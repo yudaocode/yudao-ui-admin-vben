@@ -1,9 +1,7 @@
+<!-- eslint-disable max-len -->
 <template>
   <div :class="mode == 'pop' ? 'mask' : ''" v-show="showBox">
-    <div
-      :class="mode == 'pop' ? 'verifybox' : ''"
-      :style="{ 'max-width': parseInt(imgSize.width) + 20 + 'px' }"
-    >
+    <div :class="mode == 'pop' ? 'verifybox' : ''" :style="{ 'max-width': parseInt(imgSize.width) + 20 + 'px' }">
       <div class="verifybox-top" v-if="mode == 'pop'">
         {{ t('component.captcha.verification') }}
         <span class="verifybox-close" @click="closeBox">
