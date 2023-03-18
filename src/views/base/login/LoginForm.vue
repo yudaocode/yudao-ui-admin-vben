@@ -17,24 +17,24 @@
       <InputPassword size="large" visibilityToggle v-model:value="formData.password" :placeholder="t('sys.login.password')" />
     </FormItem>
 
-    <ARow class="enter-x">
-      <ACol :span="12">
+    <Row class="enter-x">
+      <Col :span="12">
         <FormItem>
           <!-- No logic, you need to deal with it yourself -->
           <Checkbox v-model:checked="rememberMe" size="small">
             {{ t('sys.login.rememberMe') }}
           </Checkbox>
         </FormItem>
-      </ACol>
-      <ACol :span="12">
+      </Col>
+      <Col :span="12">
         <FormItem :style="{ 'text-align': 'right' }">
           <!-- No logic, you need to deal with it yourself -->
           <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
             {{ t('sys.login.forgetPassword') }}
           </Button>
         </FormItem>
-      </ACol>
-    </ARow>
+      </Col>
+    </Row>
 
     <FormItem class="enter-x">
       <Button type="primary" size="large" block @click="getCode" :loading="loading">
@@ -44,23 +44,23 @@
         {{ t('sys.login.registerButton') }}
       </Button> -->
     </FormItem>
-    <ARow class="enter-x">
-      <ACol :md="8" :xs="24">
+    <Row class="enter-x">
+      <Col :md="8" :xs="24">
         <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
           {{ t('sys.login.mobileSignInFormTitle') }}
         </Button>
-      </ACol>
-      <ACol :md="8" :xs="24" class="!my-2 !md:my-0 xs:mx-0 md:mx-2">
+      </Col>
+      <Col :md="8" :xs="24" class="!my-2 !md:my-0 xs:mx-0 md:mx-2">
         <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
           {{ t('sys.login.qrSignInFormTitle') }}
         </Button>
-      </ACol>
-      <ACol :md="6" :xs="24">
+      </Col>
+      <Col :md="6" :xs="24">
         <a-button block @click="setLoginState(LoginStateEnum.REGISTER)">
           {{ t('sys.login.registerButton') }}
         </a-button>
-      </ACol>
-    </ARow>
+      </Col>
+    </Row>
 
     <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
 
@@ -96,8 +96,6 @@ import * as authUtil from '@/utils/auth'
 import { Verify } from '@/components/Verifition'
 import { getTenantIdByName } from '@/api/base/login'
 
-const ACol = Col
-const ARow = Row
 const FormItem = Form.Item
 const InputPassword = Input.Password
 
