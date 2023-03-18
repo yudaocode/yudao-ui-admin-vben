@@ -9,7 +9,6 @@ import VitePluginCertificate from 'vite-plugin-mkcert'
 import vueSetupExtend from 'unplugin-vue-setup-extend-plus/vite'
 import { configHtmlPlugin } from './html'
 import { configPwaConfig } from './pwa'
-import { configMockPlugin } from './mock'
 import { configCompressPlugin } from './compress'
 import { configStyleImportPlugin } from './styleImport'
 import { configVisualizerConfig } from './visualizer'
@@ -18,7 +17,7 @@ import { configSvgIconsPlugin } from './svgSprite'
 import { isProdFn } from '../../utils'
 
 export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boolean) {
-  const { VITE_USE_MOCK, VITE_LEGACY, VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
+  const { VITE_LEGACY, VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
     // have to
@@ -45,9 +44,6 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
 
   // vite-plugin-svg-icons
   vitePlugins.push(configSvgIconsPlugin(isBuild))
-
-  // vite-plugin-mock
-  VITE_USE_MOCK && vitePlugins.push(configMockPlugin(isBuild))
 
   // vite-plugin-purge-icons
   vitePlugins.push(purgeIcons())
