@@ -8,11 +8,19 @@ import { isFunction } from '@/utils/is'
 import { cloneDeep } from 'lodash-es'
 import { ContentTypeEnum } from '@/enums/httpEnum'
 import { RequestEnum } from '@/enums/httpEnum'
+import { downloadByData } from '@/utils/file/download'
+import { useGlobSetting } from '@/hooks/setting'
+import { setAccessToken, getRefreshToken, getTenantId, getAccessToken } from '@/utils/auth'
 
 export * from './axiosTransform'
+const globSetting = useGlobSetting()
+// 请求队列
+let requestList: any[] = []
+// 是否正在刷新中
+let isRefreshToken = false
 
 /**
- * @description:  axios module
+ * @description:  axios 模块
  */
 export class VAxios {
   private axiosInstance: AxiosInstance
@@ -25,7 +33,7 @@ export class VAxios {
   }
 
   /**
-   * @description:  Create axios instance
+   * @description:  创建 axios 实例
    */
   private createAxios(config: CreateAxiosOptions): void {
     this.axiosInstance = axios.create(config)
@@ -39,9 +47,13 @@ export class VAxios {
   getAxios(): AxiosInstance {
     return this.axiosInstance
   }
+  refreshToken() {
+    axios.defaults.headers.common['tenant-id'] = getTenantId() as number
+    return axios.post(globSetting.apiUrl + '/system/auth/refresh-token?refreshToken=' + getRefreshToken())
+  }
 
   /**
-   * @description: Reconfigure axios
+   * @description: 重新配置 axios
    */
   configAxios(config: CreateAxiosOptions) {
     if (!this.axiosInstance) {
@@ -51,7 +63,7 @@ export class VAxios {
   }
 
   /**
-   * @description: Set general header
+   * @description: 设置通用标题
    */
   setHeader(headers: any): void {
     if (!this.axiosInstance) {
@@ -86,13 +98,54 @@ export class VAxios {
       return config
     }, undefined)
 
-    // Request interceptor error capture
+    // 请求拦截器错误捕获
     requestInterceptorsCatch &&
       isFunction(requestInterceptorsCatch) &&
       this.axiosInstance.interceptors.request.use(undefined, requestInterceptorsCatch)
 
-    // Response result interceptor processing
-    this.axiosInstance.interceptors.response.use((res: AxiosResponse<any>) => {
+    // 响应结果拦截器处理
+    this.axiosInstance.interceptors.response.use(async (res: AxiosResponse<any>) => {
+      const config = res.config
+      if (res.data.code === 401) {
+        // 如果未认证，并且未进行刷新令牌，说明可能是访问令牌过期了
+        if (!isRefreshToken) {
+          isRefreshToken = true
+          // 1. 获取到刷新token
+          if (getRefreshToken()) {
+            // 2. 进行刷新访问令牌
+            console.info('进行刷新访问令牌')
+            try {
+              const refreshTokenRes = await this.refreshToken()
+              // 2.1 刷新成功，则回放队列的请求 + 当前请求
+              setAccessToken(refreshTokenRes.data.data)
+              ;(config as Recordable).headers.Authorization = 'Bearer ' + getAccessToken()
+              requestList.forEach((cb: any) => {
+                cb()
+              })
+              requestList = []
+              // TODO
+              // res = await Promise.all([this.axiosInstance(config)])[0]
+              console.info('刷新令牌end', res)
+            } catch (e) {
+              console.info(e)
+              requestList.forEach((cb: any) => {
+                cb()
+              })
+            } finally {
+              requestList = []
+              isRefreshToken = false
+            }
+          }
+        } else {
+          // 添加到队列，等待刷新获取到新的令牌
+          return new Promise((resolve) => {
+            requestList.push(() => {
+              ;(config as Recordable).headers.Authorization = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+              resolve(this.axiosInstance(config))
+            })
+          })
+        }
+      }
       res && axiosCanceler.removePending(res.config)
       if (responseInterceptors && isFunction(responseInterceptors)) {
         res = responseInterceptors(res)
@@ -100,7 +153,7 @@ export class VAxios {
       return res
     }, undefined)
 
-    // Response result interceptor error capture
+    // 响应结果拦截器错误捕获
     responseInterceptorsCatch &&
       isFunction(responseInterceptorsCatch) &&
       this.axiosInstance.interceptors.response.use(undefined, (error) => {
@@ -110,7 +163,7 @@ export class VAxios {
   }
 
   /**
-   * @description:  File Upload
+   * @description:  文件上传
    */
   uploadFile<T = any>(config: AxiosRequestConfig, params: UploadFileParams) {
     const formData = new window.FormData()
@@ -142,12 +195,13 @@ export class VAxios {
       data: formData,
       headers: {
         'Content-type': ContentTypeEnum.FORM_DATA,
+        // @ts-ignore
         ignoreCancelToken: true
       }
     })
   }
 
-  // support form-data
+  // 支持表单数据
   supportFormData(config: AxiosRequestConfig) {
     const headers = config.headers || this.options.headers
     const contentType = headers?.['Content-Type'] || headers?.['content-type']
@@ -180,6 +234,94 @@ export class VAxios {
 
   delete<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
     return this.request({ ...config, method: 'DELETE' }, options)
+  }
+
+  download<T = any>(config: AxiosRequestConfig, title: string, options?: RequestOptions): Promise<T> {
+    let conf: CreateAxiosOptions = cloneDeep({
+      ...config,
+      method: 'GET',
+      responseType: 'blob'
+    })
+    const transform = this.getTransform()
+
+    const { requestOptions } = this.options
+
+    const opt: RequestOptions = Object.assign({}, requestOptions, options)
+
+    const { beforeRequestHook, requestCatchHook } = transform || {}
+
+    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+      conf = beforeRequestHook(conf, opt)
+    }
+    conf.requestOptions = opt
+
+    conf = this.supportFormData(conf)
+
+    return new Promise((resolve, reject) => {
+      this.axiosInstance
+        .request<any, AxiosResponse<Result>>(conf)
+        .then((res: AxiosResponse<Result>) => {
+          resolve(res as unknown as Promise<T>)
+          // download file
+          if (typeof res != undefined) {
+            downloadByData(res?.data as unknown as BlobPart, title)
+          }
+        })
+        .catch((e: Error | AxiosError) => {
+          if (requestCatchHook && isFunction(requestCatchHook)) {
+            reject(requestCatchHook(e, opt))
+            return
+          }
+          if (axios.isAxiosError(e)) {
+            // rewrite error message from axios in here
+          }
+          reject(e)
+        })
+    })
+  }
+
+  export<T = any>(config: AxiosRequestConfig, title: string, options?: RequestOptions): Promise<T> {
+    let conf: CreateAxiosOptions = cloneDeep({
+      ...config,
+      method: 'POST',
+      responseType: 'blob'
+    })
+    const transform = this.getTransform()
+
+    const { requestOptions } = this.options
+
+    const opt: RequestOptions = Object.assign({}, requestOptions, options)
+
+    const { beforeRequestHook, requestCatchHook } = transform || {}
+
+    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+      conf = beforeRequestHook(conf, opt)
+    }
+    conf.requestOptions = opt
+
+    conf = this.supportFormData(conf)
+
+    return new Promise((resolve, reject) => {
+      this.axiosInstance
+        .request<any, AxiosResponse<Result>>(conf)
+        .then((res: AxiosResponse<Result>) => {
+          resolve(res as unknown as Promise<T>)
+          // download file
+          if (typeof res != undefined) {
+            downloadByData(res?.data as unknown as BlobPart, title)
+          }
+        })
+        .catch((e: Error | AxiosError) => {
+          if (requestCatchHook && isFunction(requestCatchHook)) {
+            reject(requestCatchHook(e, opt))
+            return
+          }
+          if (axios.isAxiosError(e)) {
+            // rewrite error message from axios in here
+          }
+          reject(e)
+        })
+    })
   }
 
   request<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
@@ -223,7 +365,7 @@ export class VAxios {
             return
           }
           if (axios.isAxiosError(e)) {
-            // rewrite error message from axios in here
+            // 在此处重写来自 axios 的错误消息
           }
           reject(e)
         })

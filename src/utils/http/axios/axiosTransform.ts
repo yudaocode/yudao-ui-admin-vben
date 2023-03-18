@@ -12,8 +12,7 @@ export interface CreateAxiosOptions extends AxiosRequestConfig {
 
 export abstract class AxiosTransform {
   /**
-   * @description: Process configuration before request
-   * @description: Process configuration before request
+   * @description: 请求前的流程配置
    */
   beforeRequestHook?: (config: AxiosRequestConfig, options: RequestOptions) => AxiosRequestConfig
 

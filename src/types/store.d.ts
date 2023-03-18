@@ -1,6 +1,5 @@
 import { ErrorTypeEnum } from '@/enums/exceptionEnum'
 import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum'
-import { RoleInfo } from '@/api/sys/model/userModel'
 
 // Lock screen information
 export interface LockInfo {
@@ -37,7 +36,7 @@ export interface UserInfo {
   avatar: string
   desc?: string
   homePath?: string
-  roles: RoleInfo[]
+  roles: string[]
 }
 
 export interface BeforeMiniState {
@@ -45,4 +44,9 @@ export interface BeforeMiniState {
   menuSplit?: boolean
   menuMode?: MenuModeEnum
   menuType?: MenuTypeEnum
+}
+
+export interface DictState {
+  dictMap: Map<string, any>
+  isSetDict: boolean
 }

@@ -48,6 +48,5 @@ const getShow = computed(() => unref(getLoginState) === LoginStateEnum.MOBILE)
 async function handleLogin() {
   const data = await validForm()
   if (!data) return
-  console.log(data)
 }
 </script>

@@ -8,6 +8,16 @@ declare interface PromiseFn<T = any, R = T> {
 
 declare type RefType<T> = T | null
 
+declare interface PageParam {
+  pageSize?: number
+  pageNo?: number
+}
+
+declare interface PageResult<T = any> {
+  list: T[]
+  total: number
+}
+
 declare type LabelValueOptions = {
   label: string
   value: any
