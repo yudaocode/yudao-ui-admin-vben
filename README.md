@@ -2,38 +2,38 @@
 
 [![license](https://img.shields.io/github/license/xingyu4j/vue-vben-admin.svg)](LICENSE)
 
-<h1>v1.0.2</h1>
+<h1>yudao-ui-admin-vben</h1>
 
-## 精简版地址
+## 原项目地址
+[gitee](https://gitee.com/xingyu4j/vue-vben-admin)
+[github](https://github.com/xingyu4j/vue-vben-admin)
 
-[gitee](https://gitee.com/xingyu4j/vue-vben-admin/tree/thin/) [github](https://github.com/xingyu4j/vue-vben-admin/tree/thin)
+## 后台
+[gitee](https://gitee.com/zhijiantianya/ruoyi-vue-pro)
+[github](https://github.com/YunaiV/ruoyi-vue-pro)
 
+## 预览地址
+[预览地址](http://vben.x-surge.com)
 </div>
 
 ## 简介
 
 - Vue Vben Admin 是一个免费开源的中后台模版。
-- 本项目基于 vben2.8 版本，升级依赖，重构部分组件，重构代码样式，重构 setup 语法糖。
-- 使用了最新的`Vue3`,`Vite4`,`Antdv3`,`TypeScript5`,`Pinia`等主流技术开发，开箱即用的中后台前端解决方案。
+- 本项目基于 vben2.8 版本，升级依赖，重构部分组件，重构代码样式，重构setup语法糖。
+- 使用了最新的`Vue3`,`Vite4`,`Antdv3`,`TypeScript`,`Pinia`等主流技术开发，开箱即用的中后台前端解决方案。
+- 封装 vxe-table 详见 系统管理-角色管理等(views/demo/system/...)
 
-## 框架
-
-| 框架 | 说明 | 版本 |
-| --- | --- | --- |
-| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.2.47 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.2.0 |
-| [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.15 |
-| [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.2 |
-| [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.0.33 |
-| [vueuse](https://vueuse.org/) | 常用工具集 | 9.13.0 |
-| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
-| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.1.6 |
-| [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
-| [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.0 |
+## 开发进度
+- axios token刷新 未完成
+- router 增加基础首页 未完成
+- 系统管理 页面适配 进行中
+- 基础设施 页面适配 未完成
+- 支付管理 页面适配 未完成
+- 工作流   页面适配 未完成
 
 ## 特性
 
-- **最新技术栈**：使用 Vue3/vite4/antdv3 等前端前沿技术开发
+- **最新技术栈**：使用 Vue3/vite4/antdv3/vxeTable 等前端前沿技术开发
 - **TypeScript**: 应用程序级 JavaScript 的语言
 - **主题**：可配置的主题
 - **国际化**：内置完善的国际化方案
@@ -46,9 +46,6 @@
     <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview3.png">
 </p>
 
-## 预览地址
-
-[预览地址](http://vben.x-surge.com)
 
 ## 准备
 
