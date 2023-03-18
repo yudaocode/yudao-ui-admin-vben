@@ -1,7 +1,7 @@
 export default {
   api: {
-    operationSuccess: 'Operation Success',
     operationFailed: 'Operation failed',
+    operationSuccess: 'Operation success',
     errorTip: 'Error Tip',
     successTip: 'Success Tip',
     errorMessage: 'The operation failed, the system is abnormal!',
@@ -94,6 +94,7 @@ export default {
     policyPlaceholder: 'Register after checking',
     diffPwd: 'The two passwords are inconsistent',
 
+    tenantName: 'TenantName',
     userName: 'Username',
     password: 'Password',
     confirmPassword: 'Confirm Password',

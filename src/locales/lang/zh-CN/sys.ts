@@ -1,7 +1,7 @@
 export default {
   api: {
-    operationSuccess: '操作成功',
     operationFailed: '操作失败',
+    operationSuccess: '操作成功',
     errorTip: '错误提示',
     successTip: '成功提示',
     errorMessage: '操作失败,系统异常!',
@@ -90,6 +90,7 @@ export default {
     policyPlaceholder: '勾选后才能注册',
     diffPwd: '两次输入密码不一致',
 
+    tenantName: '租户',
     userName: '账号',
     password: '密码',
     confirmPassword: '确认密码',

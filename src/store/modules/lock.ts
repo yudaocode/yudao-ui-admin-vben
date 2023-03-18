@@ -36,13 +36,15 @@ export const useLockStore = defineStore('app-lock', {
         return true
       }
       const tryLogin = async () => {
+        // TODO 滑块验证码
         try {
-          const username = userStore.getUserInfo?.username
+          const username = userStore.getUserInfo?.user.nickname
           const res = await userStore.login({
             username,
             password: password!,
             goHome: false,
-            mode: 'none'
+            mode: 'none',
+            captchaVerification: ''
           })
           if (res) {
             this.resetLockInfo()

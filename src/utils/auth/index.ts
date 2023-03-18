@@ -1,13 +1,33 @@
 import { Persistent, BasicKeys } from '@/utils/cache/persistent'
 import { CacheTypeEnum } from '@/enums/cacheEnum'
 import projectSetting from '@/settings/projectSetting'
-import { TOKEN_KEY } from '@/enums/cacheEnum'
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, TENANT_ID_KEY } from '@/enums/cacheEnum'
 
 const { permissionCacheType } = projectSetting
 const isLocal = permissionCacheType === CacheTypeEnum.LOCAL
 
-export function getToken() {
-  return getAuthCache(TOKEN_KEY)
+export function getAccessToken() {
+  return getAuthCache(ACCESS_TOKEN_KEY)
+}
+
+export function setAccessToken(value) {
+  return setAuthCache(ACCESS_TOKEN_KEY, value)
+}
+
+export function getRefreshToken() {
+  return getAuthCache(REFRESH_TOKEN_KEY)
+}
+
+export function setRefreshToken(value) {
+  return setAuthCache(REFRESH_TOKEN_KEY, value)
+}
+
+export function getTenantId() {
+  return getAuthCache(TENANT_ID_KEY)
+}
+
+export function setTenantId(value) {
+  return setAuthCache(TENANT_ID_KEY, value)
 }
 
 export function getAuthCache<T>(key: BasicKeys) {

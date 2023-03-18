@@ -1,25 +1,27 @@
-import type { UserInfo } from '@/types/store'
 import type { ErrorMessageMode } from '@/types/axios'
+
+import { h } from 'vue'
 import { defineStore } from 'pinia'
 import { store } from '@/store'
+import { router } from '@/router'
 import { RoleEnum } from '@/enums/roleEnum'
 import { PageEnum } from '@/enums/pageEnum'
-import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
-import { getAuthCache, setAuthCache } from '@/utils/auth'
-import { GetUserInfoModel, LoginParams } from '@/api/sys/model/userModel'
-import { doLogout, getUserInfo, loginApi } from '@/api/sys/user'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useMessage } from '@/hooks/web/useMessage'
-import { router } from '@/router'
-import { usePermissionStore } from '@/store/modules/permission'
+import { ROLES_KEY, ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
 import { RouteRecordRaw } from 'vue-router'
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
+import { usePermissionStore } from '@/store/modules/permission'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
+import { getAuthCache, setAuthCache } from '@/utils/auth'
+import { doLogout, getUserInfo, loginApi } from '@/api/base/user'
+import { GetUserInfoModel, LoginParams } from '@/api/base/model/userModel'
+
 import { isArray } from '@/utils/is'
-import { h } from 'vue'
 
 interface UserState {
-  userInfo: Nullable<UserInfo>
-  token?: string
+  userInfo: Nullable<GetUserInfoModel>
+  accessToken?: string
+  refreshToken?: string
   roleList: RoleEnum[]
   sessionTimeout?: boolean
   lastUpdateTime: number
@@ -30,7 +32,8 @@ export const useUserStore = defineStore('app-user', {
     // user info
     userInfo: null,
     // token
-    token: undefined,
+    accessToken: undefined,
+    refreshToken: undefined,
     // roleList
     roleList: [],
     // Whether the login expired
@@ -39,11 +42,14 @@ export const useUserStore = defineStore('app-user', {
     lastUpdateTime: 0
   }),
   getters: {
-    getUserInfo(): UserInfo {
-      return this.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {}
+    getUserInfo(): GetUserInfoModel {
+      return this.userInfo || getAuthCache<GetUserInfoModel>(USER_INFO_KEY) || {}
     },
-    getToken(): string {
-      return this.token || getAuthCache<string>(TOKEN_KEY)
+    getAccessToken(): string {
+      return this.accessToken || getAuthCache<string>(ACCESS_TOKEN_KEY)
+    },
+    getRefreshToken(): string {
+      return this.refreshToken || getAuthCache<string>(REFRESH_TOKEN_KEY)
     },
     getRoleList(): RoleEnum[] {
       return this.roleList.length > 0 ? this.roleList : getAuthCache<RoleEnum[]>(ROLES_KEY)
@@ -56,15 +62,19 @@ export const useUserStore = defineStore('app-user', {
     }
   },
   actions: {
-    setToken(info: string | undefined) {
-      this.token = info ? info : '' // for null or undefined value
-      setAuthCache(TOKEN_KEY, info)
+    setAccessToken(info: string | undefined) {
+      this.accessToken = info ? info : '' // for null or undefined value
+      setAuthCache(ACCESS_TOKEN_KEY, info)
+    },
+    setRefreshToken(info: string | undefined) {
+      this.refreshToken = info ? info : '' // for null or undefined value
+      setAuthCache(REFRESH_TOKEN_KEY, info)
     },
     setRoleList(roleList: RoleEnum[]) {
       this.roleList = roleList
       setAuthCache(ROLES_KEY, roleList)
     },
-    setUserInfo(info: UserInfo | null) {
+    setUserInfo(info: GetUserInfoModel | null) {
       this.userInfo = info
       this.lastUpdateTime = new Date().getTime()
       setAuthCache(USER_INFO_KEY, info)
@@ -74,7 +84,7 @@ export const useUserStore = defineStore('app-user', {
     },
     resetState() {
       this.userInfo = null
-      this.token = ''
+      this.accessToken = ''
       this.roleList = []
       this.sessionTimeout = false
     },
@@ -90,17 +100,18 @@ export const useUserStore = defineStore('app-user', {
       try {
         const { goHome = true, mode, ...loginParams } = params
         const data = await loginApi(loginParams, mode)
-        const { token } = data
+        const { accessToken, refreshToken } = data
 
         // save token
-        this.setToken(token)
+        this.setAccessToken(accessToken)
+        this.setRefreshToken(refreshToken)
         return this.afterLoginAction(goHome)
       } catch (error) {
         return Promise.reject(error)
       }
     },
     async afterLoginAction(goHome?: boolean): Promise<GetUserInfoModel | null> {
-      if (!this.getToken) return null
+      if (!this.getAccessToken) return null
       // get user info
       const userInfo = await this.getUserInfoAction()
 
@@ -117,16 +128,16 @@ export const useUserStore = defineStore('app-user', {
           router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw)
           permissionStore.setDynamicAddedRoute(true)
         }
-        goHome && (await router.replace(userInfo?.homePath || PageEnum.BASE_HOME))
+        goHome && (await router.replace(PageEnum.BASE_HOME))
       }
       return userInfo
     },
-    async getUserInfoAction(): Promise<UserInfo | null> {
-      if (!this.getToken) return null
+    async getUserInfoAction(): Promise<GetUserInfoModel | null> {
+      if (!this.getAccessToken) return null
       const userInfo = await getUserInfo()
       const { roles = [] } = userInfo
       if (isArray(roles)) {
-        const roleList = roles.map((item) => item.value) as RoleEnum[]
+        const roleList = roles.map((item) => item) as RoleEnum[]
         this.setRoleList(roleList)
       } else {
         userInfo.roles = []
@@ -139,14 +150,14 @@ export const useUserStore = defineStore('app-user', {
      * @description: logout
      */
     async logout(goLogin = false) {
-      if (this.getToken) {
+      if (this.getAccessToken) {
         try {
           await doLogout()
         } catch {
           console.log('注销Token失败')
         }
       }
-      this.setToken(undefined)
+      this.setAccessToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)
       goLogin && router.push(PageEnum.BASE_LOGIN)

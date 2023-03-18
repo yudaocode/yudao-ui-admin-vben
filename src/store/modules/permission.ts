@@ -1,28 +1,23 @@
 import type { AppRouteRecordRaw, Menu } from '@/router/types'
 
+import { toRaw } from 'vue'
 import { defineStore } from 'pinia'
 import { store } from '@/store'
-import { useI18n } from '@/hooks/web/useI18n'
+
 import { useUserStore } from './user'
 import { useAppStoreWithOut } from './app'
-import { toRaw } from 'vue'
-import { transformObjToRoute, flatMultiLevelRoutes } from '@/router/helper/routeHelper'
-import { transformRouteToMenu } from '@/router/helper/menuHelper'
-
-import projectSetting from '@/settings/projectSetting'
-
-import { PermissionModeEnum } from '@/enums/appEnum'
-
 import { asyncRoutes } from '@/router/routes'
-import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
-
-import { filter } from '@/utils/helper/treeHelper'
-
-import { getMenuList } from '@/api/sys/menu'
-import { getPermCode } from '@/api/sys/user'
-
+import dashboard from '@/router/routes/modules/dashboard'
+import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
+import { transformRouteToMenu } from '@/router/helper/menuHelper'
+import { transformObjToRoute, flatMultiLevelRoutes } from '@/router/helper/routeHelper'
+import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { filter } from '@/utils/helper/treeHelper'
+import projectSetting from '@/settings/projectSetting'
+import { getMenuList } from '@/api/base/menu'
 import { PageEnum } from '@/enums/pageEnum'
+import { PermissionModeEnum } from '@/enums/appEnum'
 
 interface PermissionState {
   // Permission code list
@@ -102,8 +97,7 @@ export const usePermissionStore = defineStore('app-permission', {
       this.backMenuList = []
       this.lastBuildMenuTime = 0
     },
-    async changePermissionCode() {
-      const codeList = await getPermCode()
+    async changePermissionCode(codeList: string[]) {
       this.setPermCodeList(codeList)
     },
 
@@ -140,7 +134,7 @@ export const usePermissionStore = defineStore('app-permission', {
        * */
       const patchHomeAffix = (routes: AppRouteRecordRaw[]) => {
         if (!routes || routes.length === 0) return
-        let homePath: string = userStore.getUserInfo.homePath || PageEnum.BASE_HOME
+        let homePath: string = PageEnum.BASE_HOME
 
         function patcher(routes: AppRouteRecordRaw[], parentPath = '') {
           if (parentPath) parentPath = parentPath + '/'
@@ -220,7 +214,6 @@ export const usePermissionStore = defineStore('app-permission', {
           // 这个功能可能只需要执行一次，实际项目可以自己放在合适的时间
           let routeList: AppRouteRecordRaw[] = []
           try {
-            await this.changePermissionCode()
             routeList = (await getMenuList()) as AppRouteRecordRaw[]
           } catch (error) {
             console.error(error)
@@ -232,20 +225,18 @@ export const usePermissionStore = defineStore('app-permission', {
 
           //  Background routing to menu structure
           //  后台路由到菜单结构
-          const backMenuList = transformRouteToMenu(routeList)
+          const backMenuList = transformRouteToMenu([dashboard, ...routeList])
           this.setBackMenuList(backMenuList)
 
           // remove meta.ignoreRoute item
           // 删除 meta.ignoreRoute 项
           routeList = filter(routeList, routeRemoveIgnoreFilter)
           routeList = routeList.filter(routeRemoveIgnoreFilter)
-
           routeList = flatMultiLevelRoutes(routeList)
-          routes = [PAGE_NOT_FOUND_ROUTE, ...routeList]
+          routes = [PAGE_NOT_FOUND_ROUTE, dashboard, ...routeList]
           break
       }
 
-      routes.push(ERROR_LOG_ROUTE)
       patchHomeAffix(routes)
       return routes
     }
