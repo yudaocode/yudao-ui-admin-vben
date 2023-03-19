@@ -226,6 +226,7 @@ export const usePermissionStore = defineStore('app-permission', {
           //  Background routing to menu structure
           //  后台路由到菜单结构
           const backMenuList = transformRouteToMenu([dashboard, ...routeList])
+          console.info(backMenuList)
           this.setBackMenuList(backMenuList)
 
           // remove meta.ignoreRoute item
