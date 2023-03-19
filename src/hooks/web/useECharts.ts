@@ -12,6 +12,7 @@ import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
 export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' | 'default' = 'default') {
   const { getDarkMode: getSysDarkMode } = useRootSetting()
+
   const { getCollapsed } = useMenuSetting()
 
   const getDarkMode = computed(() => {

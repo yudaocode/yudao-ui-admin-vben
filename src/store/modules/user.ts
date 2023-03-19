@@ -128,7 +128,6 @@ export const useUserStore = defineStore('app-user', {
           router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw)
           permissionStore.setDynamicAddedRoute(true)
         }
-        console.info(router.replace(PageEnum.BASE_HOME))
         goHome && (await router.replace(PageEnum.BASE_HOME))
       }
       return userInfo

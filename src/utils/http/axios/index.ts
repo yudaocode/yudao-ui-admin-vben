@@ -70,7 +70,7 @@ const transform: AxiosTransform = {
         successMsg = t('sys.api.operationSuccess')
       }
       if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg)) {
-        successMsg = t(`sys.api.operationSuccess`)
+        successMsg = t('sys.api.operationSuccess')
       }
       if (options.successMessageMode === 'modal') {
         createSuccessModal({ title: t('sys.api.successTip'), content: successMsg })

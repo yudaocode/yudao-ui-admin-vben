@@ -13,26 +13,18 @@ import { useGo } from '@/hooks/web/usePage'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useDesign } from '@/hooks/web/useDesign'
 import { PageEnum } from '@/enums/pageEnum'
-import { useUserStore } from '@/store/modules/user'
 
 const props = defineProps({
-  /**
-   * The theme of the current parent component
-   */
+  // 当前父组件的主题
   theme: { type: String, validator: (v: string) => ['light', 'dark'].includes(v) },
-  /**
-   * Whether to show title
-   */
+  // 是否显示标题
   showTitle: { type: Boolean, default: true },
-  /**
-   * The title is also displayed when the menu is collapsed
-   */
+  // 折叠菜单时也会显示标题
   alwaysShowTitle: { type: Boolean }
 })
 
 const { prefixCls } = useDesign('app-logo')
 const { getCollapsedShowTitle } = useMenuSetting()
-const userStore = useUserStore()
 const { title } = useGlobSetting()
 const go = useGo()
 
@@ -46,7 +38,7 @@ const getTitleClass = computed(() => [
 ])
 
 function goHome() {
-  go(userStore.getUserInfo.homePath || PageEnum.BASE_HOME)
+  go(PageEnum.BASE_HOME)
 }
 </script>
 <style lang="less" scoped>

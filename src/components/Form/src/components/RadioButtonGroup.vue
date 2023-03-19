@@ -54,7 +54,6 @@ const getOptions = computed((): OptionsItem[] => {
 
 function handleClick(args) {
   emitData.value = args
-  console.info(emitData.value)
   emits('change', emitData.value)
 }
 </script>
