@@ -9,11 +9,11 @@ export default {
     // 支持 xxx.xxx.xxx格式
     fetchSetting: {
       // 传给后台的当前页字段
-      pageField: 'page',
+      pageField: 'pageNo',
       // 传给后台的每页显示多少条的字段
       sizeField: 'pageSize',
       // 接口返回表格数据的字段
-      listField: 'items',
+      listField: 'list',
       // 接口返回表格总数的字段
       totalField: 'total'
     },

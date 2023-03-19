@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { Ref, VNodeChild } from 'vue'
 import type { PaginationProps } from './pagination'
 import type { FormProps } from '@/components/Form'
 import type { TableRowSelection as ITableRowSelection } from 'ant-design-vue/lib/table/interface'
@@ -94,7 +94,7 @@ export interface TableActionType {
   getSelectRowKeys: () => string[]
   deleteSelectRowByKey: (key: string) => void
   setPagination: (info: Partial<PaginationProps>) => void
-  setTableData: <T = Recordable>(values: T[]) => void
+  setTableData: <T extends Ref<Recordable<any>[]>>(values: T[]) => void
   updateTableDataRecord: (rowKey: string | number, record: Recordable) => Recordable | void
   deleteTableDataRecord: (rowKey: string | number | string[] | number[]) => void
   insertTableDataRecord: (record: Recordable | Recordable[], index?: number) => Recordable[] | void
