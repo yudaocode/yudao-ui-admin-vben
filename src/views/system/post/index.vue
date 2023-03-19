@@ -30,11 +30,11 @@
   </div>
 </template>
 <script lang="ts" setup name="Post">
-import { BasicTable, useTable, TableAction, BasicColumn, FormSchema } from '@/components/Table'
+import { BasicTable, useTable, useRender, TableAction, BasicColumn, FormSchema } from '@/components/Table'
 import { getPostPageApi } from '@/api/system/post'
 import { useModal } from '@/components/Modal'
 import PostModel from './PostModel.vue'
-import dayjs from 'dayjs'
+import { DICT_TYPE } from '@/utils/dict'
 
 const columns: BasicColumn[] = [
   {
@@ -60,7 +60,10 @@ const columns: BasicColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 180
+    width: 180,
+    customRender: ({ text }) => {
+      return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
+    }
   },
   {
     title: '备注',
@@ -70,7 +73,7 @@ const columns: BasicColumn[] = [
     title: '创建时间',
     dataIndex: 'createTime',
     customRender: ({ text }) => {
-      return dayjs(text).format('YYYY-MM-DD HH:mm:ss')
+      return useRender.renderDate(text)
     }
   }
 ]
@@ -85,7 +88,8 @@ const searchFormSchema: FormSchema[] = [
   {
     field: 'code',
     label: '岗位编码',
-    component: 'Input'
+    component: 'Input',
+    colProps: { span: 8 }
   },
   {
     field: 'status',
