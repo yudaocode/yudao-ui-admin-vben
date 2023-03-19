@@ -57,8 +57,6 @@ async function bootstrap() {
   // Configure global error handling
   // 配置全局错误处理
   setupErrorHandle(app)
-  // https://next.router.vuejs.org/api/#isready
-  await router.isReady()
 
   // https://next.router.vuejs.org/api/#isready
   // await router.isReady();
