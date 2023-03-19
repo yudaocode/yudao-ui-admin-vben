@@ -10,7 +10,7 @@
 import { MenuItem } from 'ant-design-vue'
 import { computed, getCurrentInstance } from 'vue'
 
-import Icon from '@/components/Icon'
+import { Icon } from '@/components/Icon'
 import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({

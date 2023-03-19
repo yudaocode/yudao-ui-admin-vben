@@ -26,9 +26,9 @@
       <div :class="`${prefixCls}-entry`" v-show="!showDate">
         <div :class="`${prefixCls}-entry-content`">
           <div :class="`${prefixCls}-entry__header enter-x`">
-            <img :src="userinfo.avatar || headerImg" :class="`${prefixCls}-entry__header-img`" />
+            <img :src="userinfo.user.avatar || headerImg" :class="`${prefixCls}-entry__header-img`" />
             <p :class="`${prefixCls}-entry__header-name`">
-              {{ userinfo.realName }}
+              {{ userinfo.user.nickname }}
             </p>
           </div>
           <InputPassword :placeholder="t('sys.lock.placeholder')" class="enter-x" v-model:value="password" />
@@ -58,7 +58,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Input } from 'ant-design-vue'
 import { useUserStore } from '@/store/modules/user'

@@ -73,8 +73,5 @@ export const sendSmsApi = (data: SendSmsReqVO) => {
 
 // 导出短信模板
 export const exportPostApi = (params: SmsTemplateExportReqVO) => {
-  return defHttp.download({
-    url: '/system/sms-template/export-excel',
-    params
-  })
+  return defHttp.download({ url: '/system/sms-template/export-excel', params })
 }

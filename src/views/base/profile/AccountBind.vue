@@ -24,6 +24,7 @@
 </template>
 <script setup lang="ts">
 import { List } from 'ant-design-vue'
+import { Icon } from '@/components/Icon'
 import { CollapseContainer } from '@/components/Container/index'
 import { accountBindList } from './data'
 import { getUserProfileApi } from '@/api/base/profile'
