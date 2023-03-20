@@ -38,7 +38,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   }
 })
 
-const getTitle = computed(() => (!unref(isUpdate) ? '新增岗位' : '编辑岗位'))
+const getTitle = computed(() => (!unref(isUpdate) ? '新增公告' : '编辑公告'))
 
 async function handleSubmit() {
   try {

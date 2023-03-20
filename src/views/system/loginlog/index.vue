@@ -7,7 +7,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="Post">
+<script lang="ts" setup name="LoginLog">
 import { BasicTable, useTable } from '@/components/Table'
 import { LoginLogReqVO, exportLoginLogApi, getLoginLogPageApi } from '@/api/system/loginLog'
 import { columns, searchFormSchema } from './loginLog.data'

@@ -29,7 +29,7 @@
     <NoticeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Post">
+<script lang="ts" setup name="Notice">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteNoticeApi, getNoticePageApi } from '@/api/system/notice'
 import { useModal } from '@/components/Modal'
