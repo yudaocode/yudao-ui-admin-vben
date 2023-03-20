@@ -21,6 +21,15 @@ export const useRender = {
       return h('span', text)
     }
   },
+  renderTags: (texts: string[]) => {
+    if (texts) {
+      return h('div', null, [
+        texts.map((text) => {
+          return h(Tag, null, () => text)
+        })
+      ])
+    }
+  },
   renderDate: (text, format?) => {
     if (!format) {
       return dayjs(text).format('YYYY-MM-DD HH:mm:ss')
