@@ -45,20 +45,20 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'name',
     label: '岗位名称',
+    field: 'name',
     component: 'Input',
     colProps: { span: 8 }
   },
   {
-    field: 'code',
     label: '岗位编码',
+    field: 'code',
     component: 'Input',
     colProps: { span: 8 }
   },
   {
-    field: 'status',
     label: '状态',
+    field: 'status',
     component: 'Select',
     componentProps: {
       options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
@@ -69,32 +69,32 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   {
-    field: 'id',
     label: '编号',
+    field: 'id',
     show: false,
     component: 'Input'
   },
   {
-    field: 'name',
     label: '岗位名称',
+    field: 'name',
     required: true,
     component: 'Input'
   },
   {
-    field: 'code',
     label: '岗位编码',
+    field: 'code',
     required: true,
     component: 'Input'
   },
   {
-    field: 'sort',
     label: '岗位顺序',
+    field: 'sort',
     required: true,
     component: 'InputNumber'
   },
   {
-    field: 'status',
     label: '状态',
+    field: 'status',
     component: 'Select',
     defaultValue: 0,
     componentProps: {
