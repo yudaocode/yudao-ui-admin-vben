@@ -32,11 +32,13 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '备注',
-    dataIndex: 'remark'
+    dataIndex: 'remark',
+    width: 180
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
     }
