@@ -26,84 +26,18 @@
         </template>
       </template>
     </BasicTable>
-    <PostModel @register="registerModal" @success="handleSuccess" />
+    <PostModel @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Post">
-import { BasicTable, useTable, useRender, TableAction, BasicColumn, FormSchema } from '@/components/Table'
-import { getPostPageApi } from '@/api/system/post'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { deletePostApi, getPostPageApi } from '@/api/system/post'
 import { useModal } from '@/components/Modal'
 import PostModel from './PostModel.vue'
-import { DICT_TYPE } from '@/utils/dict'
+import { columns, searchFormSchema } from './post.data'
+import { useMessage } from '@/hooks/web/useMessage'
 
-const columns: BasicColumn[] = [
-  {
-    title: '岗位编号',
-    dataIndex: 'id',
-    width: 100
-  },
-  {
-    title: '岗位名称',
-    dataIndex: 'name',
-    width: 180
-  },
-  {
-    title: '岗位编码',
-    dataIndex: 'code',
-    width: 100
-  },
-  {
-    title: '岗位顺序',
-    dataIndex: 'sort',
-    width: 120
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    width: 180,
-    customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
-    }
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    customRender: ({ text }) => {
-      return useRender.renderDate(text)
-    }
-  }
-]
-
-const searchFormSchema: FormSchema[] = [
-  {
-    field: 'name',
-    label: '岗位名称',
-    component: 'Input',
-    colProps: { span: 8 }
-  },
-  {
-    field: 'code',
-    label: '岗位编码',
-    component: 'Input',
-    colProps: { span: 8 }
-  },
-  {
-    field: 'status',
-    label: '状态',
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: '启用', value: '0' },
-        { label: '停用', value: '1' }
-      ]
-    },
-    colProps: { span: 8 }
-  }
-]
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '岗位列表',
@@ -115,8 +49,7 @@ const [registerTable, { reload }] = useTable({
   },
   useSearchForm: true,
   showTableSetting: true,
-  // bordered: true,
-  // showIndexColumn: false,
+  showIndexColumn: false,
   actionColumn: {
     width: 120,
     title: '操作',
@@ -138,11 +71,12 @@ function handleEdit(record: Recordable) {
   })
 }
 
-function handleDelete(record: Recordable) {
+async function handleDelete(record: Recordable) {
   console.log(record)
-}
-
-function handleSuccess() {
-  reload()
+  const res = await deletePostApi(record.id)
+  if (res) {
+    createMessage.success('删除成功')
+    reload()
+  }
 }
 </script>
