@@ -28,11 +28,12 @@ export const useRender = {
       return dayjs(text).format(format)
     }
   },
-  renderDict: (text, type) => {
+  renderDict: (text, type, dictType?) => {
     if (type) {
       return h(DictTag, {
         type: type,
-        value: text
+        value: text,
+        dictType: dictType || 'number'
       })
     }
   }
