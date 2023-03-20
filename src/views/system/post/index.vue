@@ -3,6 +3,7 @@
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+        <a-button type="warning" @click="handleExport"> 导出 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -31,15 +32,17 @@
 </template>
 <script lang="ts" setup name="Post">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deletePostApi, getPostPageApi } from '@/api/system/post'
+import { PostExportReqVO, deletePostApi, exportPostApi, getPostPageApi } from '@/api/system/post'
 import { useModal } from '@/components/Modal'
 import PostModel from './PostModel.vue'
 import { columns, searchFormSchema } from './post.data'
+import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
-const { createMessage } = useMessage()
+const { t } = useI18n()
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
-const [registerTable, { reload }] = useTable({
+const [registerTable, { getForm, reload }] = useTable({
   title: '岗位列表',
   api: getPostPageApi,
   columns,
@@ -68,6 +71,18 @@ function handleEdit(record: Recordable) {
   openModal(true, {
     record,
     isUpdate: true
+  })
+}
+
+async function handleExport() {
+  createConfirm({
+    title: '导出',
+    iconType: 'warning',
+    content: '是否要导出数据？',
+    async onOk() {
+      await exportPostApi(getForm().getFieldsValue() as PostExportReqVO)
+      createMessage.success(t('common.exportSuccessText'))
+    }
   })
 }
 

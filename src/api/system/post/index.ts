@@ -54,5 +54,5 @@ export const deletePostApi = (id: number) => {
 
 // 导出岗位
 export const exportPostApi = (params: PostExportReqVO) => {
-  return defHttp.download({ url: '/system/post/export', params })
+  return defHttp.download({ url: '/system/post/export', params }, '导出岗位.xls')
 }

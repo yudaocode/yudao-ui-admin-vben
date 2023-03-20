@@ -236,7 +236,7 @@ export class VAxios {
     return this.request({ ...config, method: 'DELETE' }, options)
   }
 
-  download<T = any>(config: AxiosRequestConfig, title: string, options?: RequestOptions): Promise<T> {
+  download<T = any>(config: AxiosRequestConfig, title?: string, options?: RequestOptions): Promise<T> {
     let conf: CreateAxiosOptions = cloneDeep({
       ...config,
       method: 'GET',
@@ -264,7 +264,7 @@ export class VAxios {
           resolve(res as unknown as Promise<T>)
           // download file
           if (typeof res != undefined) {
-            downloadByData(res?.data as unknown as BlobPart, title)
+            downloadByData(res?.data as unknown as BlobPart, title || 'export')
           }
         })
         .catch((e: Error | AxiosError) => {
