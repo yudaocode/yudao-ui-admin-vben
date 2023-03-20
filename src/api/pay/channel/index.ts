@@ -66,5 +66,5 @@ export const deleteChannelApi = (id: number) => {
 
 // 导出支付渠道
 export const exportChannelApi = (params: ChannelExportReqVO) => {
-  return defHttp.download({ url: '/pay/channel/export-excel', params })
+  return defHttp.download({ url: '/pay/channel/export-excel', params }, '支付渠道.xls')
 }

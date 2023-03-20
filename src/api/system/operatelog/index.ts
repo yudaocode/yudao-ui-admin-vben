@@ -37,5 +37,5 @@ export const getOperateLogPageApi = (params: OperateLogPageReqVO) => {
 }
 // 导出操作日志
 export const exportOperateLogApi = (params: OperateLogPageReqVO) => {
-  return defHttp.download({ url: '/system/operate-log/export', params })
+  return defHttp.download({ url: '/system/operate-log/export', params }, '操作日志.xls')
 }

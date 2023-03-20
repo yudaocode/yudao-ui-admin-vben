@@ -105,5 +105,5 @@ export const deleteOrderApi = async (id: number) => {
 
 // 导出支付订单
 export const exportOrderApi = async (params: OrderExportReqVO) => {
-  return defHttp.download({ url: '/pay/order/export-excel', params })
+  return defHttp.download({ url: '/pay/order/export-excel', params }, '支付订单.xls')
 }

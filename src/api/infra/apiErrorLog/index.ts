@@ -57,10 +57,13 @@ export const updateApiErrorLogPageApi = (id: number, processStatus: number) => {
   })
 }
 
-// 导出API 访问日志
+// 导出API 错误日志
 export const exportApiErrorLogApi = (params: ApiErrorLogExportReqVO) => {
-  return defHttp.download({
-    url: '/infra/api-error-log/export-excel',
-    params
-  })
+  return defHttp.download(
+    {
+      url: '/infra/api-error-log/export-excel',
+      params
+    },
+    '错误日志.xls'
+  )
 }

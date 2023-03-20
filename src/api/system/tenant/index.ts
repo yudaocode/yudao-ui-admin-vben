@@ -58,5 +58,5 @@ export const deleteTenantApi = (id: number) => {
 
 // 导出租户
 export const exportTenantApi = (params: TenantExportReqVO) => {
-  return defHttp.download({ url: '/system/tenant/export-excel', params })
+  return defHttp.download({ url: '/system/tenant/export-excel', params }, '租户.xls')
 }

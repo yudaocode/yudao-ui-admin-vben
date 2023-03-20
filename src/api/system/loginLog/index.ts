@@ -26,5 +26,5 @@ export const getLoginLogPageApi = (params: LoginLogReqVO) => {
 }
 // 导出登录日志
 export const exportLoginLogApi = (params: LoginLogReqVO) => {
-  return defHttp.download({ url: '/system/login-log/export', params })
+  return defHttp.download({ url: '/system/login-log/export', params }, '登录日志.xls')
 }

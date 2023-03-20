@@ -59,12 +59,12 @@ export const deleteUserApi = (id: number) => {
 
 // 导出用户
 export const exportUserApi = (params: UserExportReqVO) => {
-  return defHttp.download({ url: '/system/user/export', params })
+  return defHttp.download({ url: '/system/user/export', params }, '用户.xls')
 }
 
 // 下载用户导入模板
 export const importUserTemplateApi = () => {
-  return defHttp.download({ url: '/system/user/get-import-template' })
+  return defHttp.download({ url: '/system/user/get-import-template' }, '用户导入模板.xls')
 }
 
 // 用户密码重置

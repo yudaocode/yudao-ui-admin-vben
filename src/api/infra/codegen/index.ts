@@ -38,7 +38,7 @@ export const previewCodegenApi = (id: number) => {
 
 // 下载生成代码
 export const downloadCodegenApi = (id: number) => {
-  return defHttp.download({ url: '/infra/codegen/download?tableId=' + id })
+  return defHttp.download({ url: '/infra/codegen/download?tableId=' + id }, '生成代码.zip')
 }
 
 // 获得表定义

@@ -42,8 +42,11 @@ export const getJobLogApi = (id: number) => {
 
 // 导出定时任务日志
 export const exportJobLogApi = (params: JobLogExportReqVO) => {
-  return defHttp.download({
-    url: '/infra/job-log/export-excel',
-    params
-  })
+  return defHttp.download(
+    {
+      url: '/infra/job-log/export-excel',
+      params
+    },
+    '定时任务日志.xls'
+  )
 }

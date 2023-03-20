@@ -58,5 +58,5 @@ export const deleteConfigApi = (id: number) => {
 
 // 导出参数
 export const exportConfigApi = (params: ConfigExportReqVO) => {
-  return defHttp.download({ url: '/infra/config/export', params })
+  return defHttp.download({ url: '/infra/config/export', params }, '参数.xls')
 }

@@ -65,7 +65,7 @@ export const deleteMerchantApi = (id: number) => {
 
 // 导出支付商户
 export const exportMerchantApi = (params: MerchantExportReqVO) => {
-  return defHttp.download({ url: '/pay/merchant/export-excel', params })
+  return defHttp.download({ url: '/pay/merchant/export-excel', params }, '支付商户.xls')
 }
 // 支付商户状态修改
 export const changeMerchantStatusApi = (id: number, status: number) => {

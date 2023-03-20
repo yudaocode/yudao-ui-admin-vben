@@ -46,5 +46,5 @@ export const getApiAccessLogPageApi = (params: ApiAccessLogPageReqVO) => {
 
 // 导出API 访问日志
 export const exportApiAccessLogApi = (params: ApiAccessLogExportReqVO) => {
-  return defHttp.download({ url: '/infra/api-access-log/export-excel', params })
+  return defHttp.download({ url: '/infra/api-access-log/export-excel', params }, '访问日志.xls')
 }

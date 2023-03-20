@@ -45,5 +45,5 @@ export const deleteErrorCodeApi = (id: number) => {
 
 // 导出错误码
 export const excelErrorCodeApi = (params: ErrorCodePageReqVO) => {
-  return defHttp.download({ url: '/system/error-code/export-excel', params })
+  return defHttp.download({ url: '/system/error-code/export-excel', params }, '错误码.xls')
 }

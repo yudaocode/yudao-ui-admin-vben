@@ -52,7 +52,7 @@ export const deleteJobApi = (id: number) => {
 
 // 导出定时任务调度
 export const exportJobApi = (params: JobExportReqVO) => {
-  return defHttp.download({ url: '/infra/job/export-excel', params })
+  return defHttp.download({ url: '/infra/job/export-excel', params }, '定时任务.xls')
 }
 
 // 任务状态修改

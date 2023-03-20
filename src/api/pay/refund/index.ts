@@ -112,5 +112,5 @@ export const deleteRefundApi = (id: number) => {
 
 // 导出退款订单
 export const exportRefundApi = (params: PayRefundExportReqVO) => {
-  return defHttp.download({ url: '/pay/refund/export-excel', params })
+  return defHttp.download({ url: '/pay/refund/export-excel', params }, '退款订单.xls')
 }
