@@ -42,6 +42,7 @@ export const updateErrorCodeApi = (data: ErrorCodeVO) => {
 export const deleteErrorCodeApi = (id: number) => {
   return defHttp.delete({ url: '/system/error-code/delete?id=' + id })
 }
+
 // 导出错误码
 export const excelErrorCodeApi = (params: ErrorCodePageReqVO) => {
   return defHttp.download({ url: '/system/error-code/export-excel', params })
