@@ -5,6 +5,7 @@ import { getParentLayout, LAYOUT, EXCEPTION_COMPONENT } from '@/router/constant'
 import { cloneDeep, omit } from 'lodash-es'
 import { warn } from '@/utils/log'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { isUrl } from '@/utils/is'
 
 export type LayoutMapKey = 'LAYOUT'
 const IFRAME = () => import('@/views/base/iframe/FrameBlank.vue')
@@ -78,6 +79,11 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
     } else if (!route.children) {
       route.component = route.component as string
     }
+
+    if (isUrl(route.path)) {
+      console.info(route)
+      route.component = 'IFRAME'
+    }
     const component = route.component as string
     if (component) {
       if (component.toUpperCase() === 'LAYOUT') {
@@ -86,6 +92,14 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
         meta.title = route.name
         meta.icon = route.icon
         route.meta = meta
+      } else if (component.toUpperCase() === 'IFRAME') {
+        route.component = LayoutMap.get('IFRAME'.toUpperCase())
+        const meta = route.meta || {}
+        meta.title = route.name
+        meta.icon = route.icon
+        meta.frameSrc = route.path
+        route.meta = meta
+        route.path = '/' + route.name
       } else {
         //处理顶级非目录路由
         const meta = route.meta || {}
