@@ -108,7 +108,7 @@
     "postcss": "^8.4.21",
     "postcss-html": "^1.5.0",
     "postcss-less": "^6.0.0",
-    "prettier": "^2.8.5",
+    "prettier": "^2.8.6",
     "rimraf": "^4.4.0",
     "rollup": "^3.20.0",
     "rollup-plugin-visualizer": "^5.9.0",
