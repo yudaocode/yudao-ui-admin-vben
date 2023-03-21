@@ -36,6 +36,7 @@ export function useTableForm(
     if (handleSearchInfoFn && isFunction(handleSearchInfoFn)) {
       info = handleSearchInfoFn(info) || info
     }
+    console.info(info)
     fetch({ searchInfo: info, page: 1 })
   }
 

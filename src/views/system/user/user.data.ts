@@ -73,6 +73,9 @@ export const searchFormSchema: FormSchema[] = [
     label: '创建时间',
     field: 'createTime',
     component: 'RangePicker',
+    componentProps: {
+      format: 'YYYY-MM-DD HH:mm:ss'
+    },
     colProps: { span: 8 }
   }
 ]
@@ -121,7 +124,7 @@ export const formSchema: FormSchema[] = [
     label: '用户名称',
     field: 'username',
     component: 'Input',
-    ifShow: ({ values }) => values.id === undefined
+    dynamicDisabled: ({ values }) => values.id !== undefined
   },
   {
     label: '用户密码',
@@ -144,7 +147,8 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       api: () => listSimplePostsApi(),
       labelField: 'name',
-      valueField: 'id'
+      valueField: 'id',
+      mode: 'tags'
     }
   },
   {

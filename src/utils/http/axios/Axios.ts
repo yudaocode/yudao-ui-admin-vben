@@ -124,8 +124,11 @@ export class VAxios {
               })
               requestList = []
               // TODO
-              // res = await Promise.all([this.axiosInstance(config)])[0]
               console.info('刷新令牌end', res)
+              return new Promise((resolve) => {
+                resolve(this.axiosInstance(config))
+              })
+              // res = await Promise.all([this.axiosInstance(config)])[0]
             } catch (e) {
               console.info(e)
               requestList.forEach((cb: any) => {

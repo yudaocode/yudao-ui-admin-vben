@@ -13,7 +13,9 @@
                 icon: 'clarity:note-edit-line',
                 label: '修改',
                 onClick: handleEdit.bind(null, record)
-              },
+              }
+            ]"
+            :dropDownActions="[
               {
                 icon: 'clarity:note-edit-line',
                 label: '菜单权限',
@@ -66,7 +68,7 @@ const [registerTable, { getForm, reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 240,
+    width: 160,
     title: '操作',
     dataIndex: 'action',
     fixed: 'right'

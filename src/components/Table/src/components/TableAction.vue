@@ -15,9 +15,7 @@
     </template>
     <Dropdown :trigger="['hover']" :dropMenuList="getDropdownList" popconfirm v-if="dropDownActions && getDropdownList.length > 0">
       <slot name="more"></slot>
-      <a-button type="link" size="small" v-if="!$slots.more">
-        <MoreOutlined class="icon-more" />
-      </a-button>
+      <a-button type="link" v-if="!$slots.more"> 更多<MoreOutlined class="icon-more" /> </a-button>
     </Dropdown>
   </div>
 </template>

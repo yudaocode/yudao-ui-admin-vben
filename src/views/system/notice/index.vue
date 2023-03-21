@@ -53,7 +53,7 @@ const [registerTable, { reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 120,
+    width: 160,
     title: '操作',
     dataIndex: 'action',
     fixed: 'right'

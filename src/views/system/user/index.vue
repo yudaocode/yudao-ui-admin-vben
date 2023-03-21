@@ -30,7 +30,7 @@
         </template>
       </template>
     </BasicTable>
-    <UserModel @register="registerModal" @success="handleSuccess" />
+    <UserModel @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="User">
@@ -49,7 +49,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const searchInfo = reactive<Recordable>({})
 
-const [registerTable, { getForm, reload, updateTableDataRecord }] = useTable({
+const [registerTable, { getForm, reload }] = useTable({
   title: '账号列表',
   api: getUserPageApi,
   columns,
@@ -62,7 +62,7 @@ const [registerTable, { getForm, reload, updateTableDataRecord }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 120,
+    width: 160,
     title: '操作',
     dataIndex: 'action',
     fixed: 'right'
@@ -98,17 +98,6 @@ async function handleDelete(record: Recordable) {
   await deleteUserApi(record.id)
   createMessage.success('删除成功')
   reload()
-}
-
-function handleSuccess({ isUpdate, values }) {
-  if (isUpdate) {
-    // 演示不刷新表格直接更新内部数据。
-    // 注意：updateTableDataRecord要求表格的rowKey属性为string并且存在于每一行的record的keys中
-    const result = updateTableDataRecord(values.id, values)
-    console.log(result)
-  } else {
-    reload()
-  }
 }
 
 function handleSelect(deptId = '') {
