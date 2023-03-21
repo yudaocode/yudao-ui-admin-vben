@@ -19,12 +19,10 @@ pnpm dev
 * 1. 在views下找到自己的开发模块
 * 2. 复制system/post下三个文件到需要开发的路径下
 * 3. 将post.data.ts 以及 PostModel.vue 更名为需要开发的名称（以下用role代替）
-* 4. index.vue 中 修改script lang="ts" setup name="Post"中 name为Role PostModel 为RoleModel 详情看图
-<img alt="index.vue" width="100%" src="./docimg/1.png">
+* 4. index.vue 中 修改script lang="ts" setup name="Post"中 name为Role PostModel 为RoleModel 详情看图<img alt="index.vue" width="100%" src="./docimg/1.png">
 * 5. 修改post.data.ts  更名为role.data.ts 然后打开文档最上面的vue2代码，找到迁移的index.vue文件
 * 6. 修改 columns 为 vue2 中 el-table-column 的参数 title 为 vue2中label ，dataIndex 为 prop
 * 7. 修改 searchFormSchema 为 vue2 中 搜索工作栏 下 el-form-item 的参数，component 可参考其他已完成页面修改
 * 8. 修改 formSchema 为 vue2 中 添加或修改参数配置对话框 的参数，component 可参考其他已完成页面修改
-* 9. 修改 PostModel.vue ，更名为RoleModel.vue，如果所示的其他字段
-<img alt="index.vue" width="100%" src="./docimg/1.png">
+* 9. 修改 PostModel.vue ，更名为RoleModel.vue，如果所示的其他字段<img alt="index.vue" width="100%" src="./docimg/1.png">
 * 10. 基本上70%以上的页面这样就可以完成了，修改完成后测试一下增删改查，如果没有问题就可以提交pr了
