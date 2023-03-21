@@ -15,13 +15,15 @@ import { isArray, isFunction } from '@/utils/is'
 import { get } from 'lodash-es'
 import { propTypes } from '@/utils/propTypes'
 import { LoadingOutlined } from '@ant-design/icons-vue'
+import { handleTree } from '@/utils/tree'
 
 const props = defineProps({
   api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
   params: { type: Object },
   immediate: { type: Boolean, default: true },
   resultField: propTypes.string.def(''),
-  afterFetch: { type: Function as PropType<Fn> }
+  afterFetch: { type: Function as PropType<Fn> },
+  handleTree: { type: String, default: '' }
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
@@ -76,6 +78,9 @@ async function fetch() {
   }
   loading.value = false
   if (!result) return
+  if (props.handleTree) {
+    result = handleTree(result, props.handleTree)
+  }
   if (!isArray(result)) {
     result = get(result, props.resultField)
   }
