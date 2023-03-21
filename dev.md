@@ -1,5 +1,5 @@
-[vue3 项目地址](https://gitee.com/xingyuv/yudao-ui-admin-vben)
-[vue2 项目地址](https://gitee.com/-/ide/project/zhijiantianya/ruoyi-vue-pro/edit/master/-/yudao-ui-admin/src/views/infra/config/index.vue)
+* [vue3 项目地址](https://gitee.com/xingyuv/yudao-ui-admin-vben)
+* [vue2 项目地址](https://gitee.com/-/ide/project/zhijiantianya/ruoyi-vue-pro/edit/master/-/yudao-ui-admin/src/views/infra/config/index.vue)
 
 * 为避免冲突，先fork vue3项目到自己仓库，然后clone下来，后续通过 pull request 方式提交代码
 * vue3 需要node>16.18,最好使用pnpm进行包管理
