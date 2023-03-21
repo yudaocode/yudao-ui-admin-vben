@@ -154,8 +154,8 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     componentProps: {
       options: [
-        { label: true, key: true, value: '显示' },
-        { label: false, key: false, value: '隐藏' }
+        { label: '显示', key: true, value: true },
+        { label: '隐藏', key: false, value: false }
       ]
     },
     ifShow: ({ values }) => values.type !== 3
@@ -166,8 +166,8 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     componentProps: {
       options: [
-        { label: true, key: true, value: '显示' },
-        { label: false, key: false, value: '隐藏' }
+        { label: '显示', key: true, value: true },
+        { label: '隐藏', key: false, value: false }
       ]
     },
     ifShow: ({ values }) => values.type !== 3
@@ -178,8 +178,8 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     componentProps: {
       options: [
-        { label: true, key: true, value: '缓存' },
-        { label: false, key: false, value: '不缓存' }
+        { label: '缓存', key: true, value: true },
+        { label: '不缓存', key: false, value: false }
       ]
     },
     ifShow: ({ values }) => values.type === 2

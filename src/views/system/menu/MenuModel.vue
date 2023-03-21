@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './menu.data'
-import { createDeptApi, getDeptApi, updateDeptApi } from '@/api/system/dept'
+import { createMenuApi, getMenuApi, updateMenuApi } from '@/api/system/menu'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -30,7 +30,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getDeptApi(data.record.id)
+    const res = await getMenuApi(data.record.id)
     rowId.value = res.id
     setFieldsValue({
       ...res
@@ -38,16 +38,16 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   }
 })
 
-const getTitle = computed(() => (!unref(isUpdate) ? '新增部门' : '编辑部门'))
+const getTitle = computed(() => (!unref(isUpdate) ? '新增菜单' : '编辑菜单'))
 
 async function handleSubmit() {
   try {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateDeptApi(values)
+      await updateMenuApi(values)
     } else {
-      await createDeptApi(values)
+      await createMenuApi(values)
     }
     closeModal()
     emit('success')
