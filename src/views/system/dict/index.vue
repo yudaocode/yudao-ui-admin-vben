@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <BasicTable @register="registerTable" class="w-1/2 xl:w-1/2">
+    <BasicTable @register="registerTable" class="w-1/2 xl:w-1/2" @row-click="handleRowClick">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate">新增字典类型</a-button>
       </template>
@@ -28,21 +28,23 @@
         </template>
       </template>
     </BasicTable>
-    <DictData class="w-1/2 xl:w-1/2" />
+    <DictData class="w-1/2 xl:w-1/2" :searchInfo="searchInfo" />
     <DictTypeModel @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Dict">
-// import { reactive } from 'vue'
+import { reactive } from 'vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { useModal } from '@/components/Modal'
 import DictData from './DictData.vue'
 import DictTypeModel from './DictTypeModel.vue'
 import { typeColumns, typeSearchFormSchema } from './dict.type'
-import { getDictTypePageApi } from '@/api/system/dict/type'
+import { deleteDictTypeApi, getDictTypePageApi } from '@/api/system/dict/type'
+import { useMessage } from '@/hooks/web/useMessage'
 
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
-// const searchInfo = reactive<Recordable>({})
+const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { reload }] = useTable({
   title: '字典分类列表',
@@ -63,6 +65,11 @@ const [registerTable, { reload }] = useTable({
   }
 })
 
+function handleRowClick(record) {
+  console.info(record.type)
+  searchInfo.dictType = record.type
+}
+
 function handleCreate() {
   openModal(true, {
     isUpdate: false
@@ -70,30 +77,22 @@ function handleCreate() {
 }
 
 function handleEdit(record: Recordable) {
-  console.log(record)
   openModal(true, {
     record,
     isUpdate: true
   })
 }
 
-function handleDelete(record: Recordable) {
-  console.log(record)
+async function handleDelete(record: Recordable) {
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteDictTypeApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
-
-// function handleSuccess({ isUpdate, values }) {
-//   if (isUpdate) {
-//     // 演示不刷新表格直接更新内部数据。
-//     // 注意：updateTableDataRecord要求表格的rowKey属性为string并且存在于每一行的record的keys中
-//     const result = updateTableDataRecord(values.id, values)
-//     console.log(result)
-//   } else {
-//     reload()
-//   }
-// }
-
-// function handleSelect(deptId = '') {
-//   searchInfo.deptId = deptId
-//   reload()
-// }
 </script>

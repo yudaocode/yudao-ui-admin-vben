@@ -35,6 +35,10 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     setFieldsValue({
       ...res
     })
+  } else {
+    setFieldsValue({
+      dictType: data.record
+    })
   }
 })
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BasicTable @register="registerTable">
+    <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate">新增字典数据</a-button>
       </template>
@@ -32,13 +32,22 @@
   </div>
 </template>
 <script lang="ts" setup name="DictData">
-// import { reactive } from 'vue'
+import { watch } from 'vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { useModal } from '@/components/Modal'
 import DictDataModel from './DictDataModel.vue'
 import { dataColumns, dataSearchFormSchema } from './dict.data'
-import { getDictDataPageApi } from '@/api/system/dict/data'
+import { deleteDictDataApi, getDictDataPageApi } from '@/api/system/dict/data'
+import { useMessage } from '@/hooks/web/useMessage'
 
+const props = defineProps({
+  searchInfo: {
+    type: Object as PropType<Recordable>,
+    default: () => ({})
+  }
+})
+
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 // const searchInfo = reactive<Recordable>({})
 
@@ -64,12 +73,12 @@ const [registerTable, { reload }] = useTable({
 
 function handleCreate() {
   openModal(true, {
+    record: props.searchInfo.dictType,
     isUpdate: false
   })
 }
 
 function handleEdit(record: Recordable) {
-  console.log(record)
   openModal(true, {
     record,
     isUpdate: true
@@ -77,22 +86,24 @@ function handleEdit(record: Recordable) {
 }
 
 function handleDelete(record: Recordable) {
-  console.log(record)
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteDictDataApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 
-// function handleSuccess({ isUpdate, values }) {
-//   if (isUpdate) {
-//     // 演示不刷新表格直接更新内部数据。
-//     // 注意：updateTableDataRecord要求表格的rowKey属性为string并且存在于每一行的record的keys中
-//     const result = updateTableDataRecord(values.id, values)
-//     console.log(result)
-//   } else {
-//     reload()
-//   }
-// }
-
-// function handleSelect(deptId = '') {
-//   searchInfo.deptId = deptId
-//   reload()
-// }
+watch(
+  () => props.searchInfo,
+  (val) => {
+    console.info(val)
+    val && reload()
+  },
+  { deep: true }
+)
 </script>

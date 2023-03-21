@@ -84,7 +84,8 @@ export const dataFormSchema: FormSchema[] = [
     label: '字典类型',
     field: 'dictType',
     required: true,
-    component: 'Input'
+    component: 'Input',
+    dynamicDisabled: ({ values }) => !!values.dictType
   },
   {
     label: '数据标签',
