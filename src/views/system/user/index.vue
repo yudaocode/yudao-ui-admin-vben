@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper dense contentFullHeight fixedHeight contentClass="flex">
+  <div class="flex">
     <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
     <BasicTable @register="registerTable" class="w-3/4 xl:w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
@@ -30,14 +30,13 @@
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
-  </PageWrapper>
+  </div>
 </template>
 <script lang="ts" setup name="User">
 import { reactive } from 'vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { useModal } from '@/components/Modal'
 import UserModel from './UserModel.vue'
-import { PageWrapper } from '@/components/Page'
 import DeptTree from './DeptTree.vue'
 import { columns, searchFormSchema } from './user.data'
 import { getUserPageApi } from '@/api/system/user'
