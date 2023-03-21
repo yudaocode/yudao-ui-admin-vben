@@ -39,8 +39,10 @@ import { useModal } from '@/components/Modal'
 import UserModel from './UserModel.vue'
 import DeptTree from './DeptTree.vue'
 import { columns, searchFormSchema } from './user.data'
-import { getUserPageApi } from '@/api/system/user'
+import { deleteUserApi, getUserPageApi } from '@/api/system/user'
+import { useMessage } from '@/hooks/web/useMessage'
 
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const searchInfo = reactive<Recordable>({})
 
@@ -71,15 +73,23 @@ function handleCreate() {
 }
 
 function handleEdit(record: Recordable) {
-  console.log(record)
   openModal(true, {
     record,
     isUpdate: true
   })
 }
 
-function handleDelete(record: Recordable) {
-  console.log(record)
+async function handleDelete(record: Recordable) {
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteUserApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 
 function handleSuccess({ isUpdate, values }) {

@@ -92,11 +92,15 @@ async function handleExport() {
 }
 
 async function handleDelete(record: Recordable) {
-  console.log(record)
-  const res = await deleteSensitiveWordApi(record.id)
-  if (res) {
-    createMessage.success('删除成功')
-    reload()
-  }
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteSensitiveWordApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 </script>

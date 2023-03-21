@@ -87,11 +87,15 @@ async function handleExport() {
 }
 
 async function handleDelete(record: Recordable) {
-  console.log(record)
-  const res = await deleteErrorCodeApi(record.id)
-  if (res) {
-    createMessage.success('删除成功')
-    reload()
-  }
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteErrorCodeApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 </script>

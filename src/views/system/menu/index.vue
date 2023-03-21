@@ -33,15 +33,14 @@
 </template>
 <script lang="ts" setup name="Menu">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { getMenuListApi } from '@/api/system/menu'
+import { deleteMenuApi, getMenuListApi } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'
 import { useModal } from '@/components/Modal'
 import DeptModel from './MenuModel.vue'
 import { useMessage } from '@/hooks/web/useMessage'
 import { handleTree } from '@/utils/tree'
-import { deleteDeptApi } from '@/api/system/dept'
 
-const { createMessage } = useMessage()
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
@@ -87,11 +86,15 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  console.log(record)
-  const res = await deleteDeptApi(record.id)
-  if (res) {
-    createMessage.success('删除成功')
-    reload()
-  }
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteMenuApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 </script>

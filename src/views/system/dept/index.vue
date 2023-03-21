@@ -46,7 +46,7 @@ import { nextTick, ref } from 'vue'
 import { getListSimpleUsersApi } from '@/api/system/user'
 import { onMounted } from 'vue'
 
-const { createMessage } = useMessage()
+const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
@@ -113,12 +113,16 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  console.log(record)
-  const res = await deleteDeptApi(record.id)
-  if (res) {
-    createMessage.success('删除成功')
-    reload()
-  }
+  createConfirm({
+    title: '删除',
+    iconType: 'warning',
+    content: '是否要删除数据？',
+    async onOk() {
+      await deleteDeptApi(record.id)
+      createMessage.success('删除成功')
+      reload()
+    }
+  })
 }
 
 function onFetchSuccess() {
