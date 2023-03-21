@@ -1,8 +1,8 @@
 <template>
-  <div class="flex">
-    <BasicTable @register="registerTable" class="w-1/2 xl:w-1/2">
+  <div>
+    <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">新增字典类型</a-button>
+        <a-button type="primary" @click="handleCreate">新增字典数据</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -10,13 +10,13 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                tooltip: '编辑字典分类',
+                tooltip: '编辑字典数据',
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
-                tooltip: '删除字典分类',
+                tooltip: '删除字典数据',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -28,29 +28,28 @@
         </template>
       </template>
     </BasicTable>
-    <DictData class="w-1/2 xl:w-1/2" />
-    <DictTypeModel @register="registerModal" @success="reload()" />
+    <DictDataModel @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Dict">
+<script lang="ts" setup name="DictData">
 // import { reactive } from 'vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { useModal } from '@/components/Modal'
-import DictData from './DictData.vue'
-import DictTypeModel from './DictTypeModel.vue'
-import { typeColumns, typeSearchFormSchema } from './dict.type'
-import { getDictTypePageApi } from '@/api/system/dict/type'
+import DictDataModel from './DictDataModel.vue'
+import { dataColumns, dataSearchFormSchema } from './dict.data'
+import { getDictDataPageApi } from '@/api/system/dict/data'
 
 const [registerModal, { openModal }] = useModal()
 // const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { reload }] = useTable({
-  title: '字典分类列表',
-  api: getDictTypePageApi,
-  columns: typeColumns,
+  title: '字典数据列表',
+  api: getDictDataPageApi,
+  columns: dataColumns,
   formConfig: {
     labelWidth: 120,
-    schemas: typeSearchFormSchema
+    schemas: dataSearchFormSchema,
+    autoSubmitOnEnter: true
   },
   useSearchForm: true,
   showTableSetting: true,

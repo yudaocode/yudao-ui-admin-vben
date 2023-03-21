@@ -5,7 +5,7 @@ import { store } from '@/store'
 
 import { DICT_KEY } from '@/enums/cacheEnum'
 import { createLocalStorage } from '@/utils/cache'
-import { listSimpleDictDataApi } from '@/api/system/dict/dict.data'
+import { listSimpleDictDataApi } from '@/api/system/dict/data'
 import { DictDataVO } from '@/api/system/dict/types'
 
 const ls = createLocalStorage()
