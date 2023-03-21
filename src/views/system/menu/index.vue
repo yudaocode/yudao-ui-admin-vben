@@ -8,7 +8,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="Post">
+<script lang="ts" setup name="Menu">
 import { BasicTable, useTable } from '@/components/Table'
 import { getMenuListApi } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'
