@@ -16,12 +16,6 @@
 [预览地址](http://vben.x-surge.com)
 </div>
 
-## 简介
-
-- Vue Vben Admin 是一个免费开源的中后台模版。
-- 本项目基于 vben2.8 版本，升级依赖，重构部分组件，重构代码样式，重构setup语法糖。
-- 使用了最新的`Vue3`,`Vite4`,`Antdv3`,`TypeScript`,`Pinia`等主流技术开发，开箱即用的中后台前端解决方案。
-- 封装 vxe-table 详见 系统管理-角色管理等(views/demo/system/...)
 
 ## 开发进度
 - axios token刷新 未完成
