@@ -1,12 +1,12 @@
-<div align="center"> <a href="https://github.com/xingyu4j/vue-vben-admin"> <img alt="VbenAdmin Logo" width="200" height="200" src="https://anncwb.github.io/anncwb/images/logo.png"> </a> <br> <br>
+<div align="center"> <a href="https://github.com/xingyuv/vue-vben-admin"> <img alt="VbenAdmin Logo" width="200" height="200" src="https://anncwb.github.io/anncwb/images/logo.png"> </a> <br> <br>
 
-[![license](https://img.shields.io/github/license/xingyu4j/vue-vben-admin.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
 
 <h1>yudao-ui-admin-vben</h1>
 
 ## 原项目地址
-[gitee](https://gitee.com/xingyu4j/vue-vben-admin)
-[github](https://github.com/xingyu4j/vue-vben-admin)
+[gitee](https://gitee.com/xingyuv/vue-vben-admin)
+[github](https://github.com/xingyuv/vue-vben-admin)
 
 ## 后台
 [gitee](https://gitee.com/zhijiantianya/ruoyi-vue-pro)
@@ -62,9 +62,9 @@
 - 获取项目代码
 
 ```bash
-git clone https://github.com/xingyu4j/vue-vben-admin.git
+git clone https://github.com/xingyuv/vue-vben-admin.git
 or
-git clone https://gitee.com/xingyu4j/vue-vben-admin
+git clone https://gitee.com/xingyuv/vue-vben-admin
 ```
 
 - 安装依赖
