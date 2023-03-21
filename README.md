@@ -1,5 +1,3 @@
-<div align="center"> <a href="https://github.com/xingyuv/vue-vben-admin"> <img alt="VbenAdmin Logo" width="200" height="200" src="https://anncwb.github.io/anncwb/images/logo.png"> </a> <br> <br>
-
 [![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
 
 <h1>yudao-ui-admin-vben</h1>
@@ -14,6 +12,9 @@
 
 ## 预览地址
 [预览地址](http://vben.x-surge.com)
+
+## 开发文档
+[开发文档](./dev.md)
 </div>
 
 
@@ -21,18 +22,24 @@
 - axios token刷新 未完成
 - router 增加基础首页 未完成
 - 系统管理 页面适配 进行中
-- 基础设施 页面适配 未完成
+- 基础设施 页面适配 进行中
 - 支付管理 页面适配 未完成
 - 工作流   页面适配 未完成
 
-## 特性
+## 框架
 
-- **最新技术栈**：使用 Vue3/vite4/antdv3/vxeTable 等前端前沿技术开发
-- **TypeScript**: 应用程序级 JavaScript 的语言
-- **主题**：可配置的主题
-- **国际化**：内置完善的国际化方案
-- **权限** 内置完善的动态路由权限生成方案
-- **组件** 二次封装了多个常用的组件
+| 框架 | 说明 | 版本 |
+| --- | --- | --- |
+| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.2.47 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.2.1 |
+| [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.15 |
+| [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.2 |
+| [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.0.33 |
+| [vueuse](https://vueuse.org/) | 常用工具集 | 9.13.0 |
+| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
+| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.1.6 |
+| [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
+| [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.0 |
 
 <p align="center">
     <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview1.png">
@@ -66,14 +73,14 @@ git clone https://gitee.com/xingyuv/vue-vben-admin
 ```bash
 cd vue-vben-admin
 
-pnpm install
+pnpm i
 
 ```
 
 - 运行
 
 ```bash
-pnpm serve
+pnpm dev
 ```
 
 - 打包
