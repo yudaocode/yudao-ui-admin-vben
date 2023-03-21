@@ -12,9 +12,17 @@ export const columns: BasicColumn[] = [
     align: 'left'
   },
   {
+    title: '菜单类型',
+    dataIndex: 'type',
+    width: 80,
+    customRender: ({ text }) => {
+      return useRender.renderDict(text, DICT_TYPE.SYSTEM_MENU_TYPE)
+    }
+  },
+  {
     title: '图标',
     dataIndex: 'icon',
-    width: 100,
+    width: 60,
     customRender: ({ record }) => {
       return h(Icon, { icon: record.icon })
     }
@@ -27,17 +35,17 @@ export const columns: BasicColumn[] = [
   {
     title: '权限标识',
     dataIndex: 'permission',
-    width: 120
+    width: 140
   },
   {
     title: '组件路径',
     dataIndex: 'component',
-    width: 120
+    width: 140
   },
   {
     title: '状态',
     dataIndex: 'status',
-    width: 180,
+    width: 80,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
     }
