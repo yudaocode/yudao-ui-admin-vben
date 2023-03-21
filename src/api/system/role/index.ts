@@ -22,6 +22,13 @@ export interface UpdateStatusReqVO {
   status: number
 }
 
+export interface RoleExportReqVO {
+  name?: string
+  code?: string
+  status?: number
+  createTime?: Date[]
+}
+
 // 查询角色列表
 export const getRolePageApi = (params: RolePageReqVO) => {
   return defHttp.get({ url: '/system/role/page', params })
@@ -55,4 +62,9 @@ export const updateRoleStatusApi = (data: UpdateStatusReqVO) => {
 // 删除角色
 export const deleteRoleApi = (id: number) => {
   return defHttp.delete({ url: '/system/role/delete?id=' + id })
+}
+
+// 导出角色
+export const exportRoleApi = (params: RoleExportReqVO) => {
+  return defHttp.download({ url: '/system/post/export', params }, '导出角色.xls')
 }

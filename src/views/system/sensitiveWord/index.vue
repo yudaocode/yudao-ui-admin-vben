@@ -11,11 +11,13 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
+                label: '修改',
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
+                label: '删除',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -92,15 +94,8 @@ async function handleExport() {
 }
 
 async function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteSensitiveWordApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+  await deleteSensitiveWordApi(record.id)
+  createMessage.success('删除成功')
+  reload()
 }
 </script>

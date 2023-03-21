@@ -2,6 +2,7 @@ import Icon from '@/components/Icon'
 import { listSimpleMenusApi } from '@/api/system/menu'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { SystemMenuTypeEnum } from '@/enums/systemEnum'
 import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
@@ -113,7 +114,7 @@ export const formSchema: FormSchema[] = [
     label: '菜单图标',
     field: 'icon',
     component: 'IconPicker',
-    ifShow: ({ values }) => values.type !== 3
+    ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
   },
   {
     label: '显示排序',
@@ -126,25 +127,29 @@ export const formSchema: FormSchema[] = [
     field: 'path',
     required: true,
     component: 'Input',
-    ifShow: ({ values }) => values.type !== 3
+    helpMessage: '访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头',
+    ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
   },
   {
     label: '权限标识',
     field: 'permission',
     component: 'Input',
-    ifShow: ({ values }) => values.type !== 1
+    helpMessage: 'Controller 方法上的权限字符，如：@PreAuthorize(`@ss.hasPermission("system:user:list")`)',
+    ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.DIR
   },
   {
     label: '组件路径',
     field: 'component',
     component: 'Input',
-    ifShow: ({ values }) => values.type === 2
+    helpMessage: '例如：system/user/index',
+    ifShow: ({ values }) => values.type === SystemMenuTypeEnum.MENU
   },
   {
     label: '组件名称',
     field: 'componentName',
     component: 'Input',
-    ifShow: ({ values }) => values.type === 2
+    helpMessage: '例如：SystemUser',
+    ifShow: ({ values }) => values.type === SystemMenuTypeEnum.MENU
   },
   {
     label: '菜单状态',
@@ -152,6 +157,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'RadioButtonGroup',
     defaultValue: 0,
+    helpMessage: '选择停用时，路由将不会出现在侧边栏，也不能被访问',
     componentProps: {
       options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
     }
@@ -166,7 +172,8 @@ export const formSchema: FormSchema[] = [
         { label: '隐藏', key: false, value: false }
       ]
     },
-    ifShow: ({ values }) => values.type !== 3
+    helpMessage: '选择隐藏时，路由将不会出现在侧边栏，但仍然可以访问',
+    ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
   },
   {
     label: '总是显示',
@@ -178,7 +185,8 @@ export const formSchema: FormSchema[] = [
         { label: '隐藏', key: false, value: false }
       ]
     },
-    ifShow: ({ values }) => values.type !== 3
+    helpMessage: '选择不是时，当该菜单只有一个子菜单时，不展示自己，直接展示子菜单',
+    ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
   },
   {
     label: '是否缓存',
@@ -190,6 +198,7 @@ export const formSchema: FormSchema[] = [
         { label: '不缓存', key: false, value: false }
       ]
     },
-    ifShow: ({ values }) => values.type === 2
+    helpMessage: '选择缓存时，则会被 `keep-alive` 缓存，必须填写「组件名称」字段',
+    ifShow: ({ values }) => values.type === SystemMenuTypeEnum.MENU
   }
 ]

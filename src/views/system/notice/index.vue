@@ -10,11 +10,13 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
+                label: '修改',
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
+                label: '删除',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -37,7 +39,7 @@ import NoticeModal from './NoticeModel.vue'
 import { columns, searchFormSchema } from './notice.data'
 import { useMessage } from '@/hooks/web/useMessage'
 
-const { createConfirm, createMessage } = useMessage()
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '公告列表',
@@ -72,15 +74,8 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteNoticeApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+  await deleteNoticeApi(record.id)
+  createMessage.success('删除成功')
+  reload()
 }
 </script>

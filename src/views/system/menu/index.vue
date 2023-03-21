@@ -12,11 +12,13 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
+                label: '修改',
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
+                label: '删除',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -40,7 +42,7 @@ import DeptModel from './MenuModel.vue'
 import { useMessage } from '@/hooks/web/useMessage'
 import { handleTree } from '@/utils/tree'
 
-const { createConfirm, createMessage } = useMessage()
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
@@ -86,15 +88,8 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteMenuApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+  await deleteMenuApi(record.id)
+  createMessage.success('删除成功')
+  reload()
 }
 </script>

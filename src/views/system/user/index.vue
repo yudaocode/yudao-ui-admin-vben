@@ -4,6 +4,7 @@
     <BasicTable @register="registerTable" class="w-3/4 xl:w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate">新增账号</a-button>
+        <a-button type="warning" @click="handleExport"> 导出 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -11,13 +12,13 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                tooltip: '编辑用户资料',
+                label: '编辑',
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
-                tooltip: '删除此账号',
+                label: '删除',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -39,14 +40,16 @@ import { useModal } from '@/components/Modal'
 import UserModel from './UserModel.vue'
 import DeptTree from './DeptTree.vue'
 import { columns, searchFormSchema } from './user.data'
-import { deleteUserApi, getUserPageApi } from '@/api/system/user'
+import { UserExportReqVO, deleteUserApi, exportUserApi, getUserPageApi } from '@/api/system/user'
+import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
+const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const searchInfo = reactive<Recordable>({})
 
-const [registerTable, { reload, updateTableDataRecord }] = useTable({
+const [registerTable, { getForm, reload, updateTableDataRecord }] = useTable({
   title: '账号列表',
   api: getUserPageApi,
   columns,
@@ -72,6 +75,18 @@ function handleCreate() {
   })
 }
 
+async function handleExport() {
+  createConfirm({
+    title: '导出',
+    iconType: 'warning',
+    content: '是否要导出数据？',
+    async onOk() {
+      await exportUserApi(getForm().getFieldsValue() as UserExportReqVO)
+      createMessage.success(t('common.exportSuccessText'))
+    }
+  })
+}
+
 function handleEdit(record: Recordable) {
   openModal(true, {
     record,
@@ -80,16 +95,9 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteUserApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+  await deleteUserApi(record.id)
+  createMessage.success('删除成功')
+  reload()
 }
 
 function handleSuccess({ isUpdate, values }) {
