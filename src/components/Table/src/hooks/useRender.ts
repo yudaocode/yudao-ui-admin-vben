@@ -14,6 +14,11 @@ export const useRender = {
       })
     }
   },
+  renderText: (text, val) => {
+    if (text) {
+      return text + ' ' + val
+    }
+  },
   renderTag: (text, color?) => {
     if (!color) {
       return h(Tag, { color }, () => text)

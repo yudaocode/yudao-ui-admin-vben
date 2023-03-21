@@ -58,7 +58,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'duration',
     width: 180,
     customRender: ({ text }) => {
-      return h('span', text + 'ms')
+      return useRender.renderText(text, 'ms')
     }
   }
 ]

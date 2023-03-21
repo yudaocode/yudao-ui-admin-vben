@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="PostModal">
+<script lang="ts" setup name="DictDataModal">
 import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
