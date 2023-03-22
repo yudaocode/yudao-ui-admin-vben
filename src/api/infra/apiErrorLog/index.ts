@@ -51,7 +51,7 @@ export function getApiErrorLogPage(params: ApiErrorLogPageReqVO) {
 }
 
 // 更新 API 错误日志的处理状态
-export function updateApiErrorLogPage(id: number, processStatus: number) {
+export function updateApiErrorLogProcess(id: number, processStatus: number) {
   return defHttp.put({
     url: '/infra/api-error-log/update-status?id=' + id + '&processStatus=' + processStatus
   })

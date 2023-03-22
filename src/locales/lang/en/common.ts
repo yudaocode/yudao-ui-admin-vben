@@ -12,6 +12,8 @@ export default {
   exportTitle: 'Export',
   exportMessage: 'Do you want to export data?',
   exportSuccessText: 'Export success',
+  successText: 'Success',
+  errorText: 'Error',
   resetText: 'Reset',
   searchText: 'Search',
   queryText: 'Search',
