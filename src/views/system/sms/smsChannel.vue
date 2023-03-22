@@ -34,7 +34,7 @@ import { useModal } from '@/components/Modal'
 import SmsChannelModal from './SmsChannelModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteSmsChannelApi, getSmsChannelPageApi } from '@/api/system/sms/smsChannel'
+import { deleteSmsChannel, getSmsChannelPage } from '@/api/system/sms/smsChannel'
 import { columns, searchFormSchema } from './smsChannel.data'
 
 const { t } = useI18n()
@@ -43,7 +43,7 @@ const [registerModal, { openModal }] = useModal()
 
 const [registerTable, { reload }] = useTable({
   title: '短信渠道列表',
-  api: getSmsChannelPageApi,
+  api: getSmsChannelPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -74,7 +74,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteSmsChannelApi(record.id)
+  await deleteSmsChannel(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

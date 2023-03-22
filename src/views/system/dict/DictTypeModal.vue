@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { typeFormSchema } from './dict.type'
-import { createDictTypeApi, getDictTypeApi, updateDictTypeApi } from '@/api/system/dict/type'
+import { createDictType, getDictType, updateDictType } from '@/api/system/dict/type'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getDictTypeApi(data.record.id)
+    const res = await getDictType(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateDictTypeApi(values)
+      await updateDictType(values)
     } else {
-      await createDictTypeApi(values)
+      await createDictType(values)
     }
     closeModal()
     emit('success')

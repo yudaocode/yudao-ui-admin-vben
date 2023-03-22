@@ -18,31 +18,31 @@ export interface DeptPageReqVO {
 }
 
 // 查询部门（精简)列表
-export const listSimpleDeptApi = async () => {
+export const listSimpleDept = async () => {
   return defHttp.get({ url: '/system/dept/list-all-simple' })
 }
 
 // 查询部门列表
-export const getDeptPageApi = async (params: DeptPageReqVO) => {
+export const getDeptPage = async (params: DeptPageReqVO) => {
   return defHttp.get({ url: '/system/dept/list', params })
 }
 
 // 查询部门详情
-export const getDeptApi = async (id: number) => {
+export const getDept = async (id: number) => {
   return defHttp.get({ url: '/system/dept/get?id=' + id })
 }
 
 // 新增部门
-export const createDeptApi = async (data: DeptVO) => {
+export const createDept = async (data: DeptVO) => {
   return defHttp.post({ url: '/system/dept/create', data })
 }
 
 // 修改部门
-export const updateDeptApi = async (params: DeptVO) => {
+export const updateDept = async (params: DeptVO) => {
   return defHttp.put({ url: '/system/dept/update', data: params })
 }
 
 // 删除部门
-export const deleteDeptApi = async (id: number) => {
+export const deleteDept = async (id: number) => {
   return defHttp.delete({ url: '/system/dept/delete?id=' + id })
 }

@@ -17,26 +17,26 @@ export interface PermissionAssignRoleDataScopeReqVO {
 }
 
 // 查询角色拥有的菜单权限
-export const listRoleMenusApi = (roleId: number) => {
+export const listRoleMenus = (roleId: number) => {
   return defHttp.get({ url: '/system/permission/list-role-resources?roleId=' + roleId })
 }
 
 // 赋予角色菜单权限
-export const assignRoleMenuApi = (data: PermissionAssignRoleMenuReqVO) => {
+export const assignRoleMenu = (data: PermissionAssignRoleMenuReqVO) => {
   return defHttp.post({ url: '/system/permission/assign-role-menu', data })
 }
 
 // 赋予角色数据权限
-export const assignRoleDataScopeApi = (data: PermissionAssignRoleDataScopeReqVO) => {
+export const assignRoleDataScope = (data: PermissionAssignRoleDataScopeReqVO) => {
   return defHttp.post({ url: '/system/permission/assign-role-data-scope', data })
 }
 
 // 查询用户拥有的角色数组
-export const listUserRolesApi = (userId: number) => {
+export const listUserRoles = (userId: number) => {
   return defHttp.get({ url: '/system/permission/list-user-roles?userId=' + userId })
 }
 
 // 赋予用户角色
-export const aassignUserRoleApi = (data: PermissionAssignUserRoleReqVO) => {
+export const aassignUserRole = (data: PermissionAssignUserRoleReqVO) => {
   return defHttp.post({ url: '/system/permission/assign-user-role', data })
 }

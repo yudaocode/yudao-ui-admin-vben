@@ -32,10 +32,10 @@ export interface OperateLogPageReqVO extends PageParam {
 }
 
 // 查询操作日志列表
-export const getOperateLogPageApi = (params: OperateLogPageReqVO) => {
+export const getOperateLogPage = (params: OperateLogPageReqVO) => {
   return defHttp.get({ url: '/system/operate-log/page', params })
 }
 // 导出操作日志
-export const exportOperateLogApi = (params: OperateLogPageReqVO) => {
+export const exportOperateLog = (params: OperateLogPageReqVO) => {
   return defHttp.download({ url: '/system/operate-log/export', params }, '操作日志.xls')
 }

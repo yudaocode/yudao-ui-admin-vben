@@ -5,12 +5,12 @@
 </template>
 <script lang="ts" setup name="OperateLog">
 import { BasicTable, useTable } from '@/components/Table'
-import { getMailAccountPageApi } from '@/api/system/mail/log'
+import { getMailAccountPage } from '@/api/system/mail/log'
 import { columns, searchFormSchema } from './mailLog.data'
 
 const [registerTable] = useTable({
   title: '邮件日志列表',
-  api: getMailAccountPageApi,
+  api: getMailAccountPage,
   columns,
   formConfig: {
     labelWidth: 120,

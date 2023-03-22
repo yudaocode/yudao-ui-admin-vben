@@ -20,27 +20,27 @@ export interface TenantPackagePageReqVO extends PageParam {
 }
 
 // 查询租户套餐列表
-export const getTenantPackagePageApi = (params: TenantPackagePageReqVO) => {
+export const getTenantPackagePage = (params: TenantPackagePageReqVO) => {
   return defHttp.get({ url: '/system/tenant-package/page', params })
 }
 
 // 获得租户
-export const getTenantPackageApi = (id: number) => {
+export const getTenantPackage = (id: number) => {
   return defHttp.get({ url: '/system/tenant-package/get?id=' + id })
 }
 
 // 新增租户套餐
-export const createTenantPackageApi = (data: TenantPackageVO) => {
+export const createTenantPackage = (data: TenantPackageVO) => {
   return defHttp.post({ url: '/system/tenant-package/create', data })
 }
 
 // 修改租户套餐
-export const updateTenantPackageApi = (data: TenantPackageVO) => {
+export const updateTenantPackage = (data: TenantPackageVO) => {
   return defHttp.put({ url: '/system/tenant-package/update', data })
 }
 
 // 删除租户套餐
-export const deleteTenantPackageApi = (id: number) => {
+export const deleteTenantPackage = (id: number) => {
   return defHttp.delete({ url: '/system/tenant-package/delete?id=' + id })
 }
 // 获取租户套餐精简信息列表

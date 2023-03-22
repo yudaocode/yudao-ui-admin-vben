@@ -34,7 +34,7 @@ import { useModal } from '@/components/Modal'
 import ClientModal from './ClientModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteOAuth2ClientApi, getOAuth2ClientPageApi } from '@/api/system/oauth2/client'
+import { deleteOAuth2Client, getOAuth2ClientPage } from '@/api/system/oauth2/client'
 import { columns, searchFormSchema } from './client.data'
 
 const { t } = useI18n()
@@ -42,7 +42,7 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '应用列表',
-  api: getOAuth2ClientPageApi,
+  api: getOAuth2ClientPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -73,7 +73,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteOAuth2ClientApi(record.id)
+  await deleteOAuth2Client(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

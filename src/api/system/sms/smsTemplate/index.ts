@@ -42,36 +42,36 @@ export interface SmsTemplateExportReqVO {
 }
 
 // 查询短信模板列表
-export const getSmsTemplatePageApi = (params: SmsTemplatePageReqVO) => {
+export const getSmsTemplatePage = (params: SmsTemplatePageReqVO) => {
   return defHttp.get({ url: '/system/sms-template/page', params })
 }
 
 // 查询短信模板详情
-export const getSmsTemplateApi = (id: number) => {
+export const getSmsTemplate = (id: number) => {
   return defHttp.get({ url: '/system/sms-template/get?id=' + id })
 }
 
 // 新增短信模板
-export const createSmsTemplateApi = (data: SmsTemplateVO) => {
+export const createSmsTemplate = (data: SmsTemplateVO) => {
   return defHttp.post({ url: '/system/sms-template/create', data })
 }
 
 // 修改短信模板
-export const updateSmsTemplateApi = (data: SmsTemplateVO) => {
+export const updateSmsTemplate = (data: SmsTemplateVO) => {
   return defHttp.put({ url: '/system/sms-template/update', data })
 }
 
 // 删除短信模板
-export const deleteSmsTemplateApi = (id: number) => {
+export const deleteSmsTemplate = (id: number) => {
   return defHttp.delete({ url: '/system/sms-template/delete?id=' + id })
 }
 
 // 发送短信
-export const sendSmsApi = (data: SendSmsReqVO) => {
+export const sendSms = (data: SendSmsReqVO) => {
   return defHttp.post({ url: '/system/sms-template/send-sms', data })
 }
 
 // 导出短信模板
-export const exportSmsTemplateApi = (params: SmsTemplateExportReqVO) => {
+export const exportSmsTemplate = (params: SmsTemplateExportReqVO) => {
   return defHttp.download({ url: '/system/sms-template/export-excel', params }, '短信模板.xls')
 }

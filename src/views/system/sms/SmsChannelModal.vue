@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './smsChannel.data'
-import { createSmsChannelApi, getSmsChannelApi, updateSmsChannelApi } from '@/api/system/sms/smsChannel'
+import { createSmsChannel, getSmsChannel, updateSmsChannel } from '@/api/system/sms/smsChannel'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getSmsChannelApi(data.record.id)
+    const res = await getSmsChannel(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateSmsChannelApi(values)
+      await updateSmsChannel(values)
     } else {
-      await createSmsChannelApi(values)
+      await createSmsChannel(values)
     }
     closeModal()
     emit('success')

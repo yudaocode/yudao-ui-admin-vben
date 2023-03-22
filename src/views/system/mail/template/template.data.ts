@@ -1,4 +1,4 @@
-import { getSimpleMailAccountListApi } from '@/api/system/mail/account'
+import { getSimpleMailAccountList } from '@/api/system/mail/account'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
@@ -69,7 +69,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'accountId',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getSimpleMailAccountListApi(),
+      api: () => getSimpleMailAccountList(),
       fieldNames: {
         label: 'mail',
         key: 'id',
@@ -120,7 +120,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'ApiSelect',
     componentProps: {
-      api: () => getSimpleMailAccountListApi(),
+      api: () => getSimpleMailAccountList(),
       fieldNames: {
         label: 'mail',
         key: 'id',

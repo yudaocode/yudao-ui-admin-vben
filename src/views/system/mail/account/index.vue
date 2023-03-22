@@ -34,7 +34,7 @@ import { useModal } from '@/components/Modal'
 import AccountModal from './AccountModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteMailAccountApi, getMailAccountPageApi } from '@/api/system/mail/account'
+import { deleteMailAccount, getMailAccountPage } from '@/api/system/mail/account'
 import { columns, searchFormSchema } from './account.data'
 
 const { t } = useI18n()
@@ -42,7 +42,7 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '邮件列表',
-  api: getMailAccountPageApi,
+  api: getMailAccountPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -73,7 +73,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteMailAccountApi(record.id)
+  await deleteMailAccount(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

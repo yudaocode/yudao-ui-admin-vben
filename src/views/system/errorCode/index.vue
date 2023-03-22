@@ -35,7 +35,7 @@ import { useModal } from '@/components/Modal'
 import ErrorCodeModal from './ErrorCodeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { ErrorCodePageReqVO, deleteErrorCodeApi, excelErrorCodeApi, getErrorCodePageApi } from '@/api/system/errorCode'
+import { ErrorCodePageReqVO, deleteErrorCode, excelErrorCode, getErrorCodePage } from '@/api/system/errorCode'
 import { columns, searchFormSchema } from './errorCode.data'
 
 const { t } = useI18n()
@@ -43,7 +43,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '错误码列表',
-  api: getErrorCodePageApi,
+  api: getErrorCodePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -79,14 +79,14 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await excelErrorCodeApi(getForm().getFieldsValue() as ErrorCodePageReqVO)
+      await excelErrorCode(getForm().getFieldsValue() as ErrorCodePageReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteErrorCodeApi(record.id)
+  await deleteErrorCode(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

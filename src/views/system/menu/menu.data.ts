@@ -1,5 +1,5 @@
 import Icon from '@/components/Icon'
-import { listSimpleMenusApi } from '@/api/system/menu'
+import { listSimpleMenus } from '@/api/system/menu'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { SystemMenuTypeEnum } from '@/enums/systemEnum'
@@ -84,7 +84,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'ApiTreeSelect',
     componentProps: {
-      api: () => listSimpleMenusApi(),
+      api: () => listSimpleMenus(),
       fieldNames: {
         label: 'name',
         key: 'id',

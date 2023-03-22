@@ -30,7 +30,7 @@
 </template>
 <script lang="ts" setup name="Tenant">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { TenantExportReqVO, deleteTenantApi, exportTenantApi, getTenantPageApi } from '@/api/system/tenant'
+import { TenantExportReqVO, deleteTenant, exportTenant, getTenantPage } from '@/api/system/tenant'
 import { useModal } from '@/components/Modal'
 import TenantModal from './TenantModal.vue'
 import { IconEnum } from '@/enums/appEnum'
@@ -43,7 +43,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '租户列表',
-  api: getTenantPageApi,
+  api: getTenantPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -79,14 +79,14 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportTenantApi(getForm().getFieldsValue() as TenantExportReqVO)
+      await exportTenant(getForm().getFieldsValue() as TenantExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteTenantApi(record.id)
+  await deleteTenant(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

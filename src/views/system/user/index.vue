@@ -39,7 +39,7 @@ import DeptTree from './DeptTree.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { columns, searchFormSchema } from './user.data'
-import { UserExportReqVO, deleteUserApi, exportUserApi, getUserPageApi } from '@/api/system/user'
+import { UserExportReqVO, deleteUser, exportUser, getUserPage } from '@/api/system/user'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
@@ -48,7 +48,7 @@ const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { getForm, reload }] = useTable({
   title: '账号列表',
-  api: getUserPageApi,
+  api: getUserPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -78,7 +78,7 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportUserApi(getForm().getFieldsValue() as UserExportReqVO)
+      await exportUser(getForm().getFieldsValue() as UserExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
@@ -92,7 +92,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteUserApi(record.id)
+  await deleteUser(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

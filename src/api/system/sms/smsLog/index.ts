@@ -47,11 +47,11 @@ export interface SmsLogExportReqVO {
 }
 
 // 查询短信日志列表
-export const getSmsLogPageApi = (params: SmsLogPageReqVO) => {
+export const getSmsLogPage = (params: SmsLogPageReqVO) => {
   return defHttp.get({ url: '/system/sms-log/page', params })
 }
 
 // 导出短信日志
-export const exportSmsLogApi = (params: SmsLogExportReqVO) => {
+export const exportSmsLog = (params: SmsLogExportReqVO) => {
   return defHttp.download({ url: '/system/sms-log/export', params }, '短信日志.xls')
 }

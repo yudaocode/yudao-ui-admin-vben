@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './post.data'
-import { createPostApi, getPostApi, updatePostApi } from '@/api/system/post'
+import { createPost, getPost, updatePost } from '@/api/system/post'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getPostApi(data.record.id)
+    const res = await getPost(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updatePostApi(values)
+      await updatePost(values)
     } else {
-      await createPostApi(values)
+      await createPost(values)
     }
     closeModal()
     emit('success')

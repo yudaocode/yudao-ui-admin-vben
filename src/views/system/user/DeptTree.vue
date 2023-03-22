@@ -16,14 +16,14 @@
 import { onMounted, ref } from 'vue'
 
 import { BasicTree, TreeItem } from '@/components/Tree'
-import { listSimpleDeptApi } from '@/api/system/dept'
+import { listSimpleDept } from '@/api/system/dept'
 import { handleTree } from '@/utils/tree'
 
 const emit = defineEmits(['select'])
 const treeData = ref<TreeItem[]>([])
 
 async function fetch() {
-  const res = await listSimpleDeptApi()
+  const res = await listSimpleDept()
   treeData.value = handleTree(res, 'id')
 }
 

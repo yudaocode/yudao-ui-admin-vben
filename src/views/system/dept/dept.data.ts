@@ -1,5 +1,5 @@
-import { listSimpleDeptApi } from '@/api/system/dept'
-import { getListSimpleUsersApi } from '@/api/system/user'
+import { listSimpleDept } from '@/api/system/dept'
+import { getListSimpleUsers } from '@/api/system/user'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
@@ -68,7 +68,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'ApiTreeSelect',
     componentProps: {
-      api: () => listSimpleDeptApi(),
+      api: () => listSimpleDept(),
       fieldNames: {
         label: 'name',
         key: 'id',
@@ -94,7 +94,7 @@ export const formSchema: FormSchema[] = [
     field: 'leaderUserId',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getListSimpleUsersApi(),
+      api: () => getListSimpleUsers(),
       labelField: 'nickname',
       valueField: 'id'
     }

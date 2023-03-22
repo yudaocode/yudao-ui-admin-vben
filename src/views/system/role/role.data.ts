@@ -1,6 +1,6 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { listSimpleDeptApi } from '@/api/system/dept'
+import { listSimpleDept } from '@/api/system/dept'
 import { SystemDataScopeEnum } from '@/enums/systemEnum'
 
 export const columns: BasicColumn[] = [
@@ -155,7 +155,7 @@ export const dataScopeFormSchema: FormSchema[] = [
     component: 'ApiTreeSelect',
     ifShow: ({ values }) => values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM,
     componentProps: {
-      api: () => listSimpleDeptApi(),
+      api: () => listSimpleDept(),
       fieldNames: {
         label: 'name',
         key: 'id',

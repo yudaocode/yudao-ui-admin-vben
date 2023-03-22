@@ -37,7 +37,7 @@ import { useModal } from '@/components/Modal'
 import MenuModal from './MenuModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteMenuApi, getMenuListApi } from '@/api/system/menu'
+import { deleteMenu, getMenuList } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'
 
 const { t } = useI18n()
@@ -69,7 +69,7 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   }
 })
 async function getList() {
-  const res = await getMenuListApi(getForm().getFieldsValue() as any)
+  const res = await getMenuList(getForm().getFieldsValue() as any)
   return handleTree(res, 'id')
 }
 
@@ -87,7 +87,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteMenuApi(record.id)
+  await deleteMenu(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

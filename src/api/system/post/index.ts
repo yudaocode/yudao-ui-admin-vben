@@ -23,36 +23,36 @@ export interface PostExportReqVO {
 }
 
 // 查询岗位列表
-export const getPostPageApi = (params: PostPageReqVO) => {
+export const getPostPage = (params: PostPageReqVO) => {
   return defHttp.get<PageResult<PostVO>>({ url: '/system/post/page', params })
 }
 
 // 获取岗位精简信息列表
-export const listSimplePostsApi = () => {
+export const listSimplePosts = () => {
   return defHttp.get({ url: '/system/post/list-all-simple' })
 }
 
 // 查询岗位详情
-export const getPostApi = (id: number) => {
+export const getPost = (id: number) => {
   return defHttp.get({ url: '/system/post/get?id=' + id })
 }
 
 // 新增岗位
-export const createPostApi = (data: PostVO) => {
+export const createPost = (data: PostVO) => {
   return defHttp.post({ url: '/system/post/create', data })
 }
 
 // 修改岗位
-export const updatePostApi = (data: PostVO) => {
+export const updatePost = (data: PostVO) => {
   return defHttp.put({ url: '/system/post/update', data })
 }
 
 // 删除岗位
-export const deletePostApi = (id: number) => {
+export const deletePost = (id: number) => {
   return defHttp.delete({ url: '/system/post/delete?id=' + id })
 }
 
 // 导出岗位
-export const exportPostApi = (params: PostExportReqVO) => {
+export const exportPost = (params: PostExportReqVO) => {
   return defHttp.download({ url: '/system/post/export', params }, '导出岗位.xls')
 }

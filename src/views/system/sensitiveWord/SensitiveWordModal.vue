@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './sensitiveWord.data'
-import { createSensitiveWordApi, getSensitiveWordApi, updateSensitiveWordApi } from '@/api/system/sensitiveWord'
+import { createSensitiveWord, getSensitiveWord, updateSensitiveWord } from '@/api/system/sensitiveWord'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getSensitiveWordApi(data.record.id)
+    const res = await getSensitiveWord(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateSensitiveWordApi(values)
+      await updateSensitiveWord(values)
     } else {
-      await createSensitiveWordApi(values)
+      await createSensitiveWord(values)
     }
     closeModal()
     emit('success')
