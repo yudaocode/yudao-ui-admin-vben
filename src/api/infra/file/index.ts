@@ -18,11 +18,11 @@ export interface FilePageReqVO extends PageParam {
 }
 
 // 查询文件列表
-export const getFilePageApi = (params: FilePageReqVO) => {
+export function getFilePageApi(params: FilePageReqVO) {
   return defHttp.get({ url: '/infra/file/page', params })
 }
 
 // 删除文件
-export const deleteFileApi = (id: number) => {
+export function deleteFileApi(id: number) {
   return defHttp.delete({ url: '/infra/file/delete?id=' + id })
 }

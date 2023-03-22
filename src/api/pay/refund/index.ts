@@ -86,31 +86,31 @@ export interface PayRefundExportReqVO {
 }
 
 // 查询列表退款订单
-export const getRefundPageApi = (params: RefundPageReqVO) => {
+export function getRefundPage(params: RefundPageReqVO) {
   return defHttp.get({ url: '/pay/refund/page', params })
 }
 
 // 查询详情退款订单
-export const getRefundApi = (id: number) => {
+export function getRefund(id: number) {
   return defHttp.get({ url: '/pay/refund/get?id=' + id })
 }
 
 // 新增退款订单
-export const createRefundApi = (data: RefundVO) => {
+export function createRefund(data: RefundVO) {
   return defHttp.post({ url: '/pay/refund/create', data })
 }
 
 // 修改退款订单
-export const updateRefundApi = (data: RefundVO) => {
+export function updateRefund(data: RefundVO) {
   return defHttp.put({ url: '/pay/refund/update', data })
 }
 
 // 删除退款订单
-export const deleteRefundApi = (id: number) => {
+export function deleteRefund(id: number) {
   return defHttp.delete({ url: '/pay/refund/delete?id=' + id })
 }
 
 // 导出退款订单
-export const exportRefundApi = (params: PayRefundExportReqVO) => {
+export function exportRefund(params: PayRefundExportReqVO) {
   return defHttp.download({ url: '/pay/refund/export-excel', params }, '退款订单.xls')
 }

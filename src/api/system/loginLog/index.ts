@@ -21,10 +21,10 @@ export interface LoginLogReqVO extends PageParam {
 }
 
 // 查询登录日志列表
-export const getLoginLogPage = (params: LoginLogReqVO) => {
+export function getLoginLogPage(params: LoginLogReqVO) {
   return defHttp.get({ url: '/system/login-log/page', params })
 }
 // 导出登录日志
-export const exportLoginLog = (params: LoginLogReqVO) => {
+export function exportLoginLog(params: LoginLogReqVO) {
   return defHttp.download({ url: '/system/login-log/export', params }, '登录日志.xls')
 }

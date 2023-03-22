@@ -46,19 +46,19 @@ export interface ApiErrorLogExportReqVO {
 }
 
 // 查询列表API 访问日志
-export const getApiErrorLogPageApi = (params: ApiErrorLogPageReqVO) => {
+export function getApiErrorLogPageApi(params: ApiErrorLogPageReqVO) {
   return defHttp.get({ url: '/infra/api-error-log/page', params })
 }
 
 // 更新 API 错误日志的处理状态
-export const updateApiErrorLogPageApi = (id: number, processStatus: number) => {
+export function updateApiErrorLogPageApi(id: number, processStatus: number) {
   return defHttp.put({
     url: '/infra/api-error-log/update-status?id=' + id + '&processStatus=' + processStatus
   })
 }
 
 // 导出API 错误日志
-export const exportApiErrorLogApi = (params: ApiErrorLogExportReqVO) => {
+export function exportApiErrorLogApi(params: ApiErrorLogExportReqVO) {
   return defHttp.download(
     {
       url: '/infra/api-error-log/export-excel',

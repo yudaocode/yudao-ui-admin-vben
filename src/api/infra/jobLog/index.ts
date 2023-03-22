@@ -31,17 +31,17 @@ export interface JobLogExportReqVO {
 }
 
 // 任务日志列表
-export const getJobLogPageApi = (params: JobLogPageReqVO) => {
+export function getJobLogPageApi(params: JobLogPageReqVO) {
   return defHttp.get({ url: '/infra/job-log/page', params })
 }
 
 // 任务日志详情
-export const getJobLogApi = (id: number) => {
+export function getJobLogApi(id: number) {
   return defHttp.get({ url: '/infra/job-log/get?id=' + id })
 }
 
 // 导出定时任务日志
-export const exportJobLogApi = (params: JobLogExportReqVO) => {
+export function exportJobLogApi(params: JobLogExportReqVO) {
   return defHttp.download(
     {
       url: '/infra/job-log/export-excel',

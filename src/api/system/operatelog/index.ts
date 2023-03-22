@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type OperateLogVO = {
+export interface OperateLogVO {
   id: number
   userNickname: string
   traceId: string
@@ -32,10 +32,10 @@ export interface OperateLogPageReqVO extends PageParam {
 }
 
 // 查询操作日志列表
-export const getOperateLogPage = (params: OperateLogPageReqVO) => {
+export function getOperateLogPage(params: OperateLogPageReqVO) {
   return defHttp.get({ url: '/system/operate-log/page', params })
 }
 // 导出操作日志
-export const exportOperateLog = (params: OperateLogPageReqVO) => {
+export function exportOperateLog(params: OperateLogPageReqVO) {
   return defHttp.download({ url: '/system/operate-log/export', params }, '操作日志.xls')
 }

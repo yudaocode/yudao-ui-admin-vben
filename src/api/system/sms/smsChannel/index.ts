@@ -20,31 +20,31 @@ export interface SmsChannelPageReqVO extends PageParam {
 }
 
 // 查询短信渠道列表
-export const getSmsChannelPage = (params: SmsChannelPageReqVO) => {
+export function getSmsChannelPage(params: SmsChannelPageReqVO) {
   return defHttp.get({ url: '/system/sms-channel/page', params })
 }
 
 // 获得短信渠道精简列表
-export const getSimpleSmsChannels = () => {
+export function getSimpleSmsChannels() {
   return defHttp.get({ url: '/system/sms-channel/list-all-simple' })
 }
 
 // 查询短信渠道详情
-export const getSmsChannel = (id: number) => {
+export function getSmsChannel(id: number) {
   return defHttp.get({ url: '/system/sms-channel/get?id=' + id })
 }
 
 // 新增短信渠道
-export const createSmsChannel = (data: SmsChannelVO) => {
+export function createSmsChannel(data: SmsChannelVO) {
   return defHttp.post({ url: '/system/sms-channel/create', data })
 }
 
 // 修改短信渠道
-export const updateSmsChannel = (data: SmsChannelVO) => {
+export function updateSmsChannel(data: SmsChannelVO) {
   return defHttp.put({ url: '/system/sms-channel/update', data })
 }
 
 // 删除短信渠道
-export const deleteSmsChannel = (id: number) => {
+export function deleteSmsChannel(id: number) {
   return defHttp.delete({ url: '/system/sms-channel/delete?id=' + id })
 }

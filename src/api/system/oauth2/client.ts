@@ -26,26 +26,26 @@ export interface OAuth2ClientPageReqVO extends PageParam {
   status?: number
 }
 // 查询 OAuth2列表
-export const getOAuth2ClientPage = (params: OAuth2ClientPageReqVO) => {
+export function getOAuth2ClientPage(params: OAuth2ClientPageReqVO) {
   return defHttp.get({ url: '/system/oauth2-client/page', params })
 }
 
 // 查询 OAuth2详情
-export const getOAuth2Client = (id: number) => {
+export function getOAuth2Client(id: number) {
   return defHttp.get({ url: '/system/oauth2-client/get?id=' + id })
 }
 
 // 新增 OAuth2
-export const createOAuth2Client = (data: OAuth2ClientVO) => {
+export function createOAuth2Client(data: OAuth2ClientVO) {
   return defHttp.post({ url: '/system/oauth2-client/create', data })
 }
 
 // 修改 OAuth2
-export const updateOAuth2Client = (data: OAuth2ClientVO) => {
+export function updateOAuth2Client(data: OAuth2ClientVO) {
   return defHttp.put({ url: '/system/oauth2-client/update', data })
 }
 
 // 删除 OAuth2
-export const deleteOAuth2Client = (id: number) => {
+export function deleteOAuth2Client(id: number) {
   return defHttp.delete({ url: '/system/oauth2-client/delete?id=' + id })
 }

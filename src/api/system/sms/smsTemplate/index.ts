@@ -42,36 +42,36 @@ export interface SmsTemplateExportReqVO {
 }
 
 // 查询短信模板列表
-export const getSmsTemplatePage = (params: SmsTemplatePageReqVO) => {
+export function getSmsTemplatePage(params: SmsTemplatePageReqVO) {
   return defHttp.get({ url: '/system/sms-template/page', params })
 }
 
 // 查询短信模板详情
-export const getSmsTemplate = (id: number) => {
+export function getSmsTemplate(id: number) {
   return defHttp.get({ url: '/system/sms-template/get?id=' + id })
 }
 
 // 新增短信模板
-export const createSmsTemplate = (data: SmsTemplateVO) => {
+export function createSmsTemplate(data: SmsTemplateVO) {
   return defHttp.post({ url: '/system/sms-template/create', data })
 }
 
 // 修改短信模板
-export const updateSmsTemplate = (data: SmsTemplateVO) => {
+export function updateSmsTemplate(data: SmsTemplateVO) {
   return defHttp.put({ url: '/system/sms-template/update', data })
 }
 
 // 删除短信模板
-export const deleteSmsTemplate = (id: number) => {
+export function deleteSmsTemplate(id: number) {
   return defHttp.delete({ url: '/system/sms-template/delete?id=' + id })
 }
 
 // 发送短信
-export const sendSms = (data: SendSmsReqVO) => {
+export function sendSms(data: SendSmsReqVO) {
   return defHttp.post({ url: '/system/sms-template/send-sms', data })
 }
 
 // 导出短信模板
-export const exportSmsTemplate = (params: SmsTemplateExportReqVO) => {
+export function exportSmsTemplate(params: SmsTemplateExportReqVO) {
   return defHttp.download({ url: '/system/sms-template/export-excel', params }, '短信模板.xls')
 }

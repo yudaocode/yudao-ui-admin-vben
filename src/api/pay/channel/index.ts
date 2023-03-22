@@ -35,12 +35,12 @@ export interface ChannelExportReqVO {
 }
 
 // 查询列表支付渠道
-export const getChannelPageApi = (params: ChannelPageReqVO) => {
+export function getChannelPage(params: ChannelPageReqVO) {
   return defHttp.get({ url: '/pay/channel/page', params })
 }
 
 // 查询详情支付渠道
-export const getChannelApi = (merchantId: number, appId: string, code: string) => {
+export function getChannel(merchantId: number, appId: string, code: string) {
   const params = {
     merchantId: merchantId,
     appId: appId,
@@ -50,21 +50,21 @@ export const getChannelApi = (merchantId: number, appId: string, code: string) =
 }
 
 // 新增支付渠道
-export const createChannelApi = (data: ChannelVO) => {
+export function createChannel(data: ChannelVO) {
   return defHttp.post({ url: '/pay/channel/create', data })
 }
 
 // 修改支付渠道
-export const updateChannelApi = (data: ChannelVO) => {
+export function updateChannel(data: ChannelVO) {
   return defHttp.put({ url: '/pay/channel/update', data })
 }
 
 // 删除支付渠道
-export const deleteChannelApi = (id: number) => {
+export function deleteChannel(id: number) {
   return defHttp.delete({ url: '/pay/channel/delete?id=' + id })
 }
 
 // 导出支付渠道
-export const exportChannelApi = (params: ChannelExportReqVO) => {
+export function exportChannel(params: ChannelExportReqVO) {
   return defHttp.download({ url: '/pay/channel/export-excel', params }, '支付渠道.xls')
 }

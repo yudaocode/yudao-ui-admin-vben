@@ -1,33 +1,33 @@
 import { defHttp } from '@/utils/http/axios'
 
-export const getTodoTaskPage = (params) => {
+export function getTodoTaskPage(params) {
   return defHttp.get({ url: '/bpm/task/todo-page', params })
 }
 
-export const getDoneTaskPage = (params) => {
+export function getDoneTaskPage(params) {
   return defHttp.get({ url: '/bpm/task/done-page', params })
 }
 
-export const completeTask = (data) => {
+export function completeTask(data) {
   return defHttp.put({ url: '/bpm/task/complete', data })
 }
 
-export const approveTask = (data) => {
+export function approveTask(data) {
   return defHttp.put({ url: '/bpm/task/approve', data })
 }
 
-export const rejectTask = (data) => {
+export function rejectTask(data) {
   return defHttp.put({ url: '/bpm/task/reject', data })
 }
-export const backTask = (data) => {
+export function backTask(data) {
   return defHttp.put({ url: '/bpm/task/back', data })
 }
 
-export const updateTaskAssignee = (data) => {
+export function updateTaskAssignee(data) {
   return defHttp.put({ url: '/bpm/task/update-assignee', data })
 }
 
-export const getTaskListByProcessInstanceId = (processInstanceId) => {
+export function getTaskListByProcessInstanceId(processInstanceId) {
   return defHttp.get({
     url: '/bpm/task/list-by-process-instance-id?processInstanceId=' + processInstanceId
   })

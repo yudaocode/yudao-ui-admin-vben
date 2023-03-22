@@ -33,42 +33,42 @@ export interface UserExportReqVO {
 }
 
 // 查询用户管理列表
-export const getUserPage = (params: UserPageReqVO) => {
+export function getUserPage(params: UserPageReqVO) {
   return defHttp.get({ url: '/system/user/page', params })
 }
 
 // 查询用户详情
-export const getUser = (id: number) => {
+export function getUser(id: number) {
   return defHttp.get({ url: '/system/user/get?id=' + id })
 }
 
 // 新增用户
-export const createUser = (data: UserVO) => {
+export function createUser(data: UserVO) {
   return defHttp.post({ url: '/system/user/create', data })
 }
 
 // 修改用户
-export const updateUser = (data: UserVO) => {
+export function updateUser(data: UserVO) {
   return defHttp.put({ url: '/system/user/update', data })
 }
 
 // 删除用户
-export const deleteUser = (id: number) => {
+export function deleteUser(id: number) {
   return defHttp.delete({ url: '/system/user/delete?id=' + id })
 }
 
 // 导出用户
-export const exportUser = (params: UserExportReqVO) => {
+export function exportUser(params: UserExportReqVO) {
   return defHttp.download({ url: '/system/user/export', params }, '用户.xls')
 }
 
 // 下载用户导入模板
-export const importUserTemplate = () => {
+export function importUserTemplate() {
   return defHttp.download({ url: '/system/user/get-import-template' }, '用户导入模板.xls')
 }
 
 // 用户密码重置
-export const resetUserPwd = (id: number, password: string) => {
+export function resetUserPwd(id: number, password: string) {
   const data = {
     id,
     password
@@ -77,7 +77,7 @@ export const resetUserPwd = (id: number, password: string) => {
 }
 
 // 用户状态修改
-export const updateUserStatus = (id: number, status: number) => {
+export function updateUserStatus(id: number, status: number) {
   const data = {
     id,
     status
@@ -86,6 +86,6 @@ export const updateUserStatus = (id: number, status: number) => {
 }
 
 // 获取用户精简信息列表
-export const getListSimpleUsers = () => {
+export function getListSimpleUsers() {
   return defHttp.get({ url: '/system/user/list-all-simple' })
 }

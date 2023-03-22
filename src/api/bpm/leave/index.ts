@@ -1,17 +1,27 @@
 import { defHttp } from '@/utils/http/axios'
-import { LeaveVO } from './types'
+
+export type LeaveVO = {
+  id: number
+  result: number
+  type: number
+  reason: string
+  processInstanceId: string
+  startTime: string
+  endTime: string
+  createTime: string
+}
 
 // 创建请假申请
-export const createLeaveApi = (data: LeaveVO) => {
+export function createLeave(data: LeaveVO) {
   return defHttp.post({ url: '/bpm/oa/leave/create', data })
 }
 
 // 获得请假申请
-export const getLeaveApi = (id: number) => {
+export function getLeave(id: number) {
   return defHttp.get({ url: '/bpm/oa/leave/get?id=' + id })
 }
 
 // 获得请假申请分页
-export const getLeavePageApi = (params) => {
+export function getLeavePage(params) {
   return defHttp.get({ url: '/bpm/oa/leave/page', params })
 }
