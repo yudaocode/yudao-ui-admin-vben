@@ -61,9 +61,7 @@ const state = reactive({
   recordList: [] as { id: number; time: number; res: string }[]
 })
 const server = ref(
-  (import.meta.env.VITE_GLOB_API_URL.replace('/admin-api', '') + '/websocket/message').replace('http', 'ws') +
-    '?userId=' +
-    userStore.getUserInfo.user.id
+  (import.meta.env.VITE_GLOB_BASE_URL + '/websocket/message').replace('http', 'ws') + '?userId=' + userStore.getUserInfo.user.id
 )
 const { status, data, send, close, open } = useWebSocket(server.value, {
   autoReconnect: false,
