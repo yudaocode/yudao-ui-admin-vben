@@ -1,7 +1,11 @@
+import { h } from 'vue'
+import { Switch } from 'ant-design-vue'
+import { useMessage } from '@/hooks/web/useMessage'
 import { listSimpleDept } from '@/api/system/dept'
 import { listSimplePosts } from '@/api/system/post'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { updateUserStatus } from '@/api/system/user'
 
 export const columns: BasicColumn[] = [
   {
@@ -36,8 +40,35 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 180,
-    customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
+    // customRender: ({ text }) => {
+    //   return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
+    // }
+    customRender: ({ record }) => {
+      if (!Reflect.has(record, 'pendingStatus')) {
+        record.pendingStatus = false
+      }
+      return h(Switch, {
+        checked: record.status === 0,
+        checkedChildren: '已启用',
+        unCheckedChildren: '已禁用',
+        loading: record.pendingStatus,
+        onChange(checked: boolean) {
+          record.pendingStatus = true
+          const newStatus = checked ? 0 : 1
+          const { createMessage } = useMessage()
+          updateUserStatus(record.id, newStatus)
+            .then(() => {
+              record.status = newStatus
+              createMessage.success(`已成功修改用户状态`)
+            })
+            .catch(() => {
+              createMessage.error('修改用户状态失败')
+            })
+            .finally(() => {
+              record.pendingStatus = false
+            })
+        }
+      })
     }
   },
   {
