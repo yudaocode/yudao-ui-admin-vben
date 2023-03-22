@@ -21,7 +21,7 @@ const { t } = useI18n()
 const src = ref('')
 /** 页面加载 */
 const init = async () => {
-  const res = await DbDocApi.exportHtmlApi()
+  const res = await DbDocApi.exportHtml()
   let blob = new Blob([res], { type: 'text/html' })
   let blobUrl = window.URL.createObjectURL(blob)
   src.value = blobUrl
@@ -29,15 +29,15 @@ const init = async () => {
 /** 处理导出  */
 const handleExport = async (type: string) => {
   if (type === 'HTML') {
-    const res = await DbDocApi.exportHtmlApi()
+    const res = await DbDocApi.exportHtml()
     downloadByData(res, '数据库文档.html')
   }
   if (type === 'Word') {
-    const res = await DbDocApi.exportWordApi()
+    const res = await DbDocApi.exportWord()
     downloadByData(res, '数据库文档.doc')
   }
   if (type === 'Markdown') {
-    const res = await DbDocApi.exportMarkdownApi()
+    const res = await DbDocApi.exportMarkdown()
     downloadByData(res, '数据库文档.md')
   }
 }

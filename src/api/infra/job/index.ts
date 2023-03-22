@@ -26,37 +26,37 @@ export interface JobExportReqVO {
 }
 
 // 任务列表
-export function getJobPageApi(params: JobPageReqVO) {
+export function getJobPage(params: JobPageReqVO) {
   return defHttp.get({ url: '/infra/job/page', params })
 }
 
 // 任务详情
-export function getJobApi(id: number) {
+export function getJob(id: number) {
   return defHttp.get({ url: '/infra/job/get?id=' + id })
 }
 
 // 新增任务
-export function createJobApi(data: JobVO) {
+export function createJob(data: JobVO) {
   return defHttp.post({ url: '/infra/job/create', data })
 }
 
 // 修改定时任务调度
-export function updateJobApi(data: JobVO) {
+export function updateJob(data: JobVO) {
   return defHttp.put({ url: '/infra/job/update', data })
 }
 
 // 删除定时任务调度
-export function deleteJobApi(id: number) {
+export function deleteJob(id: number) {
   return defHttp.delete({ url: '/infra/job/delete?id=' + id })
 }
 
 // 导出定时任务调度
-export function exportJobApi(params: JobExportReqVO) {
+export function exportJob(params: JobExportReqVO) {
   return defHttp.download({ url: '/infra/job/export-excel', params }, '定时任务.xls')
 }
 
 // 任务状态修改
-export function updateJobStatusApi(id: number, status: number) {
+export function updateJobStatus(id: number, status: number) {
   const params = {
     id,
     status
@@ -65,11 +65,11 @@ export function updateJobStatusApi(id: number, status: number) {
 }
 
 // 定时任务立即执行一次
-export function runJobApi(id: number) {
+export function runJob(id: number) {
   return defHttp.put({ url: '/infra/job/trigger?id=' + id })
 }
 
 // 获得定时任务的下 n 次执行时间
-export function getJobNextTimesApi(id: number) {
+export function getJobNextTimes(id: number) {
   return defHttp.get({ url: '/infra/job/get_next_times?id=' + id })
 }

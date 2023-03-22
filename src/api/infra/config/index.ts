@@ -27,36 +27,36 @@ export interface ConfigExportReqVO {
 }
 
 // 查询参数列表
-export function getConfigPageApi(params: ConfigPageReqVO) {
+export function getConfigPage(params: ConfigPageReqVO) {
   return defHttp.get({ url: '/infra/config/page', params })
 }
 
 // 查询参数详情
-export function getConfigApi(id: number) {
+export function getConfig(id: number) {
   return defHttp.get({ url: '/infra/config/get?id=' + id })
 }
 
 // 根据参数键名查询参数值
-export function getConfigKeyApi(configKey: string) {
+export function getConfigKey(configKey: string) {
   return defHttp.get({ url: '/infra/config/get-value-by-key?key=' + configKey })
 }
 
 // 新增参数
-export function createConfigApi(data: ConfigVO) {
+export function createConfig(data: ConfigVO) {
   return defHttp.post({ url: '/infra/config/create', data })
 }
 
 // 修改参数
-export function updateConfigApi(data: ConfigVO) {
+export function updateConfig(data: ConfigVO) {
   return defHttp.put({ url: '/infra/config/update', data })
 }
 
 // 删除参数
-export function deleteConfigApi(id: number) {
+export function deleteConfig(id: number) {
   return defHttp.delete({ url: '/infra/config/delete?id=' + id })
 }
 
 // 导出参数
-export function exportConfigApi(params: ConfigExportReqVO) {
+export function exportConfig(params: ConfigExportReqVO) {
   return defHttp.download({ url: '/infra/config/export', params }, '参数.xls')
 }

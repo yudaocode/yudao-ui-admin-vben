@@ -3,17 +3,17 @@ import { defHttp } from '@/utils/http/axios'
 /**
  * 获取redis 监控信息
  */
-export function getCacheApi() {
+export function getCache() {
   return defHttp.get({ url: '/infra/redis/get-monitor-info' })
 }
 // 获取模块
-export function getKeyDefineListApi() {
+export function getKeyDefineList() {
   return defHttp.get({ url: '/infra/redis/get-key-define-list' })
 }
 /**
  * 获取redis key列表
  */
-export function getKeyListApi(keyTemplate: string) {
+export function getKeyList(keyTemplate: string) {
   return defHttp.get({
     url: '/infra/redis/get-key-list',
     params: {
@@ -22,16 +22,16 @@ export function getKeyListApi(keyTemplate: string) {
   })
 }
 // 获取缓存内容
-export function getKeyValueApi(key: string) {
+export function getKeyValue(key: string) {
   return defHttp.get({ url: '/infra/redis/get-key-value?key=' + key })
 }
 
 // 根据键名删除缓存
-export function deleteKeyApi(key: string) {
+export function deleteKey(key: string) {
   return defHttp.delete({ url: '/infra/redis/delete-key?key=' + key })
 }
 
-export function deleteKeysApi(keyTemplate: string) {
+export function deleteKeys(keyTemplate: string) {
   return defHttp.delete({
     url: '/infra/redis/delete-keys?',
     params: {

@@ -30,7 +30,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteFileApi, getFilePageApi } from '@/api/infra/file'
+import { deleteFile, getFilePage } from '@/api/infra/file'
 import { columns, searchFormSchema } from './file.data'
 
 const { t } = useI18n()
@@ -38,7 +38,7 @@ const { createMessage } = useMessage()
 
 const [registerTable, { reload }] = useTable({
   title: '文件列表',
-  api: getFilePageApi,
+  api: getFilePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -60,7 +60,7 @@ function handleAdd() {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteFileApi(record.id)
+  await deleteFile(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }
