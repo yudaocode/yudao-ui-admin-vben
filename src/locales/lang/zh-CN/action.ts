@@ -1,4 +1,5 @@
 export default {
+  more: '更多',
   create: '新增',
   edit: '修改',
   test: '测试',

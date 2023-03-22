@@ -15,11 +15,12 @@
     </template>
     <Dropdown :trigger="['hover']" :dropMenuList="getDropdownList" popconfirm v-if="dropDownActions && getDropdownList.length > 0">
       <slot name="more"></slot>
-      <a-button type="link" v-if="!$slots.more"> 更多<MoreOutlined class="icon-more" /> </a-button>
+      <a-button type="link" v-if="!$slots.more"> <MoreOutlined class="icon-more" />{{ t('action.more') }} </a-button>
     </Dropdown>
   </div>
 </template>
 <script lang="ts" setup name="TableAction">
+import { useI18n } from '@/hooks/web/useI18n'
 import { computed, toRaw, unref } from 'vue'
 import { MoreOutlined } from '@ant-design/icons-vue'
 import { Divider, Tooltip, TooltipProps } from 'ant-design-vue'
@@ -48,6 +49,7 @@ const props = defineProps({
   stopButtonPropagation: propTypes.bool.def(false)
 })
 
+const { t } = useI18n()
 const { prefixCls } = useDesign('basic-table-action')
 let table: Partial<TableActionType> = {}
 if (!props.outside) {
@@ -164,6 +166,11 @@ function onCellClick(e: MouseEvent) {
     span {
       margin: auto !important;
     }
+  }
+
+  .ant-btn-link {
+    margin-left: 0;
+    padding: 8px 4px;
   }
 
   .ant-divider,

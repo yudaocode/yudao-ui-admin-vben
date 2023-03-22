@@ -1,4 +1,5 @@
 export default {
+  more: 'more',
   create: 'Create',
   edit: 'Edit',
   test: 'Test',
