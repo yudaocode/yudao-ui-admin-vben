@@ -25,7 +25,7 @@
       </template>
     </BasicTable>
     <DictData class="w-1/2 xl:w-1/2" :searchInfo="searchInfo" />
-    <DictTypeModel @register="registerModal" @success="reload()" />
+    <DictTypeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Dict">
@@ -34,7 +34,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import DictData from './DictData.vue'
-import DictTypeModel from './DictTypeModel.vue'
+import DictTypeModal from './DictTypeModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { typeColumns, typeSearchFormSchema } from './dict.type'
 import { deleteDictTypeApi, getDictTypePageApi } from '@/api/system/dict/type'

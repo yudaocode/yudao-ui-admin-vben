@@ -26,7 +26,7 @@
         </template>
       </template>
     </BasicTable>
-    <DeptModel @register="registerModal" @success="reload()" />
+    <MenuModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Menu">
@@ -34,7 +34,7 @@ import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import DeptModel from './MenuModel.vue'
+import MenuModal from './MenuModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMenuApi, getMenuListApi } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'

@@ -25,14 +25,14 @@
         </template>
       </template>
     </BasicTable>
-    <TenantModel @register="registerModal" @success="reload()" />
+    <TenantModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Tenant">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { TenantExportReqVO, deleteTenantApi, exportTenantApi, getTenantPageApi } from '@/api/system/tenant'
 import { useModal } from '@/components/Modal'
-import TenantModel from './TenantModel.vue'
+import TenantModal from './TenantModal.vue'
 import { columns, searchFormSchema } from './tenant.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

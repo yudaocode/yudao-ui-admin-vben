@@ -25,14 +25,14 @@
         </template>
       </template>
     </BasicTable>
-    <PostModel @register="registerModal" @success="reload()" />
+    <PostModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Post">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import PostModel from './PostModel.vue'
+import PostModal from './PostModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { PostExportReqVO, deletePostApi, exportPostApi, getPostPageApi } from '@/api/system/post'
 import { columns, searchFormSchema } from './post.data'

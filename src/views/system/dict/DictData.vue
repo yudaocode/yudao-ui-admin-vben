@@ -24,7 +24,7 @@
         </template>
       </template>
     </BasicTable>
-    <DictDataModel @register="registerModal" @success="reload()" />
+    <DictDataModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="DictData">
@@ -32,7 +32,7 @@ import { watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import DictDataModel from './DictDataModel.vue'
+import DictDataModal from './DictDataModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { dataColumns, dataSearchFormSchema } from './dict.data'
 import { deleteDictDataApi, getDictDataPageApi } from '@/api/system/dict/data'

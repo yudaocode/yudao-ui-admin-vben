@@ -24,14 +24,14 @@
         </template>
       </template>
     </BasicTable>
-    <TenantPackageModel @register="registerModal" @success="reload()" />
+    <TenantPackageModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="TenantPackage">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import TenantPackageModel from './TenantPackageModel.vue'
+import TenantPackageModal from './TenantPackageModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteTenantPackageApi, getTenantPackagePageApi } from '@/api/system/tenantPackage'
 import { columns, searchFormSchema } from './tenantPackage.data'

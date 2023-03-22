@@ -31,7 +31,7 @@
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import NoticeModal from './NoticeModel.vue'
+import NoticeModal from './NoticeModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteNoticeApi, getNoticePageApi } from '@/api/system/notice'
 import { columns, searchFormSchema } from './notice.data'

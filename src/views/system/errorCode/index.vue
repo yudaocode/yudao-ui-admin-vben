@@ -25,14 +25,14 @@
         </template>
       </template>
     </BasicTable>
-    <ErrorCodeModel @register="registerModal" @success="reload()" />
+    <ErrorCodeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="ErrorCode">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ErrorCodeModel from './ErrorCodeModel.vue'
+import ErrorCodeModal from './ErrorCodeModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { ErrorCodePageReqVO, deleteErrorCodeApi, excelErrorCodeApi, getErrorCodePageApi } from '@/api/system/errorCode'
 import { columns, searchFormSchema } from './errorCode.data'

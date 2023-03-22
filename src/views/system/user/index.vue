@@ -26,7 +26,7 @@
         </template>
       </template>
     </BasicTable>
-    <UserModel @register="registerModal" @success="reload()" />
+    <UserModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="User">
@@ -34,7 +34,7 @@ import { reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import UserModel from './UserModel.vue'
+import UserModal from './UserModal.vue'
 import DeptTree from './DeptTree.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { columns, searchFormSchema } from './user.data'

@@ -27,14 +27,14 @@
         </template>
       </template>
     </BasicTable>
-    <RoleModel @register="registerModal" @success="reload()" />
+    <RoleModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Role">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import RoleModel from './RoleModel.vue'
+import RoleModal from './RoleModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { RoleExportReqVO, deleteRoleApi, exportRoleApi, getRolePageApi } from '@/api/system/role'
 import { columns, searchFormSchema } from './role.data'

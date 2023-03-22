@@ -18,7 +18,7 @@
       </template>
     </List>
   </CollapseContainer>
-  <PasswordModel @register="registerModal" @success="handleSuccess" />
+  <PasswordModal @register="registerModal" @success="handleSuccess" />
 </template>
 <script setup lang="ts">
 import { List } from 'ant-design-vue'
@@ -26,7 +26,7 @@ import { CollapseContainer } from '@/components/Container/index'
 import { secureSettingList } from './data'
 import { useModal } from '@/components/Modal'
 import { useMessage } from '@/hooks/web/useMessage'
-import PasswordModel from './PasswordModel.vue'
+import PasswordModal from './PasswordModal.vue'
 
 const ListItem = List.Item
 const ListItemMeta = List.Item.Meta

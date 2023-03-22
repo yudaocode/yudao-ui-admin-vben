@@ -24,14 +24,14 @@
         </template>
       </template>
     </BasicTable>
-    <ClientModel @register="registerModal" @success="reload()" />
+    <ClientModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Client">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ClientModel from './ClientModel.vue'
+import ClientModal from './ClientModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteOAuth2ClientApi, getOAuth2ClientPageApi } from '@/api/system/oauth2/client'
 import { columns, searchFormSchema } from './client.data'

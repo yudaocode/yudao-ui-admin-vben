@@ -24,14 +24,14 @@
         </template>
       </template>
     </BasicTable>
-    <TemplateModel @register="registerModal" @success="reload()" />
+    <TemplateModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="MailTemplate">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import TemplateModel from './TemplateModel.vue'
+import TemplateModal from './TemplateModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMailTemplateApi, getMailTemplatePageApi } from '@/api/system/mail/template'
 import { columns, searchFormSchema } from './template.data'

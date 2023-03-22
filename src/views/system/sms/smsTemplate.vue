@@ -26,14 +26,14 @@
         </template>
       </template>
     </BasicTable>
-    <SmsTemplateModel @register="registerModal" @success="reload()" />
+    <SmsTemplateModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="SmsTemplate">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { SmsTemplateExportReqVO, deleteSmsTemplateApi, exportSmsTemplateApi, getSmsTemplatePageApi } from '@/api/system/sms/smsTemplate'
 import { useModal } from '@/components/Modal'
-import SmsTemplateModel from './SmsTemplateModel.vue'
+import SmsTemplateModal from './SmsTemplateModal.vue'
 import { columns, searchFormSchema } from './smsTemplate.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

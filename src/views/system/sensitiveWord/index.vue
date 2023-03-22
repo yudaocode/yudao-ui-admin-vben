@@ -25,7 +25,7 @@
         </template>
       </template>
     </BasicTable>
-    <SensitiveWordModel @register="registerModal" @success="reload()" />
+    <SensitiveWordModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="SensitiveWord">
@@ -37,7 +37,7 @@ import {
   getSensitiveWordPageApi
 } from '@/api/system/sensitiveWord'
 import { useModal } from '@/components/Modal'
-import SensitiveWordModel from './SensitiveWordModel.vue'
+import SensitiveWordModal from './SensitiveWordModal.vue'
 import { columns, searchFormSchema } from './sensitiveWord.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

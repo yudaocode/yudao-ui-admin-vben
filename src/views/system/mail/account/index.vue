@@ -24,14 +24,14 @@
         </template>
       </template>
     </BasicTable>
-    <AccountModel @register="registerModal" @success="reload()" />
+    <AccountModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="MailAccount">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import AccountModel from './AccountModel.vue'
+import AccountModal from './AccountModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMailAccountApi, getMailAccountPageApi } from '@/api/system/mail/account'
 import { columns, searchFormSchema } from './account.data'

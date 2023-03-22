@@ -29,7 +29,7 @@
         </template>
       </template>
     </BasicTable>
-    <DeptModel @register="registerModal" @success="reload()" />
+    <DeptModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Dept">
@@ -38,7 +38,7 @@ import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import DeptModel from './DeptModel.vue'
+import DeptModal from './DeptModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getListSimpleUsersApi } from '@/api/system/user'
 import { deleteDeptApi, getDeptPageApi } from '@/api/system/dept'
