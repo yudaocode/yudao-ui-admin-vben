@@ -1,6 +1,9 @@
 export default {
   create: 'Create',
   edit: 'Edit',
+  test: 'Test',
   delete: 'Delete',
-  detail: 'Detail'
+  detail: 'Detail',
+  export: 'Export',
+  import: 'Import'
 }

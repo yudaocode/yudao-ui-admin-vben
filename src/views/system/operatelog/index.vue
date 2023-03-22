@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" @click="handleExport"> 导出 </a-button>
+        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
       </template>
     </BasicTable>
   </div>
@@ -31,9 +31,9 @@ const [registerTable, { getForm }] = useTable({
 
 async function handleExport() {
   createConfirm({
-    title: '导出',
+    title: t('common.exportTitle'),
     iconType: 'warning',
-    content: '是否要导出数据？',
+    content: t('common.exportMessage'),
     async onOk() {
       await exportOperateLogApi(getForm().getFieldsValue() as OperateLogPageReqVO)
       createMessage.success(t('common.exportSuccessText'))

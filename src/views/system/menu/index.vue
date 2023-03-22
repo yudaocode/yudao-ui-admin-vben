@@ -2,9 +2,9 @@
   <div>
     <BasicTable @register="register">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
-        <a-button type="info" @click="expandAll">展开全部</a-button>
-        <a-button type="info" @click="collapseAll">折叠全部</a-button>
+        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
+        <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -12,15 +12,15 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                label: '修改',
+                label: t('action.edit'),
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
-                label: '删除',
+                label: t('action.delete'),
                 popConfirm: {
-                  title: '是否确认删除',
+                  title: t('common.delMessage'),
                   placement: 'left',
                   confirm: handleDelete.bind(null, record)
                 }
@@ -34,14 +34,16 @@
   </div>
 </template>
 <script lang="ts" setup name="Menu">
+import { handleTree } from '@/utils/tree'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
+import { useModal } from '@/components/Modal'
+import DeptModel from './MenuModel.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMenuApi, getMenuListApi } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'
-import { useModal } from '@/components/Modal'
-import DeptModel from './MenuModel.vue'
-import { useMessage } from '@/hooks/web/useMessage'
-import { handleTree } from '@/utils/tree'
 
+const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
@@ -64,7 +66,7 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   canResize: false,
   actionColumn: {
     width: 160,
-    title: '操作',
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -89,7 +91,7 @@ function handleEdit(record: Recordable) {
 
 async function handleDelete(record: Recordable) {
   await deleteMenuApi(record.id)
-  createMessage.success('删除成功')
+  createMessage.success(t('common.delSuccessText'))
   reload()
 }
 </script>

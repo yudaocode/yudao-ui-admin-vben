@@ -2,9 +2,9 @@
   <div>
     <BasicTable @register="register" @fetch-success="onFetchSuccess">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
-        <a-button type="info" @click="expandAll">展开全部</a-button>
-        <a-button type="info" @click="collapseAll">折叠全部</a-button>
+        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
+        <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
       <template #leader="{ text }">
         <span> {{ userNicknameFormat(text) }} </span>
@@ -15,13 +15,15 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
+                label: t('action.edit'),
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
+                label: t('action.delete'),
                 popConfirm: {
-                  title: '是否确认删除',
+                  title: t('common.delMessage'),
                   placement: 'left',
                   confirm: handleDelete.bind(null, record)
                 }
@@ -35,18 +37,19 @@
   </div>
 </template>
 <script lang="ts" setup name="Dept">
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteDeptApi, getDeptPageApi } from '@/api/system/dept'
-import { columns, searchFormSchema } from './dept.data'
+import { nextTick, ref, onMounted } from 'vue'
+import { handleTree } from '@/utils/tree'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import DeptModel from './DeptModel.vue'
-import { useMessage } from '@/hooks/web/useMessage'
-import { handleTree } from '@/utils/tree'
-import { nextTick, ref } from 'vue'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getListSimpleUsersApi } from '@/api/system/user'
-import { onMounted } from 'vue'
+import { deleteDeptApi, getDeptPageApi } from '@/api/system/dept'
+import { columns, searchFormSchema } from './dept.data'
 
-const { createConfirm, createMessage } = useMessage()
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
@@ -67,8 +70,8 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   showIndexColumn: false,
   canResize: false,
   actionColumn: {
-    width: 120,
-    title: '操作',
+    width: 160,
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -87,7 +90,6 @@ async function getUserList() {
 }
 
 function userNicknameFormat(row) {
-  console.info(row)
   if (!row.leaderUserId) {
     return '未设置'
   }
@@ -113,20 +115,12 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteDeptApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+  await deleteDeptApi(record.id)
+  createMessage.success(t('common.delSuccessText'))
+  reload()
 }
 
 function onFetchSuccess() {
-  // 演示默认展开所有表项
   nextTick(expandAll)
 }
 

@@ -2,8 +2,8 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
-        <a-button type="warning" @click="handleExport"> 导出 </a-button>
+        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -11,7 +11,7 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                label: '修改',
+                label: t('action.edit'),
                 onClick: handleEdit.bind(null, record)
               }
             ]"
@@ -28,10 +28,10 @@
               },
               {
                 icon: 'ant-design:delete-outlined',
-                label: '删除',
                 color: 'error',
+                label: t('action.delete'),
                 popConfirm: {
-                  title: '是否确认删除',
+                  title: t('common.delMessage'),
                   placement: 'left',
                   confirm: handleDelete.bind(null, record)
                 }
@@ -45,13 +45,13 @@
   </div>
 </template>
 <script lang="ts" setup name="Role">
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { RoleExportReqVO, deleteRoleApi, exportRoleApi, getRolePageApi } from '@/api/system/role'
-import { useModal } from '@/components/Modal'
-import RoleModel from './RoleModel.vue'
-import { columns, searchFormSchema } from './role.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { useModal } from '@/components/Modal'
+import RoleModel from './RoleModel.vue'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { RoleExportReqVO, deleteRoleApi, exportRoleApi, getRolePageApi } from '@/api/system/role'
+import { columns, searchFormSchema } from './role.data'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
@@ -69,7 +69,7 @@ const [registerTable, { getForm, reload }] = useTable({
   showIndexColumn: false,
   actionColumn: {
     width: 160,
-    title: '操作',
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -90,9 +90,9 @@ function handleEdit(record: Recordable) {
 
 async function handleExport() {
   createConfirm({
-    title: '导出',
+    title: t('common.exportTitle'),
     iconType: 'warning',
-    content: '是否要导出数据？',
+    content: t('common.exportMessage'),
     async onOk() {
       await exportRoleApi(getForm().getFieldsValue() as RoleExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
@@ -102,7 +102,7 @@ async function handleExport() {
 
 async function handleDelete(record: Recordable) {
   await deleteRoleApi(record.id)
-  createMessage.success('删除成功')
+  createMessage.success(t('common.delSuccessText'))
   reload()
 }
 </script>

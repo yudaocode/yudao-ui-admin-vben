@@ -3,8 +3,8 @@
     <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
     <BasicTable @register="registerTable" class="w-3/4 xl:w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">新增账号</a-button>
-        <a-button type="warning" @click="handleExport"> 导出 </a-button>
+        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -12,15 +12,15 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                label: '编辑',
+                label: t('action.edit'),
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
-                label: '删除',
+                label: t('action.delete'),
                 popConfirm: {
-                  title: '是否确认删除',
+                  title: t('common.delMessage'),
                   placement: 'left',
                   confirm: handleDelete.bind(null, record)
                 }
@@ -35,14 +35,14 @@
 </template>
 <script lang="ts" setup name="User">
 import { reactive } from 'vue'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import UserModel from './UserModel.vue'
 import DeptTree from './DeptTree.vue'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { columns, searchFormSchema } from './user.data'
 import { UserExportReqVO, deleteUserApi, exportUserApi, getUserPageApi } from '@/api/system/user'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useMessage } from '@/hooks/web/useMessage'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
@@ -63,7 +63,7 @@ const [registerTable, { getForm, reload }] = useTable({
   showIndexColumn: false,
   actionColumn: {
     width: 160,
-    title: '操作',
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -77,9 +77,9 @@ function handleCreate() {
 
 async function handleExport() {
   createConfirm({
-    title: '导出',
+    title: t('common.exportTitle'),
     iconType: 'warning',
-    content: '是否要导出数据？',
+    content: t('common.exportMessage'),
     async onOk() {
       await exportUserApi(getForm().getFieldsValue() as UserExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
@@ -96,7 +96,7 @@ function handleEdit(record: Recordable) {
 
 async function handleDelete(record: Recordable) {
   await deleteUserApi(record.id)
-  createMessage.success('删除成功')
+  createMessage.success(t('common.delSuccessText'))
   reload()
 }
 

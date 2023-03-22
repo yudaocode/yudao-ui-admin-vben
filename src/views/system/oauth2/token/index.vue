@@ -23,11 +23,13 @@
   </div>
 </template>
 <script lang="ts" setup name="Token">
+import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteAccessTokenApi, getAccessTokenPageApi } from '@/api/system/oauth2/token'
 import { columns, searchFormSchema } from './token.data'
 import { useMessage } from '@/hooks/web/useMessage'
 
+const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerTable, { reload }] = useTable({
   title: 'Token列表',
@@ -42,7 +44,7 @@ const [registerTable, { reload }] = useTable({
   showIndexColumn: false,
   actionColumn: {
     width: 100,
-    title: '操作',
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -50,7 +52,7 @@ const [registerTable, { reload }] = useTable({
 
 async function handleDelete(record: Recordable) {
   await deleteAccessTokenApi(record.id)
-  createMessage.success('删除成功')
+  createMessage.success(t('common.delSuccessText'))
   reload()
 }
 </script>

@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">新增字典数据</a-button>
+        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }}</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -10,15 +10,15 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                tooltip: '编辑字典数据',
+                label: t('action.edit'),
                 onClick: handleEdit.bind(null, record)
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
-                tooltip: '删除字典数据',
+                label: t('action.delete'),
                 popConfirm: {
-                  title: '是否确认删除',
+                  title: t('common.delMessage'),
                   placement: 'left',
                   confirm: handleDelete.bind(null, record)
                 }
@@ -33,12 +33,13 @@
 </template>
 <script lang="ts" setup name="DictData">
 import { watch } from 'vue'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import DictDataModel from './DictDataModel.vue'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { dataColumns, dataSearchFormSchema } from './dict.data'
 import { deleteDictDataApi, getDictDataPageApi } from '@/api/system/dict/data'
-import { useMessage } from '@/hooks/web/useMessage'
 
 const props = defineProps({
   searchInfo: {
@@ -47,9 +48,9 @@ const props = defineProps({
   }
 })
 
-const { createConfirm, createMessage } = useMessage()
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
-// const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { reload }] = useTable({
   title: '字典数据列表',
@@ -64,8 +65,8 @@ const [registerTable, { reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 120,
-    title: '操作',
+    width: 160,
+    title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
@@ -85,17 +86,10 @@ function handleEdit(record: Recordable) {
   })
 }
 
-function handleDelete(record: Recordable) {
-  createConfirm({
-    title: '删除',
-    iconType: 'warning',
-    content: '是否要删除数据？',
-    async onOk() {
-      await deleteDictDataApi(record.id)
-      createMessage.success('删除成功')
-      reload()
-    }
-  })
+async function handleDelete(record: Recordable) {
+  await deleteDictDataApi(record.id)
+  createMessage.success(t('common.delSuccessText'))
+  reload()
 }
 
 watch(
