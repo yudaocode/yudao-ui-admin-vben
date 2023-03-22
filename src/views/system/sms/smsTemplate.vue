@@ -9,16 +9,8 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              {
-                icon: 'clarity:note-edit-line',
-                label: t('action.test'),
-                onClick: handleSendSms.bind(null, record)
-              },
-              {
-                icon: 'clarity:note-edit-line',
-                label: t('action.edit'),
-                onClick: handleEdit.bind(null, record)
-              },
+              { icon: 'clarity:note-edit-line', label: t('action.test'), onClick: handleSendSms.bind(null, record) },
+              { icon: 'clarity:note-edit-line', label: t('action.edit'), onClick: handleEdit.bind(null, record) },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',

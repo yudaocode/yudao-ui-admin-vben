@@ -8,24 +8,10 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
-            :actions="[
-              {
-                icon: 'clarity:note-edit-line',
-                label: t('action.edit'),
-                onClick: handleEdit.bind(null, record)
-              }
-            ]"
+            :actions="[{ icon: 'clarity:note-edit-line', label: t('action.edit'), onClick: handleEdit.bind(null, record) }]"
             :dropDownActions="[
-              {
-                icon: 'clarity:note-edit-line',
-                label: '菜单权限',
-                onClick: handleEdit.bind(null, record)
-              },
-              {
-                icon: 'clarity:note-edit-line',
-                label: '数据权限',
-                onClick: handleEdit.bind(null, record)
-              },
+              { icon: 'clarity:note-edit-line', label: '菜单权限', onClick: handleEdit.bind(null, record) },
+              { icon: 'clarity:note-edit-line', label: '数据权限', onClick: handleEdit.bind(null, record) },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
