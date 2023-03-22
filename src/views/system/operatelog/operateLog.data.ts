@@ -1,4 +1,4 @@
-import { getIntDictOptions } from './../../../utils/dict'
+import { getIntDictOptions } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
 import { h } from 'vue'
