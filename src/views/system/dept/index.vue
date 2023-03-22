@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="register" @fetch-success="onFetchSuccess">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
         <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
         <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
@@ -13,9 +13,9 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: 'clarity:note-edit-line', label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
               {
-                icon: 'ant-design:delete-outlined',
+                icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
                 popConfirm: {
@@ -39,6 +39,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import DeptModal from './DeptModal.vue'
+import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getListSimpleUsersApi } from '@/api/system/user'
 import { deleteDeptApi, getDeptPageApi } from '@/api/system/dept'

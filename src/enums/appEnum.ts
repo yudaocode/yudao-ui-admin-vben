@@ -50,3 +50,23 @@ export enum RouterTransitionEnum {
   FADE_BOTTOM = 'fade-bottom',
   FADE_SCALE = 'fade-scale'
 }
+
+export enum IconEnum {
+  VIEW = 'ant-design:file-search-outlined',
+  ADD = 'ant-design:plus-outlined',
+  IMPORT = 'ant-design:vertical-align-top-outlined',
+  EXPORT = 'ant-design:vertical-align-bottom-outlined',
+  TEST = 'ant-design:deployment-unit-outlined',
+  EDIT = 'clarity:note-edit-line',
+  AUTH = 'ant-design:safety-certificate-outlined',
+  DATA = 'clarity:note-edit-line',
+  DELETE = 'ant-design:delete-outlined',
+  SEARCH = 'ant-design:search-outlined',
+  RESET = 'ant-design:sync-outlined',
+  UPLOAD = 'ant-design:cloud-upload-outlined',
+  DOWNLOAD = 'ant-design:cloud-download-outlined',
+  PREVIEW = 'ant-design:eye-outlined',
+  ADD_FOLD = 'ant-design:folder-add-outlined',
+  LOG = 'ant-design:exception-outlined',
+  PASSWORD = 'ant-design:key-outlined'
+}

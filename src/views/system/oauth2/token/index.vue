@@ -6,7 +6,7 @@
           <TableAction
             :actions="[
               {
-                icon: 'ant-design:delete-outlined',
+                icon: IconEnum.DELETE,
                 color: 'error',
                 label: '强退',
                 popConfirm: {
@@ -24,6 +24,7 @@
 </template>
 <script lang="ts" setup name="Token">
 import { useI18n } from '@/hooks/web/useI18n'
+import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteAccessTokenApi, getAccessTokenPageApi } from '@/api/system/oauth2/token'
 import { columns, searchFormSchema } from './token.data'

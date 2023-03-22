@@ -2,15 +2,15 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: 'clarity:note-edit-line', label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
               {
-                icon: 'ant-design:delete-outlined',
+                icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
                 popConfirm: {
@@ -32,6 +32,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import AccountModal from './AccountModal.vue'
+import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMailAccountApi, getMailAccountPageApi } from '@/api/system/mail/account'
 import { columns, searchFormSchema } from './account.data'

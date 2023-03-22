@@ -2,15 +2,15 @@
   <div class="flex">
     <BasicTable @register="registerTable" class="w-1/2 xl:w-1/2" @row-click="handleRowClick">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">{{ t('action.create') }}</a-button>
+        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: 'clarity:note-edit-line', label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
               {
-                icon: 'ant-design:delete-outlined',
+                icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
                 popConfirm: {
@@ -35,6 +35,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import DictData from './DictData.vue'
 import DictTypeModal from './DictTypeModal.vue'
+import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { typeColumns, typeSearchFormSchema } from './dict.type'
 import { deleteDictTypeApi, getDictTypePageApi } from '@/api/system/dict/type'

@@ -2,17 +2,18 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
       </template>
     </BasicTable>
   </div>
 </template>
 <script lang="ts" setup name="OperateLog">
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
+import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
 import { OperateLogPageReqVO, exportOperateLogApi, getOperateLogPageApi } from '@/api/system/operatelog'
 import { columns, searchFormSchema } from './operateLog.data'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useMessage } from '@/hooks/web/useMessage'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
