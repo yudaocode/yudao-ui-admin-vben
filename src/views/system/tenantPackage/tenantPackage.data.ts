@@ -1,4 +1,3 @@
-import { listSimpleMenusApi } from '@/api/system/menu'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
@@ -75,22 +74,9 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '菜单权限',
-    field: 'packageId',
-    required: true,
-    component: 'ApiTree',
-    // TODO
-    componentProps: {
-      api: () => listSimpleMenusApi(),
-      fieldNames: {
-        title: 'name',
-        key: 'id',
-        children: 'children'
-      },
-      handleTree: 'id',
-      checkable: true,
-      multiple: true,
-      checkedKeys: []
-    }
+    field: 'menuIds',
+    slot: 'menuIds',
+    component: 'Input'
   },
   {
     label: '状态',
