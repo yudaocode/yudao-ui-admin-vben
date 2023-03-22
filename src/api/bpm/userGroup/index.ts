@@ -3,18 +3,12 @@ import { UserGroupVO } from './types'
 
 // 创建用户组
 export const createUserGroupApi = (data: UserGroupVO) => {
-  return defHttp.post({
-    url: '/bpm/user-group/create',
-    data: data
-  })
+  return defHttp.post({ url: '/bpm/user-group/create', data })
 }
 
 // 更新用户组
 export const updateUserGroupApi = (data: UserGroupVO) => {
-  return defHttp.put({
-    url: '/bpm/user-group/update',
-    data: data
-  })
+  return defHttp.put({ url: '/bpm/user-group/update', data })
 }
 
 // 删除用户组

@@ -10,7 +10,7 @@ export const getModelApi = (id: number) => {
 }
 
 export const updateModelApi = (data: ModelVO) => {
-  return defHttp.put({ url: '/bpm/model/update', data: data })
+  return defHttp.put({ url: '/bpm/model/update', data })
 }
 
 // 任务状态修改
@@ -19,11 +19,11 @@ export const updateModelStateApi = (id: number, state: number) => {
     id: id,
     state: state
   }
-  return defHttp.put({ url: '/bpm/model/update-state', data: data })
+  return defHttp.put({ url: '/bpm/model/update-state', data })
 }
 
 export const createModelApi = (data: ModelVO) => {
-  return defHttp.post({ url: '/bpm/model/create', data: data })
+  return defHttp.post({ url: '/bpm/model/create', data })
 }
 
 export const deleteModelApi = (id: number) => {

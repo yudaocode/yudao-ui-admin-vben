@@ -6,7 +6,7 @@ export const getMyProcessInstancePageApi = (params) => {
 }
 
 export const createProcessInstanceApi = (data: ProcessInstanceVO) => {
-  return defHttp.post({ url: '/bpm/process-instance/create', data: data })
+  return defHttp.post({ url: '/bpm/process-instance/create', data })
 }
 
 export const cancelProcessInstanceApi = (id: number, reason: string) => {
@@ -14,7 +14,7 @@ export const cancelProcessInstanceApi = (id: number, reason: string) => {
     id: id,
     reason: reason
   }
-  return defHttp.delete({ url: '/bpm/process-instance/cancel', data: data })
+  return defHttp.delete({ url: '/bpm/process-instance/cancel', data })
 }
 
 export const getProcessInstanceApi = (id: number) => {

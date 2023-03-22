@@ -73,7 +73,7 @@ export const resetUserPwdApi = (id: number, password: string) => {
     id,
     password
   }
-  return defHttp.put({ url: '/system/user/update-password', data: data })
+  return defHttp.put({ url: '/system/user/update-password', data })
 }
 
 // 用户状态修改
@@ -82,7 +82,7 @@ export const updateUserStatusApi = (id: number, status: number) => {
     id,
     status
   }
-  return defHttp.put({ url: '/system/user/update-status', data: data })
+  return defHttp.put({ url: '/system/user/update-status', data })
 }
 
 // 获取用户精简信息列表

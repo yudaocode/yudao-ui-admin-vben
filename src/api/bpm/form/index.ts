@@ -3,12 +3,12 @@ import { FormVO } from './types'
 
 // 创建工作流的表单定义
 export const createFormApi = (data: FormVO) => {
-  return defHttp.post({ url: '/bpm/form/create', data: data })
+  return defHttp.post({ url: '/bpm/form/create', data })
 }
 
 // 更新工作流的表单定义
 export const updateFormApi = (data: FormVO) => {
-  return defHttp.put({ url: '/bpm/form/update', data: data })
+  return defHttp.put({ url: '/bpm/form/update', data })
 }
 
 // 删除工作流的表单定义

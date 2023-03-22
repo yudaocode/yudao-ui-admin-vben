@@ -6,15 +6,9 @@ export const getTaskAssignRuleList = (params) => {
 }
 
 export const createTaskAssignRule = (data: TaskAssignVO) => {
-  return defHttp.post({
-    url: '/bpm/task-assign-rule/create',
-    data: data
-  })
+  return defHttp.post({ url: '/bpm/task-assign-rule/create', data })
 }
 
 export const updateTaskAssignRule = (data: TaskAssignVO) => {
-  return defHttp.put({
-    url: '/bpm/task-assign-rule/update',
-    data: data
-  })
+  return defHttp.put({ url: '/bpm/task-assign-rule/update', data })
 }

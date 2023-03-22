@@ -59,7 +59,7 @@ export const updateAppApi = (data: AppVO) => {
 
 // 支付应用信息状态修改
 export const changeAppStatusApi = (data: AppUpdateStatusReqVO) => {
-  return defHttp.put({ url: '/pay/app/update-status', data: data })
+  return defHttp.put({ url: '/pay/app/update-status', data })
 }
 
 // 删除支付应用

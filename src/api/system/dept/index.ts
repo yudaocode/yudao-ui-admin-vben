@@ -34,7 +34,7 @@ export const getDeptApi = async (id: number) => {
 
 // 新增部门
 export const createDeptApi = async (data: DeptVO) => {
-  return defHttp.post({ url: '/system/dept/create', data: data })
+  return defHttp.post({ url: '/system/dept/create', data })
 }
 
 // 修改部门

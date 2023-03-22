@@ -3,7 +3,7 @@ import { LeaveVO } from './types'
 
 // 创建请假申请
 export const createLeaveApi = (data: LeaveVO) => {
-  return defHttp.post({ url: '/bpm/oa/leave/create', data: data })
+  return defHttp.post({ url: '/bpm/oa/leave/create', data })
 }
 
 // 获得请假申请

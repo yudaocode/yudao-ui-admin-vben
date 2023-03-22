@@ -73,5 +73,5 @@ export const changeMerchantStatusApi = (id: number, status: number) => {
     id,
     status
   }
-  return defHttp.put({ url: '/pay/merchant/update-status', data: data })
+  return defHttp.put({ url: '/pay/merchant/update-status', data })
 }
