@@ -147,7 +147,7 @@ export const formSchema: FormSchema[] = [
     label: '用户名称',
     field: 'username',
     component: 'Input',
-    dynamicDisabled: ({ values }) => values.id !== undefined
+    ifShow: ({ values }) => values.id !== undefined
   },
   {
     label: '用户密码',
@@ -165,7 +165,7 @@ export const formSchema: FormSchema[] = [
     label: '过期时间',
     field: 'expireTime',
     required: true,
-    component: 'TimePicker'
+    component: 'DatePicker'
   },
   {
     label: '绑定域名',

@@ -21,8 +21,11 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '部门',
-    dataIndex: 'dept.name',
-    width: 120
+    dataIndex: 'deptId',
+    width: 120,
+    customRender: ({ record }) => {
+      return useRender.renderTag(record.dept && record.dept.name)
+    }
   },
   {
     title: '手机号码',
