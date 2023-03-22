@@ -37,9 +37,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
-  actionColOptions: {
-    span: 23
-  }
+  actionColOptions: { span: 23 }
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -54,9 +52,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     rowId.value = res.id
     const menus = await listSimpleMenusApi()
     menuTree.value = handleTree(menus, 'id')
-    setFieldsValue({
-      ...res
-    })
+    setFieldsValue({ ...res })
   }
 })
 

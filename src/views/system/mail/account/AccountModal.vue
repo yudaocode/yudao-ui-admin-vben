@@ -19,9 +19,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
-  actionColOptions: {
-    span: 23
-  }
+  actionColOptions: { span: 23 }
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -32,9 +30,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   if (unref(isUpdate)) {
     const res = await getMailAccountApi(data.record.id)
     rowId.value = res.id
-    setFieldsValue({
-      ...res
-    })
+    setFieldsValue({ ...res })
   }
 })
 

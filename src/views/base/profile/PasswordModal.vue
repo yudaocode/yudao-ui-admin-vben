@@ -19,9 +19,7 @@ const [registerForm, { resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: passwordSchema,
   showActionButtonGroup: false,
-  actionColOptions: {
-    span: 23
-  }
+  actionColOptions: { span: 23 }
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(() => {
