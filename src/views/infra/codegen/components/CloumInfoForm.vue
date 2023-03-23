@@ -1,9 +1,11 @@
 <template>
   <div class="step2">
     <div class="step2-form">
-      <BasicForm @register="register" />
+      <BasicTable :dataSource="columnsInfo" @register="registerTable" @row-click="handleEdit" />
     </div>
     <Divider />
+    <a-button @click="customResetFunc">上一步</a-button>
+    <a-button @click="customSubmitFunc">下一步</a-button>
     <h3>说明</h3>
     <h4>转账到支付宝账户</h4>
     <p>
@@ -17,26 +19,26 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BasicForm, useForm } from '@/components/Form'
-import { basicInfoSchemas } from './data'
+import { BasicTable, EditRecordRow, useTable } from '@/components/Table'
+import { columns } from './data'
 import { Divider } from 'ant-design-vue'
+import { CodegenColumnVO } from '@/api/infra/codegen/types'
 
 const emit = defineEmits(['next', 'prev'])
 
-const [register, { validate }] = useForm({
-  labelWidth: 120,
-  schemas: basicInfoSchemas,
-  actionColOptions: {
-    span: 14
-  },
-  resetButtonOptions: {
-    text: '上一步'
-  },
-  submitButtonOptions: {
-    text: '下一步'
-  },
-  resetFunc: customResetFunc,
-  submitFunc: customSubmitFunc
+defineProps({
+  columnsInfo: {
+    type: Array as PropType<CodegenColumnVO[]>,
+    default: () => null
+  }
+})
+
+const [registerTable] = useTable({
+  columns,
+  pagination: false,
+  useSearchForm: false,
+  showTableSetting: false,
+  showIndexColumn: false
 })
 
 async function customResetFunc() {
@@ -45,15 +47,18 @@ async function customResetFunc() {
 
 async function customSubmitFunc() {
   try {
-    const values = await validate()
-    emit('next', values)
+    emit('next', null)
   } catch (error) {}
+}
+
+function handleEdit(record: EditRecordRow) {
+  record.onEdit?.(true)
 }
 </script>
 <style lang="less" scoped>
 .step2 {
   &-form {
-    width: 450px;
+    width: 100%;
     margin: 0 auto;
   }
 

@@ -1,5 +1,7 @@
+import { listSimpleDictType } from '@/api/system/dict/type'
 import { listSimpleMenus } from '@/api/system/menu'
 import { FormSchema } from '@/components/Form'
+import { BasicColumn } from '@/components/Table'
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
 export const basicInfoSchemas: FormSchema[] = [
@@ -126,5 +128,190 @@ export const basicInfoSchemas: FormSchema[] = [
     field: 'remark',
     component: 'InputTextArea',
     colProps: { span: 24 }
+  }
+]
+
+export const columns: BasicColumn[] = [
+  {
+    title: '字段列名',
+    dataIndex: 'columnName',
+    width: 60
+  },
+  {
+    title: '基础属性',
+    children: [
+      {
+        title: '物理类型',
+        dataIndex: 'dataType',
+        editComponent: 'Select',
+        width: 50
+      },
+      {
+        title: '字段描述',
+        dataIndex: 'columnComment',
+        editRow: true,
+        editComponent: 'Input',
+        width: 50
+      },
+      {
+        title: 'Java类型',
+        dataIndex: 'javaType',
+        editRow: true,
+        editComponent: 'Select',
+        editComponentProps: {
+          options: [
+            {
+              label: 'Long',
+              value: 'Long'
+            },
+            {
+              label: 'String',
+              value: 'String'
+            },
+            {
+              label: 'Integer',
+              value: 'Integer'
+            },
+            {
+              label: 'Double',
+              value: 'Double'
+            },
+            {
+              label: 'BigDecimal',
+              value: 'BigDecimal'
+            },
+            {
+              label: 'LocalDateTime',
+              value: 'LocalDateTime'
+            },
+            {
+              label: 'Boolean',
+              value: 'Boolean'
+            }
+          ]
+        },
+        width: 50
+      },
+      {
+        title: 'java属性',
+        dataIndex: 'javaField',
+        editRow: true,
+        editComponent: 'Input',
+        width: 50
+      }
+    ]
+  },
+  {
+    title: '增删改查',
+    children: [
+      {
+        title: '插入',
+        dataIndex: 'createOperation',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editValueMap: (value) => {
+          return value ? '是' : '否'
+        },
+        width: 40
+      },
+      {
+        title: '编辑',
+        dataIndex: 'updateOperation',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editValueMap: (value) => {
+          return value ? '是' : '否'
+        },
+        width: 40
+      },
+      {
+        title: '列表',
+        dataIndex: 'listOperationResult',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editValueMap: (value) => {
+          return value ? '是' : '否'
+        },
+        width: 40
+      },
+      {
+        title: '查询',
+        dataIndex: 'listOperation',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editValueMap: (value) => {
+          return value ? '是' : '否'
+        },
+        width: 40
+      },
+      {
+        title: '查询方式',
+        dataIndex: 'listOperationCondition',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editComponentProps: {
+          options: [
+            { label: '=', value: '=' },
+            { label: '!=', value: '!=' },
+            { label: '>', value: '>' },
+            { label: '>=', value: '>=' },
+            { label: '<', value: '<' },
+            { label: '<=', value: '<=' },
+            { label: 'LIKE', value: 'LIKE' },
+            { label: 'BETWEEN', value: 'BETWEEN' }
+          ]
+        },
+        width: 60
+      },
+      {
+        title: '允许空',
+        dataIndex: 'nullable',
+        editRow: true,
+        editComponent: 'Checkbox',
+        editValueMap: (value) => {
+          return value ? '是' : '否'
+        },
+        width: 40
+      },
+      {
+        title: '显示类型',
+        dataIndex: 'htmlType',
+        editRow: true,
+        editComponent: 'Select',
+        editComponentProps: {
+          options: [
+            { label: '文本框', value: 'input' },
+            { label: '文本域', value: 'textarea' },
+            { label: '下拉框', value: 'select' },
+            { label: '单选框', value: 'radio' },
+            { label: '复选框', value: 'checkbox' },
+            { label: '日期控件', value: 'datetime' },
+            { label: '图片上传', value: 'imageUpload' },
+            { label: '文件上传', value: 'fileUpload' },
+            { label: '富文本控件', value: 'editor' }
+          ]
+        },
+        width: 60
+      },
+      {
+        title: '字典类型',
+        dataIndex: 'dictType',
+        editRow: true,
+        editComponent: 'ApiSelect',
+        editComponentProps: {
+          api: () => listSimpleDictType(),
+          labelField: 'name',
+          valueField: 'type'
+        },
+        width: 100
+      },
+      {
+        title: '示例',
+        dataIndex: 'example',
+        editRow: true,
+        editComponent: 'Input',
+        width: 60
+      }
+    ]
   }
 ]
