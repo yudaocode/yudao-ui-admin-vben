@@ -65,10 +65,10 @@ export function colorIsDark(color: string) {
  * @returns {string} The HEX representation of the processed color
  */
 export function darken(color: string, amount: number) {
-  color = color.indexOf('#') >= 0 ? color.substring(1, color.length) : color
+  color = color.indexOf('#') >= 0 ? color.slice(1, color.length) : color
   amount = Math.trunc((255 * amount) / 100)
-  return `#${subtractLight(color.substring(0, 2), amount)}${subtractLight(color.substring(2, 4), amount)}${subtractLight(
-    color.substring(4, 6),
+  return `#${subtractLight(color.slice(0, 2), amount)}${subtractLight(color.slice(2, 4), amount)}${subtractLight(
+    color.slice(4, 6),
     amount
   )}`
 }
@@ -80,9 +80,9 @@ export function darken(color: string, amount: number) {
  * @returns {string} The processed color represented as HEX
  */
 export function lighten(color: string, amount: number) {
-  color = color.indexOf('#') >= 0 ? color.substring(1, color.length) : color
+  color = color.indexOf('#') >= 0 ? color.slice(1, color.length) : color
   amount = Math.trunc((255 * amount) / 100)
-  return `#${addLight(color.substring(0, 2), amount)}${addLight(color.substring(2, 4), amount)}${addLight(color.substring(4, 6), amount)}`
+  return `#${addLight(color.slice(0, 2), amount)}${addLight(color.slice(2, 4), amount)}${addLight(color.slice(4, 6), amount)}`
 }
 
 /* Suma el porcentaje indicado a un color (RR, GG o BB) hexadecimal para aclararlo */
@@ -126,7 +126,7 @@ function contrast(rgb1: string[], rgb2: number[]) {
  * @param hexColor - Last selected color by the user
  */
 export function calculateBestTextColor(hexColor: string) {
-  const rgbColor = hexToRGB(hexColor.substring(1))
+  const rgbColor = hexToRGB(hexColor.slice(1))
   const contrastWithBlack = contrast(rgbColor.split(','), [0, 0, 0])
 
   return contrastWithBlack >= 12 ? '#000000' : '#FFFFFF'

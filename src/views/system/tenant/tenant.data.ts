@@ -47,7 +47,7 @@ export const columns: BasicColumn[] = [
   {
     title: '绑定域名',
     dataIndex: 'domain',
-    width: 120
+    width: 200
   },
   {
     title: '租户状态',

@@ -358,9 +358,9 @@ export default defineComponent({
 
         const titleDom = isHighlight ? (
           <span class={unref(getBindValues)?.blockNode ? `${bem('content')}` : ''}>
-            <span>{title.substr(0, searchIdx)}</span>
+            <span>{title.slice(0, searchIdx)}</span>
             <span style={highlightStyle}>{searchText}</span>
-            <span>{title.substr(searchIdx + (searchText as string).length)}</span>
+            <span>{title.slice(searchIdx + (searchText as string).length)}</span>
           </span>
         ) : (
           title

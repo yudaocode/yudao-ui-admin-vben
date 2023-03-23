@@ -91,7 +91,7 @@ export function configureDynamicParamsMenu(menu: Menu, params: RouteParams) {
   const matchArr = realPath.match(menuParamRegex)
 
   matchArr?.forEach((it) => {
-    const realIt = it.substr(1)
+    const realIt = it.slice(1)
     if (params[realIt]) {
       realPath = realPath.replace(`:${realIt}`, params[realIt] as string)
     }

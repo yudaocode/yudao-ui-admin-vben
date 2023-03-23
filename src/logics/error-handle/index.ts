@@ -92,7 +92,7 @@ export function scriptErrorHandler(event: Event | string, source?: string, linen
   } else {
     errorInfo.stack = ''
   }
-  const name = source ? source.substr(source.lastIndexOf('/') + 1) : 'script'
+  const name = source ? source.slice(source.lastIndexOf('/') + 1) : 'script'
   const errorLogStore = useErrorLogStoreWithOut()
   errorLogStore.addErrorLogInfo({
     type: ErrorTypeEnum.SCRIPT,
