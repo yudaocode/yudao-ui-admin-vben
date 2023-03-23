@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@ant-design/colors': ^7.0.0
   '@ant-design/icons-vue': ^6.1.0
-  '@commitlint/cli': ^17.4.4
+  '@commitlint/cli': ^17.5.0
   '@commitlint/config-conventional': ^17.4.4
   '@iconify/iconify': ^3.1.0
   '@iconify/json': ^2.2.38
@@ -29,7 +29,7 @@ specifiers:
   '@vue/runtime-core': ^3.2.47
   '@vueuse/core': ^9.13.0
   '@zxcvbn-ts/core': ^2.2.1
-  ant-design-vue: ^3.2.15
+  ant-design-vue: ^3.2.16
   autoprefixer: ^10.4.14
   axios: ^1.3.4
   codemirror: ^5.65.3
@@ -42,7 +42,7 @@ specifiers:
   czg: ^1.6.1
   dayjs: ^1.11.7
   dotenv: ^16.0.3
-  echarts: ^5.4.1
+  echarts: ^5.4.2
   eslint: ^8.36.0
   eslint-config-prettier: ^8.8.0
   eslint-plugin-prettier: ^4.2.1
@@ -107,14 +107,14 @@ dependencies:
   '@vue/runtime-core': 3.2.47
   '@vueuse/core': 9.13.0_vue@3.2.47
   '@zxcvbn-ts/core': 2.2.1
-  ant-design-vue: 3.2.15_vue@3.2.47
+  ant-design-vue: 3.2.16_vue@3.2.47
   axios: 1.3.4
   codemirror: 5.65.12
   consola: 2.15.3
   cropperjs: 1.5.13
   crypto-js: 4.1.1
   dayjs: 1.11.7
-  echarts: 5.4.1
+  echarts: 5.4.2
   intro.js: 6.0.0
   lodash-es: 4.17.21
   nprogress: 0.2.0
@@ -135,7 +135,7 @@ dependencies:
   xlsx: 0.18.5
 
 devDependencies:
-  '@commitlint/cli': 17.4.4
+  '@commitlint/cli': 17.5.0
   '@commitlint/config-conventional': 17.4.4
   '@iconify/json': 2.2.38
   '@kirklin/vite-plugin-vben-theme': 0.1.1_vite@4.2.1
@@ -1429,14 +1429,14 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
-  /@commitlint/cli/17.4.4:
-    resolution: {integrity: sha512-HwKlD7CPVMVGTAeFZylVNy14Vm5POVY0WxPkZr7EXLC/os0LH/obs6z4HRvJtH/nHCMYBvUBQhGwnufKfTjd5g==}
+  /@commitlint/cli/17.5.0:
+    resolution: {integrity: sha512-yNW3+M7UM1ioK28LKTrryIVB5qGpXlEv8+rJQiWPMZNayy9/1XR5+lL8qBTNlgopYtZWWnIm5RETcAN29ZTL/A==}
     engines: {node: '>=v14'}
     hasBin: true
     dependencies:
       '@commitlint/format': 17.4.4
       '@commitlint/lint': 17.4.4
-      '@commitlint/load': 17.4.4
+      '@commitlint/load': 17.5.0
       '@commitlint/read': 17.4.4
       '@commitlint/types': 17.4.4
       execa: 5.1.1
@@ -1507,8 +1507,8 @@ packages:
       '@commitlint/types': 17.4.4
     dev: true
 
-  /@commitlint/load/17.4.4:
-    resolution: {integrity: sha512-z6uFIQ7wfKX5FGBe1AkOF4l/ShOQsaa1ml/nLMkbW7R/xF8galGS7Zh0yHvzVp/srtfS0brC+0bUfQfmpMPFVQ==}
+  /@commitlint/load/17.5.0:
+    resolution: {integrity: sha512-l+4W8Sx4CD5rYFsrhHH8HP01/8jEP7kKf33Xlx2Uk2out/UKoKPYMOIRcDH5ppT8UXLMV+x6Wm5osdRKKgaD1Q==}
     engines: {node: '>=v14'}
     dependencies:
       '@commitlint/config-validator': 17.4.4
@@ -1517,14 +1517,14 @@ packages:
       '@commitlint/types': 17.4.4
       '@types/node': 18.15.5
       chalk: 4.1.2
-      cosmiconfig: 8.0.0
-      cosmiconfig-typescript-loader: 4.3.0_ycmcvgie5c4ufymdvfl6ce7js4
+      cosmiconfig: 8.1.3
+      cosmiconfig-typescript-loader: 4.3.0_5mk3bjopm3vql75kemvp43vb6q
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
       resolve-from: 5.0.0
-      ts-node: 10.9.1_345kigqis4fipgyy5xb3ndshmq
-      typescript: 4.9.5
+      ts-node: 10.9.1_zlbzrxdj56n2qhafx752nt3nlm
+      typescript: 5.0.2
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -2971,8 +2971,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /ant-design-vue/3.2.15_vue@3.2.47:
-    resolution: {integrity: sha512-sJfE7LWimSdAPe4dzNyQBrmVMnOTNQTkG9oOyr+7W8qIYrX8sYWyC68Nn1uum4KBJUSZUa/BU6dohvTG0urBhA==}
+  /ant-design-vue/3.2.16_vue@3.2.47:
+    resolution: {integrity: sha512-kBGxk4csoEi2iaWO62DpNECTnBLIf/CNYW8RdNjLPWo6TBWLQNqLchxRcg8KatOkDRpdWRaqdqeD5P+F6MDC3Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       vue: '>=3.2.0'
@@ -3841,7 +3841,7 @@ packages:
       vary: 1.1.2
     dev: true
 
-  /cosmiconfig-typescript-loader/4.3.0_ycmcvgie5c4ufymdvfl6ce7js4:
+  /cosmiconfig-typescript-loader/4.3.0_5mk3bjopm3vql75kemvp43vb6q:
     resolution: {integrity: sha512-NTxV1MFfZDLPiBMjxbHRwSh5LaLcPMwNdCutmnHJCKoVnlvldPWlllonKwrsRJ5pYZBIBGRWWU2tfvzxgeSW5Q==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
@@ -3851,19 +3851,9 @@ packages:
       typescript: '>=3'
     dependencies:
       '@types/node': 18.15.5
-      cosmiconfig: 8.0.0
-      ts-node: 10.9.1_345kigqis4fipgyy5xb3ndshmq
-      typescript: 4.9.5
-    dev: true
-
-  /cosmiconfig/8.0.0:
-    resolution: {integrity: sha512-da1EafcpH6b/TD8vDRaWV7xFINlHlF6zKsGwS1TsuVJTZRkquaS5HTMq7uq6h31619QjbsYl21gVDOm32KM1vQ==}
-    engines: {node: '>=14'}
-    dependencies:
-      import-fresh: 3.3.0
-      js-yaml: 4.1.0
-      parse-json: 5.2.0
-      path-type: 4.0.0
+      cosmiconfig: 8.1.3
+      ts-node: 10.9.1_zlbzrxdj56n2qhafx752nt3nlm
+      typescript: 5.0.2
     dev: true
 
   /cosmiconfig/8.1.3:
@@ -4249,11 +4239,11 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /echarts/5.4.1:
-    resolution: {integrity: sha512-9ltS3M2JB0w2EhcYjCdmtrJ+6haZcW6acBolMGIuf01Hql1yrIV01L1aRj7jsaaIULJslEP9Z3vKlEmnJaWJVQ==}
+  /echarts/5.4.2:
+    resolution: {integrity: sha512-2W3vw3oI2tWJdyAz+b8DuWS0nfXtSDqlDmqgin/lfzbkB01cuMEN66KWBlmur3YMp5nEDEEt5s23pllnAzB4EA==}
     dependencies:
       tslib: 2.3.0
-      zrender: 5.4.1
+      zrender: 5.4.3
     dev: false
 
   /ejs/3.1.8:
@@ -8365,7 +8355,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-node/10.9.1_345kigqis4fipgyy5xb3ndshmq:
+  /ts-node/10.9.1_zlbzrxdj56n2qhafx752nt3nlm:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -8391,7 +8381,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.5
+      typescript: 5.0.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
@@ -8477,12 +8467,6 @@ packages:
       call-bind: 1.0.2
       for-each: 0.3.3
       is-typed-array: 1.1.10
-    dev: true
-
-  /typescript/4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
     dev: true
 
   /typescript/5.0.2:
@@ -9363,8 +9347,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zrender/5.4.1:
-    resolution: {integrity: sha512-M4Z05BHWtajY2241EmMPHglDQAJ1UyHQcYsxDNzD9XLSkPDqMq4bB28v9Pb4mvHnVQ0GxyTklZ/69xCFP6RXBA==}
+  /zrender/5.4.3:
+    resolution: {integrity: sha512-DRUM4ZLnoaT0PBVvGBDO9oWIDBKFdAVieNWxWwK0niYzJCMwGchRk21/hsE+RKkIveH3XHCyvXcJDkgLVvfizQ==}
     dependencies:
       tslib: 2.3.0
     dev: false
