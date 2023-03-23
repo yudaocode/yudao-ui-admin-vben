@@ -26,14 +26,14 @@
         </template>
       </template>
     </BasicTable>
-    <PostModal @register="registerModal" @success="reload()" />
+    <FileConfigModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="FileConfig">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import PostModal from './FileConfigModal.vue'
+import FileConfigModal from './FileConfigModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteFileConfig, getFileConfigPage, testFileConfig, updateFileConfigMaster } from '@/api/infra/fileConfig'
