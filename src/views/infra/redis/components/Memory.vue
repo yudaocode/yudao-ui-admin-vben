@@ -11,7 +11,7 @@ import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({
   loading: Boolean,
-  cacheInfo: propTypes.object,
+  cacheInfo: Object,
   width: propTypes.string.def('100%'),
   height: propTypes.string.def('300px')
 })
@@ -36,7 +36,7 @@ watch(
           name: '峰值',
           type: 'gauge',
           min: 0,
-          max: 1000,
+          max: 100,
           detail: {
             formatter: optionsData.value.used_memory_human
           },
