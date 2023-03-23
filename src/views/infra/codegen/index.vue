@@ -2,13 +2,16 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.IMPORT" @click="handleCreate"> {{ t('action.import') }} </a-button>
+        <a-button type="primary" :preIcon="IconEnum.IMPORT" @click="openImportTable"> {{ t('action.import') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
+              { icon: IconEnum.EDIT, label: t('action.view'), onClick: handleEdit.bind(null, record) },
               { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '同步', onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '生成代码', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
@@ -24,14 +27,14 @@
         </template>
       </template>
     </BasicTable>
-    <CodegenModal @register="registerModal" @success="reload()" />
+    <ImportTableModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Codegen">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import CodegenModal from './CodegenModal.vue'
+import ImportTableModal from './ImportTableModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteCodegenTable, getCodegenTablePage } from '@/api/infra/codegen'
@@ -53,17 +56,15 @@ const [registerTable, { reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 140,
+    width: 360,
     title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
 })
 
-function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+function openImportTable() {
+  openModal(true)
 }
 
 function handleEdit(record: Recordable) {

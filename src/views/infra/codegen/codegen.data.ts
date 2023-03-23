@@ -112,3 +112,43 @@ export const formSchema: FormSchema[] = [
     component: 'InputTextArea'
   }
 ]
+
+export const importTableColumns: BasicColumn[] = [
+  {
+    title: '表名称',
+    dataIndex: 'name',
+    width: 200
+  },
+  {
+    title: '表描述',
+    dataIndex: 'comment',
+    width: 120
+  }
+]
+
+export const importTableSearchFormSchema: FormSchema[] = [
+  {
+    label: '数据源',
+    field: 'dataSourceConfigId',
+    component: 'ApiSelect',
+    defaultValue: 0,
+    componentProps: {
+      api: () => getDataSourceConfigList(),
+      labelField: 'name',
+      valueField: 'id'
+    },
+    colProps: { span: 8 }
+  },
+  {
+    label: '表名称',
+    field: 'name',
+    component: 'Input',
+    colProps: { span: 8 }
+  },
+  {
+    label: '表描述',
+    field: 'comment',
+    component: 'Input',
+    colProps: { span: 8 }
+  }
+]

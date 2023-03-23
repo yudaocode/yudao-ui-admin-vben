@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="CodegenModal">
+<script lang="ts" setup name="ImportTable">
 import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
