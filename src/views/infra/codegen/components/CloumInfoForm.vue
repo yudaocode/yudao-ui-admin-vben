@@ -1,6 +1,6 @@
 <template>
-  <div class="step3">
-    <div class="step3-form">
+  <div class="step2">
+    <div class="step2-form">
       <BasicForm @register="register" />
     </div>
     <Divider />
@@ -19,21 +19,29 @@
 <script lang="ts" setup>
 import { BasicForm, useForm } from '@/components/Form'
 import { basicInfoSchemas } from './data'
-
 import { Divider } from 'ant-design-vue'
-const emit = defineEmits(['next'])
+
+const emit = defineEmits(['next', 'prev'])
+
 const [register, { validate }] = useForm({
   labelWidth: 120,
   schemas: basicInfoSchemas,
   actionColOptions: {
     span: 14
   },
-  showResetButton: false,
+  resetButtonOptions: {
+    text: '上一步'
+  },
   submitButtonOptions: {
     text: '下一步'
   },
+  resetFunc: customResetFunc,
   submitFunc: customSubmitFunc
 })
+
+async function customResetFunc() {
+  emit('prev')
+}
 
 async function customSubmitFunc() {
   try {
@@ -43,7 +51,7 @@ async function customSubmitFunc() {
 }
 </script>
 <style lang="less" scoped>
-.step3 {
+.step2 {
   &-form {
     width: 450px;
     margin: 0 auto;

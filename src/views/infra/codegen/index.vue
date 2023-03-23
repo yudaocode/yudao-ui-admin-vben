@@ -9,7 +9,7 @@
           <TableAction
             :actions="[
               { icon: IconEnum.EDIT, label: '预览', onClick: handlePreview.bind(null, record) },
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEditTable.bind(null, record) },
               { icon: IconEnum.DOWNLOAD, label: '生成', onClick: handleGenTable.bind(null, record) },
               {
                 icon: IconEnum.RESET,
@@ -82,8 +82,8 @@ function handlePreview(record: Recordable) {
   })
 }
 
-function handleEdit() {
-  go('/codegen/editTable')
+function handleEditTable(record: Recordable) {
+  go('/codegen/editTable?id=' + record.id)
 }
 
 async function handleGenTable(record: Recordable) {

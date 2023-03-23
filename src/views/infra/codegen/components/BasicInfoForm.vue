@@ -19,10 +19,20 @@
 <script lang="ts" setup>
 import { BasicForm, useForm } from '@/components/Form'
 import { basicInfoSchemas } from './data'
-
 import { Divider } from 'ant-design-vue'
+import { watch } from 'vue'
+import { CodegenTableVO } from '@/api/infra/codegen/types'
+
 const emit = defineEmits(['next'])
-const [register, { validate }] = useForm({
+
+const props = defineProps({
+  basicInfo: {
+    type: Object as PropType<Nullable<CodegenTableVO>>,
+    default: () => null
+  }
+})
+
+const [register, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
   schemas: basicInfoSchemas,
   actionColOptions: {
@@ -41,11 +51,24 @@ async function customSubmitFunc() {
     emit('next', values)
   } catch (error) {}
 }
+
+watch(
+  () => props.basicInfo,
+  (basicInfo) => {
+    if (!basicInfo) return
+    resetFields()
+    setFieldsValue({ ...basicInfo })
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+)
 </script>
 <style lang="less" scoped>
 .step1 {
   &-form {
-    width: 450px;
+    width: 80%;
     margin: 0 auto;
   }
 
