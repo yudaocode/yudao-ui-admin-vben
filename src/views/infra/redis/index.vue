@@ -9,16 +9,22 @@
     />
     <div class="md:flex enter-y mt-4">
       <CommandStats class="md:w-1/2 w-full" :loading="loading" :commandStats="commandStats" />
-      <Memory class="md:w-1/2 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" :memoryHuman="memoryHuman" />
+      <Memory class="md:w-1/2 w-full" :loading="loading" :memoryHuman="memoryHuman" />
     </div>
+    <div class="md:flex enter-y mt-4">
+      <BasicTable @register="registerTable" @row-click="openKeyTemplate" />
+    </div>
+    <RedisModal @register="registerModal" />
   </div>
 </template>
 <script lang="ts" setup name="Redis">
 import { ref, onMounted } from 'vue'
+import { useModal } from '@/components/Modal'
 import { Description } from '@/components/Description'
-import { baseInfoSchema } from './redis.data'
-// import { getCache, getKeyDefineList, getKeyList, getKeyValue, deleteKey, deleteKeys } from '@/api/infra/redis'
-import { getCache } from '@/api/infra/redis'
+import { BasicTable, useTable } from '@/components/Table'
+import { baseInfoSchema, tableSchema } from './redis.data'
+import RedisModal from './components/RedisModal.vue'
+import { getCache, getKeyDefineList } from '@/api/infra/redis'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 const CommandStats = createAsyncComponent(() => import('./components/CommandStats.vue'))
@@ -37,6 +43,25 @@ async function getList() {
     commandStats.value.push({ name: val.command, value: val.calls })
   })
   loading.value = false
+}
+
+const [registerTable] = useTable({
+  loading,
+  maxHeight: 400,
+  title: '缓存列表',
+  api: getKeyDefineList,
+  rowKey: 'id',
+  columns: tableSchema,
+  pagination: false,
+  useSearchForm: false,
+  showTableSetting: false,
+  showIndexColumn: false
+})
+
+const [registerModal, { openModal }] = useModal()
+
+function openKeyTemplate(keyDefine) {
+  openModal(true, { record: keyDefine.keyTemplate })
 }
 
 onMounted(async () => {
