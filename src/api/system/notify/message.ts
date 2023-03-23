@@ -2,12 +2,12 @@ import { defHttp } from '@/utils/http/axios'
 import qs from 'qs'
 
 // 获得站内信分页
-export function getPostPage(params) {
+export function getNotifyMessagePage(params) {
   return defHttp.get({ url: '/system/notify-message/page', params })
 }
 
 // 获得我的站内信分页
-export function listSimplePosts(params) {
+export function getMyNotifyMessagePage(params) {
   return defHttp.get({ url: '/system/notify-message/my-page', params })
 }
 

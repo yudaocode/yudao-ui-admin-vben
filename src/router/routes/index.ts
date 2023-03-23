@@ -58,6 +58,18 @@ export const ProfileRoute: AppRouteRecordRaw = {
         icon: 'ep:user',
         title: t('routes.basic.profile')
       }
+    },
+    {
+      path: 'notify-message',
+      component: () => import('@/views/system/notify/my/index.vue'),
+      name: 'MyNotifyMessage',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ep:message',
+        title: t('routes.basic.notifyMessage')
+      }
     }
   ]
 }
