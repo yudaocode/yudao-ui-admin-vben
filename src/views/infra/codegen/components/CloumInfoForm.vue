@@ -1,6 +1,6 @@
 <template>
   <div class="step2">
-    <div class="step2-form">
+    <div class="step2-table">
       <BasicTable :dataSource="columnsInfo" @register="registerTable" @row-click="handleEdit" />
     </div>
     <Divider />
@@ -33,8 +33,9 @@ defineProps({
   }
 })
 
-const [registerTable] = useTable({
+const [registerTable, { getDataSource }] = useTable({
   columns,
+  maxHeight: 700,
   pagination: false,
   useSearchForm: false,
   showTableSetting: false,
@@ -46,9 +47,8 @@ async function customResetFunc() {
 }
 
 async function customSubmitFunc() {
-  try {
-    emit('next', null)
-  } catch (error) {}
+  const tableValue = getDataSource()
+  emit('next', tableValue)
 }
 
 function handleEdit(record: EditRecordRow) {
@@ -57,7 +57,7 @@ function handleEdit(record: EditRecordRow) {
 </script>
 <style lang="less" scoped>
 .step2 {
-  &-form {
+  &-table {
     width: 100%;
     margin: 0 auto;
   }

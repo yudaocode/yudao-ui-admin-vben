@@ -29,7 +29,7 @@ import BasicInfoForm from './components/BasicInfoForm.vue'
 import CloumInfoForm from './components/CloumInfoForm.vue'
 import FinishForm from './components/FinishForm.vue'
 import { useRoute } from 'vue-router'
-import { getCodegenTable } from '@/api/infra/codegen'
+import { getCodegenTable, updateCodegenTable } from '@/api/infra/codegen'
 
 const Step = Steps.Step
 
@@ -42,6 +42,8 @@ const columnsInfo = ref<any[]>([])
 
 const basicInfoValue = ref()
 
+const columnsInfoValue = ref()
+
 const current = ref(0)
 const state = reactive({
   initSetp2: false,
@@ -50,8 +52,8 @@ const state = reactive({
 
 function handleStep1Next(step1Values: any) {
   current.value++
-  state.initSetp2 = true
   basicInfoValue.value = step1Values
+  state.initSetp2 = true
   console.info(step1Values)
 }
 
@@ -59,10 +61,21 @@ function handleStepPrev() {
   current.value--
 }
 
-function handleStep2Next(step2Values: any) {
+async function handleStep2Next(step2Values: any) {
   current.value++
+  columnsInfoValue.value = step2Values
+  await handleSubmit()
   state.initSetp3 = true
   console.log(step2Values)
+}
+
+async function handleSubmit() {
+  basicInfoValue.value.id = query.id as unknown as number
+  const genTable = {
+    table: basicInfoValue.value,
+    columns: columnsInfoValue.value
+  }
+  await updateCodegenTable(genTable)
 }
 
 function handleRedo() {
