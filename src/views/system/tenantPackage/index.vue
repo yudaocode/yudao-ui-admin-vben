@@ -34,7 +34,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import TenantPackageModal from './TenantPackageModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteTenantPackageApi, getTenantPackagePageApi } from '@/api/system/tenantPackage'
+import { deleteTenantPackage, getTenantPackagePage } from '@/api/system/tenantPackage'
 import { columns, searchFormSchema } from './tenantPackage.data'
 
 const { t } = useI18n()
@@ -42,7 +42,7 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '租户套餐列表',
-  api: getTenantPackagePageApi,
+  api: getTenantPackagePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -73,7 +73,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteTenantPackageApi(record.id)
+  await deleteTenantPackage(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

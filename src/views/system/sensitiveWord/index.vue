@@ -30,12 +30,7 @@
 </template>
 <script lang="ts" setup name="SensitiveWord">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import {
-  SensitiveWordExportReqVO,
-  deleteSensitiveWordApi,
-  exportSensitiveWordApi,
-  getSensitiveWordPageApi
-} from '@/api/system/sensitiveWord'
+import { SensitiveWordExportReqVO, deleteSensitiveWord, exportSensitiveWord, getSensitiveWordPage } from '@/api/system/sensitiveWord'
 import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import SensitiveWordModal from './SensitiveWordModal.vue'
@@ -48,7 +43,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '敏感词列表',
-  api: getSensitiveWordPageApi,
+  api: getSensitiveWordPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -84,14 +79,14 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportSensitiveWordApi(getForm().getFieldsValue() as SensitiveWordExportReqVO)
+      await exportSensitiveWord(getForm().getFieldsValue() as SensitiveWordExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteSensitiveWordApi(record.id)
+  await deleteSensitiveWord(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

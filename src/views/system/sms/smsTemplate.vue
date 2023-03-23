@@ -31,7 +31,7 @@
 </template>
 <script lang="ts" setup name="SmsTemplate">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { SmsTemplateExportReqVO, deleteSmsTemplateApi, exportSmsTemplateApi, getSmsTemplatePageApi } from '@/api/system/sms/smsTemplate'
+import { SmsTemplateExportReqVO, deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '@/api/system/sms/smsTemplate'
 import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import SmsTemplateModal from './SmsTemplateModal.vue'
@@ -44,7 +44,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '短信模版列表',
-  api: getSmsTemplatePageApi,
+  api: getSmsTemplatePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -84,14 +84,14 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportSmsTemplateApi(getForm().getFieldsValue() as SmsTemplateExportReqVO)
+      await exportSmsTemplate(getForm().getFieldsValue() as SmsTemplateExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteSmsTemplateApi(record.id)
+  await deleteSmsTemplate(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

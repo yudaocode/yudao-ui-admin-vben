@@ -36,7 +36,7 @@ import DictDataModal from './DictDataModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { dataColumns, dataSearchFormSchema } from './dict.data'
-import { deleteDictDataApi, getDictDataPageApi } from '@/api/system/dict/data'
+import { deleteDictData, getDictDataPage } from '@/api/system/dict/data'
 
 const props = defineProps({
   searchInfo: {
@@ -51,7 +51,7 @@ const [registerModal, { openModal }] = useModal()
 
 const [registerTable, { reload }] = useTable({
   title: '字典数据列表',
-  api: getDictDataPageApi,
+  api: getDictDataPage,
   columns: dataColumns,
   formConfig: {
     labelWidth: 120,
@@ -84,7 +84,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteDictDataApi(record.id)
+  await deleteDictData(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './errorCode.data'
-import { createErrorCodeApi, getErrorCodeApi, updateErrorCodeApi } from '@/api/system/errorCode'
+import { createErrorCode, getErrorCode, updateErrorCode } from '@/api/system/errorCode'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getErrorCodeApi(data.record.id)
+    const res = await getErrorCode(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateErrorCodeApi(values)
+      await updateErrorCode(values)
     } else {
-      await createErrorCodeApi(values)
+      await createErrorCode(values)
     }
     closeModal()
     emit('success')

@@ -1,7 +1,7 @@
 import { getIntDictOptions } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
-import { getSimpleMailAccountListApi } from '@/api/system/mail/account'
+import { getSimpleMailAccountList } from '@/api/system/mail/account'
 
 export const columns: BasicColumn[] = [
   {
@@ -59,7 +59,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'accountId',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getSimpleMailAccountListApi(),
+      api: () => getSimpleMailAccountList(),
       labelField: 'mail',
       valueField: 'id'
     },

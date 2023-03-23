@@ -32,31 +32,31 @@ export interface TenantExportReqVO {
 }
 
 // 查询租户列表
-export const getTenantPageApi = (params: TenantPageReqVO) => {
+export function getTenantPage(params: TenantPageReqVO) {
   return defHttp.get({ url: '/system/tenant/page', params })
 }
 
 // 查询租户详情
-export const getTenantApi = (id: number) => {
+export function getTenant(id: number) {
   return defHttp.get({ url: '/system/tenant/get?id=' + id })
 }
 
 // 新增租户
-export const createTenantApi = (data: TenantVO) => {
+export function createTenant(data: TenantVO) {
   return defHttp.post({ url: '/system/tenant/create', data })
 }
 
 // 修改租户
-export const updateTenantApi = (data: TenantVO) => {
+export function updateTenant(data: TenantVO) {
   return defHttp.put({ url: '/system/tenant/update', data })
 }
 
 // 删除租户
-export const deleteTenantApi = (id: number) => {
+export function deleteTenant(id: number) {
   return defHttp.delete({ url: '/system/tenant/delete?id=' + id })
 }
 
 // 导出租户
-export const exportTenantApi = (params: TenantExportReqVO) => {
+export function exportTenant(params: TenantExportReqVO) {
   return defHttp.download({ url: '/system/tenant/export-excel', params }, '租户.xls')
 }

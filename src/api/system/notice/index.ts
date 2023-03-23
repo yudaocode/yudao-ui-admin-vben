@@ -17,26 +17,26 @@ export interface NoticePageReqVO extends PageParam {
 }
 
 // 查询公告列表
-export const getNoticePageApi = (params: NoticePageReqVO) => {
+export function getNoticePage(params: NoticePageReqVO) {
   return defHttp.get({ url: '/system/notice/page', params })
 }
 
 // 查询公告详情
-export const getNoticeApi = (id: number) => {
+export function getNotice(id: number) {
   return defHttp.get({ url: '/system/notice/get?id=' + id })
 }
 
 // 新增公告
-export const createNoticeApi = (data: NoticeVO) => {
+export function createNotice(data: NoticeVO) {
   return defHttp.post({ url: '/system/notice/create', data })
 }
 
 // 修改公告
-export const updateNoticeApi = (data: NoticeVO) => {
+export function updateNotice(data: NoticeVO) {
   return defHttp.put({ url: '/system/notice/update', data })
 }
 
 // 删除公告
-export const deleteNoticeApi = (id: number) => {
+export function deleteNotice(id: number) {
   return defHttp.delete({ url: '/system/notice/delete?id=' + id })
 }

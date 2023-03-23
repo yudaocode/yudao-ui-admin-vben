@@ -38,7 +38,7 @@ import DictTypeModal from './DictTypeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { typeColumns, typeSearchFormSchema } from './dict.type'
-import { deleteDictTypeApi, getDictTypePageApi } from '@/api/system/dict/type'
+import { deleteDictType, getDictTypePage } from '@/api/system/dict/type'
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
@@ -47,7 +47,7 @@ const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { reload }] = useTable({
   title: '字典分类列表',
-  api: getDictTypePageApi,
+  api: getDictTypePage,
   columns: typeColumns,
   formConfig: {
     labelWidth: 120,
@@ -83,7 +83,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteDictTypeApi(record.id)
+  await deleteDictType(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

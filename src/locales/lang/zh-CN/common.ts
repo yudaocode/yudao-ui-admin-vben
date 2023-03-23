@@ -12,6 +12,8 @@ export default {
   exportTitle: '导出',
   exportMessage: '是否要导出数据？',
   exportSuccessText: '导出成功',
+  successText: '成功',
+  errorText: '失败',
   resetText: '重置',
   searchText: '搜索',
   queryText: '查询',

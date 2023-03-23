@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './account.data'
-import { createMailAccountApi, getMailAccountApi, updateMailAccountApi } from '@/api/system/mail/account'
+import { createMailAccount, getMailAccount, updateMailAccount } from '@/api/system/mail/account'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getMailAccountApi(data.record.id)
+    const res = await getMailAccount(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateMailAccountApi(values)
+      await updateMailAccount(values)
     } else {
-      await createMailAccountApi(values)
+      await createMailAccount(values)
     }
     closeModal()
     emit('success')

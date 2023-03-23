@@ -26,7 +26,7 @@
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteAccessTokenApi, getAccessTokenPageApi } from '@/api/system/oauth2/token'
+import { deleteAccessToken, getAccessTokenPage } from '@/api/system/oauth2/token'
 import { columns, searchFormSchema } from './token.data'
 import { useMessage } from '@/hooks/web/useMessage'
 
@@ -34,7 +34,7 @@ const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerTable, { reload }] = useTable({
   title: 'Token列表',
-  api: getAccessTokenPageApi,
+  api: getAccessTokenPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -52,7 +52,7 @@ const [registerTable, { reload }] = useTable({
 })
 
 async function handleDelete(record: Recordable) {
-  await deleteAccessTokenApi(record.id)
+  await deleteAccessToken(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

@@ -34,7 +34,7 @@ import { useModal } from '@/components/Modal'
 import NoticeModal from './NoticeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteNoticeApi, getNoticePageApi } from '@/api/system/notice'
+import { deleteNotice, getNoticePage } from '@/api/system/notice'
 import { columns, searchFormSchema } from './notice.data'
 
 const { t } = useI18n()
@@ -42,7 +42,7 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '公告列表',
-  api: getNoticePageApi,
+  api: getNoticePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -73,7 +73,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteNoticeApi(record.id)
+  await deleteNotice(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

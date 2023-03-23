@@ -9,7 +9,7 @@
 </template>
 <script lang="ts" setup name="SmsLog">
 import { BasicTable, useTable } from '@/components/Table'
-import { SmsLogExportReqVO, exportSmsLogApi, getSmsLogPageApi } from '@/api/system/sms/smsLog'
+import { SmsLogExportReqVO, exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'
 import { columns, searchFormSchema } from './smsLog.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -18,7 +18,7 @@ const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerTable, { getForm }] = useTable({
   title: '短信日志列表',
-  api: getSmsLogPageApi,
+  api: getSmsLogPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -35,7 +35,7 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportSmsLogApi(getForm().getFieldsValue() as SmsLogExportReqVO)
+      await exportSmsLog(getForm().getFieldsValue() as SmsLogExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })

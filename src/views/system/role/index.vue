@@ -37,7 +37,7 @@ import { useModal } from '@/components/Modal'
 import RoleModal from './RoleModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { RoleExportReqVO, deleteRoleApi, exportRoleApi, getRolePageApi } from '@/api/system/role'
+import { RoleExportReqVO, deleteRole, exportRole, getRolePage } from '@/api/system/role'
 import { columns, searchFormSchema } from './role.data'
 
 const { t } = useI18n()
@@ -45,7 +45,7 @@ const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '角色列表',
-  api: getRolePageApi,
+  api: getRolePage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -81,14 +81,14 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportRoleApi(getForm().getFieldsValue() as RoleExportReqVO)
+      await exportRole(getForm().getFieldsValue() as RoleExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteRoleApi(record.id)
+  await deleteRole(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './tenant.data'
-import { createTenantApi, getTenantApi, updateTenantApi } from '@/api/system/tenant'
+import { createTenant, getTenant, updateTenant } from '@/api/system/tenant'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getTenantApi(data.record.id)
+    const res = await getTenant(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateTenantApi(values)
+      await updateTenant(values)
     } else {
-      await createTenantApi(values)
+      await createTenant(values)
     }
     closeModal()
     emit('success')

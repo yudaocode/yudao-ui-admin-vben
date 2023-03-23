@@ -41,8 +41,8 @@ import { useModal } from '@/components/Modal'
 import DeptModal from './DeptModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { getListSimpleUsersApi } from '@/api/system/user'
-import { deleteDeptApi, getDeptPageApi } from '@/api/system/dept'
+import { getListSimpleUsers } from '@/api/system/user'
+import { deleteDept, getDeptPage } from '@/api/system/dept'
 import { columns, searchFormSchema } from './dept.data'
 
 const { t } = useI18n()
@@ -75,14 +75,14 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
 })
 
 async function getList() {
-  const res = await getDeptPageApi(getForm().getFieldsValue() as any)
+  const res = await getDeptPage(getForm().getFieldsValue() as any)
   return handleTree(res, 'id')
 }
 
 const users = ref<any[]>([])
 
 async function getUserList() {
-  const res = await getListSimpleUsersApi()
+  const res = await getListSimpleUsers()
   users.value = res
 }
 
@@ -112,7 +112,7 @@ function handleEdit(record: Recordable) {
 }
 
 async function handleDelete(record: Recordable) {
-  await deleteDeptApi(record.id)
+  await deleteDept(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }

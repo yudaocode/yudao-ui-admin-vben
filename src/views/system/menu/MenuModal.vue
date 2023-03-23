@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './menu.data'
-import { createMenuApi, getMenuApi, updateMenuApi } from '@/api/system/menu'
+import { createMenu, getMenu, updateMenu } from '@/api/system/menu'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getMenuApi(data.record.id)
+    const res = await getMenu(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateMenuApi(values)
+      await updateMenu(values)
     } else {
-      await createMenuApi(values)
+      await createMenu(values)
     }
     closeModal()
     emit('success')

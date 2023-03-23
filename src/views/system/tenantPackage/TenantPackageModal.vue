@@ -21,8 +21,8 @@ import { BasicForm, useForm } from '@/components/Form'
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './tenantPackage.data'
-import { createTenantPackageApi, getTenantPackageApi, updateTenantPackageApi } from '@/api/system/tenantPackage'
-import { listSimpleMenusApi } from '@/api/system/menu'
+import { createTenantPackage, getTenantPackage, updateTenantPackage } from '@/api/system/tenantPackage'
+import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
 
 const emit = defineEmits(['success', 'register'])
@@ -48,9 +48,9 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getTenantPackageApi(data.record.id)
+    const res = await getTenantPackage(data.record.id)
     rowId.value = res.id
-    const menus = await listSimpleMenusApi()
+    const menus = await listSimpleMenus()
     menuTree.value = handleTree(menus, 'id')
     setFieldsValue({ ...res })
   }
@@ -69,9 +69,9 @@ async function handleSubmit() {
     setModalProps({ confirmLoading: true })
     values.menuIds = menuKeys.value.concat(menuHalfKeys.value)
     if (unref(isUpdate)) {
-      await updateTenantPackageApi(values)
+      await updateTenantPackage(values)
     } else {
-      await createTenantPackageApi(values)
+      await createTenantPackage(values)
     }
     closeModal()
     emit('success')

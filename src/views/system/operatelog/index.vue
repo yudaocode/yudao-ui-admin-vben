@@ -12,14 +12,14 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
-import { OperateLogPageReqVO, exportOperateLogApi, getOperateLogPageApi } from '@/api/system/operatelog'
+import { OperateLogPageReqVO, exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
 import { columns, searchFormSchema } from './operateLog.data'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerTable, { getForm }] = useTable({
   title: '操作日志列表',
-  api: getOperateLogPageApi,
+  api: getOperateLogPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -36,7 +36,7 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportOperateLogApi(getForm().getFieldsValue() as OperateLogPageReqVO)
+      await exportOperateLog(getForm().getFieldsValue() as OperateLogPageReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })

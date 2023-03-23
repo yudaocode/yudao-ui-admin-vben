@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './notice.data'
-import { createNoticeApi, getNoticeApi, updateNoticeApi } from '@/api/system/notice'
+import { createNotice, getNotice, updateNotice } from '@/api/system/notice'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getNoticeApi(data.record.id)
+    const res = await getNotice(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateNoticeApi(values)
+      await updateNotice(values)
     } else {
-      await createNoticeApi(values)
+      await createNotice(values)
     }
     closeModal()
     emit('success')

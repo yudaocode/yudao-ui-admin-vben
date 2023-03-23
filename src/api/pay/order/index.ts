@@ -79,31 +79,31 @@ export interface OrderExportReqVO {
 }
 
 // 查询列表支付订单
-export const getOrderPageApi = async (params: OrderPageReqVO) => {
+export function getOrderPage(params: OrderPageReqVO) {
   return defHttp.get({ url: '/pay/order/page', params })
 }
 
 // 查询详情支付订单
-export const getOrderApi = async (id: number) => {
+export function getOrder(id: number) {
   return defHttp.get({ url: '/pay/order/get?id=' + id })
 }
 
 // 新增支付订单
-export const createOrderApi = async (data: OrderVO) => {
+export function createOrder(data: OrderVO) {
   return defHttp.post({ url: '/pay/order/create', data })
 }
 
 // 修改支付订单
-export const updateOrderApi = async (data: OrderVO) => {
+export function updateOrder(data: OrderVO) {
   return defHttp.put({ url: '/pay/order/update', data })
 }
 
 // 删除支付订单
-export const deleteOrderApi = async (id: number) => {
+export function deleteOrder(id: number) {
   return defHttp.delete({ url: '/pay/order/delete?id=' + id })
 }
 
 // 导出支付订单
-export const exportOrderApi = async (params: OrderExportReqVO) => {
+export function exportOrder(params: OrderExportReqVO) {
   return defHttp.download({ url: '/pay/order/export-excel', params }, '支付订单.xls')
 }

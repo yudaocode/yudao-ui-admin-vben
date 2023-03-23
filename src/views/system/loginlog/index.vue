@@ -11,14 +11,14 @@
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'
-import { LoginLogReqVO, exportLoginLogApi, getLoginLogPageApi } from '@/api/system/loginLog'
+import { LoginLogReqVO, exportLoginLog, getLoginLogPage } from '@/api/system/loginLog'
 import { columns, searchFormSchema } from './loginLog.data'
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerTable, { getForm }] = useTable({
   title: '登录日志列表',
-  api: getLoginLogPageApi,
+  api: getLoginLogPage,
   columns,
   formConfig: {
     labelWidth: 120,
@@ -35,7 +35,7 @@ async function handleExport() {
     iconType: 'warning',
     content: t('common.exportMessage'),
     async onOk() {
-      await exportLoginLogApi(getForm().getFieldsValue() as LoginLogReqVO)
+      await exportLoginLog(getForm().getFieldsValue() as LoginLogReqVO)
       createMessage.success(t('common.exportSuccessText'))
     }
   })

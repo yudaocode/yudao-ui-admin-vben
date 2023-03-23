@@ -1,38 +1,41 @@
 import { defHttp } from '@/utils/http/axios'
-import { UserGroupVO } from './types'
+
+export type UserGroupVO = {
+  id: number
+  name: string
+  description: string
+  memberUserIds: number[]
+  status: number
+  remark: string
+  createTime: string
+}
 
 // 创建用户组
-export const createUserGroupApi = (data: UserGroupVO) => {
-  return defHttp.post({
-    url: '/bpm/user-group/create',
-    data: data
-  })
+export function createUserGroup(data: UserGroupVO) {
+  return defHttp.post({ url: '/bpm/user-group/create', data })
 }
 
 // 更新用户组
-export const updateUserGroupApi = (data: UserGroupVO) => {
-  return defHttp.put({
-    url: '/bpm/user-group/update',
-    data: data
-  })
+export function updateUserGroup(data: UserGroupVO) {
+  return defHttp.put({ url: '/bpm/user-group/update', data })
 }
 
 // 删除用户组
-export const deleteUserGroupApi = (id: number) => {
+export function deleteUserGroup(id: number) {
   return defHttp.delete({ url: '/bpm/user-group/delete?id=' + id })
 }
 
 // 获得用户组
-export const getUserGroupApi = (id: number) => {
+export function getUserGroup(id: number) {
   return defHttp.get({ url: '/bpm/user-group/get?id=' + id })
 }
 
 // 获得用户组分页
-export const getUserGroupPageApi = (params) => {
+export function getUserGroupPage(params) {
   return defHttp.get({ url: '/bpm/user-group/page', params })
 }
 
 // 获取用户组精简信息列表
-export const listSimpleUserGroupsApi = () => {
+export function listSimpleUserGroups() {
   return defHttp.get({ url: '/bpm/user-group/list-all-simple' })
 }

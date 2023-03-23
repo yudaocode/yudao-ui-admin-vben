@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './client.data'
-import { createOAuth2ClientApi, getOAuth2ClientApi, updateOAuth2ClientApi } from '@/api/system/oauth2/client'
+import { createOAuth2Client, getOAuth2Client, updateOAuth2Client } from '@/api/system/oauth2/client'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getOAuth2ClientApi(data.record.id)
+    const res = await getOAuth2Client(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateOAuth2ClientApi(values)
+      await updateOAuth2Client(values)
     } else {
-      await createOAuth2ClientApi(values)
+      await createOAuth2Client(values)
     }
     closeModal()
     emit('success')

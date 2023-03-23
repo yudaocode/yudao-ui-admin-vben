@@ -5,7 +5,7 @@ import { store } from '@/store'
 
 import { DICT_KEY } from '@/enums/cacheEnum'
 import { createLocalStorage } from '@/utils/cache'
-import { listSimpleDictDataApi } from '@/api/system/dict/data'
+import { listSimpleDictData } from '@/api/system/dict/data'
 import { DictDataVO } from '@/api/system/dict/types'
 
 const ls = createLocalStorage()
@@ -35,7 +35,7 @@ export const useDictStore = defineStore({
         this.dictMap = dictMap
         this.isSetDict = true
       } else {
-        const res = await listSimpleDictDataApi()
+        const res = await listSimpleDictData()
         // 设置数据
         const dictDataMap = new Map<string, any>()
         res.forEach((dictData: DictDataVO) => {

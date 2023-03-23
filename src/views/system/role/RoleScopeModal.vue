@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { dataScopeFormSchema } from './role.data'
-import { createRoleApi, getRoleApi, updateRoleApi } from '@/api/system/role'
+import { createRole, getRole, updateRole } from '@/api/system/role'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getRoleApi(data.record.id)
+    const res = await getRole(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   }
@@ -41,9 +41,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateRoleApi(values)
+      await updateRole(values)
     } else {
-      await createRoleApi(values)
+      await createRole(values)
     }
     closeModal()
     emit('success')

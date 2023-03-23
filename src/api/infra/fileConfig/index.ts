@@ -31,36 +31,36 @@ export interface FileConfigPageReqVO extends PageParam {
 }
 
 // 查询文件配置列表
-export const getFileConfigPageApi = (params: FileConfigPageReqVO) => {
+export function getFileConfigPage(params: FileConfigPageReqVO) {
   return defHttp.get({ url: '/infra/file-config/page', params })
 }
 
 // 查询文件配置详情
-export const getFileConfigApi = (id: number) => {
+export function getFileConfig(id: number) {
   return defHttp.get({ url: '/infra/file-config/get?id=' + id })
 }
 
 // 更新文件配置为主配置
-export const updateFileConfigMasterApi = (id: number) => {
+export function updateFileConfigMaster(id: number) {
   return defHttp.put({ url: '/infra/file-config/update-master?id=' + id })
 }
 
 // 新增文件配置
-export const createFileConfigApi = (data: FileConfigVO) => {
+export function createFileConfig(data: FileConfigVO) {
   return defHttp.post({ url: '/infra/file-config/create', data })
 }
 
 // 修改文件配置
-export const updateFileConfigApi = (data: FileConfigVO) => {
+export function updateFileConfig(data: FileConfigVO) {
   return defHttp.put({ url: '/infra/file-config/update', data })
 }
 
 // 删除文件配置
-export const deleteFileConfigApi = (id: number) => {
+export function deleteFileConfig(id: number) {
   return defHttp.delete({ url: '/infra/file-config/delete?id=' + id })
 }
 
 // 测试文件配置
-export const testFileConfigApi = (id: number) => {
+export function testFileConfig(id: number) {
   return defHttp.get({ url: '/infra/file-config/test?id=' + id })
 }

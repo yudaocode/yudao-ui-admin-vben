@@ -8,7 +8,7 @@ import { ref, computed, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { dataFormSchema } from './dict.data'
-import { createDictDataApi, getDictDataApi, updateDictDataApi } from '@/api/system/dict/data'
+import { createDictData, getDictData, updateDictData } from '@/api/system/dict/data'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -28,7 +28,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   isUpdate.value = !!data?.isUpdate
 
   if (unref(isUpdate)) {
-    const res = await getDictDataApi(data.record.id)
+    const res = await getDictData(data.record.id)
     rowId.value = res.id
     setFieldsValue({ ...res })
   } else {
@@ -45,9 +45,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateDictDataApi(values)
+      await updateDictData(values)
     } else {
-      await createDictDataApi(values)
+      await createDictData(values)
     }
     closeModal()
     emit('success')

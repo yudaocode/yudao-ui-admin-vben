@@ -30,41 +30,41 @@ export interface RoleExportReqVO {
 }
 
 // 查询角色列表
-export const getRolePageApi = (params: RolePageReqVO) => {
+export function getRolePage(params: RolePageReqVO) {
   return defHttp.get({ url: '/system/role/page', params })
 }
 
 // 查询角色（精简)列表
-export const listSimpleRolesApi = () => {
+export function listSimpleRoles() {
   return defHttp.get({ url: '/system/role/list-all-simple' })
 }
 
 // 查询角色详情
-export const getRoleApi = (id: number) => {
+export function getRole(id: number) {
   return defHttp.get({ url: '/system/role/get?id=' + id })
 }
 
 // 新增角色
-export const createRoleApi = (data: RoleVO) => {
+export function createRole(data: RoleVO) {
   return defHttp.post({ url: '/system/role/create', data })
 }
 
 // 修改角色
-export const updateRoleApi = (data: RoleVO) => {
+export function updateRole(data: RoleVO) {
   return defHttp.put({ url: '/system/role/update', data })
 }
 
 // 修改角色状态
-export const updateRoleStatusApi = (data: UpdateStatusReqVO) => {
+export function updateRoleStatus(data: UpdateStatusReqVO) {
   return defHttp.put({ url: '/system/role/update-status', data })
 }
 
 // 删除角色
-export const deleteRoleApi = (id: number) => {
+export function deleteRole(id: number) {
   return defHttp.delete({ url: '/system/role/delete?id=' + id })
 }
 
 // 导出角色
-export const exportRoleApi = (params: RoleExportReqVO) => {
+export function exportRole(params: RoleExportReqVO) {
   return defHttp.download({ url: '/system/post/export', params }, '导出角色.xls')
 }

@@ -75,7 +75,7 @@ export function updateUserProfileApi(data: UserProfileUpdateReqVO) {
 }
 
 // 用户密码重置
-export const updateUserPwdApi = (oldPassword: string, newPassword: string) => {
+export function updateUserPwdApi(oldPassword: string, newPassword: string) {
   return defHttp.put({
     url: Api.updateUserPwdApi,
     data: {
@@ -86,7 +86,7 @@ export const updateUserPwdApi = (oldPassword: string, newPassword: string) => {
 }
 
 // 用户头像上传
-export const uploadAvatarApi = (data) => {
+export function uploadAvatarApi(data) {
   const params: UploadFileParams = {
     file: data
   }
@@ -94,7 +94,7 @@ export const uploadAvatarApi = (data) => {
 }
 
 // 社交绑定，使用 code 授权码
-export const socialBind = (type, code, state) => {
+export function socialBind(type, code, state) {
   return defHttp.post({
     url: Api.socialBindApi,
     data: {
@@ -106,7 +106,7 @@ export const socialBind = (type, code, state) => {
 }
 
 // 取消社交绑定
-export const socialUnbind = (type, openid) => {
+export function socialUnbind(type, openid) {
   return defHttp.delete({
     url: Api.socialUnbindApi,
     data: {
@@ -117,7 +117,7 @@ export const socialUnbind = (type, openid) => {
 }
 
 // 社交授权的跳转
-export const socialAuthRedirect = (type, redirectUri) => {
+export function socialAuthRedirect(type, redirectUri) {
   return defHttp.get({
     url: '/system/auth/social-auth-redirect?type=' + type + '&redirectUri=' + redirectUri
   })
