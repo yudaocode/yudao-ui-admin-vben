@@ -11,15 +11,13 @@ import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({
   loading: Boolean,
-  cacheInfo: Object,
+  memoryHuman: String,
   width: propTypes.string.def('100%'),
   height: propTypes.string.def('300px')
 })
 
 const chartRef = ref<HTMLDivElement | null>(null)
 const { setOptions } = useECharts(chartRef as Ref<HTMLDivElement>)
-
-const optionsData = ref<any>(props.cacheInfo)
 
 watch(
   () => props.loading,
@@ -29,7 +27,7 @@ watch(
     }
     setOptions({
       tooltip: {
-        formatter: '{b} <br/>{a} : ' + optionsData.value.used_memory_human
+        formatter: '{b} <br/>{a} : ' + props.memoryHuman
       },
       series: [
         {
@@ -38,11 +36,11 @@ watch(
           min: 0,
           max: 100,
           detail: {
-            formatter: optionsData.value.used_memory_human
+            formatter: props.memoryHuman
           },
           data: [
             {
-              value: parseFloat(optionsData.value.used_memory_human),
+              value: parseFloat(props.memoryHuman as unknown as number),
               name: '内存消耗'
             }
           ]

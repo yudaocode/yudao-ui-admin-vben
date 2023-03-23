@@ -9,7 +9,7 @@
     />
     <div class="md:flex enter-y mt-4">
       <CommandStats class="md:w-1/2 w-full" :loading="loading" :commandStats="commandStats" />
-      <Memory class="md:w-1/2 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" :cacheInfo="cacheInfo" />
+      <Memory class="md:w-1/2 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" :memoryHuman="memoryHuman" />
     </div>
   </div>
 </template>
@@ -27,10 +27,12 @@ const Memory = createAsyncComponent(() => import('./components/Memory.vue'))
 const loading = ref(true)
 const cacheInfo = ref<any>()
 const commandStats = ref<any[]>([])
+const memoryHuman = ref<any>()
 
 async function getList() {
   const res = await getCache()
   cacheInfo.value = res.info
+  memoryHuman.value = res.info.used_memory_human
   await res.commandStats.forEach((val) => {
     commandStats.value.push({ name: val.command, value: val.calls })
   })
