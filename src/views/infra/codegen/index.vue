@@ -2,16 +2,24 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.IMPORT" @click="openImportTable"> {{ t('action.import') }} </a-button>
+        <a-button type="primary" :preIcon="IconEnum.IMPORT" @click="openImportTableModal(true)"> {{ t('action.import') }} </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.view'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '预览', onClick: handlePreview.bind(null, record) },
               { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '同步', onClick: handleEdit.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '生成代码', onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.DOWNLOAD, label: '生成', onClick: handleGenTable.bind(null, record) },
+              {
+                icon: IconEnum.RESET,
+                label: '同步',
+                popConfirm: {
+                  title: '确认要强制同步' + record.tableName + '表结构吗？',
+                  placement: 'left',
+                  confirm: handleSynchDb.bind(null, record)
+                }
+              },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
@@ -27,22 +35,25 @@
         </template>
       </template>
     </BasicTable>
-    <ImportTableModal @register="registerModal" @success="reload()" />
+    <PreviewModal @register="registerPreviewModal" />
+    <ImportTableModal @register="registerImportTableModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Codegen">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ImportTableModal from './ImportTableModal.vue'
+import PreviewModal from './components/PreviewModal.vue'
+import ImportTableModal from './components/ImportTableModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteCodegenTable, getCodegenTablePage } from '@/api/infra/codegen'
+import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '@/api/infra/codegen'
 import { columns, searchFormSchema } from './codegen.data'
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const [registerModal, { openModal }] = useModal()
+const [registerPreviewModal, { openModal: openPreviewModal }] = useModal()
+const [registerImportTableModal, { openModal: openImportTableModal }] = useModal()
 
 const [registerTable, { reload }] = useTable({
   title: '代码生成列表',
@@ -63,15 +74,27 @@ const [registerTable, { reload }] = useTable({
   }
 })
 
-function openImportTable() {
-  openModal(true)
+function handlePreview(record: Recordable) {
+  openPreviewModal(true, {
+    record
+  })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
+  openPreviewModal(true, {
+    record
   })
+}
+
+async function handleGenTable(record: Recordable) {
+  await downloadCodegen(record)
+  createMessage.success(t('common.successText'))
+}
+
+async function handleSynchDb(record: Recordable) {
+  await syncCodegenFromDB(record.id)
+  createMessage.success(t('common.successText'))
+  reload()
 }
 
 async function handleDelete(record: Recordable) {

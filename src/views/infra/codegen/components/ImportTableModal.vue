@@ -6,7 +6,7 @@
 <script lang="ts" setup name="ImportTableModal">
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicTable, useTable } from '@/components/Table'
-import { importTableColumns, importTableSearchFormSchema } from './codegen.data'
+import { importTableColumns, importTableSearchFormSchema } from '../codegen.data'
 import { createCodegenList, getSchemaTableList } from '@/api/infra/codegen'
 
 const emit = defineEmits(['success', 'register'])

@@ -37,8 +37,8 @@ export function previewCodegen(id: number) {
 }
 
 // 下载生成代码
-export function downloadCodegen(id: number) {
-  return defHttp.download({ url: '/infra/codegen/download?tableId=' + id }, '生成代码.zip')
+export function downloadCodegen(data) {
+  return defHttp.download({ url: '/infra/codegen/download?tableId=' + data.id }, data.tableName + '.zip')
 }
 
 // 获得表定义
