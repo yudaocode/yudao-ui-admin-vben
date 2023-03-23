@@ -1,3 +1,136 @@
 <template>
-  <div>开发中</div>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) }]"
+            :dropDownActions="[
+              { icon: IconEnum.EDIT, label: '开启', onClick: handleChangeStatus.bind(null, record, true) },
+              { icon: IconEnum.EDIT, label: '暂停', onClick: handleChangeStatus.bind(null, record, false) },
+              { icon: IconEnum.EDIT, label: '执行一次', onClick: handleRun.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '任务详细', onClick: handleView.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '调度日志', onClick: handleJobLog.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record)
+                }
+              }
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <JobModal @register="registerModal" @success="reload()" />
+  </div>
 </template>
+<script lang="ts" setup name="Job">
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
+import { useModal } from '@/components/Modal'
+import JobModal from './JobModal.vue'
+import { IconEnum } from '@/enums/appEnum'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { JobExportReqVO, deleteJob, exportJob, getJobPage, runJob, updateJobStatus } from '@/api/infra/job'
+import { columns, searchFormSchema } from './job.data'
+import { InfraJobStatusEnum } from '@/enums/systemEnum'
+
+const { t } = useI18n()
+const { createConfirm, createMessage } = useMessage()
+const [registerModal, { openModal }] = useModal()
+
+const [registerTable, { getForm, reload }] = useTable({
+  title: '定时任务列表',
+  api: getJobPage,
+  columns,
+  formConfig: {
+    labelWidth: 120,
+    schemas: searchFormSchema
+  },
+  useSearchForm: true,
+  showTableSetting: true,
+  showIndexColumn: false,
+  actionColumn: {
+    width: 140,
+    title: t('common.action'),
+    dataIndex: 'action',
+    fixed: 'right'
+  }
+})
+
+function handleCreate() {
+  openModal(true, {
+    isUpdate: false
+  })
+}
+
+function handleEdit(record: Recordable) {
+  openModal(true, {
+    record,
+    isUpdate: true
+  })
+}
+
+function handleChangeStatus(record: Recordable, open: boolean) {
+  let status = open ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP
+  let statusStr = open ? '开启' : '关闭'
+  createConfirm({
+    title: '调整状态',
+    iconType: 'warning',
+    content: '是否确认' + statusStr + '定时任务编号为"' + record.id + '"的数据项?',
+    async onOk() {
+      await updateJobStatus(record.id, status)
+      createMessage.success(t('common.successText'))
+    }
+  })
+}
+
+function handleRun(record: Recordable) {
+  createConfirm({
+    title: '执行',
+    iconType: 'warning',
+    content: '确认要立即执行一次"' + record.name + '"任务吗?',
+    async onOk() {
+      await runJob(record.id)
+      createMessage.success(t('common.successText'))
+    }
+  })
+}
+
+function handleView(record: Recordable) {
+  // TODO
+  console.info(record)
+}
+
+function handleJobLog(record: Recordable) {
+  // TODO
+  console.info(record)
+}
+
+async function handleExport() {
+  createConfirm({
+    title: t('common.exportTitle'),
+    iconType: 'warning',
+    content: t('common.exportMessage'),
+    async onOk() {
+      await exportJob(getForm().getFieldsValue() as JobExportReqVO)
+      createMessage.success(t('common.exportSuccessText'))
+    }
+  })
+}
+
+async function handleDelete(record: Recordable) {
+  await deleteJob(record.id)
+  createMessage.success(t('common.delSuccessText'))
+  reload()
+}
+</script>
