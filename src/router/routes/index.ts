@@ -74,6 +74,30 @@ export const ProfileRoute: AppRouteRecordRaw = {
   ]
 }
 
+export const CodegenRoute: AppRouteRecordRaw = {
+  path: '/codegen',
+  component: LAYOUT,
+  name: 'CodegenEdit',
+  meta: {
+    title: '修改生成配置',
+    hidden: true
+  },
+  children: [
+    {
+      path: 'editTable',
+      component: () => import('@/views/infra/codegen/EditTable.vue'),
+      name: 'EditTable',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ep:edit',
+        title: '修改生成配置'
+      }
+    }
+  ]
+}
+
 // Basic routing without permission
 // 未经许可的基本路由
-export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
+export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]

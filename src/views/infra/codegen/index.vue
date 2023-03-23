@@ -9,7 +9,7 @@
           <TableAction
             :actions="[
               { icon: IconEnum.EDIT, label: '预览', onClick: handlePreview.bind(null, record) },
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null) },
               { icon: IconEnum.DOWNLOAD, label: '生成', onClick: handleGenTable.bind(null, record) },
               {
                 icon: IconEnum.RESET,
@@ -40,6 +40,7 @@
   </div>
 </template>
 <script lang="ts" setup name="Codegen">
+import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -50,6 +51,7 @@ import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '@/api/infra/codegen'
 import { columns, searchFormSchema } from './codegen.data'
 
+const go = useGo()
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerPreviewModal, { openModal: openPreviewModal }] = useModal()
@@ -80,10 +82,8 @@ function handlePreview(record: Recordable) {
   })
 }
 
-function handleEdit(record: Recordable) {
-  openPreviewModal(true, {
-    record
-  })
+function handleEdit() {
+  go('/codegen/editTable')
 }
 
 async function handleGenTable(record: Recordable) {
