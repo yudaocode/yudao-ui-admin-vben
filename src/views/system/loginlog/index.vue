@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="warning" v-auth="['system:login-log:export']" @click="handleExport"> {{ t('action.export') }} </a-button>
       </template>
     </BasicTable>
   </div>
