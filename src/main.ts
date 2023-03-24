@@ -1,4 +1,5 @@
 import 'uno.css'
+import 'virtual:unocss-devtools'
 import '@/design/index.less'
 // Register icon sprite
 import 'virtual:svg-icons-register'
@@ -16,7 +17,7 @@ import { registerGlobComp } from '@/components/registerGlobComp'
 import { isDevMode } from './utils/env'
 
 if (isDevMode()) {
-  import('ant-design-vue/dist/antd.css')
+  import('ant-design-vue/dist/antd.less')
 }
 
 async function bootstrap() {
