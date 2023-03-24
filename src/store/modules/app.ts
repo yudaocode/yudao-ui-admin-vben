@@ -31,19 +31,19 @@ export const useAppStore = defineStore('app', {
     componentSize: 'middle'
   }),
   getters: {
-    getPageLoading(): boolean {
-      return this.pageLoading
+    getPageLoading(state): boolean {
+      return state.pageLoading
     },
-    getDarkMode(): 'light' | 'dark' | string {
-      return this.darkMode || localStorage.getItem(APP_DARK_MODE_KEY_) || darkMode
-    },
-
-    getBeforeMiniInfo(): BeforeMiniState {
-      return this.beforeMiniInfo
+    getDarkMode(state): 'light' | 'dark' | string {
+      return state.darkMode || localStorage.getItem(APP_DARK_MODE_KEY_) || darkMode
     },
 
-    getProjectConfig(): ProjectConfig {
-      return this.projectConfig || ({} as ProjectConfig)
+    getBeforeMiniInfo(state): BeforeMiniState {
+      return state.beforeMiniInfo
+    },
+
+    getProjectConfig(state): ProjectConfig {
+      return state.projectConfig || ({} as ProjectConfig)
     },
 
     getHeaderSetting(): HeaderSetting {
@@ -58,8 +58,8 @@ export const useAppStore = defineStore('app', {
     getMultiTabsSetting(): MultiTabsSetting {
       return this.getProjectConfig.multiTabsSetting
     },
-    getComponentSize(): AppSizeType | undefined {
-      return this.componentSize
+    getComponentSize(state): AppSizeType | undefined {
+      return state.componentSize
     }
   },
   actions: {

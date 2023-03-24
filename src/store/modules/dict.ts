@@ -17,15 +17,15 @@ export const useDictStore = defineStore({
     isSetDict: false
   }),
   getters: {
-    getDictMap(): Recordable {
+    getDictMap(state): Recordable {
       const dictMap = ls.get(DICT_KEY)
       if (dictMap) {
-        this.dictMap = dictMap
+        state.dictMap = dictMap
       }
-      return this.dictMap
+      return state.dictMap
     },
-    getIsSetDict(): boolean {
-      return this.isSetDict
+    getIsSetDict(state): boolean {
+      return state.isSetDict
     }
   },
   actions: {

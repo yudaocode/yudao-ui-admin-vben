@@ -42,23 +42,23 @@ export const useUserStore = defineStore('app-user', {
     lastUpdateTime: 0
   }),
   getters: {
-    getUserInfo(): GetUserInfoModel {
-      return this.userInfo || getAuthCache<GetUserInfoModel>(USER_INFO_KEY) || {}
+    getUserInfo(state): GetUserInfoModel {
+      return state.userInfo || getAuthCache<GetUserInfoModel>(USER_INFO_KEY) || {}
     },
-    getAccessToken(): string {
-      return this.accessToken || getAuthCache<string>(ACCESS_TOKEN_KEY)
+    getAccessToken(state): string {
+      return state.accessToken || getAuthCache<string>(ACCESS_TOKEN_KEY)
     },
-    getRefreshToken(): string {
-      return this.refreshToken || getAuthCache<string>(REFRESH_TOKEN_KEY)
+    getRefreshToken(state): string {
+      return state.refreshToken || getAuthCache<string>(REFRESH_TOKEN_KEY)
     },
-    getRoleList(): RoleEnum[] {
-      return this.roleList.length > 0 ? this.roleList : getAuthCache<RoleEnum[]>(ROLES_KEY)
+    getRoleList(state): RoleEnum[] {
+      return state.roleList.length > 0 ? state.roleList : getAuthCache<RoleEnum[]>(ROLES_KEY)
     },
-    getSessionTimeout(): boolean {
-      return !!this.sessionTimeout
+    getSessionTimeout(state): boolean {
+      return !!state.sessionTimeout
     },
-    getLastUpdateTime(): number {
-      return this.lastUpdateTime
+    getLastUpdateTime(state): number {
+      return state.lastUpdateTime
     }
   },
   actions: {
