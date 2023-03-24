@@ -39,7 +39,7 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
   // @vitejs/plugin-legacy
   VITE_LEGACY && isBuild && vitePlugins.push(legacy())
 
-  // vite-plugin-html
+  // vite-vue-plugin-html
   vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))
 
   // vite-plugin-svg-icons
@@ -48,7 +48,7 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
   // vite-plugin-purge-icons
   vitePlugins.push(purgeIcons())
 
-  // vite-plugin-style-import
+  // vite-vue-plugin-style-import
   if (isProdFn(mode)) {
     vitePlugins.push(configStyleImportPlugin(isBuild))
   }

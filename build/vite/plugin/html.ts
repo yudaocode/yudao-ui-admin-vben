@@ -1,9 +1,9 @@
 /**
  * Plugin to minimize and use ejs template syntax in index.html.
- * https://github.com/anncwb/vite-plugin-html
+ * https://github.com/xingyuv/vite-vue-plugin-html
  */
 import type { PluginOption } from 'vite'
-import { createHtmlPlugin } from 'vite-plugin-html'
+import { createHtmlPlugin } from 'vite-vue-plugin-html'
 import pkg from '../../../package.json'
 import { GLOB_CONFIG_FILE_NAME } from '../../constant'
 
