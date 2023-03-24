@@ -2,7 +2,9 @@
   <div>
     <BasicTable @register="register" @fetch-success="onFetchSuccess">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" :preIcon="IconEnum.ADD" v-auth="['system:dept:create']" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
         <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
         <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
@@ -13,11 +15,12 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:dept:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:dept:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -60,12 +63,9 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   },
   isTreeTable: true,
   pagination: false,
-  striped: false,
   useSearchForm: true,
   showTableSetting: true,
-  bordered: true,
   showIndexColumn: false,
-  canResize: false,
   actionColumn: {
     width: 140,
     title: t('common.action'),
@@ -86,29 +86,12 @@ async function getUserList() {
   users.value = res
 }
 
-function userNicknameFormat(row) {
-  if (!row.leaderUserId) {
-    return '未设置'
-  }
-  for (const user of users.value) {
-    if (row.leaderUserId === user.id) {
-      return user.nickname
-    }
-  }
-  return '未知【' + row.leaderUserId + '】'
-}
-
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleDelete(record: Recordable) {
@@ -119,6 +102,18 @@ async function handleDelete(record: Recordable) {
 
 function onFetchSuccess() {
   nextTick(expandAll)
+}
+
+function userNicknameFormat(row) {
+  if (!row.leaderUserId) {
+    return '未设置'
+  }
+  for (const user of users.value) {
+    if (row.leaderUserId === user.id) {
+      return user.nickname
+    }
+  }
+  return '未知【' + row.leaderUserId + '】'
 }
 
 onMounted(async () => {
