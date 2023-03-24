@@ -74,7 +74,7 @@ export const dynamicInfoItems: DynamicInfoItem[] = [
   },
   {
     avatar: 'dynamic-avatar-4|svg',
-    name: 'Vben',
+    name: 'XingyuV',
     date: '2天前',
     desc: `发表文章 <a>如何编写一个Vite插件</a> `
   },

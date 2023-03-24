@@ -6,10 +6,6 @@
 [gitee](https://gitee.com/xingyuv/vue-vben-admin)
 [github](https://github.com/xingyuv/vue-vben-admin)
 
-## 后台
-[gitee](https://gitee.com/zhijiantianya/ruoyi-vue-pro)
-[github](https://github.com/YunaiV/ruoyi-vue-pro)
-
 ## 预览地址
 [预览地址](http://vben.x-surge.com)
 

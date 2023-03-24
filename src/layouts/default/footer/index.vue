@@ -7,7 +7,7 @@
 
       <a @click="openWindow(DOC_URL)">{{ t('layout.footer.onlineDocument') }}</a>
     </div>
-    <div>Copyright &copy;2020 Vben Admin</div>
+    <div>Copyright &copy;2023 {{ SITE_TITLE }}</div>
   </Footer>
 </template>
 
@@ -26,7 +26,10 @@ import { useRouter } from 'vue-router'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLayoutHeight } from '../content/useContentViewHeight'
 
+const SITE_TITLE = ref(import.meta.env.VITE_GLOB_APP_TITLE)
+
 const Footer = Layout.Footer
+
 const { t } = useI18n()
 const { getShowFooter } = useRootSetting()
 const { currentRoute } = useRouter()
