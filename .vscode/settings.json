@@ -104,7 +104,8 @@
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "cSpell.words": [
     "vben",
-    "windi",
+    "unocss",
+    "uno.css",
     "browserslist",
     "tailwindcss",
     "esnext",

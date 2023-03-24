@@ -1,7 +1,5 @@
-import 'virtual:windi-base.css'
-import 'virtual:windi-components.css'
+import 'uno.css'
 import '@/design/index.less'
-import 'virtual:windi-utilities.css'
 // Register icon sprite
 import 'virtual:svg-icons-register'
 import App from './App.vue'

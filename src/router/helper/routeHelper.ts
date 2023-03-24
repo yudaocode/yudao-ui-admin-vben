@@ -53,7 +53,7 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
     const endFlag = component.endsWith('.vue') || component.endsWith('.tsx')
     const startIndex = startFlag ? 0 : 1
     const lastIndex = endFlag ? k.length : k.lastIndexOf('.')
-    return k.slice(startIndex, lastIndex) === component
+    return k.substring(startIndex, lastIndex) === component
   })
   if (matchKeys?.length === 1) {
     const matchKey = matchKeys[0]

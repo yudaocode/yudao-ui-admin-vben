@@ -74,7 +74,7 @@ export const bindHandlers = (initEvent: Event, listeners: any, editor: any): voi
         if (key === 'onInit') {
           handler(initEvent, editor)
         } else {
-          editor.on(key.slice(2), (e: any) => handler(e, editor))
+          editor.on(key.substring(2), (e: any) => handler(e, editor))
         }
       }
     })

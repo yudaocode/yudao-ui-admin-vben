@@ -69,7 +69,7 @@ export function downloadByUrl({ url, target = '_blank', fileName }: { url: strin
     link.target = target
 
     if (link.download !== undefined) {
-      link.download = fileName || url.slice(url.lastIndexOf('/') + 1, url.length)
+      link.download = fileName || url.substring(url.lastIndexOf('/') + 1, url.length)
     }
 
     if (document.createEvent) {
