@@ -31,8 +31,6 @@ async function handleSubmit() {
       values.result = res
       setFieldsValue({ ...values })
     }
-    // closeModal()
-    // emit('success')
   } finally {
     setModalProps({ confirmLoading: false })
   }

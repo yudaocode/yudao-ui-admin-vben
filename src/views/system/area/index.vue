@@ -40,8 +40,6 @@ async function getList() {
 }
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 </script>
