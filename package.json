@@ -1,6 +1,6 @@
 {
   "name": "ruoyi-ui-admin-vben",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "xingyuv",
     "email": "xingyu4j@vip.qq.com",
@@ -67,7 +67,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.5.0",
     "@commitlint/config-conventional": "^17.4.4",
-    "@iconify/json": "^2.2.38",
+    "@iconify/json": "^2.2.39",
     "@purge-icons/generated": "^0.9.0",
     "@types/codemirror": "^5.60.5",
     "@types/crypto-js": "^4.1.1",
@@ -75,7 +75,7 @@
     "@types/inquirer": "^9.0.3",
     "@types/intro.js": "^5.1.1",
     "@types/lodash-es": "^4.17.7",
-    "@types/node": "^18.15.6",
+    "@types/node": "^18.15.7",
     "@types/nprogress": "^0.2.0",
     "@types/qrcode": "^1.5.0",
     "@types/qs": "^6.9.7",
@@ -106,9 +106,9 @@
     "postcss": "^8.4.21",
     "postcss-html": "^1.5.0",
     "postcss-less": "^6.0.0",
-    "prettier": "^2.8.6",
+    "prettier": "^2.8.7",
     "rimraf": "^4.4.1",
-    "rollup": "^3.20.1",
+    "rollup": "^3.20.2",
     "rollup-plugin-visualizer": "^5.9.0",
     "stylelint": "^15.3.0",
     "stylelint-config-recommended": "^11.0.0",
