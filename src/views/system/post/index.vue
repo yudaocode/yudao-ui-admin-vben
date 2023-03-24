@@ -57,7 +57,6 @@ const [registerTable, { getForm, reload }] = useTable({
   },
   useSearchForm: true,
   showTableSetting: true,
-  showIndexColumn: false,
   actionColumn: {
     width: 140,
     title: t('common.action'),
@@ -67,16 +66,11 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleExport() {
