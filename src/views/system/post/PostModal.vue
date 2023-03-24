@@ -12,7 +12,6 @@ import { createPost, getPost, updatePost } from '@/api/system/post'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 100,
@@ -29,7 +28,6 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   if (unref(isUpdate)) {
     const res = await getPost(data.record.id)
-    rowId.value = res.id
     setFieldsValue({ ...res })
   }
 })

@@ -109,6 +109,7 @@ export const usePermissionStore = defineStore('app-permission', {
 
       let routes: AppRouteRecordRaw[] = []
       const roleList = toRaw(userStore.getRoleList) || []
+      const userInfo = toRaw(userStore.getUserInfo) || {}
       const { permissionMode = projectSetting.permissionMode } = appStore.getProjectConfig
 
       // 路由过滤器 在 函数filter 作为回调传入遍历使用
@@ -235,6 +236,11 @@ export const usePermissionStore = defineStore('app-permission', {
           routeList = flatMultiLevelRoutes(routeList)
           routes = [PAGE_NOT_FOUND_ROUTE, dashboard, ...routeList]
           break
+      }
+
+      // 从用户中获取权限
+      if (userInfo) {
+        this.setPermCodeList(userInfo.permissions)
       }
 
       patchHomeAffix(routes)
