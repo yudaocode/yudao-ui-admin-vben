@@ -10,7 +10,7 @@ import { formSchema } from './area.data'
 import { getAreaByIp } from '@/api/system/area'
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,

@@ -2,7 +2,9 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="warning" v-auth="['infra:api-error-log:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -11,12 +13,14 @@
               {
                 icon: IconEnum.EDIT,
                 label: '已处理',
+                auth: 'infra:api-error-log:update-status',
                 ifShow: () => record.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
                 onClick: handleProcessClick.bind(null, record, InfraApiErrorLogProcessStatusEnum.DONE, '已处理')
               },
               {
                 icon: IconEnum.EDIT,
                 label: '已忽略',
+                auth: 'infra:api-error-log:update-status',
                 ifShow: () => record.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
                 onClick: handleProcessClick.bind(null, record, InfraApiErrorLogProcessStatusEnum.IGNORE, '已忽略')
               }
@@ -42,10 +46,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '异常日志列表',
   api: getApiErrorLogPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,

@@ -2,7 +2,9 @@
   <div>
     <BasicTable @register="register">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" v-auth="['system:menu:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
         <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
         <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
@@ -10,11 +12,12 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:menu:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:menu:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -49,10 +52,7 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   api: getList,
   columns,
   rowKey: 'id',
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   isTreeTable: true,
   pagination: false,
   striped: false,
@@ -74,16 +74,11 @@ async function getList() {
 }
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleDelete(record: Recordable) {

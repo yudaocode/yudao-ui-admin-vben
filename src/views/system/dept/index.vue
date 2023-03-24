@@ -57,10 +57,7 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
   api: getList,
   columns,
   rowKey: 'id',
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   isTreeTable: true,
   pagination: false,
   useSearchForm: true,

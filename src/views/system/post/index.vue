@@ -51,10 +51,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '岗位列表',
   api: getPostPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   actionColumn: {

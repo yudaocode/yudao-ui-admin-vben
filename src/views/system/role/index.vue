@@ -2,20 +2,37 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
-        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="primary" v-auth="['system:role:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button type="warning" v-auth="['system:role:create']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
-            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) }]"
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:role:update', onClick: handleEdit.bind(null, record) }
+            ]"
             :dropDownActions="[
-              { icon: IconEnum.EDIT, label: '菜单权限', onClick: handleEdit.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '数据权限', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.EDIT,
+                label: '菜单权限',
+                auth: 'system:permission:assign-role-menu',
+                onClick: handleEdit.bind(null, record)
+              },
+              {
+                icon: IconEnum.EDIT,
+                label: '数据权限',
+                auth: 'system:permission:assign-role-data-scope',
+                onClick: handleEdit.bind(null, record)
+              },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:role:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -47,10 +64,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '角色列表',
   api: getRolePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
@@ -63,16 +77,11 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleExport() {

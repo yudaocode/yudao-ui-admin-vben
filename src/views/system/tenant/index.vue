@@ -2,18 +2,23 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
-        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="primary" v-auth="['system:tenant:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button type="warning" v-auth="['system:tenant:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:tenant:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:tenant:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -45,10 +50,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '租户列表',
   api: getTenantPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
@@ -61,16 +63,11 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleExport() {

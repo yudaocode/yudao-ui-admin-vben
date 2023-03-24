@@ -2,13 +2,16 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="warning" v-auth="['system:sms-log:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
     </BasicTable>
   </div>
 </template>
 <script lang="ts" setup name="SmsLog">
 import { BasicTable, useTable } from '@/components/Table'
+import { IconEnum } from '@/enums/appEnum'
 import { SmsLogExportReqVO, exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'
 import { columns, searchFormSchema } from './smsLog.data'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -20,10 +23,7 @@ const [registerTable, { getForm }] = useTable({
   title: '短信日志列表',
   api: getSmsLogPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false

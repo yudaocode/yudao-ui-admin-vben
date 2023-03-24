@@ -3,18 +3,23 @@
     <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
     <BasicTable @register="registerTable" class="w-3/4 xl:w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
-        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="primary" v-auth="['system:user:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button type="warning" v-auth="['system:user:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:user:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:user:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -67,9 +72,7 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 async function handleExport() {
@@ -85,10 +88,7 @@ async function handleExport() {
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleDelete(record: Recordable) {

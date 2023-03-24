@@ -12,6 +12,7 @@
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'infra:file:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -40,10 +41,7 @@ const [registerTable, { reload }] = useTable({
   title: '文件列表',
   api: getFilePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,

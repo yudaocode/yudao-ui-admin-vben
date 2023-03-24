@@ -31,7 +31,7 @@ const ListItemMeta = List.Item.Meta
 const listData = ref<any[]>([])
 
 const [registerForm, { setFieldsValue, resetFields }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,

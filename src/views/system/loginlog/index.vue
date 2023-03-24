@@ -20,10 +20,7 @@ const [registerTable, { getForm }] = useTable({
   title: '登录日志列表',
   api: getLoginLogPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false

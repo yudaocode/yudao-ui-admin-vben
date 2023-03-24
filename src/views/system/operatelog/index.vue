@@ -21,10 +21,7 @@ const [registerTable, { getForm }] = useTable({
   title: '操作日志列表',
   api: getOperateLogPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false

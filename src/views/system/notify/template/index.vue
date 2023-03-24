@@ -2,17 +2,25 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" v-auth="['system:notify-template:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.EDIT,
+                label: t('action.edit'),
+                auth: 'system:notify-template:update',
+                onClick: handleEdit.bind(null, record)
+              },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:notify-template:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -45,10 +53,7 @@ const [registerTable, { reload }] = useTable({
   title: '站内信模板列表',
   api: getNotifyTemplatePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
@@ -61,16 +66,11 @@ const [registerTable, { reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleDelete(record: Recordable) {

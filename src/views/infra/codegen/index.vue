@@ -2,18 +2,21 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.IMPORT" @click="openImportTableModal(true)"> {{ t('action.import') }} </a-button>
+        <a-button type="primary" v-auth="['infra:codegen:create']" :preIcon="IconEnum.IMPORT" @click="openImportTableModal(true)">
+          {{ t('action.import') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: '预览', onClick: handlePreview.bind(null, record) },
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEditTable.bind(null, record) },
-              { icon: IconEnum.DOWNLOAD, label: '生成', onClick: handleGenTable.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '预览', auth: 'infra:codegen:preview', onClick: handlePreview.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:codegen:update', onClick: handleEditTable.bind(null, record) },
+              { icon: IconEnum.DOWNLOAD, label: '生成', auth: 'infra:codegen:download', onClick: handleGenTable.bind(null, record) },
               {
                 icon: IconEnum.RESET,
                 label: '同步',
+                auth: 'infra:codegen:update',
                 popConfirm: {
                   title: '确认要强制同步' + record.tableName + '表结构吗？',
                   placement: 'left',
@@ -24,6 +27,7 @@
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'infra:codegen:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -61,10 +65,7 @@ const [registerTable, { reload }] = useTable({
   title: '代码生成列表',
   api: getCodegenTablePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,

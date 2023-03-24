@@ -15,7 +15,7 @@ const emit = defineEmits(['success', 'register'])
 const title = ref('修改密码')
 
 const [registerForm, { resetFields, validate }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: passwordSchema,
   showActionButtonGroup: false,

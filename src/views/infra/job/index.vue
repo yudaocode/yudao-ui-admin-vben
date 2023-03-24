@@ -2,23 +2,28 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
-        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
+        <a-button type="primary" v-auth="['infra:job:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button type="warning" v-auth="['infra:job:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) }]"
             :dropDownActions="[
-              { icon: IconEnum.EDIT, label: '开启', onClick: handleChangeStatus.bind(null, record, true) },
-              { icon: IconEnum.EDIT, label: '暂停', onClick: handleChangeStatus.bind(null, record, false) },
-              { icon: IconEnum.EDIT, label: '执行一次', onClick: handleRun.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '任务详细', onClick: handleView.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '调度日志', onClick: handleJobLog.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '开启', auth: 'infra:job:update', onClick: handleChangeStatus.bind(null, record, true) },
+              { icon: IconEnum.EDIT, label: '暂停', auth: 'infra:job:update', onClick: handleChangeStatus.bind(null, record, false) },
+              { icon: IconEnum.EDIT, label: '执行一次', auth: 'infra:job:trigger', onClick: handleRun.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '任务详细', auth: 'infra:job:query', onClick: handleView.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '调度日志', auth: 'infra:job:query', onClick: handleJobLog.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'infra:job:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -52,10 +57,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '定时任务列表',
   api: getJobPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
@@ -68,16 +70,11 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, {
-    isUpdate: false
-  })
+  openModal(true, { isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 function handleChangeStatus(record: Recordable, open: boolean) {

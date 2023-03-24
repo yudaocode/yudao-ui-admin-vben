@@ -28,10 +28,7 @@ const [registerTable, { getSelectRowKeys, reload }] = useTable({
   title: '我的站内信列表',
   api: getMyNotifyMessagePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   rowSelection: { type: 'checkbox' },
   rowKey: 'id',
   useSearchForm: true,

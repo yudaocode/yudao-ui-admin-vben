@@ -13,7 +13,7 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:error-code:edit', onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:error-code:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
@@ -50,10 +50,7 @@ const [registerTable, { getForm, reload }] = useTable({
   title: '错误码列表',
   api: getErrorCodePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,

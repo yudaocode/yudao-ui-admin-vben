@@ -12,10 +12,7 @@ const [registerTable] = useTable({
   title: '站内信记录列表',
   api: getNotifyMessagePage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false

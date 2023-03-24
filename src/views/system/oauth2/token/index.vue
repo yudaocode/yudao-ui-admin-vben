@@ -9,6 +9,7 @@
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: '强退',
+                auth: 'system:oauth2-token:delete',
                 popConfirm: {
                   title: '是否确认强退',
                   placement: 'left',
@@ -36,10 +37,7 @@ const [registerTable, { reload }] = useTable({
   title: 'Token列表',
   api: getAccessTokenPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,

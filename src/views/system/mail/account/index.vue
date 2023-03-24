@@ -47,10 +47,7 @@ const [registerTable, { reload }] = useTable({
   title: '邮件列表',
   api: getMailAccountPage,
   columns,
-  formConfig: {
-    labelWidth: 120,
-    schemas: searchFormSchema
-  },
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
