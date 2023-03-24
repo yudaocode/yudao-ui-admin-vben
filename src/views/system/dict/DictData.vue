@@ -2,17 +2,20 @@
   <div>
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> {{ t('action.create') }} </a-button>
+        <a-button type="primary" v-auth="['system:dict:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:dict:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
+                auth: 'system:dict:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',
@@ -77,10 +80,7 @@ function handleCreate() {
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, {
-    record,
-    isUpdate: true
-  })
+  openModal(true, { record, isUpdate: true })
 }
 
 async function handleDelete(record: Recordable) {

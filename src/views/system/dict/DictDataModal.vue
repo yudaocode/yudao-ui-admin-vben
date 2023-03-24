@@ -1,10 +1,10 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="DictDataModal">
-import { ref, computed, unref } from 'vue'
+import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { dataFormSchema } from './dict.data'
@@ -12,10 +12,9 @@ import { createDictData, getDictData, updateDictData } from '@/api/system/dict/d
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: dataFormSchema,
   showActionButtonGroup: false,
@@ -26,10 +25,8 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   resetFields()
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
-
   if (unref(isUpdate)) {
     const res = await getDictData(data.record.id)
-    rowId.value = res.id
     setFieldsValue({ ...res })
   } else {
     setFieldsValue({
@@ -37,8 +34,6 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     })
   }
 })
-
-const getTitle = computed(() => (!unref(isUpdate) ? '新增字典分类' : '编辑字典分类'))
 
 async function handleSubmit() {
   try {
