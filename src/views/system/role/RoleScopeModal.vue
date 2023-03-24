@@ -1,10 +1,10 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="RoleScopeModal">
-import { ref, computed, unref } from 'vue'
+import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { dataScopeFormSchema } from './role.data'
@@ -12,7 +12,6 @@ import { createRole, getRole, updateRole } from '@/api/system/role'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 100,
@@ -29,12 +28,9 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   if (unref(isUpdate)) {
     const res = await getRole(data.record.id)
-    rowId.value = res.id
     setFieldsValue({ ...res })
   }
 })
-
-const getTitle = computed(() => (!unref(isUpdate) ? '新增角色' : '编辑角色'))
 
 async function handleSubmit() {
   try {

@@ -1,10 +1,10 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="ConfigModal">
-import { ref, computed, unref } from 'vue'
+import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './config.data'
@@ -12,10 +12,9 @@ import { createConfig, getConfig, updateConfig } from '@/api/infra/config'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
@@ -26,15 +25,11 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   resetFields()
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
-
   if (unref(isUpdate)) {
     const res = await getConfig(data.record.id)
-    rowId.value = res.id
     setFieldsValue({ ...res })
   }
 })
-
-const getTitle = computed(() => (!unref(isUpdate) ? '新增配置' : '编辑配置'))
 
 async function handleSubmit() {
   try {

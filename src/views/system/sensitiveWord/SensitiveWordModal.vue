@@ -1,10 +1,10 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="SensitiveWordModal">
-import { ref, computed, unref } from 'vue'
+import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './sensitiveWord.data'
@@ -12,7 +12,6 @@ import { createSensitiveWord, getSensitiveWord, updateSensitiveWord } from '@/ap
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 100,
@@ -26,15 +25,11 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   resetFields()
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
-
   if (unref(isUpdate)) {
     const res = await getSensitiveWord(data.record.id)
-    rowId.value = res.id
     setFieldsValue({ ...res })
   }
 })
-
-const getTitle = computed(() => (!unref(isUpdate) ? '新增敏感词' : '编辑敏感词'))
 
 async function handleSubmit() {
   try {

@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
     <BasicForm @register="registerForm">
       <template #menuIds="{ model, field }">
         <BasicTree
@@ -16,7 +16,7 @@
   </BasicModal>
 </template>
 <script lang="ts" setup name="TenantPackageModal">
-import { ref, computed, unref } from 'vue'
+import { ref, unref } from 'vue'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { BasicModal, useModalInner } from '@/components/Modal'
@@ -27,13 +27,12 @@ import { handleTree } from '@/utils/tree'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const rowId = ref()
 const menuTree = ref<TreeItem[]>([])
 const menuKeys = ref<(string | number)[]>([])
 const menuHalfKeys = ref<(string | number)[]>([])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-  labelWidth: 100,
+  labelWidth: 120,
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
@@ -46,17 +45,13 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   resetFields()
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
-
   if (unref(isUpdate)) {
     const res = await getTenantPackage(data.record.id)
-    rowId.value = res.id
     const menus = await listSimpleMenus()
     menuTree.value = handleTree(menus, 'id')
     setFieldsValue({ ...res })
   }
 })
-
-const getTitle = computed(() => (!unref(isUpdate) ? '新增租户套餐' : '编辑租户套餐'))
 
 function menuCheck(checkedKeys, e) {
   menuKeys.value = checkedKeys as (string | number)[]
