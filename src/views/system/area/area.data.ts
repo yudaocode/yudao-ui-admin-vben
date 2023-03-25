@@ -16,7 +16,7 @@ export const columns: BasicColumn[] = [
 export const formSchema: FormSchema[] = [
   {
     label: 'IP',
-    field: 'IP',
+    field: 'ip',
     required: true,
     component: 'Input'
   },

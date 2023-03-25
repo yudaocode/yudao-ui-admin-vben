@@ -26,7 +26,8 @@ async function handleSubmit() {
   try {
     const values = await validate()
     setModalProps({ confirmLoading: true })
-    const res = getAreaByIp(values.ip)
+    console.info(values)
+    const res = await getAreaByIp(values.ip)
     if (res) {
       values.result = res
       setFieldsValue({ ...values })
