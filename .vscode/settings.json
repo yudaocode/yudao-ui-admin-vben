@@ -93,6 +93,7 @@
       "source.fixAll.stylelint": true
     }
   },
+  "unocss.root": "packages/client",
   "i18n-ally.localesPaths": ["src/locales/lang"],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sortKeys": true,
