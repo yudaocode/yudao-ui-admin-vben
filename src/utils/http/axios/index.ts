@@ -124,10 +124,9 @@ const transform: AxiosTransform = {
     if (config.method?.toUpperCase() === RequestEnum.GET) {
       if (!isString(params)) {
         // 给 get 请求加上时间戳参数，避免从缓存中拿数据。
-        config.params = Object.assign(params || {}, joinTimestamp(joinTime, false))
         let url = config.url + '?'
-        for (const propName of Object.keys(config.params)) {
-          const value = config.params[propName]
+        for (const propName of Object.keys(params)) {
+          const value = params[propName]
           if (value !== void 0 && value !== null && typeof value !== 'undefined') {
             if (typeof value === 'object') {
               for (const val of Object.keys(value)) {
