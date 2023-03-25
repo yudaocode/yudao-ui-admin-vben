@@ -1,5 +1,5 @@
 import 'uno.css'
-import 'virtual:unocss-devtools'
+// import 'virtual:unocss-devtools'
 import '@/design/index.less'
 // Register icon sprite
 import 'virtual:svg-icons-register'
