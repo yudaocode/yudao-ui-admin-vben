@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <BasicTable @register="registerTable" class="w-1/2 xl:w-1/2" @row-click="handleRowClick">
+    <BasicTable @register="registerTable" class="w-1/2" @row-click="handleRowClick">
       <template #toolbar>
         <a-button type="primary" v-auth="['system:dict:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
@@ -27,7 +27,7 @@
         </template>
       </template>
     </BasicTable>
-    <DictData class="w-1/2 xl:w-1/2" :searchInfo="searchInfo" />
+    <DictData class="w-1/2" :searchInfo="searchInfo" />
     <DictTypeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
