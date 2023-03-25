@@ -1,8 +1,8 @@
 /**
  *  Introduces component library styles on demand.
- * https://github.com/xingyuv/vite-vue-plugin-style-import
+ * https://github.com/xingyuv/vite-plugin-style-import
  */
-import { createStyleImportPlugin } from 'vite-vue-plugin-style-import'
+import { createStyleImportPlugin } from 'vite-plugin-style-import'
 
 export function configStyleImportPlugin(_isBuild: boolean) {
   if (!_isBuild) {

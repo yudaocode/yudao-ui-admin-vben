@@ -48,7 +48,7 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
   // vite-plugin-purge-icons
   vitePlugins.push(purgeIcons())
 
-  // vite-vue-plugin-style-import
+  // vite-plugin-style-import
   if (isProdFn(mode)) {
     vitePlugins.push(configStyleImportPlugin(isBuild))
   }

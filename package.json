@@ -1,6 +1,6 @@
 {
   "name": "ruoyi-ui-admin-vben",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "xingyuv",
     "email": "xingyu4j@vip.qq.com",
@@ -115,7 +115,7 @@
     "stylelint-config-recommended-vue": "^1.4.0",
     "stylelint-config-standard": "^31.0.0",
     "stylelint-order": "^6.0.3",
-    "terser": "^5.16.6",
+    "terser": "^5.16.8",
     "typescript": "^5.0.2",
     "unocss": "^0.50.6",
     "unplugin-vue-setup-extend-plus": "^0.4.9",
@@ -128,7 +128,7 @@
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-vue-plugin-html": "^1.0.1",
     "vite-vue-plugin-theme": "^1.0.0",
-    "vite-vue-plugin-style-import": "^0.1.0",
+    "vite-plugin-style-import": "^2.0.0",
     "vue-eslint-parser": "^9.1.0",
     "vue-tsc": "^1.2.0"
   },
