@@ -125,6 +125,24 @@ const transform: AxiosTransform = {
       if (!isString(params)) {
         // 给 get 请求加上时间戳参数，避免从缓存中拿数据。
         config.params = Object.assign(params || {}, joinTimestamp(joinTime, false))
+        let url = config.url + '?'
+        for (const propName of Object.keys(config.params)) {
+          const value = config.params[propName]
+          if (value !== void 0 && value !== null && typeof value !== 'undefined') {
+            if (typeof value === 'object') {
+              for (const val of Object.keys(value)) {
+                const paramss = propName + '[' + val + ']'
+                const subPart = encodeURIComponent(paramss) + '='
+                url += subPart + encodeURIComponent(value[val]) + '&'
+              }
+            } else {
+              url += `${propName}=${encodeURIComponent(value)}&`
+            }
+          }
+        }
+        url = url.slice(0, -1)
+        config.params = {}
+        config.url = url
       } else {
         // 兼容restful风格
         config.url = config.url + params + `${joinTimestamp(joinTime, true)}`
