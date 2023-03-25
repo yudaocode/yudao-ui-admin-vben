@@ -2,19 +2,22 @@
 
 <h1>yudao-ui-admin-vben</h1>
 
-## 原项目地址
+## 原框架地址 各位大佬点个star
 [gitee](https://gitee.com/xingyuv/vue-vben-admin)
 [github](https://github.com/xingyuv/vue-vben-admin)
 
 ## 预览地址
 [预览地址](http://vben.x-surge.com)
 
-## 交流群
-<img alt="index.vue" width="400px" src="./docimg/code.jpg"></img>
+
 ## 开发文档
 [开发文档](./dev.md)
-</div>
 
+### 说明
+- 本项目为ruoyi-vue-pro vue3 antdv 版本ui
+- 基于vben2.9.0版本并升级到最新的依赖，后续将升级antdv4
+- 目前开发中
+</div>
 
 ## 开发进度
 - axios token刷新 未完成
@@ -54,22 +57,21 @@
 - [TypeScript](https://www.typescriptlang.org/) - 熟悉`TypeScript`基本语法
 - [Es6+](http://es6.ruanyifeng.com/) - 熟悉 es6 基本语法
 - [Vue-Router-Next](https://next.router.vuejs.org/) - 熟悉 vue-router 基本使用
-- [Ant-Design-Vue](https://2x.antdv.com/docs/vue/introduce-cn/) - ui 基本使用
+- [Ant-Design-Vue](https://antdv.com/) - ui 基本使用
 
 ## 安装使用
 
 - 获取项目代码
 
 ```bash
-git clone https://github.com/xingyuv/vue-vben-admin.git
+git clone https://gitee.com/xingyuv/yudao-ui-admin-vben.git
 or
-git clone https://gitee.com/xingyuv/vue-vben-admin
+git clone https://github.com/xingyuv/yudao-ui-admin-vben.git
 ```
 
 - 安装依赖
 
 ```bash
-cd vue-vben-admin
 
 pnpm i
 
@@ -79,6 +81,12 @@ pnpm i
 
 ```bash
 pnpm dev
+
+or
+// 如果不想启动后端
+
+pnpm front
+
 ```
 
 - 打包
@@ -86,6 +94,9 @@ pnpm dev
 ```bash
 pnpm build
 ```
+
+## 交流群
+<img alt="index.vue" width="400px" src="./docimg/code.jpg"></img>
 
 ## Git 贡献提交规范
 
