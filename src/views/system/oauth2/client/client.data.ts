@@ -94,7 +94,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '客户端编号',
-    field: 'secret',
+    field: 'clientId',
     required: true,
     component: 'Input'
   },
