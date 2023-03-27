@@ -158,13 +158,13 @@ export const formSchema: FormSchema[] = [
     label: '用户名称',
     field: 'username',
     component: 'Input',
-    dynamicDisabled: ({ values }) => values.id !== undefined
+    dynamicDisabled: ({ values }) => !!values.id
   },
   {
     label: '用户密码',
     field: 'password',
     component: 'InputPassword',
-    ifShow: ({ values }) => values.id === undefined
+    ifShow: ({ values }) => !!!values.id
   },
   {
     label: '用户性别',
