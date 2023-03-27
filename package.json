@@ -82,6 +82,7 @@
     "@types/sortablejs": "^1.15.1",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "@unocss/preset-wind": "^0.50.6",
     "@unocss/transformer-directives": "^0.50.6",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",

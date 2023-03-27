@@ -13,9 +13,8 @@ import { configStyleImportPlugin } from './styleImport'
 import { configVisualizerConfig } from './visualizer'
 import { configThemePlugin } from './theme'
 import { configSvgIconsPlugin } from './svgSprite'
-import { isProdFn } from '../../utils'
 
-export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boolean) {
+export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   const { VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
@@ -44,11 +43,6 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
   // vite-plugin-purge-icons
   vitePlugins.push(purgeIcons())
 
-  // vite-plugin-style-import
-  if (isProdFn(mode)) {
-    vitePlugins.push(configStyleImportPlugin(isBuild))
-  }
-
   // rollup-plugin-visualizer
   vitePlugins.push(configVisualizerConfig())
 
@@ -57,6 +51,8 @@ export function createVitePlugins(mode: string, viteEnv: ViteEnv, isBuild: boole
 
   // The following plugins only work in the production environment
   if (isBuild) {
+    // vite-plugin-style-import
+    vitePlugins.push(configStyleImportPlugin(isBuild))
     // rollup-plugin-gzip
     vitePlugins.push(configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE))
 
