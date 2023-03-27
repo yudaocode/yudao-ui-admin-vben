@@ -1,11 +1,11 @@
 import { defineConfig, presetAttributify, presetMini, presetUno } from 'unocss'
-// import presetWind from '@unocss/preset-wind'
+import transformerDirectives from '@unocss/transformer-directives'
 import { primaryColor } from './build/config/themeConfig'
 
 export default defineConfig({
+  exclude: ['node_modules', 'dist', '.git', '.husky', '.vscode', 'public', 'build'],
   presets: [presetMini({ dark: 'class' }), presetAttributify(), presetUno()],
-  // presets: [presetMini(), presetAttributify(), presetUno({ dark: 'class' }), presetWind()],
-  // transformers: [createEnterPlugin()],
+  transformers: [transformerDirectives()],
   theme: {
     extend: {
       zIndex: {

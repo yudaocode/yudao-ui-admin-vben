@@ -21,6 +21,7 @@ specifiers:
   '@types/sortablejs': ^1.15.1
   '@typescript-eslint/eslint-plugin': ^5.56.0
   '@typescript-eslint/parser': ^5.56.0
+  '@unocss/transformer-directives': ^0.50.6
   '@vitejs/plugin-legacy': ^4.0.2
   '@vitejs/plugin-vue': ^4.1.0
   '@vitejs/plugin-vue-jsx': ^3.0.1
@@ -150,6 +151,7 @@ devDependencies:
   '@types/sortablejs': 1.15.1
   '@typescript-eslint/eslint-plugin': 5.56.0_2hcjazgfnbtq42tcc73br2vup4
   '@typescript-eslint/parser': 5.56.0_j4766f7ecgqbon3u7zlxn5zszu
+  '@unocss/transformer-directives': 0.50.6
   '@vitejs/plugin-legacy': 4.0.2_terser@5.16.8+vite@4.2.1
   '@vitejs/plugin-vue': 4.1.0_vite@4.2.1+vue@3.2.47
   '@vitejs/plugin-vue-jsx': 3.0.1_vite@4.2.1+vue@3.2.47
