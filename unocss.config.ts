@@ -1,8 +1,11 @@
 import { defineConfig, presetAttributify, presetMini, presetUno } from 'unocss'
+// import presetWind from '@unocss/preset-wind'
 import { primaryColor } from './build/config/themeConfig'
 
 export default defineConfig({
   presets: [presetMini({ dark: 'class' }), presetAttributify(), presetUno()],
+  // presets: [presetMini(), presetAttributify(), presetUno({ dark: 'class' }), presetWind()],
+  // transformers: [createEnterPlugin()],
   theme: {
     extend: {
       zIndex: {
@@ -10,14 +13,14 @@ export default defineConfig({
       },
       colors: {
         primary: primaryColor
-      },
-      screens: {
-        sm: '576px',
-        md: '768px',
-        lg: '992px',
-        xl: '1200px',
-        '2xl': '1600px'
       }
+    },
+    breakpoints: {
+      sm: '576px',
+      md: '768px',
+      lg: '992px',
+      xl: '1200px',
+      '2xl': '1600px'
     }
   }
 })
