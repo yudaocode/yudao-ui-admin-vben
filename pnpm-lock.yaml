@@ -22,7 +22,6 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.56.0
   '@typescript-eslint/parser': ^5.56.0
   '@unocss/transformer-directives': ^0.50.6
-  '@vitejs/plugin-legacy': ^4.0.2
   '@vitejs/plugin-vue': ^4.1.0
   '@vitejs/plugin-vue-jsx': ^3.0.1
   '@vue/compiler-sfc': ^3.2.47
@@ -152,7 +151,6 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.56.0_2hcjazgfnbtq42tcc73br2vup4
   '@typescript-eslint/parser': 5.56.0_j4766f7ecgqbon3u7zlxn5zszu
   '@unocss/transformer-directives': 0.50.6
-  '@vitejs/plugin-legacy': 4.0.2_terser@5.16.8+vite@4.2.1
   '@vitejs/plugin-vue': 4.1.0_vite@4.2.1+vue@3.2.47
   '@vitejs/plugin-vue-jsx': 3.0.1_vite@4.2.1+vue@3.2.47
   '@vue/compiler-sfc': 3.2.47
@@ -2995,26 +2993,6 @@ packages:
       - rollup
     dev: true
 
-  /@vitejs/plugin-legacy/4.0.2_terser@5.16.8+vite@4.2.1:
-    resolution: {integrity: sha512-ivnt9sCkgwJTYTWLjuvY6H/HTuiQC1EgzAPkiAvi0yNAssiqOJjyjhG3hAK5LFUUorE0w9kGxn8K0f/74DlbxQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      terser: ^5.4.0
-      vite: ^4.0.0
-    dependencies:
-      '@babel/core': 7.21.0
-      '@babel/preset-env': 7.20.2_@babel+core@7.21.0
-      browserslist: 4.21.5
-      core-js: 3.29.1
-      magic-string: 0.30.0
-      regenerator-runtime: 0.13.11
-      systemjs: 6.14.0
-      terser: 5.16.8
-      vite: 4.2.1_qrgdxfszmr3nib6z5ws3ht5idy
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@vitejs/plugin-vue-jsx/3.0.1_vite@4.2.1+vue@3.2.47:
     resolution: {integrity: sha512-+Jb7ggL48FSPS1uhPnJbJwWa9Sr90vQ+d0InW+AhBM22n+cfuYqJZDckBc+W3QSHe1WDvewMZfa4wZOtk5pRgw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -4193,6 +4171,7 @@ packages:
   /core-js/3.29.1:
     resolution: {integrity: sha512-+jwgnhg6cQxKYIIjGtAHq2nwUOolo9eoFZ4sHfUH09BLXBgxnH4gA0zEd+t+BO2cNB8idaBtZFcFTRjQJRJmAw==}
     requiresBuild: true
+    dev: false
 
   /core-util-is/1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -8450,10 +8429,6 @@ packages:
       csso: 4.2.0
       picocolors: 1.0.0
       stable: 0.1.8
-    dev: true
-
-  /systemjs/6.14.0:
-    resolution: {integrity: sha512-OMf+kFCYG9fLQerUyw/QVIPfZ+lo579R+usrDzSrZAkvMl6B0tHtc4rUP7DFaPCr7Sy6p5DYD4V9OCF1Sp6+vA==}
     dev: true
 
   /table/6.8.1:
