@@ -113,21 +113,18 @@ export class VAxios {
           // 1. 获取到刷新token
           if (getRefreshToken()) {
             // 2. 进行刷新访问令牌
-            console.info('进行刷新访问令牌')
             try {
               const refreshTokenRes = await this.refreshToken()
               // 2.1 刷新成功，则回放队列的请求 + 当前请求
-              setAccessToken(refreshTokenRes.data.data)
+              setAccessToken(refreshTokenRes.data.data.accessToken)
               ;(config as Recordable).headers.Authorization = 'Bearer ' + getAccessToken()
               requestList.forEach((cb: any) => {
                 cb()
               })
               requestList = []
-              // TODO
-              console.info('刷新令牌end', res)
-              // return new Promise((resolve) => {
-              //   resolve(this.axiosInstance(config))
-              // })
+              return new Promise((resolve) => {
+                resolve(this.axiosInstance(config))
+              })
               // res = await Promise.all([this.axiosInstance(config)])[0]
             } catch (e) {
               console.info(e)
