@@ -147,13 +147,13 @@ export const formSchema: FormSchema[] = [
     label: '用户名称',
     field: 'username',
     component: 'Input',
-    ifShow: ({ values }) => values.id !== undefined
+    ifShow: ({ values }) => !!!values.id
   },
   {
     label: '用户密码',
     field: 'password',
     component: 'InputPassword',
-    ifShow: ({ values }) => values.id === undefined
+    ifShow: ({ values }) => !!!values.id
   },
   {
     label: '账号额度',
