@@ -4,18 +4,13 @@
       <BasicTable :dataSource="columnsInfo" @register="registerTable" @row-click="handleEdit" />
     </div>
     <Divider />
-    <a-button @click="customResetFunc">上一步</a-button>
-    <a-button @click="customSubmitFunc">下一步</a-button>
+    <div class="step2-button">
+      <a-button @click="customResetFunc">上一步</a-button>
+      <a-button type="primary" @click="customSubmitFunc">下一步</a-button>
+    </div>
     <h3>说明</h3>
-    <h4>转账到支付宝账户</h4>
-    <p>
-      如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-    </p>
-
-    <h4>转账到银行卡</h4>
-    <p>
-      如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-    </p>
+    <h4>配置字段</h4>
+    <p> 配置表的字段类型，增删改查，字典等 </p>
   </div>
 </template>
 <script lang="ts" setup>
@@ -62,6 +57,11 @@ function handleEdit(record: EditRecordRow) {
     margin: 0 auto;
   }
 
+  &-button {
+    display: flex;
+    justify-content: center;
+  }
+
   h3 {
     margin: 0 0 12px;
     font-size: 16px;
@@ -79,13 +79,5 @@ function handleEdit(record: EditRecordRow) {
   p {
     color: @text-color;
   }
-}
-
-.pay-select {
-  width: 20%;
-}
-
-.pay-input {
-  width: 70%;
 }
 </style>
