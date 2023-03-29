@@ -1,6 +1,6 @@
 <template>
   <PageWrapper>
-    <div class="m-0-auto w-200">
+    <div class="step-form-form">
       <Steps :current="current">
         <Step title="生成信息" />
         <Step title="字段信息" />
@@ -54,7 +54,6 @@ function handleStep1Next(step1Values: any) {
   current.value++
   basicInfoValue.value = step1Values
   state.initSetp2 = true
-  console.info(step1Values)
 }
 
 function handleStepPrev() {
@@ -66,7 +65,6 @@ async function handleStep2Next(step2Values: any) {
   columnsInfoValue.value = step2Values
   await handleSubmit()
   state.initSetp3 = true
-  console.log(step2Values)
 }
 
 async function handleSubmit() {
@@ -95,3 +93,10 @@ onMounted(async () => {
   await getList()
 })
 </script>
+<style lang="less" scoped>
+.step-form-form {
+  width: 750px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+</style>

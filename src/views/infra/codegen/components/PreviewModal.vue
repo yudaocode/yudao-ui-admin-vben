@@ -1,7 +1,7 @@
 <template>
-  <BasicModal v-bind="$attrs" :width="1000" @register="registerModal" title="预览代码">
+  <BasicModal v-bind="$attrs" :defaultFullscreen="true" @register="registerModal" title="预览代码">
     <div class="flex">
-      <Card class="w-1/3 w-full">
+      <Card class="w-1/4">
         <BasicTree
           title="文件夹列表"
           toolbar
@@ -12,7 +12,7 @@
           @select="handleSelect"
         />
       </Card>
-      <Card class="w-2/3 w-full">
+      <Card class="w-3/4">
         <Tabs v-model:activeKey="activeKey">
           <TabPane v-for="item in previewCodes" :key="item.filePath" :tab="item.filePath.substring(item.filePath.lastIndexOf('/') + 1)">
             <a-button type="link" style="float: right" @click="copy(item.code)">复制</a-button>
