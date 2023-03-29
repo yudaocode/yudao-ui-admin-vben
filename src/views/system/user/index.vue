@@ -47,6 +47,7 @@
     </BasicTable>
     <UserModal @register="registerModal" @success="reload()" />
     <UserRoleModal @register="registerRoleModal" @success="reload()" />
+    <ResetPwdModal @register="registerPwdModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="User">
@@ -56,6 +57,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import UserModal from './UserModal.vue'
 import UserRoleModal from './UserRoleModal.vue'
+import ResetPwdModal from './ResetPwdModal.vue'
 import DeptTree from './DeptTree.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
@@ -66,6 +68,7 @@ const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerRoleModal, { openModal: openRoleModal }] = useModal()
+const [registerPwdModal, { openModal: openPwdModal }] = useModal()
 const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { getForm, reload }] = useTable({
@@ -118,7 +121,7 @@ function handleRole(record: Recordable) {
 
 /** 重置密码按钮操作 */
 function handleResetPwd(record: Recordable) {
-  openModal(true, { record, isUpdate: true })
+  openPwdModal(true, { record })
 }
 
 /** 删除按钮操作 */
