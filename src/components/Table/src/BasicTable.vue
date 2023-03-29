@@ -334,8 +334,10 @@ emit('register', tableAction, formActions)
     }
   }
 
-  .ant-tag {
-    margin-right: 0;
+  .ant-table-cell {
+    .ant-tag {
+      margin-right: 0;
+    }
   }
 
   .ant-table-wrapper {
