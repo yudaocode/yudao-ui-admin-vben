@@ -1,7 +1,7 @@
 import { PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import Unocss from 'unocss/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import windiCSS from 'vite-plugin-windicss'
 import progress from 'vite-plugin-progress'
 import purgeIcons from 'vite-plugin-purge-icons'
 import VitePluginCertificate from 'vite-plugin-mkcert'
@@ -31,8 +31,8 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     })
   ]
 
-  // Unocss
-  vitePlugins.push(Unocss())
+  // windiCSS
+  vitePlugins.push(windiCSS())
 
   // vite-vue-plugin-html
   vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))

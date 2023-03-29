@@ -1,37 +1,9 @@
-import { defineConfig, presetAttributify, presetMini, presetUno } from 'unocss'
-import transformerDirectives from '@unocss/transformer-directives'
-import presetWind from '@unocss/preset-wind'
+import { defineConfig } from 'vite-plugin-windicss'
 import { primaryColor } from './build/config/themeConfig'
 
 export default defineConfig({
-  exclude: ['node_modules', 'dist', '.git', '.husky', '.vscode', 'public', 'build'],
-  presets: [
-    presetMini({ dark: 'class' }),
-    presetAttributify(),
-    presetUno(),
-    presetWind({
-      darkMode: 'class',
-      plugins: [createEnterPlugin()],
-      theme: {
-        extend: {
-          zIndex: {
-            '-1': '-1'
-          },
-          colors: {
-            primary: primaryColor
-          },
-          screens: {
-            sm: '576px',
-            md: '768px',
-            lg: '992px',
-            xl: '1200px',
-            '2xl': '1600px'
-          }
-        }
-      }
-    })
-  ],
-  transformers: [transformerDirectives()],
+  darkMode: 'class',
+  plugins: [createEnterPlugin()],
   theme: {
     extend: {
       zIndex: {
@@ -39,14 +11,14 @@ export default defineConfig({
       },
       colors: {
         primary: primaryColor
+      },
+      screens: {
+        sm: '576px',
+        md: '768px',
+        lg: '992px',
+        xl: '1200px',
+        '2xl': '1600px'
       }
-    },
-    breakpoints: {
-      sm: '576px',
-      md: '768px',
-      lg: '992px',
-      xl: '1200px',
-      '2xl': '1600px'
     }
   }
 })

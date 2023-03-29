@@ -5,7 +5,6 @@ const include = [
   'axios',
   'pinia',
   'dayjs',
-  'unocss',
   'qrcode',
   'echarts',
   'intro.js',
@@ -27,7 +26,8 @@ const include = [
   'ant-design-vue',
   'ant-design-vue/es/style',
   'ant-design-vue/es/locale/zh_CN',
-  'ant-design-vue/es/locale/en_US'
+  'ant-design-vue/es/locale/en_US',
+  'vite-plugin-windicss'
 ]
 
 const exclude = ['@iconify/json']
