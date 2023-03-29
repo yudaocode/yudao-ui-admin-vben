@@ -114,7 +114,7 @@ export const formSchema: FormSchema[] = [
     field: 'leaderUserId',
     component: 'ApiSelect',
     componentProps: {
-      options: () => getListSimpleUsers(),
+      api: () => getListSimpleUsers(),
       labelField: 'nickname',
       valueField: 'id'
     }

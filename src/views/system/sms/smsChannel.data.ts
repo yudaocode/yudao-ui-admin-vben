@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -101,7 +101,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     required: true,
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)
+      options: getStrDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)
     }
   },
   {
