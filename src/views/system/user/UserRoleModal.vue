@@ -1,0 +1,44 @@
+<template>
+  <BasicModal v-bind="$attrs" @register="registerModal" title="用户角色权限" @ok="handleSubmit">
+    <BasicForm @register="registerForm" />
+  </BasicModal>
+</template>
+<script lang="ts" setup name="UserRoleModal">
+import { BasicModal, useModalInner } from '@/components/Modal'
+import { BasicForm, useForm } from '@/components/Form'
+import { userRoleFormSchema } from './user.data'
+import { getUser } from '@/api/system/user'
+import { assignUserRole, listUserRoles } from '@/api/system/permission'
+
+const emit = defineEmits(['success', 'register'])
+
+const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+  labelWidth: 120,
+  baseColProps: { span: 24 },
+  schemas: userRoleFormSchema,
+  showActionButtonGroup: false,
+  actionColOptions: { span: 23 }
+})
+
+const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
+  resetFields()
+  setModalProps({ confirmLoading: false })
+
+  const res = await getUser(data.record.id)
+  const roleIds = await listUserRoles(data.record.id)
+  res.roleIds = roleIds
+  setFieldsValue({ ...res })
+})
+
+async function handleSubmit() {
+  try {
+    const values = await validate()
+    setModalProps({ confirmLoading: true })
+    await assignUserRole({ userId: values.id, roleIds: values.roleIds })
+    closeModal()
+    emit('success')
+  } finally {
+    setModalProps({ confirmLoading: false })
+  }
+}
+</script>

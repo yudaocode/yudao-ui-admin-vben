@@ -37,6 +37,6 @@ export function listUserRoles(userId: number) {
 }
 
 // 赋予用户角色
-export function aassignUserRole(data: PermissionAssignUserRoleReqVO) {
+export function assignUserRole(data: PermissionAssignUserRoleReqVO) {
   return defHttp.post({ url: '/system/permission/assign-user-role', data })
 }

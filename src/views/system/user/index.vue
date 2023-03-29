@@ -14,7 +14,21 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:user:update', onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:user:update', onClick: handleEdit.bind(null, record) }
+            ]"
+            :dropDownActions="[
+              {
+                icon: IconEnum.EDIT,
+                label: '分配角色',
+                auth: 'system:permission:assign-user-role',
+                onClick: handleRole.bind(null, record)
+              },
+              {
+                icon: IconEnum.EDIT,
+                label: '重置密码',
+                auth: 'system:user:update-password',
+                onClick: handleResetPwd.bind(null, record)
+              },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
@@ -32,6 +46,7 @@
       </template>
     </BasicTable>
     <UserModal @register="registerModal" @success="reload()" />
+    <UserRoleModal @register="registerRoleModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="User">
@@ -40,6 +55,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import UserModal from './UserModal.vue'
+import UserRoleModal from './UserRoleModal.vue'
 import DeptTree from './DeptTree.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
@@ -49,6 +65,7 @@ import { UserExportReqVO, deleteUser, exportUser, getUserPage } from '@/api/syst
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
+const [registerRoleModal, { openModal: openRoleModal }] = useModal()
 const searchInfo = reactive<Recordable>({})
 
 const [registerTable, { getForm, reload }] = useTable({
@@ -71,10 +88,12 @@ const [registerTable, { getForm, reload }] = useTable({
   }
 })
 
+/** 新增按钮操作 */
 function handleCreate() {
   openModal(true, { isUpdate: false })
 }
 
+/** 导出按钮操作 */
 async function handleExport() {
   createConfirm({
     title: t('common.exportTitle'),
@@ -87,16 +106,28 @@ async function handleExport() {
   })
 }
 
+/** 修改按钮操作 */
 function handleEdit(record: Recordable) {
   openModal(true, { record, isUpdate: true })
 }
 
+/** 分配用户角色操作 */
+function handleRole(record: Recordable) {
+  openRoleModal(true, { record })
+}
+
+/** 重置密码按钮操作 */
+function handleResetPwd(record: Recordable) {
+  openModal(true, { record, isUpdate: true })
+}
+
+/** 删除按钮操作 */
 async function handleDelete(record: Recordable) {
   await deleteUser(record.id)
   createMessage.success(t('common.delSuccessText'))
   reload()
 }
-
+/** 点击部门操作 */
 function handleSelect(deptId = '') {
   searchInfo.deptId = deptId
   reload()

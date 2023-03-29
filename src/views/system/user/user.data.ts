@@ -6,6 +6,7 @@ import { listSimplePosts } from '@/api/system/post'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { updateUserStatus } from '@/api/system/user'
+import { listSimpleRoles } from '@/api/system/role'
 
 export const columns: BasicColumn[] = [
   {
@@ -197,5 +198,37 @@ export const formSchema: FormSchema[] = [
     label: '备注',
     field: 'remark',
     component: 'InputTextArea'
+  }
+]
+
+export const userRoleFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input'
+  },
+  {
+    label: '用户名称',
+    field: 'username',
+    component: 'Input',
+    dynamicDisabled: () => true
+  },
+  {
+    label: '用户昵称',
+    field: 'nickname',
+    component: 'Input',
+    dynamicDisabled: () => true
+  },
+  {
+    label: '角色',
+    field: 'roleIds',
+    component: 'ApiSelect',
+    componentProps: {
+      api: () => listSimpleRoles(),
+      labelField: 'name',
+      valueField: 'id',
+      mode: 'tags'
+    }
   }
 ]
