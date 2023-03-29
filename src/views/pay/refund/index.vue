@@ -16,7 +16,7 @@
         </template>
       </template>
     </BasicTable>
-    <RefundModal @register="registerModal" @success="reload()" />
+    <RefundModal @register="registerModal" />
   </div>
 </template>
 <script lang="ts" setup name="Refund">
@@ -33,7 +33,7 @@ const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
-const [registerTable, { getForm, reload }] = useTable({
+const [registerTable, { getForm }] = useTable({
   title: '退款列表',
   api: getRefundPage,
   columns,
