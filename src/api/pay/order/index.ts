@@ -88,6 +88,11 @@ export function getOrder(id: number) {
   return defHttp.get({ url: '/pay/order/get?id=' + id })
 }
 
+// 查询详情支付订单
+export function getOrderDetail(id: number) {
+  return defHttp.get({ url: '/pay/order/get-detail?id=' + id })
+}
+
 // 新增支付订单
 export function createOrder(data: OrderVO) {
   return defHttp.post({ url: '/pay/order/create', data })
