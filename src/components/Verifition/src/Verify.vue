@@ -150,9 +150,9 @@ export default {
   background-color: #fff;
   box-shadow: 0 0 10px rgb(0 0 0 / 30%);
   left: 50%;
-  top: 50%;
+  top: 25%;
   border-radius: 5px;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -25%);
 }
 
 .verifybox-top {
