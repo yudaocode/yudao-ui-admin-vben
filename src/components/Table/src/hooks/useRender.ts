@@ -13,10 +13,13 @@ export const useRender = {
         width: 80
       })
     }
+    return ''
   },
   renderText: (text, val) => {
     if (text) {
       return text + ' ' + val
+    } else {
+      return ''
     }
   },
   renderTag: (text, color?) => {
@@ -34,8 +37,12 @@ export const useRender = {
         })
       ])
     }
+    return ''
   },
   renderDate: (text, format?) => {
+    if (!text) {
+      return ''
+    }
     if (!format) {
       return dayjs(text).format('YYYY-MM-DD HH:mm:ss')
     } else {
@@ -50,5 +57,6 @@ export const useRender = {
         dictType: dictType || 'number'
       })
     }
+    return ''
   }
 }
