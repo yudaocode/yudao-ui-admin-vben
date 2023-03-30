@@ -12,13 +12,13 @@
             :actions="[
               { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:account:update', onClick: handleEdit.bind(null, record) },
               {
-                icon: IconEnum.EDIT,
+                icon: IconEnum.RESET,
                 label: '生成二维码',
                 auth: 'mp:account:qr-code',
                 onClick: handleGenerateQrCode.bind(null, record)
               },
               {
-                icon: IconEnum.EDIT,
+                icon: IconEnum.TEST,
                 label: '清空 API 配额',
                 auth: 'mp:account:clear-quota',
                 onClick: handleCleanQuota.bind(null, record)
