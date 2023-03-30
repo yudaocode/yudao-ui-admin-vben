@@ -1,5 +1,4 @@
 import { defHttp } from '@/utils/http/axios'
-import { UploadFileParams } from '@/types/axios'
 
 export interface ProfileDept {
   id: number
@@ -87,10 +86,7 @@ export function updateUserPwdApi(oldPassword: string, newPassword: string) {
 
 // 用户头像上传
 export function uploadAvatarApi(data) {
-  const params: UploadFileParams = {
-    file: data
-  }
-  return defHttp.uploadFile({ url: Api.uploadAvatarApi }, params)
+  return defHttp.put({ url: Api.uploadAvatarApi, data: { file: data } })
 }
 
 // 社交绑定，使用 code 授权码

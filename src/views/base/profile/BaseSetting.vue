@@ -9,6 +9,7 @@
           <div class="mb-2">头像</div>
           <CropperAvatar
             :value="avatar"
+            :uploadApi="uploadAvatarApi as any"
             btnText="更换头像"
             :btnProps="{ preIcon: 'ant-design:cloud-upload-outlined' }"
             @change="updateAvatar"
@@ -56,7 +57,6 @@ async function updateAvatar({ src, data }) {
   const userinfo = userStore.getUserInfo
   userinfo.user.avatar = src
   userStore.setUserInfo(userinfo)
-  console.log('data', data)
 }
 
 async function handleSubmit() {
