@@ -9,8 +9,8 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:account:update', onClick: handleEdit.bind(null, record) },
+            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:account:update', onClick: handleEdit.bind(null, record) }]"
+            :drop-down-actions="[
               {
                 icon: IconEnum.RESET,
                 label: '生成二维码',
