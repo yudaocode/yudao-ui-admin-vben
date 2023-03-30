@@ -15,7 +15,7 @@
               { icon: IconEnum.DOWNLOAD, label: '生成', auth: 'infra:codegen:download', onClick: handleGenTable.bind(null, record) },
               {
                 icon: IconEnum.RESET,
-                label: '同步',
+                label: t('action.sync'),
                 auth: 'infra:codegen:update',
                 popConfirm: {
                   title: '确认要强制同步' + record.tableName + '表结构吗？',

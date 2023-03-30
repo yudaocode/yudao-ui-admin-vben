@@ -7,5 +7,6 @@ export default {
   delete: 'Delete',
   detail: 'Detail',
   export: 'Export',
-  import: 'Import'
+  import: 'Import',
+  sync: 'Sync'
 }
