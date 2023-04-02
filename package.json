@@ -140,8 +140,10 @@
     "url": "https://github.com/xingyuv/issues"
   },
   "homepage": "https://github.com/xingyuv",
+  "packageManager": "pnpm@8.1.0",
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 16.0.0",
+    "pnpm": ">=7.30.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

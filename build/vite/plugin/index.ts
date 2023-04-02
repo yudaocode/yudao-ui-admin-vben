@@ -14,7 +14,7 @@ import { configVisualizerConfig } from './visualizer'
 import { configThemePlugin } from './theme'
 import { configSvgIconsPlugin } from './svgSprite'
 
-export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
+export async function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   const { VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
