@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button type="primary" v-auth="['mp:user:sync']" :preIcon="IconEnum.RESET" @click="handleSync">
-          {{ t('action.create') }}
+          {{ t('action.sync') }}
         </a-button>
       </template>
       <template #bodyCell="{ column }">
@@ -49,7 +49,7 @@ const [registerTable, { getForm, reload }] = useTable({
 /** 同步按钮操作 */
 async function handleSync() {
   createConfirm({
-    title: '同步粉丝',
+    title: t('action.sync'),
     iconType: 'warning',
     content: '是否确认同步粉丝?',
     async onOk() {

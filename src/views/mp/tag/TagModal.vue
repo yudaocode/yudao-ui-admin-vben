@@ -3,12 +3,12 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="DataSourceConfigModal">
+<script lang="ts" setup name="PostModal">
 import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
-import { formSchema } from './dataSourceConfig.data'
-import { createDataSourceConfig, getDataSourceConfig, updateDataSourceConfig } from '@/api/infra/dataSourceConfig'
+import { formSchema } from './tag.data'
+import { createTag, updateTag, getTag } from '@/api/mp/tag'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
@@ -26,7 +26,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
   if (unref(isUpdate)) {
-    const res = await getDataSourceConfig(data.record.id)
+    const res = await getTag(data.record.id)
     setFieldsValue({ ...res })
   }
 })
@@ -36,9 +36,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
-      await updateDataSourceConfig(values)
+      await updateTag(values)
     } else {
-      await createDataSourceConfig(values)
+      await createTag(values)
     }
     closeModal()
     emit('success')

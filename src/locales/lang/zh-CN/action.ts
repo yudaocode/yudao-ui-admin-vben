@@ -7,5 +7,6 @@ export default {
   delete: '删除',
   detail: '详情',
   export: '导出',
-  import: '导入'
+  import: '导入',
+  sync: '同步'
 }

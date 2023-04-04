@@ -13,11 +13,8 @@
 ## 开发文档
 [开发文档](./dev.md)
 
-### 说明
-- 本项目为ruoyi-vue-pro vue3 antdv 版本ui
-- 基于vben2.9.0版本并升级到最新的依赖，后续将升级antdv4
-- 目前开发中
-</div>
+## 交流群
+<img alt="index.vue" width="400px" src="./docimg/wx.jpg"></img>
 
 ## 开发进度
 - 系统管理 页面适配 99%
@@ -93,9 +90,6 @@ pnpm front
 ```bash
 pnpm build
 ```
-
-## 交流群
-<img alt="index.vue" width="400px" src="./docimg/code.jpg"></img>
 
 ## Git 贡献提交规范
 
