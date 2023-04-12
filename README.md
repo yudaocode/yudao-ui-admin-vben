@@ -22,6 +22,7 @@
 - 支付管理 页面适配 99%
 - 公众号   页面适配 30%
 - 工作流   页面适配 未完成
+- 升级antdv 4.0  未完成
 
 ## 框架
 
@@ -68,7 +69,6 @@ git clone https://github.com/xingyuv/yudao-ui-admin-vben.git
 - 安装依赖
 
 ```bash
-
 pnpm i
 
 ```
