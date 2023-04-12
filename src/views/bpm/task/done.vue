@@ -1,3 +1,28 @@
 <template>
-  <div>开发中</div>
+  <div>
+    <BasicTable @register="registerTable" />
+  </div>
 </template>
+<script lang="ts" setup name="Done">
+import { useI18n } from '@/hooks/web/useI18n'
+import { BasicTable, useTable } from '@/components/Table'
+import { getDoneTaskPage } from '@/api/bpm/task'
+import { columns, searchFormSchema } from './done.data'
+
+const { t } = useI18n()
+
+const [registerTable] = useTable({
+  title: '审批列表',
+  api: getDoneTaskPage,
+  columns,
+  formConfig: { labelWidth: 120, schemas: searchFormSchema },
+  useSearchForm: true,
+  showTableSetting: true,
+  actionColumn: {
+    width: 140,
+    title: t('common.action'),
+    dataIndex: 'action',
+    fixed: 'right'
+  }
+})
+</script>
