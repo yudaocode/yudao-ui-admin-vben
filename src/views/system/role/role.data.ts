@@ -2,6 +2,7 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { listSimpleDept } from '@/api/system/dept'
 import { SystemDataScopeEnum } from '@/enums/systemEnum'
+import { listSimpleMenus } from '@/api/system/menu'
 
 export const columns: BasicColumn[] = [
   {
@@ -151,11 +152,46 @@ export const dataScopeFormSchema: FormSchema[] = [
   },
   {
     label: '数据权限',
-    field: 'status',
+    field: 'dataScopeDeptIds',
     component: 'ApiTreeSelect',
     ifShow: ({ values }) => values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM,
     componentProps: {
       api: () => listSimpleDept(),
+      fieldNames: {
+        label: 'name',
+        key: 'id',
+        value: 'id'
+      },
+      handleTree: 'id'
+    }
+  }
+]
+
+export const menuScopeFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input'
+  },
+  {
+    label: '角色名称',
+    field: 'name',
+    dynamicDisabled: true,
+    component: 'Input'
+  },
+  {
+    label: '角色标识',
+    field: 'code',
+    dynamicDisabled: true,
+    component: 'Input'
+  },
+  {
+    label: '菜单权限',
+    field: 'menuIds',
+    component: 'ApiTreeSelect',
+    componentProps: {
+      api: () => listSimpleMenus(),
       fieldNames: {
         label: 'name',
         key: 'id',

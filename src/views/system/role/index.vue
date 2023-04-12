@@ -20,13 +20,13 @@
                 icon: IconEnum.EDIT,
                 label: '菜单权限',
                 auth: 'system:permission:assign-role-menu',
-                onClick: handleEdit.bind(null, record)
+                onClick: handleMenu.bind(null, record)
               },
               {
                 icon: IconEnum.EDIT,
                 label: '数据权限',
                 auth: 'system:permission:assign-role-data-scope',
-                onClick: handleEdit.bind(null, record)
+                onClick: handleDataScope.bind(null, record)
               },
               {
                 icon: IconEnum.DELETE,
@@ -45,6 +45,8 @@
       </template>
     </BasicTable>
     <RoleModal @register="registerModal" @success="reload()" />
+    <RoleMenuModal @register="registerMenuModal" @success="reload()" />
+    <RoleScopeModal @register="registerScopeModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="Role">
@@ -52,6 +54,8 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import RoleModal from './RoleModal.vue'
+import RoleMenuModal from './RoleMenuModal.vue'
+import RoleScopeModal from './RoleScopeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { RoleExportReqVO, deleteRole, exportRole, getRolePage } from '@/api/system/role'
@@ -60,6 +64,8 @@ import { columns, searchFormSchema } from './role.data'
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
+const [registerMenuModal, { openModal: openMenuModal }] = useModal()
+const [registerScopeModal, { openModal: openScopeModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '角色列表',
   api: getRolePage,
@@ -82,6 +88,14 @@ function handleCreate() {
 
 function handleEdit(record: Recordable) {
   openModal(true, { record, isUpdate: true })
+}
+
+function handleMenu(record: Recordable) {
+  openMenuModal(true, { record, isUpdate: true })
+}
+
+function handleDataScope(record: Recordable) {
+  openScopeModal(true, { record, isUpdate: true })
 }
 
 async function handleExport() {
