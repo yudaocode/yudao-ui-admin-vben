@@ -12,7 +12,7 @@
 <script lang="ts" setup name="LazyContainer" inheritAttrs="false">
 import { reactive, onMounted, ref, toRef } from 'vue'
 import { Skeleton } from 'ant-design-vue'
-import { useTimeoutFn } from '@/hooks/core/useTimeout'
+import { useTimeoutFn } from '@vueuse/core'
 import { useIntersectionObserver } from '@/hooks/event/useIntersectionObserver'
 
 interface State {

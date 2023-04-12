@@ -5,7 +5,7 @@ import { Skeleton } from 'ant-design-vue'
 import { CollapseTransition } from '@/components/Transition'
 import CollapseHeader from './CollapseHeader.vue'
 import { triggerWindowResize } from '@/utils/event'
-import { useTimeoutFn } from '@/hooks/core/useTimeout'
+import { useTimeoutFn } from '@vueuse/core'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const collapseContainerProps = {

@@ -1,7 +1,7 @@
 import type { BasicTableProps, FetchParams, SorterResult } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
 import { ref, unref, ComputedRef, computed, onMounted, watch, reactive, Ref, watchEffect } from 'vue'
-import { useTimeoutFn } from '@/hooks/core/useTimeout'
+import { useTimeoutFn } from '@vueuse/core'
 import { buildUUID } from '@/utils/uuid'
 import { isFunction, isBoolean, isObject } from '@/utils/is'
 import { get, cloneDeep, merge } from 'lodash-es'
