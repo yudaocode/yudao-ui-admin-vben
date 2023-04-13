@@ -7,7 +7,7 @@
 [github](https://github.com/xingyuv/vue-vben-admin)
 
 ## 预览地址
-[预览地址](http://vben.x-surge.com)
+[预览地址](http://vben.xingyuv.com)
 
 
 ## 开发文档

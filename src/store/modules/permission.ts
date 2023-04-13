@@ -7,6 +7,7 @@ import { store } from '@/store'
 import { useUserStore } from './user'
 import { useAppStoreWithOut } from './app'
 import { asyncRoutes } from '@/router/routes'
+import about from '@/router/routes/modules/about'
 import dashboard from '@/router/routes/modules/dashboard'
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
 import { transformRouteToMenu } from '@/router/helper/menuHelper'
@@ -226,7 +227,7 @@ export const usePermissionStore = defineStore('app-permission', {
 
           //  Background routing to menu structure
           //  后台路由到菜单结构
-          const backMenuList = transformRouteToMenu([dashboard, ...routeList])
+          const backMenuList = transformRouteToMenu([dashboard, ...routeList, about])
           this.setBackMenuList(backMenuList)
 
           // remove meta.ignoreRoute item
@@ -234,7 +235,7 @@ export const usePermissionStore = defineStore('app-permission', {
           routeList = filter(routeList, routeRemoveIgnoreFilter)
           routeList = routeList.filter(routeRemoveIgnoreFilter)
           routeList = flatMultiLevelRoutes(routeList)
-          routes = [PAGE_NOT_FOUND_ROUTE, dashboard, ...routeList]
+          routes = [PAGE_NOT_FOUND_ROUTE, dashboard, ...routeList, about]
           break
       }
 
