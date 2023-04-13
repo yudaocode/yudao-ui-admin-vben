@@ -17,7 +17,6 @@ import * as DbDocApi from '@/api/infra/dbDoc'
 import { downloadByData } from '@/utils/file/download'
 
 const { t } = useI18n()
-// const src = ref(BASE_URL + '/doc.html')
 const src = ref('')
 /** 页面加载 */
 const init = async () => {
