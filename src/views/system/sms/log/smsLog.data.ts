@@ -1,5 +1,5 @@
 import { getSimpleSmsChannels } from '@/api/system/sms/smsChannel'
-import { getIntDictOptions } from '../../../utils/dict'
+import { getIntDictOptions } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
 
