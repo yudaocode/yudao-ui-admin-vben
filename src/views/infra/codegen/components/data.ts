@@ -57,6 +57,16 @@ export const basicInfoSchemas: FormSchema[] = [
     colProps: { span: 12 }
   },
   {
+    label: '前端类型',
+    field: 'frontType',
+    required: true,
+    component: 'Select',
+    componentProps: {
+      options: getIntDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE)
+    },
+    colProps: { span: 12 }
+  },
+  {
     label: '生成场景',
     field: 'scene',
     required: true,
