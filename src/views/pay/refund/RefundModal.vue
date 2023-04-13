@@ -3,7 +3,7 @@
     <Description :bordered="false" :column="3" :data="refundData" :schema="descSchema" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="RefundModal">
+<script lang="ts" setup name="PayRefundModal">
 import { ref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { Description } from '@/components/Description'

@@ -19,7 +19,7 @@
     <RefundModal @register="registerModal" />
   </div>
 </template>
-<script lang="ts" setup name="Refund">
+<script lang="ts" setup name="PayRefund">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
