@@ -26,12 +26,14 @@ export const getDictOptions = (dictType: string) => {
 export const getIntDictOptions = (dictType: string) => {
   const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: parseInt(dict.value + '')
+  if (dictOptions && dictOptions.length > 0) {
+    dictOptions.forEach((dict: DictDataType) => {
+      dictOption.push({
+        ...dict,
+        value: parseInt(dict.value + '')
+      })
     })
-  })
+  }
 
   return dictOption
 }
@@ -39,34 +41,42 @@ export const getIntDictOptions = (dictType: string) => {
 export const getStrDictOptions = (dictType: string) => {
   const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: dict.value + ''
+  if (dictOptions && dictOptions.length > 0) {
+    dictOptions.forEach((dict: DictDataType) => {
+      dictOption.push({
+        ...dict,
+        value: dict.value + ''
+      })
     })
-  })
+  }
   return dictOption
 }
 
 export const getBoolDictOptions = (dictType: string) => {
   const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: dict.value + '' === 'true' ? true : false
+  if (dictOptions && dictOptions.length > 0) {
+    dictOptions.forEach((dict: DictDataType) => {
+      dictOption.push({
+        ...dict,
+        value: dict.value + '' === 'true' ? true : false
+      })
     })
-  })
+  }
   return dictOption
 }
 
 export const getDictObj = (dictType: string, value: any) => {
   const dictOptions: DictDataType[] = getDictOptions(dictType)
-  dictOptions.forEach((dict: DictDataType) => {
-    if (dict.value === value.toString()) {
-      return dict
-    }
-  })
+  if (dictOptions && dictOptions.length > 0) {
+    dictOptions.forEach((dict: DictDataType) => {
+      if (dict.value === value.toString()) {
+        return dict
+      }
+    })
+  } else {
+    return null
+  }
 }
 
 export enum DICT_TYPE {
@@ -100,6 +110,7 @@ export enum DICT_TYPE {
   INFRA_API_ERROR_LOG_PROCESS_STATUS = 'infra_api_error_log_process_status',
   INFRA_CONFIG_TYPE = 'infra_config_type',
   INFRA_CODEGEN_TEMPLATE_TYPE = 'infra_codegen_template_type',
+  INFRA_CODEGEN_FRONT_TYPE = 'infra_codegen_front_type',
   INFRA_CODEGEN_SCENE = 'infra_codegen_scene',
   INFRA_FILE_STORAGE = 'infra_file_storage',
 
