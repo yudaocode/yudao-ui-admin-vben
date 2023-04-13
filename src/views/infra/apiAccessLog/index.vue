@@ -9,7 +9,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="ApiErrorLog">
+<script lang="ts" setup name="InfraApiErrorLog">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'

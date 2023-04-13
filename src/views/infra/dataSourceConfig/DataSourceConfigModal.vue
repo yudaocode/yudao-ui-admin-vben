@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="DataSourceConfigModal">
+<script lang="ts" setup name="InfraDataSourceConfigModal">
 import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'

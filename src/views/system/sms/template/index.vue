@@ -39,7 +39,7 @@
     <SmsTemplateModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SmsTemplate">
+<script lang="ts" setup name="SystemSmsTemplate">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { SmsTemplateExportReqVO, deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '@/api/system/sms/smsTemplate'
 import { useModal } from '@/components/Modal'

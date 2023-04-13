@@ -7,7 +7,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="LoginLog">
+<script lang="ts" setup name="SystemLoginLog">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'

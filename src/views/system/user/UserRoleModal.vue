@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="UserRoleModal">
+<script lang="ts" setup name="SystemUserRoleModal">
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { userRoleFormSchema } from './user.data'

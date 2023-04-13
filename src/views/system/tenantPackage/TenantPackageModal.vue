@@ -15,7 +15,7 @@
     </BasicForm>
   </BasicModal>
 </template>
-<script lang="ts" setup name="TenantPackageModal">
+<script lang="ts" setup name="SystemTenantPackageModal">
 import { ref, unref } from 'vue'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicTree, TreeItem } from '@/components/Tree'

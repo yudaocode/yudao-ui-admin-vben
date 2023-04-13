@@ -42,7 +42,7 @@
     <AccountModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Account">
+<script lang="ts" setup name="MpAccount">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'

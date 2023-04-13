@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="OperateLog">
+<script lang="ts" setup name="SystemOperateLog">
 import { BasicTable, useTable } from '@/components/Table'
 import { getMailAccountPage } from '@/api/system/mail/log'
 import { columns, searchFormSchema } from './mailLog.data'

@@ -23,7 +23,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="Token">
+<script lang="ts" setup name="SystemToken">
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'

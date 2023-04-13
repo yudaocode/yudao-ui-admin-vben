@@ -33,7 +33,7 @@
     <TenantModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Tenant">
+<script lang="ts" setup name="SystemTenant">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { TenantExportReqVO, deleteTenant, exportTenant, getTenantPage } from '@/api/system/tenant'
 import { useModal } from '@/components/Modal'

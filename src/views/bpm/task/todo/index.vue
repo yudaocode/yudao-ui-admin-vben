@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="Todo">
+<script lang="ts" setup name="BpmTodo">
 import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable } from '@/components/Table'
 import { getTodoTaskPage } from '@/api/bpm/task'

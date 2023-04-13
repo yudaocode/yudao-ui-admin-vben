@@ -32,7 +32,7 @@
     <MenuModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Menu">
+<script lang="ts" setup name="SystemMenu">
 import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

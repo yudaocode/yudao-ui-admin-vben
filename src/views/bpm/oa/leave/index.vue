@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="Form">
+<script lang="ts" setup name="BpmLeave">
 import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable } from '@/components/Table'
 import { getLeavePage } from '@/api/bpm/leave'

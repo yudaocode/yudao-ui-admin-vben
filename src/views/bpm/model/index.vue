@@ -30,7 +30,7 @@
     <ModelModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Model">
+<script lang="ts" setup name="BpmModel">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'

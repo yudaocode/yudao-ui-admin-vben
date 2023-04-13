@@ -31,7 +31,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="ApiErrorLog">
+<script lang="ts" setup name="InfraApiErrorLog">
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
 import { InfraApiErrorLogProcessStatusEnum } from '@/enums/systemEnum'

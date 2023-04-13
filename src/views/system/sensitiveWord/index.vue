@@ -38,7 +38,7 @@
     <SensitiveWordModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SensitiveWord">
+<script lang="ts" setup name="SystemSensitiveWord">
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { SensitiveWordExportReqVO, deleteSensitiveWord, exportSensitiveWord, getSensitiveWordPage } from '@/api/system/sensitiveWord'
 import { useModal } from '@/components/Modal'

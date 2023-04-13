@@ -9,7 +9,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SmsLog">
+<script lang="ts" setup name="SystemSmsLog">
 import { BasicTable, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { SmsLogExportReqVO, exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'

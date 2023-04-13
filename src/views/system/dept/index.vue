@@ -35,7 +35,7 @@
     <DeptModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Dept">
+<script lang="ts" setup name="SystemDept">
 import { nextTick, ref, onMounted } from 'vue'
 import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'

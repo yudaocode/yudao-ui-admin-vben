@@ -8,7 +8,7 @@
     <AreaModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Area">
+<script lang="ts" setup name="SystemArea">
 import { useModal } from '@/components/Modal'
 import AreaModal from './AreaModal.vue'
 import { IconEnum } from '@/enums/appEnum'

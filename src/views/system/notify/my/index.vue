@@ -13,7 +13,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="MyNotify">
+<script lang="ts" setup name="SystemMyMessage">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'

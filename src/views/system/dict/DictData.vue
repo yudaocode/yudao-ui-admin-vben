@@ -30,7 +30,7 @@
     <DictDataModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="DictData">
+<script lang="ts" setup name="SystemDictData">
 import { watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

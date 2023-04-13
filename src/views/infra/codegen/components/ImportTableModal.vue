@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="ImportTableModal">
+<script lang="ts" setup name="InfraImportTableModal">
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicTable, useTable } from '@/components/Table'
 import { importTableColumns, importTableSearchFormSchema } from '../codegen.data'

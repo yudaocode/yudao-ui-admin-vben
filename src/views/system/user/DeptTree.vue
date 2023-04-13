@@ -12,7 +12,7 @@
     />
   </div>
 </template>
-<script lang="ts" setup name="DeptTree">
+<script lang="ts" setup name="SystemDeptTree">
 import { onMounted, ref } from 'vue'
 
 import { BasicTree, TreeItem } from '@/components/Tree'

@@ -50,7 +50,7 @@
     <ResetPwdModal @register="registerPwdModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="User">
+<script lang="ts" setup name="SystemUser">
 import { reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

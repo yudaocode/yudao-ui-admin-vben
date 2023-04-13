@@ -31,7 +31,7 @@
     <DictTypeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Dict">
+<script lang="ts" setup name="SystemDict">
 import { reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

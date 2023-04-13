@@ -3,7 +3,7 @@
     <IFrame :src="src" />
   </div>
 </template>
-<script setup lang="ts" name="Swagger">
+<script setup lang="ts" name="InfraServer">
 import { ref } from 'vue'
 import { IFrame } from '@/components/IFrame'
 

@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="LoginLog">
+<script lang="ts" setup name="SystemMessage">
 import { BasicTable, useTable } from '@/components/Table'
 import { getNotifyMessagePage } from '@/api/system/notify/message'
 import { columns, searchFormSchema } from './message.data'

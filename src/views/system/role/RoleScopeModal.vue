@@ -14,7 +14,7 @@
     </BasicForm>
   </BasicModal>
 </template>
-<script lang="ts" setup name="RoleScopeModal">
+<script lang="ts" setup name="SystemRoleScopeModal">
 import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'

@@ -29,7 +29,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="Form">
+<script lang="ts" setup name="BpmForm">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'

@@ -23,7 +23,7 @@
     </div>
   </BasicModal>
 </template>
-<script lang="ts" setup name="PreviewModal">
+<script lang="ts" setup name="InfraPreviewModal">
 import { ref, unref } from 'vue'
 import { Card, Tabs } from 'ant-design-vue'
 import { BasicTree } from '@/components/Tree'

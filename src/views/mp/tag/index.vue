@@ -33,7 +33,7 @@
     <TagModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="Tag">
+<script lang="ts" setup name="MpTag">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'

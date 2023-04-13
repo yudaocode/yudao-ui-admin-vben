@@ -35,7 +35,7 @@
     <TenantPackageModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="TenantPackage">
+<script lang="ts" setup name="SystemTenantPackage">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'

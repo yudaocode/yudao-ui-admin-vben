@@ -45,7 +45,7 @@
     </div>
   </PageWrapper>
 </template>
-<script lang="ts" setup>
+<script lang="ts" setup name="InfraWebSocket">
 import { reactive, watchEffect, computed, ref } from 'vue'
 import { Tag, Input } from 'ant-design-vue'
 import { PageWrapper } from '@/components/Page'

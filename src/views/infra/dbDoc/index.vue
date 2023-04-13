@@ -8,7 +8,7 @@
     <IFrame :src="src" />
   </PageWrapper>
 </template>
-<script setup lang="ts" name="Swagger">
+<script setup lang="ts" name="InfraDbDoc">
 import { PageWrapper } from '@/components/Page'
 import { onMounted, ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

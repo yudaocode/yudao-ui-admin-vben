@@ -17,7 +17,7 @@
     <RedisModal @register="registerModal" />
   </div>
 </template>
-<script lang="ts" setup name="Redis">
+<script lang="ts" setup name="InfraRedis">
 import { ref, onMounted } from 'vue'
 import { useModal } from '@/components/Modal'
 import { Description } from '@/components/Description'
