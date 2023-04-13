@@ -81,11 +81,24 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
     }
 
     if (isUrl(route.path)) {
-      console.info(route)
       route.component = 'IFRAME'
+      const path = route.path
+      route.path = '/' + route.name
+      const childRoute = [
+        {
+          path: path,
+          name: route.name,
+          component: 'IFRAME',
+          meta: {
+            title: route.name,
+            icon: route.icon
+          }
+        }
+      ]
+      route.children = childRoute
     }
     const component = route.component as string
-    if (component) {
+    if (component && !isUrl(route.path)) {
       if (component.toUpperCase() === 'LAYOUT') {
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
         const meta = route.meta || {}
