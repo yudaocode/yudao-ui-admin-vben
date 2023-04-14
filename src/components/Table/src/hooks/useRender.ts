@@ -50,9 +50,6 @@ export const useRender = {
     }
   },
   renderDict: (text, type, dictType?) => {
-    if (!text) {
-      return ''
-    }
     if (type) {
       return h(DictTag, {
         type: type,
