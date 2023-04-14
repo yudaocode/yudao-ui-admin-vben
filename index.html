@@ -1,25 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" id="htmlRoot">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="renderer" content="webkit" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>%VITE_GLOB_APP_TITLE%</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0"
+    />
+    <!-- 由 vite 注入 VITE_GLOB_APP_TITLE 变量，在 .env 内配置 -->
+    <title><%= VITE_GLOB_APP_TITLE %></title>
     <link rel="icon" href="/favicon.ico" />
   </head>
   <body>
-    <script>
-      (() => {
-        var htmlRoot = document.getElementById('htmlRoot');
-        var theme = window.localStorage.getItem('__APP__DARK__MODE__');
-        if (htmlRoot && theme) {
-          htmlRoot.setAttribute('data-theme', theme);
-          theme = htmlRoot = null;
-        }
-      })();
-    </script>
     <div id="app">
+      <!-- 页面加载后会删除 loading 节点，所以无需担心污染 -->
       <style>
         html[data-theme='dark'] .app-loading {
           background-color: #2c344a;
@@ -29,125 +24,109 @@
           color: rgb(255 255 255 / 85%);
         }
 
-        .app-loading {
+        .loading {
           display: flex;
-          width: 100%;
-          height: 100%;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          background-color: #f4f7f9;
-        }
-
-        .app-loading .app-loading-wrap {
-          position: absolute;
+          position: fixed;
           top: 50%;
           left: 50%;
-          display: flex;
-          transform: translate3d(-50%, -50%, 0);
-          justify-content: center;
-          align-items: center;
           flex-direction: column;
-        }
-
-        .app-loading .dots {
-          display: flex;
-          padding: 98px;
-          justify-content: center;
           align-items: center;
-        }
-
-        .app-loading .app-loading-title {
-          display: flex;
-          margin-top: 30px;
-          font-size: 30px;
-          color: rgb(0 0 0 / 85%);
           justify-content: center;
-          align-items: center;
+          transform: translate3d(-50%, -50%, 0);
         }
 
-        .app-loading .app-loading-logo {
+        .logo {
           display: block;
-          width: 90px;
-          margin: 0 auto 20px;
+          width: 100px;
+          margin: 0 auto;
+          margin-bottom: 10px;
         }
 
-        .dot {
-          position: relative;
+        .title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 30px;
+          color: rgb(0 0 0 / 85%);
+          font-size: 30px;
+        }
+
+        .dots {
           display: inline-block;
+          position: relative;
+          box-sizing: border-box;
           width: 48px;
           height: 48px;
           margin-top: 30px;
-          font-size: 32px;
           transform: rotate(45deg);
-          box-sizing: border-box;
-          animation: antRotate 1.2s infinite linear;
+          animation: rotate 1s infinite linear;
+          font-size: 32px;
         }
 
-        .dot i {
-          position: absolute;
+        .dots i {
           display: block;
+          position: absolute;
           width: 20px;
           height: 20px;
-          background-color: #0065cc;
-          border-radius: 100%;
-          opacity: 30%;
           transform: scale(0.75);
-          animation: antSpinMove 1s infinite linear alternate;
           transform-origin: 50% 50%;
+          animation: spin-move 1s infinite linear alternate;
+          border-radius: 100%;
+          opacity: 0.3;
+          background-color: #0065cc;
         }
 
-        .dot i:nth-child(1) {
+        .dots i:nth-child(1) {
           top: 0;
           left: 0;
         }
 
-        .dot i:nth-child(2) {
+        .dots i:nth-child(2) {
           top: 0;
           right: 0;
           animation-delay: 0.4s;
         }
 
-        .dot i:nth-child(3) {
+        .dots i:nth-child(3) {
           right: 0;
           bottom: 0;
           animation-delay: 0.8s;
         }
 
-        .dot i:nth-child(4) {
+        .dots i:nth-child(4) {
           bottom: 0;
           left: 0;
           animation-delay: 1.2s;
         }
-        @keyframes antRotate {
+
+        @keyframes rotate {
           to {
             transform: rotate(405deg);
           }
         }
-        @keyframes antRotate {
+
+        @keyframes rotate {
           to {
             transform: rotate(405deg);
           }
         }
-        @keyframes antSpinMove {
+
+        @keyframes spin-move {
           to {
-            opacity: 100%;
+            opacity: 1;
           }
         }
-        @keyframes antSpinMove {
+
+        @keyframes spin-move {
           to {
-            opacity: 100%;
+            opacity: 1;
           }
         }
       </style>
-      <div class="app-loading">
-        <div class="app-loading-wrap">
-          <img src="/resource/img/logo.png" class="app-loading-logo" alt="Logo" />
-          <div class="app-loading-dots">
-            <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
-          </div>
-          <div class="app-loading-title">%VITE_GLOB_APP_TITLE%</div>
-        </div>
+      <div class="loading">
+        <img src="/resource/img//logo.png" class="logo" alt="Logo" />
+        <span class="dots"><i></i><i></i><i></i><i></i></span>
+        <div class="title"><%= VITE_GLOB_APP_TITLE %></div>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
