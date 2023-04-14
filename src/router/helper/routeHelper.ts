@@ -1,10 +1,9 @@
 import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
-import type { Router, RouteRecordNormalized } from 'vue-router'
-
 import { getParentLayout, LAYOUT, EXCEPTION_COMPONENT } from '@/router/constant'
+import type { Router, RouteRecordNormalized } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { cloneDeep, omit } from 'lodash-es'
 import { warn } from '@/utils/log'
-import { createRouter, createWebHashHistory } from 'vue-router'
 import { isUrl } from '@/utils/is'
 
 export type LayoutMapKey = 'LAYOUT'

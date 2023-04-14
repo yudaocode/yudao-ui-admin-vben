@@ -17,7 +17,7 @@ import { configSvgIconsPlugin } from './svgSprite'
 export async function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   const { VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
 
-  const vitePlugins: (PluginOption | PluginOption[])[] = [
+  const vitePlugins: PluginOption[] = [
     // have to
     vue(),
     // have to

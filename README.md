@@ -29,7 +29,7 @@
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
 | [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.2.47 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.2.1 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.0 |
 | [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.17 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.4 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.0.34 |
