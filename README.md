@@ -9,6 +9,7 @@
 
 ## 预览地址
 - [预览地址](http://vben.xingyuv.com)
+- [启动文档](https://doc.iocoder.cn/quick-start/)
 
 ## 交流群
 <img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
