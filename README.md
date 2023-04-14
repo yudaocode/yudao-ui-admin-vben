@@ -1,20 +1,17 @@
-[![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
-
 <h1>yudao-ui-admin-vben</h1>
 
+[![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
+
 ## 原框架地址 各位大佬点个star
-[gitee](https://gitee.com/xingyuv/vue-vben-admin)
-[github](https://github.com/xingyuv/vue-vben-admin)
+- [gitee](https://gitee.com/xingyuv/vue-vben-admin)
+- [github](https://github.com/xingyuv/vue-vben-admin)
+
 
 ## 预览地址
-[预览地址](http://vben.xingyuv.com)
-
-
-## 开发文档
-[开发文档](./dev.md)
+- [预览地址](http://vben.xingyuv.com)
 
 ## 交流群
-<img alt="index.vue" width="400px" src="./docimg/wx.jpg"></img>
+<img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
 
 ## 开发进度
 - 系统管理 页面适配 99%
