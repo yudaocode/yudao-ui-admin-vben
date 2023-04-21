@@ -6,6 +6,7 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
+          :checkStrictly="false"
           checkable
           toolbar
           title="部门分配"

@@ -6,6 +6,7 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
+          :checkStrictly="true"
           checkable
           toolbar
           title="菜单分配"

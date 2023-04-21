@@ -6,6 +6,7 @@
           v-model:value="model[field]"
           :treeData="menuTree"
           :fieldNames="{ title: 'name', key: 'id' }"
+          :checkStrictly="false"
           checkable
           toolbar
           @check="menuCheck"
