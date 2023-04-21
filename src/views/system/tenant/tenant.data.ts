@@ -165,7 +165,11 @@ export const formSchema: FormSchema[] = [
     label: '过期时间',
     field: 'expireTime',
     required: true,
-    component: 'DatePicker'
+    component: 'DatePicker',
+    componentProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }
   },
   {
     label: '绑定域名',
