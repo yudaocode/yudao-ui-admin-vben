@@ -1,10 +1,15 @@
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #editor="{ model, field }">
+        <Tinymce v-model="model[field]" width="100%" />
+      </template>
+    </BasicForm>
   </BasicModal>
 </template>
 <script lang="ts" setup name="SystemNoticeModal">
 import { ref, unref } from 'vue'
+import { Tinymce } from '@/components/Tinymce'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { formSchema } from './notice.data'
