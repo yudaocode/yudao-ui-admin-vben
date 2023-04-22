@@ -68,8 +68,17 @@
       <GithubFilled />
       <WechatFilled />
       <AlipayCircleFilled />
-      <GoogleCircleFilled />
-      <TwitterCircleFilled />
+      <!-- <GoogleCircleFilled /> -->
+      <!-- <TwitterCircleFilled /> -->
+    </div>
+
+    <!-- 萌新必读 -->
+    <Divider class="enter-x">萌新必读</Divider>
+    <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
+      <Button href="https://doc.iocoder.cn/" target="_blank">📚开发指南</Button>
+      <Button href="https://doc.iocoder.cn/video/" target="_blank" style="padding-left: 10px">🔥视频教程</Button>
+      <Button href="https://www.iocoder.cn/Interview/good-collection/" target="_blank" style="padding-left: 10px">⚡面试手册</Button>
+      <Button href="http://static.yudao.iocoder.cn/mp/xinyu370.jpeg" target="_blank" style="padding-left: 10px">🤝外包咨询</Button>
     </div>
   </Form>
   <Verify ref="verify" mode="pop" :captchaType="captchaType" :imgSize="{ width: '400px', height: '200px' }" @success="handleLogin" />
@@ -78,7 +87,7 @@
 import { reactive, ref, unref, computed } from 'vue'
 
 import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue'
-import { GithubFilled, WechatFilled, AlipayCircleFilled, GoogleCircleFilled, TwitterCircleFilled } from '@ant-design/icons-vue'
+import { GithubFilled, WechatFilled, AlipayCircleFilled } from '@ant-design/icons-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 
 import { useI18n } from '@/hooks/web/useI18n'

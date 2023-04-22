@@ -21,6 +21,8 @@ if (isDevMode()) {
   import('ant-design-vue/dist/antd.less')
 }
 
+import '@/utils/tongji' // 百度统计
+
 async function bootstrap() {
   const app = createApp(App)
 
