@@ -5,7 +5,8 @@
         <span class="flex-1">
           <a :href="GITHUB_URL" target="_blank">{{ name }}</a>
           基于Vue3.0、Vite、 Ant-Design-Vue 、TypeScript
-          的后台解决方案，目标是为中大型项目开发,提供现成的开箱解决方案及丰富的示例,原则上不会限制任何代码用于商用。
+          的后台解决方案，目标是为中大型项目开发,提供现成的开箱解决方案及丰富的示例,原则上不会限制任何代码用于商用。<br />
+          同时，我们也提供<a :href="SITE_URL" target="_blank">外包服务</a>。
         </span>
       </div>
     </template>
@@ -56,6 +57,11 @@ const infoSchema: DescItem[] = [
     label: 'Github',
     field: 'github',
     render: commonLinkRender('Github')
+  },
+  {
+    label: '外包服务',
+    field: 'outsourcing',
+    render: commonLinkRender('外包服务')
   }
 ]
 
@@ -64,7 +70,8 @@ const infoData = {
   lastBuildTime,
   doc: DOC_URL,
   preview: SITE_URL,
-  github: GITHUB_URL
+  github: GITHUB_URL,
+  outsourcing: SITE_URL
 }
 
 Object.keys(dependencies).forEach((key) => {
