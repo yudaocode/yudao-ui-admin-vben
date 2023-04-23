@@ -4,12 +4,11 @@
       <template #menuIds="{ model, field }">
         <BasicTree
           v-model:value="model[field]"
-          :treeData="menuTree"
+          :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
-          :checkStrictly="false"
+          :checkStrictly="true"
           checkable
           toolbar
-          @check="menuCheck"
           title="菜单分配"
         />
       </template>
@@ -28,9 +27,7 @@ import { handleTree } from '@/utils/tree'
 
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
-const menuTree = ref<TreeItem[]>([])
-const menuKeys = ref<(string | number)[]>([])
-const menuHalfKeys = ref<(string | number)[]>([])
+const treeData = ref<TreeItem[]>([])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
@@ -41,29 +38,24 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
-  menuKeys.value = []
-  menuHalfKeys.value = []
   resetFields()
   setModalProps({ confirmLoading: false })
+  if (unref(treeData).length === 0) {
+    const res = await listSimpleMenus()
+    treeData.value = handleTree(res, 'id')
+  }
   isUpdate.value = !!data?.isUpdate
+
   if (unref(isUpdate)) {
     const res = await getTenantPackage(data.record.id)
-    const menus = await listSimpleMenus()
-    menuTree.value = handleTree(menus, 'id')
     setFieldsValue({ ...res })
   }
 })
-
-function menuCheck(checkedKeys, e) {
-  menuKeys.value = checkedKeys as (string | number)[]
-  menuHalfKeys.value = e.halfCheckedKeys as (string | number)[]
-}
 
 async function handleSubmit() {
   try {
     const values = await validate()
     setModalProps({ confirmLoading: true })
-    values.menuIds = menuKeys.value.concat(menuHalfKeys.value)
     if (unref(isUpdate)) {
       await updateTenantPackage(values)
     } else {
