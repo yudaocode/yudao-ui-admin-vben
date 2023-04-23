@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" title="修改角色菜单权限" @ok="handleSubmit">
     <BasicForm @register="registerForm">
       <template #menuIds="{ model, field }">
         <BasicTree
@@ -20,14 +20,13 @@ import { ref, unref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
 import { menuScopeFormSchema } from './role.data'
-import { createRole, getRole, updateRole } from '@/api/system/role'
+import { getRole } from '@/api/system/role'
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
-import { listRoleMenus } from '@/api/system/permission'
+import { assignRoleMenu, listRoleMenus } from '@/api/system/permission'
 
 const emit = defineEmits(['success', 'register'])
-const isUpdate = ref(true)
 const treeData = ref<TreeItem[]>([])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
@@ -45,25 +44,18 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     const res = await listSimpleMenus()
     treeData.value = handleTree(res, 'id')
   }
-  isUpdate.value = !!data?.isUpdate
 
-  if (unref(isUpdate)) {
-    const res = await getRole(data.record.id)
-    const menuRes = await listRoleMenus(data.record.id)
-    res.menuIds = menuRes
-    setFieldsValue({ ...res })
-  }
+  const res = await getRole(data.record.id)
+  const menuRes = await listRoleMenus(data.record.id)
+  res.menuIds = menuRes
+  setFieldsValue({ ...res })
 })
 
 async function handleSubmit() {
   try {
     const values = await validate()
     setModalProps({ confirmLoading: true })
-    if (unref(isUpdate)) {
-      await updateRole(values)
-    } else {
-      await createRole(values)
-    }
+    await assignRoleMenu(values)
     closeModal()
     emit('success')
   } finally {
