@@ -22,7 +22,8 @@ const props = defineProps({
   params: { type: Object },
   immediate: { type: Boolean, default: true },
   resultField: propTypes.string.def(''),
-  handleTree: { type: String, default: '' }
+  handleTree: { type: String, default: '' },
+  parent: { type: String, default: '' }
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
@@ -79,7 +80,13 @@ async function fetch() {
   if (props.handleTree) {
     result = handleTree(result, props.handleTree)
   }
-  treeData.value = (result as Recordable[]) || []
+  if (props.parent) {
+    treeData.value = [{ id: 0, name: props.parent, children: [] }]
+    treeData.value[0].children = (result as Recordable[]) || []
+  } else {
+    treeData.value = (result as Recordable[]) || []
+  }
+
   isFirstLoaded.value = true
   emit('options-change', treeData.value)
 }

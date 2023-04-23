@@ -85,6 +85,7 @@ export const formSchema: FormSchema[] = [
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleMenus(),
+      parent: '主类目',
       fieldNames: {
         label: 'name',
         key: 'id',
