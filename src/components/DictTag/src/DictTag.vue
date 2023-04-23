@@ -52,11 +52,7 @@ export default defineComponent({
       getDictObj(props.type, props.value.toString())
       // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题
       return (
-        <Tag
-          style={dictData.value?.cssClass ? 'color: #ffffff' : ''}
-          type={dictData.value?.colorType}
-          color={dictData.value?.cssClass && isHexColor(dictData.value?.cssClass) ? dictData.value?.cssClass : ''}
-        >
+        <Tag color={dictData.value?.cssClass && isHexColor(dictData.value?.cssClass) ? dictData.value?.cssClass : ''}>
           {dictData.value?.label}
         </Tag>
       )
