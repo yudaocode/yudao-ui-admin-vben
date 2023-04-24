@@ -91,11 +91,11 @@ function handleEdit(record: Recordable) {
 }
 
 function handleMenu(record: Recordable) {
-  openMenuModal(true, { record, isUpdate: true })
+  openMenuModal(true, { record })
 }
 
 function handleDataScope(record: Recordable) {
-  openScopeModal(true, { record, isUpdate: true })
+  openScopeModal(true, { record })
 }
 
 async function handleExport() {

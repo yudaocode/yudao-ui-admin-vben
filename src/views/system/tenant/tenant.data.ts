@@ -167,8 +167,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'DatePicker',
     componentProps: {
-      showTime: true,
-      format: 'YYYY-MM-DD HH:mm:ss'
+      showTime: true
     }
   },
   {

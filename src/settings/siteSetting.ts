@@ -5,4 +5,4 @@ export const GITHUB_URL = 'https://gitee.com/xingyuv/vue-vben-admin'
 export const DOC_URL = 'http://vben.xingyuv.com/'
 
 // site url
-export const SITE_URL = 'http://vben.xingyuv.com/'
+export const SITE_URL = 'http://static.yudao.iocoder.cn/mp/xinyu370.jpeg'

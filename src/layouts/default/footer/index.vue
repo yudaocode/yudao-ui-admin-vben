@@ -1,7 +1,7 @@
 <template>
   <Footer :class="prefixCls" v-if="getShowLayoutFooter" ref="footerRef">
     <div :class="`${prefixCls}__links`">
-      <a @click="openWindow(SITE_URL)">{{ t('layout.footer.onlinePreview') }}</a>
+      <a @click="openWindow(SITE_URL)">外包咨询</a>
 
       <GithubFilled @click="openWindow(GITHUB_URL)" :class="`${prefixCls}__github`" />
 
