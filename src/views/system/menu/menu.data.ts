@@ -1,9 +1,7 @@
-import Icon from '@/components/Icon'
 import { listSimpleMenus } from '@/api/system/menu'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { SystemMenuTypeEnum } from '@/enums/systemEnum'
-import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
@@ -25,7 +23,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'icon',
     width: 60,
     customRender: ({ record }) => {
-      return h(Icon, { icon: record.icon })
+      return useRender.renderIcon(record.icon)
     }
   },
   {

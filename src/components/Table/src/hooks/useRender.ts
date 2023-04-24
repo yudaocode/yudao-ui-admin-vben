@@ -1,4 +1,5 @@
 import { DictTag } from '@/components/DictTag'
+import Icon from '@/components/Icon'
 import { Image, Tag } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { h } from 'vue'
@@ -58,5 +59,10 @@ export const useRender = {
       })
     }
     return ''
+  },
+  renderIcon: (text) => {
+    if (text) {
+      return h(Icon, { icon: text })
+    }
   }
 }
