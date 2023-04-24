@@ -20,9 +20,9 @@
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
-## 交流群
+## 交流群 && 外包項目
 
-<img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
+- [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
 ## 开发进度
 
