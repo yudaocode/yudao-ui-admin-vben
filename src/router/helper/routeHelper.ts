@@ -8,7 +8,7 @@ import { isUrl } from '@/utils/is'
 
 export type LayoutMapKey = 'LAYOUT'
 const IFRAME = () => import('@/views/base/iframe/FrameBlank.vue')
-
+const URL_HASH_TAB = `__AGWE4H__HASH__TAG__PWHRG__`
 const LayoutMap = new Map<string, () => Promise<typeof import('*.vue')>>()
 
 LayoutMap.set('LAYOUT', LAYOUT)
@@ -21,6 +21,18 @@ function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
   dynamicViewsModules = dynamicViewsModules || import.meta.glob('../../views/**/*.{vue,tsx}')
   if (!routes) return
   routes.forEach((item) => {
+    if (/^\/?http(s)?/.test(item.component as string)) {
+      item.component = item.component.substring(1, item.component.length)
+    }
+    if (/^http(s)?/.test(item.component as string)) {
+      if (item.meta?.internalOrExternal) {
+        item.path = item.component
+        item.path = item.path.replace('#', URL_HASH_TAB)
+      } else {
+        item.meta.frameSrc = item.component
+      }
+      delete item.component
+    }
     if (!item.component && item.meta?.frameSrc) {
       item.component = 'IFRAME'
     }

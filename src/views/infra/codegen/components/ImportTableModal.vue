@@ -11,7 +11,7 @@ import { createCodegenList, getSchemaTableList } from '@/api/infra/codegen'
 
 const emit = defineEmits(['success', 'register'])
 
-const [registerTable, { getSelectRowKeys }] = useTable({
+const [registerTable, { getSelectRowKeys, getForm }] = useTable({
   api: getSchemaTableList,
   columns: importTableColumns,
   formConfig: {
@@ -32,8 +32,8 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async () =>
 
 async function handleSubmit() {
   const datas = await getSelectRowKeys()
-  console.info(datas)
-  await createCodegenList({ dataSourceConfigId: 0, tableNames: datas })
+  const form = await getForm()
+  await createCodegenList({ dataSourceConfigId: form.getFieldsValue().dataSourceConfigId, tableNames: datas })
   closeModal()
   emit('success')
 }

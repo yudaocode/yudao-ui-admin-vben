@@ -20,9 +20,9 @@
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
-## 交流群
+## 交流群 && 外包項目
 
-<img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
+- [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
 ## 开发进度
 
@@ -39,7 +39,7 @@
 | --- | --- | --- |
 | [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.2.47 |
 | [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.1 |
-| [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.18 |
+| [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.19 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.4 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.0.35 |
 | [vueuse](https://vueuse.org/) | 常用工具集 | 10.1.0 |
