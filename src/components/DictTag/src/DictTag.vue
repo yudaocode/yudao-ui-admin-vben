@@ -35,8 +35,12 @@ export default defineComponent({
       }
       dictOptions.forEach((dict: DictDataType) => {
         if (dict.value === value) {
-          if (dict.colorType + '' === 'primary' || dict.colorType + '' === 'info') {
+          if (dict.colorType + '' === 'primary') {
             dict.colorType = 'processing'
+          } else if (dict.colorType + '' === 'danger') {
+            dict.colorType = 'error'
+          } else if (dict.colorType + '' === 'info') {
+            dict.colorType = 'default'
           }
           dictData.value = dict
         }
