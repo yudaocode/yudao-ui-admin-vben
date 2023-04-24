@@ -138,7 +138,7 @@ const setting: ProjectConfig = {
     // 是否打开页面切换loading
     openPageLoading: true,
     //是否打开页面切换顶部进度条
-    openNProgress: false
+    openNProgress: true
   },
 
   // 是否开启KeepAlive缓存  开发时候最好关闭,不然每次都需要清除缓存
@@ -148,7 +148,7 @@ const setting: ProjectConfig = {
   // 显示面包屑
   showBreadCrumb: true,
   // 显示面包屑图标
-  showBreadCrumbIcon: false,
+  showBreadCrumbIcon: true,
   // 是否使用全局错误捕获
   useErrorHandle: false,
   // 是否开启回到顶部
