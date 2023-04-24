@@ -2,25 +2,36 @@
 
 [![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
 
+**严肃声明：现在、未来都不会有商业版本，所有代码全部开源!！**
+
+**「我喜欢写代码，乐此不疲」**  
+**「我喜欢做开源，以此为乐」**
+
+如果这个项目让你有所收获，记得 Star 关注哦，这对我是非常不错的鼓励与支持。
+
 ## 原框架地址 各位大佬点个star
+
 - [gitee](https://gitee.com/xingyuv/vue-vben-admin)
 - [github](https://github.com/xingyuv/vue-vben-admin)
 
-
 ## 预览地址
-- [预览地址](http://vben.xingyuv.com)
+
+- [预览地址](http://dashboard-vben.yudao.iocoder.cn)
 - [启动文档](https://doc.iocoder.cn/quick-start/)
+- [视频教程](https://doc.iocoder.cn/video/)
 
 ## 交流群
+
 <img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
 
 ## 开发进度
+
 - 系统管理 页面适配 99%
 - 基础设施 页面适配 99%
 - 支付管理 页面适配 99%
 - 公众号   页面适配 40%
 - 仿钉钉工作流    预计6月
-- 升级antdv 4.0  预计5月
+- 升级 antdv 4.0  预计5月
 
 ## 框架
 
