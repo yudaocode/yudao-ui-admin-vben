@@ -19,7 +19,8 @@ export default defineComponent({
       type: String as PropType<string>,
       required: false,
       default: () => 'number'
-    }
+    },
+    icon: { type: String }
   },
   setup(props) {
     const dictData = ref<DictDataType>()
@@ -34,8 +35,8 @@ export default defineComponent({
       }
       dictOptions.forEach((dict: DictDataType) => {
         if (dict.value === value) {
-          if (dict.colorType + '' === 'primary' || dict.colorType + '' === 'default') {
-            dict.colorType = ''
+          if (dict.colorType + '' === 'primary' || dict.colorType + '' === 'info') {
+            dict.colorType = 'processing'
           }
           dictData.value = dict
         }
@@ -50,9 +51,17 @@ export default defineComponent({
         return null
       }
       getDictObj(props.type, props.value.toString())
-      // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题
+      // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题   && isHexColor(dictData.value?.cssClass)
       return (
-        <Tag color={dictData.value?.cssClass && isHexColor(dictData.value?.cssClass) ? dictData.value?.cssClass : ''}>
+        <Tag
+          color={
+            dictData.value?.colorType
+              ? dictData.value?.colorType
+              : dictData.value?.cssClass && isHexColor(dictData.value?.cssClass)
+              ? dictData.value?.cssClass
+              : ''
+          }
+        >
           {dictData.value?.label}
         </Tag>
       )

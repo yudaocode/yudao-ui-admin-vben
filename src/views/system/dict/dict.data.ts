@@ -121,11 +121,11 @@ export const dataFormSchema: FormSchema[] = [
     componentProps: {
       options: [
         {
-          value: 'default',
-          label: '默认'
+          value: '',
+          label: '空'
         },
         {
-          value: 'primary',
+          value: 'processing',
           label: '主要'
         },
         {
@@ -133,16 +133,44 @@ export const dataFormSchema: FormSchema[] = [
           label: '成功'
         },
         {
-          value: 'info',
-          label: '信息'
+          value: 'default',
+          label: '默认'
         },
         {
           value: 'warning',
           label: '警告'
         },
         {
-          value: 'danger',
+          value: 'error',
           label: '危险'
+        },
+        {
+          value: 'pink',
+          label: 'pink'
+        },
+        {
+          value: 'red',
+          label: 'red'
+        },
+        {
+          value: 'orange',
+          label: 'orange'
+        },
+        {
+          value: 'green',
+          label: 'green'
+        },
+        {
+          value: 'cyan',
+          label: 'cyan'
+        },
+        {
+          value: 'blue',
+          label: 'blue'
+        },
+        {
+          value: 'purple',
+          label: 'purple'
         }
       ]
     }
@@ -150,7 +178,8 @@ export const dataFormSchema: FormSchema[] = [
   {
     label: 'CSS Class',
     field: 'cssClass',
-    component: 'Input'
+    component: 'Input',
+    helpMessage: '输入hex模式的颜色，例如#108ee9'
   },
   {
     label: '备注',
