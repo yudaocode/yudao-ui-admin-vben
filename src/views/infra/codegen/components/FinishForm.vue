@@ -35,7 +35,7 @@ function handlePreview() {
 async function handleGenTable() {
   const tableId = query.id as unknown as number
   const res = await getCodegenTable(tableId)
-  await downloadCodegen(res)
+  await downloadCodegen(res.table)
   createMessage.success(t('common.successText'))
 }
 </script>
