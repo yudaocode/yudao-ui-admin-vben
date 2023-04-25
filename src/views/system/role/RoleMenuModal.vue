@@ -47,6 +47,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   const res = await getRole(data.record.id)
   const menuRes = await listRoleMenus(data.record.id)
+  res.roleId = data.record.id
   res.menuIds = menuRes
   setFieldsValue({ ...res })
 })
@@ -54,6 +55,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 async function handleSubmit() {
   try {
     const values = await validate()
+    values.menuIds = values.menuIds.checked
     setModalProps({ confirmLoading: true })
     await assignRoleMenu(values)
     closeModal()

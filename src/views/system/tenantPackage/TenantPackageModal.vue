@@ -55,6 +55,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 async function handleSubmit() {
   try {
     const values = await validate()
+    values.menuIds = values.menuIds.checked
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
       await updateTenantPackage(values)

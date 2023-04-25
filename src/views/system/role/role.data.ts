@@ -122,8 +122,8 @@ export const formSchema: FormSchema[] = [
 
 export const menuScopeFormSchema: FormSchema[] = [
   {
-    label: '编号',
-    field: 'id',
+    label: '角色编号',
+    field: 'roleId',
     show: false,
     component: 'Input'
   },
@@ -149,8 +149,8 @@ export const menuScopeFormSchema: FormSchema[] = [
 
 export const dataScopeFormSchema: FormSchema[] = [
   {
-    label: '编号',
-    field: 'id',
+    label: '角色编号',
+    field: 'roleId',
     show: false,
     component: 'Input'
   },

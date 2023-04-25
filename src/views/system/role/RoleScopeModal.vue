@@ -45,6 +45,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     treeData.value = handleTree(res, 'id')
   }
   const res = await getRole(data.record.id)
+  res.roleId = data.record.id
   setFieldsValue({ ...res })
 })
 
