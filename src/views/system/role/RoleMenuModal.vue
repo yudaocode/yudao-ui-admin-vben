@@ -49,6 +49,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   const menuRes = await listRoleMenus(data.record.id)
   res.roleId = data.record.id
   res.menuIds = menuRes
+  res.menuIds.checked = res.menuIds
   setFieldsValue({ ...res })
 })
 

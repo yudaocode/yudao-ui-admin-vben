@@ -48,6 +48,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   if (unref(isUpdate)) {
     const res = await getTenantPackage(data.record.id)
+    res.menuIds.checked = res.menuIds
     setFieldsValue({ ...res })
   }
 })
