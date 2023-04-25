@@ -12,11 +12,7 @@ export const useRender = {
    */
   renderImg: (text) => {
     if (text) {
-      return h(Image, {
-        src: text,
-        height: 80,
-        width: 80
-      })
+      return h(Image, { src: text, height: 80, width: 80 })
     }
     return ''
   },
@@ -28,14 +24,7 @@ export const useRender = {
    */
   renderLink: (url, text?) => {
     if (url) {
-      return h(
-        Button,
-        {
-          type: 'link',
-          href: text
-        },
-        () => text || ''
-      )
+      return h(Button, { type: 'link', href: text }, () => text || '')
     }
     return ''
   },
@@ -105,11 +94,7 @@ export const useRender = {
    */
   renderDict: (text, type, dictType?) => {
     if (type) {
-      return h(DictTag, {
-        type: type,
-        value: text,
-        dictType: dictType || 'number'
-      })
+      return h(DictTag, { type: type, value: text, dictType: dictType || 'number' })
     }
     return ''
   },
