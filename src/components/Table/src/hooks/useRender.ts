@@ -24,7 +24,7 @@ export const useRender = {
    */
   renderLink: (url, text?) => {
     if (url) {
-      return h(Button, { type: 'link', href: text }, () => text || '')
+      return h(Button, { type: 'link', href: url, target: '_blank' }, () => text || '')
     }
     return ''
   },
