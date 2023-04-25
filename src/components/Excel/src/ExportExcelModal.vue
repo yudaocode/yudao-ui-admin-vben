@@ -9,8 +9,8 @@ import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, FormSchema, useForm } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 
-const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
+const emit = defineEmits(['success', 'register'])
 const schemas: FormSchema[] = [
   {
     field: 'filename',

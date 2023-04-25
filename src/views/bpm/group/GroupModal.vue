@@ -1,15 +1,19 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="BpmGroupModal">
 import { ref, unref } from 'vue'
-import { BasicModal, useModalInner } from '@/components/Modal'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './group.data'
 import { createUserGroup, getUserGroup, updateUserGroup } from '@/api/bpm/userGroup'
 
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 
@@ -43,6 +47,7 @@ async function handleSubmit() {
     closeModal()
     emit('success')
   } finally {
+    createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
 }

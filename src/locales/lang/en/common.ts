@@ -6,6 +6,7 @@ export default {
   cancelText: 'Cancel',
   loadingText: 'Loading...',
   saveText: 'Save',
+  saveSuccessText: 'Save success',
   delText: 'Delete',
   delMessage: 'Do you want to delete data?',
   delSuccessText: 'Delete success',

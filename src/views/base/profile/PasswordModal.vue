@@ -5,11 +5,15 @@
 </template>
 <script lang="ts" setup name="PasswordModal">
 import { ref } from 'vue'
-import { BasicModal, useModalInner } from '@/components/Modal'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { passwordSchema } from './data'
 import { updateUserPwdApi } from '@/api/base/profile'
 
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 
 const title = ref('修改密码')
@@ -35,6 +39,7 @@ async function handleSubmit() {
     closeModal()
     emit('success')
   } finally {
+    createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
 }

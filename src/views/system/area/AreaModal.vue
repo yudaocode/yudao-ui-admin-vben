@@ -4,8 +4,8 @@
   </BasicModal>
 </template>
 <script lang="ts" setup name="SystemAreaModal">
-import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './area.data'
 import { getAreaByIp } from '@/api/system/area'
 

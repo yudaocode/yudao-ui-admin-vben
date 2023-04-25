@@ -20,8 +20,8 @@
 <script lang="ts" setup name="RedisModal">
 import { ref } from 'vue'
 import { List } from 'ant-design-vue'
-import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from '../redis.data'
 import { deleteKey, getKeyList } from '@/api/infra/redis'
 

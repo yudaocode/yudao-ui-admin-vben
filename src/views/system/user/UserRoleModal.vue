@@ -4,12 +4,16 @@
   </BasicModal>
 </template>
 <script lang="ts" setup name="SystemUserRoleModal">
-import { BasicModal, useModalInner } from '@/components/Modal'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { userRoleFormSchema } from './user.data'
 import { getUser } from '@/api/system/user'
 import { assignUserRole, listUserRoles } from '@/api/system/permission'
 
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
@@ -38,6 +42,7 @@ async function handleSubmit() {
     closeModal()
     emit('success')
   } finally {
+    createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
 }

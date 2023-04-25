@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? '编辑' : '新增'" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
     <BasicForm @register="registerForm">
       <template #menuIds="{ model, field }">
         <BasicTree
@@ -25,6 +25,8 @@ import { createTenantPackage, getTenantPackage, updateTenantPackage } from '@/ap
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
 
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 const treeData = ref<TreeItem[]>([])
@@ -66,6 +68,7 @@ async function handleSubmit() {
     closeModal()
     emit('success')
   } finally {
+    createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
 }

@@ -6,6 +6,7 @@ export default {
   cancelText: '取消',
   loadingText: '加载中...',
   saveText: '保存',
+  saveSuccessText: '保存成功',
   delText: '删除',
   delMessage: '是否要删除数据？',
   delSuccessText: '删除成功',

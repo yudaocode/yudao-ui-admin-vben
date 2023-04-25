@@ -17,8 +17,10 @@
 </template>
 <script lang="ts" setup name="SystemRoleScopeModal">
 import { ref, unref } from 'vue'
-import { BasicModal, useModalInner } from '@/components/Modal'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
+import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { dataScopeFormSchema } from './role.data'
 import { getRole } from '@/api/system/role'
@@ -26,6 +28,8 @@ import { listSimpleDept } from '@/api/system/dept'
 import { handleTree } from '@/utils/tree'
 import { assignRoleDataScope } from '@/api/system/permission'
 
+const { t } = useI18n()
+const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const treeData = ref<TreeItem[]>([])
 
@@ -57,6 +61,7 @@ async function handleSubmit() {
     closeModal()
     emit('success')
   } finally {
+    createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
 }
