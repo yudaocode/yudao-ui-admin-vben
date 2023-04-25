@@ -1,5 +1,10 @@
 import { defHttp } from '@/utils/http/axios'
 
+export interface AccountVO {
+  id?: number
+  name: string
+}
+
 // 创建公众号账号
 export function createAccount(data) {
   return defHttp.post({ url: '/mp/account/create', data })
