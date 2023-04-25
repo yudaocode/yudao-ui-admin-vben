@@ -1,7 +1,6 @@
 import { getIntDictOptions } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
-import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
@@ -42,7 +41,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'resultCode',
     width: 180,
     customRender: ({ text }) => {
-      return h('span', text === 0 ? '成功' : '失败')
+      return useRender.renderTag(text === 0 ? '成功' : '失败')
     }
   },
   {
