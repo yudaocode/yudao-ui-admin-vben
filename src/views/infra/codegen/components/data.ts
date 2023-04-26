@@ -4,6 +4,13 @@ import { FormSchema } from '@/components/Form'
 import { BasicColumn } from '@/components/Table'
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
+async function getDictTypeOptions() {
+  const dictTypeOptions: any[] = []
+  const res = await listSimpleDictType()
+  dictTypeOptions.push(...res)
+  return dictTypeOptions
+}
+
 export const basicInfoSchemas: FormSchema[] = [
   {
     label: '基本信息',
@@ -307,11 +314,9 @@ export const columns: BasicColumn[] = [
         title: '字典类型',
         dataIndex: 'dictType',
         editRow: true,
-        editComponent: 'ApiSelect',
+        editComponent: 'Select',
         editComponentProps: {
-          api: () => listSimpleDictType(),
-          labelField: 'name',
-          valueField: 'type'
+          options: (await getDictTypeOptions()).map((item) => ({ value: item.type, label: item.name }))
         },
         width: 100
       },
