@@ -258,7 +258,7 @@ export const columns: BasicColumn[] = [
         title: '查询方式',
         dataIndex: 'listOperationCondition',
         editRow: true,
-        editComponent: 'Checkbox',
+        editComponent: 'Select',
         editComponentProps: {
           options: [
             { label: '=', value: '=' },
@@ -271,7 +271,7 @@ export const columns: BasicColumn[] = [
             { label: 'BETWEEN', value: 'BETWEEN' }
           ]
         },
-        width: 60
+        width: 80
       },
       {
         title: '允许空',

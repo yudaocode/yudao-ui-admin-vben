@@ -6,7 +6,7 @@
     <Divider />
     <div class="step2-button">
       <a-button @click="customResetFunc">上一步</a-button>
-      <a-button type="primary" @click="customSubmitFunc">下一步</a-button>
+      <a-button type="primary" @click="customSubmitFunc">提交</a-button>
     </div>
     <h3>说明</h3>
     <h4>配置字段</h4>
