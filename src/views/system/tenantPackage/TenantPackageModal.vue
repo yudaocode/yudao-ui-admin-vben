@@ -17,6 +17,8 @@
 </template>
 <script lang="ts" setup name="SystemTenantPackageModal">
 import { ref, unref } from 'vue'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { BasicModal, useModalInner } from '@/components/Modal'
