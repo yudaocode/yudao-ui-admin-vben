@@ -1,15 +1,10 @@
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
-    <BasicForm @register="registerForm">
-      <template #editor="{ model, field }">
-        <Tinymce v-model="model[field]" width="100%" />
-      </template>
-    </BasicForm>
+    <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="SystemNoticeModal">
 import { ref, unref } from 'vue'
-import { Tinymce } from '@/components/Tinymce'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'

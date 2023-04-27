@@ -90,7 +90,6 @@ export const formSchema: FormSchema[] = [
   {
     label: '内容',
     field: 'content',
-    component: 'Input',
-    slot: 'editor'
+    component: 'Editor'
   }
 ]

@@ -115,3 +115,4 @@ export type ComponentType =
   | 'Rate'
   | 'Divider'
   | 'ApiTransfer'
+  | 'Editor'
