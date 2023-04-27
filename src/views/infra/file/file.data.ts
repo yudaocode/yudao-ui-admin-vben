@@ -8,7 +8,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '文件名',
-    dataIndex: 'module',
+    dataIndex: 'name',
     width: 200
   },
   {
@@ -19,7 +19,10 @@ export const columns: BasicColumn[] = [
   {
     title: '文件 URL',
     dataIndex: 'url',
-    width: 300
+    width: 300,
+    customRender: ({ text }) => {
+      return useRender.renderImg(text)
+    }
   },
   {
     title: '文件路径',

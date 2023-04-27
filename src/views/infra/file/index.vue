@@ -5,6 +5,7 @@
         <BasicUpload
           :maxSize="20"
           :maxNumber="10"
+          :emptyHidePreview="true"
           @change="handleChange"
           :uploadParams="uploadParams"
           :api="uploadApi"
