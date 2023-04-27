@@ -6,6 +6,7 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
+          :checkStrictly="true"
           checkable
           toolbar
           @check="menuCheck"
@@ -65,7 +66,7 @@ async function handleSubmit() {
     setModalProps({ confirmLoading: true })
     await assignRoleMenu({
       roleId: values.id,
-      menuIds: menuKeys.value.concat(menuHalfKeys.value)
+      menuIds: [...menuKeys.value, ...menuHalfKeys.value]
     })
     closeModal()
     emit('success')
@@ -81,7 +82,7 @@ function menuReset() {
 }
 
 function menuCheck(checkedKeys, e) {
-  menuKeys.value = checkedKeys.checked as number[]
-  menuHalfKeys.value = e.halfCheckedKeys as number[]
+  menuKeys.value = (checkedKeys.checked || []) as number[]
+  menuHalfKeys.value = (e.halfCheckedKeys || []) as number[]
 }
 </script>

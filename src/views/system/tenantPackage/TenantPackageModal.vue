@@ -6,6 +6,7 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
+          :checkStrictly="true"
           checkable
           toolbar
           @check="menuCheck"
@@ -32,8 +33,8 @@ const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 const treeData = ref<TreeItem[]>([])
-const menuKeys = ref<(string | number)[]>([])
-const menuHalfKeys = ref<(string | number)[]>([])
+const menuKeys = ref<number[]>([])
+const menuHalfKeys = ref<number[]>([])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
@@ -63,7 +64,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 async function handleSubmit() {
   try {
     const values = await validate()
-    values.menuIds = menuKeys.value.concat(menuHalfKeys.value)
+    values.menuIds = [...menuKeys.value, ...menuHalfKeys.value]
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate)) {
       await updateTenantPackage(values)
@@ -84,7 +85,7 @@ function menuReset() {
 }
 
 function menuCheck(checkedKeys, e) {
-  menuKeys.value = checkedKeys as (string | number)[]
-  menuHalfKeys.value = e.halfCheckedKeys as (string | number)[]
+  menuKeys.value = (checkedKeys.checked || []) as number[]
+  menuHalfKeys.value = (e.halfCheckedKeys || []) as number[]
 }
 </script>
