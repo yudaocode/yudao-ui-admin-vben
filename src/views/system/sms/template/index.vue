@@ -61,7 +61,7 @@ const [registerTable, { getForm, reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 240,
+    width: 220,
     title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
