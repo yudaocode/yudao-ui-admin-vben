@@ -7,7 +7,6 @@ const include = [
   'dayjs',
   'qrcode',
   'echarts',
-  'intro.js',
   'cropperjs',
   'crypto-js',
   'lodash-es',
