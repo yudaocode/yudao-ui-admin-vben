@@ -17,6 +17,7 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
+              { icon: IconEnum.VIEW, label: '复制链接', onClick: handleCopy.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
@@ -36,9 +37,10 @@
   </div>
 </template>
 <script lang="ts" setup name="InfraFile">
-import { ref } from 'vue'
+import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicUpload } from '@/components/Upload'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
@@ -49,6 +51,7 @@ import { uploadApi } from '@/api/base/upload'
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
+const { clipboardRef, copiedRef } = useCopyToClipboard()
 
 const uploadParams = ref({
   Authorization: 'Bearer ' + getAccessToken(),
@@ -73,6 +76,13 @@ const [registerTable, { reload }] = useTable({
 
 function handleChange() {
   reload()
+}
+
+function handleCopy(record: Recordable) {
+  clipboardRef.value = record.url
+  if (unref(copiedRef)) {
+    createMessage.warning('复制成功')
+  }
 }
 
 async function handleDelete(record: Recordable) {

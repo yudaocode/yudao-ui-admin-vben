@@ -2,7 +2,7 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
-    title: '日志编号',
+    title: '编号',
     dataIndex: 'id',
     width: 100
   },
@@ -12,14 +12,9 @@ export const columns: BasicColumn[] = [
     width: 200
   },
   {
-    title: '文件路径',
-    dataIndex: 'path',
-    width: 250
-  },
-  {
     title: '文件 URL',
     dataIndex: 'url',
-    width: 300,
+    width: 180,
     customRender: ({ text }) => {
       return useRender.renderImg(text)
     }
@@ -32,7 +27,7 @@ export const columns: BasicColumn[] = [
   {
     title: '文件大小',
     dataIndex: 'size',
-    width: 180,
+    width: 120,
     customRender: ({ text }) => {
       const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
       const srcSize = parseFloat(text)
@@ -44,7 +39,10 @@ export const columns: BasicColumn[] = [
   {
     title: '文件类型',
     dataIndex: 'type',
-    width: 180
+    width: 100,
+    customRender: ({ text }) => {
+      return useRender.renderTag(text)
+    }
   },
   {
     title: '文件内容',
