@@ -158,16 +158,18 @@ function handlerToolbar(event: string, arg?: number) {
 
 async function handleOk() {
   const uploadApi = props.uploadApi
-  if (uploadApi && isFunction(uploadApi)) {
+  try {
+    setModalProps({ confirmLoading: true })
     const blob = dataURLtoBlob(previewSource.value)
-    try {
-      setModalProps({ confirmLoading: true })
+    if (uploadApi && isFunction(uploadApi)) {
       const result = await uploadApi({ name: 'file', file: blob, filename })
       emit('uploadSuccess', { source: previewSource.value, data: result.url })
-      closeModal()
-    } finally {
-      setModalProps({ confirmLoading: false })
+    } else {
+      emit('uploadSuccess', { source: previewSource.value, data: blob, filename: filename })
     }
+    closeModal()
+  } finally {
+    setModalProps({ confirmLoading: false })
   }
 }
 </script>

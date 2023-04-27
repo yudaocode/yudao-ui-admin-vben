@@ -1,3 +1,4 @@
+import { ContentTypeEnum } from '@/enums/httpEnum'
 import { defHttp } from '@/utils/http/axios'
 
 export interface ProfileDept {
@@ -86,7 +87,15 @@ export function updateUserPwdApi(oldPassword: string, newPassword: string) {
 
 // 用户头像上传
 export function uploadAvatarApi(data) {
-  return defHttp.put({ url: Api.uploadAvatarApi, data: { file: data } })
+  return defHttp.put({
+    url: Api.uploadAvatarApi,
+    headers: {
+      'Content-type': ContentTypeEnum.FORM_DATA,
+      // @ts-ignore
+      ignoreCancelToken: true
+    },
+    data
+  })
 }
 
 // 社交绑定，使用 code 授权码
