@@ -41,8 +41,8 @@ async function handleSubmit() {
     await assignUserRole({ userId: values.id, roleIds: values.roleIds })
     closeModal()
     emit('success')
-  } finally {
     createMessage.success(t('common.saveSuccessText'))
+  } finally {
     setModalProps({ confirmLoading: false })
   }
 }

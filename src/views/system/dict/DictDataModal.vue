@@ -50,8 +50,8 @@ async function handleSubmit() {
     }
     closeModal()
     emit('success')
-  } finally {
     createMessage.success(t('common.saveSuccessText'))
+  } finally {
     setModalProps({ confirmLoading: false })
   }
 }

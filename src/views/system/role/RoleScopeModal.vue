@@ -60,8 +60,8 @@ async function handleSubmit() {
     await assignRoleDataScope(values)
     closeModal()
     emit('success')
-  } finally {
     createMessage.success(t('common.saveSuccessText'))
+  } finally {
     setModalProps({ confirmLoading: false })
   }
 }

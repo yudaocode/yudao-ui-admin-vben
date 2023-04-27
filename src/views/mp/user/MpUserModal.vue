@@ -37,8 +37,8 @@ async function handleSubmit() {
     await updateUser(values)
     closeModal()
     emit('success')
-  } finally {
     createMessage.success(t('common.saveSuccessText'))
+  } finally {
     setModalProps({ confirmLoading: false })
   }
 }
