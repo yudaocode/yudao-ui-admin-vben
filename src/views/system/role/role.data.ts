@@ -123,7 +123,7 @@ export const formSchema: FormSchema[] = [
 export const menuScopeFormSchema: FormSchema[] = [
   {
     label: '角色编号',
-    field: 'roleId',
+    field: 'id',
     show: false,
     component: 'Input'
   },

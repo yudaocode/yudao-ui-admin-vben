@@ -32,8 +32,8 @@ const { t } = useI18n()
 const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const treeData = ref<TreeItem[]>([])
-const menuKeys = ref<(string | number)[]>([])
-const menuHalfKeys = ref<(string | number)[]>([])
+const menuKeys = ref<number[]>([])
+const menuHalfKeys = ref<number[]>([])
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
@@ -54,15 +54,25 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   const res = await getRole(data.record.id)
   const menuRes = await listRoleMenus(data.record.id)
-  res.roleId = data.record.id
   res.menuIds = menuRes
   menuKeys.value = res.menuIds
   setFieldsValue({ ...res })
 })
 
-function menuCheck(checkedKeys, e) {
-  menuKeys.value = checkedKeys as (string | number)[]
-  menuHalfKeys.value = e.halfCheckedKeys as (string | number)[]
+async function handleSubmit() {
+  try {
+    const values = await validate()
+    setModalProps({ confirmLoading: true })
+    await assignRoleMenu({
+      roleId: values.id,
+      menuIds: menuKeys.value.concat(menuHalfKeys.value)
+    })
+    closeModal()
+    emit('success')
+  } finally {
+    createMessage.success(t('common.saveSuccessText'))
+    setModalProps({ confirmLoading: false })
+  }
 }
 
 function menuReset() {
@@ -70,17 +80,8 @@ function menuReset() {
   menuHalfKeys.value = []
 }
 
-async function handleSubmit() {
-  try {
-    const values = await validate()
-    values.menuIds = menuKeys.value.concat(menuHalfKeys.value)
-    setModalProps({ confirmLoading: true })
-    await assignRoleMenu(values)
-    closeModal()
-    emit('success')
-  } finally {
-    createMessage.success(t('common.saveSuccessText'))
-    setModalProps({ confirmLoading: false })
-  }
+function menuCheck(checkedKeys, e) {
+  menuKeys.value = checkedKeys.checked as number[]
+  menuHalfKeys.value = e.halfCheckedKeys as number[]
 }
 </script>

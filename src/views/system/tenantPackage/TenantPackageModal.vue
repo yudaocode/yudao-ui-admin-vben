@@ -55,21 +55,10 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
   if (unref(isUpdate)) {
     const res = await getTenantPackage(data.record.id)
-    res.menuIds.checked = res.menuIds
     menuKeys.value = res.menuIds
     setFieldsValue({ ...res })
   }
 })
-
-function menuCheck(checkedKeys, e) {
-  menuKeys.value = checkedKeys as (string | number)[]
-  menuHalfKeys.value = e.halfCheckedKeys as (string | number)[]
-}
-
-function menuReset() {
-  menuKeys.value = []
-  menuHalfKeys.value = []
-}
 
 async function handleSubmit() {
   try {
@@ -87,5 +76,15 @@ async function handleSubmit() {
     createMessage.success(t('common.saveSuccessText'))
     setModalProps({ confirmLoading: false })
   }
+}
+
+function menuReset() {
+  menuKeys.value = []
+  menuHalfKeys.value = []
+}
+
+function menuCheck(checkedKeys, e) {
+  menuKeys.value = checkedKeys as (string | number)[]
+  menuHalfKeys.value = e.halfCheckedKeys as (string | number)[]
 }
 </script>
