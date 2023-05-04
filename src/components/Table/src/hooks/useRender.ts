@@ -1,8 +1,10 @@
 import { DictTag } from '@/components/DictTag'
 import Icon from '@/components/Icon'
-import { Button, Image, Tag } from 'ant-design-vue'
+import { Button, Tag } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { h } from 'vue'
+import { TableImg } from '../..'
+import { isArray } from '@/utils/is'
 
 export const useRender = {
   /**
@@ -12,7 +14,11 @@ export const useRender = {
    */
   renderImg: (text) => {
     if (text) {
-      return h(Image, { src: text, height: 80, width: 80 })
+      if (isArray(text)) {
+        return h(TableImg, { imgList: text })
+      } else {
+        return h(TableImg, { imgList: text.split(',,,,,,') })
+      }
     }
     return ''
   },
@@ -94,7 +100,7 @@ export const useRender = {
    */
   renderDict: (text, type, dictType?) => {
     if (type) {
-      return h(DictTag, { type: type, value: text !== null ? text : '', dictType: dictType || 'number' })
+      return h(DictTag, { type: type, value: text, dictType: dictType || 'number' })
     }
     return ''
   },
