@@ -3,6 +3,7 @@ import { defineComponent, PropType, ref } from 'vue'
 import { isHexColor } from '@/utils/color'
 import { Tag } from 'ant-design-vue'
 import { DictDataType, getBoolDictOptions, getDictOptions, getStrDictOptions } from '@/utils/dict'
+import { propTypes } from '@/utils/propTypes'
 
 export default defineComponent({
   name: 'DictTag',
@@ -11,15 +12,8 @@ export default defineComponent({
       type: String as PropType<string>,
       required: true
     },
-    value: {
-      type: [String, Number, Boolean] as PropType<string | number | boolean>,
-      required: true
-    },
-    dictType: {
-      type: String as PropType<string>,
-      required: false,
-      default: () => 'number'
-    },
+    value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]),
+    dictType: propTypes.oneOf(['string', 'boolean', 'number']).def('number'),
     icon: { type: String }
   },
   setup(props) {
@@ -51,7 +45,7 @@ export default defineComponent({
         return null
       }
       // 解决自定义字典标签值为零时标签不渲染的问题
-      if (props.value === undefined && props.value !== null) {
+      if (props.value === undefined || props.value === null) {
         return null
       }
       getDictObj(props.type, props.value.toString())
