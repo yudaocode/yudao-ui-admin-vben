@@ -80,6 +80,7 @@ export const formSchema: FormSchema[] = [
     label: '上级菜单',
     field: 'parentId',
     required: true,
+    defaultValue: 0,
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleMenus(),
@@ -119,7 +120,8 @@ export const formSchema: FormSchema[] = [
     label: '显示排序',
     field: 'sort',
     required: true,
-    component: 'Input'
+    component: 'InputNumber',
+    defaultValue: 0
   },
   {
     label: '路由地址',
@@ -164,12 +166,10 @@ export const formSchema: FormSchema[] = [
   {
     label: '显示状态',
     field: 'visible',
-    component: 'RadioButtonGroup',
+    component: 'Switch',
     componentProps: {
-      options: [
-        { label: '显示', key: true, value: true },
-        { label: '隐藏', key: false, value: false }
-      ]
+      checkedChildren: '显示',
+      unCheckedChildren: '隐藏'
     },
     helpMessage: '选择隐藏时，路由将不会出现在侧边栏，但仍然可以访问',
     ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
@@ -177,12 +177,10 @@ export const formSchema: FormSchema[] = [
   {
     label: '总是显示',
     field: 'alwaysShow',
-    component: 'RadioButtonGroup',
+    component: 'Switch',
     componentProps: {
-      options: [
-        { label: '显示', key: true, value: true },
-        { label: '隐藏', key: false, value: false }
-      ]
+      checkedChildren: '显示',
+      unCheckedChildren: '隐藏'
     },
     helpMessage: '选择不是时，当该菜单只有一个子菜单时，不展示自己，直接展示子菜单',
     ifShow: ({ values }) => values.type !== SystemMenuTypeEnum.BUTTON
@@ -190,12 +188,10 @@ export const formSchema: FormSchema[] = [
   {
     label: '是否缓存',
     field: 'keepAlive',
-    component: 'RadioButtonGroup',
+    component: 'Switch',
     componentProps: {
-      options: [
-        { label: '缓存', key: true, value: true },
-        { label: '不缓存', key: false, value: false }
-      ]
+      checkedChildren: '缓存',
+      unCheckedChildren: '不缓存'
     },
     helpMessage: '选择缓存时，则会被 `keep-alive` 缓存，必须填写「组件名称」字段',
     ifShow: ({ values }) => values.type === SystemMenuTypeEnum.MENU

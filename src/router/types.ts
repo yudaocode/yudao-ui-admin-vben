@@ -10,6 +10,7 @@ export interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
   visible?: boolean
   icon?: string
   name: string
+  sort: number
   parentId?: number
   meta: RouteMeta
   component?: Component | string

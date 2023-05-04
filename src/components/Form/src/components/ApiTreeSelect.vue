@@ -23,7 +23,8 @@ const props = defineProps({
   immediate: { type: Boolean, default: true },
   resultField: propTypes.string.def(''),
   handleTree: { type: String, default: '' },
-  parent: { type: String, default: '' }
+  parent: { type: String, default: '' },
+  parentId: { type: Number, default: 0 }
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
@@ -81,8 +82,9 @@ async function fetch() {
     result = handleTree(result, props.handleTree)
   }
   if (props.parent) {
-    treeData.value = [{ id: 0, name: props.parent, children: [] }]
-    treeData.value[0].children = (result as Recordable[]) || []
+    let tree: any = { id: props.parentId, name: props.parent, children: [] }
+    tree.children = (result as Recordable[]) || []
+    treeData.value.push(tree)
   } else {
     treeData.value = (result as Recordable[]) || []
   }

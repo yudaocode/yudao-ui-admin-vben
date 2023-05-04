@@ -100,6 +100,7 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
           path: path,
           name: route.name,
           component: 'IFRAME',
+          sort: route.sort,
           meta: {
             title: route.name,
             icon: route.icon
@@ -113,12 +114,18 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
       if (component.toUpperCase() === 'LAYOUT') {
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
         const meta = route.meta || {}
+        meta.hideMenu = !route.visible
+        meta.orderNo = route.sort
+        meta.ignoreKeepAlive = !route.keepAlive
         meta.title = route.name
         meta.icon = route.icon
         route.meta = meta
       } else if (component.toUpperCase() === 'IFRAME') {
         route.component = LayoutMap.get('IFRAME'.toUpperCase())
         const meta = route.meta || {}
+        meta.hideMenu = !route.visible
+        meta.orderNo = route.sort
+        meta.ignoreKeepAlive = !route.keepAlive
         meta.title = route.name
         meta.icon = route.icon
         meta.frameSrc = route.path
@@ -127,6 +134,9 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
       } else {
         //处理顶级非目录路由
         const meta = route.meta || {}
+        meta.hideMenu = !route.visible
+        meta.orderNo = route.sort
+        meta.ignoreKeepAlive = !route.keepAlive
         meta.title = route.name
         meta.icon = route.icon
         meta.single = true
