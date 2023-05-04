@@ -86,6 +86,7 @@ export const formSchema: FormSchema[] = [
     label: '上级部门',
     field: 'parentId',
     required: true,
+    defaultValue: 0,
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleDept(),
