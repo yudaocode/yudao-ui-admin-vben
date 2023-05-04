@@ -89,7 +89,6 @@ export const formSchema: FormSchema[] = [
     label: '流程分类',
     field: 'category',
     component: 'Select',
-    dynamicDisabled: ({ values }) => !!values.id,
     componentProps: {
       options: getIntDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)
     }

@@ -102,6 +102,7 @@ export const formSchema: FormSchema[] = [
     label: '角色顺序',
     field: 'sort',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {

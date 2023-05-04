@@ -135,12 +135,14 @@ export const formSchema: FormSchema[] = [
     label: '访问令牌的有效期',
     field: 'accessTokenValiditySeconds',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {
     label: '刷新令牌的有效期',
     field: 'refreshTokenValiditySeconds',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {

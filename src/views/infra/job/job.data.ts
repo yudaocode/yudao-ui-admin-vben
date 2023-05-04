@@ -97,6 +97,7 @@ export const formSchema: FormSchema[] = [
     field: 'retryCount',
     required: true,
     helpMessage: '设置为 0 时，不进行重试',
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {
@@ -104,6 +105,7 @@ export const formSchema: FormSchema[] = [
     field: 'retryInterval',
     required: true,
     helpMessage: '单位：毫秒。设置为 0 时，无需间隔',
+    defaultValue: 0,
     component: 'InputNumber',
     suffix: '毫秒'
   },

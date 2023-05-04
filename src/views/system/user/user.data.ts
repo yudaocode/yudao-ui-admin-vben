@@ -147,6 +147,7 @@ export const formSchema: FormSchema[] = [
     label: '手机号码',
     field: 'mobile',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {

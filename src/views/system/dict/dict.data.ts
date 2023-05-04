@@ -103,6 +103,7 @@ export const dataFormSchema: FormSchema[] = [
     label: '显示排序',
     field: 'sort',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {

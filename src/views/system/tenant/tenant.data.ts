@@ -159,6 +159,7 @@ export const formSchema: FormSchema[] = [
     label: '账号额度',
     field: 'accountCount',
     required: true,
+    defaultValue: 0,
     component: 'InputNumber'
   },
   {
