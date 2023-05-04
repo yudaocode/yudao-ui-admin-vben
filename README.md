@@ -24,6 +24,8 @@
 
 - [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
+- <img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
+
 ## 开发进度
 
 - 系统管理 页面适配 99%
