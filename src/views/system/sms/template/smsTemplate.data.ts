@@ -19,7 +19,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '短信类型',
-    dataIndex: 'status',
+    dataIndex: 'type',
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE)
