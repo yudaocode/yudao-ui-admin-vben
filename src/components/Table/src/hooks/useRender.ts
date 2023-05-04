@@ -94,7 +94,7 @@ export const useRender = {
    */
   renderDict: (text, type, dictType?) => {
     if (type) {
-      return h(DictTag, { type: type, value: text || '', dictType: dictType || 'number' })
+      return h(DictTag, { type: type, value: text !== null ? text : '', dictType: dictType || 'number' })
     }
     return ''
   },

@@ -51,11 +51,11 @@ export default defineComponent({
         return null
       }
       // 解决自定义字典标签值为零时标签不渲染的问题
-      if (props.value === undefined) {
+      if (props.value === undefined && props.value !== null) {
         return null
       }
       getDictObj(props.type, props.value.toString())
-      // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题   && isHexColor(dictData.value?.cssClass)
+      // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题 && isHexColor(dictData.value?.cssClass)
       return (
         <Tag
           color={
