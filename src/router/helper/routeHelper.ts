@@ -51,6 +51,9 @@ function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
     const meta = item.meta || {}
     meta.title = item.name
     meta.icon = item.icon
+    meta.hideMenu = !item.visible
+    meta.orderNo = item.sort
+    meta.ignoreKeepAlive = !item.keepAlive
     item.meta = meta
     children && asyncImportRoute(children)
   })
