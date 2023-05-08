@@ -1,6 +1,6 @@
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" title="查看详情">
-    <Description @register="registerDesc" />
+    <Description :column="2" @register="registerDesc" />
   </BasicModal>
 </template>
 <script lang="ts" setup name="InfraJobLogModal">

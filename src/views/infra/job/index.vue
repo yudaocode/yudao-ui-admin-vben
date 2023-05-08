@@ -72,11 +72,11 @@ const [registerTable, { getForm, reload }] = useTable({
 })
 
 function handleCreate() {
-  openModal(true, { isUpdate: false })
+  openModal(true, { isEdit: true, isUpdate: false })
 }
 
 function handleEdit(record: Recordable) {
-  openModal(true, { record, isUpdate: true })
+  openModal(true, { record, isEdit: true, isUpdate: true })
 }
 
 function handleChangeStatus(record: Recordable, open: boolean) {
@@ -106,8 +106,7 @@ function handleRun(record: Recordable) {
 }
 
 function handleView(record: Recordable) {
-  // TODO
-  console.info(record)
+  openModal(true, { record, isEdit: false })
 }
 
 function handleJobLog(record: Recordable) {

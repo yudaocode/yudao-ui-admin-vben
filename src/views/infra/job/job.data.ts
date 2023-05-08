@@ -1,3 +1,4 @@
+import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
@@ -114,5 +115,53 @@ export const formSchema: FormSchema[] = [
     field: 'monitorTimeout',
     component: 'Input',
     suffix: '毫秒'
+  }
+]
+
+export const descSchema: DescItem[] = [
+  {
+    label: '任务编号',
+    field: 'id'
+  },
+  {
+    label: '任务名称',
+    field: 'name'
+  },
+  {
+    label: '任务状态',
+    field: 'status',
+    render: (curVal) => {
+      return useRender.renderDict(curVal, DICT_TYPE.INFRA_JOB_STATUS)
+    }
+  },
+  {
+    label: '处理器的名字',
+    field: 'handlerName'
+  },
+  {
+    label: '处理器的参数',
+    field: 'handlerParam'
+  },
+  {
+    label: 'Cron 表达式',
+    field: 'cronExpression'
+  },
+  {
+    label: '重试次数',
+    field: 'retryCount'
+  },
+  {
+    label: '重试间隔',
+    field: 'cronExpression',
+    render: (curVal) => {
+      return useRender.renderText(curVal, ' 毫秒')
+    }
+  },
+  {
+    label: '监控超时时间',
+    field: 'monitorTimeout',
+    render: (curVal) => {
+      return curVal > 0 ? curVal + ' 毫秒' : '未开启'
+    }
   }
 ]

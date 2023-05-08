@@ -1,21 +1,40 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
+  <BasicModal
+    v-bind="$attrs"
+    @register="registerModal"
+    :title="isEdit ? (isUpdate ? t('action.edit') : t('action.create')) : t('action.detail')"
+    @ok="handleSubmit"
+  >
+    <BasicForm v-if="isEdit" @register="registerForm" />
+    <Description v-if="!isEdit" :column="2" @register="registerDesc" />
+    <Steps v-if="!isEdit" progress-dot :current="nextTimes && nextTimes.length" direction="vertical">
+      <template v-for="(nextTime, index) in nextTimes" :key="index">
+        <Step :title="nextTime" :description="'第' + `${index + 1}` + '次'" />
+      </template>
+    </Steps>
   </BasicModal>
 </template>
 <script lang="ts" setup name="InfraJobModal">
 import { ref, unref } from 'vue'
+import { Steps } from 'ant-design-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { formSchema } from './job.data'
-import { createJob, getJob, updateJob } from '@/api/infra/job'
+import { Description, useDescription } from '@/components/Description'
+import { descSchema, formSchema } from './job.data'
+import { createJob, getJob, getJobNextTimes, updateJob } from '@/api/infra/job'
+
+const Step = Steps.Step
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
+const isEdit = ref(true)
+
+const datas = ref()
+const nextTimes = ref()
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
@@ -25,13 +44,25 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   actionColOptions: { span: 23 }
 })
 
+const [registerDesc] = useDescription({
+  schema: descSchema,
+  data: datas
+})
+
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
-  resetFields()
+  isEdit.value = !!data?.isEdit
   setModalProps({ confirmLoading: false })
-  isUpdate.value = !!data?.isUpdate
-  if (unref(isUpdate)) {
-    const res = await getJob(data.record.id)
-    setFieldsValue({ ...res })
+  if (!!data?.isEdit) {
+    resetFields()
+
+    isUpdate.value = !!data?.isUpdate
+    if (unref(isUpdate)) {
+      const res = await getJob(data.record.id)
+      setFieldsValue({ ...res })
+    }
+  } else {
+    datas.value = await getJob(data.record.id)
+    nextTimes.value = await getJobNextTimes(data.record.id)
   }
 })
 
