@@ -55,6 +55,7 @@ function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
     meta.orderNo = item.sort
     meta.ignoreKeepAlive = !item.keepAlive
     item.meta = meta
+    item.name = item.name = item.componentName && item.componentName.length > 0 ? item.componentName : toCamelCase(item.path, true)
     children && asyncImportRoute(children)
   })
 }
@@ -145,7 +146,7 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
         meta.single = true
         route.children = [cloneDeep(route)]
         route.component = LAYOUT
-        route.name = `${route.name}Parent`
+        route.name = `${toCamelCase(route.path, true)}Parent`
         route.path = ''
         route.meta = meta
       }
@@ -235,4 +236,18 @@ function isMultipleRoute(routeModule: AppRouteModule) {
     }
   }
   return flag
+}
+
+function toCamelCase(str: string, upperCaseFirst: boolean) {
+  str = (str || '')
+    .replace(/-(.)/g, function (group1: string) {
+      return group1.toUpperCase()
+    })
+    .replaceAll('-', '')
+
+  if (upperCaseFirst && str) {
+    str = str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
+  return str
 }
