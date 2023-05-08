@@ -39,6 +39,7 @@
   </div>
 </template>
 <script lang="ts" setup name="InfraJob">
+import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -49,6 +50,7 @@ import { JobExportReqVO, deleteJob, exportJob, getJobPage, runJob, updateJobStat
 import { columns, searchFormSchema } from './job.data'
 import { InfraJobStatusEnum } from '@/enums/systemEnum'
 
+const go = useGo()
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
@@ -109,8 +111,11 @@ function handleView(record: Recordable) {
 }
 
 function handleJobLog(record: Recordable) {
-  // TODO
-  console.info(record)
+  if (record.id > 0) {
+    go('/job/job-log?id=' + record.id)
+  } else {
+    go('/job/job-log')
+  }
 }
 
 async function handleExport() {

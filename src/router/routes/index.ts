@@ -92,7 +92,33 @@ export const CodegenRoute: AppRouteRecordRaw = {
         hidden: true,
         noTagsView: false,
         icon: 'ep:edit',
-        title: '修改生成配置'
+        title: '修改生成配置',
+        activeMenu: 'infra/codegen/index'
+      }
+    }
+  ]
+}
+
+export const JobLogRoute: AppRouteRecordRaw = {
+  path: '/job',
+  component: LAYOUT,
+  name: 'JobL',
+  meta: {
+    title: '调度日志',
+    hidden: true
+  },
+  children: [
+    {
+      path: 'job-log',
+      component: () => import('@/views/infra/job/logger/index.vue'),
+      name: 'InfraJobLog',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ep:edit',
+        title: '调度日志',
+        activeMenu: 'infra/job/index'
       }
     }
   ]
@@ -100,4 +126,4 @@ export const CodegenRoute: AppRouteRecordRaw = {
 
 // Basic routing without permission
 // 未经许可的基本路由
-export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
+export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, JobLogRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
