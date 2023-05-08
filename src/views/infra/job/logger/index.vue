@@ -12,12 +12,15 @@
         </template>
       </template>
     </BasicTable>
+    <JobLogModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup name="InfraJobLog">
 import { useRoute } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { useModal } from '@/components/Modal'
+import JobLogModal from './JobLogModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { JobLogExportReqVO, exportJobLog, getJobLogPage } from '@/api/infra/jobLog'
@@ -26,8 +29,9 @@ import { columns, searchFormSchema } from './jobLog.data'
 const { t } = useI18n()
 const { query } = useRoute()
 const { createConfirm, createMessage } = useMessage()
+const [registerModal, { openModal }] = useModal()
 
-const [registerTable, { getForm }] = useTable({
+const [registerTable, { getForm, reload }] = useTable({
   title: '定时任务日志列表',
   api: getJobLogPage,
   searchInfo: { id: query.id as unknown as number },
@@ -44,8 +48,8 @@ const [registerTable, { getForm }] = useTable({
   }
 })
 
-function handleDetail() {
-  console.info('detail')
+function handleDetail(record: Recordable) {
+  openModal(true, { record })
 }
 
 async function handleExport() {

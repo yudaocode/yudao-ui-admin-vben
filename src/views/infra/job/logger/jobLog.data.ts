@@ -1,3 +1,4 @@
+import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
@@ -89,58 +90,53 @@ export const searchFormSchema: FormSchema[] = [
   }
 ]
 
-export const formSchema: FormSchema[] = [
+export const descSchema: DescItem[] = [
   {
-    label: '任务编号',
-    field: 'id',
-    show: false,
-    component: 'Input'
+    label: '日志编号',
+    field: 'id'
   },
   {
-    label: '任务名称',
-    field: 'name',
-    required: true,
-    component: 'Input'
+    label: '任务编号',
+    field: 'jobId'
   },
   {
     label: '处理器的名字',
-    field: 'handlerName',
-    required: true,
-    dynamicDisabled: ({ values }) => !!values.id,
-    component: 'Input'
+    field: 'handlerName'
   },
   {
     label: '处理器的参数',
-    field: 'handlerParam',
-    component: 'Input'
+    field: 'handlerParam'
   },
   {
-    label: 'CRON 表达式',
-    field: 'cronExpression',
-    required: true,
-    component: 'Input'
+    label: '第几次执行',
+    field: 'executeIndex'
   },
   {
-    label: '重试次数',
-    field: 'retryCount',
-    required: true,
-    helpMessage: '设置为 0 时，不进行重试',
-    defaultValue: 0,
-    component: 'InputNumber'
+    label: '执行时间',
+    field: 'beginTime',
+    render: (data) => {
+      return useRender.renderDate(data.beginTime) + ' ~ ' + useRender.renderDate(data.endTime)
+    }
   },
   {
-    label: '重试间隔',
-    field: 'retryInterval',
-    required: true,
-    helpMessage: '单位：毫秒。设置为 0 时，无需间隔',
-    defaultValue: 0,
-    component: 'InputNumber',
-    suffix: '毫秒'
+    label: '执行时长',
+    field: 'duration',
+    render: (curVal) => {
+      return useRender.renderText(curVal, ' 毫秒')
+    }
   },
   {
-    label: '监控超时时间',
-    field: 'monitorTimeout',
-    component: 'Input',
-    suffix: '毫秒'
+    label: '任务状态',
+    field: 'status',
+    render: (curVal) => {
+      return useRender.renderDict(curVal, DICT_TYPE.INFRA_JOB_LOG_STATUS)
+    }
+  },
+  {
+    label: '执行结果',
+    field: 'duration',
+    render: (curVal) => {
+      return useRender.renderText(curVal, ' result')
+    }
   }
 ]
