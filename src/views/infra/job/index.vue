@@ -14,11 +14,11 @@
           <TableAction
             :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), onClick: handleEdit.bind(null, record) }]"
             :dropDownActions="[
-              { icon: IconEnum.EDIT, label: '开启', auth: 'infra:job:update', onClick: handleChangeStatus.bind(null, record, true) },
+              { icon: IconEnum.AUTH, label: '开启', auth: 'infra:job:update', onClick: handleChangeStatus.bind(null, record, true) },
               { icon: IconEnum.EDIT, label: '暂停', auth: 'infra:job:update', onClick: handleChangeStatus.bind(null, record, false) },
-              { icon: IconEnum.EDIT, label: '执行一次', auth: 'infra:job:trigger', onClick: handleRun.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '任务详细', auth: 'infra:job:query', onClick: handleView.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '调度日志', auth: 'infra:job:query', onClick: handleJobLog.bind(null, record) },
+              { icon: IconEnum.TEST, label: '执行一次', auth: 'infra:job:trigger', onClick: handleRun.bind(null, record) },
+              { icon: IconEnum.PREVIEW, label: '任务详细', auth: 'infra:job:query', onClick: handleView.bind(null, record) },
+              { icon: IconEnum.LOG, label: '调度日志', auth: 'infra:job:query', onClick: handleJobLog.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
