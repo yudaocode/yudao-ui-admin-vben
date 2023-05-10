@@ -25,6 +25,7 @@
 - [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
 - <img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
+- 外包项目请联系 [ xinyu370 ]
 
 ## 开发进度
 
