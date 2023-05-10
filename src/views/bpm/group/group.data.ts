@@ -2,6 +2,15 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { getListSimpleUsers } from '@/api/system/user'
 
+let users: any[] = []
+
+async function getUserList() {
+  const res = await getListSimpleUsers()
+  users = res
+}
+
+await getUserList()
+
 export const columns: BasicColumn[] = [
   {
     title: '编号',
@@ -22,8 +31,23 @@ export const columns: BasicColumn[] = [
     title: '成员',
     dataIndex: 'memberUserIds',
     width: 180,
-    customRender: ({ text }) => {
-      return useRender.renderTags(text)
+    customRender: ({ record, text }) => {
+      const names: any[] = []
+      if (text) {
+        for (const userId of record.memberUserIds) {
+          let isUser = false
+          users.forEach((user) => {
+            if (userId === user.id) {
+              names.push(user.nickname)
+              isUser = true
+            }
+          })
+          if (!isUser) {
+            names.push('未知(' + userId + ')')
+          }
+        }
+        return useRender.renderTags(names)
+      }
     }
   },
   {
