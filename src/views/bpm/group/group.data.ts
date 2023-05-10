@@ -97,8 +97,7 @@ export const formSchema: FormSchema[] = [
       labelField: 'nickname',
       valueField: 'id',
       mode: 'multiple'
-    },
-    colProps: { span: 8 }
+    }
   },
   {
     label: '状态',
