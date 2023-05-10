@@ -115,12 +115,12 @@ export const formSchema: FormSchema[] = [
     label: '成员',
     field: 'memberUserIds',
     required: true,
-    component: 'ApiSelect',
+    component: 'ApiTransfer',
     componentProps: {
       api: () => getListSimpleUsers(),
+      showSearch: true,
       labelField: 'nickname',
-      valueField: 'id',
-      mode: 'multiple'
+      valueField: 'id'
     }
   },
   {

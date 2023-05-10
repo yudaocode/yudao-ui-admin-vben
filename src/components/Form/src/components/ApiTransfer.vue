@@ -20,7 +20,7 @@ import { propTypes } from '@/utils/propTypes'
 import { TransferDirection, TransferItem } from 'ant-design-vue/lib/transfer'
 
 const props = defineProps({
-  value: { type: Array as PropType<Array<string>> },
+  value: { type: Array as PropType<Array<any>> },
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<TransferItem[]>>,
     default: null
