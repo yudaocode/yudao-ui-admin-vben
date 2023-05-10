@@ -12,7 +12,7 @@
 import { computed, watch, ref, onMounted, unref, useAttrs } from 'vue'
 import { TreeSelect } from 'ant-design-vue'
 import { isArray, isFunction } from '@/utils/is'
-import { get } from 'lodash-es'
+import { get, set } from 'lodash-es'
 import { propTypes } from '@/utils/propTypes'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { handleTree } from '@/utils/tree'
@@ -24,7 +24,8 @@ const props = defineProps({
   resultField: propTypes.string.def(''),
   handleTree: { type: String, default: '' },
   parent: { type: String, default: '' },
-  parentId: { type: Number, default: 0 }
+  parentId: { type: Number, default: 0 },
+  parentFiled: { type: String, default: 'name' }
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
@@ -82,7 +83,8 @@ async function fetch() {
     result = handleTree(result, props.handleTree)
   }
   if (props.parent) {
-    let tree: any = { id: props.parentId, name: props.parent, children: [] }
+    let tree: Recordable = { id: props.parentId, children: [] }
+    tree = set(tree, props.parentFiled, props.parent)
     tree.children = (result as Recordable[]) || []
     treeData.value.push(tree)
   } else {
