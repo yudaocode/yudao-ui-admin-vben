@@ -9,7 +9,7 @@
     <Description v-if="!isEdit" :column="2" @register="registerDesc" />
     <Steps v-if="!isEdit" progress-dot :current="nextTimes && nextTimes.length" direction="vertical">
       <template v-for="(nextTime, index) in nextTimes" :key="index">
-        <Step :title="nextTime" :description="'第' + `${index + 1}` + '次'" />
+        <Step :title="formatToDateTime(nextTime)" :description="'第' + `${index + 1}` + '次'" />
       </template>
     </Steps>
   </BasicModal>
@@ -24,6 +24,7 @@ import { BasicModal, useModalInner } from '@/components/Modal'
 import { Description, useDescription } from '@/components/Description'
 import { descSchema, formSchema } from './job.data'
 import { createJob, getJob, getJobNextTimes, updateJob } from '@/api/infra/job'
+import { formatToDateTime } from '@/utils/dateUtil'
 
 const Step = Steps.Step
 
