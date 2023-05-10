@@ -33,6 +33,7 @@ import { StrengthMeter } from '@/components/StrengthMeter'
 import { IconPicker } from '@/components/Icon'
 import { CountdownInput } from '@/components/CountDown'
 import { Tinymce } from '@/components/Tinymce'
+import FileUpload from './components/FileUpload.vue'
 
 const componentMap = new Map<ComponentType, Component>()
 
@@ -71,6 +72,7 @@ componentMap.set('IconPicker', IconPicker)
 componentMap.set('InputCountDown', CountdownInput)
 
 componentMap.set('Upload', BasicUpload)
+componentMap.set('FileUpload', FileUpload)
 componentMap.set('Divider', Divider)
 componentMap.set('Editor', Tinymce)
 

@@ -116,3 +116,4 @@ export type ComponentType =
   | 'Divider'
   | 'ApiTransfer'
   | 'Editor'
+  | 'FileUpload'

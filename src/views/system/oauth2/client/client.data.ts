@@ -110,12 +110,15 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'Input'
   },
-  // TODO UPLOAD
   {
     label: '应用图标',
     field: 'logo',
     required: true,
-    component: 'Input'
+    component: 'FileUpload',
+    componentProps: {
+      fileType: 'image',
+      maxCount: 1
+    }
   },
   {
     label: '应用描述',
