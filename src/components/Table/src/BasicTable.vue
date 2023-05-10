@@ -160,7 +160,7 @@ function handleTableChange(...args) {
   onChange && isFunction(onChange) && onChange.call(undefined, ...args)
 }
 
-const { getViewColumns, getColumns, setCacheColumnsByField, setColumns, getColumnsRef, getCacheColumns } = useColumns(
+const { getViewColumns, getColumns, setCacheColumnsByField, setCacheColumns, setColumns, getColumnsRef, getCacheColumns } = useColumns(
   getProps,
   getPaginationInfo
 )
@@ -292,7 +292,8 @@ const tableAction: TableActionType = {
   scrollTo,
   getSize: () => {
     return unref(getBindValues).size as SizeType
-  }
+  },
+  setCacheColumns
 }
 createTableContext({ ...tableAction, wrapRef, getBindValues })
 

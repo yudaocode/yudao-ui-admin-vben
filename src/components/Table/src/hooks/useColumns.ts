@@ -251,6 +251,10 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPagination
   function getCacheColumns() {
     return cacheColumns
   }
+  function setCacheColumns(columns: BasicColumn[]) {
+    if (!isArray(columns)) return
+    cacheColumns = columns.filter((item) => !item.flag)
+  }
 
   return {
     getColumnsRef,
@@ -258,7 +262,8 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPagination
     getColumns,
     setColumns,
     getViewColumns,
-    setCacheColumnsByField
+    setCacheColumnsByField,
+    setCacheColumns
   }
 }
 
