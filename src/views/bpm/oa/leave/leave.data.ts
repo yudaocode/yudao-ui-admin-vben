@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -60,7 +60,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.BPM_OA_LEAVE_TYPE)
+      options: getDictOpts(DICT_TYPE.BPM_OA_LEAVE_TYPE)
     },
     colProps: { span: 8 }
   },
@@ -75,7 +75,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT)
+      options: getDictOpts(DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT)
     },
     colProps: { span: 8 }
   },

@@ -1,7 +1,7 @@
 import { getMerchantListByName } from '@/api/pay/merchant'
 import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -128,7 +128,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'channelCode',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)
+      options: getDictOpts(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)
     },
     colProps: { span: 8 }
   },
@@ -149,7 +149,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.PAY_ORDER_STATUS)
+      options: getDictOpts(DICT_TYPE.PAY_ORDER_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -158,7 +158,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'refundStatus',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.PAY_ORDER_REFUND_STATUS)
+      options: getDictOpts(DICT_TYPE.PAY_ORDER_REFUND_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -167,7 +167,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'notifyStatus',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.PAY_ORDER_NOTIFY_STATUS)
+      options: getDictOpts(DICT_TYPE.PAY_ORDER_NOTIFY_STATUS)
     },
     colProps: { span: 8 }
   },

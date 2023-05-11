@@ -1,6 +1,6 @@
 import { getDataSourceConfigList } from '@/api/infra/dataSourceConfig'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 const dataSourceConfigs = await getDataSourceConfigList()
 
@@ -104,7 +104,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     }
   },
   {

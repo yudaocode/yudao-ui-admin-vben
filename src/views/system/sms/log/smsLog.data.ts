@@ -1,5 +1,5 @@
 import { getSimpleSmsChannels } from '@/api/system/sms/smsChannel'
-import { getIntDictOptions } from '@/utils/dict'
+import { getDictOpts } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
 
@@ -105,7 +105,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'sendStatus',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.SYSTEM_SMS_SEND_STATUS)
+      options: getDictOpts(DICT_TYPE.SYSTEM_SMS_SEND_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -120,7 +120,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'receiveStatus',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS)
+      options: getDictOpts(DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS)
     },
     colProps: { span: 8 }
   },

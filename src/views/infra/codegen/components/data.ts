@@ -2,7 +2,7 @@ import { listSimpleDictType } from '@/api/system/dict/type'
 import { listSimpleMenus } from '@/api/system/menu'
 import { FormSchema } from '@/components/Form'
 import { BasicColumn } from '@/components/Table'
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+import { getDictOpts, DICT_TYPE } from '@/utils/dict'
 
 async function getDictTypeOptions() {
   const dictTypeOptions: any[] = []
@@ -59,7 +59,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE)
+      options: getDictOpts(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE)
     },
     colProps: { span: 12 }
   },
@@ -69,7 +69,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE)
+      options: getDictOpts(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE)
     },
     colProps: { span: 12 }
   },
@@ -79,7 +79,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE)
+      options: getDictOpts(DICT_TYPE.INFRA_CODEGEN_SCENE)
     },
     colProps: { span: 12 }
   },

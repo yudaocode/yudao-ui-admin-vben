@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -76,7 +76,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'type',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_CONFIG_TYPE)
+      options: getDictOpts(DICT_TYPE.INFRA_CONFIG_TYPE)
     },
     colProps: { span: 8 }
   },

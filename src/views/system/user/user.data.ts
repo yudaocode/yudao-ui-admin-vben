@@ -4,7 +4,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { listSimpleDept } from '@/api/system/dept'
 import { listSimplePosts } from '@/api/system/post'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 import { updateUserStatus } from '@/api/system/user'
 import { listSimpleRoles } from '@/api/system/role'
 
@@ -100,7 +100,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -173,7 +173,7 @@ export const formSchema: FormSchema[] = [
     field: 'sex',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX)
+      options: getDictOpts(DICT_TYPE.SYSTEM_USER_SEX)
     }
   },
   {
@@ -192,7 +192,7 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     }
   },
   {

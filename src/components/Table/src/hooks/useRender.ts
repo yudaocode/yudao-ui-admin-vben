@@ -94,13 +94,12 @@ export const useRender = {
   /**
    * 渲染字典
    * @param text 字典值
-   * @param type 字典类型
-   * @param dictType number | string | boolean
+   * @param dictType 字典类型
    * @returns 字典标签
    */
-  renderDict: (text, type, dictType?) => {
-    if (type) {
-      return h(DictTag, { type: type, value: text, dictType: dictType })
+  renderDict: (text, dictType) => {
+    if (dictType) {
+      return h(DictTag, { type: dictType, value: text })
     }
     return ''
   },

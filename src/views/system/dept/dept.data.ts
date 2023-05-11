@@ -1,7 +1,7 @@
 import { listSimpleDept } from '@/api/system/dept'
 import { getListSimpleUsers } from '@/api/system/user'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 let userOptions: any[] = []
 
@@ -70,7 +70,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   }
@@ -147,7 +147,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     }
   }
 ]

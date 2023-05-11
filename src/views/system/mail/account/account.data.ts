@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getBoolDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -102,7 +102,7 @@ export const formSchema: FormSchema[] = [
     field: 'sslEnable',
     component: 'Switch',
     componentProps: {
-      options: getBoolDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING)
+      options: getDictOpts(DICT_TYPE.INFRA_BOOLEAN_STRING)
     }
   }
 ]

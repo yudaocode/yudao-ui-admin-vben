@@ -23,15 +23,27 @@ export const getDictOptions = (dictType: string) => {
   return dictStore.getDictMap[dictType]
 }
 
-export const getIntDictOptions = (dictType: string) => {
+export const getDictOpts = (dictType: string) => {
   const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
   if (dictOptions && dictOptions.length > 0) {
     dictOptions.forEach((dict: DictDataType) => {
-      dictOption.push({
-        ...dict,
-        value: parseInt(dict.value + '')
-      })
+      if (typeof dict.value === 'number') {
+        dictOption.push({
+          ...dict,
+          value: parseInt(dict.value + '')
+        })
+      } else if (typeof dict.value === 'string') {
+        dictOption.push({
+          ...dict,
+          value: dict.value + ''
+        })
+      } else if (typeof dict.value === 'boolean') {
+        dictOption.push({
+          ...dict,
+          value: dict.value + '' === 'true' ? true : false
+        })
+      }
     })
   }
 

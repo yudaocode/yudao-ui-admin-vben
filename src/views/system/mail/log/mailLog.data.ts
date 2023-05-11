@@ -1,4 +1,4 @@
-import { getIntDictOptions } from '@/utils/dict'
+import { getDictOpts } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE } from '@/utils/dict'
 import { getSimpleMailAccountList } from '@/api/system/mail/account'
@@ -76,7 +76,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'sendStatus',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS)
+      options: getDictOpts(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -91,7 +91,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'userType',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.USER_TYPE)
+      options: getDictOpts(DICT_TYPE.USER_TYPE)
     },
     colProps: { span: 8 }
   },

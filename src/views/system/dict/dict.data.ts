@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const dataColumns: BasicColumn[] = [
   {
@@ -67,7 +67,7 @@ export const dataSearchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   }
@@ -112,7 +112,7 @@ export const dataFormSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
     }
   },
   {

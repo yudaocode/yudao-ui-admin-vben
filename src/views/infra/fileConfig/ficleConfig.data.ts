@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getDictOpts } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -55,7 +55,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'storage',
     component: 'Select',
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_FILE_STORAGE)
+      options: getDictOpts(DICT_TYPE.INFRA_FILE_STORAGE)
     },
     colProps: { span: 8 }
   },
@@ -87,7 +87,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     dynamicDisabled: ({ values }) => !!values.id,
     componentProps: {
-      options: getIntDictOptions(DICT_TYPE.INFRA_FILE_STORAGE)
+      options: getDictOpts(DICT_TYPE.INFRA_FILE_STORAGE)
     }
   },
   {

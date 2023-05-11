@@ -2,7 +2,7 @@
 import { defineComponent, PropType, ref } from 'vue'
 import { isHexColor } from '@/utils/color'
 import { Tag } from 'ant-design-vue'
-import { DictDataType, getBoolDictOptions, getDictOptions, getStrDictOptions } from '@/utils/dict'
+import { DictDataType, getDictOpts } from '@/utils/dict'
 import { propTypes } from '@/utils/propTypes'
 
 export default defineComponent({
@@ -13,20 +13,13 @@ export default defineComponent({
       required: true
     },
     value: propTypes.oneOfType([propTypes.string, propTypes.number, propTypes.bool]),
-    dictType: propTypes.oneOf(['string', 'boolean', 'number']).def('number'),
     icon: { type: String }
   },
   setup(props) {
     const dictData = ref<DictDataType>()
     const getDictObj = (dictType: string, value: string) => {
       let dictOptions: DictDataType[] = []
-      if (props.dictType && props.dictType === 'boolean') {
-        dictOptions = getBoolDictOptions(dictType)
-      } else if (props.dictType && props.dictType === 'string') {
-        dictOptions = getStrDictOptions(dictType)
-      } else {
-        dictOptions = getDictOptions(dictType)
-      }
+      dictOptions = getDictOpts(dictType)
       if (dictOptions && dictOptions.length === 0) {
         return
       }
