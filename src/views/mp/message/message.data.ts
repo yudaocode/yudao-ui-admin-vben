@@ -29,7 +29,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'type',
     width: 80,
     customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.MP_MESSAGE_TYPE, 'string')
+      return useRender.renderDict(text, DICT_TYPE.MP_MESSAGE_TYPE)
     }
   },
   {
