@@ -16,6 +16,6 @@ export function createDemoOrder(data) {
 }
 
 // 退款示例订单
-export function updateApp(id: number) {
+export function refundDemoOrder(id: number) {
   return defHttp.put({ url: '/pay/demo-order/refund?id=' + id })
 }

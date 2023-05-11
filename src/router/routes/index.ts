@@ -124,6 +124,31 @@ export const JobLogRoute: AppRouteRecordRaw = {
   ]
 }
 
+export const PayRoute: AppRouteRecordRaw = {
+  path: '/cashRegister',
+  component: LAYOUT,
+  name: 'cashRegister',
+  meta: {
+    title: '收银台',
+    hidden: true
+  },
+  children: [
+    {
+      path: 'submit',
+      component: () => import('@/views/pay/submit/index.vue'),
+      name: 'PayOrderSubmit',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ep:edit',
+        title: '收银台',
+        activeMenu: 'pay/order/index'
+      }
+    }
+  ]
+}
+
 // Basic routing without permission
 // 未经许可的基本路由
-export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, JobLogRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
+export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, JobLogRoute, PayRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]

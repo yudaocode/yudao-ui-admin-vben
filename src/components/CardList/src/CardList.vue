@@ -6,8 +6,8 @@
     <div class="p-2 bg-white">
       <List :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: grid }" :data-source="data" :pagination="paginationProp">
         <template #header>
-          <div class="flex justify-end space-x-2"
-            ><slot name="header"></slot>
+          <div class="flex justify-end space-x-2">
+            <slot name="header"></slot>
             <Tooltip>
               <template #title>
                 <div class="w-50">每行显示数量</div>
