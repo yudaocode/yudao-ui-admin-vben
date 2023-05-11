@@ -37,11 +37,7 @@ export function updateModel(data: ModelVO) {
 }
 
 // 任务状态修改
-export function updateModelState(id: number, state: number) {
-  const data = {
-    id: id,
-    state: state
-  }
+export function updateModelState(data) {
   return defHttp.put({ url: '/bpm/model/update-state', data })
 }
 

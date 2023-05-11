@@ -1,10 +1,15 @@
+import { updateModelState } from '@/api/bpm/model'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { Button, Switch } from 'ant-design-vue'
+import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'id',
+    defaultHidden: true,
     width: 100
   },
   {
@@ -15,12 +20,12 @@ export const columns: BasicColumn[] = [
   {
     title: '流程名称',
     dataIndex: 'name',
-    width: 200
+    width: 180
   },
   {
     title: '流程分类',
     dataIndex: 'category',
-    width: 180,
+    width: 120,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.BPM_MODEL_CATEGORY, 'string')
     }
@@ -28,7 +33,16 @@ export const columns: BasicColumn[] = [
   {
     title: '表单信息',
     dataIndex: 'formType',
-    width: 200
+    width: 180,
+    customRender: ({ record }) => {
+      if (record.formId) {
+        return h(Button, { type: 'link', onClick: handleFormDetail.bind(null, record) }, () => record.formName)
+      } else if (record.formCustomCreatePath) {
+        return h(Button, { type: 'link', onClick: handleFormDetail.bind(null, record) }, () => record.formCustomCreatePath)
+      } else {
+        return useRender.renderTag('暂无表单')
+      }
+    }
   },
   {
     title: '创建时间',
@@ -37,6 +51,65 @@ export const columns: BasicColumn[] = [
     customRender: ({ text }) => {
       return useRender.renderDate(text)
     }
+  },
+  {
+    title: '最新部署的流程定义',
+    children: [
+      {
+        title: '流程版本',
+        dataIndex: 'processDefinition.version',
+        width: 160,
+        customRender: ({ record }) => {
+          if (record.processDefinition) {
+            return useRender.renderTag('v' + record.processDefinition.version)
+          } else {
+            return useRender.renderTag('未部署')
+          }
+        }
+      },
+      {
+        title: '激活状态',
+        dataIndex: 'processDefinition.suspensionState',
+        width: 100,
+        customRender: ({ record }) => {
+          if (record.processDefinition) {
+            if (!Reflect.has(record, 'suspensionState')) {
+              record.pendingStatus = false
+            }
+            return h(Switch, {
+              checked: record.processDefinition.suspensionState === 1,
+              checkedChildren: '激活',
+              unCheckedChildren: '挂起',
+              onChange(checked: boolean) {
+                const newStatus = checked ? 0 : 1
+                const { createMessage } = useMessage()
+                updateModelState({ id: record.id, state: newStatus })
+                  .then(() => {
+                    record.status = newStatus
+                    createMessage.success(`已成功修改流程状态`)
+                  })
+                  .catch(() => {
+                    createMessage.error('修改流程状态失败')
+                  })
+                  .finally(() => {
+                    record.pendingStatus = false
+                  })
+              }
+            })
+          }
+        }
+      },
+      {
+        title: '部署时间',
+        dataIndex: 'processDefinition.deploymentTim',
+        width: 180,
+        customRender: ({ record }) => {
+          if (record.processDefinition) {
+            return useRender.renderDate(record.processDefinition.deploymentTime)
+          }
+        }
+      }
+    ]
   }
 ]
 
@@ -99,3 +172,7 @@ export const formSchema: FormSchema[] = [
     component: 'InputTextArea'
   }
 ]
+
+function handleFormDetail() {
+  console.info('handleFormDetail')
+}
