@@ -7,13 +7,10 @@
       <List :grid="{ column: 8 }" header="选择支付宝支付" :data-source="aliPayChannels">
         <template #renderItem="{ item }">
           <ListItem>
-            <Card hoverable class="w-30 h-28 mt-3 pb-3">
+            <Card hoverable class="w-30 h-28 mt-3 pb-3" @click="submit(item.code)">
               <template #cover>
                 <img class="w-40px h-40px mt-2" :src="icons[item.code]" />
                 <p class="mt-3 text-center"> {{ item.name }} </p>
-              </template>
-              <template #actions>
-                <Icon icon="ant-design:alipay-outlined" @click="submit(item.code)" />
               </template>
             </Card>
           </ListItem>
@@ -49,7 +46,6 @@
 <script lang="ts" setup name="PayOrderSubmit">
 import { ref, onMounted } from 'vue'
 import { Card, List } from 'ant-design-vue'
-import { Icon } from '@/components/Icon'
 import { Description } from '@/components/Description'
 import { descSchema } from './submit.data'
 import { getOrder, submitOrder } from '@/api/pay/order'
