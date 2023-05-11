@@ -27,6 +27,9 @@ export default defineComponent({
       } else {
         dictOptions = getDictOptions(dictType)
       }
+      if (dictOptions && dictOptions.length === 0) {
+        return
+      }
       dictOptions.forEach((dict: DictDataType) => {
         if (dict.value === value) {
           if (dict.colorType + '' === 'primary') {
@@ -49,6 +52,10 @@ export default defineComponent({
         return null
       }
       getDictObj(props.type, props.value.toString())
+
+      if (dictData.value === undefined) {
+        return null
+      }
       // 添加标签的文字颜色为白色，解决自定义背景颜色时标签文字看不清的问题 && isHexColor(dictData.value?.cssClass)
       return (
         <Tag
@@ -60,7 +67,7 @@ export default defineComponent({
               : ''
           }
         >
-          {dictData.value?.label}
+          {dictData.value?.label || ''}
         </Tag>
       )
     }
