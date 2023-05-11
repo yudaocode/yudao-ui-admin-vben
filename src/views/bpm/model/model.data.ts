@@ -1,3 +1,4 @@
+import { getSimpleForms } from '@/api/bpm/form'
 import { updateModelState } from '@/api/bpm/model'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -162,6 +163,7 @@ export const formSchema: FormSchema[] = [
     label: '流程分类',
     field: 'category',
     component: 'Select',
+    defaultValue: 0,
     componentProps: {
       options: getIntDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)
     }
@@ -170,6 +172,40 @@ export const formSchema: FormSchema[] = [
     label: '流程描述',
     field: 'description',
     component: 'InputTextArea'
+  },
+  {
+    label: '表单类型',
+    field: 'formType',
+    component: 'Select',
+    ifShow: ({ values }) => !!values.id,
+    componentProps: {
+      options: getIntDictOptions(DICT_TYPE.BPM_MODEL_FORM_TYPE)
+    }
+  },
+  {
+    label: '流程表单',
+    field: 'formId',
+    component: 'ApiSelect',
+    ifShow: ({ values }) => !!values.id && values.formType === 10,
+    componentProps: {
+      api: () => getSimpleForms(),
+      labelField: 'name',
+      valueField: 'id'
+    }
+  },
+  {
+    label: '表单提交路由',
+    field: 'formCustomCreatePath',
+    component: 'Input',
+    helpMessage: '自定义表单的提交路径，使用 Vue 的路由地址，例如说：bpm/oa/leave/create',
+    ifShow: ({ values }) => !!values.id && values.formType === 20
+  },
+  {
+    label: '表单查看路由',
+    field: 'formCustomViewPath',
+    component: 'Input',
+    helpMessage: '自定义表单的查看路径，使用 Vue 的路由地址，例如说：bpm/oa/leave/view',
+    ifShow: ({ values }) => !!values.id && values.formType === 20
   }
 ]
 
