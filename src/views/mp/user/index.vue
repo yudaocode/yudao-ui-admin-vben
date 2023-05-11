@@ -6,10 +6,10 @@
           {{ t('action.sync') }}
         </a-button>
       </template>
-      <template #bodyCell="{ column }">
+      <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
-            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:user:update', onClick: handleEdit.bind(null) }]"
+            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:user:update', onClick: handleEdit.bind(null, record) }]"
           />
         </template>
       </template>

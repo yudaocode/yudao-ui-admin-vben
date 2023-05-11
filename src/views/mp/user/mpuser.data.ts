@@ -4,7 +4,7 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
-    title: '岗位编号',
+    title: '编号',
     dataIndex: 'id',
     width: 100
   },
@@ -54,6 +54,7 @@ export const searchFormSchema: FormSchema[] = [
     label: '公众号',
     field: 'accountId',
     component: 'ApiSelect',
+    defaultValue: 0,
     componentProps: {
       api: () => getSimpleAccounts(),
       labelField: 'name',
@@ -99,6 +100,7 @@ export const formSchema: FormSchema[] = [
     field: 'tagIds',
     helpMessage: '在微信公众平台（mp.weixin.qq.com）的菜单 [设置与开发 - 公众号设置 - 基本设置] 中能找到「开发者ID(AppID)」',
     required: true,
+    defaultValue: [],
     component: 'ApiSelect',
     componentProps: {
       api: () => getSimpleTags(),

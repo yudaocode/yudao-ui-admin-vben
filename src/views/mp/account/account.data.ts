@@ -2,8 +2,9 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
-    title: '岗位编号',
+    title: '编号',
     dataIndex: 'id',
+    defaultHidden: true,
     width: 100
   },
   {
