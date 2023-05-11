@@ -33,7 +33,7 @@ import { Image } from 'ant-design-vue';
 </template>
 <script lang="ts" setup name="WxLocation">
 import { Image } from 'ant-design-vue'
-import Icon from '@/components/Icon'
+import { Icon } from '@/components/Icon'
 
 const props = defineProps({
   locationX: {

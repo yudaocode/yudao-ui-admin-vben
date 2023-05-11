@@ -49,6 +49,7 @@
 <script lang="ts" setup name="PayOrderSubmit">
 import { ref, onMounted } from 'vue'
 import { Card, List } from 'ant-design-vue'
+import { Icon } from '@/components/Icon'
 import { Description } from '@/components/Description'
 import { descSchema } from './submit.data'
 import { getOrder, submitOrder } from '@/api/pay/order'

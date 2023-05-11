@@ -1,5 +1,5 @@
 import { DictTag } from '@/components/DictTag'
-import Icon from '@/components/Icon'
+import { Icon } from '@/components/Icon'
 import { Button, Tag } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { h } from 'vue'

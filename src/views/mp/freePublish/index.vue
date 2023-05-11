@@ -3,7 +3,7 @@
     <template #headerContent>
       请选择公众号
       <div :class="`${prefixCls}__link`">
-        <Select :value="queryParams.accountId" style="width: 200px" @change="getList">
+        <Select :value="queryParams.accountId as any" style="width: 200px" @change="getList">
           <SelectOption v-for="item in accounts" :label="item.name" :value="parseInt(item.id)" :key="parseInt(item.id)" />
         </Select>
         <!-- <a><Icon icon="bx:bx-paper-plane" color="#1890ff" /><span>开始</span></a>
@@ -42,7 +42,7 @@
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-// import Icon from '@/components/Icon'
+// import { Icon } from '@/components/Icon'
 import { PageWrapper } from '@/components/Page'
 import { Card, List, Image, Select, Pagination } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
