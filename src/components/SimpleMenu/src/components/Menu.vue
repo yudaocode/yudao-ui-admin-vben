@@ -4,13 +4,15 @@
   </ul>
 </template>
 
-<script lang="ts" setup name="Menu">
+<script lang="ts" setup>
 import type { SubMenuProvider } from './types'
 import { ref, computed, onMounted, watchEffect, watch, nextTick, getCurrentInstance, provide } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import { createSimpleRootMenuContext } from './useSimpleMenuContext'
 import mitt from '@/utils/mitt'
+
+defineOptions({ name: 'Menu' })
 
 const props = defineProps({
   theme: propTypes.oneOf(['light', 'dark']).def('light'),

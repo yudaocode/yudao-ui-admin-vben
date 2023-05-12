@@ -34,7 +34,7 @@
     </template>
   </SubMenu>
 </template>
-<script lang="ts" setup name="SimpleSubMenu">
+<script lang="ts" setup>
 import type { Menu } from '@/router/types'
 import { computed } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -47,6 +47,8 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 const SimpleMenuTag = createAsyncComponent(() => import('./SimpleMenuTag.vue'))
+
+defineOptions({ name: 'SimpleSubMenu' })
 
 const props = defineProps({
   item: {

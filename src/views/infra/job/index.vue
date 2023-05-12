@@ -38,7 +38,7 @@
     <JobModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="InfraJob">
+<script lang="ts" setup>
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -49,6 +49,8 @@ import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { JobExportReqVO, deleteJob, exportJob, getJobPage, runJob, updateJobStatus } from '@/api/infra/job'
 import { columns, searchFormSchema } from './job.data'
 import { InfraJobStatusEnum } from '@/enums/systemEnum'
+
+defineOptions({ name: 'InfraJob' })
 
 const go = useGo()
 const { t } = useI18n()

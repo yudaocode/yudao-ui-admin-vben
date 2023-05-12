@@ -35,7 +35,7 @@
     <TenantPackageModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemTenantPackage">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -44,6 +44,8 @@ import TenantPackageModal from './TenantPackageModal.vue'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteTenantPackage, getTenantPackagePage } from '@/api/system/tenantPackage'
 import { columns, searchFormSchema } from './tenantPackage.data'
+
+defineOptions({ name: 'SystemTenantPackage' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

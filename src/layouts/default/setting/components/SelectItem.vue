@@ -4,13 +4,15 @@
     <Select v-bind="getBindValue" :class="`${prefixCls}-select`" @change="handleChange as any" :disabled="disabled" :options="options" />
   </div>
 </template>
-<script lang="ts" setup name="SelectItem">
+<script lang="ts" setup>
 import { computed } from 'vue'
 
 import { Select } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { baseHandler } from '../handler'
 import { HandlerEnum } from '../enum'
+
+defineOptions({ name: 'SelectItem' })
 
 const props = defineProps({
   event: {

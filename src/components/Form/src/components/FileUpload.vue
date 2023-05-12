@@ -7,7 +7,7 @@
       :fileList="fileList"
       :disabled="disabled"
       v-bind="bindProps"
-      @remove="onRemove"
+      @remove="onRemove as any"
       @change="onFileChange"
       @preview="onFilePreview"
     >
@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="FileUpload">
+<script lang="ts" setup>
 import { Upload } from 'ant-design-vue'
 import { ref, reactive, computed, watch, unref } from 'vue'
 import { Icon } from '@/components/Icon'
@@ -36,6 +36,8 @@ import { createImgPreview } from '@/components/Preview/index'
 import { useAttrs } from '@/hooks/core/useAttrs'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useGlobSetting } from '@/hooks/setting'
+
+defineOptions({ name: 'FileUpload' })
 
 const { createMessage, createConfirm } = useMessage()
 const { prefixCls } = useDesign('upload')

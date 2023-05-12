@@ -5,7 +5,7 @@
     <MultipleTabs v-if="getShowTabs" />
   </div>
 </template>
-<script lang="ts" setup name="LayoutMultipleHeader">
+<script lang="ts" setup>
 import { unref, computed, CSSProperties } from 'vue'
 
 import LayoutHeader from './index.vue'
@@ -19,9 +19,12 @@ import { useAppInject } from '@/hooks/web/useAppInject'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLayoutHeight } from '../content/useContentViewHeight'
 
+defineOptions({ name: 'LayoutMultipleHeader' })
+
 const HEADER_HEIGHT = 48
 
 const TABS_HEIGHT = 32
+
 const { setHeaderHeight } = useLayoutHeight()
 const { prefixCls } = useDesign('layout-multiple-header')
 

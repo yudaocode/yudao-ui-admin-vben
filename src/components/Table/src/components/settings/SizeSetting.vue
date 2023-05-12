@@ -22,7 +22,7 @@
     </Dropdown>
   </Tooltip>
 </template>
-<script lang="ts" setup name="SizeSetting">
+<script lang="ts" setup>
 import type { SizeType } from '../../types/table'
 import { ref } from 'vue'
 import { Tooltip, Dropdown, Menu } from 'ant-design-vue'
@@ -32,6 +32,9 @@ import { useTableContext } from '../../hooks/useTableContext'
 import { getPopupContainer } from '@/utils'
 
 const MenuItem = Menu.Item
+
+defineOptions({ name: 'SizeSetting' })
+
 const table = useTableContext()
 const { t } = useI18n()
 

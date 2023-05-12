@@ -18,7 +18,7 @@
     <DemoModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="PayDemo">
+<script lang="ts" setup>
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -28,6 +28,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getDemoOrderPage, refundDemoOrder } from '@/api/pay/demo'
 import { columns, searchFormSchema } from './demo.data'
+
+defineOptions({ name: 'PayDemo' })
 
 const go = useGo()
 const { t } = useI18n()

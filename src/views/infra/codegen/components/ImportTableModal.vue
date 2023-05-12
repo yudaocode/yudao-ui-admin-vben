@@ -3,12 +3,13 @@
     <BasicTable @register="registerTable" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="InfraImportTableModal">
+<script lang="ts" setup>
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicTable, useTable } from '@/components/Table'
 import { importTableColumns, importTableSearchFormSchema } from '../codegen.data'
 import { createCodegenList, getSchemaTableList } from '@/api/infra/codegen'
 
+defineOptions({ name: 'InfraImportTableModal' })
 const emit = defineEmits(['success', 'register'])
 
 const [registerTable, { getSelectRowKeys, getForm }] = useTable({

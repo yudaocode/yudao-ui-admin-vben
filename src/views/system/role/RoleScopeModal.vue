@@ -15,7 +15,7 @@
     </BasicForm>
   </BasicModal>
 </template>
-<script lang="ts" setup name="SystemRoleScopeModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -27,6 +27,8 @@ import { getRole } from '@/api/system/role'
 import { listSimpleDept } from '@/api/system/dept'
 import { handleTree } from '@/utils/tree'
 import { assignRoleDataScope } from '@/api/system/permission'
+
+defineOptions({ name: 'SystemRoleScopeModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

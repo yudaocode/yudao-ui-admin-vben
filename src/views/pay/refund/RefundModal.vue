@@ -3,12 +3,14 @@
     <Description :bordered="false" :column="3" :data="refundData" :schema="descSchema" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="PayRefundModal">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { Description } from '@/components/Description'
 import { descSchema } from './refund.data'
 import { getRefund } from '@/api/pay/refund'
+
+defineOptions({ name: 'PayRefundModal' })
 
 const refundData = ref()
 

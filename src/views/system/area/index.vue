@@ -8,7 +8,7 @@
     <AreaModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemArea">
+<script lang="ts" setup>
 import { useModal } from '@/components/Modal'
 import AreaModal from './AreaModal.vue'
 import { IconEnum } from '@/enums/appEnum'
@@ -16,6 +16,8 @@ import { BasicTable, useTable } from '@/components/Table'
 import { getAreaTree } from '@/api/system/area'
 import { columns } from './area.data'
 import { handleTree } from '@/utils/tree'
+
+defineOptions({ name: 'SystemArea' })
 
 const [registerModal, { openModal }] = useModal()
 

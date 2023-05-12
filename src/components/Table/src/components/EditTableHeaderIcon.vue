@@ -5,8 +5,10 @@
     <FormOutlined />
   </span>
 </template>
-<script lang="ts" setup name="EditTableHeaderIcon">
+<script lang="ts" setup>
 import { FormOutlined } from '@ant-design/icons-vue'
+
+defineOptions({ name: 'EditTableHeaderIcon' })
 
 defineProps({ title: { type: String, default: '' } })
 </script>

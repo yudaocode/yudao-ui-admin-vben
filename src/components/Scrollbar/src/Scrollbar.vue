@@ -16,12 +16,14 @@
     </template>
   </div>
 </template>
-<script lang="ts" setup name="Scrollbar">
+<script lang="ts" setup>
 import { addResizeListener, removeResizeListener } from '@/utils/event'
 import componentSetting from '@/settings/componentSetting'
 import { toObject } from './util'
 import { ref, onMounted, onBeforeUnmount, nextTick, provide, computed, unref } from 'vue'
 import Bar from './bar'
+
+defineOptions({ name: 'Scrollbar' })
 
 const props = defineProps({
   native: {

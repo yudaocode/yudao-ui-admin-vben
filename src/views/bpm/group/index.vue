@@ -30,7 +30,7 @@
     <GroupModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="BpmGroup">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -39,6 +39,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteUserGroup, getUserGroupPage } from '@/api/bpm/userGroup'
 import { columns, searchFormSchema } from './group.data'
+
+defineOptions({ name: 'BpmGroup' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

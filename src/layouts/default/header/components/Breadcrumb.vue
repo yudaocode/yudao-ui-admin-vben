@@ -13,7 +13,7 @@
     </Breadcrumb>
   </div>
 </template>
-<script lang="ts" setup name="LayoutBreadcrumb">
+<script lang="ts" setup>
 import type { RouteLocationMatched } from 'vue-router'
 import { useRouter } from 'vue-router'
 import type { Menu } from '@/router/types'
@@ -30,6 +30,8 @@ import { getMenus } from '@/router/menus'
 import { REDIRECT_NAME } from '@/router/constant'
 import { getAllParentPath } from '@/router/helper/menuHelper'
 import { Icon } from '@/components/Icon'
+
+defineOptions({ name: 'LayoutBreadcrumb' })
 
 defineProps({
   theme: propTypes.oneOf(['dark', 'light'])

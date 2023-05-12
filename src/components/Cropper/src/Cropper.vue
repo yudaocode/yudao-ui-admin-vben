@@ -3,13 +3,15 @@
     <img v-show="isReady" ref="imgElRef" :src="src" :alt="alt" :crossorigin="crossorigin" :style="getImageStyle" />
   </div>
 </template>
-<script lang="ts" setup name="CropperImage">
+<script lang="ts" setup>
 import { CSSProperties, useAttrs } from 'vue'
 import { onMounted, ref, unref, computed, onUnmounted } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.css'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useDebounceFn } from '@vueuse/core'
+
+defineOptions({ name: 'CropperImage' })
 
 const emit = defineEmits(['cropend', 'ready', 'cropendError'])
 const attrs = useAttrs()

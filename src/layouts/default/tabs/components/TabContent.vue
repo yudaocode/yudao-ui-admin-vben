@@ -14,7 +14,7 @@
     </span>
   </Dropdown>
 </template>
-<script lang="ts" setup name="TabContent">
+<script lang="ts" setup>
 import type { RouteLocationNormalized } from 'vue-router'
 
 import { computed, unref } from 'vue'
@@ -26,6 +26,8 @@ import { TabContentProps } from '../types'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useTabDropdown } from '../useTabDropdown'
+
+defineOptions({ name: 'TabContent' })
 
 const props = defineProps({
   tabItem: {

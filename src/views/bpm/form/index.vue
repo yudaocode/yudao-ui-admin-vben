@@ -29,13 +29,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="BpmForm">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteForm, getFormPage } from '@/api/bpm/form'
 import { columns, searchFormSchema } from './form.data'
+
+defineOptions({ name: 'BpmForm' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

@@ -24,7 +24,7 @@
   <FrameLayout v-if="getCanEmbedIFramePage" />
 </template>
 
-<script lang="ts" setup name="PageLayout">
+<script lang="ts" setup>
 import { computed, unref } from 'vue'
 
 import FrameLayout from '@/layouts/iframe/index.vue'
@@ -36,6 +36,8 @@ import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 import { getTransitionName } from './transition'
 
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
+
+defineOptions({ name: 'PageLayout' })
 
 const { getShowMultipleTab } = useMultipleTabSetting()
 const tabStore = useMultipleTabStore()

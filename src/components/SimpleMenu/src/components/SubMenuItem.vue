@@ -45,7 +45,7 @@
     </Popover>
   </li>
 </template>
-<script lang="ts" setup name="SubMenu">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import type { SubMenuProvider } from './types'
 import { computed, unref, getCurrentInstance, reactive, provide, onBeforeMount, inject } from 'vue'
@@ -58,6 +58,9 @@ import { Icon } from '@/components/Icon'
 import { Popover } from 'ant-design-vue'
 import { isBoolean, isObject } from '@/utils/is'
 import mitt from '@/utils/mitt'
+
+defineOptions({ name: 'SubMenu' })
+
 const DELAY = 200
 const props = defineProps({
   name: {

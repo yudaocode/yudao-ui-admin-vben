@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="SystemUserRoleModal">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
@@ -11,6 +11,8 @@ import { BasicModal, useModalInner } from '@/components/Modal'
 import { userRoleFormSchema } from './user.data'
 import { getUser } from '@/api/system/user'
 import { assignUserRole, listUserRoles } from '@/api/system/permission'
+
+defineOptions({ name: 'SystemUserRoleModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

@@ -7,12 +7,14 @@
     </template>
   </Button>
 </template>
-<script lang="ts" setup name="AButton" extends="Button" indeterminate="false">
+<script lang="ts" setup extends="Button">
 import { Button } from 'ant-design-vue'
 import { computed, unref } from 'vue'
 import { Icon } from '@/components/Icon'
 import { buttonProps } from './props'
 import { useAttrs } from '@/hooks/core/useAttrs'
+
+defineOptions({ name: 'AButton', indeterminate: false })
 
 const props = defineProps(buttonProps)
 // get component class

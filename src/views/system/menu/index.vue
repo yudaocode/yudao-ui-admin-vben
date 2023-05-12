@@ -32,7 +32,7 @@
     <MenuModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemMenu">
+<script lang="ts" setup>
 import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -42,6 +42,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMenu, getMenuList } from '@/api/system/menu'
 import { columns, searchFormSchema } from './menu.data'
+
+defineOptions({ name: 'SystemMenu' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

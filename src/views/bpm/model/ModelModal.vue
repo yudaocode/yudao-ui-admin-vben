@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="BpmModelModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -11,6 +11,8 @@ import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './model.data'
 import { createModel, getModel, updateModel } from '@/api/bpm/model'
+
+defineOptions({ name: 'BpmModelModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

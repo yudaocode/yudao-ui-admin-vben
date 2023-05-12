@@ -44,7 +44,7 @@
     </template>
   </Modal>
 </template>
-<script lang="ts" setup name="BasicModal" inheritAttrs="false">
+<script lang="ts" setup>
 import type { ModalProps, ModalMethods } from './typing'
 
 import { computed, ref, watch, unref, watchEffect, toRef, getCurrentInstance, nextTick, useAttrs } from 'vue'
@@ -59,6 +59,8 @@ import { basicProps } from './props'
 import { useFullScreen } from './hooks/useModalFullScreen'
 import { omit } from 'lodash-es'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'BasicModal', inheritAttrs: false })
 
 const props = defineProps(basicProps)
 const attrs = useAttrs()

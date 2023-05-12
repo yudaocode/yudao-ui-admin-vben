@@ -10,12 +10,14 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="StrengthMeter">
+<script lang="ts" setup>
 import { computed, ref, watch, unref, watchEffect } from 'vue'
 import { InputPassword } from 'ant-design-vue'
 import { zxcvbn } from '@zxcvbn-ts/core'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
+
+defineOptions({ name: 'StrengthMeter' })
 
 const props = defineProps({
   value: propTypes.string,

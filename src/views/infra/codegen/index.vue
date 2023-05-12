@@ -43,7 +43,7 @@
     <ImportTableModal @register="registerImportTableModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="InfraCodegen">
+<script lang="ts" setup>
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -54,6 +54,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '@/api/infra/codegen'
 import { columns, searchFormSchema } from './codegen.data'
+
+defineOptions({ name: 'InfraCodegen' })
 
 const go = useGo()
 const { t } = useI18n()

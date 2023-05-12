@@ -16,7 +16,7 @@
     </a-button>
   </div>
 </template>
-<script lang="ts" setup name="SettingFooter">
+<script lang="ts" setup>
 import { unref } from 'vue'
 
 import { CopyOutlined, RedoOutlined } from '@ant-design/icons-vue'
@@ -36,6 +36,8 @@ import { updateGrayMode } from '@/logics/theme/updateGrayMode'
 import defaultSetting from '@/settings/projectSetting'
 import { changeTheme } from '@/logics/theme'
 import { updateSidebarBgColor } from '@/logics/theme/updateBackground'
+
+defineOptions({ name: 'SettingFooter' })
 
 const permissionStore = usePermissionStore()
 const { prefixCls } = useDesign('setting-footer')

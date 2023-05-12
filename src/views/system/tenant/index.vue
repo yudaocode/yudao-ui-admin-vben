@@ -33,7 +33,7 @@
     <TenantModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemTenant">
+<script lang="ts" setup>
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { TenantExportReqVO, deleteTenant, exportTenant, getTenantPage } from '@/api/system/tenant'
 import { useModal } from '@/components/Modal'
@@ -42,6 +42,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { columns, searchFormSchema } from './tenant.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+
+defineOptions({ name: 'SystemTenant' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

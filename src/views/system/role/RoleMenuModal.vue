@@ -16,7 +16,7 @@
     </BasicForm>
   </BasicModal>
 </template>
-<script lang="ts" setup name="SystemRoleMenuModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -28,6 +28,8 @@ import { BasicTree, TreeItem } from '@/components/Tree'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
 import { assignRoleMenu, listRoleMenus } from '@/api/system/permission'
+
+defineOptions({ name: 'SystemRoleMenuModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

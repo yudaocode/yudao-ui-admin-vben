@@ -45,14 +45,17 @@
     </div>
   </PageWrapper>
 </template>
-<script lang="ts" setup name="InfraWebSocket">
+<script lang="ts" setup>
 import { reactive, watchEffect, computed, ref } from 'vue'
 import { Tag, Input } from 'ant-design-vue'
 import { PageWrapper } from '@/components/Page'
 import { useWebSocket } from '@vueuse/core'
 import { formatToDateTime } from '@/utils/dateUtil'
 import { useUserStore } from '@/store/modules/user'
+
 const InputTextArea = Input.TextArea
+
+defineOptions({ name: 'InfraWebSocket' })
 
 const userStore = useUserStore()
 

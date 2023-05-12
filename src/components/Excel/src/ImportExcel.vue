@@ -6,11 +6,13 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="ImportExcel">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import * as XLSX from 'xlsx'
 import { dateUtil } from '@/utils/dateUtil'
 import type { ExcelData } from './typing'
+
+defineOptions({ name: 'ImportExcel' })
 
 const props = defineProps({
   // 日期时间格式。如果不提供或者提供空值，将返回原始Date对象

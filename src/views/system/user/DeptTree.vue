@@ -12,12 +12,14 @@
     />
   </div>
 </template>
-<script lang="ts" setup name="SystemDeptTree">
+<script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 
 import { BasicTree, TreeItem } from '@/components/Tree'
 import { listSimpleDept } from '@/api/system/dept'
 import { handleTree } from '@/utils/tree'
+
+defineOptions({ name: 'SystemDeptTree' })
 
 const emit = defineEmits(['select'])
 const treeData = ref<TreeItem[]>([])

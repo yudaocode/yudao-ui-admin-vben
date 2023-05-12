@@ -10,7 +10,7 @@
     />
   </div>
 </template>
-<script lang="ts" setup name="SwitchItem">
+<script lang="ts" setup>
 import { computed } from 'vue'
 
 import { Switch } from 'ant-design-vue'
@@ -18,6 +18,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 import { baseHandler } from '../handler'
 import { HandlerEnum } from '../enum'
+
+defineOptions({ name: 'SwitchItem' })
 
 const props = defineProps({
   event: {

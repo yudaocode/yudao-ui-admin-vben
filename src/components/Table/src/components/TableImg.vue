@@ -23,12 +23,14 @@
     </ImagePreviewGroup>
   </div>
 </template>
-<script lang="ts" setup name="TableImage">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { Image, Badge, ImagePreviewGroup } from 'ant-design-vue'
 import { propTypes } from '@/utils/propTypes'
+
+defineOptions({ name: 'TableImage' })
 
 const props = defineProps({
   imgList: propTypes.arrayOf(propTypes.string),

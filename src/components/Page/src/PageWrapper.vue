@@ -26,7 +26,7 @@
     </PageFooter>
   </div>
 </template>
-<script lang="ts" setup name="PageWrapper" inheritAttrs="false">
+<script lang="ts" setup>
 import { CSSProperties, provide } from 'vue'
 import { computed, watch, ref, unref, useAttrs, useSlots } from 'vue'
 import PageFooter from './PageFooter.vue'
@@ -36,6 +36,8 @@ import { omit } from 'lodash-es'
 import { PageHeader } from 'ant-design-vue'
 import { useContentHeight } from '@/hooks/web/useContentHeight'
 import { PageWrapperFixedHeightKey } from '..'
+
+defineOptions({ name: 'PageWrapper', inheritAttrs: false })
 
 const props = defineProps({
   title: propTypes.string,

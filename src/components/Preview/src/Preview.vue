@@ -14,7 +14,7 @@
     </ImagePreviewGroup>
   </div>
 </template>
-<script lang="ts" setup name="ImagePreview">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { Image, ImagePreviewGroup } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -38,6 +38,8 @@ interface ImageProps {
 }
 
 type ImageItem = string | ImageProps
+
+defineOptions({ name: 'ImagePreview' })
 
 const props = defineProps({
   functional: propTypes.bool,

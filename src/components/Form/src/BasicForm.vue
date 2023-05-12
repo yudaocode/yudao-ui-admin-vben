@@ -28,7 +28,7 @@
     </Row>
   </Form>
 </template>
-<script lang="ts" setup name="BasicForm">
+<script lang="ts" setup>
 import type { FormActionType, FormProps, FormSchema } from './types/form'
 import type { AdvanceState } from './types/hooks'
 import { Ref, useAttrs } from 'vue'
@@ -55,6 +55,8 @@ import { useDebounceFn } from '@vueuse/core'
 import { basicProps } from './props'
 import { useDesign } from '@/hooks/web/useDesign'
 import { cloneDeep } from 'lodash-es'
+
+defineOptions({ name: 'BasicForm' })
 
 const props = defineProps(basicProps)
 const emit = defineEmits(['advanced-change', 'reset', 'submit', 'register', 'field-value-change'])

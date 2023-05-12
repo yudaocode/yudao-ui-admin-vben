@@ -17,7 +17,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="RedisModal">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { List } from 'ant-design-vue'
 import { BasicForm, useForm } from '@/components/Form'
@@ -27,6 +27,8 @@ import { deleteKey, getKeyList } from '@/api/infra/redis'
 
 const ListItem = List.Item
 const ListItemMeta = List.Item.Meta
+
+defineOptions({ name: 'RedisModal' })
 
 const listData = ref<any[]>([])
 

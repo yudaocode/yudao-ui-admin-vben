@@ -3,12 +3,15 @@
     <SelectOption v-for="item in accountList" :key="item.id" :label="item.name" :value="item.id" />
   </Select>
 </template>
-<script lang="ts" setup name="WxAccountSelect">
+<script lang="ts" setup>
 import { Select } from 'ant-design-vue'
 import { AccountVO, getSimpleAccounts } from '@/api/mp/account'
 import { onMounted, reactive, ref } from 'vue'
 
 const SelectOption = Select.Option
+
+defineOptions({ name: 'WxAccountSelect' })
+
 const account = reactive<AccountVO>({
   id: undefined,
   name: ''

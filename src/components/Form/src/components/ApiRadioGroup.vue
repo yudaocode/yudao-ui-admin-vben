@@ -13,7 +13,7 @@
     </template>
   </RadioGroup>
 </template>
-<script lang="ts" setup name="ApiRadioGroup">
+<script lang="ts" setup>
 import { ref, watchEffect, computed, unref, watch } from 'vue'
 import { Radio } from 'ant-design-vue'
 import { isFunction } from '@/utils/is'
@@ -23,6 +23,8 @@ import { propTypes } from '@/utils/propTypes'
 import { get, omit } from 'lodash-es'
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
+
+defineOptions({ name: 'ApiRadioGroup' })
 
 type OptionsItem = { label: string; value: string | number | boolean; disabled?: boolean }
 

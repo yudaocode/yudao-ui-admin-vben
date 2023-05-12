@@ -12,7 +12,7 @@
     </template>
   </Menu>
 </template>
-<script lang="ts" setup name="SimpleMenu" inheritAttrs="false">
+<script lang="ts" setup>
 import type { MenuState } from './types'
 import type { Menu as MenuType } from '@/router/types'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
@@ -27,6 +27,8 @@ import { useRouter } from 'vue-router'
 import { isFunction, isUrl } from '@/utils/is'
 import { openWindow } from '@/utils'
 import { useOpenKeys } from './useOpenKeys'
+
+defineOptions({ name: 'SimpleMenu', inheritAttrs: false })
 
 const props = defineProps({
   items: {

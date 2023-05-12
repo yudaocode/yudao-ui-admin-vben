@@ -4,11 +4,13 @@
     <InputNumber v-bind="$attrs" :class="`${prefixCls}-input-number`" @change="handleChange" />
   </div>
 </template>
-<script lang="ts" setup name="InputNumberItem">
+<script lang="ts" setup>
 import { InputNumber } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { baseHandler } from '../handler'
 import { HandlerEnum } from '../enum'
+
+defineOptions({ name: 'InputNumberItem' })
 
 const props = defineProps({
   event: {

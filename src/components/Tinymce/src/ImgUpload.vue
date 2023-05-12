@@ -7,13 +7,14 @@
     </Upload>
   </div>
 </template>
-<script lang="ts" setup name="TinymceImageUpload">
+<script lang="ts" setup>
 import { computed } from 'vue'
-
 import { Upload } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useGlobSetting } from '@/hooks/setting'
 import { useI18n } from '@/hooks/web/useI18n'
+
+defineOptions({ name: 'TinymceImageUpload' })
 
 const props = defineProps({
   fullscreen: {

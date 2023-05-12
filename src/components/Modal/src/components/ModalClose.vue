@@ -13,7 +13,7 @@
     </Tooltip>
   </div>
 </template>
-<script lang="ts" setup name="ModalClose">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { FullscreenExitOutlined, FullscreenOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -21,6 +21,8 @@ import { Tooltip } from 'ant-design-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const { t } = useI18n()
+
+defineOptions({ name: 'ModalClose' })
 
 const props = defineProps({
   canFullscreen: { type: Boolean, default: true },

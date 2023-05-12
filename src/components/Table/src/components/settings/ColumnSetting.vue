@@ -82,7 +82,7 @@
     </Popover>
   </Tooltip>
 </template>
-<script lang="ts" setup name="ColumnSetting">
+<script lang="ts" setup>
 import type { BasicColumn, BasicTableProps, ColumnChangeParam } from '../../types/table'
 import { ref, reactive, useAttrs, watchEffect, nextTick, unref, computed } from 'vue'
 import { Tooltip, Popover, Checkbox, Divider } from 'ant-design-vue'
@@ -99,6 +99,8 @@ import { getPopupContainer as getParentContainer } from '@/utils'
 import { cloneDeep, omit } from 'lodash-es'
 import Sortablejs from 'sortablejs'
 import type Sortable from 'sortablejs'
+
+defineOptions({ name: 'ColumnSetting' })
 
 interface State {
   checkAll: boolean

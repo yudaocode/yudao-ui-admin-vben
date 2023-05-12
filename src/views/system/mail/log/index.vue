@@ -3,10 +3,12 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="SystemOperateLog">
+<script lang="ts" setup>
 import { BasicTable, useTable } from '@/components/Table'
 import { getMailAccountPage } from '@/api/system/mail/log'
 import { columns, searchFormSchema } from './mailLog.data'
+
+defineOptions({ name: 'SystemOperateLog' })
 
 const [registerTable] = useTable({
   title: '邮件日志列表',

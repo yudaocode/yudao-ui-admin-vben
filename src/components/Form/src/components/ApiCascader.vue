@@ -18,7 +18,7 @@
     </template>
   </Cascader>
 </template>
-<script lang="ts" setup name="ApiCascader">
+<script lang="ts" setup>
 import { ref, unref, watch, watchEffect } from 'vue'
 import { Cascader } from 'ant-design-vue'
 import { propTypes } from '@/utils/propTypes'
@@ -27,6 +27,8 @@ import { get, omit } from 'lodash-es'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
+
+defineOptions({ name: 'ApiCascader' })
 
 interface Option {
   value: string

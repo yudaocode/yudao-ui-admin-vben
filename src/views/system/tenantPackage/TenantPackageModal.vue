@@ -16,7 +16,7 @@
     </BasicForm>
   </BasicModal>
 </template>
-<script lang="ts" setup name="SystemTenantPackageModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -27,6 +27,8 @@ import { formSchema } from './tenantPackage.data'
 import { createTenantPackage, getTenantPackage, updateTenantPackage } from '@/api/system/tenantPackage'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
+
+defineOptions({ name: 'SystemTenantPackageModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

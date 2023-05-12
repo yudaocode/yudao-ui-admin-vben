@@ -9,13 +9,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="InfraApiErrorLog">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { getApiAccessLogPage, exportApiAccessLog, ApiAccessLogExportReqVO } from '@/api/infra/apiAccessLog'
 import { columns, searchFormSchema } from './apiAccessLog.data'
+
+defineOptions({ name: 'InfraApiErrorLog' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

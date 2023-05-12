@@ -3,13 +3,15 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="MpUserModal">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './mpuser.data'
 import { getUser, updateUser } from '@/api/mp/mpuser'
+
+defineOptions({ name: 'MpUserModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

@@ -13,13 +13,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SystemMyMessage">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getMyNotifyMessagePage, updateAllNotifyMessageRead, updateNotifyMessageRead } from '@/api/system/notify/message'
 import { columns, searchFormSchema } from './my.data'
+
+defineOptions({ name: 'SystemMyMessage' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

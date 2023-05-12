@@ -91,7 +91,7 @@
     </div>
   </BasicModal>
 </template>
-<script lang="ts" setup name="CropperModal">
+<script lang="ts" setup>
 import type { CropendResult, Cropper } from './typing'
 import { ref } from 'vue'
 import CropperImage from './Cropper.vue'
@@ -101,6 +101,8 @@ import { BasicModal, useModalInner } from '@/components/Modal'
 import { dataURLtoBlob } from '@/utils/file/base64Conver'
 import { isFunction } from '@/utils/is'
 import { useI18n } from '@/hooks/web/useI18n'
+
+defineOptions({ name: 'CropperModal' })
 
 type apiFunParams = { file: Blob; name: string; filename: string }
 

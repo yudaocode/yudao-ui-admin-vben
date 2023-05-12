@@ -3,14 +3,16 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="MpMessageModal">
+<script lang="ts" setup>
+import { ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './message.data'
 import { sendMessage } from '@/api/mp/message'
-import { ref } from 'vue'
+
+defineOptions({ name: 'MpMessageModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

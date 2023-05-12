@@ -33,7 +33,7 @@
     <PostModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemPost">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -42,6 +42,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { PostExportReqVO, deletePost, exportPost, getPostPage } from '@/api/system/post'
 import { columns, searchFormSchema } from './post.data'
+
+defineOptions({ name: 'SystemPost' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

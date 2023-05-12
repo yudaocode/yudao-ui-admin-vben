@@ -32,7 +32,7 @@
     <FileConfigModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="InfraFileConfig">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -41,6 +41,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteFileConfig, getFileConfigPage, testFileConfig, updateFileConfigMaster } from '@/api/infra/fileConfig'
 import { columns, searchFormSchema } from './ficleConfig.data'
+
+defineOptions({ name: 'InfraFileConfig' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage, createSuccessModal } = useMessage()

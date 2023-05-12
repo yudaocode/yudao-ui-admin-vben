@@ -20,13 +20,15 @@
     </a>
   </div>
 </template>
-<script lang="ts" setup name="RuleProps">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { remove } from '../../../utils'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import { isArray } from 'lodash-es'
 import { Form, FormItem, AutoComplete, Input } from 'ant-design-vue'
 import { Icon } from '@/components/Icon'
+
+defineOptions({ name: 'RuleProps' })
 
 // 获取祖先组件的状态
 const { formConfig } = useFormDesignState()

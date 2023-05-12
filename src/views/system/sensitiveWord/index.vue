@@ -38,7 +38,7 @@
     <SensitiveWordModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemSensitiveWord">
+<script lang="ts" setup>
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { SensitiveWordExportReqVO, deleteSensitiveWord, exportSensitiveWord, getSensitiveWordPage } from '@/api/system/sensitiveWord'
 import { useModal } from '@/components/Modal'
@@ -47,6 +47,8 @@ import SensitiveWordModal from './SensitiveWordModal.vue'
 import { columns, searchFormSchema } from './sensitiveWord.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+
+defineOptions({ name: 'SystemSensitiveWord' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

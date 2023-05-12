@@ -13,7 +13,7 @@
     <CopperModal @register="register" @upload-success="handleUploadSuccess" :uploadApi="uploadApi" :src="sourceValue" />
   </div>
 </template>
-<script lang="ts" setup name="CropperAvatar">
+<script lang="ts" setup>
 import { computed, CSSProperties, unref, ref, watchEffect, watch } from 'vue'
 import CopperModal from './CopperModal.vue'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -22,6 +22,8 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { useI18n } from '@/hooks/web/useI18n'
 import type { ButtonProps } from '@/components/Button'
 import { Icon } from '@/components/Icon'
+
+defineOptions({ name: 'CropperAvatar' })
 
 const emit = defineEmits(['update:value', 'change'])
 

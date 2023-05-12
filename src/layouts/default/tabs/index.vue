@@ -25,7 +25,7 @@
     </Tabs>
   </div>
 </template>
-<script lang="ts" setup name="MultipleTabs">
+<script lang="ts" setup>
 import type { RouteLocationNormalized, RouteMeta } from 'vue-router'
 
 import { computed, unref, ref } from 'vue'
@@ -49,6 +49,9 @@ import { listenerRouteChange } from '@/logics/mitt/routeChange'
 
 import { useRouter } from 'vue-router'
 const TabPane = Tabs.TabPane
+
+defineOptions({ name: 'MultipleTabs' })
+
 const affixTextList = initAffixTabs()
 const activeKeyRef = ref('')
 

@@ -4,10 +4,12 @@
   </Scrollbar>
 </template>
 
-<script lang="ts" setup name="ScrollContainer">
+<script lang="ts" setup>
 import { ref, unref, nextTick } from 'vue'
 import { Scrollbar, ScrollbarType } from '@/components/Scrollbar'
 import { useScrollTo } from '@/hooks/event/useScrollTo'
+
+defineOptions({ name: 'ScrollContainer' })
 
 const scrollbarRef = ref<Nullable<ScrollbarType>>(null)
 

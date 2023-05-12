@@ -35,7 +35,7 @@
     <DeptModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemDept">
+<script lang="ts" setup>
 import { nextTick, ref, onMounted } from 'vue'
 import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -47,6 +47,8 @@ import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getListSimpleUsers } from '@/api/system/user'
 import { deleteDept, getDeptPage } from '@/api/system/dept'
 import { columns, searchFormSchema } from './dept.data'
+
+defineOptions({ name: 'SystemDept' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

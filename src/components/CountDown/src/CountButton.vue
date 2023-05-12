@@ -3,12 +3,14 @@
     {{ getButtonText }}
   </Button>
 </template>
-<script lang="ts" setup name="CountButton">
+<script lang="ts" setup>
 import { ref, watchEffect, computed, unref } from 'vue'
 import { Button } from 'ant-design-vue'
 import { useCountdown } from './useCountdown'
 import { isFunction } from '@/utils/is'
 import { useI18n } from '@/hooks/web/useI18n'
+
+defineOptions({ name: 'CountButton' })
 
 const props = defineProps({
   value: { type: [Object, Number, String, Array] },

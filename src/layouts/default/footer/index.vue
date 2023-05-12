@@ -11,7 +11,7 @@
   </Footer>
 </template>
 
-<script lang="ts" setup name="LayoutFooter">
+<script lang="ts" setup>
 import { computed, unref, ref } from 'vue'
 import { Layout } from 'ant-design-vue'
 
@@ -29,6 +29,8 @@ import { useLayoutHeight } from '../content/useContentViewHeight'
 const SITE_TITLE = ref(import.meta.env.VITE_GLOB_APP_TITLE)
 
 const Footer = Layout.Footer
+
+defineOptions({ name: 'LayoutFooter' })
 
 const { t } = useI18n()
 const { getShowFooter } = useRootSetting()

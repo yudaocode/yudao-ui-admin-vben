@@ -17,11 +17,13 @@
     </span>
   </div>
 </template>
-<script lang="ts" setup name="BasicDrawerHeader">
+<script lang="ts" setup>
 import { BasicTitle } from '@/components/Basic'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
+
+defineOptions({ name: 'BasicDrawerHeader' })
 
 defineProps({
   isDetail: propTypes.bool,

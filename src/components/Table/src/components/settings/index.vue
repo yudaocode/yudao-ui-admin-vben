@@ -6,7 +6,7 @@
     <FullScreenSetting v-if="getSetting.fullScreen" :getPopupContainer="getTableContainer" />
   </div>
 </template>
-<script lang="ts" setup name="TableSetting">
+<script lang="ts" setup>
 import type { TableSetting, ColumnChangeParam } from '../../types/table'
 import { computed, unref } from 'vue'
 import ColumnSetting from './ColumnSetting.vue'
@@ -14,6 +14,8 @@ import SizeSetting from './SizeSetting.vue'
 import RedoSetting from './RedoSetting.vue'
 import FullScreenSetting from './FullScreenSetting.vue'
 import { useTableContext } from '../../hooks/useTableContext'
+
+defineOptions({ name: 'TableSetting' })
 
 const props = defineProps({
   setting: {

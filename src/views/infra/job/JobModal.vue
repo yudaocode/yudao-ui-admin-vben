@@ -14,7 +14,7 @@
     </Steps>
   </BasicModal>
 </template>
-<script lang="ts" setup name="InfraJobModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { Steps } from 'ant-design-vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -27,6 +27,8 @@ import { createJob, getJob, getJobNextTimes, updateJob } from '@/api/infra/job'
 import { formatToDateTime } from '@/utils/dateUtil'
 
 const Step = Steps.Step
+
+defineOptions({ name: 'InfraJobModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

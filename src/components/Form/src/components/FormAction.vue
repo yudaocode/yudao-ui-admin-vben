@@ -22,7 +22,7 @@
     </div>
   </Col>
 </template>
-<script lang="ts" setup name="BasicFormAction">
+<script lang="ts" setup>
 import type { ColEx } from '../types'
 //import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes';
 import { computed } from 'vue'
@@ -33,9 +33,11 @@ import { useFormContext } from '../hooks/useFormContext'
 import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
 
-type ButtonOptions = Partial<ButtonProps> & { text: string }
-
 const FormItem = Form.Item
+
+defineOptions({ name: 'BasicFormAction' })
+
+type ButtonOptions = Partial<ButtonProps> & { text: string }
 
 const props = defineProps({
   showActionButtonGroup: propTypes.bool.def(true),

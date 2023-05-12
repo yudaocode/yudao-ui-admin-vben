@@ -30,7 +30,7 @@
     <ClientModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemClient">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -39,6 +39,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteOAuth2Client, getOAuth2ClientPage } from '@/api/system/oauth2/client'
 import { columns, searchFormSchema } from './client.data'
+
+defineOptions({ name: 'SystemClient' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

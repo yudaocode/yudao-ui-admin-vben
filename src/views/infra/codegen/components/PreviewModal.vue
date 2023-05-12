@@ -23,7 +23,7 @@
     </div>
   </BasicModal>
 </template>
-<script lang="ts" setup name="InfraPreviewModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { Card, Tabs } from 'ant-design-vue'
 import { BasicTree } from '@/components/Tree'
@@ -35,6 +35,8 @@ import { useClipboard } from '@vueuse/core'
 import { useMessage } from '@/hooks/web/useMessage'
 
 const TabPane = Tabs.TabPane
+
+defineOptions({ name: 'InfraPreviewModal' })
 
 const { createMessage } = useMessage()
 

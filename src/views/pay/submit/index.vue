@@ -43,7 +43,7 @@
     </Card>
   </div>
 </template>
-<script lang="ts" setup name="PayOrderSubmit">
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { Card, List } from 'ant-design-vue'
 import { Description } from '@/components/Description'
@@ -62,6 +62,8 @@ import wx_pub from '@/assets/images/pay/icon/wx_pub.svg'
 import mock from '@/assets/images/pay/icon/mock.svg'
 
 const ListItem = List.Item
+
+defineOptions({ name: 'PayOrderSubmit' })
 
 const icons = {
   alipay_qr: alipay_qr,

@@ -3,12 +3,14 @@
     <Description :column="2" @register="registerDesc" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="InfraJobLogModal">
+<script lang="ts" setup>
 import { Description, useDescription } from '@/components/Description'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { descSchema } from './jobLog.data'
 import { getJobLog } from '@/api/infra/jobLog'
 import { ref } from 'vue'
+
+defineOptions({ name: 'InfraJobLogModal' })
 
 const datas = ref()
 

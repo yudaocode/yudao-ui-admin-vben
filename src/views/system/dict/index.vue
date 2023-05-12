@@ -31,7 +31,7 @@
     <DictTypeModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemDict">
+<script lang="ts" setup>
 import { reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -42,6 +42,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { typeColumns, typeSearchFormSchema } from './dict.type'
 import { deleteDictType, getDictTypePage } from '@/api/system/dict/type'
+
+defineOptions({ name: 'SystemDict' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

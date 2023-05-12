@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="Tinymce" inheritAttrs="false">
+<script lang="ts" setup>
 import type { Editor, RawEditorSettings } from 'tinymce'
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/silver'
@@ -58,6 +58,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { isNumber } from '@/utils/is'
 import { useLocale } from '@/locales/useLocale'
 import { useAppStore } from '@/store/modules/app'
+
+defineOptions({ name: 'Tinymce', inheritAttrs: false })
 
 const props = defineProps({
   options: {

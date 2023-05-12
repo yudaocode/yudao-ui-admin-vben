@@ -3,11 +3,13 @@
     <BasicTable @register="registerTable" />
   </div>
 </template>
-<script lang="ts" setup name="BpmDone">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable } from '@/components/Table'
 import { getDoneTaskPage } from '@/api/bpm/task'
 import { columns, searchFormSchema } from './done.data'
+
+defineOptions({ name: 'BpmDone' })
 
 const { t } = useI18n()
 

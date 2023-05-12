@@ -7,13 +7,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SystemOperateLog">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
 import { OperateLogPageReqVO, exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
 import { columns, searchFormSchema } from './operateLog.data'
+
+defineOptions({ name: 'SystemOperateLog' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

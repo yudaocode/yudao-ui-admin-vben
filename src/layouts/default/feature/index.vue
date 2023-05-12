@@ -4,7 +4,7 @@
   <SettingDrawer v-if="getIsFixedSettingDrawer" :class="prefixCls" />
   <SessionTimeoutLogin v-if="getIsSessionTimeout" />
 </template>
-<script lang="ts" setup name="LayoutFeatures">
+<script lang="ts" setup>
 import { computed, unref } from 'vue'
 import { BackTop } from 'ant-design-vue'
 
@@ -21,6 +21,8 @@ import SessionTimeoutLogin from '@/views/base/login/SessionTimeoutLogin.vue'
 const LayoutLockPage = createAsyncComponent(() => import('@/views/base/lock/index.vue'))
 
 const SettingDrawer = createAsyncComponent(() => import('@/layouts/default/setting/index.vue'))
+
+defineOptions({ name: 'LayoutFeatures' })
 
 const { getUseOpenBackTop, getShowSettingButton, getSettingButtonPosition, getFullContent } = useRootSetting()
 const userStore = useUserStoreWithOut()

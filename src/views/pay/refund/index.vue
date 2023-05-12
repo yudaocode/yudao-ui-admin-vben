@@ -19,7 +19,7 @@
     <RefundModal @register="registerModal" />
   </div>
 </template>
-<script lang="ts" setup name="PayRefund">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -28,6 +28,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getRefundPage, exportRefund, PayRefundExportReqVO } from '@/api/pay/refund'
 import { columns, searchFormSchema } from './refund.data'
+
+defineOptions({ name: 'PayRefund' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

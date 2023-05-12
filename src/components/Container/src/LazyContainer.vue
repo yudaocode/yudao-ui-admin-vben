@@ -9,11 +9,13 @@
     </div>
   </transition-group>
 </template>
-<script lang="ts" setup name="LazyContainer" inheritAttrs="false">
+<script lang="ts" setup>
 import { reactive, onMounted, ref, toRef } from 'vue'
 import { Skeleton } from 'ant-design-vue'
 import { useTimeoutFn } from '@vueuse/core'
 import { useIntersectionObserver } from '@/hooks/event/useIntersectionObserver'
+
+defineOptions({ name: 'LazyContainer', inheritAttrs: false })
 
 interface State {
   isInit: boolean

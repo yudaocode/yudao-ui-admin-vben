@@ -23,13 +23,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SystemToken">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteAccessToken, getAccessTokenPage } from '@/api/system/oauth2/token'
 import { columns, searchFormSchema } from './token.data'
 import { useMessage } from '@/hooks/web/useMessage'
+
+defineOptions({ name: 'SystemToken' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

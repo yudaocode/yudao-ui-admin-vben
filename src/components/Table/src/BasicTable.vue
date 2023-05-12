@@ -39,7 +39,7 @@
     </Table>
   </div>
 </template>
-<script lang="ts" setup name="BasicTable">
+<script lang="ts" setup>
 import type { BasicTableProps, TableActionType, SizeType, ColumnChangeParam } from './types/table'
 import { ref, computed, unref, toRaw, inject, watchEffect, useAttrs, useSlots } from 'vue'
 import { Table } from 'ant-design-vue'
@@ -66,6 +66,8 @@ import { omit } from 'lodash-es'
 import { basicProps } from './props'
 import { isFunction } from '@/utils/is'
 import { warn } from '@/utils/log'
+
+defineOptions({ name: 'BasicTable' })
 
 const props = defineProps(basicProps)
 const emit = defineEmits([

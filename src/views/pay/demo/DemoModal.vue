@@ -3,13 +3,15 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="PayDemoModal">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './demo.data'
 import { createDemoOrder } from '@/api/pay/demo'
+
+defineOptions({ name: 'PayDemoModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

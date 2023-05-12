@@ -21,7 +21,7 @@
     <DragBar ref="dragBarRef" />
   </Sider>
 </template>
-<script lang="ts" setup name="LayoutSideBar">
+<script lang="ts" setup>
 import { computed, ref, unref, CSSProperties, h } from 'vue'
 
 import { Layout } from 'ant-design-vue'
@@ -37,6 +37,9 @@ import { useDesign } from '@/hooks/web/useDesign'
 
 import DragBar from './DragBar.vue'
 const Sider = Layout.Sider
+
+defineOptions({ name: 'LayoutSideBar' })
+
 const dragBarRef = ref<ElRef>(null)
 const sideRef = ref<ElRef>(null)
 

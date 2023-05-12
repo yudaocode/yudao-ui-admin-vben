@@ -12,7 +12,7 @@
     <AccountModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="MpMessage">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useModal } from '@/components/Modal'
 import AccountModal from './MessageModal.vue'
@@ -20,6 +20,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getMessagePage } from '@/api/mp/message'
 import { columns, searchFormSchema } from './message.data'
+
+defineOptions({ name: 'MpMessage' })
 
 const { t } = useI18n()
 const [registerModal, { openModal }] = useModal()

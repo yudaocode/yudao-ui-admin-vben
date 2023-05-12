@@ -17,11 +17,13 @@
     </template>
   </div>
 </template>
-<script lang="ts" setup name="BasicDrawerFooter">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { footerProps } from '../props'
+
+defineOptions({ name: 'BasicDrawerFooter' })
 
 const props = defineProps({
   ...footerProps,

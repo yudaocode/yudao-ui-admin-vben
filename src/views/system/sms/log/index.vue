@@ -9,13 +9,15 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SystemSmsLog">
+<script lang="ts" setup>
 import { BasicTable, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { SmsLogExportReqVO, exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'
 import { columns, searchFormSchema } from './smsLog.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+
+defineOptions({ name: 'SystemSmsLog' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

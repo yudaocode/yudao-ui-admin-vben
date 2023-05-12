@@ -3,7 +3,7 @@
     <Icon :icon="getIcon" />
   </span>
 </template>
-<script lang="ts" setup name="FoldButton">
+<script lang="ts" setup>
 import { unref, computed } from 'vue'
 import { Icon } from '@/components/Icon'
 
@@ -11,6 +11,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { triggerWindowResize } from '@/utils/event'
+
+defineOptions({ name: 'FoldButton' })
 
 const { prefixCls } = useDesign('multiple-tabs-content')
 const { getShowMenu, setMenuSetting } = useMenuSetting()

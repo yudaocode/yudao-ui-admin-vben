@@ -3,10 +3,12 @@
     <use :xlink:href="symbolId" />
   </svg>
 </template>
-<script lang="ts" setup name="SvgIcon">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'SvgIcon' })
 
 const props = defineProps({
   prefix: {

@@ -11,8 +11,10 @@
     <slot name="appendFooter"></slot>
   </div>
 </template>
-<script lang="ts" setup name="BasicModalFooter">
+<script lang="ts" setup>
 import { basicProps } from '../props'
+
+defineOptions({ name: 'BasicModalFooter' })
 
 defineProps(basicProps)
 

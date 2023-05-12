@@ -3,8 +3,10 @@
     {{ title }}
   </BasicTitle>
 </template>
-<script lang="ts" setup name="BasicModalHeader">
+<script lang="ts" setup>
 import { BasicTitle } from '@/components/Basic'
+
+defineOptions({ name: 'BasicModalHeader' })
 
 defineProps({
   helpMessage: {

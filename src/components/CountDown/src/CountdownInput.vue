@@ -8,10 +8,13 @@
     </template>
   </a-input>
 </template>
-<script lang="ts" setup name="CountDownInput" inheritAttrs="false">
+<script lang="ts" setup>
 import CountButton from './CountButton.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
+
+defineOptions({ name: 'CountDownInput', inheritAttrs: false })
+
 const props = defineProps({
   value: { type: String },
   size: { type: String, validator: (v: string) => ['default', 'large', 'small'].includes(v) },
@@ -21,6 +24,7 @@ const props = defineProps({
     default: null
   }
 })
+
 const { prefixCls } = useDesign('countdown-input')
 const [state] = useRuleFormItem(props)
 </script>

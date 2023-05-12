@@ -10,7 +10,7 @@
     </template>
   </RadioGroup>
 </template>
-<script lang="ts" setup name="RadioButtonGroup">
+<script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { Radio } from 'ant-design-vue'
 import { isString } from '@/utils/is'
@@ -22,6 +22,8 @@ const RadioGroup = Radio.Group
 
 type OptionsItem = { label: string; value: string | number | boolean; disabled?: boolean }
 type RadioItem = string | OptionsItem
+
+defineOptions({ name: 'RadioButtonGroup' })
 
 const emits = defineEmits(['change'])
 

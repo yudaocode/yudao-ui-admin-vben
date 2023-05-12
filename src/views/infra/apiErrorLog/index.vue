@@ -31,7 +31,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="InfraApiErrorLog">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
 import { InfraApiErrorLogProcessStatusEnum } from '@/enums/systemEnum'
@@ -39,6 +39,8 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { updateApiErrorLogProcess, getApiErrorLogPage, exportApiErrorLog, ApiErrorLogExportReqVO } from '@/api/infra/apiErrorLog'
 import { columns, searchFormSchema } from './apiErrorLog.data'
+
+defineOptions({ name: 'InfraApiErrorLog' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

@@ -5,7 +5,7 @@
     </Badge>
   </Tooltip>
 </template>
-<script lang="ts" setup name="ErrorAction">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { Tooltip, Badge } from 'ant-design-vue'
 import { Icon } from '@/components/Icon'
@@ -15,6 +15,8 @@ import { useErrorLogStore } from '@/store/modules/errorLog'
 import { PageEnum } from '@/enums/pageEnum'
 
 import { useRouter } from 'vue-router'
+
+defineOptions({ name: 'ErrorAction' })
 
 const { t } = useI18n()
 const { push } = useRouter()

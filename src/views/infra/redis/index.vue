@@ -17,7 +17,7 @@
     <RedisModal @register="registerModal" />
   </div>
 </template>
-<script lang="ts" setup name="InfraRedis">
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useModal } from '@/components/Modal'
 import { Description } from '@/components/Description'
@@ -29,6 +29,8 @@ import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 const CommandStats = createAsyncComponent(() => import('./components/CommandStats.vue'))
 const Memory = createAsyncComponent(() => import('./components/Memory.vue'))
+
+defineOptions({ name: 'InfraRedis' })
 
 const loading = ref(true)
 const cacheInfo = ref<any>()

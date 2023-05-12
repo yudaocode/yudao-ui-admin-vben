@@ -5,11 +5,13 @@
     </template>
   </div>
 </template>
-<script lang="ts" setup name="FrameLayout">
+<script lang="ts" setup>
 import { unref, computed } from 'vue'
 import FramePage from '@/views/base/iframe/index.vue'
 
 import { useFrameKeepAlive } from './useFrameKeepAlive'
+
+defineOptions({ name: 'FrameLayout' })
 
 const { getFramePages, hasRenderFrame, showIframe } = useFrameKeepAlive()
 

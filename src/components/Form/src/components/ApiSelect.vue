@@ -21,7 +21,7 @@
     </template>
   </Select>
 </template>
-<script lang="ts" setup name="ApiSelect" inheritAttrs="false">
+<script lang="ts" setup>
 import { ref, watchEffect, computed, unref, watch } from 'vue'
 import { Select } from 'ant-design-vue'
 import { isFunction } from '@/utils/is'
@@ -32,6 +32,8 @@ import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
 import { SelectValue } from 'ant-design-vue/lib/select'
+
+defineOptions({ name: 'ApiSelect', inheritAttrs: false })
 
 type OptionsItem = { label: string; value: string; disabled?: boolean }
 

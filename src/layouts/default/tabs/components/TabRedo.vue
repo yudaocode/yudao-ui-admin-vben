@@ -3,11 +3,13 @@
     <RedoOutlined :spin="loading" />
   </span>
 </template>
-<script lang="ts" setup name="TabRedo">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { RedoOutlined } from '@ant-design/icons-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useTabs } from '@/hooks/web/useTabs'
+
+defineOptions({ name: 'TabRedo' })
 
 const loading = ref(false)
 

@@ -30,7 +30,7 @@
     <AccountModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemMailAccount">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -39,6 +39,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteMailAccount, getMailAccountPage } from '@/api/system/mail/account'
 import { columns, searchFormSchema } from './account.data'
+
+defineOptions({ name: 'SystemMailAccount' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

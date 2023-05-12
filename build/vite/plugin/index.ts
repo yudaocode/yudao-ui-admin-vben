@@ -5,7 +5,6 @@ import windiCSS from 'vite-plugin-windicss'
 import progress from 'vite-plugin-progress'
 import purgeIcons from 'vite-plugin-purge-icons'
 import VitePluginCertificate from 'vite-plugin-mkcert'
-import vueSetupExtend from 'unplugin-vue-setup-extend-plus/vite'
 import { configPwaConfig } from './pwa'
 import { configHtmlPlugin } from './html'
 import { configCompressPlugin } from './compress'
@@ -24,8 +23,6 @@ export async function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     vueJsx(),
     // 打包进度条
     progress(),
-    // support name
-    vueSetupExtend({}),
     VitePluginCertificate({
       source: 'coding'
     })

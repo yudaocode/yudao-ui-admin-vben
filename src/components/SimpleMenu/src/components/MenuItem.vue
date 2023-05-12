@@ -16,13 +16,15 @@
   </li>
 </template>
 
-<script lang="ts" setup name="MenuItem">
+<script lang="ts" setup>
 import { ref, useSlots, computed, unref, getCurrentInstance, watch } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import { useMenuItem } from './useMenu'
 import { Tooltip } from 'ant-design-vue'
 import { useSimpleRootMenuContext } from './useSimpleMenuContext'
+
+defineOptions({ name: 'MenuItem' })
 
 const props = defineProps({
   name: {

@@ -35,7 +35,7 @@
     />
   </div>
 </template>
-<script lang="ts" setup name="BasicUpload">
+<script lang="ts" setup>
 import { ref, watch, unref, useAttrs, computed } from 'vue'
 import { Icon } from '@/components/Icon'
 import { Tooltip, Space } from 'ant-design-vue'
@@ -46,6 +46,8 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { isArray } from '@/utils/is'
 import UploadModal from './UploadModal.vue'
 import UploadPreviewModal from './UploadPreviewModal.vue'
+
+defineOptions({ name: 'BasicUpload' })
 
 const props = defineProps(uploadContainerProps)
 const emit = defineEmits(['change', 'delete', 'preview-delete', 'update:value'])

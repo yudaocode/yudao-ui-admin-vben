@@ -7,12 +7,14 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="SystemLoginLog">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'
 import { LoginLogReqVO, exportLoginLog, getLoginLogPage } from '@/api/system/loginLog'
 import { columns, searchFormSchema } from './loginLog.data'
+
+defineOptions({ name: 'SystemLoginLog' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

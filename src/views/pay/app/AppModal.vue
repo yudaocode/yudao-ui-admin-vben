@@ -3,7 +3,7 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="PayAppModal">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -11,6 +11,8 @@ import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './app.data'
 import { createApp, updateApp, getApp } from '@/api/pay/app'
+
+defineOptions({ name: 'PayAppModal' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

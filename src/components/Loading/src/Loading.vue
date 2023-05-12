@@ -8,10 +8,12 @@
     <Spin v-bind="$attrs" :tip="tip" :size="size" :spinning="loading" />
   </section>
 </template>
-<script lang="ts" setup name="Loading">
+<script lang="ts" setup>
 import { Spin } from 'ant-design-vue'
 import { SizeEnum } from '@/enums/sizeEnum'
 import { propTypes } from '@/utils/propTypes'
+
+defineOptions({ name: 'Loading' })
 
 defineProps({
   tip: propTypes.string.def(''),

@@ -3,11 +3,13 @@
     {{ getTitle }}
   </BasicTitle>
 </template>
-<script lang="ts" setup name="BasicTableTitle">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { BasicTitle } from '@/components/Basic'
 import { useDesign } from '@/hooks/web/useDesign'
 import { isFunction } from '@/utils/is'
+
+defineOptions({ name: 'BasicTableTitle' })
 
 const props = defineProps({
   title: {

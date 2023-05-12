@@ -49,7 +49,7 @@
     <RoleScopeModal @register="registerScopeModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemRole">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -60,6 +60,9 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { RoleExportReqVO, deleteRole, exportRole, getRolePage } from '@/api/system/role'
 import { columns, searchFormSchema } from './role.data'
+
+defineOptions({ name: 'SystemRole' })
+
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

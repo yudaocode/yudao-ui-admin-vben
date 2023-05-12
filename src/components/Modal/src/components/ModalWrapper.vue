@@ -5,13 +5,15 @@
     </div>
   </ScrollContainer>
 </template>
-<script lang="ts" setup name="ModalWrapper" inheritAttrs="false">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed, ref, watchEffect, unref, watch, onMounted, nextTick, onUnmounted } from 'vue'
 import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import { ScrollContainer } from '@/components/Container'
 import { createModalContext } from '../hooks/useModalContext'
 import { useMutationObserver } from '@vueuse/core'
+
+defineOptions({ name: 'ModalWrapper', inheritAttrs: false })
 
 const emit = defineEmits(['height-change', 'ext-height'])
 const props = defineProps({

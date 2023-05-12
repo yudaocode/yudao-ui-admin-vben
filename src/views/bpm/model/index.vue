@@ -30,7 +30,7 @@
     <ModelModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="BpmModel">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
@@ -39,6 +39,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteModel, getModelPage } from '@/api/bpm/model'
 import { columns, searchFormSchema } from './model.data'
+
+defineOptions({ name: 'BpmModel' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

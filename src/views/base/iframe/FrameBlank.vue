@@ -1,6 +1,6 @@
 <template>
   <div></div>
 </template>
-<script lang="ts" setup name="FrameBlank">
-// freame
+<script lang="ts" setup>
+defineOptions({ name: 'FrameBlank' })
 </script>

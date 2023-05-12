@@ -19,7 +19,7 @@
     </Dropdown>
   </div>
 </template>
-<script lang="ts" setup name="TableAction">
+<script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, toRaw, unref } from 'vue'
 import { MoreOutlined } from '@ant-design/icons-vue'
@@ -34,6 +34,8 @@ import { usePermission } from '@/hooks/web/usePermission'
 import { isBoolean, isFunction, isString } from '@/utils/is'
 import { propTypes } from '@/utils/propTypes'
 import { ACTION_COLUMN_FLAG } from '../const'
+
+defineOptions({ name: 'TableAction' })
 
 const props = defineProps({
   actions: {

@@ -39,7 +39,7 @@
     <SmsTemplateModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemSmsTemplate">
+<script lang="ts" setup>
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { SmsTemplateExportReqVO, deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '@/api/system/sms/smsTemplate'
 import { useModal } from '@/components/Modal'
@@ -48,6 +48,8 @@ import SmsTemplateModal from './SmsTemplateModal.vue'
 import { columns, searchFormSchema } from './smsTemplate.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+
+defineOptions({ name: 'SystemSmsTemplate' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

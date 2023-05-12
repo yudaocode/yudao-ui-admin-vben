@@ -3,12 +3,14 @@
     <component :is="tag" ref="wrapRef" />
   </div>
 </template>
-<script lang="ts" setup name="QrCode">
+<script lang="ts" setup>
 import { watch, ref, unref, onMounted } from 'vue'
 import { toCanvas, QRCodeRenderersOptions, LogoType } from './qrcodePlus'
 import { toDataURL } from 'qrcode'
 import { downloadByUrl } from '@/utils/file/download'
 import { QrcodeDoneEventParams } from './typing'
+
+defineOptions({ name: 'QrCode' })
 
 const props = defineProps({
   value: {

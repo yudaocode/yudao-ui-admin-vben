@@ -36,7 +36,7 @@
     </BasicTable>
   </div>
 </template>
-<script lang="ts" setup name="InfraFile">
+<script lang="ts" setup>
 import { ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -48,6 +48,8 @@ import { deleteFile, getFilePage } from '@/api/infra/file'
 import { columns, searchFormSchema } from './file.data'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import { uploadApi } from '@/api/base/upload'
+
+defineOptions({ name: 'InfraFile' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()

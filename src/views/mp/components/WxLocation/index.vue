@@ -31,9 +31,11 @@ import { Image } from 'ant-design-vue';
     </a-button>
   </div>
 </template>
-<script lang="ts" setup name="WxLocation">
+<script lang="ts" setup>
 import { Image } from 'ant-design-vue'
 import { Icon } from '@/components/Icon'
+
+defineOptions({ name: 'WxLocation' })
 
 const props = defineProps({
   locationX: {

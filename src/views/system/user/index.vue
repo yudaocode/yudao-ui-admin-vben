@@ -50,7 +50,7 @@
     <ResetPwdModal @register="registerPwdModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="SystemUser">
+<script lang="ts" setup>
 import { reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -63,6 +63,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { columns, searchFormSchema } from './user.data'
 import { UserExportReqVO, deleteUser, exportUser, getUserPage } from '@/api/system/user'
+
+defineOptions({ name: 'SystemUser' })
 
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()

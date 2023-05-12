@@ -15,7 +15,7 @@
     <JobLogModal @register="registerModal" @success="reload()" />
   </div>
 </template>
-<script lang="ts" setup name="InfraJobLog">
+<script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -25,6 +25,8 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { JobLogExportReqVO, exportJobLog, getJobLogPage } from '@/api/infra/jobLog'
 import { columns, searchFormSchema } from './jobLog.data'
+
+defineOptions({ name: 'InfraJobLog' })
 
 const { t } = useI18n()
 const { query } = useRoute()

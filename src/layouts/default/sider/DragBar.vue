@@ -1,15 +1,17 @@
 <template>
   <div :class="getClass" :style="getDragBarStyle"></div>
 </template>
-<script lang="ts" setup name="DargBar">
+<script lang="ts" setup>
 import { computed, unref } from 'vue'
 
 import { useDesign } from '@/hooks/web/useDesign'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
-const props = {
+defineOptions({ name: 'DargBar' })
+
+const props = defineProps({
   mobile: Boolean
-}
+})
 const { getMiniWidthNumber, getCollapsed, getCanDrag } = useMenuSetting()
 
 const { prefixCls } = useDesign('darg-bar')

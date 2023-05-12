@@ -3,11 +3,13 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-<script lang="ts" setup name="SystemAreaModal">
+<script lang="ts" setup>
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { formSchema } from './area.data'
 import { getAreaByIp } from '@/api/system/area'
+
+defineOptions({ name: 'SystemAreaModal' })
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,

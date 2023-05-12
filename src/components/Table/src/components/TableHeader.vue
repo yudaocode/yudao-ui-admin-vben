@@ -14,12 +14,14 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="BasicTableHeader">
+<script lang="ts" setup>
 import type { TableSetting, ColumnChangeParam } from '../types/table'
 import { Divider } from 'ant-design-vue'
 import TableSettingComponent from './settings/index.vue'
 import TableTitle from './TableTitle.vue'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'BasicTableHeader' })
 
 defineProps({
   title: {

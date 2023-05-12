@@ -11,7 +11,7 @@
     :scroll="scroll"
   />
 </template>
-<script lang="ts" setup name="BasicTableFooter">
+<script lang="ts" setup>
 import { unref, computed, toRaw } from 'vue'
 import { Table } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
@@ -23,6 +23,8 @@ import { useTableContext } from '../hooks/useTableContext'
 
 const SUMMARY_ROW_KEY = '_row'
 const SUMMARY_INDEX_KEY = '_index'
+
+defineOptions({ name: 'BasicTableFooter' })
 
 const props = defineProps({
   summaryFunc: {

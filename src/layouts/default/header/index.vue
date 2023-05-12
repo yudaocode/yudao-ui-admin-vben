@@ -39,7 +39,7 @@
     </div>
   </Header>
 </template>
-<script lang="ts" setup name="LayoutHeader">
+<script lang="ts" setup>
 import { unref, computed } from 'vue'
 
 import { propTypes } from '@/utils/propTypes'
@@ -70,6 +70,7 @@ const Header = Layout.Header
 const SettingDrawer = createAsyncComponent(() => import('@/layouts/default/setting/index.vue'), {
   loading: true
 })
+defineOptions({ name: 'LayoutHeader' })
 const props = defineProps({
   fixed: propTypes.bool
 })

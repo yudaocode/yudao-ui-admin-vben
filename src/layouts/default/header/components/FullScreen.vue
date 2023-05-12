@@ -6,13 +6,14 @@
     </span>
   </Tooltip>
 </template>
-<script lang="ts" setup name="FullScreen">
+<script lang="ts" setup>
 import { computed, unref } from 'vue'
 import { Tooltip } from 'ant-design-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useFullscreen } from '@vueuse/core'
-
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
+
+defineOptions({ name: 'FullScreen' })
 const { t } = useI18n()
 const { toggle, isFullscreen } = useFullscreen()
 // 重新检查全屏状态

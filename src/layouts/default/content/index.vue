@@ -3,12 +3,14 @@
     <PageLayout />
   </div>
 </template>
-<script lang="ts" setup name="LayoutContent">
+<script lang="ts" setup>
 import PageLayout from '@/layouts/page/index.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useTransitionSetting } from '@/hooks/setting/useTransitionSetting'
 import { useContentViewHeight } from './useContentViewHeight'
+
+defineOptions({ name: 'LayoutContent' })
 
 const { prefixCls } = useDesign('layout-content')
 const { getOpenPageLoading } = useTransitionSetting()

@@ -10,7 +10,7 @@
     </template>
   </SubMenu>
 </template>
-<script lang="ts" setup name="BasicSubMenuItem">
+<script lang="ts" setup>
 import type { Menu as MenuType } from '@/router/types'
 import { computed } from 'vue'
 import { Menu } from 'ant-design-vue'
@@ -20,6 +20,9 @@ import BasicMenuItem from './BasicMenuItem.vue'
 import MenuItemContent from './MenuItemContent.vue'
 
 const SubMenu = Menu.SubMenu
+
+defineOptions({ name: 'BasicSubMenuItem' })
+
 const props = defineProps(itemProps)
 
 const { prefixCls } = useDesign('basic-menu-item')

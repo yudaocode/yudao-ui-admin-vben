@@ -17,7 +17,7 @@
     </template>
   </Menu>
 </template>
-<script lang="ts" setup name="BasicMenu">
+<script lang="ts" setup>
 import type { MenuState } from './types'
 import { computed, unref, reactive, watch, toRefs, ref } from 'vue'
 import { Menu } from 'ant-design-vue'
@@ -33,6 +33,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { getCurrentParentPath } from '@/router/menus'
 import { listenerRouteChange } from '@/logics/mitt/routeChange'
 import { getAllParentPath } from '@/router/helper/menuHelper'
+
+defineOptions({ name: 'BasicMenu' })
 
 const props = defineProps(basicProps)
 const emit = defineEmits(['menuClick'])
