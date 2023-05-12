@@ -7,17 +7,17 @@
       <div class="item">
         <Radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</Radio>
         <span> 从 </span>
-        <InputNumber v-model:value="valueRange.start" v-bind="typeRangeAttrs" />
+        <Input type="number" v-model:value="valueRange.start" v-bind="typeRangeAttrs" />
         <span> 时 至 </span>
-        <InputNumber v-model:value="valueRange.end" v-bind="typeRangeAttrs" />
+        <Input type="number" v-model:value="valueRange.end" v-bind="typeRangeAttrs" />
         <span> 时 </span>
       </div>
       <div class="item">
         <Radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">循环</Radio>
         <span> 从 </span>
-        <InputNumber v-model:value="valueLoop.start" v-bind="typeLoopAttrs" />
+        <Input type="number" v-model:value="valueLoop.start" v-bind="typeLoopAttrs" />
         <span> 时开始，间隔 </span>
-        <InputNumber v-model:value="valueLoop.interval" v-bind="typeLoopAttrs" />
+        <Input type="number" v-model:value="valueLoop.interval" v-bind="typeLoopAttrs" />
         <span> 时 </span>
       </div>
       <div class="item">
@@ -36,12 +36,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { InputNumber, Radio, Checkbox } from 'ant-design-vue'
+import { Input, Radio, Checkbox } from 'ant-design-vue'
 import { useTabProps, useTabEmits, useTabSetup } from './useTabMixin'
 
 export default defineComponent({
   name: 'HourUI',
-  components: { InputNumber, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
+  components: { Input, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '*'
   }),

@@ -17,7 +17,7 @@
         <span> 从 </span>
         <Select v-model:value="valueLoop.start" :options="weekOptions" v-bind="typeLoopSelectAttrs" />
         <span> 开始，间隔 </span>
-        <InputNumber v-model:value="valueLoop.interval" v-bind="typeLoopAttrs" />
+        <Input type="number" v-model:value="valueLoop.interval" v-bind="typeLoopAttrs" />
         <span> 天 </span>
       </div>
       <div class="item">
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { computed, watch, defineComponent } from 'vue'
-import { InputNumber, Radio, Checkbox, Select } from 'ant-design-vue'
+import { Input, Radio, Checkbox, Select } from 'ant-design-vue'
 import { useTabProps, useTabEmits, useTabSetup, TypeEnum } from './useTabMixin'
 
 const WEEK_MAP_EN = {
@@ -61,7 +61,7 @@ const WEEK_MAP_CN = {
 
 export default defineComponent({
   name: 'WeekUI',
-  components: { InputNumber, Select, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
+  components: { Input, Select, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '?',
     props: {
