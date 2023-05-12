@@ -42,6 +42,7 @@
     "ant-design-vue": "^3.2.20",
     "axios": "^1.4.0",
     "codemirror": "^5.65.3",
+    "cron-parser": "^4.8.1",
     "cropperjs": "^1.5.13",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.7",

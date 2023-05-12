@@ -1,6 +1,10 @@
 import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { useComponentRegister } from '@/components/Form'
+import { CronTab } from '@/components/CronTab'
+
+useComponentRegister('CronTab', CronTab)
 
 export const columns: BasicColumn[] = [
   {
@@ -91,7 +95,7 @@ export const formSchema: FormSchema[] = [
     label: 'CRON 表达式',
     field: 'cronExpression',
     required: true,
-    component: 'Input'
+    component: 'CronTab'
   },
   {
     label: '重试次数',

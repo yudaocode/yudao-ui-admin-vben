@@ -113,3 +113,29 @@ export const withInstall = <T extends CustomComponent>(component: T, alias?: str
   }
   return component as WithInstall<T>
 }
+
+/**
+ * 简单实现防抖方法
+ *
+ * 防抖(debounce)函数在第一次触发给定的函数时，不立即执行函数，而是给出一个期限值(delay)，比如100ms。
+ * 如果100ms内再次执行函数，就重新开始计时，直到计时结束后再真正执行函数。
+ * 这样做的好处是如果短时间内大量触发同一事件，只会执行一次函数。
+ *
+ * @param fn 要防抖的函数
+ * @param delay 防抖的毫秒数
+ * @returns {Function}
+ */
+export function simpleDebounce(fn, delay = 100) {
+  let timer: any | null = null
+  return function () {
+    // eslint-disable-next-line prefer-rest-params
+    const args = arguments
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      // @ts-ignore
+      fn.apply(this, args)
+    }, delay)
+  }
+}
