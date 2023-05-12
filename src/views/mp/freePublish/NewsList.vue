@@ -13,42 +13,25 @@
                 <div class="w-50">每行显示数量</div>
                 <Slider id="slider" v-bind="sliderProp" v-model:value="grid" @change="sliderChange" />
               </template>
-              <Button><TableOutlined /></Button>
+              <a-button><TableOutlined /></a-button>
             </Tooltip>
             <Tooltip @click="fetch">
               <template #title>刷新</template>
-              <Button><RedoOutlined /></Button>
+              <a-button><RedoOutlined /></a-button>
             </Tooltip>
           </div>
         </template>
         <template #renderItem="{ item }">
           <ListItem>
             <Card>
-              <template #title></template>
+              <template #title>{{ item.content.newsItem[0].title }}</template>
               <template #cover>
                 <div :class="height">
-                  <Image :src="item.imgs[0]" />
+                  <Image :src="item.content.newsItem[0].thumbUrl" />
                 </div>
               </template>
               <template #actions>
-                <!--              <SettingOutlined key="setting" />-->
-                <EditOutlined key="edit" />
-                <Dropdown
-                  :trigger="['hover']"
-                  :dropMenuList="[
-                    {
-                      text: '删除',
-                      event: '1',
-                      popConfirm: {
-                        title: '是否确认删除',
-                        confirm: handleDelete.bind(null, item.id)
-                      }
-                    }
-                  ]"
-                  popconfirm
-                >
-                  <EllipsisOutlined key="ellipsis" />
-                </Dropdown>
+                <Icon icon="ant-design:delete-outlined" @click="handleDelete.bind(null, item.id)" />
               </template>
 
               <CardMeta>
@@ -69,12 +52,11 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { EditOutlined, EllipsisOutlined, RedoOutlined, TableOutlined } from '@ant-design/icons-vue'
+import { RedoOutlined, TableOutlined } from '@ant-design/icons-vue'
 import { List, Card, Image, Typography, Tooltip, Slider, Avatar } from 'ant-design-vue'
-import { Dropdown } from '@/components/Dropdown'
+import { Icon } from '@/components/Icon'
 import { BasicForm, useForm, FormSchema } from '@/components/Form'
 import { propTypes } from '@/utils/propTypes'
-import { Button } from '@/components/Button'
 import { isFunction } from '@/utils/is'
 import { useSlider, grid } from './data'
 
