@@ -119,6 +119,8 @@ const setting: ProjectConfig = {
     cache: false,
     // 开启
     show: true,
+    // 显示图标
+    showIcon: true,
     // 开启快速操作
     showQuick: true,
     // 是否可以拖拽

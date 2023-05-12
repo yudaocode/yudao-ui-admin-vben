@@ -72,7 +72,7 @@ export default defineComponent({
 
     const { getShowHeader, getFixed: getHeaderFixed, getHeaderBgColor, getShowSearch } = useHeaderSetting()
 
-    const { getShowMultipleTab, getShowQuick, getShowRedo, getShowFold } = useMultipleTabSetting()
+    const { getShowMultipleTab, getShowMultipleTabIcon, getShowQuick, getShowRedo, getShowFold } = useMultipleTabSetting()
 
     const getShowMenuRef = computed(() => {
       return unref(getShowMenu) && !unref(getIsHorizontal)
@@ -254,6 +254,13 @@ export default defineComponent({
           />
 
           <SwitchItem title={t('layout.setting.tabs')} event={HandlerEnum.TABS_SHOW} def={unref(getShowMultipleTab)} />
+
+          <SwitchItem
+            title={t('layout.setting.tabsIcon')}
+            event={HandlerEnum.TABS_SHOW_ICON}
+            def={unref(getShowMultipleTabIcon)}
+            disabled={!unref(getShowMultipleTab)}
+          />
 
           <SwitchItem
             title={t('layout.setting.tabsRedoBtn')}

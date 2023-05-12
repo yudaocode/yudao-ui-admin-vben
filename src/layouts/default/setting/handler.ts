@@ -149,6 +149,9 @@ export function handler(event: HandlerEnum, value: any): DeepPartial<ProjectConf
     case HandlerEnum.TABS_SHOW:
       return { multiTabsSetting: { show: value } }
 
+    case HandlerEnum.TABS_SHOW_ICON:
+      return { multiTabsSetting: { showIcon: value } }
+
     case HandlerEnum.TABS_SHOW_REDO:
       return { multiTabsSetting: { showRedo: value } }
 
