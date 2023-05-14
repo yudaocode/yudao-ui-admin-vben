@@ -24,7 +24,7 @@
 
 - [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
-- <img alt="index.vue" width="400px" src="./public/resource/img/wx.png"></img>
+- <img alt="index.vue" width="400px" src="./public/resource/img/wx.png" />
 - 外包项目请联系 [ xinyu370 ]
 
 ## 开发进度
@@ -40,7 +40,7 @@
 
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
-| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.1 |
+| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.2 |
 | [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.5 |
 | [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.20 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.4 |
@@ -56,7 +56,6 @@
     <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview2.png">
     <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview3.png">
 </p>
-
 
 ## 准备
 
