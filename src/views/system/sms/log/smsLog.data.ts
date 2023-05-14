@@ -1,7 +1,6 @@
 import { getSimpleSmsChannels } from '@/api/system/sms/smsChannel'
-import { getDictOptions } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
