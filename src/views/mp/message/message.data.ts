@@ -120,14 +120,14 @@ export const searchFormSchema: FormSchema[] = [
     field: 'type',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE)
+      options: getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE, 'string')
     },
     colProps: { span: 8 }
   },
   {
     label: '用户标识',
     field: 'openid',
-    component: 'Select',
+    component: 'Input',
     colProps: { span: 8 }
   },
   {

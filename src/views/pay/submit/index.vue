@@ -85,7 +85,7 @@ const otherPayChannels = ref<any[]>([])
 
 function initPayChannels() {
   // 微信支付
-  for (const dict of getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)) {
+  for (const dict of getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE, 'string')) {
     const payChannel = {
       name: dict.label,
       code: dict.value as string

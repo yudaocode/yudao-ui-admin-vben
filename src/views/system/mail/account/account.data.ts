@@ -102,7 +102,7 @@ export const formSchema: FormSchema[] = [
     field: 'sslEnable',
     component: 'Switch',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING)
+      options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean')
     }
   }
 ]
