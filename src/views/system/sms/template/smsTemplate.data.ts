@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -67,7 +67,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'type',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE)
     },
     colProps: { span: 8 }
   },
@@ -76,7 +76,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -97,7 +97,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'channelId',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)
     },
     colProps: { span: 8 }
   },
@@ -128,7 +128,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE)
     }
   },
   {
@@ -155,7 +155,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }
   },
   {

@@ -49,7 +49,7 @@ import { Card, List } from 'ant-design-vue'
 import { Description } from '@/components/Description'
 import { descSchema } from './submit.data'
 import { getOrder, submitOrder } from '@/api/pay/order'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { useRoute } from 'vue-router'
 import alipay_qr from '@/assets/images/pay/icon/alipay_qr.svg'
 import alipay_app from '@/assets/images/pay/icon/alipay_app.svg'
@@ -85,7 +85,7 @@ const otherPayChannels = ref<any[]>([])
 
 function initPayChannels() {
   // 微信支付
-  for (const dict of getDictOpts(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)) {
+  for (const dict of getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)) {
     const payChannel = {
       name: dict.label,
       code: dict.value as string

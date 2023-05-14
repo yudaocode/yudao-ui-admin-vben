@@ -19,13 +19,13 @@ export interface DictDataType {
   cssClass: string
 }
 
-export const getDictOptions = (dictType: string) => {
-  return dictStore.getDictMap[dictType]
+export function getDictDatas(dictType: string) {
+  return dictStore.getDictMap[dictType] || []
 }
 
-export const getDictOpts = (dictType: string) => {
+export function getDictOpts(dictType: string) {
   const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOptions: DictDataType[] = getDictDatas(dictType)
   if (dictOptions && dictOptions.length > 0) {
     dictOptions.forEach((dict: DictDataType) => {
       if (typeof dict.value === 'number') {
@@ -50,36 +50,29 @@ export const getDictOpts = (dictType: string) => {
   return dictOption
 }
 
-export const getStrDictOptions = (dictType: string) => {
+export function getDictOptions(dictType: string, valueType?: 'string' | 'number' | 'boolean') {
   const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+  const dictOptions: DictDataType[] = getDictDatas(dictType)
   if (dictOptions && dictOptions.length > 0) {
     dictOptions.forEach((dict: DictDataType) => {
       dictOption.push({
         ...dict,
-        value: dict.value + ''
+        value:
+          valueType === 'string'
+            ? dict.value + ''
+            : valueType === 'boolean'
+            ? dict.value + '' === 'true'
+              ? true
+              : false
+            : parseInt(dict.value + '')
       })
     })
   }
   return dictOption
 }
 
-export const getBoolDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
-  if (dictOptions && dictOptions.length > 0) {
-    dictOptions.forEach((dict: DictDataType) => {
-      dictOption.push({
-        ...dict,
-        value: dict.value + '' === 'true' ? true : false
-      })
-    })
-  }
-  return dictOption
-}
-
-export const getDictObj = (dictType: string, value: any) => {
-  const dictOptions: DictDataType[] = getDictOptions(dictType)
+export function getDictObj(dictType: string, value: any) {
+  const dictOptions: DictDataType[] = getDictDatas(dictType)
   if (dictOptions) {
     dictOptions.forEach((dict: DictDataType) => {
       if (dict.value === value.toString()) {

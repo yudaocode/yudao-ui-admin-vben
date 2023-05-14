@@ -1,6 +1,5 @@
-import { getDictOpts } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { getSimpleAccounts } from '@/api/mp/account'
 
 export enum MsgType {
@@ -121,7 +120,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'type',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.MP_MESSAGE_TYPE)
+      options: getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE)
     },
     colProps: { span: 8 }
   },

@@ -1,6 +1,6 @@
 import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { useComponentRegister } from '@/components/Form'
 import { CronTab } from '@/components/CronTab'
 
@@ -54,7 +54,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.INFRA_JOB_STATUS)
+      options: getDictOptions(DICT_TYPE.INFRA_JOB_STATUS)
     },
     colProps: { span: 8 }
   },

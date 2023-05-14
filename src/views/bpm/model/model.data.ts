@@ -2,7 +2,7 @@ import { getSimpleForms } from '@/api/bpm/form'
 import { updateModelState } from '@/api/bpm/model'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { useMessage } from '@/hooks/web/useMessage'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { Button, Switch } from 'ant-design-vue'
 import { h } from 'vue'
 
@@ -132,7 +132,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'category',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.BPM_MODEL_CATEGORY)
+      options: getDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)
     },
     colProps: { span: 8 }
   }
@@ -165,7 +165,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getDictOpts(DICT_TYPE.BPM_MODEL_CATEGORY)
+      options: getDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)
     }
   },
   {
@@ -179,7 +179,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     ifShow: ({ values }) => !!values.id,
     componentProps: {
-      options: getDictOpts(DICT_TYPE.BPM_MODEL_FORM_TYPE)
+      options: getDictOptions(DICT_TYPE.BPM_MODEL_FORM_TYPE)
     }
   },
   {

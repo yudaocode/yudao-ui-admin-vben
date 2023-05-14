@@ -1,6 +1,5 @@
-import { getDictOpts } from '@/utils/dict'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -80,7 +79,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'type',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_OPERATE_TYPE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_OPERATE_TYPE)
     },
     colProps: { span: 8 }
   },

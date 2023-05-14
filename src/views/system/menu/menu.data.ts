@@ -1,6 +1,6 @@
 import { listSimpleMenus } from '@/api/system/menu'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { SystemMenuTypeEnum } from '@/enums/systemEnum'
 
 export const columns: BasicColumn[] = [
@@ -63,7 +63,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   }
@@ -100,7 +100,7 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     component: 'RadioButtonGroup',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_MENU_TYPE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE)
     },
     colProps: { lg: 24, md: 24 }
   },
@@ -160,7 +160,7 @@ export const formSchema: FormSchema[] = [
     defaultValue: 0,
     helpMessage: '选择停用时，路由将不会出现在侧边栏，也不能被访问',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }
   },
   {

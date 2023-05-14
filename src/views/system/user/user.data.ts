@@ -4,7 +4,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { listSimpleDept } from '@/api/system/dept'
 import { listSimplePosts } from '@/api/system/post'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
-import { DICT_TYPE, getDictOpts } from '@/utils/dict'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { updateUserStatus } from '@/api/system/user'
 import { listSimpleRoles } from '@/api/system/role'
 
@@ -100,7 +100,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     },
     colProps: { span: 8 }
   },
@@ -173,13 +173,14 @@ export const formSchema: FormSchema[] = [
     field: 'sex',
     component: 'Select',
     componentProps: {
-      options: getDictOpts(DICT_TYPE.SYSTEM_USER_SEX)
+      options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX)
     }
   },
   {
     label: '岗位',
     field: 'postIds',
     component: 'ApiSelect',
+    defaultValue: [],
     componentProps: {
       api: () => listSimplePosts(),
       labelField: 'name',
@@ -191,8 +192,9 @@ export const formSchema: FormSchema[] = [
     label: '状态',
     field: 'status',
     component: 'Select',
+    defaultValue: 0,
     componentProps: {
-      options: getDictOpts(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }
   },
   {
