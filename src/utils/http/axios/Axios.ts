@@ -76,7 +76,10 @@ export class VAxios {
    * @description: Interceptor configuration 拦截器配置
    */
   private setupInterceptors() {
-    const transform = this.getTransform()
+    const {
+      axiosInstance,
+      options: { transform }
+    } = this
     if (!transform) {
       return
     }
@@ -86,12 +89,11 @@ export class VAxios {
 
     // 请求拦截器配置处理
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      // 如果开启取消重复请求，则禁止取消重复请求
-      // @ts-ignore
-      const { ignoreCancelToken } = config.requestOptions
-      const ignoreCancel = ignoreCancelToken !== undefined ? ignoreCancelToken : this.options.requestOptions?.ignoreCancelToken
+      const { requestOptions } = this.options
+      const ignoreCancelToken = requestOptions?.ignoreCancelToken ?? true
 
-      !ignoreCancel && axiosCanceler.addPending(config)
+      !ignoreCancelToken && axiosCanceler.addPending(config)
+
       if (requestInterceptors && isFunction(requestInterceptors)) {
         config = requestInterceptors(config, this.options)
       }
@@ -157,8 +159,7 @@ export class VAxios {
     responseInterceptorsCatch &&
       isFunction(responseInterceptorsCatch) &&
       this.axiosInstance.interceptors.response.use(undefined, (error) => {
-        // @ts-ignore
-        return responseInterceptorsCatch(this.axiosInstance, error)
+        return responseInterceptorsCatch(axiosInstance, error)
       })
   }
 

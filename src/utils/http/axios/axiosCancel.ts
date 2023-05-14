@@ -1,59 +1,60 @@
-import type { InternalAxiosRequestConfig, Canceler } from 'axios'
-import axios from 'axios'
-import { isFunction } from '@/utils/is'
+import type { AxiosRequestConfig } from 'axios'
 
-// Used to store the identification and cancellation function of each request
-let pendingMap = new Map<string, Canceler>()
+// 用于存储每个请求的标识和取消函数
+const pendingMap = new Map<string, AbortController>()
 
-export const getPendingUrl = (config: InternalAxiosRequestConfig) => [config.method, config.url].join('&')
+const getPendingUrl = (config: AxiosRequestConfig): string => {
+  return [config.method, config.url].join('&')
+}
 
 export class AxiosCanceler {
   /**
    * 添加请求
-   * @param {Object} config
+   * @param config 请求配置
    */
-  addPending(config: InternalAxiosRequestConfig) {
+  public addPending(config: AxiosRequestConfig): void {
     this.removePending(config)
     const url = getPendingUrl(config)
-    config.cancelToken =
-      config.cancelToken ||
-      new axios.CancelToken((cancel) => {
-        if (!pendingMap.has(url)) {
-          // 如果当前没有待处理的请求，添加它
-          pendingMap.set(url, cancel)
-        }
-      })
+    const controller = new AbortController()
+    config.signal = config.signal || controller.signal
+    if (!pendingMap.has(url)) {
+      // 如果当前请求不在等待中，将其添加到等待中
+      pendingMap.set(url, controller)
+    }
   }
 
   /**
-   * @description: 清除所有待处理
+   * 清除所有等待中的请求
    */
-  removeAllPending() {
-    pendingMap.forEach((cancel) => {
-      cancel && isFunction(cancel) && cancel()
+  public removeAllPending(): void {
+    pendingMap.forEach((abortController) => {
+      if (abortController) {
+        abortController.abort()
+      }
     })
-    pendingMap.clear()
+    this.reset()
   }
 
   /**
-   * 删除请求
-   * @param {Object} config
+   * 移除请求
+   * @param config 请求配置
    */
-  removePending(config: InternalAxiosRequestConfig) {
+  public removePending(config: AxiosRequestConfig): void {
     const url = getPendingUrl(config)
-
     if (pendingMap.has(url)) {
-      // 如果有当前请求标识符处于pending状态，则需要取消当前请求并移除
-      const cancel = pendingMap.get(url)
-      cancel && cancel(url)
+      // 如果当前请求在等待中，取消它并将其从等待中移除
+      const abortController = pendingMap.get(url)
+      if (abortController) {
+        abortController.abort(url)
+      }
       pendingMap.delete(url)
     }
   }
 
   /**
-   * @description: reset
+   * 重置
    */
-  reset(): void {
-    pendingMap = new Map<string, Canceler>()
+  public reset(): void {
+    pendingMap.clear()
   }
 }
