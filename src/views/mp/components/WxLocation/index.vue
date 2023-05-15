@@ -24,7 +24,7 @@
           '&size=250*180'
         "
       />
-      <Icon icon="ep:location" />
+      <Icon icon="ant-design:environment-outlined" />
       {{ label }}
     </a-button>
   </div>

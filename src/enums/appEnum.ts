@@ -68,5 +68,6 @@ export enum IconEnum {
   PREVIEW = 'ant-design:eye-outlined',
   ADD_FOLD = 'ant-design:folder-add-outlined',
   LOG = 'ant-design:exception-outlined',
-  PASSWORD = 'ant-design:key-outlined'
+  PASSWORD = 'ant-design:key-outlined',
+  SETTING = 'ant-design:setting-outlined'
 }

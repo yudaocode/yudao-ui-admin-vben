@@ -55,7 +55,7 @@ export const ProfileRoute: AppRouteRecordRaw = {
         canTo: true,
         hidden: true,
         noTagsView: false,
-        icon: 'ep:user',
+        icon: 'ant-design:user-outlined',
         title: t('routes.basic.profile')
       }
     },
@@ -67,7 +67,7 @@ export const ProfileRoute: AppRouteRecordRaw = {
         canTo: true,
         hidden: true,
         noTagsView: false,
-        icon: 'ep:message',
+        icon: 'ant-design:bell-outlined',
         title: t('routes.basic.notifyMessage')
       }
     }
@@ -91,7 +91,7 @@ export const CodegenRoute: AppRouteRecordRaw = {
         canTo: true,
         hidden: true,
         noTagsView: false,
-        icon: 'ep:edit',
+        icon: 'ant-design:edit-outlined',
         title: '修改生成配置',
         activeMenu: 'infra/codegen/index'
       }
@@ -116,7 +116,7 @@ export const JobLogRoute: AppRouteRecordRaw = {
         canTo: true,
         hidden: true,
         noTagsView: false,
-        icon: 'ep:edit',
+        icon: 'ant-design:bar-chart-outlined',
         title: '调度日志',
         activeMenu: 'infra/job/index'
       }
@@ -141,7 +141,7 @@ export const PayRoute: AppRouteRecordRaw = {
         canTo: true,
         hidden: true,
         noTagsView: false,
-        icon: 'ep:edit',
+        icon: 'ant-design:pay-circle-outlined',
         title: '收银台',
         activeMenu: 'pay/order/index'
       }
