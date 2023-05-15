@@ -41,7 +41,7 @@ const props = defineProps({
     type: Function as PropType<(inputValue: string, item: TransferItem) => boolean>
   },
   selectedKeys: { type: Array as PropType<Array<string>> },
-  showSelectAll: { type: Boolean, default: false },
+  showSelectAll: { type: Boolean, default: true },
   targetKeys: { type: Array as PropType<Array<string>> }
 })
 const emit = defineEmits(['options-change', 'change'])
