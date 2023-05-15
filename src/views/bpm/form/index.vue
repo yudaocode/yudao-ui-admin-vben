@@ -72,7 +72,6 @@ function openForm(record: Recordable) {
   if (typeof record.id === 'number') {
     go({ name: 'BpmFormEditor', query: { id: record.id } })
   }
-  // openModal(true, { record, isUpdate: true })
 }
 
 function openDetail(record: Recordable) {

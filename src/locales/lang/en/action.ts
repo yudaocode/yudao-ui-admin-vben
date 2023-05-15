@@ -8,5 +8,6 @@ export default {
   detail: 'Detail',
   export: 'Export',
   import: 'Import',
-  sync: 'Sync'
+  sync: 'Sync',
+  cancel: 'Cancel'
 }

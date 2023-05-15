@@ -8,5 +8,6 @@ export default {
   detail: '详情',
   export: '导出',
   import: '导入',
-  sync: '同步'
+  sync: '同步',
+  cancel: '取消'
 }
