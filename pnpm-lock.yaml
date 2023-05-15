@@ -89,8 +89,8 @@ dependencies:
     specifier: ^4.2.0
     version: 4.2.0(vue@3.3.2)
   vue-types:
-    specifier: ^5.0.2
-    version: 5.0.2(vue@3.3.2)
+    specifier: ^5.0.3
+    version: 5.0.3(vue@3.3.2)
   vuedraggable:
     specifier: ^4.1.0
     version: 4.1.0(vue@3.3.2)
@@ -8677,8 +8677,8 @@ packages:
       vue: 3.3.2
     dev: false
 
-  /vue-types@5.0.2(vue@3.3.2):
-    resolution: {integrity: sha512-+/5hnQ65XOYqPs+tEUF8GGTJX95UFVH0wPQo71IJJYh5TKMfik2tGKTLkZ42JqAczANA9hGu5FrZmPgxn20nnA==}
+  /vue-types@5.0.3(vue@3.3.2):
+    resolution: {integrity: sha512-7+yOUXlRrpkJ4mtgmB6nIfDYLdLmxHQ/IMZR3hsEziYnHK4Y/Rf+rlCIg1rwNnlbyTiDf4v/vz1LEumo3RgwrQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       vue: ^2.0.0 || ^3.0.0
