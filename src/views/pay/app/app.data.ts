@@ -4,7 +4,7 @@ import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { PayChannelEnum } from '@/enums/systemEnum'
 import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
-import { Tag, Switch } from 'ant-design-vue'
+import { Switch } from 'ant-design-vue'
 import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
@@ -17,6 +17,12 @@ export const columns: BasicColumn[] = [
     title: '应用名',
     dataIndex: 'name',
     width: 100
+  },
+  {
+    title: '应用名',
+    dataIndex: 'appId',
+    width: 100,
+    ifShow: false
   },
   {
     title: '开启状态',
@@ -64,47 +70,27 @@ export const columns: BasicColumn[] = [
       {
         title: PayChannelEnum.ALIPAY_APP.name,
         dataIndex: PayChannelEnum.ALIPAY_APP.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.ALIPAY_APP.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.ALIPAY_PC.name,
         dataIndex: PayChannelEnum.ALIPAY_PC.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.ALIPAY_PC.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.ALIPAY_WAP.name,
         dataIndex: PayChannelEnum.ALIPAY_WAP.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.ALIPAY_WAP.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.ALIPAY_QR.name,
         dataIndex: PayChannelEnum.ALIPAY_QR.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.ALIPAY_QR.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.ALIPAY_BAR.name,
         dataIndex: PayChannelEnum.ALIPAY_BAR.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.ALIPAY_BAR.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       }
     ]
   },
@@ -114,29 +100,17 @@ export const columns: BasicColumn[] = [
       {
         title: PayChannelEnum.WX_LITE.name,
         dataIndex: PayChannelEnum.WX_LITE.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.WX_LITE.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.WX_PUB.name,
         dataIndex: PayChannelEnum.WX_PUB.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.WX_PUB.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       },
       {
         title: PayChannelEnum.WX_APP.name,
         dataIndex: PayChannelEnum.WX_APP.code,
-        width: 160,
-        customRender: ({ record }) => {
-          const isUpdate = record.channelCodes.indexOf(PayChannelEnum.WX_APP.code) !== -1
-          return h(Tag, { color: isUpdate ? '#108ee9' : '#f50000' }, () => (isUpdate ? '已设置' : '未设置'))
-        }
+        width: 160
       }
     ]
   },
@@ -224,6 +198,183 @@ export const formSchema: FormSchema[] = [
     field: 'refundNotifyUrl',
     required: true,
     component: 'Input'
+  },
+  {
+    label: '备注',
+    field: 'remark',
+    component: 'InputTextArea'
+  }
+]
+
+export const aliPayFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input'
+  },
+  {
+    label: '渠道费率',
+    field: 'feeRate',
+    defaultValue: 0,
+    required: true,
+    component: 'InputNumber'
+  },
+  {
+    label: '开放平台APPID',
+    field: 'appId',
+    required: true,
+    component: 'Input'
+  },
+  {
+    label: '渠道状态',
+    field: 'status',
+    required: true,
+    defaultValue: 0,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+    }
+  },
+  {
+    label: '网关地址',
+    field: 'serverUrl',
+    required: true,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_SERVER_TYPE, 'string')
+    }
+  },
+  {
+    label: '算法类型',
+    field: 'signType',
+    required: true,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_SIGN_TYPE, 'string')
+    }
+  },
+  {
+    label: '公钥类型',
+    field: 'mode',
+    required: true,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_MODE)
+    }
+  },
+  {
+    label: '商户私钥',
+    field: 'privateKey',
+    required: true,
+    ifShow: ({ values }) => !!(values.mode === 1),
+    component: 'Input'
+  },
+  {
+    label: '支付宝公钥字符串',
+    field: 'alipayPublicKey',
+    required: true,
+    ifShow: ({ values }) => !!(values.mode === 1),
+    component: 'InputTextArea'
+  },
+  {
+    label: '商户公钥应用证书',
+    field: 'appCertContent',
+    required: true,
+    ifShow: ({ values }) => !!(values.mode === 2),
+    component: 'InputTextArea'
+  },
+  {
+    label: '支付宝公钥证书',
+    field: 'alipayPublicCertContent',
+    required: true,
+    ifShow: ({ values }) => !!(values.mode === 2),
+    component: 'InputTextArea'
+  },
+  {
+    label: '根证书',
+    field: 'rootCertContent',
+    required: true,
+    ifShow: ({ values }) => !!(values.mode === 2),
+    component: 'InputTextArea'
+  },
+  {
+    label: '备注',
+    field: 'remark',
+    component: 'InputTextArea'
+  }
+]
+
+export const weChatFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input'
+  },
+  {
+    label: '渠道费率',
+    field: 'feeRate',
+    defaultValue: 0,
+    required: true,
+    component: 'InputNumber'
+  },
+  {
+    label: '公众号APPID',
+    field: 'appId',
+    required: true,
+    component: 'Input'
+  },
+  {
+    label: '商户号',
+    field: 'mchId',
+    required: true,
+    component: 'Input'
+  },
+  {
+    label: '渠道状态',
+    field: 'status',
+    required: true,
+    defaultValue: 0,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+    }
+  },
+  {
+    label: 'API 版本',
+    field: 'apiVersion',
+    required: true,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_WECHAT_VERSION, 'string')
+    }
+  },
+  {
+    label: '商户密钥',
+    field: 'mchKey',
+    required: true,
+    ifShow: ({ values }) => !!(values.apiVersion === 'v2'),
+    component: 'Input'
+  },
+  {
+    label: 'API V3密钥',
+    field: 'apiV3Key',
+    required: true,
+    ifShow: ({ values }) => !!(values.apiVersion === 'v3'),
+    component: 'Input'
+  },
+  {
+    label: 'apiclient_key.perm证书',
+    field: 'privateKeyContent',
+    required: true,
+    component: 'InputTextArea'
+  },
+  {
+    label: 'apiclient_cert.perm证书',
+    field: 'privateCertContent',
+    required: true,
+    component: 'InputTextArea'
   },
   {
     label: '备注',

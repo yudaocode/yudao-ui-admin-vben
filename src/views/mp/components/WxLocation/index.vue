@@ -1,5 +1,3 @@
-import { Image } from 'ant-design-vue';
-
 <template>
   <div>
     <a-button
