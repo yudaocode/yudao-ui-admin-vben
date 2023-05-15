@@ -1,4 +1,10 @@
+import { UploadApiResult } from '@/api/base/model/uploadModel'
+import { useGlobSetting } from '@/hooks/setting'
+import { UploadFileParams } from '@/types/axios'
 import { defHttp } from '@/utils/http/axios'
+import { AxiosProgressEvent } from 'axios'
+
+const { apiUrl = '' } = useGlobSetting()
 
 export type ProcessDefinitionVO = {
   id: string
@@ -51,4 +57,14 @@ export function deleteModel(id: number) {
 
 export function deployModel(id: number) {
   return defHttp.post({ url: '/bpm/model/deploy?id=' + id })
+}
+
+export function importModel(params: UploadFileParams, onUploadProgress: (progressEvent: AxiosProgressEvent) => void) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: apiUrl + '/bpm/model/import',
+      onUploadProgress
+    },
+    params
+  )
 }

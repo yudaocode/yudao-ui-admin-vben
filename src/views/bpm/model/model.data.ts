@@ -1,6 +1,7 @@
 import { getSimpleForms } from '@/api/bpm/form'
 import { updateModelState } from '@/api/bpm/model'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import { useGo } from '@/hooks/web/usePage'
 import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { Button, Switch } from 'ant-design-vue'
@@ -21,7 +22,10 @@ export const columns: BasicColumn[] = [
   {
     title: '流程名称',
     dataIndex: 'name',
-    width: 180
+    width: 180,
+    customRender: ({ record }) => {
+      return h(Button, { type: 'link', onClick: handleBpmnDetail.bind(null, record) }, () => record.formName)
+    }
   },
   {
     title: '流程分类',
@@ -209,6 +213,15 @@ export const formSchema: FormSchema[] = [
   }
 ]
 
-function handleFormDetail() {
-  console.info('handleFormDetail')
+function handleBpmnDetail() {
+  console.info('handleBpmnDetail')
+}
+
+function handleFormDetail(record: Recordable) {
+  if (record.formType === 10) {
+    console.info('handleFormDetail')
+  } else {
+    const go = useGo()
+    go({ path: record.formCustomCreatePath })
+  }
 }
