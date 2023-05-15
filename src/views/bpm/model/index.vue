@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" v-auth="['system:post:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
+        <a-button type="primary" v-auth="['bpm:model:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
       </template>
@@ -10,12 +10,12 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:post:update', onClick: handleEdit.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:model:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
                 label: t('action.delete'),
-                auth: 'system:post:delete',
+                auth: 'bpm:model:delete',
                 popConfirm: {
                   title: t('common.delMessage'),
                   placement: 'left',

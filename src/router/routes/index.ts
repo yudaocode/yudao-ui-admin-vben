@@ -149,6 +149,131 @@ export const PayRoute: AppRouteRecordRaw = {
   ]
 }
 
+export const BpmRoute: AppRouteRecordRaw = {
+  path: '/bpm',
+  component: LAYOUT,
+  name: 'bpm',
+  meta: {
+    title: '工作流',
+    hidden: true
+  },
+  children: [
+    {
+      path: '/manager/form/edit',
+      component: () => import('@/views/bpm/form/editor/index.vue'),
+      name: 'BpmFormEditor',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '设计流程表单',
+        activeMenu: '/bpm/manager/form'
+      }
+    },
+    {
+      path: '/manager/model/edit',
+      component: () => import('@/views/bpm/model/editor/index.vue'),
+      name: 'BpmModelEditor',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '设计流程',
+        activeMenu: '/bpm/manager/model'
+      }
+    },
+    {
+      path: '/manager/definition',
+      component: () => import('@/views/bpm/definition/index.vue'),
+      name: 'BpmProcessDefinition',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '流程定义',
+        activeMenu: '/bpm/manager/model'
+      }
+    },
+    {
+      path: '/manager/task-assign-rule',
+      component: () => import('@/views/bpm/taskAssignRule/index.vue'),
+      name: 'BpmTaskAssignRuleList',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '任务分配规则'
+      }
+    },
+    {
+      path: '/process-instance/create',
+      component: () => import('@/views/bpm/processInstance/create/index.vue'),
+      name: 'BpmProcessInstanceCreate',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '发起流程',
+        activeMenu: 'bpm/processInstance/create'
+      }
+    },
+    {
+      path: '/process-instance/detail',
+      component: () => import('@/views/bpm/processInstance/detail/index.vue'),
+      name: 'BpmProcessInstanceDetail',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '流程详情',
+        activeMenu: 'bpm/processInstance/detail'
+      }
+    },
+    {
+      path: '/bpm/oa/leave/create',
+      component: () => import('@/views/bpm/oa/leave/create.vue'),
+      name: 'OALeaveCreate',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '发起 OA 请假',
+        activeMenu: 'bpm/oa/leave'
+      }
+    },
+    {
+      path: '/process-instance/detail',
+      component: () => import('@/views/bpm/oa/leave/detail.vue'),
+      name: 'OALeaveDetail',
+      meta: {
+        canTo: true,
+        hidden: true,
+        noTagsView: false,
+        icon: 'ant-design:edit-outlined',
+        title: '查看 OA 请假',
+        activeMenu: 'bpm/oa/leave'
+      }
+    }
+  ]
+}
+
 // Basic routing without permission
 // 未经许可的基本路由
-export const basicRoutes = [LoginRoute, RootRoute, ProfileRoute, CodegenRoute, JobLogRoute, PayRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
+export const basicRoutes = [
+  LoginRoute,
+  RootRoute,
+  ProfileRoute,
+  CodegenRoute,
+  JobLogRoute,
+  PayRoute,
+  BpmRoute,
+  REDIRECT_ROUTE,
+  PAGE_NOT_FOUND_ROUTE
+]
