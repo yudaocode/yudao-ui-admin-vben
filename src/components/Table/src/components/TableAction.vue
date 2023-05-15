@@ -15,14 +15,14 @@
     </template>
     <Dropdown :trigger="['hover']" :dropMenuList="getDropdownList" popconfirm v-if="dropDownActions && getDropdownList.length > 0">
       <slot name="more"></slot>
-      <a-button type="link" v-if="!$slots.more"> <MoreOutlined class="icon-more" />{{ t('action.more') }} </a-button>
+      <a-button type="link" v-if="!$slots.more"> {{ t('action.more') }} <DownOutlined class="icon-more" /></a-button>
     </Dropdown>
   </div>
 </template>
 <script lang="ts" setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, toRaw, unref } from 'vue'
-import { MoreOutlined } from '@ant-design/icons-vue'
+import { DownOutlined } from '@ant-design/icons-vue'
 import { Divider, Tooltip, TooltipProps } from 'ant-design-vue'
 import { Icon } from '@/components/Icon'
 import { ActionItem, TableActionType } from '@/components/Table'
@@ -181,7 +181,7 @@ function onCellClick(e: MouseEvent) {
   }
 
   .icon-more {
-    transform: rotate(90deg);
+    margin-left: 0.25rem;
 
     svg {
       font-size: 1.1em;
