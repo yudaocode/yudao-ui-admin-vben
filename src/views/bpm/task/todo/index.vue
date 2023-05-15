@@ -1,16 +1,25 @@
 <template>
   <div>
-    <BasicTable @register="registerTable" />
+    <BasicTable @register="registerTable">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction :actions="[{ icon: IconEnum.VIEW, label: '审批进度', onClick: handleAudit.bind(null, record) }]" />
+        </template>
+      </template>
+    </BasicTable>
   </div>
 </template>
 <script lang="ts" setup>
+import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
-import { BasicTable, useTable } from '@/components/Table'
+import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { IconEnum } from '@/enums/appEnum'
 import { getTodoTaskPage } from '@/api/bpm/task'
 import { columns, searchFormSchema } from './todo.data'
 
-defineOptions({ name: 'BpmTodo' })
+defineOptions({ name: 'BpmTodoTask' })
 
+const go = useGo()
 const { t } = useI18n()
 
 const [registerTable] = useTable({
@@ -27,4 +36,8 @@ const [registerTable] = useTable({
     fixed: 'right'
   }
 })
+
+function handleAudit(record: Recordable) {
+  go({ name: 'BpmProcessInstanceDetail', query: { id: record.id } })
+}
 </script>
