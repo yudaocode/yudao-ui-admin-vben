@@ -37,7 +37,28 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   if (unref(isUpdate)) {
     let res = await getChannel(data.record.payMerchant.id, data.record.id, data.payCode)
     const config = JSON.parse(res.config)
-    res = Object.assign(res, config)
+    const payConfig: any = {}
+    if (type.value === PayType.ALIPAY) {
+      payConfig.appId = config.appId
+      payConfig.serverUrl = config.serverUrl
+      payConfig.signType = config.signType
+      payConfig.mode = config.mode
+      payConfig.privateKey = config.privateKey
+      payConfig.alipayPublicKey = config.alipayPublicKey
+      payConfig.appCertContent = config.appCertContent
+      payConfig.alipayPublicCertContent = config.alipayPublicCertContent
+      payConfig.rootCertContent = config.rootCertContent
+    } else {
+      payConfig.appId = config.appId
+      payConfig.apiVersion = config.apiVersion
+      payConfig.mchId = config.mchId
+      payConfig.mchKey = config.mchKey
+      payConfig.privateKeyContent = config.privateKeyContent
+      payConfig.privateCertContent = config.privateCertContent
+      payConfig.apiV3Key = config.apiV3Key
+    }
+    res.payConfig = payConfig
+    delete res['config']
     setFieldsValue({ ...res })
   }
 })
@@ -46,7 +67,7 @@ async function handleSubmit() {
   try {
     const values = await validate()
     setModalProps({ confirmLoading: true })
-    values.config = Object.assign({}, values)
+    values.config = JSON.stringify(values.payConfig)
     if (unref(isUpdate)) {
       await updateChannel(values)
     } else {

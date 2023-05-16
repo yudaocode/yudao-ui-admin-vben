@@ -221,7 +221,7 @@ export const aliPayFormSchema: FormSchema[] = [
   },
   {
     label: '开放平台APPID',
-    field: 'appId',
+    field: 'payConfig.appId',
     required: true,
     component: 'Input'
   },
@@ -236,7 +236,7 @@ export const aliPayFormSchema: FormSchema[] = [
   },
   {
     label: '网关地址',
-    field: 'serverUrl',
+    field: 'payConfig.serverUrl',
     required: true,
     component: 'RadioGroup',
     componentProps: {
@@ -245,7 +245,7 @@ export const aliPayFormSchema: FormSchema[] = [
   },
   {
     label: '算法类型',
-    field: 'signType',
+    field: 'payConfig.signType',
     required: true,
     component: 'RadioGroup',
     componentProps: {
@@ -254,8 +254,9 @@ export const aliPayFormSchema: FormSchema[] = [
   },
   {
     label: '公钥类型',
-    field: 'mode',
+    field: 'payConfig.mode',
     required: true,
+    defaultValue: null,
     component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_MODE)
@@ -263,37 +264,37 @@ export const aliPayFormSchema: FormSchema[] = [
   },
   {
     label: '商户私钥',
-    field: 'privateKey',
+    field: 'payConfig.privateKey',
     required: true,
-    ifShow: ({ values }) => !!(values.mode === 1),
+    ifShow: ({ values }) => !!(values['payConfig.mode'] === 1),
     component: 'Input'
   },
   {
     label: '支付宝公钥字符串',
-    field: 'alipayPublicKey',
+    field: 'payConfig.alipayPublicKey',
     required: true,
-    ifShow: ({ values }) => !!(values.mode === 1),
+    ifShow: ({ values }) => !!(values['payConfig.mode'] === 1),
     component: 'InputTextArea'
   },
   {
     label: '商户公钥应用证书',
-    field: 'appCertContent',
+    field: 'payConfig.appCertContent',
     required: true,
-    ifShow: ({ values }) => !!(values.mode === 2),
+    ifShow: ({ values }) => !!(values['payConfig.mode'] === 2),
     component: 'InputTextArea'
   },
   {
     label: '支付宝公钥证书',
-    field: 'alipayPublicCertContent',
+    field: 'payConfig.alipayPublicCertContent',
     required: true,
-    ifShow: ({ values }) => !!(values.mode === 2),
+    ifShow: ({ values }) => !!(values['payConfig.mode'] === 2),
     component: 'InputTextArea'
   },
   {
     label: '根证书',
-    field: 'rootCertContent',
+    field: 'payConfig.rootCertContent',
     required: true,
-    ifShow: ({ values }) => !!(values.mode === 2),
+    ifShow: ({ values }) => !!(values['payConfig.mode'] === 2),
     component: 'InputTextArea'
   },
   {
@@ -319,13 +320,13 @@ export const weChatFormSchema: FormSchema[] = [
   },
   {
     label: '公众号APPID',
-    field: 'appId',
+    field: 'payConfig.appId',
     required: true,
     component: 'Input'
   },
   {
     label: '商户号',
-    field: 'mchId',
+    field: 'payConfig.mchId',
     required: true,
     component: 'Input'
   },
@@ -340,7 +341,7 @@ export const weChatFormSchema: FormSchema[] = [
   },
   {
     label: 'API 版本',
-    field: 'apiVersion',
+    field: 'payConfig.apiVersion',
     required: true,
     component: 'RadioGroup',
     componentProps: {
@@ -349,27 +350,27 @@ export const weChatFormSchema: FormSchema[] = [
   },
   {
     label: '商户密钥',
-    field: 'mchKey',
+    field: 'payConfig.mchKey',
     required: true,
-    ifShow: ({ values }) => !!(values.apiVersion === 'v2'),
+    ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v2'),
     component: 'Input'
   },
   {
     label: 'API V3密钥',
-    field: 'apiV3Key',
+    field: 'payConfig.apiV3Key',
     required: true,
-    ifShow: ({ values }) => !!(values.apiVersion === 'v3'),
+    ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v3'),
     component: 'Input'
   },
   {
     label: 'apiclient_key.perm证书',
-    field: 'privateKeyContent',
+    field: 'payConfig.privateKeyContent',
     required: true,
     component: 'InputTextArea'
   },
   {
     label: 'apiclient_cert.perm证书',
-    field: 'privateCertContent',
+    field: 'payConfig.privateCertContent',
     required: true,
     component: 'InputTextArea'
   },
