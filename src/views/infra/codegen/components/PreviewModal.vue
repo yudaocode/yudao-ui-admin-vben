@@ -1,12 +1,12 @@
 <template>
   <BasicModal v-bind="$attrs" :defaultFullscreen="true" @register="registerModal" title="预览代码">
     <div class="flex">
-      <Card class="w-1/4">
+      <Card class="w-1/4 min-w-130">
         <BasicTree
           title="文件夹列表"
           toolbar
           :defaultExpandAll="true"
-          treeWrapperClassName="h-[calc(100%-35px)] overflow-auto"
+          treeWrapperClassName="h-[800px] overflow-auto"
           :clickRowToExpand="false"
           :treeData="fileTree"
           :fieldNames="{ key: 'id', title: 'label' }"
