@@ -5,6 +5,7 @@
         <BasicTree
           title="文件夹列表"
           toolbar
+          :defaultExpandAll="true"
           treeWrapperClassName="h-[calc(100%-35px)] overflow-auto"
           :clickRowToExpand="false"
           :treeData="fileTree"
@@ -16,7 +17,7 @@
         <Tabs v-model:activeKey="activeKey">
           <TabPane v-for="item in previewCodes" :key="item.filePath" :tab="item.filePath.substring(item.filePath.lastIndexOf('/') + 1)">
             <a-button type="link" style="float: right" @click="copy(item.code)">复制</a-button>
-            <pre>{{ item.code }}</pre>
+            <CodeEditor class="max-h-200" :value="(item.code as any)" :mode="modeValue" :readonly="true" />
           </TabPane>
         </Tabs>
       </Card>
@@ -28,6 +29,7 @@ import { ref, unref } from 'vue'
 import { Card, Tabs } from 'ant-design-vue'
 import { BasicTree } from '@/components/Tree'
 import { BasicModal, useModalInner } from '@/components/Modal'
+import { CodeEditor, MODE } from '@/components/CodeEditor'
 import { previewCodegen } from '@/api/infra/codegen'
 import { CodegenPreviewVO } from '@/api/infra/codegen/types'
 import { handleTree2 } from '@/utils/tree'
@@ -42,6 +44,7 @@ const { createMessage } = useMessage()
 
 const fileTree = ref([])
 const activeKey = ref('')
+const modeValue = ref(MODE.JS)
 const previewCodes = ref<CodegenPreviewVO[]>()
 
 const [registerModal, { setModalProps }] = useModalInner(async (data) => {
