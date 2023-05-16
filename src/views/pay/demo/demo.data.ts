@@ -95,7 +95,6 @@ export const formSchema: FormSchema[] = [
     label: '商品',
     field: 'spuId',
     component: 'Select',
-    defaultValue: 0,
     required: true,
     componentProps: {
       options: [

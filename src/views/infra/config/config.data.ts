@@ -123,7 +123,6 @@ export const formSchema: FormSchema[] = [
     label: '是否可见',
     field: 'visible',
     component: 'RadioGroup',
-    defaultValue: 0,
     componentProps: {
       options: [
         { key: true, label: '是', value: true },

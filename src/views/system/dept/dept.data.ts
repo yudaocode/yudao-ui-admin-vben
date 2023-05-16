@@ -86,7 +86,6 @@ export const formSchema: FormSchema[] = [
     label: '上级部门',
     field: 'parentId',
     required: true,
-    defaultValue: 0,
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleDept(),
@@ -145,7 +144,6 @@ export const formSchema: FormSchema[] = [
     label: '部门状态',
     field: 'status',
     component: 'Select',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }

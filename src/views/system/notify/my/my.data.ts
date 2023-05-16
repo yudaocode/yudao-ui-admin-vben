@@ -91,7 +91,6 @@ export const formSchema: FormSchema[] = [
     label: '类型',
     field: 'type',
     component: 'Select',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE)
     }
@@ -100,7 +99,6 @@ export const formSchema: FormSchema[] = [
     label: '开启状态',
     field: 'status',
     component: 'RadioGroup',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }

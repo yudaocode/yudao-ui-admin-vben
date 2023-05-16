@@ -54,7 +54,6 @@ export const searchFormSchema: FormSchema[] = [
     label: '公众号',
     field: 'accountId',
     component: 'ApiSelect',
-    defaultValue: 0,
     componentProps: {
       api: () => getSimpleAccounts(),
       labelField: 'name',

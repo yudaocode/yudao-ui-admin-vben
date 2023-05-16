@@ -110,7 +110,6 @@ export const dataFormSchema: FormSchema[] = [
     label: '状态',
     field: 'status',
     component: 'Select',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }

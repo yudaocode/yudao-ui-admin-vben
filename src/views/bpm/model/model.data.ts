@@ -167,7 +167,6 @@ export const formSchema: FormSchema[] = [
     label: '流程分类',
     field: 'category',
     component: 'Select',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)
     }

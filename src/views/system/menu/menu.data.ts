@@ -80,7 +80,6 @@ export const formSchema: FormSchema[] = [
     label: '上级菜单',
     field: 'parentId',
     required: true,
-    defaultValue: 0,
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleMenus(),
@@ -157,7 +156,6 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     required: true,
     component: 'RadioButtonGroup',
-    defaultValue: 0,
     helpMessage: '选择停用时，路由将不会出现在侧边栏，也不能被访问',
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)

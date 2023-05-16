@@ -182,7 +182,6 @@ export const formSchema: FormSchema[] = [
     label: '开启状态',
     field: 'status',
     component: 'Select',
-    defaultValue: 0,
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
     }
@@ -230,7 +229,6 @@ export const aliPayFormSchema: FormSchema[] = [
     label: '渠道状态',
     field: 'status',
     required: true,
-    defaultValue: 0,
     component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
@@ -335,7 +333,6 @@ export const weChatFormSchema: FormSchema[] = [
     label: '渠道状态',
     field: 'status',
     required: true,
-    defaultValue: 0,
     component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
