@@ -63,7 +63,6 @@ import { columns, searchFormSchema } from './role.data'
 
 defineOptions({ name: 'SystemRole' })
 
-
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
