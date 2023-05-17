@@ -42,7 +42,7 @@ const getButtonProps = computed(() => {
 function handleChange(info: Recordable) {
   const file = info.file
   const status = file?.status
-  const url = file?.response?.url
+  const url = file?.response?.data
   const name = file?.name
 
   if (status === 'uploading') {
