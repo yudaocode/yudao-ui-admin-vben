@@ -134,7 +134,7 @@ export const descSchema: DescItem[] = [
   },
   {
     label: '执行结果',
-    field: 'duration',
+    field: 'result',
     render: (curVal) => {
       return useRender.renderText(curVal, ' result')
     }
