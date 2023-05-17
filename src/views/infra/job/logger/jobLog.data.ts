@@ -1,6 +1,8 @@
 import { DescItem } from '@/components/Description'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
+import { JsonPreview } from '@/components/CodeEditor'
+import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
@@ -11,7 +13,7 @@ export const columns: BasicColumn[] = [
   {
     title: '任务编号',
     dataIndex: 'jobId',
-    width: 180
+    width: 100
   },
   {
     title: '处理器的名字',
@@ -33,7 +35,9 @@ export const columns: BasicColumn[] = [
     dataIndex: 'beginTime',
     width: 180,
     customRender: ({ record }) => {
-      return useRender.renderDate(record.beginTime) + ' ~ ' + useRender.renderDate(record.endTime)
+      const startTime = useRender.renderDate(record.beginTime)
+      const endTime = useRender.renderDate(record.endTime)
+      return useRender.renderTags([startTime, endTime])
     }
   },
   {
@@ -49,7 +53,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'status',
     width: 180,
     customRender: ({ record }) => {
-      return useRender.renderDict(record.beginTime, DICT_TYPE.INFRA_JOB_LOG_STATUS)
+      return useRender.renderDict(record.status, DICT_TYPE.INFRA_JOB_LOG_STATUS)
     }
   }
 ]
@@ -114,8 +118,10 @@ export const descSchema: DescItem[] = [
   {
     label: '执行时间',
     field: 'beginTime',
-    render: (data) => {
-      return useRender.renderDate(data.beginTime) + ' ~ ' + useRender.renderDate(data.endTime)
+    render: (_, data) => {
+      const startTime = '开始: ' + useRender.renderDate(data.beginTime)
+      const endTime = '结束: ' + useRender.renderDate(data.endTime)
+      return h('span', {}, [startTime, h('br'), endTime])
     }
   },
   {
@@ -136,7 +142,8 @@ export const descSchema: DescItem[] = [
     label: '执行结果',
     field: 'result',
     render: (curVal) => {
-      return useRender.renderText(curVal, ' result')
+      const data = JSON.parse(curVal)
+      return h(JsonPreview, { data })
     }
   }
 ]

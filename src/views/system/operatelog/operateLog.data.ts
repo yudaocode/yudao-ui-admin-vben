@@ -40,7 +40,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'resultCode',
     width: 180,
     customRender: ({ text }) => {
-      return useRender.renderTag(text === 0 ? '成功' : '失败')
+      return useRender.renderTag(text === 0 ? '成功' : '失败', text === 0 ? '#87d068' : '#f50')
     }
   },
   {

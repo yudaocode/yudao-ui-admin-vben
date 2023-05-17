@@ -48,15 +48,17 @@ export const columns: BasicColumn[] = [
     dataIndex: 'duration',
     width: 180,
     customRender: ({ text }) => {
-      return useRender.renderText(text, 'ms')
+      return useRender.renderText(text.toString(), 'ms')
     }
   },
   {
     title: '操作结果',
     dataIndex: 'status',
     width: 180,
+    ellipsis: true,
     customRender: ({ record }) => {
-      return useRender.renderTag(record.resultCode === 0 ? '成功' : '失败(' + record.resultMsg + ')')
+      const success = record.resultCode === 0
+      return useRender.renderTag(success ? '成功' : '失败(' + record.resultMsg + ')', success ? '#87d068' : '#f50')
     }
   }
 ]

@@ -54,10 +54,10 @@ export const useRender = {
    * @returns 标签
    */
   renderTag: (text, color?) => {
-    if (!color) {
+    if (color) {
       return h(Tag, { color }, () => text)
     } else {
-      return h('span', text)
+      return h(Tag, {}, () => text)
     }
   },
   /**
