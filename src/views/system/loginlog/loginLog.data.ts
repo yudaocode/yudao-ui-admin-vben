@@ -33,14 +33,14 @@ export const columns: BasicColumn[] = [
   {
     title: '结果',
     dataIndex: 'result',
-    width: 180,
+    width: 100,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.SYSTEM_LOGIN_RESULT)
     }
   },
   {
     title: '登录日期',
-    dataIndex: 'loginTime',
+    dataIndex: 'createTime',
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
