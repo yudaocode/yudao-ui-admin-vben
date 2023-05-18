@@ -169,7 +169,12 @@ export const baseSendSchemas: FormSchema[] = [
     component: 'Editor',
     label: '模板内容 ',
     required: false,
-    defaultValue: ''
+    defaultValue: '',
+    componentProps: {
+      options: {
+        readonly: true
+      }
+    }
   },
   {
     field: 'mail',
