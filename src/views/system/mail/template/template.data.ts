@@ -143,7 +143,8 @@ export const formSchema: FormSchema[] = [
   {
     label: '模板内容',
     field: 'content',
-    component: 'InputTextArea'
+    component: 'Editor',
+    required: true
   },
   {
     label: '开启状态',
@@ -158,5 +159,33 @@ export const formSchema: FormSchema[] = [
     label: '备注',
     field: 'remark',
     component: 'InputTextArea'
+  }
+]
+
+// 发送邮件
+export const baseSendSchemas: FormSchema[] = [
+  {
+    field: 'content',
+    component: 'Editor',
+    label: '模板内容 ',
+    required: false,
+    defaultValue: ''
+  },
+  {
+    field: 'mail',
+    label: '收件邮箱 ',
+    component: 'Input',
+    componentProps: {
+      placeholder: '输入收件邮箱'
+    },
+    required: true,
+    rules: [
+      {
+        required: true,
+        pattern: /^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/,
+        trigger: 'blur',
+        message: '邮箱格式不正确'
+      }
+    ]
   }
 ]

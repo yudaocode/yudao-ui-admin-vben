@@ -20,7 +20,7 @@ const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-  labelWidth: 120,
+  labelWidth: 100,
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,

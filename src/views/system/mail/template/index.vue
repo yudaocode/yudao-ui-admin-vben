@@ -38,7 +38,8 @@
         </template>
       </template>
     </BasicTable>
-    <TemplateModal @register="registerModal" @success="reload()" />
+    <TemplateModal @register="registerTemplateModal" @success="reload()" />
+    <SendMailModal @register="registerSendModal" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,16 +47,18 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import TemplateModal from './TemplateModal.vue'
+import SendMailModal from './SendMailModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { deleteMailTemplate, getMailTemplatePage, sendMail } from '@/api/system/mail/template'
+import { deleteMailTemplate, getMailTemplatePage } from '@/api/system/mail/template'
 import { columns, searchFormSchema } from './template.data'
 
 defineOptions({ name: 'SystemMailTemplate' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const [registerModal, { openModal }] = useModal()
+const [registerTemplateModal, { openModal }] = useModal()
+const [registerSendModal, { openModal: openSenModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '邮件模板列表',
   api: getMailTemplatePage,
@@ -78,8 +81,7 @@ function handleCreate() {
 
 function handleSend(record: Recordable) {
   console.info(record)
-  // TODO
-  sendMail(null)
+  openSenModal(true, record)
 }
 
 function handleEdit(record: Recordable) {
