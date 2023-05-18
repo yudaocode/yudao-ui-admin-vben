@@ -40,11 +40,11 @@
 
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
-| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.2 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.7 |
+| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.4 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.8 |
 | [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.20 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.0.4 |
-| [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.0.36 |
+| [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.1 |
 | [vueuse](https://vueuse.org/) | 常用工具集 | 10.1.2 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
 | [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.0 |
