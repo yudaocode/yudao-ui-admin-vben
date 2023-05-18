@@ -12,7 +12,15 @@
             :actions="[
               { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:file-config:update', onClick: handleEdit.bind(null, record) },
               { icon: IconEnum.TEST, label: t('action.test'), auth: 'infra:file-config:update', onClick: handleTest.bind(null, record) },
-              { icon: IconEnum.AUTH, label: '主配置', auth: 'infra:file-config:update', onClick: handleMaster.bind(null, record) },
+              {
+                icon: IconEnum.AUTH,
+                label: '主配置',
+                auth: 'infra:file-config:update',
+                ifShow: () => {
+                  return !record.master
+                },
+                onClick: handleMaster.bind(null, record)
+              },
               {
                 icon: IconEnum.DELETE,
                 color: 'error',
