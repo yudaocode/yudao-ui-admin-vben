@@ -1,29 +1,33 @@
 <template>
   <div>
-    <BasicTable @register="registerTable">
+    <BasicTable @register="register">
       <template #toolbar>
         <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> IP 查询 </a-button>
+        <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
+        <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
       </template>
     </BasicTable>
     <AreaModal @register="registerModal" @success="reload()" />
   </div>
 </template>
 <script lang="ts" setup>
+import { useI18n } from '@/hooks/web/useI18n'
 import { useModal } from '@/components/Modal'
 import AreaModal from './AreaModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
 import { getAreaTree } from '@/api/system/area'
 import { columns } from './area.data'
-import { handleTree } from '@/utils/tree'
 
 defineOptions({ name: 'SystemArea' })
 
+const { t } = useI18n()
+
 const [registerModal, { openModal }] = useModal()
 
-const [registerTable, { reload }] = useTable({
-  title: '岗位列表',
-  api: getList,
+const [register, { expandAll, collapseAll, reload }] = useTable({
+  title: 'IP 地区列表',
+  api: getAreaTree,
   columns,
   rowKey: 'id',
   isTreeTable: true,
@@ -35,11 +39,6 @@ const [registerTable, { reload }] = useTable({
   showIndexColumn: false,
   canResize: false
 })
-
-async function getList() {
-  const res = await getAreaTree()
-  return handleTree(res, 'id')
-}
 
 function handleCreate() {
   openModal(true, { isUpdate: false })
