@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-4">
     <BasicTable @register="register">
       <template #toolbar>
         <a-button type="primary" :preIcon="IconEnum.ADD" @click="handleCreate"> IP 查询 </a-button>
@@ -37,7 +37,7 @@ const [register, { expandAll, collapseAll, reload }] = useTable({
   showTableSetting: true,
   bordered: true,
   showIndexColumn: false,
-  canResize: false
+  canResize: true
 })
 
 function handleCreate() {
