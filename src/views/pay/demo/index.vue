@@ -8,8 +8,23 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: '前往支付', onClick: handlePay.bind(null, record) },
-              { icon: IconEnum.DELETE, color: 'error', label: '发起退款', onClick: handleRefund.bind(null, record) }
+              {
+                icon: IconEnum.EDIT,
+                label: '前往支付',
+                ifShow: () => {
+                  return !record.payed
+                },
+                onClick: handlePay.bind(null, record)
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: '发起退款',
+                ifShow: () => {
+                  return record.payed && !record.payRefundId
+                },
+                onClick: handleRefund.bind(null, record)
+              }
             ]"
           />
         </template>
@@ -43,6 +58,7 @@ const [registerTable, { reload }] = useTable({
   formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
+  showIndexColumn: false,
   actionColumn: {
     width: 180,
     title: t('common.action'),
