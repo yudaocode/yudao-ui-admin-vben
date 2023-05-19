@@ -1,5 +1,5 @@
 export default {
-  dashboard: 'Dashboard',
+  dashboard: 'Home',
   about: 'About',
   workbench: 'Workbench',
   analysis: 'Analysis'

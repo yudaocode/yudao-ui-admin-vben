@@ -11,7 +11,7 @@ const dashboard: AppRouteModule = {
   redirect: '/dashboard/analysis',
   meta: {
     orderNo: 10,
-    icon: 'ion:grid-outline',
+    icon: 'ant-design:home-outlined',
     title: t('routes.dashboard.dashboard')
   },
   children: [
@@ -21,7 +21,8 @@ const dashboard: AppRouteModule = {
       component: () => import('@/views/dashboard/analysis/index.vue'),
       meta: {
         // affix: true,
-        title: t('routes.dashboard.analysis')
+        title: t('routes.dashboard.analysis'),
+        icon: 'ant-design:bar-chart-outlined'
       }
     },
     {
@@ -29,7 +30,8 @@ const dashboard: AppRouteModule = {
       name: 'Workbench',
       component: () => import('@/views/dashboard/workbench/index.vue'),
       meta: {
-        title: t('routes.dashboard.workbench')
+        title: t('routes.dashboard.workbench'),
+        icon: 'ant-design:appstore-outlined'
       }
     }
   ]
