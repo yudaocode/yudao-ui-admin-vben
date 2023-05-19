@@ -212,8 +212,8 @@ export const formSchema: FormSchema[] = [
   }
 ]
 
-function handleBpmnDetail() {
-  console.info('handleBpmnDetail')
+function handleBpmnDetail(record: Recordable) {
+  console.info('handleBpmnDetail', record)
 }
 
 function handleFormDetail(record: Recordable) {
