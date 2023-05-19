@@ -24,7 +24,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { getNotifyMessagePage } from '@/api/system/notify/message'
 import { columns, searchFormSchema } from './message.data'
-import MessageInfoModal from './MessageInfoModal.vue'
+import MessageInfoModal from '@/views/system/notify/components/MessageInfoModal.vue'
 import { useModal } from '@/components/Modal'
 
 defineOptions({ name: 'SystemMessage' })
