@@ -1,12 +1,5 @@
 <template>
-  <Select
-    @dropdown-visible-change="handleFetch"
-    style="max-height: 150px"
-    v-bind="attrs"
-    @change="handleChange"
-    :options="getOptions"
-    v-model:value="state"
-  >
+  <Select @dropdown-visible-change="handleFetch" v-bind="$attrs" @change="handleChange" :options="getOptions" v-model:value="state">
     <template #[item]="data" v-for="item in Object.keys($slots)">
       <slot :name="item" v-bind="data || {}"></slot>
     </template>
@@ -26,7 +19,6 @@ import { ref, watchEffect, computed, unref, watch } from 'vue'
 import { Select } from 'ant-design-vue'
 import { isFunction } from '@/utils/is'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
-import { useAttrs } from '@/hooks/core/useAttrs'
 import { get, omit } from 'lodash-es'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -64,7 +56,6 @@ const options = ref<OptionsItem[]>([])
 const loading = ref(false)
 const isFirstLoad = ref(true)
 const emitData = ref<any[]>([])
-const attrs = useAttrs()
 const { t } = useI18n()
 
 // Embedded in the form, just use the hook binding to perform form verification
