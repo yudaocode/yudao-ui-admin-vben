@@ -9,16 +9,16 @@
   "scripts": {
     "commit": "czg",
     "bootstrap": "pnpm install",
-    "serve": "npm run dev",
+    "serve": "pnpm dev",
     "dev": "vite",
     "front": "vite --mode front",
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite build && esno ./build/script/postBuild.ts",
     "build:test": "cross-env NODE_OPTIONS=--max-old-space-size=8192  vite build --mode test && esno ./build/script/postBuild.ts",
     "build:static": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode static && esno ./build/script/postBuild.ts",
-    "build:no-cache": "pnpm clean:cache && npm run build",
-    "report": "cross-env REPORT=true npm run build",
+    "build:no-cache": "pnpm clean:cache && pnpm build",
+    "report": "cross-env REPORT=true pnpm build",
     "type:check": "vue-tsc --noEmit --skipLibCheck",
-    "preview": "npm run build && vite preview",
+    "preview": "pnpm build && vite preview",
     "preview:dist": "vite preview",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "clean:cache": "rimraf node_modules/.cache/ && rimraf node_modules/.vite",
@@ -28,7 +28,7 @@
     "lint:style": "stylelint --cache --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
     "lint:lint-staged": "lint-staged",
     "npm:check": "npx npm-check-updates",
-    "reinstall": "rimraf pnpm-lock.yaml && rimraf package.lock.json && rimraf node_modules && npm run bootstrap",
+    "reinstall": "rimraf pnpm-lock.yaml && rimraf package.lock.json && rimraf node_modules && pnpm bootstrap",
     "prepare": "husky install",
     "gen:icon": "esno ./build/generate/icon/index.ts"
   },
@@ -140,10 +140,10 @@
     "url": "https://github.com/xingyuv/issues"
   },
   "homepage": "https://github.com/xingyuv",
-  "packageManager": "pnpm@8.1.0",
+  "packageManager": "pnpm@8.4.0",
   "engines": {
     "node": ">= 16.0.0",
-    "pnpm": ">=8.1.0"
+    "pnpm": ">=8.4.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
