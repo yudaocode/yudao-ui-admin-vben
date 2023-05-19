@@ -1,4 +1,4 @@
-<h1>yudao-ui-admin-vben</h1>
+# yudao-ui-admin-vben
 
 [![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
 
@@ -24,7 +24,7 @@
 
 - [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
-- <img alt="index.vue" width="400px" src="./public/resource/img/wx.png" />
+- ![alt 微信](./public/resource/img/wx.png)
 - 外包项目请联系 [ xinyu370 ]
 
 ## 开发进度
@@ -51,11 +51,9 @@
 | [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
 | [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.0 |
 
-<p align="center">
-    <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview1.png">
-    <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview2.png">
-    <img alt="VbenAdmin Logo" width="100%" src="https://anncwb.github.io/anncwb/images/preview3.png">
-</p>
+- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
+- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview2.png)
+- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview3.png)
 
 ## 准备
 
@@ -126,6 +124,6 @@ pnpm build
 
 支持现代浏览器, 不支持 IE
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| ![alt IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_32x32.png)</br> [IE](http://godban.github.io/browsers-support-badges/) | ![alt Edge](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_32x32.png)</br> [Edge](http://godban.github.io/browsers-support-badgess/) | ![alt Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_32x32.png)</br> [Firefox](http://godban.github.io/browsers-support-badges/) | ![alt Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_32x32.png)</br> [Chrome](http://godban.github.io/browsers-support-badges/) | ![alt Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_32x32.png)</br> [Safari](http://godban.github.io/browsers-support-badges/) |
 | :-: | :-: | :-: | :-: | :-: |
 | not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
