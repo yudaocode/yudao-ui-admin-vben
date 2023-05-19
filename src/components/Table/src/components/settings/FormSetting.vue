@@ -19,6 +19,6 @@ const { t } = useI18n()
 
 function redo() {
   table.setShowForm(!table.getShowForm())
-  table.reload()
+  table.redoHeight()
 }
 </script>
