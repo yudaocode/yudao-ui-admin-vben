@@ -1,5 +1,5 @@
 <template>
-  <BasicModal title="详情" @register="innerRegister">
+  <BasicModal title="站内信详情" @register="innerRegister">
     <Description @register="descriptionRegister" />
   </BasicModal>
 </template>
