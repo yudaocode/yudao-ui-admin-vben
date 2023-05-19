@@ -4,7 +4,7 @@
       ref="formRef"
       submitOnReset
       v-bind="getFormProps"
-      v-if="getBindValues.useSearchForm"
+      v-if="getShowForm() && getBindValues.useSearchForm"
       :tableAction="tableAction"
       @register="registerForm"
       @submit="handleSearchInfoChange"
@@ -203,7 +203,12 @@ const { getHeaderProps } = useTableHeader(getProps, slots, handlers)
 
 const { getFooterProps } = useTableFooter(getProps, getScrollRef, tableElRef, getDataSourceRef)
 
-const { getFormProps, replaceFormSlotKey, getFormSlotKeys, handleSearchInfoChange } = useTableForm(getProps, slots, fetch, getLoading)
+const { getFormProps, replaceFormSlotKey, getFormSlotKeys, handleSearchInfoChange, getShowForm, setShowForm } = useTableForm(
+  getProps,
+  slots,
+  fetch,
+  getLoading
+)
 
 const getBindValues = computed(() => {
   const dataSource = unref(getDataSourceRef)
@@ -295,7 +300,9 @@ const tableAction: TableActionType = {
   getSize: () => {
     return unref(getBindValues).size as SizeType
   },
-  setCacheColumns
+  setCacheColumns,
+  setShowForm,
+  getShowForm
 }
 createTableContext({ ...tableAction, wrapRef, getBindValues })
 

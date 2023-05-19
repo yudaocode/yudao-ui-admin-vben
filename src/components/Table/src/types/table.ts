@@ -117,6 +117,8 @@ export interface TableActionType {
   getShowPagination: () => boolean
   setCacheColumnsByField?: (dataIndex: string | undefined, value: BasicColumn) => void
   setCacheColumns?: (columns: BasicColumn[]) => void
+  setShowForm: (show: boolean) => Promise<void>
+  getShowForm: () => boolean
 }
 
 export interface FetchSetting {
@@ -132,6 +134,7 @@ export interface FetchSetting {
 
 export interface TableSetting {
   redo?: boolean
+  form?: boolean
   size?: boolean
   setting?: boolean
   fullScreen?: boolean

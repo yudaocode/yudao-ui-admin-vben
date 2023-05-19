@@ -1,6 +1,5 @@
-import type { ComputedRef, Slots } from 'vue'
+import { ComputedRef, Slots, ref, unref, computed } from 'vue'
 import type { BasicTableProps, FetchParams } from '../types/table'
-import { unref, computed } from 'vue'
 import type { FormProps } from '@/components/Form'
 import { isFunction } from '@/utils/is'
 
@@ -10,6 +9,8 @@ export function useTableForm(
   fetch: (opt?: FetchParams | undefined) => Promise<void>,
   getLoading: ComputedRef<boolean | undefined>
 ) {
+  const show = ref(true)
+
   const getFormProps = computed((): Partial<FormProps> => {
     const { formConfig } = unref(propsRef)
     const { submitButtonOptions } = formConfig || {}
@@ -39,10 +40,20 @@ export function useTableForm(
     fetch({ searchInfo: info, page: 1 })
   }
 
+  function getShowForm() {
+    return unref(show)
+  }
+
+  async function setShowForm(flag: boolean) {
+    show.value = flag
+  }
+
   return {
     getFormProps,
     replaceFormSlotKey,
     getFormSlotKeys,
-    handleSearchInfoChange
+    handleSearchInfoChange,
+    getShowForm,
+    setShowForm
   }
 }

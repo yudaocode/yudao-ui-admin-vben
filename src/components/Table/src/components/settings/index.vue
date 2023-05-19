@@ -1,6 +1,7 @@
 <template>
   <div class="table-settings">
     <RedoSetting v-if="getSetting.redo" :getPopupContainer="getTableContainer" />
+    <FormSetting v-if="getSetting.form" :getPopupContainer="getTableContainer" />
     <SizeSetting v-if="getSetting.size" :getPopupContainer="getTableContainer" />
     <ColumnSetting v-if="getSetting.setting" @columns-change="handleColumnChange" :getPopupContainer="getTableContainer" />
     <FullScreenSetting v-if="getSetting.fullScreen" :getPopupContainer="getTableContainer" />
@@ -10,6 +11,7 @@
 import type { TableSetting, ColumnChangeParam } from '../../types/table'
 import { computed, unref } from 'vue'
 import ColumnSetting from './ColumnSetting.vue'
+import FormSetting from './FormSetting.vue'
 import SizeSetting from './SizeSetting.vue'
 import RedoSetting from './RedoSetting.vue'
 import FullScreenSetting from './FullScreenSetting.vue'
@@ -29,6 +31,7 @@ const table = useTableContext()
 const getSetting = computed((): TableSetting => {
   return {
     redo: true,
+    form: true,
     size: true,
     setting: true,
     fullScreen: false,

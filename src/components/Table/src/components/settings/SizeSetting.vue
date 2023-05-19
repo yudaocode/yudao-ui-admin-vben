@@ -8,15 +8,15 @@
       <ColumnHeightOutlined />
       <template #overlay>
         <Menu @click="handleTitleClick" selectable v-model:selectedKeys="selectedKeysRef">
-          <MenuItem key="default">
+          <Menu.Item key="default">
             <span>{{ t('component.table.settingDensDefault') }}</span>
-          </MenuItem>
-          <MenuItem key="middle">
+          </Menu.Item>
+          <Menu.Item key="middle">
             <span>{{ t('component.table.settingDensMiddle') }}</span>
-          </MenuItem>
-          <MenuItem key="small">
+          </Menu.Item>
+          <Menu.Item key="small">
             <span>{{ t('component.table.settingDensSmall') }}</span>
-          </MenuItem>
+          </Menu.Item>
         </Menu>
       </template>
     </Dropdown>
@@ -30,8 +30,6 @@ import { ColumnHeightOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useTableContext } from '../../hooks/useTableContext'
 import { getPopupContainer } from '@/utils'
-
-const MenuItem = Menu.Item
 
 defineOptions({ name: 'SizeSetting' })
 
