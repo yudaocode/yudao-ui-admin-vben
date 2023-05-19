@@ -9,5 +9,6 @@ export default {
   export: '导出',
   import: '导入',
   sync: '同步',
-  cancel: '取消'
+  cancel: '取消',
+  send: '发送'
 }

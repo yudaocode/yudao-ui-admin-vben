@@ -1,5 +1,6 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
+import { getListSimpleUsers } from '@/api/system/user/index'
 
 export const columns: BasicColumn[] = [
   {
@@ -125,6 +126,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '开启状态',
     field: 'status',
+    required: true,
     component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS)
@@ -134,5 +136,29 @@ export const formSchema: FormSchema[] = [
     label: '备注',
     field: 'remark',
     component: 'InputTextArea'
+  }
+]
+
+// 发送站内信
+export const baseSendSchemas: FormSchema[] = [
+  {
+    field: 'content',
+    component: 'InputTextArea',
+    label: '模板内容 ',
+    required: false,
+    componentProps: {
+      disabled: true
+    }
+  },
+  {
+    field: 'userId',
+    component: 'ApiSelect',
+    label: '接收人 ',
+    required: true,
+    componentProps: {
+      api: getListSimpleUsers,
+      labelField: 'nickname',
+      valueField: 'id'
+    }
   }
 ]
