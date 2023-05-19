@@ -24,7 +24,8 @@ const [registerTable, { getSelectRowKeys, getForm }] = useTable({
   useSearchForm: true,
   pagination: false,
   showTableSetting: false,
-  showIndexColumn: false
+  showIndexColumn: false,
+  immediate: false
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async () => {

@@ -11,6 +11,12 @@
           <TableAction
             :actions="[
               {
+                icon: IconEnum.UPLOAD,
+                label: t('action.send'),
+                auth: 'system:notify-template:update',
+                onClick: handleSend.bind(null, record)
+              },
+              {
                 icon: IconEnum.EDIT,
                 label: t('action.edit'),
                 auth: 'system:notify-template:update',
@@ -33,6 +39,7 @@
       </template>
     </BasicTable>
     <TemplateModal @register="registerModal" @success="reload()" />
+    <SendNotifyModal @register="registerSendModal" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -44,12 +51,14 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { deleteNotifyTemplate, getNotifyTemplatePage } from '@/api/system/notify/template'
 import { columns, searchFormSchema } from './template.data'
+import SendNotifyModal from './SendNotifyModal.vue'
 
 defineOptions({ name: 'SystemMessageTemplate' })
 
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
+const [registerSendModal, { openModal: openSendModal }] = useModal()
 
 const [registerTable, { reload }] = useTable({
   title: '站内信模板列表',
@@ -60,7 +69,7 @@ const [registerTable, { reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 140,
+    width: 200,
     title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
@@ -73,6 +82,11 @@ function handleCreate() {
 
 function handleEdit(record: Recordable) {
   openModal(true, { record, isUpdate: true })
+}
+
+function handleSend(record: Recordable) {
+  console.log(JSON.stringify(record, [...Object.keys(record)], 2))
+  openSendModal(true, record)
 }
 
 async function handleDelete(record: Recordable) {

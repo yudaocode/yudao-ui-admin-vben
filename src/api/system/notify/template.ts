@@ -34,3 +34,30 @@ export function listSimplePosts() {
 export function exportNotifyTemplateExcel(params) {
   return defHttp.download({ url: '/system/notify-template/export-excel', params }, '导出站内信模板.xls')
 }
+
+export type SendNotifyParam = {
+  userId: number
+  templateCode: string
+  templateParams: {
+    [key: string]: string
+  }
+}
+
+export type NotifyTemplate = {
+  name: string
+  code: string
+  type: number
+  nickname: string
+  content: string
+  status: number
+  remark?: any
+  id: number
+  params: string[]
+  createTime: number
+  key: string
+}
+
+// 发送
+export function sendNotify(data: SendNotifyParam) {
+  return defHttp.post({ url: '/system/notify-template/send-notify', data })
+}
