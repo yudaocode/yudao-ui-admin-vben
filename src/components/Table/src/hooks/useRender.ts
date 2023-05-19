@@ -17,7 +17,7 @@ export const useRender = {
       if (isArray(text)) {
         return h(TableImg, { imgList: text })
       } else {
-        return h(TableImg, { imgList: text.split(',,,,,,') })
+        return h(TableImg, { imgList: [text] })
       }
     }
     return ''
