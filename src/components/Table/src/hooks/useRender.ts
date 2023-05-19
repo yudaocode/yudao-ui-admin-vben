@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import dayjs from 'dayjs'
 import { Button, Tag } from 'ant-design-vue'
-import { isArray } from '@/utils/is'
+import { isArray, isString } from '@/utils/is'
 import { DictTag } from '@/components/DictTag'
 import { Icon } from '@/components/Icon'
 import TableImg from '../components/TableImg.vue'
@@ -16,7 +16,7 @@ export const useRender = {
     if (text) {
       if (isArray(text)) {
         return h(TableImg, { imgList: text })
-      } else {
+      } else if (isString(text)) {
         return h(TableImg, { imgList: [text] })
       }
     }
