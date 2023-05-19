@@ -1,10 +1,10 @@
+import { h } from 'vue'
+import dayjs from 'dayjs'
+import { Button, Tag } from 'ant-design-vue'
+import { isArray } from '@/utils/is'
 import { DictTag } from '@/components/DictTag'
 import { Icon } from '@/components/Icon'
-import { Button, Tag } from 'ant-design-vue'
-import dayjs from 'dayjs'
-import { h } from 'vue'
-import { TableImg } from '../..'
-import { isArray } from '@/utils/is'
+import TableImg from '../components/TableImg.vue'
 
 export const useRender = {
   /**
