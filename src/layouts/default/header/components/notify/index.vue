@@ -1,80 +1,35 @@
 <template>
-  <div :class="prefixCls">
-    <Popover title="" trigger="click" :overlayClassName="`${prefixCls}__overlay`">
-      <Badge :count="count" dot :numberStyle="numberStyle">
+  <div>
+    <Tooltip :title="tips">
+      <Badge :count="unreadCount" :offset="[0, 15]" size="small" @click="go({ path: PageEnum.MESSAGE_PAGE })">
         <BellOutlined />
       </Badge>
-      <template #content>
-        <Tabs>
-          <template v-for="item in listData" :key="item.key">
-            <TabPane>
-              <template #tab>
-                {{ item.name }}
-                <span v-if="item.list.length !== 0">({{ item.list.length }})</span>
-              </template>
-              <!-- 绑定title-click事件的通知列表中标题是“可点击”的-->
-              <NoticeList :list="item.list" v-if="item.key === '1'" @title-click="onNoticeClick" />
-              <NoticeList :list="item.list" v-else />
-            </TabPane>
-          </template>
-        </Tabs>
-      </template>
-    </Popover>
+    </Tooltip>
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { Popover, Tabs, Badge } from 'ant-design-vue'
+import { onMounted, computed } from 'vue'
+import { Badge, Tooltip } from 'ant-design-vue'
 import { BellOutlined } from '@ant-design/icons-vue'
-import { tabListData, ListItem } from './data'
-import NoticeList from './NoticeList.vue'
-import { useDesign } from '@/hooks/web/useDesign'
-import { useMessage } from '@/hooks/web/useMessage'
+import { useGo } from '@/hooks/web/usePage'
+import { PageEnum } from '@/enums/pageEnum'
+import { useUserMessageStore } from '@/store/modules/userMessage'
+import { storeToRefs } from 'pinia'
 
-const TabPane = Tabs.TabPane
-const numberStyle = ref({})
-const { prefixCls } = useDesign('header-notify')
-const { createMessage } = useMessage()
-const listData = ref(tabListData)
+const go = useGo()
 
-const count = computed(() => {
-  let count = 0
-  for (let i = 0; i < tabListData.length; i++) {
-    count += tabListData[i].list.length
+const store = useUserMessageStore()
+const { unreadCount } = storeToRefs(store)
+const tips = computed<string>(() => {
+  if (unreadCount.value === 0) {
+    return '查看站内信'
   }
-  return count
+  return `查看站内信: 未读 ${unreadCount.value} 条`
 })
 
-function onNoticeClick(record: ListItem) {
-  createMessage.success('你点击了通知，ID=' + record.id)
-  // 可以直接将其标记为已读（为标题添加删除线）,此处演示的代码会切换删除线状态
-  record.titleDelete = !record.titleDelete
-}
+onMounted(async () => {
+  // 通过store进行更新
+  store.updateUnreadCount()
+})
 </script>
-<style lang="less">
-@prefix-cls: ~'@{namespace}-header-notify';
-
-.@{prefix-cls} {
-  padding-top: 2px;
-
-  &__overlay {
-    max-width: 360px;
-  }
-
-  .ant-tabs-content {
-    width: 300px;
-  }
-
-  .ant-badge {
-    font-size: 18px;
-
-    .ant-badge-multiple-words {
-      padding: 0 4px;
-    }
-
-    svg {
-      width: 0.9em;
-    }
-  }
-}
-</style>
+<style lang="less"></style>

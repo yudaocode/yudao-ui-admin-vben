@@ -28,5 +28,5 @@ export function getUnreadNotifyMessageList() {
 
 // 获得当前用户的未读站内信数量
 export function getUnreadNotifyMessageCount() {
-  return defHttp.get({ url: '/system/notify-message/get-unread-count' })
+  return defHttp.get<number>({ url: '/system/notify-message/get-unread-count' })
 }

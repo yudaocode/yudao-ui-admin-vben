@@ -93,6 +93,7 @@ function handleMaster(record: Recordable) {
     async onOk() {
       await updateFileConfigMaster(record.id)
       createMessage.success('配置成功')
+      reload()
     }
   })
 }

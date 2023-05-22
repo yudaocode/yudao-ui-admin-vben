@@ -31,7 +31,7 @@ export const columns: BasicColumn[] = [
   {
     title: '是否已读',
     dataIndex: 'readStatus',
-    width: 180,
+    width: 100,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.INFRA_BOOLEAN_STRING)
     }
