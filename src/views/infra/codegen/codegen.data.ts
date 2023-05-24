@@ -131,10 +131,16 @@ export const importTableSearchFormSchema: FormSchema[] = [
     label: '数据源',
     field: 'dataSourceConfigId',
     component: 'ApiSelect',
-    componentProps: {
-      api: () => getDataSourceConfigList(),
-      labelField: 'name',
-      valueField: 'id'
+    componentProps: ({ formModel }) => {
+      return {
+        api: async () => {
+          const res = await getDataSourceConfigList()
+          formModel.dataSourceConfigId = res[0].id
+          return res
+        },
+        labelField: 'name',
+        valueField: 'id'
+      }
     },
     colProps: { span: 8 }
   },
