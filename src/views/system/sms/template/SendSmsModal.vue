@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" title="发送站内信" @register="innerRegister" @ok="submit">
+  <BasicModal v-bind="$attrs" title="测试发送短信" @register="innerRegister" @ok="submit">
     <BasicForm @register="register" :schemas="reactiveSchemas" />
   </BasicModal>
 </template>
@@ -8,11 +8,11 @@
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, FormSchema, useForm } from '@/components/Form'
 import { reactive, ref } from 'vue'
+import { SmsTemplateVO, sendSms } from '@/api/system/sms/smsTemplate'
 import { useMessage } from '@/hooks/web/useMessage'
-import { sendNotify, SendNotifyParam, NotifyTemplate } from '@/api/system/notify/template'
-import { baseSendSchemas } from './template.data'
+import { baseSendSchemas } from './smsTemplate.data'
 
-defineOptions({ name: 'SendNotifyModal' })
+defineOptions({ name: 'SendSmsModal' })
 
 const { createMessage } = useMessage()
 let reactiveSchemas: FormSchema[] = reactive([])
@@ -27,11 +27,11 @@ const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, 
   showResetButton: false
 })
 
-const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: NotifyTemplate) => {
+const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: SmsTemplateVO) => {
   resetForm()
   data.params.forEach((item) => {
     const dySchema: FormSchema = {
-      // 这里加上前缀 防止和content/userId字段重名
+      // 这里加上前缀 防止content/mobile和字段重名
       field: `key-${item}`,
       label: `参数{${item}} `,
       component: 'Input',
@@ -53,21 +53,21 @@ const submit = async () => {
     changeLoading(true)
     await validateFields()
     const fields = getFieldsValue()
-    const data: SendNotifyParam = {
-      userId: fields.userId,
+    const data = {
+      mobile: fields.mobile,
       templateCode: templateCode.value,
       templateParams: {}
     }
     Object.keys(fields).forEach((key) => {
-      if (key === 'content' || key === 'userId') {
+      if (key === 'content' || key === 'mobile') {
         return
       }
       // 去掉 - 后的key
       const realKey = key.split('-')[1]
       data.templateParams[realKey] = fields[key]
     })
-    await sendNotify(data)
-    createMessage.success(`发送站内信成功`)
+    await sendSms(data)
+    createMessage.success(`发送短信到[${fields.mobile}]成功`)
     closeModal()
   } finally {
     setProps({ disabled: false })

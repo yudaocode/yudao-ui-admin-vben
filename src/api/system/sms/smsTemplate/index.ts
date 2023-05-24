@@ -18,7 +18,9 @@ export interface SmsTemplateVO {
 export interface SendSmsReqVO {
   mobile: string
   templateCode: string
-  templateParams: Map<String, Object>
+  templateParams: {
+    [key: string]: any
+  }
 }
 
 export interface SmsTemplatePageReqVO {
@@ -64,6 +66,21 @@ export function updateSmsTemplate(data: SmsTemplateVO) {
 // 删除短信模板
 export function deleteSmsTemplate(id: number) {
   return defHttp.delete({ url: '/system/sms-template/delete?id=' + id })
+}
+
+// 邮件模板
+export type SmsTemplate = {
+  name: string // 标题
+  code: string // 编码
+  accountId: number
+  nickname: string // 发送人
+  title: string // 标题
+  content: string // 内容
+  status: number //
+  remark?: any // 备注
+  id: number
+  params: string[] // 模板里的参数
+  createTime: number
 }
 
 // 发送短信

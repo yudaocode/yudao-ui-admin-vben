@@ -58,7 +58,7 @@ defineOptions({ name: 'SystemMailTemplate' })
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerTemplateModal, { openModal }] = useModal()
-const [registerSendModal, { openModal: openSenModal }] = useModal()
+const [registerSendModal, { openModal: openSendModal }] = useModal()
 const [registerTable, { reload }] = useTable({
   title: '邮件模板列表',
   api: getMailTemplatePage,
@@ -80,7 +80,7 @@ function handleCreate() {
 }
 
 function handleSend(record: Recordable) {
-  openSenModal(true, record)
+  openSendModal(true, record)
 }
 
 function handleEdit(record: Recordable) {

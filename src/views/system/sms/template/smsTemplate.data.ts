@@ -168,3 +168,28 @@ export const formSchema: FormSchema[] = [
     component: 'InputTextArea'
   }
 ]
+
+// 发送短信
+export const baseSendSchemas: FormSchema[] = [
+  {
+    field: 'content',
+    component: 'Editor',
+    label: '模板内容 ',
+    required: false,
+    defaultValue: '',
+    componentProps: {
+      options: {
+        readonly: true
+      }
+    }
+  },
+  {
+    field: 'mobile',
+    label: '手机号 ',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入手机号'
+    },
+    required: true
+  }
+]

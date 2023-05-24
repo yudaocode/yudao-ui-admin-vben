@@ -22,7 +22,6 @@ export const infoSchema: DescItem[] = [
     field: 'userType',
     label: '用户类型',
     render: (value) => {
-      console.log(value)
       return useRender.renderDict(value, DICT_TYPE.USER_TYPE)
     }
   },

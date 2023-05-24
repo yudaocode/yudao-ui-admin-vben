@@ -37,6 +37,7 @@
       </template>
     </BasicTable>
     <SmsTemplateModal @register="registerModal" @success="reload()" />
+    <SendSmsModal @register="registerSendModal" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -45,6 +46,7 @@ import { SmsTemplateExportReqVO, deleteSmsTemplate, exportSmsTemplate, getSmsTem
 import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import SmsTemplateModal from './SmsTemplateModal.vue'
+import SendSmsModal from './SendSmsModal.vue'
 import { columns, searchFormSchema } from './smsTemplate.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
@@ -54,6 +56,7 @@ defineOptions({ name: 'SystemSmsTemplate' })
 const { t } = useI18n()
 const { createConfirm, createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
+const [registerSendModal, { openModal: openSendModal }] = useModal()
 const [registerTable, { getForm, reload }] = useTable({
   title: '短信模版列表',
   api: getSmsTemplatePage,
@@ -75,7 +78,7 @@ function handleCreate() {
 }
 
 function handleSendSms(record: Recordable) {
-  console.info(record)
+  openSendModal(true, record)
 }
 
 function handleEdit(record: Recordable) {

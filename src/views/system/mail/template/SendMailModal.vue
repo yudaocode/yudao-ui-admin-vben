@@ -21,7 +21,6 @@ const templateCode = ref<string>('')
 
 const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, setProps }] = useForm({
   labelWidth: 100,
-  // schemas: reactiveSchemas, 这里用动态绑定会有问题
   baseColProps: {
     span: 24
   },
