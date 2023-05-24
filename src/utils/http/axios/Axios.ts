@@ -129,7 +129,6 @@ export class VAxios {
               })
               // res = await Promise.all([this.axiosInstance(config)])[0]
             } catch (e) {
-              console.info(e)
               requestList.forEach((cb: any) => {
                 cb()
               })

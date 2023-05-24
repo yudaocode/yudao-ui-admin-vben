@@ -59,8 +59,7 @@ export const baseInfoSchema: DescItem[] = [
   {
     label: '网络入口/出口',
     field: 'instantaneous_input_kbps',
-    render: (val, data) => {
-      console.info(val)
+    render: (_val, data) => {
       return data.instantaneous_input_kbps + 'kps / ' + data.instantaneous_output_kbps + 'kps'
     }
   }

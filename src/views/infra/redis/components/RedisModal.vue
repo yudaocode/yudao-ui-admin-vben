@@ -43,7 +43,6 @@ const [registerForm, { setFieldsValue, resetFields }] = useForm({
 const [registerModal, { setModalProps }] = useModalInner(async (data) => {
   resetFields()
   setModalProps({ confirmLoading: false })
-  console.info(data.record)
   const res = await getKeyList(data.record)
   listData.value = res
 })
