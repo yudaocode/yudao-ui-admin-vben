@@ -94,7 +94,6 @@ async function handleDelete(record: Recordable) {
 watch(
   () => props.searchInfo,
   (val) => {
-    console.info(val)
     val && reload()
   },
   { deep: true }

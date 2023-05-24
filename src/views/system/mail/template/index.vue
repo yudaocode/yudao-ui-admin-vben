@@ -80,7 +80,6 @@ function handleCreate() {
 }
 
 function handleSend(record: Recordable) {
-  console.info(record)
   openSenModal(true, record)
 }
 

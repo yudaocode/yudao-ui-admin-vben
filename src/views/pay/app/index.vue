@@ -248,7 +248,6 @@ async function handleDelete(record: Recordable) {
 }
 
 function openChannel(record: Recordable, payCode: string, type: string, isUpdate: boolean) {
-  console.info(record)
   openChannelModal(true, { record, payCode, type, isUpdate })
 }
 </script>
