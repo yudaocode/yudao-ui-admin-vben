@@ -27,15 +27,21 @@ export const columns: BasicColumn[] = [
   }
 ]
 
+const simpleAccountsOptinos = await getSimpleAccounts()
+
 export const searchFormSchema: FormSchema[] = [
   {
     label: '公众号',
     field: 'accountId',
-    component: 'ApiSelect',
+    component: 'Select',
+    required: true,
+    defaultValue: simpleAccountsOptinos[0].id,
     componentProps: {
-      api: () => getSimpleAccounts(),
-      labelField: 'name',
-      valueField: 'id'
+      options: simpleAccountsOptinos,
+      fieldNames: {
+        label: 'name',
+        value: 'id'
+      }
     },
     colProps: { span: 8 }
   },

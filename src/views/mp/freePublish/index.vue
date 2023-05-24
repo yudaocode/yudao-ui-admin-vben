@@ -11,15 +11,21 @@ import { getSimpleAccounts } from '@/api/mp/account'
 import { deleteFreePublish, getFreePublishPage } from '@/api/mp/freePublish'
 import { FormSchema } from '@/components/Form'
 
+const simpleAccountsOptinos = await getSimpleAccounts()
+
 const searchSchema: FormSchema[] = [
   {
     label: '公众号',
     field: 'accountId',
-    component: 'ApiSelect',
+    component: 'Select',
+    required: true,
+    defaultValue: simpleAccountsOptinos[0].id,
     componentProps: {
-      api: () => getSimpleAccounts(),
-      labelField: 'name',
-      valueField: 'id'
+      options: simpleAccountsOptinos,
+      fieldNames: {
+        label: 'name',
+        value: 'id'
+      }
     },
     colProps: { span: 8 }
   }
