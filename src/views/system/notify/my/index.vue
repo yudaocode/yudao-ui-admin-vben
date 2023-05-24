@@ -117,7 +117,6 @@ async function handleUpdateAll() {
 }
 
 const handleInfo = (record: any) => {
-  console.log(JSON.stringify(record, Object.keys(record), 2))
   openModal(true, record)
 }
 </script>

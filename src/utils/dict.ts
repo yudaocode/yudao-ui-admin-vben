@@ -53,7 +53,6 @@ export function getDictOpts(dictType: string) {
 export function getDictOptions(dictType: string, valueType?: 'string' | 'number' | 'boolean') {
   const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictDatas(dictType)
-  console.log(dictOptions)
   if (dictOptions && dictOptions.length > 0) {
     dictOptions.forEach((dict: DictDataType) => {
       dictOption.push({

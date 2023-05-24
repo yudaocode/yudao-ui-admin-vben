@@ -85,7 +85,6 @@ function handleEdit(record: Recordable) {
 }
 
 function handleSend(record: Recordable) {
-  console.log(JSON.stringify(record, [...Object.keys(record)], 2))
   openSendModal(true, record)
 }
 
