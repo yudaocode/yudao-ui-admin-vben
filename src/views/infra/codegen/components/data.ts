@@ -58,6 +58,7 @@ export const basicInfoSchemas: FormSchema[] = [
     field: 'templateType',
     required: true,
     component: 'Select',
+    defaultValue: '30',
     componentProps: {
       options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE)
     },
