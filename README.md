@@ -9,23 +9,17 @@
 
 如果这个项目让你有所收获，记得 Star 关注哦，这对我是非常不错的鼓励与支持。
 
-## 原框架地址 各位大佬点个star
-
-- [gitee](https://gitee.com/xingyuv/vue-vben-admin)
-- [github](https://github.com/xingyuv/vue-vben-admin)
-
 ## 预览地址
 
 - [预览地址](http://vben.xingyuv.com/)
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
-## 交流群 && 外包項目
+## 交流群 && 外包项目请联系 [ xinyu370 ]
 
 - [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
 
 - ![alt 微信](./public/resource/img/wx.png)
-- 外包项目请联系 [ xinyu370 ]
 
 ## 开发进度
 
