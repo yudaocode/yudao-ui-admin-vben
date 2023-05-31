@@ -100,6 +100,8 @@ export const formSchema: FormSchema[] = [
   {
     label: '是否开启 SSL',
     field: 'sslEnable',
+    required: true,
+    defaultValue: false,
     component: 'Switch',
     componentProps: {
       options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean')
