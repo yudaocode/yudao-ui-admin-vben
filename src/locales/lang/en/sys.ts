@@ -65,6 +65,7 @@ export default {
   },
   login: {
     backSignIn: 'Back sign in',
+    ssoSignInFormTitle: 'sso login',
     mobileSignInFormTitle: 'Mobile sign in',
     qrSignInFormTitle: 'Qr code sign in',
     signInFormTitle: 'Sign in',
@@ -81,6 +82,9 @@ export default {
     rememberMe: 'Remember me',
     forgetPassword: 'Forget Password?',
     otherSignIn: 'Sign in with',
+
+    ssoInfoDesc: 'get your personal details and get started!',
+    ssoEditDesc: 'edit your personal details and get started！',
 
     // notify
     loginSuccessTitle: 'Login successful',

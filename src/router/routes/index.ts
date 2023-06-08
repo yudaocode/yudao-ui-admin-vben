@@ -38,6 +38,15 @@ export const LoginRoute: AppRouteRecordRaw = {
   }
 }
 
+export const SSORoute: AppRouteRecordRaw = {
+  path: '/sso',
+  name: 'SSO',
+  component: () => import('@/views/base/login/sso.vue'),
+  meta: {
+    title: t('routes.basic.sso')
+  }
+}
+
 export const ProfileRoute: AppRouteRecordRaw = {
   path: '/profile',
   component: LAYOUT,
@@ -268,6 +277,7 @@ export const BpmRoute: AppRouteRecordRaw = {
 // 未经许可的基本路由
 export const basicRoutes = [
   LoginRoute,
+  SSORoute,
   RootRoute,
   ProfileRoute,
   CodegenRoute,

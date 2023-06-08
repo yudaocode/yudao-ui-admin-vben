@@ -62,6 +62,7 @@ export default {
   login: {
     backSignIn: '返回',
     signInFormTitle: '登录',
+    ssoSignInFormTitle: '三方授权登录',
     mobileSignInFormTitle: '手机登录',
     qrSignInFormTitle: '二维码登录',
     signUpFormTitle: '注册',
@@ -77,6 +78,9 @@ export default {
     rememberMe: '记住我',
     forgetPassword: '忘记密码?',
     otherSignIn: '其他登录方式',
+
+    ssoInfoDesc: '访问您的个人详细信息开始使用！',
+    ssoEditDesc: '修改您的个人详细信息开始使用！',
 
     // notify
     loginSuccessTitle: '登录成功',
