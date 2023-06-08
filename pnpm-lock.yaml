@@ -284,8 +284,8 @@ devDependencies:
     specifier: ^1.0.2
     version: 1.0.2(rollup@3.24.0)(vite@4.3.9)
   vite-vue-plugin-theme:
-    specifier: ^1.0.1
-    version: 1.0.1(vite@4.3.9)
+    specifier: ^1.0.2
+    version: 1.0.2(vite@4.3.9)
   vue-eslint-parser:
     specifier: ^9.3.0
     version: 9.3.0(eslint@8.42.0)
@@ -8799,8 +8799,8 @@ packages:
       - rollup
     dev: true
 
-  /vite-vue-plugin-theme@1.0.1(vite@4.3.9):
-    resolution: {integrity: sha512-3uODaxpQQfcYfyIVJ8ZA87TtPSOGqaooYmnZWxTifdFyy2Vp1EjhV5pGZ0G2WEpnXK6MQDLJ30TCQjhWjKFeYQ==}
+  /vite-vue-plugin-theme@1.0.2(vite@4.3.9):
+    resolution: {integrity: sha512-zaB0hfdz1VyFncNoJ/6Y8PqThqBm4zhCidc/qdV5/XgsGCm/6HMNRFmnjvHHkBL7VK687bFQSaxEB+cXerfKwA==}
     peerDependencies:
       vite: '>=4.3.0'
     dependencies:
