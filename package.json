@@ -4,7 +4,7 @@
   "author": {
     "name": "xingyuv",
     "email": "xingyu4j@vip.qq.com",
-    "url": "https://github.com/xingyuv"
+    "url": "https://gitee.com/xingyuv"
   },
   "scripts": {
     "commit": "czg",
@@ -133,13 +133,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xingyuv/vue-vben-admin.git"
+    "url": "git+https://gitee.com/xingyuv/vue-vben-admin.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xingyuv/issues"
+    "url": "https://gitee.com/xingyuv/issues"
   },
-  "homepage": "https://github.com/xingyuv",
+  "homepage": "https://gitee.com/xingyuv",
   "packageManager": "pnpm@8.6.0",
   "engines": {
     "node": ">= 16.0.0",
