@@ -38,6 +38,17 @@ export function getAsyncRoutes() {
   return defHttp.get({ url: Api.GetAsyncRoutes })
 }
 
+// 获取登录验证码
+export function sendSmsCode(mobile, scene) {
+  return defHttp.post({
+    url: '/system/auth/send-sms-code',
+    data: {
+      mobile,
+      scene
+    }
+  })
+}
+
 // 获取验证图片  以及token
 export function getCaptcha(data) {
   return defHttp.post({ url: Api.GetCaptcha, data }, { isReturnNativeResponse: true })

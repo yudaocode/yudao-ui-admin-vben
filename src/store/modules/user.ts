@@ -13,8 +13,8 @@ import { usePermissionStore } from '@/store/modules/permission'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { getAuthCache, setAuthCache } from '@/utils/auth'
-import { doLogout, getUserInfo, loginApi } from '@/api/base/user'
-import { GetUserInfoModel, LoginParams } from '@/api/base/model/userModel'
+import { doLogout, getUserInfo, loginApi, smsLogin } from '@/api/base/user'
+import { GetUserInfoModel, LoginParams, SmsLoginParams } from '@/api/base/model/userModel'
 
 import { isArray } from '@/utils/is'
 
@@ -102,6 +102,24 @@ export const useUserStore = defineStore('app-user', {
         const data = await loginApi(loginParams, mode)
         const { accessToken, refreshToken } = data
 
+        // save token
+        this.setAccessToken(accessToken)
+        this.setRefreshToken(refreshToken)
+        return this.afterLoginAction(goHome)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    },
+    async smsLogin(
+      params: SmsLoginParams & {
+        goHome?: boolean
+        mode?: ErrorMessageMode
+      }
+    ): Promise<GetUserInfoModel | null> {
+      try {
+        const { goHome = true, mode, ...smsLoginParams } = params
+        const data = await smsLogin(smsLoginParams, mode)
+        const { accessToken, refreshToken } = data
         // save token
         this.setAccessToken(accessToken)
         this.setRefreshToken(refreshToken)

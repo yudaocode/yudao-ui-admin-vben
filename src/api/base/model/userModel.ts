@@ -8,6 +8,14 @@ export interface LoginParams {
 }
 
 /**
+ * @description: SmsLogin interface parameters
+ */
+export interface SmsLoginParams {
+  mobile: number
+  code: number
+}
+
+/**
  * @description: Login interface return value
  */
 export interface LoginResultModel {
