@@ -187,7 +187,7 @@ export const baseSendSchemas: FormSchema[] = [
     rules: [
       {
         required: true,
-        pattern: /^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/,
+        pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
         trigger: 'blur',
         message: '邮箱格式不正确'
       }
