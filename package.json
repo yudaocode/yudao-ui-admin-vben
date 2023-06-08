@@ -87,7 +87,7 @@
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vue/compiler-sfc": "^3.3.4",
     "autoprefixer": "^10.4.14",
-    "conventional-changelog-cli": "^2.2.2",
+    "conventional-changelog-cli": "^3.0.0",
     "cross-env": "^7.0.3",
     "cz-git": "^1.6.1",
     "czg": "^1.6.1",
