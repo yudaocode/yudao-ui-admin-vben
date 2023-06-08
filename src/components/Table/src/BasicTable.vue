@@ -44,7 +44,7 @@ import type { BasicTableProps, TableActionType, SizeType, ColumnChangeParam } fr
 import { ref, computed, unref, toRaw, inject, watchEffect, useAttrs, useSlots } from 'vue'
 import { Table } from 'ant-design-vue'
 import { BasicForm, useForm } from '@/components/Form'
-import { PageWrapperFixedHeightKey } from '@/components/Page'
+import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 import HeaderCell from './components/HeaderCell.vue'
 import { InnerHandlers } from './types/table'
 import { usePagination } from './hooks/usePagination'

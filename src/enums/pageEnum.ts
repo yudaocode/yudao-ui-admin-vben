@@ -9,3 +9,5 @@ export enum PageEnum {
   ERROR_LOG_PAGE = '/error-log/list',
   MESSAGE_PAGE = '/profile/notify-message'
 }
+
+export const PageWrapperFixedHeightKey = 'PageWrapperFixedHeight'

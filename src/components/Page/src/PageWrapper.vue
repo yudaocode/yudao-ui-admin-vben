@@ -35,7 +35,7 @@ import { propTypes } from '@/utils/propTypes'
 import { omit } from 'lodash-es'
 import { PageHeader } from 'ant-design-vue'
 import { useContentHeight } from '@/hooks/web/useContentHeight'
-import { PageWrapperFixedHeightKey } from '..'
+import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 
 defineOptions({ name: 'PageWrapper', inheritAttrs: false })
 
