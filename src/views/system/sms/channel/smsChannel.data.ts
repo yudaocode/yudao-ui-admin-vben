@@ -101,7 +101,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     required: true,
     componentProps: {
-      options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)
+      options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string')
     }
   },
   {
