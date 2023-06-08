@@ -15,6 +15,7 @@ export interface DictDataType {
   dictType: string
   label: string
   value: string | number | boolean
+  key?: any
   colorType: string
   cssClass: string
 }
@@ -57,6 +58,7 @@ export function getDictOptions(dictType: string, valueType?: 'string' | 'number'
     dictOptions.forEach((dict: DictDataType) => {
       dictOption.push({
         ...dict,
+        key: dict.value,
         value:
           valueType === 'string'
             ? dict.value + ''

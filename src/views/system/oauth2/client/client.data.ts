@@ -153,7 +153,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE),
+      options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE, 'string'),
       mode: 'multiple'
     }
   },
