@@ -22,7 +22,11 @@ export function useGo(_router?: Router) {
     if (!opt) {
       return
     }
-    isReplace ? replace(opt).catch(handleError) : push(opt).catch(handleError)
+    if (/^(https?:|mailto:|tel:)/.test(opt as string)) {
+      window.open(opt as string, '_blank', 'noopener=yes')
+    } else {
+      isReplace ? replace(opt).catch(handleError) : push(opt).catch(handleError)
+    }
   }
   return go
 }
