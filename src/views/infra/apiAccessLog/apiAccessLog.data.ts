@@ -190,6 +190,13 @@ export const infoSchema: DescItem[] = [
     }
   },
   {
+    field: 'requestParams',
+    label: '请求参数',
+    render(value) {
+      return useRender.renderJsonPreview(value)
+    }
+  },
+  {
     field: 'beginTime',
     label: '请求开始时间',
     render(value) {
