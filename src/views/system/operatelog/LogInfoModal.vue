@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" title="操作日志详情" @register="registerModalInner">
+  <BasicModal v-bind="$attrs" title="操作日志详情" @register="registerModalInner" @ok="closeModal" width="800px">
     <Description @register="registerDescription" />
   </BasicModal>
 </template>
@@ -13,7 +13,7 @@ import { infoSchema } from './operateLog.data'
 defineOptions({ name: 'OperLogInfoModal' })
 
 const logData = ref()
-const [registerModalInner] = useModalInner((record: Recordable) => {
+const [registerModalInner, { closeModal }] = useModalInner((record: Recordable) => {
   logData.value = record
 })
 
