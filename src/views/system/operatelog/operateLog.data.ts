@@ -1,6 +1,7 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { DescItem } from '@/components/Description/index'
+import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
@@ -129,7 +130,8 @@ export const infoSchema: DescItem[] = [
     label: '操作人',
     render(_, data) {
       const { userNickname, userId } = data
-      return useRender.renderText(userNickname, 'uid: ' + userId)
+      // return useRender.renderText(userNickname, 'uid: ' + userId)
+      return useRender.renderTags([userNickname, 'uid: ' + userId])
     }
   },
   {
@@ -144,6 +146,9 @@ export const infoSchema: DescItem[] = [
     label: '响应信息',
     show(data) {
       return data && data.resultMsg && data.resultMsg !== ''
+    },
+    render(value) {
+      return h('span', { style: { color: 'red', fontWeight: 'bold' } }, value)
     }
   },
   {
@@ -159,17 +164,15 @@ export const infoSchema: DescItem[] = [
   },
   {
     field: 'requestUrl',
-    label: '请求路径'
-  },
-  {
-    field: 'requestMethod',
-    label: '请求方法',
-    render(value) {
-      const current = httpMethods.find((item) => item.value === value.toUpperCase())
-      if (current) {
-        return useRender.renderTag(value, current.color)
+    label: '请求路径',
+    render(_, data) {
+      if (!data) {
+        return ''
       }
-      return value
+      const { requestMethod, requestUrl } = data
+      const current = httpMethods.find((item) => item.value === requestMethod.toUpperCase())
+      const methodTag = current ? useRender.renderTag(requestMethod, current.color) : requestMethod
+      return h('span', {}, [methodTag, requestUrl])
     }
   },
   {
