@@ -1,6 +1,74 @@
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
+const options = [
+  {
+    value: '',
+    label: '无'
+  },
+  {
+    value: 'processing',
+    label: '主要'
+  },
+  {
+    value: 'success',
+    label: '成功'
+  },
+  {
+    value: 'default',
+    label: '默认'
+  },
+  {
+    value: 'warning',
+    label: '警告'
+  },
+  {
+    value: 'error',
+    label: '危险'
+  },
+  {
+    value: 'pink',
+    label: 'pink'
+  },
+  {
+    value: 'red',
+    label: 'red'
+  },
+  {
+    value: 'orange',
+    label: 'orange'
+  },
+  {
+    value: 'green',
+    label: 'green'
+  },
+  {
+    value: 'cyan',
+    label: 'cyan'
+  },
+  {
+    value: 'blue',
+    label: 'blue'
+  },
+  {
+    value: 'purple',
+    label: 'purple'
+  }
+]
+
+function previewOptions() {
+  return options.map((option) => {
+    const { value, label } = option
+    if (value === '') {
+      return option
+    }
+    return {
+      label: useRender.renderTag(label, value),
+      value
+    }
+  })
+}
+
 export const dataColumns: BasicColumn[] = [
   {
     title: '字典编码',
@@ -119,67 +187,15 @@ export const dataFormSchema: FormSchema[] = [
     field: 'colorType',
     component: 'Select',
     componentProps: {
-      options: [
-        {
-          value: '',
-          label: '空'
-        },
-        {
-          value: 'processing',
-          label: '主要'
-        },
-        {
-          value: 'success',
-          label: '成功'
-        },
-        {
-          value: 'default',
-          label: '默认'
-        },
-        {
-          value: 'warning',
-          label: '警告'
-        },
-        {
-          value: 'error',
-          label: '危险'
-        },
-        {
-          value: 'pink',
-          label: 'pink'
-        },
-        {
-          value: 'red',
-          label: 'red'
-        },
-        {
-          value: 'orange',
-          label: 'orange'
-        },
-        {
-          value: 'green',
-          label: 'green'
-        },
-        {
-          value: 'cyan',
-          label: 'cyan'
-        },
-        {
-          value: 'blue',
-          label: 'blue'
-        },
-        {
-          value: 'purple',
-          label: 'purple'
-        }
-      ]
+      options: previewOptions()
     }
   },
   {
     label: 'CSS Class',
     field: 'cssClass',
     component: 'Input',
-    helpMessage: '输入hex模式的颜色，例如#108ee9'
+    helpMessage: '输入hex模式的颜色, 例如#108ee9',
+    rules: [{ required: false, message: '输入正确的16进制颜色', pattern: /^#([0-9a-fA-F]{3}){1,2}$/, trigger: 'blur' }]
   },
   {
     label: '备注',

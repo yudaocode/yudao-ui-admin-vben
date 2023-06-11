@@ -5,6 +5,7 @@ import { isArray, isString } from '@/utils/is'
 import { DictTag } from '@/components/DictTag'
 import { Icon } from '@/components/Icon'
 import TableImg from '../components/TableImg.vue'
+import { JsonPreview } from '@/components/CodeEditor'
 
 export const useRender = {
   /**
@@ -111,6 +112,25 @@ export const useRender = {
   renderIcon: (text) => {
     if (text) {
       return h(Icon, { icon: text })
+    }
+  },
+  /**
+   * 使用JsonPreview组件  方便预览JSON
+   * @param json json字符串/obj
+   * @returns 能转为json返回JsonPreview 否则返回自身
+   */
+  renderJsonPreview: (json: any) => {
+    if (!json) return ''
+    if (typeof json === 'object') {
+      return h(JsonPreview, { data: json })
+    }
+    if (typeof json === 'string') {
+      try {
+        const data = JSON.parse(json)
+        return h(JsonPreview, { data })
+      } catch (e) {
+        return json
+      }
     }
   }
 }
