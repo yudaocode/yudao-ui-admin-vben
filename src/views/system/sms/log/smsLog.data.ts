@@ -84,7 +84,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'channelId',
     component: 'ApiSelect',
     componentProps: {
-      options: getSimpleSmsChannels(),
+      api: getSimpleSmsChannels,
       fieldNames: {
         label: 'signature',
         key: 'id',
