@@ -115,41 +115,27 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
     }
     const component = route.component as string
     if (component && !isUrl(route.path)) {
+      const meta = route.meta || {}
+      meta.hideMenu = !route.visible
+      meta.orderNo = route.sort
+      meta.ignoreKeepAlive = !route.keepAlive
+      meta.title = route.name
+      meta.icon = route.icon
       if (component.toUpperCase() === 'LAYOUT') {
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
-        const meta = route.meta || {}
-        meta.hideMenu = !route.visible
-        meta.orderNo = route.sort
-        meta.ignoreKeepAlive = !route.keepAlive
-        meta.title = route.name
-        meta.icon = route.icon
-        route.meta = meta
       } else if (component.toUpperCase() === 'IFRAME') {
         route.component = LayoutMap.get('IFRAME'.toUpperCase())
-        const meta = route.meta || {}
-        meta.hideMenu = !route.visible
-        meta.orderNo = route.sort
-        meta.ignoreKeepAlive = !route.keepAlive
-        meta.title = route.name
-        meta.icon = route.icon
         meta.frameSrc = route.path
-        route.meta = meta
         route.path = '/' + route.name
       } else {
         //处理顶级非目录路由
-        const meta = route.meta || {}
-        meta.hideMenu = !route.visible
-        meta.orderNo = route.sort
-        meta.ignoreKeepAlive = !route.keepAlive
-        meta.title = route.name
-        meta.icon = route.icon
         meta.single = true
         route.children = [cloneDeep(route)]
         route.component = LAYOUT
         route.name = `${toCamelCase(route.path, true)}Parent`
         route.path = ''
-        route.meta = meta
       }
+      route.meta = meta
     } else {
       warn('请正确配置路由：' + route?.name + '的component属性')
     }
