@@ -11,6 +11,11 @@
           <TableAction
             :actions="[
               {
+                icon: IconEnum.VIEW,
+                label: t('action.detail'),
+                onClick: handleShowInfo.bind(null, record)
+              },
+              {
                 icon: IconEnum.EDIT,
                 label: '已处理',
                 auth: 'infra:api-error-log:update-status',
@@ -29,6 +34,7 @@
         </template>
       </template>
     </BasicTable>
+    <ErrorLogModal @register="registerModal" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -39,6 +45,8 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable, TableAction } from '@/components/Table'
 import { updateApiErrorLogProcess, getApiErrorLogPage, exportApiErrorLog, ApiErrorLogExportReqVO } from '@/api/infra/apiErrorLog'
 import { columns, searchFormSchema } from './apiErrorLog.data'
+import { useModal } from '@/components/Modal'
+import ErrorLogModal from './ErrorLogModal.vue'
 
 defineOptions({ name: 'InfraApiErrorLog' })
 
@@ -53,12 +61,17 @@ const [registerTable, { getForm, reload }] = useTable({
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 180,
+    width: 220,
     title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right'
   }
 })
+
+const [registerModal, { openModal }] = useModal()
+function handleShowInfo(record: Recordable) {
+  openModal(true, record)
+}
 
 function handleProcessClick(record, processStatus: number, type: string) {
   createConfirm({
