@@ -1,39 +1,42 @@
 <template>
-  <BasicModal v-bind="$attrs" title="测试发送邮件" @register="innerRegister" @ok="submit">
-    <BasicForm @register="register" :schemas="reactiveSchemas" />
+  <BasicModal v-bind="$attrs" title="发送邮件" @register="innerRegister" @ok="submit" @cancel="resetForm" width="600px">
+    <BasicForm @register="register" />
   </BasicModal>
 </template>
 
 <script setup lang="ts">
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicForm, FormSchema, useForm } from '@/components/Form'
-import { reactive, ref } from 'vue'
 import { MailTemplate } from '@/api/system/mail/template'
 import { sendMail } from '@/api/system/mail/template'
 import { useMessage } from '@/hooks/web/useMessage'
-import { baseSendSchemas } from './template.data'
+import { baseSendSchemas, keyPrefix } from './template.data'
 
 defineOptions({ name: 'SendMailModal' })
 
-const { createMessage } = useMessage()
-let reactiveSchemas: FormSchema[] = reactive([])
-const templateCode = ref<string>('')
+const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, appendSchemaByField, removeSchemaByField }] =
+  useForm({
+    labelWidth: 120,
+    schemas: baseSendSchemas,
+    baseColProps: {
+      span: 24
+    },
+    showSubmitButton: false,
+    showResetButton: false
+  })
 
-const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, setProps }] = useForm({
-  labelWidth: 100,
-  baseColProps: {
-    span: 24
-  },
-  showSubmitButton: false,
-  showResetButton: false
-})
+// 存储动态生成的字段信息 后续需要进行移除
+let dyFields: string[] = []
 
-const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: MailTemplate) => {
-  resetForm()
+const [innerRegister, { changeLoading, changeOkLoading, closeModal }] = useModalInner(async (data: MailTemplate) => {
+  // 打开时进行清空
+  await resetForm()
+  const dyschemas: FormSchema[] = []
   data.params.forEach((item) => {
+    // 这里加上前缀 防止和content/mail字段重名
+    const field = keyPrefix + item
     const dySchema: FormSchema = {
-      // 这里加上前缀 防止和content/mail字段重名
-      field: `key-${item}`,
+      field,
       label: `参数{${item}} `,
       component: 'Input',
       componentProps: {
@@ -41,48 +44,63 @@ const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: Mail
       },
       required: true
     }
-    reactiveSchemas.push(dySchema)
+    dyschemas.push(dySchema)
+    dyFields.push(field)
   })
-  const { content, code } = data
-  setFieldsValue({ content })
-  templateCode.value = code
+  setFieldsValue(data)
+  // 添加动态参数到末尾
+  appendSchemaByField(dyschemas, undefined)
 })
 
+function modalLoading(status: boolean) {
+  changeOkLoading(status)
+  changeLoading(status)
+}
+
+/**
+ * 移除动态生成的表单元素
+ */
+async function removeDySchemas() {
+  await removeSchemaByField(dyFields)
+  dyFields = []
+}
+
+const { createMessage } = useMessage()
 const submit = async () => {
   try {
-    setProps({ disabled: true })
-    changeLoading(true)
+    modalLoading(true)
     await validateFields()
     const fields = getFieldsValue()
     const data = {
       mail: fields.mail,
-      templateCode: templateCode.value,
+      templateCode: fields.code,
       templateParams: {}
     }
     Object.keys(fields).forEach((key) => {
-      if (key === 'content' || key === 'mail') {
+      // 这几个是固定的字段 不用处理
+      const fixedKeys = ['mail', 'code', 'content']
+      if (fixedKeys.includes(key)) {
         return
       }
-      // 去掉 - 后的key
-      const realKey = key.split('-')[1]
+      // 去掉前缀后的key
+      const realKey = key.split(keyPrefix)[1]
       data.templateParams[realKey] = fields[key]
     })
     await sendMail(data)
     createMessage.success(`发送邮件到[${fields.mail}]成功`)
     closeModal()
+  } catch (e) {
   } finally {
-    setProps({ disabled: false })
-    changeLoading(false)
+    modalLoading(false)
   }
 }
 
-const resetForm = () => {
-  // 这里需要每次清空动态表单
-  reactiveSchemas.splice(0, reactiveSchemas.length)
-  reactiveSchemas.push(...baseSendSchemas)
+async function resetForm() {
+  // 这里需要清空动态表单
+  await removeDySchemas()
   // 清除上一次的表单校验和参数
-  resetFields()
-  clearValidate()
+  await resetFields()
+  await clearValidate()
 }
 </script>
 
