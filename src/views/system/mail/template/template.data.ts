@@ -1,6 +1,8 @@
 import { getSimpleMailAccountList } from '@/api/system/mail/account'
 import { BasicColumn, FormSchema, useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
+import { ScrollContainer } from '@/components/Container'
+import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
@@ -65,7 +67,7 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 8 }
   },
   {
-    label: '邮箱账号',
+    label: '发件邮箱',
     field: 'accountId',
     component: 'ApiSelect',
     componentProps: {
@@ -112,10 +114,11 @@ export const formSchema: FormSchema[] = [
     label: '模板编码',
     field: 'code',
     required: true,
-    component: 'Input'
+    component: 'Input',
+    helpMessage: '建议使用下划线/数字/字母命名'
   },
   {
-    label: '邮箱账号',
+    label: '发件邮箱',
     field: 'accountId',
     required: true,
     component: 'ApiSelect',
@@ -132,19 +135,22 @@ export const formSchema: FormSchema[] = [
     label: '发送人名称',
     field: 'nickname',
     required: true,
-    component: 'Input'
+    component: 'Input',
+    helpMessage: '发件人的名称, 如:系统发件人'
   },
   {
     label: '模板标题',
     field: 'title',
     required: true,
-    component: 'Input'
+    component: 'Input',
+    helpMessage: '邮件的标题'
   },
   {
     label: '模板内容',
     field: 'content',
     component: 'Editor',
-    required: true
+    required: true,
+    helpMessage: '{}括号中的内容作为模板参数'
   },
   {
     label: '开启状态',
@@ -163,17 +169,35 @@ export const formSchema: FormSchema[] = [
 ]
 
 // 发送邮件
+
+// 这里加上前缀 防止和表单其他字段重名
+export const keyPrefix = 'key$-'
 export const baseSendSchemas: FormSchema[] = [
+  {
+    field: 'code',
+    label: '编码',
+    component: 'Input',
+    show: () => false
+  },
   {
     field: 'content',
     component: 'Editor',
     label: '模板内容 ',
     required: false,
     defaultValue: '',
-    componentProps: {
-      options: {
-        readonly: true
-      }
+    render({ model }) {
+      let content: string = model.content
+      Object.keys(model).forEach((key) => {
+        if (!key.startsWith(keyPrefix)) {
+          return
+        }
+        const realKey = key.split(keyPrefix)[1]
+        content = content.replace(`{${realKey}}`, model[key])
+      })
+      return h(ScrollContainer, {
+        innerHTML: content,
+        style: { border: '1px solid #e8e8e8', borderRadius: '4px', padding: '10px' }
+      })
     }
   },
   {

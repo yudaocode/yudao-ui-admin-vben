@@ -11,8 +11,8 @@
           <TableAction
             :actions="[
               {
-                icon: IconEnum.EDIT,
-                label: t('action.test'),
+                icon: IconEnum.SEND,
+                label: t('action.send'),
                 auth: 'system:mail-template:send-mail',
                 onClick: handleSend.bind(null, record)
               },
