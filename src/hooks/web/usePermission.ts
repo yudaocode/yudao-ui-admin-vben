@@ -45,7 +45,9 @@ export function usePermission() {
     resetRouter()
     const routes = await permissionStore.buildRoutesAction()
     routes.forEach((route) => {
-      router.addRoute(route as unknown as RouteRecordRaw)
+      try {
+        router.addRoute(route as unknown as RouteRecordRaw)
+      } catch (e) {}
     })
     permissionStore.setLastBuildMenuTime()
     closeAll()

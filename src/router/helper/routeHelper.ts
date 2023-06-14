@@ -8,7 +8,6 @@ import { isUrl } from '@/utils/is'
 
 export type LayoutMapKey = 'LAYOUT'
 const IFRAME = () => import('@/views/base/iframe/FrameBlank.vue')
-const URL_HASH_TAB = `__AGWE4H__HASH__TAG__PWHRG__`
 const LayoutMap = new Map<string, () => Promise<typeof import('*.vue')>>()
 
 LayoutMap.set('LAYOUT', LAYOUT)
@@ -21,18 +20,6 @@ function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
   dynamicViewsModules = dynamicViewsModules || import.meta.glob('../../views/**/*.{vue,tsx}')
   if (!routes) return
   routes.forEach((item) => {
-    if (/^\/?http(s)?/.test(item.component as string)) {
-      item.component = item.component.substring(1, item.component.length)
-    }
-    if (/^http(s)?/.test(item.component as string)) {
-      if (item.meta?.internalOrExternal) {
-        item.path = item.component
-        item.path = item.path.replace('#', URL_HASH_TAB)
-      } else {
-        item.meta.frameSrc = item.component
-      }
-      delete item.component
-    }
     if (!item.component && item.meta?.frameSrc) {
       item.component = 'IFRAME'
     }
@@ -94,27 +81,20 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
     } else if (!route.children) {
       route.component = route.component as string
     }
-
+    // if (isUrl(route.path)) {
+    //   route.component = 'LAYOUT'
+    //   const path = route.path
+    //   route.path = '/' + route.name
+    //   route.redirect = path
+    // }
     if (isUrl(route.path)) {
-      route.component = 'IFRAME'
-      const path = route.path
-      route.path = '/' + route.name
-      const childRoute = [
-        {
-          path: path,
-          name: route.name,
-          component: 'IFRAME',
-          sort: route.sort,
-          meta: {
-            title: route.name,
-            icon: route.icon
-          }
-        }
-      ]
-      route.children = childRoute
+      route.component = 'IFrame'
+      // const path = route.path
+      // route.path = '/' + route.name
+      // route.redirect = path
     }
     const component = route.component as string
-    if (component && !isUrl(route.path)) {
+    if (component) {
       const meta = route.meta || {}
       meta.hideMenu = !route.visible
       meta.orderNo = route.sort
@@ -125,8 +105,8 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
       } else if (component.toUpperCase() === 'IFRAME') {
         route.component = LayoutMap.get('IFRAME'.toUpperCase())
-        meta.frameSrc = route.path
-        route.path = '/' + route.name
+        // meta.frameSrc = route.path
+        // route.path = '/' + route.name
       } else {
         //处理顶级非目录路由
         meta.single = true

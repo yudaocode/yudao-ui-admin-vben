@@ -141,7 +141,9 @@ export const useUserStore = defineStore('app-user', {
         if (!permissionStore.isDynamicAddedRoute) {
           const routes = await permissionStore.buildRoutesAction()
           routes.forEach((route) => {
-            router.addRoute(route as unknown as RouteRecordRaw)
+            try {
+              router.addRoute(route as unknown as RouteRecordRaw)
+            } catch (e) {}
           })
           router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw)
           permissionStore.setDynamicAddedRoute(true)
