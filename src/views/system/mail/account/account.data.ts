@@ -71,7 +71,16 @@ export const formSchema: FormSchema[] = [
     label: '邮箱',
     field: 'mail',
     required: true,
-    component: 'Input'
+    component: 'Input',
+    helpMessage: '填写发件邮箱地址',
+    rules: [
+      {
+        required: true,
+        message: '请输入正确的邮箱地址',
+        pattern: /^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/,
+        trigger: 'blur'
+      }
+    ]
   },
   {
     label: '用户名',
@@ -80,10 +89,11 @@ export const formSchema: FormSchema[] = [
     component: 'Input'
   },
   {
-    label: '密码',
+    label: '密码/授权码',
     field: 'password',
     required: true,
-    component: 'InputPassword'
+    component: 'InputPassword',
+    helpMessage: '填写邮件密码, 部分邮件商需要填写授权码'
   },
   {
     label: 'SMTP 服务器域名',
@@ -95,14 +105,14 @@ export const formSchema: FormSchema[] = [
     label: 'SMTP 服务器端口',
     field: 'port',
     required: true,
-    component: 'Input'
+    component: 'InputNumber'
   },
   {
     label: '是否开启 SSL',
     field: 'sslEnable',
     required: true,
     defaultValue: false,
-    component: 'Switch',
+    component: 'RadioButtonGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean')
     }
