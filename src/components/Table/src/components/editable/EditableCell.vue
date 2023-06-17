@@ -475,6 +475,7 @@ export default defineComponent({
 }
 .@{prefix-cls} {
   position: relative;
+  min-height: 24px; // 设置高度让其始终可被hover
 
   &__wrapper {
     display: flex;
