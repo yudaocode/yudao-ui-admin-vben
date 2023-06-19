@@ -76,22 +76,12 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
 // 将背景对象变成路由对象
 export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModule[]): T[] {
   routeList.forEach((route) => {
-    if (route.children && route.parentId == 0) {
+    if (isUrl(route.path)) {
+      route.component = 'IFrame'
+    } else if (route.children && route.parentId == 0) {
       route.component = 'LAYOUT'
     } else if (!route.children) {
       route.component = route.component as string
-    }
-    // if (isUrl(route.path)) {
-    //   route.component = 'LAYOUT'
-    //   const path = route.path
-    //   route.path = '/' + route.name
-    //   route.redirect = path
-    // }
-    if (isUrl(route.path)) {
-      route.component = 'IFrame'
-      // const path = route.path
-      // route.path = '/' + route.name
-      // route.redirect = path
     }
     const component = route.component as string
     if (component) {
@@ -105,8 +95,6 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
       } else if (component.toUpperCase() === 'IFRAME') {
         route.component = LayoutMap.get('IFRAME'.toUpperCase())
-        // meta.frameSrc = route.path
-        // route.path = '/' + route.name
       } else {
         //处理顶级非目录路由
         meta.single = true

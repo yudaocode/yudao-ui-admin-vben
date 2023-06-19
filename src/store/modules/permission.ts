@@ -220,16 +220,13 @@ export const usePermissionStore = defineStore('app-permission', {
           } catch (error) {
             console.error(error)
           }
-
           // Dynamically introduce components
           // 动态引入组件
           routeList = transformObjToRoute(routeList)
-
           //  Background routing to menu structure
           //  后台路由到菜单结构
           const backMenuList = transformRouteToMenu([dashboard, ...routeList, about])
           this.setBackMenuList(backMenuList)
-
           // remove meta.ignoreRoute item
           // 删除 meta.ignoreRoute 项
           routeList = filter(routeList, routeRemoveIgnoreFilter)
