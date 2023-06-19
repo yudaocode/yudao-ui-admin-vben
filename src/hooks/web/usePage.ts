@@ -5,7 +5,6 @@ import { unref } from 'vue'
 
 import { useRouter } from 'vue-router'
 import { REDIRECT_NAME } from '@/router/constant'
-import { isUrl } from '@/utils/is'
 
 export type PathAsPageEnum<T> = T extends { path: string } ? T & { path: PageEnum } : T
 export type RouteLocationRawEx = PathAsPageEnum<RouteLocationRaw>
@@ -23,11 +22,7 @@ export function useGo(_router?: Router) {
     if (!opt) {
       return
     }
-    if (isUrl(opt as string)) {
-      window.open(opt as string, '_blank', 'noopener=yes')
-    } else {
-      isReplace ? replace(opt).catch(handleError) : push(opt).catch(handleError)
-    }
+    isReplace ? replace(opt).catch(handleError) : push(opt).catch(handleError)
   }
   return go
 }
