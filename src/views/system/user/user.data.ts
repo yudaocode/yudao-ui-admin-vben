@@ -129,6 +129,15 @@ export const formSchema: FormSchema[] = [
     component: 'Input'
   },
   {
+    label: '用户头像',
+    field: 'avatar',
+    component: 'FileUpload',
+    componentProps: {
+      maxCount: 1,
+      fileType: 'image'
+    }
+  },
+  {
     label: '归属部门',
     field: 'deptId',
     required: true,
