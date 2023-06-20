@@ -17,5 +17,5 @@ export function getUserPage(params) {
 
 // 同步公众号粉丝
 export function syncUser(accountId) {
-  return defHttp.post({ url: '/mp/tag/sync?accountId=' + accountId })
+  return defHttp.post({ url: '/mp/user/sync?accountId=' + accountId })
 }
