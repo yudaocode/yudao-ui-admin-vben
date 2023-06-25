@@ -43,7 +43,7 @@
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
 | [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.2 |
 | [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
-| [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.0 |
+| [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.1 |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview2.png)
