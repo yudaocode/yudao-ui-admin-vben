@@ -25,30 +25,18 @@ export function getDictDatas(dictType: string) {
 }
 
 export function getDictOpts(dictType: string) {
-  const dictOption: DictDataType[] = []
-  const dictOptions: DictDataType[] = getDictDatas(dictType)
-  if (dictOptions && dictOptions.length > 0) {
-    dictOptions.forEach((dict: DictDataType) => {
-      if (typeof dict.value === 'number') {
-        dictOption.push({
+  /**
+   * 这里原来是转换类型  转换类型后反而显示不出来正确的Tag
+   * 实际类型转换交给下面的getDictOptions来处理
+   * 
+   * bugfix:
+   * dictOption.push({
           ...dict,
           value: parseInt(dict.value + '')
         })
-      } else if (typeof dict.value === 'string') {
-        dictOption.push({
-          ...dict,
-          value: dict.value + ''
-        })
-      } else if (typeof dict.value === 'boolean') {
-        dictOption.push({
-          ...dict,
-          value: dict.value + '' === 'true' ? true : false
-        })
-      }
-    })
-  }
-
-  return dictOption
+     原来的这种写法是造成页面卡死的原因   
+   */
+  return getDictDatas(dictType)
 }
 
 export function getDictOptions(dictType: string, valueType?: 'string' | 'number' | 'boolean') {

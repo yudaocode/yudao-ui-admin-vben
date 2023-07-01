@@ -42,3 +42,27 @@ svg,
 span {
   outline: none;
 }
+
+/** 打包后夜间模式样式有问题 在这里覆盖 */
+html[data-theme='dark'] {
+  /** 菜单边框 */
+  ul li {
+    border: none;
+  }
+
+  ul li:hover {
+    color: inherit !important;
+    border: none;
+    box-shadow: none;
+  }
+
+  /** 日期输入框 */
+  .ant-picker-input > input {
+    border: none;
+  }
+
+  .ant-picker-input > input:focus {
+    color: inherit !important;
+    box-shadow: none;
+  }
+}
