@@ -3,12 +3,16 @@
     <BasicForm @register="registerForm">
       <template #menuIds="{ model, field }">
         <BasicTree
-          v-model:value="model[field]"
+          ref="treeRef"
+          v-if="treeData.length"
+          v-model:checkedKeys="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
-          :checkStrictly="true"
           checkable
           toolbar
+          search
+          :showStrictlyButton="false"
+          :selectable="false"
           @check="menuCheck"
           title="菜单分配"
         />
@@ -24,10 +28,11 @@ import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { menuScopeFormSchema } from './role.data'
 import { getRole } from '@/api/system/role'
-import { BasicTree, TreeItem } from '@/components/Tree'
+import { BasicTree, TreeItem, CheckKeys, CheckedEvent } from '@/components/Tree'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
 import { assignRoleMenu, listRoleMenus } from '@/api/system/permission'
+import { without } from 'lodash-es'
 
 defineOptions({ name: 'SystemRoleMenuModal' })
 
@@ -38,6 +43,12 @@ const treeData = ref<TreeItem[]>([])
 const menuKeys = ref<number[]>([])
 const menuHalfKeys = ref<number[]>([])
 
+// 默认展开的层级
+const defaultExpandLevel = ref<number>(1)
+// 祖先节点list
+const parentIdSets = ref<Set<number>>(new Set())
+const treeRef = ref()
+
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
   baseColProps: { span: 24 },
@@ -47,19 +58,34 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
-  resetFields()
+  await resetFields()
   menuReset()
   setModalProps({ confirmLoading: false })
   if (unref(treeData).length === 0) {
     const res = await listSimpleMenus()
     treeData.value = handleTree(res, 'id')
+    // 去重 拿到所有的父节点
+    parentIdSets.value = new Set(res.map((item) => item.parentId))
   }
+  const role = await getRole(data.record.id)
+  const menuIds = await listRoleMenus(data.record.id)
 
-  const res = await getRole(data.record.id)
-  const menuRes = await listRoleMenus(data.record.id)
-  res.menuIds = menuRes
-  menuKeys.value = res.menuIds
-  setFieldsValue({ ...res })
+  // https://www.lodashjs.com/docs/lodash.without
+  // 默认关联节点  需要排除所有的祖先节点  否则会全部勾选
+  // 只保留子节点 关联情况下会自己选中父节点
+  // 排除祖先节点后的子节点  达到"独立"的效果 但可以进行关联选择
+  const excludeParentIds = without(menuIds, ...Array.from(parentIdSets.value))
+  // 这里是后期更新/新增需要用的 需要使用原始参数
+  menuKeys.value = menuIds
+  // 这里是view需要的  需要排除祖先节点才能正常显示  否则传入父节点会勾选所有子节点
+  role.menuIds = excludeParentIds
+  // 这里只负责显示 后期传递参数不使用这里  所以不用祖先节点
+  await setFieldsValue({ ...role })
+
+  // 默认展开的层级
+  if (unref(treeRef)) {
+    unref(treeRef).filterByLevel(defaultExpandLevel.value)
+  }
 })
 
 async function handleSubmit() {
@@ -83,8 +109,12 @@ function menuReset() {
   menuHalfKeys.value = []
 }
 
-function menuCheck(checkedKeys, e) {
-  menuKeys.value = (checkedKeys.checked || []) as number[]
-  menuHalfKeys.value = (e.halfCheckedKeys || []) as number[]
+function menuCheck(checkedKeys: CheckKeys, event: CheckedEvent) {
+  if (checkedKeys instanceof Array) {
+    // 这里是子节点的ID
+    menuKeys.value = checkedKeys as number[]
+    // 这里是父节点的ID 默认空数组
+    menuHalfKeys.value = event.halfCheckedKeys as number[]
+  }
 }
 </script>

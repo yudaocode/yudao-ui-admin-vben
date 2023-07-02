@@ -66,6 +66,11 @@ export const treeProps = buildProps({
     default: ''
   },
   defaultExpandAll: Boolean,
+  // 是否显示toolbar的 层级关联/层级独立按钮
+  showStrictlyButton: {
+    type: Boolean,
+    default: true
+  },
 
   fieldNames: {
     type: Object as PropType<FieldNames>
@@ -178,3 +183,28 @@ export interface TreeActionType {
   getSearchValue: () => string
   getSelectedNode: (key: KeyType, treeList?: TreeItem[], selectNode?: TreeItem | null) => TreeItem | null
 }
+
+export interface CheckedEvent<T = any> {
+  checked: boolean // 是否选中节点 一个没选为false
+  checkedNodes: T[] // 选中的节点 类型为treeData的类型
+  checkedNodesPositions?: any // 选中节点的位置 eg:0-0-1 节点独立时候为null
+  event: 'check'
+  halfCheckedKeys?: number[] // 父子节点关联时为祖先节点ids, 独立时为null
+  nativeEvent: PointerEvent
+  node: any
+}
+
+/**
+ * 父子节点关联情况下
+ * 为选中的菜单id(包含子菜单 不包含父菜单)
+ *
+ * 父子节点独立情况下
+ * checked为选中的菜单
+ * halfChecked为祖先节点数组
+ */
+export type CheckedKeys =
+  | number[]
+  | {
+      checked: number[]
+      halfChecked: number[]
+    }

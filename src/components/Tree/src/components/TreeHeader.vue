@@ -51,6 +51,11 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  // 是否显示toolbar的 层级关联/层级独立按钮
+  showStrictlyButton: {
+    type: Boolean,
+    default: true
+  },
   checkable: {
     type: Boolean,
     default: false
@@ -89,7 +94,7 @@ const getInputSearchCls = computed(() => {
 })
 
 const toolbarList = computed(() => {
-  const { checkable } = props
+  const { checkable, showStrictlyButton } = props
   const defaultToolbarList = [
     { label: t('component.tree.expandAll'), value: ToolbarEnum.EXPAND_ALL },
     {
@@ -99,19 +104,33 @@ const toolbarList = computed(() => {
     }
   ]
 
-  return checkable
-    ? [
-        { label: t('component.tree.selectAll'), value: ToolbarEnum.SELECT_ALL },
+  const retList = [
+    {
+      label: t('component.tree.selectAll'),
+      value: ToolbarEnum.SELECT_ALL
+    },
+    {
+      label: t('component.tree.unSelectAll'),
+      value: ToolbarEnum.UN_SELECT_ALL,
+      divider: checkable
+    },
+    ...defaultToolbarList
+  ]
+  if (showStrictlyButton) {
+    retList.push(
+      ...[
         {
-          label: t('component.tree.unSelectAll'),
-          value: ToolbarEnum.UN_SELECT_ALL,
-          divider: checkable
+          label: t('component.tree.checkStrictly'),
+          value: ToolbarEnum.CHECK_STRICTLY
         },
-        ...defaultToolbarList,
-        { label: t('component.tree.checkStrictly'), value: ToolbarEnum.CHECK_STRICTLY },
-        { label: t('component.tree.checkUnStrictly'), value: ToolbarEnum.CHECK_UN_STRICTLY }
+        {
+          label: t('component.tree.checkUnStrictly'),
+          value: ToolbarEnum.CHECK_UN_STRICTLY
+        }
       ]
-    : defaultToolbarList
+    )
+  }
+  return checkable ? retList : defaultToolbarList
 })
 
 function handleMenuClick(e) {
