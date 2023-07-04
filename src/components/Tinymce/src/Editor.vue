@@ -50,7 +50,7 @@ import 'tinymce/plugins/wordcount'
 
 import { computed, nextTick, ref, unref, watch, onDeactivated, onBeforeUnmount, useAttrs } from 'vue'
 import ImgUpload from './ImgUpload.vue'
-import { toolbar, plugins } from './tinymce'
+import { toolbar as defaultToolbar, plugins as defaultPlugins } from './tinymce'
 import { buildShortUUID } from '@/utils/uuid'
 import { bindHandlers } from './helper'
 import { onMountedOrActivated } from '@/hooks/core/onMountedOrActivated'
@@ -72,11 +72,11 @@ const props = defineProps({
 
   toolbar: {
     type: Array as PropType<string[]>,
-    default: toolbar
+    default: defaultToolbar
   },
   plugins: {
     type: Array as PropType<string[]>,
-    default: plugins
+    default: defaultPlugins
   },
   modelValue: {
     type: String

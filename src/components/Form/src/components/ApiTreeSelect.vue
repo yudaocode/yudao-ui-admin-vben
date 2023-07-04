@@ -15,7 +15,7 @@ import { isArray, isFunction } from '@/utils/is'
 import { get, set } from 'lodash-es'
 import { propTypes } from '@/utils/propTypes'
 import { LoadingOutlined } from '@ant-design/icons-vue'
-import { handleTree } from '@/utils/tree'
+import { handleTree as handleTreeFn } from '@/utils/tree'
 
 defineOptions({ name: 'ApiTreeSelect' })
 
@@ -82,7 +82,7 @@ async function fetch() {
     result = get(result, props.resultField)
   }
   if (props.handleTree) {
-    result = handleTree(result, props.handleTree)
+    result = handleTreeFn(result, props.handleTree)
   }
   if (props.parentLabel) {
     let tree: Recordable = { id: props.parentId, children: [] }

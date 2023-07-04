@@ -13,9 +13,9 @@ import { computed, watch, ref, onMounted, unref, useSlots, useAttrs } from 'vue'
 import { Tree } from 'ant-design-vue'
 import { isArray, isFunction } from '@/utils/is'
 import { get } from 'lodash-es'
+import { handleTree as handleTreeFn } from '@/utils/tree'
 import { propTypes } from '@/utils/propTypes'
 import { LoadingOutlined } from '@ant-design/icons-vue'
-import { handleTree } from '@/utils/tree'
 
 defineOptions({ name: 'ApiTree' })
 
@@ -81,7 +81,7 @@ async function fetch() {
   loading.value = false
   if (!result) return
   if (props.handleTree) {
-    result = handleTree(result, props.handleTree)
+    result = handleTreeFn(result, props.handleTree)
   }
   if (!isArray(result)) {
     result = get(result, props.resultField)
