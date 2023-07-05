@@ -14,7 +14,13 @@
       <Input size="large" v-model:value="formData.username" :placeholder="t('sys.login.userName')" class="fix-auto-fill" />
     </FormItem>
     <FormItem name="password" class="enter-x">
-      <InputPassword size="large" visibilityToggle v-model:value="formData.password" :placeholder="t('sys.login.password')" />
+      <InputPassword
+        size="large"
+        visibilityToggle
+        v-model:value="formData.password"
+        :placeholder="t('sys.login.password')"
+        class="fix-auto-fill"
+      />
     </FormItem>
 
     <Row class="enter-x">

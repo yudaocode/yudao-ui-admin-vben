@@ -114,7 +114,7 @@ function menuCheck(checkedKeys: CheckKeys, event: CheckedEvent) {
     // 这里是子节点的ID
     menuKeys.value = checkedKeys as number[]
     // 这里是父节点的ID 默认空数组
-    menuHalfKeys.value = event.halfCheckedKeys as number[]
+    menuHalfKeys.value = (event.halfCheckedKeys as number[]) || []
   }
 }
 </script>

@@ -6,14 +6,26 @@ html[data-theme='dark'] {
       border-bottom: none !important;
     }
   }
+  .ant-tabs-tab:not(.ant-tabs-tab-active) {
+    border: none !important;
+    &:hover {
+      color: inherit;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+    }
+  }
 }
 
 html[data-theme='light'] {
   .@{prefix-cls} {
     .ant-tabs-tab:not(.ant-tabs-tab-active) {
       border: none !important;
+      &:hover {
+        color: inherit;
+        background-color: #dee1e6;
+      }
     }
   }
+
 }
 
 .@{prefix-cls} {
@@ -120,12 +132,7 @@ html[data-theme='light'] {
         }
       }
 
-      .ant-tabs-tab:not(.ant-tabs-tab-active) {
-        &:hover {
-          color: inherit;
-          background-color: #dee1e6;
-        }
-      }
+      
 
       .ant-tabs-tab-active {
         position: relative;
