@@ -85,7 +85,7 @@ export default defineComponent({
 
           const rawVal = toRaw(state.checkedKeys)
           emit('update:value', rawVal)
-          emit('check', rawVal, e)
+          emit('check', state.checkStrictly ? rawVal.checked : rawVal, e)
         },
         onRightClick: handleRightClick
       }
@@ -163,6 +163,7 @@ export default defineComponent({
 
     function checkAll(checkAll: boolean) {
       state.checkedKeys = checkAll ? getEnabledKeys() : ([] as KeyType[])
+      emit('check', state.checkedKeys, [])
     }
 
     function expandAll(expandAll: boolean) {
