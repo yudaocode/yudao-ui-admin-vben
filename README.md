@@ -35,13 +35,13 @@
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
 | [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.4 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.3.9 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.4.6 |
 | [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.20 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.1.6 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.4 |
-| [vueuse](https://vueuse.org/) | 常用工具集 | 10.1.2 |
+| [vueuse](https://vueuse.org/) | 常用工具集 | 10.2.1 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
-| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.2 |
+| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.4 |
 | [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
 | [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.1 |
 
