@@ -5,7 +5,10 @@
 import type { PluginOption } from 'vite'
 import compressPlugin from 'vite-plugin-compression'
 
-export function configCompressPlugin(compress: 'gzip' | 'brotli' | 'none', deleteOriginFile = false): PluginOption | PluginOption[] {
+export function configCompressPlugin(
+  compress: 'gzip' | 'brotli' | 'none' = 'none',
+  deleteOriginFile = false
+): PluginOption | PluginOption[] {
   const compressList = compress.split(',')
 
   const plugins: PluginOption[] = []
