@@ -17,7 +17,7 @@
         <Tabs v-model:activeKey="activeKey">
           <TabPane v-for="item in previewCodes" :key="item.filePath" :tab="item.filePath.substring(item.filePath.lastIndexOf('/') + 1)">
             <a-button type="link" style="float: right" @click="copy(item.code)">复制</a-button>
-            <CodeEditor class="max-h-200" :value="(item.code as any)" :mode="modeValue" :readonly="true" />
+            <CodeEditor class="max-h-200" :value="item.code as any" :mode="modeValue" :readonly="true" />
           </TabPane>
         </Tabs>
       </Card>

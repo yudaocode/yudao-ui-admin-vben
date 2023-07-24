@@ -3,7 +3,7 @@
     <Upload
       :headers="headers"
       :multiple="multiple"
-      :action="(uploadUrl as any)"
+      :action="uploadUrl as any"
       :fileList="fileList"
       :disabled="disabled"
       v-bind="bindProps"

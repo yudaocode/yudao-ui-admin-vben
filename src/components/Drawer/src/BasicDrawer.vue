@@ -1,7 +1,7 @@
 <template>
   <Drawer :class="prefixCls" @close="onClose" v-bind="getBindValues">
     <template #title v-if="!$slots.title">
-      <DrawerHeader :title="(getMergeProps.title as any)" :isDetail="isDetail" :showDetailBack="showDetailBack" @close="onClose">
+      <DrawerHeader :title="getMergeProps.title as any" :isDetail="isDetail" :showDetailBack="showDetailBack" @close="onClose">
         <template #titleToolbar>
           <slot name="titleToolbar"></slot>
         </template>

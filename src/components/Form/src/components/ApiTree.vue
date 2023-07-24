@@ -1,5 +1,5 @@
 <template>
-  <Tree v-bind="(getAttrs as any)" @change="handleChange">
+  <Tree v-bind="getAttrs as any" @change="handleChange">
     <template #[item]="data" v-for="item in Object.keys(slots)">
       <slot :name="item" v-bind="data || {}"></slot>
     </template>
