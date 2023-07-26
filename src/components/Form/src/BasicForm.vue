@@ -236,7 +236,6 @@ function setFormModel(key: string, value: any, schema: FormSchema) {
   if (schema && schema.itemProps && !schema.itemProps.autoLink) {
     validateFields([key]).catch((_) => {})
   }
-  emit('field-value-change', key, value)
 }
 
 function handleEnterPress(e: KeyboardEvent) {
