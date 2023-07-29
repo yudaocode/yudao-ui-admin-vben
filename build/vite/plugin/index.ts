@@ -1,7 +1,6 @@
 import { PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import windiCSS from 'vite-plugin-windicss'
 import progress from 'vite-plugin-progress'
 import purgeIcons from 'vite-plugin-purge-icons'
 import VitePluginCertificate from 'vite-plugin-mkcert'
@@ -12,6 +11,8 @@ import { configStyleImportPlugin } from './styleImport'
 import { configVisualizerConfig } from './visualizer'
 import { configThemePlugin } from './theme'
 import { configSvgIconsPlugin } from './svgSprite'
+import UnoCSS from 'unocss/vite'
+import { presetTypography, presetUno } from 'unocss'
 
 export async function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   const { VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
@@ -21,15 +22,16 @@ export async function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     vue(),
     // have to
     vueJsx(),
+    // UnoCSS
+    UnoCSS({
+      presets: [presetUno(), presetTypography()]
+    }),
     // 打包进度条
     progress(),
     VitePluginCertificate({
       source: 'coding'
     })
   ]
-
-  // windiCSS
-  vitePlugins.push(windiCSS())
 
   // vite-vue-plugin-html
   vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))

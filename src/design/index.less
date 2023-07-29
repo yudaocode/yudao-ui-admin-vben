@@ -3,6 +3,7 @@
 @import 'public.less';
 @import 'ant/index.less';
 @import './theme.less';
+@import './entry.css';
 
 input:-webkit-autofill {
   box-shadow: 0 0 0 1000px white inset !important;
@@ -65,4 +66,11 @@ html[data-theme='dark'] {
     color: inherit !important;
     box-shadow: none;
   }
+}
+
+// 保持 和 windi 一样的全局样式，减少升级带来的影响
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

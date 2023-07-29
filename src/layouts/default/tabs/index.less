@@ -6,11 +6,13 @@ html[data-theme='dark'] {
       border-bottom: none !important;
     }
   }
+
   .ant-tabs-tab:not(.ant-tabs-tab-active) {
     border: none !important;
+
     &:hover {
       color: inherit;
-      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: rgba(255, 255, 255/50%) !important;
     }
   }
 }
@@ -19,6 +21,7 @@ html[data-theme='light'] {
   .@{prefix-cls} {
     .ant-tabs-tab:not(.ant-tabs-tab-active) {
       border: none !important;
+
       &:hover {
         color: inherit;
         background-color: #dee1e6;
@@ -58,13 +61,14 @@ html[data-theme='light'] {
         color: @text-color-base;
         background-color: @component-background;
         transition: padding 0.3s;
-        padding: 0 20px;
+        padding: 0 16px;
         margin: 0 -14px 0 0 !important;
         /* stylelint-disable-next-line function-url-quotes */
         mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAAAkBAMAAAAdqzmBAAAAMFBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlTPQ5AAAAD3RSTlMAr3DvEM8wgCBA379gj5//tJBPAAAAnUlEQVRIx2NgAAM27fj/tAO/xBsYkIHyf9qCT8iWMf6nNQhAsk2f5rYheY7Dnua2/U+A28ZEe8v+F9Ax2v7/F4DbxkUH2wzgtvHTwbYPo7aN2jZq26hto7aN2jZq25Cy7Qvctnw62PYNbls9HWz7S8/G6//PsI6H4396gAUQy1je08W2jxDbpv6nD4gB2uWp+J9eYPsEhv/0BPS1DQBvoBLVZ3BppgAAAABJRU5ErkJggg==);
         mask-size: 100% 100%;
         position: relative;
         z-index: 1;
+        border-radius: 8px 8px 0 0;
 
         .ant-tabs-tab-btn {
           color: @text-color-base;
@@ -133,7 +137,7 @@ html[data-theme='light'] {
 
       .ant-tabs-tab-active {
         position: relative;
-        padding: 0 20px;
+        padding: 0 16px;
         color: @primary-color !important;
         background: #d4ebff;
         border: 0;
