@@ -32,7 +32,7 @@ const prefixCls = 'virtual-scroll'
 function convertToUnit(str: string | number | null | undefined, unit = 'px'): string | undefined {
   if (str == null || str === '')
     return undefined
-  else if (isNaN(+str!))
+  else if (Number.isNaN(+str!))
     return String(str)
   else
     return `${Number(str)}${unit}`

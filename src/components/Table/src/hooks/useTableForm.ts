@@ -46,7 +46,7 @@ export function useTableForm(
     return unref(show)
   }
 
-  async function setShowForm(flag: boolean) {
+  function setShowForm(flag: boolean) {
     show.value = flag
   }
 

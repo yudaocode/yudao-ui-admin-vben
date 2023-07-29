@@ -27,6 +27,11 @@ const ListItem = List.Item
 const CardMeta = Card.Meta
 const TypographyText = Typography.Text
 
+// 分页相关
+const page = ref(1)
+const pageSize = ref(36)
+const total = ref(0)
+
 // 获取slider属性
 const sliderProp = computed(() => useSlider())
 
@@ -97,9 +102,6 @@ async function fetch(p = {}) {
   }
 }
 // 分页相关
-const page = ref(1)
-const pageSize = ref(36)
-const total = ref(0)
 const paginationProp = ref({
   showSizeChanger: false,
   showQuickJumper: true,

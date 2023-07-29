@@ -107,8 +107,6 @@ async function fetch() {
   catch (error) {
     console.warn(error)
   }
-  finally {
-  }
 }
 function emitChange() {
   emit('options-change', unref(getdataSource))

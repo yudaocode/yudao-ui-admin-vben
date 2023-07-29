@@ -2,7 +2,7 @@
  * @Description: 导入JSON模板
 -->
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 
 // import message from '../../../utils/message';
 import { Modal, Upload } from 'ant-design-vue'
@@ -24,26 +24,28 @@ export default defineComponent({
   setup() {
     const { createMessage } = useMessage()
 
+    const myEditor = ref(null)
+
     const state = reactive({
       visible: false,
       json: `{
-  "schemas": [
-    {
-      "component": "input",
-      "label": "输入框",
-      "field": "input_2",
-      "span": 24,
-      "props": {
-        "type": "text"
-      }
-    }
-  ],
-  "layout": "horizontal",
-  "labelLayout": "flex",
-  "labelWidth": 100,
-  "labelCol": {},
-  "wrapperCol": {}
-}`,
+        "schemas": [
+          {
+            "component": "input",
+            "label": "输入框",
+            "field": "input_2",
+            "span": 24,
+            "props": {
+              "type": "text"
+            }
+          }
+        ],
+        "layout": "horizontal",
+        "labelLayout": "flex",
+        "labelWidth": 100,
+        "labelCol": {},
+        "wrapperCol": {}
+      }`,
       jsonData: {
         schemas: {},
         config: {},
@@ -89,6 +91,7 @@ export default defineComponent({
     }
 
     return {
+      myEditor,
       handleImportJson,
       beforeUpload,
       handleCancel,

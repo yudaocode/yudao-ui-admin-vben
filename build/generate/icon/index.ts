@@ -53,7 +53,7 @@ async function generateIcon() {
           const isLocal = useType === 'local'
           const icons = Object.keys(data.icons).map(item => `${isLocal ? `${prefix}:` : ''}${item}`)
 
-          await fs.writeFileSync(
+          fs.writeFileSync(
             path.join(output, 'icons.data.ts'),
             `export default ${isLocal ? JSON.stringify(icons) : JSON.stringify({ prefix, icons })}`,
           )

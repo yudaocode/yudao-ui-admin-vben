@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from 'vue'
 import { Avatar, List, Tag, Typography } from 'ant-design-vue'
-import { ListItem } from './data'
+import type { ListItem } from './data'
 import { useDesign } from '@/hooks/web/useDesign'
 import { isNumber } from '@/utils/is'
 
@@ -31,9 +31,6 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['update:currentPage'])
-const ListItem = List.Item
-const ListItemMeta = List.Item.Meta
-const TypographyParagraph = Typography.Paragraph
 const { prefixCls } = useDesign('header-notify-list')
 const current = ref(props.currentPage || 1)
 const getData = computed(() => {
@@ -77,11 +74,11 @@ function handleTitleClick(item: ListItem) {
 <template>
   <List :class="prefixCls" bordered :pagination="getPagination">
     <template v-for="item in getData" :key="item.id">
-      <ListItem class="list-item">
-        <ListItemMeta>
+      <List.Item class="list-item">
+        <List.Item.Meta>
           <template #title>
             <div class="title">
-              <TypographyParagraph
+              <Typography.Paragraph
                 style="width: 100%; margin-bottom: 0 !important"
                 :style="{ cursor: isTitleClickable ? 'pointer' : '' }"
                 :delete="!!item.titleDelete"
@@ -105,7 +102,7 @@ function handleTitleClick(item: ListItem) {
           <template #description>
             <div>
               <div v-if="item.description" class="description">
-                <TypographyParagraph
+                <Typography.Paragraph
                   style="width: 100%; margin-bottom: 0 !important"
                   :ellipsis="$props.descRows && $props.descRows > 0 ? { rows: $props.descRows, tooltip: !!item.description } : false"
                   :content="item.description"
@@ -116,8 +113,8 @@ function handleTitleClick(item: ListItem) {
               </div>
             </div>
           </template>
-        </ListItemMeta>
-      </ListItem>
+        </List.Item.Meta>
+      </List.Item>
     </template>
   </List>
 </template>

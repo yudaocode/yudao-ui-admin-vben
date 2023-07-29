@@ -7,11 +7,12 @@ import { Description, useDescription } from '@/components/Description/index'
 
 defineOptions({ name: 'MessageInfoModal' })
 
+const data = ref<MessageInfo>()
+
 const [innerRegister] = useModalInner((value: MessageInfo) => {
   data.value = value
 })
 
-const data = ref<MessageInfo>()
 const [descriptionRegister] = useDescription({
   column: 1,
   schema: infoSchema,

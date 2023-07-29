@@ -30,7 +30,7 @@ export function useContentViewHeight() {
     { immediate: true },
   )
 
-  async function setPageHeight(height: number) {
+  function setPageHeight(height: number) {
     pageHeight.value = height
   }
 

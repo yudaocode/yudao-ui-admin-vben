@@ -90,9 +90,44 @@ onMounted(() => {
   }
 })
 const canvas = ref(null)
+
+// 获取坐标
+const getMousePos = function (obj, e) {
+  const x = e.offsetX
+  const y = e.offsetY
+  return { x, y }
+}
+// 创建坐标点
+const createPoint = function (pos) {
+  tempPoints.push(Object.assign({}, pos))
+  return num.value + 1
+}
+
+// 坐标转换函数
+const pointTransfrom = function (pointArr, imgSize) {
+  const newPointArr = pointArr.map((p) => {
+    const x = Math.round((310 * p.x) / Number.parseInt(imgSize.imgWidth))
+    const y = Math.round((155 * p.y) / Number.parseInt(imgSize.imgHeight))
+    return { x, y }
+  })
+  return newPointArr
+}
+
+const refresh = async function () {
+  tempPoints.splice(0, tempPoints.length)
+  barAreaColor.value = '#000'
+  barAreaBorderColor.value = '#ddd'
+  bindingClick.value = true
+  fontPos.splice(0, fontPos.length)
+  checkPosArr.splice(0, checkPosArr.length)
+  num.value = 1
+  await getPictrue()
+  showRefresh.value = true
+}
+
 function canvasClick(e) {
   checkPosArr.push(getMousePos(canvas, e))
-  if (num.value == checkNum.value) {
+  if (num.value === checkNum.value) {
     num.value = createPoint(getMousePos(canvas, e))
     // 按比例转换坐标值
     const arr = pointTransfrom(checkPosArr, setSize)
@@ -112,12 +147,12 @@ function canvasClick(e) {
       }
       checkCaptcha(data).then((response) => {
         const res = response.data
-        if (res.repCode == '0000') {
+        if (res.repCode === '0000') {
           barAreaColor.value = '#4cae4c'
           barAreaBorderColor.value = '#5cb85c'
           text.value = t('component.captcha.success')
           bindingClick.value = false
-          if (mode.value == 'pop') {
+          if (mode.value === 'pop') {
             setTimeout(() => {
               proxy.$parent.clickShow = false
               refresh()
@@ -140,28 +175,6 @@ function canvasClick(e) {
   if (num.value < checkNum.value)
     num.value = createPoint(getMousePos(canvas, e))
 }
-// 获取坐标
-const getMousePos = function (obj, e) {
-  const x = e.offsetX
-  const y = e.offsetY
-  return { x, y }
-}
-// 创建坐标点
-const createPoint = function (pos) {
-  tempPoints.push(Object.assign({}, pos))
-  return num.value + 1
-}
-const refresh = async function () {
-  tempPoints.splice(0, tempPoints.length)
-  barAreaColor.value = '#000'
-  barAreaBorderColor.value = '#ddd'
-  bindingClick.value = true
-  fontPos.splice(0, fontPos.length)
-  checkPosArr.splice(0, checkPosArr.length)
-  num.value = 1
-  await getPictrue()
-  showRefresh.value = true
-}
 
 // 请求背景图片和验证图片
 async function getPictrue() {
@@ -169,7 +182,7 @@ async function getPictrue() {
     captchaType: captchaType.value,
   }
   const res = await getCaptcha(data)
-  if (res.data.repCode == '0000') {
+  if (res.data.repCode === '0000') {
     pointBackImgBase.value = res.data.repData.originalImageBase64
     backToken.value = res.data.repData.token
     secretKey.value = res.data.repData.secretKey
@@ -179,15 +192,6 @@ async function getPictrue() {
   else {
     text.value = res.data.repMsg
   }
-}
-// 坐标转换函数
-const pointTransfrom = function (pointArr, imgSize) {
-  const newPointArr = pointArr.map((p) => {
-    const x = Math.round((310 * p.x) / Number.parseInt(imgSize.imgWidth))
-    const y = Math.round((155 * p.y) / Number.parseInt(imgSize.imgHeight))
-    return { x, y }
-  })
-  return newPointArr
 }
 </script>
 

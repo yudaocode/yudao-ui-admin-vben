@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, reactive, toRefs, unref } from 'vue'
+import { defineComponent, reactive, ref, toRefs, unref } from 'vue'
 import { CodeEditor, MODE } from '@/components/CodeEditor'
 
 import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
@@ -24,6 +24,8 @@ export default defineComponent({
     const state = reactive({
       visible: false,
     })
+
+    const myEditor = ref(null)
 
     const exportData = (data: string, fileName = `file.${props.fileFormat}`) => {
       let content = 'data:text/csv;charset=utf-8,'
@@ -55,6 +57,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
+      myEditor,
       exportData,
       handleCopyJson,
       handleExportJson,

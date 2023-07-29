@@ -51,7 +51,6 @@ const { prefixCls } = useDesign('basic-form')
 
 // Get the basic configuration of the form
 const getProps = computed((): FormProps => {
-  // @ts-expect-error
   return { ...props, ...unref(propsRef) } as FormProps
 })
 
@@ -214,7 +213,7 @@ function handleEnterPress(e: KeyboardEvent) {
     return
   if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
     const target: HTMLElement = e.target as HTMLElement
-    if (target && target.tagName && target.tagName.toUpperCase() == 'INPUT')
+    if (target && target.tagName && target.tagName.toUpperCase() === 'INPUT')
       handleSubmit()
   }
 }

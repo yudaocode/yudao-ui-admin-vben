@@ -90,11 +90,11 @@ export const useAppStore = defineStore('app', {
       Persistent.setLocal(PROJ_CFG_KEY, this.projectConfig)
     },
 
-    async resetAllState() {
+    resetAllState() {
       resetRouter()
       Persistent.clearAll()
     },
-    async setPageLoadingAction(loading: boolean): Promise<void> {
+    setPageLoadingAction(loading: boolean) {
       if (loading) {
         clearTimeout(timeId)
         // Prevent flicker

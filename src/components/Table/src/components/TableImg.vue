@@ -36,7 +36,7 @@ const { prefixCls } = useDesign('basic-table-img')
 
 <template>
   <div v-if="imgList && imgList.length" :class="prefixCls" class="flex items-center mx-auto" :style="getWrapStyle">
-    <Badge v-if="simpleShow" :count="!showBadge || imgList.length == 1 ? 0 : imgList.length">
+    <Badge v-if="simpleShow" :count="!showBadge || imgList.length === 1 ? 0 : imgList.length">
       <div class="img-div">
         <ImagePreviewGroup>
           <template v-for="(img, index) in imgList" :key="img">

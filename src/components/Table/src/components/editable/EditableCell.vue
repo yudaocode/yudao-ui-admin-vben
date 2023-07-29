@@ -63,6 +63,19 @@ export default defineComponent({
       return ['Checkbox', 'Switch'].includes(component)
     })
 
+    const getDisable = computed(() => {
+      const { editDynamicDisabled } = props.column
+      let disabled = false
+      if (isBoolean(editDynamicDisabled))
+        disabled = editDynamicDisabled
+
+      if (isFunction(editDynamicDisabled)) {
+        const { record } = props
+        disabled = editDynamicDisabled({ record })
+      }
+      return disabled
+    })
+
     const getComponentProps = computed(() => {
       const isCheckValue = unref(getIsCheckComp)
 
@@ -106,18 +119,7 @@ export default defineComponent({
       const dataKey = (dataIndex || key) as string
       set(record, dataKey, value)
     }
-    const getDisable = computed(() => {
-      const { editDynamicDisabled } = props.column
-      let disabled = false
-      if (isBoolean(editDynamicDisabled))
-        disabled = editDynamicDisabled
 
-      if (isFunction(editDynamicDisabled)) {
-        const { record } = props
-        disabled = editDynamicDisabled({ record })
-      }
-      return disabled
-    })
     const getValues = computed(() => {
       const { editValueMap } = props.column
 

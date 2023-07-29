@@ -143,7 +143,7 @@ export function useContentHeight(
       upward(anchorEl, upwardSpace)
 
     let height
-      = bottomIncludeBody - unref(layoutFooterHeightRef) - unref(offsetHeightRef) - substractHeight - substractSpaceHeight - upwardSpaceHeight
+    = bottomIncludeBody - unref(layoutFooterHeightRef) - unref(offsetHeightRef) - substractHeight - substractSpaceHeight - upwardSpaceHeight
 
     // compensation height
     const calcCompensationHeight = () => {

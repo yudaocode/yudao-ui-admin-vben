@@ -27,9 +27,12 @@ export function usePermission() {
   /**
    * Change permission mode
    */
-  async function togglePermissionMode() {
+  function togglePermissionMode() {
     appStore.setProjectConfig({
-      permissionMode: projectSetting.permissionMode === PermissionModeEnum.BACK ? PermissionModeEnum.ROUTE_MAPPING : PermissionModeEnum.BACK,
+      permissionMode: projectSetting.permissionMode
+      === PermissionModeEnum.BACK
+        ? PermissionModeEnum.ROUTE_MAPPING
+        : PermissionModeEnum.BACK,
     })
     location.reload()
   }
@@ -99,7 +102,7 @@ export function usePermission() {
   /**
    * refresh menu data
    */
-  async function refreshMenu() {
+  function refreshMenu() {
     resume()
   }
 

@@ -117,7 +117,7 @@ export default defineComponent({
 
     const getScaleStep = computed(() => {
       const scaleStep = props?.scaleStep ?? 0
-      if (scaleStep ?? (0 > 0 && scaleStep < 100))
+      if (scaleStep ?? (scaleStep < 100))
         return scaleStep / 100
       else
         return imgState.imgScale / 10

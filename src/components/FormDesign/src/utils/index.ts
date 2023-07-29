@@ -1,5 +1,6 @@
 // import { VueConstructor } from 'vue';
 import { cloneDeep, isArray, isFunction, isNumber, uniqueId } from 'lodash-es'
+import type { Ref } from 'vue'
 import type { IFormConfig, IVFormComponent, IValidationRule } from '../typings/v-form-component'
 
 // import { del } from '@vue/composition-api';
@@ -208,14 +209,12 @@ export function runCode<T>(code: any): T {
  */
 
 // 编码表单 Conf
-export function encodeConf(designerRef: object) {
-  // @ts-expect-error
+export function encodeConf(designerRef: Ref<Recordable>) {
   return JSON.stringify(designerRef.value.getOption())
 }
 
 // 编码表单 Fields
-export function encodeFields(designerRef: object) {
-  // @ts-expect-error
+export function encodeFields(designerRef: Ref<Recordable>) {
   const rule = designerRef.value.getRule()
   const fields: string[] = []
   rule.forEach((item) => {
@@ -234,21 +233,15 @@ export function decodeFields(fields: string[]) {
 }
 
 // 设置表单的 Conf 和 Fields
-export function setConfAndFields(designerRef: object, conf: string, fields: string) {
-  // @ts-expect-error
+export function setConfAndFields(designerRef: Ref<Recordable>, conf: string, fields: string[]) {
   designerRef.value.setOption(JSON.parse(conf))
-  // @ts-expect-error
   designerRef.value.setRule(decodeFields(fields))
 }
 
 // 设置表单的 Conf 和 Fields
-export function setConfAndFields2(detailPreview: object, conf: string, fields: string, value?: object) {
-  // @ts-expect-error
+export function setConfAndFields2(detailPreview: Ref<Recordable>, conf: string, fields: string[], value?: object) {
   detailPreview.value.option = JSON.parse(conf)
-  // @ts-expect-error
   detailPreview.value.rule = decodeFields(fields)
-  if (value) {
-    // @ts-expect-error
+  if (value)
     detailPreview.value.value = value
-  }
 }

@@ -25,7 +25,7 @@ const cronRule: ValidatorRule = {
           yearValues = [year]
 
         // 判断是否都是数字
-        const checkYear = yearValues.some(item => isNaN(Number(item)))
+        const checkYear = yearValues.some(item => Number.isNaN(Number(item)))
         if (checkYear)
           return Promise.reject(`Cron表达式参数[年]错误：${year}`)
       }
@@ -39,7 +39,7 @@ const cronRule: ValidatorRule = {
       iter.next()
       return Promise.resolve()
     }
-    catch (e) {
+    catch (e: any) {
       return Promise.reject(`Cron表达式错误：${e}`)
     }
   },

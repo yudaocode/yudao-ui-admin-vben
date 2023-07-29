@@ -50,7 +50,7 @@ const staticMenus: Menu[] = []
     staticMenus.push(transformMenuModule(menu))
 })()
 
-async function getAsyncMenus() {
+function getAsyncMenus() {
   const permissionStore = usePermissionStore()
   // 递归过滤所有隐藏的菜单
   const menuFilter = (items) => {
@@ -82,7 +82,7 @@ export async function getMenus(): Promise<Menu[]> {
 
 export async function getCurrentParentPath(currentPath: string) {
   const menus = await getAsyncMenus()
-  const allParentPath = await getAllParentPath(menus, currentPath)
+  const allParentPath = getAllParentPath(menus, currentPath)
   return allParentPath?.[0]
 }
 

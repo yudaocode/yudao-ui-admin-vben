@@ -5,7 +5,7 @@ import colors from 'picocolors'
 import pkg from '../../package.json'
 import { runBuildConfig } from './buildConf'
 
-export async function runBuild() {
+export function runBuild() {
   try {
     const argvList = process.argv.splice(2)
 
@@ -15,7 +15,7 @@ export async function runBuild() {
 
     console.log(`✨ ${colors.cyan(`[${pkg.name}]`)}` + ' - build successfully!')
   }
-  catch (error) {
+  catch (error: any) {
     console.log(colors.red(`vite build error:\n${error}`))
     process.exit(1)
   }

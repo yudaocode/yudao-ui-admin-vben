@@ -1099,7 +1099,7 @@ const componentAttrs: IBaseComponentProps = {
 
 function deleteProps(list: Omit<IBaseFormAttrs, 'tag'>[], key: string) {
   list.forEach((element, index) => {
-    if (element.name == key)
+    if (element.name === key)
       list.splice(index, 1)
   })
 }
@@ -1122,7 +1122,7 @@ export const baseComponentAttrs: IBaseComponentProps = componentAttrs
 // 在所有的选项中查找需要配置项
 function findCompoentProps(props, name) {
   const idx = props.findIndex((value: BaseFormAttrs, _index) => {
-    return value.name == name
+    return value.name === name
   })
   if (idx) {
     if (props[idx].componentProps)
@@ -1135,7 +1135,7 @@ export const componentPropsFuncs = {
   RadioGroup: (compProp, options: BaseFormAttrs[]) => {
     const props = findCompoentProps(options, 'size')
     if (props) {
-      if (compProp.optionType && compProp.optionType != 'button') {
+      if (compProp.optionType && compProp.optionType !== 'button') {
         props.disabled = true
         compProp.size = null
       }

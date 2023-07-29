@@ -9,7 +9,6 @@ export class AxiosRetry {
    * 重试
    */
   retry(axiosInstance: AxiosInstance, error: AxiosError) {
-    // @ts-expect-error
     const { config } = error.response
     const { waitTime, count } = config?.requestOptions?.retryRequest
     config.__retryCount = config.__retryCount || 0

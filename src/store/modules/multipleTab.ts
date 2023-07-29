@@ -60,7 +60,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     /**
      * Update the cache according to the currently opened tabs
      */
-    async updateCacheTab() {
+    updateCacheTab() {
       const cacheMap: Set<string> = new Set()
 
       for (const tab of this.tabList) {
@@ -115,7 +115,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
       path !== toPath && go(toPath as PageEnum, true)
     },
 
-    async addTab(route: RouteLocationNormalized) {
+    addTab(route: RouteLocationNormalized) {
       const { path, name, fullPath, params, query, meta } = getRawRoute(route)
       // 404  The page does not need to add a tab
       if (
@@ -242,7 +242,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     },
 
     // Sort the tabs
-    async sortTabs(oldIndex: number, newIndex: number) {
+    sortTabs(oldIndex: number, newIndex: number) {
       const currentTab = this.tabList[oldIndex]
       this.tabList.splice(oldIndex, 1)
       this.tabList.splice(newIndex, 0, currentTab)
@@ -250,7 +250,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     },
 
     // Close the tab on the right and jump
-    async closeLeftTabs(route: RouteLocationNormalized, router: Router) {
+    closeLeftTabs(route: RouteLocationNormalized, router: Router) {
       const index = this.tabList.findIndex(item => item.path === route.path)
 
       if (index > 0) {
@@ -268,7 +268,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     },
 
     // Close the tab on the left and jump
-    async closeRightTabs(route: RouteLocationNormalized, router: Router) {
+    closeRightTabs(route: RouteLocationNormalized, router: Router) {
       const index = this.tabList.findIndex(item => item.fullPath === route.fullPath)
 
       if (index >= 0 && index < this.tabList.length - 1) {
@@ -286,7 +286,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
       handleGotoPage(router)
     },
 
-    async closeAllTab(router: Router) {
+    closeAllTab(router: Router) {
       this.tabList = this.tabList.filter(item => item?.meta?.affix ?? false)
       this.clearCacheTabs()
       this.goToPage(router)
@@ -295,7 +295,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     /**
      * Close other tabs
      */
-    async closeOtherTabs(route: RouteLocationNormalized, router: Router) {
+    closeOtherTabs(route: RouteLocationNormalized, router: Router) {
       const closePathList = this.tabList.map(item => item.fullPath)
 
       const pathList: string[] = []
@@ -320,29 +320,29 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     /**
      * Close tabs in bulk
      */
-    async bulkCloseTabs(pathList: string[]) {
+    bulkCloseTabs(pathList: string[]) {
       this.tabList = this.tabList.filter(item => !pathList.includes(item.fullPath))
     },
 
     /**
      * Set tab's title
      */
-    async setTabTitle(title: string, route: RouteLocationNormalized) {
+    setTabTitle(title: string, route: RouteLocationNormalized) {
       const findTab = this.getTabList.find(item => item === route)
       if (findTab) {
         findTab.meta.title = title
-        await this.updateCacheTab()
+        this.updateCacheTab()
       }
     },
     /**
      * replace tab's path
      * **/
-    async updateTabPath(fullPath: string, route: RouteLocationNormalized) {
+    updateTabPath(fullPath: string, route: RouteLocationNormalized) {
       const findTab = this.getTabList.find(item => item === route)
       if (findTab) {
         findTab.fullPath = fullPath
         findTab.path = fullPath
-        await this.updateCacheTab()
+        this.updateCacheTab()
       }
     },
   },

@@ -31,7 +31,7 @@ export function useLoginState() {
   return { setLoginState, getLoginState, handleBackLogin }
 }
 
-export function useFormValid<T extends Object = any>(formRef: Ref<FormInstance>) {
+export function useFormValid<T extends object = any>(formRef: Ref<FormInstance>) {
   const validate = computed(() => {
     const form = unref(formRef)
     return form?.validate ?? ((_nameList?: NamePath) => Promise.resolve())

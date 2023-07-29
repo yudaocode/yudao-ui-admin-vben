@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import { type Ref, provide, ref } from 'vue'
+import { Layout, LayoutContent, LayoutSider } from 'ant-design-vue'
+
+import { cloneDeep } from 'lodash-es'
+import { type UseRefHistoryReturn, useRefHistory } from '@vueuse/core'
 import VFormPreview from '../VFormPreview/index.vue'
 import VFormPreview2 from '../VFormPreview/useForm.vue'
 import type { IFormConfig, IVFormComponent, PropsTabKey } from '../../typings/v-form-component'
@@ -16,13 +21,6 @@ import CodeModal from './components/CodeModal.vue'
 
 import 'codemirror/mode/javascript/javascript'
 
-import type { Ref } from 'vue'
-import { provide, ref } from 'vue'
-import { Layout, LayoutContent, LayoutSider } from 'ant-design-vue'
-
-import { cloneDeep } from 'lodash-es'
-import type { UseRefHistoryReturn } from '@vueuse/core'
-import { useRefHistory } from '@vueuse/core'
 import { globalConfigState } from './config/formItemPropsConfig'
 import { useDesign } from '@/hooks/web/useDesign'
 

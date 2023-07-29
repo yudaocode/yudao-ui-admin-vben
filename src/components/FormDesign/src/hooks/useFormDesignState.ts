@@ -13,7 +13,7 @@ export function useFormDesignState() {
 }
 
 export function useFormModelState() {
-  const formModel = inject('formModel') as Ref<{}>
+  const formModel = inject('formModel') as Ref<object>
   const setFormModel = inject('setFormModelMethod') as (key: string, value: any) => void
   return { formModel, setFormModel }
 }

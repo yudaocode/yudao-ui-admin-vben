@@ -12,7 +12,7 @@ import { getAllParentPath } from '@/router/helper/menuHelper'
 export function useOpenKeys(menuState: MenuState, menus: Ref<MenuType[]>, mode: Ref<MenuModeEnum>, accordion: Ref<boolean>) {
   const { getCollapsed, getIsMixSidebar } = useMenuSetting()
 
-  async function setOpenKeys(path: string) {
+  function setOpenKeys(path: string) {
     if (mode.value === MenuModeEnum.HORIZONTAL)
       return
 

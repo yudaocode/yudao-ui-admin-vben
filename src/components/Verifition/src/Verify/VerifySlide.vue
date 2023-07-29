@@ -154,17 +154,18 @@ onMounted(() => {
 // 鼠标按下
 function start(e) {
   e = e || window.event
+  let x
   if (!e.touches) {
     // 兼容PC端
-    var x = e.clientX
+    x = e.clientX
   }
   else {
     // 兼容移动端
-    var x = e.touches[0].pageX
+    x = e.touches[0].pageX
   }
   startLeft.value = Math.floor(x - barArea.value.getBoundingClientRect().left)
   startMoveTime.value = +new Date() // 开始滑动的时间
-  if (isEnd.value == false) {
+  if (isEnd.value === false) {
     text.value = ''
     moveBlockBackgroundColor.value = '#337ab7'
     leftBarBorderColor.value = '#337AB7'
@@ -176,14 +177,15 @@ function start(e) {
 // 鼠标移动
 function move(e) {
   e = e || window.event
-  if (status.value && isEnd.value == false) {
+  let x
+  if (status.value && isEnd.value === false) {
     if (!e.touches) {
       // 兼容PC端
-      var x = e.clientX
+      x = e.clientX
     }
     else {
       // 兼容移动端
-      var x = e.touches[0].pageX
+      x = e.touches[0].pageX
     }
     const bar_area_left = barArea.value.getBoundingClientRect().left
     let move_block_left = x - bar_area_left // 小方块相对于父元素的left值
@@ -203,7 +205,7 @@ function move(e) {
 function end() {
   endMovetime.value = +new Date()
   // 判断是否重合
-  if (status.value && isEnd.value == false) {
+  if (status.value && isEnd.value === false) {
     let moveLeftDistance = Number.parseInt((moveBlockLeft.value || '').replace('px', ''))
     moveLeftDistance = (moveLeftDistance * 310) / Number.parseInt(setSize.imgWidth)
     const data = {
@@ -215,14 +217,14 @@ function end() {
     }
     checkCaptcha(data).then((response) => {
       const res = response.data
-      if (res.repCode == '0000') {
+      if (res.repCode === '0000') {
         moveBlockBackgroundColor.value = '#5cb85c'
         leftBarBorderColor.value = '#5cb85c'
         iconColor.value = '#fff'
         iconClass.value = 'icon-check'
         showRefresh.value = false
         isEnd.value = true
-        if (mode.value == 'pop') {
+        if (mode.value === 'pop') {
           setTimeout(() => {
             proxy.$parent.clickShow = false
             refresh()
@@ -290,7 +292,7 @@ async function getPictrue() {
     captchaType: captchaType.value,
   }
   const res = await getCaptcha(data)
-  if (res.data.repCode == '0000') {
+  if (res.data.repCode === '0000') {
     backImgBase.value = res.data.repData.originalImageBase64
     blockBackImgBase.value = `data:image/png;base64,${res.data.repData.jigsawImageBase64}`
     backToken.value = res.data.repData.token

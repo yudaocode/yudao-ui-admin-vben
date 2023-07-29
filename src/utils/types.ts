@@ -32,7 +32,7 @@ export interface Indexable<T> {
 
 export type Hash<T> = Indexable<T>
 
-export type TimeoutHandle = ReturnType<typeof global.setTimeout>
+export type TimeoutHandle = ReturnType<typeof globalThis.setTimeout>
 
 export type ComponentSize = 'large' | 'medium' | 'small' | 'mini'
 

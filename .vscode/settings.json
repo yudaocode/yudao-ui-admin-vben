@@ -76,6 +76,30 @@
     "jsonc",
     "yaml"
   ],
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[vue]": {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true,
@@ -92,7 +116,9 @@
   "i18n-ally.displayLanguage": "zh-CN",
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "cSpell.words": [
+    "antfu",
     "vben",
+    "unref",
     "unocss",
     "tailwind",
     "browserslist",

@@ -13,7 +13,7 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 function handleEdit(title: string) {
-  if (title == '账户密码')
+  if (title === '账户密码')
     openModal(true, {})
 }
 function handleSuccess() {

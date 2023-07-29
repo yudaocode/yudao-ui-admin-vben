@@ -1,4 +1,4 @@
-<script lang="ts" setup inheritAttrs="false">
+<script lang="ts" setup>
 import type { Ref } from 'vue'
 import { computed, nextTick, onBeforeUnmount, onDeactivated, ref, unref, useAttrs, watch } from 'vue'
 import Vditor from 'vditor'
@@ -10,13 +10,17 @@ import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { onMountedOrActivated } from '@/hooks/core/onMountedOrActivated'
 import { propTypes } from '@/utils/propTypes'
 
-type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined
+defineOptions({ inheritAttrs: false })
 
 const props = defineProps({
   height: propTypes.number.def(360),
   value: propTypes.string.def(''),
 })
+
 const emit = defineEmits(['change', 'get', 'update:value'])
+
+type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined
+
 const attrs = useAttrs()
 const wrapRef = ref<ElRef>(null)
 const vditorRef = ref(null) as Ref<Nullable<Vditor>>
@@ -27,6 +31,10 @@ const modalFn = useModalContext()
 const { getLocale } = useLocale()
 const { getDarkMode } = useRootSetting()
 const valueRef = ref(props.value || '')
+
+const instance = {
+  getVditor: (): Vditor => vditorRef.value!,
+}
 
 watch(
   [() => getDarkMode.value, () => initedRef.value],
@@ -115,10 +123,6 @@ function init() {
       enable: false,
     },
   })
-}
-
-const instance = {
-  getVditor: (): Vditor => vditorRef.value!,
 }
 
 function destroy() {

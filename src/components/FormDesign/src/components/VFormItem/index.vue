@@ -177,7 +177,7 @@ export default defineComponent({
       </template>
 
       <slot v-if="schema.componentProps && schema.componentProps?.slotName" :name="schema.componentProps.slotName" v-bind="schema" />
-      <Divider v-else-if="schema.component == 'Divider' && schema.label && !formItemProps.hiddenLabel">
+      <Divider v-else-if="schema.component === 'Divider' && schema.label && !formItemProps.hiddenLabel">
         {{ schema.label }}
       </Divider>
       <!-- 部分控件需要一个空div -->

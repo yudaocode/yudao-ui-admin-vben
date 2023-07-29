@@ -12,21 +12,8 @@ export function useHeaderSetting() {
   const { getFullContent } = useFullContent()
   const appStore = useAppStore()
 
-  const getShowFullHeaderRef = computed(() => {
-    return !unref(getFullContent) && unref(getShowMixHeaderRef) && unref(getShowHeader) && !unref(getIsTopMenu) && !unref(getIsMixSidebar)
-  })
-
-  const getUnFixedAndFull = computed(() => !unref(getFixed) && !unref(getShowFullHeaderRef))
-
-  const getShowInsetHeaderRef = computed(() => {
-    const need = !unref(getFullContent) && unref(getShowHeader)
-    return (need && !unref(getShowMixHeaderRef)) || (need && unref(getIsTopMenu)) || (need && unref(getIsMixSidebar))
-  })
-
   const { getMenuMode, getSplit, getShowHeaderTrigger, getIsSidebarType, getIsMixSidebar, getIsTopMenu } = useMenuSetting()
   const { getShowBreadCrumb, getShowLogo } = useRootSetting()
-
-  const getShowMixHeaderRef = computed(() => !unref(getIsSidebarType) && unref(getShowHeader))
 
   const getShowDoc = computed(() => appStore.getHeaderSetting.showDoc)
 
@@ -46,6 +33,19 @@ export function useHeaderSetting() {
 
   const getShowNotice = computed(() => appStore.getHeaderSetting.showNotice)
 
+  const getShowMixHeaderRef = computed(() => !unref(getIsSidebarType) && unref(getShowHeader))
+
+  const getShowFullHeaderRef = computed(() => {
+    return !unref(getFullContent) && unref(getShowMixHeaderRef) && unref(getShowHeader) && !unref(getIsTopMenu) && !unref(getIsMixSidebar)
+  })
+
+  const getUnFixedAndFull = computed(() => !unref(getFixed) && !unref(getShowFullHeaderRef))
+
+  const getShowInsetHeaderRef = computed(() => {
+    const need = !unref(getFullContent) && unref(getShowHeader)
+    return (need && !unref(getShowMixHeaderRef)) || (need && unref(getIsTopMenu)) || (need && unref(getIsMixSidebar))
+  })
+
   const getShowBread = computed(() => {
     return unref(getMenuMode) !== MenuModeEnum.HORIZONTAL && unref(getShowBreadCrumb) && !unref(getSplit)
   })
@@ -64,7 +64,6 @@ export function useHeaderSetting() {
   }
   return {
     setHeaderSetting,
-
     getShowDoc,
     getShowSearch,
     getHeaderTheme,

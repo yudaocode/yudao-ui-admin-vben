@@ -9,7 +9,7 @@ import type { RequestOptions, Result, UploadFileParams } from '@/types/axios'
 import { ContentTypeEnum, RequestEnum } from '@/enums/httpEnum'
 import { downloadByData } from '@/utils/file/download'
 import { useGlobSetting } from '@/hooks/setting'
-import { getAccessToken, getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
+import { getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
 
 export * from './axiosTransform'
 const globSetting = useGlobSetting()
@@ -49,7 +49,8 @@ export class VAxios {
 
   refreshToken() {
     axios.defaults.headers.common['tenant-id'] = getTenantId() as number
-    return axios.post(`${globSetting.apiUrl}/system/auth/refresh-token?refreshToken=${getRefreshToken()}`)
+    const refreshToken = getRefreshToken() as string
+    return axios.post(`${globSetting.apiUrl}/system/auth/refresh-token?refreshToken=${refreshToken}`)
   }
 
   /**
@@ -118,8 +119,9 @@ export class VAxios {
             try {
               const refreshTokenRes = await this.refreshToken()
               // 2.1 刷新成功，则回放队列的请求 + 当前请求
+              const refreshToken = getRefreshToken() as string
               setAccessToken(refreshTokenRes.data.data.accessToken)
-              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}`
+              ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}`
               requestList.forEach((cb: any) => {
                 cb()
               })
@@ -143,8 +145,9 @@ export class VAxios {
         else {
           // 添加到队列，等待刷新获取到新的令牌
           return new Promise((resolve) => {
+            const refreshToken = getRefreshToken() as string
             requestList.push(() => {
-              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
+              ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}` // 让每个请求携带自定义token 请根据实际情况自行修改
               resolve(this.axiosInstance(config))
             })
           })
@@ -197,7 +200,6 @@ export class VAxios {
       data: formData,
       headers: {
         'Content-type': ContentTypeEnum.FORM_DATA,
-        // @ts-expect-error
         'ignoreCancelToken': true,
       },
     })

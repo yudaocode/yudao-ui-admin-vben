@@ -52,13 +52,13 @@ export interface DrawerFooterProps {
    * The ok button props, follow jsx rules
    * @type object
    */
-  okButtonProps: { props: ButtonProps; on: {} }
+  okButtonProps: { props: ButtonProps; on: object }
 
   /**
    * The cancel button props, follow jsx rules
    * @type object
    */
-  cancelButtonProps: { props: ButtonProps; on: {} }
+  cancelButtonProps: { props: ButtonProps; on: object }
   /**
    * Whether to apply loading visual effect for OK button or not
    * @default false

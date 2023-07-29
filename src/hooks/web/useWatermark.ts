@@ -5,7 +5,7 @@ import { addResizeListener, removeResizeListener } from '@/utils/event'
 import { isDef } from '@/utils/is'
 
 const domSymbol = Symbol('watermark-dom')
-const sourceMap = new WeakMap<HTMLElement, {}>()
+const sourceMap = new WeakMap<HTMLElement, object>()
 
 export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.body)) {
   const appendElRaw = unref(appendEl)

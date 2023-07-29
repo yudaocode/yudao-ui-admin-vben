@@ -172,7 +172,7 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
 
 function setProps(modifiers: Recordable, props: Recordable) {
   modifiers.forEach((item: Recordable) => {
-    if (isNaN(Number(item)))
+    if (Number.isNaN(Number(item)))
       props.event = item
     else props.transition = item
   })

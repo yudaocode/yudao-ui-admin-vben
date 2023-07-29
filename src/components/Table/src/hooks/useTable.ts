@@ -146,7 +146,7 @@ export function useTable(tableProps?: Props): [
       return unref(formRef) as unknown as FormActionType
     },
     setShowPagination: async (show: boolean) => {
-      getTableInstance().setShowPagination(show)
+      await getTableInstance().setShowPagination(show)
     },
     getShowPagination: () => {
       return toRaw(getTableInstance().getShowPagination())
@@ -164,7 +164,7 @@ export function useTable(tableProps?: Props): [
       getTableInstance().scrollTo(pos)
     },
     setShowForm: async (show: boolean) => {
-      getTableInstance().setShowForm(show)
+      await getTableInstance().setShowForm(show)
     },
     getShowForm: () => {
       return toRaw(getTableInstance().getShowForm())

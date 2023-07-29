@@ -109,7 +109,7 @@ export default defineComponent({
       </div>
       <FormItem label="表单属性">
         <Col>
-          <Checkbox v-if="formConfig.layout == 'horizontal'" v-model:checked="formConfig.colon">
+          <Checkbox v-if="formConfig.layout === 'horizontal'" v-model:checked="formConfig.colon">
             label后面显示冒号
           </Checkbox>
         </Col>

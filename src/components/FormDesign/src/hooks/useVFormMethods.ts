@@ -74,20 +74,6 @@ export function useVFormMethods(
   }
 
   /**
-   * 设置表单项的props
-   * @param {string} field 需要设置的表单项field
-   * @param {string} key 需要设置的key
-   * @param value 需要设置的值
-   */
-  const setProps: ISetProps = (field, key, value) => {
-    const formItem = get(field)
-    if (formItem?.componentProps) {
-      ;['options', 'treeData'].includes(key) && setValue(field, undefined)
-
-      formItem.componentProps[key] = value
-    }
-  }
-  /**
    * 设置字段的值，设置后触发校验
    * @param {string} field  需要设置的字段
    * @param value  需要设置的值
@@ -104,6 +90,20 @@ export function useVFormMethods(
         props.formModel[key] = field[key]
         formInstance.value?.validateField(key, field[key], [])
       })
+    }
+  }
+  /**
+   * 设置表单项的props
+   * @param {string} field 需要设置的表单项field
+   * @param {string} key 需要设置的key
+   * @param value 需要设置的值
+   */
+  const setProps: ISetProps = (field, key, value) => {
+    const formItem = get(field)
+    if (formItem?.componentProps) {
+      ;['options', 'treeData'].includes(key) && setValue(field, undefined)
+
+      formItem.componentProps[key] = value
     }
   }
   /**

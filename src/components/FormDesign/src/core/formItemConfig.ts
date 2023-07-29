@@ -10,6 +10,9 @@ import type { ComponentType } from '@/components/Form/src/types'
 
 const componentMap = new Map<string, Component>()
 
+// 外部设置的自定义控件
+export const customComponents: IVFormComponent[] = []
+
 // 如果有其它控件，可以在这里初始化
 
 // 注册Ant控件库
@@ -43,9 +46,6 @@ export function setFormDesignComponents(config: IVFormComponent | IVFormComponen
     customComponents.push(Object.assign({ props: {} }, rest))
   }
 }
-
-// 外部设置的自定义控件
-export const customComponents: IVFormComponent[] = []
 
 // 左侧控件列表与初始化的控件属性
 // props.slotName,会在formitem级别生成一个slot,并绑定当前record值

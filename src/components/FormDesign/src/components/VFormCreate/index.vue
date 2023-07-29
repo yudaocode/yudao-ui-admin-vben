@@ -35,7 +35,7 @@ export default defineComponent({
   },
   emits: ['submit', 'change', 'update:fApi', 'update:formModel'],
   setup(props, context) {
-    const wrapperComp = props.formConfig.layout == 'vertical' ? Col : Row
+    const wrapperComp = props.formConfig.layout === 'vertical' ? Col : Row
     const { emit } = context
     const eFormModel = ref<AForm | null>(null)
 

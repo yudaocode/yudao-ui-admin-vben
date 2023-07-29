@@ -25,7 +25,7 @@ export interface TableRowSelection<T = any> extends ITableRowSelection {
    * Callback executed when select/deselect one row
    * @type Function
    */
-  onSelect?: (record: T, selected: boolean, selectedRows: Object[], nativeEvent: Event) => any
+  onSelect?: (record: T, selected: boolean, selectedRows: object[], nativeEvent: Event) => any
 
   /**
    * Callback executed when select/deselect all rows
@@ -53,11 +53,6 @@ export interface ColumnFilterItem {
   text?: string
   value?: string
   children?: any
-}
-
-export interface TableCustomRecord<T = Recordable> {
-  record?: T
-  index?: number
 }
 
 export interface SorterResult {

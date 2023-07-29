@@ -35,7 +35,7 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
 
   const { resetFields, validate, clearValidate, validateField } = useForm(formdata, [])
 
-  const submit = async () => {
+  const submit = () => {
     // const _result = await validate();
 
     const data = cloneDeep(toRaw(formdata.value))

@@ -14,7 +14,8 @@ enum Api {
 
 // 刷新访问令牌
 export function refreshToken() {
-  return defHttp.post({ url: Api.RefreshToken + getRefreshToken() })
+  const refreshToken = getRefreshToken()
+  return defHttp.post({ url: Api.RefreshToken + refreshToken })
 }
 
 // 使用租户名，获得租户编号

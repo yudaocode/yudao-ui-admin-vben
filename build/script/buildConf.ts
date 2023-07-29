@@ -36,7 +36,7 @@ function createConfig(params: CreateConfigParams) {
     console.log(`${colors.cyan(`✨ [${pkg.name}]`)} - configuration file is build successfully:`)
     console.log(`${colors.gray(`${OUTPUT_DIR}/${colors.green(configFileName)}`)}\n`)
   }
-  catch (error) {
+  catch (error: any) {
     console.log(colors.red(`configuration file configuration file failed to package:\n${error}`))
   }
 }

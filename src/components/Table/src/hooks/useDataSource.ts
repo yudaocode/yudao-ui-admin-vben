@@ -117,7 +117,7 @@ export function useDataSource(
     return unref(dataSourceRef)
   })
 
-  async function updateTableData(index: number, key: string, value: any) {
+  function updateTableData(index: number, key: string, value: any) {
     const record = dataSourceRef.value[index]
     if (record)
       dataSourceRef.value[index][key] = value
@@ -139,7 +139,7 @@ export function useDataSource(
   }
 
   function deleteTableDataRecord(rowKey: string | number | string[] | number[]) {
-    if (!dataSourceRef.value || dataSourceRef.value.length == 0)
+    if (!dataSourceRef.value || dataSourceRef.value.length === 0)
       return
     const rowKeyName = unref(getRowKey)
     if (!rowKeyName)
@@ -194,7 +194,7 @@ export function useDataSource(
   }
 
   function findTableDataRecord(rowKey: string | number) {
-    if (!dataSourceRef.value || dataSourceRef.value.length == 0)
+    if (!dataSourceRef.value || dataSourceRef.value.length === 0)
       return
 
     const rowKeyName = unref(getRowKey)

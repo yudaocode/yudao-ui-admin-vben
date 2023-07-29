@@ -91,7 +91,6 @@ export function uploadAvatarApi(data) {
     url: Api.uploadAvatarApi,
     headers: {
       'Content-type': ContentTypeEnum.FORM_DATA,
-      // @ts-expect-error
       'ignoreCancelToken': true,
     },
     data,

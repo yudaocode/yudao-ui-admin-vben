@@ -13,10 +13,6 @@ export function useMenuSetting() {
   const { getFullContent: fullContent } = useFullContent()
   const appStore = useAppStore()
 
-  const getShowSidebar = computed(() => {
-    return unref(getSplit) || (unref(getShowMenu) && unref(getMenuMode) !== MenuModeEnum.HORIZONTAL && !unref(fullContent))
-  })
-
   const getCollapsed = computed(() => appStore.getMenuSetting.collapsed)
 
   const getMenuType = computed(() => appStore.getMenuSetting.type)
@@ -57,6 +53,10 @@ export function useMenuSetting() {
 
   const getCollapsedShowTitle = computed(() => appStore.getMenuSetting.collapsedShowTitle)
 
+  const getShowSidebar = computed(() => {
+    return unref(getSplit) || (unref(getShowMenu) && unref(getMenuMode) !== MenuModeEnum.HORIZONTAL && !unref(fullContent))
+  })
+
   const getShowTopMenu = computed(() => {
     return unref(getMenuMode) === MenuModeEnum.HORIZONTAL || unref(getSplit)
   })
@@ -80,16 +80,16 @@ export function useMenuSetting() {
     return unref(getMenuMode) === MenuModeEnum.INLINE && unref(getMenuType) === MenuTypeEnum.MIX
   })
 
+  const getMiniWidthNumber = computed(() => {
+    const { collapsedShowTitle, siderHidden } = appStore.getMenuSetting
+    return siderHidden ? 0 : collapsedShowTitle ? SIDE_BAR_SHOW_TIT_MINI_WIDTH : SIDE_BAR_MINI_WIDTH
+  })
+
   const getRealWidth = computed(() => {
     if (unref(getIsMixSidebar))
       return unref(getCollapsed) && !unref(getMixSideFixed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
 
     return unref(getCollapsed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
-  })
-
-  const getMiniWidthNumber = computed(() => {
-    const { collapsedShowTitle, siderHidden } = appStore.getMenuSetting
-    return siderHidden ? 0 : collapsedShowTitle ? SIDE_BAR_SHOW_TIT_MINI_WIDTH : SIDE_BAR_MINI_WIDTH
   })
 
   const getCalcContentWidth = computed(() => {

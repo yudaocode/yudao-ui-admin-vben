@@ -227,6 +227,16 @@ export default defineComponent({
 
       const eventKey = `on${upperFirst(changeEvent)}`
 
+      const { autoSetPlaceHolder, size } = props.formProps
+
+      const propsData: Recordable = {
+        allowClear: true,
+        getPopupContainer: (trigger: Element) => trigger.parentNode,
+        size,
+        ...unref(getComponentsProps),
+        disabled: unref(getDisable),
+      }
+
       const on = {
         [eventKey]: (...args: Nullable<Recordable>[]) => {
           const [e] = args
@@ -239,15 +249,6 @@ export default defineComponent({
         },
       }
       const Comp = componentMap.get(component) as ReturnType<typeof defineComponent>
-
-      const { autoSetPlaceHolder, size } = props.formProps
-      const propsData: Recordable = {
-        allowClear: true,
-        getPopupContainer: (trigger: Element) => trigger.parentNode,
-        size,
-        ...unref(getComponentsProps),
-        disabled: unref(getDisable),
-      }
 
       const isCreatePlaceholder = !propsData.disabled && autoSetPlaceHolder
       // RangePicker place is an array

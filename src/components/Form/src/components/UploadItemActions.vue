@@ -36,7 +36,7 @@ function onMoveBack() {
     createMessage.warn(`移动失败：${index}`)
     return
   }
-  if (index == unref(list).length - 1) {
+  if (index === unref(list).length - 1) {
     doSwap(index, 0)
     return
   }

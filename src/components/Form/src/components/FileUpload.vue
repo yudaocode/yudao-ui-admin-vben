@@ -95,7 +95,7 @@ watch(
 
 // 解析数据库存储的逗号分割
 function parsePathsValue(paths) {
-  if (!paths || paths.length == 0) {
+  if (!paths || paths.length === 0) {
     fileList.value = []
     return
   }
@@ -114,7 +114,7 @@ function parsePathsValue(paths) {
 
 // 解析数组值
 function parseArrayValue(array) {
-  if (!array || array.length == 0) {
+  if (!array || array.length === 0) {
     fileList.value = []
     return
   }
@@ -225,7 +225,7 @@ function onFileChange(info) {
 function handlePathChange() {
   const uploadFiles = fileList.value
   let path = ''
-  if (!uploadFiles || uploadFiles.length == 0)
+  if (!uploadFiles || uploadFiles.length === 0)
     path = ''
 
   const pathList: string[] = []
@@ -255,12 +255,12 @@ function emitValue(value) {
 }
 
 function uidGenerator() {
-  return `-${Number.parseInt(Math.random() * 10000 + 1, 10)}`
+  return `-${Number.parseInt((Math.random() * 10000 + 1, 10).toString())}`
 }
 
 function getFileName(path) {
   if (path.lastIndexOf('\\') >= 0) {
-    const reg = new RegExp('\\\\', 'g')
+    const reg = /\\/g
     path = path.replace(reg, '/')
   }
   return path.substring(path.lastIndexOf('/') + 1)

@@ -63,13 +63,13 @@ const getClass = computed(() => {
   ]
 })
 
-const getShowHeader = computed(() => props.content || slots?.headerContent || props.title || getHeaderSlots.value.length)
-
-const getShowFooter = computed(() => slots?.leftFooter || slots?.rightFooter)
-
 const getHeaderSlots = computed(() => {
   return Object.keys(omit(slots, 'default', 'leftFooter', 'rightFooter', 'headerContent'))
 })
+
+const getShowHeader = computed(() => props.content || slots?.headerContent || props.title || getHeaderSlots.value.length)
+
+const getShowFooter = computed(() => slots?.leftFooter || slots?.rightFooter)
 
 const getContentStyle = computed((): CSSProperties => {
   const { contentFullHeight, contentStyle, fixedHeight } = props

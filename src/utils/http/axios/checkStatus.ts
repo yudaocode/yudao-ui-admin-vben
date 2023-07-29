@@ -9,7 +9,6 @@ import projectSetting from '@/settings/projectSetting'
 import { SessionTimeoutProcessingEnum } from '@/enums/appEnum'
 
 const { createMessage, createErrorModal } = useMessage()
-const error = createMessage.error
 const stp = projectSetting.sessionTimeoutProcessing
 
 export function checkStatus(status: number, msg: string, errorMessageMode: ErrorMessageMode = 'message'): void {
@@ -71,6 +70,6 @@ export function checkStatus(status: number, msg: string, errorMessageMode: Error
     if (errorMessageMode === 'modal')
       createErrorModal({ title: t('sys.api.errorTip'), content: errMessage })
     else if (errorMessageMode === 'message')
-      error({ content: errMessage, key: `global_error_message_status_${status}` })
+      createMessage.error({ content: errMessage, key: `global_error_message_status_${status}` })
   }
 }
