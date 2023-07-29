@@ -20,7 +20,7 @@ const __APP_INFO__ = {
   lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 }
 
-export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
+export default ({ command, mode }: ConfigEnv): UserConfig => {
   const root = process.cwd()
 
   const env = loadEnv(mode, root)
@@ -92,7 +92,7 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
     },
 
     // The vite plugin used by the project. The quantity is large, so it is separately extracted and managed
-    plugins: await createVitePlugins(viteEnv, isBuild),
+    plugins: createVitePlugins(viteEnv, isBuild),
 
     optimizeDeps: { include, exclude },
   }
