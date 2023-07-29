@@ -1,3 +1,5 @@
+import { RouteItem } from './menuModel'
+
 /**
  * @description: Login interface parameters
  */
@@ -31,6 +33,7 @@ export interface LoginResultModel {
 export interface GetUserInfoModel {
   roles: string[]
   permissions: string[]
+  menus: RouteItem[]
   // 用户id
   user: userModel
 }

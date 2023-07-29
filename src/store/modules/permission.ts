@@ -16,7 +16,6 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { filter } from '@/utils/helper/treeHelper'
 import projectSetting from '@/settings/projectSetting'
-import { getMenuList } from '@/api/base/menu'
 import { PageEnum } from '@/enums/pageEnum'
 import { PermissionModeEnum } from '@/enums/appEnum'
 
@@ -216,7 +215,7 @@ export const usePermissionStore = defineStore('app-permission', {
           // 这个功能可能只需要执行一次，实际项目可以自己放在合适的时间
           let routeList: AppRouteRecordRaw[] = []
           try {
-            routeList = (await getMenuList()) as AppRouteRecordRaw[]
+            routeList = userInfo.menus as AppRouteRecordRaw[]
           } catch (error) {
             console.error(error)
           }
@@ -233,7 +232,6 @@ export const usePermissionStore = defineStore('app-permission', {
           routeList = routeList.filter(routeRemoveIgnoreFilter)
           routeList = flatMultiLevelRoutes(routeList)
           routes = [PAGE_NOT_FOUND_ROUTE, dashboard, ...routeList, about]
-          console.info(routes)
           break
       }
 

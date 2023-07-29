@@ -9,8 +9,3 @@ export interface RouteItem {
   caseSensitive?: boolean
   children?: RouteItem[]
 }
-
-/**
- * @description: Get menu return value
- */
-export type getMenuListResultModel = RouteItem[]

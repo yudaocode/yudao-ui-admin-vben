@@ -8,7 +8,6 @@ enum Api {
   GetTenantIdByName = '/system/tenant/get-id-by-name?name=',
   LoginOut = '/system/auth/logout',
   GetUserInfo = '/system/auth/get-permission-info',
-  GetAsyncRoutes = '/system/auth/list-menus',
   GetCaptcha = '/system/captcha/get',
   CheckCaptcha = '/system/captcha/check'
 }
@@ -31,11 +30,6 @@ export function loginOut() {
 // 获取用户权限信息
 export function getUserInfo() {
   return defHttp.get({ url: Api.GetUserInfo })
-}
-
-// 路由
-export function getAsyncRoutes() {
-  return defHttp.get({ url: Api.GetAsyncRoutes })
 }
 
 // 获取登录验证码
