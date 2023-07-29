@@ -1,16 +1,16 @@
+import { primaryColor } from '../../build/config/themeConfig'
+import { HEADER_PRESET_BG_COLOR_LIST, SIDE_BAR_BG_COLOR_LIST } from './designSetting'
 import type { ProjectConfig } from '@/types/config'
-import { MenuTypeEnum, MenuModeEnum, TriggerEnum, MixSidebarTriggerEnum } from '@/enums/menuEnum'
+import { MenuModeEnum, MenuTypeEnum, MixSidebarTriggerEnum, TriggerEnum } from '@/enums/menuEnum'
 import { CacheTypeEnum } from '@/enums/cacheEnum'
 import {
   ContentEnum,
   PermissionModeEnum,
-  ThemeEnum,
   RouterTransitionEnum,
+  SessionTimeoutProcessingEnum,
   SettingButtonPositionEnum,
-  SessionTimeoutProcessingEnum
+  ThemeEnum,
 } from '@/enums/appEnum'
-import { SIDE_BAR_BG_COLOR_LIST, HEADER_PRESET_BG_COLOR_LIST } from './designSetting'
-import { primaryColor } from '../../build/config/themeConfig'
 
 // ! 改动后需要清空浏览器缓存
 const setting: ProjectConfig = {
@@ -70,7 +70,7 @@ const setting: ProjectConfig = {
     // 显示消息中心按钮
     showNotice: true,
     // 显示菜单搜索按钮
-    showSearch: true
+    showSearch: true,
   },
   // 菜单配置
   menuSetting: {
@@ -111,7 +111,7 @@ const setting: ProjectConfig = {
     // 左侧混合菜单模块切换触发方式
     mixSideTrigger: MixSidebarTriggerEnum.CLICK,
     // 是否固定左侧混合菜单
-    mixSideFixed: false
+    mixSideFixed: false,
   },
   // 多标签
   multiTabsSetting: {
@@ -128,7 +128,7 @@ const setting: ProjectConfig = {
     // 是否显示刷新那妞
     showRedo: true,
     // 是否显示折叠按钮
-    showFold: true
+    showFold: true,
   },
 
   // 动画配置
@@ -139,8 +139,8 @@ const setting: ProjectConfig = {
     basicTransition: RouterTransitionEnum.FADE_SIDE,
     // 是否打开页面切换loading
     openPageLoading: true,
-    //是否打开页面切换顶部进度条
-    openNProgress: true
+    // 是否打开页面切换顶部进度条
+    openNProgress: true,
   },
 
   // 是否开启KeepAlive缓存  开发时候最好关闭,不然每次都需要清除缓存
@@ -161,7 +161,7 @@ const setting: ProjectConfig = {
   closeMessageOnSwitch: true,
   // 切换界面的时候是否取消已经发送但是未响应的http请求。
   // 如果开启,想对单独接口覆盖。可以在单独接口设置
-  removeAllHttpPending: false
+  removeAllHttpPending: false,
 }
 
 export default setting

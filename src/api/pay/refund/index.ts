@@ -92,7 +92,7 @@ export function getRefundPage(params: RefundPageReqVO) {
 
 // 查询详情退款订单
 export function getRefund(id: number) {
-  return defHttp.get({ url: '/pay/refund/get?id=' + id })
+  return defHttp.get({ url: `/pay/refund/get?id=${id}` })
 }
 
 // 新增退款订单
@@ -107,7 +107,7 @@ export function updateRefund(data: RefundVO) {
 
 // 删除退款订单
 export function deleteRefund(id: number) {
-  return defHttp.delete({ url: '/pay/refund/delete?id=' + id })
+  return defHttp.delete({ url: `/pay/refund/delete?id=${id}` })
 }
 
 // 导出退款订单

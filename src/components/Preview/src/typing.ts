@@ -44,12 +44,12 @@ export interface ImageProps {
   height?: string | number
   placeholder?: string | boolean
   preview?:
-    | boolean
-    | {
-        visible?: boolean
-        onVisibleChange?: (visible: boolean, prevVisible: boolean) => void
-        getContainer: string | HTMLElement | (() => HTMLElement)
-      }
+  | boolean
+  | {
+    visible?: boolean
+    onVisibleChange?: (visible: boolean, prevVisible: boolean) => void
+    getContainer: string | HTMLElement | (() => HTMLElement)
+  }
 }
 
 export type ImageItem = string | ImageProps

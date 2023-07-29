@@ -1,4 +1,5 @@
-import { getCurrentInstance, onBeforeUnmount, ref, Ref, shallowRef, unref } from 'vue'
+import type { Ref } from 'vue'
+import { getCurrentInstance, onBeforeUnmount, ref, shallowRef, unref } from 'vue'
 import { useRafThrottle } from '@/utils/domUtils'
 import { addResizeListener, removeResizeListener } from '@/utils/event'
 import { isDef } from '@/utils/is'
@@ -6,14 +7,15 @@ import { isDef } from '@/utils/is'
 const domSymbol = Symbol('watermark-dom')
 const sourceMap = new WeakMap<HTMLElement, {}>()
 
-export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.body) as Ref<HTMLElement>) {
+export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.body)) {
   const appendElRaw = unref(appendEl)
-  if (appendElRaw && sourceMap.has(appendElRaw)) {
+  if (appendElRaw && sourceMap.has(appendElRaw))
     return sourceMap.get(appendElRaw)
-  }
-  const func = useRafThrottle(function () {
+
+  const func = useRafThrottle(() => {
     const el = unref(appendEl)
-    if (!el) return
+    if (!el)
+      return
     const { clientHeight: height, clientWidth: width } = el
     updateWatermark({ height, width })
   })
@@ -24,7 +26,8 @@ export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.bo
     const domId = unref(watermarkEl)
     watermarkEl.value = undefined
     const el = unref(appendEl)
-    if (!el) return
+    if (!el)
+      return
     domId && el.removeChild(domId)
     removeResizeListener(el, func)
   }
@@ -52,19 +55,19 @@ export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.bo
       width?: number
       height?: number
       str?: string
-    } = {}
+    } = {},
   ) {
     const el = unref(watermarkEl)
-    if (!el) return
-    if (isDef(options.width)) {
+    if (!el)
+      return
+    if (isDef(options.width))
       el.style.width = `${options.width}px`
-    }
-    if (isDef(options.height)) {
+
+    if (isDef(options.height))
       el.style.height = `${options.height}px`
-    }
-    if (isDef(options.str)) {
+
+    if (isDef(options.str))
       el.style.background = `url(${createBase64(options.str)}) left top repeat`
-    }
   }
 
   const createWatermark = (str: string) => {
@@ -81,7 +84,8 @@ export function useWatermark(appendEl: Ref<HTMLElement | null> = ref(document.bo
     div.style.position = 'absolute'
     div.style.zIndex = '100000'
     const el = unref(appendEl)
-    if (!el) return id
+    if (!el)
+      return id
     const { clientHeight: height, clientWidth: width } = el
     updateWatermark({ str, width, height })
     el.appendChild(div)

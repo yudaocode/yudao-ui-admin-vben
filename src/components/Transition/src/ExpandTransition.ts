@@ -25,7 +25,7 @@ export default function (expandedParentClass = '', x = false) {
       el._initialStyle = {
         transition: el.style.transition,
         overflow: el.style.overflow,
-        [sizeProperty]: el.style[sizeProperty]
+        [sizeProperty]: el.style[sizeProperty],
       }
     },
 
@@ -42,9 +42,8 @@ export default function (expandedParentClass = '', x = false) {
 
       el.style.transition = initialStyle.transition
 
-      if (expandedParentClass && el._parent) {
+      if (expandedParentClass && el._parent)
         el._parent.classList.add(expandedParentClass)
-      }
 
       requestAnimationFrame(() => {
         // el.style[sizeProperty] = offset;
@@ -58,32 +57,33 @@ export default function (expandedParentClass = '', x = false) {
       el._initialStyle = {
         transition: '',
         overflow: el.style.overflow,
-        [sizeProperty]: el.style[sizeProperty]
+        [sizeProperty]: el.style[sizeProperty],
       }
 
       el.style.overflow = 'hidden'
       el.style[sizeProperty] = `${el[offsetProperty]}px`
-      /* eslint-disable-next-line */
+
       void el.offsetHeight // force reflow
 
       requestAnimationFrame(() => (el.style[sizeProperty] = '0'))
     },
 
     afterLeave,
-    leaveCancelled: afterLeave
+    leaveCancelled: afterLeave,
   }
 
   function afterLeave(el: HTMLExpandElement) {
-    if (expandedParentClass && el._parent) {
+    if (expandedParentClass && el._parent)
       el._parent.classList.remove(expandedParentClass)
-    }
+
     resetStyles(el)
   }
 
   function resetStyles(el: HTMLExpandElement) {
     const size = el._initialStyle[sizeProperty]
     el.style.overflow = el._initialStyle.overflow!
-    if (size != null) el.style[sizeProperty] = size
+    if (size != null)
+      el.style[sizeProperty] = size
     Reflect.deleteProperty(el, '_initialStyle')
   }
 }

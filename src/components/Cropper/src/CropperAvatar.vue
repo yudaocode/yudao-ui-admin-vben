@@ -1,20 +1,6 @@
-<template>
-  <div :class="getClass" :style="getStyle">
-    <div :class="`${prefixCls}-image-wrapper`" :style="getImageWrapperStyle" @click="openModal">
-      <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
-        <Icon icon="ant-design:cloud-upload-outlined" :size="getIconWidth" :style="getImageWrapperStyle" color="#d6d6d6" />
-      </div>
-      <img :src="sourceValue" v-if="sourceValue" alt="avatar" />
-    </div>
-    <a-button :class="`${prefixCls}-upload-btn`" @click="openModal" v-if="showBtn" v-bind="btnProps">
-      {{ btnText ? btnText : t('component.cropper.selectImage') }}
-    </a-button>
-
-    <CopperModal @register="register" @upload-success="handleUploadSuccess" :uploadApi="uploadApi" :src="sourceValue" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { computed, CSSProperties, unref, ref, watchEffect, watch } from 'vue'
+import type { CSSProperties } from 'vue'
+import { computed, ref, unref, watch, watchEffect } from 'vue'
 import CopperModal from './CopperModal.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useModal } from '@/components/Modal'
@@ -25,16 +11,16 @@ import { Icon } from '@/components/Icon'
 
 defineOptions({ name: 'CropperAvatar' })
 
-const emit = defineEmits(['update:value', 'change'])
-
 const props = defineProps({
   width: { type: [String, Number], default: '200px' },
   value: { type: String },
   showBtn: { type: Boolean, default: true },
   btnProps: { type: Object as PropType<ButtonProps> },
   btnText: { type: String, default: '' },
-  uploadApi: { type: Function as PropType<({ file, name }) => Promise<void>> }
+  uploadApi: { type: Function as PropType<({ file, name }) => Promise<void>> },
 })
+
+const emit = defineEmits(['update:value', 'change'])
 
 const sourceValue = ref(props.value || '')
 const { prefixCls } = useDesign('cropper-avatar')
@@ -44,9 +30,9 @@ const { t } = useI18n()
 
 const getClass = computed(() => [prefixCls])
 
-const getWidth = computed(() => `${props.width}`.replace(/px/, '') + 'px')
+const getWidth = computed(() => `${`${props.width}`.replace(/px/, '')}px`)
 
-const getIconWidth = computed(() => parseInt(`${props.width}`.replace(/px/, '')) / 2 + 'px')
+const getIconWidth = computed(() => `${Number.parseInt(`${props.width}`.replace(/px/, '')) / 2}px`)
 
 const getStyle = computed((): CSSProperties => ({ width: unref(getWidth) }))
 
@@ -60,7 +46,7 @@ watch(
   () => sourceValue.value,
   (v: string) => {
     emit('update:value', v)
-  }
+  },
 )
 
 function handleUploadSuccess({ source, data }) {
@@ -71,6 +57,22 @@ function handleUploadSuccess({ source, data }) {
 
 defineExpose({ openModal: openModal.bind(null, true), closeModal })
 </script>
+
+<template>
+  <div :class="getClass" :style="getStyle">
+    <div :class="`${prefixCls}-image-wrapper`" :style="getImageWrapperStyle" @click="openModal">
+      <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
+        <Icon icon="ant-design:cloud-upload-outlined" :size="getIconWidth" :style="getImageWrapperStyle" color="#d6d6d6" />
+      </div>
+      <img v-if="sourceValue" :src="sourceValue" alt="avatar">
+    </div>
+    <a-button v-if="showBtn" :class="`${prefixCls}-upload-btn`" v-bind="btnProps" @click="openModal">
+      {{ btnText ? btnText : t('component.cropper.selectImage') }}
+    </a-button>
+
+    <CopperModal :upload-api="uploadApi" :src="sourceValue" @register="register" @upload-success="handleUploadSuccess" />
+  </div>
+</template>
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-cropper-avatar';
@@ -92,14 +94,14 @@ defineExpose({ openModal: openModal.bind(null, true), closeModal })
   }
 
   &-image-mask {
-    opacity: 0;
     position: absolute;
     width: inherit;
     height: inherit;
-    border-radius: inherit;
-    border: inherit;
-    background: rgb(0 0 0 / 40%);
     cursor: pointer;
+    background: rgb(0 0 0 / 40%);
+    border: inherit;
+    border-radius: inherit;
+    opacity: 0;
     transition: opacity 0.4s;
 
     :deep(svg) {

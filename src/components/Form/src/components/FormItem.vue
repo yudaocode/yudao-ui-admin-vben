@@ -1,17 +1,17 @@
 <script lang="tsx">
 import type { Ref } from 'vue'
 import { computed, defineComponent, toRefs, unref } from 'vue'
-import type { FormActionType, FormProps, FormSchema } from '../types/form'
 import type { Rule } from 'ant-design-vue/lib/form'
-import type { TableActionType } from '@/components/Table'
 import { Col, Divider, Form } from 'ant-design-vue'
+import { cloneDeep, upperFirst } from 'lodash-es'
+import type { FormActionType, FormProps, FormSchema } from '../types/form'
 import { componentMap } from '../componentMap'
+import { NO_AUTO_LINK_COMPONENTS, createPlaceholderMessage, setComponentRuleType } from '../helper'
+import { useItemLabelWidth } from '../hooks/useLabelWidth'
+import type { TableActionType } from '@/components/Table'
 import { BasicHelp } from '@/components/Basic'
 import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { getSlot } from '@/utils/helper/tsxHelper'
-import { createPlaceholderMessage, NO_AUTO_LINK_COMPONENTS, setComponentRuleType } from '../helper'
-import { cloneDeep, upperFirst } from 'lodash-es'
-import { useItemLabelWidth } from '../hooks/useLabelWidth'
 import { useI18n } from '@/hooks/web/useI18n'
 
 export default defineComponent({
@@ -20,33 +20,33 @@ export default defineComponent({
   props: {
     schema: {
       type: Object as PropType<FormSchema>,
-      default: () => ({})
+      default: () => ({}),
     },
     formProps: {
       type: Object as PropType<FormProps>,
-      default: () => ({})
+      default: () => ({}),
     },
     allDefaultValues: {
       type: Object as PropType<Recordable>,
-      default: () => ({})
+      default: () => ({}),
     },
     formModel: {
       type: Object as PropType<Recordable>,
-      default: () => ({})
+      default: () => ({}),
     },
     setFormModel: {
       type: Function as PropType<(key: string, value: any, schema: FormSchema) => void>,
-      default: null
+      default: null,
     },
     tableAction: {
-      type: Object as PropType<TableActionType>
+      type: Object as PropType<TableActionType>,
     },
     formActionType: {
-      type: Object as PropType<FormActionType>
+      type: Object as PropType<FormActionType>,
     },
     isAdvanced: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   setup(props, { slots }) {
     const { t } = useI18n()
@@ -67,26 +67,26 @@ export default defineComponent({
         values: {
           ...mergeDynamicData,
           ...allDefaultValues,
-          ...formModel
+          ...formModel,
         } as Recordable,
-        schema: schema
+        schema,
       }
     })
 
     const getComponentsProps = computed(() => {
       const { schema, tableAction, formModel, formActionType } = props
       let { componentProps = {} } = schema
-      if (isFunction(componentProps)) {
+      if (isFunction(componentProps))
         componentProps = componentProps({ schema, tableAction, formModel, formActionType }) ?? {}
-      }
+
       if (schema.component === 'Divider') {
         componentProps = Object.assign(
           { type: 'horizontal' },
           {
             orientation: 'left',
-            plain: true
+            plain: true,
           },
-          componentProps
+          componentProps,
         )
       }
       return componentProps as Recordable
@@ -97,12 +97,12 @@ export default defineComponent({
       const { dynamicDisabled } = props.schema
       const { disabled: itemDisabled = false } = unref(getComponentsProps)
       let disabled = !!globDisabled || itemDisabled
-      if (isBoolean(dynamicDisabled)) {
+      if (isBoolean(dynamicDisabled))
         disabled = dynamicDisabled
-      }
-      if (isFunction(dynamicDisabled)) {
+
+      if (isFunction(dynamicDisabled))
         disabled = dynamicDisabled(unref(getValues))
-      }
+
       return disabled
     })
 
@@ -114,18 +114,18 @@ export default defineComponent({
       let isShow = true
       let isIfShow = true
 
-      if (isBoolean(show)) {
+      if (isBoolean(show))
         isShow = show
-      }
-      if (isBoolean(ifShow)) {
+
+      if (isBoolean(ifShow))
         isIfShow = ifShow
-      }
-      if (isFunction(show)) {
+
+      if (isFunction(show))
         isShow = show(unref(getValues))
-      }
-      if (isFunction(ifShow)) {
+
+      if (isFunction(ifShow))
         isIfShow = ifShow(unref(getValues))
-      }
+
       isShow = isShow && itemIsAdvanced
       return { isShow, isIfShow }
     }
@@ -133,35 +133,37 @@ export default defineComponent({
     function handleRules(): Rule[] {
       const { rules: defRules = [], component, rulesMessageJoinLabel, label, dynamicRules, required } = props.schema
 
-      if (isFunction(dynamicRules)) {
+      if (isFunction(dynamicRules))
         return dynamicRules(unref(getValues)) as Rule[]
-      }
 
       let rules: Rule[] = cloneDeep(defRules) as Rule[]
       const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = props.formProps
 
       const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel') ? rulesMessageJoinLabel : globalRulesMessageJoinLabel
-      const defaultMsg = createPlaceholderMessage(component) + `${joinLabel ? label : ''}`
+      const defaultMsg = `${createPlaceholderMessage(component)}${joinLabel ? label : ''}`
 
       function validator(rule: any, value: any) {
         const msg = rule.message || defaultMsg
         if (value === undefined || isNull(value)) {
           // 空值
           return Promise.reject(msg)
-        } else if (Array.isArray(value) && value.length === 0) {
+        }
+        else if (Array.isArray(value) && value.length === 0) {
           // 数组类型
           return Promise.reject(msg)
-        } else if (typeof value === 'string' && value.trim() === '') {
+        }
+        else if (typeof value === 'string' && value.trim() === '') {
           // 空字符串
           return Promise.reject(msg)
-        } else if (
-          typeof value === 'object' &&
-          Reflect.has(value, 'checked') &&
-          Reflect.has(value, 'halfChecked') &&
-          Array.isArray(value.checked) &&
-          Array.isArray(value.halfChecked) &&
-          value.checked.length === 0 &&
-          value.halfChecked.length === 0
+        }
+        else if (
+          typeof value === 'object'
+          && Reflect.has(value, 'checked')
+          && Reflect.has(value, 'halfChecked')
+          && Array.isArray(value.checked)
+          && Array.isArray(value.halfChecked)
+          && value.checked.length === 0
+          && value.halfChecked.length === 0
         ) {
           // 非关联选择的tree组件
           return Promise.reject(msg)
@@ -179,43 +181,42 @@ export default defineComponent({
       if (getRequired) {
         if (!rules || rules.length === 0) {
           rules = [{ required: getRequired, validator }]
-        } else {
-          const requiredIndex: number = rules.findIndex((rule) => Reflect.has(rule, 'required'))
+        }
+        else {
+          const requiredIndex: number = rules.findIndex(rule => Reflect.has(rule, 'required'))
 
-          if (requiredIndex === -1) {
+          if (requiredIndex === -1)
             rules.push({ required: getRequired, validator })
-          }
         }
       }
 
-      const requiredRuleIndex: number = rules.findIndex((rule) => Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator'))
+      const requiredRuleIndex: number = rules.findIndex(rule => Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator'))
 
       if (requiredRuleIndex !== -1) {
         const rule = rules[requiredRuleIndex]
         const { isShow } = getShow()
-        if (!isShow) {
+        if (!isShow)
           rule.required = false
-        }
+
         if (component) {
-          if (!Reflect.has(rule, 'type')) {
+          if (!Reflect.has(rule, 'type'))
             rule.type = component === 'InputNumber' ? 'number' : 'string'
-          }
 
           rule.message = rule.message || defaultMsg
 
-          if (component.includes('Input') || component.includes('Textarea')) {
+          if (component.includes('Input') || component.includes('Textarea'))
             rule.whitespace = true
-          }
+
           const valueFormat = unref(getComponentsProps)?.valueFormat
           setComponentRuleType(rule, component, valueFormat)
         }
       }
 
       // Maximum input length rule check
-      const characterInx = rules.findIndex((val) => val.max)
-      if (characterInx !== -1 && !rules[characterInx].validator) {
+      const characterInx = rules.findIndex(val => val.max)
+      if (characterInx !== -1 && !rules[characterInx].validator)
         rules[characterInx].message = rules[characterInx].message || t('component.form.maxTip', [rules[characterInx].max] as Recordable)
-      }
+
       return rules
     }
 
@@ -229,13 +230,13 @@ export default defineComponent({
       const on = {
         [eventKey]: (...args: Nullable<Recordable>[]) => {
           const [e] = args
-          if (propsData[eventKey]) {
+          if (propsData[eventKey])
             propsData[eventKey](...args)
-          }
+
           const target = e ? e.target : null
           const value = target ? (isCheck ? target.checked : target.value) : e
           props.setFormModel(field, value, props.schema)
-        }
+        },
       }
       const Comp = componentMap.get(component) as ReturnType<typeof defineComponent>
 
@@ -245,51 +246,53 @@ export default defineComponent({
         getPopupContainer: (trigger: Element) => trigger.parentNode,
         size,
         ...unref(getComponentsProps),
-        disabled: unref(getDisable)
+        disabled: unref(getDisable),
       }
 
       const isCreatePlaceholder = !propsData.disabled && autoSetPlaceHolder
       // RangePicker place is an array
-      if (isCreatePlaceholder && component !== 'RangePicker' && component) {
+      if (isCreatePlaceholder && component !== 'RangePicker' && component)
         propsData.placeholder = unref(getComponentsProps)?.placeholder || createPlaceholderMessage(component)
-      }
+
       propsData.codeField = field
       propsData.formValues = unref(getValues)
 
       const bindValue: Recordable = {
-        [valueField || (isCheck ? 'checked' : 'value')]: props.formModel[field]
+        [valueField || (isCheck ? 'checked' : 'value')]: props.formModel[field],
       }
 
       const compAttr: Recordable = {
         ...propsData,
         ...on,
-        ...bindValue
+        ...bindValue,
       }
 
-      if (!renderComponentContent) {
+      if (!renderComponentContent)
         return <Comp {...compAttr} />
-      }
+
       const compSlot = isFunction(renderComponentContent)
         ? { ...renderComponentContent(unref(getValues)) }
         : {
-            default: () => renderComponentContent
+            default: () => renderComponentContent,
           }
       return <Comp {...compAttr}>{compSlot}</Comp>
     }
 
     function renderLabelHelpMessage() {
       const { label, helpMessage, helpComponentProps, subLabel } = props.schema
-      const renderLabel = subLabel ? (
+      const renderLabel = subLabel
+        ? (
         <span>
           {label} <span class="text-secondary">{subLabel}</span>
         </span>
-      ) : (
-        label
-      )
+          )
+        : (
+            label
+          )
       const getHelpMessage = isFunction(helpMessage) ? helpMessage(unref(getValues)) : helpMessage
-      if (!getHelpMessage || (Array.isArray(getHelpMessage) && getHelpMessage.length === 0)) {
+      if (!getHelpMessage || (Array.isArray(getHelpMessage) && getHelpMessage.length === 0))
         return renderLabel
-      }
+
       return (
         <span>
           {renderLabel}
@@ -309,7 +312,8 @@ export default defineComponent({
             <Divider {...unref(getComponentsProps)}>{renderLabelHelpMessage()}</Divider>
           </Col>
         )
-      } else {
+      }
+      else {
         const getContent = () => {
           return slot ? getSlot(slots, slot, unref(getValues)) : render ? render(unref(getValues)) : renderComponent()
         }
@@ -319,10 +323,10 @@ export default defineComponent({
 
         // TODO 自定义组件验证会出现问题，因此这里框架默认将自定义组件设置手动触发验证，如果其他组件还有此问题请手动设置autoLink=false
         if (NO_AUTO_LINK_COMPONENTS.includes(component)) {
-          props.schema &&
-            (props.schema.itemProps! = {
+          props.schema
+            && (props.schema.itemProps! = {
               autoLink: false,
-              ...props.schema.itemProps
+              ...props.schema.itemProps,
             })
         }
 
@@ -348,9 +352,8 @@ export default defineComponent({
 
     return () => {
       const { colProps = {}, colSlot, renderColContent, component } = props.schema
-      if (!componentMap.has(component)) {
+      if (!componentMap.has(component))
         return null
-      }
 
       const { baseColProps = {} } = props.formProps
       const realColProps = { ...baseColProps, ...colProps }
@@ -369,6 +372,6 @@ export default defineComponent({
         )
       )
     }
-  }
+  },
 })
 </script>

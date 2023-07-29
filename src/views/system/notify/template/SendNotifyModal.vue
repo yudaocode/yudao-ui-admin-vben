@@ -1,30 +1,26 @@
-<template>
-  <BasicModal v-bind="$attrs" title="发送站内信" @register="innerRegister" @ok="submit">
-    <BasicForm @register="register" :schemas="reactiveSchemas" />
-  </BasicModal>
-</template>
-
 <script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components/Modal'
-import { BasicForm, FormSchema, useForm } from '@/components/Form'
 import { reactive, ref } from 'vue'
-import { useMessage } from '@/hooks/web/useMessage'
-import { sendNotify, SendNotifyParam, NotifyTemplate } from '@/api/system/notify/template'
 import { baseSendSchemas } from './template.data'
+import { BasicModal, useModalInner } from '@/components/Modal'
+import type { FormSchema } from '@/components/Form'
+import { BasicForm, useForm } from '@/components/Form'
+import { useMessage } from '@/hooks/web/useMessage'
+import type { NotifyTemplate, SendNotifyParam } from '@/api/system/notify/template'
+import { sendNotify } from '@/api/system/notify/template'
 
 defineOptions({ name: 'SendNotifyModal' })
 
 const { createMessage } = useMessage()
-let reactiveSchemas: FormSchema[] = reactive([])
+const reactiveSchemas: FormSchema[] = reactive([])
 const templateCode = ref<string>('')
 
 const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, setProps }] = useForm({
   labelWidth: 100,
   baseColProps: {
-    span: 24
+    span: 24,
   },
   showSubmitButton: false,
-  showResetButton: false
+  showResetButton: false,
 })
 
 const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: NotifyTemplate) => {
@@ -36,9 +32,9 @@ const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: Noti
       label: `参数{${item}} `,
       component: 'Input',
       componentProps: {
-        placeholder: `输入{${item}}`
+        placeholder: `输入{${item}}`,
       },
-      required: true
+      required: true,
     }
     reactiveSchemas.push(dySchema)
   })
@@ -47,7 +43,7 @@ const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: Noti
   templateCode.value = code
 })
 
-const submit = async () => {
+async function submit() {
   try {
     setProps({ disabled: true })
     changeLoading(true)
@@ -56,26 +52,27 @@ const submit = async () => {
     const data: SendNotifyParam = {
       userId: fields.userId,
       templateCode: templateCode.value,
-      templateParams: {}
+      templateParams: {},
     }
     Object.keys(fields).forEach((key) => {
-      if (key === 'content' || key === 'userId') {
+      if (key === 'content' || key === 'userId')
         return
-      }
+
       // 去掉 - 后的key
       const realKey = key.split('-')[1]
       data.templateParams[realKey] = fields[key]
     })
     await sendNotify(data)
-    createMessage.success(`发送站内信成功`)
+    createMessage.success('发送站内信成功')
     closeModal()
-  } finally {
+  }
+  finally {
     setProps({ disabled: false })
     changeLoading(false)
   }
 }
 
-const resetForm = () => {
+function resetForm() {
   // 这里需要每次清空动态表单
   reactiveSchemas.splice(0, reactiveSchemas.length)
   reactiveSchemas.push(...baseSendSchemas)
@@ -85,4 +82,8 @@ const resetForm = () => {
 }
 </script>
 
-<style scoped></style>
+<template>
+  <BasicModal v-bind="$attrs" title="发送站内信" @register="innerRegister" @ok="submit">
+    <BasicForm :schemas="reactiveSchemas" @register="register" />
+  </BasicModal>
+</template>

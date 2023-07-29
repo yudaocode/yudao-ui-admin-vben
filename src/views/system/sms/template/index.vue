@@ -1,53 +1,12 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:sms-template:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['system:sms-template:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.TEST,
-                label: t('action.test'),
-                auth: 'system:sms-template:send-sms',
-                onClick: handleSendSms.bind(null, record)
-              },
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:sms-template:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:sms-template:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <SmsTemplateModal @register="registerModal" @success="reload()" />
-    <SendSmsModal @register="registerSendModal" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { SmsTemplateExportReqVO, deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '@/api/system/sms/smsTemplate'
-import { useModal } from '@/components/Modal'
-import { IconEnum } from '@/enums/appEnum'
 import SmsTemplateModal from './SmsTemplateModal.vue'
 import SendSmsModal from './SendSmsModal.vue'
 import { columns, searchFormSchema } from './smsTemplate.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { SmsTemplateExportReqVO } from '@/api/system/sms/smsTemplate'
+import { deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '@/api/system/sms/smsTemplate'
+import { useModal } from '@/components/Modal'
+import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
@@ -69,8 +28,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 220,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -93,7 +52,7 @@ async function handleExport() {
     async onOk() {
       await exportSmsTemplate(getForm().getFieldsValue() as SmsTemplateExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -103,3 +62,46 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:sms-template:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['system:sms-template:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.TEST,
+                label: t('action.test'),
+                auth: 'system:sms-template:send-sms',
+                onClick: handleSendSms.bind(null, record),
+              },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:sms-template:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:sms-template:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <SmsTemplateModal @register="registerModal" @success="reload()" />
+    <SendSmsModal @register="registerSendModal" />
+  </div>
+</template>

@@ -1,25 +1,25 @@
-const fs = require('fs')
-const path = require('path')
-const { execSync } = require('child_process')
+const fs = require('node:fs')
+const path = require('node:path')
+const { execSync } = require('node:child_process')
 
 const scopes = fs
   .readdirSync(path.resolve(__dirname, 'src'), { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name.replace(/s$/, ''))
+  .filter(dirent => dirent.isDirectory())
+  .map(dirent => dirent.name.replace(/s$/, ''))
 
 // precomputed scope
 const scopeComplete = execSync('git status --porcelain || true')
   .toString()
   .trim()
   .split('\n')
-  .find((r) => ~r.indexOf('M  src'))
+  .find(r => ~r.indexOf('M  src'))
   ?.replace(/(\/)/g, '%%')
   ?.match(/src%%((\w|-)*)/)?.[1]
   ?.replace(/s$/, '')
 
 /** @type {import('cz-git').UserConfig} */
 module.exports = {
-  ignores: [(commit) => commit.includes('init')],
+  ignores: [commit => commit.includes('init')],
   extends: ['@commitlint/config-conventional'],
   rules: {
     'body-leading-blank': [2, 'always'],
@@ -31,8 +31,8 @@ module.exports = {
     'type-enum': [
       2,
       'always',
-      ['feat', 'fix', 'perf', 'style', 'docs', 'test', 'refactor', 'build', 'ci', 'chore', 'revert', 'wip', 'workflow', 'types', 'release']
-    ]
+      ['feat', 'fix', 'perf', 'style', 'docs', 'test', 'refactor', 'build', 'ci', 'chore', 'revert', 'wip', 'workflow', 'types', 'release'],
+    ],
   },
   prompt: {
     /** @use `yarn commit :f` */
@@ -41,7 +41,7 @@ module.exports = {
       r: 'docs: update README',
       s: 'style: update code format',
       b: 'build: bump dependencies',
-      c: 'chore: update config'
+      c: 'chore: update config',
     },
     customScopesAlign: !scopeComplete ? 'top' : 'bottom',
     defaultScope: scopeComplete,
@@ -53,7 +53,7 @@ module.exports = {
     typesAppend: [
       { value: 'wip', name: 'wip:      work in process' },
       { value: 'workflow', name: 'workflow: workflow improvements' },
-      { value: 'types', name: 'types:    type definition file changes' }
+      { value: 'types', name: 'types:    type definition file changes' },
     ],
 
     // 中英文对照版
@@ -67,7 +67,7 @@ module.exports = {
       footerPrefixsSelect: '选择关联issue前缀 (可选):',
       customFooterPrefixs: '输入自定义issue前缀 :',
       footer: '列举关联issue (可选) 例如: #31, #I3244 :\n',
-      confirmCommit: '是否提交或修改commit ?'
+      confirmCommit: '是否提交或修改commit ?',
     },
     types: [
       { value: 'feat', name: 'feat:     新增功能' },
@@ -83,9 +83,9 @@ module.exports = {
       { value: 'chore', name: 'chore:    对构建过程或辅助工具和库的更改 (不影响源文件、测试用例)' },
       { value: 'wip', name: 'wip:      正在开发中' },
       { value: 'workflow', name: 'workflow: 工作流程改进' },
-      { value: 'types', name: 'types:    类型定义文件修改' }
+      { value: 'types', name: 'types:    类型定义文件修改' },
     ],
     emptyScopesAlias: 'empty:      不填写',
-    customScopesAlias: 'custom:     自定义'
-  }
+    customScopesAlias: 'custom:     自定义',
+  },
 }

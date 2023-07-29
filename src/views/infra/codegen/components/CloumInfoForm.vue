@@ -1,32 +1,18 @@
-<template>
-  <div class="step2">
-    <div class="step2-table">
-      <BasicTable :dataSource="columnsInfo" @register="registerTable" @row-click="handleEdit" />
-    </div>
-    <Divider />
-    <div class="step2-button">
-      <a-button @click="customResetFunc">上一步</a-button>
-      <a-button type="primary" @click="customSubmitFunc">提交</a-button>
-    </div>
-    <h3>说明</h3>
-    <h4>配置字段</h4>
-    <p> 配置表的字段类型，增删改查，字典等 </p>
-  </div>
-</template>
 <script lang="ts" setup>
-import { BasicTable, EditRecordRow, useTable } from '@/components/Table'
-import { columns } from './data'
 import { Divider } from 'ant-design-vue'
-import { CodegenColumnVO } from '@/api/infra/codegen/types'
-
-const emit = defineEmits(['next', 'prev'])
+import { columns } from './data'
+import type { EditRecordRow } from '@/components/Table'
+import { BasicTable, useTable } from '@/components/Table'
+import type { CodegenColumnVO } from '@/api/infra/codegen/types'
 
 defineProps({
   columnsInfo: {
     type: Array as PropType<CodegenColumnVO[]>,
-    default: () => null
-  }
+    default: () => null,
+  },
 })
+
+const emit = defineEmits(['next', 'prev'])
 
 const [registerTable, { getDataSource }] = useTable({
   columns,
@@ -34,7 +20,7 @@ const [registerTable, { getDataSource }] = useTable({
   pagination: false,
   useSearchForm: false,
   showTableSetting: false,
-  showIndexColumn: false
+  showIndexColumn: false,
 })
 
 async function customResetFunc() {
@@ -50,6 +36,27 @@ function handleEdit(record: EditRecordRow) {
   record.onEdit?.(true)
 }
 </script>
+
+<template>
+  <div class="step2">
+    <div class="step2-table">
+      <BasicTable :data-source="columnsInfo" @register="registerTable" @row-click="handleEdit" />
+    </div>
+    <Divider />
+    <div class="step2-button">
+      <a-button @click="customResetFunc">
+        上一步
+      </a-button>
+      <a-button type="primary" @click="customSubmitFunc">
+        提交
+      </a-button>
+    </div>
+    <h3>说明</h3>
+    <h4>配置字段</h4>
+    <p> 配置表的字段类型，增删改查，字典等 </p>
+  </div>
+</template>
+
 <style lang="less" scoped>
 .step2 {
   &-table {

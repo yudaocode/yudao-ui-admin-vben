@@ -1,8 +1,8 @@
-import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 import FullScreen from './FullScreen.vue'
+import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 export const UserDropDown = createAsyncComponent(() => import('./user-dropdown/index.vue'), {
-  loading: true
+  loading: true,
 })
 
 export const LayoutBreadcrumb = createAsyncComponent(() => import('./Breadcrumb.vue'))

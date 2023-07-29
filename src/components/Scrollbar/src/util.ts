@@ -1,4 +1,5 @@
 import type { BarMap } from './types'
+
 export const BAR_MAP: BarMap = {
   vertical: {
     offset: 'offsetHeight',
@@ -8,7 +9,7 @@ export const BAR_MAP: BarMap = {
     key: 'vertical',
     axis: 'Y',
     client: 'clientY',
-    direction: 'top'
+    direction: 'top',
   },
   horizontal: {
     offset: 'offsetWidth',
@@ -18,8 +19,8 @@ export const BAR_MAP: BarMap = {
     key: 'horizontal',
     axis: 'X',
     client: 'clientX',
-    direction: 'left'
-  }
+    direction: 'left',
+  },
 }
 
 export function renderThumbStyle({ move, size, bar }) {
@@ -41,9 +42,8 @@ function extend<T, K>(to: T, _from: K): T & K {
 export function toObject<T>(arr: Array<T>): Recordable<T> {
   const res = {}
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i]) {
+    if (arr[i])
       extend(res, arr[i])
-    }
   }
   return res
 }

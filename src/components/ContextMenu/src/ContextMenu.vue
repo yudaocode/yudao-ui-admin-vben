@@ -1,9 +1,9 @@
 <script lang="tsx">
-import type { ContextMenuItem, ItemContentProps, Axis } from './typing'
-import type { FunctionalComponent, CSSProperties } from 'vue'
-import { defineComponent, nextTick, onMounted, computed, ref, unref, onUnmounted } from 'vue'
+import type { CSSProperties, FunctionalComponent } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, unref } from 'vue'
+import { Divider, Menu } from 'ant-design-vue'
+import type { Axis, ContextMenuItem, ItemContentProps } from './typing'
 import { Icon } from '@/components/Icon'
-import { Menu, Divider } from 'ant-design-vue'
 
 const prefixCls = 'context-menu'
 
@@ -17,15 +17,15 @@ const props = {
     type: Object as PropType<Axis>,
     default() {
       return { x: 0, y: 0 }
-    }
+    },
   },
   items: {
     // The most important list, if not, will not be displayed
     type: Array as PropType<ContextMenuItem[]>,
     default() {
       return []
-    }
-  }
+    },
+  },
 }
 
 const ItemContent: FunctionalComponent<ItemContentProps> = (props) => {
@@ -60,7 +60,7 @@ export default defineComponent({
         width: `${width}px`,
         left: `${left + 1}px`,
         top: `${top + 1}px`,
-        zIndex: 9999
+        zIndex: 9999,
       }
     })
 
@@ -75,9 +75,9 @@ export default defineComponent({
 
     function handleAction(item: ContextMenuItem, e: MouseEvent) {
       const { handler, disabled } = item
-      if (disabled) {
+      if (disabled)
         return
-      }
+
       showRef.value = false
       e?.stopPropagation()
       e?.preventDefault()
@@ -85,14 +85,14 @@ export default defineComponent({
     }
 
     function renderMenuItem(items: ContextMenuItem[]) {
-      const visibleItems = items.filter((item) => !item.hidden)
+      const visibleItems = items.filter(item => !item.hidden)
       return visibleItems.map((item) => {
         const { disabled, label, children, divider = false } = item
 
         const contentProps = {
           item,
           handler: handleAction,
-          showIcon: props.showIcon
+          showIcon: props.showIcon,
         }
 
         if (!children || children.length === 0) {
@@ -105,22 +105,23 @@ export default defineComponent({
             </>
           )
         }
-        if (!unref(showRef)) return null
+        if (!unref(showRef))
+          return null
 
         return (
           <Menu.SubMenu key={label} disabled={disabled} popupClassName={`${prefixCls}__popup`}>
             {{
               title: () => <ItemContent {...contentProps} />,
-              default: () => renderMenuItem(children)
+              default: () => renderMenuItem(children),
             }}
           </Menu.SubMenu>
         )
       })
     }
     return () => {
-      if (!unref(showRef)) {
+      if (!unref(showRef))
         return null
-      }
+
       const { items } = props
       return (
         <div class={prefixCls}>
@@ -130,9 +131,10 @@ export default defineComponent({
         </div>
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 @default-height: 42px !important;
 
@@ -172,15 +174,15 @@ export default defineComponent({
   width: 156px;
   margin: 0;
   list-style: none;
+  user-select: none;
   background-color: @component-background;
+  background-clip: padding-box;
   border: 1px solid rgb(0 0 0 / 8%);
   border-radius: 0.25rem;
   box-shadow:
     0 2px 2px 0 rgb(0 0 0 / 14%),
     0 3px 1px -2px rgb(0 0 0 / 10%),
     0 1px 5px 0 rgb(0 0 0 / 6%);
-  background-clip: padding-box;
-  user-select: none;
 
   &__item {
     margin: 0 !important;

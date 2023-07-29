@@ -3,22 +3,21 @@ import { addClass, hasClass, removeClass } from '@/utils/domUtils'
 
 export async function updateDarkTheme(mode: string | null = 'light') {
   const htmlRoot = document.getElementById('htmlRoot')
-  if (!htmlRoot) {
+  if (!htmlRoot)
     return
-  }
+
   const hasDarkClass = hasClass(htmlRoot, 'dark')
   if (mode === 'dark') {
-    if (import.meta.env.PROD && !darkCssIsReady) {
+    if (import.meta.env.PROD && !darkCssIsReady)
       await loadDarkThemeCss()
-    }
+
     htmlRoot.setAttribute('data-theme', 'dark')
-    if (!hasDarkClass) {
+    if (!hasDarkClass)
       addClass(htmlRoot, 'dark')
-    }
-  } else {
+  }
+  else {
     htmlRoot.setAttribute('data-theme', 'light')
-    if (hasDarkClass) {
+    if (hasDarkClass)
       removeClass(htmlRoot, 'dark')
-    }
   }
 }

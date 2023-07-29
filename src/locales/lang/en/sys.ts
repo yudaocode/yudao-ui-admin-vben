@@ -21,12 +21,12 @@ export default {
     errMsg502: 'Network Error!',
     errMsg503: 'The service is unavailable, the server is temporarily overloaded or maintained!',
     errMsg504: 'Network timeout!',
-    errMsg505: 'The http version does not support the request!'
+    errMsg505: 'The http version does not support the request!',
   },
   app: {
     logoutTip: 'Reminder',
     logoutMessage: 'Confirm to exit the system?',
-    menuLoading: 'Menu loading...'
+    menuLoading: 'Menu loading...',
   },
   errorLog: {
     tableTitle: 'Error log list',
@@ -44,24 +44,24 @@ export default {
     fireResourceError: 'Fire resource error',
     fireAjaxError: 'Fire ajax error',
 
-    enableMessage: 'Only effective when useErrorHandle=true in `/src/settings/projectSetting.ts`.'
+    enableMessage: 'Only effective when useErrorHandle=true in `/src/settings/projectSetting.ts`.',
   },
   exception: {
     backLogin: 'Back Login',
     backHome: 'Back Home',
-    subTitle403: "Sorry, you don't have access to this page.",
+    subTitle403: 'Sorry, you don\'t have access to this page.',
     subTitle404: 'Sorry, the page you visited does not exist.',
     subTitle500: 'Sorry, the server is reporting an error.',
     noDataTitle: 'No data on the current page.',
     networkErrorTitle: 'Network Error',
-    networkErrorSubTitle: 'Sorry，Your network connection has been disconnected, please check your network!'
+    networkErrorSubTitle: 'Sorry，Your network connection has been disconnected, please check your network!',
   },
   lock: {
     unlock: 'Click to unlock',
     alert: 'Lock screen password error',
     backToLogin: 'Back to login',
     entry: 'Enter the system',
-    placeholder: 'Please enter the lock screen password or user password'
+    placeholder: 'Please enter the lock screen password or user password',
   },
   login: {
     backSignIn: 'Back sign in',
@@ -75,7 +75,7 @@ export default {
     signInTitle: 'Backstage management system',
     signInDesc: 'Enter your personal details and get started!',
     policy: 'I agree to the xxx Privacy Policy',
-    scanSign: `scanning the code to complete the login`,
+    scanSign: 'scanning the code to complete the login',
 
     loginButton: 'Sign in',
     registerButton: 'Sign up',
@@ -104,6 +104,6 @@ export default {
     confirmPassword: 'Confirm Password',
     email: 'Email',
     smsCode: 'SMS code',
-    mobile: 'Mobile'
-  }
+    mobile: 'Mobile',
+  },
 }

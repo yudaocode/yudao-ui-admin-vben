@@ -1,21 +1,13 @@
-<template>
-  <ScrollContainer ref="wrapperRef">
-    <div ref="spinRef" :style="spinStyle" v-loading="loading" :loading-tip="loadingTip">
-      <slot></slot>
-    </div>
-  </ScrollContainer>
-</template>
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { computed, ref, watchEffect, unref, watch, onMounted, nextTick, onUnmounted } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, unref, watch, watchEffect } from 'vue'
+import { useMutationObserver } from '@vueuse/core'
+import { createModalContext } from '../hooks/useModalContext'
 import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import { ScrollContainer } from '@/components/Container'
-import { createModalContext } from '../hooks/useModalContext'
-import { useMutationObserver } from '@vueuse/core'
 
 defineOptions({ name: 'ModalWrapper', inheritAttrs: false })
 
-const emit = defineEmits(['height-change', 'ext-height'])
 const props = defineProps({
   loading: { type: Boolean },
   useWrapper: { type: Boolean, default: true },
@@ -26,8 +18,9 @@ const props = defineProps({
   footerOffset: { type: Number, default: 0 },
   visible: { type: Boolean },
   fullScreen: { type: Boolean },
-  loadingTip: { type: String }
+  loadingTip: { type: String },
 })
+const emit = defineEmits(['height-change', 'ext-height'])
 const wrapperRef = ref<ComponentRef>(null)
 const spinRef = ref<ElRef>(null)
 const realHeightRef = ref(0)
@@ -35,7 +28,7 @@ const minRealHeightRef = ref(0)
 
 let realHeight = 0
 
-let stopElResizeFn: Fn = () => {}
+const stopElResizeFn: Fn = () => {}
 
 useWindowSizeFn(setModalHeight.bind(null, false))
 
@@ -46,18 +39,18 @@ useMutationObserver(
   },
   {
     attributes: true,
-    subtree: true
-  }
+    subtree: true,
+  },
 )
 
 createModalContext({
-  redoModalHeight: setModalHeight
+  redoModalHeight: setModalHeight,
 })
 
 const spinStyle = computed((): CSSProperties => {
   return {
     minHeight: `${props.minHeight}px`,
-    [props.fullScreen ? 'height' : 'maxHeight']: `${unref(realHeightRef)}px`
+    [props.fullScreen ? 'height' : 'maxHeight']: `${unref(realHeightRef)}px`,
   }
 })
 
@@ -69,12 +62,11 @@ watch(
   () => props.fullScreen,
   (v) => {
     setModalHeight()
-    if (!v) {
+    if (!v)
       realHeightRef.value = minRealHeightRef.value
-    } else {
+    else
       minRealHeightRef.value = realHeightRef.value
-    }
-  }
+  },
 )
 
 onMounted(() => {
@@ -89,7 +81,8 @@ onUnmounted(() => {
 async function scrollTop() {
   nextTick(() => {
     const wrapperRefDom = unref(wrapperRef)
-    if (!wrapperRefDom) return
+    if (!wrapperRefDom)
+      return
     ;(wrapperRefDom as any)?.scrollTo?.(0)
   })
 }
@@ -97,46 +90,60 @@ async function scrollTop() {
 async function setModalHeight() {
   // 解决在弹窗关闭的时候监听还存在,导致再次打开弹窗没有高度
   // 加上这个,就必须在使用的时候传递父级的visible
-  if (!props.visible) return
+  if (!props.visible)
+    return
   const wrapperRefDom = unref(wrapperRef)
-  if (!wrapperRefDom) return
+  if (!wrapperRefDom)
+    return
 
   const bodyDom = wrapperRefDom.$el.parentElement
-  if (!bodyDom) return
+  if (!bodyDom)
+    return
   bodyDom.style.padding = '0'
   await nextTick()
 
   try {
     const modalDom = bodyDom.parentElement && bodyDom.parentElement.parentElement
-    if (!modalDom) return
+    if (!modalDom)
+      return
 
     const modalRect = getComputedStyle(modalDom as Element).top
     const modalTop = Number.parseInt(modalRect)
     let maxHeight = window.innerHeight - modalTop * 2 + (props.footerOffset! || 0) - props.modalFooterHeight - props.modalHeaderHeight
 
     // 距离顶部过进会出现滚动条
-    if (modalTop < 40) {
+    if (modalTop < 40)
       maxHeight -= 26
-    }
+
     await nextTick()
     const spinEl = unref(spinRef)
 
-    if (!spinEl) return
+    if (!spinEl)
+      return
     await nextTick()
     // if (!realHeight) {
     realHeight = spinEl.scrollHeight
     // }
 
-    if (props.fullScreen) {
+    if (props.fullScreen)
       realHeightRef.value = window.innerHeight - props.modalFooterHeight - props.modalHeaderHeight - 28
-    } else {
+    else
       realHeightRef.value = props.height ? props.height : realHeight > maxHeight ? maxHeight : realHeight
-    }
+
     emit('height-change', unref(realHeightRef))
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
   }
 }
 
 defineExpose({ scrollTop })
 </script>
+
+<template>
+  <ScrollContainer ref="wrapperRef">
+    <div ref="spinRef" v-loading="loading" :style="spinStyle" :loading-tip="loadingTip">
+      <slot />
+    </div>
+  </ScrollContainer>
+</template>

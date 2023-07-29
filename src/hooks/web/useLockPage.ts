@@ -1,11 +1,11 @@
 import { computed, onUnmounted, unref, watchEffect } from 'vue'
 import { useThrottleFn } from '@vueuse/core'
 
+import { useRootSetting } from '../setting/useRootSetting'
 import { useAppStore } from '@/store/modules/app'
 import { useLockStore } from '@/store/modules/lock'
 
 import { useUserStore } from '@/store/modules/user'
-import { useRootSetting } from '../setting/useRootSetting'
 
 export function useLockPage() {
   const { getLockTime } = useRootSetting()
@@ -36,23 +36,23 @@ export function useLockPage() {
       () => {
         lockPage()
       },
-      lockTime * 60 * 1000
+      lockTime * 60 * 1000,
     )
   }
 
   function lockPage(): void {
     lockStore.setLockInfo({
       isLock: true,
-      pwd: undefined
+      pwd: undefined,
     })
   }
 
   watchEffect((onClean) => {
-    if (userStore.getAccessToken) {
+    if (userStore.getAccessToken)
       resetCalcLockTimeout()
-    } else {
+    else
       clear()
-    }
+
     onClean(() => {
       clear()
     })
@@ -67,7 +67,8 @@ export function useLockPage() {
   return computed(() => {
     if (unref(getLockTime)) {
       return { onKeyup: keyupFn, onMousemove: keyupFn }
-    } else {
+    }
+    else {
       clear()
       return {}
     }

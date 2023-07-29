@@ -21,13 +21,13 @@ export default defineComponent({
           <Tooltip>
             {{
               title: () => t('common.searchText'),
-              default: () => <SearchOutlined />
+              default: () => <SearchOutlined />,
             }}
           </Tooltip>
           <AppSearchModal onClose={changeModal.bind(null, false)} visible={unref(showModal)} />
         </div>
       )
     }
-  }
+  },
 })
 </script>

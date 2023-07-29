@@ -1,9 +1,3 @@
-<template>
-  <LayoutLockPage />
-  <BackTop v-if="getUseOpenBackTop" :target="getTarget" />
-  <SettingDrawer v-if="getIsFixedSettingDrawer" :class="prefixCls" />
-  <SessionTimeoutLogin v-if="getIsSessionTimeout" />
-</template>
 <script lang="ts" setup>
 import { computed, unref } from 'vue'
 import { BackTop } from 'ant-design-vue'
@@ -18,11 +12,11 @@ import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 import SessionTimeoutLogin from '@/views/base/login/SessionTimeoutLogin.vue'
 
+defineOptions({ name: 'LayoutFeatures' })
+
 const LayoutLockPage = createAsyncComponent(() => import('@/views/base/lock/index.vue'))
 
 const SettingDrawer = createAsyncComponent(() => import('@/layouts/default/setting/index.vue'))
-
-defineOptions({ name: 'LayoutFeatures' })
 
 const { getUseOpenBackTop, getShowSettingButton, getSettingButtonPosition, getFullContent } = useRootSetting()
 const userStore = useUserStoreWithOut()
@@ -34,17 +28,25 @@ const getTarget = () => document.body
 const getIsSessionTimeout = computed(() => userStore.getSessionTimeout)
 
 const getIsFixedSettingDrawer = computed(() => {
-  if (!unref(getShowSettingButton)) {
+  if (!unref(getShowSettingButton))
     return false
-  }
+
   const settingButtonPosition = unref(getSettingButtonPosition)
 
-  if (settingButtonPosition === SettingButtonPositionEnum.AUTO) {
+  if (settingButtonPosition === SettingButtonPositionEnum.AUTO)
     return !unref(getShowHeader) || unref(getFullContent)
-  }
+
   return settingButtonPosition === SettingButtonPositionEnum.FIXED
 })
 </script>
+
+<template>
+  <LayoutLockPage />
+  <BackTop v-if="getUseOpenBackTop" :target="getTarget" />
+  <SettingDrawer v-if="getIsFixedSettingDrawer" :class="prefixCls" />
+  <SessionTimeoutLogin v-if="getIsSessionTimeout" />
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-setting-drawer-feature';
 
@@ -54,13 +56,13 @@ const getIsFixedSettingDrawer = computed(() => {
   right: 0;
   z-index: 10;
   display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   color: @white;
   cursor: pointer;
   background-color: @primary-color;
   border-radius: 6px 0 0 6px;
-  justify-content: center;
-  align-items: center;
 
   svg {
     width: 1em;

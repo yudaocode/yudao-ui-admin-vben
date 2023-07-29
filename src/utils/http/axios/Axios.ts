@@ -1,16 +1,15 @@
-import type { AxiosInstance, AxiosResponse, AxiosError, InternalAxiosRequestConfig, AxiosRequestConfig } from 'axios'
-import type { RequestOptions, Result, UploadFileParams } from '@/types/axios'
-import type { CreateAxiosOptions } from './axiosTransform'
+import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import qs from 'qs'
+import { cloneDeep } from 'lodash-es'
+import type { CreateAxiosOptions } from './axiosTransform'
 import { AxiosCanceler } from './axiosCancel'
 import { isFunction } from '@/utils/is'
-import { cloneDeep } from 'lodash-es'
-import { ContentTypeEnum } from '@/enums/httpEnum'
-import { RequestEnum } from '@/enums/httpEnum'
+import type { RequestOptions, Result, UploadFileParams } from '@/types/axios'
+import { ContentTypeEnum, RequestEnum } from '@/enums/httpEnum'
 import { downloadByData } from '@/utils/file/download'
 import { useGlobSetting } from '@/hooks/setting'
-import { setAccessToken, getRefreshToken, getTenantId, getAccessToken } from '@/utils/auth'
+import { getAccessToken, getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
 
 export * from './axiosTransform'
 const globSetting = useGlobSetting()
@@ -47,18 +46,19 @@ export class VAxios {
   getAxios(): AxiosInstance {
     return this.axiosInstance
   }
+
   refreshToken() {
     axios.defaults.headers.common['tenant-id'] = getTenantId() as number
-    return axios.post(globSetting.apiUrl + '/system/auth/refresh-token?refreshToken=' + getRefreshToken())
+    return axios.post(`${globSetting.apiUrl}/system/auth/refresh-token?refreshToken=${getRefreshToken()}`)
   }
 
   /**
    * @description: 重新配置 axios
    */
   configAxios(config: CreateAxiosOptions) {
-    if (!this.axiosInstance) {
+    if (!this.axiosInstance)
       return
-    }
+
     this.createAxios(config)
   }
 
@@ -66,9 +66,9 @@ export class VAxios {
    * @description: 设置通用标题
    */
   setHeader(headers: any): void {
-    if (!this.axiosInstance) {
+    if (!this.axiosInstance)
       return
-    }
+
     Object.assign(this.axiosInstance.defaults.headers, headers)
   }
 
@@ -78,11 +78,11 @@ export class VAxios {
   private setupInterceptors() {
     const {
       axiosInstance,
-      options: { transform }
+      options: { transform },
     } = this
-    if (!transform) {
+    if (!transform)
       return
-    }
+
     const { requestInterceptors, requestInterceptorsCatch, responseInterceptors, responseInterceptorsCatch } = transform
 
     const axiosCanceler = new AxiosCanceler()
@@ -94,16 +94,16 @@ export class VAxios {
 
       !ignoreCancelToken && axiosCanceler.addPending(config)
 
-      if (requestInterceptors && isFunction(requestInterceptors)) {
+      if (requestInterceptors && isFunction(requestInterceptors))
         config = requestInterceptors(config, this.options)
-      }
+
       return config
     }, undefined)
 
     // 请求拦截器错误捕获
-    requestInterceptorsCatch &&
-      isFunction(requestInterceptorsCatch) &&
-      this.axiosInstance.interceptors.request.use(undefined, requestInterceptorsCatch)
+    requestInterceptorsCatch
+      && isFunction(requestInterceptorsCatch)
+      && this.axiosInstance.interceptors.request.use(undefined, requestInterceptorsCatch)
 
     // 响应结果拦截器处理
     this.axiosInstance.interceptors.response.use(async (res: AxiosResponse<any>) => {
@@ -119,7 +119,7 @@ export class VAxios {
               const refreshTokenRes = await this.refreshToken()
               // 2.1 刷新成功，则回放队列的请求 + 当前请求
               setAccessToken(refreshTokenRes.data.data.accessToken)
-              ;(config as Recordable).headers.Authorization = 'Bearer ' + getAccessToken()
+              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}`
               requestList.forEach((cb: any) => {
                 cb()
               })
@@ -128,36 +128,39 @@ export class VAxios {
                 resolve(this.axiosInstance(config))
               })
               // res = await Promise.all([this.axiosInstance(config)])[0]
-            } catch (e) {
+            }
+            catch (e) {
               requestList.forEach((cb: any) => {
                 cb()
               })
-            } finally {
+            }
+            finally {
               requestList = []
               isRefreshToken = false
             }
           }
-        } else {
+        }
+        else {
           // 添加到队列，等待刷新获取到新的令牌
           return new Promise((resolve) => {
             requestList.push(() => {
-              ;(config as Recordable).headers.Authorization = 'Bearer ' + getAccessToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
               resolve(this.axiosInstance(config))
             })
           })
         }
       }
       res && axiosCanceler.removePending(res.config)
-      if (responseInterceptors && isFunction(responseInterceptors)) {
+      if (responseInterceptors && isFunction(responseInterceptors))
         res = responseInterceptors(res)
-      }
+
       return res
     }, undefined)
 
     // 响应结果拦截器错误捕获
-    responseInterceptorsCatch &&
-      isFunction(responseInterceptorsCatch) &&
-      this.axiosInstance.interceptors.response.use(undefined, (error) => {
+    responseInterceptorsCatch
+      && isFunction(responseInterceptorsCatch)
+      && this.axiosInstance.interceptors.response.use(undefined, (error) => {
         return responseInterceptorsCatch(axiosInstance, error)
       })
   }
@@ -169,11 +172,10 @@ export class VAxios {
     const formData = new window.FormData()
     const customFilename = params.name || 'file'
 
-    if (params.filename) {
+    if (params.filename)
       formData.append(customFilename, params.file, params.filename)
-    } else {
+    else
       formData.append(customFilename, params.file)
-    }
 
     if (params.data) {
       Object.keys(params.data).forEach((key) => {
@@ -195,9 +197,9 @@ export class VAxios {
       data: formData,
       headers: {
         'Content-type': ContentTypeEnum.FORM_DATA,
-        // @ts-ignore
-        ignoreCancelToken: true
-      }
+        // @ts-expect-error
+        'ignoreCancelToken': true,
+      },
     })
   }
 
@@ -207,16 +209,15 @@ export class VAxios {
     const contentType = headers?.['Content-Type'] || headers?.['content-type']
 
     if (
-      contentType !== ContentTypeEnum.FORM_URLENCODED ||
-      !Reflect.has(config, 'data') ||
-      config.method?.toUpperCase() === RequestEnum.GET
-    ) {
+      contentType !== ContentTypeEnum.FORM_URLENCODED
+      || !Reflect.has(config, 'data')
+      || config.method?.toUpperCase() === RequestEnum.GET
+    )
       return config
-    }
 
     return {
       ...config,
-      data: qs.stringify(config.data, { arrayFormat: 'brackets' })
+      data: qs.stringify(config.data, { arrayFormat: 'brackets' }),
     }
   }
 
@@ -240,7 +241,7 @@ export class VAxios {
     let conf: CreateAxiosOptions = cloneDeep({
       ...config,
       method: 'GET',
-      responseType: 'blob'
+      responseType: 'blob',
     })
     const transform = this.getTransform()
 
@@ -250,9 +251,9 @@ export class VAxios {
 
     const { beforeRequestHook, requestCatchHook } = transform || {}
 
-    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+    if (beforeRequestHook && isFunction(beforeRequestHook))
       conf = beforeRequestHook(conf, opt)
-    }
+
     conf.requestOptions = opt
 
     conf = this.supportFormData(conf)
@@ -263,9 +264,8 @@ export class VAxios {
         .then((res: AxiosResponse<Result>) => {
           resolve(res as unknown as Promise<T>)
           // download file
-          if (typeof res != undefined) {
+          if (typeof res != undefined)
             downloadByData(res?.data as unknown as BlobPart, title || 'export')
-          }
         })
         .catch((e: Error | AxiosError) => {
           if (requestCatchHook && isFunction(requestCatchHook)) {
@@ -284,7 +284,7 @@ export class VAxios {
     let conf: CreateAxiosOptions = cloneDeep({
       ...config,
       method: 'POST',
-      responseType: 'blob'
+      responseType: 'blob',
     })
     const transform = this.getTransform()
 
@@ -294,9 +294,9 @@ export class VAxios {
 
     const { beforeRequestHook, requestCatchHook } = transform || {}
 
-    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+    if (beforeRequestHook && isFunction(beforeRequestHook))
       conf = beforeRequestHook(conf, opt)
-    }
+
     conf.requestOptions = opt
 
     conf = this.supportFormData(conf)
@@ -307,9 +307,8 @@ export class VAxios {
         .then((res: AxiosResponse<Result>) => {
           resolve(res as unknown as Promise<T>)
           // download file
-          if (typeof res != undefined) {
+          if (typeof res != undefined)
             downloadByData(res?.data as unknown as BlobPart, title)
-          }
         })
         .catch((e: Error | AxiosError) => {
           if (requestCatchHook && isFunction(requestCatchHook)) {
@@ -327,9 +326,9 @@ export class VAxios {
   request<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
     let conf: CreateAxiosOptions = cloneDeep(config)
     // cancelToken 如果被深拷贝，会导致最外层无法使用cancel方法来取消请求
-    if (config.cancelToken) {
+    if (config.cancelToken)
       conf.cancelToken = config.cancelToken
-    }
+
     const transform = this.getTransform()
 
     const { requestOptions } = this.options
@@ -337,9 +336,9 @@ export class VAxios {
     const opt: RequestOptions = Object.assign({}, requestOptions, options)
 
     const { beforeRequestHook, requestCatchHook, transformResponseHook } = transform || {}
-    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+    if (beforeRequestHook && isFunction(beforeRequestHook))
       conf = beforeRequestHook(conf, opt)
-    }
+
     conf.requestOptions = opt
 
     conf = this.supportFormData(conf)
@@ -352,7 +351,8 @@ export class VAxios {
             try {
               const ret = transformResponseHook(res, opt)
               resolve(ret)
-            } catch (err) {
+            }
+            catch (err) {
               reject(err || new Error('request error!'))
             }
             return

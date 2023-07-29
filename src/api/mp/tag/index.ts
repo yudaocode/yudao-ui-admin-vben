@@ -12,12 +12,12 @@ export function updateTag(data) {
 
 // 删除公众号标签
 export function deleteTag(id) {
-  return defHttp.delete({ url: '/mp/tag/delete?id=' + id })
+  return defHttp.delete({ url: `/mp/tag/delete?id=${id}` })
 }
 
 // 获得公众号标签
 export function getTag(id) {
-  return defHttp.get({ url: '/mp/tag/get?id=' + id })
+  return defHttp.get({ url: `/mp/tag/get?id=${id}` })
 }
 
 // 获得公众号标签分页
@@ -32,5 +32,5 @@ export function getSimpleTags() {
 
 // 同步公众号标签
 export function syncTag(accountId) {
-  return defHttp.post({ url: '/mp/tag/sync?accountId=' + accountId })
+  return defHttp.post({ url: `/mp/tag/sync?accountId=${accountId}` })
 }

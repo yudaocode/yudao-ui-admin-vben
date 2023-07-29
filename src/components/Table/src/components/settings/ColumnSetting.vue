@@ -1,106 +1,25 @@
-<template>
-  <Tooltip placement="top">
-    <template #title>
-      <span>{{ t('component.table.settingColumn') }}</span>
-    </template>
-    <Popover
-      placement="bottomLeft"
-      trigger="click"
-      @visible-change="handleVisibleChange"
-      :overlayClassName="`${prefixCls}__cloumn-list`"
-      :getPopupContainer="getPopupContainer"
-    >
-      <template #title>
-        <div :class="`${prefixCls}__popover-title`">
-          <Checkbox :indeterminate="indeterminate" v-model:checked="state.checkAll" @change="onCheckAllChange">
-            {{ t('component.table.settingColumnShow') }}
-          </Checkbox>
-
-          <Checkbox v-model:checked="checkIndex" @change="handleIndexCheckChange">
-            {{ t('component.table.settingIndexColumnShow') }}
-          </Checkbox>
-
-          <Checkbox v-model:checked="checkSelect" @change="handleSelectCheckChange" :disabled="!defaultRowSelection">
-            {{ t('component.table.settingSelectColumnShow') }}
-          </Checkbox>
-
-          <a-button size="small" type="link" @click="reset">
-            {{ t('common.resetText') }}
-          </a-button>
-        </div>
-      </template>
-
-      <template #content>
-        <ScrollContainer>
-          <CheckboxGroup v-model:value="state.checkedList" @change="onChange" ref="columnListRef">
-            <template v-for="item in plainOptions" :key="item.value">
-              <div :class="`${prefixCls}__check-item`" v-if="!('ifShow' in item && !item.ifShow)">
-                <DragOutlined class="table-column-drag-icon" />
-                <Checkbox :value="item.value">
-                  {{ item.label }}
-                </Checkbox>
-
-                <Tooltip placement="bottomLeft" :mouseLeaveDelay="0.4" :getPopupContainer="getPopupContainer">
-                  <template #title>
-                    {{ t('component.table.settingFixedLeft') }}
-                  </template>
-                  <Icon
-                    icon="line-md:arrow-align-left"
-                    :class="[
-                      `${prefixCls}__fixed-left`,
-                      {
-                        active: item.fixed === 'left',
-                        disabled: !state.checkedList.includes(item.value)
-                      }
-                    ]"
-                    @click="handleColumnFixed(item, 'left')"
-                  />
-                </Tooltip>
-                <Divider type="vertical" />
-                <Tooltip placement="bottomLeft" :mouseLeaveDelay="0.4" :getPopupContainer="getPopupContainer">
-                  <template #title>
-                    {{ t('component.table.settingFixedRight') }}
-                  </template>
-                  <Icon
-                    icon="line-md:arrow-align-left"
-                    :class="[
-                      `${prefixCls}__fixed-right`,
-                      {
-                        active: item.fixed === 'right',
-                        disabled: !state.checkedList.includes(item.value)
-                      }
-                    ]"
-                    @click="handleColumnFixed(item, 'right')"
-                  />
-                </Tooltip>
-              </div>
-            </template>
-          </CheckboxGroup>
-        </ScrollContainer>
-      </template>
-      <SettingOutlined />
-    </Popover>
-  </Tooltip>
-</template>
 <script lang="ts" setup>
-import type { BasicColumn, BasicTableProps, ColumnChangeParam } from '../../types/table'
-import { ref, reactive, useAttrs, watchEffect, nextTick, unref, computed } from 'vue'
-import { Tooltip, Popover, Checkbox, Divider } from 'ant-design-vue'
+import { computed, nextTick, reactive, ref, unref, useAttrs, watchEffect } from 'vue'
+import { Checkbox, Divider, Popover, Tooltip } from 'ant-design-vue'
 import type { CheckboxChangeEvent } from 'ant-design-vue/lib/checkbox/interface'
-import { SettingOutlined, DragOutlined } from '@ant-design/icons-vue'
-import { Icon } from '@/components/Icon'
-import { ScrollContainer } from '@/components/Container'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useTableContext } from '../../hooks/useTableContext'
-import { useDesign } from '@/hooks/web/useDesign'
-// import { useSortable } from '@/hooks/web/useSortable';
-import { isFunction, isNullAndUnDef } from '@/utils/is'
-import { getPopupContainer as getParentContainer } from '@/utils'
+import { DragOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { cloneDeep, omit } from 'lodash-es'
 import Sortablejs from 'sortablejs'
 import type Sortable from 'sortablejs'
+import type { BasicColumn, BasicTableProps, ColumnChangeParam } from '../../types/table'
+import { useTableContext } from '../../hooks/useTableContext'
+import { Icon } from '@/components/Icon'
+import { ScrollContainer } from '@/components/Container'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useDesign } from '@/hooks/web/useDesign'
+
+// import { useSortable } from '@/hooks/web/useSortable';
+import { isFunction, isNullAndUnDef } from '@/utils/is'
+import { getPopupContainer as getParentContainer } from '@/utils'
 
 defineOptions({ name: 'ColumnSetting' })
+
+const emit = defineEmits(['columns-change'])
 
 interface State {
   checkAll: boolean
@@ -116,7 +35,6 @@ interface Options {
 }
 
 const CheckboxGroup = Checkbox.Group
-const emit = defineEmits(['columns-change'])
 const attrs = useAttrs()
 
 const { t } = useI18n()
@@ -139,7 +57,7 @@ const columnListRef = ref<ComponentRef>(null)
 const state = reactive<State>({
   checkAll: true,
   checkedList: [],
-  defaultCheckList: []
+  defaultCheckList: [],
 })
 
 /** 缓存初始化props */
@@ -156,21 +74,20 @@ const getValues = computed(() => {
 watchEffect(() => {
   const columns = table.getColumns()
   setTimeout(() => {
-    if (isSetColumnsFromThis) {
+    if (isSetColumnsFromThis)
       isSetColumnsFromThis = false
-    } else if (columns.length) {
+    else if (columns.length)
       init()
-    }
   }, 0)
 })
 
 watchEffect(() => {
   const values = unref(getValues)
-  if (isSetPropsFromThis) {
+  if (isSetPropsFromThis)
     isSetPropsFromThis = false
-  } else {
+  else
     cacheTableProps = cloneDeep(values)
-  }
+
   checkIndex.value = !!values.showIndexColumn
   checkSelect.value = !!values.rowSelection
 })
@@ -181,7 +98,7 @@ function getColumns() {
     ret.push({
       label: (item.title as string) || (item.customTitle as string),
       value: (item.dataIndex || item.title) as string,
-      ...item
+      ...item,
     })
   })
   return ret
@@ -194,7 +111,7 @@ async function init(isReset = false) {
   const columnListEl = unref(columnListRef)
   if (columnListEl && (columnListEl as any).$el) {
     const el = (columnListEl as any).$el as Element
-    Array.from(el.children).forEach((item) => el.removeChild(item))
+    Array.from(el.children).forEach(item => el.removeChild(item))
   }
   await nextTick()
   const columns = isReset ? cloneDeep(cachePlainOptions.value) : getColumns()
@@ -202,9 +119,9 @@ async function init(isReset = false) {
   const checkList = table
     .getColumns({ ignoreAction: true, ignoreIndex: true })
     .map((item) => {
-      if (item.defaultHidden) {
+      if (item.defaultHidden)
         return ''
-      }
+
       return item.dataIndex || item.title
     })
     .filter(Boolean) as string[]
@@ -225,12 +142,13 @@ async function init(isReset = false) {
 
 // checkAll change
 function onCheckAllChange(e: CheckboxChangeEvent) {
-  const checkList = plainSortOptions.value.map((item) => item.value)
-  plainSortOptions.value.forEach((item) => ((item as BasicColumn).defaultHidden = !e.target.checked))
+  const checkList = plainSortOptions.value.map(item => item.value)
+  plainSortOptions.value.forEach(item => ((item as BasicColumn).defaultHidden = !e.target.checked))
   if (e.target.checked) {
     state.checkedList = checkList
     setColumns(checkList)
-  } else {
+  }
+  else {
     state.checkedList = []
     setColumns([])
   }
@@ -238,7 +156,7 @@ function onCheckAllChange(e: CheckboxChangeEvent) {
 
 const indeterminate = computed(() => {
   const len = plainOptions.value.length
-  let checkedLen = state.checkedList.length
+  const checkedLen = state.checkedList.length
   // unref(checkIndex) && checkedLen--;
   return checkedLen > 0 && checkedLen < len
 })
@@ -247,7 +165,7 @@ const indeterminate = computed(() => {
 function onChange(checkedList: string[]) {
   const len = plainSortOptions.value.length
   state.checkAll = checkedList.length === len
-  const sortList = unref(plainSortOptions).map((item) => item.value)
+  const sortList = unref(plainSortOptions).map(item => item.value)
   checkedList.sort((prev, next) => {
     return sortList.indexOf(prev) - sortList.indexOf(next)
   })
@@ -267,19 +185,22 @@ function reset() {
   checkSelect.value = !!cacheTableProps.rowSelection
   table.setProps({
     showIndexColumn: checkIndex.value,
-    rowSelection: checkSelect.value ? defaultRowSelection : undefined
+    rowSelection: checkSelect.value ? defaultRowSelection : undefined,
   })
   sortable.sort(sortableOrder)
 }
 
 // Open the pop-up window for drag and drop initialization
 function handleVisibleChange() {
-  if (inited) return
+  if (inited)
+    return
   nextTick(() => {
     const columnListEl = unref(columnListRef)
-    if (!columnListEl) return
+    if (!columnListEl)
+      return
     const el = columnListEl.$el as any
-    if (!el) return
+    if (!el)
+      return
     // Drag and drop sort
     sortable = Sortablejs.create(unref(el), {
       animation: 500,
@@ -288,24 +209,25 @@ function handleVisibleChange() {
       handle: '.table-column-drag-icon ',
       onEnd: (evt) => {
         const { oldIndex, newIndex } = evt
-        if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex) {
+        if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex)
           return
-        }
+
         // Sort column
         const columns = cloneDeep(plainSortOptions.value)
 
         if (oldIndex > newIndex) {
           columns.splice(newIndex, 0, columns[oldIndex])
           columns.splice(oldIndex + 1, 1)
-        } else {
+        }
+        else {
           columns.splice(newIndex + 1, 0, columns[oldIndex])
           columns.splice(oldIndex, 1)
         }
 
         plainSortOptions.value = columns
 
-        setColumns(columns.filter((item) => state.checkedList.includes(item.value)))
-      }
+        setColumns(columns.filter(item => state.checkedList.includes(item.value)))
+      },
     })
     // 记录原始order 序列
     sortableOrder = sortable.toArray()
@@ -318,7 +240,7 @@ function handleIndexCheckChange(e: CheckboxChangeEvent) {
   isSetPropsFromThis = true
   isSetColumnsFromThis = true
   table.setProps({
-    showIndexColumn: e.target.checked
+    showIndexColumn: e.target.checked,
   })
 }
 
@@ -327,24 +249,25 @@ function handleSelectCheckChange(e: CheckboxChangeEvent) {
   isSetPropsFromThis = true
   isSetColumnsFromThis = true
   table.setProps({
-    rowSelection: e.target.checked ? defaultRowSelection : undefined
+    rowSelection: e.target.checked ? defaultRowSelection : undefined,
   })
 }
 
 function handleColumnFixed(item: BasicColumn, fixed?: 'left' | 'right') {
-  if (!state.checkedList.includes(item.dataIndex as string)) return
+  if (!state.checkedList.includes(item.dataIndex as string))
+    return
 
   const columns = getColumns().filter((c: BasicColumn) => state.checkedList.includes(c.dataIndex as string)) as BasicColumn[]
   const isFixed = item.fixed === fixed ? false : fixed
-  const index = columns.findIndex((col) => col.dataIndex === item.dataIndex)
-  if (index !== -1) {
+  const index = columns.findIndex(col => col.dataIndex === item.dataIndex)
+  if (index !== -1)
     columns[index].fixed = isFixed
-  }
+
   item.fixed = isFixed
 
-  if (isFixed && !item.width) {
+  if (isFixed && !item.width)
     item.width = 100
-  }
+
   updateSortOption(item)
   table.setCacheColumnsByField?.(item.dataIndex as string, { fixed: isFixed })
   setColumns(columns)
@@ -355,8 +278,8 @@ function setColumns(columns: BasicColumn[] | string[]) {
   isSetColumnsFromThis = true
   table.setColumns(columns)
   const data: ColumnChangeParam[] = unref(plainSortOptions).map((col) => {
-    const visible =
-      columns.findIndex((c: BasicColumn | string) => c === col.value || (typeof c !== 'string' && c.dataIndex === col.value)) !== -1
+    const visible
+      = columns.findIndex((c: BasicColumn | string) => c === col.value || (typeof c !== 'string' && c.dataIndex === col.value)) !== -1
     return { dataIndex: col.value, fixed: col.fixed, visible }
   })
 
@@ -369,12 +292,97 @@ function getPopupContainer() {
 
 function updateSortOption(column: BasicColumn) {
   plainSortOptions.value.forEach((item) => {
-    if (item.value === column.dataIndex) {
+    if (item.value === column.dataIndex)
       Object.assign(item, column)
-    }
   })
 }
 </script>
+
+<template>
+  <Tooltip placement="top">
+    <template #title>
+      <span>{{ t('component.table.settingColumn') }}</span>
+    </template>
+    <Popover
+      placement="bottomLeft"
+      trigger="click"
+      :overlay-class-name="`${prefixCls}__cloumn-list`"
+      :get-popup-container="getPopupContainer"
+      @visible-change="handleVisibleChange"
+    >
+      <template #title>
+        <div :class="`${prefixCls}__popover-title`">
+          <Checkbox v-model:checked="state.checkAll" :indeterminate="indeterminate" @change="onCheckAllChange">
+            {{ t('component.table.settingColumnShow') }}
+          </Checkbox>
+
+          <Checkbox v-model:checked="checkIndex" @change="handleIndexCheckChange">
+            {{ t('component.table.settingIndexColumnShow') }}
+          </Checkbox>
+
+          <Checkbox v-model:checked="checkSelect" :disabled="!defaultRowSelection" @change="handleSelectCheckChange">
+            {{ t('component.table.settingSelectColumnShow') }}
+          </Checkbox>
+
+          <a-button size="small" type="link" @click="reset">
+            {{ t('common.resetText') }}
+          </a-button>
+        </div>
+      </template>
+
+      <template #content>
+        <ScrollContainer>
+          <CheckboxGroup ref="columnListRef" v-model:value="state.checkedList" @change="onChange">
+            <template v-for="item in plainOptions" :key="item.value">
+              <div v-if="!('ifShow' in item && !item.ifShow)" :class="`${prefixCls}__check-item`">
+                <DragOutlined class="table-column-drag-icon" />
+                <Checkbox :value="item.value">
+                  {{ item.label }}
+                </Checkbox>
+
+                <Tooltip placement="bottomLeft" :mouse-leave-delay="0.4" :get-popup-container="getPopupContainer">
+                  <template #title>
+                    {{ t('component.table.settingFixedLeft') }}
+                  </template>
+                  <Icon
+                    icon="line-md:arrow-align-left"
+                    :class="[
+                      `${prefixCls}__fixed-left`,
+                      {
+                        active: item.fixed === 'left',
+                        disabled: !state.checkedList.includes(item.value),
+                      },
+                    ]"
+                    @click="handleColumnFixed(item, 'left')"
+                  />
+                </Tooltip>
+                <Divider type="vertical" />
+                <Tooltip placement="bottomLeft" :mouse-leave-delay="0.4" :get-popup-container="getPopupContainer">
+                  <template #title>
+                    {{ t('component.table.settingFixedRight') }}
+                  </template>
+                  <Icon
+                    icon="line-md:arrow-align-left"
+                    :class="[
+                      `${prefixCls}__fixed-right`,
+                      {
+                        active: item.fixed === 'right',
+                        disabled: !state.checkedList.includes(item.value),
+                      },
+                    ]"
+                    @click="handleColumnFixed(item, 'right')"
+                  />
+                </Tooltip>
+              </div>
+            </template>
+          </CheckboxGroup>
+        </ScrollContainer>
+      </template>
+      <SettingOutlined />
+    </Popover>
+  </Tooltip>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-column-setting';
 

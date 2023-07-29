@@ -1,32 +1,18 @@
 <!--
  * @Description: 渲染JSON数据
 -->
-<template>
-  <Modal
-    title="JSON数据"
-    :footer="null"
-    :visible="visible"
-    @cancel="handleCancel"
-    :destroyOnClose="true"
-    wrapClassName="v-code-modal"
-    style="top: 20px"
-    width="850px"
-  >
-    <PreviewCode :editorJson="editorJson" />
-  </Modal>
-</template>
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue'
-import PreviewCode from './PreviewCode.vue'
-import { IFormConfig } from '../../../typings/v-form-component'
-import { formatRules, removeAttrs } from '../../../utils'
 import { Modal } from 'ant-design-vue'
+import type { IFormConfig } from '../../../typings/v-form-component'
+import { formatRules, removeAttrs } from '../../../utils'
+import PreviewCode from './PreviewCode.vue'
 
 export default defineComponent({
   name: 'JsonModal',
   components: {
     PreviewCode,
-    Modal
+    Modal,
   },
   emits: ['cancel'],
   setup(_props, { emit }) {
@@ -35,7 +21,7 @@ export default defineComponent({
       jsonData: IFormConfig
     }>({
       visible: false, // 控制json数据弹框显示
-      jsonData: {} as IFormConfig // json数据
+      jsonData: {} as IFormConfig, // json数据
     })
     /**
      * 显示Json数据弹框
@@ -59,6 +45,21 @@ export default defineComponent({
     }
 
     return { ...toRefs(state), editorJson, handleCancel, showModal }
-  }
+  },
 })
 </script>
+
+<template>
+  <Modal
+    title="JSON数据"
+    :footer="null"
+    :visible="visible"
+    :destroy-on-close="true"
+    wrap-class-name="v-code-modal"
+    style="top: 20px"
+    width="850px"
+    @cancel="handleCancel"
+  >
+    <PreviewCode :editor-json="editorJson" />
+  </Modal>
+</template>

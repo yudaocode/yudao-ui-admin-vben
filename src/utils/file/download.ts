@@ -42,9 +42,9 @@ export function downloadByData(data: BlobPart, filename: string, mime?: string, 
   tempLink.style.display = 'none'
   tempLink.href = blobURL
   tempLink.setAttribute('download', filename)
-  if (typeof tempLink.download === 'undefined') {
+  if (typeof tempLink.download === 'undefined')
     tempLink.setAttribute('target', '_blank')
-  }
+
   document.body.appendChild(tempLink)
   tempLink.click()
   document.body.removeChild(tempLink)
@@ -56,8 +56,8 @@ export function downloadByData(data: BlobPart, filename: string, mime?: string, 
  * @param {*} sUrl
  */
 export function downloadByUrl({ url, target = '_blank', fileName }: { url: string; target?: TargetContext; fileName?: string }): boolean {
-  const isChrome = window.navigator.userAgent.toLowerCase().indexOf('chrome') > -1
-  const isSafari = window.navigator.userAgent.toLowerCase().indexOf('safari') > -1
+  const isChrome = window.navigator.userAgent.toLowerCase().includes('chrome')
+  const isSafari = window.navigator.userAgent.toLowerCase().includes('safari')
 
   if (/(iP)/g.test(window.navigator.userAgent)) {
     console.error('Your browser does not support download!')
@@ -68,9 +68,8 @@ export function downloadByUrl({ url, target = '_blank', fileName }: { url: strin
     link.href = url
     link.target = target
 
-    if (link.download !== undefined) {
+    if (link.download !== undefined)
       link.download = fileName || url.substring(url.lastIndexOf('/') + 1, url.length)
-    }
 
     if (document.createEvent) {
       const e = document.createEvent('MouseEvents')
@@ -79,9 +78,8 @@ export function downloadByUrl({ url, target = '_blank', fileName }: { url: strin
       return true
     }
   }
-  if (url.indexOf('?') === -1) {
+  if (!url.includes('?'))
     url += '?download'
-  }
 
   openWindow(url, { target })
   return true

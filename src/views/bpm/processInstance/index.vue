@@ -1,46 +1,11 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="warning" v-auth="['bpm:process-instance:query']" :preIcon="IconEnum.ADD" @click="handleCreate"> 发起流程 </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.VIEW,
-                label: t('action.detail'),
-                auth: 'bpm:process-instance:query',
-                onClick: handleDetail.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.cancel'),
-                ifShow: record.result === 1,
-                auth: 'bpm:process-instance:cancel',
-                popConfirm: {
-                  title: t('action.cancel'),
-                  placement: 'left',
-                  confirm: handleCancel.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-  </div>
-</template>
 <script lang="ts" setup>
+import { columns, searchFormSchema } from './processInstance.data'
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { cancelProcessInstance, getMyProcessInstancePage } from '@/api/bpm/processInstance'
-import { columns, searchFormSchema } from './processInstance.data'
 
 defineOptions({ name: 'InfraApiErrorLog' })
 
@@ -58,8 +23,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 /** 发起流程操作 */
@@ -79,3 +44,41 @@ async function handleCancel(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['bpm:process-instance:query']" type="warning" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          发起流程
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.VIEW,
+                label: t('action.detail'),
+                auth: 'bpm:process-instance:query',
+                onClick: handleDetail.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.cancel'),
+                ifShow: record.result === 1,
+                auth: 'bpm:process-instance:cancel',
+                popConfirm: {
+                  title: t('action.cancel'),
+                  placement: 'left',
+                  confirm: handleCancel.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+  </div>
+</template>

@@ -1,12 +1,7 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" title="IP 查询" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
+import { formSchema } from './area.data'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { formSchema } from './area.data'
 import { getAreaByIp } from '@/api/system/area'
 
 defineOptions({ name: 'SystemAreaModal' })
@@ -16,7 +11,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
-  actionColOptions: { span: 23 }
+  actionColOptions: { span: 23 },
 })
 
 const [registerModal, { setModalProps }] = useModalInner(async () => {
@@ -33,8 +28,15 @@ async function handleSubmit() {
       values.result = res
       setFieldsValue({ ...values })
     }
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" title="IP 查询" @register="registerModal" @ok="handleSubmit">
+    <BasicForm @register="registerForm" />
+  </BasicModal>
+</template>

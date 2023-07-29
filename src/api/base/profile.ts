@@ -57,7 +57,7 @@ enum Api {
   uploadAvatarApi = '/system/user/profile/update-avatar',
   updateUserPwdApi = '/system/user/profile/update-password',
   socialBindApi = '/system/social-user/bind',
-  socialUnbindApi = '/system/social-user/unbind'
+  socialUnbindApi = '/system/social-user/unbind',
 }
 
 /**
@@ -79,9 +79,9 @@ export function updateUserPwdApi(oldPassword: string, newPassword: string) {
   return defHttp.put({
     url: Api.updateUserPwdApi,
     data: {
-      oldPassword: oldPassword,
-      newPassword: newPassword
-    }
+      oldPassword,
+      newPassword,
+    },
   })
 }
 
@@ -91,10 +91,10 @@ export function uploadAvatarApi(data) {
     url: Api.uploadAvatarApi,
     headers: {
       'Content-type': ContentTypeEnum.FORM_DATA,
-      // @ts-ignore
-      ignoreCancelToken: true
+      // @ts-expect-error
+      'ignoreCancelToken': true,
     },
-    data
+    data,
   })
 }
 
@@ -105,8 +105,8 @@ export function socialBind(type, code, state) {
     data: {
       type,
       code,
-      state
-    }
+      state,
+    },
   })
 }
 
@@ -116,14 +116,14 @@ export function socialUnbind(type, openid) {
     url: Api.socialUnbindApi,
     data: {
       type,
-      openid
-    }
+      openid,
+    },
   })
 }
 
 // 社交授权的跳转
 export function socialAuthRedirect(type, redirectUri) {
   return defHttp.get({
-    url: '/system/auth/social-auth-redirect?type=' + type + '&redirectUri=' + redirectUri
+    url: `/system/auth/social-auth-redirect?type=${type}&redirectUri=${redirectUri}`,
   })
 }

@@ -29,6 +29,6 @@ export function updateTaskAssignee(data) {
 
 export function getTaskListByProcessInstanceId(processInstanceId) {
   return defHttp.get({
-    url: '/bpm/task/list-by-process-instance-id?processInstanceId=' + processInstanceId
+    url: `/bpm/task/list-by-process-instance-id?processInstanceId=${processInstanceId}`,
   })
 }

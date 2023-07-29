@@ -1,6 +1,6 @@
 import * as xlsx from 'xlsx'
 import type { WorkBook } from 'xlsx'
-import type { JsonToSheet, AoAToSheet } from './typing'
+import type { AoAToSheet, JsonToSheet } from './typing'
 
 const { utils, writeFile } = xlsx
 
@@ -23,7 +23,7 @@ function setColumnWidth(data, worksheet, min = 3) {
   })
   Object.keys(obj).forEach((key) => {
     worksheet['!cols'].push({
-      wch: obj[key]
+      wch: obj[key],
     })
   })
 }
@@ -33,7 +33,7 @@ export function jsonToSheetXlsx<T = any>({
   header,
   filename = DEF_FILE_NAME,
   json2sheetOpts = {},
-  write2excelOpts = { bookType: 'xlsx' }
+  write2excelOpts = { bookType: 'xlsx' },
 }: JsonToSheet<T>) {
   const arrData = [...data]
   if (header) {
@@ -47,8 +47,8 @@ export function jsonToSheetXlsx<T = any>({
   const workbook: WorkBook = {
     SheetNames: [filename],
     Sheets: {
-      [filename]: worksheet
-    }
+      [filename]: worksheet,
+    },
   }
   /* output format determined by filename */
   writeFile(workbook, filename, write2excelOpts)
@@ -57,9 +57,8 @@ export function jsonToSheetXlsx<T = any>({
 
 export function aoaToSheetXlsx<T = any>({ data, header, filename = DEF_FILE_NAME, write2excelOpts = { bookType: 'xlsx' } }: AoAToSheet<T>) {
   const arrData = [...data]
-  if (header) {
+  if (header)
     arrData.unshift(header)
-  }
 
   const worksheet = utils.aoa_to_sheet(arrData)
 
@@ -67,8 +66,8 @@ export function aoaToSheetXlsx<T = any>({ data, header, filename = DEF_FILE_NAME
   const workbook: WorkBook = {
     SheetNames: [filename],
     Sheets: {
-      [filename]: worksheet
-    }
+      [filename]: worksheet,
+    },
   }
   /* output format determined by filename */
   writeFile(workbook, filename, write2excelOpts)

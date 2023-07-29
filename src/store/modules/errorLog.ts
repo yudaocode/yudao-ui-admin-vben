@@ -1,6 +1,6 @@
+import { defineStore } from 'pinia'
 import type { ErrorLogInfo } from '@/types/store'
 
-import { defineStore } from 'pinia'
 import { store } from '@/store'
 
 import { formatToDateTime } from '@/utils/dateUtil'
@@ -16,7 +16,7 @@ export interface ErrorLogState {
 export const useErrorLogStore = defineStore('app-error-log', {
   state: (): ErrorLogState => ({
     errorLogInfoList: null,
-    errorLogListCount: 0
+    errorLogListCount: 0,
   }),
   getters: {
     getErrorLogInfoList(state): ErrorLogInfo[] {
@@ -24,13 +24,13 @@ export const useErrorLogStore = defineStore('app-error-log', {
     },
     getErrorLogListCount(state): number {
       return state.errorLogListCount
-    }
+    },
   },
   actions: {
     addErrorLogInfo(info: ErrorLogInfo) {
       const item = {
         ...info,
-        time: formatToDateTime(new Date())
+        time: formatToDateTime(new Date()),
       }
       this.errorLogInfoList = [item, ...(this.errorLogInfoList || [])]
       this.errorLogListCount += 1
@@ -47,12 +47,12 @@ export const useErrorLogStore = defineStore('app-error-log', {
      */
     addAjaxErrorInfo(error) {
       const { useErrorHandle } = projectSetting
-      if (!useErrorHandle) {
+      if (!useErrorHandle)
         return
-      }
+
       const errInfo: Partial<ErrorLogInfo> = {
         message: error.message,
-        type: ErrorTypeEnum.AJAX
+        type: ErrorTypeEnum.AJAX,
       }
       if (error.response) {
         const { config: { url = '', data: params = '', method = 'get', headers = {} } = {}, data = {} } = error.response
@@ -63,8 +63,8 @@ export const useErrorLogStore = defineStore('app-error-log', {
         errInfo.detail = JSON.stringify({ params, method, headers })
       }
       this.addErrorLogInfo(errInfo as ErrorLogInfo)
-    }
-  }
+    },
+  },
 })
 
 // Need to be used outside the setup

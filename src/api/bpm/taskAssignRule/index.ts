@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type TaskAssignVO = {
+export interface TaskAssignVO {
   id: number
   modelId: string
   processDefinitionId: string

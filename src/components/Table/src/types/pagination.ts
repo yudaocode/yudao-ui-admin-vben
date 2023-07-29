@@ -1,5 +1,5 @@
 import Pagination from 'ant-design-vue/lib/pagination'
-import { VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
 
 interface PaginationRenderProps {
   page: number

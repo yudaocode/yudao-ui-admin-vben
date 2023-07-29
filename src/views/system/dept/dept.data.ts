@@ -1,6 +1,7 @@
 import { listSimpleDept } from '@/api/system/dept'
 import { getListSimpleUsers } from '@/api/system/user'
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 let userOptions: any[] = []
@@ -17,28 +18,27 @@ export const columns: BasicColumn[] = [
     title: '部门名称',
     dataIndex: 'name',
     width: 260,
-    align: 'left'
+    align: 'left',
   },
   {
     title: '负责人',
     dataIndex: 'leaderUserId',
     width: 120,
     customRender: ({ text }) => {
-      if (!text) {
+      if (!text)
         return '未设置'
-      }
+
       for (const user of userOptions) {
-        if (text === user.id) {
+        if (text === user.id)
           return user.nickname
-        }
       }
-      return '未知【' + text + '】'
-    }
+      return `未知【${text}】`
+    },
   },
   {
     title: '排序',
     dataIndex: 'sort',
-    width: 60
+    width: 60,
   },
   {
     title: '状态',
@@ -46,7 +46,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
-    }
+    },
   },
   {
     title: '创建时间',
@@ -54,8 +54,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
@@ -63,24 +63,24 @@ export const searchFormSchema: FormSchema[] = [
     label: '部门名称',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
     },
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 export const formSchema: FormSchema[] = [
   {
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '上级部门',
@@ -93,23 +93,23 @@ export const formSchema: FormSchema[] = [
       fieldNames: {
         label: 'name',
         key: 'id',
-        value: 'id'
+        value: 'id',
       },
-      handleTree: 'id'
-    }
+      handleTree: 'id',
+    },
   },
   {
     label: '部门名称',
     field: 'name',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '岗位顺序',
     field: 'sort',
     required: true,
     defaultValue: 0,
-    component: 'InputNumber'
+    component: 'InputNumber',
   },
   {
     label: '负责人',
@@ -118,8 +118,8 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       api: () => getListSimpleUsers(),
       labelField: 'nickname',
-      valueField: 'id'
-    }
+      valueField: 'id',
+    },
   },
   {
     label: '联系电话',
@@ -129,23 +129,23 @@ export const formSchema: FormSchema[] = [
       {
         pattern: /^(?:(?:\+|00)86)?1(?:3[\d]|4[5-79]|5[0-35-9]|6[5-7]|7[0-8]|8[\d]|9[189])\d{8}$/,
         message: '请输入正确的手机号码',
-        trigger: 'blur'
-      }
+        trigger: 'blur',
+      },
     ],
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '邮箱',
     field: 'email',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '部门状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
-    }
-  }
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
+    },
+  },
 ]

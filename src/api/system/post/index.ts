@@ -34,7 +34,7 @@ export function listSimplePosts() {
 
 // 查询岗位详情
 export function getPost(id: number) {
-  return defHttp.get({ url: '/system/post/get?id=' + id })
+  return defHttp.get({ url: `/system/post/get?id=${id}` })
 }
 
 // 新增岗位
@@ -49,7 +49,7 @@ export function updatePost(data: PostVO) {
 
 // 删除岗位
 export function deletePost(id: number) {
-  return defHttp.delete({ url: '/system/post/delete?id=' + id })
+  return defHttp.delete({ url: `/system/post/delete?id=${id}` })
 }
 
 // 导出岗位

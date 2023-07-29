@@ -1,10 +1,3 @@
-<template>
-  <div v-if="getShowDarkModeToggle" :class="getClass" @click="toggleDarkMode">
-    <div :class="`${prefixCls}-inner`"></div>
-    <SvgIcon size="14" name="sun" />
-    <SvgIcon size="14" name="moon" />
-  </div>
-</template>
 <script lang="ts" setup>
 import { computed, unref } from 'vue'
 import { SvgIcon } from '@/components/Icon'
@@ -22,8 +15,8 @@ const isDark = computed(() => getDarkMode.value === ThemeEnum.DARK)
 const getClass = computed(() => [
   prefixCls,
   {
-    [`${prefixCls}--dark`]: unref(isDark)
-  }
+    [`${prefixCls}--dark`]: unref(isDark),
+  },
 ])
 
 function toggleDarkMode() {
@@ -34,6 +27,15 @@ function toggleDarkMode() {
   updateSidebarBgColor()
 }
 </script>
+
+<template>
+  <div v-if="getShowDarkModeToggle" :class="getClass" @click="toggleDarkMode">
+    <div :class="`${prefixCls}-inner`" />
+    <SvgIcon size="14" name="sun" />
+    <SvgIcon size="14" name="moon" />
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-dark-switch';
 
@@ -46,6 +48,8 @@ html[data-theme='dark'] {
 .@{prefix-cls} {
   position: relative;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 50px;
   height: 26px;
   padding: 0 6px;
@@ -53,8 +57,6 @@ html[data-theme='dark'] {
   cursor: pointer;
   background-color: #151515;
   border-radius: 30px;
-  justify-content: space-between;
-  align-items: center;
 
   &-inner {
     position: absolute;

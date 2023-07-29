@@ -12,7 +12,7 @@ const dashboard: AppRouteModule = {
   meta: {
     orderNo: 10,
     icon: 'ant-design:home-outlined',
-    title: t('routes.dashboard.dashboard')
+    title: t('routes.dashboard.dashboard'),
   },
   children: [
     {
@@ -22,8 +22,8 @@ const dashboard: AppRouteModule = {
       meta: {
         // affix: true,
         title: t('routes.dashboard.analysis'),
-        icon: 'ant-design:bar-chart-outlined'
-      }
+        icon: 'ant-design:bar-chart-outlined',
+      },
     },
     {
       path: 'workbench',
@@ -31,10 +31,10 @@ const dashboard: AppRouteModule = {
       component: () => import('@/views/dashboard/workbench/index.vue'),
       meta: {
         title: t('routes.dashboard.workbench'),
-        icon: 'ant-design:appstore-outlined'
-      }
-    }
-  ]
+        icon: 'ant-design:appstore-outlined',
+      },
+    },
+  ],
 }
 
 export default dashboard

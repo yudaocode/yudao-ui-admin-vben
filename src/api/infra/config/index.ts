@@ -33,12 +33,12 @@ export function getConfigPage(params: ConfigPageReqVO) {
 
 // 查询参数详情
 export function getConfig(id: number) {
-  return defHttp.get({ url: '/infra/config/get?id=' + id })
+  return defHttp.get({ url: `/infra/config/get?id=${id}` })
 }
 
 // 根据参数键名查询参数值
 export function getConfigKey(configKey: string) {
-  return defHttp.get({ url: '/infra/config/get-value-by-key?key=' + configKey })
+  return defHttp.get({ url: `/infra/config/get-value-by-key?key=${configKey}` })
 }
 
 // 新增参数
@@ -53,7 +53,7 @@ export function updateConfig(data: ConfigVO) {
 
 // 删除参数
 export function deleteConfig(id: number) {
-  return defHttp.delete({ url: '/infra/config/delete?id=' + id })
+  return defHttp.delete({ url: `/infra/config/delete?id=${id}` })
 }
 
 // 导出参数

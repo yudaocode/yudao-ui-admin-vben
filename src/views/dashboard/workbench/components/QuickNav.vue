@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { Card, CardGrid } from 'ant-design-vue'
+import { navItems } from './data'
+import { Icon } from '@/components/Icon'
+</script>
+
 <template>
   <Card title="快捷导航">
     <CardGrid v-for="item in navItems" :key="item.title">
@@ -8,8 +14,3 @@
     </CardGrid>
   </Card>
 </template>
-<script lang="ts" setup>
-import { Card, CardGrid } from 'ant-design-vue'
-import { navItems } from './data'
-import { Icon } from '@/components/Icon'
-</script>

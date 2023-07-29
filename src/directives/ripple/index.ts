@@ -1,5 +1,6 @@
 import type { Directive } from 'vue'
 import './index.less'
+
 export interface RippleOptions {
   event: string
   transition: number
@@ -14,12 +15,13 @@ export type EventType = Event & MouseEvent & TouchEvent
 
 const options: RippleOptions = {
   event: 'mousedown',
-  transition: 400
+  transition: 400,
 }
 
 const RippleDirective: Directive & RippleProto = {
   beforeMount: (el: HTMLElement, binding) => {
-    if (binding.value === false) return
+    if (binding.value === false)
+      return
 
     const bg = el.getAttribute('ripple-background')
     setProps(Object.keys(binding.modifiers), options)
@@ -32,7 +34,7 @@ const RippleDirective: Directive & RippleProto = {
         event,
         el,
         background,
-        zIndex
+        zIndex,
       })
     })
   },
@@ -43,11 +45,11 @@ const RippleDirective: Directive & RippleProto = {
     }
     const bg = el.getAttribute('ripple-background')
     el?.setBackground?.(bg)
-  }
+  },
 }
 
 function rippler({ event, el, zIndex, background }: { event: EventType; el: HTMLElement } & RippleProto) {
-  const targetBorder = parseInt(getComputedStyle(el).borderWidth.replace('px', ''))
+  const targetBorder = Number.parseInt(getComputedStyle(el).borderWidth.replace('px', ''))
   const clientX = event.clientX || event.touches[0].clientX
   const clientY = event.clientY || event.touches[0].clientY
 
@@ -79,7 +81,7 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
     pointerEvents: 'none',
     position: 'relative',
     zIndex: zIndex ?? '9999',
-    backgroundColor: background ?? 'rgba(0, 0, 0, 0.12)'
+    backgroundColor: background ?? 'rgba(0, 0, 0, 0.12)',
   })
 
   // Styles for rippleContainer
@@ -91,21 +93,20 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
     height: '0',
     width: '0',
     pointerEvents: 'none',
-    overflow: 'hidden'
+    overflow: 'hidden',
   })
 
   const storedTargetPosition = el.style.position.length > 0 ? el.style.position : getComputedStyle(el).position
 
-  if (storedTargetPosition !== 'relative') {
+  if (storedTargetPosition !== 'relative')
     el.style.position = 'relative'
-  }
 
   rippleContainer.appendChild(ripple)
   el.appendChild(rippleContainer)
 
   Object.assign(ripple.style, {
     marginTop: `${dy}px`,
-    marginLeft: `${dx}px`
+    marginLeft: `${dx}px`,
   })
 
   const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius } = style
@@ -116,7 +117,7 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
     borderTopLeftRadius,
     borderTopRightRadius,
     borderBottomLeftRadius,
-    borderBottomRightRadius
+    borderBottomRightRadius,
   })
 
   setTimeout(() => {
@@ -125,7 +126,7 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
       width: wh,
       height: wh,
       marginLeft: `${dx - radius}px`,
-      marginTop: `${dy - radius}px`
+      marginTop: `${dy - radius}px`,
     })
   }, 0)
 
@@ -143,14 +144,12 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
     setTimeout(() => {
       let clearPosition = true
       for (let i = 0; i < el.childNodes.length; i++) {
-        if ((el.childNodes[i] as Recordable).className === 'ripple-container') {
+        if ((el.childNodes[i] as Recordable).className === 'ripple-container')
           clearPosition = false
-        }
       }
 
-      if (clearPosition) {
+      if (clearPosition)
         el.style.position = storedTargetPosition !== 'static' ? storedTargetPosition : ''
-      }
     }, options.transition + 260)
   }
 
@@ -158,21 +157,23 @@ function rippler({ event, el, zIndex, background }: { event: EventType; el: HTML
     el.addEventListener('mouseup', clearRipple, false)
     el.addEventListener('mouseleave', clearRipple, false)
     el.addEventListener('dragstart', clearRipple, false)
-  } else {
+  }
+  else {
     clearRipple()
   }
 
   ;(el as Recordable).setBackground = (bgColor: string) => {
-    if (!bgColor) {
+    if (!bgColor)
       return
-    }
+
     ripple.style.backgroundColor = bgColor
   }
 }
 
 function setProps(modifiers: Recordable, props: Recordable) {
   modifiers.forEach((item: Recordable) => {
-    if (isNaN(Number(item))) props.event = item
+    if (isNaN(Number(item)))
+      props.event = item
     else props.transition = item
   })
 }

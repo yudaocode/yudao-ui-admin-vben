@@ -1,10 +1,6 @@
-<template>
-  <Card title="命令统计" :loading="loading">
-    <div ref="chartRef" :style="{ width, height }"></div>
-  </Card>
-</template>
 <script lang="ts" setup>
-import { Ref, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Card } from 'ant-design-vue'
 import { useECharts } from '@/hooks/web/useECharts'
 import { propTypes } from '@/utils/propTypes'
@@ -13,7 +9,7 @@ const props = defineProps({
   loading: Boolean,
   commandStats: propTypes.array,
   width: propTypes.string.def('100%'),
-  height: propTypes.string.def('300px')
+  height: propTypes.string.def('300px'),
 })
 
 const chartRef = ref<HTMLDivElement | null>(null)
@@ -24,13 +20,13 @@ const optionsData = ref<any[]>(props.commandStats)
 watch(
   () => props.loading,
   () => {
-    if (props.loading) {
+    if (props.loading)
       return
-    }
+
     setOptions({
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       series: [
         {
@@ -41,11 +37,17 @@ watch(
           center: ['50%', '38%'],
           data: optionsData.value,
           animationEasing: 'cubicInOut',
-          animationDuration: 1000
-        }
-      ]
+          animationDuration: 1000,
+        },
+      ],
     })
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
+
+<template>
+  <Card title="命令统计" :loading="loading">
+    <div ref="chartRef" :style="{ width, height }" />
+  </Card>
+</template>

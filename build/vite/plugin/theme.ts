@@ -2,17 +2,17 @@
  * Vite plugin for website theme color switching
  * https://github.com/xingyuv/vite-vue-plugin-theme
  */
+import path from 'node:path'
 import type { PluginOption } from 'vite'
-import path from 'path'
-import { viteThemePlugin, antdDarkThemePlugin, mixLighten, mixDarken, tinycolor } from 'vite-vue-plugin-theme'
-import { getThemeColors, generateColors } from '../../config/themeConfig'
+import { antdDarkThemePlugin, mixDarken, mixLighten, tinycolor, viteThemePlugin } from 'vite-vue-plugin-theme'
+import { generateColors, getThemeColors } from '../../config/themeConfig'
 import { generateModifyVars } from '../../generate/generateModifyVars'
 
 export function configThemePlugin(isBuild: boolean): PluginOption[] {
   const colors = generateColors({
     mixDarken,
     mixLighten,
-    tinycolor
+    tinycolor,
   })
   const plugin = [
     viteThemePlugin({
@@ -37,15 +37,15 @@ export function configThemePlugin(isBuild: boolean): PluginOption[] {
         }
         return s.startsWith('[data-theme') ? s : `[data-theme] ${s}`
       },
-      colorVariables: [...getThemeColors(), ...colors]
+      colorVariables: [...getThemeColors(), ...colors],
     }),
     antdDarkThemePlugin({
       preloadFiles: [
         path.resolve(process.cwd(), 'node_modules/ant-design-vue/dist/antd.less'),
-        //path.resolve(process.cwd(), 'node_modules/ant-design-vue/dist/antd.dark.less'),
-        path.resolve(process.cwd(), 'src/design/index.less')
+        // path.resolve(process.cwd(), 'node_modules/ant-design-vue/dist/antd.dark.less'),
+        path.resolve(process.cwd(), 'src/design/index.less'),
       ],
-      filter: (id) => (isBuild ? !id.endsWith('antd.less') : true),
+      filter: id => (isBuild ? !id.endsWith('antd.less') : true),
       // extractCss: false,
       darkModifyVars: {
         ...generateModifyVars(true),
@@ -74,9 +74,9 @@ export function configThemePlugin(isBuild: boolean): PluginOption[] {
         'alert-warning-icon-color': '#d89614',
         'alert-error-border-color': '#58181c',
         'alert-error-bg-color': '#2a1215',
-        'alert-error-icon-color': '#a61d24'
-      }
-    })
+        'alert-error-icon-color': '#a61d24',
+      },
+    }),
   ]
 
   return plugin as unknown as PluginOption[]

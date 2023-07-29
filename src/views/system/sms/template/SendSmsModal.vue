@@ -1,30 +1,26 @@
-<template>
-  <BasicModal v-bind="$attrs" title="测试发送短信" @register="innerRegister" @ok="submit">
-    <BasicForm @register="register" :schemas="reactiveSchemas" />
-  </BasicModal>
-</template>
-
 <script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components/Modal'
-import { BasicForm, FormSchema, useForm } from '@/components/Form'
 import { reactive, ref } from 'vue'
-import { SmsTemplateVO, sendSms } from '@/api/system/sms/smsTemplate'
-import { useMessage } from '@/hooks/web/useMessage'
 import { baseSendSchemas } from './smsTemplate.data'
+import { BasicModal, useModalInner } from '@/components/Modal'
+import type { FormSchema } from '@/components/Form'
+import { BasicForm, useForm } from '@/components/Form'
+import type { SmsTemplateVO } from '@/api/system/sms/smsTemplate'
+import { sendSms } from '@/api/system/sms/smsTemplate'
+import { useMessage } from '@/hooks/web/useMessage'
 
 defineOptions({ name: 'SendSmsModal' })
 
 const { createMessage } = useMessage()
-let reactiveSchemas: FormSchema[] = reactive([])
+const reactiveSchemas: FormSchema[] = reactive([])
 const templateCode = ref<string>('')
 
 const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, setProps }] = useForm({
   labelWidth: 100,
   baseColProps: {
-    span: 24
+    span: 24,
   },
   showSubmitButton: false,
-  showResetButton: false
+  showResetButton: false,
 })
 
 const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: SmsTemplateVO) => {
@@ -36,9 +32,9 @@ const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: SmsT
       label: `参数{${item}} `,
       component: 'Input',
       componentProps: {
-        placeholder: `输入{${item}}`
+        placeholder: `输入{${item}}`,
       },
-      required: true
+      required: true,
     }
     reactiveSchemas.push(dySchema)
   })
@@ -47,7 +43,7 @@ const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: SmsT
   templateCode.value = code
 })
 
-const submit = async () => {
+async function submit() {
   try {
     setProps({ disabled: true })
     changeLoading(true)
@@ -56,12 +52,12 @@ const submit = async () => {
     const data = {
       mobile: fields.mobile,
       templateCode: templateCode.value,
-      templateParams: {}
+      templateParams: {},
     }
     Object.keys(fields).forEach((key) => {
-      if (key === 'content' || key === 'mobile') {
+      if (key === 'content' || key === 'mobile')
         return
-      }
+
       // 去掉 - 后的key
       const realKey = key.split('-')[1]
       data.templateParams[realKey] = fields[key]
@@ -69,13 +65,14 @@ const submit = async () => {
     await sendSms(data)
     createMessage.success(`发送短信到[${fields.mobile}]成功`)
     closeModal()
-  } finally {
+  }
+  finally {
     setProps({ disabled: false })
     changeLoading(false)
   }
 }
 
-const resetForm = () => {
+function resetForm() {
   // 这里需要每次清空动态表单
   reactiveSchemas.splice(0, reactiveSchemas.length)
   reactiveSchemas.push(...baseSendSchemas)
@@ -85,4 +82,8 @@ const resetForm = () => {
 }
 </script>
 
-<style scoped></style>
+<template>
+  <BasicModal v-bind="$attrs" title="测试发送短信" @register="innerRegister" @ok="submit">
+    <BasicForm :schemas="reactiveSchemas" @register="register" />
+  </BasicModal>
+</template>

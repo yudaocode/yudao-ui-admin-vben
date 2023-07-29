@@ -1,39 +1,25 @@
-<template>
-  <Menu
-    v-bind="getBindValues"
-    :activeName="menuState.activeName"
-    :openNames="getOpenKeys"
-    :class="prefixCls"
-    :activeSubMenuNames="menuState.activeSubMenuNames"
-    @select="handleSelect"
-  >
-    <template v-for="item in items" :key="item.path">
-      <SimpleSubMenu :item="item" :parent="true" :collapsedShowTitle="collapsedShowTitle" :collapse="collapse" />
-    </template>
-  </Menu>
-</template>
 <script lang="ts" setup>
-import type { MenuState } from './types'
-import type { Menu as MenuType } from '@/router/types'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import { computed, ref, unref, reactive, toRefs, watch, useAttrs } from 'vue'
-import { useDesign } from '@/hooks/web/useDesign'
+import { computed, reactive, ref, toRefs, unref, useAttrs, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import type { MenuState } from './types'
 import Menu from './components/Menu.vue'
 import SimpleSubMenu from './SimpleSubMenu.vue'
+import { useOpenKeys } from './useOpenKeys'
+import type { Menu as MenuType } from '@/router/types'
+import { useDesign } from '@/hooks/web/useDesign'
 import { listenerRouteChange } from '@/logics/mitt/routeChange'
 import { propTypes } from '@/utils/propTypes'
 import { REDIRECT_NAME } from '@/router/constant'
-import { useRouter } from 'vue-router'
 import { isFunction, isUrl } from '@/utils/is'
 import { openWindow } from '@/utils'
-import { useOpenKeys } from './useOpenKeys'
 
 defineOptions({ name: 'SimpleMenu', inheritAttrs: false })
 
 const props = defineProps({
   items: {
     type: Array as PropType<MenuType[]>,
-    default: () => []
+    default: () => [],
   },
   collapse: propTypes.bool.def(false),
   mixSider: propTypes.bool.def(false),
@@ -41,9 +27,9 @@ const props = defineProps({
   accordion: propTypes.bool.def(true),
   collapsedShowTitle: propTypes.bool,
   beforeClickFn: {
-    type: Function as PropType<(key: string) => Promise<boolean>>
+    type: Function as PropType<(key: string) => Promise<boolean>>,
   },
-  isSplitMenu: propTypes.bool
+  isSplitMenu: propTypes.bool,
 })
 const emit = defineEmits(['menuClick'])
 const attrs = useAttrs()
@@ -54,7 +40,7 @@ const isClickGo = ref(false)
 const menuState = reactive<MenuState>({
   activeName: '',
   openNames: [],
-  activeSubMenuNames: []
+  activeSubMenuNames: [],
 })
 
 const { currentRoute } = useRouter()
@@ -68,28 +54,28 @@ const getBindValues = computed(() => ({ ...attrs, ...props }))
 watch(
   () => props.collapse,
   (collapse) => {
-    if (collapse) {
+    if (collapse)
       menuState.openNames = []
-    } else {
+    else
       setOpenKeys(currentRoute.value.path)
-    }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 watch(
   () => props.items,
   () => {
-    if (!props.isSplitMenu) {
+    if (!props.isSplitMenu)
       return
-    }
+
     setOpenKeys(currentRoute.value.path)
   },
-  { flush: 'post' }
+  { flush: 'post' },
 )
 
 listenerRouteChange((route) => {
-  if (route.name === REDIRECT_NAME) return
+  if (route.name === REDIRECT_NAME)
+    return
 
   currentActiveMenu.value = route.meta?.currentActiveMenu as string
   handleMenuChange(route)
@@ -120,7 +106,8 @@ async function handleSelect(key: string) {
   const { beforeClickFn } = props
   if (beforeClickFn && isFunction(beforeClickFn)) {
     const flag = await beforeClickFn(key)
-    if (!flag) return
+    if (!flag)
+      return
   }
 
   emit('menuClick', key)
@@ -130,6 +117,22 @@ async function handleSelect(key: string) {
   menuState.activeName = key
 }
 </script>
+
+<template>
+  <Menu
+    v-bind="getBindValues"
+    :active-name="menuState.activeName"
+    :open-names="getOpenKeys"
+    :class="prefixCls"
+    :active-sub-menu-names="menuState.activeSubMenuNames"
+    @select="handleSelect"
+  >
+    <template v-for="item in items" :key="item.path">
+      <SimpleSubMenu :item="item" :parent="true" :collapsed-show-title="collapsedShowTitle" :collapse="collapse" />
+    </template>
+  </Menu>
+</template>
+
 <style lang="less">
 @import './index.less';
 </style>

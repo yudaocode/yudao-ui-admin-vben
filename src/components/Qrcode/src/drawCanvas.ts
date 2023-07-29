@@ -1,9 +1,9 @@
 import { toCanvas } from 'qrcode'
 import type { QRCodeRenderersOptions } from 'qrcode'
-import { RenderQrCodeParams, ContentType } from './typing'
 import { cloneDeep } from 'lodash-es'
+import type { ContentType, RenderQrCodeParams } from './typing'
 
-export const renderQrCode = ({ canvas, content, width = 0, options: params = {} }: RenderQrCodeParams) => {
+export function renderQrCode({ canvas, content, width = 0, options: params = {} }: RenderQrCodeParams) {
   const options = cloneDeep(params)
   // 容错率，默认对内容少的二维码采用高容错率，内容多的二维码采用低容错率
   options.errorCorrectionLevel = options.errorCorrectionLevel || getErrorCorrectionLevel(content)
@@ -22,11 +22,10 @@ function getOriginWidth(content: ContentType, options: QRCodeRenderersOptions) {
 
 // 对于内容少的QrCode，增大容错率
 function getErrorCorrectionLevel(content: ContentType) {
-  if (content.length > 36) {
+  if (content.length > 36)
     return 'M'
-  } else if (content.length > 16) {
+  else if (content.length > 16)
     return 'Q'
-  } else {
+  else
     return 'H'
-  }
 }

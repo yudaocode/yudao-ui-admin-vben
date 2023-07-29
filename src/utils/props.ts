@@ -1,13 +1,13 @@
 // copy from element-plus
 
 import { warn } from 'vue'
-import { isObject } from '@/utils/is'
 import { fromPairs } from 'lodash-es'
 import type { ExtractPropTypes } from 'vue'
 import type { Mutable } from './types'
+import { isObject } from '@/utils/is'
 
 const wrapperKey = Symbol()
-export type PropWrapper<T> = { [wrapperKey]: T }
+export interface PropWrapper<T> { [wrapperKey]: T }
 
 export const propKey = Symbol()
 
@@ -19,7 +19,7 @@ type ResolvePropTypeWithReadonly<T> = Readonly<T> extends Readonly<Array<infer A
 
 type IfUnknown<T, V> = [unknown] extends [T] ? V : T
 
-export type BuildPropOption<T, D extends BuildPropType<T, V, C>, R, V, C> = {
+export interface BuildPropOption<T, D extends BuildPropType<T, V, C>, R, V, C> {
   type?: T
   values?: readonly V[]
   required?: R
@@ -35,12 +35,12 @@ export type BuildPropType<T, V, C> = _BuildPropType<IfUnknown<T, never>, IfUnkno
 
 type _BuildPropDefault<T, D> = [T] extends [
   // eslint-disable-next-line @typescript-eslint/ban-types
-  Record<string, unknown> | Array<any> | Function
+  Record<string, unknown> | Array<any> | Function,
 ]
   ? D
   : D extends () => T
-  ? ReturnType<D>
-  : D
+    ? ReturnType<D>
+    : D
 
 export type BuildPropDefault<T, D, R> = R extends true
   ? { readonly default?: undefined }
@@ -76,15 +76,16 @@ export type BuildPropReturn<T, D, R, V, C> = {
  */
 export function buildProp<T = never, D extends BuildPropType<T, V, C> = never, R extends boolean = false, V = never, C = never>(
   option: BuildPropOption<T, D, R, V, C>,
-  key?: string
+  key?: string,
 ): BuildPropReturn<T, D, R, V, C> {
   // filter native prop type and nested prop, e.g `null`, `undefined` (from `buildProps`)
-  if (!isObject(option) || !!option[propKey]) return option as any
+  if (!isObject(option) || !!option[propKey])
+    return option as any
 
   const { values, required, default: defaultValue, type, validator } = option
 
-  const _validator =
-    values || validator
+  const _validator
+    = values || validator
       ? (val: unknown) => {
           let valid = false
           let allowedValues: unknown[] = []
@@ -93,14 +94,15 @@ export function buildProp<T = never, D extends BuildPropType<T, V, C> = never, R
             allowedValues = [...values, defaultValue]
             valid ||= allowedValues.includes(val)
           }
-          if (validator) valid ||= validator(val)
+          if (validator)
+            valid ||= validator(val)
 
           if (!valid && allowedValues.length > 0) {
-            const allowValuesText = [...new Set(allowedValues)].map((value) => JSON.stringify(value)).join(', ')
+            const allowValuesText = [...new Set(allowedValues)].map(value => JSON.stringify(value)).join(', ')
             warn(
               `Invalid prop: validation failed${
                 key ? ` for prop "${key}"` : ''
-              }. Expected one of [${allowValuesText}], got value ${JSON.stringify(val)}.`
+              }. Expected one of [${allowValuesText}], got value ${JSON.stringify(val)}.`,
             )
           }
           return valid
@@ -112,43 +114,42 @@ export function buildProp<T = never, D extends BuildPropType<T, V, C> = never, R
     required: !!required,
     default: defaultValue,
     validator: _validator,
-    [propKey]: true
+    [propKey]: true,
   } as unknown as BuildPropReturn<T, D, R, V, C>
 }
 
 type NativePropType = [((...args: any) => any) | { new (...args: any): any } | undefined | null]
 
-export const buildProps = <
+export function buildProps<
   O extends {
     [K in keyof O]: O[K] extends BuildPropReturn<any, any, any, any, any>
       ? O[K]
       : [O[K]] extends NativePropType
-      ? O[K]
-      : O[K] extends BuildPropOption<infer T, infer D, infer R, infer V, infer C>
-      ? D extends BuildPropType<T, V, C>
-        ? BuildPropOption<T, D, R, V, C>
-        : never
-      : never
-  }
->(
-  props: O
-) =>
-  fromPairs(Object.entries(props).map(([key, option]) => [key, buildProp(option as any, key)])) as unknown as {
+          ? O[K]
+          : O[K] extends BuildPropOption<infer T, infer D, infer R, infer V, infer C>
+            ? D extends BuildPropType<T, V, C>
+              ? BuildPropOption<T, D, R, V, C>
+              : never
+            : never
+  },
+>(props: O) {
+  return fromPairs(Object.entries(props).map(([key, option]) => [key, buildProp(option as any, key)])) as unknown as {
     [K in keyof O]: O[K] extends { [propKey]: boolean }
       ? O[K]
       : [O[K]] extends NativePropType
-      ? O[K]
-      : O[K] extends BuildPropOption<
+          ? O[K]
+          : O[K] extends BuildPropOption<
           infer T,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           infer _D,
           infer R,
           infer V,
           infer C
         >
-      ? BuildPropReturn<T, O[K]['default'], R, V, C>
-      : never
+            ? BuildPropReturn<T, O[K]['default'], R, V, C>
+            : never
   }
+}
 
 export const definePropType = <T>(val: any) => ({ [wrapperKey]: val }) as PropWrapper<T>
 

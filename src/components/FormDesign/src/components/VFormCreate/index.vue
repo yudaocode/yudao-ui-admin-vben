@@ -1,58 +1,37 @@
 <!--
  * @Description: 表单渲染器，根据json生成表单
 -->
-<template>
-  <div class="v-form-container">
-    <Form class="v-form-model" ref="eFormModel" :model="formModel" v-bind="formModelProps">
-      <Row>
-        <FormRender
-          v-for="(schema, index) of noHiddenList"
-          :key="index"
-          :schema="schema"
-          :formConfig="formConfig"
-          :formData="formModelNew"
-          @change="handleChange"
-          :setFormModel="setFormModel"
-          @submit="handleSubmit"
-          @reset="resetFields"
-        >
-          <template v-if="schema && schema.componentProps" #[`schema.componentProps!.slotName`]>
-            <slot :name="schema.componentProps!.slotName" v-bind="{ formModel: formModel, field: schema.field, schema }"></slot>
-          </template>
-        </FormRender>
-      </Row>
-    </Form>
-  </div>
-</template>
 <script lang="ts">
-import { computed, defineComponent, PropType, provide, ref, unref } from 'vue'
-import FormRender from './components/FormRender.vue'
-import { IFormConfig, AForm } from '../../typings/v-form-component'
-import { Form, Row, Col } from 'ant-design-vue'
-import { useFormInstanceMethods } from '../../hooks/useFormInstanceMethods'
-import { IProps, IVFormMethods, useVFormMethods } from '../../hooks/useVFormMethods'
+import type { PropType } from 'vue'
+import { computed, defineComponent, provide, ref, unref } from 'vue'
+import { Col, Form, Row } from 'ant-design-vue'
 import { useVModel } from '@vueuse/core'
 import { omit } from 'lodash-es'
+import type { AForm, IFormConfig } from '../../typings/v-form-component'
+import { useFormInstanceMethods } from '../../hooks/useFormInstanceMethods'
+import type { IProps, IVFormMethods } from '../../hooks/useVFormMethods'
+import { useVFormMethods } from '../../hooks/useVFormMethods'
+import FormRender from './components/FormRender.vue'
 
 export default defineComponent({
   name: 'VFormCreate',
   components: {
     FormRender,
     Form,
-    Row
+    Row,
   },
   props: {
     fApi: {
-      type: Object
+      type: Object,
     },
     formModel: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     formConfig: {
       type: Object as PropType<IFormConfig>,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['submit', 'change', 'update:fApi', 'update:formModel'],
   setup(props, context) {
@@ -62,11 +41,11 @@ export default defineComponent({
 
     const formModelNew = computed({
       get: () => props.formModel,
-      set: (value) => emit('update:formModel', value)
+      set: value => emit('update:formModel', value),
     })
 
     const noHiddenList = computed(() => {
-      return props.formConfig.schemas && props.formConfig.schemas.filter((item) => item.hidden !== true)
+      return props.formConfig.schemas && props.formConfig.schemas.filter(item => item.hidden !== true)
     })
 
     const fApi = useVModel(props, 'fApi', emit)
@@ -82,8 +61,8 @@ export default defineComponent({
         validate,
         validateField,
         resetFields,
-        clearValidate
-      }
+        clearValidate,
+      },
     )
 
     fApi.value = methods
@@ -110,7 +89,7 @@ export default defineComponent({
       formModelNew.value[key] = value
     }
 
-    provide<(key: String, value: any) => void>('setFormModelMethod', setFormModel)
+    provide<(key: string, value: any) => void>('setFormModelMethod', setFormModel)
 
     // 把祖先组件的方法项注入到子组件中，子组件可通过inject获取
     return {
@@ -126,11 +105,35 @@ export default defineComponent({
       setFormModel,
       formModelNew,
       wrapperComp,
-      noHiddenList
+      noHiddenList,
     }
-  }
+  },
 })
 </script>
+
+<template>
+  <div class="v-form-container">
+    <Form ref="eFormModel" class="v-form-model" :model="formModel" v-bind="formModelProps">
+      <Row>
+        <FormRender
+          v-for="(schema, index) of noHiddenList"
+          :key="index"
+          :schema="schema"
+          :form-config="formConfig"
+          :form-data="formModelNew"
+          :set-form-model="setFormModel"
+          @change="handleChange"
+          @submit="handleSubmit"
+          @reset="resetFields"
+        >
+          <template v-if="schema && schema.componentProps" #[`schema.componentProps!.slotName`]>
+            <slot :name="schema.componentProps!.slotName" v-bind="{ formModel, field: schema.field, schema }" />
+          </template>
+        </FormRender>
+      </Row>
+    </Form>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .v-form-model {

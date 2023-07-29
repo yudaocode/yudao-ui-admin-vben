@@ -1,12 +1,7 @@
-<template>
-  <BasicModal v-bind="$attrs" :width="800" @register="registerModal" title="导入" @ok="handleSubmit">
-    <BasicTable @register="registerTable" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
+import { importTableColumns, importTableSearchFormSchema } from '../codegen.data'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { BasicTable, useTable } from '@/components/Table'
-import { importTableColumns, importTableSearchFormSchema } from '../codegen.data'
 import { createCodegenList, getSchemaTableList } from '@/api/infra/codegen'
 
 defineOptions({ name: 'InfraImportTableModal' })
@@ -17,7 +12,7 @@ const [registerTable, { getSelectRowKeys, getForm }] = useTable({
   columns: importTableColumns,
   formConfig: {
     labelWidth: 80,
-    schemas: importTableSearchFormSchema
+    schemas: importTableSearchFormSchema,
   },
   rowSelection: { type: 'checkbox' },
   rowKey: 'name',
@@ -25,7 +20,7 @@ const [registerTable, { getSelectRowKeys, getForm }] = useTable({
   pagination: false,
   showTableSetting: false,
   showIndexColumn: false,
-  immediate: false
+  immediate: false,
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async () => {
@@ -40,3 +35,9 @@ async function handleSubmit() {
   emit('success')
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" :width="800" title="导入" @register="registerModal" @ok="handleSubmit">
+    <BasicTable @register="registerTable" />
+  </BasicModal>
+</template>

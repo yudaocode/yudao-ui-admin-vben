@@ -1,8 +1,3 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" title="表单详情" @ok="handleSubmit">
-    <VFormCreate :form-config="formConfig" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -13,13 +8,13 @@ import { getForm } from '@/api/bpm/form'
 
 defineOptions({ name: 'BpmFormModal' })
 
+const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const emit = defineEmits(['success', 'register'])
 const formConfig = ref({
   schemas: [],
   rule: [],
-  option: {}
+  option: {},
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -34,8 +29,15 @@ async function handleSubmit() {
     closeModal()
     emit('success')
     createMessage.success(t('common.saveSuccessText'))
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" title="表单详情" @register="registerModal" @ok="handleSubmit">
+    <VFormCreate :form-config="formConfig" />
+  </BasicModal>
+</template>

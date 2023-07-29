@@ -1,20 +1,9 @@
 <!--
  * @Description: 节点操作复制删除控件
 -->
-<template>
-  <div class="copy-delete-box">
-    <a class="copy" :class="activeClass" @click.stop="handleCopy">
-      <Icon icon="ant-design:copy-outlined" />
-    </a>
-    <a class="delete" :class="activeClass" @click.stop="handleDelete">
-      <Icon icon="ant-design:delete-outlined" />
-    </a>
-  </div>
-</template>
-
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { IVFormComponent } from '../../../typings/v-form-component'
+import type { IVFormComponent } from '../../../typings/v-form-component'
 import { remove } from '../../../utils'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import Icon from '@/components/Icon/index'
@@ -22,17 +11,17 @@ import Icon from '@/components/Icon/index'
 export default defineComponent({
   name: 'FormNodeOperate',
   components: {
-    Icon
+    Icon,
   },
   props: {
     schema: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     currentItem: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   setup(props) {
     const { formConfig, formDesignMethods } = useFormDesignState()
@@ -47,10 +36,10 @@ export default defineComponent({
         schemas.some((formItem, index) => {
           const { component, key } = formItem
           // 处理栅格和标签页布局
-          ;['Grid', 'Tabs'].includes(component) && formItem.columns?.forEach((item) => traverse(item.children))
+          ;['Grid', 'Tabs'].includes(component) && formItem.columns?.forEach(item => traverse(item.children))
           if (key === props.currentItem.key) {
-            let params: IVFormComponent =
-              schemas.length === 1 ? { component: '' } : schemas.length - 1 > index ? schemas[index + 1] : schemas[index - 1]
+            const params: IVFormComponent
+              = schemas.length === 1 ? { component: '' } : schemas.length - 1 > index ? schemas[index + 1] : schemas[index - 1]
             formDesignMethods.handleSetSelectItem(params)
             remove(schemas, index)
             return true
@@ -64,6 +53,17 @@ export default defineComponent({
       formDesignMethods.handleCopy()
     }
     return { activeClass, handleDelete, handleCopy }
-  }
+  },
 })
 </script>
+
+<template>
+  <div class="copy-delete-box">
+    <a class="copy" :class="activeClass" @click.stop="handleCopy">
+      <Icon icon="ant-design:copy-outlined" />
+    </a>
+    <a class="delete" :class="activeClass" @click.stop="handleDelete">
+      <Icon icon="ant-design:delete-outlined" />
+    </a>
+  </div>
+</template>

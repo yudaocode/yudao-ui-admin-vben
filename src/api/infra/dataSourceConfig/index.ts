@@ -16,7 +16,7 @@ export function getDataSourceConfigList() {
 
 // 查询数据源配置详情
 export function getDataSourceConfig(id: number) {
-  return defHttp.get({ url: '/infra/data-source-config/get?id=' + id })
+  return defHttp.get({ url: `/infra/data-source-config/get?id=${id}` })
 }
 
 // 新增数据源配置
@@ -31,5 +31,5 @@ export function updateDataSourceConfig(data: DataSourceConfigVO) {
 
 // 删除数据源配置
 export function deleteDataSourceConfig(id: number) {
-  return defHttp.delete({ url: '/infra/data-source-config/delete?id=' + id })
+  return defHttp.delete({ url: `/infra/data-source-config/delete?id=${id}` })
 }

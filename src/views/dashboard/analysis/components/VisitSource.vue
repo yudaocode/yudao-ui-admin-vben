@@ -1,17 +1,14 @@
-<template>
-  <Card title="访问来源" :loading="loading">
-    <div ref="chartRef" :style="{ width, height }"></div>
-  </Card>
-</template>
 <script lang="ts" setup>
-import { Ref, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Card } from 'ant-design-vue'
 import { useECharts } from '@/hooks/web/useECharts'
 import { propTypes } from '@/utils/propTypes'
+
 const props = defineProps({
   loading: Boolean,
   width: propTypes.string.def('100%'),
-  height: propTypes.string.def('300px')
+  height: propTypes.string.def('300px'),
 })
 const chartRef = ref<HTMLDivElement | null>(null)
 const { setOptions } = useECharts(chartRef as Ref<HTMLDivElement>)
@@ -19,16 +16,16 @@ const { setOptions } = useECharts(chartRef as Ref<HTMLDivElement>)
 watch(
   () => props.loading,
   () => {
-    if (props.loading) {
+    if (props.loading)
       return
-    }
+
     setOptions({
       tooltip: {
-        trigger: 'item'
+        trigger: 'item',
       },
       legend: {
         bottom: '1%',
-        left: 'center'
+        left: 'center',
       },
       series: [
         {
@@ -40,37 +37,43 @@ watch(
           itemStyle: {
             borderRadius: 10,
             borderColor: '#fff',
-            borderWidth: 2
+            borderWidth: 2,
           },
           label: {
             show: false,
-            position: 'center'
+            position: 'center',
           },
           emphasis: {
             label: {
               show: true,
               fontSize: '12',
-              fontWeight: 'bold'
-            }
+              fontWeight: 'bold',
+            },
           },
           labelLine: {
-            show: false
+            show: false,
           },
           data: [
             { value: 1048, name: '搜索引擎' },
             { value: 735, name: '直接访问' },
             { value: 580, name: '邮件营销' },
-            { value: 484, name: '联盟广告' }
+            { value: 484, name: '联盟广告' },
           ],
           animationType: 'scale',
           animationEasing: 'exponentialInOut',
-          animationDelay: function () {
+          animationDelay() {
             return Math.random() * 100
-          }
-        }
-      ]
+          },
+        },
+      ],
     })
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
+
+<template>
+  <Card title="访问来源" :loading="loading">
+    <div ref="chartRef" :style="{ width, height }" />
+  </Card>
+</template>

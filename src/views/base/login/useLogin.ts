@@ -1,6 +1,7 @@
-import type { Rule, FormInstance } from 'ant-design-vue/lib/form'
-import type { RuleObject, NamePath } from 'ant-design-vue/lib/form/interface'
-import { ref, computed, unref, Ref } from 'vue'
+import type { FormInstance, Rule } from 'ant-design-vue/lib/form'
+import type { NamePath, RuleObject } from 'ant-design-vue/lib/form/interface'
+import type { Ref } from 'vue'
+import { computed, ref, unref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 
 export enum LoginStateEnum {
@@ -8,7 +9,7 @@ export enum LoginStateEnum {
   REGISTER,
   RESET_PASSWORD,
   MOBILE,
-  QR_CODE
+  QR_CODE,
 }
 
 const currentState = ref(LoginStateEnum.LOGIN)
@@ -38,7 +39,8 @@ export function useFormValid<T extends Object = any>(formRef: Ref<FormInstance>)
 
   async function validForm() {
     const form = unref(formRef)
-    if (!form) return
+    if (!form)
+      return
     const data = await form.validate()
     return data as T
   }
@@ -60,12 +62,12 @@ export function useFormRules(formData?: Recordable) {
 
   const validateConfirmPassword = (password: string) => {
     return async (_: RuleObject, value: string) => {
-      if (!value) {
+      if (!value)
         return Promise.reject(t('sys.login.passwordPlaceholder'))
-      }
-      if (value !== password) {
+
+      if (value !== password)
         return Promise.reject(t('sys.login.diffPwd'))
-      }
+
       return Promise.resolve()
     }
   }
@@ -78,7 +80,7 @@ export function useFormRules(formData?: Recordable) {
 
     const mobileRule = {
       sms: smsFormRule,
-      mobile: mobileFormRule
+      mobile: mobileFormRule,
     }
     switch (unref(currentState)) {
       // register form rules
@@ -88,14 +90,14 @@ export function useFormRules(formData?: Recordable) {
           password: passwordFormRule,
           confirmPassword: [{ validator: validateConfirmPassword(formData?.password), trigger: 'change' }],
           policy: [{ validator: validatePolicy, trigger: 'change' }],
-          ...mobileRule
+          ...mobileRule,
         }
 
       // reset password form rules
       case LoginStateEnum.RESET_PASSWORD:
         return {
           account: accountFormRule,
-          ...mobileRule
+          ...mobileRule,
         }
 
       // mobile form rules
@@ -106,7 +108,7 @@ export function useFormRules(formData?: Recordable) {
       default:
         return {
           account: accountFormRule,
-          password: passwordFormRule
+          password: passwordFormRule,
         }
     }
   })
@@ -118,7 +120,7 @@ function createRule(message: string) {
     {
       required: true,
       message,
-      trigger: 'change'
-    }
+      trigger: 'change',
+    },
   ] as RuleObject[]
 }

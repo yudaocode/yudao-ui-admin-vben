@@ -1,50 +1,22 @@
-<template>
-  <Cascader
-    v-model:value="state"
-    :options="options"
-    :load-data="loadData"
-    change-on-select
-    @change="handleChange"
-    :displayRender="handleRenderDisplay"
-  >
-    <template #suffixIcon v-if="loading">
-      <LoadingOutlined spin />
-    </template>
-    <template #notFoundContent v-if="loading">
-      <span>
-        <LoadingOutlined spin class="mr-1" />
-        {{ t('component.form.apiSelectNotFound') }}
-      </span>
-    </template>
-  </Cascader>
-</template>
 <script lang="ts" setup>
 import { ref, unref, watch, watchEffect } from 'vue'
 import { Cascader } from 'ant-design-vue'
+import { get, omit } from 'lodash-es'
+import { LoadingOutlined } from '@ant-design/icons-vue'
 import { propTypes } from '@/utils/propTypes'
 import { isFunction } from '@/utils/is'
-import { get, omit } from 'lodash-es'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
-import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 
 defineOptions({ name: 'ApiCascader' })
 
-interface Option {
-  value: string
-  label: string
-  loading?: boolean
-  isLeaf?: boolean
-  children?: Option[]
-}
-
 const props = defineProps({
   value: {
-    type: Array
+    type: Array,
   },
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<Option[]>>,
-    default: null
+    default: null,
   },
   numberToString: propTypes.bool,
   resultField: propTypes.string.def(''),
@@ -56,18 +28,27 @@ const props = defineProps({
   // init fetch params
   initFetchParams: {
     type: Object as PropType<Recordable>,
-    default: () => ({})
+    default: () => ({}),
   },
   // 是否有下级，默认是
   isLeaf: {
     type: Function as PropType<(arg: Recordable) => boolean>,
-    default: null
+    default: null,
   },
   displayRenderArray: {
-    type: Array
-  }
+    type: Array,
+  },
 })
+
 const emit = defineEmits(['change', 'defaultChange'])
+
+interface Option {
+  value: string
+  label: string
+  loading?: boolean
+  isLeaf?: boolean
+  children?: Option[]
+}
 
 const apiData = ref<any[]>([])
 const options = ref<Option[]>([])
@@ -84,7 +65,7 @@ watch(
     const opts = generatorOptions(data)
     options.value = opts
   },
-  { deep: true }
+  { deep: true },
 )
 
 function generatorOptions(options: any[]): Option[] {
@@ -96,12 +77,12 @@ function generatorOptions(options: any[]): Option[] {
         ...omit(next, [labelField, valueField]),
         label: next[labelField],
         value: numberToString ? `${value}` : value,
-        isLeaf: isLeaf && typeof isLeaf === 'function' ? isLeaf(next) : false
+        isLeaf: isLeaf && typeof isLeaf === 'function' ? isLeaf(next) : false,
       }
       const children = Reflect.get(next, childrenField)
-      if (children) {
+      if (children)
         Reflect.set(item, childrenField, generatorOptions(children))
-      }
+
       prev.push(item)
     }
     return prev
@@ -110,7 +91,8 @@ function generatorOptions(options: any[]): Option[] {
 
 async function initialFetch() {
   const api = props.api
-  if (!api || !isFunction(api)) return
+  if (!api || !isFunction(api))
+    return
   apiData.value = []
   loading.value = true
   try {
@@ -119,12 +101,13 @@ async function initialFetch() {
       apiData.value = res
       return
     }
-    if (props.resultField) {
+    if (props.resultField)
       apiData.value = get(res, props.resultField) || []
-    }
-  } catch (error) {
+  }
+  catch (error) {
     console.warn(error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -134,10 +117,11 @@ async function loadData(selectedOptions: Option[]) {
   targetOption.loading = true
 
   const api = props.api
-  if (!api || !isFunction(api)) return
+  if (!api || !isFunction(api))
+    return
   try {
     const res = await api({
-      [props.asyncFetchParamKey]: Reflect.get(targetOption, 'value')
+      [props.asyncFetchParamKey]: Reflect.get(targetOption, 'value'),
     })
     if (Array.isArray(res)) {
       const children = generatorOptions(res)
@@ -148,9 +132,11 @@ async function loadData(selectedOptions: Option[]) {
       const children = generatorOptions(get(res, props.resultField) || [])
       targetOption.children = children
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
-  } finally {
+  }
+  finally {
     targetOption.loading = false
   }
 }
@@ -164,7 +150,7 @@ watch(
   () => {
     !unref(isFirstLoad) && initialFetch()
   },
-  { deep: true }
+  { deep: true },
 )
 
 function handleChange(keys, args) {
@@ -173,12 +159,33 @@ function handleChange(keys, args) {
 }
 
 function handleRenderDisplay({ labels, selectedOptions }) {
-  if (unref(emitData).length === selectedOptions.length) {
+  if (unref(emitData).length === selectedOptions.length)
     return labels.join(' / ')
-  }
-  if (props.displayRenderArray) {
+
+  if (props.displayRenderArray)
     return props.displayRenderArray.join(' / ')
-  }
+
   return ''
 }
 </script>
+
+<template>
+  <Cascader
+    v-model:value="state"
+    :options="options"
+    :load-data="loadData"
+    change-on-select
+    :display-render="handleRenderDisplay"
+    @change="handleChange"
+  >
+    <template v-if="loading" #suffixIcon>
+      <LoadingOutlined spin />
+    </template>
+    <template v-if="loading" #notFoundContent>
+      <span>
+        <LoadingOutlined spin class="mr-1" />
+        {{ t('component.form.apiSelectNotFound') }}
+      </span>
+    </template>
+  </Cascader>
+</template>

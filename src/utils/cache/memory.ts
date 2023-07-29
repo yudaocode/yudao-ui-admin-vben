@@ -40,23 +40,24 @@ export class Memory<T = any, V = any> {
   set<K extends keyof T>(key: K, value: V, expires?: number) {
     let item = this.get(key)
 
-    if (!expires || (expires as number) <= 0) {
+    if (!expires || (expires) <= 0)
       expires = this.alive
-    }
+
     if (item) {
       if (item.timeoutId) {
         clearTimeout(item.timeoutId)
         item.timeoutId = undefined
       }
       item.value = value
-    } else {
+    }
+    else {
       item = { value, alive: expires }
       this.cache[key] = item
     }
 
-    if (!expires) {
+    if (!expires)
       return value
-    }
+
     const now = new Date().getTime()
     /**
      * Prevent overflow of the setTimeout Maximum delay value
@@ -68,7 +69,7 @@ export class Memory<T = any, V = any> {
       () => {
         this.remove(key)
       },
-      expires > now ? expires - now : expires
+      expires > now ? expires - now : expires,
     )
 
     return value
@@ -78,7 +79,7 @@ export class Memory<T = any, V = any> {
     const item = this.get(key)
     Reflect.deleteProperty(this.cache, key)
     if (item) {
-      clearTimeout(item.timeoutId!)
+      clearTimeout(item.timeoutId)
       return item.value
     }
   }
@@ -90,9 +91,8 @@ export class Memory<T = any, V = any> {
       if (item && item.time) {
         const now = new Date().getTime()
         const expire = item.time
-        if (expire > now) {
+        if (expire > now)
           this.set(k, item.value, expire)
-        }
       }
     })
   }

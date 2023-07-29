@@ -1,11 +1,5 @@
-<template>
-  <span :class="getClass">
-    <slot></slot>
-    <BasicHelp :class="`${prefixCls}-help`" v-if="helpMessage" :text="helpMessage" />
-  </span>
-</template>
 <script lang="ts" setup>
-import { useSlots, computed } from 'vue'
+import { computed, useSlots } from 'vue'
 import BasicHelp from './BasicHelp.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -16,7 +10,7 @@ const props = defineProps({
    */
   helpMessage: {
     type: [String, Array] as PropType<string | string[]>,
-    default: ''
+    default: '',
   },
   /**
    * Whether the color block on the left side of the title
@@ -27,7 +21,7 @@ const props = defineProps({
    * Whether to default the text, that is, not bold
    * @default: false
    */
-  normal: { type: Boolean }
+  normal: { type: Boolean },
 })
 
 const { prefixCls } = useDesign('basic-title')
@@ -35,9 +29,17 @@ const slots = useSlots()
 const getClass = computed(() => [
   prefixCls,
   { [`${prefixCls}-show-span`]: props.span && slots.default },
-  { [`${prefixCls}-normal`]: props.normal }
+  { [`${prefixCls}-normal`]: props.normal },
 ])
 </script>
+
+<template>
+  <span :class="getClass">
+    <slot />
+    <BasicHelp v-if="helpMessage" :class="`${prefixCls}-help`" :text="helpMessage" />
+  </span>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-basic-title';
 
@@ -64,8 +66,8 @@ const getClass = computed(() => [
     width: 3px;
     height: 16px;
     margin-right: 4px;
-    background-color: @primary-color;
     content: '';
+    background-color: @primary-color;
   }
 
   &-help {

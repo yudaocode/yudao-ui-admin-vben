@@ -1,4 +1,4 @@
-import { VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
 
 export interface ColumnFilterItem {
   text?: string

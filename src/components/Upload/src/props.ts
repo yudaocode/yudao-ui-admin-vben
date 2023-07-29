@@ -1,82 +1,82 @@
-import { FileBasicColumn } from './typing'
+import type { FileBasicColumn } from './typing'
 
 export const basicProps = {
   helpText: {
     type: String as PropType<string>,
-    default: ''
+    default: '',
   },
   // 文件最大多少MB
   maxSize: {
     type: Number as PropType<number>,
-    default: 2
+    default: 2,
   },
   // 最大数量的文件，Infinity不限制
   maxNumber: {
     type: Number as PropType<number>,
-    default: Infinity
+    default: Number.POSITIVE_INFINITY,
   },
   // 根据后缀，或者其他
   accept: {
     type: Array as PropType<string[]>,
-    default: () => []
+    default: () => [],
   },
   multiple: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: true,
   },
   uploadParams: {
     type: Object as PropType<any>,
-    default: () => ({})
+    default: () => ({}),
   },
   api: {
     type: Function as PropType<PromiseFn>,
     default: null,
-    required: true
+    required: true,
   },
   name: {
     type: String as PropType<string>,
-    default: 'file'
+    default: 'file',
   },
   filename: {
     type: String as PropType<string>,
-    default: null
-  }
+    default: null,
+  },
 }
 
 export const uploadContainerProps = {
   value: {
     type: Array as PropType<string[]>,
-    default: () => []
+    default: () => [],
   },
   ...basicProps,
   showPreviewNumber: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: true,
   },
   emptyHidePreview: {
     type: Boolean as PropType<boolean>,
-    default: false
-  }
+    default: false,
+  },
 }
 
 export const previewProps = {
   value: {
     type: Array as PropType<string[]>,
-    default: () => []
-  }
+    default: () => [],
+  },
 }
 
 export const fileListProps = {
   columns: {
     type: Array as PropType<FileBasicColumn[]>,
-    default: null
+    default: null,
   },
   actionColumn: {
     type: Object as PropType<FileBasicColumn>,
-    default: null
+    default: null,
   },
   dataSource: {
     type: Array as PropType<any[]>,
-    default: null
-  }
+    default: null,
+  },
 }

@@ -1,6 +1,7 @@
 // import { VueConstructor } from 'vue';
-import { IVFormComponent, IFormConfig, IValidationRule } from '../typings/v-form-component'
 import { cloneDeep, isArray, isFunction, isNumber, uniqueId } from 'lodash-es'
+import type { IFormConfig, IVFormComponent, IValidationRule } from '../typings/v-form-component'
+
 // import { del } from '@vue/composition-api';
 // import { withInstall } from '/@/utils';
 
@@ -40,14 +41,15 @@ export function generateKey(formItem?: IVFormComponent): string | boolean {
  */
 export function remove<T>(array: Array<T>, value: number | ((item: T, index: number, array: Array<T>) => boolean)): T | undefined {
   let removeVal: Array<T | undefined> = []
-  if (!isArray(array)) return undefined
+  if (!isArray(array))
+    return undefined
   if (isNumber(value)) {
     removeVal = array.splice(value, 1)
-  } else {
+  }
+  else {
     const index = array.findIndex(value)
-    if (index !== -1) {
+    if (index !== -1)
       removeVal = array.splice(index, 1)
-    }
   }
   return removeVal.shift()
 }
@@ -85,13 +87,15 @@ export function toLine(str: string) {
  * @param cb
  */
 export function formItemsForEach(array: IVFormComponent[], cb: (item: IVFormComponent) => void) {
-  if (!isArray(array)) return
+  if (!isArray(array))
+    return
   const traverse = (schemas: IVFormComponent[]) => {
     schemas.forEach((formItem: IVFormComponent) => {
       if (['Grid'].includes(formItem.component)) {
         // 栅格布局
-        formItem.columns?.forEach((item) => traverse(item.children))
-      } else {
+        formItem.columns?.forEach(item => traverse(item.children))
+      }
+      else {
         cb(formItem)
       }
     })
@@ -104,17 +108,18 @@ export function formItemsForEach(array: IVFormComponent[], cb: (item: IVFormComp
  */
 export const findFormItem: (schemas: IVFormComponent[], cb: (formItem: IVFormComponent) => boolean) => IVFormComponent | undefined = (
   schemas,
-  cb
+  cb,
 ) => {
   let res
   const traverse = (schemas: IVFormComponent[]): boolean => {
     return schemas.some((formItem: IVFormComponent) => {
       const { component: type } = formItem
       // 处理栅格
-      if (['Grid'].includes(type)) {
-        return formItem.columns?.some((item) => traverse(item.children))
-      }
-      if (cb(formItem)) res = formItem
+      if (['Grid'].includes(type))
+        return formItem.columns?.some(item => traverse(item.children))
+
+      if (cb(formItem))
+        res = formItem
       return cb(formItem)
     })
   }
@@ -127,12 +132,12 @@ export const findFormItem: (schemas: IVFormComponent[], cb: (formItem: IVFormCom
  * @param formConfig {IFormConfig}
  * @returns {IFormConfig}
  */
-export const removeAttrs = (formConfig: IFormConfig): IFormConfig => {
+export function removeAttrs(formConfig: IFormConfig): IFormConfig {
   const copyFormConfig = cloneDeep(formConfig)
   delete copyFormConfig.currentItem
   delete copyFormConfig.activeKey
-  copyFormConfig.schemas &&
-    formItemsForEach(copyFormConfig.schemas, (item) => {
+  copyFormConfig.schemas
+    && formItemsForEach(copyFormConfig.schemas, (item) => {
       delete item.icon
       delete item.key
     })
@@ -144,11 +149,13 @@ export const removeAttrs = (formConfig: IFormConfig): IFormConfig => {
  * @param {(() => Promise<any[]>) | any[]} options
  * @return {Promise<any[]>}
  */
-export const handleAsyncOptions = async (options: (() => Promise<any[]>) | any[]): Promise<any[]> => {
+export async function handleAsyncOptions(options: (() => Promise<any[]>) | any[]): Promise<any[]> {
   try {
-    if (isFunction(options)) return await options()
+    if (isFunction(options))
+      return await options()
     return options
-  } catch {
+  }
+  catch {
     return []
   }
 }
@@ -157,13 +164,13 @@ export const handleAsyncOptions = async (options: (() => Promise<any[]>) | any[]
  * 格式化表单项校验规则配置
  * @param {IVFormComponent[]} schemas
  */
-export const formatRules = (schemas: IVFormComponent[]) => {
+export function formatRules(schemas: IVFormComponent[]) {
   formItemsForEach(schemas, (item) => {
     if ('required' in item) {
       !isArray(item.rules) && (item.rules = [])
       item.rules.push({ required: true, message: item.message })
-      delete item['required']
-      delete item['message']
+      delete item.required
+      delete item.message
     }
   })
 }
@@ -173,10 +180,11 @@ export const formatRules = (schemas: IVFormComponent[]) => {
  * @param {IValidationRule[]} rules
  * @return {IValidationRule[]}
  */
-export const strToReg = (rules: IValidationRule[]) => {
+export function strToReg(rules: IValidationRule[]) {
   const newRules = cloneDeep(rules)
   return newRules.map((item) => {
-    if (item.pattern) item.pattern = runCode(item.pattern)
+    if (item.pattern)
+      item.pattern = runCode(item.pattern)
     return item
   })
 }
@@ -186,10 +194,11 @@ export const strToReg = (rules: IValidationRule[]) => {
  * @param code
  * @return {any}
  */
-export const runCode = <T>(code: any): T => {
+export function runCode<T>(code: any): T {
   try {
     return new Function(`return ${code}`)()
-  } catch {
+  }
+  catch {
     return code
   }
 }
@@ -199,14 +208,14 @@ export const runCode = <T>(code: any): T => {
  */
 
 // 编码表单 Conf
-export const encodeConf = (designerRef: object) => {
-  // @ts-ignore
+export function encodeConf(designerRef: object) {
+  // @ts-expect-error
   return JSON.stringify(designerRef.value.getOption())
 }
 
 // 编码表单 Fields
-export const encodeFields = (designerRef: object) => {
-  // @ts-ignore
+export function encodeFields(designerRef: object) {
+  // @ts-expect-error
   const rule = designerRef.value.getRule()
   const fields: string[] = []
   rule.forEach((item) => {
@@ -216,7 +225,7 @@ export const encodeFields = (designerRef: object) => {
 }
 
 // 解码表单 Fields
-export const decodeFields = (fields: string[]) => {
+export function decodeFields(fields: string[]) {
   const rule: object[] = []
   fields.forEach((item) => {
     rule.push(JSON.parse(item))
@@ -225,21 +234,21 @@ export const decodeFields = (fields: string[]) => {
 }
 
 // 设置表单的 Conf 和 Fields
-export const setConfAndFields = (designerRef: object, conf: string, fields: string) => {
-  // @ts-ignore
+export function setConfAndFields(designerRef: object, conf: string, fields: string) {
+  // @ts-expect-error
   designerRef.value.setOption(JSON.parse(conf))
-  // @ts-ignore
+  // @ts-expect-error
   designerRef.value.setRule(decodeFields(fields))
 }
 
 // 设置表单的 Conf 和 Fields
-export const setConfAndFields2 = (detailPreview: object, conf: string, fields: string, value?: object) => {
-  // @ts-ignore
+export function setConfAndFields2(detailPreview: object, conf: string, fields: string, value?: object) {
+  // @ts-expect-error
   detailPreview.value.option = JSON.parse(conf)
-  // @ts-ignore
+  // @ts-expect-error
   detailPreview.value.rule = decodeFields(fields)
   if (value) {
-    // @ts-ignore
+    // @ts-expect-error
     detailPreview.value.value = value
   }
 }

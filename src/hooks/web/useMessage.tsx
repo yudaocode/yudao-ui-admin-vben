@@ -1,9 +1,9 @@
 import type { ModalFunc, ModalFuncProps } from 'ant-design-vue/lib/modal/Modal'
 
-import { Modal, message as Message, notification } from 'ant-design-vue'
-import { InfoCircleFilled, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons-vue'
+import { message as Message, Modal, notification } from 'ant-design-vue'
+import { CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from '@ant-design/icons-vue'
 
-import { NotificationArgsProps, ConfigProps } from 'ant-design-vue/lib/notification'
+import type { ConfigProps, NotificationArgsProps } from 'ant-design-vue/lib/notification'
 import { useI18n } from './useI18n'
 import { isString } from '@/utils/is'
 
@@ -14,7 +14,7 @@ export interface NotifyApi {
   warn(config: NotificationArgsProps): void
   warning(config: NotificationArgsProps): void
   open(args: NotificationArgsProps): void
-  close(key: String): void
+  close(key: string): void
   config(options: ConfigProps): void
   destroy(): void
 }
@@ -35,23 +35,21 @@ interface ConfirmOptions {
 }
 
 function getIcon(iconType: string) {
-  if (iconType === 'warning') {
+  if (iconType === 'warning')
     return <InfoCircleFilled class="modal-icon-warning" />
-  } else if (iconType === 'success') {
+  else if (iconType === 'success')
     return <CheckCircleFilled class="modal-icon-success" />
-  } else if (iconType === 'info') {
+  else if (iconType === 'info')
     return <InfoCircleFilled class="modal-icon-info" />
-  } else {
+  else
     return <CloseCircleFilled class="modal-icon-error" />
-  }
 }
 
 function renderContent({ content }: Pick<ModalOptionsEx, 'content'>) {
-  if (isString(content)) {
-    return <div innerHTML={`<div>${content as string}</div>`}></div>
-  } else {
+  if (isString(content))
+    return <div innerHTML={`<div>${content}</div>`}></div>
+  else
     return content
-  }
 }
 
 /**
@@ -64,16 +62,16 @@ function createConfirm(options: ModalOptionsEx): ConfirmOptions {
     centered: true,
     icon: getIcon(iconType),
     ...options,
-    content: renderContent(options)
+    content: renderContent(options),
   }
   return Modal.confirm(opt) as unknown as ConfirmOptions
 }
 
-const getBaseOptions = () => {
+function getBaseOptions() {
   const { t } = useI18n()
   return {
     okText: t('common.okText'),
-    centered: true
+    centered: true,
   }
 }
 
@@ -82,7 +80,7 @@ function createModalOptions(options: ModalOptionsPartial, icon: string): ModalOp
     ...getBaseOptions(),
     ...options,
     content: renderContent(options),
-    icon: getIcon(icon)
+    icon: getIcon(icon),
   }
 }
 
@@ -104,7 +102,7 @@ function createWarningModal(options: ModalOptionsPartial) {
 
 notification.config({
   placement: 'topRight',
-  duration: 3
+  duration: 3,
 })
 
 /**
@@ -114,10 +112,10 @@ export function useMessage() {
   return {
     createMessage: Message,
     notification: notification as NotifyApi,
-    createConfirm: createConfirm,
+    createConfirm,
     createSuccessModal,
     createErrorModal,
     createInfoModal,
-    createWarningModal
+    createWarningModal,
   }
 }

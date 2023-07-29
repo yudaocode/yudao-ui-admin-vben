@@ -9,7 +9,7 @@ export enum TypeEnum {
   loop = 'LOOP',
   work = 'WORK',
   last = 'LAST',
-  specify = 'SPECIFY'
+  specify = 'SPECIFY',
 }
 
 // use 公共 props
@@ -18,7 +18,7 @@ export function useTabProps(options) {
   return {
     value: propTypes.string.def(defaultValue),
     disabled: propTypes.bool.def(false),
-    ...options?.props
+    ...options?.props,
   }
 }
 
@@ -66,9 +66,9 @@ export function useTabSetup(props, context, options) {
         valueArray.push('L')
         break
       case TypeEnum.specify:
-        if (valueList.value.length === 0) {
+        if (valueList.value.length === 0)
           valueList.value.push(minValue.value)
-        }
+
         valueArray.push(valueList.value.join(','))
         break
       default:
@@ -81,9 +81,8 @@ export function useTabSetup(props, context, options) {
   const specifyRange = computed(() => {
     const range: number[] = []
     if (maxValue.value != null) {
-      for (let i = minValue.value; i <= maxValue.value; i++) {
+      for (let i = minValue.value; i <= maxValue.value; i++)
         range.push(i)
-      }
     }
     return range
   })
@@ -91,14 +90,13 @@ export function useTabSetup(props, context, options) {
   watch(
     () => props.value,
     (val) => {
-      if (val !== computeValue.value) {
+      if (val !== computeValue.value)
         parseValue(val)
-      }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
-  watch(computeValue, (v) => updateValue(v))
+  watch(computeValue, v => updateValue(v))
 
   function updateValue(value) {
     emit('change', value)
@@ -110,68 +108,75 @@ export function useTabSetup(props, context, options) {
    * @param value
    */
   function parseValue(value) {
-    if (value === computeValue.value) {
+    if (value === computeValue.value)
       return
-    }
+
     try {
       if (!value || value === defaultValue.value) {
         type.value = TypeEnum.every
-      } else if (value.indexOf('?') >= 0) {
+      }
+      else if (value.includes('?')) {
         type.value = TypeEnum.unset
-      } else if (value.indexOf('-') >= 0) {
+      }
+      else if (value.includes('-')) {
         type.value = TypeEnum.range
         const values = value.split('-')
         if (values.length >= 2) {
-          valueRange.start = parseInt(values[0])
-          valueRange.end = parseInt(values[1])
+          valueRange.start = Number.parseInt(values[0])
+          valueRange.end = Number.parseInt(values[1])
         }
-      } else if (value.indexOf('/') >= 0) {
+      }
+      else if (value.includes('/')) {
         type.value = TypeEnum.loop
         const values = value.split('/')
         if (values.length >= 2) {
-          valueLoop.start = value[0] === '*' ? 0 : parseInt(values[0])
-          valueLoop.interval = parseInt(values[1])
+          valueLoop.start = value[0] === '*' ? 0 : Number.parseInt(values[0])
+          valueLoop.interval = Number.parseInt(values[1])
         }
-      } else if (value.indexOf('W') >= 0) {
+      }
+      else if (value.includes('W')) {
         type.value = TypeEnum.work
         const values = value.split('W')
-        if (!values[0] && !isNaN(values[0])) {
-          valueWork.value = parseInt(values[0])
-        }
-      } else if (value.indexOf('L') >= 0) {
+        if (!values[0] && !isNaN(values[0]))
+          valueWork.value = Number.parseInt(values[0])
+      }
+      else if (value.includes('L')) {
         type.value = TypeEnum.last
-      } else if (value.indexOf(',') >= 0 || !isNaN(value)) {
+      }
+      else if (value.includes(',') || !isNaN(value)) {
         type.value = TypeEnum.specify
-        valueList.value = value.split(',').map((item) => parseInt(item))
-      } else {
+        valueList.value = value.split(',').map(item => Number.parseInt(item))
+      }
+      else {
         type.value = TypeEnum.every
       }
-    } catch (e) {
+    }
+    catch (e) {
       type.value = TypeEnum.every
     }
   }
 
   const beforeRadioAttrs = computed(() => ({
     class: ['choice'],
-    disabled: props.disabled || unref(options.disabled)
+    disabled: props.disabled || unref(options.disabled),
   }))
   const inputNumberAttrs = computed(() => ({
     class: ['w60'],
     max: maxValue.value,
     min: minValue.value,
-    precision: 0
+    precision: 0,
   }))
   const typeRangeAttrs = computed(() => ({
     disabled: type.value !== TypeEnum.range || props.disabled || unref(options.disabled),
-    ...inputNumberAttrs.value
+    ...inputNumberAttrs.value,
   }))
   const typeLoopAttrs = computed(() => ({
     disabled: type.value !== TypeEnum.loop || props.disabled || unref(options.disabled),
-    ...inputNumberAttrs.value
+    ...inputNumberAttrs.value,
   }))
   const typeSpecifyAttrs = computed(() => ({
     disabled: type.value !== TypeEnum.specify || props.disabled || unref(options.disabled),
-    class: ['list-check-item']
+    class: ['list-check-item'],
   }))
 
   return {
@@ -194,6 +199,6 @@ export function useTabSetup(props, context, options) {
     inputNumberAttrs,
     typeRangeAttrs,
     typeLoopAttrs,
-    typeSpecifyAttrs
+    typeSpecifyAttrs,
   }
 }

@@ -37,12 +37,12 @@ export function getFileConfigPage(params: FileConfigPageReqVO) {
 
 // 查询文件配置详情
 export function getFileConfig(id: number) {
-  return defHttp.get({ url: '/infra/file-config/get?id=' + id })
+  return defHttp.get({ url: `/infra/file-config/get?id=${id}` })
 }
 
 // 更新文件配置为主配置
 export function updateFileConfigMaster(id: number) {
-  return defHttp.put({ url: '/infra/file-config/update-master?id=' + id })
+  return defHttp.put({ url: `/infra/file-config/update-master?id=${id}` })
 }
 
 // 新增文件配置
@@ -57,10 +57,10 @@ export function updateFileConfig(data: FileConfigVO) {
 
 // 删除文件配置
 export function deleteFileConfig(id: number) {
-  return defHttp.delete({ url: '/infra/file-config/delete?id=' + id })
+  return defHttp.delete({ url: `/infra/file-config/delete?id=${id}` })
 }
 
 // 测试文件配置
 export function testFileConfig(id: number) {
-  return defHttp.get({ url: '/infra/file-config/test?id=' + id })
+  return defHttp.get({ url: `/infra/file-config/test?id=${id}` })
 }

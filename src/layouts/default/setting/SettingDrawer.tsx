@@ -1,7 +1,17 @@
-import { defineComponent, computed, unref } from 'vue'
-import { BasicDrawer } from '@/components/Drawer'
+import { computed, defineComponent, unref } from 'vue'
 import { Divider } from 'ant-design-vue'
-import { TypePicker, ThemeColorPicker, SettingFooter, SwitchItem, SelectItem, InputNumberItem } from './components'
+import { InputNumberItem, SelectItem, SettingFooter, SwitchItem, ThemeColorPicker, TypePicker } from './components'
+import { baseHandler } from './handler'
+import {
+  HandlerEnum,
+  contentModeOptions,
+  getMenuTriggerOptions,
+  menuTypeList,
+  mixSidebarTriggerOptions,
+  routerTransitionOptions,
+  topMenuAlignOptions,
+} from './enum'
+import { BasicDrawer } from '@/components/Drawer'
 
 import { AppDarkModeToggle } from '@/components/Application'
 
@@ -14,19 +24,7 @@ import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 import { useTransitionSetting } from '@/hooks/setting/useTransitionSetting'
 import { useI18n } from '@/hooks/web/useI18n'
 
-import { baseHandler } from './handler'
-
-import {
-  HandlerEnum,
-  contentModeOptions,
-  topMenuAlignOptions,
-  getMenuTriggerOptions,
-  routerTransitionOptions,
-  menuTypeList,
-  mixSidebarTriggerOptions
-} from './enum'
-
-import { HEADER_PRESET_BG_COLOR_LIST, SIDE_BAR_BG_COLOR_LIST, APP_PRESET_COLOR_LIST } from '@/settings/designSetting'
+import { APP_PRESET_COLOR_LIST, HEADER_PRESET_BG_COLOR_LIST, SIDE_BAR_BG_COLOR_LIST } from '@/settings/designSetting'
 
 const { t } = useI18n()
 
@@ -44,7 +42,7 @@ export default defineComponent({
       getGrayMode,
       getLockTime,
       getShowDarkModeToggle,
-      getThemeColor
+      getThemeColor,
     } = useRootSetting()
 
     const { getOpenPageLoading, getBasicTransition, getEnableTransition, getOpenNProgress } = useTransitionSetting()
@@ -67,7 +65,7 @@ export default defineComponent({
       getIsMixSidebar,
       getCloseMixSidebarOnChange,
       getMixSideTrigger,
-      getMixSideFixed
+      getMixSideFixed,
     } = useMenuSetting()
 
     const { getShowHeader, getFixed: getHeaderFixed, getHeaderBgColor, getShowSearch } = useHeaderSetting()
@@ -87,7 +85,7 @@ export default defineComponent({
               baseHandler(HandlerEnum.CHANGE_LAYOUT, {
                 mode: item.mode,
                 type: item.type,
-                split: unref(getIsHorizontal) ? false : undefined
+                split: unref(getIsHorizontal) ? false : undefined,
               })
             }}
             def={unref(getMenuType)}
@@ -115,10 +113,9 @@ export default defineComponent({
       let triggerDef = unref(getTrigger)
 
       const triggerOptions = getMenuTriggerOptions(unref(getSplit))
-      const some = triggerOptions.some((item) => item.value === triggerDef)
-      if (!some) {
+      const some = triggerOptions.some(item => item.value === triggerDef)
+      if (!some)
         triggerDef = TriggerEnum.FOOTER
-      }
 
       return (
         <>
@@ -219,7 +216,7 @@ export default defineComponent({
             event={HandlerEnum.LOCK_TIME}
             defaultValue={unref(getLockTime)}
             formatter={(value: string) => {
-              return parseInt(value) === 0 ? `0(${t('layout.setting.notAutoScreenLock')})` : `${value}${t('layout.setting.minute')}`
+              return Number.parseInt(value) === 0 ? `0(${t('layout.setting.notAutoScreenLock')})` : `${value}${t('layout.setting.minute')}`
             }}
           />
           <InputNumberItem
@@ -230,7 +227,7 @@ export default defineComponent({
             event={HandlerEnum.MENU_WIDTH}
             disabled={!unref(getShowMenuRef)}
             defaultValue={unref(getMenuWidth)}
-            formatter={(value: string) => `${parseInt(value)}px`}
+            formatter={(value: string) => `${Number.parseInt(value)}px`}
           />
         </>
       )
@@ -346,5 +343,5 @@ export default defineComponent({
         <SettingFooter />
       </BasicDrawer>
     )
-  }
+  },
 })

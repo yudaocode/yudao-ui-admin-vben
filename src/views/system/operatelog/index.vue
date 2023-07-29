@@ -1,35 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="warning" :preIcon="IconEnum.EXPORT" @click="handleExport"> {{ t('action.export') }} </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.VIEW,
-                label: t('action.detail'),
-                onClick: handleShowInfo.bind(null, record)
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <OperLogInfoModal @register="registerModal" />
-  </div>
-</template>
 <script lang="ts" setup>
+import { columns, searchFormSchema } from './operateLog.data'
+import OperLogInfoModal from './LogInfoModal.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { OperateLogPageReqVO, exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
-import { columns, searchFormSchema } from './operateLog.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { OperateLogPageReqVO } from '@/api/system/operatelog'
+import { exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
 import { useModal } from '@/components/Modal'
-import OperLogInfoModal from './LogInfoModal.vue'
 
 defineOptions({ name: 'SystemOperateLog' })
 
@@ -47,8 +25,8 @@ const [registerTable, { getForm }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 async function handleExport() {
@@ -59,7 +37,7 @@ async function handleExport() {
     async onOk() {
       await exportOperateLog(getForm().getFieldsValue() as OperateLogPageReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -68,3 +46,29 @@ function handleShowInfo(record: Recordable) {
   openModal(true, record)
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.VIEW,
+                label: t('action.detail'),
+                onClick: handleShowInfo.bind(null, record),
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <OperLogInfoModal @register="registerModal" />
+  </div>
+</template>

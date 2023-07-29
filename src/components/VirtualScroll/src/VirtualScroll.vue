@@ -1,5 +1,6 @@
 <script lang="tsx">
-import { defineComponent, computed, ref, unref, reactive, onMounted, watch, nextTick, CSSProperties } from 'vue'
+import type { CSSProperties } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, reactive, ref, unref, watch } from 'vue'
 import { useEventListener } from '@/hooks/event/useEventListener'
 import { getSlot } from '@/utils/helper/tsxHelper'
 
@@ -14,28 +15,27 @@ const props = {
   width: [Number, String] as NumberOrNumberString,
   bench: {
     type: [Number, String] as NumberOrNumberString,
-    default: 0
+    default: 0,
   },
   itemHeight: {
     type: [Number, String] as NumberOrNumberString,
-    required: true
+    required: true,
   },
   items: {
     type: Array as PropType<any[]>,
-    default: () => []
-  }
+    default: () => [],
+  },
 }
 
 const prefixCls = 'virtual-scroll'
 
 function convertToUnit(str: string | number | null | undefined, unit = 'px'): string | undefined {
-  if (str == null || str === '') {
+  if (str == null || str === '')
     return undefined
-  } else if (isNaN(+str!)) {
+  else if (isNaN(+str!))
     return String(str)
-  } else {
+  else
     return `${Number(str)}${unit}`
-  }
 }
 
 export default defineComponent({
@@ -46,15 +46,15 @@ export default defineComponent({
     const state = reactive({
       first: 0,
       last: 0,
-      scrollTop: 0
+      scrollTop: 0,
     })
 
     const getBenchRef = computed(() => {
-      return parseInt(props.bench as string, 10)
+      return Number.parseInt(props.bench as string, 10)
     })
 
     const getItemHeightRef = computed(() => {
-      return parseInt(props.itemHeight as string, 10)
+      return Number.parseInt(props.itemHeight as string, 10)
     })
 
     const getFirstToRenderRef = computed(() => {
@@ -67,7 +67,7 @@ export default defineComponent({
 
     const getContainerStyleRef = computed((): CSSProperties => {
       return {
-        height: convertToUnit((props.items || []).length * unref(getItemHeightRef))
+        height: convertToUnit((props.items || []).length * unref(getItemHeightRef)),
       }
     })
 
@@ -80,12 +80,18 @@ export default defineComponent({
       const maxWidth = convertToUnit(props.maxWidth)
       const width = convertToUnit(props.width)
 
-      if (height) styles.height = height
-      if (minHeight) styles.minHeight = minHeight
-      if (minWidth) styles.minWidth = minWidth
-      if (maxHeight) styles.maxHeight = maxHeight
-      if (maxWidth) styles.maxWidth = maxWidth
-      if (width) styles.width = width
+      if (height)
+        styles.height = height
+      if (minHeight)
+        styles.minHeight = minHeight
+      if (minWidth)
+        styles.minWidth = minWidth
+      if (maxHeight)
+        styles.maxHeight = maxHeight
+      if (maxWidth)
+        styles.maxWidth = maxWidth
+      if (width)
+        styles.width = width
       return styles
     })
 
@@ -95,10 +101,10 @@ export default defineComponent({
 
     function getLast(first: number): number {
       const wrapEl = unref(wrapElRef)
-      if (!wrapEl) {
+      if (!wrapEl)
         return 0
-      }
-      const height = parseInt(props.height || 0, 10) || wrapEl.clientHeight
+
+      const height = Number.parseInt(props.height || 0, 10) || wrapEl.clientHeight
 
       return first + Math.ceil(height / unref(getItemHeightRef))
     }
@@ -109,9 +115,9 @@ export default defineComponent({
 
     function onScroll() {
       const wrapEl = unref(wrapElRef)
-      if (!wrapEl) {
+      if (!wrapEl)
         return
-      }
+
       state.scrollTop = wrapEl.scrollTop
       state.first = getFirst()
       state.last = getLast(state.first)
@@ -136,14 +142,14 @@ export default defineComponent({
       state.last = getLast(0)
       nextTick(() => {
         const wrapEl = unref(wrapElRef)
-        if (!wrapEl) {
+        if (!wrapEl)
           return
-        }
+
         useEventListener({
           el: wrapEl,
           name: 'scroll',
           listener: onScroll,
-          wait: 0
+          wait: 0,
         })
       })
     })
@@ -155,17 +161,18 @@ export default defineComponent({
         </div>
       </div>
     )
-  }
+  },
 })
 </script>
+
 <style scoped lang="less">
 .virtual-scroll {
   position: relative;
   display: block;
+  flex: 1 1 auto;
   width: 100%;
   max-width: 100%;
   overflow: auto;
-  flex: 1 1 auto;
 
   &__container {
     display: block;

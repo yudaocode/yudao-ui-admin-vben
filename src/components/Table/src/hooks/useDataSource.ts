@@ -1,11 +1,12 @@
+import type { ComputedRef, Ref } from 'vue'
+import { computed, onMounted, reactive, ref, unref, watch, watchEffect } from 'vue'
+import { useTimeoutFn } from '@vueuse/core'
+import { cloneDeep, get, merge } from 'lodash-es'
 import type { BasicTableProps, FetchParams, SorterResult } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
-import { ref, unref, ComputedRef, computed, onMounted, watch, reactive, Ref, watchEffect } from 'vue'
-import { useTimeoutFn } from '@vueuse/core'
+import { FETCH_SETTING, PAGE_SIZE, ROW_KEY } from '../const'
 import { buildUUID } from '@/utils/uuid'
-import { isFunction, isBoolean, isObject } from '@/utils/is'
-import { get, cloneDeep, merge } from 'lodash-es'
-import { FETCH_SETTING, ROW_KEY, PAGE_SIZE } from '../const'
+import { isBoolean, isFunction, isObject } from '@/utils/is'
 
 interface ActionType {
   getPaginationInfo: ComputedRef<boolean | PaginationProps>
@@ -23,11 +24,11 @@ interface SearchState {
 export function useDataSource(
   propsRef: ComputedRef<BasicTableProps>,
   { getPaginationInfo, setPagination, setLoading, getFieldsValue, clearSelectedRowKeys, tableData }: ActionType,
-  emit: EmitType
+  emit: EmitType,
 ) {
   const searchState = reactive<SearchState>({
     sortInfo: {},
-    filterInfo: {}
+    filterInfo: {},
   })
   const dataSourceRef = ref<Recordable[]>([])
   const rawDataSourceRef = ref<Recordable>({})
@@ -43,15 +44,15 @@ export function useDataSource(
       !api && dataSource && (dataSourceRef.value = dataSource)
     },
     {
-      immediate: true
-    }
+      immediate: true,
+    },
   )
 
   function handleTableChange(pagination: PaginationProps, filters: Partial<Recordable<string[]>>, sorter: SorterResult) {
     const { clearSelectOnPageChange, sortFn, filterFn } = unref(propsRef)
-    if (clearSelectOnPageChange) {
+    if (clearSelectOnPageChange)
       clearSelectedRowKeys()
-    }
+
     setPagination(pagination)
 
     const params: Recordable = {}
@@ -70,14 +71,14 @@ export function useDataSource(
   }
 
   function setTableKey(items: any[]) {
-    if (!items || !Array.isArray(items)) return
+    if (!items || !Array.isArray(items))
+      return
     items.forEach((item) => {
-      if (!item[ROW_KEY]) {
+      if (!item[ROW_KEY])
         item[ROW_KEY] = buildUUID()
-      }
-      if (item.children && item.children.length) {
+
+      if (item.children && item.children.length)
         setTableKey(item.children)
-      }
     })
   }
 
@@ -92,9 +93,9 @@ export function useDataSource(
 
   const getDataSourceRef = computed(() => {
     const dataSource = unref(dataSourceRef)
-    if (!dataSource || dataSource.length === 0) {
+    if (!dataSource || dataSource.length === 0)
       return unref(dataSourceRef)
-    }
+
     if (unref(getAutoCreateKey)) {
       const firstItem = dataSource[0]
       const lastItem = dataSource[dataSource.length - 1]
@@ -103,12 +104,11 @@ export function useDataSource(
         if (!firstItem[ROW_KEY] || !lastItem[ROW_KEY]) {
           const data = cloneDeep(unref(dataSourceRef))
           data.forEach((item) => {
-            if (!item[ROW_KEY]) {
+            if (!item[ROW_KEY])
               item[ROW_KEY] = buildUUID()
-            }
-            if (item.children && item.children.length) {
+
+            if (item.children && item.children.length)
               setTableKey(item.children)
-            }
           })
           dataSourceRef.value = data
         }
@@ -119,9 +119,9 @@ export function useDataSource(
 
   async function updateTableData(index: number, key: string, value: any) {
     const record = dataSourceRef.value[index]
-    if (record) {
+    if (record)
       dataSourceRef.value[index][key] = value
-    }
+
     return dataSourceRef.value[index]
   }
 
@@ -130,43 +130,46 @@ export function useDataSource(
 
     if (row) {
       for (const field in row) {
-        if (Reflect.has(record, field)) row[field] = record[field]
+        if (Reflect.has(record, field))
+          row[field] = record[field]
       }
+
       return row
     }
   }
 
   function deleteTableDataRecord(rowKey: string | number | string[] | number[]) {
-    if (!dataSourceRef.value || dataSourceRef.value.length == 0) return
+    if (!dataSourceRef.value || dataSourceRef.value.length == 0)
+      return
     const rowKeyName = unref(getRowKey)
-    if (!rowKeyName) return
+    if (!rowKeyName)
+      return
     const rowKeys = !Array.isArray(rowKey) ? [rowKey] : rowKey
 
     function deleteRow(data, key) {
       const row: { index: number; data: [] } = findRow(data, key)
-      if (row === null || row.index === -1) {
+      if (row === null || row.index === -1)
         return
-      }
+
       row.data.splice(row.index, 1)
 
       function findRow(data, key) {
-        if (data === null || data === undefined) {
+        if (data === null || data === undefined)
           return null
-        }
+
         for (let i = 0; i < data.length; i++) {
           const row = data[i]
           let targetKeyName: string = rowKeyName as string
-          if (isFunction(rowKeyName)) {
+          if (isFunction(rowKeyName))
             targetKeyName = rowKeyName(row)
-          }
-          if (row[targetKeyName] === key) {
+
+          if (row[targetKeyName] === key)
             return { index: i, data }
-          }
+
           if (row.children?.length > 0) {
             const result = findRow(row.children, key)
-            if (result != null) {
+            if (result != null)
               return result
-            }
           }
         }
         return null
@@ -178,7 +181,7 @@ export function useDataSource(
       deleteRow(unref(propsRef).dataSource, key)
     }
     setPagination({
-      total: unref(propsRef).dataSource?.length
+      total: unref(propsRef).dataSource?.length,
     })
   }
 
@@ -191,10 +194,12 @@ export function useDataSource(
   }
 
   function findTableDataRecord(rowKey: string | number) {
-    if (!dataSourceRef.value || dataSourceRef.value.length == 0) return
+    if (!dataSourceRef.value || dataSourceRef.value.length == 0)
+      return
 
     const rowKeyName = unref(getRowKey)
-    if (!rowKeyName) return
+    if (!rowKeyName)
+      return
 
     const { childrenColumnName = 'children' } = unref(propsRef)
 
@@ -202,11 +207,12 @@ export function useDataSource(
       let ret
       array.some(function iter(r) {
         if (typeof rowKeyName === 'function') {
-          if ((rowKeyName(r) as string) === rowKey) {
+          if ((rowKeyName(r)) === rowKey) {
             ret = r
             return true
           }
-        } else {
+        }
+        else {
           if (Reflect.has(r, rowKeyName) && r[rowKeyName] === rowKey) {
             ret = r
             return true
@@ -229,7 +235,8 @@ export function useDataSource(
 
   async function fetch(opt?: FetchParams) {
     const { api, searchInfo, defSort, fetchSetting, beforeFetch, afterFetch, useSearchForm, pagination } = unref(propsRef)
-    if (!api || !isFunction(api)) return
+    if (!api || !isFunction(api))
+      return
     try {
       setLoading(true)
       const { pageField, sizeField, listField, totalField } = Object.assign({}, FETCH_SETTING, fetchSetting)
@@ -239,7 +246,8 @@ export function useDataSource(
 
       if ((isBoolean(pagination) && !pagination) || isBoolean(getPaginationInfo)) {
         pageParams = {}
-      } else {
+      }
+      else {
         pageParams[pageField] = (opt && opt.page) || current
         pageParams[sizeField] = pageSize
       }
@@ -255,11 +263,10 @@ export function useDataSource(
         sortInfo,
         filterInfo,
         opt?.sortInfo ?? {},
-        opt?.filterInfo ?? {}
+        opt?.filterInfo ?? {},
       )
-      if (beforeFetch && isFunction(beforeFetch)) {
+      if (beforeFetch && isFunction(beforeFetch))
         params = (await beforeFetch(params)) || params
-      }
 
       const res = await api(params)
       rawDataSourceRef.value = res
@@ -274,36 +281,38 @@ export function useDataSource(
         const currentTotalPage = Math.ceil(resultTotal / pageSize)
         if (current > currentTotalPage) {
           setPagination({
-            current: currentTotalPage
+            current: currentTotalPage,
           })
           return await fetch(opt)
         }
       }
 
-      if (afterFetch && isFunction(afterFetch)) {
+      if (afterFetch && isFunction(afterFetch))
         resultItems = (await afterFetch(resultItems)) || resultItems
-      }
+
       dataSourceRef.value = resultItems
       setPagination({
-        total: resultTotal || 0
+        total: resultTotal || 0,
       })
       if (opt && opt.page) {
         setPagination({
-          current: opt.page || 1
+          current: opt.page || 1,
         })
       }
       emit('fetch-success', {
         items: unref(resultItems),
-        total: resultTotal
+        total: resultTotal,
       })
       return resultItems
-    } catch (error) {
+    }
+    catch (error) {
       emit('fetch-error', error)
       dataSourceRef.value = []
       setPagination({
-        total: 0
+        total: 0,
       })
-    } finally {
+    }
+    finally {
       setLoading(false)
     }
   }
@@ -344,6 +353,6 @@ export function useDataSource(
     deleteTableDataRecord,
     insertTableDataRecord,
     findTableDataRecord,
-    handleTableChange
+    handleTableChange,
   }
 }

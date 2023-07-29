@@ -1,8 +1,3 @@
-<template>
-  <span :class="`${prefixCls}__extra-redo`" @click="handleRedo">
-    <RedoOutlined :spin="loading" />
-  </span>
-</template>
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { RedoOutlined } from '@ant-design/icons-vue'
@@ -25,3 +20,9 @@ async function handleRedo() {
   }, 1200)
 }
 </script>
+
+<template>
+  <span :class="`${prefixCls}__extra-redo`" @click="handleRedo">
+    <RedoOutlined :spin="loading" />
+  </span>
+</template>

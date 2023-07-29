@@ -1,14 +1,14 @@
 <template>
-  <BasicModal v-bind="$attrs" title="操作日志详情" @register="registerModalInner" @ok="closeModal" width="800px">
+  <BasicModal v-bind="$attrs" title="操作日志详情" width="800px" @register="registerModalInner" @ok="closeModal">
     <Description @register="registerDescription" />
   </BasicModal>
 </template>
 
-<script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components/Modal'
-import { Description, useDescription } from '@/components/Description/index'
+<template setup lang="ts">
 import { ref } from 'vue'
 import { infoSchema } from './operateLog.data'
+import { BasicModal, useModalInner } from '@/components/Modal'
+import { Description, useDescription } from '@/components/Description/index'
 
 defineOptions({ name: 'OperLogInfoModal' })
 
@@ -20,8 +20,6 @@ const [registerModalInner, { closeModal }] = useModalInner((record: Recordable) 
 const [registerDescription] = useDescription({
   column: 1,
   schema: infoSchema,
-  data: logData
+  data: logData,
 })
-</script>
-
-<style scoped></style>
+</template>

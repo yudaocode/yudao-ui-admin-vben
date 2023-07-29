@@ -4,36 +4,36 @@
 
   /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
   :deep(.list-main) {
-    overflow: hidden;
-    padding: 5px;
     position: relative;
+    padding: 5px;
+    overflow: hidden;
 
     .moving {
+      position: relative;
+      box-sizing: border-box;
       // 拖放移动中;
       min-height: 35px;
-      box-sizing: border-box;
-      overflow: hidden;
       padding: 0 !important;
-      position: relative;
+      overflow: hidden;
 
       &::before {
-        content: '';
-        height: 5px;
-        width: 100%;
-        background-color: @primary-color;
         position: absolute;
         top: 0;
         right: 0;
+        width: 100%;
+        height: 5px;
+        content: "";
+        background-color: @primary-color;
       }
     }
 
     .drag-move-box {
       position: relative;
       box-sizing: border-box;
+      min-height: 60px;
       padding: 8px;
       overflow: hidden;
       transition: all 0.3s;
-      min-height: 60px;
 
       &:hover {
         background-color: @primary-hover-bg-color;
@@ -41,13 +41,13 @@
 
       // 选择时 start
       &::before {
-        content: '';
-        height: 5px;
-        width: 100%;
-        background-color: @primary-color;
         position: absolute;
         top: 0;
         right: -100%;
+        width: 100%;
+        height: 5px;
+        content: "";
+        background-color: @primary-color;
         transition: all 0.3s;
       }
 
@@ -67,26 +67,26 @@
         word-wrap: break-word;
 
         &::before {
-          content: '';
           position: absolute;
-          width: 100%;
-          height: 100%;
           top: 0;
           left: 0;
+          width: 100%;
+          height: 100%;
+          content: "";
         }
 
         .ant-form-item {
+          padding-bottom: 6px;
           // 修改ant form-item的margin为padding
           margin: 0;
-          padding-bottom: 6px;
         }
       }
 
       .show-key-box {
         // 显示key
         position: absolute;
-        bottom: 2px;
         right: 5px;
+        bottom: 2px;
         font-size: 14px;
         // z-index: 999;
         color: @primary-color;
@@ -99,14 +99,14 @@
         width: 30px;
         height: 30px;
         line-height: 30px;
-        text-align: center;
         color: #fff;
+        text-align: center;
         // z-index: 989;
         transition: all 0.3s;
 
         &.unactivated {
-          opacity: 0 !important;
           pointer-events: none;
+          opacity: 0 !important;
         }
 
         &.active {
@@ -115,9 +115,9 @@
       }
 
       .copy {
-        border-radius: 0 0 0 8px;
         right: 30px;
         background-color: @primary-color;
+        border-radius: 0 0 0 8px;
       }
 
       .delete {
@@ -129,20 +129,20 @@
     .grid-box {
       position: relative;
       box-sizing: border-box;
-      padding: 5px;
-      background-color: @layout-background-color;
       width: 100%;
-      transition: all 0.3s;
+      padding: 5px;
       overflow: hidden;
+      background-color: @layout-background-color;
+      transition: all 0.3s;
 
       .form-item-box {
         position: relative;
         box-sizing: border-box;
 
         .ant-form-item {
+          padding-bottom: 15px;
           // 修改ant form-item的margin为padding
           margin: 0;
-          padding-bottom: 15px;
         }
       }
 
@@ -151,14 +151,14 @@
 
         .grid-col {
           .draggable-box {
-            min-height: 80px;
             min-width: 50px;
+            min-height: 80px;
             border: 1px #ccc dashed;
             // background: #fff;
 
             .list-main {
-              min-height: 83px;
               position: relative;
+              min-height: 83px;
               border: 1px #ccc dashed;
             }
           }
@@ -167,13 +167,13 @@
 
       // 选择时 start
       &::before {
-        content: '';
-        height: 5px;
-        width: 100%;
-        background: transparent;
         position: absolute;
         top: 0;
         right: -100%;
+        width: 100%;
+        height: 5px;
+        content: "";
+        background: transparent;
         transition: all 0.3s;
       }
 
@@ -182,8 +182,8 @@
         outline-offset: 0;
 
         &::before {
-          background-color: @layout-color;
           right: 0;
+          background-color: @layout-color;
         }
       }
       // 选择时 end
@@ -195,14 +195,14 @@
           width: 30px;
           height: 30px;
           line-height: 30px;
-          text-align: center;
           color: #fff;
+          text-align: center;
           // z-index: 989;
           transition: all 0.3s;
 
           &.unactivated {
-            opacity: 0 !important;
             pointer-events: none;
+            opacity: 0 !important;
           }
 
           &.active {
@@ -211,9 +211,9 @@
         }
 
         > .copy {
-          border-radius: 0 0 0 8px;
           right: 30px;
           background-color: @layout-color;
+          border-radius: 0 0 0 8px;
         }
 
         > .delete {

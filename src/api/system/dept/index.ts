@@ -29,7 +29,7 @@ export function getDeptPage(params: DeptPageReqVO) {
 
 // 查询部门详情
 export function getDept(id: number) {
-  return defHttp.get({ url: '/system/dept/get?id=' + id })
+  return defHttp.get({ url: `/system/dept/get?id=${id}` })
 }
 
 // 新增部门
@@ -44,5 +44,5 @@ export function updateDept(params: DeptVO) {
 
 // 删除部门
 export function deleteDept(id: number) {
-  return defHttp.delete({ url: '/system/dept/delete?id=' + id })
+  return defHttp.delete({ url: `/system/dept/delete?id=${id}` })
 }

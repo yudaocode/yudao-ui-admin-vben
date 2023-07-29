@@ -7,7 +7,7 @@ export function updateUser(data) {
 
 // 获得公众号粉丝
 export function getUser(id) {
-  return defHttp.get({ url: '/mp/user/get?id=' + id })
+  return defHttp.get({ url: `/mp/user/get?id=${id}` })
 }
 
 // 获得公众号粉丝分页
@@ -17,5 +17,5 @@ export function getUserPage(params) {
 
 // 同步公众号粉丝
 export function syncUser(accountId) {
-  return defHttp.post({ url: '/mp/user/sync?accountId=' + accountId })
+  return defHttp.post({ url: `/mp/user/sync?accountId=${accountId}` })
 }

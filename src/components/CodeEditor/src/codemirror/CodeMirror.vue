@@ -1,18 +1,16 @@
-<template>
-  <div class="relative !h-full w-full overflow-hidden" ref="el"></div>
-</template>
-
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watchEffect, watch, unref, nextTick } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, unref, watch, watchEffect } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
-import { useAppStore } from '@/store/modules/app'
-import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import CodeMirror from 'codemirror'
 import { MODE } from './../typing'
+import { useAppStore } from '@/store/modules/app'
+import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
+
 // css
 import './codemirror.css'
 import 'codemirror/theme/idea.css'
 import 'codemirror/theme/material-palenight.css'
+
 // modes
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/css/css'
@@ -25,10 +23,10 @@ const props = defineProps({
     validator(value: any) {
       // 这个值必须匹配下列字符串中的一个
       return Object.values(MODE).includes(value)
-    }
+    },
   },
   value: { type: String, default: '' },
-  readonly: { type: Boolean, default: false }
+  readonly: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['change'])
@@ -44,11 +42,10 @@ watch(
   async (value) => {
     await nextTick()
     const oldValue = editor?.getValue()
-    if (value !== oldValue) {
-      editor?.setValue(value ? value : '')
-    }
+    if (value !== oldValue)
+      editor?.setValue(value || '')
   },
-  { flush: 'post' }
+  { flush: 'post' },
 )
 
 watchEffect(() => {
@@ -61,8 +58,8 @@ watch(
     setTheme()
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 function setTheme() {
@@ -78,7 +75,7 @@ async function init() {
     autoCloseBrackets: true,
     autoCloseTags: true,
     foldGutter: true,
-    gutters: ['CodeMirror-linenumbers']
+    gutters: ['CodeMirror-linenumbers'],
   }
 
   editor = CodeMirror(el.value!, {
@@ -89,7 +86,7 @@ async function init() {
     theme: 'material-palenight',
     lineWrapping: true,
     lineNumbers: true,
-    ...addonOptions
+    ...addonOptions,
   })
   editor?.setValue(props.value)
   setTheme()
@@ -108,3 +105,7 @@ onUnmounted(() => {
   editor = null
 })
 </script>
+
+<template>
+  <div ref="el" class="relative !h-full w-full overflow-hidden" />
+</template>

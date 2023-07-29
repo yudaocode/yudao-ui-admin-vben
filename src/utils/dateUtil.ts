@@ -32,22 +32,21 @@ export function betweenDay(date1, date2) {
 export function formatDate(date, fmt) {
   date = convertDate(date)
   const o = {
-    'M+': date.getMonth() + 1, //月份
-    'd+': date.getDate(), //日
-    'H+': date.getHours(), //小时
-    'm+': date.getMinutes(), //分
-    's+': date.getSeconds(), //秒
-    'q+': Math.floor((date.getMonth() + 3) / 3), //季度
-    S: date.getMilliseconds() //毫秒
+    'M+': date.getMonth() + 1, // 月份
+    'd+': date.getDate(), // 日
+    'H+': date.getHours(), // 小时
+    'm+': date.getMinutes(), // 分
+    's+': date.getSeconds(), // 秒
+    'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+    'S': date.getMilliseconds(), // 毫秒
   }
   if (/(y+)/.test(fmt)) {
     // 年份
-    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+    fmt = fmt.replace(RegExp.$1, (`${date.getFullYear()}`).substr(4 - RegExp.$1.length))
   }
   for (const k in o) {
-    if (new RegExp('(' + k + ')').test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
-    }
+    if (new RegExp(`(${k})`).test(fmt))
+      fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : (`00${o[k]}`).substr((`${o[k]}`).length))
   }
   return fmt
 }
@@ -58,9 +57,9 @@ export function addTime(date, time) {
 }
 
 export function convertDate(date) {
-  if (typeof date === 'string') {
+  if (typeof date === 'string')
     return new Date(date)
-  }
+
   return date
 }
 
@@ -70,9 +69,9 @@ export function convertDate(date) {
  * @param block 格式化字符串
  */
 export function dateFormat(date, block) {
-  if (!date) {
+  if (!date)
     return ''
-  }
+
   let format = block || 'yyyy-MM-dd'
   date = new Date(date)
   const map = {
@@ -82,7 +81,7 @@ export function dateFormat(date, block) {
     m: date.getMinutes(), // 分
     s: date.getSeconds(), // 秒
     q: Math.floor((date.getMonth() + 3) / 3), // 季度
-    S: date.getMilliseconds() // 毫秒
+    S: date.getMilliseconds(), // 毫秒
   }
   format = format.replace(/([yMdhmsqS])+/g, (all, t) => {
     let v = map[t]
@@ -92,7 +91,8 @@ export function dateFormat(date, block) {
         v = v.substr(v.length - 2)
       }
       return v
-    } else if (t === 'y') {
+    }
+    else if (t === 'y') {
       return date
         .getFullYear()
         .toString()
@@ -114,20 +114,19 @@ export function getDate(ms) {
   const hour = Math.floor(ms / (60 * 60 * 1000) - day * 24)
   const minute = Math.floor(ms / (60 * 1000) - day * 24 * 60 - hour * 60)
   const second = Math.floor(ms / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60)
-  if (day > 0) {
-    return day + '天' + hour + '小时' + minute + '分钟'
-  }
-  if (hour > 0) {
-    return hour + '小时' + minute + '分钟'
-  }
-  if (minute > 0) {
-    return minute + '分钟'
-  }
-  if (second > 0) {
-    return second + '秒'
-  } else {
-    return 0 + '秒'
-  }
+  if (day > 0)
+    return `${day}天${hour}小时${minute}分钟`
+
+  if (hour > 0)
+    return `${hour}小时${minute}分钟`
+
+  if (minute > 0)
+    return `${minute}分钟`
+
+  if (second > 0)
+    return `${second}秒`
+  else
+    return `${0}秒`
 }
 
 export const dateUtil = dayjs

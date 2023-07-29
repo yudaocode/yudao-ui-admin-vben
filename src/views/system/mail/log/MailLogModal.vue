@@ -1,14 +1,8 @@
-<template>
-  <BasicModal v-bind="$attrs" title="发送邮件详情" @register="registerModalInner" @ok="closeModal" width="800px">
-    <Description @register="registerDescription" />
-  </BasicModal>
-</template>
-
 <script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components/Modal'
-import { Description, useDescription } from '@/components/Description/index'
 import { ref } from 'vue'
 import { logSchema } from './mailLog.data'
+import { BasicModal, useModalInner } from '@/components/Modal'
+import { Description, useDescription } from '@/components/Description/index'
 
 defineOptions({ name: 'MailLogModal' })
 
@@ -22,9 +16,13 @@ const [registerDescription] = useDescription({
   schema: logSchema,
   data: logData,
   labelStyle: {
-    width: '100px'
-  }
+    width: '100px',
+  },
 })
 </script>
 
-<style scoped></style>
+<template>
+  <BasicModal v-bind="$attrs" title="发送邮件详情" width="800px" @register="registerModalInner" @ok="closeModal">
+    <Description @register="registerDescription" />
+  </BasicModal>
+</template>

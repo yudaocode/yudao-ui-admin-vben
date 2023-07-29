@@ -1,6 +1,7 @@
-import { ref, computed, ComputedRef, unref } from 'vue'
+import type { ComputedRef } from 'vue'
+import { computed, ref, unref } from 'vue'
 import { useEventListener } from '@/hooks/event/useEventListener'
-import { screenMap, sizeEnum, screenEnum } from '@/enums/breakpointEnum'
+import { screenEnum, screenMap, sizeEnum } from '@/enums/breakpointEnum'
 
 // 可以用这个替换，优化项
 // import { Grid } from 'ant-design-vue';
@@ -24,7 +25,7 @@ export function useBreakpoint() {
     screenRef: computed(() => unref(globalScreenRef)),
     widthRef: globalWidthRef,
     screenEnum,
-    realWidthRef: globalRealWidthRef
+    realWidthRef: globalRealWidthRef,
   }
 }
 
@@ -40,19 +41,19 @@ export function createBreakpointListen(fn?: (opt: CreateCallbackParams) => void)
     const md = screenMap.get(sizeEnum.MD)!
     const lg = screenMap.get(sizeEnum.LG)!
     const xl = screenMap.get(sizeEnum.XL)!
-    if (width < xs) {
+    if (width < xs)
       screenRef.value = sizeEnum.XS
-    } else if (width < sm) {
+    else if (width < sm)
       screenRef.value = sizeEnum.SM
-    } else if (width < md) {
+    else if (width < md)
       screenRef.value = sizeEnum.MD
-    } else if (width < lg) {
+    else if (width < lg)
       screenRef.value = sizeEnum.LG
-    } else if (width < xl) {
+    else if (width < xl)
       screenRef.value = sizeEnum.XL
-    } else {
+    else
       screenRef.value = sizeEnum.XXL
-    }
+
     realWidthRef.value = width
   }
 
@@ -63,7 +64,7 @@ export function createBreakpointListen(fn?: (opt: CreateCallbackParams) => void)
     listener: () => {
       getWindowWidth()
       resizeFn()
-    }
+    },
     // wait: 100,
   })
 
@@ -79,7 +80,7 @@ export function createBreakpointListen(fn?: (opt: CreateCallbackParams) => void)
       realWidth: globalRealWidthRef,
       screenEnum,
       screenMap,
-      sizeEnum
+      sizeEnum,
     })
   }
 
@@ -88,6 +89,6 @@ export function createBreakpointListen(fn?: (opt: CreateCallbackParams) => void)
     screenRef: globalScreenRef,
     screenEnum,
     widthRef: globalWidthRef,
-    realWidthRef: globalRealWidthRef
+    realWidthRef: globalRealWidthRef,
   }
 }

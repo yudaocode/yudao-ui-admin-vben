@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import dotenv from 'dotenv'
 
 export function isDevFn(mode: string): boolean {
@@ -25,13 +25,14 @@ export function wrapperEnv(envConf: Recordable): ViteEnv {
     let realName = envConf[envName].replace(/\\n/g, '\n')
     realName = realName === 'true' ? true : realName === 'false' ? false : realName
 
-    if (envName === 'VITE_PORT') {
+    if (envName === 'VITE_PORT')
       realName = Number(realName)
-    }
+
     if (envName === 'VITE_PROXY' && realName) {
       try {
         realName = JSON.parse(realName.replace(/'/g, '"'))
-      } catch (error) {
+      }
+      catch (error) {
         realName = ''
       }
     }
@@ -70,15 +71,15 @@ export function getEnvConfig(match = 'VITE_GLOB_', confFiles = getConfFiles()) {
     try {
       const env = dotenv.parse(fs.readFileSync(path.resolve(process.cwd(), item)))
       envConfig = { ...envConfig, ...env }
-    } catch (e) {
+    }
+    catch (e) {
       console.error(`Error in parsing ${item}`, e)
     }
   })
   const reg = new RegExp(`^(${match})`)
   Object.keys(envConfig).forEach((key) => {
-    if (!reg.test(key)) {
+    if (!reg.test(key))
       Reflect.deleteProperty(envConfig, key)
-    }
   })
   return envConfig
 }

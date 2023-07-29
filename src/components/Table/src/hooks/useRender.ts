@@ -1,10 +1,10 @@
 import { h } from 'vue'
 import dayjs from 'dayjs'
 import { Button, Tag } from 'ant-design-vue'
+import TableImg from '../components/TableImg.vue'
 import { isArray, isString } from '@/utils/is'
 import { DictTag } from '@/components/DictTag'
 import { Icon } from '@/components/Icon'
-import TableImg from '../components/TableImg.vue'
 import { JsonPreview } from '@/components/CodeEditor'
 
 export const useRender = {
@@ -13,13 +13,12 @@ export const useRender = {
    * @param text 图片地址
    * @returns image标签
    */
-  renderImg: (text) => {
+  renderImg: (text: string) => {
     if (text) {
-      if (isArray(text)) {
+      if (isArray(text))
         return h(TableImg, { imgList: text })
-      } else if (isString(text)) {
+      else if (isString(text))
         return h(TableImg, { imgList: [text] })
-      }
     }
     return ''
   },
@@ -29,10 +28,10 @@ export const useRender = {
    * @param text 文字说明
    * @returns link 按钮
    */
-  renderLink: (url, text?) => {
-    if (url) {
+  renderLink: (url: string, text?: string) => {
+    if (url)
       return h(Button, { type: 'link', href: url, target: '_blank' }, () => text || '')
-    }
+
     return ''
   },
   /**
@@ -41,12 +40,11 @@ export const useRender = {
    * @param val 文本2
    * @returns 文本1 + 文本2
    */
-  renderText: (text, val) => {
-    if (text) {
-      return text + ' ' + val
-    } else {
+  renderText: (text: string, val: string) => {
+    if (text)
+      return `${text} ${val}`
+    else
       return ''
-    }
   },
   /**
    * 渲染标签
@@ -54,12 +52,11 @@ export const useRender = {
    * @param color 标签颜色
    * @returns 标签
    */
-  renderTag: (text, color?) => {
-    if (color) {
+  renderTag: (text: string, color?: string) => {
+    if (color)
       return h(Tag, { color }, () => text)
-    } else {
+    else
       return h(Tag, {}, () => text)
-    }
   },
   /**
    * 渲染多标签
@@ -71,7 +68,7 @@ export const useRender = {
       return h('div', null, [
         texts.map((text) => {
           return h(Tag, null, () => text)
-        })
+        }),
       ])
     }
     return ''
@@ -82,15 +79,14 @@ export const useRender = {
    * @param format 格式化
    * @returns 格式化后日期
    */
-  renderDate: (text, format?) => {
-    if (!text) {
+  renderDate: (text: string, format?: string) => {
+    if (!text)
       return ''
-    }
-    if (!format) {
+
+    if (!format)
       return dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-    } else {
+    else
       return dayjs(text).format(format)
-    }
   },
   /**
    * 渲染字典
@@ -98,10 +94,10 @@ export const useRender = {
    * @param dictType 字典类型
    * @returns 字典标签
    */
-  renderDict: (text, dictType) => {
-    if (dictType) {
+  renderDict: (text: string, dictType: string) => {
+    if (dictType)
       return h(DictTag, { type: dictType, value: text })
-    }
+
     return ''
   },
   /**
@@ -109,10 +105,9 @@ export const useRender = {
    * @param text icon
    * @returns icon
    */
-  renderIcon: (text) => {
-    if (text) {
+  renderIcon: (text: string) => {
+    if (text)
       return h(Icon, { icon: text })
-    }
   },
   /**
    * 使用JsonPreview组件  方便预览JSON
@@ -120,17 +115,19 @@ export const useRender = {
    * @returns 能转为json返回JsonPreview 否则返回自身
    */
   renderJsonPreview: (json: any) => {
-    if (!json) return ''
-    if (typeof json === 'object') {
+    if (!json)
+      return ''
+    if (typeof json === 'object')
       return h(JsonPreview, { data: json })
-    }
+
     if (typeof json === 'string') {
       try {
         const data = JSON.parse(json)
         return h(JsonPreview, { data })
-      } catch (e) {
+      }
+      catch (e) {
         return json
       }
     }
-  }
+  },
 }

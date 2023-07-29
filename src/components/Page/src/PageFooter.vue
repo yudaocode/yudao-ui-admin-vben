@@ -1,15 +1,3 @@
-<template>
-  <div :class="prefixCls" :style="{ width: getCalcContentWidth }">
-    <div :class="`${prefixCls}__left`">
-      <slot name="left"></slot>
-    </div>
-    <slot></slot>
-    <div :class="`${prefixCls}__right`">
-      <slot name="right"></slot>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -19,6 +7,19 @@ defineOptions({ name: 'PageFooter', inheritAttrs: false })
 const { prefixCls } = useDesign('page-footer')
 const { getCalcContentWidth } = useMenuSetting()
 </script>
+
+<template>
+  <div :class="prefixCls" :style="{ width: getCalcContentWidth }">
+    <div :class="`${prefixCls}__left`">
+      <slot name="left" />
+    </div>
+    <slot />
+    <div :class="`${prefixCls}__right`">
+      <slot name="right" />
+    </div>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-page-footer';
 
@@ -28,8 +29,8 @@ const { getCalcContentWidth } = useMenuSetting()
   bottom: 0;
   z-index: @page-footer-z-index;
   display: flex;
-  width: 100%;
   align-items: center;
+  width: 100%;
   padding: 0 24px;
   line-height: 44px;
   background-color: @component-background;

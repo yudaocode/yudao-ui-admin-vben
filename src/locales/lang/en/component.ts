@@ -2,11 +2,11 @@ export default {
   app: {
     searchNotData: 'No search results yet',
     toSearch: 'to search',
-    toNavigate: 'to navigate'
+    toNavigate: 'to navigate',
   },
   countdown: {
     normalText: 'Get SMS code',
-    sendText: 'Reacquire in {0}s'
+    sendText: 'Reacquire in {0}s',
   },
   cropper: {
     selectImage: 'Select Image',
@@ -20,38 +20,38 @@ export default {
     btn_scale_y: 'Flip vertical',
     btn_zoom_in: 'Zoom in',
     btn_zoom_out: 'Zoom out',
-    preview: 'Preivew'
+    preview: 'Preivew',
   },
   drawer: {
     loadingText: 'Loading...',
     cancelText: 'Close',
-    okText: 'Confirm'
+    okText: 'Confirm',
   },
   excel: {
     exportModalTitle: 'Export data',
     fileType: 'File type',
-    fileName: 'File name'
+    fileName: 'File name',
   },
   form: {
     putAway: 'Put away',
     unfold: 'Unfold',
     maxTip: 'The number of characters should be less than {0}',
-    apiSelectNotFound: 'Wait for data loading to complete...'
+    apiSelectNotFound: 'Wait for data loading to complete...',
   },
   icon: {
     placeholder: 'Click the select icon',
     search: 'Search icon',
-    copy: 'Copy icon successfully!'
+    copy: 'Copy icon successfully!',
   },
   menu: {
-    search: 'Menu search'
+    search: 'Menu search',
   },
   modal: {
     cancelText: 'Close',
     okText: 'Confirm',
     close: 'Close',
     maximize: 'Maximize',
-    restore: 'Restore'
+    restore: 'Restore',
   },
   table: {
     settingDens: 'Density',
@@ -66,7 +66,7 @@ export default {
     settingFixedRight: 'Fixed Right',
     settingFullScreen: 'Full Screen',
     index: 'Index',
-    total: 'total of {total}'
+    total: 'total of {total}',
   },
   time: {
     before: ' ago',
@@ -75,7 +75,7 @@ export default {
     seconds: ' seconds',
     minutes: ' minutes',
     hours: ' hours',
-    days: ' days'
+    days: ' days',
   },
   tree: {
     selectAll: 'Select All',
@@ -84,7 +84,7 @@ export default {
     unExpandAll: 'Collapse all',
 
     checkStrictly: 'Hierarchical association',
-    checkUnStrictly: 'Hierarchical independence'
+    checkUnStrictly: 'Hierarchical independence',
   },
   upload: {
     save: 'Save',
@@ -117,13 +117,13 @@ export default {
     uploadError: 'Upload failed',
     uploading: 'Uploading',
     uploadWait: 'Please wait for the file upload to finish',
-    reUploadFailed: 'Re-upload failed files'
+    reUploadFailed: 'Re-upload failed files',
   },
   captcha: {
     verification: 'Please complete security verification',
     slide: 'Swipe right to complete verification',
     point: 'Please click',
     success: 'Verification succeeded',
-    fail: 'verification failed'
-  }
+    fail: 'verification failed',
+  },
 }

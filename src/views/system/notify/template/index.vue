@@ -1,57 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:notify-template:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.UPLOAD,
-                label: t('action.send'),
-                auth: 'system:notify-template:update',
-                onClick: handleSend.bind(null, record)
-              },
-              {
-                icon: IconEnum.EDIT,
-                label: t('action.edit'),
-                auth: 'system:notify-template:update',
-                onClick: handleEdit.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:notify-template:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <TemplateModal @register="registerModal" @success="reload()" />
-    <SendNotifyModal @register="registerSendModal" />
-  </div>
-</template>
 <script lang="ts" setup>
+import TemplateModal from './TemplateModal.vue'
+import { columns, searchFormSchema } from './template.data'
+import SendNotifyModal from './SendNotifyModal.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import TemplateModal from './TemplateModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteNotifyTemplate, getNotifyTemplatePage } from '@/api/system/notify/template'
-import { columns, searchFormSchema } from './template.data'
-import SendNotifyModal from './SendNotifyModal.vue'
 
 defineOptions({ name: 'SystemMessageTemplate' })
 
@@ -72,8 +28,8 @@ const [registerTable, { reload }] = useTable({
     width: 200,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -94,3 +50,48 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:notify-template:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.UPLOAD,
+                label: t('action.send'),
+                auth: 'system:notify-template:update',
+                onClick: handleSend.bind(null, record),
+              },
+              {
+                icon: IconEnum.EDIT,
+                label: t('action.edit'),
+                auth: 'system:notify-template:update',
+                onClick: handleEdit.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:notify-template:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <TemplateModal @register="registerModal" @success="reload()" />
+    <SendNotifyModal @register="registerSendModal" />
+  </div>
+</template>

@@ -1,10 +1,10 @@
-import type { ProjectConfig, HeaderSetting, MenuSetting, TransitionSetting, MultiTabsSetting, AppSizeType } from '@/types/config'
+import { defineStore } from 'pinia'
+import type { AppSizeType, HeaderSetting, MenuSetting, MultiTabsSetting, ProjectConfig, TransitionSetting } from '@/types/config'
 import type { BeforeMiniState } from '@/types/store'
 
-import { defineStore } from 'pinia'
 import { store } from '@/store'
 
-import { ThemeEnum } from '@/enums/appEnum'
+import type { ThemeEnum } from '@/enums/appEnum'
 import { APP_DARK_MODE_KEY_, PROJ_CFG_KEY } from '@/enums/cacheEnum'
 import { Persistent } from '@/utils/cache/persistent'
 import { darkMode } from '@/settings/designSetting'
@@ -28,7 +28,7 @@ export const useAppStore = defineStore('app', {
     pageLoading: false,
     projectConfig: Persistent.getLocal(PROJ_CFG_KEY),
     beforeMiniInfo: {},
-    componentSize: 'middle'
+    componentSize: 'middle',
   }),
   getters: {
     getPageLoading(state): boolean {
@@ -60,7 +60,7 @@ export const useAppStore = defineStore('app', {
     },
     getComponentSize(state): AppSizeType | undefined {
       return state.componentSize
-    }
+    },
   },
   actions: {
     setPageLoading(loading: boolean): void {
@@ -101,12 +101,13 @@ export const useAppStore = defineStore('app', {
         timeId = setTimeout(() => {
           this.setPageLoading(loading)
         }, 50)
-      } else {
+      }
+      else {
         this.setPageLoading(loading)
         clearTimeout(timeId)
       }
-    }
-  }
+    },
+  },
 })
 
 // Need to be used outside the setup

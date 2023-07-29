@@ -1,4 +1,4 @@
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 export interface BasicProps {
   width: string
@@ -7,10 +7,10 @@ export interface BasicProps {
 export const basicProps = {
   width: {
     type: String as PropType<string>,
-    default: '100%'
+    default: '100%',
   },
   height: {
     type: String as PropType<string>,
-    default: '280px'
-  }
+    default: '280px',
+  },
 }

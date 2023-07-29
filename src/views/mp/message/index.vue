@@ -1,25 +1,11 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[{ icon: IconEnum.VIEW, label: '消息', auth: 'mp:message:send', onClick: handleEdit.bind(null, record) }]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <AccountModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import AccountModal from './MessageModal.vue'
+import { columns, searchFormSchema } from './message.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useModal } from '@/components/Modal'
-import AccountModal from './MessageModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getMessagePage } from '@/api/mp/message'
-import { columns, searchFormSchema } from './message.data'
 
 defineOptions({ name: 'MpMessage' })
 
@@ -37,8 +23,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 /** 修改按钮操作 */
@@ -46,3 +32,18 @@ function handleEdit(record: Recordable) {
   openModal(true, { record })
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[{ icon: IconEnum.VIEW, label: '消息', auth: 'mp:message:send', onClick: handleEdit.bind(null, record) }]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <AccountModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

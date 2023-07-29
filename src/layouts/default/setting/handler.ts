@@ -4,7 +4,7 @@ import { updateColorWeak } from '@/logics/theme/updateColorWeak'
 import { updateGrayMode } from '@/logics/theme/updateGrayMode'
 
 import { useAppStore } from '@/store/modules/app'
-import { ProjectConfig } from '@/types/config'
+import type { ProjectConfig } from '@/types/config'
 import { changeTheme } from '@/logics/theme'
 import { updateDarkTheme } from '@/logics/theme/dark'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
@@ -35,22 +35,22 @@ export function handler(event: HandlerEnum, value: any): DeepPartial<ProjectConf
           collapsed: false,
           show: true,
           hidden: false,
-          ...splitOpt
-        }
+          ...splitOpt,
+        },
       }
 
     case HandlerEnum.CHANGE_THEME_COLOR:
-      if (getThemeColor.value === value) {
+      if (getThemeColor.value === value)
         return {}
-      }
+
       changeTheme(value)
 
       return { themeColor: value }
 
     case HandlerEnum.CHANGE_THEME:
-      if (getDarkMode.value === value) {
+      if (getDarkMode.value === value)
         return {}
-      }
+
       updateDarkTheme(value)
 
       return {}
@@ -111,7 +111,7 @@ export function handler(event: HandlerEnum, value: any): DeepPartial<ProjectConf
 
     case HandlerEnum.OPEN_PROGRESS:
       return { transitionSetting: { openNProgress: value } }
-    // ============root==================
+      // ============root==================
 
     case HandlerEnum.LOCK_TIME:
       return { lockTime: value }

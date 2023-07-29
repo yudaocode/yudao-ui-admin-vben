@@ -1,10 +1,10 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type task = {
+export interface task {
   id: string
   name: string
 }
-export type ProcessInstanceVO = {
+export interface ProcessInstanceVO {
   id: number
   name: string
   processDefinitionId: string
@@ -29,12 +29,12 @@ export function createProcessInstance(data: ProcessInstanceVO) {
 
 export function cancelProcessInstance(id: number, reason: string) {
   const data = {
-    id: id,
-    reason: reason
+    id,
+    reason,
   }
   return defHttp.delete({ url: '/bpm/process-instance/cancel', data })
 }
 
 export function getProcessInstance(id: number) {
-  return defHttp.get({ url: '/bpm/process-instance/get?id=' + id })
+  return defHttp.get({ url: `/bpm/process-instance/get?id=${id}` })
 }

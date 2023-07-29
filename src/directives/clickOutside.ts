@@ -1,6 +1,6 @@
+import type { ComponentPublicInstance, DirectiveBinding, ObjectDirective } from 'vue'
 import { on } from '@/utils/domUtils'
 import { isServer } from '@/utils/is'
-import type { ComponentPublicInstance, DirectiveBinding, ObjectDirective } from 'vue'
 
 type DocumentHandler = <T extends MouseEvent>(mouseup: T, mousedown: T) => void
 
@@ -19,9 +19,8 @@ let startClick: MouseEvent
 if (!isServer) {
   on(document, 'mousedown', (e: MouseEvent) => (startClick = e))
   on(document, 'mouseup', (e: MouseEvent) => {
-    for (const { documentHandler } of nodeList.values()) {
+    for (const { documentHandler } of nodeList.values())
       documentHandler(e, startClick)
-    }
   })
 }
 
@@ -29,7 +28,8 @@ function createDocumentHandler(el: HTMLElement, binding: DirectiveBinding): Docu
   let excludes: HTMLElement[] = []
   if (Array.isArray(binding.arg)) {
     excludes = binding.arg
-  } else {
+  }
+  else {
     // due to current implementation on binding type is wrong the type casting is necessary here
     excludes.push(binding.arg as unknown as HTMLElement)
   }
@@ -46,13 +46,13 @@ function createDocumentHandler(el: HTMLElement, binding: DirectiveBinding): Docu
     const isContainedByEl = el.contains(mouseUpTarget) || el.contains(mouseDownTarget)
     const isSelf = el === mouseUpTarget
 
-    const isTargetExcluded =
-      (excludes.length && excludes.some((item) => item?.contains(mouseUpTarget))) ||
-      (excludes.length && excludes.includes(mouseDownTarget as HTMLElement))
+    const isTargetExcluded
+      = (excludes.length && excludes.some(item => item?.contains(mouseUpTarget)))
+      || (excludes.length && excludes.includes(mouseDownTarget as HTMLElement))
     const isContainedByPopper = popperRef && (popperRef.contains(mouseUpTarget) || popperRef.contains(mouseDownTarget))
-    if (isBound || isTargetExists || isContainedByEl || isSelf || isTargetExcluded || isContainedByPopper) {
+    if (isBound || isTargetExists || isContainedByEl || isSelf || isTargetExcluded || isContainedByPopper)
       return
-    }
+
     binding.value()
   }
 }
@@ -61,18 +61,18 @@ const ClickOutside: ObjectDirective = {
   beforeMount(el, binding) {
     nodeList.set(el, {
       documentHandler: createDocumentHandler(el, binding),
-      bindingFn: binding.value
+      bindingFn: binding.value,
     })
   },
   updated(el, binding) {
     nodeList.set(el, {
       documentHandler: createDocumentHandler(el, binding),
-      bindingFn: binding.value
+      bindingFn: binding.value,
     })
   },
   unmounted(el) {
     nodeList.delete(el)
-  }
+  },
 }
 
 export default ClickOutside

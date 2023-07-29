@@ -1,4 +1,4 @@
-export type FormVO = {
+export interface FormVO {
   id: number
   name: string
   conf: string
@@ -8,7 +8,7 @@ export type FormVO = {
   createTime: string
 }
 
-export type TaskProcessVO = {
+export interface TaskProcessVO {
   id: string
   name: string
   startUserId: number
@@ -16,7 +16,7 @@ export type TaskProcessVO = {
   processDefinitionId: string
 }
 
-export type TaskTodoVO = {
+export interface TaskTodoVO {
   id: string
   name: string
   claimTime: string
@@ -25,7 +25,7 @@ export type TaskTodoVO = {
   processInstance: TaskProcessVO
 }
 
-export type TaskDoneVO = {
+export interface TaskDoneVO {
   id: string
   name: string
   claimTime: string

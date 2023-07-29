@@ -1,8 +1,7 @@
 import type { EChartsOption } from 'echarts'
 import type { Ref } from 'vue'
-import { useTimeoutFn, tryOnUnmounted } from '@vueuse/core'
-import { unref, nextTick, watch, computed, ref } from 'vue'
-import { useDebounceFn } from '@vueuse/core'
+import { tryOnUnmounted, useDebounceFn, useTimeoutFn } from '@vueuse/core'
+import { computed, nextTick, ref, unref, watch } from 'vue'
 import { useEventListener } from '@/hooks/event/useEventListener'
 import { useBreakpoint } from '@/hooks/event/useBreakpoint'
 import echarts from '@/utils/lib/echarts'
@@ -24,26 +23,25 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
   resizeFn = useDebounceFn(resize, 200)
 
   const getOptions = computed(() => {
-    if (getDarkMode.value !== 'dark') {
-      return cacheOptions.value as EChartsOption
-    }
+    if (getDarkMode.value !== 'dark')
+      return cacheOptions.value
+
     return {
       backgroundColor: 'transparent',
-      ...cacheOptions.value
+      ...cacheOptions.value,
     } as EChartsOption
   })
 
   function initCharts(t = theme) {
     const el = unref(elRef)
-    if (!el || !unref(el)) {
+    if (!el || !unref(el))
       return
-    }
 
     chartInstance = echarts.init(el, t)
     const { removeEvent } = useEventListener({
       el: window,
       name: 'resize',
-      listener: resizeFn
+      listener: resizeFn,
     })
     removeResizeFn = removeEvent
     const { widthRef, screenEnum } = useBreakpoint()
@@ -68,7 +66,8 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
           if (!chartInstance) {
             initCharts(getDarkMode.value as 'default')
 
-            if (!chartInstance) return
+            if (!chartInstance)
+              return
           }
           clear && chartInstance?.clear()
 
@@ -83,8 +82,8 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
     chartInstance?.resize({
       animation: {
         duration: 300,
-        easing: 'quadraticIn'
-      }
+        easing: 'quadraticIn',
+      },
     })
   }
 
@@ -96,7 +95,7 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
         initCharts(theme as 'default')
         setOptions(cacheOptions.value)
       }
-    }
+    },
   )
 
   watch(getCollapsed, (_) => {
@@ -106,16 +105,17 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
   })
 
   tryOnUnmounted(() => {
-    if (!chartInstance) return
+    if (!chartInstance)
+      return
     removeResizeFn()
     chartInstance.dispose()
     chartInstance = null
   })
 
   function getInstance(): echarts.ECharts | null {
-    if (!chartInstance) {
+    if (!chartInstance)
       initCharts(getDarkMode.value as 'default')
-    }
+
     return chartInstance
   }
 
@@ -123,6 +123,6 @@ export function useECharts(elRef: Ref<HTMLDivElement>, theme: 'light' | 'dark' |
     setOptions,
     resize,
     echarts,
-    getInstance
+    getInstance,
   }
 }

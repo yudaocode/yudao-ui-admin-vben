@@ -1,5 +1,5 @@
+import type { TentantNameVO } from './model/loginModel'
 import { defHttp } from '@/utils/http/axios'
-import { TentantNameVO } from './model/loginModel'
 import { getRefreshToken } from '@/utils/auth'
 
 enum Api {
@@ -9,7 +9,7 @@ enum Api {
   LoginOut = '/system/auth/logout',
   GetUserInfo = '/system/auth/get-permission-info',
   GetCaptcha = '/system/captcha/get',
-  CheckCaptcha = '/system/captcha/check'
+  CheckCaptcha = '/system/captcha/check',
 }
 
 // 刷新访问令牌
@@ -38,8 +38,8 @@ export function sendSmsCode(mobile, scene) {
     url: '/system/auth/send-sms-code',
     data: {
       mobile,
-      scene
-    }
+      scene,
+    },
   })
 }
 
@@ -56,31 +56,31 @@ export function checkCaptcha(data) {
 // ========== OAUTH 2.0 相关 ==========
 
 export function getAuthorize(clientId) {
-  return defHttp.get({ url: '/system/oauth2/authorize?clientId=' + clientId })
+  return defHttp.get({ url: `/system/oauth2/authorize?clientId=${clientId}` })
 }
 
 export function authorize(responseType, clientId, redirectUri, state, autoApprove, checkedScopes, uncheckedScopes) {
   // 构建 scopes
   const scopes = {}
-  for (const scope of checkedScopes) {
+  for (const scope of checkedScopes)
     scopes[scope] = true
-  }
-  for (const scope of uncheckedScopes) {
+
+  for (const scope of uncheckedScopes)
     scopes[scope] = false
-  }
+
   // 发起请求
   return defHttp.post({
     url: '/system/oauth2/authorize',
     headers: {
-      'Content-type': 'application/x-www-form-urlencoded'
+      'Content-type': 'application/x-www-form-urlencoded',
     },
     params: {
       response_type: responseType,
       client_id: clientId,
       redirect_uri: redirectUri,
-      state: state,
+      state,
       auto_approve: autoApprove,
-      scope: JSON.stringify(scopes)
-    }
+      scope: JSON.stringify(scopes),
+    },
   })
 }

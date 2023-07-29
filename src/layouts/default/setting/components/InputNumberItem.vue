@@ -1,24 +1,18 @@
-<template>
-  <div :class="prefixCls">
-    <span> {{ title }}</span>
-    <InputNumber v-bind="$attrs" :class="`${prefixCls}-input-number`" @change="handleChange" />
-  </div>
-</template>
 <script lang="ts" setup>
 import { InputNumber } from 'ant-design-vue'
-import { useDesign } from '@/hooks/web/useDesign'
 import { baseHandler } from '../handler'
-import { HandlerEnum } from '../enum'
+import type { HandlerEnum } from '../enum'
+import { useDesign } from '@/hooks/web/useDesign'
 
 defineOptions({ name: 'InputNumberItem' })
 
 const props = defineProps({
   event: {
-    type: Number as PropType<HandlerEnum>
+    type: Number as PropType<HandlerEnum>,
   },
   title: {
-    type: String
-  }
+    type: String,
+  },
 })
 const { prefixCls } = useDesign('setting-input-number-item')
 
@@ -26,6 +20,14 @@ function handleChange(e) {
   props.event && baseHandler(props.event, e)
 }
 </script>
+
+<template>
+  <div :class="prefixCls">
+    <span> {{ title }}</span>
+    <InputNumber v-bind="$attrs" :class="`${prefixCls}-input-number`" @change="handleChange" />
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-setting-input-number-item';
 

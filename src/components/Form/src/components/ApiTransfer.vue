@@ -1,23 +1,10 @@
-<template>
-  <Transfer
-    v-bind="getAttrs"
-    :data-source="getdataSource"
-    :filter-option="filterOption"
-    :render="(item) => item.title"
-    :showSelectAll="showSelectAll"
-    :selectedKeys="selectedKeys"
-    :targetKeys="getTargetKeys"
-    :showSearch="showSearch"
-    @change="handleChange"
-  />
-</template>
 <script lang="ts" setup>
-import { computed, watch, ref, unref, useAttrs, watchEffect } from 'vue'
+import { computed, ref, unref, useAttrs, watch, watchEffect } from 'vue'
 import { Transfer } from 'ant-design-vue'
-import { isFunction } from '@/utils/is'
 import { get, omit } from 'lodash-es'
+import type { TransferDirection, TransferItem } from 'ant-design-vue/lib/transfer'
+import { isFunction } from '@/utils/is'
 import { propTypes } from '@/utils/propTypes'
-import { TransferDirection, TransferItem } from 'ant-design-vue/lib/transfer'
 
 defineOptions({ name: 'ApiTransfer' })
 
@@ -25,7 +12,7 @@ const props = defineProps({
   value: { type: Array as PropType<Array<any>> },
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<TransferItem[]>>,
-    default: null
+    default: null,
   },
   params: { type: Object },
   dataSource: { type: Array as PropType<Array<TransferItem>> },
@@ -38,11 +25,11 @@ const props = defineProps({
   showSearch: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   filterOption: {
-    type: Function as PropType<(inputValue: string, item: TransferItem) => boolean>
+    type: Function as PropType<(inputValue: string, item: TransferItem) => boolean>,
   },
   selectedKeys: { type: Array as PropType<Array<string>> },
   showSelectAll: { type: Boolean, default: true },
-  targetKeys: { type: Array as PropType<Array<string>> }
+  targetKeys: { type: Array as PropType<Array<string>> },
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
@@ -52,7 +39,7 @@ const _targetKeys = ref<string[]>([])
 const getAttrs = computed(() => {
   return {
     ...(!props.api ? { dataSource: unref(_dataSource) } : {}),
-    ...attrs
+    ...attrs,
   }
 })
 const getdataSource = computed(() => {
@@ -62,22 +49,22 @@ const getdataSource = computed(() => {
       prev.push({
         ...omit(next, [labelField, valueField]),
         title: next[labelField],
-        key: next[valueField]
+        key: next[valueField],
       })
     }
     return prev
   }, [] as TransferItem[])
 })
 const getTargetKeys = computed<string[]>(() => {
-  if (unref(_targetKeys).length > 0) {
+  if (unref(_targetKeys).length > 0)
     return unref(_targetKeys)
-  }
-  if (Array.isArray(props.value)) {
+
+  if (Array.isArray(props.value))
     return props.value
-  }
-  if (Array.isArray(props.targetKeys)) {
+
+  if (Array.isArray(props.targetKeys))
     return props.targetKeys
-  }
+
   return []
 })
 function handleChange(keys: string[], direction: TransferDirection, moveKeys: string[]) {
@@ -94,14 +81,14 @@ watch(
   () => {
     fetch()
   },
-  { deep: true }
+  { deep: true },
 )
 async function fetch() {
   const api = props.api
   if (!api || !isFunction(api)) {
-    if (Array.isArray(props.dataSource)) {
+    if (Array.isArray(props.dataSource))
       _dataSource.value = props.dataSource
-    }
+
     return
   }
   _dataSource.value = []
@@ -112,16 +99,32 @@ async function fetch() {
       emitChange()
       return
     }
-    if (props.resultField) {
+    if (props.resultField)
       _dataSource.value = get(res, props.resultField) || []
-    }
+
     emitChange()
-  } catch (error) {
+  }
+  catch (error) {
     console.warn(error)
-  } finally {
+  }
+  finally {
   }
 }
 function emitChange() {
   emit('options-change', unref(getdataSource))
 }
 </script>
+
+<template>
+  <Transfer
+    v-bind="getAttrs"
+    :data-source="getdataSource"
+    :filter-option="filterOption"
+    :render="(item) => item.title"
+    :show-select-all="showSelectAll"
+    :selected-keys="selectedKeys"
+    :target-keys="getTargetKeys"
+    :show-search="showSearch"
+    @change="handleChange"
+  />
+</template>

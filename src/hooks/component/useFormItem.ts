@@ -1,5 +1,5 @@
-import { UnwrapRef, Ref, WritableComputedRef, DeepReadonly, nextTick } from 'vue'
-import { reactive, readonly, computed, getCurrentInstance, watchEffect, unref, toRaw } from 'vue'
+import type { DeepReadonly, Ref, UnwrapRef, WritableComputedRef } from 'vue'
+import { computed, getCurrentInstance, nextTick, reactive, readonly, toRaw, unref, watchEffect } from 'vue'
 
 import { isEqual } from 'lodash-es'
 
@@ -15,7 +15,7 @@ export function useRuleFormItem<T extends Recordable>(props: T, key: keyof T = '
   const emit = instance?.emit
 
   const innerState = reactive({
-    value: props[key]
+    value: props[key],
   })
 
   const defaultState = readonly(innerState)
@@ -33,13 +33,14 @@ export function useRuleFormItem<T extends Recordable>(props: T, key: keyof T = '
       return innerState.value
     },
     set(value) {
-      if (isEqual(value, defaultState.value)) return
+      if (isEqual(value, defaultState.value))
+        return
 
       innerState.value = value as T[keyof T]
       nextTick(() => {
         emit?.(changeEvent, value, ...(toRaw(unref(emitData)) || []))
       })
-    }
+    },
   })
 
   return [state, setState, defaultState]

@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type LeaveVO = {
+export interface LeaveVO {
   id: number
   result: number
   type: number
@@ -18,7 +18,7 @@ export function createLeave(data: LeaveVO) {
 
 // 获得请假申请
 export function getLeave(id: number) {
-  return defHttp.get({ url: '/bpm/oa/leave/get?id=' + id })
+  return defHttp.get({ url: `/bpm/oa/leave/get?id=${id}` })
 }
 
 // 获得请假申请分页

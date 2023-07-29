@@ -1,28 +1,23 @@
-<template>
-  <BasicModal v-bind="$attrs" title="发送邮件" @register="innerRegister" @ok="submit" @cancel="resetForm" width="600px">
-    <BasicForm @register="register" />
-  </BasicModal>
-</template>
-
 <script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components/Modal'
-import { BasicForm, FormSchema, useForm } from '@/components/Form'
-import { MailTemplate } from '@/api/system/mail/template'
-import { sendMail } from '@/api/system/mail/template'
-import { useMessage } from '@/hooks/web/useMessage'
 import { baseSendSchemas, keyPrefix } from './template.data'
+import { BasicModal, useModalInner } from '@/components/Modal'
+import type { FormSchema } from '@/components/Form'
+import { BasicForm, useForm } from '@/components/Form'
+import { sendMail } from '@/api/system/mail/template'
+import type { MailTemplate } from '@/api/system/mail/template'
+import { useMessage } from '@/hooks/web/useMessage'
 
 defineOptions({ name: 'SendMailModal' })
 
-const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, appendSchemaByField, removeSchemaByField }] =
-  useForm({
+const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, clearValidate, appendSchemaByField, removeSchemaByField }]
+  = useForm({
     labelWidth: 120,
     schemas: baseSendSchemas,
     baseColProps: {
-      span: 24
+      span: 24,
     },
     showSubmitButton: false,
-    showResetButton: false
+    showResetButton: false,
   })
 
 // 存储动态生成的字段信息 后续需要进行移除
@@ -40,9 +35,9 @@ const [innerRegister, { changeLoading, changeOkLoading, closeModal }] = useModal
       label: `参数{${item}} `,
       component: 'Input',
       componentProps: {
-        placeholder: `输入{${item}}`
+        placeholder: `输入{${item}}`,
       },
-      required: true
+      required: true,
     }
     dyschemas.push(dySchema)
     dyFields.push(field)
@@ -66,7 +61,7 @@ async function removeDySchemas() {
 }
 
 const { createMessage } = useMessage()
-const submit = async () => {
+async function submit() {
   try {
     modalLoading(true)
     await validateFields()
@@ -74,14 +69,14 @@ const submit = async () => {
     const data = {
       mail: fields.mail,
       templateCode: fields.code,
-      templateParams: {}
+      templateParams: {},
     }
     Object.keys(fields).forEach((key) => {
       // 这几个是固定的字段 不用处理
       const fixedKeys = ['mail', 'code', 'content']
-      if (fixedKeys.includes(key)) {
+      if (fixedKeys.includes(key))
         return
-      }
+
       // 去掉前缀后的key
       const realKey = key.split(keyPrefix)[1]
       data.templateParams[realKey] = fields[key]
@@ -89,8 +84,10 @@ const submit = async () => {
     await sendMail(data)
     createMessage.success(`发送邮件到[${fields.mail}]成功`)
     closeModal()
-  } catch (e) {
-  } finally {
+  }
+  catch (e) {
+  }
+  finally {
     modalLoading(false)
   }
 }
@@ -104,4 +101,8 @@ async function resetForm() {
 }
 </script>
 
-<style scoped></style>
+<template>
+  <BasicModal v-bind="$attrs" title="发送邮件" width="600px" @register="innerRegister" @ok="submit" @cancel="resetForm">
+    <BasicForm @register="register" />
+  </BasicModal>
+</template>

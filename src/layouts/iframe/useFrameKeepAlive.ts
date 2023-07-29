@@ -1,14 +1,11 @@
-import type { AppRouteRecordRaw } from '@/router/types'
-
 import { computed, toRaw, unref } from 'vue'
+import { uniqBy } from 'lodash-es'
+import { useRouter } from 'vue-router'
+import type { AppRouteRecordRaw } from '@/router/types'
 
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 
-import { uniqBy } from 'lodash-es'
-
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
-
-import { useRouter } from 'vue-router'
 
 export function useFrameKeepAlive() {
   const router = useRouter()
@@ -22,9 +19,9 @@ export function useFrameKeepAlive() {
 
   const getOpenTabList = computed((): string[] => {
     return tabStore.getTabList.reduce((prev: string[], next) => {
-      if (next.meta && Reflect.has(next.meta, 'frameSrc')) {
+      if (next.meta && Reflect.has(next.meta, 'frameSrc'))
         prev.push(next.name as string)
-      }
+
       return prev
     }, [])
   })
@@ -33,12 +30,11 @@ export function useFrameKeepAlive() {
     let res: AppRouteRecordRaw[] = []
     for (const route of routes) {
       const { meta: { frameSrc } = {}, children } = route
-      if (frameSrc) {
+      if (frameSrc)
         res.push(route)
-      }
-      if (children && children.length) {
+
+      if (children && children.length)
         res.push(...getAllFramePages(children))
-      }
     }
     res = uniqBy(res, 'name')
     return res
@@ -49,9 +45,9 @@ export function useFrameKeepAlive() {
   }
 
   function hasRenderFrame(name: string) {
-    if (!unref(getShowMultipleTab)) {
+    if (!unref(getShowMultipleTab))
       return router.currentRoute.value.name === name
-    }
+
     return unref(getOpenTabList).includes(name)
   }
 

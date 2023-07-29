@@ -1,29 +1,9 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                label: '详情',
-                icon: IconEnum.LOG,
-                onClick: handleShowInfo.bind(null, record)
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <MessageInfoModal @register="registerModal" />
-  </div>
-</template>
 <script lang="ts" setup>
+import { columns, searchFormSchema } from './message.data'
 import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getNotifyMessagePage } from '@/api/system/notify/message'
-import { columns, searchFormSchema } from './message.data'
 import MessageInfoModal from '@/views/system/notify/components/MessageInfoModal.vue'
 import { useModal } from '@/components/Modal'
 
@@ -43,13 +23,34 @@ const [registerTable] = useTable({
     width: 100,
     title: t('common.action'),
     fixed: 'right',
-    key: 'action'
-  }
+    key: 'action',
+  },
 })
 
 const [registerModal, { openModal }] = useModal()
 
-const handleShowInfo = (record: Recordable) => {
+function handleShowInfo(record: Recordable) {
   openModal(true, record)
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                label: '详情',
+                icon: IconEnum.LOG,
+                onClick: handleShowInfo.bind(null, record),
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <MessageInfoModal @register="registerModal" />
+  </div>
+</template>

@@ -37,7 +37,7 @@ export function getJobLogPage(params: JobLogPageReqVO) {
 
 // 任务日志详情
 export function getJobLog(id: number) {
-  return defHttp.get({ url: '/infra/job-log/get?id=' + id })
+  return defHttp.get({ url: `/infra/job-log/get?id=${id}` })
 }
 
 // 导出定时任务日志

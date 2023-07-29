@@ -1,6 +1,7 @@
 /**
  * Application configuration
  */
+import { primaryColor } from '../../build/config/themeConfig'
 import type { ProjectConfig } from '@/types/config'
 
 import { PROJ_CFG_KEY } from '@/enums/cacheEnum'
@@ -17,7 +18,6 @@ import { useLocaleStore } from '@/store/modules/locale'
 
 import { getCommonStoragePrefix, getStorageShortName } from '@/utils/env'
 
-import { primaryColor } from '../../build/config/themeConfig'
 import { Persistent } from '@/utils/cache/persistent'
 import { deepMerge } from '@/utils'
 import { ThemeEnum } from '@/enums/appEnum'
@@ -35,16 +35,16 @@ export function initAppConfigStore() {
     themeColor,
 
     headerSetting: { bgColor: headerBgColor } = {},
-    menuSetting: { bgColor } = {}
+    menuSetting: { bgColor } = {},
   } = projCfg
   try {
-    if (themeColor && themeColor !== primaryColor) {
+    if (themeColor && themeColor !== primaryColor)
       changeTheme(themeColor)
-    }
 
     grayMode && updateGrayMode(grayMode)
     colorWeak && updateColorWeak(colorWeak)
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
   }
   appStore.setProjectConfig(projCfg)
@@ -54,7 +54,8 @@ export function initAppConfigStore() {
   if (darkMode === ThemeEnum.DARK) {
     updateHeaderBgColor()
     updateSidebarBgColor()
-  } else {
+  }
+  else {
     headerBgColor && updateHeaderBgColor(headerBgColor)
     bgColor && updateSidebarBgColor(bgColor)
   }
@@ -76,9 +77,8 @@ export function clearObsoleteStorage() {
 
   ;[localStorage, sessionStorage].forEach((item: Storage) => {
     Object.keys(item).forEach((key) => {
-      if (key && key.startsWith(commonPrefix) && !key.startsWith(shortPrefix)) {
+      if (key && key.startsWith(commonPrefix) && !key.startsWith(shortPrefix))
         item.removeItem(key)
-      }
     })
   })
 }

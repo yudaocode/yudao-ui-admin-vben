@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, unref, type ExtractPropTypes } from 'vue'
+import { type ExtractPropTypes, computed, defineComponent, unref } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { BasicArrow, BasicTitle } from '@/components/Basic'
 
@@ -10,8 +10,8 @@ const collapseHeaderProps = {
   canExpan: Boolean,
   helpMessage: {
     type: [Array, String] as PropType<string[] | string>,
-    default: ''
-  }
+    default: '',
+  },
 }
 
 export type CollapseHeaderProps = ExtractPropTypes<typeof collapseHeaderProps>
@@ -37,6 +37,6 @@ export default defineComponent({
         </div>
       </div>
     )
-  }
+  },
 })
 </script>

@@ -2,11 +2,11 @@ export default {
   app: {
     searchNotData: '暂无搜索结果',
     toSearch: '确认',
-    toNavigate: '切换'
+    toNavigate: '切换',
   },
   countdown: {
     normalText: '获取验证码',
-    sendText: '{0}秒后重新获取'
+    sendText: '{0}秒后重新获取',
   },
   cropper: {
     selectImage: '选择图片',
@@ -20,17 +20,17 @@ export default {
     btn_scale_y: '垂直翻转',
     btn_zoom_in: '放大',
     btn_zoom_out: '缩小',
-    preview: '预览'
+    preview: '预览',
   },
   drawer: {
     loadingText: '加载中...',
     cancelText: '关闭',
-    okText: '确认'
+    okText: '确认',
   },
   excel: {
     exportModalTitle: '导出数据',
     fileType: '文件类型',
-    fileName: '文件名'
+    fileName: '文件名',
   },
   form: {
     putAway: '收起',
@@ -38,22 +38,22 @@ export default {
 
     maxTip: '字符数应小于{0}位',
 
-    apiSelectNotFound: '请等待数据加载完成...'
+    apiSelectNotFound: '请等待数据加载完成...',
   },
   icon: {
     placeholder: '点击选择图标',
     search: '搜索图标',
-    copy: '复制图标成功!'
+    copy: '复制图标成功!',
   },
   menu: {
-    search: '菜单搜索'
+    search: '菜单搜索',
   },
   modal: {
     cancelText: '关闭',
     okText: '确认',
     close: '关闭',
     maximize: '最大化',
-    restore: '还原'
+    restore: '还原',
   },
   table: {
     settingDens: '密度',
@@ -70,7 +70,7 @@ export default {
 
     index: '序号',
 
-    total: '共 {total} 条数据'
+    total: '共 {total} 条数据',
   },
   time: {
     before: '前',
@@ -79,7 +79,7 @@ export default {
     seconds: '秒',
     minutes: '分钟',
     hours: '小时',
-    days: '天'
+    days: '天',
   },
   tree: {
     selectAll: '选择全部',
@@ -87,7 +87,7 @@ export default {
     expandAll: '展开全部',
     unExpandAll: '折叠全部',
     checkStrictly: '层级关联',
-    checkUnStrictly: '层级独立'
+    checkUnStrictly: '层级独立',
   },
   upload: {
     save: '保存',
@@ -120,13 +120,13 @@ export default {
     uploadError: '上传失败',
     uploading: '上传中',
     uploadWait: '请等待文件上传结束后操作',
-    reUploadFailed: '重新上传失败文件'
+    reUploadFailed: '重新上传失败文件',
   },
   captcha: {
     verification: '请完成安全验证',
     slide: '向右滑动完成验证',
     point: '请依次点击',
     success: '验证成功',
-    fail: '验证失败'
-  }
+    fail: '验证失败',
+  },
 }

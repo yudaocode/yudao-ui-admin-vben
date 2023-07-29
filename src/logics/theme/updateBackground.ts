@@ -1,7 +1,7 @@
-import { colorIsDark, lighten, darken } from '@/utils/color'
+import { setCssVar } from './util'
+import { colorIsDark, darken, lighten } from '@/utils/color'
 import { useAppStore } from '@/store/modules/app'
 import { ThemeEnum } from '@/enums/appEnum'
-import { setCssVar } from './util'
 
 const HEADER_BG_COLOR_VAR = '--header-bg-color'
 const HEADER_BG_HOVER_COLOR_VAR = '--header-bg-hover-color'
@@ -19,27 +19,26 @@ export function updateHeaderBgColor(color?: string) {
   const appStore = useAppStore()
   const darkMode = appStore.getDarkMode === ThemeEnum.DARK
   if (!color) {
-    if (darkMode) {
+    if (darkMode)
       color = '#151515'
-    } else {
+    else
       color = appStore.getHeaderSetting.bgColor
-    }
   }
   // bg color
   setCssVar(HEADER_BG_COLOR_VAR, color)
 
   // hover color
-  const hoverColor = lighten(color!, 6)
+  const hoverColor = lighten(color, 6)
   setCssVar(HEADER_BG_HOVER_COLOR_VAR, hoverColor)
   setCssVar(HEADER_MENU_ACTIVE_BG_COLOR_VAR, hoverColor)
 
   // Determine the depth of the color value and automatically switch the theme
-  const isDark = colorIsDark(color!)
+  const isDark = colorIsDark(color)
 
   appStore.setProjectConfig({
     headerSetting: {
-      theme: isDark || darkMode ? ThemeEnum.DARK : ThemeEnum.LIGHT
-    }
+      theme: isDark || darkMode ? ThemeEnum.DARK : ThemeEnum.LIGHT,
+    },
   })
 }
 
@@ -53,23 +52,22 @@ export function updateSidebarBgColor(color?: string) {
   // if (!isHexColor(color)) return;
   const darkMode = appStore.getDarkMode === ThemeEnum.DARK
   if (!color) {
-    if (darkMode) {
+    if (darkMode)
       color = '#212121'
-    } else {
+    else
       color = appStore.getMenuSetting.bgColor
-    }
   }
   setCssVar(SIDER_DARK_BG_COLOR, color)
-  setCssVar(SIDER_DARK_DARKEN_BG_COLOR, darken(color!, 6))
-  setCssVar(SIDER_LIGHTEN_BG_COLOR, lighten(color!, 5))
+  setCssVar(SIDER_DARK_DARKEN_BG_COLOR, darken(color, 6))
+  setCssVar(SIDER_LIGHTEN_BG_COLOR, lighten(color, 5))
 
   // only #ffffff is light
   // Only when the background color is #fff, the theme of the menu will be changed to light
-  const isLight = ['#fff', '#ffffff'].includes(color!.toLowerCase())
+  const isLight = ['#fff', '#ffffff'].includes(color.toLowerCase())
 
   appStore.setProjectConfig({
     menuSetting: {
-      theme: isLight && !darkMode ? ThemeEnum.LIGHT : ThemeEnum.DARK
-    }
+      theme: isLight && !darkMode ? ThemeEnum.LIGHT : ThemeEnum.DARK,
+    },
   })
 }

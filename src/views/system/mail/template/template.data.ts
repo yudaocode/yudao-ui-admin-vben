@@ -1,39 +1,40 @@
+import { h } from 'vue'
 import { getSimpleMailAccountList } from '@/api/system/mail/account'
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { ScrollContainer } from '@/components/Container'
-import { h } from 'vue'
 
 export const columns: BasicColumn[] = [
   {
     title: '模板编码',
     dataIndex: 'code',
-    width: 100
+    width: 100,
   },
   {
     title: '模板名称',
     dataIndex: 'name',
-    width: 180
+    width: 180,
   },
   {
     title: '模板标题',
     dataIndex: 'title',
-    width: 100
+    width: 100,
   },
   {
     title: '模板内容',
     dataIndex: 'content',
-    width: 300
+    width: 300,
   },
   {
     title: '邮箱账号',
     dataIndex: 'accountId',
-    width: 120
+    width: 120,
   },
   {
     title: '发送人名称',
     dataIndex: 'nickname',
-    width: 100
+    width: 100,
   },
   {
     title: '开启状态',
@@ -41,7 +42,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
-    }
+    },
   },
   {
     title: '创建时间',
@@ -49,8 +50,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
@@ -58,13 +59,13 @@ export const searchFormSchema: FormSchema[] = [
     label: '模板名称',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '模板编码',
     field: 'code',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '发件邮箱',
@@ -75,26 +76,26 @@ export const searchFormSchema: FormSchema[] = [
       fieldNames: {
         label: 'mail',
         key: 'id',
-        value: 'id'
-      }
+        value: 'id',
+      },
     },
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '开启状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
     },
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '创建时间',
     field: 'createTime',
     component: 'RangePicker',
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 export const formSchema: FormSchema[] = [
@@ -102,20 +103,20 @@ export const formSchema: FormSchema[] = [
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '模板名称',
     field: 'name',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '模板编码',
     field: 'code',
     required: true,
     component: 'Input',
-    helpMessage: '建议使用下划线/数字/字母命名'
+    helpMessage: '建议使用下划线/数字/字母命名',
   },
   {
     label: '发件邮箱',
@@ -127,30 +128,30 @@ export const formSchema: FormSchema[] = [
       fieldNames: {
         label: 'mail',
         key: 'id',
-        value: 'id'
-      }
-    }
+        value: 'id',
+      },
+    },
   },
   {
     label: '发送人名称',
     field: 'nickname',
     required: true,
     component: 'Input',
-    helpMessage: '发件人的名称, 如:系统发件人'
+    helpMessage: '发件人的名称, 如:系统发件人',
   },
   {
     label: '模板标题',
     field: 'title',
     required: true,
     component: 'Input',
-    helpMessage: '邮件的标题'
+    helpMessage: '邮件的标题',
   },
   {
     label: '模板内容',
     field: 'content',
     component: 'Editor',
     required: true,
-    helpMessage: '{}括号中的内容作为模板参数'
+    helpMessage: '{}括号中的内容作为模板参数',
   },
   {
     label: '开启状态',
@@ -158,14 +159,14 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     defaultValue: 0,
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
-    }
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
+    },
   },
   {
     label: '备注',
     field: 'remark',
-    component: 'InputTextArea'
-  }
+    component: 'InputTextArea',
+  },
 ]
 
 // 发送邮件
@@ -177,7 +178,7 @@ export const baseSendSchemas: FormSchema[] = [
     field: 'code',
     label: '编码',
     component: 'Input',
-    show: () => false
+    show: () => false,
   },
   {
     field: 'content',
@@ -188,24 +189,24 @@ export const baseSendSchemas: FormSchema[] = [
     render({ model }) {
       let content: string = model.content
       Object.keys(model).forEach((key) => {
-        if (!key.startsWith(keyPrefix)) {
+        if (!key.startsWith(keyPrefix))
           return
-        }
+
         const realKey = key.split(keyPrefix)[1]
         content = content.replace(`{${realKey}}`, model[key])
       })
       return h(ScrollContainer, {
         innerHTML: content,
-        style: { border: '1px solid #e8e8e8', borderRadius: '4px', padding: '10px' }
+        style: { border: '1px solid #e8e8e8', borderRadius: '4px', padding: '10px' },
       })
-    }
+    },
   },
   {
     field: 'mail',
     label: '收件邮箱 ',
     component: 'Input',
     componentProps: {
-      placeholder: '输入收件邮箱'
+      placeholder: '输入收件邮箱',
     },
     required: true,
     rules: [
@@ -213,8 +214,8 @@ export const baseSendSchemas: FormSchema[] = [
         required: true,
         pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
         trigger: 'blur',
-        message: '邮箱格式不正确'
-      }
-    ]
-  }
+        message: '邮箱格式不正确',
+      },
+    ],
+  },
 ]

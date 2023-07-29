@@ -44,7 +44,7 @@ export function getAppPage(params: AppPageReqVO) {
 
 // 查询详情支付应用
 export function getApp(id: number) {
-  return defHttp.get({ url: '/pay/app/get?id=' + id })
+  return defHttp.get({ url: `/pay/app/get?id=${id}` })
 }
 
 // 新增支付应用
@@ -64,7 +64,7 @@ export function changeAppStatus(data: AppUpdateStatusReqVO) {
 
 // 删除支付应用
 export function deleteApp(id: number) {
-  return defHttp.delete({ url: '/pay/app/delete?id=' + id })
+  return defHttp.delete({ url: `/pay/app/delete?id=${id}` })
 }
 
 // 导出支付应用
@@ -74,5 +74,5 @@ export function exportApp(params: AppExportReqVO) {
 
 // 根据商ID称搜索应用列表
 export function getAppListByMerchantId(merchantId: number) {
-  return defHttp.get({ url: '/pay/app/list-merchant-id', params: { merchantId: merchantId } })
+  return defHttp.get({ url: '/pay/app/list-merchant-id', params: { merchantId } })
 }

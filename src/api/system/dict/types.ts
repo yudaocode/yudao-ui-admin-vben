@@ -1,4 +1,4 @@
-export type DictTypeVO = {
+export interface DictTypeVO {
   id: number
   name: string
   type: string
@@ -7,21 +7,21 @@ export type DictTypeVO = {
   createTime: Date
 }
 
-export type DictTypePageReqVO = {
+export interface DictTypePageReqVO {
   name: string
   type: string
   status: number
   createTime: Date[]
 }
 
-export type DictTypeExportReqVO = {
+export interface DictTypeExportReqVO {
   name: string
   type: string
   status: number
   createTime: Date[]
 }
 
-export type DictDataVO = {
+export interface DictDataVO {
   id: number
   sort: number
   label: string
@@ -33,13 +33,13 @@ export type DictDataVO = {
   remark: string
   createTime: Date
 }
-export type DictDataPageReqVO = {
+export interface DictDataPageReqVO {
   label: string
   dictType: string
   status: number
 }
 
-export type DictDataExportReqVO = {
+export interface DictDataExportReqVO {
   label: string
   dictType: string
   status: number

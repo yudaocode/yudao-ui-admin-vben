@@ -1,7 +1,5 @@
 {
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "volar.tsPlugin": true,
-  "volar.tsPluginStatus": false,
   "npm.packageManager": "pnpm",
   "editor.tabSize": 2,
   "prettier.printWidth": 140, // 超过最大值换行
@@ -60,33 +58,24 @@
   "path-intellisense.mappings": {
     "@/": "${workspaceRoot}/src"
   },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  },
-  "[less]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
   },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
+  ],
   "[vue]": {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true,
@@ -135,27 +124,6 @@
     "sider",
     "pnpm",
     "antd"
-  ],
-  "vetur.format.scriptInitialIndent": true,
-  "vetur.format.styleInitialIndent": true,
-  "vetur.validation.script": false,
-  "MicroPython.executeButton": [
-    {
-      "text": "▶",
-      "tooltip": "运行",
-      "alignment": "left",
-      "command": "extension.executeFile",
-      "priority": 3.5
-    }
-  ],
-  "MicroPython.syncButton": [
-    {
-      "text": "$(sync)",
-      "tooltip": "同步",
-      "alignment": "left",
-      "command": "extension.execute",
-      "priority": 4
-    }
   ],
   // 控制相关文件嵌套展示
   "explorer.fileNesting.enabled": true,

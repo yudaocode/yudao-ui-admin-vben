@@ -1,21 +1,8 @@
-<template>
-  <div class="m-4 mr-0 overflow-hidden bg-white">
-    <BasicTree
-      title="部门列表"
-      toolbar
-      search
-      treeWrapperClassName="h-[calc(100%-35px)] overflow-auto"
-      :clickRowToExpand="false"
-      :treeData="treeData"
-      :fieldNames="{ key: 'id', title: 'name' }"
-      @select="handleSelect"
-    />
-  </div>
-</template>
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 
-import { BasicTree, TreeItem } from '@/components/Tree'
+import type { TreeItem } from '@/components/Tree'
+import { BasicTree } from '@/components/Tree'
 import { listSimpleDept } from '@/api/system/dept'
 import { handleTree } from '@/utils/tree'
 
@@ -37,3 +24,18 @@ onMounted(() => {
   fetch()
 })
 </script>
+
+<template>
+  <div class="m-4 mr-0 overflow-hidden bg-white">
+    <BasicTree
+      title="部门列表"
+      toolbar
+      search
+      tree-wrapper-class-name="h-[calc(100%-35px)] overflow-auto"
+      :click-row-to-expand="false"
+      :tree-data="treeData"
+      :field-names="{ key: 'id', title: 'name' }"
+      @select="handleSelect"
+    />
+  </div>
+</template>

@@ -16,7 +16,8 @@ function resizeHandler(entries: any[]) {
 
 /* istanbul ignore next */
 export function addResizeListener(element: any, fn: () => any) {
-  if (isServer) return
+  if (isServer)
+    return
   if (!element.__resizeListeners__) {
     element.__resizeListeners__ = []
     element.__ro__ = new ResizeObserver(resizeHandler)
@@ -27,11 +28,11 @@ export function addResizeListener(element: any, fn: () => any) {
 
 /* istanbul ignore next */
 export function removeResizeListener(element: any, fn: () => any) {
-  if (!element || !element.__resizeListeners__) return
+  if (!element || !element.__resizeListeners__)
+    return
   element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1)
-  if (!element.__resizeListeners__.length) {
+  if (!element.__resizeListeners__.length)
     element.__ro__.disconnect()
-  }
 }
 
 export function triggerWindowResize() {

@@ -1,17 +1,17 @@
-import type { Router, RouteLocationNormalized } from 'vue-router'
+import type { RouteLocationNormalized, Router } from 'vue-router'
+import { Modal, notification } from 'ant-design-vue'
+import { unref } from 'vue'
+import nProgress from 'nprogress'
+import { createPermissionGuard } from './permissionGuard'
+import { createStateGuard } from './stateGuard'
+import { createParamMenuGuard } from './paramMenuGuard'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { useTransitionSetting } from '@/hooks/setting/useTransitionSetting'
 import { AxiosCanceler } from '@/utils/http/axios/axiosCancel'
-import { Modal, notification } from 'ant-design-vue'
 import { warn } from '@/utils/log'
-import { unref } from 'vue'
 import { setRouteChange } from '@/logics/mitt/routeChange'
-import { createPermissionGuard } from './permissionGuard'
-import { createStateGuard } from './stateGuard'
-import nProgress from 'nprogress'
 import projectSetting from '@/settings/projectSetting'
-import { createParamMenuGuard } from './paramMenuGuard'
 
 // Don't change the order of creation
 export function setupRouterGuard(router: Router) {
@@ -52,12 +52,11 @@ function createPageLoadingGuard(router: Router) {
   const appStore = useAppStoreWithOut()
   const { getOpenPageLoading } = useTransitionSetting()
   router.beforeEach(async (to) => {
-    if (!userStore.getAccessToken) {
+    if (!userStore.getAccessToken)
       return true
-    }
-    if (to.meta.loaded) {
+
+    if (to.meta.loaded)
       return true
-    }
 
     if (unref(getOpenPageLoading)) {
       appStore.setPageLoadingAction(true)
@@ -85,9 +84,9 @@ function createPageLoadingGuard(router: Router) {
 function createHttpGuard(router: Router) {
   const { removeAllHttpPending } = projectSetting
   let axiosCanceler: Nullable<AxiosCanceler>
-  if (removeAllHttpPending) {
+  if (removeAllHttpPending)
     axiosCanceler = new AxiosCanceler()
-  }
+
   router.beforeEach(async () => {
     // Switching the route will delete the previous request
     axiosCanceler?.removeAllPending()
@@ -98,7 +97,7 @@ function createHttpGuard(router: Router) {
 // Routing switch back to the top
 function createScrollGuard(router: Router) {
   const isHash = (href: string) => {
-    return /^#/.test(href)
+    return href.startsWith('#')
   }
 
   const body = document.body
@@ -123,8 +122,9 @@ export function createMessageGuard(router: Router) {
         Modal.destroyAll()
         notification.destroy()
       }
-    } catch (error) {
-      warn('message guard error:' + error)
+    }
+    catch (error) {
+      warn(`message guard error:${error}`)
     }
     return true
   })
@@ -133,9 +133,9 @@ export function createMessageGuard(router: Router) {
 export function createProgressGuard(router: Router) {
   const { getOpenNProgress } = useTransitionSetting()
   router.beforeEach(async (to) => {
-    if (to.meta.loaded) {
+    if (to.meta.loaded)
       return true
-    }
+
     unref(getOpenNProgress) && nProgress.start()
     return true
   })

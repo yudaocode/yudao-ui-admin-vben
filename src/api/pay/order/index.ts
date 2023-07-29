@@ -85,12 +85,12 @@ export function getOrderPage(params: OrderPageReqVO) {
 
 // 查询详情支付订单
 export function getOrder(id: number) {
-  return defHttp.get({ url: '/pay/order/get?id=' + id })
+  return defHttp.get({ url: `/pay/order/get?id=${id}` })
 }
 
 // 查询详情支付订单
 export function getOrderDetail(id: number) {
-  return defHttp.get({ url: '/pay/order/get-detail?id=' + id })
+  return defHttp.get({ url: `/pay/order/get-detail?id=${id}` })
 }
 
 // 新增支付订单
@@ -105,7 +105,7 @@ export function updateOrder(data: OrderVO) {
 
 // 删除支付订单
 export function deleteOrder(id: number) {
-  return defHttp.delete({ url: '/pay/order/delete?id=' + id })
+  return defHttp.delete({ url: `/pay/order/delete?id=${id}` })
 }
 
 // 导出支付订单

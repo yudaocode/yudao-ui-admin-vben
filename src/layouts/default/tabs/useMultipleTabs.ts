@@ -1,11 +1,11 @@
-import { toRaw, ref, nextTick } from 'vue'
+import { nextTick, ref, toRaw } from 'vue'
 import type { RouteLocationNormalized } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useSortable } from '@/hooks/web/useSortable'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { isNullAndUnDef } from '@/utils/is'
 import projectSetting from '@/settings/projectSetting'
-import { useRouter } from 'vue-router'
 
 export function initAffixTabs(): string[] {
   const affixList = ref<RouteLocationNormalized[]>([])
@@ -17,11 +17,10 @@ export function initAffixTabs(): string[] {
    */
   function filterAffixTabs(routes: RouteLocationNormalized[]) {
     const tabs: RouteLocationNormalized[] = []
-    routes &&
-      routes.forEach((route) => {
-        if (route.meta && route.meta.affix) {
+    routes
+      && routes.forEach((route) => {
+        if (route.meta && route.meta.affix)
           tabs.push(toRaw(route))
-        }
       })
     return tabs
   }
@@ -36,7 +35,7 @@ export function initAffixTabs(): string[] {
       tabStore.addTab({
         meta: tab.meta,
         name: tab.name,
-        path: tab.path
+        path: tab.path,
       } as unknown as RouteLocationNormalized)
     }
   }
@@ -47,7 +46,7 @@ export function initAffixTabs(): string[] {
     addAffixTabs()
     isAddAffix = true
   }
-  return affixList.value.map((item) => item.meta?.title).filter(Boolean) as string[]
+  return affixList.value.map(item => item.meta?.title).filter(Boolean)
 }
 
 export function useTabsDrag(affixTextList: string[]) {
@@ -55,23 +54,24 @@ export function useTabsDrag(affixTextList: string[]) {
   const { multiTabsSetting } = projectSetting
   const { prefixCls } = useDesign('multiple-tabs')
   nextTick(() => {
-    if (!multiTabsSetting.canDrag) return
+    if (!multiTabsSetting.canDrag)
+      return
     const el = document.querySelectorAll(`.${prefixCls} .ant-tabs-nav-wrap > div`)?.[0] as HTMLElement
     const { initSortable } = useSortable(el, {
       filter: (e: ChangeEvent) => {
         const text = e?.target?.innerText
-        if (!text) return false
+        if (!text)
+          return false
         return affixTextList.includes(text)
       },
       onEnd: (evt) => {
         const { oldIndex, newIndex } = evt
 
-        if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex) {
+        if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex)
           return
-        }
 
         tabStore.sortTabs(oldIndex, newIndex)
-      }
+      },
     })
     initSortable()
   })

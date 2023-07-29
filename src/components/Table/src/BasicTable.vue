@@ -1,52 +1,9 @@
-<template>
-  <div ref="wrapRef" :class="getWrapperClass">
-    <BasicForm
-      ref="formRef"
-      submitOnReset
-      v-bind="getFormProps"
-      v-if="getShowForm() && getBindValues.useSearchForm"
-      :tableAction="tableAction"
-      @register="registerForm"
-      @submit="handleSearchInfoChange"
-      @advanced-change="redoHeight"
-    >
-      <template #[replaceFormSlotKey(item)]="data" v-for="item in getFormSlotKeys">
-        <slot :name="item" v-bind="data || {}"></slot>
-      </template>
-    </BasicForm>
-
-    <Table
-      ref="tableElRef"
-      v-bind="getBindValues"
-      :rowClassName="getRowClassName"
-      v-show="getEmptyDataIsShowTable"
-      @change="handleTableChange"
-      @resize-column="handleResizeColumn"
-    >
-      <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">
-        <slot :name="item" v-bind="data || {}"></slot>
-      </template>
-      <template #headerCell="{ column }">
-        <HeaderCell :column="column" />
-      </template>
-      <!-- 增加对antdv3.x兼容 -->
-      <template #bodyCell="data">
-        <slot name="bodyCell" v-bind="data || {}"></slot>
-      </template>
-      <!--      <template #[`header-${column.dataIndex}`] v-for="(column, index) in columns" :key="index">-->
-      <!--        <HeaderCell :column="column" />-->
-      <!--      </template>-->
-    </Table>
-  </div>
-</template>
 <script lang="ts" setup>
-import type { BasicTableProps, TableActionType, SizeType, ColumnChangeParam } from './types/table'
-import { ref, computed, unref, toRaw, inject, watchEffect, useAttrs, useSlots } from 'vue'
+import { computed, inject, ref, toRaw, unref, useAttrs, useSlots, watchEffect } from 'vue'
 import { Table } from 'ant-design-vue'
-import { BasicForm, useForm } from '@/components/Form'
-import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
+import { omit } from 'lodash-es'
+import type { BasicTableProps, ColumnChangeParam, InnerHandlers, SizeType, TableActionType } from './types/table'
 import HeaderCell from './components/HeaderCell.vue'
-import { InnerHandlers } from './types/table'
 import { usePagination } from './hooks/usePagination'
 import { useColumns } from './hooks/useColumns'
 import { useDataSource } from './hooks/useDataSource'
@@ -61,9 +18,10 @@ import { useTableExpand } from './hooks/useTableExpand'
 import { createTableContext } from './hooks/useTableContext'
 import { useTableFooter } from './hooks/useTableFooter'
 import { useTableForm } from './hooks/useTableForm'
-import { useDesign } from '@/hooks/web/useDesign'
-import { omit } from 'lodash-es'
 import { basicProps } from './props'
+import { useDesign } from '@/hooks/web/useDesign'
+import { BasicForm, useForm } from '@/components/Form'
+import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 import { isFunction } from '@/utils/is'
 import { warn } from '@/utils/log'
 
@@ -86,7 +44,7 @@ const emit = defineEmits([
   'edit-change',
   'expanded-rows-change',
   'change',
-  'columns-change'
+  'columns-change',
 ])
 const slots = useSlots()
 const attrs = useAttrs()
@@ -107,9 +65,9 @@ const getProps = computed(() => {
 
 const isFixedHeightPage = inject(PageWrapperFixedHeightKey, false)
 watchEffect(() => {
-  unref(isFixedHeightPage) &&
-    props.canResize &&
-    warn("'canResize' of BasicTable may not work in PageWrapper with 'fixedHeight' (especially in hot updates)")
+  unref(isFixedHeightPage)
+    && props.canResize
+    && warn('\'canResize\' of BasicTable may not work in PageWrapper with \'fixedHeight\' (especially in hot updates)')
 })
 
 const { getLoading, setLoading } = useLoading(getProps)
@@ -123,7 +81,7 @@ const {
   clearSelectedRowKeys,
   getSelectRowKeys,
   deleteSelectRowByKey,
-  setSelectedRowKeys
+  setSelectedRowKeys,
 } = useRowSelection(getProps, tableData, emit)
 
 const {
@@ -140,7 +98,7 @@ const {
   getRowKey,
   reload,
   getAutoCreateKey,
-  updateTableData
+  updateTableData,
 } = useDataSource(
   getProps,
   {
@@ -149,9 +107,9 @@ const {
     setLoading,
     setPagination,
     getFieldsValue: formActions.getFieldsValue,
-    clearSelectedRowKeys
+    clearSelectedRowKeys,
   },
-  emit
+  emit,
 )
 
 function handleTableChange(...args) {
@@ -164,7 +122,7 @@ function handleTableChange(...args) {
 
 const { getViewColumns, getColumns, setCacheColumnsByField, setCacheColumns, setColumns, getColumnsRef, getCacheColumns } = useColumns(
   getProps,
-  getPaginationInfo
+  getPaginationInfo,
 )
 
 const { getScrollRef, redoHeight } = useTableScroll(
@@ -174,7 +132,7 @@ const { getScrollRef, redoHeight } = useTableScroll(
   getRowSelectionRef,
   getDataSourceRef,
   wrapRef,
-  formRef
+  formRef,
 )
 
 const { scrollTo } = useTableScrollTo(tableElRef, getDataSourceRef)
@@ -184,7 +142,7 @@ const { customRow } = useCustomRow(getProps, {
   getSelectRowKeys,
   clearSelectedRowKeys,
   getAutoCreateKey,
-  emit
+  emit,
 })
 
 const { getRowClassName } = useTableStyle(getProps, prefixCls)
@@ -196,7 +154,7 @@ const handlers: InnerHandlers = {
     emit('columns-change', data)
     // support useTable
     unref(getProps).onColumnsChange?.(data)
-  }
+  },
 }
 
 const { getHeaderProps } = useTableHeader(getProps, slots, handlers)
@@ -207,7 +165,7 @@ const { getFormProps, replaceFormSlotKey, getFormSlotKeys, handleSearchInfoChang
   getProps,
   slots,
   fetch,
-  getLoading
+  getLoading,
 )
 
 const getBindValues = computed(() => {
@@ -226,7 +184,7 @@ const getBindValues = computed(() => {
     pagination: toRaw(unref(getPaginationInfo)),
     dataSource,
     footer: unref(getFooterProps),
-    ...unref(getExpandOption)
+    ...unref(getExpandOption),
   }
   // if (slots.expandedRowRender) {
   //   propsData = omit(propsData, 'scroll');
@@ -243,16 +201,16 @@ const getWrapperClass = computed(() => {
     attrs.class,
     {
       [`${prefixCls}-form-container`]: values.useSearchForm,
-      [`${prefixCls}--inset`]: values.inset
-    }
+      [`${prefixCls}--inset`]: values.inset,
+    },
   ]
 })
 
 const getEmptyDataIsShowTable = computed(() => {
   const { emptyDataIsShowTable, useSearchForm } = unref(getProps)
-  if (emptyDataIsShowTable || !useSearchForm) {
+  if (emptyDataIsShowTable || !useSearchForm)
     return true
-  }
+
   return !!unref(getDataSourceRef).length
 })
 
@@ -260,7 +218,7 @@ function setProps(props: Partial<BasicTableProps>) {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
 }
 
-const handleResizeColumn = (w, col) => {
+function handleResizeColumn(w, col) {
   col.width = w
 }
 
@@ -302,7 +260,7 @@ const tableAction: TableActionType = {
   },
   setCacheColumns,
   setShowForm,
-  getShowForm
+  getShowForm,
 }
 createTableContext({ ...tableAction, wrapRef, getBindValues })
 
@@ -310,6 +268,49 @@ defineExpose({ tableAction })
 
 emit('register', tableAction, formActions)
 </script>
+
+<template>
+  <div ref="wrapRef" :class="getWrapperClass">
+    <BasicForm
+      v-if="getShowForm() && getBindValues.useSearchForm"
+      ref="formRef"
+      submit-on-reset
+      v-bind="getFormProps"
+      :table-action="tableAction"
+      @register="registerForm"
+      @submit="handleSearchInfoChange"
+      @advanced-change="redoHeight"
+    >
+      <template v-for="item in getFormSlotKeys" #[replaceFormSlotKey(item)]="data">
+        <slot :name="item" v-bind="data || {}" />
+      </template>
+    </BasicForm>
+
+    <Table
+      v-show="getEmptyDataIsShowTable"
+      ref="tableElRef"
+      v-bind="getBindValues"
+      :row-class-name="getRowClassName"
+      @change="handleTableChange"
+      @resize-column="handleResizeColumn"
+    >
+      <template v-for="item in Object.keys($slots)" #[item]="data" :key="item">
+        <slot :name="item" v-bind="data || {}" />
+      </template>
+      <template #headerCell="{ column }">
+        <HeaderCell :column="column" />
+      </template>
+      <!-- 增加对antdv3.x兼容 -->
+      <template #bodyCell="data">
+        <slot name="bodyCell" v-bind="data || {}" />
+      </template>
+      <!--      <template #[`header-${column.dataIndex}`] v-for="(column, index) in columns" :key="index"> -->
+      <!--        <HeaderCell :column="column" /> -->
+      <!--      </template> -->
+    </Table>
+  </div>
+</template>
+
 <style lang="less">
 @border-color: #cecece4d;
 
@@ -371,10 +372,10 @@ emit('register', tableAction, formActions)
 
     &-title {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 8px 6px;
       border-bottom: none;
-      justify-content: space-between;
-      align-items: center;
     }
 
     //.ant-table-tbody > tr.ant-table-row-selected td {

@@ -1,31 +1,11 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.VIEW,
-                label: t('action.detail'),
-                onClick: handleShowInfo.bind(null, record)
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <MailLogModal @register="registerModal" />
-  </div>
-</template>
 <script lang="ts" setup>
+import { columns, searchFormSchema } from './mailLog.data'
+import MailLogModal from './MailLogModal.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getMailAccountPage } from '@/api/system/mail/log'
-import { columns, searchFormSchema } from './mailLog.data'
 import { useModal } from '@/components/Modal'
-import MailLogModal from './MailLogModal.vue'
 
 defineOptions({ name: 'SystemOperateLog' })
 
@@ -42,8 +22,8 @@ const [registerTable] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 const [registerModal, { openModal }] = useModal()
@@ -52,3 +32,24 @@ function handleShowInfo(record: Recordable) {
   openModal(true, record)
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.VIEW,
+                label: t('action.detail'),
+                onClick: handleShowInfo.bind(null, record),
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <MailLogModal @register="registerModal" />
+  </div>
+</template>

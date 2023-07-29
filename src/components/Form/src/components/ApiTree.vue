@@ -1,21 +1,11 @@
-<template>
-  <Tree v-bind="getAttrs as any" @change="handleChange">
-    <template #[item]="data" v-for="item in Object.keys(slots)">
-      <slot :name="item" v-bind="data || {}"></slot>
-    </template>
-    <template #suffixIcon v-if="loading">
-      <LoadingOutlined spin />
-    </template>
-  </Tree>
-</template>
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted, unref, useSlots, useAttrs } from 'vue'
+import { computed, onMounted, ref, unref, useAttrs, useSlots, watch } from 'vue'
 import { Tree } from 'ant-design-vue'
-import { isArray, isFunction } from '@/utils/is'
 import { get } from 'lodash-es'
+import { LoadingOutlined } from '@ant-design/icons-vue'
+import { isArray, isFunction } from '@/utils/is'
 import { handleTree as handleTreeFn } from '@/utils/tree'
 import { propTypes } from '@/utils/propTypes'
-import { LoadingOutlined } from '@ant-design/icons-vue'
 
 defineOptions({ name: 'ApiTree' })
 
@@ -25,19 +15,19 @@ const props = defineProps({
   immediate: { type: Boolean, default: true },
   resultField: propTypes.string.def(''),
   afterFetch: { type: Function as PropType<Fn> },
-  handleTree: { type: String, default: '' }
+  handleTree: { type: String, default: '' },
 })
 const emit = defineEmits(['options-change', 'change'])
 const attrs = useAttrs()
 const slots = useSlots()
 
 const treeData = ref<Recordable[]>([])
-const isFirstLoaded = ref<Boolean>(false)
+const isFirstLoaded = ref<boolean>(false)
 const loading = ref(false)
 const getAttrs = computed(() => {
   return {
     ...(props.api ? { treeData: unref(treeData) } : {}),
-    ...attrs
+    ...attrs,
   }
 })
 
@@ -50,14 +40,14 @@ watch(
   () => {
     !unref(isFirstLoaded) && fetch()
   },
-  { deep: true }
+  { deep: true },
 )
 
 watch(
   () => props.immediate,
   (v) => {
     v && !isFirstLoaded.value && fetch()
-  }
+  },
 )
 
 onMounted(() => {
@@ -66,28 +56,42 @@ onMounted(() => {
 
 async function fetch() {
   const { api, afterFetch } = props
-  if (!api || !isFunction(api)) return
+  if (!api || !isFunction(api))
+    return
   loading.value = true
   treeData.value = []
   let result
   try {
     result = await api(props.params)
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
   }
-  if (afterFetch && isFunction(afterFetch)) {
+  if (afterFetch && isFunction(afterFetch))
     result = afterFetch(result)
-  }
+
   loading.value = false
-  if (!result) return
-  if (props.handleTree) {
+  if (!result)
+    return
+  if (props.handleTree)
     result = handleTreeFn(result, props.handleTree)
-  }
-  if (!isArray(result)) {
+
+  if (!isArray(result))
     result = get(result, props.resultField)
-  }
+
   treeData.value = (result as Recordable[]) || []
   isFirstLoaded.value = true
   emit('options-change', treeData.value)
 }
 </script>
+
+<template>
+  <Tree v-bind="getAttrs as any" @change="handleChange">
+    <template v-for="item in Object.keys(slots)" #[item]="data">
+      <slot :name="item" v-bind="data || {}" />
+    </template>
+    <template v-if="loading" #suffixIcon>
+      <LoadingOutlined spin />
+    </template>
+  </Tree>
+</template>

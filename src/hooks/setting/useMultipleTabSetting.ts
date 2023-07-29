@@ -1,6 +1,5 @@
-import type { MultiTabsSetting } from '@/types/config'
-
 import { computed } from 'vue'
+import type { MultiTabsSetting } from '@/types/config'
 
 import { useAppStore } from '@/store/modules/app'
 
@@ -26,6 +25,6 @@ export function useMultipleTabSetting() {
     getShowMultipleTabIcon,
     getShowQuick,
     getShowRedo,
-    getShowFold
+    getShowFold,
   }
 }

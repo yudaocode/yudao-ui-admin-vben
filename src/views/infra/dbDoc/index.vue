@@ -1,16 +1,6 @@
-<template>
-  <PageWrapper>
-    <div class="mb-3">
-      <a-button type="primary" size="small" class="mr-1" @click="handleExport('HTML')">{{ t('action.export') + 'Html' }}</a-button>
-      <a-button type="primary" size="small" class="mr-1" @click="handleExport('Word')">{{ t('action.export') + 'Word' }}</a-button>
-      <a-button type="primary" size="small" @click="handleExport('Markdown')">{{ t('action.export') + 'Markdown' }}</a-button>
-    </div>
-    <IFrame :src="src" />
-  </PageWrapper>
-</template>
 <script setup lang="ts" name="InfraDbDoc">
-import { PageWrapper } from '@/components/Page'
 import { onMounted, ref } from 'vue'
+import { PageWrapper } from '@/components/Page'
 import { useI18n } from '@/hooks/web/useI18n'
 import { IFrame } from '@/components/IFrame'
 import * as DbDocApi from '@/api/infra/dbDoc'
@@ -19,14 +9,14 @@ import { downloadByData } from '@/utils/file/download'
 const { t } = useI18n()
 const src = ref('')
 /** 页面加载 */
-const init = async () => {
+async function init() {
   const res = await DbDocApi.exportHtml()
-  let blob = new Blob([res], { type: 'text/html' })
-  let blobUrl = window.URL.createObjectURL(blob)
+  const blob = new Blob([res], { type: 'text/html' })
+  const blobUrl = window.URL.createObjectURL(blob)
   src.value = blobUrl
 }
 /** 处理导出  */
-const handleExport = async (type: string) => {
+async function handleExport(type: string) {
   if (type === 'HTML') {
     const res = await DbDocApi.exportHtml()
     downloadByData(res, '数据库文档.html')
@@ -44,3 +34,20 @@ onMounted(async () => {
   await init()
 })
 </script>
+
+<template>
+  <PageWrapper>
+    <div class="mb-3">
+      <a-button type="primary" size="small" class="mr-1" @click="handleExport('HTML')">
+        {{ `${t('action.export')}Html` }}
+      </a-button>
+      <a-button type="primary" size="small" class="mr-1" @click="handleExport('Word')">
+        {{ `${t('action.export')}Word` }}
+      </a-button>
+      <a-button type="primary" size="small" @click="handleExport('Markdown')">
+        {{ `${t('action.export')}Markdown` }}
+      </a-button>
+    </div>
+    <IFrame :src="src" />
+  </PageWrapper>
+</template>

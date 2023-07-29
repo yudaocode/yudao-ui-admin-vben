@@ -1,23 +1,17 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="title" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { passwordSchema } from './data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { passwordSchema } from './data'
 import { updateUserPwdApi } from '@/api/base/profile'
 
 defineOptions({ name: 'PasswordModal' })
 
+const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const emit = defineEmits(['success', 'register'])
-
 const title = ref('修改密码')
 
 const [registerForm, { resetFields, validate }] = useForm({
@@ -25,7 +19,7 @@ const [registerForm, { resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: passwordSchema,
   showActionButtonGroup: false,
-  actionColOptions: { span: 23 }
+  actionColOptions: { span: 23 },
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(() => {
@@ -41,8 +35,15 @@ async function handleSubmit() {
     closeModal()
     emit('success')
     createMessage.success(t('common.saveSuccessText'))
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" :title="title" @register="registerModal" @ok="handleSubmit">
+    <BasicForm @register="registerForm" />
+  </BasicModal>
+</template>

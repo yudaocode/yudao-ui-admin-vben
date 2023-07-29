@@ -1,13 +1,6 @@
-<template>
-  <div :class="prefixCls" :style="getWrapStyle">
-    <Spin :spinning="loading" size="large" :style="getWrapStyle">
-      <iframe :src="frameSrc" :class="`${prefixCls}__main`" ref="frameRef" @load="hideLoading"></iframe>
-    </Spin>
-  </div>
-</template>
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { ref, unref, computed } from 'vue'
+import { computed, ref, unref } from 'vue'
 import { Spin } from 'ant-design-vue'
 import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import { propTypes } from '@/utils/propTypes'
@@ -15,7 +8,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useLayoutHeight } from '@/layouts/default/content/useContentViewHeight'
 
 defineProps({
-  frameSrc: propTypes.string.def('')
+  frameSrc: propTypes.string.def(''),
 })
 
 const loading = ref(true)
@@ -29,15 +22,15 @@ useWindowSizeFn(calcHeight, 150, { immediate: true })
 
 const getWrapStyle = computed((): CSSProperties => {
   return {
-    height: `${unref(heightRef)}px`
+    height: `${unref(heightRef)}px`,
   }
 })
 
 function calcHeight() {
   const iframe = unref(frameRef)
-  if (!iframe) {
+  if (!iframe)
     return
-  }
+
   const top = headerHeightRef.value
   topRef.value = top
   heightRef.value = window.innerHeight - top
@@ -50,6 +43,15 @@ function hideLoading() {
   calcHeight()
 }
 </script>
+
+<template>
+  <div :class="prefixCls" :style="getWrapStyle">
+    <Spin :spinning="loading" size="large" :style="getWrapStyle">
+      <iframe ref="frameRef" :src="frameSrc" :class="`${prefixCls}__main`" @load="hideLoading" />
+    </Spin>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-iframe-page';
 
@@ -74,12 +76,12 @@ function hideLoading() {
   }
 
   &__main {
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     overflow: hidden;
     background-color: @component-background;
     border: 0;
-    box-sizing: border-box;
   }
 }
 </style>

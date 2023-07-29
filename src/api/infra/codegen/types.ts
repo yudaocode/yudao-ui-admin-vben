@@ -1,4 +1,4 @@
-export type CodegenTableVO = {
+export interface CodegenTableVO {
   id: number
   tableId: number
   isParentMenuIdValid: boolean
@@ -18,7 +18,7 @@ export type CodegenTableVO = {
   parentMenuId: number
 }
 
-export type CodegenColumnVO = {
+export interface CodegenColumnVO {
   id: number
   tableId: number
   columnName: string
@@ -39,23 +39,23 @@ export type CodegenColumnVO = {
   listOperationResult: number
   htmlType: string
 }
-export type DatabaseTableVO = {
+export interface DatabaseTableVO {
   name: string
   comment: string
 }
-export type CodegenDetailVO = {
+export interface CodegenDetailVO {
   table: CodegenTableVO
   columns: CodegenColumnVO[]
 }
-export type CodegenPreviewVO = {
+export interface CodegenPreviewVO {
   filePath: string
   code: string
 }
-export type CodegenUpdateReqVO = {
+export interface CodegenUpdateReqVO {
   table: CodegenTableVO
   columns: CodegenColumnVO[]
 }
-export type CodegenCreateListReqVO = {
+export interface CodegenCreateListReqVO {
   dataSourceConfigId: number
   tableNames: string[]
 }

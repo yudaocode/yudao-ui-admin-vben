@@ -1,4 +1,5 @@
-import { Ref, watchEffect, ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 interface IntersectionObserverProps {
   target: Ref<Element | null | undefined>
@@ -17,7 +18,7 @@ export function useIntersectionObserver({ target, root, onIntersect, rootMargin 
     observer.value = new IntersectionObserver(onIntersect, {
       root: root ? root.value : null,
       rootMargin,
-      threshold
+      threshold,
     })
 
     const current = target.value
@@ -37,6 +38,6 @@ export function useIntersectionObserver({ target, root, onIntersect, rootMargin 
     stop: () => {
       cleanup()
       stopEffect()
-    }
+    },
   }
 }

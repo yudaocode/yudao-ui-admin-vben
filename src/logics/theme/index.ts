@@ -1,17 +1,16 @@
-import { getThemeColors, generateColors } from '../../../build/config/themeConfig'
-
 import { replaceStyleVariables } from 'vite-vue-plugin-theme/es/client'
-import { mixLighten, mixDarken, tinycolor } from 'vite-vue-plugin-theme/es/colorUtils'
+import { mixDarken, mixLighten, tinycolor } from 'vite-vue-plugin-theme/es/colorUtils'
+import { generateColors, getThemeColors } from '../../../build/config/themeConfig'
 
 export async function changeTheme(color: string) {
   const colors = generateColors({
     mixDarken,
     mixLighten,
     tinycolor,
-    color
+    color,
   })
 
   return await replaceStyleVariables({
-    colorVariables: [...getThemeColors(color), ...colors]
+    colorVariables: [...getThemeColors(color), ...colors],
   })
 }

@@ -53,7 +53,7 @@ export function getApiErrorLogPage(params: ApiErrorLogPageReqVO) {
 // 更新 API 错误日志的处理状态
 export function updateApiErrorLogProcess(id: number, processStatus: number) {
   return defHttp.put({
-    url: '/infra/api-error-log/update-status?id=' + id + '&processStatus=' + processStatus
+    url: `/infra/api-error-log/update-status?id=${id}&processStatus=${processStatus}`,
   })
 }
 
@@ -62,8 +62,8 @@ export function exportApiErrorLog(params: ApiErrorLogExportReqVO) {
   return defHttp.download(
     {
       url: '/infra/api-error-log/export-excel',
-      params
+      params,
     },
-    '错误日志.xls'
+    '错误日志.xls',
   )
 }

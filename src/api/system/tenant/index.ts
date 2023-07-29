@@ -38,7 +38,7 @@ export function getTenantPage(params: TenantPageReqVO) {
 
 // 查询租户详情
 export function getTenant(id: number) {
-  return defHttp.get({ url: '/system/tenant/get?id=' + id })
+  return defHttp.get({ url: `/system/tenant/get?id=${id}` })
 }
 
 // 新增租户
@@ -53,7 +53,7 @@ export function updateTenant(data: TenantVO) {
 
 // 删除租户
 export function deleteTenant(id: number) {
-  return defHttp.delete({ url: '/system/tenant/delete?id=' + id })
+  return defHttp.delete({ url: `/system/tenant/delete?id=${id}` })
 }
 
 // 导出租户

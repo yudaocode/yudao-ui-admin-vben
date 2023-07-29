@@ -1,9 +1,6 @@
-<template>
-  <span :class="getTagClass" v-if="getShowTag">{{ getContent }}</span>
-</template>
 <script lang="ts" setup>
-import type { Menu } from '@/router/types'
 import { computed } from 'vue'
+import type { Menu } from '@/router/types'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 
@@ -12,10 +9,10 @@ defineOptions({ name: 'SimpleMenuTag' })
 const props = defineProps({
   item: {
     type: Object as PropType<Menu>,
-    default: () => ({})
+    default: () => ({}),
   },
   dot: propTypes.bool,
-  collapseParent: propTypes.bool
+  collapseParent: propTypes.bool,
 })
 
 const { prefixCls } = useDesign('simple-menu')
@@ -23,18 +20,22 @@ const { prefixCls } = useDesign('simple-menu')
 const getShowTag = computed(() => {
   const { item } = props
 
-  if (!item) return false
+  if (!item)
+    return false
 
   const { tag } = item
-  if (!tag) return false
+  if (!tag)
+    return false
 
   const { dot, content } = tag
-  if (!dot && !content) return false
+  if (!dot && !content)
+    return false
   return true
 })
 
 const getContent = computed(() => {
-  if (!getShowTag.value) return ''
+  if (!getShowTag.value)
+    return ''
   const { item, collapseParent } = props
   const { tag } = item
   const { dot, content } = tag!
@@ -52,8 +53,12 @@ const getTagClass = computed(() => {
     [`${tagCls}--${type}`],
     {
       [`${tagCls}--collapse`]: collapseParent,
-      [`${tagCls}--dot`]: dot || props.dot
-    }
+      [`${tagCls}--dot`]: dot || props.dot,
+    },
   ]
 })
 </script>
+
+<template>
+  <span v-if="getShowTag" :class="getTagClass">{{ getContent }}</span>
+</template>

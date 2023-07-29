@@ -1,10 +1,9 @@
-import { IAnyObject } from '../typings/base-type'
-import { Ref, SetupContext } from 'vue'
+import { getCurrentInstance, toRaw } from 'vue'
+import type { Ref, SetupContext } from 'vue'
 import { cloneDeep, forOwn, isFunction } from 'lodash-es'
-import { AForm, IVFormComponent } from '../typings/v-form-component'
-import { getCurrentInstance } from 'vue'
 import { Form } from 'ant-design-vue'
-import { toRaw } from 'vue'
+import type { AForm, IVFormComponent } from '../typings/v-form-component'
+import type { IAnyObject } from '../typings/base-type'
 
 export function useFormInstanceMethods(props: IAnyObject, formdata, context: Partial<SetupContext>, _formInstance: Ref<AForm | null>) {
   /**
@@ -13,19 +12,18 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
   const bindContext = () => {
     const instance = getCurrentInstance()
     const vm = instance?.parent
-    if (!vm) return
+    if (!vm)
+      return
     ;(props.formConfig.schemas as IVFormComponent[]).forEach((item) => {
       // 绑定 props 中的上下文
       forOwn(item.componentProps, (value: any, key) => {
-        if (isFunction(value)) {
+        if (isFunction(value))
           item.componentProps![key] = value.bind(vm)
-        }
       })
       // 绑定事件监听（v-on）的上下文
       forOwn(item.on, (value: any, key) => {
-        if (isFunction(value)) {
+        if (isFunction(value))
           item.componentProps![key] = value.bind(vm)
-        }
       })
     })
   }
@@ -38,7 +36,7 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
   const { resetFields, validate, clearValidate, validateField } = useForm(formdata, [])
 
   const submit = async () => {
-    //const _result = await validate();
+    // const _result = await validate();
 
     const data = cloneDeep(toRaw(formdata.value))
     emit?.('submit', data)
@@ -51,6 +49,6 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
     validateField,
     resetFields,
     clearValidate,
-    submit
+    submit,
   }
 }

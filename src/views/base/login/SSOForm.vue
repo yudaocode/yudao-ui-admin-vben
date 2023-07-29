@@ -1,46 +1,14 @@
-<template>
-  <h2 class="mb-3 text-2xl font-bold text-center xl:text-3xl enter-x xl:text-left">
-    {{ client.name + t('sys.login.ssoSignInFormTitle') }}
-  </h2>
-  <Form class="p-4 enter-x" :model="loginForm" ref="formRef" @keypress.enter="handleAuthorize(true)">
-    此第三方应用请求获取以下权限：
-    <Row class="enter-x">
-      <Col :span="12">
-        <template v-for="scope in params.scopes" :key="scope">
-          <FormItem>
-            <!-- No logic, you need to deal with it yourself -->
-            <Checkbox :checked="scope" size="small">
-              <Button type="link" size="small">
-                {{ formatScope(scope) }}
-              </Button>
-            </Checkbox>
-          </FormItem>
-        </template>
-      </Col>
-    </Row>
-
-    <FormItem class="enter-x">
-      <Button type="primary" size="large" block @click="handleAuthorize(true)" :loading="loading">
-        {{ t('sys.login.loginButton') }}
-      </Button>
-      <Button size="large" class="mt-4 enter-x" block @click="handleAuthorize(false)">
-        {{ t('common.cancelText') }}
-      </Button>
-    </FormItem>
-  </Form>
-</template>
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Checkbox, Form, Row, Col, Button } from 'ant-design-vue'
+import { Button, Checkbox, Col, Form, Row } from 'ant-design-vue'
 
+import { useFormValid } from './useLogin'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
-import { useFormValid } from './useLogin'
 import { useDesign } from '@/hooks/web/useDesign'
 import { authorize, getAuthorize } from '@/api/base/login'
-import { onMounted } from 'vue'
 
 const FormItem = Form.Item
 
@@ -53,7 +21,7 @@ const formRef = ref()
 const loading = ref(false)
 
 const loginForm = reactive({
-  scopes: [] as any[] // 已选中的 scope 数组
+  scopes: [] as any[], // 已选中的 scope 数组
 })
 
 // URL 上的 client_id、scope 等参数
@@ -62,13 +30,13 @@ const params = reactive({
   clientId: undefined as any,
   redirectUri: undefined as any,
   state: undefined as any,
-  scopes: [] as any[] // 优先从 query 参数获取；如果未传递，从后端获取
+  scopes: [] as any[], // 优先从 query 参数获取；如果未传递，从后端获取
 })
 
 // 客户端信息
 let client = reactive({
   name: '',
-  logo: ''
+  logo: '',
 })
 
 const { validForm } = useFormValid(formRef)
@@ -81,9 +49,8 @@ async function init() {
   params.clientId = query.client_id as any
   params.redirectUri = query.redirect_uri as any
   params.state = query.state as any
-  if (query.scope) {
+  if (query.scope)
     params.scopes = (query.scope as any).split(' ')
-  }
 
   // 如果有 scope 参数，先执行一次自动授权，看看是否之前都授权过了。
   if (params.scopes.length > 0) {
@@ -105,28 +72,27 @@ async function init() {
   if (params.scopes.length > 0) {
     scopes = []
     for (const scope of res.scopes) {
-      if (params.scopes.indexOf(scope.key) >= 0) {
+      if (params.scopes.includes(scope.key))
         scopes.push(scope)
-      }
     }
     // 1.2 如果 params.scope 为空，则使用返回的 scopes 设置它
-  } else {
+  }
+  else {
     scopes = res.data.scopes
-    for (const scope of scopes) {
+    for (const scope of scopes)
       params.scopes.push(scope.key)
-    }
   }
   // 生成已选中的 checkedScopes
   for (const scope of scopes) {
-    if (scope.value) {
+    if (scope.value)
       loginForm.scopes.push(scope.key)
-    }
   }
 }
 
 async function handleAuthorize(approved) {
   const data = await validForm()
-  if (!data) return
+  if (!data)
+    return
   try {
     loading.value = true
     // 计算 checkedScopes + uncheckedScopes
@@ -135,8 +101,9 @@ async function handleAuthorize(approved) {
     if (approved) {
       // 同意授权，按照用户的选择
       checkedScopes = loginForm.scopes
-      uncheckedScopes = params.scopes.filter((item) => checkedScopes.indexOf(item) === -1)
-    } else {
+      uncheckedScopes = params.scopes.filter(item => !checkedScopes.includes(item))
+    }
+    else {
       // 拒绝，则都是取消
       checkedScopes = []
       uncheckedScopes = params.scopes
@@ -145,23 +112,25 @@ async function handleAuthorize(approved) {
     const res = await doAuthorize(false, checkedScopes, uncheckedScopes)
     if (res) {
       const href = res
-      if (!href) {
+      if (!href)
         return
-      }
+
       location.href = href
       notification.success({
         message: t('sys.login.loginSuccessTitle'),
         description: `${t('sys.login.loginSuccessDesc')}`,
-        duration: 3
+        duration: 3,
       })
     }
-  } catch (error) {
+  }
+  catch (error) {
     createErrorModal({
       title: t('sys.api.errorTip'),
       content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
-      getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body
+      getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
     })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -173,7 +142,7 @@ async function doAuthorize(autoApprove, checkedScopes, uncheckedScopes) {
     params.state,
     autoApprove,
     checkedScopes,
-    uncheckedScopes
+    uncheckedScopes,
   )
 }
 
@@ -194,3 +163,35 @@ onMounted(() => {
   init()
 })
 </script>
+
+<template>
+  <h2 class="mb-3 text-2xl font-bold text-center xl:text-3xl enter-x xl:text-left">
+    {{ client.name + t('sys.login.ssoSignInFormTitle') }}
+  </h2>
+  <Form ref="formRef" class="p-4 enter-x" :model="loginForm" @keypress.enter="handleAuthorize(true)">
+    此第三方应用请求获取以下权限：
+    <Row class="enter-x">
+      <Col :span="12">
+        <template v-for="scope in params.scopes" :key="scope">
+          <FormItem>
+            <!-- No logic, you need to deal with it yourself -->
+            <Checkbox :checked="scope" size="small">
+              <Button type="link" size="small">
+                {{ formatScope(scope) }}
+              </Button>
+            </Checkbox>
+          </FormItem>
+        </template>
+      </Col>
+    </Row>
+
+    <FormItem class="enter-x">
+      <Button type="primary" size="large" block :loading="loading" @click="handleAuthorize(true)">
+        {{ t('sys.login.loginButton') }}
+      </Button>
+      <Button size="large" class="mt-4 enter-x" block @click="handleAuthorize(false)">
+        {{ t('common.cancelText') }}
+      </Button>
+    </FormItem>
+  </Form>
+</template>

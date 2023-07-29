@@ -1,22 +1,7 @@
-<template>
-  <Drawer
-    v-if="getIsMobile"
-    placement="left"
-    :class="prefixCls"
-    :width="getMenuWidth"
-    :getContainer="null"
-    :visible="!getCollapsed"
-    @close="handleClose"
-  >
-    <Sider />
-  </Drawer>
-  <MixSider v-else-if="getIsMixSidebar" />
-  <Sider v-else />
-</template>
 <script lang="ts" setup>
+import { Drawer } from 'ant-design-vue'
 import Sider from './LayoutSider.vue'
 import MixSider from './MixSider.vue'
-import { Drawer } from 'ant-design-vue'
 
 import { useAppInject } from '@/hooks/web/useAppInject'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
@@ -30,10 +15,27 @@ const { setMenuSetting, getCollapsed, getMenuWidth, getIsMixSidebar } = useMenuS
 
 function handleClose() {
   setMenuSetting({
-    collapsed: true
+    collapsed: true,
   })
 }
 </script>
+
+<template>
+  <Drawer
+    v-if="getIsMobile"
+    placement="left"
+    :class="prefixCls"
+    :width="getMenuWidth"
+    :get-container="null"
+    :visible="!getCollapsed"
+    @close="handleClose"
+  >
+    <Sider />
+  </Drawer>
+  <MixSider v-else-if="getIsMixSidebar" />
+  <Sider v-else />
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-layout-sider-wrapper';
 

@@ -1,23 +1,20 @@
-<template>
-  <div ref="wrapRef"></div>
-</template>
 <script lang="ts" setup inheritAttrs="false">
 import type { Ref } from 'vue'
-import { ref, unref, nextTick, computed, watch, onBeforeUnmount, onDeactivated, useAttrs } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onDeactivated, ref, unref, useAttrs, watch } from 'vue'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
-import { useLocale } from '@/locales/useLocale'
 import { useModalContext } from '../../Modal'
+import { getTheme } from './getTheme'
+import { useLocale } from '@/locales/useLocale'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { onMountedOrActivated } from '@/hooks/core/onMountedOrActivated'
-import { getTheme } from './getTheme'
 import { propTypes } from '@/utils/propTypes'
 
 type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined
 
 const props = defineProps({
   height: propTypes.number.def(360),
-  value: propTypes.string.def('')
+  value: propTypes.string.def(''),
 })
 const emit = defineEmits(['change', 'get', 'update:value'])
 const attrs = useAttrs()
@@ -34,25 +31,25 @@ const valueRef = ref(props.value || '')
 watch(
   [() => getDarkMode.value, () => initedRef.value],
   ([val, inited]) => {
-    if (!inited) {
+    if (!inited)
       return
-    }
+
     instance.getVditor()?.setTheme(getTheme(val) as any, getTheme(val, 'content'), getTheme(val, 'code'))
   },
   {
     immediate: true,
-    flush: 'post'
-  }
+    flush: 'post',
+  },
 )
 
 watch(
   () => props.value,
   (v) => {
-    if (v !== valueRef.value) {
+    if (v !== valueRef.value)
       instance.getVditor()?.setValue(v)
-    }
+
     valueRef.value = v
-  }
+  },
 )
 
 const getCurrentLang = computed((): 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' => {
@@ -74,7 +71,8 @@ const getCurrentLang = computed((): 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' => {
 })
 function init() {
   const wrapEl = unref(wrapRef) as HTMLElement
-  if (!wrapEl) return
+  if (!wrapEl)
+    return
   const bindValue = { ...attrs, ...props }
   const insEditor = new Vditor(wrapEl, {
     // 设置外观主题
@@ -82,18 +80,18 @@ function init() {
     lang: unref(getCurrentLang),
     mode: 'sv',
     fullscreen: {
-      index: 520
+      index: 520,
     },
     preview: {
       theme: {
         // 设置内容主题
-        current: getTheme(getDarkMode.value, 'content')
+        current: getTheme(getDarkMode.value, 'content'),
       },
       hljs: {
         // 设置代码块主题
-        style: getTheme(getDarkMode.value, 'code')
+        style: getTheme(getDarkMode.value, 'code'),
       },
-      actions: []
+      actions: [],
     },
     input: (v) => {
       valueRef.value = v
@@ -110,25 +108,27 @@ function init() {
       })
     },
     blur: () => {
-      //unref(vditorRef)?.setValue(props.value);
+      // unref(vditorRef)?.setValue(props.value);
     },
     ...bindValue,
     cache: {
-      enable: false
-    }
+      enable: false,
+    },
   })
 }
 
 const instance = {
-  getVditor: (): Vditor => vditorRef.value!
+  getVditor: (): Vditor => vditorRef.value!,
 }
 
 function destroy() {
   const vditorInstance = unref(vditorRef)
-  if (!vditorInstance) return
+  if (!vditorInstance)
+    return
   try {
     vditorInstance?.destroy?.()
-  } catch (error) {}
+  }
+  catch (error) {}
   vditorRef.value = null
   initedRef.value = false
 }
@@ -138,3 +138,7 @@ onMountedOrActivated(init)
 onBeforeUnmount(destroy)
 onDeactivated(destroy)
 </script>
+
+<template>
+  <div ref="wrapRef" />
+</template>

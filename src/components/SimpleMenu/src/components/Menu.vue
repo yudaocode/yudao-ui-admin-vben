@@ -1,15 +1,9 @@
-<template>
-  <ul :class="getClass">
-    <slot></slot>
-  </ul>
-</template>
-
 <script lang="ts" setup>
+import { computed, getCurrentInstance, nextTick, onMounted, provide, ref, watch, watchEffect } from 'vue'
 import type { SubMenuProvider } from './types'
-import { ref, computed, onMounted, watchEffect, watch, nextTick, getCurrentInstance, provide } from 'vue'
+import { createSimpleRootMenuContext } from './useSimpleMenuContext'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
-import { createSimpleRootMenuContext } from './useSimpleMenuContext'
 import mitt from '@/utils/mitt'
 
 defineOptions({ name: 'Menu' })
@@ -19,7 +13,7 @@ const props = defineProps({
   activeName: propTypes.oneOfType([propTypes.string, propTypes.number]),
   openNames: {
     type: Array as PropType<string[]>,
-    default: () => []
+    default: () => [],
   },
   accordion: propTypes.bool.def(true),
   width: propTypes.string.def('100%'),
@@ -28,8 +22,8 @@ const props = defineProps({
   collapse: propTypes.bool.def(true),
   activeSubMenuNames: {
     type: Array as PropType<(string | number)[]>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 const emit = defineEmits(['select', 'open-change'])
 
@@ -44,8 +38,8 @@ const { prefixCls } = useDesign('menu')
 const isRemoveAllPopup = ref(false)
 
 createSimpleRootMenuContext({
-  rootMenuEmitter: rootMenuEmitter,
-  activeName: currentActiveName
+  rootMenuEmitter,
+  activeName: currentActiveName,
 })
 
 const getClass = computed(() => {
@@ -55,8 +49,8 @@ const getClass = computed(() => {
     `${prefixCls}-${theme}`,
     `${prefixCls}-vertical`,
     {
-      [`${prefixCls}-collapse`]: props.collapse
-    }
+      [`${prefixCls}-collapse`]: props.collapse,
+    },
   ]
 })
 
@@ -65,9 +59,8 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
-  if (props.activeName) {
+  if (props.activeName)
     currentActiveName.value = props.activeName
-  }
 })
 
 watch(
@@ -76,7 +69,7 @@ watch(
     nextTick(() => {
       updateOpened()
     })
-  }
+  },
 )
 
 function updateOpened() {
@@ -84,13 +77,14 @@ function updateOpened() {
 }
 
 function addSubMenu(name: string) {
-  if (openedNames.value.includes(name)) return
+  if (openedNames.value.includes(name))
+    return
   openedNames.value.push(name)
   updateOpened()
 }
 
 function removeSubMenu(name: string) {
-  openedNames.value = openedNames.value.filter((item) => item !== name)
+  openedNames.value = openedNames.value.filter(item => item !== name)
   updateOpened()
 }
 
@@ -100,7 +94,8 @@ function removeAll() {
 }
 
 function sliceIndex(index: number) {
-  if (index === -1) return
+  if (index === -1)
+    return
   openedNames.value = openedNames.value.slice(0, index + 1)
   updateOpened()
 }
@@ -113,7 +108,7 @@ provide<SubMenuProvider>(`subMenu:${instance?.uid}`, {
   isRemoveAllPopup,
   sliceIndex,
   level: 0,
-  props: props as any
+  props: props as any,
 })
 
 onMounted(() => {
@@ -131,13 +126,21 @@ onMounted(() => {
   rootMenuEmitter.on('open-name-change', ({ name, opened }) => {
     if (opened && !openedNames.value.includes(name)) {
       openedNames.value.push(name)
-    } else if (!opened) {
-      const index = openedNames.value.findIndex((item) => item === name)
+    }
+    else if (!opened) {
+      const index = openedNames.value.findIndex(item => item === name)
       index !== -1 && openedNames.value.splice(index, 1)
     }
   })
 })
 </script>
+
+<template>
+  <ul :class="getClass">
+    <slot />
+  </ul>
+</template>
+
 <style lang="less">
 @import './menu.less';
 </style>

@@ -1,6 +1,5 @@
-import type { HeaderSetting } from '@/types/config'
-
 import { computed, unref } from 'vue'
+import type { HeaderSetting } from '@/types/config'
 
 import { useAppStore } from '@/store/modules/app'
 
@@ -81,6 +80,6 @@ export function useHeaderSetting() {
     getShowFullHeaderRef,
     getShowInsetHeaderRef,
     getUnFixedAndFull,
-    getHeaderBgColor
+    getHeaderBgColor,
   }
 }

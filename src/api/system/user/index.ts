@@ -39,7 +39,7 @@ export function getUserPage(params: UserPageReqVO) {
 
 // 查询用户详情
 export function getUser(id: number) {
-  return defHttp.get({ url: '/system/user/get?id=' + id })
+  return defHttp.get({ url: `/system/user/get?id=${id}` })
 }
 
 // 新增用户
@@ -54,7 +54,7 @@ export function updateUser(data: UserVO) {
 
 // 删除用户
 export function deleteUser(id: number) {
-  return defHttp.delete({ url: '/system/user/delete?id=' + id })
+  return defHttp.delete({ url: `/system/user/delete?id=${id}` })
 }
 
 // 导出用户
@@ -71,7 +71,7 @@ export function importUserTemplate() {
 export function resetUserPwd(id: number, password: string) {
   const data = {
     id,
-    password
+    password,
   }
   return defHttp.put({ url: '/system/user/update-password', data })
 }
@@ -80,7 +80,7 @@ export function resetUserPwd(id: number, password: string) {
 export function updateUserStatus(id: number, status: number) {
   const data = {
     id,
-    status
+    status,
   }
   return defHttp.put({ url: '/system/user/update-status', data })
 }

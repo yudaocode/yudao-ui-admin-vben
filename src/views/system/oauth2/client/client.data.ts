@@ -1,21 +1,22 @@
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
     title: '客户端编号',
     dataIndex: 'clientId',
-    width: 200
+    width: 200,
   },
   {
     title: '客户端密钥',
     dataIndex: 'secret',
-    width: 100
+    width: 100,
   },
   {
     title: '应用名',
     dataIndex: 'name',
-    width: 100
+    width: 100,
   },
   {
     title: '应用图标',
@@ -23,7 +24,7 @@ export const columns: BasicColumn[] = [
     width: 120,
     customRender: ({ text }) => {
       return useRender.renderImg(text)
-    }
+    },
   },
   {
     title: '状态',
@@ -31,7 +32,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
-    }
+    },
   },
   {
     title: '访问令牌的有效期',
@@ -39,7 +40,7 @@ export const columns: BasicColumn[] = [
     width: 100,
     customRender: ({ text }) => {
       return useRender.renderText(text, '秒')
-    }
+    },
   },
   {
     title: '刷新令牌的有效期',
@@ -47,7 +48,7 @@ export const columns: BasicColumn[] = [
     width: 100,
     customRender: ({ text }) => {
       return useRender.renderText(text, '秒')
-    }
+    },
   },
   {
     title: '授权类型',
@@ -55,7 +56,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderTags(text)
-    }
+    },
   },
   {
     title: '创建时间',
@@ -63,8 +64,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
@@ -72,17 +73,17 @@ export const searchFormSchema: FormSchema[] = [
     label: '应用名',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
     },
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 export const formSchema: FormSchema[] = [
@@ -90,25 +91,25 @@ export const formSchema: FormSchema[] = [
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '客户端编号',
     field: 'clientId',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '客户端密钥',
     field: 'secret',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '应用名',
     field: 'name',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '应用图标',
@@ -117,35 +118,35 @@ export const formSchema: FormSchema[] = [
     component: 'FileUpload',
     componentProps: {
       fileType: 'image',
-      maxCount: 1
-    }
+      maxCount: 1,
+    },
   },
   {
     label: '应用描述',
     field: 'description',
-    component: 'InputTextArea'
+    component: 'InputTextArea',
   },
   {
     label: '状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
-    }
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
+    },
   },
   {
     label: '访问令牌的有效期',
     field: 'accessTokenValiditySeconds',
     required: true,
     defaultValue: 0,
-    component: 'InputNumber'
+    component: 'InputNumber',
   },
   {
     label: '刷新令牌的有效期',
     field: 'refreshTokenValiditySeconds',
     required: true,
     defaultValue: 0,
-    component: 'InputNumber'
+    component: 'InputNumber',
   },
   {
     label: '授权类型',
@@ -154,8 +155,8 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE, 'string'),
-      mode: 'multiple'
-    }
+      mode: 'multiple',
+    },
   },
   {
     label: '授权范围',
@@ -163,8 +164,8 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
+      options: [],
+    },
   },
   {
     label: '自动授权范围',
@@ -172,8 +173,8 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
+      options: [],
+    },
   },
   {
     label: '可重定向的 URI 地址',
@@ -182,8 +183,8 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
+      options: [],
+    },
   },
   {
     label: '权限',
@@ -191,8 +192,8 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
+      options: [],
+    },
   },
   {
     label: '资源',
@@ -200,12 +201,12 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
+      options: [],
+    },
   },
   {
     label: '附加信息',
     field: 'additionalInformation',
-    component: 'InputTextArea'
-  }
+    component: 'InputTextArea',
+  },
 ]

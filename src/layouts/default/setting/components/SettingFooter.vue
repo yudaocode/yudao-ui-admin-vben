@@ -1,21 +1,3 @@
-<template>
-  <div :class="prefixCls">
-    <a-button type="primary" block @click="handleCopy">
-      <CopyOutlined class="mr-2" />
-      {{ t('layout.setting.copyBtn') }}
-    </a-button>
-
-    <a-button color="warning" block @click="handleResetSetting" class="my-3">
-      <RedoOutlined class="mr-2" />
-      {{ t('common.resetText') }}
-    </a-button>
-
-    <a-button color="error" block @click="handleClearAndRedo">
-      <RedoOutlined class="mr-2" />
-      {{ t('layout.setting.clearBtn') }}
-    </a-button>
-  </div>
-</template>
 <script lang="ts" setup>
 import { unref } from 'vue'
 
@@ -49,10 +31,10 @@ const appStore = useAppStore()
 
 function handleCopy() {
   const { isSuccessRef } = useCopyToClipboard(JSON.stringify(unref(appStore.getProjectConfig), null, 2))
-  unref(isSuccessRef) &&
-    createSuccessModal({
+  unref(isSuccessRef)
+    && createSuccessModal({
       title: t('layout.setting.operatingTitle'),
-      content: t('layout.setting.operatingContent')
+      content: t('layout.setting.operatingContent'),
     })
 }
 function handleResetSetting() {
@@ -64,7 +46,8 @@ function handleResetSetting() {
     updateColorWeak(colorWeak)
     updateGrayMode(grayMode)
     createMessage.success(t('layout.setting.resetSuccess'))
-  } catch (error: any) {
+  }
+  catch (error: any) {
     createMessage.error(error)
   }
 }
@@ -78,6 +61,26 @@ function handleClearAndRedo() {
   location.reload()
 }
 </script>
+
+<template>
+  <div :class="prefixCls">
+    <a-button type="primary" block @click="handleCopy">
+      <CopyOutlined class="mr-2" />
+      {{ t('layout.setting.copyBtn') }}
+    </a-button>
+
+    <a-button color="warning" block class="my-3" @click="handleResetSetting">
+      <RedoOutlined class="mr-2" />
+      {{ t('common.resetText') }}
+    </a-button>
+
+    <a-button color="error" block @click="handleClearAndRedo">
+      <RedoOutlined class="mr-2" />
+      {{ t('layout.setting.clearBtn') }}
+    </a-button>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-setting-footer';
 

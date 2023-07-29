@@ -10,5 +10,5 @@ export default {
   import: '导入',
   sync: '同步',
   cancel: '取消',
-  send: '发送'
+  send: '发送',
 }

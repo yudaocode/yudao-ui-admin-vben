@@ -1,5 +1,5 @@
+import type { App, Directive } from 'vue'
 import { createLoading } from '@/components/Loading'
-import type { Directive, App } from 'vue'
 
 const loadingDirective: Directive = {
   mounted(el, binding) {
@@ -13,23 +13,23 @@ const loadingDirective: Directive = {
         background,
         size: size || 'large',
         loading: !!binding.value,
-        absolute: !fullscreen
+        absolute: !fullscreen,
       },
-      fullscreen ? document.body : el
+      fullscreen ? document.body : el,
     )
     el.instance = instance
   },
   updated(el, binding) {
     const instance = el.instance
-    if (!instance) return
+    if (!instance)
+      return
     instance.setTip(el.getAttribute('loading-tip'))
-    if (binding.oldValue !== binding.value) {
+    if (binding.oldValue !== binding.value)
       instance.setLoading?.(binding.value && !instance.loading)
-    }
   },
   unmounted(el) {
     el?.instance?.close()
-  }
+  },
 }
 
 export function setupLoadingDirective(app: App<Element>) {

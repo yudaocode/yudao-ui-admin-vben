@@ -1,11 +1,3 @@
-<template>
-  <div class="anticon" :class="getAppLogoClass" @click="goHome">
-    <img src="@/assets/images/logo.png" />
-    <div class="ml-2 truncate md:opacity-100" :class="getTitleClass" v-show="showTitle">
-      {{ title }}
-    </div>
-  </div>
-</template>
 <script lang="ts" setup>
 import { computed, unref } from 'vue'
 import { useGlobSetting } from '@/hooks/setting'
@@ -20,7 +12,7 @@ const props = defineProps({
   // 是否显示标题
   showTitle: { type: Boolean, default: true },
   // 折叠菜单时也会显示标题
-  alwaysShowTitle: { type: Boolean }
+  alwaysShowTitle: { type: Boolean },
 })
 
 const { prefixCls } = useDesign('app-logo')
@@ -33,14 +25,24 @@ const getAppLogoClass = computed(() => [prefixCls, props.theme, { 'collapsed-sho
 const getTitleClass = computed(() => [
   `${prefixCls}__title`,
   {
-    'xs:opacity-0': !props.alwaysShowTitle
-  }
+    'xs:opacity-0': !props.alwaysShowTitle,
+  },
 ])
 
 function goHome() {
   go(PageEnum.BASE_HOME)
 }
 </script>
+
+<template>
+  <div class="anticon" :class="getAppLogoClass" @click="goHome">
+    <img src="@/assets/images/logo.png">
+    <div v-show="showTitle" class="ml-2 truncate md:opacity-100" :class="getTitleClass">
+      {{ title }}
+    </div>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-app-logo';
 
@@ -70,8 +72,8 @@ function goHome() {
   &__title {
     font-size: 16px;
     font-weight: 700;
-    transition: all 0.5s;
     line-height: normal;
+    transition: all 0.5s;
   }
 }
 </style>

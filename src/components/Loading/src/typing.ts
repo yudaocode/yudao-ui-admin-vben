@@ -1,4 +1,4 @@
-import { SizeEnum } from '@/enums/sizeEnum'
+import type { SizeEnum } from '@/enums/sizeEnum'
 
 export interface LoadingProps {
   tip: string

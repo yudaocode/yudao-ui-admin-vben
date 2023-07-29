@@ -31,7 +31,7 @@ export function getSimpleSmsChannels() {
 
 // 查询短信渠道详情
 export function getSmsChannel(id: number) {
-  return defHttp.get({ url: '/system/sms-channel/get?id=' + id })
+  return defHttp.get({ url: `/system/sms-channel/get?id=${id}` })
 }
 
 // 新增短信渠道
@@ -46,5 +46,5 @@ export function updateSmsChannel(data: SmsChannelVO) {
 
 // 删除短信渠道
 export function deleteSmsChannel(id: number) {
-  return defHttp.delete({ url: '/system/sms-channel/delete?id=' + id })
+  return defHttp.delete({ url: `/system/sms-channel/delete?id=${id}` })
 }

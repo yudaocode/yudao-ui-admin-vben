@@ -1,20 +1,20 @@
-import type { ErrorMessageMode } from '@/types/axios'
-
 import { h } from 'vue'
 import { defineStore } from 'pinia'
+import type { RouteRecordRaw } from 'vue-router'
+import type { ErrorMessageMode } from '@/types/axios'
+
 import { store } from '@/store'
 import { router } from '@/router'
-import { RoleEnum } from '@/enums/roleEnum'
+import type { RoleEnum } from '@/enums/roleEnum'
 import { PageEnum } from '@/enums/pageEnum'
-import { ROLES_KEY, ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
-import { RouteRecordRaw } from 'vue-router'
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, ROLES_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { getAuthCache, setAuthCache } from '@/utils/auth'
 import { doLogout, getUserInfo, loginApi, smsLogin } from '@/api/base/user'
-import { GetUserInfoModel, LoginParams, SmsLoginParams } from '@/api/base/model/userModel'
+import type { GetUserInfoModel, LoginParams, SmsLoginParams } from '@/api/base/model/userModel'
 
 import { isArray } from '@/utils/is'
 
@@ -39,7 +39,7 @@ export const useUserStore = defineStore('app-user', {
     // Whether the login expired
     sessionTimeout: false,
     // Last fetch time
-    lastUpdateTime: 0
+    lastUpdateTime: 0,
   }),
   getters: {
     getUserInfo(state): GetUserInfoModel {
@@ -59,15 +59,15 @@ export const useUserStore = defineStore('app-user', {
     },
     getLastUpdateTime(state): number {
       return state.lastUpdateTime
-    }
+    },
   },
   actions: {
     setAccessToken(info: string | undefined) {
-      this.accessToken = info ? info : '' // for null or undefined value
+      this.accessToken = info || '' // for null or undefined value
       setAuthCache(ACCESS_TOKEN_KEY, info)
     },
     setRefreshToken(info: string | undefined) {
-      this.refreshToken = info ? info : '' // for null or undefined value
+      this.refreshToken = info || '' // for null or undefined value
       setAuthCache(REFRESH_TOKEN_KEY, info)
     },
     setRoleList(roleList: RoleEnum[]) {
@@ -95,7 +95,7 @@ export const useUserStore = defineStore('app-user', {
       params: LoginParams & {
         goHome?: boolean
         mode?: ErrorMessageMode
-      }
+      },
     ): Promise<GetUserInfoModel | null> {
       try {
         const { goHome = true, mode, ...loginParams } = params
@@ -106,7 +106,8 @@ export const useUserStore = defineStore('app-user', {
         this.setAccessToken(accessToken)
         this.setRefreshToken(refreshToken)
         return this.afterLoginAction(goHome)
-      } catch (error) {
+      }
+      catch (error) {
         return Promise.reject(error)
       }
     },
@@ -114,7 +115,7 @@ export const useUserStore = defineStore('app-user', {
       params: SmsLoginParams & {
         goHome?: boolean
         mode?: ErrorMessageMode
-      }
+      },
     ): Promise<GetUserInfoModel | null> {
       try {
         const { goHome = true, mode, ...smsLoginParams } = params
@@ -124,26 +125,30 @@ export const useUserStore = defineStore('app-user', {
         this.setAccessToken(accessToken)
         this.setRefreshToken(refreshToken)
         return this.afterLoginAction(goHome)
-      } catch (error) {
+      }
+      catch (error) {
         return Promise.reject(error)
       }
     },
     async afterLoginAction(goHome?: boolean): Promise<GetUserInfoModel | null> {
-      if (!this.getAccessToken) return null
+      if (!this.getAccessToken)
+        return null
       // get user info
       const userInfo = await this.getUserInfoAction()
 
       const sessionTimeout = this.sessionTimeout
       if (sessionTimeout) {
         this.setSessionTimeout(false)
-      } else {
+      }
+      else {
         const permissionStore = usePermissionStore()
         if (!permissionStore.isDynamicAddedRoute) {
           const routes = await permissionStore.buildRoutesAction()
           routes.forEach((route) => {
             try {
               router.addRoute(route as unknown as RouteRecordRaw)
-            } catch (e) {}
+            }
+            catch (e) {}
           })
           router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw)
           permissionStore.setDynamicAddedRoute(true)
@@ -153,13 +158,15 @@ export const useUserStore = defineStore('app-user', {
       return userInfo
     },
     async getUserInfoAction(): Promise<GetUserInfoModel | null> {
-      if (!this.getAccessToken) return null
+      if (!this.getAccessToken)
+        return null
       const userInfo = await getUserInfo()
       const { roles = [] } = userInfo
       if (isArray(roles)) {
-        const roleList = roles.map((item) => item) as RoleEnum[]
+        const roleList = roles.map(item => item) as RoleEnum[]
         this.setRoleList(roleList)
-      } else {
+      }
+      else {
         userInfo.roles = []
         this.setRoleList([])
       }
@@ -173,7 +180,8 @@ export const useUserStore = defineStore('app-user', {
       if (this.getAccessToken) {
         try {
           await doLogout()
-        } catch {
+        }
+        catch {
           console.log('注销Token失败')
         }
       }
@@ -195,10 +203,10 @@ export const useUserStore = defineStore('app-user', {
         content: () => h('span', t('sys.app.logoutMessage')),
         onOk: async () => {
           await this.logout(true)
-        }
+        },
       })
-    }
-  }
+    },
+  },
 })
 
 // Need to be used outside the setup

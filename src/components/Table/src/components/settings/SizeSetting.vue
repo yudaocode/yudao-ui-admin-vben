@@ -1,13 +1,37 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { Dropdown, Menu, Tooltip } from 'ant-design-vue'
+import { ColumnHeightOutlined } from '@ant-design/icons-vue'
+import type { SizeType } from '../../types/table'
+import { useTableContext } from '../../hooks/useTableContext'
+import { useI18n } from '@/hooks/web/useI18n'
+import { getPopupContainer } from '@/utils'
+
+defineOptions({ name: 'SizeSetting' })
+
+const table = useTableContext()
+const { t } = useI18n()
+
+const selectedKeysRef = ref<SizeType[]>([table.getSize()])
+
+function handleTitleClick({ key }: { key: any }) {
+  selectedKeysRef.value = [key]
+  table.setProps({
+    size: key,
+  })
+}
+</script>
+
 <template>
   <Tooltip placement="top">
     <template #title>
       <span>{{ t('component.table.settingDens') }}</span>
     </template>
 
-    <Dropdown placement="bottom" :trigger="['click']" :getPopupContainer="getPopupContainer">
+    <Dropdown placement="bottom" :trigger="['click']" :get-popup-container="getPopupContainer">
       <ColumnHeightOutlined />
       <template #overlay>
-        <Menu @click="handleTitleClick" selectable v-model:selectedKeys="selectedKeysRef">
+        <Menu v-model:selectedKeys="selectedKeysRef" selectable @click="handleTitleClick">
           <Menu.Item key="default">
             <span>{{ t('component.table.settingDensDefault') }}</span>
           </Menu.Item>
@@ -22,26 +46,3 @@
     </Dropdown>
   </Tooltip>
 </template>
-<script lang="ts" setup>
-import type { SizeType } from '../../types/table'
-import { ref } from 'vue'
-import { Tooltip, Dropdown, Menu } from 'ant-design-vue'
-import { ColumnHeightOutlined } from '@ant-design/icons-vue'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useTableContext } from '../../hooks/useTableContext'
-import { getPopupContainer } from '@/utils'
-
-defineOptions({ name: 'SizeSetting' })
-
-const table = useTableContext()
-const { t } = useI18n()
-
-const selectedKeysRef = ref<SizeType[]>([table.getSize()])
-
-function handleTitleClick({ key }: { key: any }) {
-  selectedKeysRef.value = [key]
-  table.setProps({
-    size: key
-  })
-}
-</script>

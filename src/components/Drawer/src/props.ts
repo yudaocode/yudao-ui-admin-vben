@@ -1,4 +1,5 @@
 import { useI18n } from '@/hooks/web/useI18n'
+
 const { t } = useI18n()
 
 export const footerProps = {
@@ -19,8 +20,8 @@ export const footerProps = {
   showFooter: { type: Boolean },
   footerHeight: {
     type: [String, Number] as PropType<string | number>,
-    default: 60
-  }
+    default: 60,
+  },
 }
 export const basicProps = {
   isDetail: { type: Boolean },
@@ -31,12 +32,12 @@ export const basicProps = {
   loading: { type: Boolean },
   maskClosable: { type: Boolean, default: true },
   getContainer: {
-    type: [Object, String] as PropType<any>
+    type: [Object, String] as PropType<any>,
   },
   closeFunc: {
     type: [Function, Object] as PropType<any>,
-    default: null
+    default: null,
   },
   destroyOnClose: { type: Boolean },
-  ...footerProps
+  ...footerProps,
 }

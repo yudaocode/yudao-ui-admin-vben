@@ -1,25 +1,6 @@
-<template>
-  <BasicTitle v-if="!isDetail" :class="prefixCls">
-    <slot name="title"></slot>
-    {{ !$slots.title ? title : '' }}
-  </BasicTitle>
-
-  <div :class="[prefixCls, `${prefixCls}--detail`]" v-else>
-    <span :class="`${prefixCls}__twrap`">
-      <span @click="handleClose" v-if="showDetailBack">
-        <ArrowLeftOutlined :class="`${prefixCls}__back`" />
-      </span>
-      <span v-if="title">{{ title }}</span>
-    </span>
-
-    <span :class="`${prefixCls}__toolbar`">
-      <slot name="titleToolbar"></slot>
-    </span>
-  </div>
-</template>
 <script lang="ts" setup>
-import { BasicTitle } from '@/components/Basic'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
+import { BasicTitle } from '@/components/Basic'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 
@@ -28,7 +9,7 @@ defineOptions({ name: 'BasicDrawerHeader' })
 defineProps({
   isDetail: propTypes.bool,
   showDetailBack: propTypes.bool,
-  title: propTypes.string
+  title: propTypes.string,
 })
 const emit = defineEmits(['close'])
 
@@ -39,13 +20,33 @@ function handleClose() {
 }
 </script>
 
+<template>
+  <BasicTitle v-if="!isDetail" :class="prefixCls">
+    <slot name="title" />
+    {{ !$slots.title ? title : '' }}
+  </BasicTitle>
+
+  <div v-else :class="[prefixCls, `${prefixCls}--detail`]">
+    <span :class="`${prefixCls}__twrap`">
+      <span v-if="showDetailBack" @click="handleClose">
+        <ArrowLeftOutlined :class="`${prefixCls}__back`" />
+      </span>
+      <span v-if="title">{{ title }}</span>
+    </span>
+
+    <span :class="`${prefixCls}__toolbar`">
+      <slot name="titleToolbar" />
+    </span>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-drawer-header';
 @footer-height: 60px;
 .@{prefix-cls} {
   display: flex;
-  height: 100%;
   align-items: center;
+  height: 100%;
 
   &__back {
     padding: 0 12px;

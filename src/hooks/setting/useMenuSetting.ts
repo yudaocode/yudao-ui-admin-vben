@@ -1,6 +1,5 @@
+import { computed, ref, unref } from 'vue'
 import type { MenuSetting } from '@/types/config'
-
-import { computed, unref, ref } from 'vue'
 
 import { useAppStore } from '@/store/modules/app'
 
@@ -63,9 +62,8 @@ export function useMenuSetting() {
   })
 
   const getShowHeaderTrigger = computed(() => {
-    if (unref(getMenuType) === MenuTypeEnum.TOP_MENU || !unref(getShowMenu) || unref(getMenuHidden)) {
+    if (unref(getMenuType) === MenuTypeEnum.TOP_MENU || !unref(getShowMenu) || unref(getMenuHidden))
       return false
-    }
 
     return unref(getTrigger) === TriggerEnum.HEADER
   })
@@ -83,9 +81,9 @@ export function useMenuSetting() {
   })
 
   const getRealWidth = computed(() => {
-    if (unref(getIsMixSidebar)) {
+    if (unref(getIsMixSidebar))
       return unref(getCollapsed) && !unref(getMixSideFixed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
-    }
+
     return unref(getCollapsed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
   })
 
@@ -95,13 +93,13 @@ export function useMenuSetting() {
   })
 
   const getCalcContentWidth = computed(() => {
-    const width =
-      unref(getIsTopMenu) || !unref(getShowMenu) || (unref(getSplit) && unref(getMenuHidden))
+    const width
+      = unref(getIsTopMenu) || !unref(getShowMenu) || (unref(getSplit) && unref(getMenuHidden))
         ? 0
         : unref(getIsMixSidebar)
-        ? (unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH) +
-          (unref(getMixSideFixed) && unref(mixSideHasChildren) ? unref(getRealWidth) : 0)
-        : unref(getRealWidth)
+          ? (unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH)
+          + (unref(getMixSideFixed) && unref(mixSideHasChildren) ? unref(getRealWidth) : 0)
+          : unref(getRealWidth)
 
     return `calc(100% - ${unref(width)}px)`
   })
@@ -113,7 +111,7 @@ export function useMenuSetting() {
 
   function toggleCollapsed() {
     setMenuSetting({
-      collapsed: !unref(getCollapsed)
+      collapsed: !unref(getCollapsed),
     })
   }
   return {
@@ -150,6 +148,6 @@ export function useMenuSetting() {
     getCloseMixSidebarOnChange,
     getMixSideTrigger,
     getMixSideFixed,
-    mixSideHasChildren
+    mixSideHasChildren,
   }
 }

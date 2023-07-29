@@ -788,6 +788,6 @@ export default {
     'zhihu-outlined',
     'zhihu-square-filled',
     'zoom-in-outlined',
-    'zoom-out-outlined'
-  ]
+    'zoom-out-outlined',
+  ],
 }

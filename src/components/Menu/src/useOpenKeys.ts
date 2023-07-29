@@ -1,22 +1,21 @@
+import type { Ref } from 'vue'
+import { computed, toRaw, unref } from 'vue'
+import { uniq } from 'lodash-es'
+import { useTimeoutFn } from '@vueuse/core'
+import type { MenuState } from './types'
 import { MenuModeEnum } from '@/enums/menuEnum'
 import type { Menu as MenuType } from '@/router/types'
-import type { MenuState } from './types'
 
-import { computed, Ref, toRaw } from 'vue'
-
-import { unref } from 'vue'
-import { uniq } from 'lodash-es'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { getAllParentPath } from '@/router/helper/menuHelper'
-import { useTimeoutFn } from '@vueuse/core'
 
 export function useOpenKeys(menuState: MenuState, menus: Ref<MenuType[]>, mode: Ref<MenuModeEnum>, accordion: Ref<boolean>) {
   const { getCollapsed, getIsMixSidebar } = useMenuSetting()
 
   async function setOpenKeys(path: string) {
-    if (mode.value === MenuModeEnum.HORIZONTAL) {
+    if (mode.value === MenuModeEnum.HORIZONTAL)
       return
-    }
+
     const native = unref(getIsMixSidebar)
     const handle = () => {
       const menuList = toRaw(menus.value)
@@ -24,17 +23,15 @@ export function useOpenKeys(menuState: MenuState, menus: Ref<MenuType[]>, mode: 
         menuState.openKeys = []
         return
       }
-      if (!unref(accordion)) {
+      if (!unref(accordion))
         menuState.openKeys = uniq([...menuState.openKeys, ...getAllParentPath(menuList, path)])
-      } else {
+      else
         menuState.openKeys = getAllParentPath(menuList, path)
-      }
     }
-    if (native) {
+    if (native)
       handle()
-    } else {
+    else
       useTimeoutFn(handle, 16)
-    }
   }
 
   const getOpenKeys = computed(() => {
@@ -54,23 +51,23 @@ export function useOpenKeys(menuState: MenuState, menus: Ref<MenuType[]>, mode: 
   function handleOpenChange(openKeys: string[]) {
     if (unref(mode) === MenuModeEnum.HORIZONTAL || !unref(accordion) || unref(getIsMixSidebar)) {
       menuState.openKeys = openKeys
-    } else {
+    }
+    else {
       // const menuList = toRaw(menus.value);
       // getAllParentPath(menuList, path);
       const rootSubMenuKeys: string[] = []
       for (const { children, path } of unref(menus)) {
-        if (children && children.length > 0) {
+        if (children && children.length > 0)
           rootSubMenuKeys.push(path)
-        }
       }
       if (!unref(getCollapsed)) {
-        const latestOpenKey = openKeys.find((key) => menuState.openKeys.indexOf(key) === -1)
-        if (rootSubMenuKeys.indexOf(latestOpenKey as string) === -1) {
+        const latestOpenKey = openKeys.find(key => !menuState.openKeys.includes(key))
+        if (!rootSubMenuKeys.includes(latestOpenKey as string))
           menuState.openKeys = openKeys
-        } else {
+        else
           menuState.openKeys = latestOpenKey ? [latestOpenKey] : []
-        }
-      } else {
+      }
+      else {
         menuState.collapsedOpenKeys = openKeys
       }
     }

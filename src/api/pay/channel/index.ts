@@ -42,11 +42,11 @@ export function getChannelPage(params: ChannelPageReqVO) {
 // 查询详情支付渠道
 export function getChannel(merchantId: number, appId: string, code: string) {
   const params = {
-    merchantId: merchantId,
-    appId: appId,
-    code: code
+    merchantId,
+    appId,
+    code,
   }
-  return defHttp.get({ url: '/pay/channel/get-channel', params: params })
+  return defHttp.get({ url: '/pay/channel/get-channel', params })
 }
 
 // 新增支付渠道
@@ -61,7 +61,7 @@ export function updateChannel(data: ChannelVO) {
 
 // 删除支付渠道
 export function deleteChannel(id: number) {
-  return defHttp.delete({ url: '/pay/channel/delete?id=' + id })
+  return defHttp.delete({ url: `/pay/channel/delete?id=${id}` })
 }
 
 // 导出支付渠道

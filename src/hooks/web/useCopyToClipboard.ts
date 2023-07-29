@@ -1,6 +1,7 @@
 import { ref, watch } from 'vue'
 
 import { isDef } from '@/utils/is'
+
 interface Options {
   target?: HTMLElement
 }
@@ -17,7 +18,7 @@ export function useCopyToClipboard(initial?: string) {
         isSuccessRef.value = copyTextToClipboard(str)
       }
     },
-    { immediate: !!initial, flush: 'sync' }
+    { immediate: !!initial, flush: 'sync' },
   )
 
   return { clipboardRef, isSuccessRef, copiedRef }
@@ -37,9 +38,8 @@ export function copyTextToClipboard(input: string, { target = document.body }: O
 
   const selection = document.getSelection()
   let originalRange
-  if (selection && selection.rangeCount > 0) {
+  if (selection && selection.rangeCount > 0)
     originalRange = selection.getRangeAt(0)
-  }
 
   target.append(element)
   element.select()
@@ -50,7 +50,8 @@ export function copyTextToClipboard(input: string, { target = document.body }: O
   let isSuccess = false
   try {
     isSuccess = document.execCommand('copy')
-  } catch (e: any) {
+  }
+  catch (e: any) {
     throw new Error(e)
   }
 

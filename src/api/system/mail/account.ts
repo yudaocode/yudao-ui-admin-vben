@@ -12,12 +12,12 @@ export function updateMailAccount(data) {
 
 // 删除邮箱账号
 export function deleteMailAccount(id: number) {
-  return defHttp.delete({ url: '/system/mail-account/delete?id=' + id })
+  return defHttp.delete({ url: `/system/mail-account/delete?id=${id}` })
 }
 
 // 获得邮箱账号
 export function getMailAccount(id: number) {
-  return defHttp.get({ url: '/system/mail-account/get?id=' + id })
+  return defHttp.get({ url: `/system/mail-account/get?id=${id}` })
 }
 
 // 获得邮箱账号分页

@@ -1,9 +1,9 @@
-export type UserLoginVO = {
+export interface UserLoginVO {
   username: string
   password: string
   captchaVerification: string
 }
 
-export type TentantNameVO = {
+export interface TentantNameVO {
   id: number
 }

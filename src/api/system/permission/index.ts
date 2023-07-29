@@ -18,7 +18,7 @@ export interface PermissionAssignRoleDataScopeReqVO {
 
 // 查询角色拥有的菜单权限
 export function listRoleMenus(roleId: number) {
-  return defHttp.get({ url: '/system/permission/list-role-resources?roleId=' + roleId })
+  return defHttp.get({ url: `/system/permission/list-role-resources?roleId=${roleId}` })
 }
 
 // 赋予角色菜单权限
@@ -33,7 +33,7 @@ export function assignRoleDataScope(data: PermissionAssignRoleDataScopeReqVO) {
 
 // 查询用户拥有的角色数组
 export function listUserRoles(userId: number) {
-  return defHttp.get({ url: '/system/permission/list-user-roles?userId=' + userId })
+  return defHttp.get({ url: `/system/permission/list-user-roles?userId=${userId}` })
 }
 
 // 赋予用户角色

@@ -12,12 +12,12 @@ export function updateNotifyTemplate(data) {
 
 // 删除站内信模板
 export function deleteNotifyTemplate(id: number) {
-  return defHttp.delete({ url: '/system/notify-template/delete?id=' + id })
+  return defHttp.delete({ url: `/system/notify-template/delete?id=${id}` })
 }
 
 // 获得站内信模板
 export function getNotifyTemplate(id: number) {
-  return defHttp.get({ url: '/system/notify-template/get?id=' + id })
+  return defHttp.get({ url: `/system/notify-template/get?id=${id}` })
 }
 
 // 获得站内信模板分页
@@ -35,7 +35,7 @@ export function exportNotifyTemplateExcel(params) {
   return defHttp.download({ url: '/system/notify-template/export-excel', params }, '导出站内信模板.xls')
 }
 
-export type SendNotifyParam = {
+export interface SendNotifyParam {
   userId: number
   templateCode: string
   templateParams: {
@@ -43,7 +43,7 @@ export type SendNotifyParam = {
   }
 }
 
-export type NotifyTemplate = {
+export interface NotifyTemplate {
   name: string
   code: string
   type: number

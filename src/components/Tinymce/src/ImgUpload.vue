@@ -1,12 +1,3 @@
-<template>
-  <div :class="[prefixCls, { fullscreen }]">
-    <Upload name="file" multiple @change="handleChange" :action="uploadUrl" :showUploadList="false" accept=".jpg,.jpeg,.gif,.png,.webp">
-      <a-button type="primary" v-bind="{ ...getButtonProps }">
-        {{ t('component.upload.imgUpload') }}
-      </a-button>
-    </Upload>
-  </div>
-</template>
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Upload } from 'ant-design-vue'
@@ -18,12 +9,12 @@ defineOptions({ name: 'TinymceImageUpload' })
 
 const props = defineProps({
   fullscreen: {
-    type: Boolean
+    type: Boolean,
   },
   disabled: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 const emit = defineEmits(['uploading', 'done', 'error'])
 let uploading = false
@@ -35,7 +26,7 @@ const { prefixCls } = useDesign('tinymce-img-upload')
 const getButtonProps = computed(() => {
   const { disabled } = props
   return {
-    disabled
+    disabled,
   }
 })
 
@@ -50,15 +41,28 @@ function handleChange(info: Recordable) {
       emit('uploading', name)
       uploading = true
     }
-  } else if (status === 'done') {
+  }
+  else if (status === 'done') {
     emit('done', name, url)
     uploading = false
-  } else if (status === 'error') {
+  }
+  else if (status === 'error') {
     emit('error')
     uploading = false
   }
 }
 </script>
+
+<template>
+  <div :class="[prefixCls, { fullscreen }]">
+    <Upload name="file" multiple :action="uploadUrl" :show-upload-list="false" accept=".jpg,.jpeg,.gif,.png,.webp" @change="handleChange">
+      <a-button type="primary" v-bind="{ ...getButtonProps }">
+        {{ t('component.upload.imgUpload') }}
+      </a-button>
+    </Upload>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-tinymce-img-upload';
 

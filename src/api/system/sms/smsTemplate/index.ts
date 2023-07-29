@@ -50,7 +50,7 @@ export function getSmsTemplatePage(params: SmsTemplatePageReqVO) {
 
 // 查询短信模板详情
 export function getSmsTemplate(id: number) {
-  return defHttp.get({ url: '/system/sms-template/get?id=' + id })
+  return defHttp.get({ url: `/system/sms-template/get?id=${id}` })
 }
 
 // 新增短信模板
@@ -65,11 +65,11 @@ export function updateSmsTemplate(data: SmsTemplateVO) {
 
 // 删除短信模板
 export function deleteSmsTemplate(id: number) {
-  return defHttp.delete({ url: '/system/sms-template/delete?id=' + id })
+  return defHttp.delete({ url: `/system/sms-template/delete?id=${id}` })
 }
 
 // 邮件模板
-export type SmsTemplate = {
+export interface SmsTemplate {
   name: string // 标题
   code: string // 编码
   accountId: number

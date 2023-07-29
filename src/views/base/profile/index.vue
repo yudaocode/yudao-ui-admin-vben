@@ -1,7 +1,19 @@
+<script setup lang="ts">
+import { TabPane, Tabs } from 'ant-design-vue'
+import { settingList } from './data'
+import BaseSetting from './BaseSetting.vue'
+import SecureSetting from './SecureSetting.vue'
+import AccountBind from './AccountBind.vue'
+import MsgNotify from './MsgNotify.vue'
+import { ScrollContainer } from '@/components/Container/index'
+
+const tabBarStyle = { width: '220px' }
+</script>
+
 <template>
   <ScrollContainer>
     <div ref="wrapperRef" class="account-setting">
-      <Tabs tab-position="left" :tabBarStyle="tabBarStyle">
+      <Tabs tab-position="left" :tab-bar-style="tabBarStyle">
         <template v-for="item in settingList" :key="item.key">
           <TabPane :tab="item.name">
             <BaseSetting v-if="item.component == 'BaseSetting'" />
@@ -14,16 +26,7 @@
     </div>
   </ScrollContainer>
 </template>
-<script setup lang="ts">
-import { Tabs, TabPane } from 'ant-design-vue'
-import { ScrollContainer } from '@/components/Container/index'
-import { settingList } from './data'
-import BaseSetting from './BaseSetting.vue'
-import SecureSetting from './SecureSetting.vue'
-import AccountBind from './AccountBind.vue'
-import MsgNotify from './MsgNotify.vue'
-const tabBarStyle = { width: '220px' }
-</script>
+
 <style lang="less">
 .account-setting {
   margin: 12px;

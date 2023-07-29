@@ -1,4 +1,4 @@
-import { IBaseFormAttrs } from './formItemPropsConfig'
+import type { IBaseFormAttrs } from './formItemPropsConfig'
 
 interface IBaseComponentProps {
   [key: string]: IBaseFormAttrs[]
@@ -10,7 +10,7 @@ export const baseComponentControlAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
   {
     // 没有disabled属性的控件不能作为form控件
     name: 'disabled',
-    label: '禁用'
+    label: '禁用',
   },
   {
     // 没有disabled属性的控件不能作为form控件
@@ -29,8 +29,8 @@ export const baseComponentControlAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
       'TreeSelect',
       'Switch',
       'AutoComplete',
-      'Slider'
-    ]
+      'Slider',
+    ],
   },
   {
     name: 'allowClear',
@@ -46,65 +46,65 @@ export const baseComponentControlAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
       'TimePicker',
       'Cascader',
       'TreeSelect',
-      'AutoComplete'
-    ]
+      'AutoComplete',
+    ],
   },
   { name: 'fullscreen', label: '全屏', includes: ['Calendar'] },
   {
     name: 'showSearch',
     label: '可搜索',
-    includes: ['Select', 'TreeSelect', 'Cascader', 'Transfer']
+    includes: ['Select', 'TreeSelect', 'Cascader', 'Transfer'],
   },
   {
     name: 'showTime',
     label: '显示时间',
-    includes: ['DatePicker', 'RangePicker', 'MonthPicker']
+    includes: ['DatePicker', 'RangePicker', 'MonthPicker'],
   },
   {
     name: 'range',
     label: '双向滑动',
-    includes: []
+    includes: [],
   },
   {
     name: 'allowHalf',
     label: '允许半选',
-    includes: ['Rate']
+    includes: ['Rate'],
   },
   {
     name: 'multiple',
     label: '多选',
-    includes: ['Select', 'TreeSelect', 'Upload']
+    includes: ['Select', 'TreeSelect', 'Upload'],
   },
   {
     name: 'directory',
     label: '文件夹',
-    includes: ['Upload']
+    includes: ['Upload'],
   },
   {
     name: 'withCredentials',
     label: '携带cookie',
-    includes: ['Upload']
+    includes: ['Upload'],
   },
   {
     name: 'bordered',
     label: '是否有边框',
-    includes: ['Select', 'Input']
+    includes: ['Select', 'Input'],
   },
   {
     name: 'defaultActiveFirstOption',
     label: '高亮第一个选项',
     component: 'Checkbox',
-    includes: ['Select', 'AutoComplete']
+    includes: ['Select', 'AutoComplete'],
   },
   {
     name: 'dropdownMatchSelectWidth',
     label: '下拉菜单和选择器同宽',
     component: 'Checkbox',
-    includes: ['Select', 'TreeSelect', 'AutoComplete']
-  }
+    includes: ['Select', 'TreeSelect', 'AutoComplete'],
+  },
 ]
 
-//共用属性
+// 共用属性
 export const baseComponentCommonAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
   {
     name: 'size',
@@ -114,26 +114,26 @@ export const baseComponentCommonAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
       options: [
         {
           label: '默认',
-          value: 'default'
+          value: 'default',
         },
         {
           label: '大',
-          value: 'large'
+          value: 'large',
         },
         {
           label: '小',
-          value: 'small'
-        }
-      ]
+          value: 'small',
+        },
+      ],
     },
-    includes: ['InputNumber', 'Input', 'Cascader', 'Button']
+    includes: ['InputNumber', 'Input', 'Cascader', 'Button'],
   },
   {
     name: 'placeholder',
     label: '占位符',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入占位符'
+      placeholder: '请输入占位符',
     },
     includes: [
       'AutoComplete',
@@ -146,16 +146,16 @@ export const baseComponentCommonAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
       'MonthPicker',
       'TimePicker',
       'TreeSelect',
-      'Cascader'
-    ]
+      'Cascader',
+    ],
   },
   {
     name: 'style',
     label: '样式',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入样式'
-    }
+      placeholder: '请输入样式',
+    },
   },
   {
     name: 'open',
@@ -165,20 +165,20 @@ export const baseComponentCommonAttrs: Omit<IBaseFormAttrs, 'tag'>[] = [
       options: [
         {
           label: '默认',
-          value: undefined
+          value: undefined,
         },
         {
           label: '是',
-          value: true
+          value: true,
         },
         {
           label: '否',
-          value: false
-        }
-      ]
+          value: false,
+        },
+      ],
     },
-    includes: ['Select', 'AutoComplete']
-  }
+    includes: ['Select', 'AutoComplete'],
+  },
 ]
 
 const componentAttrs: IBaseComponentProps = {
@@ -188,14 +188,14 @@ const componentAttrs: IBaseComponentProps = {
       label: '自动回填',
       component: 'Switch',
       componentProps: {
-        span: 8
-      }
+        span: 8,
+      },
     },
     {
       name: 'defaultOpen',
       label: '是否默认展开下拉菜单',
-      component: 'Checkbox'
-    }
+      component: 'Checkbox',
+    },
   ],
   IconPicker: [
     {
@@ -205,11 +205,11 @@ const componentAttrs: IBaseComponentProps = {
       componentProps: {
         options: [
           { label: 'ICONIFY', value: null },
-          { label: 'SVG', value: 'svg' }
+          { label: 'SVG', value: 'svg' },
           // { label: '组合', value: 'combobox' },
-        ]
-      }
-    }
+        ],
+      },
+    },
   ],
 
   // https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input#%3Cinput%3E_types
@@ -241,9 +241,9 @@ const componentAttrs: IBaseComponentProps = {
           { value: 'checkbox', label: '复选框' },
           { value: 'color', label: '颜色' },
           { value: 'image', label: '图像' },
-          { value: 'hidden', label: '隐藏' }
-        ]
-      }
+          { value: 'hidden', label: '隐藏' },
+        ],
+      },
     },
     {
       name: 'defaultValue',
@@ -251,8 +251,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'prefix',
@@ -260,8 +260,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入前缀'
-      }
+        placeholder: '请输入前缀',
+      },
     },
     {
       name: 'suffix',
@@ -269,8 +269,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入后缀'
-      }
+        placeholder: '请输入后缀',
+      },
     },
     {
       name: 'addonBefore',
@@ -278,8 +278,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入前置标签'
-      }
+        placeholder: '请输入前置标签',
+      },
     },
     {
       name: 'addonAfter',
@@ -287,8 +287,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入后置标签'
-      }
+        placeholder: '请输入后置标签',
+      },
     },
     {
       name: 'maxLength',
@@ -296,9 +296,9 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         type: 'text',
-        placeholder: '请输入最大长度'
-      }
-    }
+        placeholder: '请输入最大长度',
+      },
+    },
   ],
 
   InputNumber: [
@@ -307,8 +307,8 @@ const componentAttrs: IBaseComponentProps = {
       label: '默认值',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'min',
@@ -316,8 +316,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         type: 'text',
-        placeholder: '请输入最小值'
-      }
+        placeholder: '请输入最小值',
+      },
     },
     {
       name: 'max',
@@ -325,8 +325,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         type: 'text',
-        placeholder: '请输入最大值'
-      }
+        placeholder: '请输入最大值',
+      },
     },
     {
       name: 'precision',
@@ -334,8 +334,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         type: 'text',
-        placeholder: '请输入最大值'
-      }
+        placeholder: '请输入最大值',
+      },
     },
     {
       name: 'step',
@@ -343,14 +343,14 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         type: 'text',
-        placeholder: '请输入步长'
-      }
+        placeholder: '请输入步长',
+      },
     },
     {
       name: 'decimalSeparator',
       label: '小数点',
       component: 'Input',
-      componentProps: { type: 'text', placeholder: '请输入小数点' }
+      componentProps: { type: 'text', placeholder: '请输入小数点' },
     },
     {
       name: 'addonBefore',
@@ -358,8 +358,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入前置标签'
-      }
+        placeholder: '请输入前置标签',
+      },
     },
     {
       name: 'addonAfter',
@@ -367,29 +367,29 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入后置标签'
-      }
+        placeholder: '请输入后置标签',
+      },
     },
     {
       name: 'controls',
       label: '是否显示增减按钮',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'keyboard',
       label: '是否启用键盘快捷行为',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'stringMode',
       label: '字符值模式',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'bordered',
       label: '是否有边框',
-      component: 'Checkbox'
-    }
+      component: 'Checkbox',
+    },
   ],
   InputTextArea: [
     {
@@ -398,24 +398,24 @@ const componentAttrs: IBaseComponentProps = {
       component: 'Input',
       componentProps: {
         type: 'text',
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'maxlength',
       label: '最大长度',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入最大长度'
-      }
+        placeholder: '请输入最大长度',
+      },
     },
     {
       name: 'minlength',
       label: '最小长度',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入最小长度'
-      }
+        placeholder: '请输入最小长度',
+      },
     },
     {
       name: 'cols',
@@ -423,8 +423,8 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入可见列数',
-        min: 0
-      }
+        min: 0,
+      },
     },
     {
       name: 'rows',
@@ -432,36 +432,36 @@ const componentAttrs: IBaseComponentProps = {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入可见行数',
-        min: 0
-      }
+        min: 0,
+      },
     },
     {
       name: 'minlength',
       label: '最小长度',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入最小长度'
-      }
+        placeholder: '请输入最小长度',
+      },
     },
     {
       name: 'autosize',
       label: '自适应内容高度',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'showCount',
       label: '是否展示字数',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'readonly',
       label: '是否只读',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'spellcheck',
       label: '读写检查',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'autocomplete',
@@ -471,9 +471,9 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           { label: '正常', value: null },
           { label: '开', value: 'on' },
-          { label: '关', value: 'off' }
-        ]
-      }
+          { label: '关', value: 'off' },
+        ],
+      },
     },
     {
       name: 'autocorrect',
@@ -483,10 +483,10 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           { label: '正常', value: null },
           { label: '开', value: 'on' },
-          { label: '关', value: 'off' }
-        ]
-      }
-    }
+          { label: '关', value: 'off' },
+        ],
+      },
+    },
   ],
   Select: [
     {
@@ -497,38 +497,38 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           { label: '单选', value: null },
           { label: '多选', value: 'multiple' },
-          { label: '标签', value: 'tags' }
+          { label: '标签', value: 'tags' },
           // { label: '组合', value: 'combobox' },
-        ]
-      }
+        ],
+      },
     },
     {
       name: 'autoClearSearchValue',
       label: '是否在选中项后清空搜索框',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'labelInValue',
       label: '选项的label包装到value中',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'showArrow',
       label: '显示下拉小箭头',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'defaultOpen',
       label: '默认展开下拉菜单',
-      component: 'Checkbox'
-    }
+      component: 'Checkbox',
+    },
   ],
   Checkbox: [
     {
       name: 'indeterminate',
       label: '设置indeterminate状态',
-      component: 'Checkbox'
-    }
+      component: 'Checkbox',
+    },
   ],
   CheckboxGroup: [],
   RadioGroup: [
@@ -537,8 +537,8 @@ const componentAttrs: IBaseComponentProps = {
       label: '默认值',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'buttonStyle',
@@ -548,14 +548,14 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: 'outline',
-            value: 'outline'
+            value: 'outline',
           },
           {
             label: 'solid',
-            value: 'solid'
-          }
-        ]
-      }
+            value: 'solid',
+          },
+        ],
+      },
     },
     {
       name: 'optionType',
@@ -565,18 +565,18 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: '默认',
-            value: 'default'
+            value: 'default',
           },
           {
             label: '按钮',
-            value: 'button'
-          }
-        ]
-        //根据其它选项的值更新自身控件配置值
-        //compProp当前组件的属性，
-        //configProps，当且组件的所有配置选项
-        //self,当前配置的componentProps属性
-        //返回真值进行更新
+            value: 'button',
+          },
+        ],
+        // 根据其它选项的值更新自身控件配置值
+        // compProp当前组件的属性，
+        // configProps，当且组件的所有配置选项
+        // self,当前配置的componentProps属性
+        // 返回真值进行更新
         // _propsFunc: (compProp, configProps, self) => {
         //   console.log("i'm called");
         //   console.log(compProp, configProps, self);
@@ -594,7 +594,7 @@ const componentAttrs: IBaseComponentProps = {
 
         //   // return prop.optionType == 'button';
         // },
-      }
+      },
     },
     {
       name: 'size',
@@ -604,19 +604,19 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: '默认',
-            value: 'default'
+            value: 'default',
           },
           {
             label: '大',
-            value: 'large'
+            value: 'large',
           },
           {
             label: '小',
-            value: 'small'
-          }
-        ]
-      }
-    }
+            value: 'small',
+          },
+        ],
+      },
+    },
   ],
   DatePicker: [
     {
@@ -624,17 +624,17 @@ const componentAttrs: IBaseComponentProps = {
       label: '展示格式（format）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM-DD'
-      }
+        placeholder: 'YYYY-MM-DD',
+      },
     },
     {
       name: 'valueFormat',
       label: '绑定值格式（valueFormat）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM-DD'
-      }
-    }
+        placeholder: 'YYYY-MM-DD',
+      },
+    },
   ],
   RangePicker: [
     {
@@ -644,31 +644,31 @@ const componentAttrs: IBaseComponentProps = {
         {
           name: '',
           label: '',
-          component: 'Input'
+          component: 'Input',
         },
         {
           name: '',
           label: '',
-          component: 'Input'
-        }
-      ]
+          component: 'Input',
+        },
+      ],
     },
     {
       name: 'format',
       label: '展示格式（format）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM-DD HH:mm:ss'
-      }
+        placeholder: 'YYYY-MM-DD HH:mm:ss',
+      },
     },
     {
       name: 'valueFormat',
       label: '绑定值格式（valueFormat）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM-DD'
-      }
-    }
+        placeholder: 'YYYY-MM-DD',
+      },
+    },
   ],
   MonthPicker: [
     {
@@ -676,17 +676,17 @@ const componentAttrs: IBaseComponentProps = {
       label: '展示格式（format）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM'
-      }
+        placeholder: 'YYYY-MM',
+      },
     },
     {
       name: 'valueFormat',
       label: '绑定值格式（valueFormat）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM'
-      }
-    }
+        placeholder: 'YYYY-MM',
+      },
+    },
   ],
   TimePicker: [
     {
@@ -694,17 +694,17 @@ const componentAttrs: IBaseComponentProps = {
       label: '展示格式（format）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM'
-      }
+        placeholder: 'YYYY-MM',
+      },
     },
     {
       name: 'valueFormat',
       label: '绑定值格式（valueFormat）',
       component: 'Input',
       componentProps: {
-        placeholder: 'YYYY-MM'
-      }
-    }
+        placeholder: 'YYYY-MM',
+      },
+    },
   ],
   Slider: [
     {
@@ -712,32 +712,32 @@ const componentAttrs: IBaseComponentProps = {
       label: '默认值',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'min',
       label: '最小值',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入最小值'
-      }
+        placeholder: '请输入最小值',
+      },
     },
     {
       name: 'max',
       label: '最大值',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入最大值'
-      }
+        placeholder: '请输入最大值',
+      },
     },
     {
       name: 'step',
       label: '步长',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入步长'
-      }
+        placeholder: '请输入步长',
+      },
     },
     {
       name: 'tooltipPlacement',
@@ -756,40 +756,40 @@ const componentAttrs: IBaseComponentProps = {
           { value: 'leftTop', label: '左下' },
           { value: 'leftBottom', label: '左上' },
           { value: 'rightTop', label: '右下' },
-          { value: 'rightBottom', label: '右上' }
-        ]
-      }
+          { value: 'rightBottom', label: '右上' },
+        ],
+      },
     },
     {
       name: 'tooltipVisible',
       label: '始终显示Tooltip',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'dots',
       label: '只能拖拽到刻度上',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'range',
       label: '双滑块模式',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'reverse',
       label: '反向坐标轴',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'vertical',
       label: '垂直方向',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'included',
       label: '值为包含关系',
-      component: 'Checkbox'
-    }
+      component: 'Checkbox',
+    },
   ],
   Rate: [
     {
@@ -797,25 +797,25 @@ const componentAttrs: IBaseComponentProps = {
       label: '默认值',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'character',
       label: '自定义字符',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入自定义字符'
-      }
+        placeholder: '请输入自定义字符',
+      },
     },
     {
       name: 'count',
       label: 'start 总数',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入自定义字符'
-      }
-    }
+        placeholder: '请输入自定义字符',
+      },
+    },
   ],
   Switch: [
     {
@@ -823,37 +823,37 @@ const componentAttrs: IBaseComponentProps = {
       label: '选中时的内容',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入选中时的内容'
-      }
+        placeholder: '请输入选中时的内容',
+      },
     },
     {
       name: 'checkedValue',
       label: '选中时的值',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入选中时的值'
-      }
+        placeholder: '请输入选中时的值',
+      },
     },
     {
       name: 'unCheckedChildren',
       label: '非选中时的内容',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入非选中时的内容'
-      }
+        placeholder: '请输入非选中时的内容',
+      },
     },
     {
       name: 'unCheckedValue',
       label: '非选中时的值',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入非选中时的值'
-      }
+        placeholder: '请输入非选中时的值',
+      },
     },
     {
       name: 'loading',
       label: '加载中的开关',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'size',
@@ -863,15 +863,15 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: '默认',
-            value: 'default'
+            value: 'default',
           },
           {
             label: '小',
-            value: 'small'
-          }
-        ]
-      }
-    }
+            value: 'small',
+          },
+        ],
+      },
+    },
   ],
   TreeSelect: [
     {
@@ -879,79 +879,79 @@ const componentAttrs: IBaseComponentProps = {
       label: '默认值',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入默认值'
-      }
+        placeholder: '请输入默认值',
+      },
     },
     {
       name: 'searchPlaceholder',
       label: '搜索框默认文字',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入搜索框默认文字'
-      }
+        placeholder: '请输入搜索框默认文字',
+      },
     },
     {
       name: 'treeNodeFilterProp',
       label: '输入项过滤对应的 treeNode 属性',
       component: 'Input',
       componentProps: {
-        defaultValue: 'value'
-      }
+        defaultValue: 'value',
+      },
     },
     {
       name: 'treeNodeLabelProp',
       label: '作为显示的 prop 设置',
       component: 'Input',
       componentProps: {
-        defaultValue: 'title'
-      }
+        defaultValue: 'title',
+      },
     },
     {
       name: 'dropdownClassName',
       label: '下拉菜单的 className 属性',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入下拉菜单的 className 属性'
-      }
+        placeholder: '请输入下拉菜单的 className 属性',
+      },
     },
 
     {
       name: 'labelInValue',
       label: '选项的label包装到value中',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'treeIcon',
       label: '展示TreeNode title前的图标',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'treeCheckable',
       label: '选项可勾选',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'treeCheckStrictly',
       label: '节点选择完全受控',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'treeDefaultExpandAll',
       label: '默认展开所有',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'treeLine',
       label: '是否展示线条样式',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'maxTagCount',
       label: '最多显示多少个 tag',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '最多显示多少个 tag'
-      }
+        placeholder: '最多显示多少个 tag',
+      },
     },
     {
       name: 'size',
@@ -961,15 +961,15 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: '默认',
-            value: 'default'
+            value: 'default',
           },
           {
             label: '小',
-            value: 'small'
-          }
-        ]
-      }
-    }
+            value: 'small',
+          },
+        ],
+      },
+    },
   ],
   Cascader: [
     {
@@ -980,15 +980,15 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: 'click',
-            value: 'click'
+            value: 'click',
           },
           {
             label: 'hover',
-            value: 'hover'
-          }
-        ]
-      }
-    }
+            value: 'hover',
+          },
+        ],
+      },
+    },
   ],
   Button: [
     {
@@ -999,22 +999,22 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: 'default',
-            value: 'default'
+            value: 'default',
           },
           {
             label: 'primary',
-            value: 'primary'
+            value: 'primary',
           },
           {
             label: 'danger',
-            value: 'danger'
+            value: 'danger',
           },
           {
             label: 'dashed',
-            value: 'dashed'
-          }
-        ]
-      }
+            value: 'dashed',
+          },
+        ],
+      },
     },
     {
       name: 'handle',
@@ -1024,27 +1024,27 @@ const componentAttrs: IBaseComponentProps = {
         options: [
           {
             label: '提交',
-            value: 'submit'
+            value: 'submit',
           },
           {
             label: '重置',
-            value: 'reset'
-          }
-        ]
-      }
-    }
+            value: 'reset',
+          },
+        ],
+      },
+    },
   ],
   Upload: [
     {
       name: 'action',
       label: '上传地址',
-      component: 'Input'
+      component: 'Input',
     },
     {
       name: 'name',
       label: '附件参数名（name）',
-      component: 'Input'
-    }
+      component: 'Input',
+    },
   ],
   // ColorPicker: [
   //   {
@@ -1057,8 +1057,8 @@ const componentAttrs: IBaseComponentProps = {
     {
       name: 'slotName',
       label: '插槽名称',
-      component: 'Input'
-    }
+      component: 'Input',
+    },
   ],
   Transfer: [
     // {
@@ -1082,53 +1082,51 @@ const componentAttrs: IBaseComponentProps = {
     {
       name: 'oneWay',
       label: '展示为单向样式',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'pagination',
       label: '使用分页样式',
-      component: 'Checkbox'
+      component: 'Checkbox',
     },
     {
       name: 'showSelectAll',
       label: '展示全选勾选框',
-      component: 'Checkbox'
-    }
-  ]
+      component: 'Checkbox',
+    },
+  ],
 }
 
 function deleteProps(list: Omit<IBaseFormAttrs, 'tag'>[], key: string) {
   list.forEach((element, index) => {
-    if (element.name == key) {
+    if (element.name == key)
       list.splice(index, 1)
-    }
   })
 }
 
-componentAttrs['StrengthMeter'] = componentAttrs['Input']
-componentAttrs['StrengthMeter'].push({
+componentAttrs.StrengthMeter = componentAttrs.Input
+componentAttrs.StrengthMeter.push({
   name: 'visibilityToggle',
   label: '是否显示切换按钮',
-  component: 'Checkbox'
+  component: 'Checkbox',
 })
 
-deleteProps(componentAttrs['StrengthMeter'], 'type')
-deleteProps(componentAttrs['StrengthMeter'], 'prefix')
-deleteProps(componentAttrs['StrengthMeter'], 'defaultValue')
-deleteProps(componentAttrs['StrengthMeter'], 'suffix')
-//组件属性
+deleteProps(componentAttrs.StrengthMeter, 'type')
+deleteProps(componentAttrs.StrengthMeter, 'prefix')
+deleteProps(componentAttrs.StrengthMeter, 'defaultValue')
+deleteProps(componentAttrs.StrengthMeter, 'suffix')
+// 组件属性
 // name 控件的属性
 export const baseComponentAttrs: IBaseComponentProps = componentAttrs
 
-//在所有的选项中查找需要配置项
-const findCompoentProps = (props, name) => {
+// 在所有的选项中查找需要配置项
+function findCompoentProps(props, name) {
   const idx = props.findIndex((value: BaseFormAttrs, _index) => {
     return value.name == name
   })
   if (idx) {
-    if (props[idx].componentProps) {
+    if (props[idx].componentProps)
       return props[idx].componentProps
-    }
   }
 }
 
@@ -1137,12 +1135,13 @@ export const componentPropsFuncs = {
   RadioGroup: (compProp, options: BaseFormAttrs[]) => {
     const props = findCompoentProps(options, 'size')
     if (props) {
-      if (compProp['optionType'] && compProp['optionType'] != 'button') {
-        props['disabled'] = true
-        compProp['size'] = null
-      } else {
-        props['disabled'] = false
+      if (compProp.optionType && compProp.optionType != 'button') {
+        props.disabled = true
+        compProp.size = null
+      }
+      else {
+        props.disabled = false
       }
     }
-  }
+  },
 }

@@ -3,7 +3,7 @@ import type { LocaleSetting, LocaleType } from '@/types/config'
 
 export const LOCALE: { [key: string]: LocaleType } = {
   ZH_CN: 'zh_CN',
-  EN_US: 'en'
+  EN_US: 'en',
 }
 
 export const localeSetting: LocaleSetting = {
@@ -14,17 +14,17 @@ export const localeSetting: LocaleSetting = {
   // 默认语言
   fallback: LOCALE.ZH_CN,
   // 允许的语言
-  availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US]
+  availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US],
 }
 
 // 语言列表
 export const localeList: DropMenu[] = [
   {
     text: '简体中文',
-    event: LOCALE.ZH_CN
+    event: LOCALE.ZH_CN,
   },
   {
     text: 'English',
-    event: LOCALE.EN_US
-  }
+    event: LOCALE.EN_US,
+  },
 ]

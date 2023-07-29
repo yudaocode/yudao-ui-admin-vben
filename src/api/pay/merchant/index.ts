@@ -35,7 +35,7 @@ export function getMerchantPage(params: MerchantPageReqVO) {
 
 // 查询详情支付商户
 export function getMerchant(id: number) {
-  return defHttp.get({ url: '/pay/merchant/get?id=' + id })
+  return defHttp.get({ url: `/pay/merchant/get?id=${id}` })
 }
 
 // 根据商户名称搜索商户列表
@@ -43,8 +43,8 @@ export function getMerchantListByName(name: string) {
   return defHttp.get({
     url: '/pay/merchant/list-by-name?id=',
     params: {
-      name: name
-    }
+      name,
+    },
   })
 }
 
@@ -60,7 +60,7 @@ export function updateMerchant(data: MerchantVO) {
 
 // 删除支付商户
 export function deleteMerchant(id: number) {
-  return defHttp.delete({ url: '/pay/merchant/delete?id=' + id })
+  return defHttp.delete({ url: `/pay/merchant/delete?id=${id}` })
 }
 
 // 导出支付商户
@@ -71,7 +71,7 @@ export function exportMerchant(params: MerchantExportReqVO) {
 export function changeMerchantStatus(id: number, status: number) {
   const data = {
     id,
-    status
+    status,
   }
   return defHttp.put({ url: '/pay/merchant/update-status', data })
 }

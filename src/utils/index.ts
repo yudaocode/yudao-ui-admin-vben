@@ -5,7 +5,7 @@ import { intersectionWith, isEqual, mergeWith, unionWith } from 'lodash-es'
 import { unref } from 'vue'
 import { isArray, isObject } from '@/utils/is'
 
-export const noop = () => {}
+export function noop() {}
 
 /**
  * @description:  Set ui mount node
@@ -26,9 +26,9 @@ export function getPopupContainer(node?: HTMLElement): HTMLElement {
  */
 export function setObjToUrlParams(baseUrl: string, obj: any): string {
   let parameters = ''
-  for (const key in obj) {
-    parameters += key + '=' + encodeURIComponent(obj[key]) + '&'
-  }
+  for (const key in obj)
+    parameters += `${key}=${encodeURIComponent(obj[key])}&`
+
   parameters = parameters.replace(/&$/, '')
   return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters
 }
@@ -50,14 +50,14 @@ export function setObjToUrlParams(baseUrl: string, obj: any): string {
 export function deepMerge<T extends object | null | undefined, U extends object | null | undefined>(
   source: T,
   target: U,
-  mergeArrays: 'union' | 'intersection' | 'concat' | 'replace' = 'replace'
+  mergeArrays: 'union' | 'intersection' | 'concat' | 'replace' = 'replace',
 ): T & U {
-  if (!target) {
+  if (!target)
     return source as T & U
-  }
-  if (!source) {
+
+  if (!source)
     return target as T & U
-  }
+
   return mergeWith({}, source, target, (sourceValue, targetValue) => {
     if (isArray(targetValue) && isArray(sourceValue)) {
       switch (mergeArrays) {
@@ -73,9 +73,9 @@ export function deepMerge<T extends object | null | undefined, U extends object 
           throw new Error(`Unknown merge array strategy: ${mergeArrays as string}`)
       }
     }
-    if (isObject(targetValue) && isObject(sourceValue)) {
+    if (isObject(targetValue) && isObject(sourceValue))
       return deepMerge(sourceValue, targetValue, mergeArrays)
-    }
+
     return undefined
   })
 }
@@ -102,22 +102,23 @@ export function getDynamicProps<T extends Record<string, unknown>, U>(props: T):
 }
 
 export function getRawRoute(route: RouteLocationNormalized): RouteLocationNormalized {
-  if (!route) return route
+  if (!route)
+    return route
   const { matched, ...opt } = route
   return {
     ...opt,
     matched: (matched
-      ? matched.map((item) => ({
-          meta: item.meta,
-          name: item.name,
-          path: item.path
-        }))
-      : undefined) as RouteRecordNormalized[]
+      ? matched.map(item => ({
+        meta: item.meta,
+        name: item.name,
+        path: item.path,
+      }))
+      : undefined) as RouteRecordNormalized[],
   }
 }
 
 // https://github.com/vant-ui/vant/issues/8302
-type EventShim = {
+interface EventShim {
   new (...args: any[]): {
     $props: {
       onClick?: (...args: any[]) => void
@@ -131,14 +132,14 @@ export type WithInstall<T> = T & {
 
 export type CustomComponent = Component & { displayName?: string }
 
-export const withInstall = <T extends CustomComponent>(component: T, alias?: string) => {
+export function withInstall<T extends CustomComponent>(component: T, alias?: string) {
   ;(component as Record<string, unknown>).install = (app: App) => {
     const compName = component.name || component.displayName
-    if (!compName) return
+    if (!compName)
+      return
     app.component(compName, component)
-    if (alias) {
+    if (alias)
       app.config.globalProperties[alias] = component
-    }
   }
   return component as WithInstall<T>
 }
@@ -159,11 +160,11 @@ export function simpleDebounce(fn, delay = 100) {
   return function () {
     // eslint-disable-next-line prefer-rest-params
     const args = arguments
-    if (timer) {
+    if (timer)
       clearTimeout(timer)
-    }
+
     timer = setTimeout(() => {
-      // @ts-ignore
+      // @ts-expect-error
       fn.apply(this, args)
     }, delay)
   }

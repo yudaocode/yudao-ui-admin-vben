@@ -1,4 +1,4 @@
-import { ref, computed, unref } from 'vue'
+import { computed, ref, unref } from 'vue'
 import { createPageContext } from '@/hooks/component/usePageContext'
 import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 
@@ -27,7 +27,7 @@ export function useContentViewHeight() {
       contentHeight.value = window.innerHeight
     },
     100,
-    { immediate: true }
+    { immediate: true },
   )
 
   async function setPageHeight(height: number) {
@@ -37,6 +37,6 @@ export function useContentViewHeight() {
   createPageContext({
     contentHeight: getViewHeight,
     setPageHeight,
-    pageHeight
+    pageHeight,
   })
 }
