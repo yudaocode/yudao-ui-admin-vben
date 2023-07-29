@@ -11,7 +11,7 @@
 
 ## 预览地址
 
-- [预览地址](http://vben.xingyuv.com/)
+- [预览地址](http://dashboard-vben.yudao.iocoder.cn/)
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
