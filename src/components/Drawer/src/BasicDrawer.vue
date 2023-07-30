@@ -1,4 +1,4 @@
-<script lang="ts" setup inheritAttrs="false">
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed, getCurrentInstance, nextTick, ref, toRaw, unref, watch } from 'vue'
 import { Drawer } from 'ant-design-vue'
@@ -12,6 +12,8 @@ import { ScrollContainer } from '@/components/Container'
 import { isFunction, isNumber } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAttrs } from '@/hooks/core/useAttrs'
+
+defineOptions({ inheritAttrs: false })
 
 const props = defineProps(basicProps)
 const emit = defineEmits(['visible-change', 'ok', 'close', 'register'])
@@ -52,10 +54,8 @@ const getProps = computed((): DrawerProps => {
     const detailCls = `${prefixCls}__detail`
     opt.class = wrapClassName ? `${wrapClassName} ${detailCls}` : detailCls
 
-    if (!getContainer) {
-      // TODO type error?
+    if (!getContainer)
       opt.getContainer = `.${prefixVar}-layout-content` as any
-    }
   }
   return opt as DrawerProps
 })

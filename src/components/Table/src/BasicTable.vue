@@ -340,7 +340,7 @@ emit('register', tableAction, formActions)
       width: 100%;
       padding: 12px 10px 6px;
       margin-bottom: 16px;
-      background-color: @component-background;
+      // background-color: @component-background;
       border-radius: 2px;
     }
   }
@@ -353,7 +353,7 @@ emit('register', tableAction, formActions)
 
   .ant-table-wrapper {
     padding: 6px;
-    background-color: @component-background;
+    // background-color: @component-background;
     border-radius: 2px;
 
     .ant-table-title {

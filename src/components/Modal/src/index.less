@@ -50,6 +50,7 @@
   }
 
   &-content {
+    padding: 12px 8px !important;
     box-shadow:
       0 4px 8px 0 rgb(0 0 0 / 20%),
       0 6px 20px 0 rgb(0 0 0 / 19%);
@@ -62,7 +63,9 @@
   }
 
   &-close {
+    width: auto !important;
     font-weight: normal;
+    // background: #fff !important;
     outline: none;
   }
 
@@ -73,21 +76,37 @@
     line-height: 56px;
   }
 
-  &-confirm-body {
-    .ant-modal-confirm-content {
-      // color: #fff;
+  // &-confirm-body {
+  //   .ant-modal-confirm-content {
+  //     // color: #fff;
 
-      > * {
-        color: @text-color-help-dark;
-      }
-    }
-  }
+  //     > * {
+  //       color: @text-color-help-dark;
+  //     }
+  //   }
+  // }
+
+  // &-confirm-confirm.error .ant-modal-confirm-body > .anticon {
+  //   color: @error-color;
+  // }
 
   &-confirm-btns {
     .ant-btn:last-child {
       margin-right: 0;
     }
   }
+
+  // &-confirm-info {
+  //   .ant-modal-confirm-body > .anticon {
+  //     color: @warning-color;
+  //   }
+  // }
+
+  // &-confirm-confirm.success {
+  //   .ant-modal-confirm-body > .anticon {
+  //     color: @success-color;
+  //   }
+  // }
 }
 
 .ant-modal-confirm .ant-modal-body {
