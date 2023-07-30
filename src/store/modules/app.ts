@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import { theme as antdTheme } from 'ant-design-vue/es'
+import type { ThemeConfig } from 'ant-design-vue/es/config-provider/context'
+import { reactive } from 'vue'
 import type { AppSizeType, HeaderSetting, MenuSetting, MultiTabsSetting, ProjectConfig, TransitionSetting } from '@/types/config'
 import type { BeforeMiniState } from '@/types/store'
 
@@ -13,6 +16,7 @@ import { deepMerge } from '@/utils'
 
 interface AppState {
   darkMode?: ThemeEnum
+  themeConfig: ThemeConfig
   // Page loading status
   pageLoading: boolean
   // project config
@@ -25,6 +29,13 @@ let timeId: TimeoutHandle
 export const useAppStore = defineStore('app', {
   state: (): AppState => ({
     darkMode: undefined,
+    themeConfig: {
+      algorithm: antdTheme.defaultAlgorithm,
+      token: {
+        colorBgContainer: '#fff',
+      },
+      components: {},
+    },
     pageLoading: false,
     projectConfig: Persistent.getLocal(PROJ_CFG_KEY),
     beforeMiniInfo: {},
@@ -69,7 +80,37 @@ export const useAppStore = defineStore('app', {
 
     setDarkMode(mode: ThemeEnum): void {
       this.darkMode = mode
+      console.info(mode)
+      this.setThemeConfig()
       localStorage.setItem(APP_DARK_MODE_KEY_, mode)
+    },
+    setThemeConfig(color?: string): void {
+      console.info(this.darkMode)
+      let themeConfig = reactive<ThemeConfig>({
+        algorithm: antdTheme.defaultAlgorithm,
+        token: {
+          colorBgContainer: '#fff',
+          colorPrimary: color || (this.projectConfig
+            ? this.projectConfig.themeColor
+            : '#1890ff'),
+        },
+        components: {},
+      })
+
+      if (this.darkMode === 'dark') {
+        themeConfig = {
+          algorithm: antdTheme.darkAlgorithm,
+          token: {
+            colorBgContainer: 'rgb(36, 37, 37)',
+            colorPrimary: color || (this.projectConfig
+              ? this.projectConfig.themeColor
+              : '#1890ff'),
+          },
+          components: {},
+        }
+      }
+      console.info(themeConfig)
+      this.themeConfig = themeConfig
     },
 
     setBeforeMiniInfo(state: BeforeMiniState): void {

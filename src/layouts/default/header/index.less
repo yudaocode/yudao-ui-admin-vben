@@ -3,6 +3,11 @@
 @breadcrumb-prefix-cls: ~"@{namespace}-layout-breadcrumb";
 @logo-prefix-cls: ~"@{namespace}-app-logo";
 
+.ant-layout .ant-layout-header {
+  height: 48px !important;
+  padding-inline: 10px;
+}
+
 .@{header-prefix-cls} {
   display: flex;
   align-items: center;
@@ -120,7 +125,7 @@
       }
 
       .ant-badge-dot {
-        top: 10px;
+        top: 14px;
         right: 2px;
       }
     }

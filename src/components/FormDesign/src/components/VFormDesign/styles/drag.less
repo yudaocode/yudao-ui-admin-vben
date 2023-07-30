@@ -23,7 +23,6 @@
         width: 100%;
         height: 5px;
         content: "";
-        background-color: @primary-color;
       }
     }
 
@@ -35,10 +34,6 @@
       overflow: hidden;
       transition: all 0.3s;
 
-      &:hover {
-        background-color: @primary-hover-bg-color;
-      }
-
       // 选择时 start
       &::before {
         position: absolute;
@@ -47,12 +42,10 @@
         width: 100%;
         height: 5px;
         content: "";
-        background-color: @primary-color;
         transition: all 0.3s;
       }
 
       &.active {
-        background-color: @primary-hover-bg-color;
         outline-offset: 0;
 
         &::before {
@@ -89,7 +82,6 @@
         bottom: 2px;
         font-size: 14px;
         // z-index: 999;
-        color: @primary-color;
       }
 
       .copy,
@@ -116,13 +108,11 @@
 
       .copy {
         right: 30px;
-        background-color: @primary-color;
         border-radius: 0 0 0 8px;
       }
 
       .delete {
         right: 0;
-        background-color: @primary-color;
       }
     }
 

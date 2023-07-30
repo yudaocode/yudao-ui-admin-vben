@@ -51,10 +51,6 @@ function handleClose() {
   &__back {
     padding: 0 12px;
     cursor: pointer;
-
-    &:hover {
-      color: @primary-color;
-    }
   }
 
   &__twrap {

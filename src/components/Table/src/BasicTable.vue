@@ -329,7 +329,7 @@ emit('register', tableAction, formActions)
 
   &-row__striped {
     td {
-      background-color: @app-content-background;
+      // background-color: @app-content-background;
     }
   }
 

@@ -99,10 +99,6 @@ export default defineComponent({
   color: @text-color-help-dark;
   cursor: pointer;
 
-  &:hover {
-    color: @primary-color;
-  }
-
   &__wrap {
     p {
       margin-bottom: 0;

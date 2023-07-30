@@ -166,10 +166,6 @@ html[data-theme='dark'] {
       font-size: 22px;
       color: #888;
       cursor: pointer;
-
-      &:hover {
-        color: @primary-color;
-      }
     }
   }
 

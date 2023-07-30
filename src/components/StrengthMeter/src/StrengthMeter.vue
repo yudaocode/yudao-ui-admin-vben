@@ -98,31 +98,6 @@ watch(
       transition:
         width 0.5s ease-in-out,
         background 0.25s;
-
-      &[data-score='0'] {
-        width: 20%;
-        background-color: darken(@error-color, 10%);
-      }
-
-      &[data-score='1'] {
-        width: 40%;
-        background-color: @error-color;
-      }
-
-      &[data-score='2'] {
-        width: 60%;
-        background-color: @warning-color;
-      }
-
-      &[data-score='3'] {
-        width: 80%;
-        background-color: fade(@success-color, 50%);
-      }
-
-      &[data-score='4'] {
-        width: 100%;
-        background-color: @success-color;
-      }
     }
   }
 }

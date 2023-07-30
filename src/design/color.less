@@ -10,9 +10,37 @@ html {
   --sider-dark-lighten-bg-color: #273352;
 }
 
+@font-size-base: 14;
+
 @white: #fff;
 
+@black: #000;
+
 @content-bg: #f4f7f9;
+
+@text-color: fade(@black, 85%);
+
+@text-color-secondary: fade(@black, 45%);
+
+@text-color-inverse: @white;
+
+@icon-color: inherit;
+
+@icon-color-hover: fade(@black, 75%);
+
+@component-background: #fff;
+
+@component-background-dark: fade(@black, 75%);
+
+@layout-body-background: #f0f2f5;
+
+@modal-mask-bg: fade(@black, 45%);
+
+@disabled-color: fade(#000, 25%);
+
+@background-color-light: hsv(0, 0, 98%);
+
+@item-hover-bg: #f5f5f5;
 
 // :export {
 //   name: "less";
@@ -24,6 +52,7 @@ html {
 // =================================
 // ==============border-color=======
 // =================================
+@border-color-base: #fff;
 
 // Dark-dark
 @border-color-dark: #b6b7b9;
@@ -83,9 +112,6 @@ html {
 // =================================
 // ==============link============
 // =================================
-@link-hover-color: @primary-color;
-@link-active-color: darken(@primary-color, 10%);
-
 // =================================
 // ==============Text color-=============
 // =================================
@@ -107,32 +133,13 @@ html {
 // ==============button=============
 // =================================
 
-@button-primary-color: @primary-color;
-@button-primary-hover-color: lighten(@primary-color, 5%);
-@button-primary-active-color: darken(@primary-color, 5%);
-
 @button-ghost-color: @white;
 @button-ghost-hover-color: lighten(@white, 10%);
 @button-ghost-hover-bg-color: #e1ebf6;
 @button-ghost-active-color: darken(@white, 10%);
 
-@button-success-color: @success-color;
-@button-success-hover-color: lighten(@success-color, 10%);
-@button-success-active-color: darken(@success-color, 10%);
-
-@button-warn-color: @warning-color;
-@button-warn-hover-color: lighten(@warning-color, 10%);
-@button-warn-active-color: darken(@warning-color, 10%);
-
-@button-error-color: @error-color;
-@button-error-hover-color: lighten(@error-color, 10%);
-@button-error-active-color: darken(@error-color, 10%);
-
 @button-cancel-color: @text-color-call-out;
+
 @button-cancel-bg-color: @white;
 @button-cancel-border-color: @border-color-shallow-dark;
 
-// Mouse over
-@button-cancel-hover-color: @primary-color;
-@button-cancel-hover-bg-color: @white;
-@button-cancel-hover-border-color: @primary-color;

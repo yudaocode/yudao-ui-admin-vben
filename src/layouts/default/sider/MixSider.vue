@@ -331,7 +331,7 @@ export default defineComponent({
   position: fixed;
   top: 0;
   left: 0;
-  z-index: @layout-mix-sider-fixed-z-index;
+  // z-index: @layout-mix-sider-fixed-z-index;
   height: 100%;
   overflow: hidden;
   background-color: @sider-dark-bg-color;
@@ -372,7 +372,6 @@ export default defineComponent({
         color: rgb(0 0 0 / 65%);
 
         &--active {
-          color: @primary-color;
           background-color: unset;
         }
       }
@@ -458,7 +457,6 @@ export default defineComponent({
           width: 3px;
           height: 100%;
           content: '';
-          background-color: @primary-color;
         }
       }
     }
@@ -511,7 +509,6 @@ export default defineComponent({
       height: @header-height;
       // margin-left: -6px;
       font-size: 18px;
-      color: @primary-color;
       border-bottom: 1px solid rgb(238 238 238);
       opacity: 0;
       transition: unset;

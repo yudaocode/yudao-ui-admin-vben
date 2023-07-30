@@ -84,16 +84,6 @@ function handleFullScreen(e: Event) {
   & span:nth-child(1) {
     display: inline-block;
     padding: 10px;
-
-    &:hover {
-      color: @primary-color;
-    }
-  }
-
-  & span:last-child {
-    &:hover {
-      color: @error-color;
-    }
   }
 }
 </style>

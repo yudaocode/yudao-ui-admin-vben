@@ -66,8 +66,6 @@ function handleClick(color: string) {
     }
 
     &--active {
-      border: 1px solid lighten(@primary-color, 10%);
-
       svg {
         display: inline-block;
         margin: 0 0 3px 3px;

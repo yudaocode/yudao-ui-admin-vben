@@ -163,10 +163,6 @@ function getIcon(route) {
 
       a {
         color: rgb(0 0 0 / 65%);
-
-        &:hover {
-          color: @primary-color;
-        }
       }
     }
 

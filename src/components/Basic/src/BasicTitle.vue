@@ -67,7 +67,6 @@ const getClass = computed(() => [
     height: 16px;
     margin-right: 4px;
     content: '';
-    background-color: @primary-color;
   }
 
   &-help {

@@ -406,10 +406,6 @@ function updateSortOption(column: BasicColumn) {
 
     .ant-checkbox-wrapper {
       width: 100%;
-
-      &:hover {
-        color: @primary-color;
-      }
     }
   }
 
@@ -417,11 +413,6 @@ function updateSortOption(column: BasicColumn) {
   &__fixed-right {
     color: rgb(0 0 0 / 45%);
     cursor: pointer;
-
-    &.active,
-    &:hover {
-      color: @primary-color;
-    }
 
     &.disabled {
       color: @disabled-color;

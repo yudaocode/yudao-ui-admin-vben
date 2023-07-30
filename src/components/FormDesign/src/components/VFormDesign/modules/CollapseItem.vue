@@ -90,10 +90,6 @@ ul {
 
     &:hover {
       position: relative;
-      color: @primary-color;
-      border: 1px solid @primary-color;
-      // z-index: 1;
-      box-shadow: 0 2px 6px @primary-color;
     }
   }
 }

@@ -9,9 +9,7 @@ import { presetTypography, presetUno } from 'unocss'
 import { configPwaConfig } from './pwa'
 import { configHtmlPlugin } from './html'
 import { configCompressPlugin } from './compress'
-import { configStyleImportPlugin } from './styleImport'
 import { configVisualizerConfig } from './visualizer'
-import { configThemePlugin } from './theme'
 import { configSvgIconsPlugin } from './svgSprite'
 
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
@@ -45,13 +43,8 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   // rollup-plugin-visualizer
   vitePlugins.push(configVisualizerConfig())
 
-  // vite-plugin-vben-theme
-  vitePlugins.push(configThemePlugin(isBuild))
-
   // The following plugins only work in the production environment
   if (isBuild) {
-    // vite-plugin-style-import
-    vitePlugins.push(configStyleImportPlugin(isBuild))
     // rollup-plugin-gzip
     vitePlugins.push(configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE))
 

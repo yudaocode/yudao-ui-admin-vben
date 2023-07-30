@@ -103,7 +103,7 @@ const getTrigger = h(LayoutTrigger)
   z-index: @layout-sider-fixed-z-index;
 
   &--fixed {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     height: 100%;

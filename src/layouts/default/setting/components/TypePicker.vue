@@ -152,7 +152,6 @@ const { prefixCls } = useDesign('setting-menu-type-picker')
     &:hover,
     &--active {
       padding: 12px;
-      border: 2px solid @primary-color;
 
       &::before,
       &::after {

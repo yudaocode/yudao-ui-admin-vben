@@ -124,10 +124,6 @@ export default defineComponent({
       color: #ccc;
     }
 
-    &:hover {
-      color: @primary-color;
-    }
-
     > span {
       padding-left: 2px;
       font-size: 14px;

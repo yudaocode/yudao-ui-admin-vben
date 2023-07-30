@@ -235,8 +235,6 @@ function handleClose() {
 
       &--active {
         color: #fff;
-        background-color: @primary-color;
-
         .@{prefix-cls}-list__item-enter {
           opacity: 1;
         }

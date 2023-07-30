@@ -211,7 +211,6 @@ function handleShowForm(show = false) {
     &__err-msg {
       display: inline-block;
       margin-top: 10px;
-      color: @error-color;
     }
 
     &__footer {

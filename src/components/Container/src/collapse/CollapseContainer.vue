@@ -93,7 +93,7 @@ export default defineComponent({
 @prefix-cls: ~'@{namespace}-collapse-container';
 
 .@{prefix-cls} {
-  background-color: @component-background;
+  // background-color: @component-background;
   border-radius: 2px;
   transition: all 0.3s ease-in-out;
 

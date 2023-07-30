@@ -152,9 +152,9 @@ watch(
     }
   }
 
-  &-content-bg {
-    background-color: @component-background;
-  }
+  // &-content-bg {
+  //   background-color: @component-background;
+  // }
 
   &--dense {
     .@{prefix-cls}-content {

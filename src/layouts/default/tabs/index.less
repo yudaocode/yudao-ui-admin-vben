@@ -1,6 +1,7 @@
 @prefix-cls: ~"@{namespace}-multiple-tabs";
 
 html[data-theme="dark"] {
+  // background-color: @component-background-dark;
   .@{prefix-cls} {
     .ant-tabs-tab {
       border-bottom: none !important;
@@ -18,6 +19,7 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="light"] {
+  background-color: @component-background;
   .@{prefix-cls} {
     .ant-tabs-tab:not(.ant-tabs-tab-active) {
       border: none !important;
@@ -34,7 +36,6 @@ html[data-theme="light"] {
   z-index: 10;
   height: @multiple-height;
   line-height: @multiple-height;
-  background-color: @component-background;
   box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
 
   .ant-tabs-small {
@@ -46,7 +47,7 @@ html[data-theme="light"] {
       height: @multiple-height;
       padding-left: 10px;
       margin: 0;
-      background-color: @component-background;
+      // background-color: @component-background;
       border: 0;
       box-shadow: none;
 
@@ -62,17 +63,17 @@ html[data-theme="light"] {
         padding: 0 16px;
         margin: 0 -14px 0 0 !important;
         line-height: @multiple-height;
-        color: @text-color-base;
-        background-color: @component-background;
+        // color: @text-color-base;
+        // background-color: @component-background;
         border-radius: 8px 8px 0 0;
         /* stylelint-disable-next-line function-url-quotes */
         mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAAAkBAMAAAAdqzmBAAAAMFBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlTPQ5AAAAD3RSTlMAr3DvEM8wgCBA379gj5//tJBPAAAAnUlEQVRIx2NgAAM27fj/tAO/xBsYkIHyf9qCT8iWMf6nNQhAsk2f5rYheY7Dnua2/U+A28ZEe8v+F9Ax2v7/F4DbxkUH2wzgtvHTwbYPo7aN2jZq26hto7aN2jZq25Cy7Qvctnw62PYNbls9HWz7S8/G6//PsI6H4396gAUQy1je08W2jxDbpv6nD4gB2uWp+J9eYPsEhv/0BPS1DQBvoBLVZ3BppgAAAABJRU5ErkJggg==);
         transition: padding 0.3s;
         mask-size: 100% 100%;
 
-        .ant-tabs-tab-btn {
-          color: @text-color-base;
-        }
+        // .ant-tabs-tab-btn {
+        //   color: @text-color-base;
+        // }
 
         &:hover {
           z-index: 2;
@@ -140,17 +141,8 @@ html[data-theme="light"] {
         z-index: 3;
         padding: 0 16px;
         font-weight: inherit;
-        color: @primary-color !important;
         background: #d4ebff;
         border: 0;
-
-        span {
-          color: @primary-color !important;
-        }
-
-        .ant-tabs-tab-btn {
-          color: @primary-color;
-        }
 
         .ant-tabs-tab-remove .anticon-close {
           opacity: 1;
@@ -162,7 +154,6 @@ html[data-theme="light"] {
 
         svg {
           width: inherit;
-          fill: @primary-color;
         }
       }
     }
@@ -210,7 +201,7 @@ html[data-theme="light"] {
       width: 36px;
       height: @multiple-height;
       line-height: @multiple-height;
-      color: @text-color-secondary;
+      // color: @text-color-secondary;
       text-align: center;
       cursor: pointer;
       border-left: 1px solid @border-color-base;

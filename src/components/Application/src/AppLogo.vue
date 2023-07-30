@@ -61,10 +61,6 @@ function goHome() {
     padding-left: 20px;
   }
 
-  &.light &__title {
-    color: @primary-color;
-  }
-
   &.dark &__title {
     color: @white;
   }

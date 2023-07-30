@@ -475,7 +475,6 @@ export default defineComponent({
 .edit-cell-rule-popover {
   .ant-popover-inner-content {
     padding: 4px 8px;
-    color: @error-color;
     // border: 1px solid @error-color;
     border-radius: 2px;
   }
@@ -497,10 +496,6 @@ export default defineComponent({
   &__icon {
     &:hover {
       transform: scale(1.2);
-
-      svg {
-        color: @primary-color;
-      }
     }
   }
 
