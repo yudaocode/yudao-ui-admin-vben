@@ -272,7 +272,7 @@ export default defineComponent({
         return <Comp {...compAttr} />
 
       const compSlot = isFunction(renderComponentContent)
-        ? { ...renderComponentContent(unref(getValues)) }
+        ? { ...renderComponentContent(unref(getValues), { disabled: unref(getDisable) }) }
         : {
             default: () => renderComponentContent,
           }
@@ -307,6 +307,8 @@ export default defineComponent({
       const { labelCol, wrapperCol } = unref(itemLabelWidthProp)
       const { colon } = props.formProps
 
+      const opts = { disabled: unref(getDisable) }
+
       if (component === 'Divider') {
         return (
           <Col span={24}>
@@ -316,7 +318,7 @@ export default defineComponent({
       }
       else {
         const getContent = () => {
-          return slot ? getSlot(slots, slot, unref(getValues)) : render ? render(unref(getValues)) : renderComponent()
+          return slot ? getSlot(slots, slot, unref(getValues), opts) : render ? render(unref(getValues), opts) : renderComponent()
         }
 
         const showSuffix = !!suffix
@@ -360,9 +362,10 @@ export default defineComponent({
       const realColProps = { ...baseColProps, ...colProps }
       const { isIfShow, isShow } = getShow()
       const values = unref(getValues)
+      const opts = { disabled: unref(getDisable) }
 
       const getContent = () => {
-        return colSlot ? getSlot(slots, colSlot, values) : renderColContent ? renderColContent(values) : renderItem()
+        return colSlot ? getSlot(slots, colSlot, values, opts) : renderColContent ? renderColContent(values, opts) : renderItem()
       }
 
       return (
