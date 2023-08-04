@@ -27,7 +27,7 @@ export default defineComponent({
     const myEditor = ref(null)
 
     const state = reactive({
-      visible: false,
+      open: false,
       json: `{
         "schemas": [
           {
@@ -54,10 +54,10 @@ export default defineComponent({
     })
     const { formDesignMethods } = useFormDesignState()
     const handleCancel = () => {
-      state.visible = false
+      state.open = false
     }
     const showModal = () => {
-      state.visible = true
+      state.open = true
     }
     const handleImportJson = () => {
       // 导入JSON
@@ -106,7 +106,7 @@ export default defineComponent({
 <template>
   <Modal
     title="JSON数据"
-    :visible="visible"
+    :open="open"
     cancel-text="关闭"
     :destroy-on-close="true"
     wrap-class-name="v-code-modal"

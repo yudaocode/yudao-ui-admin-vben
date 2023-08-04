@@ -28,7 +28,7 @@ const props = defineProps({
   returnUrl: propTypes.bool.def(true),
   // 最大上传数量
   maxCount: propTypes.number.def(0),
-  buttonVisible: propTypes.bool.def(true),
+  buttonOpen: propTypes.bool.def(true),
   multiple: propTypes.bool.def(true),
   // 是否显示左右移动按钮
   mover: propTypes.bool.def(true),
@@ -288,7 +288,7 @@ function getFileName(path) {
           </div>
         </div>
       </template>
-      <a-button v-else-if="buttonVisible" :disabled="isMaxCount || disabled">
+      <a-button v-else-if="buttonOpen" :disabled="isMaxCount || disabled">
         <Icon icon="ant-design:upload-outlined" />
         <span>{{ text }}</span>
       </a-button>

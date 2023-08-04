@@ -85,8 +85,8 @@ export default defineComponent({
     }
 
     function renderMenuItem(items: ContextMenuItem[]) {
-      const visibleItems = items.filter(item => !item.hidden)
-      return visibleItems.map((item) => {
+      const openItems = items.filter(item => !item.hidden)
+      return openItems.map((item) => {
         const { disabled, label, children, divider = false } = item
 
         const contentProps = {

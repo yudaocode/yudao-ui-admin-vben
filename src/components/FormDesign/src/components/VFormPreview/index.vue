@@ -23,13 +23,13 @@ export default defineComponent({
     const jsonModal = ref<IToolbarMethods | null>(null)
     const state = reactive<{
       formModel: IAnyObject
-      visible: boolean
+      open: boolean
       formConfig: IFormConfig
       fApi: IVFormMethods
     }>({
       formModel: {},
       formConfig: {} as IFormConfig,
-      visible: false,
+      open: false,
       fApi: {} as IVFormMethods,
     })
 
@@ -41,7 +41,7 @@ export default defineComponent({
       // console.log('showModal-', jsonData);
       formatRules(jsonData.schemas)
       state.formConfig = jsonData
-      state.visible = true
+      state.open = true
     }
 
     /**
@@ -49,7 +49,7 @@ export default defineComponent({
      * @return {Promise<void>}
      */
     const handleCancel = () => {
-      state.visible = false
+      state.open = false
       state.formModel = {}
     }
     const handleGetData = async () => {
@@ -79,7 +79,7 @@ export default defineComponent({
 <template>
   <Modal
     title="预览(支持布局)"
-    :visible="visible"
+    :open="open"
     ok-text="获取数据"
     cancel-text="关闭"
     style="top: 20px"

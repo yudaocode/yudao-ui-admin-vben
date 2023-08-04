@@ -218,8 +218,8 @@ onBeforeMount(() => {
   })
 })
 
-function handleVisibleChange(visible: boolean) {
-  state.opened = visible
+function handleOpenChange(open: boolean) {
+  state.opened = open
 }
 
 // provide
@@ -254,10 +254,10 @@ provide<SubMenuProvider>(`subMenu:${instance?.uid}`, {
       v-else
       placement="right"
       :overlay-class-name="`${prefixCls}-menu-popover`"
-      :visible="getIsOpend"
+      :open="getIsOpend"
       :overlay-style="getOverlayStyle"
       :align="{ offset: [0, 0] }"
-      @visible-change="handleVisibleChange"
+      @open-change="handleOpenChange"
     >
       <div :class="getSubClass" v-bind="getEvents(false)">
         <div

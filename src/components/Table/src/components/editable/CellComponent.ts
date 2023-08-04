@@ -7,13 +7,13 @@ import { componentMap } from '@/components/Table/src/componentMap'
 export interface ComponentProps {
   component: ComponentType
   rule: boolean
-  popoverVisible: boolean
+  popoverOpen: boolean
   ruleMessage: string
   getPopupContainer?: Fn
 }
 
 export const CellComponent: FunctionalComponent = (
-  { component = 'Input', rule = true, ruleMessage, popoverVisible, getPopupContainer }: ComponentProps,
+  { component = 'Input', rule = true, ruleMessage, popoverOpen, getPopupContainer }: ComponentProps,
   { attrs },
 ) => {
   const Comp = componentMap.get(component) as typeof defineComponent
@@ -26,7 +26,7 @@ export const CellComponent: FunctionalComponent = (
     Popover,
     {
       overlayClassName: 'edit-cell-rule-popover',
-      visible: !!popoverVisible,
+      open: !!popoverOpen,
       ...(getPopupContainer ? { getPopupContainer } : {}),
     },
     {

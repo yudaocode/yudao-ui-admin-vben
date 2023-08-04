@@ -49,7 +49,7 @@ const isSvgMode = props.mode === 'svg'
 const icons = isSvgMode ? getSvgIcons() : getIcons()
 
 const currentSelect = ref('')
-const visible = ref(false)
+const open = ref(false)
 const currentList = ref(icons)
 
 const { t } = useI18n()
@@ -109,7 +109,7 @@ function handleSearchChange(e: ChangeEvent) {
 <template>
   <AInput v-model:value="currentSelect" disabled :style="{ width }" :placeholder="t('component.icon.placeholder')" :class="prefixCls">
     <template #addonAfter>
-      <APopover v-model="visible" placement="bottomLeft" trigger="click" :overlay-class-name="`${prefixCls}-popover`">
+      <APopover v-model="open" placement="bottomLeft" trigger="click" :overlay-class-name="`${prefixCls}-popover`">
         <template #title>
           <div class="flex justify-between">
             <AInput :placeholder="t('component.icon.search')" allow-clear @change="debounceHandleSearchChange" />

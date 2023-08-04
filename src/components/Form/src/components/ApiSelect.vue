@@ -107,8 +107,8 @@ async function fetch() {
   }
 }
 
-async function handleFetch(visible) {
-  if (visible) {
+async function handleFetch(open) {
+  if (open) {
     if (props.alwaysLoad) {
       await fetch()
     }
@@ -129,7 +129,7 @@ function handleChange(_, ...args) {
 </script>
 
 <template>
-  <Select v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-visible-change="handleFetch" @change="handleChange">
+  <Select v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch" @change="handleChange">
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

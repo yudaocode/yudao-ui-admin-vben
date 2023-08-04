@@ -11,7 +11,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useAppInject } from '@/hooks/web/useAppInject'
 
 const props = defineProps({
-  visible: { type: Boolean },
+  open: { type: Boolean },
 })
 
 const emit = defineEmits(['close'])
@@ -38,9 +38,9 @@ const getClass = computed(() => {
 })
 
 watch(
-  () => props.visible,
-  (visible: boolean) => {
-    visible
+  () => props.open,
+  (open: boolean) => {
+    open
       && nextTick(() => {
         unref(inputRef)?.focus()
       })
@@ -56,7 +56,7 @@ function handleClose() {
 <template>
   <Teleport to="body">
     <transition name="zoom-fade" mode="out-in">
-      <div v-if="visible" :class="getClass" @click.stop>
+      <div v-if="open" :class="getClass" @click.stop>
         <div v-click-outside="handleClose" :class="`${prefixCls}-content`">
           <div :class="`${prefixCls}-input__wrapper`">
             <a-input ref="inputRef" :class="`${prefixCls}-input`" :placeholder="t('common.searchText')" allow-clear @change="handleSearch">

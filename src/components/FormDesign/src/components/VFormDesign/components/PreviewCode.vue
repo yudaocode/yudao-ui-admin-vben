@@ -22,7 +22,7 @@ export default defineComponent({
   },
   setup(props) {
     const state = reactive({
-      visible: false,
+      open: false,
     })
 
     const myEditor = ref(null)

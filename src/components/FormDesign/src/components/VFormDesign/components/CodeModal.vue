@@ -45,13 +45,13 @@ export default defineComponent({
   components: { PreviewCode, Modal },
   setup() {
     const state = reactive({
-      visible: false,
+      open: false,
       jsonData: {} as IFormConfig
     })
 
     const showModal = (formConfig: IFormConfig) => {
       formConfig.schemas && formatRules(formConfig.schemas)
-      state.visible = true
+      state.open = true
       state.jsonData = formConfig
     }
 
@@ -67,8 +67,8 @@ export default defineComponent({
   <Modal
     title="代码"
     :footer="null"
-    :visible="visible"
-    @cancel="visible = false"
+    :open="open"
+    @cancel="open = false"
     wrapClassName="v-code-modal"
     style="top: 20px"
     width="850px"

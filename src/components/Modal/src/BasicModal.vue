@@ -17,9 +17,9 @@ import { useDesign } from '@/hooks/web/useDesign'
 defineOptions({ name: 'BasicModal', inheritAttrs: false })
 
 const props = defineProps(basicProps)
-const emit = defineEmits(['visible-change', 'height-change', 'cancel', 'ok', 'register', 'update:visible'])
+const emit = defineEmits(['open-change', 'height-change', 'cancel', 'ok', 'register', 'update:open'])
 const attrs = useAttrs()
-const visibleRef = ref(false)
+const openRef = ref(false)
 const propsRef = ref<Partial<ModalProps> | null>(null)
 const modalWrapperRef = ref<any>(null)
 const { prefixCls } = useDesign('basic-modal')
@@ -28,7 +28,7 @@ const { prefixCls } = useDesign('basic-modal')
 const extHeightRef = ref(0)
 const modalMethods: ModalMethods = {
   setModalProps,
-  emitVisible: undefined,
+  emitOpen: undefined,
   redoModalHeight: () => {
     nextTick(() => {
       if (unref(modalWrapperRef)) {
@@ -60,7 +60,7 @@ const { handleFullScreen, getWrapClassName, fullScreenRef } = useFullScreen({
 const getProps = computed((): Recordable => {
   const opt = {
     ...unref(getMergeProps),
-    visible: unref(visibleRef),
+    open: unref(openRef),
     okButtonProps: undefined,
     cancelButtonProps: undefined,
     title: undefined,
@@ -75,7 +75,7 @@ const getBindValue = computed((): Recordable => {
   const attr = {
     ...attrs,
     ...unref(getMergeProps),
-    visible: unref(visibleRef),
+    open: unref(openRef),
   }
   attr.wrapClassName = `${attr?.wrapClassName || ''} ${unref(getWrapClassName)}`
   if (unref(fullScreenRef))
@@ -91,16 +91,16 @@ const getWrapperHeight = computed(() => {
 })
 
 watchEffect(() => {
-  visibleRef.value = !!props.visible
+  openRef.value = !!props.open
   fullScreenRef.value = !!props.defaultFullscreen
 })
 
 watch(
-  () => unref(visibleRef),
+  () => unref(openRef),
   (v) => {
-    emit('visible-change', v)
-    emit('update:visible', v)
-    instance && modalMethods.emitVisible?.(v, instance.uid)
+    emit('open-change', v)
+    emit('update:open', v)
+    instance && modalMethods.emitOpen?.(v, instance.uid)
     nextTick(() => {
       if (props.scrollTop && v && unref(modalWrapperRef)) {
         ;(unref(modalWrapperRef) as any).scrollTop()
@@ -120,11 +120,11 @@ async function handleCancel(e: Event) {
     return
   if (props.closeFunc && isFunction(props.closeFunc)) {
     const isClose: boolean = await props.closeFunc()
-    visibleRef.value = !isClose
+    openRef.value = !isClose
     return
   }
 
-  visibleRef.value = false
+  openRef.value = false
   emit('cancel', e)
 }
 
@@ -134,8 +134,8 @@ async function handleCancel(e: Event) {
 function setModalProps(props: Partial<ModalProps>): void {
   // Keep the last setModalProps
   propsRef.value = deepMerge(unref(propsRef) || ({} as any), props)
-  if (Reflect.has(props, 'visible'))
-    visibleRef.value = !!props.visible
+  if (Reflect.has(props, 'open'))
+    openRef.value = !!props.open
 
   if (Reflect.has(props, 'defaultFullscreen'))
     fullScreenRef.value = !!props.defaultFullscreen
@@ -193,9 +193,9 @@ function handleTitleDbClick(e) {
       :loading-tip="getProps.loadingTip"
       :min-height="getProps.minHeight"
       :height="getWrapperHeight"
-      :visible="visibleRef"
+      :open="openRef"
       :modal-footer-height="footer !== undefined && !footer ? 0 : undefined"
-      v-bind="omit(getProps.wrapperProps, 'visible', 'height', 'modalFooterHeight')"
+      v-bind="omit(getProps.wrapperProps, 'open', 'height', 'modalFooterHeight')"
       @ext-height="handleExtHeight"
       @height-change="handleHeightChange"
     >

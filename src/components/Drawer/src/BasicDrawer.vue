@@ -16,9 +16,9 @@ import { useAttrs } from '@/hooks/core/useAttrs'
 defineOptions({ inheritAttrs: false })
 
 const props = defineProps(basicProps)
-const emit = defineEmits(['visible-change', 'ok', 'close', 'register'])
+const emit = defineEmits(['open-change', 'ok', 'close', 'register'])
 
-const visibleRef = ref(false)
+const openRef = ref(false)
 const attrs = useAttrs()
 const propsRef = ref<Partial<Nullable<DrawerProps>>>(null)
 
@@ -27,7 +27,7 @@ const { prefixVar, prefixCls } = useDesign('basic-drawer')
 
 const drawerInstance: DrawerInstance = {
   setDrawerProps,
-  emitVisible: undefined,
+  emitOpen: undefined,
 }
 
 const instance = getCurrentInstance()
@@ -43,7 +43,7 @@ const getProps = computed((): DrawerProps => {
     placement: 'right',
     ...unref(attrs),
     ...unref(getMergeProps),
-    visible: unref(visibleRef),
+    open: unref(openRef),
   }
   opt.title = undefined
   const { isDetail, width, wrapClassName, getContainer } = opt
@@ -89,20 +89,20 @@ const getLoading = computed(() => {
 })
 
 watch(
-  () => props.visible,
+  () => props.open,
   (newVal, oldVal) => {
     if (newVal !== oldVal)
-      visibleRef.value = newVal
+      openRef.value = newVal
   },
   { deep: true },
 )
 
 watch(
-  () => visibleRef.value,
-  (visible) => {
+  () => openRef.value,
+  (open) => {
     nextTick(() => {
-      emit('visible-change', visible)
-      instance && drawerInstance.emitVisible?.(visible, instance.uid)
+      emit('open-change', open)
+      instance && drawerInstance.emitOpen?.(open, instance.uid)
     })
   },
 )
@@ -113,18 +113,18 @@ async function onClose(e: Recordable) {
   emit('close', e)
   if (closeFunc && isFunction(closeFunc)) {
     const res = await closeFunc()
-    visibleRef.value = !res
+    openRef.value = !res
     return
   }
-  visibleRef.value = false
+  openRef.value = false
 }
 
 function setDrawerProps(props: Partial<DrawerProps>): void {
   // Keep the last setDrawerProps
   propsRef.value = deepMerge(unref(propsRef) || ({} as any), props)
 
-  if (Reflect.has(props, 'visible'))
-    visibleRef.value = !!props.visible
+  if (Reflect.has(props, 'open'))
+    openRef.value = !!props.open
 }
 
 function handleOk() {

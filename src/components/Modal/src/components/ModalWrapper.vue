@@ -16,7 +16,7 @@ const props = defineProps({
   minHeight: { type: Number, default: 200 },
   height: { type: Number },
   footerOffset: { type: Number, default: 0 },
-  visible: { type: Boolean },
+  open: { type: Boolean },
   fullScreen: { type: Boolean },
   loadingTip: { type: String },
 })
@@ -89,8 +89,8 @@ async function scrollTop() {
 
 async function setModalHeight() {
   // 解决在弹窗关闭的时候监听还存在,导致再次打开弹窗没有高度
-  // 加上这个,就必须在使用的时候传递父级的visible
-  if (!props.visible)
+  // 加上这个,就必须在使用的时候传递父级的open
+  if (!props.open)
     return
   const wrapperRefDom = unref(wrapperRef)
   if (!wrapperRefDom)

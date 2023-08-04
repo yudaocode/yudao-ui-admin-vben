@@ -42,7 +42,7 @@ export default defineComponent({
     const table = useTableContext()
     const isEdit = ref(false)
     const elRef = ref()
-    const ruleVisible = ref(false)
+    const ruleOpen = ref(false)
     const ruleMessage = ref('')
     const optionsRef = ref<LabelValueOptions>([])
     const currentValueRef = ref<any>(props.value)
@@ -54,8 +54,8 @@ export default defineComponent({
     const getComponent = computed(() => props.column?.editComponent || 'Input')
     const getRule = computed(() => props.column?.editRule)
 
-    const getRuleVisible = computed(() => {
-      return unref(ruleMessage) && unref(ruleVisible)
+    const getRuleOpen = computed(() => {
+      return unref(ruleMessage) && unref(ruleOpen)
     })
 
     const getIsCheckComp = computed(() => {
@@ -211,7 +211,7 @@ export default defineComponent({
 
       if (editRule) {
         if (isBoolean(editRule) && !currentValue && !isNumber(currentValue)) {
-          ruleVisible.value = true
+          ruleOpen.value = true
           const component = unref(getComponent)
           ruleMessage.value = createPlaceholderMessage(component)
           return false
@@ -220,7 +220,7 @@ export default defineComponent({
           const res = await editRule(currentValue, record as Recordable)
           if (res) {
             ruleMessage.value = res
-            ruleVisible.value = true
+            ruleOpen.value = true
             return false
           }
           else {
@@ -383,7 +383,7 @@ export default defineComponent({
       getRule,
       onClickOutside,
       ruleMessage,
-      getRuleVisible,
+      getRuleOpen,
       getComponentProps,
       handleOptionsChange,
       getWrapperStyle,
@@ -422,7 +422,7 @@ export default defineComponent({
                 {...this.getComponentProps}
                 component={this.getComponent}
                 style={this.getWrapperStyle}
-                popoverVisible={this.getRuleVisible}
+                popoverOpen={this.getRuleOpen}
                 rule={this.getRule}
                 ruleMessage={this.ruleMessage}
                 class={this.getWrapperClass}

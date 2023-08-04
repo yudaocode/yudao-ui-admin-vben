@@ -135,7 +135,7 @@ async function init(isReset = false) {
   // 是否列展示全选
   state.checkAll = checkList.length === columns.length
   inited = false
-  handleVisibleChange()
+  handleOpenChange()
   state.checkedList = checkList
 }
 
@@ -190,7 +190,7 @@ function reset() {
 }
 
 // Open the pop-up window for drag and drop initialization
-function handleVisibleChange() {
+function handleOpenChange() {
   if (inited)
     return
   nextTick(() => {
@@ -277,9 +277,9 @@ function setColumns(columns: BasicColumn[] | string[]) {
   isSetColumnsFromThis = true
   table.setColumns(columns)
   const data: ColumnChangeParam[] = unref(plainSortOptions).map((col) => {
-    const visible
+    const open
       = columns.findIndex((c: BasicColumn | string) => c === col.value || (typeof c !== 'string' && c.dataIndex === col.value)) !== -1
-    return { dataIndex: col.value, fixed: col.fixed, visible }
+    return { dataIndex: col.value, fixed: col.fixed, open }
   })
 
   emit('columns-change', data)
@@ -307,7 +307,7 @@ function updateSortOption(column: BasicColumn) {
       trigger="click"
       :overlay-class-name="`${prefixCls}__cloumn-list`"
       :get-popup-container="getPopupContainer"
-      @visible-change="handleVisibleChange"
+      @open-change="handleOpenChange"
     >
       <template #title>
         <div :class="`${prefixCls}__popover-title`">

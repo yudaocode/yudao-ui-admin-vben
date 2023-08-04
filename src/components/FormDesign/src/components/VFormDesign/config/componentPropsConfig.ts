@@ -761,7 +761,7 @@ const componentAttrs: IBaseComponentProps = {
       },
     },
     {
-      name: 'tooltipVisible',
+      name: 'tooltipOpen',
       label: '始终显示Tooltip',
       component: 'Checkbox',
     },
