@@ -26,8 +26,7 @@ export function useContentViewHeight() {
     () => {
       contentHeight.value = window.innerHeight
     },
-    100,
-    { immediate: true },
+    { wait: 100, immediate: true },
   )
 
   function setPageHeight(height: number) {
