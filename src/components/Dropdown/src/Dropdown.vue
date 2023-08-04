@@ -65,7 +65,7 @@ const getAttr = (key: string | number) => ({ key })
       <AMenu :selected-keys="selectedKeys">
         <template v-for="item in dropMenuList" :key="`${item.event}`">
           <AMenuItem v-bind="getAttr(item.event)" :disabled="item.disabled" @click="handleClickMenu(item)">
-            <APopconfirm v-if="popconfirm && item.popConfirm" v-bind="getPopConfirmAttrs(item.popConfirm)">
+            <APopconfirm v-if="popconfirm && item.popConfirm" v-bind="getPopConfirmAttrs(item.popConfirm)" :disabled="item.disabled">
               <template v-if="item.popConfirm.icon" #icon>
                 <Icon :icon="item.popConfirm.icon" />
               </template>
