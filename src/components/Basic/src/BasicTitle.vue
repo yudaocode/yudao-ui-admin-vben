@@ -73,4 +73,10 @@ const getClass = computed(() => [
     margin-left: 10px;
   }
 }
+
+html[data-theme="dark"] {
+  .@{prefix-cls} {
+    color: rgb(255 255 255 85%);
+  }
+}
 </style>

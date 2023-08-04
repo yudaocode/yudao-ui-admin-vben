@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="m-4 mr-0 overflow-hidden bg-white">
+  <div class="m-4 mr-0 overflow-hidden">
     <BasicTree
       title="部门列表"
       toolbar
