@@ -18,6 +18,7 @@ const props = defineProps({
   btnProps: { type: Object as PropType<ButtonProps> },
   btnText: { type: String, default: '' },
   uploadApi: { type: Function as PropType<({ file, name }) => Promise<void>> },
+  size: { type: Number, default: 5 },
 })
 
 const emit = defineEmits(['update:value', 'change'])
@@ -70,7 +71,7 @@ defineExpose({ openModal: openModal.bind(null, true), closeModal })
       {{ btnText ? btnText : t('component.cropper.selectImage') }}
     </a-button>
 
-    <CopperModal :upload-api="uploadApi" :src="sourceValue" @register="register" @upload-success="handleUploadSuccess" />
+    <CopperModal :upload-api="uploadApi" :src="sourceValue" :size="size" @register="register" @upload-success="handleUploadSuccess" />
   </div>
 </template>
 

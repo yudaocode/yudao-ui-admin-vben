@@ -17,9 +17,10 @@ const props = defineProps({
     type: Function as PropType<(params: apiFunParams) => Promise<any>>,
   },
   src: { type: String },
+  size: { type: Number },
 })
 
-const emit = defineEmits(['uploadSuccess', 'register'])
+const emit = defineEmits(['uploadSuccess', 'uploadError', 'register'])
 
 interface apiFunParams { file: Blob; name: string; filename: string }
 
@@ -36,6 +37,10 @@ const { t } = useI18n()
 
 // Block upload
 function handleBeforeUpload(file: File) {
+  if (props.size && file.size > 1024 * 1024 * props.size) {
+    emit('uploadError', { msg: t('component.cropper.imageTooBig') })
+    return
+  }
   const reader = new FileReader()
   reader.readAsDataURL(file)
   src.value = ''
