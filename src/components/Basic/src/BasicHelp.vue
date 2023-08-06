@@ -96,7 +96,6 @@ export default defineComponent({
   display: inline-block;
   margin-left: 6px;
   font-size: 14px;
-  color: @text-color-help-dark;
   cursor: pointer;
 
   &__wrap {

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { infoSchema } from './apiErrorLog.data'
 import { BasicModal, useModalInner } from '@/components/Modal'

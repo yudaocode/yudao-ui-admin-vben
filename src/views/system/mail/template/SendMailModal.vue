@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { baseSendSchemas, keyPrefix } from './template.data'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import type { FormSchema } from '@/components/Form'

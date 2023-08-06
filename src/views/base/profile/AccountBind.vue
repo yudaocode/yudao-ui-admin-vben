@@ -1,13 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { List } from 'ant-design-vue'
 import { onMounted } from 'vue'
 import { accountBindList } from './data'
 import { Icon } from '@/components/Icon'
 import { CollapseContainer } from '@/components/Container/index'
 import { getUserProfileApi } from '@/api/base/profile'
-
-const ListItem = List.Item
-const ListItemMeta = List.Item.Meta
 
 async function init() {
   const userInfo = await getUserProfileApi()
@@ -16,7 +13,7 @@ async function init() {
     if (userInfo.socialUsers) {
       for (const j in userInfo.socialUsers) {
         if (accountBindList[i].key === userInfo.socialUsers[j].type) {
-          accountBindList[i].title = '已綁定'
+          accountBindList[i].title = '已绑定'
           break
         }
       }
@@ -32,8 +29,8 @@ onMounted(async () => {
   <CollapseContainer title="账号绑定" :can-expan="false">
     <List>
       <template v-for="item in accountBindList" :key="item.key">
-        <ListItem>
-          <ListItemMeta>
+        <List.Item>
+          <List.Item.Meta>
             <template #avatar>
               <Icon v-if="item.avatar" class="avatar" :icon="item.avatar" :color="item.color" />
             </template>
@@ -46,8 +43,8 @@ onMounted(async () => {
             <template #description>
               <div>{{ item.description }}</div>
             </template>
-          </ListItemMeta>
-        </ListItem>
+          </List.Item.Meta>
+        </List.Item>
       </template>
     </List>
   </CollapseContainer>

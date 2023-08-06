@@ -68,7 +68,7 @@
     &-light {
       .@{menu-prefix-cls}-item,
       .@{menu-prefix-cls}-submenu-title {
-        color: @text-color-base;
+        color: @text-color;
 
         &-selected {
           z-index: 2;
@@ -88,7 +88,7 @@
     padding: 0;
     margin: 0;
     font-size: @font-size-base;
-    color: @text-color-base;
+    color: @text-color;
     list-style: none;
     outline: none;
 
@@ -232,6 +232,7 @@
       color: @menu-dark-subsidiary-color;
       &-active:not(.@{menu-prefix-cls}-submenu) {
         color: #fff !important;
+        background-color: #0b55a4;
       }
 
       &:hover {

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { Input } from 'ant-design-vue'
 import { LockOutlined } from '@ant-design/icons-vue'

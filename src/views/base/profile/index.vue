@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TabPane, Tabs } from 'ant-design-vue'
 import { ref } from 'vue'
 import { settingList } from './data'

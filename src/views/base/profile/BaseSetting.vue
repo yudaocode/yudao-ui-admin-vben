@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Button, Col, Row } from 'ant-design-vue'
 import { computed, onMounted } from 'vue'
 import { baseSetschemas } from './data'

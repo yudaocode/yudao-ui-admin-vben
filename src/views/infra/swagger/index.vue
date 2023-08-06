@@ -1,6 +1,8 @@
-<script setup lang="ts" name="InfraSwagger">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { IFrame } from '@/components/IFrame'
+
+defineOptions({ name: 'InfraSwagger' })
 
 // knife4j
 // const src = ref(import.meta.env.VITE_GLOB_BASE_URL + '/doc.html')

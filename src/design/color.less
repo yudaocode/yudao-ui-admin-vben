@@ -18,15 +18,7 @@ html {
 
 @content-bg: #f4f7f9;
 
-@text-color: fade(@black, 85%);
-
-@text-color-secondary: fade(@black, 45%);
-
-@text-color-inverse: @white;
-
-@icon-color: inherit;
-
-@icon-color-hover: fade(@black, 75%);
+@text-color: var(--text-color);
 
 @component-background: #fff;
 
@@ -48,33 +40,6 @@ html {
 //   fontSize: @fontSize;
 // }
 @iconify-bg-color: #5551;
-
-// =================================
-// ==============border-color=======
-// =================================
-@border-color-base: #fff;
-
-// Dark-dark
-@border-color-dark: #b6b7b9;
-
-// Dark-light
-@border-color-shallow-dark: #cececd;
-
-// Light-dark
-@border-color-light: @border-color-base;
-
-// =================================
-// ==============message==============
-// =================================
-
-// success-bg-color
-@success-background-color: #f1f9ec;
-// info-bg-color
-@info-background-color: #e8eff8;
-// warn-bg-color
-@warning-background-color: #fdf6ed;
-// danger-bg-color
-@danger-background-color: #fef0f0;
 
 // =================================
 // ==============Header=============
@@ -100,46 +65,3 @@ html {
 // trigger
 @trigger-dark-hover-bg-color: rgba(255, 255, 255, 0.2);
 @trigger-dark-bg-color: rgba(255, 255, 255, 0.1);
-
-// =================================
-// ==============tree============
-// =================================
-// tree item hover background
-@tree-hover-background-color: #f5f7fa;
-// tree item hover font color
-@tree-hover-font-color: #f5f7fa;
-
-// =================================
-// ==============link============
-// =================================
-// =================================
-// ==============Text color-=============
-// =================================
-
-// Main text color
-@text-color-base: @text-color;
-
-// Label color
-@text-color-call-out: #606266;
-
-// Auxiliary information color-dark
-@text-color-help-dark: #909399;
-
-// =================================
-// ==============breadcrumb=========
-// =================================
-@breadcrumb-item-normal-color: #999;
-// =================================
-// ==============button=============
-// =================================
-
-@button-ghost-color: @white;
-@button-ghost-hover-color: lighten(@white, 10%);
-@button-ghost-hover-bg-color: #e1ebf6;
-@button-ghost-active-color: darken(@white, 10%);
-
-@button-cancel-color: @text-color-call-out;
-
-@button-cancel-bg-color: @white;
-@button-cancel-border-color: @border-color-shallow-dark;
-

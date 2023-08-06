@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { baseSendSchemas } from './smsTemplate.data'
 import { BasicModal, useModalInner } from '@/components/Modal'

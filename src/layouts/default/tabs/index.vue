@@ -23,8 +23,6 @@ import { listenerRouteChange } from '@/logics/mitt/routeChange'
 
 defineOptions({ name: 'MultipleTabs' })
 
-const TabPane = Tabs.TabPane
-
 const affixTextList = initAffixTabs()
 const activeKeyRef = ref('')
 
@@ -101,11 +99,11 @@ function handleEdit(targetKey: string) {
       @edit="handleEdit"
     >
       <template v-for="item in getTabsState" :key="item.query ? item.fullPath : item.path">
-        <TabPane :closable="!(item && item.meta && item.meta.affix)">
+        <Tabs.TabPane :closable="!(item && item.meta && item.meta.affix)">
           <template #tab>
             <TabContent :tab-item="item" />
           </template>
-        </TabPane>
+        </Tabs.TabPane>
       </template>
 
       <template v-if="getShowRedo || getShowQuick" #rightExtra>

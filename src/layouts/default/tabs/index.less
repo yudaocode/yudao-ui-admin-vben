@@ -13,7 +13,7 @@
   .ant-tabs.ant-tabs-card {
     .ant-tabs-nav {
       height: @multiple-height;
-      padding-left: 10px;
+      // padding-left: 10px;
       margin: 0;
       background-color: var(--component-background);
       border: 0;
@@ -28,7 +28,7 @@
         position: relative;
         z-index: 1;
         height: @multiple-height;
-        padding: 0 16px;
+        padding: 0 6px;
         margin: 0 -14px 0 0 !important;
         line-height: @multiple-height;
         color: var(--text-color);
@@ -45,7 +45,7 @@
 
         &:hover {
           z-index: 2;
-          padding: 0 22px;
+          padding: 0 12px;
 
           .ant-tabs-tab-remove .anticon-close {
             opacity: 1;
@@ -85,38 +85,43 @@
           }
         }
 
-        // > div {
-        //   display: flex;
-        //   justify-content: center;
-        //   align-items: center;
-        // }
+        > div {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
 
         svg {
-          fill: @text-color-base;
+          fill: @text-color;
         }
 
         &:first-child {
-          padding: 0 16px !important;
+          padding: 0 6px !important;
         }
 
         &:active {
-          padding: 0 16px !important;
+          padding: 0 6px !important;
         }
       }
 
       .ant-tabs-tab-active {
         position: relative;
         z-index: 3;
-        padding: 0 16px;
+        padding: 0 6px;
         font-weight: inherit;
-        background: #d4ebff;
+        background: #004b89;
         border: 0;
+
+        .ant-tabs-tab-btn {
+          color: #fff;
+        }
 
         .ant-tabs-tab-remove .anticon-close {
           opacity: 1;
 
           svg {
             width: 0.6em;
+            fill: #fff;
           }
         }
 
@@ -130,7 +135,7 @@
       padding: 0 6px;
 
       .ant-tabs-tab {
-        margin-right: -20px !important;
+        margin-right: -6px !important;
       }
     }
   }
@@ -175,7 +180,7 @@
       border-left: 1px solid var(--border-color);
 
       &:hover {
-        color: @text-color-base;
+        color: @text-color;
       }
 
       span[role="img"] {
