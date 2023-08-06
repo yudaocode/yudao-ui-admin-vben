@@ -80,12 +80,11 @@ export const useAppStore = defineStore('app', {
 
     setDarkMode(mode: ThemeEnum): void {
       this.darkMode = mode
-      console.info(mode)
       this.setThemeConfig()
       localStorage.setItem(APP_DARK_MODE_KEY_, mode)
     },
+
     setThemeConfig(color?: string): void {
-      console.info(this.darkMode)
       let themeConfig = reactive<ThemeConfig>({
         algorithm: antdTheme.defaultAlgorithm,
         token: {
@@ -109,7 +108,6 @@ export const useAppStore = defineStore('app', {
           components: {},
         }
       }
-      console.info(themeConfig)
       this.themeConfig = themeConfig
     },
 
@@ -122,8 +120,9 @@ export const useAppStore = defineStore('app', {
     },
 
     setProjectConfig(config: DeepPartial<ProjectConfig>): void {
-      this.projectConfig = deepMerge(this.projectConfig || {}, config)
+      this.projectConfig = deepMerge(this.projectConfig, config)
       Persistent.setLocal(PROJ_CFG_KEY, this.projectConfig)
+      this.setThemeConfig(config.themeColor)
     },
 
     setMenuSetting(setting: Partial<MenuSetting>): void {

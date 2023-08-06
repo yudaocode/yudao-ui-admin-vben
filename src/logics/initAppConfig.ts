@@ -50,6 +50,7 @@ export function initAppConfigStore() {
   appStore.setProjectConfig(projCfg)
 
   // init dark mode
+  appStore.setDarkMode(darkMode as ThemeEnum)
   updateDarkTheme(darkMode)
   if (darkMode === ThemeEnum.DARK) {
     updateHeaderBgColor()
