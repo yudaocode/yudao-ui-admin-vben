@@ -1,4 +1,4 @@
-<script setup lang="ts" name="UserDropdown">
+<script lang="ts" setup>
 import { Dropdown, Menu, MenuDivider } from 'ant-design-vue'
 import type { MenuInfo } from 'ant-design-vue/lib/menu/src/interface'
 import { computed } from 'vue'
@@ -13,6 +13,8 @@ import { propTypes } from '@/utils/propTypes'
 import { openWindow } from '@/utils'
 import { useGo } from '@/hooks/web/usePage'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
+
+defineOptions({ name: 'UserDropdown' })
 
 defineProps({
   theme: propTypes.oneOf(['dark', 'light']),

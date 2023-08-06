@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { theme as antdTheme } from 'ant-design-vue/es'
 import type { ThemeConfig } from 'ant-design-vue/es/config-provider/context'
 import { reactive } from 'vue'
+import { primaryColor } from '../../../build/config/themeConfig'
 import type { AppSizeType, HeaderSetting, MenuSetting, MultiTabsSetting, ProjectConfig, TransitionSetting } from '@/types/config'
 import type { BeforeMiniState } from '@/types/store'
 
@@ -91,7 +92,7 @@ export const useAppStore = defineStore('app', {
           colorBgContainer: '#fff',
           colorPrimary: color || (this.projectConfig
             ? this.projectConfig.themeColor
-            : '#1890ff'),
+            : primaryColor),
         },
         components: {},
       })
@@ -103,7 +104,7 @@ export const useAppStore = defineStore('app', {
             colorBgContainer: 'rgb(36, 37, 37)',
             colorPrimary: color || (this.projectConfig
               ? this.projectConfig.themeColor
-              : '#1890ff'),
+              : primaryColor),
           },
           components: {},
         }
@@ -126,6 +127,8 @@ export const useAppStore = defineStore('app', {
     },
 
     setMenuSetting(setting: Partial<MenuSetting>): void {
+      if (!this.projectConfig)
+        return
       this.projectConfig.menuSetting = deepMerge(this.projectConfig.menuSetting, setting)
       Persistent.setLocal(PROJ_CFG_KEY, this.projectConfig)
     },

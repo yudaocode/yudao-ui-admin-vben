@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { List } from 'ant-design-vue'
 import { secureSettingList } from './data'
 import PasswordModal from './PasswordModal.vue'

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { logSchema } from './mailLog.data'
 import { BasicModal, useModalInner } from '@/components/Modal'

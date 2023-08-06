@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { List, Switch } from 'ant-design-vue'
 import { msgNotifyList } from './data'
 import { CollapseContainer } from '@/components/Container/index'

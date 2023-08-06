@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import type { MessageInfo } from './message.data'
 import { infoSchema } from './message.data'

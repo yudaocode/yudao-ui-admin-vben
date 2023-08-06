@@ -1,11 +1,11 @@
-<script lang="ts" setup extends="Button">
+<script lang="ts" setup>
 import { Button } from 'ant-design-vue'
 import { computed, unref } from 'vue'
 import { buttonProps } from './props'
 import { Icon } from '@/components/Icon'
 import { useAttrs } from '@/hooks/core/useAttrs'
 
-defineOptions({ name: 'AButton', indeterminate: false })
+defineOptions({ name: 'AButton', extends: Button, indeterminate: false })
 
 const props = defineProps(buttonProps)
 // get component class
