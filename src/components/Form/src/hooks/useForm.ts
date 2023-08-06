@@ -1,7 +1,7 @@
-import type { FormProps, FormActionType, UseFormReturnType, FormSchema } from '../types/form'
 import type { NamePath } from 'ant-design-vue/lib/form/interface'
+import { nextTick, onUnmounted, ref, unref, watch } from 'vue'
+import type { FormActionType, FormProps, FormSchema, UseFormReturnType } from '../types/form'
 import type { DynamicProps } from '@/types/utils'
-import { ref, onUnmounted, unref, nextTick, watch } from 'vue'
 import { isProdMode } from '@/utils/env'
 import { error } from '@/utils/log'
 import { getDynamicProps } from '@/utils'
@@ -16,20 +16,21 @@ export function useForm(props?: Props): UseFormReturnType {
 
   async function getForm() {
     const form = unref(formRef)
-    if (!form) {
+    if (!form)
       error('The form instance has not been obtained, please make sure that the form has been rendered when performing the form operation!')
-    }
+
     await nextTick()
     return form as FormActionType
   }
 
   function register(instance: FormActionType) {
-    isProdMode() &&
-      onUnmounted(() => {
+    isProdMode()
+      && onUnmounted(() => {
         formRef.value = null
         loadedRef.value = null
       })
-    if (unref(loadedRef) && isProdMode() && instance === unref(formRef)) return
+    if (unref(loadedRef) && isProdMode() && instance === unref(formRef))
+      return
 
     formRef.value = instance
     loadedRef.value = true
@@ -41,8 +42,8 @@ export function useForm(props?: Props): UseFormReturnType {
       },
       {
         immediate: true,
-        deep: true
-      }
+        deep: true,
+      },
     )
   }
 
@@ -72,9 +73,8 @@ export function useForm(props?: Props): UseFormReturnType {
     },
 
     resetFields: async () => {
-      getForm().then(async (form) => {
-        await form.resetFields()
-      })
+      const form = await getForm()
+      await form.resetFields()
     },
 
     removeSchemaByField: async (field: string | string[]) => {
@@ -109,7 +109,7 @@ export function useForm(props?: Props): UseFormReturnType {
     validateFields: async (nameList?: NamePath[]): Promise<Recordable> => {
       const form = await getForm()
       return form.validateFields(nameList)
-    }
+    },
   }
 
   return [register, methods]

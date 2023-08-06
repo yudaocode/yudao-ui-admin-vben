@@ -14,7 +14,7 @@ export const APP_PRESET_COLOR_LIST: string[] = [
   '#ee4f12',
   '#0096c7',
   '#9c27b0',
-  '#ff9800'
+  '#ff9800',
 ]
 
 // 顶部背景色预设
@@ -29,7 +29,7 @@ export const HEADER_PRESET_BG_COLOR_LIST: string[] = [
   '#24292e',
   '#394664',
   '#001529',
-  '#383f45'
+  '#383f45',
 ]
 
 // 左侧菜单背景色预设
@@ -44,5 +44,5 @@ export const SIDE_BAR_BG_COLOR_LIST: string[] = [
   '#001628',
   '#28333E',
   '#344058',
-  '#383f45'
+  '#383f45',
 ]

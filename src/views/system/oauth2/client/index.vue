@@ -1,44 +1,12 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:oauth2-client:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:oauth2-client:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:oauth2-client:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <ClientModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import ClientModal from './ClientModal.vue'
+import { columns, searchFormSchema } from './client.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ClientModal from './ClientModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteOAuth2Client, getOAuth2ClientPage } from '@/api/system/oauth2/client'
-import { columns, searchFormSchema } from './client.data'
 
 defineOptions({ name: 'SystemClient' })
 
@@ -57,8 +25,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -75,3 +43,36 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:oauth2-client:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:oauth2-client:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:oauth2-client:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <ClientModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

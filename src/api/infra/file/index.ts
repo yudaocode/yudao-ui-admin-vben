@@ -24,5 +24,5 @@ export function getFilePage(params: FilePageReqVO) {
 
 // 删除文件
 export function deleteFile(id: number) {
-  return defHttp.delete({ url: '/infra/file/delete?id=' + id })
+  return defHttp.delete({ url: `/infra/file/delete?id=${id}` })
 }

@@ -1,47 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:post:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['system:post:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:post:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:post:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <PostModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import PostModal from './PostModal.vue'
+import { columns, searchFormSchema } from './post.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import PostModal from './PostModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { PostExportReqVO, deletePost, exportPost, getPostPage } from '@/api/system/post'
-import { columns, searchFormSchema } from './post.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { PostExportReqVO } from '@/api/system/post'
+import { deletePost, exportPost, getPostPage } from '@/api/system/post'
 
 defineOptions({ name: 'SystemPost' })
 
@@ -60,8 +26,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -80,7 +46,7 @@ async function handleExport() {
     async onOk() {
       await exportPost(getForm().getFieldsValue() as PostExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -90,3 +56,39 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:post:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['system:post:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:post:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:post:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <PostModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

@@ -1,11 +1,11 @@
 import type { Ref } from 'vue'
 
-import { computed, unref, onMounted, nextTick } from 'vue'
+import { computed, nextTick, onMounted, unref } from 'vue'
 
+import { useDebounceFn } from '@vueuse/core'
 import { TriggerEnum } from '@/enums/menuEnum'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useDebounceFn } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 
 /**
@@ -22,8 +22,8 @@ export function useSiderEvent() {
   function onBreakpointChange(broken: boolean) {
     appStore.setProjectConfig({
       menuSetting: {
-        siderHidden: broken
-      }
+        siderHidden: broken,
+      },
     })
   }
 
@@ -43,11 +43,11 @@ export function useTrigger(getIsMobile: Ref<boolean>) {
   })
 
   const getTriggerAttr = computed(() => {
-    if (unref(getShowTrigger)) {
+    if (unref(getShowTrigger))
       return {}
-    }
+
     return {
-      trigger: null
+      trigger: null,
     }
   })
 
@@ -71,10 +71,11 @@ export function useDragLine(siderRef: Ref<any>, dragBarRef: Ref<any>, mix = fals
 
   function getEl(elRef: Ref<ElRef | ComponentRef>): any {
     const el = unref(elRef)
-    if (!el) return null
-    if (Reflect.has(el, '$el')) {
+    if (!el)
+      return null
+    if (Reflect.has(el, '$el'))
       return (unref(elRef) as ComponentRef)?.$el
-    }
+
     return unref(elRef)
   }
 
@@ -87,7 +88,7 @@ export function useDragLine(siderRef: Ref<any>, dragBarRef: Ref<any>, mix = fals
       iT < 0 && (iT = 0)
       iT > maxT && (iT = maxT)
       iT < minT && (iT = minT)
-      ele.style.left = wrap.style.width = iT + 'px'
+      ele.style.left = wrap.style.width = `${iT}px`
       return false
     }
   }
@@ -99,16 +100,16 @@ export function useDragLine(siderRef: Ref<any>, dragBarRef: Ref<any>, mix = fals
       document.onmousemove = null
       document.onmouseup = null
       wrap.style.transition = 'width 0.2s'
-      const width = parseInt(wrap.style.width)
+      const width = Number.parseInt(wrap.style.width)
 
       if (!mix) {
         const miniWidth = unref(getMiniWidthNumber)
-        if (!unref(getCollapsed)) {
+        if (!unref(getCollapsed))
           width > miniWidth + 20 ? setMenuSetting({ menuWidth: width }) : setMenuSetting({ collapsed: true })
-        } else {
+        else
           width > miniWidth && setMenuSetting({ collapsed: false, menuWidth: width })
-        }
-      } else {
+      }
+      else {
         setMenuSetting({ menuWidth: width })
       }
 
@@ -118,9 +119,11 @@ export function useDragLine(siderRef: Ref<any>, dragBarRef: Ref<any>, mix = fals
 
   function changeWrapWidth() {
     const ele = getEl(dragBarRef)
-    if (!ele) return
+    if (!ele)
+      return
     const wrap = getEl(siderRef)
-    if (!wrap) return
+    if (!wrap)
+      return
 
     ele.onmousedown = (e: any) => {
       wrap.style.transition = 'unset'

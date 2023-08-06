@@ -1,48 +1,48 @@
 <script lang="tsx">
 import type { CSSProperties } from 'vue'
 import { computed, defineComponent, nextTick, ref, toRaw, unref, watchEffect } from 'vue'
-import type { BasicColumn } from '../../types/table'
-import type { EditRecordRow } from './index'
 import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue'
+import { pick, set } from 'lodash-es'
+import { Spin } from 'ant-design-vue'
+import type { BasicColumn } from '../../types/table'
+import { useTableContext } from '../../hooks/useTableContext'
 import { CellComponent } from './CellComponent'
+import { createPlaceholderMessage } from './helper'
+import type { EditRecordRow } from './index'
 
 import { useDesign } from '@/hooks/web/useDesign'
-import { useTableContext } from '../../hooks/useTableContext'
 
 import clickOutside from '@/directives/clickOutside'
 
 import { propTypes } from '@/utils/propTypes'
 import { isArray, isBoolean, isFunction, isNumber, isString } from '@/utils/is'
-import { createPlaceholderMessage } from './helper'
-import { pick, set } from 'lodash-es'
 import { treeToList } from '@/utils/helper/treeHelper'
-import { Spin } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'EditableCell',
   components: { FormOutlined, CloseOutlined, CheckOutlined, CellComponent, Spin },
   directives: {
-    clickOutside
+    clickOutside,
   },
   props: {
     value: {
       type: [String, Number, Boolean, Object] as PropType<string | number | boolean | Recordable>,
-      default: ''
+      default: '',
     },
     record: {
-      type: Object as PropType<EditRecordRow>
+      type: Object as PropType<EditRecordRow>,
     },
     column: {
       type: Object as PropType<BasicColumn>,
-      default: () => ({})
+      default: () => ({}),
     },
-    index: propTypes.number
+    index: propTypes.number,
   },
   setup(props) {
     const table = useTableContext()
     const isEdit = ref(false)
     const elRef = ref()
-    const ruleVisible = ref(false)
+    const ruleOpen = ref(false)
     const ruleMessage = ref('')
     const optionsRef = ref<LabelValueOptions>([])
     const currentValueRef = ref<any>(props.value)
@@ -54,13 +54,26 @@ export default defineComponent({
     const getComponent = computed(() => props.column?.editComponent || 'Input')
     const getRule = computed(() => props.column?.editRule)
 
-    const getRuleVisible = computed(() => {
-      return unref(ruleMessage) && unref(ruleVisible)
+    const getRuleOpen = computed(() => {
+      return unref(ruleMessage) && unref(ruleOpen)
     })
 
     const getIsCheckComp = computed(() => {
       const component = unref(getComponent)
       return ['Checkbox', 'Switch'].includes(component)
+    })
+
+    const getDisable = computed(() => {
+      const { editDynamicDisabled } = props.column
+      let disabled = false
+      if (isBoolean(editDynamicDisabled))
+        disabled = editDynamicDisabled
+
+      if (isFunction(editDynamicDisabled)) {
+        const { record } = props
+        disabled = editDynamicDisabled({ record })
+      }
+      return disabled
     })
 
     const getComponentProps = computed(() => {
@@ -74,9 +87,8 @@ export default defineComponent({
       let compProps = props.column?.editComponentProps ?? {}
       const { record, column, index } = props
 
-      if (isFunction(compProps)) {
+      if (isFunction(compProps))
         compProps = compProps({ text: val, record, column, index }) ?? {}
-      }
 
       // 用临时变量存储 onChange方法 用于 handleChange方法 获取，并删除原始onChange, 防止存在两个 onChange
       compProps.onChangeTemp = compProps.onChange
@@ -84,9 +96,9 @@ export default defineComponent({
 
       const component = unref(getComponent)
       const apiSelectProps: Recordable = {}
-      if (component === 'ApiSelect') {
+      if (component === 'ApiSelect')
         apiSelectProps.cache = true
-      }
+
       upEditDynamicDisabled(record, column, value)
       return {
         size: 'small',
@@ -95,54 +107,43 @@ export default defineComponent({
         ...apiSelectProps,
         ...compProps,
         [valueField]: value,
-        disabled: unref(getDisable)
+        disabled: unref(getDisable),
       } as any
     })
     function upEditDynamicDisabled(record, column, value) {
-      if (!record) return false
+      if (!record)
+        return false
       const { key, dataIndex } = column
-      if (!key && !dataIndex) return
+      if (!key && !dataIndex)
+        return
       const dataKey = (dataIndex || key) as string
       set(record, dataKey, value)
     }
-    const getDisable = computed(() => {
-      const { editDynamicDisabled } = props.column
-      let disabled = false
-      if (isBoolean(editDynamicDisabled)) {
-        disabled = editDynamicDisabled
-      }
-      if (isFunction(editDynamicDisabled)) {
-        const { record } = props
-        disabled = editDynamicDisabled({ record })
-      }
-      return disabled
-    })
+
     const getValues = computed(() => {
       const { editValueMap } = props.column
 
       const value = unref(currentValueRef)
 
-      if (editValueMap && isFunction(editValueMap)) {
+      if (editValueMap && isFunction(editValueMap))
         return editValueMap(value)
-      }
 
       const component = unref(getComponent)
-      if (!component.includes('Select') && !component.includes('Radio')) {
+      if (!component.includes('Select') && !component.includes('Radio'))
         return value
-      }
 
       const options: LabelValueOptions = unref(getComponentProps)?.options ?? (unref(optionsRef) || [])
-      const option = options.find((item) => `${item.value}` === `${value}`)
+      const option = options.find(item => `${item.value}` === `${value}`)
 
       return option?.label ?? value
     })
 
     const getWrapperStyle = computed((): CSSProperties => {
-      if (unref(getIsCheckComp) || unref(getRowEditable)) {
+      if (unref(getIsCheckComp) || unref(getRowEditable))
         return {}
-      }
+
       return {
-        width: 'calc(100% - 48px)'
+        width: 'calc(100% - 48px)',
       }
     })
 
@@ -163,13 +164,13 @@ export default defineComponent({
 
     watchEffect(() => {
       const { editable } = props.column
-      if (isBoolean(editable) || isBoolean(unref(getRowEditable))) {
+      if (isBoolean(editable) || isBoolean(unref(getRowEditable)))
         isEdit.value = !!editable || unref(getRowEditable)
-      }
     })
 
     function handleEdit() {
-      if (unref(getRowEditable) || unref(props.column?.editRow)) return
+      if (unref(getRowEditable) || unref(props.column?.editRow))
+        return
       ruleMessage.value = ''
       isEdit.value = true
       nextTick(() => {
@@ -180,24 +181,25 @@ export default defineComponent({
 
     async function handleChange(e: any) {
       const component = unref(getComponent)
-      if (!e) {
+      if (!e)
         currentValueRef.value = e
-      } else if (component === 'Checkbox') {
+      else if (component === 'Checkbox')
         currentValueRef.value = (e as ChangeEvent).target.checked
-      } else if (component === 'Switch') {
+      else if (component === 'Switch')
         currentValueRef.value = e
-      } else if (e?.target && Reflect.has(e.target, 'value')) {
+      else if (e?.target && Reflect.has(e.target, 'value'))
         currentValueRef.value = (e as ChangeEvent).target.value
-      } else if (isString(e) || isBoolean(e) || isNumber(e) || isArray(e)) {
+      else if (isString(e) || isBoolean(e) || isNumber(e) || isArray(e))
         currentValueRef.value = e
-      }
+
       const onChange = unref(getComponentProps)?.onChangeTemp
-      if (onChange && isFunction(onChange)) onChange(...arguments)
+      if (onChange && isFunction(onChange))
+        onChange(...arguments)
 
       table.emit?.('edit-change', {
         column: props.column,
         value: unref(currentValueRef),
-        record: toRaw(props.record)
+        record: toRaw(props.record),
       })
       handleSubmitRule()
     }
@@ -209,18 +211,19 @@ export default defineComponent({
 
       if (editRule) {
         if (isBoolean(editRule) && !currentValue && !isNumber(currentValue)) {
-          ruleVisible.value = true
+          ruleOpen.value = true
           const component = unref(getComponent)
           ruleMessage.value = createPlaceholderMessage(component)
           return false
         }
         if (isFunction(editRule)) {
           const res = await editRule(currentValue, record as Recordable)
-          if (!!res) {
+          if (res) {
             ruleMessage.value = res
-            ruleVisible.value = true
+            ruleOpen.value = true
             return false
-          } else {
+          }
+          else {
             ruleMessage.value = ''
             return true
           }
@@ -233,14 +236,17 @@ export default defineComponent({
     async function handleSubmit(needEmit = true, valid = true) {
       if (valid) {
         const isPass = await handleSubmitRule()
-        if (!isPass) return false
+        if (!isPass)
+          return false
       }
 
       const { column, index, record } = props
-      if (!record) return false
+      if (!record)
+        return false
       const { key, dataIndex } = column
       const value = unref(currentValueRef)
-      if (!key && !dataIndex) return
+      if (!key && !dataIndex)
+        return
 
       const dataKey = (dataIndex || key) as string
 
@@ -251,36 +257,37 @@ export default defineComponent({
 
         if (beforeEditSubmit && isFunction(beforeEditSubmit)) {
           spinning.value = true
-          const keys: string[] = columns.map((_column) => _column.dataIndex).filter((field) => !!field) as string[]
+          const keys: string[] = columns.map(_column => _column.dataIndex).filter(field => !!field) as string[]
           let result: any = true
           try {
             result = await beforeEditSubmit({
               record: pick(record, keys),
               index,
               key: dataKey as string,
-              value
+              value,
             })
-          } catch (e) {
+          }
+          catch (e) {
             result = false
-          } finally {
+          }
+          finally {
             spinning.value = false
           }
-          if (result === false) {
+          if (result === false)
             return
-          }
         }
       }
 
       set(record, dataKey, value)
-      //const record = await table.updateTableData(index, dataKey, value);
+      // const record = await table.updateTableData(index, dataKey, value);
       needEmit && table.emit?.('edit-end', { record, index, key: dataKey, value })
       isEdit.value = false
     }
 
     async function handleEnter() {
-      if (props.column?.editRow) {
+      if (props.column?.editRow)
         return
-      }
+
       handleSubmit()
     }
 
@@ -297,19 +304,18 @@ export default defineComponent({
         record,
         index,
         key: dataIndex || key,
-        value: unref(currentValueRef)
+        value: unref(currentValueRef),
       })
     }
 
     function onClickOutside() {
-      if (props.column?.editable || unref(getRowEditable)) {
+      if (props.column?.editable || unref(getRowEditable))
         return
-      }
+
       const component = unref(getComponent)
 
-      if (component.includes('Input')) {
+      if (component.includes('Input'))
         handleCancel()
-      }
     }
 
     // only ApiSelect or TreeSelect
@@ -322,11 +328,12 @@ export default defineComponent({
         listOptions = listOptions.map((item) => {
           return {
             label: item[title],
-            value: item[value]
+            value: item[value],
           }
         })
         optionsRef.value = listOptions as LabelValueOptions
-      } else {
+      }
+      else {
         optionsRef.value = options
       }
     }
@@ -376,7 +383,7 @@ export default defineComponent({
       getRule,
       onClickOutside,
       ruleMessage,
-      getRuleVisible,
+      getRuleOpen,
       getComponentProps,
       handleOptionsChange,
       getWrapperStyle,
@@ -415,7 +422,7 @@ export default defineComponent({
                 {...this.getComponentProps}
                 component={this.getComponent}
                 style={this.getWrapperStyle}
-                popoverVisible={this.getRuleVisible}
+                popoverOpen={this.getRuleOpen}
                 rule={this.getRule}
                 ruleMessage={this.ruleMessage}
                 class={this.getWrapperClass}
@@ -468,7 +475,6 @@ export default defineComponent({
 .edit-cell-rule-popover {
   .ant-popover-inner-content {
     padding: 4px 8px;
-    color: @error-color;
     // border: 1px solid @error-color;
     border-radius: 2px;
   }
@@ -490,20 +496,16 @@ export default defineComponent({
   &__icon {
     &:hover {
       transform: scale(1.2);
-
-      svg {
-        color: @primary-color;
-      }
     }
   }
 
   .ellipsis-cell {
     .cell-content {
-      overflow-wrap: break-word;
-      word-break: break-word;
       overflow: hidden;
-      white-space: nowrap;
       text-overflow: ellipsis;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: nowrap;
     }
   }
 

@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type FormVO = {
+export interface FormVO {
   id: number
   name: string
   conf: string
@@ -22,12 +22,12 @@ export function updateForm(data: FormVO) {
 
 // 删除工作流的表单定义
 export function deleteForm(id: number) {
-  return defHttp.delete({ url: '/bpm/form/delete?id=' + id })
+  return defHttp.delete({ url: `/bpm/form/delete?id=${id}` })
 }
 
 // 获得工作流的表单定义
 export function getForm(id: number) {
-  return defHttp.get({ url: '/bpm/form/get?id=' + id })
+  return defHttp.get({ url: `/bpm/form/get?id=${id}` })
 }
 
 // 获得工作流的表单定义分页

@@ -1,17 +1,8 @@
-<template>
-  <Button v-bind="getBindValue" :class="getButtonClass" @click="onClick">
-    <template #default="data">
-      <Icon :icon="preIcon" v-if="preIcon" :size="iconSize" />
-      <slot v-bind="data || {}"></slot>
-      <Icon :icon="postIcon" v-if="postIcon" :size="iconSize" />
-    </template>
-  </Button>
-</template>
 <script lang="ts" setup extends="Button">
 import { Button } from 'ant-design-vue'
 import { computed, unref } from 'vue'
-import { Icon } from '@/components/Icon'
 import { buttonProps } from './props'
+import { Icon } from '@/components/Icon'
 import { useAttrs } from '@/hooks/core/useAttrs'
 
 defineOptions({ name: 'AButton', indeterminate: false })
@@ -24,11 +15,21 @@ const getButtonClass = computed(() => {
   return [
     {
       [`ant-btn-${color}`]: !!color,
-      [`is-disabled`]: disabled
-    }
+      'is-disabled': disabled,
+    },
   ]
 })
 
 // get inherit binding value
 const getBindValue = computed(() => ({ ...unref(attrs), ...props }))
 </script>
+
+<template>
+  <Button v-bind="getBindValue" :class="getButtonClass" @click="onClick">
+    <template #default="data">
+      <Icon v-if="preIcon" :icon="preIcon" :size="iconSize" />
+      <slot v-bind="data || {}" />
+      <Icon v-if="postIcon" :icon="postIcon" :size="iconSize" />
+    </template>
+  </Button>
+</template>

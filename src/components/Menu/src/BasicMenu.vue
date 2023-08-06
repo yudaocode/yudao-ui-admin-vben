@@ -1,32 +1,14 @@
-<template>
-  <Menu
-    :selectedKeys="menuState.selectedKeys"
-    :defaultSelectedKeys="menuState.defaultSelectedKeys"
-    :mode="mode"
-    :openKeys="getOpenKeys"
-    :inlineIndent="inlineIndent"
-    :theme="theme"
-    @open-change="handleOpenChange"
-    :class="getMenuClass"
-    @click="handleMenuClick"
-    :subMenuOpenDelay="0.2"
-    v-bind="getInlineCollapseOptions"
-  >
-    <template v-for="item in items" :key="item.path">
-      <BasicSubMenuItem :item="item" :theme="theme" :isHorizontal="isHorizontal" />
-    </template>
-  </Menu>
-</template>
 <script lang="ts" setup>
-import type { MenuState } from './types'
-import { computed, unref, reactive, watch, toRefs, ref } from 'vue'
+import { computed, reactive, ref, toRefs, unref, watch } from 'vue'
 import { Menu } from 'ant-design-vue'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRouter } from 'vue-router'
+import type { MenuState } from './types'
 import BasicSubMenuItem from './components/BasicSubMenuItem.vue'
-import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum'
 import { useOpenKeys } from './useOpenKeys'
-import { RouteLocationNormalizedLoaded, useRouter } from 'vue-router'
-import { isFunction } from '@/utils/is'
 import { basicProps } from './props'
+import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum'
+import { isFunction } from '@/utils/is'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { REDIRECT_NAME } from '@/router/constant'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -46,7 +28,7 @@ const menuState = reactive<MenuState>({
   defaultSelectedKeys: [],
   openKeys: [],
   selectedKeys: [],
-  collapsedOpenKeys: []
+  collapsedOpenKeys: [],
 })
 
 const { prefixCls } = useDesign('basic-menu')
@@ -71,8 +53,8 @@ const getMenuClass = computed(() => {
     `justify-${align}`,
     {
       [`${prefixCls}__second`]: !props.isHorizontal && unref(getSplit),
-      [`${prefixCls}__sidebar-hor`]: unref(getIsTopMenu)
-    }
+      [`${prefixCls}__sidebar-hor`]: unref(getIsTopMenu),
+    },
   ]
 })
 
@@ -80,14 +62,15 @@ const getInlineCollapseOptions = computed(() => {
   const isInline = props.mode === MenuModeEnum.INLINE
 
   const inlineCollapseOptions: { inlineCollapsed?: boolean } = {}
-  if (isInline) {
+  if (isInline)
     inlineCollapseOptions.inlineCollapsed = props.mixSider ? false : unref(getCollapsed)
-  }
+
   return inlineCollapseOptions
 })
 
 listenerRouteChange((route) => {
-  if (route.name === REDIRECT_NAME) return
+  if (route.name === REDIRECT_NAME)
+    return
   handleMenuChange(route)
   currentActiveMenu.value = route.meta?.currentActiveMenu as string
 
@@ -97,19 +80,20 @@ listenerRouteChange((route) => {
   }
 })
 
-!props.mixSider &&
-  watch(
+!props.mixSider
+  && watch(
     () => props.items,
     () => {
       handleMenuChange()
-    }
+    },
   )
 
 async function handleMenuClick({ key }) {
   const { beforeClickFn } = props
   if (beforeClickFn && isFunction(beforeClickFn)) {
     const flag = await beforeClickFn(key)
-    if (!flag) return
+    if (!flag)
+      return
   }
   emit('menuClick', key)
 
@@ -124,16 +108,39 @@ async function handleMenuChange(route?: RouteLocationNormalizedLoaded) {
   }
   const path = (route || unref(currentRoute)).meta?.currentActiveMenu || (route || unref(currentRoute)).path
   setOpenKeys(path)
-  if (unref(currentActiveMenu)) return
+  if (unref(currentActiveMenu))
+    return
   if (props.isHorizontal && unref(getSplit)) {
     const parentPath = await getCurrentParentPath(path)
     menuState.selectedKeys = [parentPath]
-  } else {
+  }
+  else {
     const parentPaths = await getAllParentPath(props.items, path)
     menuState.selectedKeys = parentPaths
   }
 }
 </script>
+
+<template>
+  <Menu
+    :selected-keys="menuState.selectedKeys"
+    :default-selected-keys="menuState.defaultSelectedKeys"
+    :mode="mode"
+    :open-keys="getOpenKeys"
+    :inline-indent="inlineIndent"
+    :theme="theme"
+    :class="getMenuClass"
+    :sub-menu-open-delay="0.2"
+    v-bind="getInlineCollapseOptions"
+    @open-change="handleOpenChange"
+    @click="handleMenuClick"
+  >
+    <template v-for="item in items" :key="item.path">
+      <BasicSubMenuItem :item="item" :theme="theme" :is-horizontal="isHorizontal" />
+    </template>
+  </Menu>
+</template>
+
 <style lang="less">
 @import './index.less';
 </style>

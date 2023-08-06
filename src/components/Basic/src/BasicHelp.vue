@@ -1,10 +1,10 @@
 <script lang="tsx">
 import type { CSSProperties } from 'vue'
-import { defineComponent, computed, unref } from 'vue'
+import { computed, defineComponent, unref } from 'vue'
 import { Tooltip } from 'ant-design-vue'
 import { InfoCircleOutlined } from '@ant-design/icons-vue'
 import { getPopupContainer } from '@/utils'
-import { isString, isArray } from '@/utils/is'
+import { isArray, isString } from '@/utils/is'
 import { getSlot } from '@/utils/helper/tsxHelper'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -36,7 +36,7 @@ const props = {
   /**
    * Help text list
    */
-  text: { type: [Array, String] as PropType<string[] | string> }
+  text: { type: [Array, String] as PropType<string[] | string> },
 }
 
 export default defineComponent({
@@ -53,9 +53,8 @@ export default defineComponent({
     function renderTitle() {
       const textList = props.text
 
-      if (isString(textList)) {
+      if (isString(textList))
         return <p>{textList}</p>
-      }
 
       if (isArray(textList)) {
         return textList.map((text, index) => {
@@ -86,9 +85,10 @@ export default defineComponent({
         </Tooltip>
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-help';
 
@@ -98,10 +98,6 @@ export default defineComponent({
   font-size: 14px;
   color: @text-color-help-dark;
   cursor: pointer;
-
-  &:hover {
-    color: @primary-color;
-  }
 
   &__wrap {
     p {

@@ -50,6 +50,7 @@
   }
 
   &-content {
+    padding: 12px 8px !important;
     box-shadow:
       0 4px 8px 0 rgb(0 0 0 / 20%),
       0 6px 20px 0 rgb(0 0 0 / 19%);
@@ -62,30 +63,32 @@
   }
 
   &-close {
+    width: auto !important;
     font-weight: normal;
+    background: rgb(255 255 255/ 0%) !important;
     outline: none;
   }
 
-  &-close-x {
-    display: inline-block;
-    width: 96px;
-    height: 56px;
-    line-height: 56px;
-  }
+  // &-close-x {
+  //   display: inline-block;
+  //   width: 96px;
+  //   height: 56px;
+  //   line-height: 56px;
+  // }
 
-  &-confirm-body {
-    .ant-modal-confirm-content {
-      // color: #fff;
+  // &-confirm-body {
+  //   .ant-modal-confirm-content {
+  //     // color: #fff;
 
-      > * {
-        color: @text-color-help-dark;
-      }
-    }
-  }
+  //     > * {
+  //       color: @text-color-help-dark;
+  //     }
+  //   }
+  // }
 
-  &-confirm-confirm.error .ant-modal-confirm-body > .anticon {
-    color: @error-color;
-  }
+  // &-confirm-confirm.error .ant-modal-confirm-body > .anticon {
+  //   color: @error-color;
+  // }
 
   &-confirm-btns {
     .ant-btn:last-child {
@@ -93,17 +96,17 @@
     }
   }
 
-  &-confirm-info {
-    .ant-modal-confirm-body > .anticon {
-      color: @warning-color;
-    }
-  }
+  // &-confirm-info {
+  //   .ant-modal-confirm-body > .anticon {
+  //     color: @warning-color;
+  //   }
+  // }
 
-  &-confirm-confirm.success {
-    .ant-modal-confirm-body > .anticon {
-      color: @success-color;
-    }
-  }
+  // &-confirm-confirm.success {
+  //   .ant-modal-confirm-body > .anticon {
+  //     color: @success-color;
+  //   }
+  // }
 }
 
 .ant-modal-confirm .ant-modal-body {

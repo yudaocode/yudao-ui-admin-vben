@@ -1,18 +1,23 @@
-@header-trigger-prefix-cls: ~'@{namespace}-layout-header-trigger';
-@header-prefix-cls: ~'@{namespace}-layout-header';
-@breadcrumb-prefix-cls: ~'@{namespace}-layout-breadcrumb';
-@logo-prefix-cls: ~'@{namespace}-app-logo';
+@header-trigger-prefix-cls: ~"@{namespace}-layout-header-trigger";
+@header-prefix-cls: ~"@{namespace}-layout-header";
+@breadcrumb-prefix-cls: ~"@{namespace}-layout-breadcrumb";
+@logo-prefix-cls: ~"@{namespace}-app-logo";
+
+.ant-layout .ant-layout-header {
+  height: 48px !important;
+  padding-inline: 10px;
+}
 
 .@{header-prefix-cls} {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   height: @header-height;
   padding: 0;
   margin-left: -1px;
   line-height: @header-height;
   color: @white;
   background-color: @white;
-  align-items: center;
-  justify-content: space-between;
 
   &--mobile {
     .@{breadcrumb-prefix-cls},
@@ -47,8 +52,8 @@
   }
 
   &-logo {
-    height: @header-height;
     min-width: 192px;
+    height: @header-height;
     padding: 0 10px;
     font-size: 14px;
 
@@ -61,15 +66,15 @@
 
   &-left {
     display: flex;
-    height: 100%;
     align-items: center;
+    height: 100%;
 
     .@{header-trigger-prefix-cls} {
       display: flex;
+      align-items: center;
       height: 100%;
       padding: 1px 10px 0;
       cursor: pointer;
-      align-items: center;
 
       .anticon {
         font-size: 16px;
@@ -94,25 +99,25 @@
   }
 
   &-menu {
-    height: 100%;
-    min-width: 0;
     flex: 1;
     align-items: center;
+    min-width: 0;
+    height: 100%;
   }
 
   &-action {
     display: flex;
-    min-width: 180px;
     // padding-right: 12px;
     align-items: center;
+    min-width: 180px;
 
     &__item {
       display: flex !important;
+      align-items: center;
       height: @header-height;
       padding: 0 2px;
       font-size: 1.2em;
       cursor: pointer;
-      align-items: center;
 
       .ant-badge {
         height: @header-height;
@@ -120,12 +125,12 @@
       }
 
       .ant-badge-dot {
-        top: 10px;
+        top: 14px;
         right: 2px;
       }
     }
 
-    span[role='img'] {
+    span[role="img"] {
       padding: 0 8px;
     }
   }
@@ -158,7 +163,7 @@
       }
 
       &-icon,
-      span[role='img'] {
+      span[role="img"] {
         color: @text-color-base;
       }
     }
@@ -166,8 +171,8 @@
 
   &--dark {
     background-color: @header-dark-bg-color !important;
-    // border-bottom: 1px solid @border-color-base;
-    border-left: 1px solid @border-color-base;
+    border-bottom: 1px solid var(--border-color);
+    border-left: 1px solid var(--border-color);
     .@{header-prefix-cls}-logo {
       &:hover {
         background-color: @header-dark-bg-hover-color;

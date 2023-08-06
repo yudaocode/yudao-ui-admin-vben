@@ -26,7 +26,7 @@ export function getTenantPackagePage(params: TenantPackagePageReqVO) {
 
 // 获得租户
 export function getTenantPackage(id: number) {
-  return defHttp.get({ url: '/system/tenant-package/get?id=' + id })
+  return defHttp.get({ url: `/system/tenant-package/get?id=${id}` })
 }
 
 // 新增租户套餐
@@ -41,7 +41,7 @@ export function updateTenantPackage(data: TenantPackageVO) {
 
 // 删除租户套餐
 export function deleteTenantPackage(id: number) {
-  return defHttp.delete({ url: '/system/tenant-package/delete?id=' + id })
+  return defHttp.delete({ url: `/system/tenant-package/delete?id=${id}` })
 }
 // 获取租户套餐精简信息列表
 export function getTenantPackageList() {

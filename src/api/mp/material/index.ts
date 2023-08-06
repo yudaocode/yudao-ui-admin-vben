@@ -7,5 +7,5 @@ export function getMaterialPage(params) {
 
 // 删除公众号永久素材
 export function deletePermanentMaterial(id) {
-  return defHttp.delete({ url: '/mp/material/delete-permanent?id=' + id })
+  return defHttp.delete({ url: `/mp/material/delete-permanent?id=${id}` })
 }

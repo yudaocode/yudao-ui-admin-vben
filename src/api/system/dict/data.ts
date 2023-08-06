@@ -1,5 +1,5 @@
+import type { DictDataExportReqVO, DictDataPageReqVO, DictDataVO } from './types'
 import { defHttp } from '@/utils/http/axios'
-import type { DictDataVO, DictDataPageReqVO, DictDataExportReqVO } from './types'
 
 // 查询字典数据（精简)列表
 export function listSimpleDictData() {
@@ -13,7 +13,7 @@ export function getDictDataPage(params: DictDataPageReqVO) {
 
 // 查询字典数据详情
 export function getDictData(id: number) {
-  return defHttp.get({ url: '/system/dict-data/get?id=' + id })
+  return defHttp.get({ url: `/system/dict-data/get?id=${id}` })
 }
 
 // 新增字典数据
@@ -28,7 +28,7 @@ export function updateDictData(data: DictDataVO) {
 
 // 删除字典数据
 export function deleteDictData(id: number) {
-  return defHttp.delete({ url: '/system/dict-data/delete?id=' + id })
+  return defHttp.delete({ url: `/system/dict-data/delete?id=${id}` })
 }
 // 导出字典类型数据
 export function exportDictData(params: DictDataExportReqVO) {

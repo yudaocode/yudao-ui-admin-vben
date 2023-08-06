@@ -9,5 +9,5 @@ export function getProcessDefinitionList(params) {
 }
 
 export function getProcessDefinitionBpmnXML(id) {
-  return defHttp.get({ url: '/bpm/process-definition/get-bpmn-xml?id=' + id })
+  return defHttp.get({ url: `/bpm/process-definition/get-bpmn-xml?id=${id}` })
 }

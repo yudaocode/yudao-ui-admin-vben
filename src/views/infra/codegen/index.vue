@@ -1,59 +1,14 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['infra:codegen:create']" :preIcon="IconEnum.IMPORT" @click="openImportTableModal(true)">
-          {{ t('action.import') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.PREVIEW, label: '预览', auth: 'infra:codegen:preview', onClick: handlePreview.bind(null, record) },
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:codegen:update', onClick: handleEditTable.bind(null, record) },
-              { icon: IconEnum.DOWNLOAD, label: '生成', auth: 'infra:codegen:download', onClick: handleGenTable.bind(null, record) },
-              {
-                icon: IconEnum.RESET,
-                label: t('action.sync'),
-                auth: 'infra:codegen:update',
-                popConfirm: {
-                  title: '确认要强制同步' + record.tableName + '表结构吗？',
-                  placement: 'left',
-                  confirm: handleSynchDb.bind(null, record)
-                }
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'infra:codegen:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <PreviewModal @register="registerPreviewModal" />
-    <ImportTableModal @register="registerImportTableModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import PreviewModal from './components/PreviewModal.vue'
+import ImportTableModal from './components/ImportTableModal.vue'
+import { columns, searchFormSchema } from './codegen.data'
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import PreviewModal from './components/PreviewModal.vue'
-import ImportTableModal from './components/ImportTableModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '@/api/infra/codegen'
-import { columns, searchFormSchema } from './codegen.data'
 
 defineOptions({ name: 'InfraCodegen' })
 
@@ -75,18 +30,18 @@ const [registerTable, { reload }] = useTable({
     width: 360,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handlePreview(record: Recordable) {
   openPreviewModal(true, {
-    record
+    record,
   })
 }
 
 function handleEditTable(record: Recordable) {
-  go('/codegen/editTable?id=' + record.id)
+  go(`/codegen/editTable?id=${record.id}`)
 }
 
 async function handleGenTable(record: Recordable) {
@@ -106,3 +61,49 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['infra:codegen:create']" type="primary" :pre-icon="IconEnum.IMPORT" @click="openImportTableModal(true)">
+          {{ t('action.import') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.PREVIEW, label: '预览', auth: 'infra:codegen:preview', onClick: handlePreview.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:codegen:update', onClick: handleEditTable.bind(null, record) },
+              { icon: IconEnum.DOWNLOAD, label: '生成', auth: 'infra:codegen:download', onClick: handleGenTable.bind(null, record) },
+              {
+                icon: IconEnum.RESET,
+                label: t('action.sync'),
+                auth: 'infra:codegen:update',
+                popConfirm: {
+                  title: `确认要强制同步${record.tableName}表结构吗？`,
+                  placement: 'left',
+                  confirm: handleSynchDb.bind(null, record),
+                },
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'infra:codegen:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <PreviewModal @register="registerPreviewModal" />
+    <ImportTableModal @register="registerImportTableModal" @success="reload()" />
+  </div>
+</template>

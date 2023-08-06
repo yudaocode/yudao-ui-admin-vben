@@ -1,87 +1,39 @@
-<template>
-  <li :class="getClass">
-    <template v-if="!getCollapse">
-      <div :class="`${prefixCls}-submenu-title`" @click.stop="handleClick" :style="getItemStyle">
-        <slot name="title"></slot>
-        <Icon icon="eva:arrow-ios-downward-outline" :size="14" :class="`${prefixCls}-submenu-title-icon`" />
-      </div>
-      <CollapseTransition>
-        <ul :class="prefixCls" v-show="state.opened">
-          <slot></slot>
-        </ul>
-      </CollapseTransition>
-    </template>
-
-    <Popover
-      placement="right"
-      :overlayClassName="`${prefixCls}-menu-popover`"
-      v-else
-      :visible="getIsOpend"
-      @visible-change="handleVisibleChange"
-      :overlayStyle="getOverlayStyle"
-      :align="{ offset: [0, 0] }"
-    >
-      <div :class="getSubClass" v-bind="getEvents(false)">
-        <div
-          :class="[
-            {
-              [`${prefixCls}-submenu-popup`]: !getParentSubMenu,
-              [`${prefixCls}-submenu-collapsed-show-tit`]: collapsedShowTitle
-            }
-          ]"
-        >
-          <slot name="title"></slot>
-        </div>
-        <Icon v-if="getParentSubMenu" icon="eva:arrow-ios-downward-outline" :size="14" :class="`${prefixCls}-submenu-title-icon`" />
-      </div>
-      <!-- eslint-disable-next-line -->
-      <template #content v-show="state.opened">
-        <div v-bind="getEvents(true)">
-          <ul :class="[prefixCls, `${prefixCls}-${getTheme}`, `${prefixCls}-popup`]">
-            <slot></slot>
-          </ul>
-        </div>
-      </template>
-    </Popover>
-  </li>
-</template>
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
+import { computed, getCurrentInstance, inject, onBeforeMount, provide, reactive, unref } from 'vue'
+import { Popover } from 'ant-design-vue'
 import type { SubMenuProvider } from './types'
-import { computed, unref, getCurrentInstance, reactive, provide, onBeforeMount, inject } from 'vue'
-import { useDesign } from '@/hooks/web/useDesign'
-import { propTypes } from '@/utils/propTypes'
 import { useMenuItem } from './useMenu'
 import { useSimpleRootMenuContext } from './useSimpleMenuContext'
+import { useDesign } from '@/hooks/web/useDesign'
+import { propTypes } from '@/utils/propTypes'
 import { CollapseTransition } from '@/components/Transition'
 import { Icon } from '@/components/Icon'
-import { Popover } from 'ant-design-vue'
 import { isBoolean, isObject } from '@/utils/is'
 import mitt from '@/utils/mitt'
 
 defineOptions({ name: 'SubMenu' })
 
-const DELAY = 200
 const props = defineProps({
   name: {
     type: [String, Number] as PropType<string | number>,
-    required: true
+    required: true,
   },
   disabled: propTypes.bool,
-  collapsedShowTitle: propTypes.bool
+  collapsedShowTitle: propTypes.bool,
 })
-
+const DELAY = 200
 const instance = getCurrentInstance()
 
 const state = reactive({
   active: false,
-  opened: false
+  opened: false,
 })
 
 const data = reactive({
   timeout: null as TimeoutHandle | null,
   mouseInChild: false,
-  isChild: false
+  isChild: false,
 })
 
 const { getParentSubMenu, getItemStyle, getParentMenu, getParentList } = useMenuItem(instance)
@@ -101,7 +53,7 @@ const {
   sliceIndex,
   level,
   props: rootProps,
-  handleMouseleave: parentHandleMouseleave
+  handleMouseleave: parentHandleMouseleave,
 } = inject<SubMenuProvider>(`subMenu:${getParentMenu.value?.uid}`)!
 
 const getClass = computed(() => {
@@ -112,8 +64,8 @@ const getClass = computed(() => {
       [`${prefixCls}-opened`]: state.opened,
       [`${prefixCls}-submenu-disabled`]: props.disabled,
       [`${prefixCls}-submenu-has-parent-submenu`]: unref(getParentSubMenu),
-      [`${prefixCls}-child-item-active`]: state.active
-    }
+      [`${prefixCls}-child-item-active`]: state.active,
+    },
   ]
 })
 
@@ -123,15 +75,15 @@ const getTheme = computed(() => rootProps.theme)
 
 const getOverlayStyle = computed((): CSSProperties => {
   return {
-    minWidth: '200px'
+    minWidth: '200px',
   }
 })
 
 const getIsOpend = computed(() => {
   const name = props.name
-  if (unref(getCollapse)) {
+  if (unref(getCollapse))
     return parentGetOpenNames().includes(name)
-  }
+
   return state.opened
 })
 
@@ -142,24 +94,25 @@ const getSubClass = computed(() => {
     {
       [`${prefixCls}-submenu-active`]: isActive,
       [`${prefixCls}-submenu-active-border`]: isActive && level === 0,
-      [`${prefixCls}-submenu-collapse`]: unref(getCollapse) && level === 0
-    }
+      [`${prefixCls}-submenu-collapse`]: unref(getCollapse) && level === 0,
+    },
   ]
 })
 
 function getEvents(deep: boolean) {
-  if (!unref(getCollapse)) {
+  if (!unref(getCollapse))
     return {}
-  }
+
   return {
     onMouseenter: handleMouseenter,
-    onMouseleave: () => handleMouseleave(deep)
+    onMouseleave: () => handleMouseleave(deep),
   }
 }
 
 function handleClick() {
   const { disabled } = props
-  if (disabled || unref(getCollapse)) return
+  if (disabled || unref(getCollapse))
+    return
   const opened = state.opened
 
   if (unref(getAccordion)) {
@@ -167,12 +120,13 @@ function handleClick() {
     rootMenuEmitter.emit('on-update-opened', {
       opend: false,
       parent: instance?.parent,
-      uidList: uidList
+      uidList,
     })
-  } else {
+  }
+  else {
     rootMenuEmitter.emit('open-name-change', {
       name: props.name,
-      opened: !opened
+      opened: !opened,
     })
   }
   state.opened = !opened
@@ -180,18 +134,19 @@ function handleClick() {
 
 function handleMouseenter() {
   const disabled = props.disabled
-  if (disabled) return
+  if (disabled)
+    return
 
   subMenuEmitter.emit('submenu:mouse-enter-child')
 
-  const index = parentGetOpenNames().findIndex((item) => item === props.name)
+  const index = parentGetOpenNames().findIndex(item => item === props.name)
 
   sliceIndex(index)
 
   const isRoot = level === 0 && parentGetOpenNames().length === 2
-  if (isRoot) {
+  if (isRoot)
     parentRemoveAll()
-  }
+
   data.isChild = parentGetOpenNames().includes(props.name)
   clearTimeout(data.timeout!)
   data.timeout = setTimeout(() => {
@@ -201,29 +156,25 @@ function handleMouseenter() {
 
 function handleMouseleave(deepDispatch = false) {
   const parentName = getParentMenu.value?.props.name
-  if (!parentName) {
+  if (!parentName)
     isRemoveAllPopup.value = true
-  }
 
-  if (parentGetOpenNames().slice(-1)[0] === props.name) {
+  if (parentGetOpenNames().slice(-1)[0] === props.name)
     data.isChild = false
-  }
 
   subMenuEmitter.emit('submenu:mouse-leave-child')
   if (data.timeout) {
     clearTimeout(data.timeout!)
     data.timeout = setTimeout(() => {
-      if (isRemoveAllPopup.value) {
+      if (isRemoveAllPopup.value)
         parentRemoveAll()
-      } else if (!data.mouseInChild) {
+      else if (!data.mouseInChild)
         parentRemoveSubmenu(props.name)
-      }
     }, DELAY)
   }
   if (deepDispatch) {
-    if (getParentSubMenu.value) {
+    if (getParentSubMenu.value)
       parentHandleMouseleave?.(true)
-    }
   }
 }
 
@@ -234,41 +185,41 @@ onBeforeMount(() => {
     clearTimeout(data.timeout!)
   })
   subMenuEmitter.on('submenu:mouse-leave-child', () => {
-    if (data.isChild) return
+    if (data.isChild)
+      return
     data.mouseInChild = false
     clearTimeout(data.timeout!)
   })
 
   rootMenuEmitter.on('on-update-opened', (data: boolean | (string | number)[] | Recordable) => {
-    if (unref(getCollapse)) return
+    if (unref(getCollapse))
+      return
     if (isBoolean(data)) {
       state.opened = data
       return
     }
     if (isObject(data) && rootProps.accordion) {
       const { opend, parent, uidList } = data as Recordable
-      if (parent === instance?.parent) {
+      if (parent === instance?.parent)
         state.opened = opend
-      } else if (!uidList.includes(instance?.uid)) {
+      else if (!uidList.includes(instance?.uid))
         state.opened = false
-      }
+
       return
     }
 
-    if (props.name && Array.isArray(data)) {
+    if (props.name && Array.isArray(data))
       state.opened = (data as (string | number)[]).includes(props.name)
-    }
   })
 
   rootMenuEmitter.on('on-update-active-name:submenu', (data: number[]) => {
-    if (instance?.uid) {
+    if (instance?.uid)
       state.active = data.includes(instance?.uid)
-    }
   })
 })
 
-function handleVisibleChange(visible: boolean) {
-  state.opened = visible
+function handleOpenChange(open: boolean) {
+  state.opened = open
 }
 
 // provide
@@ -281,6 +232,54 @@ provide<SubMenuProvider>(`subMenu:${instance?.uid}`, {
   sliceIndex,
   level: level + 1,
   handleMouseleave,
-  props: rootProps
+  props: rootProps,
 })
 </script>
+
+<template>
+  <li :class="getClass">
+    <template v-if="!getCollapse">
+      <div :class="`${prefixCls}-submenu-title`" :style="getItemStyle" @click.stop="handleClick">
+        <slot name="title" />
+        <Icon icon="eva:arrow-ios-downward-outline" :size="14" :class="`${prefixCls}-submenu-title-icon`" />
+      </div>
+      <CollapseTransition>
+        <ul v-show="state.opened" :class="prefixCls">
+          <slot />
+        </ul>
+      </CollapseTransition>
+    </template>
+
+    <Popover
+      v-else
+      placement="right"
+      :overlay-class-name="`${prefixCls}-menu-popover`"
+      :open="getIsOpend"
+      :overlay-style="getOverlayStyle"
+      :align="{ offset: [0, 0] }"
+      @open-change="handleOpenChange"
+    >
+      <div :class="getSubClass" v-bind="getEvents(false)">
+        <div
+          :class="[
+            {
+              [`${prefixCls}-submenu-popup`]: !getParentSubMenu,
+              [`${prefixCls}-submenu-collapsed-show-tit`]: collapsedShowTitle,
+            },
+          ]"
+        >
+          <slot name="title" />
+        </div>
+        <Icon v-if="getParentSubMenu" icon="eva:arrow-ios-downward-outline" :size="14" :class="`${prefixCls}-submenu-title-icon`" />
+      </div>
+      <!-- eslint-disable-next-line -->
+      <template #content v-show="state.opened">
+        <div v-bind="getEvents(true)">
+          <ul :class="[prefixCls, `${prefixCls}-${getTheme}`, `${prefixCls}-popup`]">
+            <slot />
+          </ul>
+        </div>
+      </template>
+    </Popover>
+  </li>
+</template>

@@ -1,51 +1,14 @@
-<template>
-  <div>
-    <Space>
-      <a-button type="primary" @click="openUploadModal" preIcon="carbon:cloud-upload">
-        {{ t('component.upload.upload') }}
-      </a-button>
-      <Tooltip placement="bottom" v-if="showPreview">
-        <template #title>
-          {{ t('component.upload.uploaded') }}
-          <template v-if="fileList.length">
-            {{ fileList.length }}
-          </template>
-        </template>
-        <a-button @click="openPreviewModal">
-          <Icon icon="bi:eye" />
-          <template v-if="fileList.length && showPreviewNumber">
-            {{ fileList.length }}
-          </template>
-        </a-button>
-      </Tooltip>
-    </Space>
-    <UploadModal
-      v-bind="bindValue"
-      :previewFileList="fileList"
-      @register="registerUploadModal"
-      @change="handleChange"
-      @delete="handleDelete"
-    />
-
-    <UploadPreviewModal
-      :value="fileList"
-      @register="registerPreviewModal"
-      @list-change="handlePreviewChange"
-      @delete="handlePreviewDelete"
-    />
-  </div>
-</template>
 <script lang="ts" setup>
-import { ref, watch, unref, useAttrs, computed } from 'vue'
-import { Icon } from '@/components/Icon'
-import { Tooltip, Space } from 'ant-design-vue'
-import { useModal } from '@/components/Modal'
-import { uploadContainerProps } from './props'
+import { computed, ref, unref, useAttrs, watch } from 'vue'
+import { Space, Tooltip } from 'ant-design-vue'
 import { omit } from 'lodash-es'
-import { useI18n } from '@/hooks/web/useI18n'
-import { isArray } from '@/utils/is'
+import { uploadContainerProps } from './props'
 import UploadModal from './UploadModal.vue'
 import UploadPreviewModal from './UploadPreviewModal.vue'
+import { Icon } from '@/components/Icon'
+import { useModal } from '@/components/Modal'
+import { useI18n } from '@/hooks/web/useI18n'
+import { isArray } from '@/utils/is'
 
 defineOptions({ name: 'BasicUpload' })
 
@@ -64,7 +27,8 @@ const fileList = ref<string[]>([])
 
 const showPreview = computed(() => {
   const { emptyHidePreview } = props
-  if (!emptyHidePreview) return true
+  if (!emptyHidePreview)
+    return true
   return emptyHidePreview ? fileList.value.length > 0 : true
 })
 
@@ -78,7 +42,7 @@ watch(
   (value = []) => {
     fileList.value = isArray(value) ? value : []
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 // 上传modal保存操作
@@ -103,3 +67,41 @@ function handlePreviewDelete(url: string) {
   emit('preview-delete', url)
 }
 </script>
+
+<template>
+  <div>
+    <Space>
+      <a-button type="primary" pre-icon="carbon:cloud-upload" @click="openUploadModal">
+        {{ t('component.upload.upload') }}
+      </a-button>
+      <Tooltip v-if="showPreview" placement="bottom">
+        <template #title>
+          {{ t('component.upload.uploaded') }}
+          <template v-if="fileList.length">
+            {{ fileList.length }}
+          </template>
+        </template>
+        <a-button @click="openPreviewModal">
+          <Icon icon="bi:eye" />
+          <template v-if="fileList.length && showPreviewNumber">
+            {{ fileList.length }}
+          </template>
+        </a-button>
+      </Tooltip>
+    </Space>
+    <UploadModal
+      v-bind="bindValue"
+      :preview-file-list="fileList"
+      @register="registerUploadModal"
+      @change="handleChange"
+      @delete="handleDelete"
+    />
+
+    <UploadPreviewModal
+      :value="fileList"
+      @register="registerPreviewModal"
+      @list-change="handlePreviewChange"
+      @delete="handlePreviewDelete"
+    />
+  </div>
+</template>

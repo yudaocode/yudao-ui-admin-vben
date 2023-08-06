@@ -1,7 +1,8 @@
 <script lang="tsx">
 import type { CSSProperties } from 'vue'
 
-import { computed, defineComponent, unref, toRef } from 'vue'
+import { computed, defineComponent, toRef, unref } from 'vue'
+import { useSplitMenu } from './useLayoutMenu'
 import { BasicMenu } from '@/components/Menu'
 import { SimpleMenu } from '@/components/SimpleMenu'
 import { AppLogo } from '@/components/Application'
@@ -12,7 +13,6 @@ import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { ScrollContainer } from '@/components/Container'
 
 import { useGo } from '@/hooks/web/usePage'
-import { useSplitMenu } from './useLayoutMenu'
 import { openWindow } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
 import { isUrl } from '@/utils/is'
@@ -27,15 +27,15 @@ export default defineComponent({
 
     splitType: {
       type: Number as PropType<MenuSplitTyeEnum>,
-      default: MenuSplitTyeEnum.NONE
+      default: MenuSplitTyeEnum.NONE,
     },
 
     isHorizontal: propTypes.bool,
     // menu Mode
     menuMode: {
       type: [String] as PropType<Nullable<MenuModeEnum>>,
-      default: ''
-    }
+      default: '',
+    },
   },
   setup(props) {
     const go = useGo()
@@ -49,7 +49,7 @@ export default defineComponent({
       getAccordion,
       getIsHorizontal,
       getIsSidebarType,
-      getSplit
+      getSplit,
     } = useMenuSetting()
     const { getShowLogo } = useRootSetting()
 
@@ -67,14 +67,14 @@ export default defineComponent({
 
     const getUseScroll = computed(() => {
       return (
-        !unref(getIsHorizontal) &&
-        (unref(getIsSidebarType) || props.splitType === MenuSplitTyeEnum.LEFT || props.splitType === MenuSplitTyeEnum.NONE)
+        !unref(getIsHorizontal)
+        && (unref(getIsSidebarType) || props.splitType === MenuSplitTyeEnum.LEFT || props.splitType === MenuSplitTyeEnum.NONE)
       )
     })
 
     const getWrapperStyle = computed((): CSSProperties => {
       return {
-        height: `calc(100% - ${unref(getIsShowLogo) ? '48px' : '0px'})`
+        height: `calc(100% - ${unref(getIsShowLogo) ? '48px' : '0px'})`,
       }
     })
 
@@ -83,8 +83,8 @@ export default defineComponent({
         `${prefixCls}-logo`,
         unref(getComputedMenuTheme),
         {
-          [`${prefixCls}--mobile`]: unref(getIsMobile)
-        }
+          [`${prefixCls}--mobile`]: unref(getIsMobile),
+        },
       ]
     })
 
@@ -98,7 +98,7 @@ export default defineComponent({
         accordion: unref(getAccordion),
         collapse: unref(getCollapsed),
         collapsedShowTitle: unref(getCollapsedShowTitle),
-        onMenuClick: handleMenuClick
+        onMenuClick: handleMenuClick,
       }
     })
     /**
@@ -115,25 +115,29 @@ export default defineComponent({
      * @param menu
      */
     async function beforeMenuClickFn(path: string) {
-      if (!isUrl(path)) {
+      if (!isUrl(path))
         return true
-      }
+
       openWindow(path)
       return false
     }
 
     function renderHeader() {
-      if (!unref(getIsShowLogo) && !unref(getIsMobile)) return null
+      if (!unref(getIsShowLogo) && !unref(getIsMobile))
+        return null
 
       return <AppLogo showTitle={!unref(getCollapsed)} class={unref(getLogoClass)} theme={unref(getComputedMenuTheme)} />
     }
 
     function renderMenu() {
       const { menus, ...menuProps } = unref(getCommonProps)
-      if (!menus || !menus.length) return null
-      return !props.isHorizontal ? (
+      if (!menus || !menus.length)
+        return null
+      return !props.isHorizontal
+        ? (
         <SimpleMenu {...menuProps} isSplitMenu={unref(getSplit)} items={menus} />
-      ) : (
+          )
+        : (
         <BasicMenu
           {...(menuProps as any)}
           isHorizontal={props.isHorizontal}
@@ -142,7 +146,7 @@ export default defineComponent({
           mode={unref(getComputedMenuMode as any)}
           items={menus}
         />
-      )
+          )
     }
 
     return () => {
@@ -153,9 +157,10 @@ export default defineComponent({
         </>
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-layout-menu';
 @logo-prefix-cls: ~'@{namespace}-app-logo';

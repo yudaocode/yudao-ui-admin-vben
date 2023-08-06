@@ -1,4 +1,5 @@
 import { useMessage } from '@/hooks/web/useMessage'
+
 const { createMessage } = useMessage()
 const message = Object.assign({
   success: (msg: string) => {
@@ -12,7 +13,7 @@ const message = Object.assign({
   },
   info: (msg: string) => {
     createMessage.info(msg)
-  }
+  },
 })
 
 export default message

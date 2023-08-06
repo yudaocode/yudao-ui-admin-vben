@@ -33,7 +33,7 @@ export function getMenuList(params: MenuPageReqVO) {
 
 // 获取菜单详情
 export function getMenu(id: number) {
-  return defHttp.get({ url: '/system/menu/get?id=' + id })
+  return defHttp.get({ url: `/system/menu/get?id=${id}` })
 }
 
 // 新增菜单
@@ -48,5 +48,5 @@ export function updateMenu(data: MenuVO) {
 
 // 删除菜单
 export function deleteMenu(id: number) {
-  return defHttp.delete({ url: '/system/menu/delete?id=' + id })
+  return defHttp.delete({ url: `/system/menu/delete?id=${id}` })
 }

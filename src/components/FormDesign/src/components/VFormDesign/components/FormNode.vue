@@ -1,35 +1,26 @@
 <!--
  * @Description: 拖拽节点控件
 -->
-<template>
-  <div class="drag-move-box" @click.stop="handleSelectItem" :class="{ active: schema.key === formConfig.currentItem?.key }">
-    <div class="form-item-box">
-      <VFormItem :formConfig="formConfig" :schema="schema" />
-    </div>
-    <div class="show-key-box">
-      {{ schema.label + (schema.field ? '/' + schema.field : '') }}
-    </div>
-    <FormNodeOperate :schema="schema" :currentItem="formConfig.currentItem" />
-  </div>
-</template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, PropType } from 'vue'
-import { IVFormComponent } from '../../../typings/v-form-component'
-import FormNodeOperate from './FormNodeOperate.vue'
+import type { PropType } from 'vue'
+import { defineComponent, reactive, toRefs } from 'vue'
+import type { IVFormComponent } from '../../../typings/v-form-component'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import VFormItem from '../../VFormItem/index.vue'
+import FormNodeOperate from './FormNodeOperate.vue'
+
 // import VFormItem from '../../VFormItem/vFormItem.vue';
 export default defineComponent({
   name: 'FormNode',
   components: {
     VFormItem,
-    FormNodeOperate
+    FormNodeOperate,
   },
   props: {
     schema: {
       type: Object as PropType<IVFormComponent>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { formConfig, formDesignMethods } = useFormDesignState()
@@ -42,8 +33,20 @@ export default defineComponent({
     return {
       ...toRefs(state),
       handleSelectItem,
-      formConfig
+      formConfig,
     }
-  }
+  },
 })
 </script>
+
+<template>
+  <div class="drag-move-box" :class="{ active: schema.key === formConfig.currentItem?.key }" @click.stop="handleSelectItem">
+    <div class="form-item-box">
+      <VFormItem :form-config="formConfig" :schema="schema" />
+    </div>
+    <div class="show-key-box">
+      {{ schema.label + (schema.field ? `/${schema.field}` : '') }}
+    </div>
+    <FormNodeOperate :schema="schema" :current-item="formConfig.currentItem" />
+  </div>
+</template>

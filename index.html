@@ -11,13 +11,13 @@
   <body>
     <script>
       (() => {
-        var htmlRoot = document.getElementById('htmlRoot');
-        var theme = window.localStorage.getItem('__APP__DARK__MODE__');
+        let htmlRoot = document.getElementById('htmlRoot')
+        let theme = window.localStorage.getItem('__APP__DARK__MODE__')
         if (htmlRoot && theme) {
-          htmlRoot.setAttribute('data-theme', theme);
-          theme = htmlRoot = null;
+          htmlRoot.setAttribute('data-theme', theme)
+          theme = htmlRoot = null
         }
-      })();
+      })()
     </script>
     <div id="app">
       <style>

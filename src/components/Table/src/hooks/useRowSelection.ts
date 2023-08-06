@@ -1,8 +1,9 @@
-import { isFunction } from '@/utils/is'
-import type { BasicTableProps, TableRowSelection } from '../types/table'
-import { computed, ComputedRef, nextTick, Ref, ref, toRaw, unref, watch } from 'vue'
-import { ROW_KEY } from '../const'
+import type { ComputedRef, Ref } from 'vue'
+import { computed, nextTick, ref, toRaw, unref, watch } from 'vue'
 import { omit } from 'lodash-es'
+import type { BasicTableProps, TableRowSelection } from '../types/table'
+import { ROW_KEY } from '../const'
+import { isFunction } from '@/utils/is'
 import { findNodeAll } from '@/utils/helper/treeHelper'
 
 export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableData: Ref<Recordable[]>, emit: EmitType) {
@@ -11,16 +12,15 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
 
   const getRowSelectionRef = computed((): TableRowSelection | null => {
     const { rowSelection } = unref(propsRef)
-    if (!rowSelection) {
+    if (!rowSelection)
       return null
-    }
 
     return {
       selectedRowKeys: unref(selectedRowKeysRef),
       onChange: (selectedRowKeys: string[]) => {
         setSelectedRowKeys(selectedRowKeys)
       },
-      ...omit(rowSelection, ['onChange'])
+      ...omit(rowSelection, ['onChange']),
     }
   })
 
@@ -28,7 +28,7 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
     () => unref(propsRef).rowSelection?.selectedRowKeys,
     (v: string[]) => {
       setSelectedRowKeys(v)
-    }
+    },
   )
 
   watch(
@@ -38,15 +38,16 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
         const { rowSelection } = unref(propsRef)
         if (rowSelection) {
           const { onChange } = rowSelection
-          if (onChange && isFunction(onChange)) onChange(getSelectRowKeys(), getSelectRows())
+          if (onChange && isFunction(onChange))
+            onChange(getSelectRowKeys(), getSelectRows())
         }
         emit('selection-change', {
           keys: getSelectRowKeys(),
-          rows: getSelectRows()
+          rows: getSelectRows(),
         })
       })
     },
-    { deep: true }
+    { deep: true },
   )
 
   const getAutoCreateKey = computed(() => {
@@ -62,14 +63,14 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
     selectedRowKeysRef.value = rowKeys
     const allSelectedRows = findNodeAll(
       toRaw(unref(tableData)).concat(toRaw(unref(selectedRowRef))),
-      (item) => rowKeys?.includes(item[unref(getRowKey) as string]),
+      item => rowKeys?.includes(item[unref(getRowKey) as string]),
       {
-        children: propsRef.value.childrenColumnName ?? 'children'
-      }
+        children: propsRef.value.childrenColumnName ?? 'children',
+      },
     )
     const trueSelectedRows: any[] = []
     rowKeys?.forEach((key: string) => {
-      const found = allSelectedRows.find((item) => item[unref(getRowKey) as string] === key)
+      const found = allSelectedRows.find(item => item[unref(getRowKey) as string] === key)
       found && trueSelectedRows.push(found)
     })
     selectedRowRef.value = trueSelectedRows
@@ -86,10 +87,9 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
 
   function deleteSelectRowByKey(key: string) {
     const selectedRowKeys = unref(selectedRowKeysRef)
-    const index = selectedRowKeys.findIndex((item) => item === key)
-    if (index !== -1) {
+    const index = selectedRowKeys.findIndex(item => item === key)
+    if (index !== -1)
       unref(selectedRowKeysRef).splice(index, 1)
-    }
   }
 
   function getSelectRowKeys() {
@@ -113,6 +113,6 @@ export function useRowSelection(propsRef: ComputedRef<BasicTableProps>, tableDat
     setSelectedRowKeys,
     clearSelectedRowKeys,
     deleteSelectRowByKey,
-    setSelectedRows
+    setSelectedRows,
   }
 }

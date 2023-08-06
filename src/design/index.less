@@ -1,9 +1,9 @@
-@import 'transition/index.less';
-@import 'var/index.less';
-@import 'public.less';
-@import 'ant/index.less';
-@import './theme.less';
-@import './entry.css';
+@import "transition/index.less";
+@import "var/index.less";
+@import "public.less";
+// @import "ant/index.less";
+@import "./theme.less";
+@import "./entry.css";
 
 input:-webkit-autofill {
   box-shadow: 0 0 0 1000px white inset !important;
@@ -24,6 +24,7 @@ body {
   height: 100%;
   overflow: visible;
   overflow-x: hidden;
+  color: var(--text-color);
 
   &.color-weak {
     filter: invert(80%);
@@ -45,7 +46,7 @@ span {
 }
 
 /** 打包后夜间模式样式有问题 在这里覆盖 */
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   /** 菜单边框 */
   ul li {
     border: none;
@@ -70,7 +71,7 @@ html[data-theme='dark'] {
 
 // 保持 和 windi 一样的全局样式，减少升级带来的影响
 ul {
-  list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
+  list-style: none;
 }

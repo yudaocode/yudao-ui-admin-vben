@@ -1,12 +1,7 @@
-<template>
-  <Scrollbar ref="scrollbarRef" class="scroll-container" v-bind="$attrs">
-    <slot></slot>
-  </Scrollbar>
-</template>
-
 <script lang="ts" setup>
-import { ref, unref, nextTick } from 'vue'
-import { Scrollbar, ScrollbarType } from '@/components/Scrollbar'
+import { nextTick, ref, unref } from 'vue'
+import type { ScrollbarType } from '@/components/Scrollbar'
+import { Scrollbar } from '@/components/Scrollbar'
 import { useScrollTo } from '@/hooks/event/useScrollTo'
 
 defineOptions({ name: 'ScrollContainer' })
@@ -18,18 +13,18 @@ const scrollbarRef = ref<Nullable<ScrollbarType>>(null)
  */
 function scrollTo(to: number, duration = 500) {
   const scrollbar = unref(scrollbarRef)
-  if (!scrollbar) {
+  if (!scrollbar)
     return
-  }
+
   nextTick(() => {
     const wrap = unref(scrollbar.wrap)
-    if (!wrap) {
+    if (!wrap)
       return
-    }
+
     const { start } = useScrollTo({
       el: wrap,
       to,
-      duration
+      duration,
     })
     start()
   })
@@ -37,9 +32,9 @@ function scrollTo(to: number, duration = 500) {
 
 function getScrollWrap() {
   const scrollbar = unref(scrollbarRef)
-  if (!scrollbar) {
+  if (!scrollbar)
     return null
-  }
+
   return scrollbar.wrap
 }
 
@@ -48,18 +43,18 @@ function getScrollWrap() {
  */
 function scrollBottom() {
   const scrollbar = unref(scrollbarRef)
-  if (!scrollbar) {
+  if (!scrollbar)
     return
-  }
+
   nextTick(() => {
     const wrap = unref(scrollbar.wrap) as any
-    if (!wrap) {
+    if (!wrap)
       return
-    }
+
     const scrollHeight = wrap.scrollHeight as number
     const { start } = useScrollTo({
       el: wrap,
-      to: scrollHeight
+      to: scrollHeight,
     })
     start()
   })
@@ -75,6 +70,13 @@ defineExpose({ scrollbarRef, scrollTo, scrollBottom, getScrollWrap })
 //   }
 // })
 </script>
+
+<template>
+  <Scrollbar ref="scrollbarRef" class="scroll-container" v-bind="$attrs">
+    <slot />
+  </Scrollbar>
+</template>
+
 <style lang="less">
 .scroll-container {
   width: 100%;

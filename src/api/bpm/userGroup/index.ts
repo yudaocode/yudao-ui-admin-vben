@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 
-export type UserGroupVO = {
+export interface UserGroupVO {
   id: number
   name: string
   description: string
@@ -22,12 +22,12 @@ export function updateUserGroup(data: UserGroupVO) {
 
 // 删除用户组
 export function deleteUserGroup(id: number) {
-  return defHttp.delete({ url: '/bpm/user-group/delete?id=' + id })
+  return defHttp.delete({ url: `/bpm/user-group/delete?id=${id}` })
 }
 
 // 获得用户组
 export function getUserGroup(id: number) {
-  return defHttp.get({ url: '/bpm/user-group/get?id=' + id })
+  return defHttp.get({ url: `/bpm/user-group/get?id=${id}` })
 }
 
 // 获得用户组分页

@@ -1,5 +1,6 @@
-import { CSSProperties, VNodeChild } from 'vue'
-import { createTypes, VueTypeValidableDef, VueTypesInterface } from 'vue-types'
+import type { CSSProperties, VNodeChild } from 'vue'
+import type { VueTypeValidableDef, VueTypesInterface } from 'vue-types'
+import { createTypes } from 'vue-types'
 
 export type VueNode = VNodeChild | JSX.Element
 
@@ -15,7 +16,7 @@ const propTypes = createTypes({
   string: undefined,
   number: undefined,
   object: undefined,
-  integer: undefined
+  integer: undefined,
 }) as PropTypes
 
 // propTypes.extend([

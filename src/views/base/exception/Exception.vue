@@ -1,10 +1,10 @@
 <script lang="tsx">
-import { Result, Button } from 'ant-design-vue'
-import { defineComponent, ref, computed, unref } from 'vue'
+import { Button, Result } from 'ant-design-vue'
+import { computed, defineComponent, ref, unref } from 'vue'
+import { useRoute } from 'vue-router'
 import { ExceptionEnum } from '@/enums/exceptionEnum'
 import notDataSvg from '@/assets/svg/no-data.svg'
 import netWorkSvg from '@/assets/svg/net-error.svg'
-import { useRoute } from 'vue-router'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useGo, useRedo } from '@/hooks/web/usePage'
@@ -25,23 +25,23 @@ export default defineComponent({
     // 状态码
     status: {
       type: Number as PropType<number>,
-      default: ExceptionEnum.PAGE_NOT_FOUND
+      default: ExceptionEnum.PAGE_NOT_FOUND,
     },
 
     title: {
       type: String as PropType<string>,
-      default: ''
+      default: '',
     },
 
     subTitle: {
       type: String as PropType<string>,
-      default: ''
+      default: '',
     },
 
     full: {
       type: Boolean as PropType<boolean>,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props) {
     const statusMapRef = ref(new Map<string | number, MapValue>())
@@ -70,7 +70,7 @@ export default defineComponent({
       status: `${ExceptionEnum.PAGE_NOT_ACCESS}`,
       subTitle: t('sys.exception.subTitle403'),
       btnText: props.full ? backLoginI18n : backHomeI18n,
-      handler: () => (props.full ? go(PageEnum.BASE_LOGIN) : go())
+      handler: () => (props.full ? go(PageEnum.BASE_LOGIN) : go()),
     })
 
     unref(statusMapRef).set(ExceptionEnum.PAGE_NOT_FOUND, {
@@ -78,7 +78,7 @@ export default defineComponent({
       status: `${ExceptionEnum.PAGE_NOT_FOUND}`,
       subTitle: t('sys.exception.subTitle404'),
       btnText: props.full ? backLoginI18n : backHomeI18n,
-      handler: () => (props.full ? go(PageEnum.BASE_LOGIN) : go())
+      handler: () => (props.full ? go(PageEnum.BASE_LOGIN) : go()),
     })
 
     unref(statusMapRef).set(ExceptionEnum.ERROR, {
@@ -86,7 +86,7 @@ export default defineComponent({
       status: `${ExceptionEnum.ERROR}`,
       subTitle: t('sys.exception.subTitle500'),
       btnText: backHomeI18n,
-      handler: () => go()
+      handler: () => go(),
     })
 
     unref(statusMapRef).set(ExceptionEnum.PAGE_NOT_DATA, {
@@ -94,7 +94,7 @@ export default defineComponent({
       subTitle: '',
       btnText: t('common.redo'),
       handler: () => redo(),
-      icon: notDataSvg
+      icon: notDataSvg,
     })
 
     unref(statusMapRef).set(ExceptionEnum.NET_WORK_ERROR, {
@@ -102,7 +102,7 @@ export default defineComponent({
       subTitle: t('sys.exception.networkErrorSubTitle'),
       btnText: t('common.redo'),
       handler: () => redo(),
-      icon: netWorkSvg
+      icon: netWorkSvg,
     })
 
     return () => {
@@ -116,21 +116,22 @@ export default defineComponent({
                   {() => btnText}
                 </Button>
               ),
-            icon: () => (icon ? <img src={icon} /> : null)
+            icon: () => (icon ? <img src={icon} /> : null),
           }}
         </Result>
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-app-exception-page';
 
 .@{prefix-cls} {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
 
   .ant-result-icon {
     img {

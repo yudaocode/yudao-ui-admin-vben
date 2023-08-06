@@ -1,17 +1,16 @@
-import type { AppRouteRecordRaw, Menu } from '@/router/types'
-
 import { toRaw } from 'vue'
 import { defineStore } from 'pinia'
-import { store } from '@/store'
 
 import { useUserStore } from './user'
 import { useAppStoreWithOut } from './app'
+import { store } from '@/store'
+import type { AppRouteRecordRaw, Menu } from '@/router/types'
 import { asyncRoutes } from '@/router/routes'
 import about from '@/router/routes/modules/about'
 import dashboard from '@/router/routes/modules/dashboard'
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic'
 import { transformRouteToMenu } from '@/router/helper/menuHelper'
-import { transformObjToRoute, flatMultiLevelRoutes } from '@/router/helper/routeHelper'
+import { flatMultiLevelRoutes, transformObjToRoute } from '@/router/helper/routeHelper'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { filter } from '@/utils/helper/treeHelper'
@@ -51,7 +50,7 @@ export const usePermissionStore = defineStore('app-permission', {
     backMenuList: [],
     // menu List
     // 菜单列表
-    frontMenuList: []
+    frontMenuList: [],
   }),
   getters: {
     getPermCodeList(state): string[] | number[] {
@@ -68,7 +67,7 @@ export const usePermissionStore = defineStore('app-permission', {
     },
     getIsDynamicAddedRoute(state): boolean {
       return state.isDynamicAddedRoute
-    }
+    },
   },
   actions: {
     setPermCodeList(codeList: string[]) {
@@ -97,12 +96,12 @@ export const usePermissionStore = defineStore('app-permission', {
       this.backMenuList = []
       this.lastBuildMenuTime = 0
     },
-    async changePermissionCode(codeList: string[]) {
+    changePermissionCode(codeList: string[]) {
       this.setPermCodeList(codeList)
     },
 
     // 构建路由
-    async buildRoutesAction(): Promise<AppRouteRecordRaw[]> {
+    buildRoutesAction(): Promise<AppRouteRecordRaw[]> {
       const { t } = useI18n()
       const userStore = useUserStore()
       const appStore = useAppStoreWithOut()
@@ -117,9 +116,10 @@ export const usePermissionStore = defineStore('app-permission', {
         const { meta } = route
         // 抽出角色
         const { roles } = meta || {}
-        if (!roles) return true
+        if (!roles)
+          return true
         // 进行角色权限判断
-        return roleList.some((role) => roles.includes(role))
+        return roleList.some(role => roles.includes(role))
       }
 
       const routeRemoveIgnoreFilter = (route: AppRouteRecordRaw) => {
@@ -134,18 +134,21 @@ export const usePermissionStore = defineStore('app-permission', {
        * @description 根据设置的首页path，修正routes中的affix标记（固定首页）
        * */
       const patchHomeAffix = (routes: AppRouteRecordRaw[]) => {
-        if (!routes || routes.length === 0) return
+        if (!routes || routes.length === 0)
+          return
         let homePath: string = PageEnum.BASE_HOME
 
         function patcher(routes: AppRouteRecordRaw[], parentPath = '') {
-          if (parentPath) parentPath = parentPath + '/'
+          if (parentPath)
+            parentPath = `${parentPath}/`
           routes.forEach((route: AppRouteRecordRaw) => {
             const { path, children, redirect } = route
             const currentPath = path.startsWith('/') ? path : parentPath + path
             if (currentPath === homePath) {
               if (redirect) {
                 homePath = route.redirect! as string
-              } else {
+              }
+              else {
                 route.meta = Object.assign({}, route.meta, { affix: true })
                 throw new Error('end')
               }
@@ -156,10 +159,10 @@ export const usePermissionStore = defineStore('app-permission', {
 
         try {
           patcher(routes)
-        } catch (e) {
+        }
+        catch (e) {
           // 已处理完毕跳出循环
         }
-        return
       }
 
       switch (permissionMode) {
@@ -204,10 +207,7 @@ export const usePermissionStore = defineStore('app-permission', {
         case PermissionModeEnum.BACK:
           const { createMessage } = useMessage()
 
-          createMessage.loading({
-            content: t('sys.app.menuLoading'),
-            duration: 1
-          })
+          createMessage.loading({ content: t('sys.app.menuLoading'), duration: 1 })
 
           // !Simulate to obtain permission codes from the background,
           // 模拟从后台获取权限码，
@@ -216,7 +216,8 @@ export const usePermissionStore = defineStore('app-permission', {
           let routeList: AppRouteRecordRaw[] = []
           try {
             routeList = userInfo.menus as AppRouteRecordRaw[]
-          } catch (error) {
+          }
+          catch (error) {
             console.error(error)
           }
           // Dynamically introduce components
@@ -236,14 +237,13 @@ export const usePermissionStore = defineStore('app-permission', {
       }
 
       // 从用户中获取权限
-      if (userInfo) {
+      if (userInfo)
         this.setPermCodeList(userInfo.permissions)
-      }
 
       patchHomeAffix(routes)
       return routes
-    }
-  }
+    },
+  },
 })
 
 // Need to be used outside the setup

@@ -1,56 +1,12 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['mp:account:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:account:update', onClick: handleEdit.bind(null, record) }]"
-            :drop-down-actions="[
-              {
-                icon: IconEnum.RESET,
-                label: '生成二维码',
-                auth: 'mp:account:qr-code',
-                onClick: handleGenerateQrCode.bind(null, record)
-              },
-              {
-                icon: IconEnum.TEST,
-                label: '清空 API 配额',
-                auth: 'mp:account:clear-quota',
-                onClick: handleCleanQuota.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'mp:account:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <AccountModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import AccountModal from './AccountModal.vue'
+import { columns, searchFormSchema } from './account.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import AccountModal from './AccountModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { clearAccountQuota, deleteAccount, generateAccountQrCode, getAccountPage } from '@/api/mp/account'
-import { columns, searchFormSchema } from './account.data'
 
 defineOptions({ name: 'MpAccount' })
 
@@ -69,8 +25,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 /** 新增按钮操作 */
@@ -88,11 +44,11 @@ function handleGenerateQrCode(record: Recordable) {
   createConfirm({
     title: '生成二维码',
     iconType: 'warning',
-    content: '是否确认生成公众号账号' + record.name + '的二维码?',
+    content: `是否确认生成公众号账号${record.name}的二维码?`,
     async onOk() {
       await generateAccountQrCode(record.id)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -101,11 +57,11 @@ function handleCleanQuota(record: Recordable) {
   createConfirm({
     title: '删除二维码',
     iconType: 'warning',
-    content: '是否确认清空生成公众号账号' + record.name + '的 API 配额?',
+    content: `是否确认清空生成公众号账号${record.name}的 API 配额?`,
     async onOk() {
       await clearAccountQuota(record.id)
       createMessage.success('清空 API 配额成功')
-    }
+    },
   })
 }
 
@@ -116,3 +72,48 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['mp:account:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'mp:account:update', onClick: handleEdit.bind(null, record) }]"
+            :drop-down-actions="[
+              {
+                icon: IconEnum.RESET,
+                label: '生成二维码',
+                auth: 'mp:account:qr-code',
+                onClick: handleGenerateQrCode.bind(null, record),
+              },
+              {
+                icon: IconEnum.TEST,
+                label: '清空 API 配额',
+                auth: 'mp:account:clear-quota',
+                onClick: handleCleanQuota.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'mp:account:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <AccountModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

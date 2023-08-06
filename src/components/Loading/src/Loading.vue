@@ -1,13 +1,3 @@
-<template>
-  <section
-    class="full-loading"
-    :class="{ absolute, [theme]: !!theme }"
-    :style="[background ? `background-color: ${background}` : '']"
-    v-show="loading"
-  >
-    <Spin v-bind="$attrs" :tip="tip" :size="size" :spinning="loading" />
-  </section>
-</template>
 <script lang="ts" setup>
 import { Spin } from 'ant-design-vue'
 import { SizeEnum } from '@/enums/sizeEnum'
@@ -22,14 +12,26 @@ defineProps({
     default: SizeEnum.LARGE,
     validator: (v: SizeEnum): boolean => {
       return [SizeEnum.DEFAULT, SizeEnum.SMALL, SizeEnum.LARGE].includes(v)
-    }
+    },
   },
   absolute: propTypes.bool.def(false),
   loading: propTypes.bool.def(false),
   background: propTypes.string,
-  theme: propTypes.oneOf(['dark', 'light']).def('light')
+  theme: propTypes.oneOf(['dark', 'light']).def('light'),
 })
 </script>
+
+<template>
+  <section
+    v-show="loading"
+    class="full-loading"
+    :class="{ absolute, [theme]: !!theme }"
+    :style="[background ? `background-color: ${background}` : '']"
+  >
+    <Spin v-bind="$attrs" :tip="tip" :size="size" :spinning="loading" />
+  </section>
+</template>
+
 <style lang="less" scoped>
 .full-loading {
   position: fixed;
@@ -37,10 +39,10 @@ defineProps({
   left: 0;
   z-index: 200;
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  justify-content: center;
-  align-items: center;
   background-color: rgb(240 242 245 / 40%);
 
   &.absolute {

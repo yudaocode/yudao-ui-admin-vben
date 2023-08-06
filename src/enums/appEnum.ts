@@ -5,24 +5,24 @@ export enum ContentEnum {
   // auto width
   FULL = 'full',
   // fixed width
-  FIXED = 'fixed'
+  FIXED = 'fixed',
 }
 
 // menu theme enum
 export enum ThemeEnum {
   DARK = 'dark',
-  LIGHT = 'light'
+  LIGHT = 'light',
 }
 
 export enum SettingButtonPositionEnum {
   AUTO = 'auto',
   HEADER = 'header',
-  FIXED = 'fixed'
+  FIXED = 'fixed',
 }
 
 export enum SessionTimeoutProcessingEnum {
   ROUTE_JUMP,
-  PAGE_COVERAGE
+  PAGE_COVERAGE,
 }
 
 /**
@@ -37,7 +37,7 @@ export enum PermissionModeEnum {
   BACK = 'BACK',
   // route mapping
   // 路由映射
-  ROUTE_MAPPING = 'ROUTE_MAPPING'
+  ROUTE_MAPPING = 'ROUTE_MAPPING',
 }
 
 // Route switching animation
@@ -48,7 +48,7 @@ export enum RouterTransitionEnum {
   FADE_SIDE = 'fade-slide',
   FADE = 'fade',
   FADE_BOTTOM = 'fade-bottom',
-  FADE_SCALE = 'fade-scale'
+  FADE_SCALE = 'fade-scale',
 }
 
 export enum IconEnum {
@@ -70,5 +70,5 @@ export enum IconEnum {
   LOG = 'ant-design:exception-outlined',
   PASSWORD = 'ant-design:key-outlined',
   SETTING = 'ant-design:setting-outlined',
-  SEND = 'ant-design:send-outlined'
+  SEND = 'ant-design:send-outlined',
 }

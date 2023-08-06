@@ -1,13 +1,14 @@
-import { IAnyObject } from './base-type'
 // import { ComponentOptions } from 'vue/types/options';
-import { ComponentOptions } from 'vue'
-import { IVFormMethods } from '../hooks/useVFormMethods'
-import { ColEx } from '@/components/Form/src/types'
+import type { ComponentOptions } from 'vue'
 
-import { SelectValue } from 'ant-design-vue/lib/select'
-import { validateOptions } from 'ant-design-vue/lib/form/useForm'
-import { RuleError } from 'ant-design-vue/lib/form/interface'
-import { FormItem } from '@/components/Form'
+import type { SelectValue } from 'ant-design-vue/lib/select'
+import type { validateOptions } from 'ant-design-vue/lib/form/useForm'
+import type { RuleError } from 'ant-design-vue/lib/form/interface'
+import type { IVFormMethods } from '../hooks/useVFormMethods'
+import type { IAnyObject } from './base-type'
+import type { ColEx } from '@/components/Form/src/types'
+import type { FormItem } from '@/components/Form'
+
 type LayoutType = 'horizontal' | 'vertical' | 'inline'
 type labelLayout = 'flex' | 'Grid'
 export type PropsTabKey = 1 | 2 | 3

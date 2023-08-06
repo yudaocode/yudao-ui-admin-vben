@@ -1,6 +1,5 @@
-import type { LocaleType } from '@/types/config'
-
 import { set } from 'lodash-es'
+import type { LocaleType } from '@/types/config'
 
 export const loadLocalePool: LocaleType[] = []
 
@@ -28,7 +27,8 @@ export function genMessage(langs: Record<string, Record<string, any>>, prefix = 
       if (objKey) {
         set(obj, moduleName, obj[moduleName] || {})
         set(obj[moduleName], objKey, langFileModule)
-      } else {
+      }
+      else {
         set(obj, moduleName, langFileModule || {})
       }
     }

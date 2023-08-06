@@ -1,45 +1,24 @@
-<template>
-  <Drawer :class="prefixCls" @close="onClose" v-bind="getBindValues">
-    <template #title v-if="!$slots.title">
-      <DrawerHeader :title="getMergeProps.title as any" :isDetail="isDetail" :showDetailBack="showDetailBack" @close="onClose">
-        <template #titleToolbar>
-          <slot name="titleToolbar"></slot>
-        </template>
-      </DrawerHeader>
-    </template>
-    <template v-else #title>
-      <slot name="title"></slot>
-    </template>
-
-    <ScrollContainer :style="getScrollContentStyle" v-loading="getLoading" :loading-tip="loadingText || t('common.loadingText')">
-      <slot></slot>
-    </ScrollContainer>
-    <DrawerFooter v-bind="getProps" @close="onClose" @ok="handleOk" :height="getFooterHeight">
-      <template #[item]="data" v-for="item in Object.keys($slots)">
-        <slot :name="item" v-bind="data || {}"></slot>
-      </template>
-    </DrawerFooter>
-  </Drawer>
-</template>
-<script lang="ts" setup inheritAttrs="false">
-import type { DrawerInstance, DrawerProps } from './typing'
+<script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { ref, computed, watch, unref, nextTick, toRaw, getCurrentInstance } from 'vue'
+import { computed, getCurrentInstance, nextTick, ref, toRaw, unref, watch } from 'vue'
 import { Drawer } from 'ant-design-vue'
-import { useI18n } from '@/hooks/web/useI18n'
-import { isFunction, isNumber } from '@/utils/is'
-import { deepMerge } from '@/utils'
+import type { DrawerInstance, DrawerProps } from './typing'
 import DrawerFooter from './components/DrawerFooter.vue'
 import DrawerHeader from './components/DrawerHeader.vue'
-import { ScrollContainer } from '@/components/Container'
 import { basicProps } from './props'
+import { useI18n } from '@/hooks/web/useI18n'
+import { deepMerge } from '@/utils'
+import { ScrollContainer } from '@/components/Container'
+import { isFunction, isNumber } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAttrs } from '@/hooks/core/useAttrs'
 
-const props = defineProps(basicProps)
-const emit = defineEmits(['visible-change', 'ok', 'close', 'register'])
+defineOptions({ inheritAttrs: false })
 
-const visibleRef = ref(false)
+const props = defineProps(basicProps)
+const emit = defineEmits(['open-change', 'ok', 'close', 'register'])
+
+const openRef = ref(false)
 const attrs = useAttrs()
 const propsRef = ref<Partial<Nullable<DrawerProps>>>(null)
 
@@ -47,8 +26,8 @@ const { t } = useI18n()
 const { prefixVar, prefixCls } = useDesign('basic-drawer')
 
 const drawerInstance: DrawerInstance = {
-  setDrawerProps: setDrawerProps,
-  emitVisible: undefined
+  setDrawerProps,
+  emitOpen: undefined,
 }
 
 const instance = getCurrentInstance()
@@ -64,21 +43,19 @@ const getProps = computed((): DrawerProps => {
     placement: 'right',
     ...unref(attrs),
     ...unref(getMergeProps),
-    visible: unref(visibleRef)
+    open: unref(openRef),
   }
   opt.title = undefined
   const { isDetail, width, wrapClassName, getContainer } = opt
   if (isDetail) {
-    if (!width) {
+    if (!width)
       opt.width = '100%'
-    }
+
     const detailCls = `${prefixCls}__detail`
     opt.class = wrapClassName ? `${wrapClassName} ${detailCls}` : detailCls
 
-    if (!getContainer) {
-      // TODO type error?
+    if (!getContainer)
       opt.getContainer = `.${prefixVar}-layout-content` as any
-    }
   }
   return opt as DrawerProps
 })
@@ -86,24 +63,24 @@ const getProps = computed((): DrawerProps => {
 const getBindValues = computed((): DrawerProps => {
   return {
     ...attrs,
-    ...unref(getProps)
+    ...unref(getProps),
   }
 })
 
 // Custom implementation of the bottom button,
 const getFooterHeight = computed(() => {
   const { footerHeight, showFooter } = unref(getProps)
-  if (showFooter && footerHeight) {
+  if (showFooter && footerHeight)
     return isNumber(footerHeight) ? `${footerHeight}px` : `${footerHeight.replace('px', '')}px`
-  }
-  return `0px`
+
+  return '0px'
 })
 
 const getScrollContentStyle = computed((): CSSProperties => {
   const footerHeight = unref(getFooterHeight)
   return {
     position: 'relative',
-    height: `calc(100% - ${footerHeight})`
+    height: `calc(100% - ${footerHeight})`,
   }
 })
 
@@ -112,21 +89,22 @@ const getLoading = computed(() => {
 })
 
 watch(
-  () => props.visible,
+  () => props.open,
   (newVal, oldVal) => {
-    if (newVal !== oldVal) visibleRef.value = newVal
+    if (newVal !== oldVal)
+      openRef.value = newVal
   },
-  { deep: true }
+  { deep: true },
 )
 
 watch(
-  () => visibleRef.value,
-  (visible) => {
+  () => openRef.value,
+  (open) => {
     nextTick(() => {
-      emit('visible-change', visible)
-      instance && drawerInstance.emitVisible?.(visible, instance.uid)
+      emit('open-change', open)
+      instance && drawerInstance.emitOpen?.(open, instance.uid)
     })
-  }
+  },
 )
 
 // Cancel event
@@ -135,25 +113,49 @@ async function onClose(e: Recordable) {
   emit('close', e)
   if (closeFunc && isFunction(closeFunc)) {
     const res = await closeFunc()
-    visibleRef.value = !res
+    openRef.value = !res
     return
   }
-  visibleRef.value = false
+  openRef.value = false
 }
 
 function setDrawerProps(props: Partial<DrawerProps>): void {
   // Keep the last setDrawerProps
   propsRef.value = deepMerge(unref(propsRef) || ({} as any), props)
 
-  if (Reflect.has(props, 'visible')) {
-    visibleRef.value = !!props.visible
-  }
+  if (Reflect.has(props, 'open'))
+    openRef.value = !!props.open
 }
 
 function handleOk() {
   emit('ok')
 }
 </script>
+
+<template>
+  <Drawer :class="prefixCls" v-bind="getBindValues" @close="onClose">
+    <template v-if="!$slots.title" #title>
+      <DrawerHeader :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack" @close="onClose">
+        <template #titleToolbar>
+          <slot name="titleToolbar" />
+        </template>
+      </DrawerHeader>
+    </template>
+    <template v-else #title>
+      <slot name="title" />
+    </template>
+
+    <ScrollContainer v-loading="getLoading" :style="getScrollContentStyle" :loading-tip="loadingText || t('common.loadingText')">
+      <slot />
+    </ScrollContainer>
+    <DrawerFooter v-bind="getProps" :height="getFooterHeight" @close="onClose" @ok="handleOk">
+      <template v-for="item in Object.keys($slots)" #[item]="data">
+        <slot :name="item" v-bind="data || {}" />
+      </template>
+    </DrawerFooter>
+  </Drawer>
+</template>
+
 <style lang="less">
 @header-height: 60px;
 @detail-header-height: 40px;
@@ -165,16 +167,10 @@ function handleOk() {
     overflow: hidden;
   }
 
-  .ant-drawer-close {
-    &:hover {
-      color: @error-color;
-    }
-  }
-
   .ant-drawer-body {
     height: calc(100% - @header-height);
     padding: 0;
-    background-color: @component-background;
+    background-color: var(--component-background);
 
     .scrollbar__wrap {
       padding: 16px !important;
@@ -191,11 +187,11 @@ function handleOk() {
   position: absolute;
 
   .ant-drawer-header {
+    box-sizing: border-box;
     width: 100%;
     height: @detail-header-height;
     padding: 0;
-    border-top: 1px solid @border-color-base;
-    box-sizing: border-box;
+    border-top: 1px solid;
   }
 
   .ant-drawer-title {

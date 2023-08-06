@@ -24,5 +24,5 @@ export function getAccessTokenPage(params: OAuth2TokenPageReqVO) {
 
 // 删除 token
 export function deleteAccessToken(accessToken: number) {
-  return defHttp.delete({ url: '/system/oauth2-token/delete?accessToken=' + accessToken })
+  return defHttp.delete({ url: `/system/oauth2-token/delete?accessToken=${accessToken}` })
 }

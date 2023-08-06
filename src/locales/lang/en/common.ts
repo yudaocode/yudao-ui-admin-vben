@@ -27,5 +27,5 @@ export default {
   back: 'Back',
 
   light: 'Light',
-  dark: 'Dark'
+  dark: 'Dark',
 }

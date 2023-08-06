@@ -1,75 +1,15 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['bpm:model:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <BasicUpload
-          :maxSize="20"
-          :maxNumber="1"
-          :emptyHidePreview="true"
-          @change="reload"
-          :uploadParams="uploadParams"
-          :api="importModel"
-          class="my-5"
-          :accept="['.bpmn', '.xml']"
-        />
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:model:update', onClick: handleEdit.bind(null, record) }]"
-            :dropDownActions="[
-              { icon: IconEnum.EDIT, label: '设计流程', auth: 'bpm:model:update', onClick: handleDesign.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '分配规则', auth: 'bpm:task-assign-rule:query', onClick: handleAssignRule.bind(null, record) },
-              {
-                icon: IconEnum.EDIT,
-                label: '发布流程',
-                auth: 'bpm:model:deploy',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDeploy.bind(null, record)
-                }
-              },
-              {
-                icon: IconEnum.EDIT,
-                label: '流程定义',
-                auth: 'bpm:process-definition:query',
-                onClick: handleDefinitionList.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'bpm:model:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <ModelModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
 import { ref } from 'vue'
+import ModelModal from './ModelModal.vue'
+import { columns, searchFormSchema } from './model.data'
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ModelModal from './ModelModal.vue'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicUpload } from '@/components/Upload'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteModel, deployModel, getModelPage, importModel } from '@/api/bpm/model'
-import { columns, searchFormSchema } from './model.data'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 
 defineOptions({ name: 'BpmModel' })
@@ -80,8 +20,8 @@ const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const uploadParams = ref({
-  Authorization: 'Bearer ' + getAccessToken(),
-  'tenant-id': getTenantId()
+  'Authorization': `Bearer ${getAccessToken()}`,
+  'tenant-id': getTenantId(),
 })
 
 const [registerTable, { reload }] = useTable({
@@ -95,8 +35,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -135,3 +75,64 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['bpm:model:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <BasicUpload
+          :max-size="20"
+          :max-number="1"
+          :empty-hide-preview="true"
+          :upload-params="uploadParams"
+          :api="importModel"
+          class="my-5"
+          :accept="['.bpmn', '.xml']"
+          @change="reload"
+        />
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[{ icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:model:update', onClick: handleEdit.bind(null, record) }]"
+            :drop-down-actions="[
+              { icon: IconEnum.EDIT, label: '设计流程', auth: 'bpm:model:update', onClick: handleDesign.bind(null, record) },
+              { icon: IconEnum.EDIT, label: '分配规则', auth: 'bpm:task-assign-rule:query', onClick: handleAssignRule.bind(null, record) },
+              {
+                icon: IconEnum.EDIT,
+                label: '发布流程',
+                auth: 'bpm:model:deploy',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDeploy.bind(null, record),
+                },
+              },
+              {
+                icon: IconEnum.EDIT,
+                label: '流程定义',
+                auth: 'bpm:process-definition:query',
+                onClick: handleDefinitionList.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'bpm:model:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <ModelModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

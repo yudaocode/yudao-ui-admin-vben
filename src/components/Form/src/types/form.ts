@@ -1,11 +1,10 @@
 import type { NamePath, RuleObject } from 'ant-design-vue/lib/form/interface'
-import type { VNode } from 'vue'
-import type { ButtonProps as AntdButtonProps } from '@/components/Button'
+import type { CSSProperties, VNode } from 'vue'
+import type { RowProps } from 'ant-design-vue/lib/grid/Row'
 import type { FormItem } from './formItem'
 import type { ColEx, ComponentType } from './index'
+import type { ButtonProps as AntdButtonProps } from '@/components/Button'
 import type { TableActionType } from '@/components/Table/src/types/table'
-import type { CSSProperties } from 'vue'
-import type { RowProps } from 'ant-design-vue/lib/grid/Row'
 
 export type FieldMapToTime = [string, [string, string], (string | [string, string])?][]
 
@@ -36,7 +35,7 @@ export interface FormActionType {
   removeSchemaByField: (field: string | string[]) => Promise<void>
   appendSchemaByField: (schema: FormSchema | FormSchema[], prefixField: string | undefined, first?: boolean | undefined) => Promise<void>
   validateFields: (nameList?: NamePath[]) => Promise<any>
-  validate: (nameList?: NamePath[]) => Promise<any>
+  validate: (nameList?: NamePath[] | false) => Promise<any>
   scrollToField: (name: NamePath, options?: ScrollOptions) => Promise<void>
 }
 
@@ -120,15 +119,21 @@ export interface FormProps {
   transformDateFunc?: (date: any) => string
   colon?: boolean
 }
+export interface RenderOpts {
+  disabled: boolean
+  [key: string]: any
+}
 export interface FormSchema {
   // Field name
   field: string
+  // Extra Fields name[]
+  fields?: string[]
   // Event name triggered by internal value change, default change
   changeEvent?: string
   // Variable name bound to v-model Default value
   valueField?: string
   // Label name
-  label: string | VNode
+  label?: string | VNode
   // Auxiliary text
   subLabel?: string
   // Help text on the right side of the text
@@ -143,8 +148,8 @@ export interface FormSchema {
   component: ComponentType
   // Component parameters
   componentProps?:
-    | ((opt: { schema: FormSchema; tableAction: TableActionType; formActionType: FormActionType; formModel: Recordable }) => Recordable)
-    | object
+  | ((opt: { schema: FormSchema; tableAction: TableActionType; formActionType: FormActionType; formModel: Recordable }) => Recordable)
+  | object
   // Required
   required?: boolean | ((renderCallbackParams: RenderCallbackParams) => boolean)
 
@@ -164,6 +169,9 @@ export interface FormSchema {
   // 默认值
   defaultValue?: any
 
+  // 额外默认值数组对象
+  defaultValueObj?: { [key: string]: any }
+
   // 是否自动处理与时间相关组件的默认值
   isHandleDateDefaultValue?: boolean
 
@@ -177,12 +185,18 @@ export interface FormSchema {
   show?: boolean | ((renderCallbackParams: RenderCallbackParams) => boolean)
 
   // Render the content in the form-item tag
-  render?: (renderCallbackParams: RenderCallbackParams) => VNode | VNode[] | string
+  render?: (
+    renderCallbackParams: RenderCallbackParams,
+    opts: RenderOpts,
+  ) => VNode | VNode[] | string
 
   // Rendering col content requires outer wrapper form-item
-  renderColContent?: (renderCallbackParams: RenderCallbackParams) => VNode | VNode[] | string
+  renderColContent?: (
+    renderCallbackParams: RenderCallbackParams,
+    opts: RenderOpts,
+  ) => VNode | VNode[] | string
 
-  renderComponentContent?: ((renderCallbackParams: RenderCallbackParams) => any) | VNode | VNode[] | string
+  renderComponentContent?: ((renderCallbackParams: RenderCallbackParams, opts: RenderOpts) => any) | VNode | VNode[] | string
 
   // Custom slot, in from-item
   slot?: string

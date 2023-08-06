@@ -1,10 +1,13 @@
-import type { ProjectConfig, HeaderSetting, MenuSetting, TransitionSetting, MultiTabsSetting, AppSizeType } from '@/types/config'
+import { defineStore } from 'pinia'
+import { theme as antdTheme } from 'ant-design-vue/es'
+import type { ThemeConfig } from 'ant-design-vue/es/config-provider/context'
+import { reactive } from 'vue'
+import type { AppSizeType, HeaderSetting, MenuSetting, MultiTabsSetting, ProjectConfig, TransitionSetting } from '@/types/config'
 import type { BeforeMiniState } from '@/types/store'
 
-import { defineStore } from 'pinia'
 import { store } from '@/store'
 
-import { ThemeEnum } from '@/enums/appEnum'
+import type { ThemeEnum } from '@/enums/appEnum'
 import { APP_DARK_MODE_KEY_, PROJ_CFG_KEY } from '@/enums/cacheEnum'
 import { Persistent } from '@/utils/cache/persistent'
 import { darkMode } from '@/settings/designSetting'
@@ -13,6 +16,7 @@ import { deepMerge } from '@/utils'
 
 interface AppState {
   darkMode?: ThemeEnum
+  themeConfig: ThemeConfig
   // Page loading status
   pageLoading: boolean
   // project config
@@ -25,10 +29,17 @@ let timeId: TimeoutHandle
 export const useAppStore = defineStore('app', {
   state: (): AppState => ({
     darkMode: undefined,
+    themeConfig: {
+      algorithm: antdTheme.defaultAlgorithm,
+      token: {
+        colorBgContainer: '#fff',
+      },
+      components: {},
+    },
     pageLoading: false,
     projectConfig: Persistent.getLocal(PROJ_CFG_KEY),
     beforeMiniInfo: {},
-    componentSize: 'middle'
+    componentSize: 'middle',
   }),
   getters: {
     getPageLoading(state): boolean {
@@ -60,7 +71,7 @@ export const useAppStore = defineStore('app', {
     },
     getComponentSize(state): AppSizeType | undefined {
       return state.componentSize
-    }
+    },
   },
   actions: {
     setPageLoading(loading: boolean): void {
@@ -69,7 +80,35 @@ export const useAppStore = defineStore('app', {
 
     setDarkMode(mode: ThemeEnum): void {
       this.darkMode = mode
+      this.setThemeConfig()
       localStorage.setItem(APP_DARK_MODE_KEY_, mode)
+    },
+
+    setThemeConfig(color?: string): void {
+      let themeConfig = reactive<ThemeConfig>({
+        algorithm: antdTheme.defaultAlgorithm,
+        token: {
+          colorBgContainer: '#fff',
+          colorPrimary: color || (this.projectConfig
+            ? this.projectConfig.themeColor
+            : '#1890ff'),
+        },
+        components: {},
+      })
+
+      if (this.darkMode === 'dark') {
+        themeConfig = {
+          algorithm: antdTheme.darkAlgorithm,
+          token: {
+            colorBgContainer: 'rgb(36, 37, 37)',
+            colorPrimary: color || (this.projectConfig
+              ? this.projectConfig.themeColor
+              : '#1890ff'),
+          },
+          components: {},
+        }
+      }
+      this.themeConfig = themeConfig
     },
 
     setBeforeMiniInfo(state: BeforeMiniState): void {
@@ -81,8 +120,9 @@ export const useAppStore = defineStore('app', {
     },
 
     setProjectConfig(config: DeepPartial<ProjectConfig>): void {
-      this.projectConfig = deepMerge(this.projectConfig || {}, config)
+      this.projectConfig = deepMerge(this.projectConfig, config)
       Persistent.setLocal(PROJ_CFG_KEY, this.projectConfig)
+      this.setThemeConfig(config.themeColor)
     },
 
     setMenuSetting(setting: Partial<MenuSetting>): void {
@@ -90,23 +130,24 @@ export const useAppStore = defineStore('app', {
       Persistent.setLocal(PROJ_CFG_KEY, this.projectConfig)
     },
 
-    async resetAllState() {
+    resetAllState() {
       resetRouter()
       Persistent.clearAll()
     },
-    async setPageLoadingAction(loading: boolean): Promise<void> {
+    setPageLoadingAction(loading: boolean) {
       if (loading) {
         clearTimeout(timeId)
         // Prevent flicker
         timeId = setTimeout(() => {
           this.setPageLoading(loading)
         }, 50)
-      } else {
+      }
+      else {
         this.setPageLoading(loading)
         clearTimeout(timeId)
       }
-    }
-  }
+    },
+  },
 })
 
 // Need to be used outside the setup

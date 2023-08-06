@@ -1,13 +1,13 @@
+import type { GetUserInfoModel, LoginParams, LoginResultModel, SmsLoginParams } from './model/userModel'
 import { defHttp } from '@/utils/http/axios'
-import { LoginParams, LoginResultModel, GetUserInfoModel, SmsLoginParams } from './model/userModel'
 
-import { ErrorMessageMode } from '@/types/axios'
+import type { ErrorMessageMode } from '@/types/axios'
 
 enum Api {
   Login = '/system/auth/login',
   Logout = '/system/auth/logout',
   SmsLogin = '/system/auth/sms-login',
-  GetUserInfo = '/system/auth/get-permission-info'
+  GetUserInfo = '/system/auth/get-permission-info',
 }
 
 /**

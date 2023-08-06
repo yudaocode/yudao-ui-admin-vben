@@ -1,9 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, h, unref } from 'vue'
-import BasicButton from './BasicButton.vue'
 import { Popconfirm } from 'ant-design-vue'
-import { extendSlots } from '@/utils/helper/tsxHelper'
 import { omit } from 'lodash-es'
+import BasicButton from './BasicButton.vue'
+import { extendSlots } from '@/utils/helper/tsxHelper'
 import { useAttrs } from '@/hooks/core/useAttrs'
 import { useI18n } from '@/hooks/web/useI18n'
 
@@ -14,8 +14,8 @@ const props = {
    */
   enable: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 }
 
 export default defineComponent({
@@ -31,24 +31,25 @@ export default defineComponent({
       return Object.assign(
         {
           okText: t('common.okText'),
-          cancelText: t('common.cancelText')
+          cancelText: t('common.cancelText'),
         },
-        { ...props, ...unref(attrs) }
+        { ...props, ...unref(attrs) },
       )
     })
 
     return () => {
       const bindValues = omit(unref(getBindValues), 'icon')
       const btnBind = omit(bindValues, 'title') as Recordable
-      if (btnBind.disabled) btnBind.color = ''
+      if (btnBind.disabled)
+        btnBind.color = ''
       const Button = h(BasicButton, btnBind, extendSlots(slots))
 
       // If it is not enabled, it is a normal button
-      if (!props.enable) {
+      if (!props.enable)
         return Button
-      }
+
       return h(Popconfirm, bindValues, { default: () => Button })
     }
-  }
+  },
 })
 </script>

@@ -7,10 +7,10 @@ export function getFreePublishPage(params) {
 
 // 删除公众号素材
 export function deleteFreePublish(accountId, articleId) {
-  return defHttp.delete({ url: '/mp/free-publish/delete?accountId=' + accountId + '&&articleId=' + articleId })
+  return defHttp.delete({ url: `/mp/free-publish/delete?accountId=${accountId}&&articleId=${articleId}` })
 }
 
 // 发布公众号素材
 export function submitFreePublish(accountId, mediaId) {
-  return defHttp.post({ url: '/mp/free-publish/submit?accountId=' + accountId + '&&mediaId=' + mediaId })
+  return defHttp.post({ url: `/mp/free-publish/submit?accountId=${accountId}&&mediaId=${mediaId}` })
 }

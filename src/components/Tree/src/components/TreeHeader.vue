@@ -1,83 +1,58 @@
-<template>
-  <div :class="bem()" class="flex px-2 py-1.5 items-center">
-    <slot name="headerTitle" v-if="slots.headerTitle"></slot>
-    <BasicTitle :helpMessage="helpMessage" v-if="!slots.headerTitle && title">
-      {{ title }}
-    </BasicTitle>
-    <div class="flex items-center flex-1 cursor-pointer justify-self-stretch" v-if="search || toolbar">
-      <div :class="getInputSearchCls" v-if="search">
-        <InputSearch :placeholder="t('common.searchText')" allowClear v-model:value="searchValue" />
-      </div>
-      <Dropdown @click.prevent v-if="toolbar">
-        <Icon icon="ion:ellipsis-vertical" />
-        <template #overlay>
-          <Menu @click="handleMenuClick">
-            <template v-for="item in toolbarList" :key="item.value">
-              <MenuItem v-bind="{ key: item.value }">
-                {{ item.label }}
-              </MenuItem>
-              <MenuDivider v-if="item.divider" />
-            </template>
-          </Menu>
-        </template>
-      </Dropdown>
-    </div>
-  </div>
-</template>
 <script lang="ts" setup>
-import { computed, ref, watch, useSlots } from 'vue'
-import { Dropdown, Menu, MenuItem, MenuDivider, InputSearch } from 'ant-design-vue'
+import { computed, ref, useSlots, watch } from 'vue'
+import { Dropdown, InputSearch, Menu, MenuDivider } from 'ant-design-vue'
+import { useDebounceFn } from '@vueuse/core'
+import { ToolbarEnum } from '../types/tree'
 import { Icon } from '@/components/Icon'
 import { BasicTitle } from '@/components/Basic'
 import { useI18n } from '@/hooks/web/useI18n'
-import { useDebounceFn } from '@vueuse/core'
 import { createBEM } from '@/utils/bem'
-import { ToolbarEnum } from '../types/tree'
-
-const searchValue = ref('')
-
-const [bem] = createBEM('tree-header')
 
 const props = defineProps({
   helpMessage: {
     type: [String, Array] as PropType<string | string[]>,
-    default: ''
+    default: '',
   },
   title: {
     type: String,
-    default: ''
+    default: '',
   },
   toolbar: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 是否显示toolbar的 层级关联/层级独立按钮
   showStrictlyButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   checkable: {
     type: Boolean,
-    default: false
+    default: false,
   },
   search: {
     type: Boolean,
-    default: false
+    default: false,
   },
   searchText: {
     type: String,
-    default: ''
+    default: '',
   },
   checkAll: {
     type: Function,
-    default: undefined
+    default: undefined,
   },
   expandAll: {
     type: Function,
-    default: undefined
-  }
+    default: undefined,
+  },
 } as const)
+
 const emit = defineEmits(['strictly-change', 'search'])
+
+const searchValue = ref('')
+
+const [bem] = createBEM('tree-header')
 
 const slots = useSlots()
 const { t } = useI18n()
@@ -88,8 +63,8 @@ const getInputSearchCls = computed(() => {
     'mr-1',
     'w-full',
     {
-      ['ml-5']: titleExists
-    }
+      'ml-5': titleExists,
+    },
   ]
 })
 
@@ -100,34 +75,34 @@ const toolbarList = computed(() => {
     {
       label: t('component.tree.unExpandAll'),
       value: ToolbarEnum.UN_EXPAND_ALL,
-      divider: checkable
-    }
+      divider: checkable,
+    },
   ]
 
   const retList = [
     {
       label: t('component.tree.selectAll'),
-      value: ToolbarEnum.SELECT_ALL
+      value: ToolbarEnum.SELECT_ALL,
     },
     {
       label: t('component.tree.unSelectAll'),
       value: ToolbarEnum.UN_SELECT_ALL,
-      divider: checkable
+      divider: checkable,
     },
-    ...defaultToolbarList
+    ...defaultToolbarList,
   ]
   if (showStrictlyButton) {
     retList.push(
       ...[
         {
           label: t('component.tree.checkStrictly'),
-          value: ToolbarEnum.CHECK_STRICTLY
+          value: ToolbarEnum.CHECK_STRICTLY,
         },
         {
           label: t('component.tree.checkUnStrictly'),
-          value: ToolbarEnum.CHECK_UN_STRICTLY
-        }
-      ]
+          value: ToolbarEnum.CHECK_UN_STRICTLY,
+        },
+      ],
     )
   }
   return checkable ? retList : defaultToolbarList
@@ -167,15 +142,41 @@ watch(
   () => searchValue.value,
   (v) => {
     debounceEmitChange(v)
-  }
+  },
 )
 
 watch(
   () => props.searchText,
   (v) => {
-    if (v !== searchValue.value) {
+    if (v !== searchValue.value)
       searchValue.value = v
-    }
-  }
+  },
 )
 </script>
+
+<template>
+  <div :class="bem()" class="flex px-2 py-1.5 items-center">
+    <slot v-if="slots.headerTitle" name="headerTitle" />
+    <BasicTitle v-if="!slots.headerTitle && title" :help-message="helpMessage">
+      {{ title }}
+    </BasicTitle>
+    <div v-if="search || toolbar" class="flex items-center flex-1 cursor-pointer justify-self-stretch">
+      <div v-if="search" :class="getInputSearchCls">
+        <InputSearch v-model:value="searchValue" :placeholder="t('common.searchText')" allow-clear />
+      </div>
+      <Dropdown v-if="toolbar" @click.prevent>
+        <Icon icon="ion:ellipsis-vertical" />
+        <template #overlay>
+          <Menu @click="handleMenuClick">
+            <template v-for="item in toolbarList" :key="item.value">
+              <Menu.Item v-bind="{ key: item.value }">
+                {{ item.label }}
+              </Menu.Item>
+              <MenuDivider v-if="item.divider" />
+            </template>
+          </Menu>
+        </template>
+      </Dropdown>
+    </div>
+  </div>
+</template>

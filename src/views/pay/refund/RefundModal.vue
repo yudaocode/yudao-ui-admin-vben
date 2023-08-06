@@ -1,13 +1,8 @@
-<template>
-  <BasicModal v-bind="$attrs" width="60%" @register="registerModal" title="查看详情" :showOkBtn="false">
-    <Description :bordered="false" :column="3" :data="refundData" :schema="descSchema" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { descSchema } from './refund.data'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { Description } from '@/components/Description'
-import { descSchema } from './refund.data'
 import { getRefund } from '@/api/pay/refund'
 
 defineOptions({ name: 'PayRefundModal' })
@@ -20,3 +15,9 @@ const [registerModal, { setModalProps }] = useModalInner(async (data) => {
   refundData.value = res
 })
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" width="60%" title="查看详情" :show-ok-btn="false" @register="registerModal">
+    <Description :bordered="false" :column="3" :data="refundData" :schema="descSchema" />
+  </BasicModal>
+</template>

@@ -1,14 +1,14 @@
-import contextMenuVue from './ContextMenu.vue'
-import { isClient } from '@/utils/is'
-import { CreateContextOptions, ContextMenuProps } from './typing'
 import { createVNode, render } from 'vue'
+import contextMenuVue from './ContextMenu.vue'
+import type { ContextMenuProps, CreateContextOptions } from './typing'
+import { isClient } from '@/utils/is'
 
 const menuManager: {
   domList: Element[]
   resolve: Fn
 } = {
   domList: [],
-  resolve: () => {}
+  resolve: () => {},
 }
 
 export const createContextMenu = function (options: CreateContextOptions) {
@@ -16,21 +16,19 @@ export const createContextMenu = function (options: CreateContextOptions) {
 
   event && event?.preventDefault()
 
-  if (!isClient) {
+  if (!isClient)
     return
-  }
+
   return new Promise((resolve) => {
     const body = document.body
 
     const container = document.createElement('div')
     const propsData: Partial<ContextMenuProps> = {}
-    if (options.styles) {
+    if (options.styles)
       propsData.styles = options.styles
-    }
 
-    if (options.items) {
+    if (options.items)
       propsData.items = options.items
-    }
 
     if (options.event) {
       propsData.customEvent = event
@@ -50,7 +48,8 @@ export const createContextMenu = function (options: CreateContextOptions) {
       menuManager.domList.forEach((dom: Element) => {
         try {
           dom && body.removeChild(dom)
-        } catch (error) {}
+        }
+        catch (error) {}
       })
       body.removeEventListener('click', handleClick)
       body.removeEventListener('scroll', handleClick)

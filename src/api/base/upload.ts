@@ -1,8 +1,8 @@
-import { UploadApiResult } from './model/uploadModel'
+import type { AxiosProgressEvent } from 'axios'
+import type { UploadApiResult } from './model/uploadModel'
 import { defHttp } from '@/utils/http/axios'
-import { UploadFileParams } from '@/types/axios'
+import type { UploadFileParams } from '@/types/axios'
 import { useGlobSetting } from '@/hooks/setting'
-import { AxiosProgressEvent } from 'axios'
 
 const { uploadUrl = '' } = useGlobSetting()
 
@@ -13,8 +13,8 @@ export function uploadApi(params: UploadFileParams, onUploadProgress: (progressE
   return defHttp.uploadFile<UploadApiResult>(
     {
       url: uploadUrl,
-      onUploadProgress
+      onUploadProgress,
     },
-    params
+    params,
   )
 }

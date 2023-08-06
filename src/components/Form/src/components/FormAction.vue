@@ -1,43 +1,17 @@
-<template>
-  <Col v-bind="actionColOpt" v-if="showActionButtonGroup">
-    <div style="width: 100%" :style="{ textAlign: actionColOpt.style.textAlign }">
-      <FormItem>
-        <slot name="resetBefore"></slot>
-        <Button type="default" class="mr-2" v-bind="getResetBtnOptions" @click="resetAction" v-if="showResetButton">
-          {{ getResetBtnOptions.text }}
-        </Button>
-        <slot name="submitBefore"></slot>
-
-        <Button type="primary" class="mr-2" v-bind="getSubmitBtnOptions" @click="submitAction" v-if="showSubmitButton">
-          {{ getSubmitBtnOptions.text }}
-        </Button>
-
-        <slot name="advanceBefore"></slot>
-        <Button type="link" size="small" @click="toggleAdvanced" v-if="showAdvancedButton && !hideAdvanceBtn">
-          {{ isAdvanced ? t('component.form.putAway') : t('component.form.unfold') }}
-          <BasicArrow class="ml-1" :expand="!isAdvanced" up />
-        </Button>
-        <slot name="advanceAfter"></slot>
-      </FormItem>
-    </div>
-  </Col>
-</template>
 <script lang="ts" setup>
-import type { ColEx } from '../types'
-//import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes';
 import { computed } from 'vue'
-import { Form, Col } from 'ant-design-vue'
-import { Button, ButtonProps } from '@/components/Button'
-import { BasicArrow } from '@/components/Basic'
+import { Col, Form } from 'ant-design-vue'
+import type { ColEx } from '../types'
+
+// import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes';
 import { useFormContext } from '../hooks/useFormContext'
+import type { ButtonProps } from '@/components/Button'
+import { Button } from '@/components/Button'
+import { BasicArrow } from '@/components/Basic'
 import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
 
-const FormItem = Form.Item
-
 defineOptions({ name: 'BasicFormAction' })
-
-type ButtonOptions = Partial<ButtonProps> & { text: string }
 
 const props = defineProps({
   showActionButtonGroup: propTypes.bool.def(true),
@@ -46,22 +20,27 @@ const props = defineProps({
   showAdvancedButton: propTypes.bool.def(true),
   resetButtonOptions: {
     type: Object as PropType<ButtonOptions>,
-    default: () => ({})
+    default: () => ({}),
   },
   submitButtonOptions: {
     type: Object as PropType<ButtonOptions>,
-    default: () => ({})
+    default: () => ({}),
   },
   actionColOptions: {
     type: Object as PropType<Partial<ColEx>>,
-    default: () => ({})
+    default: () => ({}),
   },
   actionSpan: propTypes.number.def(6),
   isAdvanced: propTypes.bool,
-  hideAdvanceBtn: propTypes.bool
+  hideAdvanceBtn: propTypes.bool,
 })
 
 const emit = defineEmits(['toggle-advanced'])
+
+const FormItem = Form.Item
+
+type ButtonOptions = Partial<ButtonProps> & { text: string }
+
 const { t } = useI18n()
 
 const actionColOpt = computed(() => {
@@ -72,7 +51,7 @@ const actionColOpt = computed(() => {
     style: { textAlign: 'right' },
     span: showAdvancedButton ? 6 : 4,
     ...advancedSpanObj,
-    ...actionColOptions
+    ...actionColOptions,
   }
   return actionColOpt
 })
@@ -80,18 +59,18 @@ const actionColOpt = computed(() => {
 const getResetBtnOptions = computed((): ButtonOptions => {
   return Object.assign(
     {
-      text: t('common.resetText')
+      text: t('common.resetText'),
     },
-    props.resetButtonOptions
+    props.resetButtonOptions,
   )
 })
 
 const getSubmitBtnOptions = computed(() => {
   return Object.assign(
     {
-      text: t('common.queryText')
+      text: t('common.queryText'),
     },
-    props.submitButtonOptions
+    props.submitButtonOptions,
   )
 })
 
@@ -101,3 +80,28 @@ function toggleAdvanced() {
 
 const { resetAction, submitAction } = useFormContext()
 </script>
+
+<template>
+  <Col v-if="showActionButtonGroup" v-bind="actionColOpt">
+    <div style="width: 100%" :style="{ textAlign: actionColOpt.style.textAlign }">
+      <FormItem>
+        <slot name="resetBefore" />
+        <Button v-if="showResetButton" type="default" class="mr-2" v-bind="getResetBtnOptions" @click="resetAction">
+          {{ getResetBtnOptions.text }}
+        </Button>
+        <slot name="submitBefore" />
+
+        <Button v-if="showSubmitButton" type="primary" class="mr-2" v-bind="getSubmitBtnOptions" @click="submitAction">
+          {{ getSubmitBtnOptions.text }}
+        </Button>
+
+        <slot name="advanceBefore" />
+        <Button v-if="showAdvancedButton && !hideAdvanceBtn" type="link" size="small" @click="toggleAdvanced">
+          {{ isAdvanced ? t('component.form.putAway') : t('component.form.unfold') }}
+          <BasicArrow class="ml-1" :expand="!isAdvanced" up />
+        </Button>
+        <slot name="advanceAfter" />
+      </FormItem>
+    </div>
+  </Col>
+</template>

@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { RoleEnum } from '@/enums/roleEnum'
+import type { RoleEnum } from '@/enums/roleEnum'
 import { usePermission } from '@/hooks/web/usePermission'
 import { getSlot } from '@/utils/helper/tsxHelper'
 
@@ -18,8 +18,8 @@ export default defineComponent({
      */
     value: {
       type: [Number, Array, String] as PropType<RoleEnum | RoleEnum[] | string | string[]>,
-      default: ''
-    }
+      default: '',
+    },
   },
   setup(props, { slots }) {
     const { hasPermission } = usePermission()
@@ -29,9 +29,9 @@ export default defineComponent({
      */
     function renderAuth() {
       const { value } = props
-      if (!value) {
+      if (!value)
         return getSlot(slots)
-      }
+
       return hasPermission(value) ? getSlot(slots) : null
     }
 
@@ -39,6 +39,6 @@ export default defineComponent({
       // Role-based value control
       return renderAuth()
     }
-  }
+  },
 })
 </script>

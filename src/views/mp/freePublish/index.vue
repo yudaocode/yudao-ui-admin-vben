@@ -1,15 +1,10 @@
-<template>
-  <PageWrapper title="公众号图文">
-    <WxNews :search-schema="searchSchema" :api="getFreePublishPage" @get-method="getMethod" @delete="handleDelete" />
-  </PageWrapper>
-</template>
 <script lang="ts" setup>
 // import { Icon } from '@/components/Icon'
-import { PageWrapper } from '@/components/Page'
 import WxNews from '../components/WxNews/index.vue'
+import { PageWrapper } from '@/components/Page'
 import { getSimpleAccounts } from '@/api/mp/account'
 import { deleteFreePublish, getFreePublishPage } from '@/api/mp/freePublish'
-import { FormSchema } from '@/components/Form'
+import type { FormSchema } from '@/components/Form'
 
 const simpleAccountsOptinos = await getSimpleAccounts()
 
@@ -24,11 +19,11 @@ const searchSchema: FormSchema[] = [
       options: simpleAccountsOptinos,
       fieldNames: {
         label: 'name',
-        value: 'id'
-      }
+        value: 'id',
+      },
     },
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 let reload = () => {}
@@ -37,9 +32,15 @@ function getMethod(m: any) {
   reload = m
 }
 
-//删除按钮事件
+// 删除按钮事件
 function handleDelete(id) {
   deleteFreePublish(id, id)
   reload()
 }
 </script>
+
+<template>
+  <PageWrapper title="公众号图文">
+    <WxNews :search-schema="searchSchema" :api="getFreePublishPage" @get-method="getMethod" @delete="handleDelete" />
+  </PageWrapper>
+</template>

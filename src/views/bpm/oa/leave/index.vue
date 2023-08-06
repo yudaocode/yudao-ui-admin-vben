@@ -1,13 +1,8 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable" />
-  </div>
-</template>
 <script lang="ts" setup>
+import { columns, searchFormSchema } from './leave.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, useTable } from '@/components/Table'
 import { getLeavePage } from '@/api/bpm/leave'
-import { columns, searchFormSchema } from './leave.data'
 
 defineOptions({ name: 'BpmLeave' })
 
@@ -24,7 +19,13 @@ const [registerTable] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable" />
+  </div>
+</template>

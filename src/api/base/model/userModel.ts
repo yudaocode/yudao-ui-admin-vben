@@ -1,4 +1,4 @@
-import { RouteItem } from './menuModel'
+import type { RouteItem } from './menuModel'
 
 /**
  * @description: Login interface parameters

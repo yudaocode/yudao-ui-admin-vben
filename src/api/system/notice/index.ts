@@ -23,7 +23,7 @@ export function getNoticePage(params: NoticePageReqVO) {
 
 // 查询公告详情
 export function getNotice(id: number) {
-  return defHttp.get({ url: '/system/notice/get?id=' + id })
+  return defHttp.get({ url: `/system/notice/get?id=${id}` })
 }
 
 // 新增公告
@@ -38,5 +38,5 @@ export function updateNotice(data: NoticeVO) {
 
 // 删除公告
 export function deleteNotice(id: number) {
-  return defHttp.delete({ url: '/system/notice/delete?id=' + id })
+  return defHttp.delete({ url: `/system/notice/delete?id=${id}` })
 }

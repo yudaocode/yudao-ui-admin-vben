@@ -1,46 +1,48 @@
-<template>
-  <div :class="prefixCls">
-    <template v-for="item in menuTypeList || []" :key="item.title">
-      <Tooltip :title="item.title" placement="bottom">
-        <div
-          @click="handler(item)"
-          :class="[
-            `${prefixCls}__item`,
-            `${prefixCls}__item--${item.type}`,
-            {
-              [`${prefixCls}__item--active`]: def === item.type
-            }
-          ]"
-        >
-          <div class="mix-sidebar"></div>
-        </div>
-      </Tooltip>
-    </template>
-  </div>
-</template>
 <script lang="ts" setup>
 import { Tooltip } from 'ant-design-vue'
-import { useDesign } from '@/hooks/web/useDesign'
 import { menuTypeList } from '../enum'
+import { useDesign } from '@/hooks/web/useDesign'
 
 defineOptions({ name: 'MenuTypePicker' })
 
 defineProps({
   menuTypeList: {
     type: Array as PropType<typeof menuTypeList>,
-    default: () => []
+    default: () => [],
   },
   handler: {
     type: Function as PropType<Fn>,
-    default: () => ({})
+    default: () => ({}),
   },
   def: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 const { prefixCls } = useDesign('setting-menu-type-picker')
 </script>
+
+<template>
+  <div :class="prefixCls">
+    <template v-for="item in menuTypeList || []" :key="item.title">
+      <Tooltip :title="item.title" placement="bottom">
+        <div
+          :class="[
+            `${prefixCls}__item`,
+            `${prefixCls}__item--${item.type}`,
+            {
+              [`${prefixCls}__item--active`]: def === item.type,
+            },
+          ]"
+          @click="handler(item)"
+        >
+          <div class="mix-sidebar" />
+        </div>
+      </Tooltip>
+    </template>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-setting-menu-type-picker';
 
@@ -150,7 +152,6 @@ const { prefixCls } = useDesign('setting-menu-type-picker')
     &:hover,
     &--active {
       padding: 12px;
-      border: 2px solid @primary-color;
 
       &::before,
       &::after {

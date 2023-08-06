@@ -1,29 +1,20 @@
-<template>
-  <div class="table-settings">
-    <RedoSetting v-if="getSetting.redo" :getPopupContainer="getTableContainer" />
-    <FormSetting v-if="getSetting.form" :getPopupContainer="getTableContainer" />
-    <SizeSetting v-if="getSetting.size" :getPopupContainer="getTableContainer" />
-    <ColumnSetting v-if="getSetting.setting" @columns-change="handleColumnChange" :getPopupContainer="getTableContainer" />
-    <FullScreenSetting v-if="getSetting.fullScreen" :getPopupContainer="getTableContainer" />
-  </div>
-</template>
 <script lang="ts" setup>
-import type { TableSetting, ColumnChangeParam } from '../../types/table'
 import { computed, unref } from 'vue'
+import type { ColumnChangeParam, TableSetting } from '../../types/table'
+import { useTableContext } from '../../hooks/useTableContext'
 import ColumnSetting from './ColumnSetting.vue'
 import FormSetting from './FormSetting.vue'
 import SizeSetting from './SizeSetting.vue'
 import RedoSetting from './RedoSetting.vue'
 import FullScreenSetting from './FullScreenSetting.vue'
-import { useTableContext } from '../../hooks/useTableContext'
 
 defineOptions({ name: 'TableSetting' })
 
 const props = defineProps({
   setting: {
     type: Object as PropType<TableSetting>,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 const emit = defineEmits(['columns-change'])
 const table = useTableContext()
@@ -35,7 +26,7 @@ const getSetting = computed((): TableSetting => {
     size: true,
     setting: true,
     fullScreen: false,
-    ...props.setting
+    ...props.setting,
   }
 })
 
@@ -47,6 +38,17 @@ function getTableContainer() {
   return table ? unref(table.wrapRef) : document.body
 }
 </script>
+
+<template>
+  <div class="table-settings">
+    <RedoSetting v-if="getSetting.redo" :get-popup-container="getTableContainer" />
+    <FormSetting v-if="getSetting.form" :get-popup-container="getTableContainer" />
+    <SizeSetting v-if="getSetting.size" :get-popup-container="getTableContainer" />
+    <ColumnSetting v-if="getSetting.setting" :get-popup-container="getTableContainer" @columns-change="handleColumnChange" />
+    <FullScreenSetting v-if="getSetting.fullScreen" :get-popup-container="getTableContainer" />
+  </div>
+</template>
+
 <style lang="less">
 .table-settings {
   & > * {

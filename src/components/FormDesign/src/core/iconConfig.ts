@@ -213,7 +213,7 @@ const iconConfig = {
     'yuque',
     'youtube',
     'zhihu-circle',
-    'zhihu-square'
+    'zhihu-square',
   ],
   outlined: [
     'account-book',
@@ -582,7 +582,7 @@ const iconConfig = {
     'zhihu',
     'woman',
     'zoom-out',
-    'zoom-in'
+    'zoom-in',
   ],
   twoTone: [
     'account-book',
@@ -732,8 +732,8 @@ const iconConfig = {
     'dollar',
     'euro',
     'gold',
-    'canlendar'
-  ]
+    'canlendar',
+  ],
 }
 
 export default iconConfig

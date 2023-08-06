@@ -1,10 +1,11 @@
+import type { ComputedRef, Ref } from 'vue'
+import { computed, getCurrentInstance, shallowReactive, unref, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 import type { ColEx } from '../types'
 import type { AdvanceState } from '../types/hooks'
-import { ComputedRef, getCurrentInstance, Ref, shallowReactive, computed, unref, watch } from 'vue'
 import type { FormProps, FormSchema } from '../types/form'
 import { isBoolean, isFunction, isNumber, isObject } from '@/utils/is'
 import { useBreakpoint } from '@/hooks/event/useBreakpoint'
-import { useDebounceFn } from '@vueuse/core'
 
 const BASIC_COL_LEN = 24
 
@@ -23,15 +24,15 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
   const { realWidthRef, screenEnum, screenRef } = useBreakpoint()
 
   const getEmptySpan = computed((): number => {
-    if (!advanceState.isAdvanced) {
+    if (!advanceState.isAdvanced)
       return 0
-    }
+
     // For some special cases, you need to manually specify additional blank lines
     const emptySpan = unref(getProps).emptySpan || 0
 
-    if (isNumber(emptySpan)) {
+    if (isNumber(emptySpan))
       return emptySpan
-    }
+
     if (isObject(emptySpan)) {
       const { span = 0 } = emptySpan
       const screen = unref(screenRef) as string
@@ -48,35 +49,33 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
     [() => unref(getSchema), () => advanceState.isAdvanced, () => unref(realWidthRef)],
     () => {
       const { showAdvancedButton } = unref(getProps)
-      if (showAdvancedButton) {
+      if (showAdvancedButton)
         debounceUpdateAdvanced()
-      }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   function getAdvanced(itemCol: Partial<ColEx>, itemColSum = 0, isLastAction = false) {
     const width = unref(realWidthRef)
 
-    const mdWidth =
-      parseInt(itemCol.md as string) ||
-      parseInt(itemCol.xs as string) ||
-      parseInt(itemCol.sm as string) ||
-      (itemCol.span as number) ||
-      BASIC_COL_LEN
+    const mdWidth
+      = Number.parseInt(itemCol.md as string)
+      || Number.parseInt(itemCol.xs as string)
+      || Number.parseInt(itemCol.sm as string)
+      || (itemCol.span as number)
+      || BASIC_COL_LEN
 
-    const lgWidth = parseInt(itemCol.lg as string) || mdWidth
-    const xlWidth = parseInt(itemCol.xl as string) || lgWidth
-    const xxlWidth = parseInt(itemCol.xxl as string) || xlWidth
-    if (width <= screenEnum.LG) {
+    const lgWidth = Number.parseInt(itemCol.lg as string) || mdWidth
+    const xlWidth = Number.parseInt(itemCol.xl as string) || lgWidth
+    const xxlWidth = Number.parseInt(itemCol.xxl as string) || xlWidth
+    if (width <= screenEnum.LG)
       itemColSum += mdWidth
-    } else if (width < screenEnum.XL) {
+    else if (width < screenEnum.XL)
       itemColSum += lgWidth
-    } else if (width < screenEnum.XXL) {
+    else if (width < screenEnum.XXL)
       itemColSum += xlWidth
-    } else {
+    else
       itemColSum += xxlWidth
-    }
 
     if (isLastAction) {
       advanceState.hideAdvanceBtn = false
@@ -84,11 +83,13 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
         // When less than or equal to 2 lines, the collapse and expand buttons are not displayed
         advanceState.hideAdvanceBtn = true
         advanceState.isAdvanced = true
-      } else if (itemColSum > BASIC_COL_LEN * 2 && itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)) {
+      }
+      else if (itemColSum > BASIC_COL_LEN * 2 && itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)) {
         advanceState.hideAdvanceBtn = false
 
         // More than 3 lines collapsed by default
-      } else if (!advanceState.isLoad) {
+      }
+      else if (!advanceState.isLoad) {
         advanceState.isLoad = true
         advanceState.isAdvanced = !advanceState.isAdvanced
       }
@@ -96,7 +97,8 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
     }
     if (itemColSum > BASIC_COL_LEN * (unref(getProps).alwaysShowLines || 1)) {
       return { isAdvanced: advanceState.isAdvanced, itemColSum }
-    } else {
+    }
+    else {
       // The first line is always displayed
       return { isAdvanced: true, itemColSum }
     }
@@ -113,19 +115,18 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
       const { show, colProps } = schema
       let isShow = true
 
-      if (isBoolean(show)) {
+      if (isBoolean(show))
         isShow = show
-      }
 
       if (isFunction(show)) {
         isShow = show({
-          schema: schema,
+          schema,
           model: formModel,
           field: schema.field,
           values: {
             ...unref(defaultValueRef),
-            ...formModel
-          }
+            ...formModel,
+          },
         })
       }
 
@@ -133,9 +134,9 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
         const { itemColSum: sum, isAdvanced } = getAdvanced({ ...baseColProps, ...colProps }, itemColSum)
 
         itemColSum = sum || 0
-        if (isAdvanced) {
+        if (isAdvanced)
           realItemColSum = itemColSum
-        }
+
         fieldsIsAdvancedMap[schema.field] = isAdvanced
       }
     }

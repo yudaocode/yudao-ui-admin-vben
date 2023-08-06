@@ -1,10 +1,5 @@
-<template>
-  <span :class="`${prefixCls}__extra-fold`" @click="handleFold">
-    <Icon :icon="getIcon" />
-  </span>
-</template>
 <script lang="ts" setup>
-import { unref, computed } from 'vue'
+import { computed, unref } from 'vue'
 import { Icon } from '@/components/Icon'
 
 import { useDesign } from '@/hooks/web/useDesign'
@@ -26,9 +21,15 @@ function handleFold() {
   const isUnFold = unref(getIsUnFold)
   setMenuSetting({
     show: isUnFold,
-    hidden: !isUnFold
+    hidden: !isUnFold,
   })
   setHeaderSetting({ show: isUnFold })
   triggerWindowResize()
 }
 </script>
+
+<template>
+  <span :class="`${prefixCls}__extra-fold`" @click="handleFold">
+    <Icon :icon="getIcon" />
+  </span>
+</template>

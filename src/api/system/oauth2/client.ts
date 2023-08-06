@@ -32,7 +32,7 @@ export function getOAuth2ClientPage(params: OAuth2ClientPageReqVO) {
 
 // 查询 OAuth2详情
 export function getOAuth2Client(id: number) {
-  return defHttp.get({ url: '/system/oauth2-client/get?id=' + id })
+  return defHttp.get({ url: `/system/oauth2-client/get?id=${id}` })
 }
 
 // 新增 OAuth2
@@ -47,5 +47,5 @@ export function updateOAuth2Client(data: OAuth2ClientVO) {
 
 // 删除 OAuth2
 export function deleteOAuth2Client(id: number) {
-  return defHttp.delete({ url: '/system/oauth2-client/delete?id=' + id })
+  return defHttp.delete({ url: `/system/oauth2-client/delete?id=${id}` })
 }

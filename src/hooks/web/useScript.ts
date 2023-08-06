@@ -41,6 +41,6 @@ export function useScript(opts: ScriptOptions) {
     isLoading,
     error,
     success,
-    toPromise: () => promise
+    toPromise: () => promise,
   }
 }

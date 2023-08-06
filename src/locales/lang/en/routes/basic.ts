@@ -3,5 +3,5 @@ export default {
   sso: 'SSO Login',
   errorLogList: 'Error Log',
   profile: 'User Center',
-  notifyMessage: 'Notify Message'
+  notifyMessage: 'Notify Message',
 }

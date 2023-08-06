@@ -1,4 +1,5 @@
-import { ComputedRef, Slots, ref, unref, computed } from 'vue'
+import type { ComputedRef, Slots } from 'vue'
+import { computed, ref, unref } from 'vue'
 import type { BasicTableProps, FetchParams } from '../types/table'
 import type { FormProps } from '@/components/Form'
 import { isFunction } from '@/utils/is'
@@ -7,7 +8,7 @@ export function useTableForm(
   propsRef: ComputedRef<BasicTableProps>,
   slots: Slots,
   fetch: (opt?: FetchParams | undefined) => Promise<void>,
-  getLoading: ComputedRef<boolean | undefined>
+  getLoading: ComputedRef<boolean | undefined>,
 ) {
   const show = ref(true)
 
@@ -18,25 +19,26 @@ export function useTableForm(
       showAdvancedButton: true,
       ...formConfig,
       submitButtonOptions: { loading: unref(getLoading), ...submitButtonOptions },
-      compact: true
+      compact: true,
     }
   })
 
   const getFormSlotKeys: ComputedRef<string[]> = computed(() => {
     const keys = Object.keys(slots)
-    return keys.map((item) => (item.startsWith('form-') ? item : null)).filter((item) => !!item) as string[]
+    return keys.map(item => (item.startsWith('form-') ? item : null)).filter(item => !!item) as string[]
   })
 
   function replaceFormSlotKey(key: string) {
-    if (!key) return ''
+    if (!key)
+      return ''
     return key?.replace?.(/form\-/, '') ?? ''
   }
 
   function handleSearchInfoChange(info: Recordable) {
     const { handleSearchInfoFn } = unref(propsRef)
-    if (handleSearchInfoFn && isFunction(handleSearchInfoFn)) {
+    if (handleSearchInfoFn && isFunction(handleSearchInfoFn))
       info = handleSearchInfoFn(info) || info
-    }
+
     fetch({ searchInfo: info, page: 1 })
   }
 
@@ -44,7 +46,7 @@ export function useTableForm(
     return unref(show)
   }
 
-  async function setShowForm(flag: boolean) {
+  function setShowForm(flag: boolean) {
     show.value = flag
   }
 
@@ -54,6 +56,6 @@ export function useTableForm(
     getFormSlotKeys,
     handleSearchInfoChange,
     getShowForm,
-    setShowForm
+    setShowForm,
   }
 }

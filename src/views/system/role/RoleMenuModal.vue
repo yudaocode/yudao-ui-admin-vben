@@ -1,44 +1,23 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" title="修改角色菜单权限" @ok="handleSubmit">
-    <BasicForm @register="registerForm">
-      <template #menuIds="{ model, field }">
-        <BasicTree
-          ref="treeRef"
-          v-if="treeData.length"
-          v-model:checkedKeys="model[field]"
-          :treeData="treeData"
-          :fieldNames="{ title: 'name', key: 'id' }"
-          checkable
-          toolbar
-          search
-          :showStrictlyButton="false"
-          :selectable="false"
-          @check="menuCheck"
-          title="菜单分配"
-        />
-      </template>
-    </BasicForm>
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref, unref } from 'vue'
+import { without } from 'lodash-es'
+import { menuScopeFormSchema } from './role.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { menuScopeFormSchema } from './role.data'
 import { getRole } from '@/api/system/role'
-import { BasicTree, TreeItem, CheckKeys, CheckedEvent } from '@/components/Tree'
+import type { CheckKeys, CheckedEvent, TreeItem } from '@/components/Tree'
+import { BasicTree } from '@/components/Tree'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
 import { assignRoleMenu, listRoleMenus } from '@/api/system/permission'
-import { without } from 'lodash-es'
 
 defineOptions({ name: 'SystemRoleMenuModal' })
 
+const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const emit = defineEmits(['success', 'register'])
 const treeData = ref<TreeItem[]>([])
 const menuKeys = ref<number[]>([])
 const menuHalfKeys = ref<number[]>([])
@@ -54,7 +33,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: menuScopeFormSchema,
   showActionButtonGroup: false,
-  actionColOptions: { span: 23 }
+  actionColOptions: { span: 23 },
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -65,7 +44,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     const res = await listSimpleMenus()
     treeData.value = handleTree(res, 'id')
     // 去重 拿到所有的父节点
-    parentIdSets.value = new Set(res.map((item) => item.parentId))
+    parentIdSets.value = new Set(res.map(item => item.parentId))
   }
   const role = await getRole(data.record.id)
   const menuIds = await listRoleMenus(data.record.id)
@@ -83,9 +62,8 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   await setFieldsValue({ ...role })
 
   // 默认展开的层级
-  if (unref(treeRef)) {
+  if (unref(treeRef))
     unref(treeRef).filterByLevel(defaultExpandLevel.value)
-  }
 })
 
 async function handleSubmit() {
@@ -94,12 +72,13 @@ async function handleSubmit() {
     setModalProps({ confirmLoading: true })
     await assignRoleMenu({
       roleId: values.id,
-      menuIds: [...menuKeys.value, ...menuHalfKeys.value]
+      menuIds: [...menuKeys.value, ...menuHalfKeys.value],
     })
     closeModal()
     emit('success')
     createMessage.success(t('common.saveSuccessText'))
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
@@ -110,7 +89,7 @@ function menuReset() {
 }
 
 function menuCheck(checkedKeys: CheckKeys, event: CheckedEvent) {
-  if (checkedKeys instanceof Array) {
+  if (Array.isArray(checkedKeys)) {
     // 这里是子节点的ID
     menuKeys.value = checkedKeys as number[]
     // 这里是父节点的ID 默认空数组
@@ -118,3 +97,26 @@ function menuCheck(checkedKeys: CheckKeys, event: CheckedEvent) {
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" title="修改角色菜单权限" @register="registerModal" @ok="handleSubmit">
+    <BasicForm @register="registerForm">
+      <template #menuIds="{ model, field }">
+        <BasicTree
+          v-if="treeData.length"
+          ref="treeRef"
+          v-model:checkedKeys="model[field]"
+          :tree-data="treeData"
+          :field-names="{ title: 'name', key: 'id' }"
+          checkable
+          toolbar
+          search
+          :show-strictly-button="false"
+          :selectable="false"
+          title="菜单分配"
+          @check="menuCheck"
+        />
+      </template>
+    </BasicForm>
+  </BasicModal>
+</template>

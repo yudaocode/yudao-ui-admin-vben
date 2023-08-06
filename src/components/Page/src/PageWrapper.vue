@@ -1,39 +1,11 @@
-<template>
-  <div :class="getClass" ref="wrapperRef">
-    <PageHeader :ghost="ghost" :title="title" v-bind="omit($attrs, 'class')" ref="headerRef" v-if="getShowHeader">
-      <template #default>
-        <template v-if="content">
-          {{ content }}
-        </template>
-        <slot name="headerContent" v-else></slot>
-      </template>
-      <template v-for="(item, index) in getHeaderSlots" #[item]="data" :key="index">
-        <slot :name="item" v-bind="data || {}"></slot>
-      </template>
-    </PageHeader>
-
-    <div class="overflow-hidden" :class="getContentClass" :style="getContentStyle" ref="contentRef">
-      <slot></slot>
-    </div>
-
-    <PageFooter v-if="getShowFooter" ref="footerRef">
-      <template #left>
-        <slot name="leftFooter"></slot>
-      </template>
-      <template #right>
-        <slot name="rightFooter"></slot>
-      </template>
-    </PageFooter>
-  </div>
-</template>
 <script lang="ts" setup>
-import { CSSProperties, provide } from 'vue'
-import { computed, watch, ref, unref, useAttrs, useSlots } from 'vue'
+import type { CSSProperties } from 'vue'
+import { computed, provide, ref, unref, useAttrs, useSlots, watch } from 'vue'
+import { omit } from 'lodash-es'
+import { PageHeader } from 'ant-design-vue'
 import PageFooter from './PageFooter.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
-import { omit } from 'lodash-es'
-import { PageHeader } from 'ant-design-vue'
 import { useContentHeight } from '@/hooks/web/useContentHeight'
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 
@@ -45,13 +17,13 @@ const props = defineProps({
   ghost: propTypes.bool,
   content: propTypes.string,
   contentStyle: {
-    type: Object as PropType<CSSProperties>
+    type: Object as PropType<CSSProperties>,
   },
   contentBackground: propTypes.bool.def(true),
   contentFullHeight: propTypes.bool.def(false),
   contentClass: propTypes.string,
   fixedHeight: propTypes.bool,
-  upwardSpace: propTypes.oneOfType([propTypes.number, propTypes.string]).def(0)
+  upwardSpace: propTypes.oneOfType([propTypes.number, propTypes.string]).def(0),
 })
 const slots = useSlots()
 const attrs = useAttrs()
@@ -64,7 +36,7 @@ const { prefixCls } = useDesign('page-wrapper')
 
 provide(
   PageWrapperFixedHeightKey,
-  computed(() => props.fixedHeight)
+  computed(() => props.fixedHeight),
 )
 
 const getIsContentFullHeight = computed(() => {
@@ -77,7 +49,7 @@ const { redoHeight, setCompensation, contentHeight } = useContentHeight(
   wrapperRef,
   [headerRef, footerRef],
   [contentRef],
-  getUpwardSpace
+  getUpwardSpace,
 )
 setCompensation({ useLayoutFooter: true, elements: [footerRef] })
 
@@ -85,31 +57,30 @@ const getClass = computed(() => {
   return [
     prefixCls,
     {
-      [`${prefixCls}--dense`]: props.dense
+      [`${prefixCls}--dense`]: props.dense,
     },
-    attrs.class ?? {}
+    attrs.class ?? {},
   ]
+})
+
+const getHeaderSlots = computed(() => {
+  return Object.keys(omit(slots, 'default', 'leftFooter', 'rightFooter', 'headerContent'))
 })
 
 const getShowHeader = computed(() => props.content || slots?.headerContent || props.title || getHeaderSlots.value.length)
 
 const getShowFooter = computed(() => slots?.leftFooter || slots?.rightFooter)
 
-const getHeaderSlots = computed(() => {
-  return Object.keys(omit(slots, 'default', 'leftFooter', 'rightFooter', 'headerContent'))
-})
-
 const getContentStyle = computed((): CSSProperties => {
   const { contentFullHeight, contentStyle, fixedHeight } = props
-  if (!contentFullHeight) {
+  if (!contentFullHeight)
     return { ...contentStyle }
-  }
 
   const height = `${unref(contentHeight)}px`
   return {
     ...contentStyle,
     minHeight: height,
-    ...(fixedHeight ? { height } : {})
+    ...(fixedHeight ? { height } : {}),
   }
 })
 
@@ -119,8 +90,8 @@ const getContentClass = computed(() => {
     `${prefixCls}-content`,
     contentClass,
     {
-      [`${prefixCls}-content-bg`]: contentBackground
-    }
+      [`${prefixCls}-content-bg`]: contentBackground,
+    },
   ]
 })
 
@@ -131,10 +102,40 @@ watch(
   },
   {
     flush: 'post',
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 </script>
+
+<template>
+  <div ref="wrapperRef" :class="getClass">
+    <PageHeader v-if="getShowHeader" v-bind="omit($attrs, 'class')" ref="headerRef" :ghost="ghost" :title="title">
+      <template #default>
+        <template v-if="content">
+          {{ content }}
+        </template>
+        <slot v-else name="headerContent" />
+      </template>
+      <template v-for="(item, index) in getHeaderSlots" #[item]="data" :key="index">
+        <slot :name="item" v-bind="data || {}" />
+      </template>
+    </PageHeader>
+
+    <div ref="contentRef" class="overflow-hidden" :class="getContentClass" :style="getContentStyle">
+      <slot />
+    </div>
+
+    <PageFooter v-if="getShowFooter" ref="footerRef">
+      <template #left>
+        <slot name="leftFooter" />
+      </template>
+      <template #right>
+        <slot name="rightFooter" />
+      </template>
+    </PageFooter>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-page-wrapper';
 
@@ -142,7 +143,7 @@ watch(
   position: relative;
 
   .@{prefix-cls}-content {
-    margin: 16px;
+    margin: 12px;
   }
 
   .ant-page-header {
@@ -152,7 +153,7 @@ watch(
   }
 
   &-content-bg {
-    background-color: @component-background;
+    background-color: var(--component-background);
   }
 
   &--dense {

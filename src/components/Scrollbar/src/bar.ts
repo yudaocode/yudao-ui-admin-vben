@@ -1,7 +1,7 @@
-import { defineComponent, h, computed, ref, getCurrentInstance, onUnmounted, inject, Ref } from 'vue'
-import { on, off } from '@/utils/domUtils'
-
-import { renderThumbStyle, BAR_MAP } from './util'
+import type { Ref } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, inject, onUnmounted, ref } from 'vue'
+import { BAR_MAP, renderThumbStyle } from './util'
+import { off, on } from '@/utils/domUtils'
 
 export default defineComponent({
   name: 'Bar',
@@ -9,7 +9,7 @@ export default defineComponent({
   props: {
     vertical: Boolean,
     size: String,
-    move: Number
+    move: Number,
   },
 
   setup(props) {
@@ -21,24 +21,21 @@ export default defineComponent({
     })
     const barStore = ref<Recordable>({})
     const cursorDown = ref()
-    const clickThumbHandler = (e: any) => {
-      // prevent click event of right button
-      if (e.ctrlKey || e.button === 2) {
+
+    const mouseMoveDocumentHandler = (e: any) => {
+      if (cursorDown.value === false)
         return
-      }
-      window.getSelection()?.removeAllRanges()
-      startDrag(e)
-      barStore.value[bar.value.axis] =
-        e.currentTarget[bar.value.offset] - (e[bar.value.client] - e.currentTarget.getBoundingClientRect()[bar.value.direction])
-    }
+      const prevPage = barStore.value[bar.value.axis]
 
-    const clickTrackHandler = (e: any) => {
-      const offset = Math.abs(e.target.getBoundingClientRect()[bar.value.direction] - e[bar.value.client])
-      const thumbHalf = thumb.value[bar.value.offset] / 2
-      const thumbPositionPercentage = ((offset - thumbHalf) * 100) / instance?.vnode.el?.[bar.value.offset]
+      if (!prevPage)
+        return
 
+      const offset = (instance?.vnode.el?.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]) * -1
+      const thumbClickPosition = thumb.value[bar.value.offset] - prevPage
+      const thumbPositionPercentage = ((offset - thumbClickPosition) * 100) / instance?.vnode.el?.[bar.value.offset]
       wrap.value[bar.value.scroll] = (thumbPositionPercentage * wrap.value[bar.value.scrollSize]) / 100
     }
+
     const startDrag = (e: any) => {
       e.stopImmediatePropagation()
       cursorDown.value = true
@@ -47,15 +44,22 @@ export default defineComponent({
       document.onselectstart = () => false
     }
 
-    const mouseMoveDocumentHandler = (e: any) => {
-      if (cursorDown.value === false) return
-      const prevPage = barStore.value[bar.value.axis]
+    const clickThumbHandler = (e: any) => {
+      // prevent click event of right button
+      if (e.ctrlKey || e.button === 2)
+        return
 
-      if (!prevPage) return
+      window.getSelection()?.removeAllRanges()
+      startDrag(e)
+      barStore.value[bar.value.axis]
+        = e.currentTarget[bar.value.offset] - (e[bar.value.client] - e.currentTarget.getBoundingClientRect()[bar.value.direction])
+    }
 
-      const offset = (instance?.vnode.el?.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]) * -1
-      const thumbClickPosition = thumb.value[bar.value.offset] - prevPage
-      const thumbPositionPercentage = ((offset - thumbClickPosition) * 100) / instance?.vnode.el?.[bar.value.offset]
+    const clickTrackHandler = (e: any) => {
+      const offset = Math.abs(e.target.getBoundingClientRect()[bar.value.direction] - e[bar.value.client])
+      const thumbHalf = thumb.value[bar.value.offset] / 2
+      const thumbPositionPercentage = ((offset - thumbHalf) * 100) / instance?.vnode.el?.[bar.value.offset]
+
       wrap.value[bar.value.scroll] = (thumbPositionPercentage * wrap.value[bar.value.scrollSize]) / 100
     }
 
@@ -74,8 +78,8 @@ export default defineComponent({
       h(
         'div',
         {
-          class: ['scrollbar__bar', 'is-' + bar.value.key],
-          onMousedown: clickTrackHandler
+          class: ['scrollbar__bar', `is-${bar.value.key}`],
+          onMousedown: clickTrackHandler,
         },
         h('div', {
           ref: thumb,
@@ -84,9 +88,9 @@ export default defineComponent({
           style: renderThumbStyle({
             size: props.size,
             move: props.move,
-            bar: bar.value
-          })
-        })
+            bar: bar.value,
+          }),
+        }),
       )
-  }
+  },
 })

@@ -1,47 +1,43 @@
-<template>
-  <div>
-    <component :is="tag" ref="wrapRef" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { watch, ref, unref, onMounted } from 'vue'
-import { toCanvas, QRCodeRenderersOptions, LogoType } from './qrcodePlus'
+import { onMounted, ref, unref, watch } from 'vue'
 import { toDataURL } from 'qrcode'
+import type { LogoType, QRCodeRenderersOptions } from './qrcodePlus'
+import { toCanvas } from './qrcodePlus'
+import type { QrcodeDoneEventParams } from './typing'
 import { downloadByUrl } from '@/utils/file/download'
-import { QrcodeDoneEventParams } from './typing'
 
 defineOptions({ name: 'QrCode' })
 
 const props = defineProps({
   value: {
     type: [String, Array] as PropType<string | any[]>,
-    default: null
+    default: null,
   },
   // 参数
   options: {
     type: Object as PropType<QRCodeRenderersOptions>,
-    default: null
+    default: null,
   },
   // 宽度
   width: {
     type: Number as PropType<number>,
-    default: 200
+    default: 200,
   },
   // 中间logo图标
   logo: {
     type: [String, Object] as PropType<Partial<LogoType> | string>,
-    default: ''
+    default: '',
   },
   // img 不支持内嵌logo
   tag: {
     type: String as PropType<'canvas' | 'img'>,
     default: 'canvas',
-    validator: (v: string) => ['canvas', 'img'].includes(v)
-  }
+    validator: (v: string) => ['canvas', 'img'].includes(v),
+  },
 })
 const emit = defineEmits({
   done: (data: QrcodeDoneEventParams) => !!data,
-  error: (error: any) => !!error
+  error: (error: any) => !!error,
 })
 
 const wrapRef = ref<HTMLCanvasElement | HTMLImageElement | null>(null)
@@ -51,7 +47,8 @@ async function createQrcode() {
     const renderValue = String(value)
     const wrapEl = unref(wrapRef)
 
-    if (!wrapEl) return
+    if (!wrapEl)
+      return
 
     if (tag === 'canvas') {
       const url: string = await toCanvas({
@@ -59,7 +56,7 @@ async function createQrcode() {
         width,
         logo: logo as any,
         content: renderValue,
-        options: options || {}
+        options: options || {},
       })
       emit('done', { url, ctx: (wrapEl as HTMLCanvasElement).getContext('2d') })
       return
@@ -69,12 +66,13 @@ async function createQrcode() {
       const url = await toDataURL(renderValue, {
         errorCorrectionLevel: 'H',
         width,
-        ...options
+        ...options,
       })
       ;(unref(wrapRef) as HTMLImageElement).src = url
       emit('done', { url })
     }
-  } catch (error) {
+  }
+  catch (error) {
     emit('error', error)
   }
 }
@@ -84,15 +82,16 @@ async function createQrcode() {
 function download(fileName?: string) {
   let url = ''
   const wrapEl = unref(wrapRef)
-  if (wrapEl instanceof HTMLCanvasElement) {
+  if (wrapEl instanceof HTMLCanvasElement)
     url = wrapEl.toDataURL()
-  } else if (wrapEl instanceof HTMLImageElement) {
+  else if (wrapEl instanceof HTMLImageElement)
     url = wrapEl.src
-  }
-  if (!url) return
+
+  if (!url)
+    return
   downloadByUrl({
     url,
-    fileName
+    fileName,
   })
 }
 
@@ -105,9 +104,15 @@ watch(
     createQrcode()
   },
   {
-    deep: true
-  }
+    deep: true,
+  },
 )
 
 defineExpose({ download })
 </script>
+
+<template>
+  <div>
+    <component :is="tag" ref="wrapRef" />
+  </div>
+</template>

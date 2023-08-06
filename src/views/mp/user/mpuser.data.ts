@@ -1,27 +1,28 @@
 import { getSimpleAccounts } from '@/api/mp/account'
 import { getSimpleTags } from '@/api/mp/tag'
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'id',
-    width: 100
+    width: 100,
   },
   {
     title: '用户标识',
     dataIndex: 'openid',
-    width: 180
+    width: 180,
   },
   {
     title: '昵称',
     dataIndex: 'nickname',
-    width: 100
+    width: 100,
   },
   {
     title: '备注',
     dataIndex: 'remark',
-    width: 120
+    width: 120,
   },
   {
     title: '标签',
@@ -29,7 +30,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderTags(text)
-    }
+    },
   },
   {
     title: '订阅状态',
@@ -37,7 +38,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderTag(text === 0 ? '已订阅' : '未订阅', text === 0 ? 'purple' : 'orange')
-    }
+    },
   },
   {
     title: '订阅时间',
@@ -45,8 +46,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 const simpleAccountsOptinos = await getSimpleAccounts()
@@ -62,23 +63,23 @@ export const searchFormSchema: FormSchema[] = [
       options: simpleAccountsOptinos,
       fieldNames: {
         label: 'name',
-        value: 'id'
-      }
+        value: 'id',
+      },
     },
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '用户标识',
     field: 'openid',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '昵称',
     field: 'nickname',
     component: 'Input',
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 export const formSchema: FormSchema[] = [
@@ -86,19 +87,19 @@ export const formSchema: FormSchema[] = [
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '昵称',
     field: 'nickname',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '备注',
     field: 'remark',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '标签',
@@ -111,7 +112,7 @@ export const formSchema: FormSchema[] = [
       api: () => getSimpleTags(),
       labelField: 'name',
       valueField: 'tagId',
-      mode: 'tags'
-    }
-  }
+      mode: 'tags',
+    },
+  },
 ]

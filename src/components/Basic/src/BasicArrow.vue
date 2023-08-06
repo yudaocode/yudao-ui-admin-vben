@@ -1,8 +1,3 @@
-<template>
-  <span :class="getClass">
-    <Icon icon="ion:chevron-forward" :style="$attrs.iconStyle" />
-  </span>
-</template>
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Icon } from '@/components/Icon'
@@ -24,7 +19,7 @@ const props = defineProps({
   /**
    * Cancel padding/margin for inline
    */
-  inset: { type: Boolean }
+  inset: { type: Boolean },
 })
 
 const { prefixCls } = useDesign('basic-arrow')
@@ -38,19 +33,26 @@ const getClass = computed(() => {
       [`${prefixCls}--active`]: expand,
       up,
       inset,
-      down
-    }
+      down,
+    },
   ]
 })
 </script>
+
+<template>
+  <span :class="getClass">
+    <Icon icon="ion:chevron-forward" :style="$attrs.iconStyle" />
+  </span>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-basic-arrow';
 
 .@{prefix-cls} {
   display: inline-block;
   cursor: pointer;
-  transform: rotate(0deg);
   transition: all 0.3s ease 0.1s;
+  transform: rotate(0deg);
   transform-origin: center center;
 
   &--active {

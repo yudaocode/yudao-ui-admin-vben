@@ -1,47 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:error-code:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['system:error-code:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:error-code:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:error-code:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <ErrorCodeModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import ErrorCodeModal from './ErrorCodeModal.vue'
+import { columns, searchFormSchema } from './errorCode.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ErrorCodeModal from './ErrorCodeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { ErrorCodePageReqVO, deleteErrorCode, excelErrorCode, getErrorCodePage } from '@/api/system/errorCode'
-import { columns, searchFormSchema } from './errorCode.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { ErrorCodePageReqVO } from '@/api/system/errorCode'
+import { deleteErrorCode, excelErrorCode, getErrorCodePage } from '@/api/system/errorCode'
 
 defineOptions({ name: 'SystemErrorCode' })
 
@@ -60,8 +26,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -80,7 +46,7 @@ async function handleExport() {
     async onOk() {
       await excelErrorCode(getForm().getFieldsValue() as ErrorCodePageReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -90,3 +56,39 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:error-code:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['system:error-code:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:error-code:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:error-code:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <ErrorCodeModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

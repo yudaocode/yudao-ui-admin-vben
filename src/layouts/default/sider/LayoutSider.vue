@@ -1,44 +1,22 @@
-<template>
-  <div v-if="getMenuFixed && !getIsMobile" :style="getHiddenDomStyle" v-show="showClassSideBarRef"></div>
-  <Sider
-    v-show="showClassSideBarRef"
-    ref="sideRef"
-    breakpoint="lg"
-    collapsible
-    :class="getSiderClass"
-    :width="getMenuWidth"
-    :collapsed="getCollapsed"
-    :collapsedWidth="getCollapsedWidth"
-    :theme="getMenuTheme"
-    @breakpoint="onBreakpointChange"
-    :trigger="getTrigger"
-    v-bind="getTriggerAttr"
-  >
-    <template #trigger v-if="getShowTrigger">
-      <LayoutTrigger />
-    </template>
-    <LayoutMenu :theme="getMenuTheme" :menuMode="getMode" :splitType="getSplitType" />
-    <DragBar ref="dragBarRef" />
-  </Sider>
-</template>
 <script lang="ts" setup>
-import { computed, ref, unref, CSSProperties, h } from 'vue'
+import type { CSSProperties } from 'vue'
+import { computed, h, ref, unref } from 'vue'
 
 import { Layout } from 'ant-design-vue'
 import LayoutMenu from '../menu/index.vue'
+import { useDragLine, useSiderEvent, useTrigger } from './useLayoutSider'
+import DragBar from './DragBar.vue'
 import LayoutTrigger from '@/layouts/default/trigger/index.vue'
 
 import { MenuModeEnum, MenuSplitTyeEnum } from '@/enums/menuEnum'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useTrigger, useDragLine, useSiderEvent } from './useLayoutSider'
 import { useAppInject } from '@/hooks/web/useAppInject'
 import { useDesign } from '@/hooks/web/useDesign'
 
-import DragBar from './DragBar.vue'
-const Sider = Layout.Sider
-
 defineOptions({ name: 'LayoutSideBar' })
+
+const Sider = Layout.Sider
 
 const dragBarRef = ref<ElRef>(null)
 const sideRef = ref<ElRef>(null)
@@ -72,20 +50,20 @@ const getSiderClass = computed(() => {
     prefixCls,
     {
       [`${prefixCls}--fixed`]: unref(getMenuFixed),
-      [`${prefixCls}--mix`]: unref(getIsMixMode) && !unref(getIsMobile)
-    }
+      [`${prefixCls}--mix`]: unref(getIsMixMode) && !unref(getIsMobile),
+    },
   ]
 })
 
 const getHiddenDomStyle = computed((): CSSProperties => {
   const width = `${unref(getRealWidth)}px`
   return {
-    width: width,
+    width,
     overflow: 'hidden',
     flex: `0 0 ${width}`,
     maxWidth: width,
     minWidth: width,
-    transition: 'all 0.2s'
+    transition: 'all 0.2s',
   }
 })
 
@@ -93,6 +71,31 @@ const getHiddenDomStyle = computed((): CSSProperties => {
 // andv 更新后，如果trigger插槽可用，则此处代码可废弃
 const getTrigger = h(LayoutTrigger)
 </script>
+
+<template>
+  <div v-if="getMenuFixed && !getIsMobile" v-show="showClassSideBarRef" :style="getHiddenDomStyle" />
+  <Sider
+    v-show="showClassSideBarRef"
+    ref="sideRef"
+    breakpoint="lg"
+    collapsible
+    :class="getSiderClass"
+    :width="getMenuWidth"
+    :collapsed="getCollapsed"
+    :collapsed-width="getCollapsedWidth"
+    :theme="getMenuTheme"
+    :trigger="getTrigger"
+    v-bind="getTriggerAttr"
+    @breakpoint="onBreakpointChange"
+  >
+    <template v-if="getShowTrigger" #trigger>
+      <LayoutTrigger />
+    </template>
+    <LayoutMenu :theme="getMenuTheme" :menu-mode="getMode" :split-type="getSplitType" />
+    <DragBar ref="dragBarRef" />
+  </Sider>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-layout-sideBar';
 
@@ -100,7 +103,7 @@ const getTrigger = h(LayoutTrigger)
   z-index: @layout-sider-fixed-z-index;
 
   &--fixed {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     height: 100%;
@@ -130,7 +133,7 @@ const getTrigger = h(LayoutTrigger)
 
     .ant-layout-sider-trigger {
       color: @text-color-base;
-      border-top: 1px solid @border-color-light;
+      border-top: 1px solid var(--border-color);
     }
   }
 

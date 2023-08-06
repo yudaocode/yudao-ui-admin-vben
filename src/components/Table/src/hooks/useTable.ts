@@ -1,10 +1,10 @@
-import type { BasicTableProps, TableActionType, FetchParams, BasicColumn } from '../types/table'
+import type { WatchStopHandle } from 'vue'
+import { onUnmounted, ref, toRaw, unref, watch } from 'vue'
+import type { BasicColumn, BasicTableProps, FetchParams, TableActionType } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
 import type { DynamicProps } from '@/types/utils'
 import type { FormActionType } from '@/components/Form'
-import type { WatchStopHandle } from 'vue'
 import { getDynamicProps } from '@/utils'
-import { ref, onUnmounted, unref, watch, toRaw } from 'vue'
 import { isProdMode } from '@/utils/env'
 import { error } from '@/utils/log'
 
@@ -18,7 +18,7 @@ export function useTable(tableProps?: Props): [
   (instance: TableActionType, formInstance: UseTableMethod) => void,
   TableActionType & {
     getForm: () => FormActionType
-  }
+  },
 ] {
   const tableRef = ref<Nullable<TableActionType>>(null)
   const loadedRef = ref<Nullable<boolean>>(false)
@@ -27,13 +27,14 @@ export function useTable(tableProps?: Props): [
   let stopWatch: WatchStopHandle
 
   function register(instance: TableActionType, formInstance: UseTableMethod) {
-    isProdMode() &&
-      onUnmounted(() => {
+    isProdMode()
+      && onUnmounted(() => {
         tableRef.value = null
         loadedRef.value = null
       })
 
-    if (unref(loadedRef) && isProdMode() && instance === unref(tableRef)) return
+    if (unref(loadedRef) && isProdMode() && instance === unref(tableRef))
+      return
 
     tableRef.value = instance
     formRef.value = formInstance
@@ -49,16 +50,16 @@ export function useTable(tableProps?: Props): [
       },
       {
         immediate: true,
-        deep: true
-      }
+        deep: true,
+      },
     )
   }
 
   function getTableInstance(): TableActionType {
     const table = unref(tableRef)
-    if (!table) {
+    if (!table)
       error('The table instance has not been obtained yet, please make sure the table is presented when performing the table operation!')
-    }
+
     return table as TableActionType
   }
 
@@ -145,7 +146,7 @@ export function useTable(tableProps?: Props): [
       return unref(formRef) as unknown as FormActionType
     },
     setShowPagination: async (show: boolean) => {
-      getTableInstance().setShowPagination(show)
+      await getTableInstance().setShowPagination(show)
     },
     getShowPagination: () => {
       return toRaw(getTableInstance().getShowPagination())
@@ -163,11 +164,11 @@ export function useTable(tableProps?: Props): [
       getTableInstance().scrollTo(pos)
     },
     setShowForm: async (show: boolean) => {
-      getTableInstance().setShowForm(show)
+      await getTableInstance().setShowForm(show)
     },
     getShowForm: () => {
       return toRaw(getTableInstance().getShowForm())
-    }
+    },
   }
 
   return [register, methods]

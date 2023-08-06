@@ -1,10 +1,5 @@
-<template>
-  <Button v-bind="$attrs" :disabled="isStart" @click="handleStart" :loading="loading">
-    {{ getButtonText }}
-  </Button>
-</template>
 <script lang="ts" setup>
-import { ref, watchEffect, computed, unref } from 'vue'
+import { computed, ref, unref, watchEffect } from 'vue'
 import { Button } from 'ant-design-vue'
 import { useCountdown } from './useCountdown'
 import { isFunction } from '@/utils/is'
@@ -17,8 +12,8 @@ const props = defineProps({
   count: { type: Number, default: 60 },
   beforeStartFunc: {
     type: Function as PropType<() => Promise<boolean>>,
-    default: null
-  }
+    default: null,
+  },
 })
 
 const loading = ref(false)
@@ -44,11 +39,19 @@ async function handleStart() {
     try {
       const canStart = await beforeStartFunc()
       canStart && start()
-    } finally {
+    }
+    finally {
       loading.value = false
     }
-  } else {
+  }
+  else {
     start()
   }
 }
 </script>
+
+<template>
+  <Button v-bind="$attrs" :disabled="isStart" :loading="loading" @click="handleStart">
+    {{ getButtonText }}
+  </Button>
+</template>

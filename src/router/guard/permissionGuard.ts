@@ -1,4 +1,4 @@
-import type { Router, RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw, Router } from 'vue-router'
 
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 
@@ -43,7 +43,8 @@ export function createPermissionGuard(router: Router) {
             next((to.query?.redirect as string) || '/')
             return
           }
-        } catch {}
+        }
+        catch {}
       }
       next()
       return
@@ -60,12 +61,12 @@ export function createPermissionGuard(router: Router) {
       // redirect login page
       const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
         path: LOGIN_PATH,
-        replace: true
+        replace: true,
       }
       if (to.path) {
         redirectData.query = {
           ...redirectData.query,
-          redirect: to.path
+          redirect: to.path,
         }
       }
       next(redirectData)
@@ -78,14 +79,15 @@ export function createPermissionGuard(router: Router) {
       return
     }
 
-    if (!dictStore.getIsSetDict) {
+    if (!dictStore.getIsSetDict)
       await dictStore.setDictMap()
-    }
+
     // get userinfo while last fetch time is empty
     if (userStore.getLastUpdateTime === 0) {
       try {
         await userStore.getUserInfoAction()
-      } catch (err) {
+      }
+      catch (err) {
         next()
         return
       }
@@ -101,7 +103,8 @@ export function createPermissionGuard(router: Router) {
     routes.forEach((route) => {
       try {
         router.addRoute(route as unknown as RouteRecordRaw)
-      } catch (e) {}
+      }
+      catch (e) {}
     })
 
     router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw)
@@ -111,7 +114,8 @@ export function createPermissionGuard(router: Router) {
     if (to.name === PAGE_NOT_FOUND_ROUTE.name) {
       // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
       next({ path: to.fullPath, replace: true, query: to.query })
-    } else {
+    }
+    else {
       const redirectPath = (from.query.redirect || to.path) as string
       const redirect = decodeURIComponent(redirectPath)
       const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect }

@@ -17,12 +17,12 @@ export function updateAccount(data) {
 
 // 删除公众号账号
 export function deleteAccount(id) {
-  return defHttp.delete({ url: '/mp/account/delete?id=' + id, method: 'delete' })
+  return defHttp.delete({ url: `/mp/account/delete?id=${id}`, method: 'delete' })
 }
 
 // 获得公众号账号
 export function getAccount(id) {
-  return defHttp.get({ url: '/mp/account/get?id=' + id })
+  return defHttp.get({ url: `/mp/account/get?id=${id}` })
 }
 
 // 获得公众号账号分页
@@ -37,10 +37,10 @@ export function getSimpleAccounts() {
 
 // 生成公众号二维码
 export function generateAccountQrCode(id) {
-  return defHttp.put({ url: '/mp/account/generate-qr-code?id=' + id })
+  return defHttp.put({ url: `/mp/account/generate-qr-code?id=${id}` })
 }
 
 // 清空公众号 API 配额
 export function clearAccountQuota(id) {
-  return defHttp.put({ url: '/mp/account/clear-quota?id=' + id })
+  return defHttp.put({ url: `/mp/account/clear-quota?id=${id}` })
 }

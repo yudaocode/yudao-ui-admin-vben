@@ -1,19 +1,92 @@
+<script lang="ts" setup>
+import { computed, ref, unref, watch } from 'vue'
+import { Avatar, List, Tag, Typography } from 'ant-design-vue'
+import type { ListItem } from './data'
+import { useDesign } from '@/hooks/web/useDesign'
+import { isNumber } from '@/utils/is'
+
+const props = defineProps({
+  list: {
+    type: Array as PropType<ListItem[]>,
+    default: () => [],
+  },
+  pageSize: {
+    type: [Boolean, Number] as PropType<boolean | number>,
+    default: 5,
+  },
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
+  titleRows: {
+    type: Number,
+    default: 1,
+  },
+  descRows: {
+    type: Number,
+    default: 2,
+  },
+  onTitleClick: {
+    type: Function as PropType<(Recordable) => void>,
+  },
+})
+const emit = defineEmits(['update:currentPage'])
+const { prefixCls } = useDesign('header-notify-list')
+const current = ref(props.currentPage || 1)
+const getData = computed(() => {
+  const { pageSize, list } = props
+  if (pageSize === false)
+    return []
+  const size = isNumber(pageSize) ? pageSize : 5
+  return list.slice(size * (unref(current) - 1), size * unref(current))
+})
+watch(
+  () => props.currentPage,
+  (v) => {
+    current.value = v
+  },
+)
+const isTitleClickable = computed(() => !!props.onTitleClick)
+const getPagination = computed(() => {
+  const { list, pageSize } = props
+  if (isNumber(pageSize) && pageSize > 0 && list && list.length > pageSize) {
+    return {
+      total: list.length,
+      pageSize,
+      // size: 'small',
+      current: unref(current),
+      onChange(page) {
+        current.value = page
+        emit('update:currentPage', page)
+      },
+    }
+  }
+  else {
+    return false
+  }
+})
+
+function handleTitleClick(item: ListItem) {
+  props.onTitleClick && props.onTitleClick(item)
+}
+</script>
+
 <template>
   <List :class="prefixCls" bordered :pagination="getPagination">
     <template v-for="item in getData" :key="item.id">
-      <ListItem class="list-item">
-        <ListItemMeta>
+      <List.Item class="list-item">
+        <List.Item.Meta>
           <template #title>
             <div class="title">
-              <TypographyParagraph
-                @click="handleTitleClick(item)"
+              <Typography.Paragraph
                 style="width: 100%; margin-bottom: 0 !important"
                 :style="{ cursor: isTitleClickable ? 'pointer' : '' }"
                 :delete="!!item.titleDelete"
                 :ellipsis="$props.titleRows && $props.titleRows > 0 ? { rows: $props.titleRows, tooltip: !!item.title } : false"
                 :content="item.title"
+                @click="handleTitleClick(item)"
               />
-              <div class="extra" v-if="item.extra">
+              <div v-if="item.extra" class="extra">
                 <Tag class="tag" :color="item.color">
                   {{ item.extra }}
                 </Tag>
@@ -28,8 +101,8 @@
 
           <template #description>
             <div>
-              <div class="description" v-if="item.description">
-                <TypographyParagraph
+              <div v-if="item.description" class="description">
+                <Typography.Paragraph
                   style="width: 100%; margin-bottom: 0 !important"
                   :ellipsis="$props.descRows && $props.descRows > 0 ? { rows: $props.descRows, tooltip: !!item.description } : false"
                   :content="item.description"
@@ -40,84 +113,12 @@
               </div>
             </div>
           </template>
-        </ListItemMeta>
-      </ListItem>
+        </List.Item.Meta>
+      </List.Item>
     </template>
   </List>
 </template>
-<script lang="ts" setup>
-import { computed, ref, watch, unref } from 'vue'
-import { ListItem } from './data'
-import { useDesign } from '@/hooks/web/useDesign'
-import { List, Avatar, Tag, Typography } from 'ant-design-vue'
-import { isNumber } from '@/utils/is'
 
-const ListItem = List.Item
-const ListItemMeta = List.Item.Meta
-const TypographyParagraph = Typography.Paragraph
-const props = defineProps({
-  list: {
-    type: Array as PropType<ListItem[]>,
-    default: () => []
-  },
-  pageSize: {
-    type: [Boolean, Number] as PropType<Boolean | Number>,
-    default: 5
-  },
-  currentPage: {
-    type: Number,
-    default: 1
-  },
-  titleRows: {
-    type: Number,
-    default: 1
-  },
-  descRows: {
-    type: Number,
-    default: 2
-  },
-  onTitleClick: {
-    type: Function as PropType<(Recordable) => void>
-  }
-})
-const emit = defineEmits(['update:currentPage'])
-const { prefixCls } = useDesign('header-notify-list')
-const current = ref(props.currentPage || 1)
-const getData = computed(() => {
-  const { pageSize, list } = props
-  if (pageSize === false) return []
-  let size = isNumber(pageSize) ? pageSize : 5
-  return list.slice(size * (unref(current) - 1), size * unref(current))
-})
-watch(
-  () => props.currentPage,
-  (v) => {
-    current.value = v
-  }
-)
-const isTitleClickable = computed(() => !!props.onTitleClick)
-const getPagination = computed(() => {
-  const { list, pageSize } = props
-  if (isNumber(pageSize) && pageSize > 0 && list && list.length > pageSize) {
-    return {
-      total: list.length,
-      pageSize,
-      //size: 'small',
-      current: unref(current),
-      onChange(page) {
-        current.value = page
-        emit('update:currentPage', page)
-      }
-    }
-  } else {
-    return false
-  }
-})
-
-function handleTitleClick(item: ListItem) {
-  props.onTitleClick && props.onTitleClick(item)
-}
-</script>
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-header-notify-list';
 

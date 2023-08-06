@@ -54,9 +54,8 @@ export default function mitt(all?: EventHandlerMap): Emitter {
     on<T = any>(type: EventType, handler: Handler<T>) {
       const handlers = all?.get(type)
       const added = handlers && handlers.push(handler)
-      if (!added) {
+      if (!added)
         all?.set(type, [handler])
-      }
     },
 
     /**
@@ -67,9 +66,8 @@ export default function mitt(all?: EventHandlerMap): Emitter {
      */
     off<T = any>(type: EventType, handler: Handler<T>) {
       const handlers = all?.get(type)
-      if (handlers) {
+      if (handlers)
         handlers.splice(handlers.indexOf(handler) >>> 0, 1)
-      }
     },
 
     /**
@@ -86,7 +84,7 @@ export default function mitt(all?: EventHandlerMap): Emitter {
       ;((all?.get(type) || []) as EventHandlerList).slice().map((handler) => {
         handler(evt)
       })
-      ;((all?.get('*') || []) as WildCardEventHandlerList).slice().map((handler) => {
+      ;((all?.get('*') || [])).slice().map((handler) => {
         handler(type, evt)
       })
     },
@@ -96,6 +94,6 @@ export default function mitt(all?: EventHandlerMap): Emitter {
      */
     clear() {
       this.all.clear()
-    }
+    },
   }
 }

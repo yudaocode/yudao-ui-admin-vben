@@ -1,4 +1,4 @@
-import type { AppRouteRecordRaw, AppRouteModule } from '@/router/types'
+import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
 
 import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE } from '@/router/routes/basic'
 
@@ -25,8 +25,8 @@ export const RootRoute: AppRouteRecordRaw = {
   name: 'Root',
   redirect: PageEnum.BASE_HOME,
   meta: {
-    title: 'Root'
-  }
+    title: 'Root',
+  },
 }
 
 export const LoginRoute: AppRouteRecordRaw = {
@@ -34,8 +34,8 @@ export const LoginRoute: AppRouteRecordRaw = {
   name: 'Login',
   component: () => import('@/views/base/login/Login.vue'),
   meta: {
-    title: t('routes.basic.login')
-  }
+    title: t('routes.basic.login'),
+  },
 }
 
 export const SSORoute: AppRouteRecordRaw = {
@@ -43,8 +43,8 @@ export const SSORoute: AppRouteRecordRaw = {
   name: 'SSO',
   component: () => import('@/views/base/login/sso.vue'),
   meta: {
-    title: t('routes.basic.sso')
-  }
+    title: t('routes.basic.sso'),
+  },
 }
 
 export const ProfileRoute: AppRouteRecordRaw = {
@@ -53,7 +53,7 @@ export const ProfileRoute: AppRouteRecordRaw = {
   name: 'Profile',
   meta: {
     title: t('routes.basic.profile'),
-    hidden: true
+    hidden: true,
   },
   children: [
     {
@@ -65,8 +65,8 @@ export const ProfileRoute: AppRouteRecordRaw = {
         hidden: true,
         noTagsView: false,
         icon: 'ant-design:user-outlined',
-        title: t('routes.basic.profile')
-      }
+        title: t('routes.basic.profile'),
+      },
     },
     {
       path: 'notify-message',
@@ -77,10 +77,10 @@ export const ProfileRoute: AppRouteRecordRaw = {
         hidden: true,
         noTagsView: false,
         icon: 'ant-design:bell-outlined',
-        title: t('routes.basic.notifyMessage')
-      }
-    }
-  ]
+        title: t('routes.basic.notifyMessage'),
+      },
+    },
+  ],
 }
 
 export const CodegenRoute: AppRouteRecordRaw = {
@@ -89,7 +89,7 @@ export const CodegenRoute: AppRouteRecordRaw = {
   name: 'CodegenEdit',
   meta: {
     title: '修改生成配置',
-    hidden: true
+    hidden: true,
   },
   children: [
     {
@@ -102,10 +102,10 @@ export const CodegenRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '修改生成配置',
-        activeMenu: 'infra/codegen/index'
-      }
-    }
-  ]
+        activeMenu: 'infra/codegen/index',
+      },
+    },
+  ],
 }
 
 export const JobLogRoute: AppRouteRecordRaw = {
@@ -114,7 +114,7 @@ export const JobLogRoute: AppRouteRecordRaw = {
   name: 'JobL',
   meta: {
     title: '调度日志',
-    hidden: true
+    hidden: true,
   },
   children: [
     {
@@ -127,10 +127,10 @@ export const JobLogRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:bar-chart-outlined',
         title: '调度日志',
-        activeMenu: 'infra/job/index'
-      }
-    }
-  ]
+        activeMenu: 'infra/job/index',
+      },
+    },
+  ],
 }
 
 export const PayRoute: AppRouteRecordRaw = {
@@ -139,7 +139,7 @@ export const PayRoute: AppRouteRecordRaw = {
   name: 'cashRegister',
   meta: {
     title: '收银台',
-    hidden: true
+    hidden: true,
   },
   children: [
     {
@@ -152,10 +152,10 @@ export const PayRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:pay-circle-outlined',
         title: '收银台',
-        activeMenu: 'pay/order/index'
-      }
-    }
-  ]
+        activeMenu: 'pay/order/index',
+      },
+    },
+  ],
 }
 
 export const BpmRoute: AppRouteRecordRaw = {
@@ -164,7 +164,7 @@ export const BpmRoute: AppRouteRecordRaw = {
   name: 'bpm',
   meta: {
     title: '工作流',
-    hidden: true
+    hidden: true,
   },
   children: [
     {
@@ -177,8 +177,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '设计流程表单',
-        activeMenu: '/bpm/manager/form'
-      }
+        activeMenu: '/bpm/manager/form',
+      },
     },
     {
       path: '/manager/model/edit',
@@ -190,8 +190,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '设计流程',
-        activeMenu: '/bpm/manager/model'
-      }
+        activeMenu: '/bpm/manager/model',
+      },
     },
     {
       path: '/manager/definition',
@@ -203,8 +203,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '流程定义',
-        activeMenu: '/bpm/manager/model'
-      }
+        activeMenu: '/bpm/manager/model',
+      },
     },
     {
       path: '/manager/task-assign-rule',
@@ -215,8 +215,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         hidden: true,
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
-        title: '任务分配规则'
-      }
+        title: '任务分配规则',
+      },
     },
     {
       path: '/process-instance/create',
@@ -228,8 +228,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '发起流程',
-        activeMenu: 'bpm/processInstance/create'
-      }
+        activeMenu: 'bpm/processInstance/create',
+      },
     },
     {
       path: '/process-instance/detail',
@@ -241,8 +241,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '流程详情',
-        activeMenu: 'bpm/processInstance/detail'
-      }
+        activeMenu: 'bpm/processInstance/detail',
+      },
     },
     {
       path: '/bpm/oa/leave/create',
@@ -254,8 +254,8 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '发起 OA 请假',
-        activeMenu: 'bpm/oa/leave'
-      }
+        activeMenu: 'bpm/oa/leave',
+      },
     },
     {
       path: '/process-instance/detail',
@@ -267,10 +267,10 @@ export const BpmRoute: AppRouteRecordRaw = {
         noTagsView: false,
         icon: 'ant-design:edit-outlined',
         title: '查看 OA 请假',
-        activeMenu: 'bpm/oa/leave'
-      }
-    }
-  ]
+        activeMenu: 'bpm/oa/leave',
+      },
+    },
+  ],
 }
 
 // Basic routing without permission
@@ -285,5 +285,5 @@ export const basicRoutes = [
   PayRoute,
   BpmRoute,
   REDIRECT_ROUTE,
-  PAGE_NOT_FOUND_ROUTE
+  PAGE_NOT_FOUND_ROUTE,
 ]

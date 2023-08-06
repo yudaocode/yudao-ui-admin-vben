@@ -1,50 +1,21 @@
 <!--
  * @Description:
 -->
-<template>
-  <Col v-bind="colPropsComputed">
-    <FormItem v-bind="{ ...formItemProps }">
-      <template #label v-if="!formItemProps.hiddenLabel && schema.component !== 'Divider'">
-        <Tooltip>
-          <span>{{ schema.label }}</span>
-          <template #title v-if="schema.helpMessage"
-            ><span>{{ schema.helpMessage }}</span></template
-          >
-          <Icon v-if="schema.helpMessage" class="ml-5" icon="ant-design:question-circle-outlined" />
-        </Tooltip>
-      </template>
-
-      <slot v-if="schema.componentProps && schema.componentProps?.slotName" :name="schema.componentProps.slotName" v-bind="schema"></slot>
-      <Divider v-else-if="schema.component == 'Divider' && schema.label && !formItemProps.hiddenLabel">{{ schema.label }}</Divider>
-      <!-- 部分控件需要一个空div -->
-      <div
-        ><component
-          class="v-form-item-wrapper"
-          :is="componentItem"
-          v-bind="{ ...cmpProps, ...asyncProps }"
-          :schema="schema"
-          :style="schema.width ? { width: schema.width } : {}"
-          @change="handleChange"
-          @click="handleClick(schema)"
-      /></div>
-
-      <span v-if="['Button'].includes(schema.component)">{{ schema.label }}</span>
-    </FormItem>
-  </Col>
-</template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, PropType, unref } from 'vue'
-import { componentMap } from '../../core/formItemConfig'
-import { IVFormComponent, IFormConfig } from '../../typings/v-form-component'
+import type { PropType } from 'vue'
+import { computed, defineComponent, reactive, toRefs, unref } from 'vue'
 import { asyncComputed } from '@vueuse/core'
-import { handleAsyncOptions } from '../../utils'
 import { omit } from 'lodash-es'
-import { Tooltip, FormItem, Divider, Col } from 'ant-design-vue'
+import { Col, Divider, FormItem, Tooltip } from 'ant-design-vue'
+import { componentMap } from '../../core/formItemConfig'
+import type { IFormConfig, IVFormComponent } from '../../typings/v-form-component'
+import { handleAsyncOptions } from '../../utils'
 
 // import FormItem from '/@/components/Form/src/components/FormItem.vue';
 
-import { Icon } from '@/components/Icon'
 import { useFormModelState } from '../../hooks/useFormDesignState'
+import { Icon } from '@/components/Icon'
+
 export default defineComponent({
   name: 'VFormItem',
   components: {
@@ -52,27 +23,27 @@ export default defineComponent({
     Icon,
     FormItem,
     Divider,
-    Col
+    Col,
   },
 
   props: {
     formData: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     schema: {
       type: Object as PropType<IVFormComponent>,
-      required: true
+      required: true,
     },
     formConfig: {
       type: Object as PropType<IFormConfig>,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update:form-data', 'change'],
   setup(props, { emit }) {
     const state = reactive({
-      componentMap
+      componentMap,
     })
 
     const { formModel: formData1, setFormModel } = useFormModelState()
@@ -87,22 +58,18 @@ export default defineComponent({
 
       const { itemProps } = unref(props.schema)
 
-      //<editor-fold desc="布局属性">
-      labelCol = labelCol
-        ? labelCol
-        : formConfig.layout === 'horizontal'
+      // <editor-fold desc="布局属性">
+      labelCol = labelCol || (formConfig.layout === 'horizontal'
         ? formConfig.labelLayout === 'flex'
           ? { style: `width:${formConfig.labelWidth}px` }
           : formConfig.labelCol
-        : {}
+        : {})
 
-      wrapperCol = wrapperCol
-        ? wrapperCol
-        : formConfig.layout === 'horizontal'
+      wrapperCol = wrapperCol || (formConfig.layout === 'horizontal'
         ? formConfig.labelLayout === 'flex'
           ? { style: 'width:auto;flex:1' }
           : formConfig.wrapperCol
-        : {}
+        : {})
 
       const style = formConfig.layout === 'horizontal' && formConfig.labelLayout === 'flex' ? { display: 'flex' } : {}
 
@@ -119,19 +86,19 @@ export default defineComponent({
           required,
           rules,
           labelCol,
-          wrapperCol
+          wrapperCol,
         },
-        itemProps
+        itemProps,
       )
-      if (!itemProps?.labelCol?.span) {
+      if (!itemProps?.labelCol?.span)
         newConfig.labelCol = labelCol
-      }
-      if (!itemProps?.wrapperCol?.span) {
+
+      if (!itemProps?.wrapperCol?.span)
         newConfig.wrapperCol = wrapperCol
-      }
-      if (!itemProps?.rules) {
+
+      if (!itemProps?.rules)
         newConfig.rules = rules
-      }
+
       return newConfig
     }) as Recordable
 
@@ -139,18 +106,21 @@ export default defineComponent({
 
     // console.log('component change:', props.schema.component, componentItem.value);
     const handleClick = (schema: IVFormComponent) => {
-      if (schema.component === 'Button' && schema.componentProps?.handle) emit(schema.componentProps?.handle)
+      if (schema.component === 'Button' && schema.componentProps?.handle)
+        emit(schema.componentProps?.handle)
     }
     /**
      * 处理异步属性，异步属性会导致一些属性渲染错误，如defaultValue异步加载会导致渲染不出来，故而此处只处理options，treeData，同步属性在cmpProps中处理
      */
     const asyncProps = asyncComputed(async () => {
       let { options, treeData } = props.schema.componentProps ?? {}
-      if (options) options = await handleAsyncOptions(options)
-      if (treeData) treeData = await handleAsyncOptions(treeData)
+      if (options)
+        options = await handleAsyncOptions(options)
+      if (treeData)
+        treeData = await handleAsyncOptions(treeData)
       return {
         options,
-        treeData
+        treeData,
       }
     })
 
@@ -159,7 +129,7 @@ export default defineComponent({
      */
     const cmpProps = computed(() => {
       const isCheck = props.schema && ['Switch', 'Checkbox', 'Radio'].includes(props.schema.component)
-      let { field } = props.schema
+      const { field } = props.schema
 
       let { disabled, ...attrs } = omit(props.schema.componentProps, ['options', 'treeData']) ?? {}
 
@@ -168,7 +138,7 @@ export default defineComponent({
       return {
         ...attrs,
         disabled,
-        [isCheck ? 'checked' : 'value']: formData1.value[field!]
+        [isCheck ? 'checked' : 'value']: formData1.value[field!],
       }
     })
 
@@ -187,11 +157,46 @@ export default defineComponent({
       asyncProps,
       cmpProps,
       handleChange,
-      colPropsComputed
+      colPropsComputed,
     }
-  }
+  },
 })
 </script>
+
+<template>
+  <Col v-bind="colPropsComputed">
+    <FormItem v-bind="{ ...formItemProps }">
+      <template v-if="!formItemProps.hiddenLabel && schema.component !== 'Divider'" #label>
+        <Tooltip>
+          <span>{{ schema.label }}</span>
+          <template v-if="schema.helpMessage" #title>
+            <span>{{ schema.helpMessage }}</span>
+          </template>
+          <Icon v-if="schema.helpMessage" class="ml-5" icon="ant-design:question-circle-outlined" />
+        </Tooltip>
+      </template>
+
+      <slot v-if="schema.componentProps && schema.componentProps?.slotName" :name="schema.componentProps.slotName" v-bind="schema" />
+      <Divider v-else-if="schema.component === 'Divider' && schema.label && !formItemProps.hiddenLabel">
+        {{ schema.label }}
+      </Divider>
+      <!-- 部分控件需要一个空div -->
+      <div>
+        <component
+          :is="componentItem"
+          class="v-form-item-wrapper"
+          v-bind="{ ...cmpProps, ...asyncProps }"
+          :schema="schema"
+          :style="schema.width ? { width: schema.width } : {}"
+          @change="handleChange"
+          @click="handleClick(schema)"
+        />
+      </div>
+
+      <span v-if="['Button'].includes(schema.component)">{{ schema.label }}</span>
+    </FormItem>
+  </Col>
+</template>
 
 <style lang="less" scoped>
 .ml-5 {

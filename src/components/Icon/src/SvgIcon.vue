@@ -1,8 +1,3 @@
-<template>
-  <svg :class="[prefixCls, $attrs.class, spin && 'svg-icon-spin']" :style="getStyle" aria-hidden="true">
-    <use :xlink:href="symbolId" />
-  </svg>
-</template>
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
@@ -13,20 +8,20 @@ defineOptions({ name: 'SvgIcon' })
 const props = defineProps({
   prefix: {
     type: String,
-    default: 'icon'
+    default: 'icon',
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   size: {
     type: [Number, String],
-    default: 16
+    default: 16,
   },
   spin: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const { prefixCls } = useDesign('svg-icon')
@@ -38,10 +33,17 @@ const getStyle = computed((): CSSProperties => {
   s = `${s.replace('px', '')}px`
   return {
     width: s,
-    height: s
+    height: s,
   }
 })
 </script>
+
+<template>
+  <svg :class="[prefixCls, $attrs.class, spin && 'svg-icon-spin']" :style="getStyle" aria-hidden="true">
+    <use :xlink:href="symbolId" />
+  </svg>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-svg-icon';
 

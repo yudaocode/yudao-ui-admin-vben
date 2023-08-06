@@ -1,44 +1,12 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['bpm:user-group:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:user-group:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'bpm:user-group:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <GroupModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import GroupModal from './GroupModal.vue'
+import { columns, searchFormSchema } from './group.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import GroupModal from './GroupModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteUserGroup, getUserGroupPage } from '@/api/bpm/userGroup'
-import { columns, searchFormSchema } from './group.data'
 
 defineOptions({ name: 'BpmGroup' })
 
@@ -57,8 +25,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -75,3 +43,36 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['bpm:user-group:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:user-group:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'bpm:user-group:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <GroupModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

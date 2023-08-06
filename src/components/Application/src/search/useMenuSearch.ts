@@ -1,11 +1,12 @@
-import type { Menu } from '@/router/types'
-import { ref, onBeforeMount, unref, Ref, nextTick } from 'vue'
-import { getMenus } from '@/router/menus'
+import type { Ref } from 'vue'
+import { nextTick, onBeforeMount, ref, unref } from 'vue'
 import { cloneDeep } from 'lodash-es'
+import { onKeyStroke, useDebounceFn } from '@vueuse/core'
+import type { Menu } from '@/router/types'
+import { getMenus } from '@/router/menus'
 import { filter, forEach } from '@/utils/helper/treeHelper'
 import { useGo } from '@/hooks/web/usePage'
 import { useScrollTo } from '@/hooks/event/useScrollTo'
-import { onKeyStroke, useDebounceFn } from '@vueuse/core'
 import { useI18n } from '@/hooks/web/useI18n'
 
 export interface SearchResult {
@@ -21,7 +22,7 @@ function transform(c: string) {
 }
 
 function createSearchReg(key: string) {
-  const keys = [...key].map((item) => transform(item))
+  const keys = [...key].map(item => transform(item))
   const str = ['', ...keys, ''].join('.*')
   return new RegExp(str)
 }
@@ -69,12 +70,11 @@ export function useMenuSearch(refs: Ref<HTMLElement[]>, scrollWrap: Ref<ElRef>, 
         ret.push({
           name: parent?.name ? `${parent.name} > ${name}` : name,
           path,
-          icon
+          icon,
         })
       }
-      if (!meta?.hideChildrenInMenu && Array.isArray(children) && children.length) {
+      if (!meta?.hideChildrenInMenu && Array.isArray(children) && children.length)
         ret.push(...handlerSearchResult(children, reg, item))
-      }
     })
     return ret
   }
@@ -87,21 +87,23 @@ export function useMenuSearch(refs: Ref<HTMLElement[]>, scrollWrap: Ref<ElRef>, 
 
   // Arrow key up
   function handleUp() {
-    if (!searchResult.value.length) return
+    if (!searchResult.value.length)
+      return
     activeIndex.value--
-    if (activeIndex.value < 0) {
+    if (activeIndex.value < 0)
       activeIndex.value = searchResult.value.length - 1
-    }
+
     handleScroll()
   }
 
   // Arrow key down
   function handleDown() {
-    if (!searchResult.value.length) return
+    if (!searchResult.value.length)
+      return
     activeIndex.value++
-    if (activeIndex.value > searchResult.value.length - 1) {
+    if (activeIndex.value > searchResult.value.length - 1)
       activeIndex.value = 0
-    }
+
     handleScroll()
   }
 
@@ -109,39 +111,38 @@ export function useMenuSearch(refs: Ref<HTMLElement[]>, scrollWrap: Ref<ElRef>, 
   // the scroll bar needs to scroll automatically
   function handleScroll() {
     const refList = unref(refs)
-    if (!refList || !Array.isArray(refList) || refList.length === 0 || !unref(scrollWrap)) {
+    if (!refList || !Array.isArray(refList) || refList.length === 0 || !unref(scrollWrap))
       return
-    }
 
     const index = unref(activeIndex)
     const currentRef = refList[index]
-    if (!currentRef) {
+    if (!currentRef)
       return
-    }
+
     const wrapEl = unref(scrollWrap)
-    if (!wrapEl) {
+    if (!wrapEl)
       return
-    }
+
     const scrollHeight = currentRef.offsetTop + currentRef.offsetHeight
     const wrapHeight = wrapEl.offsetHeight
     const { start } = useScrollTo({
       el: wrapEl,
       duration: 100,
-      to: scrollHeight - wrapHeight
+      to: scrollHeight - wrapHeight,
     })
     start()
   }
 
   // enter keyboard event
   async function handleEnter() {
-    if (!searchResult.value.length) {
+    if (!searchResult.value.length)
       return
-    }
+
     const result = unref(searchResult)
     const index = unref(activeIndex)
-    if (result.length === 0 || index < 0) {
+    if (result.length === 0 || index < 0)
       return
-    }
+
     const to = result[index]
     handleClose()
     await nextTick()

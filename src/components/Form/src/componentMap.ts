@@ -1,25 +1,25 @@
 import type { Component } from 'vue'
+import {
+  AutoComplete,
+  Cascader,
+  Checkbox,
+  DatePicker,
+  Divider,
+  Input,
+  InputNumber,
+  Radio,
+  Rate,
+  Select,
+  Slider,
+  Switch,
+  TimePicker,
+  TreeSelect,
+} from 'ant-design-vue'
 import type { ComponentType } from './types'
 
 /**
  * Component list, register here to setting it in the form
  */
-import {
-  Input,
-  Select,
-  Radio,
-  Checkbox,
-  AutoComplete,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  Switch,
-  TimePicker,
-  TreeSelect,
-  Slider,
-  Rate,
-  Divider
-} from 'ant-design-vue'
 
 import ApiRadioGroup from './components/ApiRadioGroup.vue'
 import RadioButtonGroup from './components/RadioButtonGroup.vue'
@@ -28,12 +28,12 @@ import ApiTree from './components/ApiTree.vue'
 import ApiTreeSelect from './components/ApiTreeSelect.vue'
 import ApiCascader from './components/ApiCascader.vue'
 import ApiTransfer from './components/ApiTransfer.vue'
+import FileUpload from './components/FileUpload.vue'
 import { BasicUpload } from '@/components/Upload'
 import { StrengthMeter } from '@/components/StrengthMeter'
 import { IconPicker } from '@/components/Icon'
 import { CountdownInput } from '@/components/CountDown'
 import { Tinymce } from '@/components/Tinymce'
-import FileUpload from './components/FileUpload.vue'
 
 const componentMap = new Map<ComponentType, Component>()
 

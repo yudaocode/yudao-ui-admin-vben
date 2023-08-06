@@ -1,46 +1,13 @@
-<template>
-  <div class="flex">
-    <BasicTable @register="registerTable" class="w-1/2" @row-click="handleRowClick">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:dict:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:dict:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:dict:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <DictData class="w-1/2" :searchInfo="searchInfo" />
-    <DictTypeModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
 import { reactive } from 'vue'
+import DictData from './DictData.vue'
+import DictTypeModal from './DictTypeModal.vue'
+import { typeColumns, typeSearchFormSchema } from './dict.type'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import DictData from './DictData.vue'
-import DictTypeModal from './DictTypeModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { typeColumns, typeSearchFormSchema } from './dict.type'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteDictType, getDictTypePage } from '@/api/system/dict/type'
 
 defineOptions({ name: 'SystemDict' })
@@ -56,7 +23,7 @@ const [registerTable, { reload }] = useTable({
   columns: typeColumns,
   formConfig: {
     labelWidth: 120,
-    schemas: typeSearchFormSchema
+    schemas: typeSearchFormSchema,
   },
   useSearchForm: true,
   showTableSetting: true,
@@ -65,8 +32,8 @@ const [registerTable, { reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleRowClick(record) {
@@ -87,3 +54,37 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div class="flex">
+    <BasicTable class="w-1/2" @register="registerTable" @row-click="handleRowClick">
+      <template #toolbar>
+        <a-button v-auth="['system:dict:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:dict:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:dict:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <DictData class="w-1/2" :search-info="searchInfo" />
+    <DictTypeModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

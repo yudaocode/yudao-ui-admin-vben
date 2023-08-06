@@ -1,23 +1,3 @@
-<template>
-  <BasicModal :footer="null" :title="t('layout.header.lockScreen')" v-bind="$attrs" :class="prefixCls" @register="register">
-    <div :class="`${prefixCls}__entry`">
-      <div :class="`${prefixCls}__header`">
-        <img :src="avatar" :class="`${prefixCls}__header-img`" />
-        <p :class="`${prefixCls}__header-name`">
-          {{ getRealName }}
-        </p>
-      </div>
-
-      <BasicForm @register="registerForm" />
-
-      <div :class="`${prefixCls}__footer`">
-        <a-button type="primary" block class="mt-2" @click="handleLock">
-          {{ t('layout.header.lockScreenBtn') }}
-        </a-button>
-      </div>
-    </div>
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -45,12 +25,12 @@ const [registerForm, { validateFields, resetFields }] = useForm({
       field: 'password',
       label: t('layout.header.lockScreenPassword'),
       colProps: {
-        span: 24
+        span: 24,
       },
       component: 'InputPassword',
-      required: true
-    }
-  ]
+      required: true,
+    },
+  ],
 })
 
 async function handleLock() {
@@ -60,7 +40,7 @@ async function handleLock() {
 
   lockStore.setLockInfo({
     isLock: true,
-    pwd: password
+    pwd: password,
   })
   await resetFields()
 }
@@ -70,6 +50,28 @@ const avatar = computed(() => {
   return avatar || headerImg
 })
 </script>
+
+<template>
+  <BasicModal :footer="null" :title="t('layout.header.lockScreen')" v-bind="$attrs" :class="prefixCls" @register="register">
+    <div :class="`${prefixCls}__entry`">
+      <div :class="`${prefixCls}__header`">
+        <img :src="avatar" :class="`${prefixCls}__header-img`">
+        <p :class="`${prefixCls}__header-name`">
+          {{ getRealName }}
+        </p>
+      </div>
+
+      <BasicForm @register="registerForm" />
+
+      <div :class="`${prefixCls}__footer`">
+        <a-button type="primary" block class="mt-2" @click="handleLock">
+          {{ t('layout.header.lockScreenBtn') }}
+        </a-button>
+      </div>
+    </div>
+  </BasicModal>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-header-lock-modal';
 

@@ -1,60 +1,53 @@
-<template>
-  <div>
-    <input ref="inputRef" type="file" v-show="false" accept=".xlsx, .xls" @change="handleInputClick" />
-    <div @click="handleUpload">
-      <slot></slot>
-    </div>
-  </div>
-</template>
 <script lang="ts" setup>
 import { ref, unref } from 'vue'
 import * as XLSX from 'xlsx'
-import { dateUtil } from '@/utils/dateUtil'
 import type { ExcelData } from './typing'
+import { dateUtil } from '@/utils/dateUtil'
 
 defineOptions({ name: 'ImportExcel' })
 
 const props = defineProps({
   // 日期时间格式。如果不提供或者提供空值，将返回原始Date对象
   dateFormat: {
-    type: String
+    type: String,
   },
   // 时区调整。实验性功能，仅为了解决读取日期时间值有偏差的问题。目前仅提供了+08:00时区的偏差修正值
   // https://github.com/SheetJS/sheetjs/issues/1470#issuecomment-501108554
   timeZone: {
     type: Number,
-    default: 8
+    default: 8,
   },
   // 是否直接返回选中文件
   isReturnFile: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 const emit = defineEmits(['success', 'error', 'cancel'])
 
 const inputRef = ref<HTMLInputElement | null>(null)
-const loadingRef = ref<Boolean>(false)
-const cancelRef = ref<Boolean>(true)
+const loadingRef = ref<boolean>(false)
+const cancelRef = ref<boolean>(true)
 
 function shapeWorkSheel(sheet: XLSX.WorkSheet, range: XLSX.Range) {
-  let str = ' ',
-    char = 65,
-    customWorkSheet = {
-      t: 's',
-      v: str,
-      r: '<t> </t><phoneticPr fontId="1" type="noConversion"/>',
-      h: str,
-      w: str
-    }
-  if (!sheet || !sheet['!ref']) return []
-  let c = 0,
-    r = 1
+  let str = ' '
+  let char = 65
+  let customWorkSheet = {
+    t: 's',
+    v: str,
+    r: '<t> </t><phoneticPr fontId="1" type="noConversion"/>',
+    h: str,
+    w: str,
+  }
+  if (!sheet || !sheet['!ref'])
+    return []
+  let c = 0
+  let r = 1
   while (c < range.e.c + 1) {
     while (r < range.e.r + 1) {
-      if (!sheet[String.fromCharCode(char) + r]) {
+      if (!sheet[String.fromCharCode(char) + r])
         sheet[String.fromCharCode(char) + r] = customWorkSheet
-      }
+
       r++
     }
     r = 1
@@ -64,7 +57,7 @@ function shapeWorkSheel(sheet: XLSX.WorkSheet, range: XLSX.Range) {
       v: str,
       r: '<t> </t><phoneticPr fontId="1" type="noConversion"/>',
       h: str,
-      w: str
+      w: str,
     }
     c++
     char++
@@ -75,7 +68,8 @@ function shapeWorkSheel(sheet: XLSX.WorkSheet, range: XLSX.Range) {
  * @description: 第一行作为头部
  */
 function getHeaderRow(sheet: XLSX.WorkSheet) {
-  if (!sheet || !sheet['!ref']) return []
+  if (!sheet || !sheet['!ref'])
+    return []
   const headers: string[] = []
   // A3:B7=>{s:{c:0, r:2}, e:{c:1, r:6}}
   const range = XLSX.utils.decode_range(sheet['!ref'])
@@ -87,8 +81,9 @@ function getHeaderRow(sheet: XLSX.WorkSheet) {
     /* walk every column in the range */
     const cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })]
     /* find the cell in the first row */
-    let hdr = 'UNKNOWN ' + C // <-- replace with your desired default
-    if (cell && cell.t) hdr = XLSX.utils.format_cell(cell)
+    let hdr = `UNKNOWN ${C}` // <-- replace with your desired default
+    if (cell && cell.t)
+      hdr = XLSX.utils.format_cell(cell)
     headers.push(hdr)
   }
   return headers
@@ -105,17 +100,16 @@ function getExcelData(workbook: XLSX.WorkBook) {
     const header: string[] = getHeaderRow(worksheet)
     let results = XLSX.utils.sheet_to_json(worksheet, {
       raw: true,
-      dateNF: dateFormat //Not worked
+      dateNF: dateFormat, // Not worked
     }) as object[]
     results = results.map((row: object) => {
-      for (let field in row) {
+      for (const field in row) {
         if (row[field] instanceof Date) {
-          if (timeZone === 8) {
+          if (timeZone === 8)
             row[field].setSeconds(row[field].getSeconds() + 43)
-          }
-          if (dateFormat) {
+
+          if (dateFormat)
             row[field] = dateUtil(row[field]).format(dateFormat)
-          }
         }
       }
       return row
@@ -125,8 +119,8 @@ function getExcelData(workbook: XLSX.WorkBook) {
       header,
       results,
       meta: {
-        sheetName
-      }
+        sheetName,
+      },
     })
   }
   return excelData
@@ -147,10 +141,12 @@ function readerData(rawFile: File) {
         const excelData = getExcelData(workbook)
         emit('success', excelData)
         resolve('')
-      } catch (error) {
+      }
+      catch (error) {
         reject(error)
         emit('error')
-      } finally {
+      }
+      finally {
         loadingRef.value = false
       }
     }
@@ -175,7 +171,8 @@ function handleInputClick(e: Event) {
   const files = target?.files
   const rawFile = files && files[0] // only setting files[0]
   target.value = ''
-  if (!rawFile) return
+  if (!rawFile)
+    return
 
   cancelRef.value = false
 
@@ -191,9 +188,9 @@ function handleInputClick(e: Event) {
  */
 function handleFocusChange() {
   const timeId = setInterval(() => {
-    if (cancelRef.value === true) {
+    if (cancelRef.value === true)
       emit('cancel')
-    }
+
     clearInterval(timeId)
     window.removeEventListener('focus', handleFocusChange)
   }, 1000)
@@ -211,3 +208,12 @@ function handleUpload() {
   }
 }
 </script>
+
+<template>
+  <div>
+    <input v-show="false" ref="inputRef" type="file" accept=".xlsx, .xls" @change="handleInputClick">
+    <div @click="handleUpload">
+      <slot />
+    </div>
+  </div>
+</template>

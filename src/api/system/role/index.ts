@@ -41,7 +41,7 @@ export function listSimpleRoles() {
 
 // 查询角色详情
 export function getRole(id: number) {
-  return defHttp.get({ url: '/system/role/get?id=' + id })
+  return defHttp.get({ url: `/system/role/get?id=${id}` })
 }
 
 // 新增角色
@@ -61,7 +61,7 @@ export function updateRoleStatus(data: UpdateStatusReqVO) {
 
 // 删除角色
 export function deleteRole(id: number) {
-  return defHttp.delete({ url: '/system/role/delete?id=' + id })
+  return defHttp.delete({ url: `/system/role/delete?id=${id}` })
 }
 
 // 导出角色

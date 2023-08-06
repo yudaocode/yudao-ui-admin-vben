@@ -1,22 +1,17 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref, unref } from 'vue'
+import { formSchema } from './ficleConfig.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { formSchema } from './ficleConfig.data'
 import { createFileConfig, getFileConfig, updateFileConfig } from '@/api/infra/fileConfig'
 
 defineOptions({ name: 'InfraFileConfigModal' })
 
+const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
@@ -24,7 +19,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
-  actionColOptions: { span: 23 }
+  actionColOptions: { span: 23 },
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -39,25 +34,31 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 
 async function handleSubmit() {
   try {
-    let values = await validate()
-    let config: any = {}
-    for (let item in values) {
-      if (item.startsWith('config.')) {
+    const values = await validate()
+    const config: any = {}
+    for (const item in values) {
+      if (item.startsWith('config.'))
         config[item.substring(7)] = values[item]
-      }
     }
     values.config = config
     setModalProps({ confirmLoading: true })
-    if (unref(isUpdate)) {
+    if (unref(isUpdate))
       await updateFileConfig(values)
-    } else {
+    else
       await createFileConfig(values)
-    }
+
     closeModal()
     emit('success')
     createMessage.success(t('common.saveSuccessText'))
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" :title="isUpdate ? t('action.edit') : t('action.create')" @register="registerModal" @ok="handleSubmit">
+    <BasicForm @register="registerForm" />
+  </BasicModal>
+</template>

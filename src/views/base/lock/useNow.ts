@@ -1,6 +1,6 @@
-import { dateUtil } from '@/utils/dateUtil'
 import { reactive, toRefs } from 'vue'
 import { tryOnMounted, tryOnUnmounted } from '@vueuse/core'
+import { dateUtil } from '@/utils/dateUtil'
 
 export function useNow(immediate = true) {
   let timer: IntervalHandle
@@ -13,7 +13,7 @@ export function useNow(immediate = true) {
     hour: '',
     minute: '',
     second: 0,
-    meridiem: ''
+    meridiem: '',
   })
 
   const update = () => {
@@ -25,7 +25,7 @@ export function useNow(immediate = true) {
 
     state.year = now.get('y')
     state.month = now.get('M') + 1
-    state.week = '星期' + ['日', '一', '二', '三', '四', '五', '六'][now.day()]
+    state.week = `星期${['日', '一', '二', '三', '四', '五', '六'][now.day()]}`
     state.day = now.get('date')
     state.hour = h
     state.minute = m
@@ -55,6 +55,6 @@ export function useNow(immediate = true) {
   return {
     ...toRefs(state),
     start,
-    stop
+    stop,
   }
 }

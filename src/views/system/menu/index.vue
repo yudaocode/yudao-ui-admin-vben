@@ -1,47 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="register">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:menu:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="info" @click="expandAll">{{ t('component.tree.expandAll') }}</a-button>
-        <a-button type="info" @click="collapseAll">{{ t('component.tree.unExpandAll') }}</a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:menu:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:menu:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <MenuModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import MenuModal from './MenuModal.vue'
+import { columns, searchFormSchema } from './menu.data'
 import { handleTree } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import MenuModal from './MenuModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMenu, getMenuList } from '@/api/system/menu'
-import { columns, searchFormSchema } from './menu.data'
 
 defineOptions({ name: 'SystemMenu' })
 
@@ -67,8 +33,8 @@ const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 async function getList() {
   const res = await getMenuList(getForm().getFieldsValue() as any)
@@ -89,3 +55,42 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="register">
+      <template #toolbar>
+        <a-button v-auth="['system:menu:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button type="info" @click="expandAll">
+          {{ t('component.tree.expandAll') }}
+        </a-button>
+        <a-button type="info" @click="collapseAll">
+          {{ t('component.tree.unExpandAll') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:menu:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:menu:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <MenuModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

@@ -1,17 +1,5 @@
-<template>
-  <div :class="prefixCls" class="relative">
-    <InputPassword v-if="showInput" v-bind="$attrs" allowClear :value="innerValueRef" @change="handleChange" :disabled="disabled">
-      <template #[item]="data" v-for="item in Object.keys($slots)">
-        <slot :name="item" v-bind="data || {}"></slot>
-      </template>
-    </InputPassword>
-    <div :class="`${prefixCls}-bar`">
-      <div :class="`${prefixCls}-bar--fill`" :data-score="getPasswordStrength"></div>
-    </div>
-  </div>
-</template>
 <script lang="ts" setup>
-import { computed, ref, watch, unref, watchEffect } from 'vue'
+import { computed, ref, unref, watch, watchEffect } from 'vue'
 import { InputPassword } from 'ant-design-vue'
 import { zxcvbn } from '@zxcvbn-ts/core'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -22,7 +10,7 @@ defineOptions({ name: 'StrengthMeter' })
 const props = defineProps({
   value: propTypes.string,
   showInput: propTypes.bool.def(true),
-  disabled: propTypes.bool
+  disabled: propTypes.bool,
 })
 const emit = defineEmits(['score-change', 'change'])
 
@@ -31,7 +19,8 @@ const { prefixCls } = useDesign('strength-meter')
 
 const getPasswordStrength = computed(() => {
   const { disabled } = props
-  if (disabled) return -1
+  if (disabled)
+    return -1
   const innerValue = unref(innerValueRef)
   const score = innerValue ? zxcvbn(unref(innerValueRef)).score : -1
   emit('score-change', score)
@@ -50,9 +39,23 @@ watch(
   () => unref(innerValueRef),
   (val) => {
     emit('change', val)
-  }
+  },
 )
 </script>
+
+<template>
+  <div :class="prefixCls" class="relative">
+    <InputPassword v-if="showInput" v-bind="$attrs" allow-clear :value="innerValueRef" :disabled="disabled" @change="handleChange">
+      <template v-for="item in Object.keys($slots)" #[item]="data">
+        <slot :name="item" v-bind="data || {}" />
+      </template>
+    </InputPassword>
+    <div :class="`${prefixCls}-bar`">
+      <div :class="`${prefixCls}-bar--fill`" :data-score="getPasswordStrength" />
+    </div>
+  </div>
+</template>
+
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-strength-meter';
 
@@ -71,11 +74,11 @@ watch(
       display: block;
       width: 20%;
       height: inherit;
+      content: '';
       background-color: transparent;
       border-color: @white;
       border-style: solid;
       border-width: 0 5px;
-      content: '';
     }
 
     &::before {
@@ -95,31 +98,6 @@ watch(
       transition:
         width 0.5s ease-in-out,
         background 0.25s;
-
-      &[data-score='0'] {
-        width: 20%;
-        background-color: darken(@error-color, 10%);
-      }
-
-      &[data-score='1'] {
-        width: 40%;
-        background-color: @error-color;
-      }
-
-      &[data-score='2'] {
-        width: 60%;
-        background-color: @warning-color;
-      }
-
-      &[data-score='3'] {
-        width: 80%;
-        background-color: fade(@success-color, 50%);
-      }
-
-      &[data-score='4'] {
-        width: 100%;
-        background-color: @success-color;
-      }
     }
   }
 }

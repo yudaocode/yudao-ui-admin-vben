@@ -1,62 +1,41 @@
-<template>
-  <div :class="[prefixCls, getAlign]" @click="onCellClick">
-    <template v-for="(action, index) in getActions" :key="`${index}-${action.label}`">
-      <Tooltip v-if="action.tooltip" v-bind="getTooltip(action.tooltip)">
-        <PopConfirmButton v-bind="action">
-          <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon" />
-          <template v-if="action.label">{{ action.label }}</template>
-        </PopConfirmButton>
-      </Tooltip>
-      <PopConfirmButton v-else v-bind="action">
-        <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon" />
-        <template v-if="action.label">{{ action.label }}</template>
-      </PopConfirmButton>
-      <Divider type="vertical" class="action-divider" v-if="divider && index < getActions.length - 1" />
-    </template>
-    <Dropdown :trigger="['hover']" :dropMenuList="getDropdownList" popconfirm v-if="dropDownActions && getDropdownList.length > 0">
-      <slot name="more"></slot>
-      <a-button type="link" v-if="!$slots.more"> {{ t('action.more') }} <DownOutlined class="icon-more" /></a-button>
-    </Dropdown>
-  </div>
-</template>
 <script lang="ts" setup>
-import { useI18n } from '@/hooks/web/useI18n'
 import { computed, toRaw, unref } from 'vue'
 import { DownOutlined } from '@ant-design/icons-vue'
-import { Divider, Tooltip, TooltipProps } from 'ant-design-vue'
+import type { TooltipProps } from 'ant-design-vue'
+import { Divider, Tooltip } from 'ant-design-vue'
+import { useTableContext } from '../hooks/useTableContext'
+import { ACTION_COLUMN_FLAG } from '../const'
+import { useI18n } from '@/hooks/web/useI18n'
 import { Icon } from '@/components/Icon'
-import { ActionItem, TableActionType } from '@/components/Table'
+import type { ActionItem, TableActionType } from '@/components/Table'
 import { PopConfirmButton } from '@/components/Button'
 import { Dropdown } from '@/components/Dropdown'
 import { useDesign } from '@/hooks/web/useDesign'
-import { useTableContext } from '../hooks/useTableContext'
 import { usePermission } from '@/hooks/web/usePermission'
 import { isBoolean, isFunction, isString } from '@/utils/is'
 import { propTypes } from '@/utils/propTypes'
-import { ACTION_COLUMN_FLAG } from '../const'
 
 defineOptions({ name: 'TableAction' })
 
 const props = defineProps({
   actions: {
     type: Array as PropType<ActionItem[]>,
-    default: null
+    default: null,
   },
   dropDownActions: {
     type: Array as PropType<ActionItem[]>,
-    default: null
+    default: null,
   },
   divider: propTypes.bool.def(true),
   outside: propTypes.bool,
-  stopButtonPropagation: propTypes.bool.def(false)
+  stopButtonPropagation: propTypes.bool.def(false),
 })
 
 const { t } = useI18n()
 const { prefixCls } = useDesign('basic-table-action')
 let table: Partial<TableActionType> = {}
-if (!props.outside) {
+if (!props.outside)
   table = useTableContext()
-}
 
 const { hasPermission } = usePermission()
 function isIfShow(action: ActionItem): boolean {
@@ -64,12 +43,12 @@ function isIfShow(action: ActionItem): boolean {
 
   let isIfShow = true
 
-  if (isBoolean(ifShow)) {
+  if (isBoolean(ifShow))
     isIfShow = ifShow
-  }
-  if (isFunction(ifShow)) {
+
+  if (isFunction(ifShow))
     isIfShow = ifShow(action)
-  }
+
   return isIfShow
 }
 
@@ -87,7 +66,7 @@ const getActions = computed(() => {
         ...(popConfirm || {}),
         onConfirm: popConfirm?.confirm,
         onCancel: popConfirm?.cancel,
-        enable: !!popConfirm
+        enable: !!popConfirm,
       }
     })
 })
@@ -104,14 +83,14 @@ const getDropdownList = computed((): any[] => {
       onConfirm: popConfirm?.confirm,
       onCancel: popConfirm?.cancel,
       text: label,
-      divider: index < list.length - 1 ? props.divider : false
+      divider: index < list.length - 1 ? props.divider : false,
     }
   })
 })
 
 const getAlign = computed(() => {
   const columns = (table as TableActionType)?.getColumns?.() || []
-  const actionColumn = columns.find((item) => item.flag === ACTION_COLUMN_FLAG)
+  const actionColumn = columns.find(item => item.flag === ACTION_COLUMN_FLAG)
   return actionColumn?.align ?? 'left'
 })
 
@@ -119,12 +98,13 @@ function getTooltip(data: string | TooltipProps): TooltipProps {
   return {
     getPopupContainer: () => unref((table as any)?.wrapRef.value) ?? document.body,
     placement: 'bottom',
-    ...(isString(data) ? { title: data } : data)
+    ...(isString(data) ? { title: data } : data),
   }
 }
 
 function onCellClick(e: MouseEvent) {
-  if (!props.stopButtonPropagation) return
+  if (!props.stopButtonPropagation)
+    return
   const path = e.composedPath() as HTMLElement[]
   const isInButton = path.find((ele) => {
     return ele.tagName?.toUpperCase() === 'BUTTON'
@@ -132,6 +112,35 @@ function onCellClick(e: MouseEvent) {
   isInButton && e.stopPropagation()
 }
 </script>
+
+<template>
+  <div :class="[prefixCls, getAlign]" @click="onCellClick">
+    <template v-for="(action, index) in getActions" :key="`${index}-${action.label}`">
+      <Tooltip v-if="action.tooltip" v-bind="getTooltip(action.tooltip)">
+        <PopConfirmButton v-bind="action">
+          <Icon v-if="action.icon" :icon="action.icon" :class="{ 'mr-1': !!action.label }" />
+          <template v-if="action.label">
+            {{ action.label }}
+          </template>
+        </PopConfirmButton>
+      </Tooltip>
+      <PopConfirmButton v-else v-bind="action">
+        <Icon v-if="action.icon" :icon="action.icon" :class="{ 'mr-1': !!action.label }" />
+        <template v-if="action.label">
+          {{ action.label }}
+        </template>
+      </PopConfirmButton>
+      <Divider v-if="divider && index < getActions.length - 1" type="vertical" class="action-divider" />
+    </template>
+    <Dropdown v-if="dropDownActions && getDropdownList.length > 0" :trigger="['hover']" :drop-menu-list="getDropdownList" popconfirm>
+      <slot name="more" />
+      <a-button v-if="!$slots.more" type="link">
+        {{ t('action.more') }} <DownOutlined class="icon-more" />
+      </a-button>
+    </Dropdown>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-table-action';
 
@@ -171,8 +180,8 @@ function onCellClick(e: MouseEvent) {
   }
 
   .ant-btn-link {
-    margin-left: 0;
     padding: 8px 4px;
+    margin-left: 0;
   }
 
   .ant-divider,

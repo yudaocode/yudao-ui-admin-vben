@@ -1,8 +1,8 @@
-import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
-import { getParentLayout, LAYOUT, EXCEPTION_COMPONENT } from '@/router/constant'
-import type { Router, RouteRecordNormalized } from 'vue-router'
+import type { RouteRecordNormalized, Router } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { cloneDeep, omit } from 'lodash-es'
+import { EXCEPTION_COMPONENT, LAYOUT, getParentLayout } from '@/router/constant'
+import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
 import { warn } from '@/utils/log'
 import { isUrl } from '@/utils/is'
 
@@ -18,21 +18,22 @@ let dynamicViewsModules: Record<string, () => Promise<Recordable>>
 // Dynamic introduction
 function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
   dynamicViewsModules = dynamicViewsModules || import.meta.glob('../../views/**/*.{vue,tsx}')
-  if (!routes) return
+  if (!routes)
+    return
   routes.forEach((item) => {
-    if (!item.component && item.meta?.frameSrc) {
+    if (!item.component && item.meta?.frameSrc)
       item.component = 'IFRAME'
-    }
+
     const { component, name } = item
     const { children } = item
     if (component) {
       const layoutFound = LayoutMap.get(component.toUpperCase())
-      if (layoutFound) {
+      if (layoutFound)
         item.component = layoutFound
-      } else {
+      else
         item.component = dynamicImport(dynamicViewsModules, component as string)
-      }
-    } else if (name) {
+    }
+    else if (name) {
       item.component = getParentLayout()
     }
     const meta = item.meta || {}
@@ -60,14 +61,15 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
   if (matchKeys?.length === 1) {
     const matchKey = matchKeys[0]
     return dynamicViewsModules[matchKey]
-  } else if (matchKeys?.length > 1) {
+  }
+  else if (matchKeys?.length > 1) {
     warn(
       // eslint-disable-next-line max-len
-      'Please do not create `.vue` and `.TSX` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure'
+      'Please do not create `.vue` and `.TSX` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure',
     )
-    return
-  } else {
-    warn('在src/views/下找不到`' + component + '.vue` 或 `' + component + '.tsx`, 请自行创建!')
+  }
+  else {
+    warn(`在src/views/下找不到\`${component}.vue\` 或 \`${component}.tsx\`, 请自行创建!`)
     return EXCEPTION_COMPONENT
   }
 }
@@ -76,13 +78,13 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
 // 将背景对象变成路由对象
 export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModule[]): T[] {
   routeList.forEach((route) => {
-    if (isUrl(route.path)) {
+    if (isUrl(route.path))
       route.component = 'IFrame'
-    } else if (route.children && route.parentId == 0) {
+    else if (route.children && route.parentId == 0)
       route.component = 'LAYOUT'
-    } else if (!route.children) {
+    else if (!route.children)
       route.component = route.component as string
-    }
+
     const component = route.component as string
     if (component) {
       const meta = route.meta || {}
@@ -93,10 +95,12 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
       meta.icon = route.icon
       if (component.toUpperCase() === 'LAYOUT') {
         route.component = LayoutMap.get('LAYOUT'.toUpperCase())
-      } else if (component.toUpperCase() === 'IFRAME') {
+      }
+      else if (component.toUpperCase() === 'IFRAME') {
         route.component = LayoutMap.get('IFRAME'.toUpperCase())
-      } else {
-        //处理顶级非目录路由
+      }
+      else {
+        // 处理顶级非目录路由
         meta.single = true
         route.children = [cloneDeep(route)]
         route.component = LAYOUT
@@ -104,8 +108,9 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
         route.path = ''
       }
       route.meta = meta
-    } else {
-      warn('请正确配置路由：' + route?.name + '的component属性')
+    }
+    else {
+      warn(`请正确配置路由：${route?.name}的component属性`)
     }
     route.children && asyncImportRoute(route.children)
   })
@@ -140,7 +145,7 @@ function promoteRouteLevel(routeModule: AppRouteModule) {
   // createRouter 创建一个可以被 Vue 应用程序使用的路由实例
   let router: Router | null = createRouter({
     routes: [routeModule as unknown as RouteRecordNormalized],
-    history: createWebHashHistory()
+    history: createWebHashHistory(),
   })
   // getRoutes： 获取所有 路由记录的完整列表。
   const routes = router.getRoutes()
@@ -149,7 +154,7 @@ function promoteRouteLevel(routeModule: AppRouteModule) {
   router = null
 
   // omit lodash的函数 对传入的item对象的children进行删除
-  routeModule.children = routeModule.children?.map((item) => omit(item, 'children'))
+  routeModule.children = routeModule.children?.map(item => omit(item, 'children'))
 }
 
 // Add all sub-routes to the secondary route
@@ -157,17 +162,16 @@ function promoteRouteLevel(routeModule: AppRouteModule) {
 function addToChildren(routes: RouteRecordNormalized[], children: AppRouteRecordRaw[], routeModule: AppRouteModule) {
   for (let index = 0; index < children.length; index++) {
     const child = children[index]
-    const route = routes.find((item) => item.name === child.name)
-    if (!route) {
+    const route = routes.find(item => item.name === child.name)
+    if (!route)
       continue
-    }
+
     routeModule.children = routeModule.children || []
-    if (!routeModule.children.find((item) => item.name === route.name)) {
+    if (!routeModule.children.find(item => item.name === route.name))
       routeModule.children?.push(route as unknown as AppRouteModule)
-    }
-    if (child.children?.length) {
+
+    if (child.children?.length)
       addToChildren(routes, child.children, routeModule)
-    }
   }
 }
 
@@ -175,9 +179,8 @@ function addToChildren(routes: RouteRecordNormalized[], children: AppRouteRecord
 // 判断级别是否超过2级
 function isMultipleRoute(routeModule: AppRouteModule) {
   // Reflect.has 与 in 操作符 相同, 用于检查一个对象(包括它原型链上)是否拥有某个属性
-  if (!routeModule || !Reflect.has(routeModule, 'children') || !routeModule.children?.length) {
+  if (!routeModule || !Reflect.has(routeModule, 'children') || !routeModule.children?.length)
     return false
-  }
 
   const children = routeModule.children
 
@@ -194,14 +197,13 @@ function isMultipleRoute(routeModule: AppRouteModule) {
 
 function toCamelCase(str: string, upperCaseFirst: boolean) {
   str = (str || '')
-    .replace(/-(.)/g, function (group1: string) {
+    .replace(/-(.)/g, (group1: string) => {
       return group1.toUpperCase()
     })
     .replaceAll('-', '')
 
-  if (upperCaseFirst && str) {
+  if (upperCaseFirst && str)
     str = str.charAt(0).toUpperCase() + str.slice(1)
-  }
 
   return str
 }

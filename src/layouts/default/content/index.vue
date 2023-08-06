@@ -1,14 +1,9 @@
-<template>
-  <div :class="[prefixCls, getLayoutContentMode]" v-loading="getOpenPageLoading && getPageLoading">
-    <PageLayout />
-  </div>
-</template>
 <script lang="ts" setup>
+import { useContentViewHeight } from './useContentViewHeight'
 import PageLayout from '@/layouts/page/index.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useTransitionSetting } from '@/hooks/setting/useTransitionSetting'
-import { useContentViewHeight } from './useContentViewHeight'
 
 defineOptions({ name: 'LayoutContent' })
 
@@ -18,6 +13,13 @@ const { getLayoutContentMode, getPageLoading } = useRootSetting()
 
 useContentViewHeight()
 </script>
+
+<template>
+  <div v-loading="getOpenPageLoading && getPageLoading" :class="[prefixCls, getLayoutContentMode]">
+    <PageLayout />
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-layout-content';
 

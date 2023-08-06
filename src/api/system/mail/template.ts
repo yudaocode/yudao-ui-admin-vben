@@ -12,12 +12,12 @@ export function updateMailTemplate(data) {
 
 // 删除邮件模版
 export function deleteMailTemplate(id: number) {
-  return defHttp.delete({ url: '/system/mail-template/delete?id=' + id })
+  return defHttp.delete({ url: `/system/mail-template/delete?id=${id}` })
 }
 
 // 获得邮件模版
 export function getMailTemplate(id: number) {
-  return defHttp.get({ url: '/system/mail-template/get?id=' + id })
+  return defHttp.get({ url: `/system/mail-template/get?id=${id}` })
 }
 
 // 获得邮件模版分页
@@ -26,7 +26,7 @@ export function getMailTemplatePage(params) {
 }
 
 // 邮件模板
-export type MailTemplate = {
+export interface MailTemplate {
   name: string // 标题
   code: string // 编码
   accountId: number
@@ -40,7 +40,7 @@ export type MailTemplate = {
   createTime: number
 }
 
-export type SendMailParams = {
+export interface SendMailParams {
   mail: string
   templateCode: string
   templateParams: {

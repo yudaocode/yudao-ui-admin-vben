@@ -1,14 +1,14 @@
-import type { UserConfig, ConfigEnv } from 'vite'
-import pkg from './package.json'
+import { resolve } from 'node:path'
+import type { ConfigEnv, UserConfig } from 'vite'
 import dayjs from 'dayjs'
 import { loadEnv } from 'vite'
-import { resolve } from 'path'
+import pkg from './package.json'
 import { generateModifyVars } from './build/generate/generateModifyVars'
 import { createProxy } from './build/vite/proxy'
 import { wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/vite/plugin'
 import { OUTPUT_DIR } from './build/constant'
-import { include, exclude } from './build/vite/optimize'
+import { exclude, include } from './build/vite/optimize'
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir)
@@ -17,10 +17,10 @@ function pathResolve(dir: string) {
 const { dependencies, devDependencies, name, version } = pkg
 const __APP_INFO__ = {
   pkg: { dependencies, devDependencies, name, version },
-  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 }
 
-export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
+export default ({ command, mode }: ConfigEnv): UserConfig => {
   const root = process.cwd()
 
   const env = loadEnv(mode, root)
@@ -41,23 +41,23 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
       host: true,
       port: VITE_PORT,
       // Load proxy configuration from .env
-      proxy: createProxy(VITE_PROXY)
+      proxy: createProxy(VITE_PROXY),
     },
     resolve: {
       alias: [
         {
           find: 'vue-i18n',
-          replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
+          replacement: 'vue-i18n/dist/vue-i18n.cjs.js',
         },
         // @/xxxx => src/xxxx
         {
           find: /\@\//,
-          replacement: pathResolve('src') + '/'
-        }
-      ]
+          replacement: `${pathResolve('src')}/`,
+        },
+      ],
     },
     esbuild: {
-      drop: VITE_DROP_CONSOLE ? ['console', 'debugger'] : []
+      drop: VITE_DROP_CONSOLE ? ['console', 'debugger'] : [],
     },
     build: {
       target: 'esnext',
@@ -76,24 +76,24 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
       // },
       // Turning off brotliSize display can slightly reduce packaging time
       reportCompressedSize: false,
-      chunkSizeWarningLimit: 2000
+      chunkSizeWarningLimit: 2000,
     },
     define: {
-      __APP_INFO__: JSON.stringify(__APP_INFO__)
+      __APP_INFO__: JSON.stringify(__APP_INFO__),
     },
 
     css: {
       preprocessorOptions: {
         less: {
           modifyVars: generateModifyVars(),
-          javascriptEnabled: true
-        }
-      }
+          javascriptEnabled: true,
+        },
+      },
     },
 
     // The vite plugin used by the project. The quantity is large, so it is separately extracted and managed
-    plugins: await createVitePlugins(viteEnv, isBuild),
+    plugins: createVitePlugins(viteEnv, isBuild),
 
-    optimizeDeps: { include, exclude }
+    optimizeDeps: { include, exclude },
   }
 }

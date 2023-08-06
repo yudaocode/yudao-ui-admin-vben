@@ -1,60 +1,30 @@
-<template>
-  <Form v-bind="getBindValue" :class="getFormClass" ref="formElRef" :model="formModel" @keypress.enter="handleEnterPress">
-    <Row v-bind="getRow">
-      <slot name="formHeader"></slot>
-      <template v-for="schema in getSchema" :key="schema.field">
-        <FormItem
-          :isAdvanced="fieldsIsAdvancedMap[schema.field]"
-          :tableAction="tableAction"
-          :formActionType="formActionType as any"
-          :schema="schema"
-          :formProps="getProps"
-          :allDefaultValues="defaultValueRef"
-          :formModel="formModel"
-          :setFormModel="setFormModel"
-        >
-          <template #[item]="data" v-for="item in Object.keys($slots)">
-            <slot :name="item" v-bind="data || {}"></slot>
-          </template>
-        </FormItem>
-      </template>
-
-      <FormAction v-bind="getFormActionBindProps" @toggle-advanced="handleToggleAdvanced">
-        <template #[item]="data" v-for="item in ['resetBefore', 'submitBefore', 'advanceBefore', 'advanceAfter']">
-          <slot :name="item" v-bind="data || {}"></slot>
-        </template>
-      </FormAction>
-      <slot name="formFooter"></slot>
-    </Row>
-  </Form>
-</template>
 <script lang="ts" setup>
+import type { Ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, unref, useAttrs, watch } from 'vue'
+import { Form, Row } from 'ant-design-vue'
+import { useDebounceFn } from '@vueuse/core'
+import { cloneDeep } from 'lodash-es'
 import type { FormActionType, FormProps, FormSchema } from './types/form'
 import type { AdvanceState } from './types/hooks'
-import { Ref, useAttrs } from 'vue'
 
-import { reactive, ref, computed, unref, onMounted, watch, nextTick } from 'vue'
-import { Form, Row } from 'ant-design-vue'
 import FormItem from './components/FormItem.vue'
 import FormAction from './components/FormAction.vue'
 
 import { dateItemType } from './helper'
-import { dateUtil } from '@/utils/dateUtil'
-
-// import { cloneDeep } from 'lodash-es';
-import { deepMerge } from '@/utils'
-
 import { useFormValues } from './hooks/useFormValues'
 import useAdvanced from './hooks/useAdvanced'
 import { useFormEvents } from './hooks/useFormEvents'
 import { createFormContext } from './hooks/useFormContext'
 import { useAutoFocus } from './hooks/useAutoFocus'
-import { useModalContext } from '@/components/Modal'
-import { useDebounceFn } from '@vueuse/core'
-
 import { basicProps } from './props'
+import { dateUtil } from '@/utils/dateUtil'
+
+// import { cloneDeep } from 'lodash-es';
+import { deepMerge } from '@/utils'
+
+import { useModalContext } from '@/components/Modal'
+
 import { useDesign } from '@/hooks/web/useDesign'
-import { cloneDeep } from 'lodash-es'
 
 defineOptions({ name: 'BasicForm' })
 
@@ -68,7 +38,7 @@ const advanceState = reactive<AdvanceState>({
   isAdvanced: true,
   hideAdvanceBtn: false,
   isLoad: false,
-  actionSpan: 6
+  actionSpan: 6,
 })
 
 const defaultValueRef = ref<Recordable>({})
@@ -81,7 +51,6 @@ const { prefixCls } = useDesign('basic-form')
 
 // Get the basic configuration of the form
 const getProps = computed((): FormProps => {
-  // @ts-ignore
   return { ...props, ...unref(propsRef) } as FormProps
 })
 
@@ -89,8 +58,8 @@ const getFormClass = computed(() => {
   return [
     prefixCls,
     {
-      [`${prefixCls}--compact`]: unref(getProps).compact
-    }
+      [`${prefixCls}--compact`]: unref(getProps).compact,
+    },
   ]
 })
 
@@ -99,7 +68,7 @@ const getRow = computed((): Recordable => {
   const { baseRowStyle = {}, rowProps } = unref(getProps)
   return {
     style: baseRowStyle,
-    ...rowProps
+    ...rowProps,
   }
 })
 
@@ -113,7 +82,8 @@ const getSchema = computed((): FormSchema[] => {
     if (isHandleDateDefaultValue && defaultValue && dateItemType.includes(component)) {
       if (!Array.isArray(defaultValue)) {
         schema.defaultValue = dateUtil(defaultValue)
-      } else {
+      }
+      else {
         const def: any[] = []
         defaultValue.forEach((item) => {
           def.push(dateUtil(item))
@@ -122,11 +92,10 @@ const getSchema = computed((): FormSchema[] => {
       }
     }
   }
-  if (unref(getProps).showAdvancedButton) {
-    return cloneDeep(schemas.filter((schema) => schema.component !== 'Divider') as FormSchema[])
-  } else {
+  if (unref(getProps).showAdvancedButton)
+    return cloneDeep(schemas.filter(schema => schema.component !== 'Divider') as FormSchema[])
+  else
     return cloneDeep(schemas as FormSchema[])
-  }
 })
 
 const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
@@ -135,21 +104,21 @@ const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
   getProps,
   getSchema,
   formModel,
-  defaultValueRef
+  defaultValueRef,
 })
 
 const { handleFormValues, initDefault } = useFormValues({
   getProps,
   defaultValueRef,
   getSchema,
-  formModel
+  formModel,
 })
 
 useAutoFocus({
   getSchema,
   getProps,
   isInitedDefault: isInitedDefaultRef,
-  formElRef: formElRef as Ref<FormActionType>
+  formElRef: formElRef as Ref<FormActionType>,
 })
 
 const {
@@ -164,7 +133,7 @@ const {
   appendSchemaByField,
   removeSchemaByField,
   resetFields,
-  scrollToField
+  scrollToField,
 } = useFormEvents({
   emit,
   getProps,
@@ -173,31 +142,32 @@ const {
   defaultValueRef,
   formElRef: formElRef as Ref<FormActionType>,
   schemaRef: schemaRef as Ref<FormSchema[]>,
-  handleFormValues
+  handleFormValues,
 })
 
 createFormContext({
   resetAction: resetFields,
-  submitAction: handleSubmit
+  submitAction: handleSubmit,
 })
 
 watch(
   () => unref(getProps).model,
   () => {
     const { model } = unref(getProps)
-    if (!model) return
+    if (!model)
+      return
     setFieldsValue(model)
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 watch(
   () => unref(getProps).schemas,
   (schemas) => {
     resetSchema(schemas ?? [])
-  }
+  },
 )
 
 watch(
@@ -207,14 +177,14 @@ watch(
       //  Solve the problem of modal adaptive height calculation when the form is placed in the modal
       modalFn?.redoModalHeight?.()
     })
-    if (unref(isInitedDefaultRef)) {
+    if (unref(isInitedDefaultRef))
       return
-    }
+
     if (schema?.length) {
       initDefault()
       isInitedDefaultRef.value = true
     }
-  }
+  },
 )
 
 watch(
@@ -222,7 +192,7 @@ watch(
   useDebounceFn(() => {
     unref(getProps).submitOnChange && handleSubmit()
   }, 300),
-  { deep: true }
+  { deep: true },
 )
 
 async function setProps(formProps: Partial<FormProps>): Promise<void> {
@@ -233,19 +203,18 @@ function setFormModel(key: string, value: any, schema: FormSchema) {
   formModel[key] = value
   emit('field-value-change', key, value)
   // TODO 优化验证，这里如果是autoLink=false手动关联的情况下才会再次触发此函数
-  if (schema && schema.itemProps && !schema.itemProps.autoLink) {
+  if (schema && schema.itemProps && !schema.itemProps.autoLink)
     validateFields([key]).catch((_) => {})
-  }
 }
 
 function handleEnterPress(e: KeyboardEvent) {
   const { autoSubmitOnEnter } = unref(getProps)
-  if (!autoSubmitOnEnter) return
+  if (!autoSubmitOnEnter)
+    return
   if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
     const target: HTMLElement = e.target as HTMLElement
-    if (target && target.tagName && target.tagName.toUpperCase() == 'INPUT') {
+    if (target && target.tagName && target.tagName.toUpperCase() === 'INPUT')
       handleSubmit()
-    }
   }
 }
 
@@ -262,7 +231,7 @@ const formActionType: Partial<FormActionType> = {
   validateFields,
   validate,
   submit: handleSubmit,
-  scrollToField: scrollToField
+  scrollToField,
 }
 
 onMounted(() => {
@@ -272,6 +241,38 @@ onMounted(() => {
 
 const getFormActionBindProps = computed((): Recordable => ({ ...getProps.value, ...advanceState }))
 </script>
+
+<template>
+  <Form v-bind="getBindValue" ref="formElRef" :class="getFormClass" :model="formModel" @keypress.enter="handleEnterPress">
+    <Row v-bind="getRow">
+      <slot name="formHeader" />
+      <template v-for="schema in getSchema" :key="schema.field">
+        <FormItem
+          :is-advanced="fieldsIsAdvancedMap[schema.field]"
+          :table-action="tableAction"
+          :form-action-type="formActionType as any"
+          :schema="schema"
+          :form-props="getProps"
+          :all-default-values="defaultValueRef"
+          :form-model="formModel"
+          :set-form-model="setFormModel"
+        >
+          <template v-for="item in Object.keys($slots)" #[item]="data">
+            <slot :name="item" v-bind="data || {}" />
+          </template>
+        </FormItem>
+      </template>
+
+      <FormAction v-bind="getFormActionBindProps" @toggle-advanced="handleToggleAdvanced">
+        <template v-for="item in ['resetBefore', 'submitBefore', 'advanceBefore', 'advanceAfter']" #[item]="data">
+          <slot :name="item" v-bind="data || {}" />
+        </template>
+      </FormAction>
+      <slot name="formFooter" />
+    </Row>
+  </Form>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-form';
 
@@ -300,10 +301,10 @@ const getFormActionBindProps = computed((): Recordable => ({ ...getProps.value, 
 
       .suffix {
         display: inline-flex;
+        align-items: center;
         padding-left: 6px;
         margin-top: 1px;
         line-height: 1;
-        align-items: center;
       }
     }
   }

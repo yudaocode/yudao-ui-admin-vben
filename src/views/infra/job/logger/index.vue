@@ -1,30 +1,14 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="warning" v-auth="['infra:job:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction :actions="[{ icon: IconEnum.EDIT, label: t('action.detail'), onClick: handleDetail.bind(null, record) }]" />
-        </template>
-      </template>
-    </BasicTable>
-    <JobLogModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
+import JobLogModal from './JobLogModal.vue'
+import { columns, searchFormSchema } from './jobLog.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import JobLogModal from './JobLogModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { JobLogExportReqVO, exportJobLog, getJobLogPage } from '@/api/infra/jobLog'
-import { columns, searchFormSchema } from './jobLog.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { JobLogExportReqVO } from '@/api/infra/jobLog'
+import { exportJobLog, getJobLogPage } from '@/api/infra/jobLog'
 
 defineOptions({ name: 'InfraJobLog' })
 
@@ -46,8 +30,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleDetail(record: Recordable) {
@@ -62,7 +46,25 @@ async function handleExport() {
     async onOk() {
       await exportJobLog(getForm().getFieldsValue() as JobLogExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['infra:job:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction :actions="[{ icon: IconEnum.EDIT, label: t('action.detail'), onClick: handleDetail.bind(null, record) }]" />
+        </template>
+      </template>
+    </BasicTable>
+    <JobLogModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

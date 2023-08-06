@@ -1,27 +1,10 @@
-<template>
-  <transition-group class="h-full w-full" v-bind="$attrs" ref="elRef" :name="transitionName" :tag="tag" mode="out-in">
-    <div key="component" v-if="state.isInit">
-      <slot :loading="state.loading"></slot>
-    </div>
-    <div key="skeleton" v-else>
-      <slot name="skeleton" v-if="$slots.skeleton"></slot>
-      <Skeleton v-else />
-    </div>
-  </transition-group>
-</template>
 <script lang="ts" setup>
-import { reactive, onMounted, ref, toRef } from 'vue'
+import { onMounted, reactive, ref, toRef } from 'vue'
 import { Skeleton } from 'ant-design-vue'
 import { useTimeoutFn } from '@vueuse/core'
 import { useIntersectionObserver } from '@/hooks/event/useIntersectionObserver'
 
 defineOptions({ name: 'LazyContainer', inheritAttrs: false })
-
-interface State {
-  isInit: boolean
-  loading: boolean
-  intersectionObserverInstance: IntersectionObserver | null
-}
 
 const props = defineProps({
   /**
@@ -34,7 +17,7 @@ const props = defineProps({
    */
   viewport: {
     type: (typeof window !== 'undefined' ? window.HTMLElement : Object) as PropType<HTMLElement>,
-    default: () => null
+    default: () => null,
   },
   /**
    * Preload threshold, css unit
@@ -46,7 +29,7 @@ const props = defineProps({
   direction: {
     type: String,
     default: 'vertical',
-    validator: (v: string) => ['vertical', 'horizontal'].includes(v)
+    validator: (v: string) => ['vertical', 'horizontal'].includes(v),
   },
   /**
    * The label name of the outer container that wraps the component
@@ -56,15 +39,22 @@ const props = defineProps({
   /**
    * transition name
    */
-  transitionName: { type: String, default: 'lazy-container' }
+  transitionName: { type: String, default: 'lazy-container' },
 })
 
 const emit = defineEmits(['init'])
+
+interface State {
+  isInit: boolean
+  loading: boolean
+  intersectionObserverInstance: IntersectionObserver | null
+}
+
 const elRef = ref()
 const state = reactive<State>({
   isInit: false,
   loading: false,
-  intersectionObserverInstance: null
+  intersectionObserverInstance: null,
 })
 
 onMounted(() => {
@@ -75,8 +65,8 @@ onMounted(() => {
 // If there is a set delay time, it will be executed immediately
 function immediateInit() {
   const { timeout } = props
-  timeout &&
-    useTimeoutFn(() => {
+  timeout
+    && useTimeoutFn(() => {
       init()
     }, timeout)
 }
@@ -85,7 +75,8 @@ function init() {
   state.loading = true
 
   useTimeoutFn(() => {
-    if (state.isInit) return
+    if (state.isInit)
+      return
     state.isInit = true
     emit('init')
   }, props.maxWaitingTime || 80)
@@ -93,7 +84,8 @@ function init() {
 
 function initIntersectionObserver() {
   const { timeout, direction, threshold } = props
-  if (timeout) return
+  if (timeout)
+    return
   // According to the scrolling direction to construct the viewport margin, used to load in advance
   let rootMargin = '0px'
   switch (direction) {
@@ -113,15 +105,27 @@ function initIntersectionObserver() {
         const isIntersecting = entries[0].isIntersecting || entries[0].intersectionRatio
         if (isIntersecting) {
           init()
-          if (observer) {
+          if (observer)
             stop()
-          }
         }
       },
-      root: toRef(props, 'viewport')
+      root: toRef(props, 'viewport'),
     })
-  } catch (e) {
+  }
+  catch (e) {
     init()
   }
 }
 </script>
+
+<template>
+  <transition-group v-bind="$attrs" ref="elRef" class="h-full w-full" :name="transitionName" :tag="tag" mode="out-in">
+    <div v-if="state.isInit" key="component">
+      <slot :loading="state.loading" />
+    </div>
+    <div v-else key="skeleton">
+      <slot v-if="$slots.skeleton" name="skeleton" />
+      <Skeleton v-else />
+    </div>
+  </transition-group>
+</template>

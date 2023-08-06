@@ -1,11 +1,11 @@
 <script lang="tsx">
-import type { DescriptionProps, DescInstance, DescItem } from './typing'
 import type { DescriptionsProps } from 'ant-design-vue/es/descriptions'
 import type { CSSProperties } from 'vue'
-import type { CollapseContainerOptions } from '@/components/Container'
-import { defineComponent, computed, ref, unref, toRefs } from 'vue'
+import { computed, defineComponent, ref, toRefs, unref } from 'vue'
 import { get } from 'lodash-es'
 import { Descriptions } from 'ant-design-vue'
+import type { DescInstance, DescItem, DescriptionProps } from './typing'
+import type { CollapseContainerOptions } from '@/components/Container'
 import { CollapseContainer } from '@/components/Container'
 import { useDesign } from '@/hooks/web/useDesign'
 import { isFunction } from '@/utils/is'
@@ -17,25 +17,25 @@ const props = {
   title: { type: String, default: '' },
   size: {
     type: String,
-    validator: (v) => ['small', 'default', 'middle', undefined].includes(v),
-    default: 'small'
+    validator: v => ['small', 'default', 'middle', undefined].includes(v),
+    default: 'small',
   },
   bordered: { type: Boolean, default: true },
   column: {
     type: [Number, Object] as PropType<number | Recordable>,
     default: () => {
       return { xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }
-    }
+    },
   },
   collapseOptions: {
     type: Object as PropType<CollapseContainerOptions>,
-    default: null
+    default: null,
   },
   schema: {
     type: Array as PropType<DescItem[]>,
-    default: () => []
+    default: () => [],
   },
-  data: { type: Object }
+  data: { type: Object },
 }
 
 export default defineComponent({
@@ -52,14 +52,14 @@ export default defineComponent({
     const getMergeProps = computed(() => {
       return {
         ...props,
-        ...(unref(propsRef) as Recordable)
+        ...(unref(propsRef) as Recordable),
       } as DescriptionProps
     })
 
     const getProps = computed(() => {
       const opt = {
         ...unref(getMergeProps),
-        title: undefined
+        title: undefined,
       }
       return opt as DescriptionProps
     })
@@ -76,7 +76,7 @@ export default defineComponent({
       return {
         // Cannot be expanded by default
         canExpand: false,
-        ...unref(getProps).collapseOptions
+        ...unref(getProps).collapseOptions,
       }
     })
 
@@ -94,13 +94,12 @@ export default defineComponent({
 
     // Prevent line breaks
     function renderLabel({ label, labelMinWidth, labelStyle }: DescItem) {
-      if (!labelStyle && !labelMinWidth) {
+      if (!labelStyle && !labelMinWidth)
         return label
-      }
 
       const labelStyles: CSSProperties = {
         ...labelStyle,
-        minWidth: `${labelMinWidth}px `
+        minWidth: `${labelMinWidth}px `,
       }
       return <div style={labelStyles}>{label}</div>
     }
@@ -111,19 +110,18 @@ export default defineComponent({
         .map((item) => {
           const { render, field, span, show, contentMinWidth } = item
 
-          if (show && isFunction(show) && !show(data)) {
+          if (show && isFunction(show) && !show(data))
             return null
-          }
 
           const getContent = () => {
             const _data = unref(getProps)?.data
-            if (!_data) {
+            if (!_data)
               return null
-            }
+
             const getField = get(_data, field)
-            if (getField && !toRefs(_data).hasOwnProperty(field)) {
+            if (getField && !toRefs(_data).hasOwnProperty(field))
               return isFunction(render) ? render('', _data) : ''
-            }
+
             return isFunction(render) ? render(getField, _data) : getField ?? ''
           }
 
@@ -131,18 +129,18 @@ export default defineComponent({
           return (
             <Descriptions.Item label={renderLabel(item)} key={field} span={span}>
               {() => {
-                if (!contentMinWidth) {
+                if (!contentMinWidth)
                   return getContent()
-                }
+
                 const style: CSSProperties = {
-                  minWidth: `${width}px`
+                  minWidth: `${width}px`,
                 }
                 return <div style={style}>{getContent()}</div>
               }}
             </Descriptions.Item>
           )
         })
-        .filter((item) => !!item)
+        .filter(item => !!item)
     }
 
     const renderDesc = () => {
@@ -156,9 +154,8 @@ export default defineComponent({
     const renderContainer = () => {
       const content = props.useCollapse ? renderDesc() : <div>{renderDesc()}</div>
       // Reduce the dom level
-      if (!props.useCollapse) {
+      if (!props.useCollapse)
         return content
-      }
 
       const { canExpand, helpMessage } = unref(getCollapseOptions)
       const { title } = unref(getMergeProps)
@@ -167,18 +164,18 @@ export default defineComponent({
         <CollapseContainer title={title} canExpan={canExpand} helpMessage={helpMessage}>
           {{
             default: () => content,
-            action: () => getSlot(slots, 'action')
+            action: () => getSlot(slots, 'action'),
           }}
         </CollapseContainer>
       )
     }
 
     const methods: DescInstance = {
-      setDescProps
+      setDescProps,
     }
 
     emit('register', methods)
     return () => (unref(useWrapper) ? renderContainer() : renderDesc())
-  }
+  },
 })
 </script>

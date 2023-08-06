@@ -1,50 +1,11 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:sensitive-word:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['system:sensitive-word:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.EDIT,
-                label: t('action.edit'),
-                auth: 'system:sensitive-word:delete',
-                onClick: handleEdit.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:sensitive-word:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <SensitiveWordModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { SensitiveWordExportReqVO, deleteSensitiveWord, exportSensitiveWord, getSensitiveWordPage } from '@/api/system/sensitiveWord'
-import { useModal } from '@/components/Modal'
-import { IconEnum } from '@/enums/appEnum'
 import SensitiveWordModal from './SensitiveWordModal.vue'
 import { columns, searchFormSchema } from './sensitiveWord.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { SensitiveWordExportReqVO } from '@/api/system/sensitiveWord'
+import { deleteSensitiveWord, exportSensitiveWord, getSensitiveWordPage } from '@/api/system/sensitiveWord'
+import { useModal } from '@/components/Modal'
+import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
@@ -65,8 +26,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -85,7 +46,7 @@ async function handleExport() {
     async onOk() {
       await exportSensitiveWord(getForm().getFieldsValue() as SensitiveWordExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -95,3 +56,44 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:sensitive-word:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['system:sensitive-word:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.EDIT,
+                label: t('action.edit'),
+                auth: 'system:sensitive-word:delete',
+                onClick: handleEdit.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:sensitive-word:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <SensitiveWordModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

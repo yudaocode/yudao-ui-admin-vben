@@ -1,40 +1,9 @@
-@prefix-cls: ~'@{namespace}-multiple-tabs';
-
-html[data-theme='dark'] {
-  .@{prefix-cls} {
-    .ant-tabs-tab {
-      border-bottom: none !important;
-    }
-  }
-
-  .ant-tabs-tab:not(.ant-tabs-tab-active) {
-    border: none !important;
-
-    &:hover {
-      color: inherit;
-      background-color: rgba(255, 255, 255/50%) !important;
-    }
-  }
-}
-
-html[data-theme='light'] {
-  .@{prefix-cls} {
-    .ant-tabs-tab:not(.ant-tabs-tab-active) {
-      border: none !important;
-
-      &:hover {
-        color: inherit;
-        background-color: #dee1e6;
-      }
-    }
-  }
-}
+@prefix-cls: ~"@{namespace}-multiple-tabs";
 
 .@{prefix-cls} {
   z-index: 10;
   height: @multiple-height;
   line-height: @multiple-height;
-  background-color: @component-background;
   box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
 
   .ant-tabs-small {
@@ -44,11 +13,11 @@ html[data-theme='light'] {
   .ant-tabs.ant-tabs-card {
     .ant-tabs-nav {
       height: @multiple-height;
+      padding-left: 10px;
       margin: 0;
-      background-color: @component-background;
+      background-color: var(--component-background);
       border: 0;
       box-shadow: none;
-      padding-left: 10px;
 
       .ant-tabs-nav-container {
         height: @multiple-height;
@@ -56,22 +25,22 @@ html[data-theme='light'] {
       }
 
       .ant-tabs-tab {
-        height: @multiple-height;
-        line-height: @multiple-height;
-        color: @text-color-base;
-        background-color: @component-background;
-        transition: padding 0.3s;
-        padding: 0 16px;
-        margin: 0 -14px 0 0 !important;
-        /* stylelint-disable-next-line function-url-quotes */
-        mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAAAkBAMAAAAdqzmBAAAAMFBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlTPQ5AAAAD3RSTlMAr3DvEM8wgCBA379gj5//tJBPAAAAnUlEQVRIx2NgAAM27fj/tAO/xBsYkIHyf9qCT8iWMf6nNQhAsk2f5rYheY7Dnua2/U+A28ZEe8v+F9Ax2v7/F4DbxkUH2wzgtvHTwbYPo7aN2jZq26hto7aN2jZq25Cy7Qvctnw62PYNbls9HWz7S8/G6//PsI6H4396gAUQy1je08W2jxDbpv6nD4gB2uWp+J9eYPsEhv/0BPS1DQBvoBLVZ3BppgAAAABJRU5ErkJggg==);
-        mask-size: 100% 100%;
         position: relative;
         z-index: 1;
+        height: @multiple-height;
+        padding: 0 16px;
+        margin: 0 -14px 0 0 !important;
+        line-height: @multiple-height;
+        color: var(--text-color);
+        background-color: var(--component-background);
         border-radius: 8px 8px 0 0;
+        /* stylelint-disable-next-line function-url-quotes */
+        mask: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANoAAAAkBAMAAAAdqzmBAAAAMFBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlTPQ5AAAAD3RSTlMAr3DvEM8wgCBA379gj5//tJBPAAAAnUlEQVRIx2NgAAM27fj/tAO/xBsYkIHyf9qCT8iWMf6nNQhAsk2f5rYheY7Dnua2/U+A28ZEe8v+F9Ax2v7/F4DbxkUH2wzgtvHTwbYPo7aN2jZq26hto7aN2jZq25Cy7Qvctnw62PYNbls9HWz7S8/G6//PsI6H4396gAUQy1je08W2jxDbpv6nD4gB2uWp+J9eYPsEhv/0BPS1DQBvoBLVZ3BppgAAAABJRU5ErkJggg==);
+        transition: padding 0.3s;
+        mask-size: 100% 100%;
 
         .ant-tabs-tab-btn {
-          color: @text-color-base;
+          color: var(--text-color);
         }
 
         &:hover {
@@ -98,15 +67,15 @@ html[data-theme='light'] {
             position: relative;
             width: 14px;
             height: 14px;
+            overflow: hidden;
             font-size: 18px;
+            line-height: 10px;
             color: inherit;
+            vertical-align: middle;
+            border-radius: 100%;
             opacity: 0;
             transition: opacity 0.15s;
-            vertical-align: middle;
-            line-height: 10px;
-            overflow: hidden;
             transform-origin: 100% 50%;
-            border-radius: 100%;
 
             &:hover {
               svg {
@@ -137,20 +106,11 @@ html[data-theme='light'] {
 
       .ant-tabs-tab-active {
         position: relative;
+        z-index: 3;
         padding: 0 16px;
-        color: @primary-color !important;
+        font-weight: inherit;
         background: #d4ebff;
         border: 0;
-        font-weight: inherit;
-        z-index: 3;
-
-        span {
-          color: @primary-color !important;
-        }
-
-        .ant-tabs-tab-btn {
-          color: @primary-color;
-        }
 
         .ant-tabs-tab-remove .anticon-close {
           opacity: 1;
@@ -162,7 +122,6 @@ html[data-theme='light'] {
 
         svg {
           width: inherit;
-          fill: @primary-color;
         }
       }
     }
@@ -210,22 +169,22 @@ html[data-theme='light'] {
       width: 36px;
       height: @multiple-height;
       line-height: @multiple-height;
-      color: @text-color-secondary;
+      color: var(--text-color-secondary);
       text-align: center;
       cursor: pointer;
-      border-left: 1px solid @border-color-base;
+      border-left: 1px solid var(--border-color);
 
       &:hover {
         color: @text-color-base;
       }
 
-      span[role='img'] {
+      span[role="img"] {
         transform: rotate(90deg);
       }
     }
 
     &__extra-redo {
-      span[role='img'] {
+      span[role="img"] {
         transform: rotate(0deg);
       }
     }

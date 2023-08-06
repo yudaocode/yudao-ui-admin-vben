@@ -2,46 +2,21 @@
  * @Description: 中间表单布局面板
  * https://github.com/SortableJS/vue.draggable.next/issues/138
 -->
-<template>
-  <div class="form-panel v-form-container">
-    <Empty class="empty-text" v-show="formConfig.schemas.length === 0" description="从左侧选择控件添加" />
-    <Form v-bind="formConfig">
-      <div class="draggable-box">
-        <draggable
-          class="list-main ant-row"
-          group="form-draggable"
-          :component-data="{ name: 'list', tag: 'div', type: 'transition-group' }"
-          ghostClass="moving"
-          :animation="180"
-          handle=".drag-move"
-          v-model="formConfig.schemas"
-          item-key="key"
-          @add="addItem"
-          @start="handleDragStart"
-        >
-          <template #item="{ element }">
-            <LayoutItem class="drag-move" :schema="element" :data="formConfig" :current-item="formConfig.currentItem || {}" />
-          </template>
-        </draggable>
-      </div>
-    </Form>
-  </div>
-</template>
 <script lang="ts">
 import draggable from 'vuedraggable'
-import { defineComponent, computed } from 'vue'
-import LayoutItem from '../components/LayoutItem.vue'
+import { computed, defineComponent } from 'vue'
 import { cloneDeep } from 'lodash-es'
+import { Empty, Form } from 'ant-design-vue'
+import LayoutItem from '../components/LayoutItem.vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
-import { Form, Empty } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'FormComponentPanel',
   components: {
     LayoutItem,
-    draggable,
+    Draggable: draggable,
     Form,
-    Empty
+    Empty,
   },
   emits: ['handleSetSelectItem'],
   setup(_, { emit }) {
@@ -78,11 +53,37 @@ export default defineComponent({
       addItem,
       handleDragStart,
       formConfig,
-      layoutTag
+      layoutTag,
     }
-  }
+  },
 })
 </script>
+
+<template>
+  <div class="form-panel v-form-container">
+    <Empty v-show="formConfig.schemas.length === 0" class="empty-text" description="从左侧选择控件添加" />
+    <Form v-bind="formConfig">
+      <div class="draggable-box">
+        <Draggable
+          v-model="formConfig.schemas"
+          class="list-main ant-row"
+          group="form-draggable"
+          :component-data="{ name: 'list', tag: 'div', type: 'transition-group' }"
+          ghost-class="moving"
+          :animation="180"
+          handle=".drag-move"
+          item-key="key"
+          @add="addItem"
+          @start="handleDragStart"
+        >
+          <template #item="{ element }">
+            <LayoutItem class="drag-move" :schema="element" :data="formConfig" :current-item="formConfig.currentItem || {}" />
+          </template>
+        </Draggable>
+      </div>
+    </Form>
+  </div>
+</template>
 
 <style lang="less" scoped>
 @import url('../styles/variable.less');
@@ -94,8 +95,8 @@ export default defineComponent({
     .list-main {
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-start;
       align-content: flex-start;
+      justify-content: flex-start;
 
       .layout-width {
         width: 100%;
@@ -113,24 +114,24 @@ export default defineComponent({
   height: 100%;
 
   .empty-text {
-    color: #aaa;
-    height: 150px;
-    inset: -10% 0 0;
-    margin: auto;
     position: absolute;
+    inset: -10% 0 0;
     z-index: 100;
+    height: 150px;
+    margin: auto;
+    color: #aaa;
   }
 
   .draggable-box {
     // width: 100%;
     .drag-move {
-      cursor: move;
       min-height: 62px;
+      cursor: move;
     }
 
     .list-main {
-      overflow: auto;
       height: 100%;
+      overflow: auto;
       // 列表动画
       .list-enter-active {
         transition: all 0.5s;

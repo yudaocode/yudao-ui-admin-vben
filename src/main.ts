@@ -1,9 +1,11 @@
 import 'uno.css'
-import '@/design/index.less'
+import 'ant-design-vue/dist/reset.css'
+import './design/index.less'
+
 // Register icon sprite
 import 'virtual:svg-icons-register'
-import App from './App.vue'
 import { createApp } from 'vue'
+import App from './App.vue'
 import { initAppConfigStore } from '@/logics/initAppConfig'
 import { setupErrorHandle } from '@/logics/error-handle'
 import { router, setupRouter } from '@/router'
@@ -13,13 +15,7 @@ import { setupGlobDirectives } from '@/directives'
 import { setupI18n } from '@/locales/setupI18n'
 import { registerGlobComp } from '@/components/registerGlobComp'
 
-import { isDevMode } from './utils/env'
-
-if (isDevMode()) {
-  import('ant-design-vue/dist/antd.less')
-}
-
-import '@/utils/tongji' // 百度统计
+import '@/utils/tongji'
 
 async function bootstrap() {
   const app = createApp(App)

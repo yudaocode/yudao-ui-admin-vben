@@ -7,7 +7,7 @@ export function getDemoOrderPage(params) {
 
 // 获得示例订单
 export function getDemoOrder(id: number) {
-  return defHttp.get({ url: '/pay/demo-order/get?id=' + id })
+  return defHttp.get({ url: `/pay/demo-order/get?id=${id}` })
 }
 
 // 创建示例订单
@@ -17,5 +17,5 @@ export function createDemoOrder(data) {
 
 // 退款示例订单
 export function refundDemoOrder(id: number) {
-  return defHttp.put({ url: '/pay/demo-order/refund?id=' + id })
+  return defHttp.put({ url: `/pay/demo-order/refund?id=${id}` })
 }

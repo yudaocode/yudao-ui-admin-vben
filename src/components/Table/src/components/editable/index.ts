@@ -1,8 +1,8 @@
-import type { BasicColumn } from '@/components/Table/src/types/table'
-
-import { h, Ref } from 'vue'
+import type { Ref } from 'vue'
+import { h, toRaw } from 'vue'
 
 import EditableCell from './EditableCell.vue'
+import type { BasicColumn } from '@/components/Table/src/types/table'
 import { isArray } from '@/utils/is'
 
 interface Params {
@@ -13,23 +13,24 @@ interface Params {
 
 export function renderEditCell(column: BasicColumn) {
   return ({ text: value, record, index }: Params) => {
-    record.onValid = async () => {
+    toRaw(record).onValid = async () => {
       if (isArray(record?.validCbs)) {
-        const validFns = (record?.validCbs || []).map((fn) => fn())
+        const validFns = (record?.validCbs || []).map(fn => fn())
         const res = await Promise.all(validFns)
-        return res.every((item) => !!item)
-      } else {
+        return res.every(item => !!item)
+      }
+      else {
         return false
       }
     }
 
-    record.onEdit = async (edit: boolean, submit = false) => {
-      if (!submit) {
+    toRaw(record).onEdit = async (edit: boolean, submit = false) => {
+      if (!submit)
         record.editable = edit
-      }
 
       if (!edit && submit) {
-        if (!(await record.onValid())) return false
+        if (!(await record.onValid()))
+          return false
         const res = await record.onSubmitEdit?.()
         if (res) {
           record.editable = false
@@ -38,9 +39,9 @@ export function renderEditCell(column: BasicColumn) {
         return false
       }
       // cancel
-      if (!edit && !submit) {
+      if (!edit && !submit)
         record.onCancelEdit?.()
-      }
+
       return true
     }
 
@@ -48,7 +49,7 @@ export function renderEditCell(column: BasicColumn) {
       value,
       record,
       column,
-      index
+      index,
     })
   }
 }

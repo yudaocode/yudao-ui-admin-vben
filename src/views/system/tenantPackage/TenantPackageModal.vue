@@ -1,43 +1,22 @@
-<template>
-  <BasicModal v-bind="$attrs" @register="registerModal" :title="isUpdate ? t('action.edit') : t('action.create')" @ok="handleSubmit">
-    <BasicForm @register="registerForm">
-      <template #menuIds="{ model, field }">
-        <BasicTree
-          ref="treeRef"
-          v-if="treeData.length"
-          v-model:checkedKeys="model[field]"
-          :treeData="treeData"
-          :fieldNames="{ title: 'name', key: 'id' }"
-          checkable
-          toolbar
-          search
-          :showStrictlyButton="false"
-          :selectable="false"
-          @check="menuCheck"
-          title="菜单分配"
-        />
-      </template>
-    </BasicForm>
-  </BasicModal>
-</template>
 <script lang="ts" setup>
 import { ref, unref } from 'vue'
+import { without } from 'lodash-es'
+import { formSchema } from './tenantPackage.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
-import { BasicTree, TreeItem, CheckedKeys, CheckedEvent } from '@/components/Tree'
+import type { CheckedEvent, CheckedKeys, TreeItem } from '@/components/Tree'
+import { BasicTree } from '@/components/Tree'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { formSchema } from './tenantPackage.data'
 import { createTenantPackage, getTenantPackage, updateTenantPackage } from '@/api/system/tenantPackage'
 import { listSimpleMenus } from '@/api/system/menu'
 import { handleTree } from '@/utils/tree'
-import { without } from 'lodash-es'
 
 defineOptions({ name: 'SystemTenantPackageModal' })
 
+const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
-const emit = defineEmits(['success', 'register'])
 const isUpdate = ref(true)
 const treeData = ref<TreeItem[]>([])
 const menuKeys = ref<number[]>([])
@@ -53,7 +32,7 @@ const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   baseColProps: { span: 24 },
   schemas: formSchema,
   showActionButtonGroup: false,
-  actionColOptions: { span: 23 }
+  actionColOptions: { span: 23 },
 })
 
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -64,7 +43,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
     const res = await listSimpleMenus()
     treeData.value = handleTree(res, 'id')
     // 去重 拿到所有的祖先节点
-    parentIdSets.value = new Set<number>(res.map((item) => item.parentId))
+    parentIdSets.value = new Set<number>(res.map(item => item.parentId))
   }
   isUpdate.value = !!data?.isUpdate
 
@@ -82,9 +61,8 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   }
 
   // 默认展开的层级
-  if (unref(treeRef)) {
+  if (unref(treeRef))
     unref(treeRef).filterByLevel(defaultExpandLevel.value)
-  }
 })
 
 async function handleSubmit() {
@@ -92,15 +70,16 @@ async function handleSubmit() {
     const values = await validate()
     values.menuIds = [...menuKeys.value, ...menuHalfKeys.value]
     setModalProps({ confirmLoading: true })
-    if (unref(isUpdate)) {
+    if (unref(isUpdate))
       await updateTenantPackage(values)
-    } else {
+    else
       await createTenantPackage(values)
-    }
+
     closeModal()
     emit('success')
     createMessage.success(t('common.saveSuccessText'))
-  } finally {
+  }
+  finally {
     setModalProps({ confirmLoading: false })
   }
 }
@@ -117,9 +96,32 @@ function menuReset() {
  * @param e event
  */
 function menuCheck(checkedKeys: CheckedKeys, event: CheckedEvent) {
-  if (checkedKeys instanceof Array) {
+  if (Array.isArray(checkedKeys)) {
     menuKeys.value = checkedKeys
     menuHalfKeys.value = event.halfCheckedKeys!
   }
 }
 </script>
+
+<template>
+  <BasicModal v-bind="$attrs" :title="isUpdate ? t('action.edit') : t('action.create')" @register="registerModal" @ok="handleSubmit">
+    <BasicForm @register="registerForm">
+      <template #menuIds="{ model, field }">
+        <BasicTree
+          v-if="treeData.length"
+          ref="treeRef"
+          v-model:checkedKeys="model[field]"
+          :tree-data="treeData"
+          :field-names="{ title: 'name', key: 'id' }"
+          checkable
+          toolbar
+          search
+          :show-strictly-button="false"
+          :selectable="false"
+          title="菜单分配"
+          @check="menuCheck"
+        />
+      </template>
+    </BasicForm>
+  </BasicModal>
+</template>

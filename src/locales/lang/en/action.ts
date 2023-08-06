@@ -9,5 +9,5 @@ export default {
   export: 'Export',
   import: 'Import',
   sync: 'Sync',
-  cancel: 'Cancel'
+  cancel: 'Cancel',
 }

@@ -28,13 +28,13 @@ export function getDictOpts(dictType: string) {
   /**
    * 这里原来是转换类型  转换类型后反而显示不出来正确的Tag
    * 实际类型转换交给下面的getDictOptions来处理
-   * 
+   *
    * bugfix:
    * dictOption.push({
           ...dict,
           value: parseInt(dict.value + '')
         })
-     原来的这种写法是造成页面卡死的原因   
+     原来的这种写法是造成页面卡死的原因
    */
   return getDictDatas(dictType)
 }
@@ -49,12 +49,10 @@ export function getDictOptions(dictType: string, valueType?: 'string' | 'number'
         key: dict.value,
         value:
           valueType === 'string'
-            ? dict.value + ''
+            ? `${dict.value}`
             : valueType === 'boolean'
-            ? dict.value + '' === 'true'
-              ? true
-              : false
-            : parseInt(dict.value + '')
+              ? `${dict.value}` === 'true'
+              : Number.parseInt(`${dict.value}`),
       })
     })
   }
@@ -65,11 +63,11 @@ export function getDictObj(dictType: string, value: any) {
   const dictOptions: DictDataType[] = getDictDatas(dictType)
   if (dictOptions) {
     dictOptions.forEach((dict: DictDataType) => {
-      if (dict.value === value.toString()) {
+      if (dict.value === value.toString())
         return dict
-      }
     })
-  } else {
+  }
+  else {
     return null
   }
 }
@@ -152,5 +150,5 @@ export enum DICT_TYPE {
   PROMOTION_COUPON_STATUS = 'promotion_coupon_status', // 优惠劵的状态
   PROMOTION_COUPON_TAKE_TYPE = 'promotion_coupon_take_type', // 优惠劵的领取方式
   PROMOTION_ACTIVITY_STATUS = 'promotion_activity_status', // 优惠活动的状态
-  PROMOTION_CONDITION_TYPE = 'promotion_condition_type' // 营销的条件类型枚举
+  PROMOTION_CONDITION_TYPE = 'promotion_condition_type', // 营销的条件类型枚举
 }

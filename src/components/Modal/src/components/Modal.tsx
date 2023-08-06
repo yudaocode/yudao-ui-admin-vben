@@ -11,12 +11,12 @@ export default defineComponent({
   props: basicProps,
   emits: ['cancel'],
   setup(props, { slots, emit }) {
-    const { visible, draggable, destroyOnClose } = toRefs(props)
+    const { open, draggable, destroyOnClose } = toRefs(props)
     const attrs = useAttrs()
     useModalDragMove({
-      visible,
+      open,
       destroyOnClose,
-      draggable
+      draggable,
     })
 
     const onCancel = (e: Event) => {
@@ -27,5 +27,5 @@ export default defineComponent({
       const propsData = { ...unref(attrs), ...props, onCancel } as Recordable
       return <Modal {...propsData}>{extendSlots(slots)}</Modal>
     }
-  }
+  },
 })

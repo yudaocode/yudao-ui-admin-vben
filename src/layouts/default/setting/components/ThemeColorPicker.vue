@@ -1,42 +1,23 @@
-<template>
-  <div :class="prefixCls">
-    <template v-for="color in colorList || []" :key="color">
-      <span
-        @click="handleClick(color)"
-        :class="[
-          `${prefixCls}__item`,
-          {
-            [`${prefixCls}__item--active`]: def === color
-          }
-        ]"
-        :style="{ background: color }"
-      >
-        <CheckOutlined />
-      </span>
-    </template>
-  </div>
-</template>
 <script lang="ts" setup>
 import { CheckOutlined } from '@ant-design/icons-vue'
 
-import { useDesign } from '@/hooks/web/useDesign'
-
 import { baseHandler } from '../handler'
-import { HandlerEnum } from '../enum'
+import type { HandlerEnum } from '../enum'
+import { useDesign } from '@/hooks/web/useDesign'
 
 defineOptions({ name: 'ThemeColorPicker' })
 
 const props = defineProps({
   colorList: {
     type: Array as PropType<string[]>,
-    default: () => []
+    default: () => [],
   },
   event: {
-    type: Number as PropType<HandlerEnum>
+    type: Number as PropType<HandlerEnum>,
   },
   def: {
-    type: String
-  }
+    type: String,
+  },
 })
 const { prefixCls } = useDesign('setting-theme-picker')
 
@@ -44,14 +25,34 @@ function handleClick(color: string) {
   props.event && baseHandler(props.event, color)
 }
 </script>
+
+<template>
+  <div :class="prefixCls">
+    <template v-for="color in colorList || []" :key="color">
+      <span
+        :class="[
+          `${prefixCls}__item`,
+          {
+            [`${prefixCls}__item--active`]: def === color,
+          },
+        ]"
+        :style="{ background: color }"
+        @click="handleClick(color)"
+      >
+        <CheckOutlined />
+      </span>
+    </template>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-setting-theme-picker';
 
 .@{prefix-cls} {
   display: flex;
   flex-wrap: wrap;
-  margin: 16px 0;
   justify-content: space-around;
+  margin: 16px 0;
 
   &__item {
     width: 20px;
@@ -65,8 +66,6 @@ function handleClick(color: string) {
     }
 
     &--active {
-      border: 1px solid lighten(@primary-color, 10%);
-
       svg {
         display: inline-block;
         margin: 0 0 3px 3px;

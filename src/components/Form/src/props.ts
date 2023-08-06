@@ -1,40 +1,40 @@
-import type { FieldMapToTime, FormSchema } from './types/form'
 import type { CSSProperties } from 'vue'
-import type { ColEx } from './types'
-import type { TableActionType } from '@/components/Table'
 import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes'
 import type { RowProps } from 'ant-design-vue/lib/grid/Row'
+import type { FieldMapToTime, FormSchema } from './types/form'
+import type { ColEx } from './types'
+import type { TableActionType } from '@/components/Table'
 import { propTypes } from '@/utils/propTypes'
 
 export const basicProps = {
   model: {
     type: Object as PropType<Recordable>,
-    default: () => ({})
+    default: () => ({}),
   },
   // 标签宽度  固定宽度
   labelWidth: {
     type: [Number, String] as PropType<number | string>,
-    default: 0
+    default: 0,
   },
   fieldMapToTime: {
     type: Array as PropType<FieldMapToTime>,
-    default: () => []
+    default: () => [],
   },
   compact: propTypes.bool,
   // 表单配置规则
   schemas: {
     type: Array as PropType<FormSchema[]>,
-    default: () => []
+    default: () => [],
   },
   mergeDynamicData: {
     type: Object as PropType<Recordable>,
-    default: null
+    default: null,
   },
   baseRowStyle: {
-    type: Object as PropType<CSSProperties>
+    type: Object as PropType<CSSProperties>,
   },
   baseColProps: {
-    type: Object as PropType<Partial<ColEx>>
+    type: Object as PropType<Partial<ColEx>>,
   },
   autoSetPlaceHolder: propTypes.bool.def(true),
   // 在INPUT组件上单击回车时，是否自动提交
@@ -46,7 +46,7 @@ export const basicProps = {
   disabled: propTypes.bool,
   emptySpan: {
     type: [Number, Object] as PropType<number | Recordable>,
-    default: 0
+    default: 0,
   },
   // 是否显示收起展开按钮
   showAdvancedButton: propTypes.bool,
@@ -55,7 +55,7 @@ export const basicProps = {
     type: Function as PropType<Fn>,
     default: (date: any) => {
       return date?.format?.('YYYY-MM-DD HH:mm:ss') ?? date
-    }
+    },
   },
   rulesMessageJoinLabel: propTypes.bool.def(true),
   // 超过3行自动折叠
@@ -90,7 +90,7 @@ export const basicProps = {
 
   layout: propTypes.oneOf(['horizontal', 'vertical', 'inline']).def('horizontal'),
   tableAction: {
-    type: Object as PropType<TableActionType>
+    type: Object as PropType<TableActionType>,
   },
 
   wrapperCol: Object as PropType<Partial<ColEx>>,
@@ -99,5 +99,5 @@ export const basicProps = {
 
   labelAlign: propTypes.string,
 
-  rowProps: Object as PropType<RowProps>
+  rowProps: Object as PropType<RowProps>,
 }

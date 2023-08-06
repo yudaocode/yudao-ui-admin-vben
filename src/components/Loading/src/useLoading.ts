@@ -1,7 +1,7 @@
 import { unref } from 'vue'
+import type { Ref } from 'vue'
 import { createLoading } from './createLoading'
 import type { LoadingProps } from './typing'
-import type { Ref } from 'vue'
 
 export interface UseLoadingOptions {
   target?: any
@@ -23,7 +23,8 @@ export function useLoading(opt: Partial<LoadingProps> | Partial<UseLoadingOption
     const options = opt as Partial<UseLoadingOptions>
     props = options.props || {}
     target = options.target || document.body
-  } else {
+  }
+  else {
     props = opt as Partial<LoadingProps>
   }
 
@@ -31,7 +32,8 @@ export function useLoading(opt: Partial<LoadingProps> | Partial<UseLoadingOption
 
   const open = (): void => {
     const t = unref(target as Ref<ElRef>)
-    if (!t) return
+    if (!t)
+      return
     instance.open(t)
   }
 

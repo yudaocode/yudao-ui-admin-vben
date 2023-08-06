@@ -19,15 +19,16 @@ export function useCountdown(count: number) {
   }
 
   function start() {
-    if (unref(isStart) || !!timerId) {
+    if (unref(isStart) || !!timerId)
       return
-    }
+
     isStart.value = true
     timerId = setInterval(() => {
       if (unref(currentCount) === 1) {
         stop()
         currentCount.value = count
-      } else {
+      }
+      else {
         currentCount.value -= 1
       }
     }, 1000)

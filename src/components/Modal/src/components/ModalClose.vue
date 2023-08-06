@@ -1,35 +1,20 @@
-<template>
-  <div :class="getClass">
-    <template v-if="canFullscreen">
-      <Tooltip :title="t('component.modal.restore')" placement="bottom" v-if="fullScreen">
-        <FullscreenExitOutlined role="full" @click="handleFullScreen" />
-      </Tooltip>
-      <Tooltip :title="t('component.modal.maximize')" placement="bottom" v-else>
-        <FullscreenOutlined role="close" @click="handleFullScreen" />
-      </Tooltip>
-    </template>
-    <Tooltip :title="t('component.modal.close')" placement="bottom">
-      <CloseOutlined @click="handleCancel" />
-    </Tooltip>
-  </div>
-</template>
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { FullscreenExitOutlined, FullscreenOutlined, CloseOutlined } from '@ant-design/icons-vue'
-import { useDesign } from '@/hooks/web/useDesign'
+import { CloseOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import { Tooltip } from 'ant-design-vue'
+import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
-
-const { t } = useI18n()
 
 defineOptions({ name: 'ModalClose' })
 
 const props = defineProps({
   canFullscreen: { type: Boolean, default: true },
-  fullScreen: { type: Boolean }
+  fullScreen: { type: Boolean },
 })
 
 const emit = defineEmits(['cancel', 'fullscreen'])
+
+const { t } = useI18n()
 
 const { prefixCls } = useDesign('basic-modal-close')
 
@@ -38,8 +23,8 @@ const getClass = computed(() => {
     prefixCls,
     `${prefixCls}--custom`,
     {
-      [`${prefixCls}--can-full`]: props.canFullscreen
-    }
+      [`${prefixCls}--can-full`]: props.canFullscreen,
+    },
   ]
 })
 
@@ -53,12 +38,29 @@ function handleFullScreen(e: Event) {
   emit('fullscreen')
 }
 </script>
+
+<template>
+  <div :class="getClass">
+    <template v-if="canFullscreen">
+      <Tooltip v-if="fullScreen" :title="t('component.modal.restore')" placement="bottom">
+        <FullscreenExitOutlined role="full" @click="handleFullScreen" />
+      </Tooltip>
+      <Tooltip v-else :title="t('component.modal.maximize')" placement="bottom">
+        <FullscreenOutlined role="close" @click="handleFullScreen" />
+      </Tooltip>
+    </template>
+    <Tooltip :title="t('component.modal.close')" placement="bottom">
+      <CloseOutlined @click="handleCancel" />
+    </Tooltip>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-modal-close';
 .@{prefix-cls} {
   display: flex;
-  height: 95%;
   align-items: center;
+  height: 95%;
 
   > span {
     margin-left: 48px;
@@ -82,16 +84,6 @@ function handleFullScreen(e: Event) {
   & span:nth-child(1) {
     display: inline-block;
     padding: 10px;
-
-    &:hover {
-      color: @primary-color;
-    }
-  }
-
-  & span:last-child {
-    &:hover {
-      color: @error-color;
-    }
   }
 }
 </style>

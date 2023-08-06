@@ -1,46 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['bpm:form:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:form:update', onClick: openForm.bind(null, record) },
-              { icon: IconEnum.VIEW, label: t('action.detail'), auth: 'bpm:form:query', onClick: openDetail.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'bpm:form:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <BpmFormModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import BpmFormModal from './FormModal.vue'
+import { columns, searchFormSchema } from './form.data'
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import BpmFormModal from './FormModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteForm, getFormPage } from '@/api/bpm/form'
-import { columns, searchFormSchema } from './form.data'
 
 defineOptions({ name: 'BpmForm' })
 
@@ -60,8 +27,8 @@ const [registerTable, { reload }] = useTable({
     width: 180,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -69,9 +36,8 @@ function handleCreate() {
 }
 
 function openForm(record: Recordable) {
-  if (typeof record.id === 'number') {
+  if (typeof record.id === 'number')
     go({ name: 'BpmFormEditor', query: { id: record.id } })
-  }
 }
 
 function openDetail(record: Recordable) {
@@ -84,3 +50,37 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['bpm:form:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'bpm:form:update', onClick: openForm.bind(null, record) },
+              { icon: IconEnum.VIEW, label: t('action.detail'), auth: 'bpm:form:query', onClick: openDetail.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'bpm:form:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <BpmFormModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

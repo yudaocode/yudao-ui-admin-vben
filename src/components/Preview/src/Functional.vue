@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, unref, computed, reactive, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, unref, watchEffect } from 'vue'
 import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons-vue'
 import resumeSvg from '@/assets/svg/preview/resume.svg'
 import rotateSvg from '@/assets/svg/preview/p-rotate.svg'
@@ -10,7 +10,7 @@ import unRotateSvg from '@/assets/svg/preview/unrotate.svg'
 enum StatueEnum {
   LOADING,
   DONE,
-  FAIL
+  FAIL,
 }
 interface ImgState {
   currentUrl: string
@@ -27,28 +27,28 @@ interface ImgState {
 const props = {
   show: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   imageList: {
     type: Array as PropType<string[]>,
-    default: null
+    default: null,
   },
   index: {
     type: Number as PropType<number>,
-    default: 0
+    default: 0,
   },
   scaleStep: {
-    type: Number as PropType<number>
+    type: Number as PropType<number>,
   },
   defaultWidth: {
-    type: Number as PropType<number>
+    type: Number as PropType<number>,
   },
   maskClosable: {
-    type: Boolean as PropType<boolean>
+    type: Boolean as PropType<boolean>,
   },
   rememberState: {
-    type: Boolean as PropType<boolean>
-  }
+    type: Boolean as PropType<boolean>,
+  },
 }
 
 const prefixCls = 'img-preview'
@@ -74,7 +74,7 @@ export default defineComponent({
       currentIndex: 0,
       moveX: 0,
       moveY: 0,
-      show: props.show
+      show: props.show,
     })
 
     const wrapElRef = ref<HTMLDivElement | null>(null)
@@ -85,9 +85,9 @@ export default defineComponent({
       initMouseWheel()
       const { index, imageList } = props
 
-      if (!imageList || !imageList.length) {
+      if (!imageList || !imageList.length)
         throw new Error('imageList is undefined')
-      }
+
       imgState.currentIndex = index
       handleIChangeImage(imageList[index])
     }
@@ -103,9 +103,9 @@ export default defineComponent({
     // 初始化鼠标滚轮事件
     function initMouseWheel() {
       const wrapEl = unref(wrapElRef)
-      if (!wrapEl) {
+      if (!wrapEl)
         return
-      }
+
       ;(wrapEl as any).onmousewheel = scrollFunc
       // 火狐浏览器没有onmousewheel事件，用DOMMouseScroll代替
       document.body.addEventListener('DOMMouseScroll', scrollFunc)
@@ -117,11 +117,10 @@ export default defineComponent({
 
     const getScaleStep = computed(() => {
       const scaleStep = props?.scaleStep ?? 0
-      if (scaleStep ?? (0 > 0 && scaleStep < 100)) {
+      if (scaleStep ?? (scaleStep < 100))
         return scaleStep / 100
-      } else {
+      else
         return imgState.imgScale / 10
-      }
     })
 
     // 监听鼠标滚轮
@@ -145,12 +144,12 @@ export default defineComponent({
       const MIN_SCALE = 0.02
       // 放大缩小的颗粒度
       const GRA = 0.1
-      if (imgState.imgScale <= 0.2 && num < 0) return
+      if (imgState.imgScale <= 0.2 && num < 0)
+        return
       imgState.imgScale += num * GRA
       // scale 不能 < 0，否则图片会倒置放大
-      if (imgState.imgScale < 0) {
+      if (imgState.imgScale < 0)
         imgState.imgScale = MIN_SCALE
-      }
     }
 
     // 旋转图片
@@ -161,7 +160,8 @@ export default defineComponent({
     // 鼠标事件
     function handleMouseUp() {
       const imgEl = unref(imgElRef)
-      if (!imgEl) return
+      if (!imgEl)
+        return
       imgEl.onmousemove = null
     }
 
@@ -179,7 +179,7 @@ export default defineComponent({
               scale: imgState.imgScale,
               top: imgState.imgTop,
               left: imgState.imgLeft,
-              rotate: imgState.imgRotate
+              rotate: imgState.imgRotate,
             })
             // 如果之前已存储缩放信息，就应用
             const stateInfo = stateMap.get(url)
@@ -188,23 +188,23 @@ export default defineComponent({
               imgState.imgTop = stateInfo.top
               imgState.imgRotate = stateInfo.rotate
               imgState.imgLeft = stateInfo.left
-            } else {
-              initState()
-              if (props.defaultWidth) {
-                imgState.imgScale = props.defaultWidth / ele[0].naturalWidth
-              }
             }
-          } else {
-            if (props.defaultWidth) {
-              imgState.imgScale = props.defaultWidth / ele[0].naturalWidth
+            else {
+              initState()
+              if (props.defaultWidth)
+                imgState.imgScale = props.defaultWidth / ele[0].naturalWidth
             }
           }
+          else {
+            if (props.defaultWidth)
+              imgState.imgScale = props.defaultWidth / ele[0].naturalWidth
+          }
 
-          ele &&
-            emit('img-load', {
+          ele
+            && emit('img-load', {
               index: imgState.currentIndex,
               dom: ele[0] as HTMLImageElement,
-              url
+              url,
             })
         }
         imgState.currentUrl = url
@@ -212,11 +212,11 @@ export default defineComponent({
       }
       img.onerror = (e: Event) => {
         const ele: EventTarget[] = e.composedPath()
-        ele &&
-          emit('img-error', {
+        ele
+          && emit('img-error', {
             index: imgState.currentIndex,
             dom: ele[0] as HTMLImageElement,
-            url
+            url,
           })
         imgState.status = StatueEnum.FAIL
       }
@@ -247,11 +247,12 @@ export default defineComponent({
       prev: handleChange.bind(null, 'left'),
       next: handleChange.bind(null, 'right'),
       setScale: (scale: number) => {
-        if (scale > 0 && scale <= 10) imgState.imgScale = scale
+        if (scale > 0 && scale <= 10)
+          imgState.imgScale = scale
       },
       setRotate: (rotate: number) => {
         imgState.imgRotate = rotate
-      }
+      },
     })
 
     // 上一页下一页
@@ -260,15 +261,13 @@ export default defineComponent({
       const { imageList } = props
       if (direction === 'left') {
         imgState.currentIndex--
-        if (currentIndex <= 0) {
+        if (currentIndex <= 0)
           imgState.currentIndex = imageList.length - 1
-        }
       }
       if (direction === 'right') {
         imgState.currentIndex++
-        if (currentIndex >= imageList.length - 1) {
+        if (currentIndex >= imageList.length - 1)
           imgState.currentIndex = 0
-        }
       }
       handleIChangeImage(imageList[imgState.currentIndex])
     }
@@ -278,9 +277,8 @@ export default defineComponent({
       imgState.moveX = e.clientX
       imgState.moveY = e.clientY
       const imgEl = unref(imgElRef)
-      if (imgEl) {
+      if (imgEl)
         imgEl.onmousemove = moveFunc
-      }
     }
 
     function moveFunc(e: MouseEvent) {
@@ -301,7 +299,7 @@ export default defineComponent({
         transform: `scale(${imgScale}) rotate(${imgRotate}deg)`,
         marginTop: `${imgTop}px`,
         marginLeft: `${imgLeft}px`,
-        maxWidth: props.defaultWidth ? 'unset' : '100%'
+        maxWidth: props.defaultWidth ? 'unset' : '100%',
       }
     })
 
@@ -311,18 +309,16 @@ export default defineComponent({
     })
 
     watchEffect(() => {
-      if (props.show) {
+      if (props.show)
         init()
-      }
-      if (props.imageList) {
+
+      if (props.imageList)
         initState()
-      }
     })
 
     const handleMaskClick = (e: MouseEvent) => {
-      if (props.maskClosable && e.target && (e.target as HTMLDivElement).classList.contains(`${prefixCls}-content`)) {
+      if (props.maskClosable && e.target && (e.target as HTMLDivElement).classList.contains(`${prefixCls}-content`))
         handleClose(e)
-      }
     }
 
     const renderClose = () => {
@@ -334,9 +330,9 @@ export default defineComponent({
     }
 
     const renderIndex = () => {
-      if (!unref(getIsMultipleImage)) {
+      if (!unref(getIsMultipleImage))
         return null
-      }
+
       const { currentIndex } = imgState
       const { imageList } = props
       return (
@@ -369,9 +365,9 @@ export default defineComponent({
     }
 
     const renderArrow = (direction: 'left' | 'right') => {
-      if (!unref(getIsMultipleImage)) {
+      if (!unref(getIsMultipleImage))
         return null
-      }
+
       return (
         <div class={[`${prefixCls}__arrow`, direction]} onClick={() => handleChange(direction)}>
           {direction === 'left' ? <LeftOutlined /> : <RightOutlined />}
@@ -384,16 +380,16 @@ export default defineComponent({
         imgState.show && (
           <div class={prefixCls} ref={wrapElRef} onMouseup={handleMouseUp} onClick={handleMaskClick}>
             <div class={`${prefixCls}-content`}>
-              {/*<Spin*/}
-              {/*  indicator={<LoadingOutlined style="font-size: 24px" spin />}*/}
-              {/*  spinning={true}*/}
-              {/*  class={[*/}
-              {/*    `${prefixCls}-image`,*/}
-              {/*    {*/}
-              {/*      hidden: imgState.status !== StatueEnum.LOADING,*/}
-              {/*    },*/}
-              {/*  ]}*/}
-              {/*/>*/}
+              {/* <Spin */}
+              {/*  indicator={<LoadingOutlined style="font-size: 24px" spin />} */}
+              {/*  spinning={true} */}
+              {/*  class={[ */}
+              {/*    `${prefixCls}-image`, */}
+              {/*    { */}
+              {/*      hidden: imgState.status !== StatueEnum.LOADING, */}
+              {/*    }, */}
+              {/*  ]} */}
+              {/* /> */}
               <img
                 style={unref(getImageStyle)}
                 class={[`${prefixCls}-image`, imgState.status === StatueEnum.DONE ? '' : 'hidden']}
@@ -411,24 +407,25 @@ export default defineComponent({
         )
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 .img-preview {
   position: fixed;
   inset: 0;
   z-index: @preview-comp-z-index;
-  background: rgb(0 0 0 / 50%);
   user-select: none;
+  background: rgb(0 0 0 / 50%);
 
   &-content {
     display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
     color: @white;
-    justify-content: center;
-    align-items: center;
   }
 
   &-image {
@@ -477,13 +474,13 @@ export default defineComponent({
     bottom: 10%;
     left: 50%;
     display: flex;
+    justify-content: center;
     width: 260px;
     height: 44px;
     padding: 0 22px;
     margin-left: -139px;
     background: rgb(109 109 109 / 60%);
     border-radius: 22px;
-    justify-content: center;
 
     &-item {
       display: flex;

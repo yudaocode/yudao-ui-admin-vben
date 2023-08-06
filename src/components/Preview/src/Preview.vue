@@ -1,19 +1,3 @@
-<template>
-  <div :class="prefixCls">
-    <ImagePreviewGroup>
-      <slot v-if="!imageList || $slots.default"></slot>
-      <template v-else>
-        <template v-for="item in getImageList" :key="item.src">
-          <Image v-bind="item">
-            <template #placeholder v-if="item.placeholder">
-              <Image v-bind="item" :src="item.placeholder" :preview="false" />
-            </template>
-          </Image>
-        </template>
-      </template>
-    </ImagePreviewGroup>
-  </div>
-</template>
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Image, ImagePreviewGroup } from 'ant-design-vue'
@@ -29,12 +13,12 @@ interface ImageProps {
   height?: string | number
   placeholder?: string | boolean
   preview?:
-    | boolean
-    | {
-        visible?: boolean
-        onVisibleChange?: (visible: boolean, prevVisible: boolean) => void
-        getContainer: string | HTMLElement | (() => HTMLElement)
-      }
+  | boolean
+  | {
+    open?: boolean
+    onOpenChange?: (open: boolean, prevOpen: boolean) => void
+    getContainer: string | HTMLElement | (() => HTMLElement)
+  }
 }
 
 type ImageItem = string | ImageProps
@@ -44,28 +28,46 @@ defineOptions({ name: 'ImagePreview' })
 const props = defineProps({
   functional: propTypes.bool,
   imageList: {
-    type: Array as PropType<ImageItem[]>
-  }
+    type: Array as PropType<ImageItem[]>,
+  },
 })
 
 const { prefixCls } = useDesign('image-preview')
 
 const getImageList = computed((): any[] => {
   const { imageList } = props
-  if (!imageList) {
+  if (!imageList)
     return []
-  }
+
   return imageList.map((item) => {
     if (isString(item)) {
       return {
         src: item,
-        placeholder: false
+        placeholder: false,
       }
     }
     return item
   })
 })
 </script>
+
+<template>
+  <div :class="prefixCls">
+    <ImagePreviewGroup>
+      <slot v-if="!imageList || $slots.default" />
+      <template v-else>
+        <template v-for="item in getImageList" :key="item.src">
+          <Image v-bind="item">
+            <template v-if="item.placeholder" #placeholder>
+              <Image v-bind="item" :src="item.placeholder" :preview="false" />
+            </template>
+          </Image>
+        </template>
+      </template>
+    </ImagePreviewGroup>
+  </div>
+</template>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-image-preview';
 

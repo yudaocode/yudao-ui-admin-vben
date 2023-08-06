@@ -1,9 +1,4 @@
 import type { Component } from 'vue'
-import { ComponentType } from '@/components/Form/src/types'
-import { IconPicker } from '@/components/Icon/index'
-/**
- * Component list, register here to setting it in the form
- */
 import {
   Input,
   Button,
@@ -22,10 +17,16 @@ import {
   Rate,
   Divider,
   Calendar,
-  Transfer
+  Transfer,
 } from 'ant-design-vue'
+import type { ComponentType } from '@/components/Form/src/types'
+import { IconPicker } from '@/components/Icon/index'
 
-//ant-desing本身的Form控件库
+/**
+ * Component list, register here to setting it in the form
+ */
+
+// ant-desing本身的Form控件库
 
 const componentMap = new Map<string, Component>()
 componentMap.set('Radio', Radio)

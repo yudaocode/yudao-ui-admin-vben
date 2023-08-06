@@ -1,5 +1,5 @@
-import { defHttp } from '@/utils/http/axios'
 import qs from 'qs'
+import { defHttp } from '@/utils/http/axios'
 
 // 获得站内信分页
 export function getNotifyMessagePage(params) {
@@ -13,7 +13,7 @@ export function getMyNotifyMessagePage(params) {
 
 // 批量标记已读
 export function updateNotifyMessageRead(ids: number[]) {
-  return defHttp.put({ url: '/system/notify-message/update-read?' + qs.stringify({ ids: ids }, { indices: false }) })
+  return defHttp.put({ url: `/system/notify-message/update-read?${qs.stringify({ ids }, { indices: false })}` })
 }
 
 // 标记所有站内信为已读

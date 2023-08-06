@@ -1,5 +1,6 @@
 <script lang="tsx">
-import { defineComponent, CSSProperties, watch, nextTick } from 'vue'
+import type { CSSProperties } from 'vue'
+import { defineComponent, nextTick, watch } from 'vue'
 import { fileListProps } from './props'
 import { isFunction } from '@/utils/is'
 import { useModalContext } from '@/components/Modal/src/hooks/useModalContext'
@@ -15,7 +16,7 @@ export default defineComponent({
         nextTick(() => {
           modalFn?.redoModalHeight?.()
         })
-      }
+      },
     )
     return () => {
       const { columns, actionColumn, dataSource } = props
@@ -27,7 +28,7 @@ export default defineComponent({
               const { width = 0, dataIndex } = item
               const style: CSSProperties = {
                 width: `${width}px`,
-                minWidth: `${width}px`
+                minWidth: `${width}px`,
               }
               return <col style={width ? style : {}} key={dataIndex} />
             })}
@@ -64,9 +65,10 @@ export default defineComponent({
         </table>
       )
     }
-  }
+  },
 })
 </script>
+
 <style lang="less">
 .file-table {
   width: 100%;
@@ -96,7 +98,7 @@ export default defineComponent({
   table,
   td,
   th {
-    border: 1px solid @border-color-base;
+    border: 1px solid var(--border-color);
   }
 }
 </style>

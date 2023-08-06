@@ -1,9 +1,9 @@
-import { UploadApiResult } from '@/api/base/model/uploadModel'
+import type { UploadApiResult } from '@/api/base/model/uploadModel'
 
 export enum UploadResultStatus {
   SUCCESS = 'success',
   ERROR = 'error',
-  UPLOADING = 'uploading'
+  UPLOADING = 'uploading',
 }
 
 export interface FileItem {

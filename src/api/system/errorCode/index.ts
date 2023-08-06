@@ -25,7 +25,7 @@ export function getErrorCodePage(params: ErrorCodePageReqVO) {
 
 // 查询错误码详情
 export function getErrorCode(id: number) {
-  return defHttp.get({ url: '/system/error-code/get?id=' + id })
+  return defHttp.get({ url: `/system/error-code/get?id=${id}` })
 }
 
 // 新增错误码
@@ -40,7 +40,7 @@ export function updateErrorCode(data: ErrorCodeVO) {
 
 // 删除错误码
 export function deleteErrorCode(id: number) {
-  return defHttp.delete({ url: '/system/error-code/delete?id=' + id })
+  return defHttp.delete({ url: `/system/error-code/delete?id=${id}` })
 }
 
 // 导出错误码

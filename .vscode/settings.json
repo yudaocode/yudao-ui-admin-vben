@@ -1,7 +1,5 @@
 {
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "volar.tsPlugin": true,
-  "volar.tsPluginStatus": false,
   "npm.packageManager": "pnpm",
   "editor.tabSize": 2,
   "prettier.printWidth": 140, // 超过最大值换行
@@ -60,6 +58,24 @@
   "path-intellisense.mappings": {
     "@/": "${workspaceRoot}/src"
   },
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
+  ],
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -84,9 +100,6 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "[vue]": {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true,
@@ -103,7 +116,9 @@
   "i18n-ally.displayLanguage": "zh-CN",
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "cSpell.words": [
+    "antfu",
     "vben",
+    "unref",
     "unocss",
     "tailwind",
     "browserslist",
@@ -135,27 +150,6 @@
     "sider",
     "pnpm",
     "antd"
-  ],
-  "vetur.format.scriptInitialIndent": true,
-  "vetur.format.styleInitialIndent": true,
-  "vetur.validation.script": false,
-  "MicroPython.executeButton": [
-    {
-      "text": "▶",
-      "tooltip": "运行",
-      "alignment": "left",
-      "command": "extension.executeFile",
-      "priority": 3.5
-    }
-  ],
-  "MicroPython.syncButton": [
-    {
-      "text": "$(sync)",
-      "tooltip": "同步",
-      "alignment": "left",
-      "command": "extension.execute",
-      "priority": 4
-    }
   ],
   // 控制相关文件嵌套展示
   "explorer.fileNesting.enabled": true,

@@ -1,57 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:mail-template:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: IconEnum.SEND,
-                label: t('action.send'),
-                auth: 'system:mail-template:send-mail',
-                onClick: handleSend.bind(null, record)
-              },
-              {
-                icon: IconEnum.EDIT,
-                label: t('action.edit'),
-                auth: 'system:mail-template:update',
-                onClick: handleEdit.bind(null, record)
-              },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:mail-template:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <TemplateModal @register="registerTemplateModal" @success="reload()" />
-    <SendMailModal @register="registerSendModal" />
-  </div>
-</template>
 <script lang="ts" setup>
+import TemplateModal from './TemplateModal.vue'
+import SendMailModal from './SendMailModal.vue'
+import { columns, searchFormSchema } from './template.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import TemplateModal from './TemplateModal.vue'
-import SendMailModal from './SendMailModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMailTemplate, getMailTemplatePage } from '@/api/system/mail/template'
-import { columns, searchFormSchema } from './template.data'
 
 defineOptions({ name: 'SystemMailTemplate' })
 
@@ -71,8 +27,8 @@ const [registerTable, { reload }] = useTable({
     width: 200,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -93,3 +49,48 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:mail-template:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: IconEnum.SEND,
+                label: t('action.send'),
+                auth: 'system:mail-template:send-mail',
+                onClick: handleSend.bind(null, record),
+              },
+              {
+                icon: IconEnum.EDIT,
+                label: t('action.edit'),
+                auth: 'system:mail-template:update',
+                onClick: handleEdit.bind(null, record),
+              },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:mail-template:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <TemplateModal @register="registerTemplateModal" @success="reload()" />
+    <SendMailModal @register="registerSendModal" />
+  </div>
+</template>

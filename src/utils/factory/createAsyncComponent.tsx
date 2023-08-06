@@ -1,5 +1,5 @@
 import {
-  defineAsyncComponent
+  defineAsyncComponent,
   // FunctionalComponent, CSSProperties
 } from 'vue'
 import { Spin } from 'ant-design-vue'
@@ -53,11 +53,12 @@ export function createAsyncComponent(loader: Fn, options: Options = {}) {
           if (error.message.match(/fetch/) && attempts <= 3) {
             // retry on fetch errors, 3 max attempts
             retry()
-          } else {
+          }
+          else {
             // Note that retry/fail are like resolve/reject of a promise:
             // one of them must be called for the error handling to continue.
             fail()
           }
-        }
+        },
   })
 }

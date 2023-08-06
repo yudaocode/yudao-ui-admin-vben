@@ -1,26 +1,10 @@
-<template>
-  <PageWrapper title="关于">
-    <template #headerContent>
-      <div class="flex justify-between items-center">
-        <span class="flex-1">
-          <a :href="GITHUB_URL" target="_blank">{{ name }}</a>
-          基于Vue3.0、Vite、 Ant-Design-Vue 、TypeScript
-          的后台解决方案，目标是为中大型项目开发,提供现成的开箱解决方案及丰富的示例,原则上不会限制任何代码用于商用。<br />
-          同时，我们也提供<a :href="SITE_URL" target="_blank">外包服务</a>。
-        </span>
-      </div>
-    </template>
-    <Description @register="infoRegister" class="enter-y" />
-    <Description @register="register" class="my-4 enter-y" />
-    <Description @register="registerDev" class="enter-y" />
-  </PageWrapper>
-</template>
 <script lang="ts" setup>
 import { h } from 'vue'
 import { Tag } from 'ant-design-vue'
 import { PageWrapper } from '@/components/Page'
-import { Description, DescItem, useDescription } from '@/components/Description'
-import { GITHUB_URL, SITE_URL, DOC_URL } from '@/settings/siteSetting'
+import type { DescItem } from '@/components/Description'
+import { Description, useDescription } from '@/components/Description'
+import { DOC_URL, GITHUB_URL, SITE_URL } from '@/settings/siteSetting'
 
 const { pkg, lastBuildTime } = __APP_INFO__
 
@@ -29,40 +13,40 @@ const { dependencies, devDependencies, name, version } = pkg
 const schema: DescItem[] = []
 const devSchema: DescItem[] = []
 
-const commonTagRender = (color: string) => (curVal) => h(Tag, { color }, () => curVal)
-const commonLinkRender = (text: string) => (href) => h('a', { href, target: '_blank' }, text)
+const commonTagRender = (color: string) => curVal => h(Tag, { color }, () => curVal)
+const commonLinkRender = (text: string) => href => h('a', { href, target: '_blank' }, text)
 
 const infoSchema: DescItem[] = [
   {
     label: '版本',
     field: 'version',
-    render: commonTagRender('blue')
+    render: commonTagRender('blue'),
   },
   {
     label: '最后编译时间',
     field: 'lastBuildTime',
-    render: commonTagRender('blue')
+    render: commonTagRender('blue'),
   },
   {
     label: '文档地址',
     field: 'doc',
-    render: commonLinkRender('文档地址')
+    render: commonLinkRender('文档地址'),
   },
   {
     label: '预览地址',
     field: 'preview',
-    render: commonLinkRender('预览地址')
+    render: commonLinkRender('预览地址'),
   },
   {
     label: 'Github',
     field: 'github',
-    render: commonLinkRender('Github')
+    render: commonLinkRender('Github'),
   },
   {
     label: '外包服务',
     field: 'outsourcing',
-    render: commonLinkRender('外包服务')
-  }
+    render: commonLinkRender('外包服务'),
+  },
 ]
 
 const infoData = {
@@ -71,7 +55,7 @@ const infoData = {
   doc: DOC_URL,
   preview: SITE_URL,
   github: GITHUB_URL,
-  outsourcing: SITE_URL
+  outsourcing: SITE_URL,
 }
 
 Object.keys(dependencies).forEach((key) => {
@@ -85,21 +69,39 @@ Object.keys(devDependencies).forEach((key) => {
 const [register] = useDescription({
   title: '生产环境依赖',
   data: dependencies,
-  schema: schema,
-  column: 3
+  schema,
+  column: 3,
 })
 
 const [registerDev] = useDescription({
   title: '开发环境依赖',
   data: devDependencies,
   schema: devSchema,
-  column: 3
+  column: 3,
 })
 
 const [infoRegister] = useDescription({
   title: '项目信息',
   data: infoData,
   schema: infoSchema,
-  column: 2
+  column: 2,
 })
 </script>
+
+<template>
+  <PageWrapper title="关于">
+    <template #headerContent>
+      <div class="flex justify-between items-center">
+        <span class="flex-1">
+          <a :href="GITHUB_URL" target="_blank">{{ name }}</a>
+          基于Vue3.0、Vite、 Ant-Design-Vue 、TypeScript
+          的后台解决方案，目标是为中大型项目开发,提供现成的开箱解决方案及丰富的示例,原则上不会限制任何代码用于商用。<br>
+          同时，我们也提供<a :href="SITE_URL" target="_blank">外包服务</a>。
+        </span>
+      </div>
+    </template>
+    <Description class="enter-y" @register="infoRegister" />
+    <Description class="my-4 enter-y" @register="register" />
+    <Description class="enter-y" @register="registerDev" />
+  </PageWrapper>
+</template>

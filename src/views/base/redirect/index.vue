@@ -1,6 +1,3 @@
-<template>
-  <div></div>
-</template>
 <script lang="ts" setup>
 import { unref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -19,12 +16,17 @@ if (_redirect_type === 'name') {
   replace({
     name: _path,
     query,
-    params: JSON.parse((params._origin_params as string) ?? '{}')
+    params: JSON.parse((params._origin_params as string) ?? '{}'),
   })
-} else {
+}
+else {
   replace({
-    path: _path.startsWith('/') ? _path : '/' + _path,
-    query
+    path: _path.startsWith('/') ? _path : `/${_path}`,
+    query,
   })
 }
 </script>
+
+<template>
+  <div />
+</template>

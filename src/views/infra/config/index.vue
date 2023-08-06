@@ -1,47 +1,13 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['infra:config:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['infra:config:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:config:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'infra:config:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <ConfigModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
+import ConfigModal from './ConfigModal.vue'
+import { columns, searchFormSchema } from './config.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
-import ConfigModal from './ConfigModal.vue'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { getConfigPage, deleteConfig, exportConfig, ConfigExportReqVO } from '@/api/infra/config'
-import { columns, searchFormSchema } from './config.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { ConfigExportReqVO } from '@/api/infra/config'
+import { deleteConfig, exportConfig, getConfigPage } from '@/api/infra/config'
 
 defineOptions({ name: 'InfraConfig' })
 
@@ -61,8 +27,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -81,7 +47,7 @@ async function handleExport() {
     async onOk() {
       await exportConfig(getForm().getFieldsValue() as ConfigExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -91,3 +57,39 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['infra:config:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['infra:config:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'infra:config:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'infra:config:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <ConfigModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

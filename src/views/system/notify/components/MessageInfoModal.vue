@@ -1,27 +1,27 @@
-<template>
-  <BasicModal title="站内信详情" @register="innerRegister">
-    <Description @register="descriptionRegister" />
-  </BasicModal>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { MessageInfo } from './message.data'
+import { infoSchema } from './message.data'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { Description, useDescription } from '@/components/Description/index'
-import { infoSchema, MessageInfo } from './message.data'
 
 defineOptions({ name: 'MessageInfoModal' })
+
+const data = ref<MessageInfo>()
 
 const [innerRegister] = useModalInner((value: MessageInfo) => {
   data.value = value
 })
 
-const data = ref<MessageInfo>()
 const [descriptionRegister] = useDescription({
   column: 1,
   schema: infoSchema,
-  data
+  data,
 })
 </script>
 
-<style scoped></style>
+<template>
+  <BasicModal title="站内信详情" @register="innerRegister">
+    <Description @register="descriptionRegister" />
+  </BasicModal>
+</template>

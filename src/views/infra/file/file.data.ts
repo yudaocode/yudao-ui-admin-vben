@@ -1,15 +1,16 @@
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'id',
-    width: 100
+    width: 100,
   },
   {
     title: '文件名',
     dataIndex: 'name',
-    width: 200
+    width: 200,
   },
   {
     title: '文件 URL',
@@ -17,12 +18,12 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderImg(text)
-    }
+    },
   },
   {
     title: '文件路径',
     dataIndex: 'path',
-    width: 180
+    width: 180,
   },
   {
     title: '文件大小',
@@ -30,11 +31,11 @@ export const columns: BasicColumn[] = [
     width: 120,
     customRender: ({ text }) => {
       const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-      const srcSize = parseFloat(text)
+      const srcSize = Number.parseFloat(text)
       const index = Math.floor(Math.log(srcSize) / Math.log(1024))
-      const size = srcSize / Math.pow(1024, index)
-      return size.toFixed(2) + ' ' + unitArr[index]
-    }
+      const size = srcSize / 1024 ** index
+      return `${size.toFixed(2)} ${unitArr[index]}`
+    },
   },
   {
     title: '文件类型',
@@ -42,7 +43,7 @@ export const columns: BasicColumn[] = [
     width: 100,
     customRender: ({ text }) => {
       return useRender.renderTag(text)
-    }
+    },
   },
   {
     title: '文件内容',
@@ -50,7 +51,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderImg(text)
-    }
+    },
   },
   {
     title: '上传时间',
@@ -58,8 +59,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
@@ -67,12 +68,12 @@ export const searchFormSchema: FormSchema[] = [
     label: '文件路径',
     field: 'path',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '创建时间',
     field: 'createTime',
     component: 'RangePicker',
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]

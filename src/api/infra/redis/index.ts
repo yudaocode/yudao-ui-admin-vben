@@ -17,25 +17,25 @@ export function getKeyList(keyTemplate: string) {
   return defHttp.get({
     url: '/infra/redis/get-key-list',
     params: {
-      keyTemplate
-    }
+      keyTemplate,
+    },
   })
 }
 // 获取缓存内容
 export function getKeyValue(key: string) {
-  return defHttp.get({ url: '/infra/redis/get-key-value?key=' + key })
+  return defHttp.get({ url: `/infra/redis/get-key-value?key=${key}` })
 }
 
 // 根据键名删除缓存
 export function deleteKey(key: string) {
-  return defHttp.delete({ url: '/infra/redis/delete-key?key=' + key })
+  return defHttp.delete({ url: `/infra/redis/delete-key?key=${key}` })
 }
 
 export function deleteKeys(keyTemplate: string) {
   return defHttp.delete({
     url: '/infra/redis/delete-keys?',
     params: {
-      keyTemplate
-    }
+      keyTemplate,
+    },
   })
 }

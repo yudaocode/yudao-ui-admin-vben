@@ -15,9 +15,10 @@ import InterfaceSummaryChart from './components/InterfaceSummaryChart.vue'
 
 defineOptions({ name: 'Statistics' })
 
-
 const loading = ref(true)
 
 const accountId = ref(1)
 </script> -->
-<template><div>开发中</div></template>
+<template>
+  <div>开发中</div>
+</template>

@@ -1,16 +1,17 @@
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'id',
-    width: 100
+    width: 100,
   },
   {
     title: '敏感词',
     dataIndex: 'name',
-    width: 180
+    width: 180,
   },
   {
     title: '状态',
@@ -18,12 +19,12 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDict(text, DICT_TYPE.COMMON_STATUS)
-    }
+    },
   },
   {
     title: '描述',
     dataIndex: 'description',
-    width: 200
+    width: 200,
   },
   {
     title: '标签',
@@ -31,7 +32,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderTags(text)
-    }
+    },
   },
   {
     title: '创建时间',
@@ -39,8 +40,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
@@ -48,29 +49,29 @@ export const searchFormSchema: FormSchema[] = [
     label: '敏感词',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '标签',
     field: 'tag',
     component: 'Input',
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
     },
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '创建时间',
     field: 'createTime',
     component: 'RangePicker',
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 export const formSchema: FormSchema[] = [
@@ -78,26 +79,26 @@ export const formSchema: FormSchema[] = [
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '敏感词',
     field: 'name',
     required: true,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '状态',
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS)
-    }
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
+    },
   },
   {
     label: '备注',
     field: 'remark',
-    component: 'InputTextArea'
+    component: 'InputTextArea',
   },
   {
     label: '标签',
@@ -106,7 +107,7 @@ export const formSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       mode: 'tags',
-      options: []
-    }
-  }
+      options: [],
+    },
+  },
 ]

@@ -1,23 +1,23 @@
-import type { Menu as MenuType } from '@/router/types'
-import type { MenuState } from './types'
+import type { Ref } from 'vue'
+import { computed, toRaw, unref } from 'vue'
 
-import { computed, Ref, toRaw } from 'vue'
-
-import { unref } from 'vue'
 import { uniq } from 'lodash-es'
-import { getAllParentPath } from '@/router/helper/menuHelper'
 
-import { useTimeoutFn, useDebounceFn } from '@vueuse/core'
+import { useDebounceFn, useTimeoutFn } from '@vueuse/core'
+import type { MenuState } from './types'
+import { getAllParentPath } from '@/router/helper/menuHelper'
+import type { Menu as MenuType } from '@/router/types'
 
 export function useOpenKeys(
   menuState: MenuState,
   menus: Ref<MenuType[]>,
   accordion: Ref<boolean>,
   mixSider: Ref<boolean>,
-  collapse: Ref<boolean>
+  collapse: Ref<boolean>,
 ) {
   const debounceSetOpenKeys = useDebounceFn(setOpenKeys, 50)
-  async function setOpenKeys(path: string) {
+
+  function setOpenKeys(path: string) {
     const native = !mixSider.value
     const menuList = toRaw(menus.value)
     const handle = () => {
@@ -28,18 +28,17 @@ export function useOpenKeys(
       }
       const keys = getAllParentPath(menuList, path)
 
-      if (!unref(accordion)) {
+      if (!unref(accordion))
         menuState.openNames = uniq([...menuState.openNames, ...keys])
-      } else {
+      else
         menuState.openNames = keys
-      }
+
       menuState.activeSubMenuNames = menuState.openNames
     }
-    if (native) {
+    if (native)
       handle()
-    } else {
+    else
       useTimeoutFn(handle, 30)
-    }
   }
 
   const getOpenKeys = computed(() => {

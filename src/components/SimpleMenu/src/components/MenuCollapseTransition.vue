@@ -1,8 +1,3 @@
-<template>
-  <transition mode="out-in" v-on="on">
-    <slot></slot>
-  </transition>
-</template>
 <script lang="ts" setup>
 import { addClass, removeClass } from '@/utils/domUtils'
 
@@ -11,7 +6,8 @@ defineOptions({ name: 'MenuCollapseTransition' })
 const on = {
   beforeEnter(el) {
     addClass(el, 'collapse-transition')
-    if (!el.dataset) el.dataset = {}
+    if (!el.dataset)
+      el.dataset = {}
 
     el.dataset.oldPaddingTop = el.style.paddingTop
     el.dataset.oldPaddingBottom = el.style.paddingBottom
@@ -24,10 +20,11 @@ const on = {
   enter(el) {
     el.dataset.oldOverflow = el.style.overflow
     if (el.scrollHeight !== 0) {
-      el.style.height = el.scrollHeight + 'px'
+      el.style.height = `${el.scrollHeight}px`
       el.style.paddingTop = el.dataset.oldPaddingTop
       el.style.paddingBottom = el.dataset.oldPaddingBottom
-    } else {
+    }
+    else {
       el.style.height = ''
       el.style.paddingTop = el.dataset.oldPaddingTop
       el.style.paddingBottom = el.dataset.oldPaddingBottom
@@ -43,12 +40,13 @@ const on = {
   },
 
   beforeLeave(el) {
-    if (!el.dataset) el.dataset = {}
+    if (!el.dataset)
+      el.dataset = {}
     el.dataset.oldPaddingTop = el.style.paddingTop
     el.dataset.oldPaddingBottom = el.style.paddingBottom
     el.dataset.oldOverflow = el.style.overflow
 
-    el.style.height = el.scrollHeight + 'px'
+    el.style.height = `${el.scrollHeight}px`
     el.style.overflow = 'hidden'
   },
 
@@ -67,6 +65,12 @@ const on = {
     el.style.overflow = el.dataset.oldOverflow
     el.style.paddingTop = el.dataset.oldPaddingTop
     el.style.paddingBottom = el.dataset.oldPaddingBottom
-  }
+  },
 }
 </script>
+
+<template>
+  <transition mode="out-in" v-on="on">
+    <slot />
+  </transition>
+</template>

@@ -15,11 +15,13 @@
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
-## 交流群 && 外包项目请联系 [ xinyu370 ]
+## 外包项目请联系 [ xinyu370 ]
 
-- [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
+- ![alt 定制开发](./public/resource/img/wx2.png)
 
-- ![alt 微信](./public/resource/img/wx.png)
+## 交流群
+
+- ![alt 交流群](./public/resource/img/wx.png)
 
 ## 开发进度
 
@@ -35,14 +37,14 @@
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
 | [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.4 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.4.7 |
-| [ant-design-vue](https://antdv.com/) | ant-design-vue | 3.2.20 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.4.8 |
+| [ant-design-vue](https://antdv.com/) | ant-design-vue | 4.0.0 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.1.6 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.6 |
 | [vueuse](https://vueuse.org/) | 常用工具集 | 10.2.1 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
 | [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.4 |
-| [windicss](https://cn.windicss.org/) | 下一代工具优先的 CSS 框架 | 3.5.6 |
+| [unocss](https://uno.antfu.me/) | 原子 css | 0.54.1 |
 | [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.1 |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)

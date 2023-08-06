@@ -8,19 +8,19 @@ export function getDraftPage(params) {
 // 创建公众号草稿
 export function createDraft(accountId, articles) {
   return defHttp.post({
-    url: '/mp/draft/create?accountId=' + accountId,
+    url: `/mp/draft/create?accountId=${accountId}`,
     data: {
-      articles
-    }
+      articles,
+    },
   })
 }
 
 // 更新公众号草稿
 export function updateDraft(accountId, mediaId, articles) {
-  return defHttp.put({ url: '/mp/draft/update?accountId=' + accountId + '&mediaId=' + mediaId, data: articles })
+  return defHttp.put({ url: `/mp/draft/update?accountId=${accountId}&mediaId=${mediaId}`, data: articles })
 }
 
 // 删除公众号草稿
 export function deleteDraft(accountId, mediaId) {
-  return defHttp.delete({ url: '/mp/draft/delete?accountId=' + accountId + '&mediaId=' + mediaId })
+  return defHttp.delete({ url: `/mp/draft/delete?accountId=${accountId}&mediaId=${mediaId}` })
 }

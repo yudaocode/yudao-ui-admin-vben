@@ -1,34 +1,16 @@
 <!--
  * @Description: 右侧属性配置面板
 -->
-<template>
-  <div>
-    <Tabs v-model:activeKey="formConfig.activeKey" :tabBarStyle="{ margin: 0 }">
-      <TabPane :key="1" tab="表单">
-        <FormProps />
-      </TabPane>
-      <TabPane :key="2" tab="控件">
-        <FormItemProps />
-      </TabPane>
-      <TabPane :key="3" tab="栅格">
-        <ComponentColumnProps />
-      </TabPane>
-      <TabPane :key="4" tab="组件">
-        <slot v-if="slotProps" :name="slotProps.component + 'Props'"></slot>
-        <ComponentProps v-else />
-      </TabPane>
-    </Tabs>
-  </div>
-</template>
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
+import { TabPane, Tabs } from 'ant-design-vue'
 import FormProps from '../components/FormProps.vue'
 import FormItemProps from '../components/FormItemProps.vue'
 import ComponentProps from '../components/ComponentProps.vue'
 import ComponentColumnProps from '../components/FormItemColumnProps.vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import { customComponents } from '../../../core/formItemConfig'
-import { TabPane, Tabs } from 'ant-design-vue'
+
 type ChangeTabKey = 1 | 2
 export interface IPropsPanel {
   changeTab: (key: ChangeTabKey) => void
@@ -41,17 +23,37 @@ export default defineComponent({
     ComponentProps,
     ComponentColumnProps,
     Tabs,
-    TabPane
+    TabPane,
   },
   setup() {
     const { formConfig } = useFormDesignState()
     const slotProps = computed(() => {
-      return customComponents.find((item) => item.component === formConfig.value.currentItem?.component)
+      return customComponents.find(item => item.component === formConfig.value.currentItem?.component)
     })
     return { formConfig, customComponents, slotProps }
-  }
+  },
 })
 </script>
+
+<template>
+  <div>
+    <Tabs v-model:activeKey="formConfig.activeKey" :tab-bar-style="{ margin: 0 }">
+      <TabPane :key="1" tab="表单">
+        <FormProps />
+      </TabPane>
+      <TabPane :key="2" tab="控件">
+        <FormItemProps />
+      </TabPane>
+      <TabPane :key="3" tab="栅格">
+        <ComponentColumnProps />
+      </TabPane>
+      <TabPane :key="4" tab="组件">
+        <slot v-if="slotProps" :name="`${slotProps.component}Props`" />
+        <ComponentProps v-else />
+      </TabPane>
+    </Tabs>
+  </div>
+</template>
 
 <style lang="less" scoped>
 @import url('../styles/variable.less');
@@ -60,12 +62,12 @@ export default defineComponent({
   box-sizing: border-box;
 
   form {
-    width: 100%;
     position: absolute;
+    width: 100%;
     height: calc(100% - 50px);
     margin-right: 10px;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .hint-box {
@@ -74,9 +76,9 @@ export default defineComponent({
 
   .ant-form-item,
   .ant-slider-with-marks {
-    margin-left: 10px;
     margin-right: 20px;
     margin-bottom: 0;
+    margin-left: 10px;
   }
 
   .ant-form-item {

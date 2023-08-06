@@ -1,9 +1,9 @@
-import type { Menu } from '@/router/types'
 import type { Ref } from 'vue'
-import { watch, unref, ref, computed } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { MenuSplitTyeEnum } from '@/enums/menuEnum'
 import { useThrottleFn } from '@vueuse/core'
+import { MenuSplitTyeEnum } from '@/enums/menuEnum'
+import type { Menu } from '@/router/types'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { getChildrenMenus, getCurrentParentPath, getMenus, getShallowMenus } from '@/router/menus'
 import { usePermissionStore } from '@/store/modules/permission'
@@ -32,19 +32,20 @@ export function useSplitMenu(splitType: Ref<MenuSplitTyeEnum>) {
   watch(
     [() => unref(currentRoute).path, () => unref(splitType)],
     async ([path]: [string, MenuSplitTyeEnum]) => {
-      if (unref(splitNotLeft) || unref(getIsMobile)) return
+      if (unref(splitNotLeft) || unref(getIsMobile))
+        return
 
       const { meta } = unref(currentRoute)
       const currentActiveMenu = meta.currentActiveMenu as string
       let parentPath = await getCurrentParentPath(path)
-      if (!parentPath) {
+      if (!parentPath)
         parentPath = await getCurrentParentPath(currentActiveMenu)
-      }
+
       parentPath && throttleHandleSplitLeftMenu(parentPath)
     },
     {
-      immediate: true
-    }
+      immediate: true,
+    },
   )
 
   // Menu changes
@@ -54,22 +55,24 @@ export function useSplitMenu(splitType: Ref<MenuSplitTyeEnum>) {
       genMenus()
     },
     {
-      immediate: true
-    }
+      immediate: true,
+    },
   )
 
   // split Menu changes
   watch(
     () => getSplit.value,
     () => {
-      if (unref(splitNotLeft)) return
+      if (unref(splitNotLeft))
+        return
       genMenus()
-    }
+    },
   )
 
   // Handle left menu split
   async function handleSplitLeftMenu(parentPath: string) {
-    if (unref(getSplitLeft) || unref(getIsMobile)) return
+    if (unref(getSplitLeft) || unref(getIsMobile))
+      return
 
     // spilt mode left
     const children = await getChildrenMenus(parentPath)
@@ -97,7 +100,6 @@ export function useSplitMenu(splitType: Ref<MenuSplitTyeEnum>) {
       const shallowMenus = await getShallowMenus()
 
       menusRef.value = shallowMenus
-      return
     }
   }
 

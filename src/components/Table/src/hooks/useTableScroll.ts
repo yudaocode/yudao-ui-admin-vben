@@ -1,12 +1,12 @@
-import type { BasicTableProps, TableRowSelection, BasicColumn } from '../types/table'
-import { Ref, ComputedRef, ref } from 'vue'
-import { computed, unref, nextTick, watch } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
+import { computed, nextTick, ref, unref, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import type { BasicColumn, BasicTableProps, TableRowSelection } from '../types/table'
+import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import { getViewportOffset } from '@/utils/domUtils'
 import { isBoolean } from '@/utils/is'
-import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn'
 import { useModalContext } from '@/components/Modal'
 import { onMountedOrActivated } from '@/hooks/core/onMountedOrActivated'
-import { useDebounceFn } from '@vueuse/core'
 
 export function useTableScroll(
   propsRef: ComputedRef<BasicTableProps>,
@@ -15,7 +15,7 @@ export function useTableScroll(
   rowSelectionRef: ComputedRef<TableRowSelection | null>,
   getDataSourceRef: ComputedRef<Recordable[]>,
   wrapRef: Ref<HTMLElement | null>,
-  formRef: Ref<ComponentRef>
+  formRef: Ref<ComponentRef>,
 ) {
   const tableHeightRef: Ref<Nullable<number | string>> = ref(167)
   const modalFn = useModalContext()
@@ -34,8 +34,8 @@ export function useTableScroll(
       debounceRedoHeight()
     },
     {
-      flush: 'post'
-    }
+      flush: 'post',
+    },
   )
 
   function redoHeight() {
@@ -55,49 +55,29 @@ export function useTableScroll(
   let footerEl: HTMLElement | null
   let bodyEl: HTMLElement | null
 
-  async function calcTableHeight() {
-    const { resizeHeightOffset, pagination, maxHeight, isCanResizeParent, useSearchForm } = unref(propsRef)
-    const tableData = unref(getDataSourceRef)
-
-    const table = unref(tableElRef)
-    if (!table) return
-
-    const tableEl: Element = table.$el
-    if (!tableEl) return
-
-    if (!bodyEl) {
-      bodyEl = tableEl.querySelector('.ant-table-body')
-      if (!bodyEl) return
-    }
-
+  function handleScrollBar(bodyEl: HTMLElement, tableEl: Element) {
     const hasScrollBarY = bodyEl.scrollHeight > bodyEl.clientHeight
     const hasScrollBarX = bodyEl.scrollWidth > bodyEl.clientWidth
 
     if (hasScrollBarY) {
-      tableEl.classList.contains('hide-scrollbar-y') && tableEl.classList.remove('hide-scrollbar-y')
-    } else {
+      tableEl.classList.contains('hide-scrollbar-y')
+        && tableEl.classList.remove('hide-scrollbar-y')
+    }
+    else {
       !tableEl.classList.contains('hide-scrollbar-y') && tableEl.classList.add('hide-scrollbar-y')
     }
 
     if (hasScrollBarX) {
-      tableEl.classList.contains('hide-scrollbar-x') && tableEl.classList.remove('hide-scrollbar-x')
-    } else {
+      tableEl.classList.contains('hide-scrollbar-x')
+        && tableEl.classList.remove('hide-scrollbar-x')
+    }
+    else {
       !tableEl.classList.contains('hide-scrollbar-x') && tableEl.classList.add('hide-scrollbar-x')
     }
+  }
 
-    bodyEl!.style.height = 'unset'
-
-    if (!unref(getCanResize) || !unref(tableData) || tableData.length === 0) return
-
-    await nextTick()
-    // Add a delay to get the correct bottomIncludeBody paginationHeight footerHeight headerHeight
-
-    const headEl = tableEl.querySelector('.ant-table-thead ')
-
-    if (!headEl) return
-
-    // Table height from bottom height-custom offset
-    let paddingHeight = 32
+  function caclPaginationHeight(tableEl: Element): number {
+    const { pagination } = unref(propsRef)
     // Pager height
     let paginationHeight = 2
     if (!isBoolean(pagination)) {
@@ -105,29 +85,45 @@ export function useTableScroll(
       if (paginationEl) {
         const offsetHeight = paginationEl.offsetHeight
         paginationHeight += offsetHeight || 0
-      } else {
+      }
+      else {
         // TODO First fix 24
         paginationHeight += 24
       }
-    } else {
+    }
+    else {
       paginationHeight = -8
     }
+    return paginationHeight
+  }
 
+  function caclFooterHeight(tableEl: Element): number {
+    const { pagination } = unref(propsRef)
     let footerHeight = 0
     if (!isBoolean(pagination)) {
       if (!footerEl) {
         footerEl = tableEl.querySelector('.ant-table-footer') as HTMLElement
-      } else {
+      }
+      else {
         const offsetHeight = footerEl.offsetHeight
         footerHeight += offsetHeight || 0
       }
     }
+    return footerHeight
+  }
 
+  function calcHeaderHeight(headEl: Element): number {
     let headerHeight = 0
-    if (headEl) {
+    if (headEl)
       headerHeight = (headEl as HTMLElement).offsetHeight
-    }
 
+    return headerHeight
+  }
+
+  function calcBottomAndPaddingHeight(tableEl: Element, headEl: Element) {
+    const { pagination, isCanResizeParent, useSearchForm } = unref(propsRef)
+    // Table height from bottom height-custom offset
+    let paddingHeight = 30
     let bottomIncludeBody = 0
     if (unref(wrapRef) && isCanResizeParent) {
       const tablePadding = 12
@@ -136,32 +132,84 @@ export function useTableScroll(
       const wrapHeight = unref(wrapRef)?.offsetHeight ?? 0
 
       let formHeight = unref(formRef)?.$el.offsetHeight ?? 0
-      if (formHeight) {
+      if (formHeight)
         formHeight += formMargin
-      }
-      if (isBoolean(pagination) && !pagination) {
-        paginationMargin = 0
-      }
-      if (isBoolean(useSearchForm) && !useSearchForm) {
-        paddingHeight = 0
-      }
 
-      const headerCellHeight = (tableEl.querySelector('.ant-table-title') as HTMLElement)?.offsetHeight ?? 0
+      if (isBoolean(pagination) && !pagination)
+        paginationMargin = 0
+
+      if (isBoolean(useSearchForm) && !useSearchForm)
+        paddingHeight = 0
+
+      const headerCellHeight
+        = (tableEl.querySelector('.ant-table-title') as HTMLElement)?.offsetHeight ?? 0
 
       console.log(wrapHeight - formHeight - headerCellHeight - tablePadding - paginationMargin)
-      bottomIncludeBody = wrapHeight - formHeight - headerCellHeight - tablePadding - paginationMargin
-    } else {
+      bottomIncludeBody
+        = wrapHeight - formHeight - headerCellHeight - tablePadding - paginationMargin
+    }
+    else {
       // Table height from bottom
       bottomIncludeBody = getViewportOffset(headEl).bottomIncludeBody
     }
 
-    let height = bottomIncludeBody - (resizeHeightOffset || 0) - paddingHeight - paginationHeight - footerHeight - headerHeight
+    return {
+      paddingHeight,
+      bottomIncludeBody,
+    }
+  }
+
+  async function calcTableHeight() {
+    const { resizeHeightOffset, maxHeight } = unref(propsRef)
+    const tableData = unref(getDataSourceRef)
+
+    const table = unref(tableElRef)
+    if (!table)
+      return
+
+    const tableEl: Element = table.$el
+    if (!tableEl)
+      return
+
+    if (!bodyEl) {
+      bodyEl = tableEl.querySelector('.ant-table-body')
+      if (!bodyEl)
+        return
+    }
+
+    handleScrollBar(bodyEl, tableEl)
+
+    bodyEl.style.height = 'unset'
+
+    if (!unref(getCanResize) || !unref(tableData) || tableData.length === 0)
+      return
+
+    await nextTick()
+    // Add a delay to get the correct bottomIncludeBody paginationHeight footerHeight headerHeight
+
+    const headEl = tableEl.querySelector('.ant-table-thead ')
+
+    if (!headEl)
+      return
+
+    const paginationHeight = caclPaginationHeight(tableEl)
+    const footerHeight = caclFooterHeight(tableEl)
+    const headerHeight = calcHeaderHeight(headEl)
+    const { paddingHeight, bottomIncludeBody } = calcBottomAndPaddingHeight(tableEl, headEl)
+
+    let height
+      = bottomIncludeBody
+      - (resizeHeightOffset || 0)
+      - paddingHeight
+      - paginationHeight
+      - footerHeight
+      - headerHeight
     height = (height > maxHeight! ? (maxHeight as number) : height) ?? height
     setHeight(height)
 
-    bodyEl!.style.height = `${height}px`
+    bodyEl.style.height = `${height}px`
   }
-  useWindowSizeFn(calcTableHeight, 280)
+  useWindowSizeFn(calcTableHeight, { wait: 280 })
   onMountedOrActivated(() => {
     calcTableHeight()
     nextTick(() => {
@@ -171,23 +219,21 @@ export function useTableScroll(
 
   const getScrollX = computed(() => {
     let width = 0
-    if (unref(rowSelectionRef)) {
+    if (unref(rowSelectionRef))
       width += 60
-    }
 
     // TODO props ?? 0;
     const NORMAL_WIDTH = 150
 
-    const columns = unref(columnsRef).filter((item) => !item.defaultHidden)
+    const columns = unref(columnsRef).filter(item => !item.defaultHidden)
     columns.forEach((item) => {
       width += Number.parseFloat(item.width as string) || 0
     })
-    const unsetWidthColumns = columns.filter((item) => !Reflect.has(item, 'width'))
+    const unsetWidthColumns = columns.filter(item => !Reflect.has(item, 'width'))
 
     const len = unsetWidthColumns.length
-    if (len !== 0) {
+    if (len !== 0)
       width += len * NORMAL_WIDTH
-    }
 
     const table = unref(tableElRef)
     const tableWidth = table?.$el?.offsetWidth ?? 0
@@ -201,7 +247,7 @@ export function useTableScroll(
       x: unref(getScrollX),
       y: canResize ? tableHeight : null,
       scrollToFirstRowOnChange: false,
-      ...scroll
+      ...scroll,
     }
   })
 

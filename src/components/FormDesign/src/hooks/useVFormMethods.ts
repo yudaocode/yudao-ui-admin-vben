@@ -1,8 +1,8 @@
-import { Ref, SetupContext } from 'vue'
-import { IVFormComponent, IFormConfig, AForm } from '../typings/v-form-component'
-import { findFormItem, formItemsForEach } from '../utils'
+import type { Ref, SetupContext } from 'vue'
 import { cloneDeep, isFunction } from 'lodash-es'
-import { IAnyObject } from '../typings/base-type'
+import type { AForm, IFormConfig, IVFormComponent } from '../typings/v-form-component'
+import { findFormItem, formItemsForEach } from '../utils'
+import type { IAnyObject } from '../typings/base-type'
 
 interface IFormInstanceMethods extends AForm {
   submit: () => Promise<any>
@@ -52,14 +52,14 @@ export function useVFormMethods(
   props: IProps,
   _context: Partial<SetupContext>,
   formInstance: Ref<AForm | null>,
-  formInstanceMethods: Partial<IFormInstanceMethods>
+  formInstanceMethods: Partial<IFormInstanceMethods>,
 ): IVFormMethods {
   /**
    * 根据field获取表单项
    * @param {string} field
    * @return {IVFormComponent | undefined}
    */
-  const get: IGet = (field) => findFormItem(props.formConfig.schemas, (item) => item.field === field)
+  const get: IGet = field => findFormItem(props.formConfig.schemas, item => item.field === field)
 
   /**
    * 根据表单field设置表单项字段值
@@ -69,9 +69,29 @@ export function useVFormMethods(
    */
   const set: ISet = (field, key, value) => {
     const formItem = get(field)
-    if (formItem) formItem[key] = value
+    if (formItem)
+      formItem[key] = value
   }
 
+  /**
+   * 设置字段的值，设置后触发校验
+   * @param {string} field  需要设置的字段
+   * @param value  需要设置的值
+   */
+  const setValue: ISetValue = (field, value) => {
+    if (typeof field === 'string') {
+      // props.formData[field] = value
+      props.formModel[field] = value
+      formInstance.value?.validateField(field, value, [])
+    }
+    else {
+      const keys = Object.keys(field)
+      keys.forEach((key) => {
+        props.formModel[key] = field[key]
+        formInstance.value?.validateField(key, field[key], [])
+      })
+    }
+  }
   /**
    * 设置表单项的props
    * @param {string} field 需要设置的表单项field
@@ -84,24 +104,6 @@ export function useVFormMethods(
       ;['options', 'treeData'].includes(key) && setValue(field, undefined)
 
       formItem.componentProps[key] = value
-    }
-  }
-  /**
-   * 设置字段的值，设置后触发校验
-   * @param {string} field  需要设置的字段
-   * @param value  需要设置的值
-   */
-  const setValue: ISetValue = (field, value) => {
-    if (typeof field === 'string') {
-      // props.formData[field] = value
-      props.formModel[field] = value
-      formInstance.value?.validateField(field, value, [])
-    } else {
-      const keys = Object.keys(field)
-      keys.forEach((key) => {
-        props.formModel[key] = field[key]
-        formInstance.value?.validateField(key, field[key], [])
-      })
     }
   }
   /**
@@ -162,10 +164,10 @@ export function useVFormMethods(
     formItemsForEach(schemas, (formItem) => {
       // 如果需要关联，则进行第二层遍历，查找表单中关联的字段，存到Set中
       formItemsForEach(schemas, (item) => {
-        if (!linkOn[item.field!]) linkOn[item.field!] = new Set<IVFormComponent>()
-        if (formItem.link?.includes(item.field!) && isFunction(formItem.update)) {
+        if (!linkOn[item.field!])
+          linkOn[item.field!] = new Set<IVFormComponent>()
+        if (formItem.link?.includes(item.field!) && isFunction(formItem.update))
           linkOn[item.field!].add(formItem)
-        }
       })
       linkOn[formItem.field!].add(formItem)
     })
@@ -183,6 +185,6 @@ export function useVFormMethods(
     setProps,
     getData,
     disable,
-    ...formInstanceMethods
+    ...formInstanceMethods,
   }
 }

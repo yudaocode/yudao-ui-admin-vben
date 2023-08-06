@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, toRefs, ref, unref } from 'vue'
+import { defineComponent, ref, toRefs, unref } from 'vue'
 import { createAppProviderContext } from './useAppContext'
 import { createBreakpointListen } from '@/hooks/event/useBreakpoint'
 import { prefixCls } from '@/settings/designSetting'
@@ -10,7 +10,7 @@ const props = {
   /**
    * class style prefix
    */
-  prefixCls: { type: String, default: prefixCls }
+  prefixCls: { type: String, default: prefixCls },
 }
 
 export default defineComponent({
@@ -26,9 +26,9 @@ export default defineComponent({
     // Monitor screen breakpoint information changes
     createBreakpointListen(({ screenMap, sizeEnum, width }) => {
       const lgWidth = screenMap.get(sizeEnum.LG)
-      if (lgWidth) {
+      if (lgWidth)
         isMobile.value = width.value - 1 < lgWidth
-      }
+
       handleRestoreState()
     })
 
@@ -45,18 +45,19 @@ export default defineComponent({
         if (!unref(isSetState)) {
           isSetState.value = true
           const {
-            menuSetting: { type: menuType, mode: menuMode, collapsed: menuCollapsed, split: menuSplit }
+            menuSetting: { type: menuType, mode: menuMode, collapsed: menuCollapsed, split: menuSplit },
           } = appStore.getProjectConfig
           appStore.setProjectConfig({
             menuSetting: {
               type: MenuTypeEnum.SIDEBAR,
               mode: MenuModeEnum.INLINE,
-              split: false
-            }
+              split: false,
+            },
           })
           appStore.setBeforeMiniInfo({ menuMode, menuCollapsed, menuType, menuSplit })
         }
-      } else {
+      }
+      else {
         if (unref(isSetState)) {
           isSetState.value = false
           const { menuMode, menuCollapsed, menuType, menuSplit } = appStore.getBeforeMiniInfo
@@ -65,13 +66,13 @@ export default defineComponent({
               type: menuType,
               mode: menuMode,
               collapsed: menuCollapsed,
-              split: menuSplit
-            }
+              split: menuSplit,
+            },
           })
         }
       }
     }
     return () => slots.default?.()
-  }
+  },
 })
 </script>

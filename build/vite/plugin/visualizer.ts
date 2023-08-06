@@ -2,8 +2,8 @@
  * Package file volume analysis
  */
 import visualizer from 'rollup-plugin-visualizer'
+import type { PluginOption } from 'vite'
 import { isReportMode } from '../../utils'
-import { PluginOption } from 'vite'
 
 export function configVisualizerConfig() {
   if (isReportMode()) {
@@ -11,7 +11,7 @@ export function configVisualizerConfig() {
       filename: './node_modules/.cache/visualizer/stats.html',
       open: true,
       gzipSize: true,
-      brotliSize: true
+      brotliSize: true,
     }) as PluginOption
   }
   return []

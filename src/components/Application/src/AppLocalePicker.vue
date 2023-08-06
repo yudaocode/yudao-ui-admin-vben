@@ -1,22 +1,7 @@
-<template>
-  <Dropdown
-    placement="bottom"
-    :trigger="['click']"
-    :dropMenuList="localeList"
-    :selectedKeys="selectedKeys"
-    @menu-event="handleMenuEvent"
-    overlayClassName="app-locale-picker-overlay"
-  >
-    <span class="cursor-pointer flex items-center">
-      <Icon icon="ion:language" />
-      <span v-if="showText" class="ml-1">{{ getLocaleText }}</span>
-    </span>
-  </Dropdown>
-</template>
 <script lang="ts" setup>
+import { computed, ref, unref, watchEffect } from 'vue'
 import type { LocaleType } from '@/types/config'
 import type { DropMenu } from '@/components/Dropdown'
-import { ref, watchEffect, unref, computed } from 'vue'
 import { Dropdown } from '@/components/Dropdown'
 import { Icon } from '@/components/Icon'
 import { useLocale } from '@/locales/useLocale'
@@ -30,7 +15,7 @@ const props = defineProps({
   /**
    * Whether to refresh the interface when changing
    */
-  reload: { type: Boolean }
+  reload: { type: Boolean },
 })
 
 const selectedKeys = ref<string[]>([])
@@ -39,10 +24,10 @@ const { changeLocale, getLocale } = useLocale()
 
 const getLocaleText = computed(() => {
   const key = selectedKeys.value[0]
-  if (!key) {
+  if (!key)
     return ''
-  }
-  return localeList.find((item) => item.event === key)?.text
+
+  return localeList.find(item => item.event === key)?.text
 })
 
 watchEffect(() => {
@@ -56,12 +41,28 @@ async function toggleLocale(lang: LocaleType | string) {
 }
 
 function handleMenuEvent(menu: DropMenu) {
-  if (unref(getLocale) === menu.event) {
+  if (unref(getLocale) === menu.event)
     return
-  }
+
   toggleLocale(menu.event as string)
 }
 </script>
+
+<template>
+  <Dropdown
+    placement="bottom"
+    :trigger="['click']"
+    :drop-menu-list="localeList"
+    :selected-keys="selectedKeys"
+    overlay-class-name="app-locale-picker-overlay"
+    @menu-event="handleMenuEvent"
+  >
+    <span class="cursor-pointer flex items-center">
+      <Icon icon="ion:language" />
+      <span v-if="showText" class="ml-1">{{ getLocaleText }}</span>
+    </span>
+  </Dropdown>
+</template>
 
 <style lang="less">
 .app-locale-picker-overlay {

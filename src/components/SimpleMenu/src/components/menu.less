@@ -1,6 +1,6 @@
-@menu-prefix-cls: ~'@{namespace}-menu';
-@menu-popup-prefix-cls: ~'@{namespace}-menu-popup';
-@submenu-popup-prefix-cls: ~'@{namespace}-menu-submenu-popup';
+@menu-prefix-cls: ~"@{namespace}-menu";
+@menu-popup-prefix-cls: ~"@{namespace}-menu-popup";
+@submenu-popup-prefix-cls: ~"@{namespace}-menu-submenu-popup";
 
 @transition-time: 0.2s;
 @menu-dark-subsidiary-color: rgba(255, 255, 255, 0.7);
@@ -13,8 +13,7 @@
     bottom: 0;
     display: block;
     width: 2px;
-    content: '';
-    background-color: @primary-color;
+    content: "";
   }
 }
 
@@ -62,7 +61,6 @@
 
         &-selected {
           color: #fff;
-          background-color: @primary-color !important;
         }
       }
     }
@@ -72,15 +70,8 @@
       .@{menu-prefix-cls}-submenu-title {
         color: @text-color-base;
 
-        &:hover {
-          color: @primary-color;
-        }
-
         &-selected {
           z-index: 2;
-          color: @primary-color;
-          background-color: fade(@primary-color, 10);
-
           .light-border();
         }
       }
@@ -110,8 +101,6 @@
       background-color: #fff;
 
       .@{menu-prefix-cls}-submenu-active {
-        color: @primary-color !important;
-
         &-border {
           .light-border();
         }
@@ -160,10 +149,6 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       cursor: pointer;
-
-      &:hover {
-        color: @primary-color;
-      }
 
       .@{menu-prefix-cls}-tooltip {
         width: calc(100% - 0px);
@@ -218,13 +203,7 @@
     &-light&-vertical &-item {
       &-active:not(.@{menu-prefix-cls}-submenu) {
         z-index: 2;
-        color: @primary-color;
-        background-color: fade(@primary-color, 10);
-
         .light-border();
-      }
-      &-active.@{menu-prefix-cls}-submenu {
-        color: @primary-color;
       }
     }
 
@@ -232,7 +211,6 @@
       > li.@{menu-prefix-cls}-item-active,
       .@{menu-prefix-cls}-submenu-active {
         position: relative;
-        background-color: fade(@primary-color, 5);
 
         &::after {
           display: none;
@@ -244,8 +222,7 @@
           left: 0;
           width: 3px;
           height: 100%;
-          content: '';
-          background-color: @primary-color;
+          content: "";
         }
       }
     }
@@ -255,7 +232,6 @@
       color: @menu-dark-subsidiary-color;
       &-active:not(.@{menu-prefix-cls}-submenu) {
         color: #fff !important;
-        background-color: @primary-color !important;
       }
 
       &:hover {
@@ -276,8 +252,7 @@
           left: 0;
           width: 3px;
           height: 100%;
-          content: '';
-          background-color: @primary-color;
+          content: "";
         }
 
         .@{menu-prefix-cls}-submenu-collapse {

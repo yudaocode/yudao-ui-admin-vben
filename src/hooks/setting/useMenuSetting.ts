@@ -1,6 +1,5 @@
+import { computed, ref, unref } from 'vue'
 import type { MenuSetting } from '@/types/config'
-
-import { computed, unref, ref } from 'vue'
 
 import { useAppStore } from '@/store/modules/app'
 
@@ -13,10 +12,6 @@ const mixSideHasChildren = ref(false)
 export function useMenuSetting() {
   const { getFullContent: fullContent } = useFullContent()
   const appStore = useAppStore()
-
-  const getShowSidebar = computed(() => {
-    return unref(getSplit) || (unref(getShowMenu) && unref(getMenuMode) !== MenuModeEnum.HORIZONTAL && !unref(fullContent))
-  })
 
   const getCollapsed = computed(() => appStore.getMenuSetting.collapsed)
 
@@ -58,14 +53,17 @@ export function useMenuSetting() {
 
   const getCollapsedShowTitle = computed(() => appStore.getMenuSetting.collapsedShowTitle)
 
+  const getShowSidebar = computed(() => {
+    return unref(getSplit) || (unref(getShowMenu) && unref(getMenuMode) !== MenuModeEnum.HORIZONTAL && !unref(fullContent))
+  })
+
   const getShowTopMenu = computed(() => {
     return unref(getMenuMode) === MenuModeEnum.HORIZONTAL || unref(getSplit)
   })
 
   const getShowHeaderTrigger = computed(() => {
-    if (unref(getMenuType) === MenuTypeEnum.TOP_MENU || !unref(getShowMenu) || unref(getMenuHidden)) {
+    if (unref(getMenuType) === MenuTypeEnum.TOP_MENU || !unref(getShowMenu) || unref(getMenuHidden))
       return false
-    }
 
     return unref(getTrigger) === TriggerEnum.HEADER
   })
@@ -82,26 +80,26 @@ export function useMenuSetting() {
     return unref(getMenuMode) === MenuModeEnum.INLINE && unref(getMenuType) === MenuTypeEnum.MIX
   })
 
-  const getRealWidth = computed(() => {
-    if (unref(getIsMixSidebar)) {
-      return unref(getCollapsed) && !unref(getMixSideFixed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
-    }
-    return unref(getCollapsed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
-  })
-
   const getMiniWidthNumber = computed(() => {
     const { collapsedShowTitle, siderHidden } = appStore.getMenuSetting
     return siderHidden ? 0 : collapsedShowTitle ? SIDE_BAR_SHOW_TIT_MINI_WIDTH : SIDE_BAR_MINI_WIDTH
   })
 
+  const getRealWidth = computed(() => {
+    if (unref(getIsMixSidebar))
+      return unref(getCollapsed) && !unref(getMixSideFixed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
+
+    return unref(getCollapsed) ? unref(getMiniWidthNumber) : unref(getMenuWidth)
+  })
+
   const getCalcContentWidth = computed(() => {
-    const width =
-      unref(getIsTopMenu) || !unref(getShowMenu) || (unref(getSplit) && unref(getMenuHidden))
+    const width
+      = unref(getIsTopMenu) || !unref(getShowMenu) || (unref(getSplit) && unref(getMenuHidden))
         ? 0
         : unref(getIsMixSidebar)
-        ? (unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH) +
-          (unref(getMixSideFixed) && unref(mixSideHasChildren) ? unref(getRealWidth) : 0)
-        : unref(getRealWidth)
+          ? (unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH)
+          + (unref(getMixSideFixed) && unref(mixSideHasChildren) ? unref(getRealWidth) : 0)
+          : unref(getRealWidth)
 
     return `calc(100% - ${unref(width)}px)`
   })
@@ -113,7 +111,7 @@ export function useMenuSetting() {
 
   function toggleCollapsed() {
     setMenuSetting({
-      collapsed: !unref(getCollapsed)
+      collapsed: !unref(getCollapsed),
     })
   }
   return {
@@ -150,6 +148,6 @@ export function useMenuSetting() {
     getCloseMixSidebarOnChange,
     getMixSideTrigger,
     getMixSideFixed,
-    mixSideHasChildren
+    mixSideHasChildren,
   }
 }

@@ -1,42 +1,31 @@
-<template>
-  <div>
-    <div class="v-json-box">
-      <CodeEditor :value="editorJson" ref="myEditor" :mode="MODE.JSON" />
-    </div>
-    <div class="copy-btn-box">
-      <a-button @click="handleCopyJson" type="primary" class="copy-btn" data-clipboard-action="copy" :data-clipboard-text="editorJson">
-        复制数据
-      </a-button>
-      <a-button @click="handleExportJson" type="primary">导出代码</a-button>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import { defineComponent, reactive, toRefs, unref } from 'vue'
+import { defineComponent, reactive, ref, toRefs, unref } from 'vue'
 import { CodeEditor, MODE } from '@/components/CodeEditor'
 
 import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
 import { useMessage } from '@/hooks/web/useMessage'
+
 export default defineComponent({
   name: 'PreviewCode',
   components: {
-    CodeEditor
+    CodeEditor,
   },
   props: {
     fileFormat: {
       type: String,
-      default: 'json'
+      default: 'json',
     },
     editorJson: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   setup(props) {
     const state = reactive({
-      visible: false
+      open: false,
     })
+
+    const myEditor = ref(null)
 
     const exportData = (data: string, fileName = `file.${props.fileFormat}`) => {
       let content = 'data:text/csv;charset=utf-8,'
@@ -62,21 +51,37 @@ export default defineComponent({
         return
       }
       clipboardRef.value = value
-      if (unref(copiedRef)) {
+      if (unref(copiedRef))
         createMessage.warning('复制成功！')
-      }
     }
 
     return {
       ...toRefs(state),
+      myEditor,
       exportData,
       handleCopyJson,
       handleExportJson,
-      MODE
+      MODE,
     }
-  }
+  },
 })
 </script>
+
+<template>
+  <div>
+    <div class="v-json-box">
+      <CodeEditor ref="myEditor" :value="editorJson" :mode="MODE.JSON" />
+    </div>
+    <div class="copy-btn-box">
+      <a-button type="primary" class="copy-btn" data-clipboard-action="copy" :data-clipboard-text="editorJson" @click="handleCopyJson">
+        复制数据
+      </a-button>
+      <a-button type="primary" @click="handleExportJson">
+        导出代码
+      </a-button>
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped>
 // modal复制按钮样式

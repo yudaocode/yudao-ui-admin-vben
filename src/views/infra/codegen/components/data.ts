@@ -1,8 +1,8 @@
 import { listSimpleDictType } from '@/api/system/dict/type'
 import { listSimpleMenus } from '@/api/system/menu'
-import { FormSchema } from '@/components/Form'
-import { BasicColumn } from '@/components/Table'
-import { getDictOptions, DICT_TYPE } from '@/utils/dict'
+import type { FormSchema } from '@/components/Form'
+import type { BasicColumn } from '@/components/Table'
+import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
 async function getDictTypeOptions() {
   const dictTypeOptions: any[] = []
@@ -16,21 +16,21 @@ export const basicInfoSchemas: FormSchema[] = [
     label: '基本信息',
     field: 'basicInfo',
     component: 'Divider',
-    colProps: { span: 24 }
+    colProps: { span: 24 },
   },
   {
     label: '表名称',
     field: 'tableName',
     required: true,
     component: 'Input',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '表描述',
     field: 'tableComment',
     required: true,
     component: 'Input',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '实体类名称',
@@ -38,20 +38,20 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     helpMessage: '默认去除表名的前缀。如果存在重复，则需要手动添加前缀，避免 MyBatis 报 Alias 重复的问题。',
     component: 'Input',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '作者',
     field: 'author',
     required: true,
     component: 'Input',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '生成信息',
     field: 'genInfo',
     component: 'Divider',
-    colProps: { span: 24 }
+    colProps: { span: 24 },
   },
   {
     label: '生成模板',
@@ -60,9 +60,9 @@ export const basicInfoSchemas: FormSchema[] = [
     component: 'Select',
     defaultValue: '30',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE)
+      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE),
     },
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '前端类型',
@@ -70,9 +70,9 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE)
+      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE),
     },
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '生成场景',
@@ -80,9 +80,9 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE)
+      options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE),
     },
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '模块名',
@@ -90,7 +90,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     helpMessage: '模块名，即一级目录，例如 system、infra、tool 等等',
     component: 'Input',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '业务名',
@@ -98,7 +98,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Input',
     helpMessage: '业务名，即二级目录，例如 user、permission、dict 等等',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '类名称',
@@ -106,7 +106,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Input',
     helpMessage: '类名称（首字母大写），例如SysUser、SysMenu、SysDictData 等等',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '类描述',
@@ -114,7 +114,7 @@ export const basicInfoSchemas: FormSchema[] = [
     required: true,
     component: 'Input',
     helpMessage: '用作类描述，例如 用户',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '上级菜单',
@@ -126,11 +126,11 @@ export const basicInfoSchemas: FormSchema[] = [
       fieldNames: {
         label: 'name',
         key: 'id',
-        value: 'id'
+        value: 'id',
       },
-      handleTree: 'id'
+      handleTree: 'id',
     },
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '自定义路径',
@@ -139,21 +139,21 @@ export const basicInfoSchemas: FormSchema[] = [
     helpMessage: '填写磁盘绝对路径，若不填写，则生成到当前Web项目下',
     defaultValue: '/',
     ifShow: ({ values }) => values.genType === '1',
-    colProps: { span: 12 }
+    colProps: { span: 12 },
   },
   {
     label: '备注',
     field: 'remark',
     component: 'InputTextArea',
-    colProps: { span: 24 }
-  }
+    colProps: { span: 24 },
+  },
 ]
 
 export const columns: BasicColumn[] = [
   {
     title: '字段列名',
     dataIndex: 'columnName',
-    width: 60
+    width: 60,
   },
   {
     title: '基础属性',
@@ -162,14 +162,14 @@ export const columns: BasicColumn[] = [
         title: '物理类型',
         dataIndex: 'dataType',
         editComponent: 'Select',
-        width: 50
+        width: 50,
       },
       {
         title: '字段描述',
         dataIndex: 'columnComment',
         editRow: true,
         editComponent: 'Input',
-        width: 50
+        width: 50,
       },
       {
         title: 'Java类型',
@@ -180,44 +180,44 @@ export const columns: BasicColumn[] = [
           options: [
             {
               label: 'Long',
-              value: 'Long'
+              value: 'Long',
             },
             {
               label: 'String',
-              value: 'String'
+              value: 'String',
             },
             {
               label: 'Integer',
-              value: 'Integer'
+              value: 'Integer',
             },
             {
               label: 'Double',
-              value: 'Double'
+              value: 'Double',
             },
             {
               label: 'BigDecimal',
-              value: 'BigDecimal'
+              value: 'BigDecimal',
             },
             {
               label: 'LocalDateTime',
-              value: 'LocalDateTime'
+              value: 'LocalDateTime',
             },
             {
               label: 'Boolean',
-              value: 'Boolean'
-            }
-          ]
+              value: 'Boolean',
+            },
+          ],
         },
-        width: 50
+        width: 50,
       },
       {
         title: 'java属性',
         dataIndex: 'javaField',
         editRow: true,
         editComponent: 'Input',
-        width: 50
-      }
-    ]
+        width: 50,
+      },
+    ],
   },
   {
     title: '增删改查',
@@ -230,7 +230,7 @@ export const columns: BasicColumn[] = [
         editValueMap: (value) => {
           return value ? '是' : '否'
         },
-        width: 40
+        width: 40,
       },
       {
         title: '编辑',
@@ -240,7 +240,7 @@ export const columns: BasicColumn[] = [
         editValueMap: (value) => {
           return value ? '是' : '否'
         },
-        width: 40
+        width: 40,
       },
       {
         title: '列表',
@@ -250,7 +250,7 @@ export const columns: BasicColumn[] = [
         editValueMap: (value) => {
           return value ? '是' : '否'
         },
-        width: 40
+        width: 40,
       },
       {
         title: '查询',
@@ -260,7 +260,7 @@ export const columns: BasicColumn[] = [
         editValueMap: (value) => {
           return value ? '是' : '否'
         },
-        width: 40
+        width: 40,
       },
       {
         title: '查询方式',
@@ -276,10 +276,10 @@ export const columns: BasicColumn[] = [
             { label: '<', value: '<' },
             { label: '<=', value: '<=' },
             { label: 'LIKE', value: 'LIKE' },
-            { label: 'BETWEEN', value: 'BETWEEN' }
-          ]
+            { label: 'BETWEEN', value: 'BETWEEN' },
+          ],
         },
-        width: 80
+        width: 80,
       },
       {
         title: '允许空',
@@ -289,7 +289,7 @@ export const columns: BasicColumn[] = [
         editValueMap: (value) => {
           return value ? '是' : '否'
         },
-        width: 40
+        width: 40,
       },
       {
         title: '显示类型',
@@ -306,10 +306,10 @@ export const columns: BasicColumn[] = [
             { label: '日期控件', value: 'datetime' },
             { label: '图片上传', value: 'imageUpload' },
             { label: '文件上传', value: 'fileUpload' },
-            { label: '富文本控件', value: 'editor' }
-          ]
+            { label: '富文本控件', value: 'editor' },
+          ],
         },
-        width: 60
+        width: 60,
       },
       {
         title: '字典类型',
@@ -317,17 +317,17 @@ export const columns: BasicColumn[] = [
         editRow: true,
         editComponent: 'Select',
         editComponentProps: {
-          options: (await getDictTypeOptions()).map((item) => ({ value: item.type, label: item.name }))
+          options: (await getDictTypeOptions()).map(item => ({ value: item.type, label: item.name })),
         },
-        width: 100
+        width: 100,
       },
       {
         title: '示例',
         dataIndex: 'example',
         editRow: true,
         editComponent: 'Input',
-        width: 60
-      }
-    ]
-  }
+        width: 60,
+      },
+    ],
+  },
 ]

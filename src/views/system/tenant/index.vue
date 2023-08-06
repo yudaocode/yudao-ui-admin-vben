@@ -1,45 +1,11 @@
-<template>
-  <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" v-auth="['system:tenant:create']" :preIcon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button type="warning" v-auth="['system:tenant:export']" :preIcon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:tenant:update', onClick: handleEdit.bind(null, record) },
-              {
-                icon: IconEnum.DELETE,
-                color: 'error',
-                label: t('action.delete'),
-                auth: 'system:tenant:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record)
-                }
-              }
-            ]"
-          />
-        </template>
-      </template>
-    </BasicTable>
-    <TenantModal @register="registerModal" @success="reload()" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { BasicTable, useTable, TableAction } from '@/components/Table'
-import { TenantExportReqVO, deleteTenant, exportTenant, getTenantPage } from '@/api/system/tenant'
-import { useModal } from '@/components/Modal'
 import TenantModal from './TenantModal.vue'
-import { IconEnum } from '@/enums/appEnum'
 import { columns, searchFormSchema } from './tenant.data'
+import { BasicTable, TableAction, useTable } from '@/components/Table'
+import type { TenantExportReqVO } from '@/api/system/tenant'
+import { deleteTenant, exportTenant, getTenantPage } from '@/api/system/tenant'
+import { useModal } from '@/components/Modal'
+import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
@@ -60,8 +26,8 @@ const [registerTable, { getForm, reload }] = useTable({
     width: 140,
     title: t('common.action'),
     dataIndex: 'action',
-    fixed: 'right'
-  }
+    fixed: 'right',
+  },
 })
 
 function handleCreate() {
@@ -80,7 +46,7 @@ async function handleExport() {
     async onOk() {
       await exportTenant(getForm().getFieldsValue() as TenantExportReqVO)
       createMessage.success(t('common.exportSuccessText'))
-    }
+    },
   })
 }
 
@@ -90,3 +56,39 @@ async function handleDelete(record: Recordable) {
   reload()
 }
 </script>
+
+<template>
+  <div>
+    <BasicTable @register="registerTable">
+      <template #toolbar>
+        <a-button v-auth="['system:tenant:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+          {{ t('action.create') }}
+        </a-button>
+        <a-button v-auth="['system:tenant:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+          {{ t('action.export') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction
+            :actions="[
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:tenant:update', onClick: handleEdit.bind(null, record) },
+              {
+                icon: IconEnum.DELETE,
+                color: 'error',
+                label: t('action.delete'),
+                auth: 'system:tenant:delete',
+                popConfirm: {
+                  title: t('common.delMessage'),
+                  placement: 'left',
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
+    <TenantModal @register="registerModal" @success="reload()" />
+  </div>
+</template>

@@ -1,21 +1,22 @@
 import { getSimpleAccounts } from '@/api/mp/account'
-import { BasicColumn, FormSchema, useRender } from '@/components/Table'
+import type { BasicColumn, FormSchema } from '@/components/Table'
+import { useRender } from '@/components/Table'
 
 export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'id',
-    width: 100
+    width: 100,
   },
   {
     title: '标签名称',
     dataIndex: 'name',
-    width: 180
+    width: 180,
   },
   {
     title: '粉丝数',
     dataIndex: 'count',
-    width: 100
+    width: 100,
   },
   {
     title: '创建时间',
@@ -23,8 +24,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
-    }
-  }
+    },
+  },
 ]
 
 const simpleAccountsOptinos = await getSimpleAccounts()
@@ -40,17 +41,17 @@ export const searchFormSchema: FormSchema[] = [
       options: simpleAccountsOptinos,
       fieldNames: {
         label: 'name',
-        value: 'id'
-      }
+        value: 'id',
+      },
     },
-    colProps: { span: 8 }
+    colProps: { span: 8 },
   },
   {
     label: '标签名称',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 }
-  }
+    colProps: { span: 8 },
+  },
 ]
 
 export const formSchema: FormSchema[] = [
@@ -58,12 +59,12 @@ export const formSchema: FormSchema[] = [
     label: '编号',
     field: 'id',
     show: false,
-    component: 'Input'
+    component: 'Input',
   },
   {
     label: '标签名称',
     field: 'name',
     required: true,
-    component: 'Input'
-  }
+    component: 'Input',
+  },
 ]

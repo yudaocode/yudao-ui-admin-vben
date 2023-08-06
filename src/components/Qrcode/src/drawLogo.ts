@@ -1,6 +1,7 @@
+import type { LogoType, RenderQrCodeParams } from './typing'
 import { isString } from '@/utils/is'
-import { RenderQrCodeParams, LogoType } from './typing'
-export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
+
+export function drawLogo({ canvas, logo }: RenderQrCodeParams) {
   if (!logo) {
     return new Promise((resolve) => {
       resolve((canvas as HTMLCanvasElement).toDataURL())
@@ -16,7 +17,8 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
   const logoBgXY = (canvasWidth * (1 - logoSize - borderSize)) / 2
 
   const ctx = canvas.getContext('2d')
-  if (!ctx) return
+  if (!ctx)
+    return
 
   // logo 底色
   canvasRoundRect(ctx)(logoBgXY, logoBgXY, logoBgWidth, logoBgWidth, borderRadius)
@@ -25,9 +27,9 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
 
   // logo
   const image = new Image()
-  if (crossOrigin || logoRadius) {
+  if (crossOrigin || logoRadius)
     image.setAttribute('crossOrigin', crossOrigin || 'anonymous')
-  }
+
   image.src = logoSrc
 
   // 使用image绘制可以避免某些跨域情况
@@ -41,11 +43,13 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
     canvasImage.width = logoXY + logoWidth
     canvasImage.height = logoXY + logoWidth
     const imageCanvas = canvasImage.getContext('2d')
-    if (!imageCanvas || !ctx) return
+    if (!imageCanvas || !ctx)
+      return
     imageCanvas.drawImage(image, logoXY, logoXY, logoWidth, logoWidth)
 
     canvasRoundRect(ctx)(logoXY, logoXY, logoWidth, logoWidth, logoRadius)
-    if (!ctx) return
+    if (!ctx)
+      return
     const fillStyle = ctx.createPattern(canvasImage, 'no-repeat')
     if (fillStyle) {
       ctx.fillStyle = fillStyle
@@ -66,9 +70,9 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
 function canvasRoundRect(ctx: CanvasRenderingContext2D) {
   return (x: number, y: number, w: number, h: number, r: number) => {
     const minSize = Math.min(w, h)
-    if (r > minSize / 2) {
+    if (r > minSize / 2)
       r = minSize / 2
-    }
+
     ctx.beginPath()
     ctx.moveTo(x + r, y)
     ctx.arcTo(x + w, y, x + w, y + h, r)

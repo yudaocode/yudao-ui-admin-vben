@@ -1,16 +1,14 @@
-<template>
-  <div ref="viewerRef" id="markdownViewer" :class="$props.class"></div>
-</template>
-
 <script lang="ts" setup>
-import { onBeforeUnmount, onDeactivated, Ref, ref, unref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { onBeforeUnmount, onDeactivated, ref, unref, watch } from 'vue'
 import VditorPreview from 'vditor/dist/method.min'
+import { getTheme } from './getTheme'
 import { onMountedOrActivated } from '@/hooks/core/onMountedOrActivated'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
-import { getTheme } from './getTheme'
+
 const props = defineProps({
   value: { type: String },
-  class: { type: String }
+  class: { type: String },
 })
 const viewerRef = ref<ElRef>(null)
 const vditorPreviewRef = ref(null) as Ref<Nullable<VditorPreview>>
@@ -22,12 +20,12 @@ function init() {
     mode: getTheme(getDarkMode.value, 'content'),
     theme: {
       // 设置内容主题
-      current: getTheme(getDarkMode.value, 'content')
+      current: getTheme(getDarkMode.value, 'content'),
     },
     hljs: {
       // 设置代码块主题
-      style: getTheme(getDarkMode.value, 'code')
-    }
+      style: getTheme(getDarkMode.value, 'code'),
+    },
   })
 }
 watch(
@@ -36,22 +34,24 @@ watch(
     VditorPreview.setContentTheme(getTheme(val, 'content'))
     VditorPreview.setCodeTheme(getTheme(val, 'code'))
     init()
-  }
+  },
 )
 
 watch(
   () => props.value,
   (v, oldValue) => {
     v !== oldValue && init()
-  }
+  },
 )
 
 function destroy() {
   const vditorInstance = unref(vditorPreviewRef)
-  if (!vditorInstance) return
+  if (!vditorInstance)
+    return
   try {
     vditorInstance?.destroy?.()
-  } catch (error) {}
+  }
+  catch (error) {}
   vditorPreviewRef.value = null
 }
 
@@ -60,3 +60,7 @@ onMountedOrActivated(init)
 onBeforeUnmount(destroy)
 onDeactivated(destroy)
 </script>
+
+<template>
+  <div id="markdownViewer" ref="viewerRef" :class="$props.class" />
+</template>
