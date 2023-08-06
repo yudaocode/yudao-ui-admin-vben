@@ -221,7 +221,7 @@ function handleClose() {
       padding-left: 14px;
       margin-top: 8px;
       font-size: 14px;
-      color: @text-color-base;
+      // color: @text-color-base;
       cursor: pointer;
       background-color: var(--component-background);
       border-radius: 4px;

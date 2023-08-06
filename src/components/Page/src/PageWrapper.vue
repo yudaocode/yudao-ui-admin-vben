@@ -109,7 +109,14 @@ watch(
 
 <template>
   <div ref="wrapperRef" :class="getClass">
-    <PageHeader v-if="getShowHeader" v-bind="omit($attrs, 'class')" ref="headerRef" :ghost="ghost" :title="title">
+    <PageHeader
+      v-if="getShowHeader"
+      v-bind="omit($attrs, 'class')"
+      ref="headerRef"
+      style="margin: 1rem; border-radius: 1rem;"
+      :ghost="ghost"
+      :title="title"
+    >
       <template #default>
         <template v-if="content">
           {{ content }}
@@ -143,12 +150,14 @@ watch(
   position: relative;
 
   .@{prefix-cls}-content {
-    margin: 12px;
+    margin: 1rem;
+    border-radius: 1rem;
   }
 
   .ant-page-header {
     &:empty {
-      padding: 0;
+      margin: 1rem;
+      border-radius: 1rem;
     }
   }
 

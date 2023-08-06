@@ -159,7 +159,7 @@ function getIcon(route) {
 
   &--light {
     .ant-breadcrumb-link {
-      color: @breadcrumb-item-normal-color;
+      color: #999;
 
       a {
         color: rgb(0 0 0 / 65%);
@@ -167,7 +167,7 @@ function getIcon(route) {
     }
 
     .ant-breadcrumb-separator {
-      color: @breadcrumb-item-normal-color;
+      color: #999;
     }
   }
 

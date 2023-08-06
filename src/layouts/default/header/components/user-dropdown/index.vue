@@ -137,7 +137,7 @@ function handleMenuClick(e: MenuInfo) {
     }
 
     .@{prefix-cls}__name {
-      color: @text-color-base;
+      color: @text-color;
     }
 
     .@{prefix-cls}__desc {
