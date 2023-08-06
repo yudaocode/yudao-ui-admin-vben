@@ -40,7 +40,7 @@ const getClass = computed(() => {
 
 const getCollapse = computed(() => unref(getParentRootMenu)?.props.collapse)
 
-const showTooptip = computed(() => {
+const showToptip = computed(() => {
   return unref(getParentMenu)?.type.name === 'Menu' && unref(getCollapse) && slots.title
 })
 
@@ -85,7 +85,7 @@ watch(
 
 <template>
   <li :class="getClass" :style="getCollapse ? {} : getItemStyle" @click.stop="handleClickItem">
-    <Tooltip v-if="showTooptip" placement="right">
+    <Tooltip v-if="showToptip" placement="right">
       <template #title>
         <slot name="title" />
       </template>
