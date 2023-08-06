@@ -15,11 +15,13 @@
 - [启动文档](https://doc.iocoder.cn/quick-start/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
-## 交流群 && 外包项目请联系 [ xinyu370 ]
+## 外包项目请联系 [ xinyu370 ]
 
-- [Star 点击查看](https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/I6R8J0)
+- ![alt 定制开发](./public/resource/img/wx2.png)
 
-- ![alt 微信](./public/resource/img/wx.png)
+## 交流群
+
+- ![alt 交流群](./public/resource/img/wx.png)
 
 ## 开发进度
 
