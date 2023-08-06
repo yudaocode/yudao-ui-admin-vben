@@ -84,7 +84,7 @@ ul {
     margin: 2.7px;
     line-height: 20px;
     cursor: move;
-    border: 1px solid @border-color;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     transition: all 0.3s;
 

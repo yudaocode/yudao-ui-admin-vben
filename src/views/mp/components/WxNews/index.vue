@@ -130,10 +130,10 @@ async function handleDelete(id) {
 
 <template>
   <div class="p-2">
-    <div class="p-4 mb-2 bg-white">
+    <div class="p-4 mb-2">
       <BasicForm @register="registerForm" />
     </div>
-    <div class="p-2 bg-white">
+    <div class="p-2">
       <List :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: grid }" :data-source="data" :pagination="paginationProp">
         <template #header>
           <div class="flex justify-end space-x-2">

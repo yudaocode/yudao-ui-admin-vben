@@ -67,18 +67,19 @@ export default defineComponent({
     const getMenuStyle = computed((): CSSProperties => {
       return {
         width: unref(openMenu) ? `${unref(getMenuWidth)}px` : 0,
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         left: `${unref(getMixSideWidth)}px`,
       }
     })
 
     const getIsFixed = computed(() => {
-      /* eslint-disable-next-line */
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       mixSideHasChildren.value = unref(childrenMenus).length > 0
       const isFixed = unref(getMixSideFixed) && unref(mixSideHasChildren)
-      if (isFixed) {
-        /* eslint-disable-next-line */
+      if (isFixed)
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         openMenu.value = true
-      }
+
       return isFixed
     })
 
@@ -392,25 +393,24 @@ export default defineComponent({
       }
     }
   }
-  @border-color: @sider-dark-lighten-bg-color;
 
   &.dark {
     &.open {
-      // .@{prefix-cls}-logo {
-      //   border-bottom: 1px solid @border-color;
-      // }
+      .@{prefix-cls}-logo {
+        border-bottom: 1px solid var(--sider-dark-lighten-bg-color);
+      }
 
       > .scrollbar {
-        border-right: 1px solid @border-color;
+        border-right: 1px solid var(--sider-dark-lighten-bg-color);
       }
     }
     .@{prefix-cls}-menu-list {
-      background-color: @sider-dark-bg-color;
+      background-color: var(--sider-dark-bg-color);
 
       &__title {
         color: @white;
         border-bottom: none;
-        border-bottom: 1px solid @border-color;
+        border-bottom: 1px solid var(--sider-dark-lighten-bg-color);
       }
     }
   }

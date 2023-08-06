@@ -163,7 +163,7 @@ function handleClose() {
     flex-direction: column;
     width: 632px;
     margin: 0 auto auto;
-    background-color: @component-background;
+    background-color: var(--component-background);
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
   }
@@ -223,7 +223,7 @@ function handleClose() {
       font-size: 14px;
       color: @text-color-base;
       cursor: pointer;
-      background-color: @component-background;
+      background-color: var(--component-background);
       border-radius: 4px;
       box-shadow: 0 1px 3px 0 #d4d9e1;
 

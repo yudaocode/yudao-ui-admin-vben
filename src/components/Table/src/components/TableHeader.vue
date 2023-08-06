@@ -56,6 +56,7 @@ function handleColumnChange(data: ColumnChangeParam[]) {
     flex: 1;
     align-items: center;
     justify-content: flex-end;
+    padding-top: 10px;
 
     > * {
       margin-right: 8px;

@@ -29,7 +29,7 @@ const title = computed(() => globSetting?.title ?? '')
   <div :class="prefixCls" class="relative w-full h-full px-4">
     <div class="flex items-center absolute right-4 top-4">
       <AppDarkModeToggle v-if="!sessionTimeout" class="enter-x mr-2" />
-      <AppLocalePicker v-if="!sessionTimeout && showLocale" class="text-white enter-x xl:text-gray-600" :show-text="false" />
+      <AppLocalePicker v-if="!sessionTimeout && showLocale" class="enter-x xl:text-gray-600" :show-text="false" />
     </div>
 
     <span class="-enter-x xl:hidden">
@@ -203,7 +203,6 @@ html[data-theme='dark'] {
 
   .ant-divider-inner-text {
     font-size: 12px;
-    color: @text-color-secondary;
   }
 }
 </style>

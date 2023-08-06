@@ -175,7 +175,7 @@ export default defineComponent({
   margin: 0;
   list-style: none;
   user-select: none;
-  background-color: @component-background;
+  background-color: var(--component-background);
   background-clip: padding-box;
   border: 1px solid rgb(0 0 0 / 8%);
   border-radius: 0.25rem;

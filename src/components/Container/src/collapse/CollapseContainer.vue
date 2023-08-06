@@ -93,8 +93,8 @@ export default defineComponent({
 @prefix-cls: ~'@{namespace}-collapse-container';
 
 .@{prefix-cls} {
-  // background-color: @component-background;
-  border-radius: 2px;
+  background-color: var(--component-background);
+  border-radius: 6px;
   transition: all 0.3s ease-in-out;
 
   &__header {
@@ -102,11 +102,11 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     height: 32px;
-    border-bottom: 1px solid @border-color-light;
+    border-bottom: 1px solid var(--border-color);
   }
 
   &__footer {
-    border-top: 1px solid @border-color-light;
+    border-top: 1px solid var(--border-color);
   }
 
   &__action {

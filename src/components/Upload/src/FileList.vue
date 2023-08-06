@@ -98,7 +98,7 @@ export default defineComponent({
   table,
   td,
   th {
-    border: 1px solid @border-color-base;
+    border: 1px solid var(--border-color);
   }
 }
 </style>

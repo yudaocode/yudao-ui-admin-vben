@@ -85,8 +85,8 @@ defineExpose({ openModal: openModal.bind(null, true), closeModal })
   &-image-wrapper {
     overflow: hidden;
     cursor: pointer;
-    background: @component-background;
-    border: 1px solid @border-color-base;
+    background: var(--component-background);
+    border: 1px solid var(--border-color);
     border-radius: 50%;
 
     img {

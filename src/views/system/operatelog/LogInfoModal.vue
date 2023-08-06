@@ -1,10 +1,4 @@
-<template>
-  <BasicModal v-bind="$attrs" title="操作日志详情" width="800px" @register="registerModalInner" @ok="closeModal">
-    <Description @register="registerDescription" />
-  </BasicModal>
-</template>
-
-<template setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { infoSchema } from './operateLog.data'
 import { BasicModal, useModalInner } from '@/components/Modal'
@@ -22,4 +16,10 @@ const [registerDescription] = useDescription({
   schema: infoSchema,
   data: logData,
 })
+</script>
+
+<template>
+  <BasicModal v-bind="$attrs" title="操作日志详情" width="800px" @register="registerModalInner" @ok="closeModal">
+    <Description @register="registerDescription" />
+  </BasicModal>
 </template>

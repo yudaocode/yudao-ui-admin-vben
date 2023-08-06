@@ -57,7 +57,7 @@ function handleGoList() {
 <style lang="less" scoped>
 .result-success {
   padding: 48px 32px;
-  background-color: @component-background;
+  background-color: var(--component-background);
 
   &__content {
     padding: 24px 40px;

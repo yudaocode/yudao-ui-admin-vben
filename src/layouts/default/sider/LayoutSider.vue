@@ -133,7 +133,7 @@ const getTrigger = h(LayoutTrigger)
 
     .ant-layout-sider-trigger {
       color: @text-color-base;
-      border-top: 1px solid @border-color-light;
+      border-top: 1px solid var(--border-color);
     }
   }
 

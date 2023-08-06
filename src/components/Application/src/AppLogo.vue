@@ -54,7 +54,7 @@ function goHome() {
   transition: all 0.2s ease;
 
   &.light {
-    border-bottom: 1px solid @border-color-base;
+    border-bottom: 1px solid var(--border-color);
   }
 
   &.collapsed-show-title {

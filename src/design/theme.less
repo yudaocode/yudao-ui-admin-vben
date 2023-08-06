@@ -1,8 +1,8 @@
-.bg-white {
-  background-color: @component-background !important;
-}
-
 html[data-theme="light"] {
+  --component-background: #fff;
+  --text-color: rgb(0 0 0 0.85);
+  --border-color: #fff;
+
   .text-secondary {
     color: rgb(0 0 0 / 45%);
   }
@@ -27,7 +27,11 @@ html[data-theme="light"] {
   }
 }
 
-[data-theme="dark"] {
+html[data-theme="dark"] {
+  --component-background: rgb(0 0 0 75%);
+  --text-color: rgb(255 255 255 0.85);
+  --border-color: #b6b7b9;
+
   .text-secondary {
     color: #8b949e;
   }

@@ -113,7 +113,7 @@ export default defineComponent({
   font-size: 16px;
   line-height: @operating-area-height;
   text-align: left;
-  border-bottom: 2px solid @border-color;
+  border-bottom: 2px solid var(--border-color);
 
   a {
     margin: 0 5px;

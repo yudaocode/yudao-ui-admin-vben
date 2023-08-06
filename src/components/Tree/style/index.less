@@ -1,7 +1,8 @@
 @tree-prefix-cls: ~"@{namespace}-tree";
 
 .@{tree-prefix-cls} {
-  // background-color: @component-background;
+  background-color: var(--component-background);
+  border-radius: 6px;
 
   .ant-tree-node-content-wrapper {
     position: relative;
@@ -47,15 +48,6 @@
   }
 
   &-header {
-    border-bottom: 1px solid @border-color-base;
+    border-bottom: 1px solid var(--border-color);
   }
 }
-
-html[data-theme="dark"] {
-  .@{tree-prefix-cls} {
-    &-header {
-      background-color: #1f1f1f;
-    }
-  }
-}
-

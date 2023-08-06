@@ -226,7 +226,7 @@ async function handleOk() {
     height: 220px;
     margin: 0 auto;
     overflow: hidden;
-    border: 1px solid @border-color-base;
+    border: 1px solid var(--border-color);
     border-radius: 50%;
 
     img {
@@ -241,7 +241,7 @@ async function handleOk() {
     justify-content: space-around;
     padding-top: 8px;
     margin-top: 8px;
-    border-top: 1px solid @border-color-base;
+    border-top: 1px solid var(--border-color);
   }
 }
 </style>

@@ -58,7 +58,7 @@ function toggle() {
 <template>
   <PageWrapper title="WebSocket 示例">
     <div class="flex">
-      <div class="w-1/3 bg-white p-4">
+      <div class="w-1/3 p-4">
         <div class="flex items-center">
           <span class="text-lg font-medium mr-4"> 连接状态: </span>
           <Tag :color="getTagColor">
@@ -89,7 +89,7 @@ function toggle() {
         </a-button>
       </div>
 
-      <div class="w-2/3 bg-white ml-4 p-4">
+      <div class="w-2/3 ml-4 p-4">
         <span class="text-lg font-medium mr-4"> 消息记录: </span>
         <hr class="my-4">
 

@@ -312,8 +312,6 @@ emit('register', tableAction, formActions)
 </template>
 
 <style lang="less">
-@border-color: #cecece4d;
-
 @prefix-cls: ~'@{namespace}-basic-table';
 
 [data-theme='dark'] {
@@ -327,21 +325,15 @@ emit('register', tableAction, formActions)
   max-width: 100%;
   height: 100%;
 
-  &-row__striped {
-    td {
-      // background-color: @app-content-background;
-    }
-  }
-
   &-form-container {
-    padding: 16px;
+    padding: 12px;
 
     .ant-form {
       width: 100%;
       padding: 12px 10px 6px;
-      margin-bottom: 16px;
-      // background-color: @component-background;
-      border-radius: 2px;
+      margin-bottom: 12px;
+      background-color: var(--component-background);
+      border-radius: 6px;
     }
   }
 
@@ -353,8 +345,8 @@ emit('register', tableAction, formActions)
 
   .ant-table-wrapper {
     padding: 6px;
-    // background-color: @component-background;
-    border-radius: 2px;
+    background-color: var(--component-background);
+    border-radius: 6px;
 
     .ant-table-title {
       min-height: 40px;

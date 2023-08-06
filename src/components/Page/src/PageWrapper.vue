@@ -143,7 +143,7 @@ watch(
   position: relative;
 
   .@{prefix-cls}-content {
-    margin: 16px;
+    margin: 12px;
   }
 
   .ant-page-header {
@@ -152,9 +152,9 @@ watch(
     }
   }
 
-  // &-content-bg {
-  //   background-color: @component-background;
-  // }
+  &-content-bg {
+    background-color: var(--component-background);
+  }
 
   &--dense {
     .@{prefix-cls}-content {

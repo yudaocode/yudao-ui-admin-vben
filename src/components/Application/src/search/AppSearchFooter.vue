@@ -30,9 +30,9 @@ const { t } = useI18n()
   height: 44px;
   padding: 0 16px;
   font-size: 12px;
-  color: #666;
-  background-color: @component-background;
-  border-top: 1px solid @border-color-base;
+  color: var(--text-color);
+  background-color: var(--component-background);
+  border-top: 1px solid var(--border-color);
   border-radius: 0 0 16px 16px;
 
   &-item {
