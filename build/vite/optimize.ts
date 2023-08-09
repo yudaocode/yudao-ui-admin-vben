@@ -5,7 +5,6 @@ const include = [
   'axios',
   'pinia',
   'dayjs',
-  'qrcode',
   'echarts',
   'cropperjs',
   'crypto-js',
