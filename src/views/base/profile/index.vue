@@ -34,6 +34,7 @@ const tabBarStyle = { width: '220px' }
 .account-setting {
   margin: 12px;
   background-color: var(--component-background);
+  border-radius: 8px;
 
   .base-title {
     padding-left: 0;
