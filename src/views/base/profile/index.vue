@@ -39,8 +39,8 @@ const tabBarStyle = { width: '220px' }
     padding-left: 0;
   }
 
-  .ant-tabs-tab-active {
-    background-color: @item-active-bg;
-  }
+  // .ant-tabs-tab-active {
+  //   background-color: @item-active-bg;
+  // }
 }
 </style>
