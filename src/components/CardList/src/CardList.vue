@@ -22,9 +22,6 @@ const props = defineProps({
 })
 // 暴露内部方法
 const emit = defineEmits(['getMethod', 'delete'])
-const ListItem = List.Item
-const CardMeta = Card.Meta
-const TypographyText = Typography.Text
 // 获取slider属性
 const sliderProp = computed(() => useSlider(4))
 // 数据
@@ -129,7 +126,7 @@ async function handleDelete(id) {
           </div>
         </template>
         <template #renderItem="{ item }">
-          <ListItem>
+          <List.Item>
             <Card>
               <template #title />
               <template #cover>
@@ -139,7 +136,7 @@ async function handleDelete(id) {
               </template>
               <template #actions>
                 <!--              <SettingOutlined key="setting" /> -->
-                <EditOutlined key="edit" />
+                <EditOutlined />
                 <Dropdown
                   :trigger="['hover']"
                   :drop-menu-list="[
@@ -154,13 +151,13 @@ async function handleDelete(id) {
                   ]"
                   popconfirm
                 >
-                  <EllipsisOutlined key="ellipsis" />
+                  <EllipsisOutlined />
                 </Dropdown>
               </template>
 
-              <CardMeta>
+              <Card.Meta>
                 <template #title>
-                  <TypographyText :content="item.name" :ellipsis="{ tooltip: item.address }" />
+                  <Typography.Paragraph :content="item.name" :ellipsis="{ tooltip: item.address }" />
                 </template>
                 <template #avatar>
                   <Avatar :src="item.avatar" />
@@ -168,9 +165,9 @@ async function handleDelete(id) {
                 <template #description>
                   {{ item.time }}
                 </template>
-              </CardMeta>
+              </Card.Meta>
             </Card>
-          </ListItem>
+          </List.Item>
         </template>
       </List>
     </div>
