@@ -14,7 +14,7 @@ enum Api {
 
 // 刷新访问令牌
 export function refreshToken() {
-  const refreshToken = getRefreshToken()
+  const refreshToken: string = getRefreshToken()
   return defHttp.post({ url: Api.RefreshToken + refreshToken })
 }
 

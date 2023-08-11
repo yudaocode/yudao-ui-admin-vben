@@ -174,7 +174,7 @@ const transform: AxiosTransform = {
    */
   requestInterceptors: (config, options) => {
     // 是否需要设置 token
-    let isToken = (config as Recordable)?.requestOptions?.withToken == false
+    let isToken = (config as Recordable)?.requestOptions?.withToken === false
     whiteList.some((v) => {
       if (config.url) {
         config.url.includes(v)

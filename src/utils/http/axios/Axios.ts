@@ -49,7 +49,7 @@ export class VAxios {
 
   refreshToken() {
     axios.defaults.headers.common['tenant-id'] = getTenantId() as number
-    const refreshToken = getRefreshToken() as string
+    const refreshToken = getRefreshToken()
     return axios.post(`${globSetting.apiUrl}/system/auth/refresh-token?refreshToken=${refreshToken}`)
   }
 
@@ -119,7 +119,7 @@ export class VAxios {
             try {
               const refreshTokenRes = await this.refreshToken()
               // 2.1 刷新成功，则回放队列的请求 + 当前请求
-              const refreshToken = getRefreshToken() as string
+              const refreshToken = getRefreshToken()
               setAccessToken(refreshTokenRes.data.data.accessToken)
               ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}`
               requestList.forEach((cb: any) => {
@@ -145,7 +145,7 @@ export class VAxios {
         else {
           // 添加到队列，等待刷新获取到新的令牌
           return new Promise((resolve) => {
-            const refreshToken = getRefreshToken() as string
+            const refreshToken = getRefreshToken()
             requestList.push(() => {
               ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}` // 让每个请求携带自定义token 请根据实际情况自行修改
               resolve(this.axiosInstance(config))

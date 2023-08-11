@@ -6,19 +6,19 @@ import projectSetting from '@/settings/projectSetting'
 const { permissionCacheType } = projectSetting
 const isLocal = permissionCacheType === CacheTypeEnum.LOCAL
 
-export function getAccessToken() {
+export function getAccessToken(): string {
   return getAuthCache(ACCESS_TOKEN_KEY)
 }
 
-export function setAccessToken(value) {
+export function setAccessToken(value: string) {
   return setAuthCache(ACCESS_TOKEN_KEY, value)
 }
 
-export function getRefreshToken() {
+export function getRefreshToken(): string {
   return getAuthCache(REFRESH_TOKEN_KEY)
 }
 
-export function setRefreshToken(value) {
+export function setRefreshToken(value: string) {
   return setAuthCache(REFRESH_TOKEN_KEY, value)
 }
 
