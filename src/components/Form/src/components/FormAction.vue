@@ -35,7 +35,7 @@ const props = defineProps({
   hideAdvanceBtn: propTypes.bool,
 })
 
-const emit = defineEmits(['toggle-advanced'])
+const emit = defineEmits(['toggleAdvanced'])
 
 const FormItem = Form.Item
 
@@ -75,7 +75,7 @@ const getSubmitBtnOptions = computed(() => {
 })
 
 function toggleAdvanced() {
-  emit('toggle-advanced')
+  emit('toggleAdvanced')
 }
 
 const { resetAction, submitAction } = useFormContext()

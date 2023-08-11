@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, unref, useAttrs, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, unref, useAttrs, watch } from 'vue'
 import { TreeSelect } from 'ant-design-vue'
 import { get, set } from 'lodash-es'
 import { LoadingOutlined } from '@ant-design/icons-vue'
@@ -14,15 +14,12 @@ const props = defineProps({
   params: { type: Object },
   immediate: { type: Boolean, default: true },
   resultField: propTypes.string.def(''),
-  labelField: propTypes.string.def('title'),
-  valueField: propTypes.string.def('value'),
-  childrenField: propTypes.string.def('children'),
   handleTree: { type: String, default: '' },
   parentId: { type: Number, default: 0 },
   parentLabel: { type: String, default: '' },
   parentFiled: { type: String, default: 'name' },
 })
-const emit = defineEmits(['options-change', 'change'])
+const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
 
 const treeData = ref<Recordable[]>([])
@@ -35,19 +32,9 @@ const getAttrs = computed(() => {
   }
 })
 
-const fieldNames = {
-  children: props.childrenField,
-  value: props.valueField,
-  label: props.labelField,
-}
-
 function handleChange(...args) {
   emit('change', ...args)
 }
-
-watchEffect(() => {
-  props.immediate && fetch()
-})
 
 watch(
   () => props.params,
@@ -101,12 +88,12 @@ async function fetch() {
   }
 
   isFirstLoaded.value = true
-  emit('options-change', treeData.value)
+  emit('optionsChange', treeData.value)
 }
 </script>
 
 <template>
-  <TreeSelect v-bind="getAttrs" :field-names="fieldNames" @change="handleChange">
+  <TreeSelect v-bind="getAttrs" @change="handleChange">
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

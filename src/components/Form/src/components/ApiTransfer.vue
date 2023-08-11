@@ -31,7 +31,7 @@ const props = defineProps({
   showSelectAll: { type: Boolean, default: true },
   targetKeys: { type: Array as PropType<Array<string>> },
 })
-const emit = defineEmits(['options-change', 'change'])
+const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
 
 const _dataSource = ref<TransferItem[]>([])
@@ -109,7 +109,7 @@ async function fetch() {
   }
 }
 function emitChange() {
-  emit('options-change', unref(getdataSource))
+  emit('optionsChange', unref(getdataSource))
 }
 </script>
 

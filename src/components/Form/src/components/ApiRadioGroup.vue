@@ -33,7 +33,7 @@ const props = defineProps({
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
 })
-const emit = defineEmits(['options-change', 'change'])
+const emit = defineEmits(['optionsChange', 'change'])
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 
@@ -103,7 +103,7 @@ async function fetch() {
 }
 
 function emitChange() {
-  emit('options-change', unref(getOptions))
+  emit('optionsChange', unref(getOptions))
 }
 
 function handleChange(args) {

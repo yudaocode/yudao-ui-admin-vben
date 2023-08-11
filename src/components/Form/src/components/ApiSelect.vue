@@ -33,7 +33,7 @@ const props = defineProps({
   alwaysLoad: propTypes.bool.def(false),
 })
 
-const emit = defineEmits(['options-change', 'change', 'update:value'])
+const emit = defineEmits(['optionsChange', 'change', 'update:value'])
 
 interface OptionsItem { label: string; value: string; disabled?: boolean }
 
@@ -120,7 +120,7 @@ async function handleFetch(open) {
 }
 
 function emitChange() {
-  emit('options-change', unref(getOptions))
+  emit('optionsChange', unref(getOptions))
 }
 
 function handleChange(_, ...args) {

@@ -16,7 +16,7 @@ import { useAttrs } from '@/hooks/core/useAttrs'
 defineOptions({ inheritAttrs: false })
 
 const props = defineProps(basicProps)
-const emit = defineEmits(['open-change', 'ok', 'close', 'register'])
+const emit = defineEmits(['openChange', 'ok', 'close', 'register'])
 
 const openRef = ref(false)
 const attrs = useAttrs()
@@ -101,7 +101,7 @@ watch(
   () => openRef.value,
   (open) => {
     nextTick(() => {
-      emit('open-change', open)
+      emit('openChange', open)
       instance && drawerInstance.emitOpen?.(open, instance.uid)
     })
   },

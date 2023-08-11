@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, unref, useAttrs, useSlots, watch } from 'vue'
 import { Tree } from 'ant-design-vue'
 import { get } from 'lodash-es'
-import { LoadingOutlined } from '@ant-design/icons-vue'
 import { isArray, isFunction } from '@/utils/is'
 import { handleTree as handleTreeFn } from '@/utils/tree'
 import { propTypes } from '@/utils/propTypes'
@@ -17,7 +16,7 @@ const props = defineProps({
   afterFetch: { type: Function as PropType<Fn> },
   handleTree: { type: String, default: '' },
 })
-const emit = defineEmits(['options-change', 'change'])
+const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
 const slots = useSlots()
 
@@ -81,7 +80,7 @@ async function fetch() {
 
   treeData.value = (result as Recordable[]) || []
   isFirstLoaded.value = true
-  emit('options-change', treeData.value)
+  emit('optionsChange', treeData.value)
 }
 </script>
 
@@ -90,8 +89,8 @@ async function fetch() {
     <template v-for="item in Object.keys(slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>
-    <template v-if="loading" #suffixIcon>
+    <!-- <template v-if="loading" #suffixIcon>
       <LoadingOutlined spin />
-    </template>
+    </template> -->
   </Tree>
 </template>
