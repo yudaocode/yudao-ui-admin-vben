@@ -55,22 +55,28 @@ const getShowLayoutFooter = computed(() => {
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-layout-footer';
 
-@normal-color: rgba(0, 0, 0, 0.45);
+html{
+  --normal-text:#b6b7b9;
+  --hover-text: rgb(0 0 0 / 85%);
+}
 
-@hover-color: rgba(0, 0, 0, 0.85);
+html[data-theme="dark"] {
+  --normal-text:rgb(255 255 255 0.85);
+  --hover-text: rgb(0 0 0 / 85%);
+}
 
 .@{prefix-cls} {
-  color: @normal-color;
+  color: var(--normal-text);
   text-align: center;
 
   &__links {
     margin-bottom: 8px;
 
     a {
-      color: @normal-color;
+      color: var(--normal-text);
 
       &:hover {
-        color: @hover-color;
+        color: var(--hover-text);
       }
     }
   }
@@ -79,7 +85,7 @@ const getShowLayoutFooter = computed(() => {
     margin: 0 30px;
 
     &:hover {
-      color: @hover-color;
+      color: var(--hover-text);
     }
   }
 }
