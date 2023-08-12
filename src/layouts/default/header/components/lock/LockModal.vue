@@ -52,7 +52,7 @@ const avatar = computed(() => {
 </script>
 
 <template>
-  <BasicModal :footer="null" :title="t('layout.header.lockScreen')" v-bind="$attrs" :class="prefixCls" @register="register">
+  <BasicModal :footer="null" width="25%" :title="t('layout.header.lockScreen')" v-bind="$attrs" :class="prefixCls" @register="register">
     <div :class="`${prefixCls}__entry`">
       <div :class="`${prefixCls}__header`">
         <img :src="avatar" :class="`${prefixCls}__header-img`">
@@ -101,6 +101,7 @@ const avatar = computed(() => {
   }
 
   &__footer {
+    margin-top: 16px;
     text-align: center;
   }
 }
