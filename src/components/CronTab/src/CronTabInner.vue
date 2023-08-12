@@ -291,7 +291,7 @@ function emitValue(value) {
         </Col>
         <Col :span="6">
           <div>近十次执行时间（不含年）</div>
-          <Textarea type="textarea" :value="preTimeList" :rows="5" />
+          <Textarea :value="preTimeList" :rows="5" />
         </Col>
       </Row>
     </div>

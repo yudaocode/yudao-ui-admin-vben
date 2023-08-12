@@ -5,7 +5,7 @@ import { useTabEmits, useTabProps, useTabSetup } from './useTabMixin'
 
 export default defineComponent({
   name: 'SecondUI',
-  components: { Input, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
+  components: { AInput: Input, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '*',
   }),
@@ -35,9 +35,9 @@ export default defineComponent({
           区间
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueRange.start" type="number" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.start" type="number" v-bind="typeRangeAttrs" />
         <span> 秒 至 </span>
-        <Input v-model:value="valueRange.end" type="number" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.end" type="number" v-bind="typeRangeAttrs" />
         <span> 秒 </span>
       </div>
       <div class="item">
@@ -45,15 +45,15 @@ export default defineComponent({
           循环
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueLoop.start" type="number" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.start" type="number" v-bind="typeLoopAttrs" />
         <span> 秒开始，间隔 </span>
-        <Input v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
         <span> 秒 </span>
       </div>
       <div class="item">
-        <a-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">
+        <Radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">
           指定
-        </a-radio>
+        </Radio>
         <div class="list">
           <CheckboxGroup v-model:value="valueList">
             <template v-for="i in specifyRange" :key="i">

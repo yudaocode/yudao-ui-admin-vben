@@ -18,7 +18,7 @@ const props = defineProps({
   autoFormat: { type: Boolean, default: true },
 })
 
-const emit = defineEmits(['change', 'update:value', 'format-error'])
+const emit = defineEmits(['change', 'update:value', 'formatError'])
 
 const getValue = computed(() => {
   const { value, mode, autoFormat } = props
@@ -31,7 +31,7 @@ const getValue = computed(() => {
       result = JSON.parse(value)
     }
     catch (e) {
-      emit('format-error', value)
+      emit('formatError', value)
       return value as string
     }
   }

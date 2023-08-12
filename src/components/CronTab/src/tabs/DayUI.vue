@@ -5,7 +5,7 @@ import { TypeEnum, useTabEmits, useTabProps, useTabSetup } from './useTabMixin'
 
 export default defineComponent({
   name: 'DayUI',
-  components: { Input, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
+  components: { AInput: Input, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '*',
     props: {
@@ -62,9 +62,9 @@ export default defineComponent({
           区间
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueRange.start" type="number" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.start" type="number" v-bind="typeRangeAttrs" />
         <span> 日 至 </span>
-        <Input v-model:value="valueRange.end" type="number" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.end" type="number" v-bind="typeRangeAttrs" />
         <span> 日 </span>
       </div>
       <div class="item">
@@ -72,9 +72,9 @@ export default defineComponent({
           循环
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueLoop.start" type="number" class="w-4" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.start" type="number" class="w-4" v-bind="typeLoopAttrs" />
         <span> 日开始，间隔 </span>
-        <Input v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
         <span> 日 </span>
       </div>
       <div class="item">

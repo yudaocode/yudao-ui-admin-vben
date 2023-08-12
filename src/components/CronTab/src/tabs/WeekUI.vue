@@ -25,7 +25,7 @@ const WEEK_MAP_CN = {
 
 export default defineComponent({
   name: 'WeekUI',
-  components: { Input, Select, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
+  components: { AInput: Input, ASelect: Select, Checkbox, CheckboxGroup: Checkbox.Group, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '?',
     props: {
@@ -102,27 +102,27 @@ export default defineComponent({
           区间
         </Radio>
         <span> 从 </span>
-        <Select v-model:value="valueRange.start" :options="weekOptions" v-bind="typeRangeSelectAttrs" />
+        <ASelect v-model:value="valueRange.start" :options="weekOptions" v-bind="typeRangeSelectAttrs" />
         <span> 至 </span>
-        <Select v-model:value="valueRange.end" :options="weekOptions" v-bind="typeRangeSelectAttrs" />
+        <ASelect v-model:value="valueRange.end" :options="weekOptions" v-bind="typeRangeSelectAttrs" />
       </div>
       <div class="item">
         <Radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">
           循环
         </Radio>
         <span> 从 </span>
-        <Select v-model:value="valueLoop.start" :options="weekOptions" v-bind="typeLoopSelectAttrs" />
+        <ASelect v-model:value="valueLoop.start" :options="weekOptions" v-bind="typeLoopSelectAttrs" />
         <span> 开始，间隔 </span>
-        <Input v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.interval" type="number" v-bind="typeLoopAttrs" />
         <span> 天 </span>
       </div>
       <div class="item">
-        <a-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">
+        <Radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">
           指定
-        </a-radio>
+        </Radio>
         <div class="list list-cn">
           <CheckboxGroup v-model:value="valueList">
-            <template v-for="opt in weekOptions" :key="i">
+            <template v-for="opt in weekOptions" :key="opt.value">
               <Checkbox :value="opt.value" v-bind="typeSpecifyAttrs">
                 {{ opt.label }}
               </Checkbox>
