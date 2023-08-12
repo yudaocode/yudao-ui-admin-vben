@@ -144,7 +144,7 @@ export const formSchema: FormSchema[] = [
 
 // 发送站内信
 // 这里加上前缀 防止和表单其他字段重名
-const keyPrefix = 'key$-'
+export const keyPrefix = 'key$-'
 export const baseSendSchemas: FormSchema[] = [
   {
     field: 'content',
