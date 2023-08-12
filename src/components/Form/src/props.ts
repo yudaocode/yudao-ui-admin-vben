@@ -41,7 +41,7 @@ export const basicProps = {
   autoSubmitOnEnter: propTypes.bool.def(false),
   submitOnReset: propTypes.bool,
   submitOnChange: propTypes.bool,
-  size: propTypes.oneOf(['default', 'small', 'large']).def('default'),
+  size: propTypes.oneOf(['default', 'small', 'large']),
   // 禁用表单
   disabled: propTypes.bool,
   emptySpan: {
