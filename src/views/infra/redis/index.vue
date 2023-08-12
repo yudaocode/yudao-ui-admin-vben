@@ -40,7 +40,7 @@ onMounted(async () => {
     />
     <div class="md:flex enter-y mt-4">
       <CommandStats class="md:w-1/2 w-full" :loading="loading" :command-stats="commandStats" />
-      <Memory class="md:w-1/2 w-full" :loading="loading" :memory-human="memoryHuman" />
+      <Memory class="md:w-1/2 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" :memory-human="memoryHuman" />
     </div>
   </div>
 </template>
