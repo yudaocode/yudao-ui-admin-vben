@@ -1,7 +1,9 @@
+import { h } from 'vue'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 import { getListSimpleUsers } from '@/api/system/user/index'
+import { ScrollContainer } from '@/components/Container'
 
 export const columns: BasicColumn[] = [
   {
@@ -141,14 +143,28 @@ export const formSchema: FormSchema[] = [
 ]
 
 // 发送站内信
+// 这里加上前缀 防止和表单其他字段重名
+const keyPrefix = 'key$-'
 export const baseSendSchemas: FormSchema[] = [
   {
     field: 'content',
-    component: 'InputTextArea',
+    component: 'Editor',
     label: '模板内容 ',
     required: false,
-    componentProps: {
-      disabled: true,
+    defaultValue: '',
+    render({ model }) {
+      let content: string = model.content
+      Object.keys(model).forEach((key) => {
+        if (!key.startsWith(keyPrefix))
+          return
+
+        const realKey = key.split(keyPrefix)[1]
+        content = content.replace(`{${realKey}}`, model[key])
+      })
+      return h(ScrollContainer, {
+        innerHTML: content,
+        style: { border: '1px solid #e8e8e8', borderRadius: '4px', padding: '10px' },
+      })
     },
   },
   {
