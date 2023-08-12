@@ -170,9 +170,8 @@ export const formSchema: FormSchema[] = [
 ]
 
 // 发送邮件
-
 // 这里加上前缀 防止和表单其他字段重名
-export const keyPrefix = 'key$-'
+const keyPrefix = 'key$-'
 export const baseSendSchemas: FormSchema[] = [
   {
     field: 'code',
