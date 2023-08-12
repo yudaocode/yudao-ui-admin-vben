@@ -163,7 +163,7 @@ export const baseSendSchemas: FormSchema[] = [
       })
       return h(ScrollContainer, {
         innerHTML: content,
-        style: { border: '1px solid #e8e8e8', borderRadius: '4px', padding: '10px' },
+        style: { border: '1px solid #e8e8e8', borderRadius: '6px', padding: '10px' },
       })
     },
   },

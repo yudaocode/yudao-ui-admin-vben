@@ -224,7 +224,7 @@ function handleClose() {
       // color: @text-color-base;
       cursor: pointer;
       background-color: var(--component-background);
-      border-radius: 4px;
+      border-radius: 6px;
       box-shadow: 0 1px 3px 0 #d4d9e1;
 
       > div:first-child,
@@ -234,7 +234,6 @@ function handleClose() {
       }
 
       &--active {
-        color: #fff;
         .@{prefix-cls}-list__item-enter {
           opacity: 1;
         }

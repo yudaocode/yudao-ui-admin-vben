@@ -44,7 +44,7 @@ const { t } = useI18n()
     padding-bottom: 2px;
     margin-right: 0.4em;
     background-color: linear-gradient(-225deg, #d5dbe4, #f8f8f8);
-    border-radius: 2px;
+    border-radius: 4px;
     box-shadow:
       inset 0 -2px 0 0 #cdcde6,
       inset 0 0 1px 1px #fff,

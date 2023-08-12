@@ -20,7 +20,7 @@ defineProps({
     position: static;
     display: block;
     cursor: zoom-in;
-    border-radius: 4px;
+    border-radius: 6px;
     object-fit: cover;
   }
 }
