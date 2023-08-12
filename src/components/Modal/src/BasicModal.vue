@@ -17,7 +17,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 defineOptions({ name: 'BasicModal', inheritAttrs: false })
 
 const props = defineProps(basicProps)
-const emit = defineEmits(['open-change', 'height-change', 'cancel', 'ok', 'register', 'update:open'])
+const emit = defineEmits(['openChange', 'heightChange', 'cancel', 'ok', 'register', 'update:open'])
 const attrs = useAttrs()
 const openRef = ref(false)
 const propsRef = ref<Partial<ModalProps> | null>(null)
@@ -72,7 +72,7 @@ const getProps = computed((): Recordable => {
 })
 
 const getBindValue = computed((): Recordable => {
-  const attr = {
+  const attr: any = {
     ...attrs,
     ...unref(getMergeProps),
     open: unref(openRef),
@@ -98,7 +98,7 @@ watchEffect(() => {
 watch(
   () => unref(openRef),
   (v) => {
-    emit('open-change', v)
+    emit('openChange', v)
     emit('update:open', v)
     instance && modalMethods.emitOpen?.(v, instance.uid)
     nextTick(() => {
@@ -146,7 +146,7 @@ function handleOk(e: Event) {
 }
 
 function handleHeightChange(height: string) {
-  emit('height-change', height)
+  emit('heightChange', height)
 }
 
 function handleExtHeight(height: number) {

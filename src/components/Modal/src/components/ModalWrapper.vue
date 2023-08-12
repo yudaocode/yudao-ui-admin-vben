@@ -20,7 +20,7 @@ const props = defineProps({
   fullScreen: { type: Boolean },
   loadingTip: { type: String },
 })
-const emit = defineEmits(['height-change', 'ext-height'])
+const emit = defineEmits(['heightChange', 'extHeight'])
 const wrapperRef = ref<ComponentRef>(null)
 const spinRef = ref<ElRef>(null)
 const realHeightRef = ref(0)
@@ -30,7 +30,7 @@ let realHeight = 0
 
 const stopElResizeFn: Fn = () => {}
 
-useWindowSizeFn(setModalHeight.bind(null, false))
+useWindowSizeFn(setModalHeight.bind(false))
 
 useMutationObserver(
   spinRef,
@@ -71,7 +71,7 @@ watch(
 
 onMounted(() => {
   const { modalHeaderHeight, modalFooterHeight } = props
-  emit('ext-height', modalHeaderHeight + modalFooterHeight)
+  emit('extHeight', modalHeaderHeight + modalFooterHeight)
 })
 
 onUnmounted(() => {
@@ -130,7 +130,7 @@ async function setModalHeight() {
     else
       realHeightRef.value = props.height ? props.height : realHeight > maxHeight ? maxHeight : realHeight
 
-    emit('height-change', unref(realHeightRef))
+    emit('heightChange', unref(realHeightRef))
   }
   catch (error) {
     console.log(error)

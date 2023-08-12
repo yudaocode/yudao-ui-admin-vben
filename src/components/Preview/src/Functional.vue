@@ -55,7 +55,7 @@ const prefixCls = 'img-preview'
 export default defineComponent({
   name: 'ImagePreview',
   props,
-  emits: ['img-load', 'img-error'],
+  emits: ['imgLoad', 'imgError'],
   setup(props, { expose, emit }) {
     interface stateInfo {
       scale: number
@@ -201,7 +201,7 @@ export default defineComponent({
           }
 
           ele
-            && emit('img-load', {
+            && emit('imgLoad', {
               index: imgState.currentIndex,
               dom: ele[0] as HTMLImageElement,
               url,
@@ -213,7 +213,7 @@ export default defineComponent({
       img.onerror = (e: Event) => {
         const ele: EventTarget[] = e.composedPath()
         ele
-          && emit('img-error', {
+          && emit('imgError', {
             index: imgState.currentIndex,
             dom: ele[0] as HTMLImageElement,
             url,

@@ -23,11 +23,6 @@ const props = defineProps({
   mode: propTypes.oneOf(['svg', 'iconify']).def('iconify'),
 })
 const emit = defineEmits(['change', 'update:value'])
-// 没有使用别名引入，是因为WebStorm当前版本还不能正确识别，会报unused警告
-const AInput = Input
-const APopover = Popover
-const APagination = Pagination
-const AEmpty = Empty
 
 function getIcons() {
   const data = iconsData as any
@@ -107,12 +102,12 @@ function handleSearchChange(e: ChangeEvent) {
 </script>
 
 <template>
-  <AInput v-model:value="currentSelect" disabled :style="{ width }" :placeholder="t('component.icon.placeholder')" :class="prefixCls">
+  <Input v-model:value="currentSelect" disabled :style="{ width }" :placeholder="t('component.icon.placeholder')" :class="prefixCls">
     <template #addonAfter>
-      <APopover v-model="open" placement="bottomLeft" trigger="click" :overlay-class-name="`${prefixCls}-popover`">
+      <Popover v-model="open" placement="bottomLeft" trigger="click" :overlay-class-name="`${prefixCls}-popover`">
         <template #title>
           <div class="flex justify-between">
-            <AInput :placeholder="t('component.icon.search')" allow-clear @change="debounceHandleSearchChange" />
+            <Input :placeholder="t('component.icon.search')" allow-clear @change="debounceHandleSearchChange" />
           </div>
         </template>
 
@@ -135,12 +130,12 @@ function handleSearchChange(e: ChangeEvent) {
               </ul>
             </ScrollContainer>
             <div v-if="getTotal >= pageSize" class="flex py-2 items-center justify-center">
-              <APagination show-less-items size="small" :page-size="pageSize" :total="getTotal" @change="handlePageChange" />
+              <Pagination show-less-items size="small" :page-size="pageSize" :total="getTotal" @change="handlePageChange" />
             </div>
           </div>
           <template v-else>
             <div class="p-5">
-              <AEmpty />
+              <Empty />
             </div>
           </template>
         </template>
@@ -149,9 +144,9 @@ function handleSearchChange(e: ChangeEvent) {
           <SvgIcon :name="currentSelect" />
         </span>
         <Icon v-else :icon="currentSelect || 'ion:apps-outline'" class="cursor-pointer px-2 py-1" />
-      </APopover>
+      </Popover>
     </template>
-  </AInput>
+  </Input>
 </template>
 
 <style lang="less">
