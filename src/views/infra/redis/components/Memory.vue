@@ -6,8 +6,8 @@ import { useECharts } from '@/hooks/web/useECharts'
 import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({
-  loading: Boolean,
-  memoryHuman: String,
+  loading: propTypes.bool.def(true),
+  memoryHuman: propTypes.string.def('0'),
   width: propTypes.string.def('100%'),
   height: propTypes.string.def('300px'),
 })
@@ -36,7 +36,7 @@ watch(
           },
           data: [
             {
-              value: Number.parseFloat(props.memoryHuman as unknown as number),
+              value: Number.parseFloat(props.memoryHuman),
               name: '内存消耗',
             },
           ],

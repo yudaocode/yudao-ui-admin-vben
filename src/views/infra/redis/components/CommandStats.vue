@@ -6,8 +6,8 @@ import { useECharts } from '@/hooks/web/useECharts'
 import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({
-  loading: Boolean,
-  commandStats: propTypes.array,
+  loading: propTypes.bool.def(true),
+  commandStats: propTypes.array.def([]),
   width: propTypes.string.def('100%'),
   height: propTypes.string.def('300px'),
 })

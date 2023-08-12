@@ -2,14 +2,14 @@
 import { ref } from 'vue'
 import { List } from 'ant-design-vue'
 import { formSchema } from '../redis.data'
+import { useI18n } from '@/hooks/web/useI18n'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { deleteKey, getKeyList } from '@/api/infra/redis'
 
 defineOptions({ name: 'RedisModal' })
-const ListItem = List.Item
-const ListItemMeta = List.Item.Meta
 
+const { t } = useI18n()
 const listData = ref<any[]>([])
 
 const [registerForm, { setFieldsValue, resetFields }] = useForm({
@@ -41,16 +41,16 @@ function handleDeleteKey(item) {
   <BasicModal v-bind="$attrs" title="缓存模块" @register="registerModal">
     <List :data-source="listData">
       <template #renderItem="{ item }">
-        <ListItem>
-          <ListItemMeta>
+        <List.Item>
+          <template #actions>
+            <a @click="handleDeleteKey(item)">{{ t('action.delete') }}</a>
+          </template>
+          <List.Item.Meta>
             <template #title>
               <a @click="handleKeyValue(item)">{{ item }}</a>
             </template>
-            <template #actions>
-              <a @click="handleDeleteKey(item)">删除</a>
-            </template>
-          </ListItemMeta>
-        </ListItem>
+          </List.Item.Meta>
+        </List.Item>
       </template>
     </List>
     <BasicForm @register="registerForm" />

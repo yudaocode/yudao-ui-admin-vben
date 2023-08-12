@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { baseInfoSchema, tableSchema } from './redis.data'
-import RedisModal from './components/RedisModal.vue'
-import { useModal } from '@/components/Modal'
+import { baseInfoSchema } from './redis.data'
 import { Description } from '@/components/Description'
-import { BasicTable, useTable } from '@/components/Table'
-import { getCache, getKeyDefineList } from '@/api/infra/redis'
+import { getCache } from '@/api/infra/redis'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
 defineOptions({ name: 'InfraRedis' })
@@ -27,25 +24,6 @@ async function getList() {
   loading.value = false
 }
 
-const [registerTable] = useTable({
-  loading,
-  maxHeight: 400,
-  title: '缓存列表',
-  api: getKeyDefineList,
-  rowKey: 'id',
-  columns: tableSchema,
-  pagination: false,
-  useSearchForm: false,
-  showTableSetting: false,
-  showIndexColumn: false,
-})
-
-const [registerModal, { openModal }] = useModal()
-
-function openKeyTemplate(keyDefine) {
-  openModal(true, { record: keyDefine.keyTemplate })
-}
-
 onMounted(async () => {
   await getList()
 })
@@ -64,9 +42,5 @@ onMounted(async () => {
       <CommandStats class="md:w-1/2 w-full" :loading="loading" :command-stats="commandStats" />
       <Memory class="md:w-1/2 w-full" :loading="loading" :memory-human="memoryHuman" />
     </div>
-    <div class="md:flex enter-y mt-4">
-      <BasicTable @register="registerTable" @row-click="openKeyTemplate" />
-    </div>
-    <RedisModal @register="registerModal" />
   </div>
 </template>

@@ -12,8 +12,6 @@ import { useMessage } from '@/hooks/web/useMessage'
 
 defineOptions({ name: 'InfraPreviewModal' })
 
-const TabPane = Tabs.TabPane
-
 const { createMessage } = useMessage()
 
 const fileTree = ref([])
@@ -123,24 +121,22 @@ async function copy(text: string) {
     <div class="flex">
       <Card class="w-1/4 min-w-130">
         <BasicTree
-          title="文件夹列表"
-          toolbar
-          :default-expand-all="true"
-          tree-wrapper-class-name="h-[800px] overflow-auto"
-          :click-row-to-expand="false"
-          :tree-data="fileTree"
-          :field-names="{ key: 'id', title: 'label' }"
+          title="文件夹列表" toolbar :default-expand-all="true" tree-wrapper-class-name="h-[800px] overflow-auto"
+          :click-row-to-expand="false" :tree-data="fileTree" :field-names="{ key: 'id', title: 'label' }"
           @select="handleSelect"
         />
       </Card>
       <Card class="w-3/4">
         <Tabs v-model:activeKey="activeKey">
-          <TabPane v-for="item in previewCodes" :key="item.filePath" :tab="item.filePath.substring(item.filePath.lastIndexOf('/') + 1)">
-            <a-button type="link" style="float: right" @click="copy(item.code)">
+          <Tabs.TabPane
+            v-for="item in previewCodes" :key="item.filePath"
+            :tab="item.filePath.substring(item.filePath.lastIndexOf('/') + 1)"
+          >
+            <a-button type="link" style="float: right; padding: 4px 60px;" @click="copy(item.code)">
               复制
             </a-button>
-            <CodeEditor class="max-h-200" :value="item.code as any" :mode="modeValue" :readonly="true" />
-          </TabPane>
+            <CodeEditor class="max-h-200" :value="item.code" :mode="modeValue" :readonly="true" />
+          </Tabs.TabPane>
         </Tabs>
       </Card>
     </div>
