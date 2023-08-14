@@ -52,6 +52,7 @@ function handleChangeStatus(record: Recordable, open: boolean) {
     async onOk() {
       await updateJobStatus(record.id, status)
       createMessage.success(t('common.successText'))
+      reload()
     },
   })
 }
