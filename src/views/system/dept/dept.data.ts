@@ -105,7 +105,7 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    label: '岗位顺序',
+    label: '显示顺序',
     field: 'sort',
     required: true,
     defaultValue: 0,
