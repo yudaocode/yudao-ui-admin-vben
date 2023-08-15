@@ -57,11 +57,7 @@ export function exportJob(params: JobExportReqVO) {
 
 // 任务状态修改
 export function updateJobStatus(id: number, status: number) {
-  const params = {
-    id,
-    status,
-  }
-  return defHttp.put({ url: '/infra/job/update-status', params })
+  return defHttp.put({ url: `/infra/job/update-status?id=${id}&status=${status}` })
 }
 
 // 定时任务立即执行一次
