@@ -23,10 +23,7 @@ const props = defineProps({
   value: {
     type: [String, Number, Boolean] as PropType<string | number | boolean>,
   },
-  isBtn: {
-    type: [Boolean] as PropType<boolean>,
-    default: false,
-  },
+  isBtn: propTypes.bool.def(false),
   numberToString: propTypes.bool,
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('label'),

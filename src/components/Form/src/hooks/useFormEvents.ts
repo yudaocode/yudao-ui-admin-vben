@@ -4,7 +4,15 @@ import { nextTick, toRaw, unref } from 'vue'
 import { cloneDeep, get, set, uniqBy } from 'lodash-es'
 import type { FormActionType, FormProps, FormSchema } from '../types/form'
 import { dateItemType, defaultValueComponents, handleInputNumberValue } from '../helper'
-import { isArray, isDef, isEmpty, isFunction, isNullOrUnDef, isObject, isString } from '@/utils/is'
+import {
+  isArray,
+  isDef,
+  isEmpty,
+  isFunction,
+  isNullOrUnDef,
+  isObject,
+  isString,
+} from '@/utils/is'
 import { deepMerge } from '@/utils'
 import { dateUtil } from '@/utils/dateUtil'
 import { error } from '@/utils/log'
@@ -82,12 +90,10 @@ export function useFormEvents({
       const fieldKeys = Object.keys(defaultValueObj || {})
       if (fieldKeys.length) {
         fieldKeys.map((field) => {
-          formModel[field] = defaultValueObj[field]
+          formModel[field] = defaultValueObj![field]
         })
       }
-      const isInput = schema?.component && defaultValueComponents.includes(schema.component)
-      const defaultValue = cloneDeep(defaultValueRef.value[key])
-      formModel[key] = isInput ? defaultValue || '' : defaultValue
+      formModel[key] = getDefaultValue(schema, defaultValueRef, key)
     })
     nextTick(() => clearValidate())
 
@@ -139,7 +145,11 @@ export function useFormEvents({
             unref(formModel)[key] = arr
           }
           else {
-            unref(formModel)[key] = fieldValue ? (_props?.valueFormat ? fieldValue : dateUtil(fieldValue)) : null
+            unref(formModel)[key] = fieldValue
+              ? _props?.valueFormat
+                ? fieldValue
+                : dateUtil(fieldValue)
+              : null
           }
         }
         else {
@@ -204,9 +214,19 @@ export function useFormEvents({
   /**
    * @description: Insert after a certain field, if not insert the last
    */
-  async function appendSchemaByField(schema: FormSchema | FormSchema[], prefixField?: string, first = false) {
+  async function appendSchemaByField(
+    schema: FormSchema | FormSchema[],
+    prefixField?: string,
+    first = false,
+  ) {
     const schemaList: FormSchema[] = cloneDeep(unref(getSchema))
-
+    const addSchemaIds: string[] = Array.isArray(schema)
+      ? schema.map(item => item.field)
+      : [schema.field]
+    if (schemaList.find(item => addSchemaIds.includes(item.field))) {
+      error('There are schemas that have already been added')
+      return
+    }
     const index = schemaList.findIndex(schema => schema.field === prefixField)
     const _schemaList = isObject(schema) ? [schema as FormSchema] : (schema as FormSchema[])
     if (!prefixField || index === -1 || first) {
@@ -231,10 +251,14 @@ export function useFormEvents({
     if (isArray(data))
       updateData = [...data]
 
-    const hasField = updateData.every(item => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field))
+    const hasField = updateData.every(
+      item => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field),
+    )
 
     if (!hasField) {
-      error('All children of the form Schema array that need to be updated must contain the `field` field')
+      error(
+        'All children of the form Schema array that need to be updated must contain the `field` field',
+      )
       return
     }
     schemaRef.value = updateData as FormSchema[]
@@ -248,10 +272,14 @@ export function useFormEvents({
     if (isArray(data))
       updateData = [...data]
 
-    const hasField = updateData.every(item => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field))
+    const hasField = updateData.every(
+      item => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field),
+    )
 
     if (!hasField) {
-      error('All children of the form Schema array that need to be updated must contain the `field` field')
+      error(
+        'All children of the form Schema array that need to be updated must contain the `field` field',
+      )
       return
     }
     const schema: FormSchema[] = []
@@ -290,7 +318,9 @@ export function useFormEvents({
         && Reflect.has(item, 'field')
         && item.field
         && !isNullOrUnDef(item.defaultValue)
-        && (!(item.field in currentFieldsValue) || isNullOrUnDef(currentFieldsValue[item.field]) || isEmpty(currentFieldsValue[item.field]))
+        && (!(item.field in currentFieldsValue)
+          || isNullOrUnDef(currentFieldsValue[item.field])
+          || isEmpty(currentFieldsValue[item.field]))
       )
         obj[item.field] = item.defaultValue
     })
@@ -376,4 +406,29 @@ export function useFormEvents({
     setFieldsValue,
     scrollToField,
   }
+}
+
+function getDefaultValue(
+  schema: FormSchema | undefined,
+  defaultValueRef: UseFormActionContext['defaultValueRef'],
+  key: string,
+) {
+  let defaultValue = cloneDeep(defaultValueRef.value[key])
+  const isInput = checkIsInput(schema)
+  if (isInput)
+    return defaultValue || ''
+
+  if (!defaultValue && schema && checkIsRangeSlider(schema))
+    defaultValue = [0, 0]
+
+  return defaultValue
+}
+
+function checkIsRangeSlider(schema: FormSchema) {
+  if (schema.component === 'Slider' && schema.componentProps && schema.componentProps.range)
+    return true
+}
+
+function checkIsInput(schema?: FormSchema) {
+  return schema?.component && defaultValueComponents.includes(schema.component)
 }

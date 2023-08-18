@@ -12,11 +12,11 @@ type ShallowUnwrap<T> = {
 }
 
 export function createContext<T>(context: any, key: InjectionKey<T> = Symbol(), options: CreateContextOptions = {}) {
-  const { readonly = true, createProvider = false, native = false } = options
+  const { readonly = true, createProvider = true, native = false } = options
 
   const state = reactive(context)
   const provideData = readonly ? defineReadonly(state) : state
-  !createProvider && provide(key, native ? context : provideData)
+  createProvider && provide(key, native ? context : provideData)
 
   return {
     state,
