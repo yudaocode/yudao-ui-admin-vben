@@ -162,18 +162,18 @@ async function handleLogin(params) {
         {{ t('sys.login.registerButton') }}
       </Button> -->
     </FormItem>
-    <Row class="enter-x">
+    <Row class="enter-x" :gutter="[16, 16]">
       <Col :md="8" :xs="24">
         <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
           {{ t('sys.login.mobileSignInFormTitle') }}
         </Button>
       </Col>
-      <Col :md="8" :xs="24" class="!my-2 !md:my-0 xs:mx-0 md:mx-2">
+      <Col :md="8" :xs="24">
         <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
           {{ t('sys.login.qrSignInFormTitle') }}
         </Button>
       </Col>
-      <Col :md="6" :xs="24">
+      <Col :md="8" :xs="24">
         <a-button block @click="setLoginState(LoginStateEnum.REGISTER)">
           {{ t('sys.login.registerButton') }}
         </a-button>
