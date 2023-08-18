@@ -83,7 +83,7 @@ function handleFullScreen(e: Event) {
 
   & span:nth-child(1) {
     display: inline-block;
-    padding: 10px;
+    // padding: 10px;
   }
 }
 </style>
