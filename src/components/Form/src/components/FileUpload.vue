@@ -182,8 +182,9 @@ function onFileChange(info) {
     }
   }
   if (info.file.status === 'done') {
+    let successFileList = []
     if (info.file.response.success) {
-      fileListTemp = fileListTemp.map((file) => {
+      successFileList = fileListTemp.map((file) => {
         if (file.response) {
           const reUrl = file.response.message
           file.url = reUrl
@@ -191,6 +192,13 @@ function onFileChange(info) {
         return file
       })
     }
+    else {
+      successFileList = fileListTemp.filter((item) => {
+        return item.uid !== info.file.uid
+      })
+      createMessage.error(`${info.file.name} 上传失败.`)
+    }
+    fileListTemp = successFileList
   }
   else if (info.file.status === 'error') {
     createMessage.error(`${info.file.name} 上传失败.`)
