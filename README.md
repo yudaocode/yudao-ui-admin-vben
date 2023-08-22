@@ -28,7 +28,7 @@
 - 系统管理 已完成
 - 基础设施 已完成
 - 支付管理 已完成
-- 公众号   进行中 40%  预计年底
+- 公众号   进行中 50%  预计年底
 - 工作流   进行中 40%  预计年底
 - 升级 antdv 4.0 已完成
 
@@ -38,7 +38,7 @@
 | --- | --- | --- |
 | [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.4 |
 | [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.4.9 |
-| [ant-design-vue](https://antdv.com/) | ant-design-vue | 4.0.0 |
+| [ant-design-vue](https://antdv.com/) | ant-design-vue | 4.0.1 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.1.6 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.6 |
 | [vueuse](https://vueuse.org/) | 常用工具集 | 10.3.0 |
