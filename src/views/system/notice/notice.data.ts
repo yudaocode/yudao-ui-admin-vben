@@ -60,7 +60,6 @@ export const formSchema: FormSchema[] = [
   {
     label: '编号',
     field: 'id',
-
     show: false,
     component: 'Input',
   },
