@@ -18,6 +18,6 @@ const [registerModal, { setModalProps }] = useModalInner(async (data) => {
 
 <template>
   <BasicModal v-bind="$attrs" width="60%" title="查看详情" :show-ok-btn="false" @register="registerModal">
-    <Description :bordered="false" :column="3" :data="refundData" :schema="descSchema" />
+    <Description :bordered="false" :column="2" :data="refundData" :schema="descSchema" />
   </BasicModal>
 </template>
