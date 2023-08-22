@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { ref, unref } from 'vue'
-import { formSchema } from './config.data'
+import { formSchema } from './tag.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
-import { createSignInConfig, getSignInConfig, updateSignInConfig } from '@/api/member/signin/config'
+import { createMemberTag, getMemberTag, updateMemberTag } from '@/api/member/tag'
 
-defineOptions({ name: 'SignInConfigModal' })
+defineOptions({ name: 'MemberTagModal' })
 
 const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
@@ -27,7 +27,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
   if (unref(isUpdate)) {
-    const res = await getSignInConfig(data.record.id)
+    const res = await getMemberTag(data.record.id)
     setFieldsValue({ ...res })
   }
 })
@@ -37,9 +37,9 @@ async function handleSubmit() {
     const values = await validate()
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate))
-      await updateSignInConfig(values)
+      await updateMemberTag(values)
     else
-      await createSignInConfig(values)
+      await createMemberTag(values)
 
     closeModal()
     emit('success')
