@@ -115,7 +115,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'channelCode',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE),
+      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE),
     },
     colProps: { span: 8 },
   },

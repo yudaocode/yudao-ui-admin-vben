@@ -40,9 +40,8 @@ export function getChannelPage(params: ChannelPageReqVO) {
 }
 
 // 查询详情支付渠道
-export function getChannel(merchantId: number, appId: string, code: string) {
+export function getChannel(appId: string, code: string) {
   const params = {
-    merchantId,
     appId,
     code,
   }

@@ -1,7 +1,6 @@
 import { Switch } from 'ant-design-vue'
 import { h } from 'vue'
 import { changeAppStatus } from '@/api/pay/app'
-import { getMerchantListByName } from '@/api/pay/merchant'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { PayChannelEnum } from '@/enums/systemEnum'
@@ -18,12 +17,6 @@ export const columns: BasicColumn[] = [
     title: '应用名',
     dataIndex: 'name',
     width: 100,
-  },
-  {
-    title: '应用名',
-    dataIndex: 'appId',
-    width: 100,
-    ifShow: false,
   },
   {
     title: '开启状态',
@@ -55,14 +48,6 @@ export const columns: BasicColumn[] = [
             })
         },
       })
-    },
-  },
-  {
-    title: '商户名称',
-    dataIndex: 'payMerchant.name',
-    width: 100,
-    customRender: ({ record }) => {
-      return record.payMerchant.name || ''
     },
   },
   {
@@ -116,6 +101,16 @@ export const columns: BasicColumn[] = [
     ],
   },
   {
+    title: '模拟支付配置',
+    children: [
+      {
+        title: PayChannelEnum.MOCK.name,
+        dataIndex: PayChannelEnum.MOCK.code,
+        width: 160,
+      },
+    ],
+  },
+  {
     title: '创建时间',
     dataIndex: 'createTime',
     width: 180,
@@ -129,12 +124,6 @@ export const searchFormSchema: FormSchema[] = [
   {
     label: '应用名',
     field: 'name',
-    component: 'Input',
-    colProps: { span: 8 },
-  },
-  {
-    label: '商户名称',
-    field: 'merchantName',
     component: 'Input',
     colProps: { span: 8 },
   },
@@ -169,17 +158,6 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    label: '所属商户',
-    field: 'shortName',
-    required: true,
-    component: 'ApiSelect',
-    componentProps: {
-      api: () => getMerchantListByName(''),
-      labelField: 'name',
-      valueField: 'id',
-    },
-  },
-  {
     label: '开启状态',
     field: 'status',
     component: 'Select',
@@ -189,7 +167,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '支付结果的回调地址',
-    field: 'payNotifyUrl',
+    field: 'orderNotifyUrl',
     required: true,
     component: 'Input',
   },
@@ -241,7 +219,10 @@ export const aliPayFormSchema: FormSchema[] = [
     required: true,
     component: 'RadioGroup',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_SERVER_TYPE, 'string'),
+      options: [
+        { value: 'https://openapi.alipay.com/gateway.do', label: '线上环境' },
+        { value: 'https://openapi-sandbox.dl.alipaydev.com/gateway.do', label: '沙箱环境' },
+      ],
     },
   },
   {
@@ -250,7 +231,9 @@ export const aliPayFormSchema: FormSchema[] = [
     required: true,
     component: 'RadioGroup',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_SIGN_TYPE, 'string'),
+      options: [
+        { value: 'RSA2', label: 'RSA2', key: 'RSA2' },
+      ],
     },
   },
   {
@@ -260,18 +243,21 @@ export const aliPayFormSchema: FormSchema[] = [
     defaultValue: null,
     component: 'RadioGroup',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_ALIPAY_MODE),
+      options: [
+        { value: 1, label: '公钥模式', key: '1' },
+        { value: 2, label: '证书模式', key: '2' },
+      ],
     },
   },
   {
-    label: '商户私钥',
+    label: '应用私钥',
     field: 'payConfig.privateKey',
     required: true,
     ifShow: ({ values }) => !!(values['payConfig.mode'] === 1),
-    component: 'Input',
+    component: 'InputTextArea',
   },
   {
-    label: '支付宝公钥字符串',
+    label: '支付宝公钥',
     field: 'payConfig.alipayPublicKey',
     required: true,
     ifShow: ({ values }) => !!(values['payConfig.mode'] === 1),
@@ -320,7 +306,7 @@ export const weChatFormSchema: FormSchema[] = [
     component: 'InputNumber',
   },
   {
-    label: '公众号APPID',
+    label: '公众号 APPID',
     field: 'payConfig.appId',
     required: true,
     component: 'Input',
@@ -346,7 +332,10 @@ export const weChatFormSchema: FormSchema[] = [
     required: true,
     component: 'RadioGroup',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_WECHAT_VERSION, 'string'),
+      options: [
+        { value: 'v2', label: 'v2' },
+        { value: 'v3', label: 'v3' },
+      ],
     },
   },
   {
@@ -354,26 +343,58 @@ export const weChatFormSchema: FormSchema[] = [
     field: 'payConfig.mchKey',
     required: true,
     ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v2'),
-    component: 'Input',
+    component: 'InputTextArea',
+  },
+  {
+    label: 'apiclient_cert.p12 证书',
+    field: 'payConfig.keyContent',
+    required: true,
+    ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v2'),
+    component: 'InputTextArea',
   },
   {
     label: 'API V3密钥',
     field: 'payConfig.apiV3Key',
     required: true,
     ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v3'),
-    component: 'Input',
+    component: 'InputTextArea',
   },
   {
     label: 'apiclient_key.perm证书',
     field: 'payConfig.privateKeyContent',
     required: true,
+    ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v3'),
     component: 'InputTextArea',
   },
   {
     label: 'apiclient_cert.perm证书',
     field: 'payConfig.privateCertContent',
     required: true,
+    ifShow: ({ values }) => !!(values['payConfig.apiVersion'] === 'v3'),
     component: 'InputTextArea',
+  },
+  {
+    label: '备注',
+    field: 'remark',
+    component: 'InputTextArea',
+  },
+]
+
+export const mockFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input',
+  },
+  {
+    label: '渠道状态',
+    field: 'status',
+    required: true,
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
+    },
   },
   {
     label: '备注',

@@ -1,4 +1,4 @@
-import { getMerchantListByName } from '@/api/pay/merchant'
+import { getAppList } from '@/api/pay/app'
 import type { DescItem } from '@/components/Description'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
@@ -11,37 +11,38 @@ export const columns: BasicColumn[] = [
     width: 100,
   },
   {
-    title: '支付渠道',
-    children: [
-      {
-        title: '商户名称',
-        dataIndex: 'merchantName',
-        width: 120,
-      },
-      {
-        title: '应用名称',
-        dataIndex: 'appName',
-        width: 120,
-      },
-      {
-        title: '渠道名称',
-        dataIndex: 'channelCodeName',
-        width: 160,
-      },
-    ],
+    title: '支付金额(元)',
+    dataIndex: 'payPrice',
+    width: 120,
+    customRender: ({ text }) => {
+      return `￥${Number.parseFloat(`${text / 100}`).toFixed(2)}`
+    },
   },
   {
-    title: '商户订单号',
+    title: '退款金额(元)',
+    dataIndex: 'refundPrice',
+    width: 120,
+    customRender: ({ text }) => {
+      return `￥${Number.parseFloat(`${text / 100}`).toFixed(2)}`
+    },
+  },
+  {
+    title: '退款订单号',
     children: [
       {
-        title: '退款',
-        dataIndex: 'merchantRefundNo',
-        width: 200,
+        title: '商户',
+        dataIndex: 'merchantRefundId',
+        width: 120,
       },
       {
-        title: '交易',
-        dataIndex: 'merchantOrderId',
-        width: 100,
+        title: '退款',
+        dataIndex: 'no',
+        width: 120,
+      },
+      {
+        title: '渠道',
+        dataIndex: 'channelRefundNo',
+        width: 160,
       },
     ],
   },
@@ -49,61 +50,32 @@ export const columns: BasicColumn[] = [
     title: '支付订单号',
     children: [
       {
-        title: '交易',
-        dataIndex: 'tradeNo',
-        width: 100,
+        title: '商户',
+        dataIndex: 'merchantOrderId',
+        width: 200,
       },
       {
         title: '渠道',
         dataIndex: 'channelOrderNo',
-        width: 200,
+        width: 100,
       },
     ],
-  },
-  {
-    title: '支付金额(元)',
-    dataIndex: 'payAmount',
-    width: 120,
-    customRender: ({ text }) => {
-      return `￥${Number.parseFloat(text / 100).toFixed(2)}`
-    },
-  },
-  {
-    title: '退款金额(元)',
-    dataIndex: 'refundAmount',
-    width: 120,
-    customRender: ({ text }) => {
-      return `￥${Number.parseFloat(text / 100).toFixed(2)}`
-    },
-  },
-  {
-    title: '退款类型',
-    dataIndex: 'type',
-    width: 100,
-    customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.PAY_REFUND_ORDER_TYPE)
-    },
   },
   {
     title: '退款状态',
     dataIndex: 'status',
     width: 100,
     customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.PAY_REFUND_ORDER_STATUS)
+      return useRender.renderDict(text, DICT_TYPE.PAY_REFUND_STATUS)
     },
   },
   {
-    title: '回调状态',
-    dataIndex: 'notifyStatus',
+    title: '退款渠道',
+    dataIndex: 'channelCode',
     width: 100,
     customRender: ({ text }) => {
-      return useRender.renderDict(text, DICT_TYPE.PAY_ORDER_NOTIFY_STATUS)
+      return useRender.renderDict(text, DICT_TYPE.PAY_CHANNEL_CODE)
     },
-  },
-  {
-    title: '退款原因',
-    dataIndex: 'reason',
-    width: 100,
   },
   {
     title: '创建时间',
@@ -121,51 +93,40 @@ export const columns: BasicColumn[] = [
       return useRender.renderDate(text)
     },
   },
+  {
+    title: '支付应用',
+    dataIndex: 'appName',
+    width: 100,
+  },
 ]
 
 export const searchFormSchema: FormSchema[] = [
   {
-    label: '所属商户',
-    field: 'merchantId',
+    label: '应用编号',
+    field: 'appId',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getMerchantListByName(''),
+      api: () => getAppList(),
+      labelField: 'name',
+      valueField: 'id',
     },
     colProps: { span: 8 },
   },
   {
-    label: '应用编号',
-    field: 'appId',
+    label: '商户支付单号',
+    field: 'merchantOrderId',
     component: 'Input',
     colProps: { span: 8 },
   },
   {
-    label: '渠道编码',
-    field: 'channelCode',
-    component: 'Select',
-    componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE_TYPE),
-    },
-    colProps: { span: 8 },
-  },
-  {
-    label: '退款类型',
-    field: 'type',
-    component: 'Select',
-    componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_REFUND_ORDER_TYPE),
-    },
-    colProps: { span: 8 },
-  },
-  {
-    label: '商户退款订单号',
-    field: 'merchantRefundNo',
+    label: '商户退款单号',
+    field: 'merchantRefundId',
     component: 'Input',
     colProps: { span: 8 },
   },
   {
-    label: '应用编号',
-    field: 'appId',
+    label: '渠道支付单号',
+    field: 'channelOrderNo',
     component: 'Input',
     colProps: { span: 8 },
   },
@@ -174,16 +135,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'status',
     component: 'Select',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_REFUND_ORDER_STATUS),
-    },
-    colProps: { span: 8 },
-  },
-  {
-    label: '退款回调状态',
-    field: 'notifyStatus',
-    component: 'Select',
-    componentProps: {
-      options: getDictOptions(DICT_TYPE.PAY_ORDER_NOTIFY_STATUS),
+      options: getDictOptions(DICT_TYPE.PAY_REFUND_STATUS),
     },
     colProps: { span: 8 },
   },
@@ -197,54 +149,51 @@ export const searchFormSchema: FormSchema[] = [
 
 export const descSchema: DescItem[] = [
   {
-    label: '商户名称',
-    field: 'merchantName',
+    label: '商户退款单号',
+    field: 'merchantRefundId',
+  },
+  {
+    label: '渠道退款单号',
+    field: 'channelRefundNo',
+  },
+  {
+    label: '商户支付单号',
+    field: 'merchantOrderId',
+  },
+  {
+    label: '渠道支付单号',
+    field: 'channelOrderNo',
+    render: (curVal) => {
+      return useRender.renderTag(curVal)
+    },
+  },
+  {
+    label: '应用编号',
+    field: 'appId',
   },
   {
     label: '应用名称',
     field: 'appName',
   },
   {
-    label: '商品名称',
-    field: 'subject',
-  },
-  {
-    label: '商户退款单号',
-    field: 'merchantRefundNo',
-    render: (curVal) => {
-      return useRender.renderTag(curVal)
-    },
-  },
-  {
-    label: '商户订单号',
-    field: 'merchantOrderId',
-  },
-  {
     label: '支付金额',
-    field: 'payAmount',
+    field: 'payPrice',
     render: (curVal) => {
-      return `￥${Number.parseFloat(curVal / 100).toFixed(2)}`
+      return `￥${Number.parseFloat(`${curVal / 100}`).toFixed(2)}`
     },
   },
   {
     label: '退款金额',
-    field: 'refundAmount',
+    field: 'refundPrice',
     render: (curVal) => {
-      return `￥${Number.parseFloat(curVal / 100).toFixed(2)}`
-    },
-  },
-  {
-    label: '退款类型',
-    field: 'type',
-    render: (curVal) => {
-      return useRender.renderDict(curVal, DICT_TYPE.PAY_REFUND_ORDER_TYPE)
+      return `￥${Number.parseFloat(`${curVal / 100}`).toFixed(2)}`
     },
   },
   {
     label: '退款状态',
     field: 'status',
     render: (curVal) => {
-      return useRender.renderDict(curVal, DICT_TYPE.PAY_REFUND_ORDER_STATUS)
+      return useRender.renderDict(curVal, DICT_TYPE.PAY_REFUND_STATUS)
     },
   },
   {
@@ -262,13 +211,6 @@ export const descSchema: DescItem[] = [
     },
   },
   {
-    label: '退款失效时间',
-    field: 'expireTime',
-    render: (curVal) => {
-      return useRender.renderDate(curVal)
-    },
-  },
-  {
     label: '更新时间',
     field: 'updateTime',
     render: (curVal) => {
@@ -276,38 +218,23 @@ export const descSchema: DescItem[] = [
     },
   },
   {
-    label: '支付渠道',
-    field: 'channelCodeName',
+    label: '退款渠道',
+    field: 'channelCode',
+    render: (curVal) => {
+      return useRender.renderDict(curVal, DICT_TYPE.PAY_CHANNEL_CODE)
+    },
   },
   {
-    label: '支付IP',
+    label: '退款原因',
+    field: 'reason',
+  },
+  {
+    label: '退款 IP',
     field: 'userIp',
   },
   {
-    label: '回调地址',
+    label: '退款 URL',
     field: 'notifyUrl',
-  },
-  {
-    label: '回调状态',
-    field: 'notifyStatus',
-    render: (curVal) => {
-      return useRender.renderDict(curVal, DICT_TYPE.PAY_ORDER_NOTIFY_STATUS)
-    },
-  },
-  {
-    label: '回调时间',
-    field: 'notifyTime',
-    render: (curVal) => {
-      return useRender.renderDate(curVal)
-    },
-  },
-  {
-    label: '渠道订单号',
-    field: 'channelOrderNo',
-  },
-  {
-    label: '渠道退款单号',
-    field: 'channelRefundNo',
   },
   {
     label: '渠道错误码',
@@ -315,14 +242,10 @@ export const descSchema: DescItem[] = [
   },
   {
     label: '渠道错误码描述',
-    field: 'notifchannelErrorMsgyUrl',
+    field: 'channelErrorMsg',
   },
   {
-    label: '渠道额外参数',
-    field: 'channelExtras',
-  },
-  {
-    label: '退款原因',
-    field: 'reason',
+    label: '支付通道异步回调内容',
+    field: 'channelNotifyData',
   },
 ]

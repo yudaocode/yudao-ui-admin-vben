@@ -229,6 +229,25 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
             <Icon icon="ant-design:close-outlined" />
           </a-button>
         </template>
+        <template v-if="column.key === PayChannelEnum.MOCK.code">
+          <a-button
+            v-if="record.channelCodes.indexOf(PayChannelEnum.MOCK.code) !== -1"
+            type="primary"
+            shape="circle"
+            @click="openChannel(record, PayChannelEnum.MOCK.code, PayType.MOCK, true)"
+          >
+            <Icon icon="ant-design:check-outlined" />
+          </a-button>
+          <a-button
+            v-else
+            type="primary"
+            shape="circle"
+            danger
+            @click="openChannel(record, PayChannelEnum.MOCK.code, PayType.MOCK, false)"
+          >
+            <Icon icon="ant-design:close-outlined" />
+          </a-button>
+        </template>
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
