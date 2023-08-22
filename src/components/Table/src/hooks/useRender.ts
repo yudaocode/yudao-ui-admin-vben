@@ -52,7 +52,7 @@ export const useRender = {
    * @param color 标签颜色
    * @returns 标签
    */
-  renderTag: (text: string, color?: string) => {
+  renderTag: (text: string | number, color?: string) => {
     if (color)
       return h(Tag, { color }, () => text)
     else

@@ -76,3 +76,8 @@ export function exportApp(params: AppExportReqVO) {
 export function getAppListByMerchantId(merchantId: number) {
   return defHttp.get({ url: '/pay/app/list-merchant-id', params: { merchantId } })
 }
+
+// 获得支付应用列表
+export function getAppList() {
+  return defHttp.get({ url: '/pay/app/list' })
+}
