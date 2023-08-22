@@ -136,10 +136,6 @@ function handleMenuClick(e: MenuInfo) {
       background-color: @header-light-bg-hover-color;
     }
 
-    .@{prefix-cls}__name {
-      color: @text-color;
-    }
-
     .@{prefix-cls}__desc {
       color: @header-light-desc-color;
     }

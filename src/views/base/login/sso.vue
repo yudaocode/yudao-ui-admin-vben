@@ -195,7 +195,6 @@ html[data-theme='dark'] {
 
   .ant-divider-inner-text {
     font-size: 12px;
-    color: var(--text-color-secondary);
   }
 }
 </style>

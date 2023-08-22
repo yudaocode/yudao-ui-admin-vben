@@ -29,7 +29,7 @@ const { t } = useI18n()
 const getBindValue = computed(() => {
   return props.def ? { checked: props.def } : {}
 })
-function handleChange(e: ChangeEvent) {
+function handleChange(e) {
   props.event && baseHandler(props.event, e)
 }
 </script>
@@ -42,7 +42,7 @@ function handleChange(e: ChangeEvent) {
       :disabled="disabled"
       :checked-children="t('layout.setting.on')"
       :un-checked-children="t('layout.setting.off')"
-      @change="handleChange as any"
+      @change="handleChange"
     />
   </div>
 </template>

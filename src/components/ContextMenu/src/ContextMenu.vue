@@ -159,7 +159,7 @@ export default defineComponent({
     }
 
     &:not(.ant-menu-item-disabled):hover {
-      color: @text-color;
+      // color: @text-color;
       background-color: @item-hover-bg;
     }
   }

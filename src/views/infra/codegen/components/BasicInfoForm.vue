@@ -76,19 +76,14 @@ watch(
     margin: 0 0 12px;
     font-size: 16px;
     line-height: 32px;
-    color: @text-color;
   }
 
   h4 {
     margin: 0 0 4px;
     font-size: 14px;
     line-height: 22px;
-    color: @text-color;
   }
 
-  p {
-    color: @text-color;
-  }
 }
 
 .pay-select {

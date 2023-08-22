@@ -33,8 +33,6 @@ const { getCalcContentWidth } = useMenuSetting()
   width: 100%;
   padding: 0 24px;
   line-height: 44px;
-  color: var(--text-color);
-  background-color: var(--component-background);
   border-top: 1px solid var(--border-color);
   box-shadow:
     0 -6px 16px -8px rgb(0 0 0 / 8%),
