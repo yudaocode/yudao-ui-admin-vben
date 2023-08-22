@@ -5,7 +5,7 @@ import { getSignInRecordPage } from '@/api/member/signin/record'
 
 defineOptions({ name: 'SignInRecord' })
 
-const [registerTable, { reload }] = useTable({
+const [registerTable] = useTable({
   title: '签到记录列表',
   api: getSignInRecordPage,
   columns,
