@@ -19,8 +19,7 @@ const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, 
   baseColProps: {
     span: 24,
   },
-  showSubmitButton: false,
-  showResetButton: false,
+  showActionButtonGroup: false,
 })
 
 const [innerRegister, { changeLoading, closeModal }] = useModalInner((data: SmsTemplateVO) => {

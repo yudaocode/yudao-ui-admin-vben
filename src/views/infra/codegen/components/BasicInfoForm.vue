@@ -22,7 +22,7 @@ const [register, { setFieldsValue, resetFields, validate }] = useForm({
   },
   showResetButton: false,
   submitButtonOptions: {
-    text: '下一步',
+    text: '保存',
   },
   submitFunc: customSubmitFunc,
 })

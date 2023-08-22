@@ -16,8 +16,7 @@ const [register, { setFieldsValue, getFieldsValue, validateFields, resetFields, 
     baseColProps: {
       span: 24,
     },
-    showSubmitButton: false,
-    showResetButton: false,
+    showActionButtonGroup: false,
   })
 
 // 存储动态生成的字段信息 后续需要进行移除
