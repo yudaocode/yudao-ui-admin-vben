@@ -63,6 +63,19 @@ async function handleDelete(record: Recordable) {
 function openChannel(record: Recordable, payCode: string, type: string, isUpdate: boolean) {
   openChannelModal(true, { record, payCode, type, isUpdate })
 }
+
+/**
+ * 根据渠道编码判断渠道列表中是否存在
+ *
+ * @param channels 渠道列表
+ * @param channelCode 渠道编码
+ */
+function isChannelExists(channels, channelCode) {
+  if (!channels)
+    return false
+
+  return channels.includes(channelCode)
+}
 </script>
 
 <template>
@@ -79,7 +92,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === PayChannelEnum.ALIPAY_APP.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.ALIPAY_APP.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_APP.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.ALIPAY_APP.code, PayType.ALIPAY, true)"
@@ -98,7 +111,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_PC.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.ALIPAY_PC.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_PC.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.ALIPAY_PC.code, PayType.ALIPAY, true)"
@@ -117,7 +130,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_WAP.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.ALIPAY_WAP.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_WAP.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.ALIPAY_WAP.code, PayType.ALIPAY, true)"
@@ -136,7 +149,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_QR.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.ALIPAY_QR.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_QR.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.ALIPAY_QR.code, PayType.ALIPAY, true)"
@@ -155,7 +168,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_BAR.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.ALIPAY_BAR.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_BAR.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.ALIPAY_BAR.code, PayType.ALIPAY, true)"
@@ -174,7 +187,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.WX_LITE.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.WX_LITE.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_LITE.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_LITE.code, PayType.WECHAT, true)"
@@ -193,7 +206,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.WX_PUB.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.WX_PUB.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_PUB.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_PUB.code, PayType.WECHAT, true)"
@@ -212,7 +225,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.WX_APP.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.WX_APP.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_APP.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_APP.code, PayType.WECHAT, true)"
@@ -231,7 +244,7 @@ function openChannel(record: Recordable, payCode: string, type: string, isUpdate
         </template>
         <template v-if="column.key === PayChannelEnum.MOCK.code">
           <a-button
-            v-if="record.channelCodes.indexOf(PayChannelEnum.MOCK.code) !== -1"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.MOCK.code)"
             type="primary"
             shape="circle"
             @click="openChannel(record, PayChannelEnum.MOCK.code, PayType.MOCK, true)"

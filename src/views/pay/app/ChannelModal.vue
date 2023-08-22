@@ -14,12 +14,12 @@ const emit = defineEmits(['success', 'register'])
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const isUpdate = ref(true)
-const type = ref(PayType.ALIPAY)
+const appType = ref(PayType.ALIPAY)
 
 const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
   labelWidth: 120,
   baseColProps: { span: 24 },
-  schemas: type.value === PayType.ALIPAY ? aliPayFormSchema : (type.value === PayType.WECHAT ? weChatFormSchema : mockFormSchema),
+  schemas: appType.value === PayType.ALIPAY ? aliPayFormSchema : (appType.value === PayType.WECHAT ? weChatFormSchema : mockFormSchema),
   showActionButtonGroup: false,
   actionColOptions: { span: 23 },
 })
@@ -28,12 +28,12 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
   resetFields()
   setModalProps({ confirmLoading: false })
   isUpdate.value = !!data?.isUpdate
-  type.value = data.type
+  appType.value = data.type
   if (unref(isUpdate)) {
     const res = await getChannel(data.record.id, data.payCode)
     const config = JSON.parse(res.config)
     const payConfig: any = {}
-    if (type.value === PayType.ALIPAY) {
+    if (appType.value === PayType.ALIPAY) {
       payConfig.appId = config.appId
       payConfig.serverUrl = config.serverUrl
       payConfig.signType = config.signType
@@ -44,7 +44,7 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
       payConfig.alipayPublicCertContent = config.alipayPublicCertContent
       payConfig.rootCertContent = config.rootCertContent
     }
-    else if (type.value === PayType.WECHAT) {
+    else if (appType.value === PayType.WECHAT) {
       payConfig.appId = config.appId
       payConfig.apiVersion = config.apiVersion
       payConfig.mchId = config.mchId
