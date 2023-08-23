@@ -44,6 +44,14 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: '结果',
+    dataIndex: 'result',
+    width: 180,
+    customRender: ({ text }) => {
+      return useRender.renderDict(text, DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT)
+    },
+  },
+  {
     title: '提交时间',
     dataIndex: 'createTime',
     width: 180,
