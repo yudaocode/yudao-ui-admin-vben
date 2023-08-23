@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { FloatButton } from 'ant-design-vue'
+import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { computed, unref } from 'vue'
 
 import { SettingButtonPositionEnum } from '@/enums/appEnum'
@@ -9,6 +10,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 import SessionTimeoutLogin from '@/views/base/login/SessionTimeoutLogin.vue'
+import { openWindow } from '@/utils'
+import { SITE_URL } from '@/settings/siteSetting'
 
 defineOptions({ name: 'LayoutFeatures' })
 const LayoutLockPage = createAsyncComponent(() => import('@/views/base/lock/index.vue'))
@@ -40,6 +43,19 @@ const getIsFixedSettingDrawer = computed(() => {
 <template>
   <LayoutLockPage />
   <FloatButton.BackTop v-if="getUseOpenBackTop" :target="getTarget" />
+  <FloatButton
+    shape="circle"
+    type="primary"
+    :badge="{ dot: true }"
+    :style="{
+      right: '64px',
+    }"
+    @click="openWindow(SITE_URL)"
+  >
+    <template #icon>
+      <QuestionCircleOutlined />
+    </template>
+  </FloatButton>
   <SettingDrawer v-if="getIsFixedSettingDrawer" :class="prefixCls" />
   <SessionTimeoutLogin v-if="getIsSessionTimeout" />
 </template>
