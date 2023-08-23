@@ -42,7 +42,7 @@ async function handleDelete(record: Recordable) {
             :actions="[
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: '强退',
                 auth: 'system:oauth2-token:delete',
                 popConfirm: {

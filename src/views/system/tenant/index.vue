@@ -75,7 +75,7 @@ async function handleDelete(record: Recordable) {
               { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:tenant:update', onClick: handleEdit.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'system:tenant:delete',
                 popConfirm: {

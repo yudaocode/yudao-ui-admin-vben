@@ -66,7 +66,7 @@ async function handleDelete(record: Recordable) {
               },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 ifShow: record.id !== 0,
                 auth: 'infra:data-source-config:delete',

@@ -122,7 +122,7 @@ async function handleDelete(record: Recordable) {
               { icon: IconEnum.LOG, label: '调度日志', auth: 'infra:job:query', onClick: handleJobLog.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'infra:job:delete',
                 popConfirm: {

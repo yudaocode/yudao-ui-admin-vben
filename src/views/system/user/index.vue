@@ -121,7 +121,7 @@ function handleSelect(deptId = '') {
               },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'system:user:delete',
                 popConfirm: {

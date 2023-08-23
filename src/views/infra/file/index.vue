@@ -77,7 +77,7 @@ async function handleDelete(record: Recordable) {
               { icon: IconEnum.VIEW, label: '复制链接', onClick: handleCopy.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'infra:file:delete',
                 popConfirm: {

@@ -78,7 +78,7 @@ async function handleRefund(record: Recordable) {
               },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: '发起退款',
                 ifShow: () => {
                   return record.payed && !record.payRefundId

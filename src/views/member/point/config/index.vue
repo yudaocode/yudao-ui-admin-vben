@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { BasicForm, useForm } from '@/components/Form'
-import type { FormSchema } from '@/components/From/src/types/form'
+import type { FormSchema } from '@/components/From'
 import { PageWrapper } from '@/components/Page'
 import { getConfig, saveConfig } from '@/api/member/point/config'
 import { useI18n } from '@/hooks/web/useI18n'
