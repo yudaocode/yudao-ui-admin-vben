@@ -65,7 +65,7 @@ async function handleCancel(record: Recordable) {
               },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.cancel'),
                 ifShow: record.result === 1,
                 auth: 'bpm:process-instance:cancel',

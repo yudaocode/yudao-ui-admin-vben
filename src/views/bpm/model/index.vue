@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import ModelModal from './ModelModal.vue'
+import ModelImportModal from './ModelImportModal.vue'
 import { columns, searchFormSchema } from './model.data'
 import { useGo } from '@/hooks/web/usePage'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
-import { BasicUpload } from '@/components/Upload'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
-import { deleteModel, deployModel, getModelPage, importModel } from '@/api/bpm/model'
-import { getAccessToken, getTenantId } from '@/utils/auth'
+import { deleteModel, deployModel, getModelPage } from '@/api/bpm/model'
+
+// import { getAccessToken, getTenantId } from '@/utils/auth'
 
 defineOptions({ name: 'BpmModel' })
 
@@ -18,11 +18,12 @@ const go = useGo()
 const { t } = useI18n()
 const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
+const [registerImportModal, { openModal: openImportModal }] = useModal()
 
-const uploadParams = ref({
-  'Authorization': `Bearer ${getAccessToken()}`,
-  'tenant-id': getTenantId(),
-})
+// const uploadParams = ref({
+//   'Authorization': `Bearer ${getAccessToken()}`,
+//   'tenant-id': getTenantId(),
+// })
 
 const [registerTable, { reload }] = useTable({
   title: '流程模型图列表',
@@ -83,7 +84,10 @@ async function handleDelete(record: Recordable) {
         <a-button v-auth="['bpm:model:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <BasicUpload
+        <a-button v-auth="['bpm:model:import']" type="primary" :pre-icon="IconEnum.UPLOAD" @click="openImportModal">
+          {{ t('action.import') }}
+        </a-button>
+        <!-- <BasicUpload
           :max-size="20"
           :max-number="1"
           :empty-hide-preview="true"
@@ -92,7 +96,7 @@ async function handleDelete(record: Recordable) {
           class="my-5"
           :accept="['.bpmn', '.xml']"
           @change="reload"
-        />
+        /> -->
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -119,7 +123,7 @@ async function handleDelete(record: Recordable) {
               },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'bpm:model:delete',
                 popConfirm: {
@@ -134,5 +138,6 @@ async function handleDelete(record: Recordable) {
       </template>
     </BasicTable>
     <ModelModal @register="registerModal" @success="reload()" />
+    <ModelImportModal @register="registerImportModal" @success="reload()" />
   </div>
 </template>

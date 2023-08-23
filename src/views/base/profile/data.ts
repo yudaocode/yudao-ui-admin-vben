@@ -1,4 +1,4 @@
-import type { FormSchema } from '@/components/Form/index'
+import type { FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const { t } = useI18n()

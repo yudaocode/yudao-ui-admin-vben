@@ -1,3 +1,4 @@
+import type { DescItem } from '@/components/Description'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
@@ -47,7 +48,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '申请时间',
-    dataIndex: 'applyTime',
+    dataIndex: 'createTime',
     width: 180,
     customRender: ({ text }) => {
       return useRender.renderDate(text)
@@ -58,7 +59,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     label: '请假类型',
-    field: 'status',
+    field: 'type',
     component: 'Select',
     componentProps: {
       options: getDictOptions(DICT_TYPE.BPM_OA_LEAVE_TYPE),
@@ -73,7 +74,7 @@ export const searchFormSchema: FormSchema[] = [
   },
   {
     label: '结果',
-    field: 'status',
+    field: 'result',
     component: 'Select',
     componentProps: {
       options: getDictOptions(DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT),
@@ -85,5 +86,73 @@ export const searchFormSchema: FormSchema[] = [
     field: 'reason',
     component: 'Input',
     colProps: { span: 8 },
+  },
+]
+
+export const formSchema: FormSchema[] = [
+  {
+    label: '请假类型',
+    field: 'type',
+    required: true,
+    component: 'Select',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.BPM_OA_LEAVE_TYPE),
+    },
+  },
+  {
+    label: '开始时间',
+    field: 'startTime',
+    required: true,
+    component: 'DatePicker',
+    componentProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+      valueFormat: 'x',
+    },
+  },
+  {
+    label: '结束时间',
+    field: 'endTime',
+    required: true,
+    component: 'DatePicker',
+    componentProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+      valueFormat: 'x',
+    },
+  },
+  {
+    label: '原因',
+    field: 'reason',
+    required: true,
+    component: 'Input',
+  },
+]
+
+export const descSchema: DescItem[] = [
+  {
+    label: '请假类型',
+    field: 'merchantOrderId',
+    render: (curVal) => {
+      return useRender.renderTag(curVal)
+    },
+  },
+  {
+    label: '开始时间',
+    field: 'startTime',
+    render: (curVal) => {
+      return useRender.renderDate(curVal, 'YYYY-MM-DD')
+    },
+  },
+  {
+    label: '结束时间',
+    field: 'endTime',
+    render: (curVal) => {
+      return useRender.renderDate(curVal, 'YYYY-MM-DD')
+    },
+  },
+  {
+    label: '原因',
+    field: 'reason',
   },
 ]

@@ -32,3 +32,8 @@ export function getTaskListByProcessInstanceId(processInstanceId) {
     url: `/bpm/task/list-by-process-instance-id?processInstanceId=${processInstanceId}`,
   })
 }
+
+// 导出任务
+export async function exportTask(params) {
+  return await defHttp.download({ url: '/bpm/task/export', params })
+}

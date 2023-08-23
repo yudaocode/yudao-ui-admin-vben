@@ -1,6 +1,6 @@
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
-import { DICT_TYPE, getDictOptions } from '@/utils/dict'
+import { DICT_TYPE } from '@/utils/dict'
 
 export const columns: BasicColumn[] = [
   {
@@ -41,15 +41,6 @@ export const searchFormSchema: FormSchema[] = [
     label: '表单名',
     field: 'name',
     component: 'Input',
-    colProps: { span: 8 },
-  },
-  {
-    label: '状态',
-    field: 'status',
-    component: 'Select',
-    componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS),
-    },
     colProps: { span: 8 },
   },
 ]

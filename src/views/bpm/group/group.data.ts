@@ -126,7 +126,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '状态',
     field: 'status',
-    component: 'Select',
+    component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS),
     },

@@ -1,10 +1,4 @@
-import type { AxiosProgressEvent } from 'axios'
-import type { UploadApiResult } from '@/api/base/model/uploadModel'
-import { useGlobSetting } from '@/hooks/setting'
-import type { UploadFileParams } from '@/types/axios'
 import { defHttp } from '@/utils/http/axios'
-
-const { apiUrl = '' } = useGlobSetting()
 
 export interface ProcessDefinitionVO {
   id: string
@@ -43,7 +37,11 @@ export function updateModel(data: ModelVO) {
 }
 
 // 任务状态修改
-export function updateModelState(data) {
+export function updateModelState(id: number, state: number) {
+  const data = {
+    id,
+    state,
+  }
   return defHttp.put({ url: '/bpm/model/update-state', data })
 }
 
@@ -59,12 +57,6 @@ export function deployModel(id: number) {
   return defHttp.post({ url: `/bpm/model/deploy?id=${id}` })
 }
 
-export function importModel(params: UploadFileParams, onUploadProgress: (progressEvent: AxiosProgressEvent) => void) {
-  return defHttp.uploadFile<UploadApiResult>(
-    {
-      url: `${apiUrl}/bpm/model/import`,
-      onUploadProgress,
-    },
-    params,
-  )
+export function importModel(data) {
+  return defHttp.post({ url: '/bpm/model/import', data })
 }

@@ -67,7 +67,7 @@ async function handleDelete(record: Recordable) {
               { icon: IconEnum.VIEW, label: t('action.detail'), auth: 'bpm:form:query', onClick: openDetail.bind(null, record) },
               {
                 icon: IconEnum.DELETE,
-                color: 'error',
+                danger: true,
                 label: t('action.delete'),
                 auth: 'bpm:form:delete',
                 popConfirm: {
