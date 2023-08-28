@@ -332,7 +332,7 @@ export default defineComponent({
   position: fixed;
   top: 0;
   left: 0;
-  // z-index: @layout-mix-sider-fixed-z-index;
+  z-index: @layout-mix-sider-fixed-z-index;
   height: 100%;
   overflow: hidden;
   background-color: @sider-dark-bg-color;
