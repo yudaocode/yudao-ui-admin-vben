@@ -41,10 +41,10 @@
 | [ant-design-vue](https://antdv.com/) | ant-design-vue | 4.0.1 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.1.6 |
 | [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.6 |
-| [vueuse](https://vueuse.org/) | 常用工具集 | 10.3.0 |
+| [vueuse](https://vueuse.org/) | 常用工具集 | 10.4.0 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
 | [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.4 |
-| [unocss](https://uno.antfu.me/) | 原子 css | 0.55.2 |
+| [unocss](https://uno.antfu.me/) | 原子 css | 0.55.3 |
 | [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.1 |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
