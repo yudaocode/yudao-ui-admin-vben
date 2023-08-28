@@ -3,7 +3,18 @@
 -->
 <script lang="ts">
 import { computed, defineComponent, watch } from 'vue'
-import { Checkbox, Col, Empty, Form, FormItem, Input, RadioGroup, Select, Slider, Switch } from 'ant-design-vue'
+import {
+  Checkbox,
+  Col,
+  Empty,
+  Form,
+  FormItem,
+  Input,
+  RadioGroup,
+  Select,
+  Slider,
+  Switch,
+} from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import {
   advanceFormItemColProps,
@@ -40,8 +51,10 @@ export default defineComponent({
       () => {
         if (formConfig.value.currentItem) {
           formConfig.value.currentItem.itemProps = formConfig.value.currentItem.itemProps || {}
-          formConfig.value.currentItem.itemProps.labelCol = formConfig.value.currentItem.itemProps.labelCol || {}
-          formConfig.value.currentItem.itemProps.wrapperCol = formConfig.value.currentItem.itemProps.wrapperCol || {}
+          formConfig.value.currentItem.itemProps.labelCol
+              = formConfig.value.currentItem.itemProps.labelCol || {}
+          formConfig.value.currentItem.itemProps.wrapperCol
+              = formConfig.value.currentItem.itemProps.wrapperCol || {}
         }
       },
       { deep: true, immediate: true },

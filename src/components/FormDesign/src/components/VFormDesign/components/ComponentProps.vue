@@ -2,7 +2,20 @@
  * @Description: 组件属性控件
 -->
 <script lang="ts">
-import { Checkbox, Col, Empty, Form, FormItem, Input, InputNumber, RadioGroup, Row, Select, Switch } from 'ant-design-vue'
+import {
+  Checkbox,
+  Col,
+  Empty,
+  Form,
+  FormItem,
+  Input,
+  InputNumber,
+  RadioGroup,
+  Row,
+  Select,
+  Switch,
+} from 'ant-design-vue'
+import RadioButtonGroup from '/@/components/Form/src/components/RadioButtonGroup.vue'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import {
@@ -14,7 +27,6 @@ import {
 import { formItemsForEach, remove } from '../../../utils'
 import type { IBaseFormAttrs } from '../config/formItemPropsConfig'
 import FormOptions from './FormOptions.vue'
-import RadioButtonGroup from '@/components/Form/src/components/RadioButtonGroup.vue'
 
 export default defineComponent({
   name: 'ComponentProps',
@@ -45,19 +57,21 @@ export default defineComponent({
 
     const { formConfig } = useFormDesignState()
 
-    if (formConfig.value.currentItem)
-      formConfig.value.currentItem.componentProps = formConfig.value.currentItem.componentProps || {}
+    if (formConfig.value.currentItem) {
+      formConfig.value.currentItem.componentProps
+          = formConfig.value.currentItem.componentProps || {}
+    }
 
     watch(
       () => formConfig.value.currentItem?.field,
       (_newValue, oldValue) => {
         formConfig.value.schemas
-          && formItemsForEach(formConfig.value.schemas, (item) => {
-            if (item.link) {
-              const index = item.link.findIndex(linkItem => linkItem === oldValue)
-              index !== -1 && remove(item.link, index)
-            }
-          })
+            && formItemsForEach(formConfig.value.schemas, (item) => {
+              if (item.link) {
+                const index = item.link.findIndex(linkItem => linkItem === oldValue)
+                index !== -1 && remove(item.link, index)
+              }
+            })
       },
     )
 
@@ -94,18 +108,18 @@ export default defineComponent({
         })
 
         baseComponentAttrs[formConfig.value.currentItem!.component]
-          && baseComponentAttrs[formConfig.value.currentItem!.component].forEach(async (item) => {
-            if (item.component) {
-              if (['Switch', 'Checkbox', 'Radio'].includes(item.component)) {
-                item.category = 'control'
-                allOptions.value.push(item)
+            && baseComponentAttrs[formConfig.value.currentItem!.component].forEach(async (item) => {
+              if (item.component) {
+                if (['Switch', 'Checkbox', 'Radio'].includes(item.component)) {
+                  item.category = 'control'
+                  allOptions.value.push(item)
+                }
+                else {
+                  item.category = 'input'
+                  allOptions.value.push(item)
+                }
               }
-              else {
-                item.category = 'input'
-                allOptions.value.push(item)
-              }
-            }
-          })
+            })
       },
       {
         immediate: true,
@@ -114,14 +128,14 @@ export default defineComponent({
     // 控制性的选项
     const controlOptions = computed(() => {
       return allOptions.value.filter((item) => {
-        return item.category === 'control'
+        return item.category == 'control'
       })
     })
 
     // 非控制性选择
     const inputOptions = computed(() => {
       return allOptions.value.filter((item) => {
-        return item.category === 'input'
+        return item.category == 'input'
       })
     })
 
@@ -140,9 +154,9 @@ export default defineComponent({
     const linkOptions = computed(() => {
       return (
         formConfig.value.schemas
-        && formConfig.value.schemas
-          .filter(item => item.key !== formConfig.value.currentItem!.key)
-          .map(({ label, field }) => ({ label: `${label}/${field}`, value: field }))
+          && formConfig.value.schemas
+            .filter(item => item.key !== formConfig.value.currentItem!.key)
+            .map(({ label, field }) => ({ label: `${label}/${field}`, value: field }))
       )
     })
     return {
@@ -199,12 +213,23 @@ export default defineComponent({
           </FormItem>
         </div>
         <FormItem label="关联字段">
-          <Select v-model:value="formConfig.currentItem.link" mode="multiple" :options="linkOptions" />
+          <Select
+            v-model:value="formConfig.currentItem.link"
+            mode="multiple"
+            :options="linkOptions"
+          />
         </FormItem>
 
         <FormItem
           v-if="
-            ['Select', 'CheckboxGroup', 'RadioGroup', 'TreeSelect', 'Cascader', 'AutoComplete'].includes(formConfig.currentItem.component)
+            [
+              'Select',
+              'CheckboxGroup',
+              'RadioGroup',
+              'TreeSelect',
+              'Cascader',
+              'AutoComplete',
+            ].includes(formConfig.currentItem.component)
           "
           label="选项"
         >

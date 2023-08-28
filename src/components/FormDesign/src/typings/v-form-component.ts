@@ -177,7 +177,12 @@ export interface AForm {
    * validate one or several form items
    * @type Function
    */
-  validateField: (name: string, value: any, rules: Record<string, unknown>[], option?: validateOptions) => Promise<RuleError[]>
+  validateField: (
+    name: string,
+    value: any,
+    rules: Record<string, unknown>[],
+    option?: validateOptions,
+  ) => Promise<RuleError[]>
   /**
    * reset all the fields and remove validation result
    */

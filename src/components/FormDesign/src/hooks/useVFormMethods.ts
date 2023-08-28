@@ -13,7 +13,11 @@ export interface IProps {
   formModel: IAnyObject
 }
 
-type ISet = <T extends keyof IVFormComponent>(field: string, key: T, value: IVFormComponent[T]) => void
+type ISet = <T extends keyof IVFormComponent>(
+  field: string,
+  key: T,
+  value: IVFormComponent[T],
+) => void
 // 获取当前field绑定的表单项
 type IGet = (field: string) => IVFormComponent | undefined
 // 获取field在formData中的值
@@ -59,7 +63,8 @@ export function useVFormMethods(
    * @param {string} field
    * @return {IVFormComponent | undefined}
    */
-  const get: IGet = field => findFormItem(props.formConfig.schemas, item => item.field === field)
+  const get: IGet = field =>
+    findFormItem(props.formConfig.schemas, item => item.field === field)
 
   /**
    * 根据表单field设置表单项字段值
@@ -73,6 +78,20 @@ export function useVFormMethods(
       formItem[key] = value
   }
 
+  /**
+   * 设置表单项的props
+   * @param {string} field 需要设置的表单项field
+   * @param {string} key 需要设置的key
+   * @param value 需要设置的值
+   */
+  const setProps: ISetProps = (field, key, value) => {
+    const formItem = get(field)
+    if (formItem?.componentProps) {
+      ['options', 'treeData'].includes(key) && setValue(field, undefined)
+
+      formItem.componentProps[key] = value
+    }
+  }
   /**
    * 设置字段的值，设置后触发校验
    * @param {string} field  需要设置的字段
@@ -90,20 +109,6 @@ export function useVFormMethods(
         props.formModel[key] = field[key]
         formInstance.value?.validateField(key, field[key], [])
       })
-    }
-  }
-  /**
-   * 设置表单项的props
-   * @param {string} field 需要设置的表单项field
-   * @param {string} key 需要设置的key
-   * @param value 需要设置的值
-   */
-  const setProps: ISetProps = (field, key, value) => {
-    const formItem = get(field)
-    if (formItem?.componentProps) {
-      ;['options', 'treeData'].includes(key) && setValue(field, undefined)
-
-      formItem.componentProps[key] = value
     }
   }
   /**
@@ -143,7 +148,9 @@ export function useVFormMethods(
    * @param {string | undefined} field
    */
   const disable: IDisable = (field) => {
-    typeof field === 'string' ? setProps(field, 'disabled', true) : setFormConfig('disabled', field !== false)
+    typeof field === 'string'
+      ? setProps(field, 'disabled', true)
+      : setFormConfig('disabled', field !== false)
   }
 
   /**

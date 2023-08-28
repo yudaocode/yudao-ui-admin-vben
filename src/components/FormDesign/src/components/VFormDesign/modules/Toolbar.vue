@@ -6,7 +6,7 @@ import { defineComponent, inject, reactive, toRefs } from 'vue'
 import type { UseRefHistoryReturn } from '@vueuse/core'
 import { Divider, Tooltip } from 'ant-design-vue'
 import type { IFormConfig } from '../../../typings/v-form-component'
-import Icon from '@/components/Icon/index'
+import { Icon } from '@/components/Icon'
 
 interface IToolbarsConfig {
   type: string
@@ -100,34 +100,38 @@ export default defineComponent({
 </template>
 
 <style lang="less" scoped>
-//noinspection CssUnknownTarget
-@import url('../styles/variable.less');
+  //noinspection CssUnknownTarget
+  @import url('../styles/variable.less');
 
-.operating-area {
-  display: flex;
-  align-content: center;
-  justify-content: space-between;
-  height: @operating-area-height;
-  padding: 0 12px;
-  padding-left: 30px;
-  font-size: 16px;
-  line-height: @operating-area-height;
-  text-align: left;
-  border-bottom: 2px solid var(--border-color);
+  .operating-area {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    height: @operating-area-height;
+    padding: 0 12px;
+    padding-left: 40px;
+    font-size: 16px;
+    line-height: @operating-area-height;
+    text-align: left;
+    border-bottom: 2px solid @border-color;
 
-  a {
-    margin: 0 5px;
-    color: #666;
+    a {
+      margin: 0 5px;
+      color: #666;
 
-    &.disabled,
-    &.disabled:hover {
-      color: #ccc;
-    }
+      &.disabled,
+      &.disabled:hover {
+        color: #ccc;
+      }
 
-    > span {
-      padding-left: 2px;
-      font-size: 14px;
+      &:hover {
+        color: @primary-color;
+      }
+
+      > span {
+        padding-left: 2px;
+        font-size: 14px;
+      }
     }
   }
-}
 </style>

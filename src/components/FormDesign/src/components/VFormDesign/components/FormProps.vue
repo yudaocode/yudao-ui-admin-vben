@@ -1,43 +1,30 @@
 <!--
  * @Description: 右侧属性面板控件 表单属性面板
 -->
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import type { RadioChangeEvent } from 'ant-design-vue'
-import { Checkbox, Col, InputNumber, Slider } from 'ant-design-vue'
-
-// import RadioButtonGroup from '/@/components/RadioButtonGroup.vue';
-import { Form, FormItem, Radio } from 'ant-design-vue'
+import {
+  Checkbox,
+  Col,
+  Form,
+  FormItem,
+  InputNumber,
+  Radio,
+  Slider,
+} from 'ant-design-vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 
-export default defineComponent({
-  name: 'FormProps',
-  components: {
-    InputNumber,
-    Slider,
-    Checkbox,
-    RadioGroup: Radio.Group,
-    RadioButton: Radio.Button,
-    Form,
-    FormItem,
-    Col,
-  },
-  setup() {
-    const { formConfig } = useFormDesignState()
+const { formConfig } = useFormDesignState()
 
-    formConfig.value = formConfig.value || {
-      labelCol: { span: 24 },
-      wrapperCol: { span: 24 },
-    }
+formConfig.value = formConfig.value || {
+  labelCol: { span: 24 },
+  wrapperCol: { span: 24 },
+}
 
-    const lableLayoutChange = (e: RadioChangeEvent) => {
-      if (e.target.value === 'Grid')
-        formConfig.value.layout = 'horizontal'
-    }
-
-    return { formConfig, lableLayoutChange }
-  },
-})
+function lableLayoutChange(e: RadioChangeEvent) {
+  if (e.target.value === 'Grid')
+    formConfig.value.layout = 'horizontal'
+}
 </script>
 
 <template>
@@ -46,33 +33,42 @@ export default defineComponent({
       <!--      <e-upload v-model="fileList"></e-upload> -->
 
       <FormItem label="表单布局">
-        <RadioGroup v-model:value="formConfig.layout" button-style="solid">
-          <RadioButton value="horizontal">
+        <Radio.Group v-model:value="formConfig.layout" button-style="solid">
+          <Radio.Button value="horizontal">
             水平
-          </RadioButton>
-          <RadioButton value="vertical" :disabled="formConfig.labelLayout === 'Grid'">
+          </Radio.Button>
+          <Radio.Button value="vertical" :disabled="formConfig.labelLayout === 'Grid'">
             垂直
-          </RadioButton>
-          <RadioButton value="inline" :disabled="formConfig.labelLayout === 'Grid'">
+          </Radio.Button>
+          <Radio.Button value="inline" :disabled="formConfig.labelLayout === 'Grid'">
             行内
-          </RadioButton>
-        </RadioGroup>
+          </Radio.Button>
+        </Radio.Group>
       </FormItem>
 
       <!-- <Row> -->
       <FormItem label="标签布局">
-        <RadioGroup v-model:value="formConfig.labelLayout" button-style="solid" @change="lableLayoutChange">
-          <RadioButton value="flex">
+        <Radio.Group
+          v-model:value="formConfig.labelLayout"
+          button-style="solid"
+          @change="lableLayoutChange"
+        >
+          <Radio.Button value="flex">
             固定
-          </RadioButton>
-          <RadioButton value="Grid" :disabled="formConfig.layout !== 'horizontal'">
+          </Radio.Button>
+          <Radio.Button value="Grid" :disabled="formConfig.layout !== 'horizontal'">
             栅格
-          </RadioButton>
-        </RadioGroup>
+          </Radio.Button>
+        </Radio.Group>
       </FormItem>
       <!-- </Row> -->
       <FormItem v-show="formConfig.labelLayout === 'flex'" label="标签宽度（px）">
-        <InputNumber v-model:value="formConfig.labelWidth" :style="{ width: '100%' }" :min="0" :step="1" />
+        <InputNumber
+          v-model:value="formConfig.labelWidth"
+          :style="{ width: '100%' }"
+          :min="0"
+          :step="1"
+        />
       </FormItem>
       <div v-if="formConfig.labelLayout === 'Grid'">
         <FormItem label="labelCol">
@@ -83,28 +79,28 @@ export default defineComponent({
         </FormItem>
 
         <FormItem label="标签对齐">
-          <RadioGroup v-model:value="formConfig.labelAlign" button-style="solid">
-            <RadioButton value="left">
+          <Radio.Group v-model:value="formConfig.labelAlign" button-style="solid">
+            <Radio.Button value="left">
               靠左
-            </RadioButton>
-            <RadioButton value="right">
+            </Radio.Button>
+            <Radio.Button value="right">
               靠右
-            </RadioButton>
-          </RadioGroup>
+            </Radio.Button>
+          </Radio.Group>
         </FormItem>
 
         <FormItem label="控件大小">
-          <RadioGroup v-model:value="formConfig.size" button-style="solid">
-            <RadioButton value="default">
+          <Radio.Group v-model:value="formConfig.size" button-style="solid">
+            <Radio.Button value="default">
               默认
-            </RadioButton>
-            <RadioButton value="small">
+            </Radio.Button>
+            <Radio.Button value="small">
               小
-            </RadioButton>
-            <RadioButton value="large">
+            </Radio.Button>
+            <Radio.Button value="large">
               大
-            </RadioButton>
-          </RadioGroup>
+            </Radio.Button>
+          </Radio.Group>
         </FormItem>
       </div>
       <FormItem label="表单属性">

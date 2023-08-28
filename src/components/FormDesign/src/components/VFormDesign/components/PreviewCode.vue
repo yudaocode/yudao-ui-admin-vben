@@ -73,7 +73,13 @@ export default defineComponent({
       <CodeEditor ref="myEditor" :value="editorJson" :mode="MODE.JSON" />
     </div>
     <div class="copy-btn-box">
-      <a-button type="primary" class="copy-btn" data-clipboard-action="copy" :data-clipboard-text="editorJson" @click="handleCopyJson">
+      <a-button
+        type="primary"
+        class="copy-btn"
+        data-clipboard-action="copy"
+        :data-clipboard-text="editorJson"
+        @click="handleCopyJson"
+      >
         复制数据
       </a-button>
       <a-button type="primary" @click="handleExportJson">

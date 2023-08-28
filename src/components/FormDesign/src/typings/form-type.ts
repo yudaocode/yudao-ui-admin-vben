@@ -44,5 +44,9 @@ export interface IFormDesignMethods {
   handleAddAttrs(schemas: IVFormComponent[], index: number): void
   setFormConfig(config: IFormConfig): void
   // 添加到表单中之前触发
-  handleBeforeColAdd(event: { newIndex: string }, schemas: IVFormComponent[], isCopy?: boolean): void
+  handleBeforeColAdd(
+    event: { newIndex: string },
+    schemas: IVFormComponent[],
+    isCopy?: boolean,
+  ): void
 }

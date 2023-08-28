@@ -1,11 +1,16 @@
-import { getCurrentInstance, toRaw } from 'vue'
 import type { Ref, SetupContext } from 'vue'
+import { getCurrentInstance, toRaw } from 'vue'
 import { cloneDeep, forOwn, isFunction } from 'lodash-es'
 import { Form } from 'ant-design-vue'
 import type { AForm, IVFormComponent } from '../typings/v-form-component'
 import type { IAnyObject } from '../typings/base-type'
 
-export function useFormInstanceMethods(props: IAnyObject, formdata, context: Partial<SetupContext>, _formInstance: Ref<AForm | null>) {
+export function useFormInstanceMethods(
+  props: IAnyObject,
+  formdata,
+  context: Partial<SetupContext>,
+  _formInstance: Ref<AForm | null>,
+) {
   /**
    * 绑定props和on中的上下文为parent
    */
@@ -13,8 +18,9 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
     const instance = getCurrentInstance()
     const vm = instance?.parent
     if (!vm)
-      return
-    ;(props.formConfig.schemas as IVFormComponent[]).forEach((item) => {
+      return;
+
+    (props.formConfig.schemas as IVFormComponent[]).forEach((item) => {
       // 绑定 props 中的上下文
       forOwn(item.componentProps, (value: any, key) => {
         if (isFunction(value))
@@ -35,7 +41,7 @@ export function useFormInstanceMethods(props: IAnyObject, formdata, context: Par
 
   const { resetFields, validate, clearValidate, validateField } = useForm(formdata, [])
 
-  const submit = () => {
+  const submit = async () => {
     // const _result = await validate();
 
     const data = cloneDeep(toRaw(formdata.value))

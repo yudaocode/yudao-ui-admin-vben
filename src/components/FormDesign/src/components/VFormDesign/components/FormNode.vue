@@ -40,13 +40,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="drag-move-box" :class="{ active: schema.key === formConfig.currentItem?.key }" @click.stop="handleSelectItem">
+  <div
+    class="drag-move-box"
+    :class="{ active: schema.key === formConfig.currentItem?.key }"
+    @click.stop="handleSelectItem"
+  >
     <div class="form-item-box">
       <VFormItem :form-config="formConfig" :schema="schema" />
     </div>
+
     <div class="show-key-box">
       {{ schema.label + (schema.field ? `/${schema.field}` : '') }}
     </div>
+
     <FormNodeOperate :schema="schema" :current-item="formConfig.currentItem" />
   </div>
 </template>

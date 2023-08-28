@@ -45,12 +45,16 @@ export default defineComponent({
     })
 
     const noHiddenList = computed(() => {
-      return props.formConfig.schemas && props.formConfig.schemas.filter(item => item.hidden !== true)
+      return (
+        props.formConfig.schemas
+          && props.formConfig.schemas.filter(item => item.hidden !== true)
+      )
     })
 
     const fApi = useVModel(props, 'fApi', emit)
 
-    const { submit, validate, clearValidate, resetFields, validateField } = useFormInstanceMethods(props, formModelNew, context, eFormModel)
+    const { submit, validate, clearValidate, resetFields, validateField }
+        = useFormInstanceMethods(props, formModelNew, context, eFormModel)
 
     const { linkOn, ...methods } = useVFormMethods(
       { formConfig: props.formConfig, formData: props.formModel } as unknown as IProps,
@@ -78,7 +82,9 @@ export default defineComponent({
     /**
      * 获取表单属性
      */
-    const formModelProps = computed(() => omit(props.formConfig, ['disabled', 'labelWidth', 'schemas']) as Recordable)
+    const formModelProps = computed(
+      () => omit(props.formConfig, ['disabled', 'labelWidth', 'schemas']) as Recordable,
+    )
 
     const handleSubmit = () => {
       submit()
@@ -127,7 +133,10 @@ export default defineComponent({
           @reset="resetFields"
         >
           <template v-if="schema && schema.componentProps" #[`schema.componentProps!.slotName`]>
-            <slot :name="schema.componentProps!.slotName" v-bind="{ formModel, field: schema.field, schema }" />
+            <slot
+              :name="schema.componentProps!.slotName"
+              v-bind="{ formModel, field: schema.field, schema }"
+            />
           </template>
         </FormRender>
       </Row>

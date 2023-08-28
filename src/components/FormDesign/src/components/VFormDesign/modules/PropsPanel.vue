@@ -28,7 +28,9 @@ export default defineComponent({
   setup() {
     const { formConfig } = useFormDesignState()
     const slotProps = computed(() => {
-      return customComponents.find(item => item.component === formConfig.value.currentItem?.component)
+      return customComponents.find(
+        item => item.component === formConfig.value.currentItem?.component,
+      )
     })
     return { formConfig, customComponents, slotProps }
   },
@@ -56,43 +58,43 @@ export default defineComponent({
 </template>
 
 <style lang="less" scoped>
-@import url('../styles/variable.less');
+  @import url('../styles/variable.less');
 
-:deep(.ant-tabs) {
-  box-sizing: border-box;
+  :deep(.ant-tabs) {
+    box-sizing: border-box;
 
-  form {
-    position: absolute;
-    width: 100%;
-    height: calc(100% - 50px);
-    margin-right: 10px;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+    form {
+      position: absolute;
+      width: 100%;
+      height: calc(100% - 50px);
+      margin-right: 10px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
-  .hint-box {
-    margin-top: 200px;
-  }
+    .hint-box {
+      margin-top: 200px;
+    }
 
-  .ant-form-item,
-  .ant-slider-with-marks {
-    margin-right: 20px;
-    margin-bottom: 0;
-    margin-left: 10px;
-  }
+    .ant-form-item,
+    .ant-slider-with-marks {
+      margin-right: 20px;
+      margin-bottom: 0;
+      margin-left: 10px;
+    }
 
-  .ant-form-item {
-    // width: 100%;
-    margin-bottom: 0;
+    .ant-form-item {
+      // width: 100%;
+      margin-bottom: 0;
 
-    .ant-form-item-label {
-      line-height: 2;
-      vertical-align: text-top;
+      .ant-form-item-label {
+        line-height: 2;
+        vertical-align: text-top;
+      }
+    }
+
+    .ant-input-number {
+      width: 100%;
     }
   }
-
-  .ant-input-number {
-    width: 100%;
-  }
-}
 </style>

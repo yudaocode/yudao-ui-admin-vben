@@ -1,55 +1,37 @@
-<script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+<script lang="ts" setup>
 import { Input } from 'ant-design-vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import { remove } from '../../../utils'
 import message from '../../../utils/message'
-import Icon from '@/components/Icon/index'
+import { Icon } from '@/components/Icon'
 
-export default defineComponent({
-  name: 'FormOptions',
-  components: { Input, Icon },
-  // props: {},
-  setup() {
-    const state = reactive({})
-    const { formConfig } = useFormDesignState()
-    const key = formConfig.value.currentItem?.component === 'TreeSelect' ? 'treeData' : 'options'
-    const addOptions = () => {
-      if (!formConfig.value.currentItem?.componentProps?.[key])
-        formConfig.value.currentItem!.componentProps![key] = []
-      const len = formConfig.value.currentItem?.componentProps?.[key].length + 1
-      formConfig.value.currentItem!.componentProps![key].push({
-        label: `选项${len}`,
-        value: `${len}`,
-      })
-    }
-    const deleteOptions = (index: number) => {
-      remove(formConfig.value.currentItem?.componentProps?.[key], index)
-    }
+const { formConfig } = useFormDesignState()
+const key = formConfig.value.currentItem?.component === 'TreeSelect' ? 'treeData' : 'options'
+function addOptions() {
+  if (!formConfig.value.currentItem?.componentProps?.[key])
+    formConfig.value.currentItem!.componentProps![key] = []
+  const len = formConfig.value.currentItem?.componentProps?.[key].length + 1
+  formConfig.value.currentItem!.componentProps![key].push({
+    label: `选项${len}`,
+    value: `${len}`,
+  })
+}
+function deleteOptions(index: number) {
+  remove(formConfig.value.currentItem?.componentProps?.[key], index)
+}
 
-    const addGridOptions = () => {
-      formConfig.value.currentItem?.columns?.push({
-        span: 12,
-        children: [],
-      })
-    }
-    const deleteGridOptions = (index: number) => {
-      if (index === 0)
-        return message.warning('请至少保留一个栅格')
+function addGridOptions() {
+  formConfig.value.currentItem?.columns?.push({
+    span: 12,
+    children: [],
+  })
+}
+function deleteGridOptions(index: number) {
+  if (index === 0)
+    return message.warning('请至少保留一个栅格')
 
-      remove(formConfig.value.currentItem!.columns!, index)
-    }
-    return {
-      ...toRefs(state),
-      formConfig,
-      addOptions,
-      deleteOptions,
-      key,
-      deleteGridOptions,
-      addGridOptions,
-    }
-  },
-})
+  remove(formConfig.value.currentItem!.columns!, index)
+}
 </script>
 
 <template>

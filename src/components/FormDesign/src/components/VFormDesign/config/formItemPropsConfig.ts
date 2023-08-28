@@ -183,7 +183,9 @@ export const baseFormItemProps: IBaseFormAttrs[] = [
     label: '控件-FormItem',
     component: 'Select',
     componentProps: {
-      options: baseComponents.concat(customComponents).map(item => ({ value: item.component, label: item.label })),
+      options: baseComponents
+        .concat(customComponents)
+        .map(item => ({ value: item.component, label: item.label })),
     },
   },
   {

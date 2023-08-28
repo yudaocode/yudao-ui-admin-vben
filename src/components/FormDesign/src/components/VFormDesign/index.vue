@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { type Ref, provide, ref } from 'vue'
+import type { Ref } from 'vue'
+import { provide, ref } from 'vue'
 import { Layout, LayoutContent, LayoutSider } from 'ant-design-vue'
-
 import { cloneDeep } from 'lodash-es'
-import { type UseRefHistoryReturn, useRefHistory } from '@vueuse/core'
+import type { UseRefHistoryReturn } from '@vueuse/core'
+import { useRefHistory } from '@vueuse/core'
 import VFormPreview from '../VFormPreview/index.vue'
 import VFormPreview2 from '../VFormPreview/useForm.vue'
 import type { IFormConfig, IVFormComponent, PropsTabKey } from '../../typings/v-form-component'
@@ -13,18 +14,14 @@ import type { IFormDesignMethods, IPropsPanel, IToolbarMethods } from '../../typ
 import CollapseItem from './modules/CollapseItem.vue'
 import FormComponentPanel from './modules/FormComponentPanel.vue'
 import JsonModal from './components/JsonModal.vue'
-
 import Toolbar from './modules/Toolbar.vue'
 import PropsPanel from './modules/PropsPanel.vue'
 import ImportJsonModal from './components/ImportJsonModal.vue'
 import CodeModal from './components/CodeModal.vue'
-
-import 'codemirror/mode/javascript/javascript'
-
 import { globalConfigState } from './config/formItemPropsConfig'
 import { useDesign } from '@/hooks/web/useDesign'
-
 import { CollapseContainer } from '@/components/Container/index'
+import 'codemirror/mode/javascript/javascript'
 
 defineProps({
   title: {
@@ -94,7 +91,9 @@ const historyReturn = useRefHistory(formConfig, {
  */
 function handleSetSelectItem(schema: IVFormComponent) {
   formConfig.value.currentItem = schema
-  handleChangePropsTabs(schema.key ? (formConfig.value.activeKey! === 1 ? 2 : formConfig.value.activeKey!) : 1)
+  handleChangePropsTabs(
+    schema.key ? (formConfig.value.activeKey! === 1 ? 2 : formConfig.value.activeKey!) : 1,
+  )
 }
 
 function setGlobalConfigState(formItem: IVFormComponent) {
@@ -154,7 +153,8 @@ function copyFormItem(formItem: IVFormComponent) {
  * @param item {IVFormComponent} 当前点击的组件
  * @param isCopy {boolean} 是否复制
  */
-function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFormComponent, isCopy = true) {
+function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFormComponent,
+  isCopy = true) {
   const key = formConfig.value.currentItem?.key
   /**
    * 遍历当表单项配置，如果是复制，则复制一份表单项，如果不是复制，则直接添加到表单项中
@@ -165,7 +165,9 @@ function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFo
     schemas.some((formItem: IVFormComponent, index: number) => {
       if (formItem.key === key) {
         // 判断是不是复制
-        isCopy ? schemas.splice(index, 0, copyFormItem(formItem)) : schemas.splice(index + 1, 0, item)
+        isCopy
+          ? schemas.splice(index, 0, copyFormItem(formItem))
+          : schemas.splice(index + 1, 0, item)
         const event = {
           newIndex: index + 1,
         }
@@ -254,7 +256,7 @@ provide<IFormDesignMethods>('formDesignMethods', {
       collapsed-width="0"
       width="270"
       :zero-width-trigger-style="{
-        'margin-top': '-70px',
+        'margin-top': '-60px',
         'background-color': 'gray',
       }"
       breakpoint="md"
@@ -293,7 +295,11 @@ provide<IFormDesignMethods>('formDesignMethods', {
         @handle-open-code-modal="handleOpenModal(codeModal!)"
         @handle-clear-form-items="handleClearFormItems"
       />
-      <FormComponentPanel :current-item="formConfig.currentItem" :data="formConfig" @handle-set-select-item="handleSetSelectItem" />
+      <FormComponentPanel
+        :current-item="formConfig.currentItem"
+        :data="formConfig"
+        @handle-set-select-item="handleSetSelectItem"
+      />
     </LayoutContent>
     <LayoutSider
       :class="`right ${prefixCls}-sider`"
@@ -301,12 +307,15 @@ provide<IFormDesignMethods>('formDesignMethods', {
       :reverse-arrow="true"
       collapsed-width="0"
       width="270"
-      :zero-width-trigger-style="{ 'margin-top': '-70px', 'background-color': 'gray' }"
+      :zero-width-trigger-style="{ 'margin-top': '-60px', 'background-color': 'gray' }"
       breakpoint="lg"
     >
       <PropsPanel ref="propsPanel" :active-key="formConfig.activeKey">
         <template v-for="item of formConfig.schemas" #[`${item.component}Props`]="data">
-          <slot :name="`${item.component}Props`" v-bind="{ formItem: data, props: data.componentProps }" />
+          <slot
+            :name="`${item.component}Props`"
+            v-bind="{ formItem: data, props: data.componentProps }"
+          />
         </template>
       </PropsPanel>
     </LayoutSider>
