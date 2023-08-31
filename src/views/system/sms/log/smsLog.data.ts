@@ -23,7 +23,7 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text, record }) => {
       if (record.userType && record.userId)
-        return `${useRender.renderDict(record.userType, DICT_TYPE.USER_TYPE)}record.userId`
+        return `${useRender.renderDict(record.userType, DICT_TYPE.USER_TYPE)} + ${record.userId}`
       else
         return text
     },

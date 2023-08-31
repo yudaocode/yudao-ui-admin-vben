@@ -314,7 +314,7 @@ export function useFormEvents({
     const currentFieldsValue = getFieldsValue()
     schemas.forEach((item) => {
       if (
-        item.component != 'Divider'
+        item.component !== 'Divider'
         && Reflect.has(item, 'field')
         && item.field
         && !isNullOrUnDef(item.defaultValue)
