@@ -186,10 +186,10 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
   }
 
   // Get selected node
-  function getSelectedNode(key: KeyType, list?: TreeItem[], selectedNode?: TreeItem | null) {
+  function getSelectedNode(key: KeyType, treeList?: TreeItem[], selectedNode?: TreeItem | null) {
     if (!key && key !== 0)
       return null
-    const treeData = list || unref(treeDataRef)
+    const treeData = treeList || unref(treeDataRef)
     const { key: keyField, children: childrenField } = unref(getFieldNames)
     if (!keyField)
       return

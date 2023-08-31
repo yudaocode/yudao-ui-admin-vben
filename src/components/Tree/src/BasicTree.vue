@@ -52,6 +52,18 @@ export default defineComponent({
       }
     })
 
+    const {
+      deleteNodeByKey,
+      insertNodeByKey,
+      insertNodesByKey,
+      filterByLevel,
+      updateNodeByKey,
+      getAllKeys,
+      getChildrenKeys,
+      getEnabledKeys,
+      getSelectedNode,
+    } = useTree(treeDataRef, getFieldNames)
+
     const getBindValues = computed(() => {
       const propsData = {
         'blockNode': true,
@@ -98,18 +110,6 @@ export default defineComponent({
     const getNotFound = computed((): boolean => {
       return !getTreeData.value || getTreeData.value.length === 0
     })
-
-    const {
-      deleteNodeByKey,
-      insertNodeByKey,
-      insertNodesByKey,
-      filterByLevel,
-      updateNodeByKey,
-      getAllKeys,
-      getChildrenKeys,
-      getEnabledKeys,
-      getSelectedNode,
-    } = useTree(treeDataRef, getFieldNames)
 
     function getIcon(params: TreeItem, icon?: string) {
       if (!icon) {

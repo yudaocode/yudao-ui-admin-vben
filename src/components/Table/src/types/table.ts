@@ -257,7 +257,7 @@ export interface BasicTableProps<T = any> {
    * Customize row expand Icon.
    * @type Function | VNodeChild
    */
-  expandIcon?: Function | VNodeChild | JSX.Element
+  expandIcon?: Fn | VNodeChild | JSX.Element
 
   /**
    * Whether to expand row by clicking anywhere in the whole row
@@ -275,7 +275,7 @@ export interface BasicTableProps<T = any> {
    * Table footer renderer
    * @type Function | VNodeChild
    */
-  footer?: Function | VNodeChild | JSX.Element
+  footer?: Fn | VNodeChild | JSX.Element
 
   /**
    * Indent size in pixels of tree data
@@ -366,7 +366,7 @@ export interface BasicTableProps<T = any> {
    *
    * @version 1.5.4
    */
-  transformCellText?: Function
+  transformCellText?: Fn
 
   /**
    * Callback executed before editable cell submit value, not for row-editor

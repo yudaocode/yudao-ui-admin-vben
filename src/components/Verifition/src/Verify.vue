@@ -110,7 +110,7 @@ export default {
 </script>
 
 <template>
-  <div v-show="showBox" :class="mode == 'pop' ? 'mask' : ''">
+  <div v-show="showBox" :class="mode === 'pop' ? 'mask' : ''">
     <div :class="mode === 'pop' ? 'verifybox' : ''" :style="{ 'max-width': `${parseInt(imgSize.width) + 20}px` }">
       <div v-if="mode === 'pop'" class="verifybox-top">
         {{ t('component.captcha.verification') }}
