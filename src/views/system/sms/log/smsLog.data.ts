@@ -3,6 +3,15 @@ import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
+let channelOptions: any[] = []
+
+async function getchannelList() {
+  const res = await getSimpleSmsChannels()
+  channelOptions = res
+}
+
+await getchannelList()
+
 export const columns: BasicColumn[] = [
   {
     title: '日志编号',
@@ -23,9 +32,8 @@ export const columns: BasicColumn[] = [
     width: 180,
     customRender: ({ text, record }) => {
       if (record.userType && record.userId)
-        return `${useRender.renderDict(record.userType, DICT_TYPE.USER_TYPE)} + ${record.userId}`
-      else
-        return text
+        return useRender.renderDict(record.userType, DICT_TYPE.USER_TYPE)
+      else return text
     },
   },
   {
@@ -54,7 +62,15 @@ export const columns: BasicColumn[] = [
     dataIndex: 'channelCode',
     width: 180,
     customRender: ({ text, record }) => {
-      return useRender.renderText(record.channelId, '') || `${useRender.renderDict(text, DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE)}` || ''
+      if (!text)
+        return '未设置'
+
+      for (const channel of channelOptions) {
+        if (record.channelId === channel.id)
+          return channel.signature
+      }
+
+      return `找不到签名：${record.channelId}`
     },
   },
   {
