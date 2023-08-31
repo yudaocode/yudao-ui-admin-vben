@@ -9,7 +9,7 @@ export const modalProps = {
   open: { type: Boolean },
   scrollTop: { type: Boolean, default: true },
   height: { type: Number },
-  minHeight: { type: Number },
+  minHeight: { type: Number, default: 600 },
   // open drag
   draggable: { type: Boolean, default: true },
   centered: { type: Boolean },
