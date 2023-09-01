@@ -28,24 +28,24 @@
 - 系统管理 已完成
 - 基础设施 已完成
 - 支付管理 已完成
-- 公众号   进行中 50%  预计年底
-- 工作流   进行中 40%  预计年底
+- 公众号 进行中 50% 预计年底
+- 工作流 进行中 40% 预计年底
 - 升级 antdv 4.0 已完成
 
 ## 框架
 
-| 框架 | 说明 | 版本 |
-| --- | --- | --- |
-| [Vue](https://staging-cn.vuejs.org/) | Vue 框架 | 3.3.4 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 4.4.9 |
-| [ant-design-vue](https://antdv.com/) | ant-design-vue | 4.0.2 |
-| [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 的超集 | 5.1.6 |
-| [pinia](https://pinia.vuejs.org/) | Vue 存储库 替代 vuex5 | 2.1.6 |
-| [vueuse](https://vueuse.org/) | 常用工具集 | 10.4.1 |
-| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 9.2.2 |
-| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.2.4 |
-| [unocss](https://uno.antfu.me/) | 原子 css | 0.55.3 |
-| [iconify](https://icon-sets.iconify.design/) | 在线图标库 | 3.1.1 |
+| 框架                                                                 | 说明                  | 版本   |
+| -------------------------------------------------------------------- | --------------------- | ------ |
+| [Vue](https://staging-cn.vuejs.org/)                                 | Vue 框架              | 3.3.4  |
+| [Vite](https://cn.vitejs.dev//)                                      | 开发与构建工具        | 4.4.9  |
+| [ant-design-vue](https://antdv.com/)                                 | ant-design-vue        | 4.0.2  |
+| [TypeScript](https://www.typescriptlang.org/docs/)                   | JavaScript 的超集     | 5.1.6  |
+| [pinia](https://pinia.vuejs.org/)                                    | Vue 存储库 替代 vuex5 | 2.1.6  |
+| [vueuse](https://vueuse.org/)                                        | 常用工具集            | 10.4.1 |
+| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化                | 9.2.2  |
+| [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.4  |
+| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.55.4 |
+| [iconify](https://icon-sets.iconify.design/)                         | 在线图标库            | 3.1.1  |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview2.png)
@@ -121,6 +121,6 @@ pnpm build
 支持现代浏览器, 不支持 IE
 
 | ![alt IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_32x32.png) | ![alt Edge](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_32x32.png) | ![alt Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_32x32.png) | ![alt Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_32x32.png) | ![alt Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_32x32.png) |
-| :-: | :-: | :-: | :-: | :-: |
-| [IE](http://godban.github.io/browsers-support-badges/) | [Edge](http://godban.github.io/browsers-support-badgess/) | [Firefox](http://godban.github.io/browsers-support-badges/) | [Chrome](http://godban.github.io/browsers-support-badges/) | [Safari](http://godban.github.io/browsers-support-badges/)|
-| not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+| :---------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
+|                     [IE](http://godban.github.io/browsers-support-badges/)                      |                     [Edge](http://godban.github.io/browsers-support-badgess/)                     |                        [Firefox](http://godban.github.io/browsers-support-badges/)                         |                       [Chrome](http://godban.github.io/browsers-support-badges/)                        |                       [Safari](http://godban.github.io/browsers-support-badges/)                        |
+|                                           not support                                           |                                          last 2 versions                                          |                                              last 2 versions                                               |                                             last 2 versions                                             |                                             last 2 versions                                             |
