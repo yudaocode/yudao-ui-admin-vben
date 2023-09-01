@@ -129,7 +129,7 @@
     "stylelint-prettier": "^4.0.2",
     "terser": "^5.19.3",
     "typescript": "^5.1.6",
-    "unocss": "^0.55.3",
+    "unocss": "^0.55.4",
     "vite": "^4.4.9",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-mkcert": "^1.16.0",
