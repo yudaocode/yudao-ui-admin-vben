@@ -7,7 +7,7 @@ export interface SimpleRootMenuContextProps {
   activeName: Ref<string | number>
 }
 
-const key: InjectionKey<SimpleRootMenuContextProps> = Symbol()
+const key: InjectionKey<SimpleRootMenuContextProps> = Symbol('simple-menu-context')
 
 export function createSimpleRootMenuContext(context: SimpleRootMenuContextProps) {
   return createContext<SimpleRootMenuContextProps>(context, key, { readonly: false, native: true })

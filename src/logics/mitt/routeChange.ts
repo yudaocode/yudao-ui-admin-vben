@@ -8,7 +8,7 @@ import { getRawRoute } from '@/utils'
 
 const emitter = mitt()
 
-const key = Symbol()
+const key = Symbol('route-change')
 
 let lastChangeTab: RouteLocationNormalized
 

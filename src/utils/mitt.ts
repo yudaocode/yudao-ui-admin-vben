@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /**
  * copy to https://github.com/developit/mitt
  * Expand clear method

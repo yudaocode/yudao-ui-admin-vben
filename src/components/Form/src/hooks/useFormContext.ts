@@ -6,7 +6,7 @@ export interface FormContextProps {
   submitAction: () => Promise<void>
 }
 
-const key: InjectionKey<FormContextProps> = Symbol()
+const key: InjectionKey<FormContextProps> = Symbol('form-context')
 
 export function createFormContext(context: FormContextProps) {
   return createContext<FormContextProps>(context, key)

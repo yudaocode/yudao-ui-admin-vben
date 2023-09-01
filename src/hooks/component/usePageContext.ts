@@ -7,7 +7,7 @@ export interface PageContextProps {
   setPageHeight: (height: number) => Promise<void>
 }
 
-const key: InjectionKey<PageContextProps> = Symbol()
+const key: InjectionKey<PageContextProps> = Symbol('page-context')
 
 export function createPageContext(context: PageContextProps) {
   return createContext<PageContextProps>(context, key, { native: true })

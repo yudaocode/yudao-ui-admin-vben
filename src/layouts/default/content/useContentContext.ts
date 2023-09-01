@@ -6,7 +6,7 @@ export interface ContentContextProps {
   setPageHeight: (height: number) => Promise<void>
 }
 
-const key: InjectionKey<ContentContextProps> = Symbol()
+const key: InjectionKey<ContentContextProps> = Symbol('content-context')
 
 export function createContentContext(context: ContentContextProps) {
   return createContext<ContentContextProps>(context, key, { native: true })

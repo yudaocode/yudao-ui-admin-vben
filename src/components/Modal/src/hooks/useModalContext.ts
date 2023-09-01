@@ -5,7 +5,7 @@ export interface ModalContextProps {
   redoModalHeight: () => void
 }
 
-const key: InjectionKey<ModalContextProps> = Symbol()
+const key: InjectionKey<ModalContextProps> = Symbol('modal-context')
 
 export function createModalContext(context: ModalContextProps) {
   return createContext<ModalContextProps>(context, key)

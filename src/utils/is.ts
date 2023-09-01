@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const toString = Object.prototype.toString
 
 export function is(val: unknown, type: string) {
@@ -57,7 +58,7 @@ export function isString(val: unknown): val is string {
   return is(val, 'String')
 }
 
-export function isFunction(val: unknown): val is Function {
+export function isFunction(val: unknown): val is Fn {
   return typeof val === 'function'
 }
 

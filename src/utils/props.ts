@@ -6,10 +6,10 @@ import type { ExtractPropTypes } from 'vue'
 import type { Mutable } from './types'
 import { isObject } from '@/utils/is'
 
-const wrapperKey = Symbol()
+const wrapperKey = Symbol('wrapperKey')
 export interface PropWrapper<T> { [wrapperKey]: T }
 
-export const propKey = Symbol()
+export const propKey = Symbol('propKey')
 
 type ResolveProp<T> = ExtractPropTypes<{
   key: { type: T; required: true }

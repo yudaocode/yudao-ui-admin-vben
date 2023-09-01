@@ -28,6 +28,7 @@ export function getSlot(slots: Slots, slot = 'default', data?: any, opts?: Rende
 export function extendSlots(slots: Slots, excludeKeys: string[] = []) {
   const slotKeys = Object.keys(slots)
   const ret: any = {}
+  // eslint-disable-next-line array-callback-return
   slotKeys.map((key) => {
     if (excludeKeys.includes(key))
       return null
