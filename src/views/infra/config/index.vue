@@ -65,7 +65,7 @@ async function handleDelete(record: Recordable) {
         <a-button v-auth="['infra:config:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <a-button v-auth="['infra:config:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+        <a-button v-auth="['infra:config:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
           {{ t('action.export') }}
         </a-button>
       </template>

@@ -37,7 +37,7 @@ async function handleExport() {
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button v-auth="['system:login-log:export']" type="warning" @click="handleExport">
+        <a-button v-auth="['system:login-log:export']" @click="handleExport">
           {{ t('action.export') }}
         </a-button>
       </template>

@@ -51,7 +51,7 @@ function handleShowInfo(record: Recordable) {
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+        <a-button :pre-icon="IconEnum.EXPORT" @click="handleExport">
           {{ t('action.export') }}
         </a-button>
       </template>

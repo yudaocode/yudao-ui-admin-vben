@@ -96,7 +96,7 @@ function handleSelect(deptId = '') {
         <a-button v-auth="['system:user:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <a-button v-auth="['system:user:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+        <a-button v-auth="['system:user:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
           {{ t('action.export') }}
         </a-button>
       </template>

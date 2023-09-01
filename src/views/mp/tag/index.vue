@@ -63,7 +63,7 @@ async function handleDelete(record: Recordable) {
         <a-button v-auth="['mp:tag:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <a-button v-auth="['mp:tag:sync']" type="warning" :pre-icon="IconEnum.RESET" @click="handleSync">
+        <a-button v-auth="['mp:tag:sync']" :pre-icon="IconEnum.RESET" @click="handleSync">
           {{ t('action.sync') }}
         </a-button>
       </template>

@@ -49,7 +49,7 @@ async function handleCancel(record: Recordable) {
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button v-auth="['bpm:process-instance:query']" type="warning" :pre-icon="IconEnum.ADD" @click="handleCreate">
+        <a-button v-auth="['bpm:process-instance:query']" :pre-icon="IconEnum.ADD" @click="handleCreate">
           发起流程
         </a-button>
       </template>

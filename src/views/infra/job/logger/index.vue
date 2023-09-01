@@ -55,7 +55,7 @@ async function handleExport() {
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button v-auth="['infra:job:export']" type="warning" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+        <a-button v-auth="['infra:job:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
           {{ t('action.export') }}
         </a-button>
       </template>
