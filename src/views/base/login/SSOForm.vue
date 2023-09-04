@@ -3,7 +3,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { Button, Checkbox, Col, Form, Row } from 'ant-design-vue'
 
-import { useFormValid } from './useLogin'
+import { useFormValid, useLoginState } from './useLogin'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
@@ -16,6 +16,8 @@ const { t } = useI18n()
 const { query } = useRoute()
 const { notification, createErrorModal } = useMessage()
 const { prefixCls } = useDesign('login')
+
+const { handleBackLogin } = useLoginState()
 
 const formRef = ref()
 const loading = ref(false)
@@ -189,7 +191,7 @@ onMounted(() => {
       <Button type="primary" size="large" block :loading="loading" @click="handleAuthorize(true)">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <Button size="large" class="mt-4 enter-x" block @click="handleAuthorize(false)">
+      <Button size="large" class="mt-4 enter-x" block @click="handleBackLogin">
         {{ t('common.cancelText') }}
       </Button>
     </FormItem>
