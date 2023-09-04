@@ -107,12 +107,22 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
 
       const [startTimeFormat, endTimeFormat] = Array.isArray(format) ? format : [format, format]
 
-      values[startTimeKey] = dateUtil(startTime).format(startTimeFormat)
-      values[endTimeKey] = dateUtil(endTime).format(endTimeFormat)
+      values[startTimeKey] = formatTime(startTime, startTimeFormat)
+      values[endTimeKey] = formatTime(endTime, endTimeFormat)
       Reflect.deleteProperty(values, field)
     }
 
     return values
+  }
+
+  function formatTime(time: string, format: string) {
+    if (format === 'timestamp')
+      return dateUtil(time).unix()
+
+    else if (format === 'timestampStartDay')
+      return dateUtil(time).startOf('day').unix()
+
+    return dateUtil(time).format(format)
   }
 
   function initDefault() {
