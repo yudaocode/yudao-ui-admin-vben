@@ -1,3 +1,8 @@
+import type {
+  AsyncComponentLoader,
+  Component,
+  ComponentPublicInstance,
+} from 'vue'
 import {
   defineAsyncComponent,
   // FunctionalComponent, CSSProperties
@@ -27,7 +32,11 @@ interface Options {
   retry?: boolean
 }
 
-export function createAsyncComponent(loader: Fn, options: Options = {}) {
+export function createAsyncComponent<
+  T extends Component = {
+    new (): ComponentPublicInstance
+  },
+>(loader: AsyncComponentLoader<T>, options: Options = {}) {
   const { size = 'small', delay = 100, timeout = 30000, loading = false, retry = true } = options
   return defineAsyncComponent({
     loader,
