@@ -8,7 +8,7 @@ import { propTypes } from '@/utils/propTypes'
 defineOptions({ name: 'DropdownMenuItem' })
 
 const props = defineProps({
-  // eslint-disable-next-line
+  // eslint-disable-next-line vue/no-reserved-props
   key: propTypes.string,
   text: propTypes.string,
   icon: propTypes.string,

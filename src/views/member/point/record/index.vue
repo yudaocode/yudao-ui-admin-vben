@@ -5,7 +5,7 @@ import { getRecordPage } from '@/api/member/point/record'
 
 defineOptions({ name: 'PointRecord' })
 
-const [registerTable, { reload }] = useTable({
+const [registerTable] = useTable({
   title: '积分记录列表',
   api: getRecordPage,
   columns,

@@ -59,7 +59,6 @@ export enum IconEnum {
   TEST = 'ant-design:deployment-unit-outlined',
   EDIT = 'clarity:note-edit-line',
   AUTH = 'ant-design:safety-certificate-outlined',
-  DATA = 'clarity:note-edit-line',
   DELETE = 'ant-design:delete-outlined',
   SEARCH = 'ant-design:search-outlined',
   RESET = 'ant-design:sync-outlined',

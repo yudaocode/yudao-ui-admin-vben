@@ -268,6 +268,7 @@ export function handleTree2(data, id, parentId, children, rootId) {
       // 返回每一项的子级数组
       return father[id] === child[parentId]
     })
+    // eslint-disable-next-line no-unused-expressions
     branchArr.length > 0 ? (father.children = branchArr) : ''
     // 返回第一层
     return father[parentId] === rootId

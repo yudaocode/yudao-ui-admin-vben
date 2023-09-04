@@ -135,7 +135,7 @@ export interface ColumnProps<T> {
    * Sort function for local sort, see Array.sort's compareFunction. If you need sort buttons only, set to true
    * @type boolean | Function
    */
-  sorter?: boolean | Function
+  sorter?: boolean | Fn
 
   /**
    * Order of sorted values: 'ascend' 'descend' false

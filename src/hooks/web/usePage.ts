@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import type { RouteLocationRaw, Router } from 'vue-router'
 
 import { unref } from 'vue'

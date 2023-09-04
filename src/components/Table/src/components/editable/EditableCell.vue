@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <script lang="tsx">
 import type { CSSProperties } from 'vue'
 import { computed, defineComponent, nextTick, ref, toRaw, unref, watchEffect } from 'vue'
@@ -138,6 +139,11 @@ export default defineComponent({
       return option?.label ?? value
     })
 
+    const getRowEditable = computed(() => {
+      const { editable } = props.record || {}
+      return !!editable
+    })
+
     const getWrapperStyle = computed((): CSSProperties => {
       if (unref(getIsCheckComp) || unref(getRowEditable))
         return {}
@@ -150,11 +156,6 @@ export default defineComponent({
     const getWrapperClass = computed(() => {
       const { align = 'center' } = props.column
       return `edit-cell-align-${align}`
-    })
-
-    const getRowEditable = computed(() => {
-      const { editable } = props.record || {}
-      return !!editable
     })
 
     watchEffect(() => {
@@ -339,10 +340,8 @@ export default defineComponent({
     }
 
     function initCbs(cbs: 'submitCbs' | 'validCbs' | 'cancelCbs', handle: Fn) {
-      if (props.record) {
-        /* eslint-disable  */
+      if (props.record)
         isArray(props.record[cbs]) ? props.record[cbs]?.push(handle) : (props.record[cbs] = [handle])
-      }
     }
 
     if (props.record) {
@@ -351,19 +350,19 @@ export default defineComponent({
       initCbs('cancelCbs', handleCancel)
 
       if (props.column.dataIndex) {
-        if (!props.record.editValueRefs) props.record.editValueRefs = {}
+        if (!props.record.editValueRefs)
+          props.record.editValueRefs = {}
         props.record.editValueRefs[props.column.dataIndex as any] = currentValueRef
       }
-      /* eslint-disable  */
       props.record.onCancelEdit = () => {
-        isArray(props.record?.cancelCbs) && props.record?.cancelCbs.forEach((fn) => fn())
+        isArray(props.record?.cancelCbs) && props.record?.cancelCbs.forEach(fn => fn())
       }
-      /* eslint-disable */
       props.record.onSubmitEdit = async () => {
         if (isArray(props.record?.submitCbs)) {
-          if (!props.record?.onValid?.()) return
+          if (!props.record?.onValid?.())
+            return
           const submitFns = props.record?.submitCbs || []
-          submitFns.forEach((fn) => fn(false, false))
+          submitFns.forEach(fn => fn(false, false))
           table.emit?.('edit-row-end')
           return true
         }
@@ -392,7 +391,7 @@ export default defineComponent({
       getValues,
       handleEnter,
       handleSubmitClick,
-      spinning
+      spinning,
     }
   },
   render() {
@@ -406,11 +405,11 @@ export default defineComponent({
           <div class="cell-content" title={this.column.ellipsis ? this.getValues ?? '' : ''}>
             {this.column.editRender
               ? this.column.editRender({
-                  text: this.value,
-                  record: this.record as Recordable,
-                  column: this.column,
-                  index: this.index
-                })
+                text: this.value,
+                record: this.record as Recordable,
+                column: this.column,
+                index: this.index,
+              })
               : this.getValues ?? '\u00A0'}
           </div>
           {!this.column.editRow && <FormOutlined class={`${this.prefixCls}__normal-icon`} />}
@@ -442,9 +441,10 @@ export default defineComponent({
         )}
       </div>
     )
-  }
+  },
 })
 </script>
+
 <style lang="less">
 @prefix-cls: ~'@{namespace}-editable-cell';
 

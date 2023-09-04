@@ -16,6 +16,7 @@ export function useDesign(scope: string) {
   // }
   return {
     // prefixCls: computed(() => `${values.prefixCls}-${scope}`),
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     prefixCls: `${values.prefixCls}-${scope}`,
     prefixVar: values.prefixCls,
     // style,

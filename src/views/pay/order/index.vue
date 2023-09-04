@@ -59,7 +59,7 @@ async function handleExport() {
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.DATA, label: t('action.detail'), auth: 'pay:order:query', onClick: handleQueryDetails.bind(null, record) },
+              { icon: IconEnum.VIEW, label: t('action.detail'), auth: 'pay:order:query', onClick: handleQueryDetails.bind(null, record) },
             ]"
           />
         </template>

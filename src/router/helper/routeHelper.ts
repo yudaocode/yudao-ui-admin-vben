@@ -80,7 +80,7 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
   routeList.forEach((route) => {
     if (isUrl(route.path))
       route.component = 'IFrame'
-    else if (route.children && route.parentId == 0)
+    else if (route.children && route.parentId === 0)
       route.component = 'LAYOUT'
     else if (!route.children)
       route.component = route.component as string

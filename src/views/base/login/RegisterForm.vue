@@ -32,6 +32,7 @@ const getShow = computed(() => unref(getLoginState) === LoginStateEnum.REGISTER)
 async function handleRegister() {
   const data = await validForm()
   if (!data)
+    // eslint-disable-next-line no-useless-return
     return
 }
 </script>

@@ -8,6 +8,7 @@ import { useLocaleStoreWithOut } from '@/store/modules/locale'
 
 const { fallback, availableLocales } = localeSetting
 
+// eslint-disable-next-line import/no-mutable-exports
 export let i18n: ReturnType<typeof createI18n>
 
 async function createI18nOptions(): Promise<I18nOptions> {
