@@ -1,6 +1,6 @@
 {
   "name": "yudao-ui-admin-vben",
-  "version": "1.8.0-snapshot",
+  "version": "1.8.1-snapshot",
   "packageManager": "pnpm@8.6.0",
   "author": {
     "name": "xingyuv",
