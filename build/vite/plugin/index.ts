@@ -5,7 +5,6 @@ import progress from 'vite-plugin-progress'
 import purgeIcons from 'vite-plugin-purge-icons'
 import VitePluginCertificate from 'vite-plugin-mkcert'
 import UnoCSS from 'unocss/vite'
-import { presetTypography, presetUno } from 'unocss'
 import { configPwaConfig } from './pwa'
 import { configHtmlPlugin } from './html'
 import { configCompressPlugin } from './compress'
@@ -21,9 +20,7 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     // have to
     vueJsx(),
     // UnoCSS
-    UnoCSS({
-      presets: [presetUno(), presetTypography()],
-    }),
+    UnoCSS(),
     // 打包进度条
     progress(),
     VitePluginCertificate({
