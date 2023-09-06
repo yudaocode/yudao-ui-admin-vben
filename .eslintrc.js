@@ -3,7 +3,7 @@ const process = require('node:process')
 process.env.ESLINT_TSCONFIG = 'tsconfig.json'
 
 module.exports = {
-  extends: '@antfu',
+  extends: ['@antfu', '@unocss'],
   rules: {
     'max-len': ['error', { code: 140, tabWidth: 2, ignoreComments: true }],
     '@typescript-eslint/no-floating-promises': 'off',
