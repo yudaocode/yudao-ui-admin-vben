@@ -15,6 +15,11 @@ export function getMemberTag(id: number) {
   return defHttp.get({ url: `/member/tag/get?id=${id}` })
 }
 
+// 查询会员标签 - 精简信息列表
+export function getSimpleTagList() {
+  return defHttp.get({ url: '/member/tag/list-all-simple' })
+}
+
 // 新增会员标签
 export function createMemberTag(data: TagVO) {
   return defHttp.post({ url: '/member/tag/create', data })

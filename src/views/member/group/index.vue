@@ -1,28 +1,26 @@
 <script lang="ts" setup>
-import UserModal from './UserModal.vue'
-import UpdateLevelModal from './UpdateLevelModal.vue'
-import { columns, searchFormSchema } from './user.data'
+import GroupModal from './GroupModal.vue'
+import { columns, searchFormSchema } from './group.data'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
-import { getUserPage } from '@/api/member/user'
+import { getGroupPage } from '@/api/member/group'
 
-defineOptions({ name: 'MemberUser' })
+defineOptions({ name: 'MemberGroup' })
 
 const { t } = useI18n()
 const [registerModal, { openModal }] = useModal()
-const [registerUpdateLevelModal, { openModal: openUpdateLevelModal }] = useModal()
 const [registerTable, { reload }] = useTable({
-  title: '会员列表',
-  api: getUserPage,
+  title: '会员分组',
+  api: getGroupPage,
   columns,
   formConfig: { labelWidth: 120, schemas: searchFormSchema },
   useSearchForm: true,
   showTableSetting: true,
   showIndexColumn: false,
   actionColumn: {
-    width: 200,
+    width: 140,
     title: t('common.action'),
     dataIndex: 'action',
     fixed: 'right',
@@ -31,9 +29,6 @@ const [registerTable, { reload }] = useTable({
 
 function handleEdit(record: Recordable) {
   openModal(true, { record, isUpdate: true })
-}
-function updateLevelFormRef(record: Recordable) {
-  openUpdateLevelModal(true, { record, isUpdate: true })
 }
 </script>
 
@@ -44,14 +39,12 @@ function updateLevelFormRef(record: Recordable) {
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'member:user:update', onClick: handleEdit.bind(null, record) },
-              { icon: IconEnum.EDIT, label: '修改等级', auth: 'member:user:update-level', onClick: updateLevelFormRef.bind(null, record) },
+              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'member:group:update', onClick: handleEdit.bind(null, record) },
             ]"
           />
         </template>
       </template>
     </BasicTable>
-    <UserModal @register="registerModal" @success="reload()" />
-    <UpdateLevelModal @register="registerUpdateLevelModal" @success="reload()" />
+    <GroupModal @register="registerModal" @success="reload()" />
   </div>
 </template>

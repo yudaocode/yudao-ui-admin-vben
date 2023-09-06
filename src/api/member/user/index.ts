@@ -32,3 +32,8 @@ export function getUser(id: number) {
 export function updateUser(data: UserVO) {
   return defHttp.put({ url: '/member/user/update', data })
 }
+
+// 修改会员用户等级
+export function updateUserLevel(data: any) {
+  return defHttp.put({ url: '/member/user/update-level', data })
+}

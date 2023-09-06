@@ -1,4 +1,6 @@
-import { getMemberTagPage } from '@/api/member/tag'
+import { getSimpleGroupList } from '@/api/member/group'
+import { getSimpleLevelList } from '@/api/member/level'
+import { getMemberTagPage, getSimpleTagList } from '@/api/member/tag'
 import { getAreaTree } from '@/api/system/area'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
@@ -28,11 +30,16 @@ export const columns: BasicColumn[] = [
     dataIndex: 'nickname',
     width: 100,
   },
-  // {
-  //   title: '分组',
-  //   dataIndex: 'id',
-  //   width: 100,
-  // },
+  {
+    title: '等级',
+    dataIndex: 'levelName',
+    width: 100,
+  },
+  {
+    title: '分组',
+    dataIndex: 'groupName',
+    width: 100,
+  },
   {
     title: '用户标签',
     dataIndex: 'tagNames',
@@ -41,11 +48,11 @@ export const columns: BasicColumn[] = [
       return useRender.renderTags(text)
     },
   },
-  // {
-  //   title: '积分',
-  //   dataIndex: 'nickname',
-  //   width: 100,
-  // },
+  {
+    title: '积分',
+    dataIndex: 'point',
+    width: 100,
+  },
   {
     title: '状态',
     dataIndex: 'status',
@@ -100,7 +107,29 @@ export const searchFormSchema: FormSchema[] = [
     field: 'tagIds',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getMemberTagPage({}),
+      api: () => getSimpleTagList(),
+      labelField: 'name',
+      valueField: 'id',
+    },
+    colProps: { span: 8 },
+  },
+  {
+    label: '用户等级',
+    field: 'levelId',
+    component: 'ApiSelect',
+    componentProps: {
+      api: () => getSimpleLevelList(),
+      labelField: 'name',
+      valueField: 'id',
+    },
+    colProps: { span: 8 },
+  },
+  {
+    label: '用户分组',
+    field: 'groupId',
+    component: 'ApiSelect',
+    componentProps: {
+      api: () => getSimpleGroupList(),
       labelField: 'name',
       valueField: 'id',
     },
@@ -183,7 +212,17 @@ export const formSchema: FormSchema[] = [
     field: 'tagIds',
     component: 'ApiSelect',
     componentProps: {
-      api: () => getMemberTagPage({}),
+      api: () => getSimpleTagList(),
+      labelField: 'name',
+      valueField: 'id',
+    },
+  },
+  {
+    label: '用户分组',
+    field: 'groupId',
+    component: 'ApiSelect',
+    componentProps: {
+      api: () => getSimpleGroupList(),
       labelField: 'name',
       valueField: 'id',
     },
@@ -191,6 +230,37 @@ export const formSchema: FormSchema[] = [
   {
     label: '会员备注',
     field: 'mark',
+    component: 'InputTextArea',
+  },
+]
+
+export const updateLevelFormSchema: FormSchema[] = [
+  {
+    label: '编号',
+    field: 'id',
+    show: false,
+    component: 'Input',
+  },
+  {
+    label: '用户昵称',
+    field: 'nickname',
+    dynamicDisabled: true,
+    component: 'Input',
+  },
+  {
+    label: '用户等级',
+    field: 'levelId',
+    component: 'ApiSelect',
+    componentProps: {
+      api: () => getSimpleLevelList(),
+      labelField: 'name',
+      valueField: 'id',
+    },
+  },
+  {
+    label: '修改原因',
+    field: 'reason',
+    required: true,
     component: 'InputTextArea',
   },
 ]
