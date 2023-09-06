@@ -121,9 +121,11 @@ export default {
       </div>
       <div class="verifybox-bottom" :style="{ padding: mode === 'pop' ? '10px' : '0' }">
         <!-- 验证码容器 -->
-        <component :is="componentType" v-if="componentType" ref="instance" :captcha-type="captchaType" :type="verifyType"
+        <component
+          :is="componentType" v-if="componentType" ref="instance" :captcha-type="captchaType" :type="verifyType"
           :figure="figure" :arith="arith" :mode="mode" :v-space="vSpace" :explain="explain" :img-size="imgSize"
-          :block-size="blockSize" :bar-size="barSize" />
+          :block-size="blockSize" :bar-size="barSize"
+        />
       </div>
     </div>
   </div>

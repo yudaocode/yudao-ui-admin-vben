@@ -119,7 +119,7 @@ async function copy(text: string) {
 <template>
   <BasicModal v-bind="$attrs" :default-fullscreen="true" title="预览代码" @register="registerModal">
     <div class="flex">
-      <Card class="w-1/4 min-w-130">
+      <Card class="min-w-130 w-1/4">
         <BasicTree
           title="文件夹列表" toolbar :default-expand-all="true" tree-wrapper-class-name="h-[800px] overflow-auto"
           :click-row-to-expand="false" :tree-data="fileTree" :field-names="{ key: 'id', title: 'label' }"

@@ -60,7 +60,7 @@ function toggle() {
     <div class="flex">
       <div class="w-1/3 p-4">
         <div class="flex items-center">
-          <span class="text-lg font-medium mr-4"> 连接状态: </span>
+          <span class="mr-4 text-lg font-medium"> 连接状态: </span>
           <Tag :color="getTagColor">
             {{ status }}
           </Tag>
@@ -77,7 +77,7 @@ function toggle() {
             {{ getIsOpen ? '关闭连接' : '开启连接' }}
           </a-button>
         </div>
-        <p class="text-lg font-medium mt-4">
+        <p class="mt-4 text-lg font-medium">
           设置
         </p>
         <hr class="my-4">
@@ -89,15 +89,15 @@ function toggle() {
         </a-button>
       </div>
 
-      <div class="w-2/3 ml-4 p-4">
-        <span class="text-lg font-medium mr-4"> 消息记录: </span>
+      <div class="ml-4 w-2/3 p-4">
+        <span class="mr-4 text-lg font-medium"> 消息记录: </span>
         <hr class="my-4">
 
         <div class="max-h-80 overflow-auto">
           <ul>
             <li v-for="item in getList" :key="item.time" class="mt-2">
               <div class="flex items-center">
-                <span class="mr-2 text-primary font-medium">收到消息:</span>
+                <span class="mr-2 font-medium text-primary">收到消息:</span>
                 <span>{{ formatToDateTime(item.time) }}</span>
               </div>
               <div>

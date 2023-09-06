@@ -117,7 +117,7 @@ async function getSmsCode() {
 <template>
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form ref="formRef" class="p-4 enter-x" :model="formData" :rules="getFormRules">
+    <Form ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules">
       <FormItem name="tenantName" class="enter-x">
         <Input
           v-if="tenantEnable === 'true'"

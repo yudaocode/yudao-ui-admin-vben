@@ -60,7 +60,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="form-panel v-form-container">
+  <div class="v-form-container form-panel">
     <Empty
       v-show="formConfig.schemas.length === 0"
       class="empty-text"

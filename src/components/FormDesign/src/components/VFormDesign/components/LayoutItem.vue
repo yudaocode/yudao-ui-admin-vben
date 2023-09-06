@@ -76,7 +76,7 @@ export default defineComponent({
                 handle: '.drag-move',
               }"
               v-model="colItem.children"
-              class="list-main draggable-box"
+              class="draggable-box list-main"
               :component-data="{ name: 'list', tag: 'div', type: 'transition-group' }"
               item-key="key"
               @start="$emit('dragStart', $event, colItem.children)"

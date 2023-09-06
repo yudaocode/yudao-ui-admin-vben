@@ -77,7 +77,7 @@ onMounted(update)
 
 <template>
   <SvgIcon v-if="isSvgIcon" :size="size" :name="getSvgIcon" class="anticon" :class="[$attrs.class]" :spin="spin" />
-  <span v-else ref="elRef" class="app-iconify anticon" :class="[$attrs.class, spin && 'app-iconify-spin']" :style="getWrapStyle" />
+  <span v-else ref="elRef" class="anticon app-iconify" :class="[$attrs.class, spin && 'app-iconify-spin']" :style="getWrapStyle" />
 </template>
 
 <style lang="less">

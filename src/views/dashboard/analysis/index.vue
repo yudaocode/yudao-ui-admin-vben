@@ -16,11 +16,11 @@ setTimeout(() => {
 <template>
   <div class="p-4">
     <GrowCard :loading="loading" class="enter-y" />
-    <SiteAnalysis class="!my-4 enter-y" :loading="loading" />
-    <div class="md:flex enter-y">
-      <VisitRadar class="md:w-1/3 w-full" :loading="loading" />
-      <VisitSource class="md:w-1/3 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" />
-      <SalesProductPie class="md:w-1/3 w-full" :loading="loading" />
+    <SiteAnalysis class="enter-y !my-4" :loading="loading" />
+    <div class="enter-y md:flex">
+      <VisitRadar class="w-full md:w-1/3" :loading="loading" />
+      <VisitSource class="w-full !my-4 md:w-1/3 !md:mx-4 !md:my-0" :loading="loading" />
+      <SalesProductPie class="w-full md:w-1/3" :loading="loading" />
     </div>
   </div>
 </template>

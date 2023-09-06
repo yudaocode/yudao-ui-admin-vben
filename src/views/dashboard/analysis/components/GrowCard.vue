@@ -17,7 +17,7 @@ defineProps({
       <Card
         :loading="loading"
         :title="item.title"
-        class="md:w-1/4 w-full !md:mt-0"
+        class="w-full md:w-1/4 !md:mt-0"
         :class="{ '!md:mr-4': index + 1 < 4, '!mt-4': index > 0 }"
       >
         <template #extra>
@@ -26,12 +26,12 @@ defineProps({
           </Tag>
         </template>
 
-        <div class="py-4 px-4 flex justify-between items-center">
+        <div class="flex items-center justify-between px-4 py-4">
           <CountTo prefix="$" :start-val="1" :end-val="item.value" class="text-2xl" />
           <Icon :icon="item.icon" :size="40" />
         </div>
 
-        <div class="p-2 px-4 flex justify-between">
+        <div class="flex justify-between p-2 px-4">
           <span>总{{ item.title }}</span>
           <CountTo prefix="$" :start-val="1" :end-val="item.total" />
         </div>

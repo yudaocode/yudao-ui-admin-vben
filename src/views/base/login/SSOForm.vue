@@ -167,10 +167,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <h2 class="mb-3 text-2xl font-bold text-center xl:text-3xl enter-x xl:text-left">
+  <h2 class="enter-x mb-3 text-center text-2xl font-bold xl:text-left xl:text-3xl">
     {{ client.name + t('sys.login.ssoSignInFormTitle') }}
   </h2>
-  <Form ref="formRef" class="p-4 enter-x" :model="loginForm" @keypress.enter="handleAuthorize(true)">
+  <Form ref="formRef" class="enter-x p-4" :model="loginForm" @keypress.enter="handleAuthorize(true)">
     此第三方应用请求获取以下权限：
     <Row class="enter-x">
       <Col :span="12">
@@ -191,7 +191,7 @@ onMounted(() => {
       <Button type="primary" size="large" block :loading="loading" @click="handleAuthorize(true)">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <Button size="large" class="mt-4 enter-x" block @click="handleBackLogin">
+      <Button size="large" class="enter-x mt-4" block @click="handleBackLogin">
         {{ t('common.cancelText') }}
       </Button>
     </FormItem>

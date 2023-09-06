@@ -4,7 +4,7 @@ import { VFormDesign } from '@/components/FormDesign'
 </script>
 
 <template>
-  <PageWrapper dense content-full-height fixed-height>
+  <PageWrapper dense fixed-height content-full-height>
     <VFormDesign />
   </PageWrapper>
 </template>

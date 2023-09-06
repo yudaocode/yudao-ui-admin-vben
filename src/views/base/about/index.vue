@@ -91,7 +91,7 @@ const [infoRegister] = useDescription({
 <template>
   <PageWrapper title="关于">
     <template #headerContent>
-      <div class="flex justify-between items-center">
+      <div class="flex items-center justify-between">
         <span class="flex-1">
           <a :href="GITHUB_URL" target="_blank">{{ name }}</a>
           基于Vue3.0、Vite、 Ant-Design-Vue 、TypeScript
@@ -101,7 +101,7 @@ const [infoRegister] = useDescription({
       </div>
     </template>
     <Description class="enter-y" @register="infoRegister" />
-    <Description class="my-4 enter-y" @register="register" />
+    <Description class="enter-y my-4" @register="register" />
     <Description class="enter-y" @register="registerDev" />
   </PageWrapper>
 </template>

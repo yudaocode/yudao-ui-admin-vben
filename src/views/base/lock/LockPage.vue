@@ -57,21 +57,21 @@ function handleShowForm(show = false) {
 </script>
 
 <template>
-  <div :class="prefixCls" class="fixed inset-0 flex h-screen w-screen bg-black items-center justify-center" @click="handleShowForm(false)">
+  <div :class="prefixCls" class="fixed inset-0 h-screen w-screen flex items-center justify-center bg-black" @click="handleShowForm(false)">
     <!-- eslint-disable max-len -->
     <div
       v-show="showDate"
       :class="`${prefixCls}__unlock`"
-      class="absolute top-0 left-1/2 flex pt-5 h-16 items-center justify-center sm:text-md xl:text-xl flex-col cursor-pointer transform translate-x-1/2"
+      class="sm:text-md absolute left-1/2 top-0 h-16 flex flex-col translate-x-1/2 transform cursor-pointer items-center justify-center pt-5 xl:text-xl"
     >
       <LockOutlined />
       <span>{{ t('sys.lock.unlock') }}</span>
     </div>
 
-    <div class="flex w-screen h-screen justify-center items-center">
-      <div :class="`${prefixCls}__hour`" class="relative mr-5 md:mr-20 w-2/5 h-2/5 md:h-4/5">
+    <div class="h-screen w-screen flex items-center justify-center">
+      <div :class="`${prefixCls}__hour`" class="relative mr-5 h-2/5 w-2/5 md:mr-20 md:h-4/5">
         <span>{{ hour }}</span>
-        <span v-show="showDate" class="meridiem absolute left-5 top-5 text-md xl:text-xl">
+        <span v-show="showDate" class="meridiem text-md absolute left-5 top-5 xl:text-xl">
           {{ meridiem }}
         </span>
       </div>
@@ -93,10 +93,10 @@ function handleShowForm(show = false) {
             {{ t('sys.lock.alert') }}
           </span>
           <div :class="`${prefixCls}-entry__footer enter-x`">
-            <a-button type="link" size="small" class="mt-2 mr-2 enter-x" :disabled="loading" @click="handleShowForm(true)">
+            <a-button type="link" size="small" class="enter-x mr-2 mt-2" :disabled="loading" @click="handleShowForm(true)">
               {{ t('common.back') }}
             </a-button>
-            <a-button type="link" size="small" class="mt-2 mr-2 enter-x" :disabled="loading" @click="goLogin">
+            <a-button type="link" size="small" class="enter-x mr-2 mt-2" :disabled="loading" @click="goLogin">
               {{ t('sys.lock.backToLogin') }}
             </a-button>
             <a-button class="mt-2" type="link" size="small" :loading="loading" @click="unLock()">
@@ -107,8 +107,8 @@ function handleShowForm(show = false) {
       </div>
     </transition>
 
-    <div class="absolute bottom-5 w-full text-gray-300 xl:text-xl 2xl:text-3xl text-center enter-y">
-      <div v-show="!showDate" class="text-5xl mb-4 enter-x">
+    <div class="enter-y absolute bottom-5 w-full text-center text-gray-300 2xl:text-3xl xl:text-xl">
+      <div v-show="!showDate" class="enter-x mb-4 text-5xl">
         {{ hour }}:{{ minute }} <span class="text-3xl">{{ meridiem }}</span>
       </div>
       <div class="text-2xl">

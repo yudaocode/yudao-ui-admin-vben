@@ -344,7 +344,7 @@ async function getPictrue() {
           @touchstart="start"
           @mousedown="start"
         >
-          <i class="verify-icon iconfont" :class="[iconClass]" :style="{ color: iconColor }" />
+          <i class="iconfont verify-icon" :class="[iconClass]" :style="{ color: iconColor }" />
           <div
             v-if="type === '2'"
             class="verify-sub-block"

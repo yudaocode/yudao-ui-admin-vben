@@ -113,13 +113,13 @@ function handleSearchChange(e: ChangeEvent) {
 
         <template #content>
           <div v-if="getPaginationList.length">
-            <ScrollContainer class="border border-solid border-t-0">
+            <ScrollContainer class="border border-t-0 border-solid">
               <ul class="flex flex-wrap px-2">
                 <li
                   v-for="icon in getPaginationList"
                   :key="icon"
                   :class="currentSelect === icon ? 'border border-primary' : ''"
-                  class="p-2 w-1/8 cursor-pointer mr-1 mt-1 flex justify-center items-center border border-solid hover:border-primary"
+                  class="mr-1 mt-1 w-1/8 flex cursor-pointer items-center justify-center border border-solid p-2 hover:border-primary"
                   :title="icon"
                   @click="handleClick(icon)"
                 >
@@ -129,7 +129,7 @@ function handleSearchChange(e: ChangeEvent) {
                 </li>
               </ul>
             </ScrollContainer>
-            <div v-if="getTotal >= pageSize" class="flex py-2 items-center justify-center">
+            <div v-if="getTotal >= pageSize" class="flex items-center justify-center py-2">
               <Pagination show-less-items size="small" :page-size="pageSize" :total="getTotal" @change="handlePageChange" />
             </div>
           </div>
@@ -140,7 +140,7 @@ function handleSearchChange(e: ChangeEvent) {
           </template>
         </template>
 
-        <span v-if="isSvgMode && currentSelect" class="cursor-pointer px-2 py-1 flex items-center">
+        <span v-if="isSvgMode && currentSelect" class="flex cursor-pointer items-center px-2 py-1">
           <SvgIcon :name="currentSelect" />
         </span>
         <Icon v-else :icon="currentSelect || 'ion:apps-outline'" class="cursor-pointer px-2 py-1" />

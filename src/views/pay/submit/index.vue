@@ -81,9 +81,9 @@ onMounted(async () => {
       <List :grid="{ column: 8 }" header="选择支付宝支付" :data-source="aliPayChannels">
         <template #renderItem="{ item }">
           <ListItem>
-            <Card hoverable class="w-30 h-28 mt-3 pb-3" @click="submit(item.code)">
+            <Card hoverable class="mt-3 h-28 w-30 pb-3" @click="submit(item.code)">
               <template #cover>
-                <img class="w-40px h-40px mt-2" :src="icons[item.code]">
+                <img class="mt-2 h-40px w-40px" :src="icons[item.code]">
                 <p class="mt-3 text-center">
                   {{ item.name }}
                 </p>
@@ -95,9 +95,9 @@ onMounted(async () => {
       <List :grid="{ column: 8 }" class="mt-4" header="选择微信支付" :data-source="wxPayChannels">
         <template #renderItem="{ item }">
           <ListItem>
-            <Card hoverable class="w-30 h-28 pt-3 pb-3">
+            <Card hoverable class="h-28 w-30 pb-3 pt-3">
               <template #cover>
-                <img class="w-40px h-40px mt-2" :src="icons[item.code]">
+                <img class="mt-2 h-40px w-40px" :src="icons[item.code]">
                 <p class="mt-3 text-center">
                   {{ item.name }}
                 </p>
@@ -109,9 +109,9 @@ onMounted(async () => {
       <List :grid="{ column: 8 }" class="mt-4" header="选择其它支付" :data-source="otherPayChannels">
         <template #renderItem="{ item }">
           <ListItem>
-            <Card hoverable class="w-30 h-28 pt-3 pb-3">
+            <Card hoverable class="h-28 w-30 pb-3 pt-3">
               <template #cover>
-                <img class="w-40px h-40px mt-2" :src="icons[item.code]">
+                <img class="mt-2 h-40px w-40px" :src="icons[item.code]">
                 <p class="mt-3 text-center">
                   {{ item.name }}
                 </p>

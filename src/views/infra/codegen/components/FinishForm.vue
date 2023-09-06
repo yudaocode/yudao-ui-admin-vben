@@ -36,7 +36,7 @@ function handleGoList() {
 </script>
 
 <template>
-  <div class="m-5 result-success">
+  <div class="result-success m-5">
     <Result status="success" title="代码生成成功" sub-title="可点击下方按钮预览、下载，或返回列表页。">
       <template #extra>
         <a-button key="console" type="primary" @click="handleGoList">

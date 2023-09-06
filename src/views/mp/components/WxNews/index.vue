@@ -130,7 +130,7 @@ async function handleDelete(id) {
 
 <template>
   <div class="p-2">
-    <div class="p-4 mb-2">
+    <div class="mb-2 p-4">
       <BasicForm @register="registerForm" />
     </div>
     <div class="p-2">

@@ -40,7 +40,7 @@ async function handleRegister() {
 <template>
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form ref="formRef" class="p-4 enter-x" :model="formData" :rules="getFormRules">
+    <Form ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules">
       <FormItem name="account" class="enter-x">
         <Input v-model:value="formData.account" class="fix-auto-fill" size="large" :placeholder="t('sys.login.userName')" />
       </FormItem>
@@ -72,7 +72,7 @@ async function handleRegister() {
       <Button type="primary" class="enter-x" size="large" block :loading="loading" @click="handleRegister">
         {{ t('sys.login.registerButton') }}
       </Button>
-      <Button size="large" block class="mt-4 enter-x" @click="handleBackLogin">
+      <Button size="large" block class="enter-x mt-4" @click="handleBackLogin">
         {{ t('sys.login.backSignIn') }}
       </Button>
     </Form>

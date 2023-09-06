@@ -108,9 +108,8 @@ function menuCheck(checkedKeys: CheckKeys, event: CheckedEvent) {
           v-model:checkedKeys="model[field]"
           :tree-data="treeData"
           :field-names="{ title: 'name', key: 'id' }"
-          checkable
-          toolbar
-          search
+
+          toolbar checkable search
           :show-strictly-button="false"
           :selectable="false"
           title="菜单分配"

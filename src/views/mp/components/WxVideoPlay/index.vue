@@ -36,8 +36,10 @@ function playVideo() {
 
     <!-- 弹窗播放 -->
     <Modal v-model:open="openVideo" title="视频播放" append-to-body>
-      <VideoPlayer v-if="openVideo" class="video-player vjs-big-play-centered" :src="props.url" poster=""
-        crossorigin="anonymous" playsinline controls :volume="0.6" :width="800" :playback-rates="[0.7, 1.0, 1.5, 2.0]" />
+      <VideoPlayer
+        v-if="openVideo" class="video-player vjs-big-play-centered" :src="props.url" poster=""
+        crossorigin="anonymous" controls playsinline :volume="0.6" :width="800" :playback-rates="[0.7, 1.0, 1.5, 2.0]"
+      />
       <!--     事件，暫時沒用
       @mounted="handleMounted" -->
       <!--        @ready="handleEvent($event)" -->

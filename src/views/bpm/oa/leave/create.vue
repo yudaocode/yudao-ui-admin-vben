@@ -37,6 +37,6 @@ onMounted(() => {
 
 <template>
   <PageWrapper>
-    <BasicForm class="mt-10 w-200 h-120" @register="registerForm" @submit="handleSubmit" />
+    <BasicForm class="mt-10 h-120 w-200" @register="registerForm" @submit="handleSubmit" />
   </PageWrapper>
 </template>

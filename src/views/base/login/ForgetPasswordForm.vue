@@ -33,7 +33,7 @@ async function handleReset() {
 <template>
   <template v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form ref="formRef" class="p-4 enter-x" :model="formData" :rules="getFormRules">
+    <Form ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules">
       <FormItem name="account" class="enter-x">
         <Input v-model:value="formData.account" size="large" :placeholder="t('sys.login.userName')" />
       </FormItem>

@@ -112,7 +112,7 @@ async function handleLogin(params) {
 
 <template>
   <LoginFormTitle v-show="getShow" class="enter-x" />
-  <Form v-show="getShow" ref="formRef" class="p-4 enter-x" :model="formData" :rules="getFormRules" @keypress.enter="handleLogin">
+  <Form v-show="getShow" ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules" @keypress.enter="handleLogin">
     <FormItem name="tenantName" class="enter-x">
       <Input
         v-if="tenantEnable === 'true'"
@@ -184,7 +184,7 @@ async function handleLogin(params) {
       {{ t('sys.login.otherSignIn') }}
     </Divider>
 
-    <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
+    <div class="enter-x flex justify-evenly" :class="`${prefixCls}-sign-in-way`">
       <GithubFilled />
       <WechatFilled />
       <AlipayCircleFilled />
@@ -196,7 +196,7 @@ async function handleLogin(params) {
     <Divider class="enter-x">
       萌新必读
     </Divider>
-    <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
+    <div class="enter-x flex justify-evenly" :class="`${prefixCls}-sign-in-way`">
       <Button href="https://doc.iocoder.cn/" target="_blank">
         📚开发指南
       </Button>

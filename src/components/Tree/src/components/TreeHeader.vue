@@ -155,12 +155,12 @@ watch(
 </script>
 
 <template>
-  <div :class="bem()" class="flex px-2 py-1.5 items-center">
+  <div :class="bem()" class="flex items-center px-2 py-1.5">
     <slot v-if="slots.headerTitle" name="headerTitle" />
     <BasicTitle v-if="!slots.headerTitle && title" :help-message="helpMessage">
       {{ title }}
     </BasicTitle>
-    <div v-if="search || toolbar" class="flex items-center flex-1 cursor-pointer justify-self-stretch">
+    <div v-if="search || toolbar" class="flex flex-1 cursor-pointer items-center justify-self-stretch">
       <div v-if="search" :class="getInputSearchCls">
         <InputSearch v-model:value="searchValue" :placeholder="t('common.searchText')" allow-clear />
       </div>

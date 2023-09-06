@@ -57,7 +57,7 @@ function handleMenuEvent(menu: DropMenu) {
     overlay-class-name="app-locale-picker-overlay"
     @menu-event="handleMenuEvent"
   >
-    <span class="cursor-pointer flex items-center">
+    <span class="flex cursor-pointer items-center">
       <Icon icon="ion:language" />
       <span v-if="showText" class="ml-1">{{ getLocaleText }}</span>
     </span>

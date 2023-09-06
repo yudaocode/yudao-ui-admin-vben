@@ -38,9 +38,9 @@ onMounted(async () => {
       :data="cacheInfo"
       :schema="baseInfoSchema"
     />
-    <div class="md:flex enter-y mt-4">
-      <CommandStats class="md:w-1/2 w-full" :loading="loading" :command-stats="commandStats" />
-      <Memory class="md:w-1/2 !md:mx-4 !md:my-0 !my-4 w-full" :loading="loading" :memory-human="memoryHuman" />
+    <div class="enter-y mt-4 md:flex">
+      <CommandStats class="w-full md:w-1/2" :loading="loading" :command-stats="commandStats" />
+      <Memory class="w-full !my-4 md:w-1/2 !md:mx-4 !md:my-0" :loading="loading" :memory-human="memoryHuman" />
     </div>
   </div>
 </template>
