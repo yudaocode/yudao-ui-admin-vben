@@ -9,11 +9,11 @@
     "mrmlnc.vscode-less",
     "lokalise.i18n-ally",
     "redhat.vscode-yaml",
-    "heybourn.headwind",
     "csstools.postcss",
     "mikestead.dotenv",
     "eamodio.gitlens",
     "antfu.iconify",
+    "antfu.unocss",
     "Vue.volar"
   ]
 }
