@@ -90,7 +90,7 @@ dependencies:
     specifier: ^3.3.4
     version: 3.3.4
   vue-i18n:
-    specifier: 9.2.2
+    specifier: ^9.2.2
     version: 9.2.2(vue@3.3.4)
   vue-json-pretty:
     specifier: ^2.2.4
