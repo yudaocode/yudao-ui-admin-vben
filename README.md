@@ -24,15 +24,6 @@
 
 - ![alt 交流群](./public/resource/img/wx.png)
 
-## 开发进度
-
-- 系统管理 已完成
-- 基础设施 已完成
-- 支付管理 已完成
-- 公众号 进行中 50% 预计年底
-- 工作流 进行中 40% 预计年底
-- 升级 antdv 4.0 已完成
-
 ## 框架
 
 | 框架                                                                 | 说明                  | 版本   |
@@ -45,7 +36,7 @@
 | [vueuse](https://vueuse.org/)                                        | 常用工具集            | 10.4.1 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化                | 9.2.2  |
 | [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.4  |
-| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.55.4 |
+| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.55.7 |
 | [iconify](https://icon-sets.iconify.design/)                         | 在线图标库            | 3.1.1  |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
@@ -60,7 +51,7 @@
 - [TypeScript](https://www.typescriptlang.org/) - 熟悉`TypeScript`基本语法
 - [Es6+](http://es6.ruanyifeng.com/) - 熟悉 es6 基本语法
 - [Vue-Router-Next](https://next.router.vuejs.org/) - 熟悉 vue-router 基本使用
-- [Ant-Design-Vue](https://antdv.com/) - ui 基本使用
+- [Ant-Design-Vue-4.0](https://antdv.com/) - ui 基本使用
 
 ## 安装使用
 
@@ -76,6 +67,11 @@ git clone https://github.com/xingyuv/yudao-ui-admin-vben.git
 
 ```bash
 pnpm i
+
+如提示 Expected version: >=8.6.0
+
+使用 cmd 等升级 pnpm 版本
+npm add -g pnpm
 
 ```
 
@@ -96,6 +92,15 @@ pnpm front
 ```bash
 pnpm build
 ```
+
+## 开发进度
+
+- 系统管理 已完成
+- 基础设施 已完成
+- 支付管理 已完成
+- 升级 antdv 4.0 已完成
+- 公众号 进行中 50% 预计年底
+- 工作流 进行中 40% 预计年底
 
 ## Git 贡献提交规范
 
