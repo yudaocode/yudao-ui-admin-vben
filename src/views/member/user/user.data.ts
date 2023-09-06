@@ -1,6 +1,6 @@
 import { getSimpleGroupList } from '@/api/member/group'
 import { getSimpleLevelList } from '@/api/member/level'
-import { getMemberTagPage, getSimpleTagList } from '@/api/member/tag'
+import { getSimpleTagList } from '@/api/member/tag'
 import { getAreaTree } from '@/api/system/area'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
