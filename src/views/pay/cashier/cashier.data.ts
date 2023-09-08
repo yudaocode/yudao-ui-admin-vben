@@ -77,6 +77,7 @@ export const channelsAlipay = [
     code: 'alipay_bar',
   },
 ]
+
 export const channelsWechat = [
   {
     name: '微信公众号支付',
@@ -104,6 +105,7 @@ export const channelsWechat = [
     code: 'wx_bar',
   },
 ]
+
 export const channelsMock = [
   {
     name: '模拟支付',
