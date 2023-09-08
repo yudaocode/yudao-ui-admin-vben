@@ -16,7 +16,7 @@ import wx_lite from '@/assets/images/pay/icon/wx_lite.svg'
 import wx_pub from '@/assets/images/pay/icon/wx_pub.svg'
 import mock from '@/assets/images/pay/icon/mock.svg'
 
-defineOptions({ name: 'PayOrderSubmit' })
+defineOptions({ name: 'PayCashier' })
 
 const ListItem = List.Item
 

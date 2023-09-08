@@ -88,32 +88,17 @@ export function getOrder(id: number) {
   return defHttp.get({ url: `/pay/order/get?id=${id}` })
 }
 
-// 查询详情支付订单
+// 获得支付订单的明细
 export function getOrderDetail(id: number) {
   return defHttp.get({ url: `/pay/order/get-detail?id=${id}` })
 }
 
-// 新增支付订单
-export function createOrder(data: OrderVO) {
-  return defHttp.post({ url: '/pay/order/create', data })
-}
-
-// 修改支付订单
-export function updateOrder(data: OrderVO) {
-  return defHttp.put({ url: '/pay/order/update', data })
-}
-
-// 删除支付订单
-export function deleteOrder(id: number) {
-  return defHttp.delete({ url: `/pay/order/delete?id=${id}` })
+// 提交支付订单
+export function submitOrder(data: any) {
+  return defHttp.post({ url: '/pay/order/submit', data })
 }
 
 // 导出支付订单
 export function exportOrder(params: OrderExportReqVO) {
-  return defHttp.download({ url: '/pay/order/export-excel', params }, '支付订单.xls')
-}
-
-// 提交支付订单
-export function submitOrder(data) {
-  return defHttp.post({ url: '/pay/order/submit', data })
+  return defHttp.download({ url: '/pay/order/export-excel', params })
 }

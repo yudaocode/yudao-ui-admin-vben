@@ -67,16 +67,6 @@ export function deleteApp(id: number) {
   return defHttp.delete({ url: `/pay/app/delete?id=${id}` })
 }
 
-// 导出支付应用
-export function exportApp(params: AppExportReqVO) {
-  return defHttp.download({ url: '/pay/app/export-excel', params }, '支付应用.xls')
-}
-
-// 根据商ID称搜索应用列表
-export function getAppListByMerchantId(merchantId: number) {
-  return defHttp.get({ url: '/pay/app/list-merchant-id', params: { merchantId } })
-}
-
 // 获得支付应用列表
 export function getAppList() {
   return defHttp.get({ url: '/pay/app/list' })

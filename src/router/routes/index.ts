@@ -143,9 +143,9 @@ export const PayRoute: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: 'submit',
-      component: () => import('@/views/pay/submit/index.vue'),
-      name: 'PayOrderSubmit',
+      path: 'cashier',
+      component: () => import('@/views/pay/cashier/index.vue'),
+      name: 'PayCashier',
       meta: {
         canTo: true,
         hidden: true,

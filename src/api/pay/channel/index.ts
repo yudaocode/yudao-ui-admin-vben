@@ -35,7 +35,7 @@ export interface ChannelExportReqVO {
 }
 
 // 查询列表支付渠道
-export function getChannelPage(params: ChannelPageReqVO) {
+export function getChannelPage(params: PageParam) {
   return defHttp.get({ url: '/pay/channel/page', params })
 }
 
@@ -45,7 +45,7 @@ export function getChannel(appId: string, code: string) {
     appId,
     code,
   }
-  return defHttp.get({ url: '/pay/channel/get-channel', params })
+  return defHttp.get({ url: '/pay/channel/get', params })
 }
 
 // 新增支付渠道
@@ -64,6 +64,6 @@ export function deleteChannel(id: number) {
 }
 
 // 导出支付渠道
-export function exportChannel(params: ChannelExportReqVO) {
+export function exportChannel(params) {
   return defHttp.download({ url: '/pay/channel/export-excel', params }, '支付渠道.xls')
 }
