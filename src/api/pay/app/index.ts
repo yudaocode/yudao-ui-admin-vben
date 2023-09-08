@@ -22,16 +22,6 @@ export interface AppPageReqVO extends PageParam {
   createTime?: Date[]
 }
 
-export interface AppExportReqVO {
-  name?: string
-  status?: number
-  remark?: string
-  payNotifyUrl?: string
-  refundNotifyUrl?: string
-  merchantName?: string
-  createTime?: Date[]
-}
-
 export interface AppUpdateStatusReqVO {
   id: number
   status: number

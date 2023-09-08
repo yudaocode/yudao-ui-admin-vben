@@ -9,17 +9,16 @@ import { PayChannelEnum, PayType } from '@/enums/systemEnum'
 import { IconEnum } from '@/enums/appEnum'
 import { Icon } from '@/components/Icon'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
-import type { AppExportReqVO } from '@/api/pay/app'
-import { deleteApp, exportApp, getAppPage } from '@/api/pay/app'
+import { deleteApp, getAppPage } from '@/api/pay/app'
 
 defineOptions({ name: 'PayApp' })
 
 const { t } = useI18n()
-const { createConfirm, createMessage } = useMessage()
+const { createMessage } = useMessage()
 const [registerModal, { openModal }] = useModal()
 const [registerChannelModal, { openModal: openChannelModal }] = useModal()
 
-const [registerTable, { getForm, reload }] = useTable({
+const [registerTable, { reload }] = useTable({
   title: '应用列表',
   api: getAppPage,
   columns,
@@ -40,18 +39,6 @@ function handleCreate() {
 
 function handleEdit(record: Recordable) {
   openModal(true, { record, isUpdate: true })
-}
-
-async function handleExport() {
-  createConfirm({
-    title: t('common.exportTitle'),
-    iconType: 'warning',
-    content: t('common.exportMessage'),
-    async onOk() {
-      await exportApp(getForm().getFieldsValue() as AppExportReqVO)
-      createMessage.success(t('common.exportSuccessText'))
-    },
-  })
 }
 
 async function handleDelete(record: Recordable) {
@@ -85,25 +72,17 @@ function isChannelExists(channels, channelCode) {
         <a-button v-auth="['pay:app:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <a-button v-auth="['pay:app:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === PayChannelEnum.ALIPAY_APP.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_APP.code)"
-            type="primary"
-            shape="circle"
-            @click="openChannel(record, PayChannelEnum.ALIPAY_APP.code, PayType.ALIPAY, true)"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_APP.code)" type="primary"
+            shape="circle" @click="openChannel(record, PayChannelEnum.ALIPAY_APP.code, PayType.ALIPAY, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.ALIPAY_APP.code, PayType.ALIPAY, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -111,18 +90,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_PC.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_PC.code)"
-            type="primary"
-            shape="circle"
-            @click="openChannel(record, PayChannelEnum.ALIPAY_PC.code, PayType.ALIPAY, true)"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_PC.code)" type="primary"
+            shape="circle" @click="openChannel(record, PayChannelEnum.ALIPAY_PC.code, PayType.ALIPAY, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.ALIPAY_PC.code, PayType.ALIPAY, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -130,18 +104,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_WAP.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_WAP.code)"
-            type="primary"
-            shape="circle"
-            @click="openChannel(record, PayChannelEnum.ALIPAY_WAP.code, PayType.ALIPAY, true)"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_WAP.code)" type="primary"
+            shape="circle" @click="openChannel(record, PayChannelEnum.ALIPAY_WAP.code, PayType.ALIPAY, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.ALIPAY_WAP.code, PayType.ALIPAY, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -149,18 +118,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_QR.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_QR.code)"
-            type="primary"
-            shape="circle"
-            @click="openChannel(record, PayChannelEnum.ALIPAY_QR.code, PayType.ALIPAY, true)"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_QR.code)" type="primary"
+            shape="circle" @click="openChannel(record, PayChannelEnum.ALIPAY_QR.code, PayType.ALIPAY, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.ALIPAY_QR.code, PayType.ALIPAY, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -168,18 +132,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.ALIPAY_BAR.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_BAR.code)"
-            type="primary"
-            shape="circle"
-            @click="openChannel(record, PayChannelEnum.ALIPAY_BAR.code, PayType.ALIPAY, true)"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.ALIPAY_BAR.code)" type="primary"
+            shape="circle" @click="openChannel(record, PayChannelEnum.ALIPAY_BAR.code, PayType.ALIPAY, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.ALIPAY_BAR.code, PayType.ALIPAY, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -187,18 +146,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.WX_LITE.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_LITE.code)"
-            type="primary"
-            shape="circle"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_LITE.code)" type="primary" shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_LITE.code, PayType.WECHAT, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.WX_LITE.code, PayType.WECHAT, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -206,18 +160,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.WX_PUB.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_PUB.code)"
-            type="primary"
-            shape="circle"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_PUB.code)" type="primary" shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_PUB.code, PayType.WECHAT, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.WX_PUB.code, PayType.WECHAT, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -225,18 +174,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.WX_APP.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_APP.code)"
-            type="primary"
-            shape="circle"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.WX_APP.code)" type="primary" shape="circle"
             @click="openChannel(record, PayChannelEnum.WX_APP.code, PayType.WECHAT, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.WX_APP.code, PayType.WECHAT, false)"
           >
             <Icon icon="ant-design:close-outlined" />
@@ -244,18 +188,13 @@ function isChannelExists(channels, channelCode) {
         </template>
         <template v-if="column.key === PayChannelEnum.MOCK.code">
           <a-button
-            v-if="isChannelExists(record.channelCodes, PayChannelEnum.MOCK.code)"
-            type="primary"
-            shape="circle"
+            v-if="isChannelExists(record.channelCodes, PayChannelEnum.MOCK.code)" type="primary" shape="circle"
             @click="openChannel(record, PayChannelEnum.MOCK.code, PayType.MOCK, true)"
           >
             <Icon icon="ant-design:check-outlined" />
           </a-button>
           <a-button
-            v-else
-            type="primary"
-            shape="circle"
-            danger
+            v-else type="primary" shape="circle" danger
             @click="openChannel(record, PayChannelEnum.MOCK.code, PayType.MOCK, false)"
           >
             <Icon icon="ant-design:close-outlined" />
