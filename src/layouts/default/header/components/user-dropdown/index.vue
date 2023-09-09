@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Dropdown, Menu, MenuDivider } from 'ant-design-vue'
+import { Avatar, Dropdown, Menu, MenuDivider } from 'ant-design-vue'
+import { UserOutlined } from '@ant-design/icons-vue'
 import type { MenuInfo } from 'ant-design-vue/lib/menu/src/interface'
 import { computed } from 'vue'
 import { DOC_URL } from '@/settings/siteSetting'
@@ -78,7 +79,9 @@ function handleMenuClick(e: MenuInfo) {
 <template>
   <Dropdown placement="bottomLeft" :overlay-class-name="`${prefixCls}-dropdown-overlay`">
     <span :class="[prefixCls, `${prefixCls}--${theme}`]" class="flex">
-      <img :class="`${prefixCls}__header`" :src="getUserInfo.avatar">
+      <Avatar size="small" :class="`${prefixCls}__avatar`" :src="getUserInfo.avatar">
+        <template #icon><UserOutlined /></template>
+      </Avatar>
       <span :class="`${prefixCls}__info hidden md:block`">
         <span :class="`${prefixCls}__name  `" class="truncate">
           {{ getUserInfo.nickname }}
@@ -111,14 +114,8 @@ function handleMenuClick(e: MenuInfo) {
   font-size: 12px;
   cursor: pointer;
 
-  img {
-    width: 24px;
-    height: 24px;
-    margin-right: 12px;
-  }
-
-  &__header {
-    border-radius: 50%;
+  &__avatar {
+    margin-right: 5px;
   }
 
   &__name {
