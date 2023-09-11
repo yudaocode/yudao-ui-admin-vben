@@ -87,12 +87,10 @@ const getMenuMode = computed(() => {
     <!-- left start -->
     <div :class="`${prefixCls}-left`">
       <!-- logo -->
-      <AppLogo v-if="getShowHeaderLogo || getIsMobile" :class="`${prefixCls}-logo`" :theme="getHeaderTheme" :style="getLogoWidth" />
-      <LayoutTrigger
-        v-if="(getShowContent && getShowHeaderTrigger && !getSplit && !getIsMixSidebar) || getIsMobile"
-        :theme="getHeaderTheme"
-        :sider="false"
-      />
+      <AppLogo v-if="getShowHeaderLogo || getIsMobile" :class="`${prefixCls}-logo`" :theme="getHeaderTheme"
+        :style="getLogoWidth" />
+      <LayoutTrigger v-if="(getShowContent && getShowHeaderTrigger && !getSplit && !getIsMixSidebar) || getIsMobile"
+        :theme="getHeaderTheme" :sider="false" />
       <LayoutBreadcrumb v-if="getShowContent && getShowBread" :theme="getHeaderTheme" />
     </div>
     <!-- left end -->
@@ -105,7 +103,7 @@ const getMenuMode = computed(() => {
 
     <!-- action  -->
     <div :class="`${prefixCls}-action`">
-      <AppSearch v-if="getShowSearch" :class="`${prefixCls}-action__item `" />
+      <AppSearch v-if="getShowSearch" :class="`${prefixCls}-action__item search-item`" />
 
       <ErrorAction v-if="getUseErrorHandle" :class="`${prefixCls}-action__item error-action`" />
 
@@ -113,9 +111,10 @@ const getMenuMode = computed(() => {
 
       <FullScreen v-if="getShowFullScreen" :class="`${prefixCls}-action__item fullscreen-item`" />
 
-      <AppSizePicker :show-text="false" :class="`${prefixCls}-action__item`" />
+      <AppSizePicker :show-text="false" :class="`${prefixCls}-action__item size-item`" />
 
-      <AppLocalePicker v-if="getShowLocalePicker" :reload="true" :show-text="false" :class="`${prefixCls}-action__item`" />
+      <AppLocalePicker v-if="getShowLocalePicker" :reload="true" :show-text="false"
+        :class="`${prefixCls}-action__item locale-item`" />
 
       <UserDropDown :theme="getHeaderTheme" />
 
