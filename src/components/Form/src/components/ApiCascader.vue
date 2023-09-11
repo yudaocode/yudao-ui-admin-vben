@@ -38,6 +38,7 @@ const props = defineProps({
   displayRenderArray: {
     type: Array,
   },
+  alwaysLoad: propTypes.bool.def(true),
 })
 
 const emit = defineEmits(['change', 'defaultChange'])
@@ -148,7 +149,11 @@ watchEffect(() => {
 watch(
   () => props.initFetchParams,
   () => {
-    !unref(isFirstLoad) && initialFetch()
+    if (props.alwaysLoad)
+      !unref(isFirstLoad) && initialFetch()
+
+    else
+      initialFetch()
   },
   { deep: true },
 )
@@ -170,14 +175,8 @@ function handleRenderDisplay({ labels, selectedOptions }) {
 </script>
 
 <template>
-  <Cascader
-    v-model:value="state"
-    :options="options"
-    :load-data="loadData"
-    change-on-select
-    :display-render="handleRenderDisplay"
-    @change="handleChange"
-  >
+  <Cascader v-model:value="state" :options="options" :load-data="loadData" change-on-select
+    :display-render="handleRenderDisplay" @change="handleChange">
     <template v-if="loading" #suffixIcon>
       <LoadingOutlined spin />
     </template>

@@ -18,6 +18,7 @@ const props = defineProps({
   parentId: { type: Number, default: 0 },
   parentLabel: { type: String, default: '' },
   parentFiled: { type: String, default: 'name' },
+  alwaysLoad: propTypes.bool.def(true),
 })
 const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
@@ -39,7 +40,11 @@ function handleChange(...args) {
 watch(
   () => props.params,
   () => {
-    !unref(isFirstLoaded) && fetch()
+    if (props.alwaysLoad)
+      !unref(isFirstLoaded) && fetch()
+
+    else
+      fetch()
   },
   { deep: true },
 )
@@ -47,7 +52,11 @@ watch(
 watch(
   () => props.immediate,
   (v) => {
-    v && !isFirstLoaded.value && fetch()
+    if (props.alwaysLoad)
+      v && !isFirstLoaded.value && fetch()
+
+    else
+      v && fetch()
   },
 )
 

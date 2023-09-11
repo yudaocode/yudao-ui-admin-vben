@@ -30,7 +30,7 @@ const props = defineProps({
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
-  alwaysLoad: propTypes.bool.def(false),
+  alwaysLoad: propTypes.bool.def(true),
 })
 
 const emit = defineEmits(['optionsChange', 'change', 'update:value'])
@@ -129,7 +129,8 @@ function handleChange(_, ...args) {
 </script>
 
 <template>
-  <Select v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch" @change="handleChange">
+  <Select v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch"
+    @change="handleChange">
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

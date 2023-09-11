@@ -70,7 +70,7 @@ export default defineComponent({
       <div class="draggable-box">
         <Draggable
           v-model="formConfig.schemas"
-          class="list-main ant-row"
+          class="ant-row list-main"
           group="form-draggable"
           :component-data="{ name: 'list', tag: 'div', type: 'transition-group' }"
           ghost-class="moving"

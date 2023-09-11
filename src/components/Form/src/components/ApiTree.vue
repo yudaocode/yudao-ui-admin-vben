@@ -11,10 +11,11 @@ defineOptions({ name: 'ApiTree' })
 const props = defineProps({
   api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
   params: { type: Object },
-  immediate: { type: Boolean, default: true },
+  immediate: propTypes.bool.def(true),
   resultField: propTypes.string.def(''),
   afterFetch: { type: Function as PropType<Fn> },
-  handleTree: { type: String, default: '' },
+  handleTree: propTypes.string.def(''),
+  alwaysLoad: propTypes.bool.def(true),
 })
 const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
@@ -37,7 +38,11 @@ function handleChange(...args) {
 watch(
   () => props.params,
   () => {
-    !unref(isFirstLoaded) && fetch()
+    if (props.alwaysLoad)
+      !unref(isFirstLoaded) && fetch()
+
+    else
+      fetch()
   },
   { deep: true },
 )
@@ -45,7 +50,11 @@ watch(
 watch(
   () => props.immediate,
   (v) => {
-    v && !isFirstLoaded.value && fetch()
+    if (props.alwaysLoad)
+      v && !isFirstLoaded.value && fetch()
+
+    else
+      v && fetch()
   },
 )
 

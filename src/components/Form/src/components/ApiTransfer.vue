@@ -17,7 +17,7 @@ const props = defineProps({
   params: { type: Object },
   dataSource: { type: Array as PropType<Array<TransferItem>> },
   immediate: propTypes.bool.def(true),
-  alwaysLoad: propTypes.bool.def(false),
+  alwaysLoad: propTypes.bool.def(true),
   afterFetch: { type: Function as PropType<Fn> },
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('title'),
@@ -114,15 +114,7 @@ function emitChange() {
 </script>
 
 <template>
-  <Transfer
-    v-bind="getAttrs"
-    :data-source="getdataSource"
-    :filter-option="filterOption"
-    :render="(item) => item.title"
-    :show-select-all="showSelectAll"
-    :selected-keys="selectedKeys"
-    :target-keys="getTargetKeys"
-    :show-search="showSearch"
-    @change="handleChange"
-  />
+  <Transfer v-bind="getAttrs" :data-source="getdataSource" :filter-option="filterOption" :render="(item) => item.title"
+    :show-select-all="showSelectAll" :selected-keys="selectedKeys" :target-keys="getTargetKeys" :show-search="showSearch"
+    @change="handleChange" />
 </template>

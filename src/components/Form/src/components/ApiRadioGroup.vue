@@ -29,6 +29,7 @@ const props = defineProps({
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
+  alwaysLoad: propTypes.bool.def(true),
 })
 const emit = defineEmits(['optionsChange', 'change'])
 const RadioButton = Radio.Button
@@ -68,7 +69,11 @@ watchEffect(() => {
 watch(
   () => props.params,
   () => {
-    !unref(isFirstLoad) && fetch()
+    if (props.alwaysLoad)
+      !unref(isFirstLoad) && fetch()
+
+    else
+      fetch()
   },
   { deep: true },
 )
