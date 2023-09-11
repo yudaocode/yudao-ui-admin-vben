@@ -52,7 +52,7 @@ const getProps = computed((): DrawerProps => {
       opt.width = '100%'
 
     const detailCls = `${prefixCls}__detail`
-    opt.class = wrapClassName ? `${wrapClassName} ${detailCls}` : detailCls
+    opt.rootClassName = wrapClassName ? `${wrapClassName} ${detailCls}` : detailCls
 
     if (!getContainer)
       opt.getContainer = `.${prefixVar}-layout-content` as any
@@ -133,9 +133,10 @@ function handleOk() {
 </script>
 
 <template>
-  <Drawer :class="prefixCls" v-bind="getBindValues" @close="onClose">
+  <Drawer :root-class-name="prefixCls" v-bind="getBindValues" @close="onClose">
     <template v-if="!$slots.title" #title>
-      <DrawerHeader :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack" @close="onClose">
+      <DrawerHeader :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack"
+        @close="onClose">
         <template #titleToolbar>
           <slot name="titleToolbar" />
         </template>
@@ -145,7 +146,8 @@ function handleOk() {
       <slot name="title" />
     </template>
 
-    <ScrollContainer v-loading="getLoading" :style="getScrollContentStyle" :loading-tip="loadingText || t('common.loadingText')">
+    <ScrollContainer v-loading="getLoading" :style="getScrollContentStyle"
+      :loading-tip="loadingText || t('common.loadingText')">
       <slot />
     </ScrollContainer>
     <DrawerFooter v-bind="getProps" :height="getFooterHeight" @close="onClose" @ok="handleOk">
@@ -177,7 +179,7 @@ function handleOk() {
       margin-bottom: 0 !important;
     }
 
-    > .scrollbar > .scrollbar__bar.is-horizontal {
+    >.scrollbar>.scrollbar__bar.is-horizontal {
       display: none;
     }
   }
