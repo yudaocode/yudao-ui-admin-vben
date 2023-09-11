@@ -7,6 +7,7 @@ import PageFooter from './PageFooter.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import { useContentHeight } from '@/hooks/web/useContentHeight'
+import { useLayoutHeight } from '@/layouts/default/content/useContentViewHeight'
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 
 defineOptions({ name: 'PageWrapper', inheritAttrs: false })
@@ -15,6 +16,8 @@ const props = defineProps({
   title: propTypes.string,
   dense: propTypes.bool,
   ghost: propTypes.bool,
+  headerSticky: propTypes.bool,
+  headerStyle: Object as PropType<CSSProperties>,
   content: propTypes.string,
   contentStyle: {
     type: Object as PropType<CSSProperties>,
@@ -67,6 +70,20 @@ const getHeaderSlots = computed(() => {
   return Object.keys(omit(slots, 'default', 'leftFooter', 'rightFooter', 'headerContent'))
 })
 
+const { headerHeightRef } = useLayoutHeight()
+
+const getHeaderStyle = computed((): CSSProperties => {
+  const { headerSticky } = props
+  if (!headerSticky)
+    return {}
+
+  return {
+    position: 'sticky',
+    top: `${unref(headerHeightRef)}px`,
+    ...props.headerStyle,
+  }
+})
+
 const getShowHeader = computed(() => props.content || slots?.headerContent || props.title || getHeaderSlots.value.length)
 
 const getShowFooter = computed(() => slots?.leftFooter || slots?.rightFooter)
@@ -109,14 +126,8 @@ watch(
 
 <template>
   <div ref="wrapperRef" :class="getClass">
-    <PageHeader
-      v-if="getShowHeader"
-      v-bind="omit($attrs, 'class')"
-      ref="headerRef"
-      style="margin: 1rem; border-radius: 1rem;"
-      :ghost="ghost"
-      :title="title"
-    >
+    <PageHeader v-if="getShowHeader" v-bind="omit($attrs, 'class')" ref="headerRef" :style="getHeaderStyle"
+      style="margin: 1rem; border-radius: 1rem;" :ghost="ghost" :title="title">
       <template #default>
         <template v-if="content">
           {{ content }}
