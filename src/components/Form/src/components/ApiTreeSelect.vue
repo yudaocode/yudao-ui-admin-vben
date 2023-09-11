@@ -12,12 +12,12 @@ defineOptions({ name: 'ApiTreeSelect' })
 const props = defineProps({
   api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
   params: { type: Object },
-  immediate: { type: Boolean, default: true },
+  immediate: propTypes.bool.def(true),
   resultField: propTypes.string.def(''),
-  handleTree: { type: String, default: '' },
-  parentId: { type: Number, default: 0 },
-  parentLabel: { type: String, default: '' },
-  parentFiled: { type: String, default: 'name' },
+  handleTree: propTypes.string.def(''),
+  parentId: propTypes.number.def(0),
+  parentLabel: propTypes.string.def(''),
+  parentFiled: propTypes.string.def('name'),
   alwaysLoad: propTypes.bool.def(true),
 })
 const emit = defineEmits(['optionsChange', 'change'])
@@ -41,10 +41,10 @@ watch(
   () => props.params,
   () => {
     if (props.alwaysLoad)
-      !unref(isFirstLoaded) && fetch()
+      fetch()
 
     else
-      fetch()
+      !unref(isFirstLoaded) && fetch()
   },
   { deep: true },
 )
@@ -53,10 +53,10 @@ watch(
   () => props.immediate,
   (v) => {
     if (props.alwaysLoad)
-      v && !isFirstLoaded.value && fetch()
+      v && fetch()
 
     else
-      v && fetch()
+      v && !isFirstLoaded.value && fetch()
   },
 )
 

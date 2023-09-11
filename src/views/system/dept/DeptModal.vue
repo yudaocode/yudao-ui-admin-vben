@@ -52,7 +52,10 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <BasicModal v-bind="$attrs" :title="isUpdate ? t('action.edit') : t('action.create')" @register="registerModal" @ok="handleSubmit">
+  <BasicModal
+    v-bind="$attrs" :title="isUpdate ? t('action.edit') : t('action.create')" @register="registerModal"
+    @ok="handleSubmit"
+  >
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>

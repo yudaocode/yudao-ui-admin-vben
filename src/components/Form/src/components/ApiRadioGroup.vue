@@ -11,6 +11,7 @@ import { useAttrs } from '@/hooks/core/useAttrs'
 import { propTypes } from '@/utils/propTypes'
 
 defineOptions({ name: 'ApiRadioGroup' })
+
 const props = defineProps({
   api: {
     type: Function as PropType<(arg?: Recordable | string) => Promise<OptionsItem[]>>,
@@ -70,10 +71,10 @@ watch(
   () => props.params,
   () => {
     if (props.alwaysLoad)
-      !unref(isFirstLoad) && fetch()
+      fetch()
 
     else
-      fetch()
+      !unref(isFirstLoad) && fetch()
   },
   { deep: true },
 )

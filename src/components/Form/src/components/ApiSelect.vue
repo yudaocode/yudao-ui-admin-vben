@@ -76,7 +76,11 @@ watch(
 watch(
   () => props.params,
   () => {
-    !unref(isFirstLoad) && fetch()
+    if (props.alwaysLoad)
+      fetch()
+
+    else
+      !unref(isFirstLoad) && fetch()
   },
   { deep: true },
 )
@@ -129,8 +133,10 @@ function handleChange(_, ...args) {
 </script>
 
 <template>
-  <Select v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch"
-    @change="handleChange">
+  <Select
+    v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch"
+    @change="handleChange"
+  >
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

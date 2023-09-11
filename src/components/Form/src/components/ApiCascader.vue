@@ -11,14 +11,12 @@ import { useI18n } from '@/hooks/web/useI18n'
 defineOptions({ name: 'ApiCascader' })
 
 const props = defineProps({
-  value: {
-    type: Array,
-  },
+  value: propTypes.array.def([]),
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<Option[]>>,
     default: null,
   },
-  numberToString: propTypes.bool,
+  numberToString: propTypes.bool.def(false),
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
@@ -55,7 +53,7 @@ const apiData = ref<any[]>([])
 const options = ref<Option[]>([])
 const loading = ref<boolean>(false)
 const emitData = ref<any[]>([])
-const isFirstLoad = ref(true)
+const isFirstLoad = ref(false)
 const { t } = useI18n()
 // Embedded in the form, just use the hook binding to perform form verification
 const [state]: any = useRuleFormItem(props, 'value', 'change', emitData)
@@ -150,10 +148,10 @@ watch(
   () => props.initFetchParams,
   () => {
     if (props.alwaysLoad)
-      !unref(isFirstLoad) && initialFetch()
+      initialFetch()
 
     else
-      initialFetch()
+      !unref(isFirstLoad) && initialFetch()
   },
   { deep: true },
 )
@@ -175,8 +173,10 @@ function handleRenderDisplay({ labels, selectedOptions }) {
 </script>
 
 <template>
-  <Cascader v-model:value="state" :options="options" :load-data="loadData" change-on-select
-    :display-render="handleRenderDisplay" @change="handleChange">
+  <Cascader
+    v-model:value="state" :options="options" :load-data="loadData" change-on-select
+    :display-render="handleRenderDisplay" @change="handleChange"
+  >
     <template v-if="loading" #suffixIcon>
       <LoadingOutlined spin />
     </template>

@@ -39,10 +39,10 @@ watch(
   () => props.params,
   () => {
     if (props.alwaysLoad)
-      !unref(isFirstLoaded) && fetch()
+      fetch()
 
     else
-      fetch()
+      !unref(isFirstLoaded) && fetch()
   },
   { deep: true },
 )
@@ -51,10 +51,10 @@ watch(
   () => props.immediate,
   (v) => {
     if (props.alwaysLoad)
-      v && !isFirstLoaded.value && fetch()
+      v && fetch()
 
     else
-      v && fetch()
+      v && !isFirstLoaded.value && fetch()
   },
 )
 

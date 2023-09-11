@@ -52,7 +52,7 @@ export const basicProps = Object.assign({}, modalProps, {
 
   confirmLoading: { type: Boolean },
 
-  destroyOnClose: { type: Boolean },
+  destroyOnClose: { type: Boolean, default: true },
 
   footer: Object as PropType<VueNode>,
 
