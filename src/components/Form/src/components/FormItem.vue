@@ -231,7 +231,7 @@ export default defineComponent({
 
       const propsData: Recordable = {
         allowClear: true,
-        getPopupContainer: (trigger: Element) => trigger.parentNode,
+        getPopupContainer: (trigger: Element) => trigger.parentNode.parentNode,
         size,
         ...unref(getComponentsProps),
         disabled: unref(getDisable),
