@@ -42,7 +42,7 @@ function handleAudit(record: Recordable) {
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              { icon: IconEnum.VIEW, label: '详情', onClick: openDetail.bind(null, record) },
+              { icon: IconEnum.VIEW, label: t('action.detail'), onClick: openDetail.bind(null, record) },
               { icon: IconEnum.VIEW, label: '流程', onClick: handleAudit.bind(null, record) },
             ]"
           />

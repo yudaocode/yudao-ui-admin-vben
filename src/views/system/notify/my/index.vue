@@ -112,7 +112,7 @@ function handleInfo(record: any) {
               },
               {
                 icon: IconEnum.LOG,
-                label: '详情',
+                label: t('action.detail'),
                 onClick: handleInfo.bind(null, record),
               },
             ]"

@@ -42,7 +42,7 @@ function handleShowInfo(record: Recordable) {
           <TableAction
             :actions="[
               {
-                label: '详情',
+                label: t('action.detail'),
                 icon: IconEnum.LOG,
                 onClick: handleShowInfo.bind(null, record),
               },
