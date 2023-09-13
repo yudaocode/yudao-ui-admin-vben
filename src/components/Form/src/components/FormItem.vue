@@ -231,7 +231,7 @@ export default defineComponent({
 
       const propsData: Recordable = {
         allowClear: true,
-        getPopupContainer: (trigger: Element) => trigger.parentNode.parentNode,
+        getPopupContainer: (trigger: Element) => trigger.parentNode!.parentNode,
         size,
         ...unref(getComponentsProps),
         disabled: unref(getDisable),
@@ -283,9 +283,9 @@ export default defineComponent({
       const { label, helpMessage, helpComponentProps, subLabel } = props.schema
       const renderLabel = subLabel
         ? (
-        <span>
-          {label} <span class="text-secondary">{subLabel}</span>
-        </span>
+          <span>
+            {label} <span class="text-secondary">{subLabel}</span>
+          </span>
           )
         : (
             label
