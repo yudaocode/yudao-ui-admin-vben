@@ -80,7 +80,7 @@ async function init() {
     // 1.2 如果 params.scope 为空，则使用返回的 scopes 设置它
   }
   else {
-    scopes = res.data.scopes
+    scopes = res.scopes
     for (const scope of scopes)
       params.scopes.push(scope.key)
   }
