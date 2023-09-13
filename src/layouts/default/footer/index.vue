@@ -55,16 +55,6 @@ const getShowLayoutFooter = computed(() => {
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-layout-footer';
 
-html{
-  --normal-text:#b6b7b9;
-  --hover-text: rgb(0 0 0 / 85%);
-}
-
-html[data-theme="dark"] {
-  --normal-text:rgb(255 255 255 0.85);
-  --hover-text: rgb(0 0 0 / 85%);
-}
-
 .@{prefix-cls} {
   color: var(--normal-text);
   text-align: center;
