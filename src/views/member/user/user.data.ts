@@ -2,6 +2,7 @@ import { getSimpleGroupList } from '@/api/member/group'
 import { getSimpleLevelList } from '@/api/member/level'
 import { getSimpleTagList } from '@/api/member/tag'
 import { getAreaTree } from '@/api/system/area'
+import type { DescItem } from '@/components/Description'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
@@ -262,5 +263,105 @@ export const updateLevelFormSchema: FormSchema[] = [
     field: 'reason',
     required: true,
     component: 'InputTextArea',
+  },
+]
+
+export const userBasicInfoDesc: DescItem[] = [
+  {
+    label: '用户名',
+    field: 'name',
+  },
+  {
+    label: '昵称',
+    field: 'nickname',
+  },
+  {
+    label: '手机号',
+    field: 'mobile',
+  },
+  {
+    label: '性别',
+    field: 'sex',
+    render: (curVal) => {
+      return useRender.renderDict(curVal, DICT_TYPE.SYSTEM_USER_SEX)
+    },
+  },
+  {
+    label: '所在地',
+    field: 'areaName',
+  },
+  {
+    label: '注册 IP',
+    field: 'registerIp',
+  },
+  {
+    label: '生日',
+    field: 'birthday',
+    render: (curVal) => {
+      return useRender.renderDate(curVal)
+    },
+  },
+  {
+    label: '注册时间',
+    field: 'createTime',
+    render: (curVal) => {
+      return useRender.renderDate(curVal)
+    },
+  },
+  {
+    label: '最后登录时间',
+    field: 'loginDate',
+    render: (curVal) => {
+      return useRender.renderDate(curVal)
+    },
+  },
+]
+
+export const userAccountInfoDesc: DescItem[] = [
+  {
+    label: '等级',
+    field: 'levelName',
+  },
+  {
+    label: '成长值',
+    field: 'experience',
+    render: (curVal) => {
+      return curVal || 0
+    },
+  },
+  {
+    label: '当前积分',
+    field: 'point',
+    render: (curVal) => {
+      return curVal || 0
+    },
+  },
+  {
+    label: '总积分',
+    field: 'totalPoint',
+    render: (curVal) => {
+      return curVal || 0
+    },
+  },
+  {
+    label: '当前余额',
+    field: 'aaa',
+    render: (curVal) => {
+      return curVal || 0
+    },
+  },
+  {
+    label: '支出金额',
+    field: 'bbb',
+    render: (curVal) => {
+      return curVal || 0
+    },
+  },
+  {
+    label: '充值金额',
+    field: 'ccc',
+    render: (curVal) => {
+      return curVal || 0
+    },
   },
 ]

@@ -94,7 +94,6 @@ export default defineComponent({
 
 .@{prefix-cls} {
   background-color: var(--component-background);
-  border-radius: 6px;
   transition: all 0.3s ease-in-out;
 
   &__header {
@@ -103,6 +102,7 @@ export default defineComponent({
     justify-content: space-between;
     height: 32px;
     border-bottom: 1px solid var(--border-color);
+    border-radius: 6px;
   }
 
   &__footer {
