@@ -90,7 +90,7 @@ export class VAxios {
 
     // 请求拦截器配置处理
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      const { requestOptions } = this.options
+      const requestOptions = (config as unknown as any).requestOptions ?? this.options.requestOptions
       const ignoreCancelToken = requestOptions?.ignoreCancelToken ?? true
 
       !ignoreCancelToken && axiosCanceler.addPending(config)
@@ -330,6 +330,9 @@ export class VAxios {
     // cancelToken 如果被深拷贝，会导致最外层无法使用cancel方法来取消请求
     if (config.cancelToken)
       conf.cancelToken = config.cancelToken
+
+    if (config.signal)
+      conf.signal = config.signal
 
     const transform = this.getTransform()
 
