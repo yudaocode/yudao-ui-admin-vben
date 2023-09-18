@@ -298,7 +298,9 @@ emit('register', tableAction, formActions)
         <slot :name="item" v-bind="data || {}" />
       </template>
       <template #headerCell="{ column }">
-        <HeaderCell :column="column" />
+        <slot name="headerCell" v-bind="{ column }">
+          <HeaderCell :column="column" />
+        </slot>
       </template>
       <!-- 增加对antdv3.x兼容 -->
       <template #bodyCell="data">

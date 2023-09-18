@@ -7,7 +7,7 @@ defineProps({ title: { type: String, default: '' } })
 </script>
 
 <template>
-  <span>
+  <span class="edit-header-cell">
     <slot />
     {{ title }}
     <FormOutlined />
