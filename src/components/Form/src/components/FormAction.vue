@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { Col, Form } from 'ant-design-vue'
 import type { ColEx } from '../types'
 
-// import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes';
 import { useFormContext } from '../hooks/useFormContext'
 import type { ButtonProps } from '@/components/Button'
 import { Button } from '@/components/Button'
