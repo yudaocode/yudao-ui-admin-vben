@@ -1,5 +1,5 @@
 import type { Ref, VNodeChild } from 'vue'
-import type { TableRowSelection as ITableRowSelection } from 'ant-design-vue/lib/table/interface'
+import type { TableRowSelection as ITableRowSelection, Key } from 'ant-design-vue/lib/table/interface'
 import type { ColumnProps } from 'ant-design-vue/lib/table'
 import type { PaginationProps } from './pagination'
 
@@ -19,7 +19,7 @@ export interface TableRowSelection<T = any> extends ITableRowSelection {
    * Callback executed when selected rows change
    * @type Function
    */
-  onChange?: (selectedRowKeys: string[] | number[], selectedRows: T[]) => any
+  onChange?: (selectedRowKeys: Key[], selectedRows: T[]) => any
 
   /**
    * Callback executed when select/deselect one row
@@ -37,7 +37,7 @@ export interface TableRowSelection<T = any> extends ITableRowSelection {
    * Callback executed when row selection is inverted
    * @type Function
    */
-  onSelectInvert?: (selectedRows: string[] | number[]) => any
+  onSelectInvert?: (selectedRows: Key[]) => any
 }
 
 export interface TableCustomRecord<T> {
@@ -83,7 +83,7 @@ export interface TableActionType {
   getSelectRows: <T = Recordable>() => T[]
   clearSelectedRowKeys: () => void
   expandAll: () => void
-  expandRows: (keys: string[] | number[]) => void
+  expandRows: (keys: (string | number)[]) => void
   collapseAll: () => void
   scrollTo: (pos: string) => void // pos: id | "top" | "bottom"
   getSelectRowKeys: () => string[]
@@ -101,7 +101,7 @@ export interface TableActionType {
   setLoading: (loading: boolean) => void
   setProps: (props: Partial<BasicTableProps>) => void
   redoHeight: () => void
-  setSelectedRowKeys: (rowKeys: string[] | number[]) => void
+  setSelectedRowKeys: (rowKeys: Key[]) => void
   getPaginationRef: () => PaginationProps | boolean
   getSize: () => SizeType
   getRowSelection: () => TableRowSelection<Recordable>

@@ -4,7 +4,7 @@ import type { BasicTableProps } from '../types/table'
 import { ROW_KEY } from '../const'
 
 export function useTableExpand(propsRef: ComputedRef<BasicTableProps>, tableData: Ref<Recordable[]>, emit: EmitType) {
-  const expandedRowKeys = ref<string[]>([])
+  const expandedRowKeys = ref<(string | number)[]>([])
 
   const getAutoCreateKey = computed(() => {
     return unref(propsRef).autoCreateKey && !unref(propsRef).rowKey
@@ -34,7 +34,7 @@ export function useTableExpand(propsRef: ComputedRef<BasicTableProps>, tableData
     expandedRowKeys.value = keys
   }
 
-  function expandRows(keys: string[]) {
+  function expandRows(keys: (string | number)[]) {
     // use row ID expands the specified table row
     const { isTreeTable } = unref(propsRef)
     if (!isTreeTable)
