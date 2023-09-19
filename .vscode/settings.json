@@ -19,9 +19,11 @@
     "**/.idea": true,
     "**/.vscode": false,
     "**/yarn.lock": true,
+    "pnpm-lock.yaml": true,
     "**/tmp": true,
     "out": true,
     "dist": true,
+    "public": true,
     "node_modules": true,
     "CHANGELOG.md": true,
     "examples": true,
@@ -103,6 +105,7 @@
   "[vue]": {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true,
+      "source.organizeImports": false,
       "source.fixAll.stylelint": true
     }
   },
@@ -146,7 +149,9 @@
     "unref",
     "vben",
     "vditor",
+    "videojs",
     "vitejs",
+    "vuedraggable",
     "vueuse",
     "xingyuv",
     "yudao",

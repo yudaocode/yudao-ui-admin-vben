@@ -38,7 +38,7 @@
     "clean:lib": "rimraf node_modules",
     "lint": "eslint \"src/**/*.{vue,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{vue,ts,tsx}\" --fix",
-    "lint:stylelint": "stylelint \"**/*.{vue,css,less,scss}\" --fix --cache --cache-location node_modules/.cache/stylelint/",
+    "lint:stylelint": "stylelint \"src/**/*.{vue,css,less,scss}\" --fix --cache --cache-location node_modules/.cache/stylelint/",
     "lint:lint-staged": "lint-staged",
     "npm:check": "npx npm-check-updates",
     "reinstall": "rimraf pnpm-lock.yaml && rimraf package.lock.json && rimraf node_modules && pnpm bootstrap",
@@ -82,7 +82,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.42.0",
+    "@antfu/eslint-config": "^0.42.1",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@iconify/json": "^2.2.117",
@@ -112,7 +112,7 @@
     "less": "^4.2.0",
     "lint-staged": "^14.0.1",
     "picocolors": "^1.0.0",
-    "postcss": "^8.4.29",
+    "postcss": "^8.4.30",
     "postcss-html": "^1.5.0",
     "postcss-less": "^6.0.0",
     "prettier": "^3.0.3",

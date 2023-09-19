@@ -17,5 +17,10 @@ module.exports = {
     'no-case-declarations': 'off',
     'no-console': 'off',
     'n/prefer-global/process': 'off',
+    'jsdoc/no-multi-asterisks': 'off',
+    'jsdoc/valid-types': 'off',
+    'jsdoc/check-param-names': 'off',
+    'jsdoc/require-returns-description': 'off',
+    'jsdoc/require-returns-check': 'off',
   },
 }
