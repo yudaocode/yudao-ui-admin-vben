@@ -67,7 +67,7 @@ export function getType(value: any): string {
 
 /**
  * 生成唯一guid
- * @returns {String} 唯一id标识符
+ * @returns {string} 唯一id标识符
  */
 export function randomUUID(): string {
   function S4() {

@@ -64,7 +64,7 @@ export type BuildPropReturn<T, D, R, V, C> = {
     type: String,
     values: ['light', 'dark'],
   } as const)
-  * @example
+ * @example
   // limited options and other types
   // the type will be PropType<'small' | 'medium' | number>
   buildProp({

@@ -26,9 +26,9 @@ const state = reactive<{
 })
 
 /**
-     * 显示Json数据弹框
-     * @param jsonData
-     */
+ * 显示Json数据弹框
+ * @param jsonData
+ */
 function showModal(jsonData: IFormConfig) {
   // console.log('showModal-', jsonData);
   formatRules(jsonData.schemas)
@@ -37,9 +37,9 @@ function showModal(jsonData: IFormConfig) {
 }
 
 /**
-     * 获取表单数据
-     * @return {Promise<void>}
-     */
+ * 获取表单数据
+ * @return {Promise<void>}
+ */
 function handleCancel() {
   state.open = false
   onCancel()

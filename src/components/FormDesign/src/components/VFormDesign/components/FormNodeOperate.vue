@@ -24,8 +24,8 @@ const activeClass = computed(() => {
   return props.schema.key === props.currentItem.key ? 'active' : 'unactivated'
 })
 /**
-       * 删除当前项
-       */
+ * 删除当前项
+ */
 function handleDelete() {
   const traverse = (schemas: IVFormComponent[]) => {
     schemas.some((formItem, index) => {

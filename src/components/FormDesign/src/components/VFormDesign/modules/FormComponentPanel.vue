@@ -23,9 +23,9 @@ export default defineComponent({
     const { formConfig } = useFormDesignState()
 
     /**
-       * 拖拽完成事件
-       * @param newIndex
-       */
+     * 拖拽完成事件
+     * @param newIndex
+     */
     const addItem = ({ newIndex }: any) => {
       formConfig.value.schemas = formConfig.value.schemas || []
 
@@ -35,9 +35,9 @@ export default defineComponent({
     }
 
     /**
-       * 拖拽开始事件
-       * @param e {Object} 事件对象
-       */
+     * 拖拽开始事件
+     * @param e {Object} 事件对象
+     */
     const handleDragStart = (e: any) => {
       emit('handleSetSelectItem', formConfig.value.schemas[e.oldIndex])
     }
@@ -70,7 +70,7 @@ export default defineComponent({
       <div class="draggable-box">
         <Draggable
           v-model="formConfig.schemas"
-          class="ant-row list-main"
+          class="list-main ant-row"
           group="form-draggable"
           :component-data="{ name: 'list', tag: 'div', type: 'transition-group' }"
           ghost-class="moving"

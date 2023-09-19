@@ -135,8 +135,10 @@ function handleOk() {
 <template>
   <Drawer :root-class-name="prefixCls" v-bind="getBindValues" @close="onClose">
     <template v-if="!$slots.title" #title>
-      <DrawerHeader :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack"
-        @close="onClose">
+      <DrawerHeader
+        :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack"
+        @close="onClose"
+      >
         <template #titleToolbar>
           <slot name="titleToolbar" />
         </template>
@@ -146,8 +148,10 @@ function handleOk() {
       <slot name="title" />
     </template>
 
-    <ScrollContainer v-loading="getLoading" :style="getScrollContentStyle"
-      :loading-tip="loadingText || t('common.loadingText')">
+    <ScrollContainer
+      v-loading="getLoading" :style="getScrollContentStyle"
+      :loading-tip="loadingText || t('common.loadingText')"
+    >
       <slot />
     </ScrollContainer>
     <DrawerFooter v-bind="getProps" :height="getFooterHeight" @close="onClose" @ok="handleOk">

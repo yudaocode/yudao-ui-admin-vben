@@ -336,7 +336,8 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     },
     /**
      * replace tab's path
-     * **/
+     * *
+     */
     updateTabPath(fullPath: string, route: RouteLocationNormalized) {
       const findTab = this.getTabList.find(item => item === route)
       if (findTab) {

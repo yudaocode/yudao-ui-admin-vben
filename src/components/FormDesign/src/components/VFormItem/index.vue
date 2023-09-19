@@ -61,8 +61,8 @@ const formItemProps = computed(() => {
             : {}
 
   /**
-       * 将字符串正则格式化成正则表达式
-       */
+   * 将字符串正则格式化成正则表达式
+   */
 
   const newConfig = Object.assign(
     {},
@@ -97,8 +97,8 @@ function handleClick(schema: IVFormComponent) {
     emit(schema.componentProps?.handle)
 }
 /**
-     * 处理异步属性，异步属性会导致一些属性渲染错误，如defaultValue异步加载会导致渲染不出来，故而此处只处理options，treeData，同步属性在cmpProps中处理
-     */
+ * 处理异步属性，异步属性会导致一些属性渲染错误，如defaultValue异步加载会导致渲染不出来，故而此处只处理options，treeData，同步属性在cmpProps中处理
+ */
 const asyncProps = asyncComputed(async () => {
   let { options, treeData } = props.schema.componentProps ?? {}
   if (options)
@@ -112,8 +112,8 @@ const asyncProps = asyncComputed(async () => {
 })
 
 /**
-     * 处理同步属性
-     */
+ * 处理同步属性
+ */
 const cmpProps = computed(() => {
   const isCheck
           = props.schema && ['Switch', 'Checkbox', 'Radio'].includes(props.schema.component)

@@ -18,9 +18,9 @@ const state = reactive<{
   jsonData: {} as IFormConfig, // json数据
 })
 /**
-     * 显示Json数据弹框
-     * @param jsonData
-     */
+ * 显示Json数据弹框
+ * @param jsonData
+ */
 function showModal(jsonData: IFormConfig) {
   formatRules(jsonData.schemas)
   state.jsonData = jsonData
