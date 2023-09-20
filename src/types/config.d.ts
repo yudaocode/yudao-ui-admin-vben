@@ -1,14 +1,14 @@
-import { MenuTypeEnum, MenuModeEnum, TriggerEnum, MixSidebarTriggerEnum } from '@/enums/menuEnum'
-import {
+import type { MenuModeEnum, MenuTypeEnum, MixSidebarTriggerEnum, TriggerEnum } from '@/enums/menuEnum'
+import type {
   ContentEnum,
   PermissionModeEnum,
-  ThemeEnum,
   RouterTransitionEnum,
+  SessionTimeoutProcessingEnum,
   SettingButtonPositionEnum,
-  SessionTimeoutProcessingEnum
+  ThemeEnum,
 } from '@/enums/appEnum'
 
-import { CacheTypeEnum } from '@/enums/cacheEnum'
+import type { CacheTypeEnum } from '@/enums/cacheEnum'
 
 export type LocaleType = 'zh_CN' | 'en' | 'ru' | 'ja' | 'ko'
 

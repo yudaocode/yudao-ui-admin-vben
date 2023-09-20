@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import type { RouteLocationNormalized, Router } from 'vue-router'
 import { Modal, notification } from 'ant-design-vue'
 import { unref } from 'vue'
@@ -124,7 +125,7 @@ export function createMessageGuard(router: Router) {
       }
     }
     catch (error) {
-      warn(`message guard error:${error}`)
+      warn(`message guard error:${error as any}`)
     }
     return true
   })

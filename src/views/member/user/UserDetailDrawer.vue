@@ -24,7 +24,6 @@ const [registerAccountDesc] = useDescription({
 const [registerDrawer, { setDrawerProps }] = useDrawerInner(async (data) => {
   setDrawerProps({ loading: true })
   const res = await getUser(data.id)
-  console.info(res)
   userInfo.value = res
   loading.value = false
   setDrawerProps({ loading: false })

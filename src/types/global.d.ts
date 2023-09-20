@@ -1,4 +1,4 @@
-import type { ComponentRenderProxy, VNode, VNodeChild, ComponentPublicInstance, FunctionalComponent, PropType as VuePropType } from 'vue'
+import type { ComponentPublicInstance, ComponentRenderProxy, FunctionalComponent, VNode, VNodeChild, PropType as VuePropType } from 'vue'
 
 declare global {
   const __APP_INFO__: {
@@ -26,10 +26,10 @@ declare global {
   declare type Nullable<T> = T | null
   declare type NonNullable<T> = T extends null | undefined ? never : T
   declare type Recordable<T = any> = Record<string, T>
-  declare type ReadonlyRecordable<T = any> = {
+  declare interface ReadonlyRecordable<T = any> {
     readonly [key: string]: T
   }
-  declare type Indexable<T = any> = {
+  declare interface Indexable<T = any> {
     [key: string]: T
   }
   declare type DeepPartial<T> = {

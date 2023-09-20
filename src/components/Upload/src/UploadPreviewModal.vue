@@ -43,10 +43,7 @@ function handleRemove(record: PreviewFileItem) {
   if (index !== -1) {
     const removed = fileListRef.value.splice(index, 1)
     emit('delete', removed[0].url)
-    emit(
-      'list-change',
-      fileListRef.value.map(item => item.url),
-    )
+    emit('list-change', fileListRef.value.map(item => item.url))
   }
 }
 
