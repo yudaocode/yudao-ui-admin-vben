@@ -15,7 +15,7 @@ const ListItemMeta = List.Item.Meta
           <ListItemMeta>
             <template #title>
               {{ item.title }}
-              <Switch class="extra" checked-children="开" un-checked-children="关" default-checked />
+              <Switch class="float-right mr-7.5 mt-0" checked-children="开" un-checked-children="关" default-checked />
             </template>
             <template #description>
               <div>{{ item.description }}</div>
@@ -26,11 +26,3 @@ const ListItemMeta = List.Item.Meta
     </List>
   </CollapseContainer>
 </template>
-
-<style lang="less" scoped>
-.extra {
-  float: right;
-  margin-top: 10px;
-  margin-right: 30px;
-}
-</style>

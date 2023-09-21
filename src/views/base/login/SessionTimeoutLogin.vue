@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import Login from './Login.vue'
-import { useDesign } from '@/hooks/web/useDesign'
 import { useUserStore } from '@/store/modules/user'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useAppStore } from '@/store/modules/app'
 import { PermissionModeEnum } from '@/enums/appEnum'
 
-const { prefixCls } = useDesign('st-login')
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 const appStore = useAppStore()
@@ -36,20 +34,8 @@ onBeforeUnmount(() => {
 
 <template>
   <transition>
-    <div :class="prefixCls">
+    <div class="fixed z-9999999 h-full w-full bg-[var(--component-background)]">
       <Login session-timeout />
     </div>
   </transition>
 </template>
-
-<style lang="less" scoped>
-@prefix-cls: ~'@{namespace}-st-login';
-
-.@{prefix-cls} {
-  position: fixed;
-  z-index: 9999999;
-  width: 100%;
-  height: 100%;
-  background: var(--component-background);
-}
-</style>

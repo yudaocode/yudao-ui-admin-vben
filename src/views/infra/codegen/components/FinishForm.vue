@@ -36,7 +36,7 @@ function handleGoList() {
 </script>
 
 <template>
-  <div class="result-success m-5">
+  <div class="m-5 bg-white px-8 py-12 dark:bg-dark">
     <Result status="success" title="代码生成成功" sub-title="可点击下方按钮预览、下载，或返回列表页。">
       <template #extra>
         <a-button key="console" type="primary" @click="handleGoList">
@@ -53,15 +53,3 @@ function handleGoList() {
     <PreviewModal @register="registerPreviewModal" />
   </div>
 </template>
-
-<style lang="less" scoped>
-.result-success {
-  padding: 48px 32px;
-  background-color: var(--component-background);
-
-  &__content {
-    padding: 24px 40px;
-    background-color: @background-color-light;
-  }
-}
-</style>

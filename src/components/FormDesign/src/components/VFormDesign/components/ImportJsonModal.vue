@@ -109,7 +109,7 @@ defineExpose({ showModal })
         取消
       </a-button>
       <Upload
-        class="upload-button"
+        class="mx-2.5"
         :before-upload="beforeUpload"
         :show-upload-list="false"
         accept="application/json"
@@ -124,9 +124,3 @@ defineExpose({ showModal })
     </template>
   </Modal>
 </template>
-
-<style lang="less" scoped>
-.upload-button {
-  margin: 0 10px;
-}
-</style>

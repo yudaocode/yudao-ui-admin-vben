@@ -19,7 +19,6 @@ import PropsPanel from './modules/PropsPanel.vue'
 import ImportJsonModal from './components/ImportJsonModal.vue'
 import CodeModal from './components/CodeModal.vue'
 import { globalConfigState } from './config/formItemPropsConfig'
-import { useDesign } from '@/hooks/web/useDesign'
 import { CollapseContainer } from '@/components/Container/index'
 import 'codemirror/mode/javascript/javascript'
 
@@ -29,7 +28,6 @@ defineProps({
     default: 'v-form-antd表单设计器',
   },
 })
-const { prefixCls } = useDesign('form-design')
 // 子组件实例
 const propsPanel = ref<null | IPropsPanel>(null)
 const jsonModal = ref<null | IToolbarMethods>(null)
@@ -251,7 +249,7 @@ provide<IFormDesignMethods>('formDesignMethods', {
 <template>
   <Layout>
     <LayoutSider
-      :class="`left ${prefixCls}-sider`"
+      class="bg-white dark:bg-black"
       collapsible
       collapsed-width="0"
       width="270"
@@ -302,7 +300,7 @@ provide<IFormDesignMethods>('formDesignMethods', {
       />
     </LayoutContent>
     <LayoutSider
-      :class="`right ${prefixCls}-sider`"
+      class="bg-white dark:bg-black"
       collapsible
       :reverse-arrow="true"
       collapsed-width="0"
@@ -327,19 +325,3 @@ provide<IFormDesignMethods>('formDesignMethods', {
   <VFormPreview ref="eFormPreview" :form-config="formConfig" />
   <VFormPreview2 ref="eFormPreview2" :form-config="formConfig" />
 </template>
-
-<style lang="less" scoped>
-@prefix-cls: ~'@{namespace}-form-design';
-
-[data-theme='dark'] {
-  .@{prefix-cls}-sider {
-    background-color: #1f1f1f;
-  }
-}
-
-[data-theme='light'] {
-  .@{prefix-cls}-sider {
-    background-color: #fff;
-  }
-}
-</style>

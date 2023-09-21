@@ -11,7 +11,6 @@ import { openWindow } from '@/utils'
 
 import { useI18n } from '@/hooks/web/useI18n'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
-import { useDesign } from '@/hooks/web/useDesign'
 
 defineOptions({ name: 'LayoutFooter' })
 
@@ -22,7 +21,6 @@ const Footer = Layout.Footer
 const { t } = useI18n()
 const { getShowFooter } = useRootSetting()
 const { currentRoute } = useRouter()
-const { prefixCls } = useDesign('layout-footer')
 
 const footerRef = ref<ComponentRef>(null)
 const { setFooterHeight } = useLayoutHeight()
@@ -40,43 +38,15 @@ const getShowLayoutFooter = computed(() => {
 </script>
 
 <template>
-  <Footer v-if="getShowLayoutFooter" ref="footerRef" :class="prefixCls">
-    <div :class="`${prefixCls}__links`">
-      <a @click="openWindow(SITE_URL)">外包咨询</a>
+  <Footer v-if="getShowLayoutFooter" ref="footerRef" class="text-center text-[var(--normal-text)]">
+    <div class="mb-2">
+      <a class="text-[var(--normal-text)] hover:text-[var(--hover-text)]" @click="openWindow(SITE_URL)">外包咨询</a>
 
-      <GithubFilled :class="`${prefixCls}__github`" @click="openWindow(GITHUB_URL)" />
+      <GithubFilled class="mx-7.5 hover:text-[var(--hover-text)]" @click="openWindow(GITHUB_URL)" />
 
-      <a @click="openWindow(DOC_URL)">{{ t('layout.footer.onlineDocument') }}</a>
+      <a class="text-[var(--normal-text)] hover:text-[var(--hover-text)]" @click="openWindow(DOC_URL)">{{
+        t('layout.footer.onlineDocument') }}</a>
     </div>
     <div>Copyright &copy;2023 {{ SITE_TITLE }}</div>
   </Footer>
 </template>
-
-<style lang="less" scoped>
-@prefix-cls: ~'@{namespace}-layout-footer';
-
-.@{prefix-cls} {
-  color: var(--normal-text);
-  text-align: center;
-
-  &__links {
-    margin-bottom: 8px;
-
-    a {
-      color: var(--normal-text);
-
-      &:hover {
-        color: var(--hover-text);
-      }
-    }
-  }
-
-  &__github {
-    margin: 0 30px;
-
-    &:hover {
-      color: var(--hover-text);
-    }
-  }
-}
-</style>

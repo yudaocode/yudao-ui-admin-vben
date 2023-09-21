@@ -280,11 +280,11 @@ function getFileName(path) {
     <Upload
       :headers="headers"
       :multiple="multiple"
-      :action="uploadUrl as any"
+      :action="uploadUrl"
       :file-list="fileList"
       :disabled="disabled"
       v-bind="bindProps"
-      @remove="onRemove as any"
+      @remove="onRemove"
       @change="onFileChange"
       @preview="onFilePreview"
     >
@@ -305,7 +305,6 @@ function getFileName(path) {
 </template>
 
 <style lang="less">
-//noinspection LessUnresolvedVariable
 @prefix-cls: ~'@{namespace}-upload';
 
 .@{prefix-cls} {
@@ -323,12 +322,9 @@ function getFileName(path) {
         }
       }
 
-      /* update-begin-author:taoyan date:2022-5-24 for:VUEN-1093详情界面 图片下载按钮显示不全 */
       .upload-download-handler {
         right: 6px !important;
       }
-
-      /* update-end-author:taoyan date:2022-5-24 for:VUEN-1093详情界面 图片下载按钮显示不全 */
     }
 
     .ant-upload-list-item {

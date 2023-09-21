@@ -73,7 +73,7 @@ onMounted(async () => {
 
 <template>
   <PageWrapper>
-    <div class="step-form-form">
+    <div class="mx-auto my-0 mt-2.5 w-200">
       <Steps :current="current">
         <Step title="生成信息" />
         <Step title="字段信息" />
@@ -94,11 +94,3 @@ onMounted(async () => {
     </div>
   </PageWrapper>
 </template>
-
-<style lang="less" scoped>
-.step-form-form {
-  width: 750px;
-  margin: 0 auto;
-  margin-top: 10px;
-}
-</style>

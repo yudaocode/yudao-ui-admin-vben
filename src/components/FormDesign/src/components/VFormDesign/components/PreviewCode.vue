@@ -72,10 +72,10 @@ export default defineComponent({
     <div class="v-json-box">
       <CodeEditor ref="myEditor" :value="editorJson" :mode="MODE.JSON" />
     </div>
-    <div class="copy-btn-box">
+    <div class="pt-2 text-center">
       <a-button
         type="primary"
-        class="copy-btn"
+        class="mr-2"
         data-clipboard-action="copy"
         :data-clipboard-text="editorJson"
         @click="handleCopyJson"
@@ -88,15 +88,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
-<style lang="less" scoped>
-// modal复制按钮样式
-.copy-btn-box {
-  padding-top: 8px;
-  text-align: center;
-
-  .copy-btn {
-    margin-right: 8px;
-  }
-}
-</style>

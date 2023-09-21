@@ -33,5 +33,3 @@ onMounted(async () => {
     </Tooltip>
   </div>
 </template>
-
-<style lang="less"></style>

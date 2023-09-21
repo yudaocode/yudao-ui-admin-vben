@@ -29,8 +29,14 @@ function toggleDarkMode() {
 </script>
 
 <template>
-  <div v-if="getShowDarkModeToggle" :class="getClass" @click="toggleDarkMode">
-    <div :class="`${prefixCls}-inner`" />
+  <div
+    v-if="getShowDarkModeToggle" :class="getClass"
+    class="relative mr-auto h-6.5 w-12.5 flex cursor-pointer items-center justify-between rounded-4.5 bg-black px-1.5"
+    @click="toggleDarkMode"
+  >
+    <div
+      class="dark:(transform translateX(calc(100% + 2px))) absolute z-1 h-4.5 w-4.5 rounded-1/2 bg-white will-change-transform"
+    />
     <SvgIcon size="14" name="sun" />
     <SvgIcon size="14" name="moon" />
   </div>
@@ -46,29 +52,11 @@ html[data-theme='dark'] {
 }
 
 .@{prefix-cls} {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 50px;
-  height: 26px;
-  padding: 0 6px;
-  margin-left: auto;
-  cursor: pointer;
-  background-color: #151515;
-  border-radius: 30px;
 
   &-inner {
-    position: absolute;
-    z-index: 1;
-    width: 18px;
-    height: 18px;
-    background-color: #fff;
-    border-radius: 50%;
     transition:
       transform 0.5s,
       background-color 0.5s;
-    will-change: transform;
   }
 
   &--dark {

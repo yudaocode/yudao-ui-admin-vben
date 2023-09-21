@@ -52,10 +52,10 @@ function deleteGridOptions(index: number) {
     </div>
     <div v-else>
       <div v-for="(item, index) of formConfig.currentItem!.componentProps![key]" :key="index">
-        <div class="options-box">
+        <div class="mb-1.5 flex items-center">
           <Input v-model:value="item.label" />
-          <Input v-model:value="item.value" class="options-value" />
-          <a class="options-delete" @click="deleteOptions(index)">
+          <Input v-model:value="item.value" class="mx-2" />
+          <a class="h-7.5 w-7.5 rounded-full bg-light-50 text-center text-gray-500 hover:bg-red-500" @click="deleteOptions(index)">
             <Icon icon="ant-design:delete-outlined" />
           </a>
         </div>
@@ -67,30 +67,3 @@ function deleteGridOptions(index: number) {
     </div>
   </div>
 </template>
-
-<style lang="less" scoped>
-.options-box {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-
-  .options-value {
-    margin: 0 8px;
-  }
-
-  .options-delete {
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    color: #666;
-    text-align: center;
-    background: #f5f5f5;
-    border-radius: 50%;
-
-    &:hover {
-      background: #ff4d4f;
-    }
-  }
-}
-</style>

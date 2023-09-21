@@ -9,7 +9,6 @@ import LayoutSideBar from './sider/index.vue'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInject } from '@/hooks/web/useAppInject'
-import { useDesign } from '@/hooks/web/useDesign'
 import { useLockPage } from '@/hooks/web/useLockPage'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
@@ -18,7 +17,6 @@ defineOptions({ name: 'DefaultLayout' })
 const LayoutFeatures = createAsyncComponent(() => import('@/layouts/default/feature/index.vue'))
 const LayoutFooter = createAsyncComponent(() => import('@/layouts/default/footer/index.vue'))
 
-const { prefixCls } = useDesign('default-layout')
 const { getIsMobile } = useAppInject()
 const { getShowFullHeaderRef } = useHeaderSetting()
 const { getShowSidebar, getIsMixSidebar, getShowMenu } = useMenuSetting()
@@ -36,12 +34,12 @@ const layoutClass = computed(() => {
 </script>
 
 <template>
-  <Layout :class="prefixCls" v-bind="lockEvents">
+  <Layout class="min-h-full w-full flex flex-col" v-bind="lockEvents">
     <LayoutFeatures />
     <LayoutHeader v-if="getShowFullHeaderRef" fixed />
     <Layout :class="[layoutClass]">
       <LayoutSideBar v-if="getShowSidebar || getIsMobile" />
-      <Layout :class="`${prefixCls}-main`">
+      <Layout class="ml-0.25 w-full">
         <LayoutMultipleHeader />
         <LayoutContent />
         <LayoutFooter />
@@ -49,19 +47,3 @@ const layoutClass = computed(() => {
     </Layout>
   </Layout>
 </template>
-
-<style lang="less">
-  @prefix-cls: ~'@{namespace}-default-layout';
-
-  .@{prefix-cls} {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100%;
-
-    &-main {
-      width: 100%;
-      margin-left: 1px;
-    }
-  }
-</style>

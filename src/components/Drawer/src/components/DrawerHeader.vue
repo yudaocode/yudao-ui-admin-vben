@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import { BasicTitle } from '@/components/Basic'
-import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 
 defineOptions({ name: 'BasicDrawerHeader' })
@@ -13,52 +12,27 @@ defineProps({
 })
 const emit = defineEmits(['close'])
 
-const { prefixCls } = useDesign('basic-drawer-header')
-
 function handleClose() {
   emit('close')
 }
 </script>
 
 <template>
-  <BasicTitle v-if="!isDetail" :class="prefixCls">
+  <BasicTitle v-if="!isDetail" class="h-full flex items-center">
     <slot name="title" />
     {{ !$slots.title ? title : '' }}
   </BasicTitle>
 
-  <div v-else :class="[prefixCls, `${prefixCls}--detail`]">
-    <span :class="`${prefixCls}__twrap`">
+  <div v-else>
+    <span class="flex-1">
       <span v-if="showDetailBack" @click="handleClose">
-        <ArrowLeftOutlined :class="`${prefixCls}__back`" />
+        <ArrowLeftOutlined class="cursor-pointer px-3" />
       </span>
       <span v-if="title">{{ title }}</span>
     </span>
 
-    <span :class="`${prefixCls}__toolbar`">
+    <span class="pr-12.5">
       <slot name="titleToolbar" />
     </span>
   </div>
 </template>
-
-<style lang="less">
-@prefix-cls: ~'@{namespace}-basic-drawer-header';
-@footer-height: 60px;
-.@{prefix-cls} {
-  display: flex;
-  align-items: center;
-  height: 100%;
-
-  &__back {
-    padding: 0 12px;
-    cursor: pointer;
-  }
-
-  &__twrap {
-    flex: 1;
-  }
-
-  &__toolbar {
-    padding-right: 50px;
-  }
-}
-</style>

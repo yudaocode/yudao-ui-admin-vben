@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed, ref, unref, watch, watchEffect } from 'vue'
+import { Avatar } from 'ant-design-vue'
 import CopperModal from './CopperModal.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useModal } from '@/components/Modal'
@@ -65,9 +66,9 @@ defineExpose({ openModal: openModal.bind(null, true), closeModal })
       <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
         <Icon icon="ant-design:cloud-upload-outlined" :size="getIconWidth" :style="getImageWrapperStyle" color="#d6d6d6" />
       </div>
-      <img v-if="sourceValue" :src="sourceValue" alt="avatar">
+      <Avatar v-if="sourceValue" :size="{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }" :src="sourceValue" alt="avatar" />
     </div>
-    <a-button v-if="showBtn" :class="`${prefixCls}-upload-btn`" v-bind="btnProps" @click="openModal">
+    <a-button v-if="showBtn" class="mx-auto my-2.5" v-bind="btnProps" @click="openModal">
       {{ btnText ? btnText : t('component.cropper.selectImage') }}
     </a-button>
 
@@ -112,10 +113,6 @@ defineExpose({ openModal: openModal.bind(null, true), closeModal })
 
   &-image-mask:hover {
     opacity: 40;
-  }
-
-  &-upload-btn {
-    margin: 10px auto;
   }
 }
 </style>

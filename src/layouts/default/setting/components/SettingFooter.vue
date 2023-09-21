@@ -8,7 +8,6 @@ import { usePermissionStore } from '@/store/modules/permission'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { useUserStore } from '@/store/modules/user'
 
-import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
@@ -22,7 +21,6 @@ import { updateSidebarBgColor } from '@/logics/theme/updateBackground'
 defineOptions({ name: 'SettingFooter' })
 
 const permissionStore = usePermissionStore()
-const { prefixCls } = useDesign('setting-footer')
 const { t } = useI18n()
 const { createSuccessModal, createMessage } = useMessage()
 const tabStore = useMultipleTabStore()
@@ -63,7 +61,7 @@ function handleClearAndRedo() {
 </script>
 
 <template>
-  <div :class="prefixCls">
+  <div class="flex flex-col items-center">
     <a-button type="primary" block @click="handleCopy">
       <CopyOutlined class="mr-2" />
       {{ t('layout.setting.copyBtn') }}
@@ -80,13 +78,3 @@ function handleClearAndRedo() {
     </a-button>
   </div>
 </template>
-
-<style lang="less" scoped>
-@prefix-cls: ~'@{namespace}-setting-footer';
-
-.@{prefix-cls} {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style>
