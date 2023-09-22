@@ -35,7 +35,7 @@ function toggleDarkMode() {
     @click="toggleDarkMode"
   >
     <div
-      class="dark:(transform translateX(calc(100% + 2px))) absolute z-1 h-4.5 w-4.5 rounded-1/2 bg-white will-change-transform"
+      class="absolute z-1 h-4.5 w-4.5 rounded-1/2 bg-white will-change-transform"
     />
     <SvgIcon size="14" name="sun" />
     <SvgIcon size="14" name="moon" />
