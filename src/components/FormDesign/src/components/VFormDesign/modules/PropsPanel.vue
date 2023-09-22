@@ -1,8 +1,8 @@
 <!--
  * @Description: 右侧属性配置面板
 -->
-<script lang="ts">
-import { computed, defineComponent } from 'vue'
+<script lang="ts" setup>
+import { computed } from 'vue'
 import { TabPane, Tabs } from 'ant-design-vue'
 import FormProps from '../components/FormProps.vue'
 import FormItemProps from '../components/FormItemProps.vue'
@@ -15,25 +15,11 @@ type ChangeTabKey = 1 | 2
 export interface IPropsPanel {
   changeTab: (key: ChangeTabKey) => void
 }
-export default defineComponent({
-  name: 'PropsPanel',
-  components: {
-    FormProps,
-    FormItemProps,
-    ComponentProps,
-    ComponentColumnProps,
-    Tabs,
-    TabPane,
-  },
-  setup() {
-    const { formConfig } = useFormDesignState()
-    const slotProps = computed(() => {
-      return customComponents.find(
-        item => item.component === formConfig.value.currentItem?.component,
-      )
-    })
-    return { formConfig, customComponents, slotProps }
-  },
+const { formConfig } = useFormDesignState()
+const slotProps = computed(() => {
+  return customComponents.find(
+    item => item.component === formConfig.value.currentItem?.component,
+  )
 })
 </script>
 

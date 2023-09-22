@@ -2,7 +2,7 @@
  * @Description: 中间表单布局面板
  * https://github.com/SortableJS/vue.draggable.next/issues/138
 -->
-<script lang="ts">
+<script lang="ts" setup>
 import draggable from 'vuedraggable'
 import { computed, defineComponent } from 'vue'
 import { cloneDeep } from 'lodash-es'
@@ -10,52 +10,37 @@ import { Empty, Form } from 'ant-design-vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import LayoutItem from '../components/LayoutItem.vue'
 
-export default defineComponent({
-  name: 'FormComponentPanel',
-  components: {
-    LayoutItem,
-    Draggable: draggable,
-    Form,
-    Empty,
-  },
-  emits: ['handleSetSelectItem'],
-  setup(_, { emit }) {
-    const { formConfig } = useFormDesignState()
+const emit = defineEmits(['handleSetSelectItem'])
 
-    /**
-     * 拖拽完成事件
-     * @param newIndex
-     */
-    const addItem = ({ newIndex }: any) => {
-      formConfig.value.schemas = formConfig.value.schemas || []
+const  Draggable = draggable
 
-      const schemas = formConfig.value.schemas
-      schemas[newIndex] = cloneDeep(schemas[newIndex])
-      emit('handleSetSelectItem', schemas[newIndex])
-    }
+const { formConfig } = useFormDesignState()
 
-    /**
-     * 拖拽开始事件
-     * @param e {Object} 事件对象
-     */
-    const handleDragStart = (e: any) => {
-      emit('handleSetSelectItem', formConfig.value.schemas[e.oldIndex])
-    }
+/**
+ * 拖拽完成事件
+ * @param newIndex
+ */
+function addItem({ newIndex }: any) {
+  formConfig.value.schemas = formConfig.value.schemas || []
 
-    // 获取祖先组件传递的currentItem
+  const schemas = formConfig.value.schemas
+  schemas[newIndex] = cloneDeep(schemas[newIndex])
+  emit('handleSetSelectItem', schemas[newIndex])
+}
 
-    // 计算布局元素，水平模式下为ACol，非水平模式下为div
-    const layoutTag = computed(() => {
-      return formConfig.value.layout === 'horizontal' ? 'Col' : 'div'
-    })
+/**
+ * 拖拽开始事件
+ * @param e {Object} 事件对象
+ */
+function handleDragStart(e: any) {
+  emit('handleSetSelectItem', formConfig.value.schemas[e.oldIndex])
+}
 
-    return {
-      addItem,
-      handleDragStart,
-      formConfig,
-      layoutTag,
-    }
-  },
+// 获取祖先组件传递的currentItem
+
+// 计算布局元素，水平模式下为ACol，非水平模式下为div
+const layoutTag = computed(() => {
+  return formConfig.value.layout === 'horizontal' ? 'Col' : 'div'
 })
 </script>
 

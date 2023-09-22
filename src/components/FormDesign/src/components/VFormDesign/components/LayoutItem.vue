@@ -3,9 +3,9 @@
  * 千万不要在template下面的第一行加注释，因为这里拖动的第一个元素
 -->
 
-<script lang="ts">
+<script lang="ts" setup>
 import type { PropType } from 'vue'
-import { computed, defineComponent, reactive, toRefs } from 'vue'
+import { computed } from 'vue'
 import draggable from 'vuedraggable'
 import { Col, Row } from 'ant-design-vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
@@ -13,16 +13,8 @@ import type { IVFormComponent } from '../../../typings/v-form-component'
 import FormNode from './FormNode.vue'
 import FormNodeOperate from './FormNodeOperate.vue'
 
-export default defineComponent({
-  name: 'LayoutItem',
-  components: {
-    FormNode,
-    FormNodeOperate,
-    Draggable: draggable,
-    Row,
-    Col,
-  },
-  props: {
+const props = defineProps(
+  {
     schema: {
       type: Object as PropType<IVFormComponent>,
       required: true,
@@ -32,33 +24,23 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['dragStart', 'handleColAdd', 'handle-copy', 'handle-delete'],
-  setup(props) {
-    const {
-      formDesignMethods: { handleSetSelectItem },
-      formConfig,
-    } = useFormDesignState()
-    const state = reactive({})
-    const colPropsComputed = computed(() => {
-      const { colProps = {} } = props.schema
-      return colProps
-    })
+)
 
-    const list1 = computed(() => props.schema.columns)
+const emit = defineEmits(['dragStart', 'handleColAdd', 'handle-copy', 'handle-delete'])
 
-    // 计算布局元素，水平模式下为ACol，非水平模式下为div
-    const layoutTag = computed(() => {
-      return formConfig.value.layout === 'horizontal' ? 'Col' : 'div'
-    })
+const Draggable = draggable
 
-    return {
-      ...toRefs(state),
-      colPropsComputed,
-      handleSetSelectItem,
-      layoutTag,
-      list1,
-    }
-  },
+const { formDesignMethods: { handleSetSelectItem }, formConfig } = useFormDesignState()
+const colPropsComputed = computed(() => {
+  const { colProps = {} } = props.schema
+  return colProps
+})
+
+const list1 = computed(() => props.schema.columns)
+
+// 计算布局元素，水平模式下为ACol，非水平模式下为div
+const layoutTag = computed(() => {
+  return formConfig.value.layout === 'horizontal' ? 'Col' : 'div'
 })
 </script>
 
@@ -87,8 +69,8 @@ export default defineComponent({
                   class="drag-move"
                   :schema="element"
                   :current-item="currentItem"
-                  @handle-copy="$emit('handle-copy')"
-                  @handle-delete="$emit('handle-delete')"
+                  @handle-copy="emit('handle-copy')"
+                  @handle-delete="emit('handle-delete')"
                 />
               </template>
             </Draggable>
@@ -102,8 +84,8 @@ export default defineComponent({
       :key="schema.key"
       :schema="schema"
       :current-item="currentItem"
-      @handle-copy="$emit('handle-copy')"
-      @handle-delete="$emit('handle-delete')"
+      @handle-copy="emit('handle-copy')"
+      @handle-delete="emit('handle-delete')"
     />
   </Col>
 </template>
