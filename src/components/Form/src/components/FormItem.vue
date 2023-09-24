@@ -140,7 +140,8 @@ export default defineComponent({
       const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = props.formProps
 
       const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel') ? rulesMessageJoinLabel : globalRulesMessageJoinLabel
-      const defaultMsg = `${createPlaceholderMessage(component)}${joinLabel ? label : ''}`
+      const assertLabel = joinLabel ? label : ''
+      const defaultMsg = component ? createPlaceholderMessage(component) + assertLabel : assertLabel
 
       function validator(rule: any, value: any) {
         const msg = rule.message || defaultMsg
@@ -354,8 +355,8 @@ export default defineComponent({
     }
 
     return () => {
-      const { colProps = {}, colSlot, renderColContent, component } = props.schema
-      if (!componentMap.has(component))
+      const { colProps = {}, colSlot, renderColContent, component, slot } = props.schema
+      if (!componentMap.has(component) && !slot)
         return null
 
       const { baseColProps = {} } = props.formProps
