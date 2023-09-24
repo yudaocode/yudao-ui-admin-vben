@@ -26,7 +26,7 @@ const title = computed(() => globSetting?.title ?? '')
 </script>
 
 <template>
-  <div :class="prefixCls" class="relative h-full w-full px-4">
+  <div :class="prefixCls" class="relative h-full min-h-full w-full overflow-hidden px-4">
     <div class="absolute right-4 top-4 flex items-center">
       <AppDarkModeToggle v-if="!sessionTimeout" class="enter-x mr-2" />
       <AppLocalePicker v-if="!sessionTimeout && showLocale" class="enter-x xl:text-gray-600" :show-text="false" />
@@ -108,9 +108,6 @@ html[data-theme='dark'] {
 }
 
 .@{prefix-cls} {
-  min-height: 100%;
-  overflow: hidden;
-
   @media (max-width: @screen-xl) {
     background-color: #293146;
 

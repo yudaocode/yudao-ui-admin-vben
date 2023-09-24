@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { useDesign } from '@/hooks/web/useDesign'
 import { BasicForm, useForm } from '@/components/Form'
 import { BasicModal, useModalInner } from '@/components/Modal'
 import { useUserStore } from '@/store/modules/user'
@@ -11,7 +10,6 @@ import headerImg from '@/assets/images/header.jpg'
 defineOptions({ name: 'LockModal' })
 
 const { t } = useI18n()
-const { prefixCls } = useDesign('header-lock-modal')
 const userStore = useUserStore()
 const lockStore = useLockStore()
 
@@ -52,18 +50,18 @@ const avatar = computed(() => {
 </script>
 
 <template>
-  <BasicModal :footer="null" width="25%" :title="t('layout.header.lockScreen')" v-bind="$attrs" :class="prefixCls" @register="register">
-    <div :class="`${prefixCls}__entry`">
-      <div :class="`${prefixCls}__header`">
-        <img :src="avatar" :class="`${prefixCls}__header-img`">
-        <p :class="`${prefixCls}__header-name`">
+  <BasicModal :footer="null" width="25%" :title="t('layout.header.lockScreen')" v-bind="$attrs" @register="register">
+    <div class="relative rounded-10 px-8 pb-8 pt-30">
+      <div class="absolute left-[calc(50%-45px)] top-0 w-auto text-center">
+        <img :src="avatar" class="w-18 rounded-50%">
+        <p class="mt-2">
           {{ getRealName }}
         </p>
       </div>
 
       <BasicForm @register="registerForm" />
 
-      <div :class="`${prefixCls}__footer`">
+      <div class="mt-4 text-center">
         <a-button type="primary" block class="mt-2" @click="handleLock">
           {{ t('layout.header.lockScreenBtn') }}
         </a-button>
@@ -71,38 +69,3 @@ const avatar = computed(() => {
     </div>
   </BasicModal>
 </template>
-
-<style lang="less">
-@prefix-cls: ~'@{namespace}-header-lock-modal';
-
-.@{prefix-cls} {
-  &__entry {
-    position: relative;
-    //height: 240px;
-    padding: 130px 30px 30px;
-    border-radius: 10px;
-  }
-
-  &__header {
-    position: absolute;
-    top: 0;
-    left: calc(50% - 45px);
-    width: auto;
-    text-align: center;
-
-    &-img {
-      width: 70px;
-      border-radius: 50%;
-    }
-
-    &-name {
-      margin-top: 5px;
-    }
-  }
-
-  &__footer {
-    margin-top: 16px;
-    text-align: center;
-  }
-}
-</style>

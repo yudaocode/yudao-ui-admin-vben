@@ -1,16 +1,13 @@
-<script lang="ts">
-import { defineComponent, reactive } from 'vue'
+<script lang="ts" setup>
 import draggable from 'vuedraggable'
 import type { IVFormComponent } from '../../../typings/v-form-component'
 import { Icon } from '@/components/Icon'
 import { useDesign } from '@/hooks/web/useDesign'
 
-export default defineComponent({
-  name: 'CollapseItem',
-  components: { Draggable: draggable, Icon },
-  props: {
+const props = defineProps(
+  {
     list: {
-      type: [Array],
+      type: Array as unknown as any[],
       default: () => [],
     },
     handleListPush: {
@@ -18,24 +15,23 @@ export default defineComponent({
       default: null,
     },
   },
-  setup(props, { emit }) {
-    const { prefixCls } = useDesign('form-design-collapse-item')
+)
+const emit = defineEmits(['start', 'add-attrs', 'handle-list-push'])
+const Draggable = draggable
 
-    const state = reactive({})
-    const handleStart = (e: any, list1: IVFormComponent[]) => {
-      emit('start', list1[e.oldIndex].component)
-    }
-    const handleAdd = (e: any) => {
-      console.log(e)
-    }
-    // https://github.com/SortableJS/vue.draggable.next
-    // https://github.com/SortableJS/vue.draggable.next/blob/master/example/components/custom-clone.vue
-    const cloneItem = (one) => {
-      return props.handleListPush(one)
-    }
-    return { prefixCls, state, handleStart, handleAdd, cloneItem }
-  },
-})
+const { prefixCls } = useDesign('form-design-collapse-item')
+
+function handleStart(e: any, list1: IVFormComponent[]) {
+  emit('start', list1[e.oldIndex].component)
+}
+function handleAdd(e: any) {
+  console.log(e)
+}
+// https://github.com/SortableJS/vue.draggable.next
+// https://github.com/SortableJS/vue.draggable.next/blob/master/example/components/custom-clone.vue
+function cloneItem(one) {
+  return props.handleListPush(one)
+}
 </script>
 
 <template>
@@ -57,8 +53,8 @@ export default defineComponent({
       <template #item="{ element, index }">
         <li
           class="bs-box text-ellipsis"
-          @dragstart="$emit('add-attrs', list, index)"
-          @click="$emit('handle-list-push', element)"
+          @dragstart="emit('add-attrs', list, index)"
+          @click="emit('handle-list-push', element)"
         >
           <!-- <svg v-if="element.icon.indexOf('icon-') > -1" class="icon" aria-hidden="true">
             <use :xlink:href="`#${element.icon}`" />

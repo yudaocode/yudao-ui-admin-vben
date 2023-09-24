@@ -66,6 +66,12 @@
     "source.fixAll.eslint": true,
     "source.organizeImports": false
   },
+  "eslint.rules.customizations": [
+    {
+      "rule": "@stylistic/*",
+      "severity": "off"
+    }
+  ],
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -82,7 +88,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -120,6 +126,7 @@
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "cSpell.words": [
     "antd",
+    "antdv",
     "antfu",
     "antv",
     "brotli",
@@ -165,6 +172,9 @@
     "*.tsx": "$(capture).test.ts, $(capture).test.tsx",
     "*.env": "$(capture).env.*",
     "package.json": ".hintrc,pnpm-lock.yaml,yarn.lock,LICENSE,README*,CHANGELOG*,CNAME,.gitattributes,.gitignore,prettier.config.js,stylelint.config.js,commitlint.config.js,.stylelintignore,.prettierignore,.gitpod.yml,.eslintrc.js,.eslintignore"
+  },
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
   },
   "terminal.integrated.scrollback": 10000,
   "nuxt.isNuxtApp": false

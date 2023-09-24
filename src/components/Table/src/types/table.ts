@@ -86,7 +86,7 @@ export interface TableActionType {
   expandRows: (keys: (string | number)[]) => void
   collapseAll: () => void
   scrollTo: (pos: string) => void // pos: id | "top" | "bottom"
-  getSelectRowKeys: () => string[]
+  getSelectRowKeys: () => Key[]
   deleteSelectRowByKey: (key: string) => void
   setPagination: (info: Partial<PaginationProps>) => void
   setTableData: <T extends Ref<Recordable<any>[]>>(values: T[]) => void
@@ -108,11 +108,11 @@ export interface TableActionType {
   getCacheColumns: () => BasicColumn[]
   emit?: EmitType
   updateTableData: (index: number, key: string, value: any) => Recordable
-  setShowPagination: (show: boolean) => Promise<void>
+  setShowPagination: (show: boolean) => void
   getShowPagination: () => boolean
   setCacheColumnsByField?: (dataIndex: string | undefined, value: BasicColumn) => void
   setCacheColumns?: (columns: BasicColumn[]) => void
-  setShowForm: (show: boolean) => Promise<void>
+  setShowForm: (flag: boolean) => void
   getShowForm: () => boolean
 }
 
@@ -403,6 +403,7 @@ export interface BasicTableProps<T = any> {
 
 export type CellFormat = string | ((text: string, record: Recordable, index: number) => string | number) | Map<string | number, any>
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 export interface BasicColumn extends ColumnProps<Recordable> {
   children?: BasicColumn[]

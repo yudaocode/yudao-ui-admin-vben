@@ -119,7 +119,7 @@ export default defineComponent({
 
 <template>
   <div class="v-form-container">
-    <Form ref="eFormModel" class="v-form-model" :model="formModel" v-bind="formModelProps">
+    <Form ref="eFormModel" class="overflow-hidden" :model="formModel" v-bind="formModelProps">
       <Row>
         <FormRender
           v-for="(schema, index) of noHiddenList"
@@ -143,9 +143,3 @@ export default defineComponent({
     </Form>
   </div>
 </template>
-
-<style lang="less" scoped>
-.v-form-model {
-  overflow: hidden;
-}
-</style>

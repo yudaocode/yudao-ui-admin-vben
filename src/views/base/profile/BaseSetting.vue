@@ -54,7 +54,7 @@ async function handleSubmit() {
         <BasicForm @register="register" />
       </Col>
       <Col :span="10">
-        <div class="change-avatar">
+        <div>
           <div class="mb-2">
             头像
           </div>
@@ -63,6 +63,7 @@ async function handleSubmit() {
             btn-text="更换头像"
             :btn-props="{ preIcon: 'ant-design:cloud-upload-outlined' }"
             width="150"
+            class="mb-4 block rounded-full"
             @change="updateAvatar"
           />
         </div>
@@ -73,13 +74,3 @@ async function handleSubmit() {
     </Button>
   </CollapseContainer>
 </template>
-
-<style lang="less" scoped>
-.change-avatar {
-  img {
-    display: block;
-    margin-bottom: 15px;
-    border-radius: 50%;
-  }
-}
-</style>

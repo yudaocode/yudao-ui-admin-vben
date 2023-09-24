@@ -32,11 +32,11 @@ onMounted(async () => {
         <List.Item>
           <List.Item.Meta>
             <template #avatar>
-              <Icon v-if="item.avatar" class="avatar" :icon="item.avatar" :color="item.color" />
+              <Icon v-if="item.avatar" class="text-4xl" :icon="item.avatar" :color="item.color" />
             </template>
             <template #title>
               {{ item.title }}
-              <a-button v-if="item.extra" type="link" size="small" class="extra">
+              <a-button v-if="item.extra" type="link" size="small" class="float-right mr-7.5 mt-2.5 cursor-pointer">
                 {{ item.extra }}
               </a-button>
             </template>
@@ -49,16 +49,3 @@ onMounted(async () => {
     </List>
   </CollapseContainer>
 </template>
-
-<style lang="less" scoped>
-.avatar {
-  font-size: 40px !important;
-}
-
-.extra {
-  float: right;
-  margin-top: 10px;
-  margin-right: 30px;
-  cursor: pointer;
-}
-</style>

@@ -78,7 +78,7 @@ async function submitForm(formData) {
 
 <template>
   <PageWrapper>
-    <div class="step-form-form">
+    <div class="mx-auto my-0 mt-2.5 w-200">
       <Steps :current="current">
         <Steps.Step title="选择流程" />
         <Steps.Step title="流程提交" />
@@ -113,11 +113,3 @@ async function submitForm(formData) {
     </div>
   </PageWrapper>
 </template>
-
-<style lang="less" scoped>
-.step-form-form {
-  width: 750px;
-  margin: 0 auto;
-  margin-top: 10px;
-}
-</style>

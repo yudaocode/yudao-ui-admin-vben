@@ -51,46 +51,20 @@ watch(
 </script>
 
 <template>
-  <div class="step1">
-    <div class="step1-form">
+  <div>
+    <div class="mx-auto my-0 w-80%">
       <BasicForm @register="register" />
     </div>
     <Divider />
-    <h3>说明</h3>
-    <h4>基本信息</h4>
+    <h3 class="mb-3 text-base">
+      说明
+    </h3>
+    <h4 class="mb-1 text-sm">
+      基本信息
+    </h4>
     <p> 配置生成的基本信息 </p>
 
     <h4>生成信息</h4>
     <p> 配置生成生成的详细信息。 </p>
   </div>
 </template>
-
-<style lang="less" scoped>
-.step1 {
-  &-form {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    line-height: 32px;
-  }
-
-  h4 {
-    margin: 0 0 4px;
-    font-size: 14px;
-    line-height: 22px;
-  }
-
-}
-
-.pay-select {
-  width: 20%;
-}
-
-.pay-input {
-  width: 70%;
-}
-</style>

@@ -316,7 +316,7 @@ emit('register', tableAction, formActions)
 <style lang="less">
 @prefix-cls: ~'@{namespace}-basic-table';
 
-[data-theme='dark'] {
+html[data-theme='dark'] {
   .ant-table-tbody > tr:hover.ant-table-row-selected > td,
   .ant-table-tbody > tr.ant-table-row-selected td {
     background-color: #262626;

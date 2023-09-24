@@ -1,8 +1,8 @@
 <!--
  * @Description: 表单项属性，控件属性面板
 -->
-<script lang="ts">
-import { computed, defineComponent, watch } from 'vue'
+<script lang="ts" setup>
+import { computed, watch } from 'vue'
 import {
   Checkbox,
   Col,
@@ -10,9 +10,6 @@ import {
   Form,
   FormItem,
   Input,
-  RadioGroup,
-  Select,
-  Slider,
   Switch,
 } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
@@ -26,61 +23,32 @@ import {
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import RuleProps from './RuleProps.vue'
 
-export default defineComponent({
-  name: 'FormItemProps',
-  components: {
-    RuleProps,
-    Empty,
-    Input,
-    Form,
-    FormItem,
-    Switch,
-    Checkbox,
-    Select,
-    Slider,
-    Col,
-    RadioGroup,
-  },
-  // props: {} as PropsOptions,
+const { formConfig } = useFormDesignState()
 
-  setup() {
-    const { formConfig } = useFormDesignState()
-
-    watch(
-      () => formConfig.value,
-      () => {
-        if (formConfig.value.currentItem) {
-          formConfig.value.currentItem.itemProps = formConfig.value.currentItem.itemProps || {}
-          formConfig.value.currentItem.itemProps.labelCol
+watch(
+  () => formConfig.value,
+  () => {
+    if (formConfig.value.currentItem) {
+      formConfig.value.currentItem.itemProps = formConfig.value.currentItem.itemProps || {}
+      formConfig.value.currentItem.itemProps.labelCol
               = formConfig.value.currentItem.itemProps.labelCol || {}
-          formConfig.value.currentItem.itemProps.wrapperCol
+      formConfig.value.currentItem.itemProps.wrapperCol
               = formConfig.value.currentItem.itemProps.wrapperCol || {}
-        }
-      },
-      { deep: true, immediate: true },
-    )
-    const showProps = (exclude: string[] | undefined) => {
-      if (!exclude)
-        return true
-
-      return isArray(exclude) ? !exclude.includes(formConfig.value.currentItem!.component) : true
-    }
-
-    const controlPropsList = computed(() => {
-      return baseFormItemControlAttrs.filter((item) => {
-        return showProps(item.exclude)
-      })
-    })
-
-    return {
-      baseFormItemProps,
-      advanceFormItemProps,
-      advanceFormItemColProps,
-      formConfig,
-      controlPropsList,
-      showProps,
     }
   },
+  { deep: true, immediate: true },
+)
+function showProps(exclude: string[] | undefined) {
+  if (!exclude)
+    return true
+
+  return isArray(exclude) ? !exclude.includes(formConfig.value.currentItem!.component) : true
+}
+
+const controlPropsList = computed(() => {
+  return baseFormItemControlAttrs.filter((item) => {
+    return showProps(item.exclude)
+  })
 })
 </script>
 

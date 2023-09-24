@@ -39,11 +39,11 @@ function handleEdit(record: EditRecordRow) {
 
 <template>
   <div class="step2">
-    <div class="step2-table">
+    <div class="mx-auto my-0 w-full">
       <BasicTable :data-source="columnsInfo" @register="registerTable" @row-click="handleEdit" />
     </div>
     <Divider />
-    <div class="step2-button">
+    <div class="flex justify-center">
       <a-button @click="customResetFunc">
         上一步
       </a-button>
@@ -51,35 +51,12 @@ function handleEdit(record: EditRecordRow) {
         提交
       </a-button>
     </div>
-    <h3>说明</h3>
-    <h4>配置字段</h4>
+    <h3 class="mb-3 text-base">
+      说明
+    </h3>
+    <h4 class="mb-1 text-sm">
+      配置字段
+    </h4>
     <p> 配置表的字段类型，增删改查，字典等 </p>
   </div>
 </template>
-
-<style lang="less" scoped>
-.step2 {
-  &-table {
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  &-button {
-    display: flex;
-    justify-content: center;
-  }
-
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    line-height: 32px;
-  }
-
-  h4 {
-    margin: 0 0 4px;
-    font-size: 14px;
-    line-height: 22px;
-  }
-
-}
-</style>

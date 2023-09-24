@@ -35,8 +35,8 @@
 | [pinia](https://pinia.vuejs.org/)                                    | Vue 存储库 替代 vuex5 | 2.1.6  |
 | [vueuse](https://vueuse.org/)                                        | 常用工具集            | 10.4.1 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化                | 9.4.1  |
-| [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.4  |
-| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.55.7 |
+| [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.5  |
+| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.56.1 |
 | [iconify](https://icon-sets.iconify.design/)                         | 在线图标库            | 3.1.1  |
 
 - ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)

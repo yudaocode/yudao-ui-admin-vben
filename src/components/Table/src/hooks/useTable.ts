@@ -163,8 +163,8 @@ export function useTable(tableProps?: Props): [
     scrollTo: (pos: string) => {
       getTableInstance().scrollTo(pos)
     },
-    setShowForm: async (show: boolean) => {
-      await getTableInstance().setShowForm(show)
+    setShowForm: async (flag: boolean) => {
+      await getTableInstance().setShowForm(flag)
     },
     getShowForm: () => {
       return toRaw(getTableInstance().getShowForm())

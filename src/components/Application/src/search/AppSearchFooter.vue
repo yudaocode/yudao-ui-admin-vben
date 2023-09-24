@@ -8,7 +8,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div :class="`${prefixCls}`">
+  <div class="relative h-10 flex flex-shrink-0 items-center border-t-1 rounded-bl-2xl px-4 py-0 dark:border-light-100">
     <AppSearchKeyItem :class="`${prefixCls}-item`" icon="ant-design:enter-outlined" />
     <span>{{ t('component.app.toSearch') }}</span>
     <AppSearchKeyItem :class="`${prefixCls}-item`" icon="ion:arrow-up-outline" />
@@ -23,18 +23,6 @@ const { t } = useI18n()
 @prefix-cls: ~'@{namespace}-app-search-footer';
 
 .@{prefix-cls} {
-  position: relative;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 44px;
-  padding: 0 16px;
-  font-size: 12px;
-  // color: var(--text-color);
-  // background-color: var(--component-background);
-  border-top: 1px solid var(--border-color);
-  border-radius: 0 0 16px 16px;
-
   &-item {
     display: flex;
     align-items: center;

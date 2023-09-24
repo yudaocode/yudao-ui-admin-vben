@@ -6,7 +6,6 @@ import { InfoCircleOutlined } from '@ant-design/icons-vue'
 import { getPopupContainer } from '@/utils'
 import { isArray, isString } from '@/utils/is'
 import { getSlot } from '@/utils/helper/tsxHelper'
-import { useDesign } from '@/hooks/web/useDesign'
 
 const props = {
   /**
@@ -44,7 +43,6 @@ export default defineComponent({
   components: { Tooltip },
   props,
   setup(props, { slots }) {
-    const { prefixCls } = useDesign('basic-help')
 
     const getTooltipStyle = computed((): CSSProperties => ({ color: props.color, fontSize: props.fontSize }))
 
@@ -74,14 +72,14 @@ export default defineComponent({
     return () => {
       return (
         <Tooltip
-          overlayClassName={`${prefixCls}__wrap`}
+          overlayClassName="overlay-class"
           title={<div style={unref(getTooltipStyle)}>{renderTitle()}</div>}
           autoAdjustOverflow={true}
           overlayStyle={unref(getOverlayStyle)}
           placement={props.placement as 'right'}
           getPopupContainer={() => getPopupContainer()}
         >
-          <span class={prefixCls}>{getSlot(slots) || <InfoCircleOutlined />}</span>
+          <span class="ml-1.5 inline-block cursor-pointer text-sm">{getSlot(slots) || <InfoCircleOutlined />}</span>
         </Tooltip>
       )
     }
@@ -89,19 +87,10 @@ export default defineComponent({
 })
 </script>
 
-<style lang="less">
-@prefix-cls: ~'@{namespace}-basic-help';
-
-.@{prefix-cls} {
-  display: inline-block;
-  margin-left: 6px;
-  font-size: 14px;
-  cursor: pointer;
-
-  &__wrap {
-    p {
-      margin-bottom: 0;
-    }
+<style>
+.overlay-class {
+  p {
+    margin-bottom: 0;
   }
 }
 </style>

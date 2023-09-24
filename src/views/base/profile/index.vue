@@ -15,7 +15,7 @@ const tabBarStyle = { width: '220px' }
 
 <template>
   <ScrollContainer>
-    <div ref="wrapperRef" class="account-setting">
+    <div ref="wrapperRef" class="m-3 rounded-1.5 bg-[var(--component-background)]">
       <Tabs tab-position="left" :tab-bar-style="tabBarStyle">
         <template v-for="item in settingList" :key="item.key">
           <TabPane :tab="item.name">
@@ -29,19 +29,3 @@ const tabBarStyle = { width: '220px' }
     </div>
   </ScrollContainer>
 </template>
-
-<style lang="less">
-.account-setting {
-  margin: 12px;
-  background-color: var(--component-background);
-  border-radius: 6px;
-
-  .base-title {
-    padding-left: 0;
-  }
-
-  // .ant-tabs-tab-active {
-  //   background-color: @item-active-bg;
-  // }
-}
-</style>

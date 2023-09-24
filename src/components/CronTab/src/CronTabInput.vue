@@ -3,7 +3,6 @@ import { ref, watch } from 'vue'
 import { Input } from 'ant-design-vue'
 import CronTabModal from './CronTabModal.vue'
 import { cronEmits, cronProps } from './cron.data'
-import { useDesign } from '@/hooks/web/useDesign'
 import { useModal } from '@/components/Modal'
 import { propTypes } from '@/utils/propTypes'
 import { Icon } from '@/components/Icon'
@@ -14,7 +13,6 @@ const props = defineProps({
   exeStartTime: propTypes.oneOfType([propTypes.number, propTypes.string, propTypes.object]).def(0),
 })
 const emit = defineEmits([...cronEmits])
-const { prefixCls } = useDesign('cron-input')
 const [registerModal, { openModal }] = useModal()
 const editCronValue = ref(props.value)
 
@@ -37,11 +35,11 @@ function showConfigModal() {
 </script>
 
 <template>
-  <div :class="`${prefixCls}`">
+  <div>
     <Input v-model:value="editCronValue" :placeholder="placeholder" :disabled="disabled">
       <template #addonAfter>
-        <a class="open-btn" :disabled="disabled ? 'disabled' : null" @click="showConfigModal">
-          <Icon icon="ant-design:setting-outlined" />
+        <a class="cursor-pointer" :disabled="disabled ? 'disabled' : null" @click="showConfigModal">
+          <Icon class="relative right-0.5 top-0.25" icon="ant-design:setting-outlined" />
           <span>选择</span>
         </a>
       </template>
@@ -56,19 +54,3 @@ function showConfigModal() {
     />
   </div>
 </template>
-
-<style lang="less">
-@prefix-cls: ~'@{namespace}-cron-input';
-
-.@{prefix-cls} {
-  a.open-btn {
-    cursor: pointer;
-
-    .app-iconify {
-      position: relative;
-      top: 1px;
-      right: 2px;
-    }
-  }
-}
-</style>

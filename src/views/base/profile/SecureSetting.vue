@@ -29,7 +29,7 @@ function handleSuccess() {
           <ListItemMeta>
             <template #title>
               {{ item.title }}
-              <div v-if="item.extra" class="extra">
+              <div v-if="item.extra" class="float-right mr-7.5 mt-2.5 cursor-pointer font-normal text-blue-500">
                 <a-button type="link" @click="handleEdit(item.title)">
                   {{ item.extra }}
                 </a-button>
@@ -45,14 +45,3 @@ function handleSuccess() {
   </CollapseContainer>
   <PasswordModal @register="registerModal" @success="handleSuccess" />
 </template>
-
-<style lang="less" scoped>
-.extra {
-  float: right;
-  margin-top: 10px;
-  margin-right: 30px;
-  font-weight: normal;
-  color: #1890ff;
-  cursor: pointer;
-}
-</style>
