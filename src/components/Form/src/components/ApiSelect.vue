@@ -134,7 +134,7 @@ function handleChange(_, ...args) {
 
 <template>
   <Select
-    v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-open-change="handleFetch"
+    v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-visible-change="handleFetch"
     @change="handleChange"
   >
     <template v-for="item in Object.keys($slots)" #[item]="data">
