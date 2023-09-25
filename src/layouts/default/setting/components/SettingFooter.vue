@@ -67,12 +67,12 @@ function handleClearAndRedo() {
       {{ t('layout.setting.copyBtn') }}
     </a-button>
 
-    <a-button color="warning" block class="my-3" @click="handleResetSetting">
+    <a-button block class="my-3" @click="handleResetSetting">
       <RedoOutlined class="mr-2" />
       {{ t('common.resetText') }}
     </a-button>
 
-    <a-button color="error" block @click="handleClearAndRedo">
+    <a-button type="primary" danger block @click="handleClearAndRedo">
       <RedoOutlined class="mr-2" />
       {{ t('layout.setting.clearBtn') }}
     </a-button>
