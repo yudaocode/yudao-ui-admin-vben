@@ -1,6 +1,6 @@
 {
   "name": "yudao-ui-admin-vben",
-  "version": "1.8.1-snapshot",
+  "version": "1.8.2-snapshot",
   "packageManager": "pnpm@8.6.0",
   "author": {
     "name": "xingyuv",
@@ -84,7 +84,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
-    "@iconify/json": "^2.2.119",
+    "@iconify/json": "^2.2.120",
     "@purge-icons/generated": "^0.9.0",
     "@types/codemirror": "^5.60.10",
     "@types/crypto-js": "^4.1.2",
@@ -95,7 +95,7 @@
     "@types/nprogress": "^0.2.1",
     "@types/qs": "^6.9.8",
     "@types/sortablejs": "^1.15.2",
-    "@unocss/eslint-config": "^0.56.1",
+    "@unocss/eslint-config": "^0.56.2",
     "@vitejs/plugin-vue": "4.3.4",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/compiler-sfc": "^3.3.4",
@@ -128,7 +128,7 @@
     "stylelint-prettier": "^4.0.2",
     "terser": "^5.20.0",
     "typescript": "^5.2.2",
-    "unocss": "^0.56.1",
+    "unocss": "^0.56.2",
     "vite": "^4.4.9",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-mkcert": "^1.16.0",
