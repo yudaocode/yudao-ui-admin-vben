@@ -34,8 +34,7 @@ type _BuildPropType<T, V, C> =
 export type BuildPropType<T, V, C> = _BuildPropType<IfUnknown<T, never>, IfUnknown<V, never>, IfUnknown<C, never>>
 
 type _BuildPropDefault<T, D> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Record<string, unknown> | Array<any> | Function,
+  Record<string, unknown> | Array<any> | Fn,
 ]
   ? D
   : D extends () => T

@@ -158,13 +158,16 @@ export function once(el: HTMLElement, event: string, fn: EventListener): void {
 
 export function useRafThrottle<T extends FunctionArgs>(fn: T): T {
   let locked = false
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   return function (...args: any[]) {
     if (locked)
       return
     locked = true
     window.requestAnimationFrame(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-invalid-this 
       fn.apply(this, args)
       locked = false
     })
