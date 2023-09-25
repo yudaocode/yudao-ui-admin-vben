@@ -6,6 +6,9 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import mitt from '@/utils/mitt'
 
+// eslint-disable-next-line vue/no-reserved-component-names
+defineOptions({ name: 'Menu' })
+
 const props = defineProps({
   theme: propTypes.oneOf(['light', 'dark']).def('light'),
   activeName: propTypes.oneOfType([propTypes.string, propTypes.number]),
