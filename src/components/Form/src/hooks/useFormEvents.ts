@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import type { ComputedRef, Ref } from 'vue'
 import type { NamePath } from 'ant-design-vue/lib/form/interface'
 import { nextTick, toRaw, unref } from 'vue'
@@ -89,6 +90,7 @@ export function useFormEvents({
       const defaultValueObj = schema?.defaultValueObj
       const fieldKeys = Object.keys(defaultValueObj || {})
       if (fieldKeys.length) {
+        // eslint-disable-next-line array-callback-return
         fieldKeys.map((field) => {
           formModel[field] = defaultValueObj![field]
         })

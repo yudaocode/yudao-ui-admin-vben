@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/await-thenable */
 import type { WatchStopHandle } from 'vue'
 import { onUnmounted, ref, toRaw, unref, watch } from 'vue'
 import type { BasicColumn, BasicTableProps, FetchParams, TableActionType } from '../types/table'

@@ -1,3 +1,4 @@
+<!-- eslint-disable no-useless-call -->
 <script lang="ts" setup>
 import { computed, inject, ref, toRaw, unref, useAttrs, useSlots, watchEffect } from 'vue'
 import { Table } from 'ant-design-vue'

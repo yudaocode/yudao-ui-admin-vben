@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Button, Checkbox, Col, Form, Row } from 'ant-design-vue'
+import { Checkbox, Col, Form, Row } from 'ant-design-vue'
 
 import { useFormValid, useLoginState } from './useLogin'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -178,9 +178,9 @@ onMounted(() => {
           <FormItem>
             <!-- No logic, you need to deal with it yourself -->
             <Checkbox :checked="scope" size="small">
-              <Button type="link" size="small">
+              <a-button type="link" size="small">
                 {{ formatScope(scope) }}
-              </Button>
+              </a-button>
             </Checkbox>
           </FormItem>
         </template>
@@ -188,12 +188,12 @@ onMounted(() => {
     </Row>
 
     <FormItem class="enter-x">
-      <Button type="primary" size="large" block :loading="loading" @click="handleAuthorize(true)">
+      <a-button type="primary" size="large" block :loading="loading" @click="handleAuthorize(true)">
         {{ t('sys.login.loginButton') }}
-      </Button>
-      <Button size="large" class="enter-x mt-4" block @click="handleBackLogin">
+      </a-button>
+      <a-button size="large" class="enter-x mt-4" block @click="handleBackLogin">
         {{ t('common.cancelText') }}
-      </Button>
+      </a-button>
     </FormItem>
   </Form>
 </template>

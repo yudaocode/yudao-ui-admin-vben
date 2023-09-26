@@ -164,6 +164,9 @@ export function simpleDebounce(fn, delay = 100) {
       clearTimeout(timer)
 
     timer = setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-invalid-this
       fn.apply(this, args)
     }, delay)
   }

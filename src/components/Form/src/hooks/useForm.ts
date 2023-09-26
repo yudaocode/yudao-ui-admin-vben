@@ -78,7 +78,7 @@ export function useForm(props?: Props): UseFormReturnType {
     },
 
     removeSchemaByField: async (field: string | string[]) => {
-      unref(formRef)?.removeSchemaByField(field)
+      await unref(formRef)?.removeSchemaByField(field)
     },
 
     // TODO promisify

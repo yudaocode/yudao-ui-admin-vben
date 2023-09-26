@@ -11,7 +11,7 @@ const [register, { openDrawer }] = useDrawer()
 
 <template>
   <div @click="openDrawer(true)">
-    <Icon icon="ion:settings-outline" />
+    <Icon class="h-4 w-4" icon="ion:settings-outline" />
     <SettingDrawer @register="register" />
   </div>
 </template>

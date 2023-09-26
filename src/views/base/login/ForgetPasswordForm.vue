@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, unref } from 'vue'
-import { Button, Form, Input } from 'ant-design-vue'
+import { Form, Input } from 'ant-design-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useFormRules, useLoginState } from './useLogin'
 import { CountdownInput } from '@/components/CountDown'
@@ -46,12 +46,12 @@ async function handleReset() {
       </FormItem>
 
       <FormItem class="enter-x">
-        <Button type="primary" size="large" block :loading="loading" @click="handleReset">
+        <a-button type="primary" size="large" block :loading="loading" @click="handleReset">
           {{ t('common.resetText') }}
-        </Button>
-        <Button size="large" block class="mt-4" @click="handleBackLogin">
+        </a-button>
+        <a-button size="large" block class="mt-4" @click="handleBackLogin">
           {{ t('sys.login.backSignIn') }}
-        </Button>
+        </a-button>
       </FormItem>
     </Form>
   </template>

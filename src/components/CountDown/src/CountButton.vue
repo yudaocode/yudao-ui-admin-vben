@@ -11,7 +11,7 @@ const props = defineProps({
   value: { type: [Object, Number, String, Array] },
   count: { type: Number, default: 60 },
   beforeStartFunc: {
-    type: Function as PropType<() => Promise<boolean>>,
+    type: Function as PropType<() => Promise<any>>,
     default: null,
   },
 })
@@ -38,7 +38,9 @@ async function handleStart() {
     loading.value = true
     try {
       const canStart = await beforeStartFunc()
-      canStart && start()
+      if (canStart) 
+        start()
+      
     }
     finally {
       loading.value = false

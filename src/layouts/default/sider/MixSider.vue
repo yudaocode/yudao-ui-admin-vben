@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
 import { computed, onMounted, ref, unref, watch } from 'vue'
@@ -51,28 +52,26 @@ const permissionStore = usePermissionStore()
 
 useDragLine(sideRef, dragBarRef, true)
 
+const getMixSideWidth = computed(() => {
+  return unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH
+})
+
 const getMenuStyle = computed((): CSSProperties => {
   return {
     width: unref(openMenu) ? `${unref(getMenuWidth)}px` : 0,
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     left: `${unref(getMixSideWidth)}px`,
   }
 })
 
 const getIsFixed = computed(() => {
-  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   mixSideHasChildren.value = unref(childrenMenus).length > 0
   const isFixed = unref(getMixSideFixed) && unref(mixSideHasChildren)
   if (isFixed)
-  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     openMenu.value = true
 
   return isFixed
 })
 
-const getMixSideWidth = computed(() => {
-  return unref(getCollapsed) ? SIDE_BAR_MINI_WIDTH : SIDE_BAR_SHOW_TIT_MINI_WIDTH
-})
 
 const getDomStyle = computed((): CSSProperties => {
   const fixedWidth = unref(getIsFixed) ? unref(getRealWidth) : 0
@@ -292,6 +291,7 @@ onClickOutside(wrap, () => {
 <style lang="less">
 @prefix-cls: ~'@{namespace}-layout-mix-sider';
 @width: 80px;
+
 .@{prefix-cls} {
   position: fixed;
   top: 0;
@@ -326,7 +326,7 @@ onClickOutside(wrap, () => {
     }
 
     &.open {
-      > .scrollbar {
+      >.scrollbar {
         border-right: 1px solid rgb(238 238 238);
       }
     }
@@ -341,6 +341,7 @@ onClickOutside(wrap, () => {
         }
       }
     }
+
     .@{prefix-cls}-menu-list {
       &__content {
         box-shadow: 0 0 4px 0 rgb(0 0 0 / 10%);
@@ -364,10 +365,11 @@ onClickOutside(wrap, () => {
         border-bottom: 1px solid var(--sider-dark-lighten-bg-color);
       }
 
-      > .scrollbar {
+      >.scrollbar {
         border-right: 1px solid var(--sider-dark-lighten-bg-color);
       }
     }
+
     .@{prefix-cls}-menu-list {
       background-color: var(--sider-dark-bg-color);
 
@@ -379,7 +381,7 @@ onClickOutside(wrap, () => {
     }
   }
 
-  > .scrollbar {
+  >.scrollbar {
     height: calc(100% - @header-height - 38px);
   }
 
@@ -408,6 +410,7 @@ onClickOutside(wrap, () => {
       &:hover {
         color: @white;
       }
+
       // &:hover,
       &--active {
         font-weight: 700;

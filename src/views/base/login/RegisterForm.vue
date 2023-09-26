@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, unref } from 'vue'
-import { Button, Checkbox, Form, Input } from 'ant-design-vue'
+import { Checkbox, Form, Input } from 'ant-design-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin'
 import { StrengthMeter } from '@/components/StrengthMeter'
@@ -69,12 +69,12 @@ async function handleRegister() {
         </Checkbox>
       </FormItem>
 
-      <Button type="primary" class="enter-x" size="large" block :loading="loading" @click="handleRegister">
+      <a-button type="primary" class="enter-x" size="large" block :loading="loading" @click="handleRegister">
         {{ t('sys.login.registerButton') }}
-      </Button>
-      <Button size="large" block class="enter-x mt-4" @click="handleBackLogin">
+      </a-button>
+      <a-button size="large" block class="enter-x mt-4" @click="handleBackLogin">
         {{ t('sys.login.backSignIn') }}
-      </Button>
+      </a-button>
     </Form>
   </div>
 </template>
