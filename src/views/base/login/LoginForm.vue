@@ -112,7 +112,10 @@ async function handleLogin(params) {
 
 <template>
   <LoginFormTitle v-show="getShow" class="enter-x" />
-  <Form v-show="getShow" ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules" @keypress.enter="handleLogin">
+  <Form
+    v-show="getShow" ref="formRef" class="enter-x p-4" :model="formData" :rules="getFormRules"
+    @keypress.enter="handleLogin"
+  >
     <FormItem name="tenantName" class="enter-x">
       <Input
         v-if="tenantEnable === 'true'"
@@ -123,7 +126,10 @@ async function handleLogin(params) {
       />
     </FormItem>
     <FormItem name="username" class="enter-x">
-      <Input v-model:value="formData.username" size="large" :placeholder="t('sys.login.userName')" class="fix-auto-fill" />
+      <Input
+        v-model:value="formData.username" size="large" :placeholder="t('sys.login.userName')"
+        class="fix-auto-fill"
+      />
     </FormItem>
     <FormItem name="password" class="enter-x">
       <InputPassword

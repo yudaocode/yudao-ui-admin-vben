@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { Button } from 'ant-design-vue'
+import { Button, theme } from 'ant-design-vue'
 import { computed, unref } from 'vue'
 import { buttonProps } from './props'
-import { Icon } from '@/components/Icon'
 import { useAttrs } from '@/hooks/core/useAttrs'
+import { Icon } from '@/components/Icon'
 
 defineOptions({ name: 'AButton', extends: Button, indeterminate: false })
-
 const props = defineProps(buttonProps)
+const { useToken } = theme
+const { token } = useToken()
 // get component class
 const attrs = useAttrs({ excludeDefaultKeys: false })
 const getButtonClass = computed(() => {
@@ -24,7 +25,25 @@ const getBindValue = computed(() => ({ ...unref(attrs), ...props }))
 </script>
 
 <template>
-  <Button v-bind="getBindValue" :style="{ backgroundColor: color }" :class="getButtonClass" @click="onClick">
+  <Button
+    v-bind="getBindValue" :style="{
+      backgroundColor: color
+        ? (
+          color === 'primary'
+            ? token.colorPrimary
+            : (
+              color === 'error'
+                ? token.colorError
+                : (
+                  color === 'warning'
+                    ? token.colorWarning
+                    : (color === 'success' ? token.colorSuccess : '')
+                )
+            )
+        )
+        : '',
+    }" :class="getButtonClass" @click="onClick"
+  >
     <template #default="data">
       <Icon v-if="preIcon" :icon="preIcon" :size="iconSize" />
       <slot v-bind="data || {}" />
