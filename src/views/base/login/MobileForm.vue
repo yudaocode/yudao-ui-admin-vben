@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, unref } from 'vue'
-import { Button, Form, Input } from 'ant-design-vue'
+import { Form, Input } from 'ant-design-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin'
 import { CountdownInput } from '@/components/CountDown'
@@ -142,12 +142,12 @@ async function getSmsCode() {
       </FormItem>
 
       <FormItem class="enter-x">
-        <Button type="primary" size="large" block :loading="loading" @click="getCode">
+        <a-button type="primary" size="large" block :loading="loading" @click="getCode">
           {{ t('sys.login.loginButton') }}
-        </Button>
-        <Button size="large" block class="mt-4" @click="handleBackLogin">
+        </a-button>
+        <a-button size="large" block class="mt-4" @click="handleBackLogin">
           {{ t('sys.login.backSignIn') }}
-        </Button>
+        </a-button>
       </FormItem>
     </Form>
     <Verify ref="verify" mode="pop" :captcha-type="captchaType" :img-size="{ width: '400px', height: '200px' }" @success="handleLogin" />

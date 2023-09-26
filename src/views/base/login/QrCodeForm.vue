@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, unref } from 'vue'
-import { Button, Divider, Popover, QRCode } from 'ant-design-vue'
+import { Divider, Popover, QRCode } from 'ant-design-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useLoginState } from './useLogin'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -28,9 +28,9 @@ const getShow = computed(() => unref(getLoginState) === LoginStateEnum.QR_CODE)
       <Divider class="enter-x">
         {{ t('sys.login.scanSign') }}
       </Divider>
-      <Button size="large" block class="enter-x mt-4" @click="handleBackLogin">
+      <a-button size="large" block class="enter-x mt-4" @click="handleBackLogin">
         {{ t('sys.login.backSignIn') }}
-      </Button>
+      </a-button>
     </div>
   </div>
 </template>

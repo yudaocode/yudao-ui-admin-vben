@@ -11,10 +11,9 @@ const props = defineProps(buttonProps)
 // get component class
 const attrs = useAttrs({ excludeDefaultKeys: false })
 const getButtonClass = computed(() => {
-  const { color, disabled } = props
+  const { disabled } = props
   return [
     {
-      [`ant-btn-${color}`]: !!color,
       'is-disabled': disabled,
     },
   ]
@@ -25,7 +24,7 @@ const getBindValue = computed(() => ({ ...unref(attrs), ...props }))
 </script>
 
 <template>
-  <Button v-bind="getBindValue" :class="getButtonClass" @click="onClick">
+  <Button v-bind="getBindValue" :style="{ backgroundColor: color }" :class="getButtonClass" @click="onClick">
     <template #default="data">
       <Icon v-if="preIcon" :icon="preIcon" :size="iconSize" />
       <slot v-bind="data || {}" />

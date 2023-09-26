@@ -10,7 +10,7 @@ const props = defineProps({
   size: { type: String, validator: (v: string) => ['default', 'large', 'small'].includes(v) },
   count: { type: Number, default: 60 },
   sendCodeApi: {
-    type: Function as PropType<() => Promise<boolean>>,
+    type: Function as PropType<() => Promise<any>>,
     default: null,
   },
 })

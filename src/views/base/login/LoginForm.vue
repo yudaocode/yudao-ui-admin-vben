@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, unref } from 'vue'
 
-import { Button, Checkbox, Col, Divider, Form, Input, Row } from 'ant-design-vue'
+import { Checkbox, Col, Divider, Form, Input, Row } from 'ant-design-vue'
 import { AlipayCircleFilled, GithubFilled, WechatFilled } from '@ant-design/icons-vue'
 import LoginFormTitle from './LoginFormTitle.vue'
 
@@ -147,31 +147,31 @@ async function handleLogin(params) {
       <Col :span="12">
         <FormItem :style="{ 'text-align': 'right' }">
           <!-- No logic, you need to deal with it yourself -->
-          <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
+          <a-button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
             {{ t('sys.login.forgetPassword') }}
-          </Button>
+          </a-button>
         </FormItem>
       </Col>
     </Row>
 
     <FormItem class="enter-x">
-      <Button type="primary" size="large" block :loading="loading" @click="getCode">
+      <a-button type="primary" size="large" block :loading="loading" @click="getCode">
         {{ t('sys.login.loginButton') }}
-      </Button>
-      <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
+      </a-button>
+      <!-- <a-button size="large" class="mt-4 enter-x" block @click="handleRegister">
         {{ t('sys.login.registerButton') }}
-      </Button> -->
+      </a-button> -->
     </FormItem>
     <Row class="enter-x" :gutter="[16, 16]">
       <Col :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
+        <a-button block @click="setLoginState(LoginStateEnum.MOBILE)">
           {{ t('sys.login.mobileSignInFormTitle') }}
-        </Button>
+        </a-button>
       </Col>
       <Col :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
+        <a-button block @click="setLoginState(LoginStateEnum.QR_CODE)">
           {{ t('sys.login.qrSignInFormTitle') }}
-        </Button>
+        </a-button>
       </Col>
       <Col :md="8" :xs="24">
         <a-button block @click="setLoginState(LoginStateEnum.REGISTER)">
@@ -197,18 +197,18 @@ async function handleLogin(params) {
       萌新必读
     </Divider>
     <div class="enter-x flex justify-evenly" :class="`${prefixCls}-sign-in-way`">
-      <Button href="https://doc.iocoder.cn/" target="_blank">
+      <a-button href="https://doc.iocoder.cn/" target="_blank">
         📚开发指南
-      </Button>
-      <Button href="https://doc.iocoder.cn/video/" target="_blank" style="padding-left: 10px">
+      </a-button>
+      <a-button href="https://doc.iocoder.cn/video/" target="_blank" class="pl-2">
         🔥视频教程
-      </Button>
-      <Button href="https://www.iocoder.cn/Interview/good-collection/" target="_blank" style="padding-left: 10px">
+      </a-button>
+      <a-button href="https://www.iocoder.cn/Interview/good-collection/" target="_blank" class="pl-2">
         ⚡面试手册
-      </Button>
-      <Button href="http://static.yudao.iocoder.cn/mp/xinyu370.jpeg" target="_blank" style="padding-left: 10px">
+      </a-button>
+      <a-button href="http://static.yudao.iocoder.cn/mp/xinyu370.jpeg" target="_blank" class="pl-2">
         🤝外包咨询
-      </Button>
+      </a-button>
     </div>
   </Form>
   <Verify ref="verify" mode="pop" :captcha-type="captchaType" :img-size="{ width: '400px', height: '200px' }" @success="handleLogin" />
