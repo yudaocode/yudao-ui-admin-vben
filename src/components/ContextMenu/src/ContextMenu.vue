@@ -55,12 +55,12 @@ export default defineComponent({
       const left = body.clientWidth < x + menuWidth ? x - menuWidth : x
       const top = body.clientHeight < y + menuHeight ? y - menuHeight : y
       return {
-        ...styles,
         position: 'absolute',
         width: `${width}px`,
         left: `${left + 1}px`,
         top: `${top + 1}px`,
         zIndex: 9999,
+        ...styles,
       }
     })
 
@@ -124,11 +124,9 @@ export default defineComponent({
 
       const { items } = props
       return (
-        <div class={prefixCls}>
-          <Menu inlineIndent={12} mode="vertical" ref={wrapRef} style={unref(getStyle)}>
-            {renderMenuItem(items)}
-          </Menu>
-        </div>
+        <Menu inlineIndent={12} mode="vertical" class={prefixCls} ref={wrapRef} style={unref(getStyle)}>
+          {renderMenuItem(items)}
+        </Menu>
       )
     }
   },
@@ -145,7 +143,7 @@ export default defineComponent({
 .item-style() {
   li {
     display: inline-block;
-    width: 100%;
+    width: 100% !important;
     height: @default-height;
     margin: 0 !important;
     line-height: @default-height;
@@ -154,7 +152,9 @@ export default defineComponent({
       line-height: @default-height;
     }
 
-    > div {
+    >div {
+      width: 100% !important;
+      height: 100% !important;
       margin: 0 !important;
     }
 
@@ -178,7 +178,7 @@ export default defineComponent({
   background-color: var(--component-background);
   background-clip: padding-box;
   border: 1px solid rgb(0 0 0 / 8%);
-  border-radius: 0.25rem;
+  border-radius: 8px;
   box-shadow:
     0 2px 2px 0 rgb(0 0 0 / 14%),
     0 3px 1px -2px rgb(0 0 0 / 10%),
@@ -187,6 +187,7 @@ export default defineComponent({
   &__item {
     margin: 0 !important;
   }
+
   .item-style();
 
   .ant-divider {
