@@ -30,7 +30,7 @@ let realHeight = 0
 
 const stopElResizeFn: Fn = () => {}
 
-useWindowSizeFn(setModalHeight.bind(false))
+useWindowSizeFn(setModalHeight.bind(null))
 
 useMutationObserver(
   spinRef,

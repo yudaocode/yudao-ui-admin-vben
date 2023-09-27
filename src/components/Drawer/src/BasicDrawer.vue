@@ -133,7 +133,7 @@ function handleOk() {
 </script>
 
 <template>
-  <Drawer :root-class-name="prefixCls" v-bind="getBindValues" @close="onClose">
+  <Drawer v-bind="getBindValues" @close="onClose">
     <template v-if="!$slots.title" #title>
       <DrawerHeader
         :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack"
