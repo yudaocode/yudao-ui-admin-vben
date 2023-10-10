@@ -100,8 +100,5 @@ async function fetch() {
     <template v-for="item in Object.keys(slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>
-    <!-- <template v-if="loading" #suffixIcon>
-      <LoadingOutlined spin />
-    </template> -->
   </Tree>
 </template>
