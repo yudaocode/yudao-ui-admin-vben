@@ -43,4 +43,3 @@ function handleChange(e) {
     <Select v-bind="getBindValue" class="max-w-32 w-30" :disabled="disabled" :options="options" @change="handleChange" />
   </div>
 </template>
-

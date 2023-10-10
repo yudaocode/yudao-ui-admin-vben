@@ -94,6 +94,7 @@ export function openWindow(url: string, opt?: { target?: TargetContext | string;
 export function getDynamicProps<T extends Record<string, unknown>, U>(props: T): Partial<U> {
   const ret: Recordable = {}
 
+  // eslint-disable-next-line array-callback-return
   Object.keys(props).map((key) => {
     ret[key] = unref((props as Recordable)[key])
   })

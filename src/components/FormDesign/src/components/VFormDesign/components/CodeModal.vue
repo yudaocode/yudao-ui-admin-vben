@@ -27,8 +27,7 @@ export default {
       fApi:{},
       formData:{},
       formConfig: `
-/* eslint-disable */
-let codeVueLast = `
+const codeVueLast = `
     }
   },
   methods: {
@@ -38,36 +37,37 @@ let codeVueLast = `
      }
   }
 }
-<\/script>`;
+<\/script>`
 //
 const state = reactive({
   open: false,
   jsonData: {} as IFormConfig,
-});
+})
 
-const showModal = (formConfig: IFormConfig) => {
-  formConfig.schemas && formatRules(formConfig.schemas);
-  state.open = true;
-  state.jsonData = formConfig;
-};
+function showModal(formConfig: IFormConfig) {
+  formConfig.schemas && formatRules(formConfig.schemas)
+  state.open = true
+  state.jsonData = formConfig
+}
 
 const editorVueJson = computed(() => {
-  return codeVueFront + JSON.stringify(removeAttrs(state.jsonData), null, '\t') + codeVueLast;
-});
+  return codeVueFront + JSON.stringify(removeAttrs(state.jsonData), null, '\t') + codeVueLast
+})
 
 defineExpose({ showModal })
 </script>
+
 <template>
   <Modal
     title="代码"
     :footer="null"
     :open="state.open"
-    @cancel="state.open = false"
-    wrapClassName="v-code-modal"
+    wrap-class-name="v-code-modal"
     style="top: 20px"
     width="850px"
-    :destroyOnClose="true"
+    :destroy-on-close="true"
+    @cancel="state.open = false"
   >
-    <PreviewCode :editorJson="editorVueJson" fileFormat="vue" />
+    <PreviewCode :editor-json="editorVueJson" file-format="vue" />
   </Modal>
 </template>

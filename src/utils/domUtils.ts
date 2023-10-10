@@ -167,7 +167,7 @@ export function useRafThrottle<T extends FunctionArgs>(fn: T): T {
     window.requestAnimationFrame(() => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      // eslint-disable-next-line @typescript-eslint/no-invalid-this 
+      // eslint-disable-next-line @typescript-eslint/no-invalid-this
       fn.apply(this, args)
       locked = false
     })

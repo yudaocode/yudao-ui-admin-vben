@@ -72,7 +72,6 @@ const getIsFixed = computed(() => {
   return isFixed
 })
 
-
 const getDomStyle = computed((): CSSProperties => {
   const fixedWidth = unref(getIsFixed) ? unref(getRealWidth) : 0
   const width = `${unref(getMixSideWidth) + fixedWidth}px`

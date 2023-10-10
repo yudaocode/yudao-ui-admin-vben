@@ -9,13 +9,13 @@ import VFormItem from '../../VFormItem/index.vue'
 import FormNodeOperate from './FormNodeOperate.vue'
 
 const props = defineProps(
-  { 
+  {
     schema: {
       type: Object as PropType<IVFormComponent>,
       required: true,
-    }, 
+    },
   },
-  
+
 )
 
 const { formConfig, formDesignMethods } = useFormDesignState()
@@ -28,8 +28,7 @@ function handleSelectItem() {
 
 <template>
   <div
-    class="drag-move-box"
-    :class="{ active: schema.key === formConfig.currentItem?.key }"
+    class="drag-move-box" :class="{ active: schema.key === formConfig.currentItem?.key }"
     @click.stop="handleSelectItem"
   >
     <div class="form-item-box">

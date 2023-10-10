@@ -38,9 +38,8 @@ async function handleStart() {
     loading.value = true
     try {
       const canStart = await beforeStartFunc()
-      if (canStart) 
+      if (canStart)
         start()
-      
     }
     finally {
       loading.value = false

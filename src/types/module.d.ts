@@ -9,7 +9,7 @@ declare module 'ant-design-vue/es/locale/*' {
   import type { Locale } from 'ant-design-vue/types/locale-provider'
 
   const locale: Locale & ReadonlyRecordable
-  export default locale 
+  export default locale
 }
 
 declare module 'virtual:*' {
