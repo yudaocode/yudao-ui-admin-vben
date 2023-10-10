@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, unref, useAttrs, useSlots, watch } from 'vue'
 import { Tree } from 'ant-design-vue'
 import { get } from 'lodash-es'
+import type { DataNode } from 'ant-design-vue/es/tree'
 import { isArray, isFunction } from '@/utils/is'
 import { handleTree as handleTreeFn } from '@/utils/tree'
 import { propTypes } from '@/utils/propTypes'
@@ -21,9 +22,10 @@ const emit = defineEmits(['optionsChange', 'change'])
 const attrs = useAttrs()
 const slots = useSlots()
 
-const treeData = ref<Recordable[]>([])
+const treeData = ref<DataNode[]>([])
 const isFirstLoaded = ref<boolean>(false)
 const loading = ref(false)
+
 const getAttrs = computed(() => {
   return {
     ...(props.api ? { treeData: unref(treeData) } : {}),
@@ -87,7 +89,7 @@ async function fetch() {
   if (!isArray(result))
     result = get(result, props.resultField)
 
-  treeData.value = (result as Recordable[]) || []
+  treeData.value = (result as DataNode[]) || []
   isFirstLoaded.value = true
   emit('optionsChange', treeData.value)
 }
