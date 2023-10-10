@@ -1,9 +1,9 @@
 import { unref } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
-import { cloneDeep, set } from 'lodash-es'
+import { cloneDeep, get, set, unset } from 'lodash-es'
 import type { FormProps, FormSchema } from '../types/form'
 import { dateUtil } from '@/utils/dateUtil'
-import { isArray, isFunction, isNullOrUnDef, isObject, isString } from '@/utils/is'
+import { isArray, isFunction, isNotEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
 
 interface UseFormValuesContext {
   defaultValueRef: Ref<any>
@@ -98,18 +98,22 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
         continue
 
       // If the value to be converted is empty, remove the field
-      if (!values[field]) {
-        Reflect.deleteProperty(values, field)
+      if (!get(values, field)) {
+        unset(values, field)
         continue
       }
 
-      const [startTime, endTime]: string[] = values[field]
+      const [startTime, endTime]: string[] = get(values, field)
 
       const [startTimeFormat, endTimeFormat] = Array.isArray(format) ? format : [format, format]
 
-      values[startTimeKey] = formatTime(startTime, startTimeFormat)
-      values[endTimeKey] = formatTime(endTime, endTimeFormat)
-      Reflect.deleteProperty(values, field)
+      if (isNotEmpty(startTime))
+        set(values, startTimeKey, formatTime(startTime, startTimeFormat))
+
+      if (isNotEmpty(endTime))
+        set(values, endTimeKey, formatTime(endTime, endTimeFormat))
+
+      unset(values, field)
     }
 
     return values
