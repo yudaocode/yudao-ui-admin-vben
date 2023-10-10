@@ -6,6 +6,10 @@ import { useScrollTo } from '@/hooks/event/useScrollTo'
 
 defineOptions({ name: 'ScrollContainer' })
 
+defineProps({
+  scrollHeight: { type: Number },
+})
+
 const scrollbarRef = ref<Nullable<ScrollbarType>>(null)
 
 /**
@@ -72,7 +76,12 @@ defineExpose({ scrollbarRef, scrollTo, scrollBottom, getScrollWrap })
 </script>
 
 <template>
-  <Scrollbar ref="scrollbarRef" class="scroll-container" v-bind="$attrs">
+  <Scrollbar
+    ref="scrollbarRef"
+    class="scroll-container"
+    :scroll-height="scrollHeight"
+    v-bind="$attrs"
+  >
     <slot />
   </Scrollbar>
 </template>

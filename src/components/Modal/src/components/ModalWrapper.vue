@@ -26,7 +26,7 @@ const spinRef = ref<ElRef>(null)
 const realHeightRef = ref(0)
 const minRealHeightRef = ref(0)
 
-let realHeight = 0
+const realHeight = ref(0);
 
 const stopElResizeFn: Fn = () => {}
 
@@ -122,13 +122,13 @@ async function setModalHeight() {
       return
     await nextTick()
     // if (!realHeight) {
-    realHeight = spinEl.scrollHeight
+    realHeight.value = spinEl.scrollHeight
     // }
 
     if (props.fullScreen)
       realHeightRef.value = window.innerHeight - props.modalFooterHeight - props.modalHeaderHeight - 28
     else
-      realHeightRef.value = props.height ? props.height : realHeight > maxHeight ? maxHeight : realHeight
+      realHeightRef.value = props.height ? props.height : realHeight.value > maxHeight ? maxHeight : realHeight.value
 
     emit('heightChange', unref(realHeightRef))
   }
@@ -141,7 +141,7 @@ defineExpose({ scrollTop })
 </script>
 
 <template>
-  <ScrollContainer ref="wrapperRef">
+  <ScrollContainer ref="wrapperRef" :scrollHeight="realHeight">
     <div ref="spinRef" v-loading="loading" :style="spinStyle" :loading-tip="loadingTip">
       <slot />
     </div>

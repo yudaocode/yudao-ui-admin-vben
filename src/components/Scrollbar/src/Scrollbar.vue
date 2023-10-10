@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, unref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, unref, watch } from 'vue'
 import { toObject } from './util'
 import Bar from './bar'
 import { addResizeListener, removeResizeListener } from '@/utils/event'
@@ -32,6 +32,11 @@ const props = defineProps({
   tag: {
     type: String,
     default: 'div',
+  },
+  scrollHeight: {
+    // 用于监控内部scrollHeight的变化
+    type: Number,
+    default: 0,
   },
 })
 
@@ -69,6 +74,15 @@ function update() {
   sizeWidth.value = widthPercentage < 100 ? `${widthPercentage}%` : ''
 }
 
+watch(
+  () => props.scrollHeight,
+  () => {
+    if (props.native)
+      return
+    update()
+  },
+)
+
 onMounted(() => {
   if (props.native)
     return
@@ -94,10 +108,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="scrollbar">
     <div
-      ref="wrap"
-      class="scrollbar__wrap" :class="[wrapClass, native ? '' : 'scrollbar__wrap--hidden-default']"
-      :style="style as any"
-      @scroll="handleScroll"
+      ref="wrap" class="scrollbar__wrap" :class="[wrapClass, native ? '' : 'scrollbar__wrap--hidden-default']"
+      :style="style as any" @scroll="handleScroll"
     >
       <component :is="tag" ref="resize" class="scrollbar__view" :class="[viewClass]" :style="viewStyle">
         <slot />
@@ -160,7 +172,7 @@ onBeforeUnmount(() => {
       top: 2px;
       width: 6px;
 
-      & > div {
+      &>div {
         width: 100%;
       }
     }
@@ -169,16 +181,16 @@ onBeforeUnmount(() => {
       left: 2px;
       height: 6px;
 
-      & > div {
+      &>div {
         height: 100%;
       }
     }
   }
 }
 
-.scrollbar:active > .scrollbar__bar,
-.scrollbar:focus > .scrollbar__bar,
-.scrollbar:hover > .scrollbar__bar {
+.scrollbar:active>.scrollbar__bar,
+.scrollbar:focus>.scrollbar__bar,
+.scrollbar:hover>.scrollbar__bar {
   opacity: 1;
   transition: opacity 340ms ease-out;
 }
