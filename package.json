@@ -56,7 +56,7 @@
     "ant-design-vue": "^4.0.3",
     "axios": "^1.5.1",
     "benz-amr-recorder": "^1.1.5",
-    "codemirror": "5.65.3",
+    "codemirror": "5.65.15",
     "cron-parser": "^4.9.0",
     "cropperjs": "^1.6.1",
     "crypto-js": "^4.1.1",

@@ -176,9 +176,6 @@
   "eslint.codeAction.showDocumentation": {
     "enable": true
   },
-  "eslint.codeAction.showDocumentation": {
-    "enable": true
-  },
   "terminal.integrated.scrollback": 10000,
   "nuxt.isNuxtApp": false
 }
