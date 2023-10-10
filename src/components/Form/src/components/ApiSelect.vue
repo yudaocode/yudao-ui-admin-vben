@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, unref, watch, watchEffect } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 import { Select } from 'ant-design-vue'
 import { get, omit } from 'lodash-es'
 import { LoadingOutlined } from '@ant-design/icons-vue'
@@ -39,7 +39,8 @@ interface OptionsItem { label: string; value: string; disabled?: boolean }
 
 const options = ref<OptionsItem[]>([])
 const loading = ref(false)
-const isFirstLoad = ref(true)
+// 首次是否加载过了
+const isFirstLoaded = ref(false)
 const emitData = ref<any[]>([])
 const { t } = useI18n()
 
@@ -62,10 +63,6 @@ const getOptions = computed(() => {
   }, [] as OptionsItem[])
 })
 
-watchEffect(() => {
-  props.immediate && !props.alwaysLoad && fetch()
-})
-
 watch(
   () => state.value,
   (v) => {
@@ -80,19 +77,20 @@ watch(
       fetch()
 
     else
-      !unref(isFirstLoad) && fetch()
+      !unref(isFirstLoaded) && fetch()
   },
-  { deep: true },
+  { deep: true, immediate: props.immediate },
 )
 
 async function fetch() {
   const api = props.api
-  if (!api || !isFunction(api))
+  if (!api || !isFunction(api) || loading.value)
     return
   options.value = []
   try {
     loading.value = true
     const res = await api(props.params)
+    isFirstLoaded.value = true
     if (Array.isArray(res)) {
       options.value = res
       emitChange()
@@ -111,14 +109,14 @@ async function fetch() {
   }
 }
 
-async function handleFetch(open) {
+async function handleFetch(open: boolean) {
   if (open) {
     if (props.alwaysLoad) {
       await fetch()
     }
-    else if (!props.immediate && unref(isFirstLoad)) {
+    else if (!props.immediate && !unref(isFirstLoaded)) {
       await fetch()
-      isFirstLoad.value = false
+      isFirstLoaded.value = false
     }
   }
 }
