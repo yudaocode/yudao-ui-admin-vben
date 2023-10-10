@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, unref } from 'vue'
+import { ref } from 'vue'
 import { CodeEditor, MODE } from '@/components/CodeEditor'
 
-import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
 import { useMessage } from '@/hooks/web/useMessage'
+import { copyText } from '@/utils/copyTextToClipboard'
 
 const props = defineProps(
   {
@@ -33,7 +33,6 @@ function exportData(data: string, fileName = `file.${props.fileFormat}`) {
 function handleExportJson() {
   exportData(props.editorJson)
 }
-const { clipboardRef, copiedRef } = useCopyToClipboard()
 const { createMessage } = useMessage()
 
 function handleCopyJson() {
@@ -43,9 +42,7 @@ function handleCopyJson() {
     createMessage.warning('代码为空！')
     return
   }
-  clipboardRef.value = value
-  if (unref(copiedRef))
-    createMessage.warning('复制成功！')
+  copyText(value)
 }
 </script>
 

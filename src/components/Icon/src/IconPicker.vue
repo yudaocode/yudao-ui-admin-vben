@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, unref, watch, watchEffect } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import { Empty, Input, Pagination, Popover } from 'ant-design-vue'
 import { useDebounceFn } from '@vueuse/core'
 import svgIcons from 'virtual:svg-icons-names'
@@ -12,14 +12,13 @@ import { ScrollContainer } from '@/components/Container'
 import { propTypes } from '@/utils/propTypes'
 import { usePagination } from '@/hooks/web/usePagination'
 import { useI18n } from '@/hooks/web/useI18n'
-import { useCopyToClipboard } from '@/hooks/web/useCopyToClipboard'
-import { useMessage } from '@/hooks/web/useMessage'
+import { copyText } from '@/utils/copyTextToClipboard'
 
 const props = defineProps({
   value: propTypes.string,
   width: propTypes.string.def('100%'),
   pageSize: propTypes.number.def(140),
-  copy: propTypes.bool.def(false),
+  copy: propTypes.bool.def(true),
   mode: propTypes.oneOf(['svg', 'iconify']).def('iconify'),
 })
 const emit = defineEmits(['change', 'update:value'])
@@ -52,17 +51,6 @@ const { prefixCls } = useDesign('icon-picker')
 
 const debounceHandleSearchChange = useDebounceFn(handleSearchChange, 100)
 
-let clipboardRef
-let isSuccessRef
-
-if (props.copy) {
-  const clipboard = useCopyToClipboard(props.value)
-  clipboardRef = clipboard?.clipboardRef
-  isSuccessRef = clipboard?.isSuccessRef
-}
-
-const { createMessage } = useMessage()
-
 const { getPaginationList, getTotal, setCurrentPage } = usePagination(currentList, props.pageSize)
 
 watchEffect(() => {
@@ -83,11 +71,8 @@ function handlePageChange(page: number) {
 
 function handleClick(icon: string) {
   currentSelect.value = icon
-  if (props.copy) {
-    clipboardRef.value = icon
-    if (unref(isSuccessRef))
-      createMessage.success(t('component.icon.copy'))
-  }
+  if (props.copy)
+    copyText(icon, t('component.icon.copy'))
 }
 
 function handleSearchChange(e: ChangeEvent) {
