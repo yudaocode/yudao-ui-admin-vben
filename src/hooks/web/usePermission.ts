@@ -65,7 +65,7 @@ export function usePermission() {
     if (!value)
       return def
 
-    const permMode = projectSetting.permissionMode
+    const permMode = appStore.getProjectConfig.permissionMode
 
     if ([PermissionModeEnum.ROUTE_MAPPING, PermissionModeEnum.ROLE].includes(permMode)) {
       if (!isArray(value))
