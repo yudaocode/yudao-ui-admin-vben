@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "christian-kohler.path-intellisense",
+    "vue.vscode-typescript-vue-plugin",
     "vscode-icons-team.vscode-icons",
     "davidanson.vscode-markdownlint",
     "stylelint.vscode-stylelint",

@@ -29,7 +29,7 @@
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite build && esno ./build/script/postBuild.ts",
     "build:test": "cross-env NODE_OPTIONS=--max-old-space-size=8192  vite build --mode test && esno ./build/script/postBuild.ts",
     "build:static": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode static && esno ./build/script/postBuild.ts",
-    "build:no-cache": "pnpm clean:cache && pnpm build",
+    "build:no-cache": "pnpm store prune && pnpm build",
     "report": "cross-env REPORT=true pnpm build",
     "type:check": "vue-tsc --noEmit --skipLibCheck",
     "preview": "pnpm build && vite preview",
