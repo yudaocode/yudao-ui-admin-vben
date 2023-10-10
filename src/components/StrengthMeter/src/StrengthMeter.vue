@@ -28,6 +28,7 @@ const getPasswordStrength = computed(() => {
 })
 
 function handleChange(e: ChangeEvent) {
+  emit('change', e.target.value)
   innerValueRef.value = e.target.value
 }
 
