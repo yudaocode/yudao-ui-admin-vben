@@ -65,7 +65,12 @@ function getConfFiles() {
  * @param match prefix
  * @param confFiles ext
  */
-export function getEnvConfig(match = 'VITE_GLOB_', confFiles = getConfFiles()) {
+export function getEnvConfig(
+  match = 'VITE_GLOB_',
+  confFiles = getConfFiles(),
+): Promise<{
+  [key: string]: string;
+}> {
   let envConfig = {}
   confFiles.forEach((item) => {
     try {
