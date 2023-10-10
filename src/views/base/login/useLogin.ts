@@ -115,12 +115,12 @@ export function useFormRules(formData?: Recordable) {
   return { getFormRules }
 }
 
-function createRule(message: string) {
+function createRule(message: string): Rule[] {
   return [
     {
       required: true,
       message,
       trigger: 'change',
     },
-  ] as RuleObject[]
+  ]
 }

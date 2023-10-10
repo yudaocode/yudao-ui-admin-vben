@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { Button, theme } from 'ant-design-vue'
+import type { ComponentOptionsMixin } from 'vue'
 import { computed, unref } from 'vue'
 import { buttonProps } from './props'
 import { useAttrs } from '@/hooks/core/useAttrs'
 import { Icon } from '@/components/Icon'
 
-defineOptions({ name: 'AButton', extends: Button, indeterminate: false })
+defineOptions({ name: 'AButton', extends: Button as ComponentOptionsMixin, indeterminate: false })
 const props = defineProps(buttonProps)
 const { useToken } = theme
 const { token } = useToken()

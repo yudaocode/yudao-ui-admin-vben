@@ -93,7 +93,7 @@ function sliderChange(n: number) {
   fetch()
 }
 
-async function handleDelete(id) {
+async function handleDelete(id: number) {
   emit('delete', id)
 }
 </script>

@@ -7,7 +7,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 const props = defineProps(
   {
     list: {
-      type: Array as unknown as any[],
+      type: Array as PropType<IVFormComponent[]>,
       default: () => [],
     },
     handleListPush: {

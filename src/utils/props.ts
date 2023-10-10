@@ -109,7 +109,7 @@ export function buildProp<T = never, D extends BuildPropType<T, V, C> = never, R
       : undefined
 
   return {
-    type: typeof type === 'object' && type && Object.getOwnPropertySymbols(type).includes(wrapperKey) ? type[wrapperKey] : type,
+    type: typeof type === 'object' && type && Object.getOwnPropertySymbols(type).includes(wrapperKey) && type ? type[wrapperKey] : type,
     required: !!required,
     default: defaultValue,
     validator: _validator,
@@ -152,7 +152,8 @@ export function buildProps<
 
 export const definePropType = <T>(val: any) => ({ [wrapperKey]: val }) as PropWrapper<T>
 
-export const keyOf = <T>(arr: T) => Object.keys(arr as any) as Array<keyof T>
+export const keyOf = <T extends object>(arr: T) => Object.keys(arr) as Array<keyof T>
+
 export const mutable = <T extends readonly any[] | Record<string, unknown>>(val: T) => val as Mutable<typeof val>
 
 export const componentSize = ['large', 'medium', 'small', 'mini'] as const

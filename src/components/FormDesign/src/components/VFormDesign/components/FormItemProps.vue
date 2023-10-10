@@ -3,15 +3,7 @@
 -->
 <script lang="ts" setup>
 import { computed, watch } from 'vue'
-import {
-  Checkbox,
-  Col,
-  Empty,
-  Form,
-  FormItem,
-  Input,
-  Switch,
-} from 'ant-design-vue'
+import { Checkbox, Col, Empty, Form, FormItem, Input, Switch } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import {
   advanceFormItemColProps,
@@ -23,6 +15,8 @@ import {
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import RuleProps from './RuleProps.vue'
 
+defineOptions({ name: 'FormItemProps' })
+
 const { formConfig } = useFormDesignState()
 
 watch(
@@ -31,9 +25,9 @@ watch(
     if (formConfig.value.currentItem) {
       formConfig.value.currentItem.itemProps = formConfig.value.currentItem.itemProps || {}
       formConfig.value.currentItem.itemProps.labelCol
-              = formConfig.value.currentItem.itemProps.labelCol || {}
+          = formConfig.value.currentItem.itemProps.labelCol || {}
       formConfig.value.currentItem.itemProps.wrapperCol
-              = formConfig.value.currentItem.itemProps.wrapperCol || {}
+          = formConfig.value.currentItem.itemProps.wrapperCol || {}
     }
   },
   { deep: true, immediate: true },

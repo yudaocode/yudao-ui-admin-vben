@@ -9,18 +9,26 @@ import SvgIcon from './SvgIcon.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { ScrollContainer } from '@/components/Container'
 
-import { propTypes } from '@/utils/propTypes'
 import { usePagination } from '@/hooks/web/usePagination'
 import { useI18n } from '@/hooks/web/useI18n'
 import { copyText } from '@/utils/copyTextToClipboard'
 
-const props = defineProps({
-  value: propTypes.string,
-  width: propTypes.string.def('100%'),
-  pageSize: propTypes.number.def(140),
-  copy: propTypes.bool.def(true),
-  mode: propTypes.oneOf(['svg', 'iconify']).def('iconify'),
+export interface Props {
+  value?: string
+  width?: string
+  pageSize?: number
+  copy?: boolean
+  mode?: 'svg' | 'iconify'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: '',
+  width: '100%',
+  pageSize: 140,
+  copy: false,
+  mode: 'iconify',
 })
+
 const emit = defineEmits(['change', 'update:value'])
 
 function getIcons() {
@@ -36,7 +44,7 @@ function getIcons() {
 }
 
 function getSvgIcons() {
-  return svgIcons.map(icon => icon.replace('icon-', ''))
+  return svgIcons.map((icon: string) => icon.replace('icon-', ''))
 }
 
 const isSvgMode = props.mode === 'svg'
@@ -87,7 +95,10 @@ function handleSearchChange(e: ChangeEvent) {
 </script>
 
 <template>
-  <Input v-model:value="currentSelect" disabled :style="{ width }" :placeholder="t('component.icon.placeholder')" :class="prefixCls">
+  <Input
+    v-model:value="currentSelect" disabled :style="{ width }" :placeholder="t('component.icon.placeholder')"
+    :class="prefixCls"
+  >
     <template #addonAfter>
       <Popover v-model="open" placement="bottomLeft" trigger="click" :overlay-class-name="`${prefixCls}-popover`">
         <template #title>
@@ -101,12 +112,10 @@ function handleSearchChange(e: ChangeEvent) {
             <ScrollContainer class="border border-t-0 border-solid">
               <ul class="flex flex-wrap px-2">
                 <li
-                  v-for="icon in getPaginationList"
-                  :key="icon"
+                  v-for="icon in getPaginationList" :key="icon"
                   :class="currentSelect === icon ? 'border border-primary' : ''"
                   class="mr-1 mt-1 w-1/8 flex cursor-pointer items-center justify-center border border-solid p-2 hover:border-primary"
-                  :title="icon"
-                  @click="handleClick(icon)"
+                  :title="icon" @click="handleClick(icon)"
                 >
                   <!-- <Icon :icon="icon" :prefix="prefix" /> -->
                   <SvgIcon v-if="isSvgMode" :name="icon" />
