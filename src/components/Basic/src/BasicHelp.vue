@@ -43,7 +43,6 @@ export default defineComponent({
   components: { Tooltip },
   props,
   setup(props, { slots }) {
-
     const getTooltipStyle = computed((): CSSProperties => ({ color: props.color, fontSize: props.fontSize }))
 
     const getOverlayStyle = computed((): CSSProperties => ({ maxWidth: props.maxWidth }))
