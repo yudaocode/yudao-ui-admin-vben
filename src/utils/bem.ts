@@ -13,8 +13,7 @@ function genBem(name: string, mods?: Mods): string {
     return ` ${name}--${mods}`
 
   if (Array.isArray(mods))
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    return mods.reduce((ret, item) => ret + genBem(name, item), '')
+    return (mods as Mod[]).reduce<string>((ret, item) => ret + genBem(name, item), '')
 
   return Object.keys(mods).reduce((ret, key) => ret + (mods[key] ? genBem(name, key) : ''), '')
 }
