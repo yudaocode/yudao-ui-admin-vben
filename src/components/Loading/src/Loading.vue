@@ -25,7 +25,7 @@ defineProps({
   <section
     v-show="loading"
     class="full-loading"
-    :class="{ absolute, [theme]: !!theme }"
+    :class="{ absolute, [`${theme}`]: !!theme }"
     :style="[background ? `background-color: ${background}` : '']"
   >
     <Spin v-bind="$attrs" :tip="tip" :size="size" :spinning="loading" />

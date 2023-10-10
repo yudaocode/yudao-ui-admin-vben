@@ -12,8 +12,8 @@ export interface Options {
   defaultWidth?: number
   maskClosable?: boolean
   rememberState?: boolean
-  onImgLoad?: (img: onImgLoadType) => void
-  onImgError?: (img: onImgLoadType) => void
+  onImgLoad?: (params: onImgLoadType) => void
+  onImgError?: (params: onImgLoadType) => void
 }
 
 export interface Props {
