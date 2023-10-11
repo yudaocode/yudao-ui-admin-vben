@@ -6,5 +6,6 @@ module.exports = {
   extends: ['@xingyuv', '@unocss'],
   rules: {
     'no-console': 'off',
+    'vue/custom-event-name-casing': 'off',
   },
 }
