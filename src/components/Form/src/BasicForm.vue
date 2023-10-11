@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue'
 import { computed, nextTick, onMounted, reactive, ref, unref, useAttrs, watch } from 'vue'
-import { Form, Row } from 'ant-design-vue'
+import { type FormProps as AntFormProps, Form, Row } from 'ant-design-vue'
 import { useDebounceFn } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import type { FormActionType, FormProps, FormSchema } from './types/form'
@@ -19,7 +19,6 @@ import { useAutoFocus } from './hooks/useAutoFocus'
 import { basicProps } from './props'
 import { dateUtil } from '@/utils/dateUtil'
 
-// import { cloneDeep } from 'lodash-es';
 import { deepMerge } from '@/utils'
 
 import { useModalContext } from '@/components/Modal'
@@ -43,14 +42,14 @@ const advanceState = reactive<AdvanceState>({
 
 const defaultValueRef = ref<Recordable>({})
 const isInitedDefaultRef = ref(false)
-const propsRef = ref<Partial<FormProps>>({})
+const propsRef = ref<Partial<FormProps>>()
 const schemaRef = ref<Nullable<FormSchema[]>>(null)
 const formElRef = ref<Nullable<FormActionType>>(null)
 
 const { prefixCls } = useDesign('basic-form')
 
 // Get the basic configuration of the form
-const getProps = computed((): FormProps => {
+const getProps = computed(() => {
   return { ...props, ...unref(propsRef) } as FormProps
 })
 
@@ -72,7 +71,9 @@ const getRow = computed((): Recordable => {
   }
 })
 
-const getBindValue = computed(() => ({ ...attrs, ...props, ...unref(getProps) }) as Recordable)
+const getBindValue = computed(
+  () => ({ ...attrs, ...props, ...unref(getProps) }) as AntFormProps,
+)
 
 const getSchema = computed((): FormSchema[] => {
   const schemas: FormSchema[] = unref(schemaRef) || (unref(getProps).schemas as any)
@@ -214,7 +215,7 @@ function setFormModel(key: string, value: any, schema: FormSchema) {
   emit('field-value-change', key, value)
   // TODO 优化验证，这里如果是autoLink=false手动关联的情况下才会再次触发此函数
   if (schema && schema.itemProps && !schema.itemProps.autoLink)
-    validateFields([key]).catch((_) => {})
+    validateFields([key]).catch((_) => { })
 }
 
 function handleEnterPress(e: KeyboardEvent) {
@@ -249,7 +250,7 @@ onMounted(() => {
   emit('register', formActionType)
 })
 
-const getFormActionBindProps = computed((): Recordable => ({ ...getProps.value, ...advanceState }))
+const getFormActionBindProps = computed(() => ({ ...getProps.value, ...advanceState }) as InstanceType<typeof FormAction>['$props'])
 </script>
 
 <template>
@@ -258,14 +259,9 @@ const getFormActionBindProps = computed((): Recordable => ({ ...getProps.value, 
       <slot name="formHeader" />
       <template v-for="schema in getSchema" :key="schema.field">
         <FormItem
-          :is-advanced="fieldsIsAdvancedMap[schema.field]"
-          :table-action="tableAction"
-          :form-action-type="formActionType as any"
-          :schema="schema"
-          :form-props="getProps"
-          :all-default-values="defaultValueRef"
-          :form-model="formModel"
-          :set-form-model="setFormModel"
+          :is-advanced="fieldsIsAdvancedMap[schema.field]" :table-action="tableAction"
+          :form-action-type="formActionType as any" :schema="schema" :form-props="getProps"
+          :all-default-values="defaultValueRef" :form-model="formModel" :set-form-model="setFormModel"
         >
           <template v-for="item in Object.keys($slots)" #[item]="data">
             <slot :name="item" v-bind="data || {}" />

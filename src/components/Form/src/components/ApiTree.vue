@@ -89,7 +89,7 @@ async function fetch() {
   if (!isArray(result))
     result = get(result, props.resultField)
 
-  treeData.value = (result as DataNode[]) || []
+  treeData.value = (result as (Recordable & { key: string | number })[]) || []
   isFirstLoaded.value = true
   emit('optionsChange', treeData.value)
 }

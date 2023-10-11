@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useSlots, watch } from 'vue'
+import type { MenuProps } from 'ant-design-vue'
 import { Dropdown, InputSearch, Menu, MenuDivider } from 'ant-design-vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ToolbarEnum } from '../types/tree'
@@ -108,8 +109,7 @@ const toolbarList = computed(() => {
   return checkable ? retList : defaultToolbarList
 })
 
-function handleMenuClick(e) {
-  const { key } = e
+const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
   switch (key) {
     case ToolbarEnum.SELECT_ALL:
       props.checkAll?.(true)

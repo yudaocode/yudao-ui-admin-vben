@@ -5,7 +5,7 @@ import { useTabEmits, useTabProps, useTabSetup } from './useTabMixin'
 
 export default defineComponent({
   name: 'YearUI',
-  components: { Input, Radio, RadioGroup: Radio.Group },
+  components: { AInput: Input, Radio, RadioGroup: Radio.Group },
   props: useTabProps({
     defaultValue: '*',
   }),
@@ -35,9 +35,9 @@ export default defineComponent({
           区间
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueRange.start" type="number" class="w80" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.start" type="number" class="w80" v-bind="typeRangeAttrs" />
         <span> 年 至 </span>
-        <Input v-model:value="valueRange.end" type="number" class="w80" v-bind="typeRangeAttrs" />
+        <AInput v-model:value="valueRange.end" type="number" class="w80" v-bind="typeRangeAttrs" />
         <span> 年 </span>
       </div>
       <div class="item">
@@ -45,9 +45,9 @@ export default defineComponent({
           循环
         </Radio>
         <span> 从 </span>
-        <Input v-model:value="valueLoop.start" type="number" class="w80" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.start" type="number" class="w80" v-bind="typeLoopAttrs" />
         <span> 年开始，间隔 </span>
-        <Input v-model:value="valueLoop.interval" type="number" class="w80" v-bind="typeLoopAttrs" />
+        <AInput v-model:value="valueLoop.interval" type="number" class="w80" v-bind="typeLoopAttrs" />
         <span> 年 </span>
       </div>
     </RadioGroup>

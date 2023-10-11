@@ -273,8 +273,10 @@ function getUploadingImgName(name: string) {
 
 <template>
   <div :class="prefixCls" :style="{ width: containerWidth }">
-    <ImgUpload v-if="showImageUpload" v-show="editorRef" :fullscreen="fullscreen" :disabled="disabled"
-      @uploading="handleImageUploading" @done="handleDone" />
+    <ImgUpload
+      v-if="showImageUpload" v-show="editorRef" :fullscreen="fullscreen" :disabled="disabled"
+      @uploading="handleImageUploading" @done="handleDone"
+    />
     <textarea v-if="!initOptions.inline" :id="tinymceId" ref="elRef" :style="{ visibility: 'hidden' }" />
     <slot v-else />
   </div>

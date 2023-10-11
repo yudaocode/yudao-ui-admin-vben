@@ -17,7 +17,7 @@ export default defineComponent({
   name: 'VFormCreate',
   components: {
     FormRender,
-    Form,
+    AntForm: Form,
     Row,
   },
   props: {
@@ -119,7 +119,7 @@ export default defineComponent({
 
 <template>
   <div class="v-form-container">
-    <Form ref="eFormModel" class="overflow-hidden" :model="formModel" v-bind="formModelProps">
+    <AntForm ref="eFormModel" class="overflow-hidden" :model="formModel" v-bind="formModelProps">
       <Row>
         <FormRender
           v-for="(schema, index) of noHiddenList"
@@ -140,6 +140,6 @@ export default defineComponent({
           </template>
         </FormRender>
       </Row>
-    </Form>
+    </AntForm>
   </div>
 </template>

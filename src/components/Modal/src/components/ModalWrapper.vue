@@ -26,7 +26,7 @@ const spinRef = ref<ElRef>(null)
 const realHeightRef = ref(0)
 const minRealHeightRef = ref(0)
 
-const realHeight = ref(0);
+const realHeight = ref(0)
 
 const stopElResizeFn: Fn = () => {}
 
@@ -141,7 +141,7 @@ defineExpose({ scrollTop })
 </script>
 
 <template>
-  <ScrollContainer ref="wrapperRef" :scrollHeight="realHeight">
+  <ScrollContainer ref="wrapperRef" :scroll-height="realHeight">
     <div ref="spinRef" v-loading="loading" :style="spinStyle" :loading-tip="loadingTip">
       <slot />
     </div>
