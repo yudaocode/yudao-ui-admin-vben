@@ -8,7 +8,7 @@ import LayoutTrigger from '../trigger/index.vue'
 import { useDragLine } from './useLayoutSider'
 import type { Menu } from '@/router/types'
 import { ScrollContainer } from '@/components/Container'
-import { SimpleMenu, SimpleMenuTag } from '@/components/SimpleMenu'
+import { SimpleMenu } from '@/components/SimpleMenu'
 import { Icon } from '@/components/Icon'
 import { AppLogo } from '@/components/Application'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
@@ -20,6 +20,9 @@ import { useGo } from '@/hooks/web/usePage'
 import { SIDE_BAR_MINI_WIDTH, SIDE_BAR_SHOW_TIT_MINI_WIDTH } from '@/enums/appEnum'
 import { getChildrenMenus, getCurrentParentPath, getShallowMenus } from '@/router/menus'
 import { listenerRouteChange } from '@/logics/mitt/routeChange'
+import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
+
+const SimpleMenuTag = createAsyncComponent(() => import('/@/components/SimpleMenu/src/SimpleMenuTag.vue'))
 
 const wrap = ref(null)
 const menuModules = ref<Menu[]>([])
@@ -228,17 +231,14 @@ onClickOutside(wrap, () => {
 <template>
   <div :class="`${prefixCls}-dom`" :style="getDomStyle" />
   <div
-    ref="wrap"
-    :style="getWrapStyle"
-    :class="[
+    ref="wrap" :style="getWrapStyle" :class="[
       prefixCls,
       getMenuTheme,
       {
         open: openMenu,
         mini: getCollapsed,
       },
-    ]"
-    v-bind="getMenuEvents"
+    ]" v-bind="getMenuEvents"
   >
     <AppLogo :show-title="false" :class="`${prefixCls}-logo`" />
 
@@ -247,10 +247,7 @@ onClickOutside(wrap, () => {
     <ScrollContainer>
       <ul :class="`${prefixCls}-module`">
         <li
-          v-for="item in menuModules"
-          v-bind="getItemEvents(item)"
-          :key="item.path"
-          :class="[
+          v-for="item in menuModules" v-bind="getItemEvents(item)" :key="item.path" :class="[
             `${prefixCls}-module__item `,
             {
               [`${prefixCls}-module__item--active`]: item.path === activePath,
@@ -258,7 +255,10 @@ onClickOutside(wrap, () => {
           ]"
         >
           <SimpleMenuTag :item="item" collapse-parent dot />
-          <Icon :class="`${prefixCls}-module__icon`" :size="getCollapsed ? 16 : 20" :icon="item.icon || (item.meta && item.meta.icon)" />
+          <Icon
+            :class="`${prefixCls}-module__icon`" :size="getCollapsed ? 16 : 20"
+            :icon="item.icon || (item.meta && item.meta.icon)"
+          />
           <p :class="`${prefixCls}-module__name`">
             {{ t(item.name) }}
           </p>
@@ -268,8 +268,7 @@ onClickOutside(wrap, () => {
 
     <div ref="sideRef" :class="`${prefixCls}-menu-list`" :style="getMenuStyle">
       <div
-        v-show="openMenu"
-        :class="[
+        v-show="openMenu" :class="[
           `${prefixCls}-menu-list__title`,
           {
             show: openMenu,
@@ -277,7 +276,10 @@ onClickOutside(wrap, () => {
         ]"
       >
         <span class="text"> {{ title }}</span>
-        <Icon :size="16" :icon="getMixSideFixed ? 'ri:pushpin-2-fill' : 'ri:pushpin-2-line'" class="pushpin" @click="handleFixedMenu" />
+        <Icon
+          :size="16" :icon="getMixSideFixed ? 'ri:pushpin-2-fill' : 'ri:pushpin-2-line'" class="pushpin"
+          @click="handleFixedMenu"
+        />
       </div>
       <ScrollContainer :class="`${prefixCls}-menu-list__content`">
         <SimpleMenu :items="childrenMenus" :theme="getMenuTheme" mix-sider @menu-click="handleMenuClick" />
