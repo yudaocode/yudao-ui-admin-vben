@@ -12,6 +12,7 @@ import { useFullContent } from '@/hooks/web/useFullContent'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 import { useAppInject } from '@/hooks/web/useAppInject'
 import { useDesign } from '@/hooks/web/useDesign'
+import { useMultipleTabStore } from '@/store/modules/multipleTab'
 
 defineOptions({ name: 'LayoutMultipleHeader' })
 
@@ -20,6 +21,7 @@ const HEADER_HEIGHT = 48
 const TABS_HEIGHT = 32
 
 const { setHeaderHeight } = useLayoutHeight()
+const tabStore = useMultipleTabStore()
 const { prefixCls } = useDesign('layout-multiple-header')
 
 const { getCalcContentWidth, getSplit } = useMenuSetting()
@@ -76,7 +78,7 @@ const getClass = computed(() => {
   <div v-if="getIsShowPlaceholderDom" :style="getPlaceholderDomStyle" />
   <div :style="getWrapStyle" :class="getClass">
     <LayoutHeader v-if="getShowInsetHeaderRef" />
-    <MultipleTabs v-if="getShowTabs" />
+    <MultipleTabs v-if="getShowTabs" :key="tabStore.getLastDragEndIndex" />
   </div>
 </template>
 
