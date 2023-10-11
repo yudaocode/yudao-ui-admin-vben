@@ -209,7 +209,7 @@ function initSetup(e) {
   bindHandlers(e, attrs, unref(editorRef))
 }
 
-function setValue(editor: Recordable, val: string, prevVal?: string) {
+function setValue(editor: Recordable, val?: string, prevVal?: string) {
   if (editor && typeof val === 'string' && val !== prevVal && val !== editor.getContent({ format: attrs.outputFormat }))
     editor.setContent(val)
 }
@@ -220,14 +220,14 @@ function bindModelHandlers(editor: any) {
 
   watch(
     () => props.modelValue,
-    (val: string, prevVal: string) => {
+    (val, prevVal) => {
       setValue(editor, val, prevVal)
     },
   )
 
   watch(
     () => props.value,
-    (val: string, prevVal: string) => {
+    (val, prevVal) => {
       setValue(editor, val, prevVal)
     },
     {
@@ -273,14 +273,8 @@ function getUploadingImgName(name: string) {
 
 <template>
   <div :class="prefixCls" :style="{ width: containerWidth }">
-    <ImgUpload
-      v-if="showImageUpload"
-      v-show="editorRef"
-      :fullscreen="fullscreen"
-      :disabled="disabled"
-      @uploading="handleImageUploading"
-      @done="handleDone"
-    />
+    <ImgUpload v-if="showImageUpload" v-show="editorRef" :fullscreen="fullscreen" :disabled="disabled"
+      @uploading="handleImageUploading" @done="handleDone" />
     <textarea v-if="!initOptions.inline" :id="tinymceId" ref="elRef" :style="{ visibility: 'hidden' }" />
     <slot v-else />
   </div>
