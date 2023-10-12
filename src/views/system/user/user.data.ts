@@ -1,5 +1,6 @@
 import { h } from 'vue'
 import { Switch } from 'ant-design-vue'
+import dayjs from 'dayjs'
 import { useMessage } from '@/hooks/web/useMessage'
 import { listSimpleDept } from '@/api/system/dept'
 import { listSimplePosts } from '@/api/system/post'
@@ -110,7 +111,9 @@ export const searchFormSchema: FormSchema[] = [
     field: 'createTime',
     component: 'RangePicker',
     componentProps: {
-      format: 'YYYY-MM-DD HH:mm:ss',
+      showTime: {
+        defaultValue: [dayjs('00:00:00', 'HH:mm:ss'), dayjs('23:59:59', 'HH:mm:ss')],
+      },
     },
     colProps: { span: 8 },
   },
