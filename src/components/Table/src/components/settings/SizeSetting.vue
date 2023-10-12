@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import type { MenuProps } from 'ant-design-vue'
 import { Dropdown, Menu, Tooltip } from 'ant-design-vue'
 import { ColumnHeightOutlined } from '@ant-design/icons-vue'
 import type { SizeType } from '../../types/table'
@@ -14,10 +15,10 @@ const { t } = useI18n()
 
 const selectedKeysRef = ref<SizeType[]>([table.getSize()])
 
-function handleTitleClick({ key }: { key: any }) {
-  selectedKeysRef.value = [key]
+const handleTitleClick: MenuProps['onClick'] = ({ key }) => {
+  selectedKeysRef.value = [key as SizeType]
   table.setProps({
-    size: key,
+    size: key as SizeType,
   })
 }
 </script>

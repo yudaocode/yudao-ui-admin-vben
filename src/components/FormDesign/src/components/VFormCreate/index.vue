@@ -47,16 +47,23 @@ export default defineComponent({
     const noHiddenList = computed(() => {
       return (
         props.formConfig.schemas
-          && props.formConfig.schemas.filter(item => item.hidden !== true)
+        && props.formConfig.schemas.filter(item => item.hidden !== true)
       )
     })
 
     const fApi = useVModel(props, 'fApi', emit)
 
     const { submit, validate, clearValidate, resetFields, validateField }
-        = useFormInstanceMethods(props, formModelNew, context, eFormModel)
+      = useFormInstanceMethods<['submit', 'change', 'update:fApi', 'update:formModel']>(
+        props,
+        formModelNew,
+        context,
+        eFormModel,
+      )
 
-    const { linkOn, ...methods } = useVFormMethods(
+    const { linkOn, ...methods } = useVFormMethods<
+      ['submit', 'change', 'update:fApi', 'update:formModel']
+    >(
       { formConfig: props.formConfig, formData: props.formModel } as unknown as IProps,
       context,
       eFormModel,
@@ -122,21 +129,12 @@ export default defineComponent({
     <AntForm ref="eFormModel" class="overflow-hidden" :model="formModel" v-bind="formModelProps">
       <Row>
         <FormRender
-          v-for="(schema, index) of noHiddenList"
-          :key="index"
-          :schema="schema"
-          :form-config="formConfig"
-          :form-data="formModelNew"
-          :set-form-model="setFormModel"
-          @change="handleChange"
-          @submit="handleSubmit"
+          v-for="(schema, index) of noHiddenList" :key="index" :schema="schema" :form-config="formConfig"
+          :form-data="formModelNew" :set-form-model="setFormModel" @change="handleChange" @submit="handleSubmit"
           @reset="resetFields"
         >
           <template v-if="schema && schema.componentProps" #[`schema.componentProps!.slotName`]>
-            <slot
-              :name="schema.componentProps!.slotName"
-              v-bind="{ formModel, field: schema.field, schema }"
-            />
+            <slot :name="schema.componentProps!.slotName" v-bind="{ formModel, field: schema.field, schema }" />
           </template>
         </FormRender>
       </Row>
