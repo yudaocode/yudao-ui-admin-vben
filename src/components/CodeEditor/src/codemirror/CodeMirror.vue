@@ -27,6 +27,7 @@ const props = defineProps({
   },
   value: { type: String, default: '' },
   readonly: { type: Boolean, default: false },
+  bordered: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['change'])
@@ -107,5 +108,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="el" class="relative w-full overflow-hidden !h-full" />
+  <div
+    ref="el"
+    class="relative w-full overflow-hidden !h-full"
+    :class="{ 'ant-input': props.bordered, 'css-dev-only-do-not-override-kqecok': props.bordered }"
+  />
 </template>

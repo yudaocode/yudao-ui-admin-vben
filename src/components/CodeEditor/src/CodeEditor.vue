@@ -16,6 +16,7 @@ const props = defineProps({
   },
   readonly: { type: Boolean },
   autoFormat: { type: Boolean, default: true },
+  bordered: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['change', 'update:value', 'formatError'])
@@ -46,6 +47,6 @@ function handleValueChange(v) {
 
 <template>
   <div class="h-full">
-    <CodeMirrorEditor :value="getValue" :mode="mode" :readonly="readonly" @change="handleValueChange" />
+    <CodeMirrorEditor :value="getValue" :mode="mode" :readonly="readonly" :bordered="bordered" @change="handleValueChange" />
   </div>
 </template>
