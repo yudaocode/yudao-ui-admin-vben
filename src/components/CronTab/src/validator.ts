@@ -2,6 +2,7 @@ import CronParser from 'cron-parser'
 import type { ValidatorRule } from 'ant-design-vue/lib/form/interface'
 
 const cronRule: ValidatorRule = {
+  // eslint-disable-next-line no-empty-pattern
   validator({}, value) {
     // 没填写就不校验
     if (!value)

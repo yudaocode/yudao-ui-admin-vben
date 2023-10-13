@@ -132,6 +132,7 @@ export function useVFormMethods<E extends EmitsOptions = EmitsOptions>(
    * 获取formData中的值
    * @return {Promise<IAnyObject<any>>}
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   const getData: IGetData = async () => {
     return cloneDeep(props.formModel)
   }

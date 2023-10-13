@@ -195,6 +195,7 @@ export default defineComponent({
 
       const onChange = unref(getComponentProps)?.onChangeTemp
       if (onChange && isFunction(onChange))
+        // eslint-disable-next-line prefer-rest-params
         onChange(...arguments)
 
       table.emit?.('edit-change', {

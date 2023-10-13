@@ -28,6 +28,7 @@ const activeClass = computed(() => {
  */
 function handleDelete() {
   const traverse = (schemas: IVFormComponent[]) => {
+    // eslint-disable-next-line array-callback-return
     schemas.some((formItem, index) => {
       const { component, key } = formItem;
       // 处理栅格和标签页布局

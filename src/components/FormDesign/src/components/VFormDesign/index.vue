@@ -160,6 +160,7 @@ function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFo
    */
   const traverse = (schemas: IVFormComponent[]) => {
     // 使用some遍历，找到目标后停止遍历
+    // eslint-disable-next-line array-callback-return
     schemas.some((formItem: IVFormComponent, index: number) => {
       if (formItem.key === key) {
         // 判断是不是复制

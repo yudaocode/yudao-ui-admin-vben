@@ -119,6 +119,7 @@ export default defineComponent({
               return null
 
             const getField = get(_data, field)
+            // eslint-disable-next-line no-prototype-builtins
             if (getField && !toRefs(_data).hasOwnProperty(field))
               return isFunction(render) ? render('', _data) : ''
 
