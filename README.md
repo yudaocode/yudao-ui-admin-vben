@@ -32,7 +32,7 @@
 | [Vite](https://cn.vitejs.dev//)                                      | 开发与构建工具        | 4.4.11 |
 | [ant-design-vue](https://antdv.com/)                                 | ant-design-vue        | 4.0.3  |
 | [TypeScript](https://www.typescriptlang.org/docs/)                   | JavaScript 的超集     | 5.1.6  |
-| [pinia](https://pinia.vuejs.org/)                                    | Vue 存储库 替代 vuex5 | 2.1.6  |
+| [pinia](https://pinia.vuejs.org/)                                    | Vue 存储库 替代 vuex5 | 2.1.7  |
 | [vueuse](https://vueuse.org/)                                        | 常用工具集            | 10.5.0 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化                | 9.5.0  |
 | [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.5  |
