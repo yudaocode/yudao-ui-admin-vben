@@ -134,9 +134,9 @@ export const JobLogRoute: AppRouteRecordRaw = {
 }
 
 export const PayRoute: AppRouteRecordRaw = {
-  path: '/cashRegister',
+  path: '/pay',
   component: LAYOUT,
-  name: 'cashRegister',
+  name: 'pay',
   meta: {
     title: '收银台',
     hidden: true,

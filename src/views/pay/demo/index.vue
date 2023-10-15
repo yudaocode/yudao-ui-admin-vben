@@ -38,7 +38,7 @@ function handleAdd() {
 
 /** 支付按钮操作 */
 function handlePay(record: Recordable) {
-  go(`/cashRegister/submit?id=${record.id}`)
+  go(`/pay/cashier?id=${record.id}`)
 }
 
 /** 退款按钮操作 */
