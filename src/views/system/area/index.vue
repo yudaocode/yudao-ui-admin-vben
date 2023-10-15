@@ -40,10 +40,10 @@ function handleCreate() {
         <a-button type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           IP 查询
         </a-button>
-        <a-button type="info" @click="expandAll">
+        <a-button @click="expandAll">
           {{ t('component.tree.expandAll') }}
         </a-button>
-        <a-button type="info" @click="collapseAll">
+        <a-button @click="collapseAll">
           {{ t('component.tree.unExpandAll') }}
         </a-button>
       </template>

@@ -79,10 +79,10 @@ function refreshMenu() {
         <a-button v-auth="['system:menu:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           {{ t('action.create') }}
         </a-button>
-        <a-button type="info" @click="expandAll">
+        <a-button @click="expandAll">
           {{ t('component.tree.expandAll') }}
         </a-button>
-        <a-button type="info" @click="collapseAll">
+        <a-button @click="collapseAll">
           {{ t('component.tree.unExpandAll') }}
         </a-button>
         <a-button color="warning" pre-icon="ep:refresh" @click="refreshMenu">
