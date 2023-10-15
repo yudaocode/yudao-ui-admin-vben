@@ -12,9 +12,7 @@ import { propTypes } from '@/utils/propTypes'
 defineOptions({ name: 'ApiSelect', inheritAttrs: false })
 
 const props = defineProps({
-  value: {
-    type: [Array, Object, String, Number] as PropType<SelectValue>,
-  },
+  value: { type: Object as PropType<SelectValue> },
   numberToString: propTypes.bool,
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<OptionsItem[]>>,
@@ -31,6 +29,10 @@ const props = defineProps({
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
   alwaysLoad: propTypes.bool.def(true),
+  options: {
+    type: Array<OptionsItem>,
+    default: [],
+  },
 })
 
 const emit = defineEmits(['optionsChange', 'change', 'update:value'])
@@ -41,7 +43,7 @@ const options = ref<OptionsItem[]>([])
 const loading = ref(false)
 // 首次是否加载过了
 const isFirstLoaded = ref(false)
-const emitData = ref<any[]>([])
+const emitData = ref<OptionsItem[]>([])
 const { t } = useI18n()
 
 // Embedded in the form, just use the hook binding to perform form verification
