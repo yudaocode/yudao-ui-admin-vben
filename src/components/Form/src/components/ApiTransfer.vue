@@ -115,8 +115,15 @@ function emitChange() {
 
 <template>
   <Transfer
-    v-bind="getAttrs" :data-source="getdataSource" :filter-option="filterOption" :render="(item) => item.title"
-    :show-select-all="showSelectAll" :selected-keys="selectedKeys" :target-keys="getTargetKeys" :show-search="showSearch"
+    v-bind="getAttrs"
+    :data-source="getdataSource"
+    :filter-option="filterOption"
+    :render="(item) => item.title"
+    :show-select-all="showSelectAll"
+    :selected-keys="selectedKeys"
+    :target-keys="getTargetKeys"
+    :show-search="showSearch"
+    :disabled="disabled"
     @change="handleChange"
   />
 </template>
