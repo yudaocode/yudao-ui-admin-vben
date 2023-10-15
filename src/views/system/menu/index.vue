@@ -8,11 +8,12 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMenu, getMenuList } from '@/api/system/menu'
+import { usePermission } from '@/hooks/web/usePermission'
 
 defineOptions({ name: 'SystemMenu' })
 
 const { t } = useI18n()
-const { createMessage } = useMessage()
+const { createMessage, createConfirm } = useMessage()
 const [registerModal, { openModal }] = useModal()
 
 const [register, { expandAll, collapseAll, getForm, reload }] = useTable({
@@ -54,6 +55,21 @@ async function handleDelete(record: Recordable) {
   createMessage.success(t('common.delSuccessText'))
   reload()
 }
+
+function refreshMenu() {
+  createConfirm({
+    title: '刷新菜单',
+    iconType: 'warning',
+    content: '即将更新缓存刷新浏览器',
+    async onOk() {
+      const { refreshMenu } = usePermission()
+      await refreshMenu()
+      createMessage.success('刷新成功')
+      // 刷新浏览器
+      location.reload()
+    },
+  })
+}
 </script>
 
 <template>
@@ -68,6 +84,9 @@ async function handleDelete(record: Recordable) {
         </a-button>
         <a-button type="info" @click="collapseAll">
           {{ t('component.tree.unExpandAll') }}
+        </a-button>
+        <a-button color="warning" pre-icon="ep:refresh" @click="refreshMenu">
+          刷新菜单缓存
         </a-button>
       </template>
       <template #bodyCell="{ column, record }">
