@@ -45,6 +45,9 @@ const getBindValue = computed(() => ({ ...unref(attrs), ...props }))
         : '',
     }" :class="getButtonClass" @click="onClick"
   >
+    <template #icon>
+      <slot name="icon" />
+    </template>
     <template #default="data">
       <Icon v-if="preIcon" :icon="preIcon" :size="iconSize" />
       <slot v-bind="data || {}" />
