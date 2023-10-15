@@ -2,17 +2,17 @@ import type { DescItem } from '@/components/Description'
 import { useRender } from '@/components/Table'
 
 // 导入图标
-import svg_alipay_pc from '@/assets/svgs/pay/icon/alipay_pc.svg'
-import svg_alipay_wap from '@/assets/svgs/pay/icon/alipay_wap.svg'
-import svg_alipay_app from '@/assets/svgs/pay/icon/alipay_app.svg'
-import svg_alipay_qr from '@/assets/svgs/pay/icon/alipay_qr.svg'
-import svg_alipay_bar from '@/assets/svgs/pay/icon/alipay_bar.svg'
-import svg_wx_pub from '@/assets/svgs/pay/icon/wx_pub.svg'
-import svg_wx_lite from '@/assets/svgs/pay/icon/wx_lite.svg'
-import svg_wx_app from '@/assets/svgs/pay/icon/wx_app.svg'
-import svg_wx_native from '@/assets/svgs/pay/icon/wx_native.svg'
-import svg_wx_bar from '@/assets/svgs/pay/icon/wx_bar.svg'
-import svg_mock from '@/assets/svgs/pay/icon/mock.svg'
+import svg_alipay_pc from '@/assets/svg/pay/icon/alipay_pc.svg'
+import svg_alipay_wap from '@/assets/svg/pay/icon/alipay_wap.svg'
+import svg_alipay_app from '@/assets/svg/pay/icon/alipay_app.svg'
+import svg_alipay_qr from '@/assets/svg/pay/icon/alipay_qr.svg'
+import svg_alipay_bar from '@/assets/svg/pay/icon/alipay_bar.svg'
+import svg_wx_pub from '@/assets/svg/pay/icon/wx_pub.svg'
+import svg_wx_lite from '@/assets/svg/pay/icon/wx_lite.svg'
+import svg_wx_app from '@/assets/svg/pay/icon/wx_app.svg'
+import svg_wx_native from '@/assets/svg/pay/icon/wx_native.svg'
+import svg_wx_bar from '@/assets/svg/pay/icon/wx_bar.svg'
+import svg_mock from '@/assets/svg/pay/icon/mock.svg'
 
 export const descSchema: DescItem[] = [
   {
