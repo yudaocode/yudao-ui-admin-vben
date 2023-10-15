@@ -34,7 +34,7 @@ function handleClose() {
 <template>
   <div
     v-if="showFooter || $slots.footer"
-    class="absolute bottom-0 w-full border-t-1 border-light-200 bg-white pl-5 pr-3 dark:bg-dark"
+    class="absolute bottom-0 left-0 w-full border-t-1 border-light-200 bg-white pl-5 pr-3 dark:bg-dark"
     :style="getStyle"
   >
     <template v-if="!$slots.footer">
