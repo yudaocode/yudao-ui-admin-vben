@@ -6,6 +6,7 @@ import type { DataNode } from 'ant-design-vue/es/tree'
 import { isArray, isFunction } from '@/utils/is'
 import { handleTree as handleTreeFn } from '@/utils/tree'
 import { propTypes } from '@/utils/propTypes'
+import { useRuleFormItem } from '@/hooks/component/useFormItem'
 
 defineOptions({ name: 'ApiTree' })
 
@@ -17,14 +18,17 @@ const props = defineProps({
   afterFetch: { type: Function as PropType<Fn> },
   handleTree: propTypes.string.def(''),
   alwaysLoad: propTypes.bool.def(true),
+  value: [Array, Object, String, Number],
 })
-const emit = defineEmits(['optionsChange', 'change'])
+const emit = defineEmits(['optionsChange', 'change', 'update:value'])
 const attrs = useAttrs()
 const slots = useSlots()
 
 const treeData = ref<DataNode[]>([])
 const isFirstLoaded = ref<boolean>(false)
 const loading = ref(false)
+const emitData = ref<any[]>([])
+const [state] = useRuleFormItem(props, 'value', 'change', emitData)
 
 const getAttrs = computed(() => {
   return {
@@ -36,6 +40,13 @@ const getAttrs = computed(() => {
 function handleChange(...args) {
   emit('change', ...args)
 }
+
+watch(
+  () => state.value,
+  (v) => {
+    emit('update:value', v)
+  },
+)
 
 watch(
   () => props.params,
@@ -96,7 +107,7 @@ async function fetch() {
 </script>
 
 <template>
-  <Tree v-bind="getAttrs" @select="handleChange">
+  <Tree v-bind="getAttrs" v-model:selected-keys="state" @select="handleChange">
     <template v-for="item in Object.keys(slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>
