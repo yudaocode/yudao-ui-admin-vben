@@ -96,7 +96,7 @@ async function fetch() {
 </script>
 
 <template>
-  <Tree v-bind="getAttrs as any" @change="handleChange">
+  <Tree v-bind="getAttrs" @select="handleChange">
     <template v-for="item in Object.keys(slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>
