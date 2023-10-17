@@ -56,6 +56,7 @@ const controlPropsList = computed(() => {
             <component
               v-bind="item.componentProps"
               :is="item.component"
+              v-if="item.component"
               v-model:value="formConfig.currentItem[item.name]"
               class="component-props"
             />
@@ -66,6 +67,7 @@ const controlPropsList = computed(() => {
             <component
               v-bind="item.componentProps"
               :is="item.component"
+              v-if="item.component"
               v-model:value="formConfig.currentItem.itemProps[item.name]"
               class="component-props"
             />
@@ -75,6 +77,7 @@ const controlPropsList = computed(() => {
             <component
               v-bind="item.componentProps"
               :is="item.component"
+              v-if="item.component"
               v-model:value="formConfig.currentItem.itemProps[item.name].span"
               class="component-props"
             />

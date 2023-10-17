@@ -47,10 +47,13 @@ watch(
 const isTitleClickable = computed(() => !!props.onTitleClick)
 const getPagination = computed(() => {
   const { list, pageSize } = props
-  if (isNumber(pageSize) && pageSize > 0 && list && list.length > pageSize) {
+  // compatible line 104
+  // if typeof pageSize is boolean, Number(true) && 5 = 5, Number(false) && 5 = 0
+  const size = isNumber(pageSize) ? pageSize : Number(pageSize) && 5
+  if (size > 0 && list && list.length > size) {
     return {
       total: list.length,
-      pageSize,
+      pageSize: size,
       // size: 'small',
       current: unref(current),
       onChange(page) {

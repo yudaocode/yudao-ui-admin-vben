@@ -141,14 +141,18 @@ const linkOptions = computed(() => {
             <!--     处理数组属性，placeholder       -->
 
             <div v-if="item.children">
-              <component
-                v-bind="child.componentProps" :is="child.component" v-for="(child, index) of item.children"
-                :key="index" v-model:value="formConfig.currentItem.componentProps[item.name][index]"
-              />
+              <template v-for="(child, index) of item.children" :key="index">
+                <component
+                  v-bind="child.componentProps"
+                  :is="child.component"
+                  v-if="child.component"
+                  v-model:value="formConfig.currentItem.componentProps[item.name][index]"
+                />
+              </template>
             </div>
             <!--     如果不是数组，则正常处理属性值       -->
             <component
-              v-bind="item.componentProps" :is="item.component" v-else
+              v-bind="item.componentProps" :is="item.component" v-else-if="item.component"
               v-model:value="formConfig.currentItem.componentProps[item.name]" class="component-prop"
             />
           </FormItem>

@@ -37,7 +37,7 @@ export const treeProps = buildProps({
   },
 
   renderIcon: {
-    type: Function as PropType<(params: Recordable) => string>,
+    type: Function as PropType<(...params: any[]) => string>,
   },
 
   helpMessage: {

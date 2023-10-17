@@ -25,7 +25,7 @@ function showProps(exclude: string[] | undefined) {
         <div v-for="item of baseItemColumnProps" :key="item.name">
           <FormItem v-if="showProps(item.exclude)" :label="item.label">
             <component
-              v-bind="item.componentProps" :is="item.component" v-if="formConfig.currentItem.colProps"
+              v-bind="item.componentProps" :is="item.component" v-if="formConfig.currentItem.colProps && item.component"
               v-model:value="formConfig.currentItem.colProps[item.name]" class="component-props"
             />
           </FormItem>

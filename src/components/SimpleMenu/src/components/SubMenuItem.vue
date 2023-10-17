@@ -10,7 +10,7 @@ import { propTypes } from '@/utils/propTypes'
 import { CollapseTransition } from '@/components/Transition'
 import { Icon } from '@/components/Icon'
 import { isBoolean, isObject } from '@/utils/is'
-import mitt from '@/utils/mitt'
+import { mitt } from '@/utils/mitt'
 
 defineOptions({ name: 'SubMenu' })
 
