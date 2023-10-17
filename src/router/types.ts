@@ -36,6 +36,7 @@ export interface Menu {
   name: string
   // 菜单图标,如果没有，则会尝试使用route.meta.icon
   icon?: string
+  img?: string
   // 菜单路径
   path: string
 

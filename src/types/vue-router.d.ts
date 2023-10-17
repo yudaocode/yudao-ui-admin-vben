@@ -21,6 +21,8 @@ declare module 'vue-router' {
     affix?: boolean
     // 图标，也是菜单图标
     icon?: string
+    // img on tab
+    img?: string
     // 内嵌iframe的地址
     frameSrc?: string
     // 指定该路由切换的动画名

@@ -29,7 +29,8 @@ const { t } = useI18n()
 const { prefixCls } = useDesign('simple-menu')
 
 const getShowMenu = computed(() => !props.item?.meta?.hideMenu)
-const getIcon = computed(() => props.item?.icon)
+const getIcon = computed(() => (props.item?.img ? undefined : props.item?.icon))
+const getImg = computed(() => props.item?.img)
 const getI18nName = computed(() => t(props.item?.name))
 const getShowSubTitle = computed(() => !props.collapse || !props.parent)
 const getIsCollapseParent = computed(() => !!props.collapse && !!props.parent)
@@ -54,6 +55,7 @@ function menuHasChildren(menuTreeItem: Menu): boolean {
 
 <template>
   <MenuItem v-if="!menuHasChildren(item) && getShowMenu" :name="item.path" v-bind="$props" :class="getLevelClass">
+    <img v-if="getImg" :src="getImg" class="h-16px w-16px align-top">
     <Icon v-if="getIcon" :icon="getIcon" :size="16" />
     <div v-if="collapsedShowTitle && getIsCollapseParent" class="collapse-title mt-1">
       {{ getI18nName }}
@@ -72,6 +74,7 @@ function menuHasChildren(menuTreeItem: Menu): boolean {
     :collapsed-show-title="collapsedShowTitle"
   >
     <template #title>
+      <img v-if="getImg" :src="getImg" class="h-16px w-16px align-top">
       <Icon v-if="getIcon" :icon="getIcon" :size="16" />
 
       <div v-if="collapsedShowTitle && getIsCollapseParent" class="collapse-title mt-2">

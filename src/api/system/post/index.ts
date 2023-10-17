@@ -38,12 +38,12 @@ export function getPost(id: number) {
 }
 
 // 新增岗位
-export function createPost(data: PostVO) {
+export function createPost(data) {
   return defHttp.post({ url: '/system/post/create', data })
 }
 
 // 修改岗位
-export function updatePost(data: PostVO) {
+export function updatePost(data) {
   return defHttp.put({ url: '/system/post/update', data })
 }
 
