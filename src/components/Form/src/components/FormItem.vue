@@ -4,7 +4,8 @@ import { computed, defineComponent, toRefs, unref } from 'vue'
 import type { Rule } from 'ant-design-vue/lib/form'
 import { Col, Divider, Form } from 'ant-design-vue'
 import { cloneDeep, upperFirst } from 'lodash-es'
-import type { FormActionType, FormProps, FormSchema } from '../types/form'
+import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form'
+import { isComponentFormSchema } from '../types/form'
 import { componentMap } from '../componentMap'
 import { NO_AUTO_LINK_COMPONENTS, createPlaceholderMessage, setComponentRuleType } from '../helper'
 import { useItemLabelWidth } from '../hooks/useLabelWidth'
@@ -219,6 +220,9 @@ export default defineComponent({
     }
 
     function renderComponent() {
+      if (!isComponentFormSchema(props.schema))
+        return null
+
       const { renderComponentContent, component, field, changeEvent = 'change', valueField } = props.schema
 
       const isCheck = component && ['Switch', 'Checkbox'].includes(component)
@@ -323,7 +327,7 @@ export default defineComponent({
         const getSuffix = isFunction(suffix) ? suffix(unref(getValues)) : suffix
 
         // TODO 自定义组件验证会出现问题，因此这里框架默认将自定义组件设置手动触发验证，如果其他组件还有此问题请手动设置autoLink=false
-        if (NO_AUTO_LINK_COMPONENTS.includes(component)) {
+        if (component && NO_AUTO_LINK_COMPONENTS.includes(component)) {
           props.schema
             && (props.schema.itemProps! = {
               autoLink: false,
@@ -353,7 +357,7 @@ export default defineComponent({
 
     return () => {
       const { colProps = {}, colSlot, renderColContent, component, slot } = props.schema
-      if (!componentMap.has(component) && !slot)
+      if (!component || (!componentMap.has(component) && !slot))
         return null
 
       const { baseColProps = {} } = props.formProps

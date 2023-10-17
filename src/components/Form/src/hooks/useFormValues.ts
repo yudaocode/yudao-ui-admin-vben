@@ -1,7 +1,7 @@
 import { unref } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 import { cloneDeep, get, set, unset } from 'lodash-es'
-import type { FormProps, FormSchema } from '../types/form'
+import type { FormProps, FormSchemaInner as FormSchema } from '../types/form'
 import { dateUtil } from '@/utils/dateUtil'
 import { isArray, isFunction, isNotEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
 
@@ -138,9 +138,9 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
       if (fieldKeys.length) {
         // eslint-disable-next-line array-callback-return
         fieldKeys.map((field) => {
-          obj[field] = defaultValueObj![field]
+          obj[field] = defaultValueObj[field]
           if (formModel[field] === undefined)
-            formModel[field] = defaultValueObj![field]
+            formModel[field] = defaultValueObj[field]
         })
       }
       if (!isNullOrUnDef(defaultValue)) {

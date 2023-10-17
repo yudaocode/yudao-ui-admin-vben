@@ -13,7 +13,7 @@ export type Rule = RuleObject & {
 }
 
 export interface RenderCallbackParams {
-  schema: FormSchema
+  schema: FormSchemaInner
   values: Recordable
   model: Recordable
   field: string
@@ -29,8 +29,8 @@ export interface FormActionType {
   resetFields: () => Promise<void>
   getFieldsValue: () => Recordable
   clearValidate: (name?: string | string[]) => Promise<void>
-  updateSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>
-  resetSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>
+  updateSchema: (data: Partial<FormSchemaInner> | Partial<FormSchemaInner>[]) => Promise<void>
+  resetSchema: (data: Partial<FormSchemaInner> | Partial<FormSchemaInner>[]) => Promise<void>
   setProps: (formProps: Partial<FormProps>) => Promise<void>
   removeSchemaByField: (field: string | string[]) => Promise<void>
   appendSchemaByField: (schema: FormSchema | FormSchema[], prefixField: string | undefined, first?: boolean | undefined) => Promise<void>
@@ -222,6 +222,16 @@ interface SlotFormSchema extends BaseFormSchema {
 }
 
 export type FormSchema = ComponentFormSchema | SlotFormSchema
+
+export type FormSchemaInner = Partial<ComponentFormSchema> & Partial<SlotFormSchema> & BaseFormSchema
+
+export function isSlotFormSchema(schema: FormSchemaInner): schema is SlotFormSchema {
+  return 'slot' in schema
+}
+
+export function isComponentFormSchema(schema: FormSchemaInner): schema is ComponentFormSchema {
+  return !isSlotFormSchema(schema)
+}
 
 export interface HelpComponentProps {
   maxWidth: string

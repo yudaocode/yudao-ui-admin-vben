@@ -4,7 +4,7 @@ import { computed, nextTick, onMounted, reactive, ref, unref, useAttrs, watch } 
 import { type FormProps as AntFormProps, Form, Row } from 'ant-design-vue'
 import { useDebounceFn } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
-import type { FormActionType, FormProps, FormSchema } from './types/form'
+import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from './types/form'
 import type { AdvanceState } from './types/hooks'
 
 import FormItem from './components/FormItem.vue'
@@ -88,7 +88,7 @@ const getSchema = computed((): FormSchema[] => {
     // eslint-disable-next-line dot-notation
     const valueFormat = componentProps ? componentProps['valueFormat'] : null
     // handle date type
-    if (isHandleDateDefaultValue && defaultValue && dateItemType.includes(component)) {
+    if (isHandleDateDefaultValue && defaultValue && component && dateItemType.includes(component)) {
       if (!Array.isArray(defaultValue)) {
         schema.defaultValue = valueFormat
           ? dateUtil(defaultValue).format(valueFormat)

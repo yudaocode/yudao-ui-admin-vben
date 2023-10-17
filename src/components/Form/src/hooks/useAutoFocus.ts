@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
 import { nextTick, unref, watchEffect } from 'vue'
-import type { FormActionType, FormProps, FormSchema } from '../types/form'
+import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form'
 
 interface UseAutoFocusContext {
   getSchema: ComputedRef<FormSchema[]>
@@ -22,7 +22,7 @@ export function useAutoFocus({ getSchema, getProps, formElRef, isInitedDefault }
 
     const firstItem = schemas[0]
     // Only open when the first form item is input type
-    if (!firstItem.component.includes('Input'))
+    if (!firstItem.component || !firstItem.component.includes('Input'))
       return
 
     const inputEl = el.querySelector('.ant-row:first-child input') as Nullable<HTMLInputElement>

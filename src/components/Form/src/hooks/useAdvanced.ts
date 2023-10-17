@@ -3,7 +3,7 @@ import { computed, getCurrentInstance, shallowReactive, unref, watch } from 'vue
 import { useDebounceFn } from '@vueuse/core'
 import type { ColEx } from '../types'
 import type { AdvanceState } from '../types/hooks'
-import type { FormProps, FormSchema } from '../types/form'
+import type { FormProps, FormSchemaInner as FormSchema } from '../types/form'
 import { isBoolean, isFunction, isNumber, isObject } from '@/utils/is'
 import { useBreakpoint } from '@/hooks/event/useBreakpoint'
 

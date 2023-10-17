@@ -3,7 +3,7 @@ import type { ComputedRef, Ref } from 'vue'
 import type { NamePath } from 'ant-design-vue/lib/form/interface'
 import { nextTick, toRaw, unref } from 'vue'
 import { cloneDeep, get, set, uniqBy } from 'lodash-es'
-import type { FormActionType, FormProps, FormSchema } from '../types/form'
+import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form'
 import { dateItemType, defaultValueComponents, handleInputNumberValue } from '../helper'
 import {
   isArray,
@@ -92,7 +92,7 @@ export function useFormEvents({
       if (fieldKeys.length) {
         // eslint-disable-next-line array-callback-return
         fieldKeys.map((field) => {
-          formModel[field] = defaultValueObj![field]
+          formModel[field] = defaultValueObj[field]
         })
       }
       formModel[key] = getDefaultValue(schema, defaultValueRef, key)
@@ -128,7 +128,7 @@ export function useFormEvents({
 
       value = handleInputNumberValue(schema?.component, value)
       const { componentProps } = schema || {}
-      let _props = componentProps as any
+      let _props = componentProps
       if (typeof componentProps === 'function')
         _props = _props({ formModel: unref(formModel) })
 
@@ -263,7 +263,7 @@ export function useFormEvents({
       )
       return
     }
-    schemaRef.value = updateData as FormSchema[]
+    schemaRef.value = updateData
   }
 
   async function updateSchema(data: Partial<FormSchema> | Partial<FormSchema>[]) {
@@ -341,7 +341,7 @@ export function useFormEvents({
    */
   function itemIsDateType(key: string) {
     return unref(getSchema).some((item) => {
-      return item.field === key ? dateItemType.includes(item.component) : false
+      return item.field === key && item.component ? dateItemType.includes(item.component) : false
     })
   }
 
