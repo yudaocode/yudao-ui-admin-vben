@@ -12,7 +12,7 @@ import { propTypes } from '@/utils/propTypes'
 defineOptions({ name: 'ApiSelect', inheritAttrs: false })
 
 const props = defineProps({
-  value: { type: Object as PropType<SelectValue> },
+  value: { type: [Array, Object, String, Number] as PropType<SelectValue> },
   numberToString: propTypes.bool,
   api: {
     type: Function as PropType<(arg?: Recordable) => Promise<OptionsItem[]>>,
