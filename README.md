@@ -1,7 +1,5 @@
 # yudao-ui-admin-vben
 
-[![license](https://img.shields.io/github/license/xingyuv/vue-vben-admin.svg)](LICENSE)
-
 **严肃声明：现在、未来都不会有商业版本，所有代码全部开源!！**
 
 **「我喜欢写代码，乐此不疲」**  
@@ -66,7 +64,7 @@ git clone https://github.com/xingyuv/yudao-ui-admin-vben.git
 ```bash
 pnpm i
 
-如提示 Expected version: >=8.6.0
+如提示 Expected version: >=8.9.0
 
 使用 cmd 等升级 pnpm 版本
 npm add -g pnpm
@@ -90,15 +88,6 @@ pnpm front
 ```bash
 pnpm build
 ```
-
-## 开发进度
-
-- 系统管理 已完成
-- 基础设施 已完成
-- 支付管理 已完成
-- 升级 antdv 4.0 已完成
-- 公众号 进行中 50% 预计年底
-- 工作流 进行中 40% 预计年底
 
 ## Git 贡献提交规范
 
