@@ -144,11 +144,9 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPagination
     const mapFn = (column) => {
       const { slots, customRender, format, edit, editRow, flag } = column
 
-      if (!slots || !slots?.title) {
-        // column.slots = { title: `header-${dataIndex}`, ...(slots || {}) };
+      if (!slots || !slots?.title)
         column.customTitle = column.title
-        Reflect.deleteProperty(column, 'title')
-      }
+
       const isDefaultAction = [INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG].includes(flag)
       if (!customRender && format && !edit && !isDefaultAction) {
         column.customRender = ({ text, record, index }) => {
