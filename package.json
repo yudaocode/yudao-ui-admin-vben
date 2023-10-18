@@ -137,7 +137,6 @@
     "vite-plugin-pwa": "^0.16.5",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-vue-plugin-html": "^1.0.2",
-    "vue-eslint-parser": "^9.3.2",
     "vue-tsc": "^1.8.19"
   },
   "lint-staged": {

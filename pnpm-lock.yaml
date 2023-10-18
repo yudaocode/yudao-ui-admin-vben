@@ -274,9 +274,6 @@ devDependencies:
   vite-vue-plugin-html:
     specifier: ^1.0.2
     version: 1.0.2(rollup@4.1.4)(vite@4.4.11)
-  vue-eslint-parser:
-    specifier: ^9.3.2
-    version: 9.3.2(eslint@8.51.0)
   vue-tsc:
     specifier: ^1.8.19
     version: 1.8.19(typescript@5.2.2)
