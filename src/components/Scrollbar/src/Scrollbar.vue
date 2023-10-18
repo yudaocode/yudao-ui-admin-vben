@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, unref, watch } from 'vue'
-import { toObject } from './util'
+import type { PropType } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, provide, ref, unref, watch } from 'vue'
 import Bar from './bar'
 import { addResizeListener, removeResizeListener } from '@/utils/event'
+import type { StyleValue } from '@/utils/types'
 import componentSetting from '@/settings/componentSetting'
 
 defineOptions({ name: 'Scrollbar' })
@@ -13,7 +14,7 @@ const props = defineProps({
     default: componentSetting.scrollbar?.native ?? false,
   },
   wrapStyle: {
-    type: [String, Array],
+    type: [String, Array, Object] as PropType<StyleValue>,
     default: '',
   },
   wrapClass: {
@@ -48,13 +49,6 @@ const wrap = ref()
 const resize = ref()
 
 provide('scroll-bar-wrap', wrap)
-
-const style = computed(() => {
-  if (Array.isArray(props.wrapStyle))
-    return toObject(props.wrapStyle)
-
-  return props.wrapStyle
-})
 
 function handleScroll() {
   if (!props.native) {
@@ -108,8 +102,11 @@ onBeforeUnmount(() => {
 <template>
   <div class="scrollbar">
     <div
-      ref="wrap" class="scrollbar__wrap" :class="[wrapClass, native ? '' : 'scrollbar__wrap--hidden-default']"
-      :style="style as any" @scroll="handleScroll"
+      ref="wrap"
+      class="scrollbar__wrap"
+      :class="[wrapClass, native ? '' : 'scrollbar__wrap--hidden-default']"
+      :style="wrapStyle"
+      @scroll="handleScroll"
     >
       <component :is="tag" ref="resize" class="scrollbar__view" :class="[viewClass]" :style="viewStyle">
         <slot />

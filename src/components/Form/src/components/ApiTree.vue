@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref, useAttrs, useSlots, watch } from 'vue'
+import type { TreeProps } from 'ant-design-vue'
 import { Tree } from 'ant-design-vue'
 import { get } from 'lodash-es'
 import type { DataNode } from 'ant-design-vue/es/tree'
@@ -18,7 +19,9 @@ const props = defineProps({
   afterFetch: { type: Function as PropType<Fn> },
   handleTree: propTypes.string.def(''),
   alwaysLoad: propTypes.bool.def(true),
-  value: [Array, Object, String, Number],
+  value: {
+    type: Array as PropType<TreeProps['selectedKeys']>,
+  },
 })
 const emit = defineEmits(['optionsChange', 'change', 'update:value'])
 const attrs = useAttrs()

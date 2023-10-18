@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, toRefs, unref, watch } from 'vue'
+import type { MenuProps } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
@@ -88,7 +89,7 @@ listenerRouteChange((route) => {
     },
   )
 
-async function handleMenuClick({ key }) {
+const handleMenuClick: MenuProps['onClick'] = async ({ key }) => {
   const { beforeClickFn } = props
   if (beforeClickFn && isFunction(beforeClickFn)) {
     const flag = await beforeClickFn(key)

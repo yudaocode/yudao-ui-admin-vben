@@ -135,7 +135,6 @@ async function handleDelete(id: number) {
                 </div>
               </template>
               <template #actions>
-                <!--              <SettingOutlined key="setting" /> -->
                 <EditOutlined />
                 <Dropdown
                   :trigger="['hover']"
