@@ -1,7 +1,7 @@
 {
   "name": "yudao-ui-admin-vben",
   "version": "1.8.2-snapshot",
-  "packageManager": "pnpm@8.6.0",
+  "packageManager": "pnpm@8.9.0",
   "author": {
     "name": "xingyuv",
     "email": "xingyu4j@vip.qq.com",
@@ -17,8 +17,8 @@
     "url": "https://gitee.com/xingyuv/issues"
   },
   "engines": {
-    "node": ">= 18.0.0",
-    "pnpm": ">=8.6.0"
+    "node": "^18.0.0 || >=20.0.0",
+    "pnpm": ">=8.9.0"
   },
   "scripts": {
     "commit": "czg",
@@ -92,8 +92,8 @@
     "@types/fs-extra": "^11.0.2",
     "@types/inquirer": "^9.0.5",
     "@types/lodash-es": "^4.17.10",
-    "@types/node": "^20.8.6",
-    "@types/nprogress": "^0.2.1",
+    "@types/node": "^20.8.7",
+    "@types/nprogress": "^0.2.2",
     "@types/qs": "^6.9.8",
     "@types/sortablejs": "^1.15.3",
     "@unocss/eslint-config": "^0.56.5",
@@ -129,7 +129,7 @@
     "terser": "^5.22.0",
     "typescript": "^5.2.2",
     "unocss": "^0.56.5",
-    "vite": "^4.4.11",
+    "vite": "^4.5.0",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-mkcert": "^1.16.0",
     "vite-plugin-progress": "^0.0.7",
