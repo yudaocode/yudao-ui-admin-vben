@@ -9,6 +9,7 @@ import { handleTree } from '@/utils/tree'
 defineOptions({ name: 'SystemDeptTree' })
 
 const emit = defineEmits(['select'])
+const treeRef = ref()
 const treeData = ref<TreeItem[]>([])
 
 async function fetch() {
@@ -26,8 +27,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="m-4 mr-0 overflow-hidden">
+  <div class="m-4 mr-0 overflow-hidden" v-bind="$attrs">
     <BasicTree
+      ref="treeRef"
       title="部门列表"
       toolbar
       search

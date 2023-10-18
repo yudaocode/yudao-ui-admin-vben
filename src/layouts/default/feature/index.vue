@@ -42,9 +42,11 @@ const getIsFixedSettingDrawer = computed(() => {
   <LayoutLockPage />
   <FloatButton.BackTop v-if="getUseOpenBackTop" :target="getTarget" />
   <FloatButton
-    shape="circle" type="primary" :badge="{ dot: true }" :style="{
-      right: '64px',
-    }" @click="openWindow(SITE_URL)"
+    shape="circle"
+    type="primary"
+    :badge="{ dot: true }"
+    :style="{ right: '64px' }"
+    @click="openWindow(SITE_URL)"
   >
     <template #icon>
       <QuestionCircleOutlined />

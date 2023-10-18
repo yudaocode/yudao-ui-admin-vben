@@ -255,7 +255,7 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      const level = Number.parseInt(props.defaultExpandLevel)
+      const level = Number.parseInt(props.defaultExpandLevel as string)
       if (level > 0)
         state.expandedKeys = filterByLevel(level)
       else if (props.defaultExpandAll)
