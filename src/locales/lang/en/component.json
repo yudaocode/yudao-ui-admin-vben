@@ -1,0 +1,124 @@
+{
+  "app": {
+    "searchNotData": "No search results yet",
+    "toNavigate": "to navigate",
+    "toSearch": "to search"
+  },
+  "captcha": {
+    "fail": "verification failed",
+    "point": "Please click",
+    "slide": "Swipe right to complete verification",
+    "success": "Verification succeeded",
+    "verification": "Please complete security verification"
+  },
+  "countdown": {
+    "normalText": "Get SMS code",
+    "sendText": "Reacquire in {0}s"
+  },
+  "cropper": {
+    "btn_reset": "Reset",
+    "btn_rotate_left": "Counterclockwise rotation",
+    "btn_rotate_right": "Clockwise rotation",
+    "btn_scale_x": "Flip horizontal",
+    "btn_scale_y": "Flip vertical",
+    "btn_zoom_in": "Zoom in",
+    "btn_zoom_out": "Zoom out",
+    "imageTooBig": "Image too big",
+    "modalTitle": "Avatar upload",
+    "okText": "Confirm and upload",
+    "preview": "Preview",
+    "selectImage": "Select Image",
+    "uploadSuccess": "Uploaded success!"
+  },
+  "drawer": {
+    "cancelText": "Close",
+    "loadingText": "Loading...",
+    "okText": "Confirm"
+  },
+  "excel": {
+    "exportModalTitle": "Export data",
+    "fileName": "File name",
+    "fileType": "File type"
+  },
+  "form": {
+    "apiSelectNotFound": "Wait for data loading to complete...",
+    "maxTip": "The number of characters should be less than {0}",
+    "putAway": "Put away",
+    "unfold": "Unfold"
+  },
+  "icon": {
+    "copy": "Copy icon successfully!",
+    "placeholder": "Click the select icon",
+    "search": "Search icon"
+  },
+  "menu": {
+    "search": "Menu search"
+  },
+  "modal": {
+    "cancelText": "Close",
+    "close": "Close",
+    "maximize": "Maximize",
+    "okText": "Confirm",
+    "restore": "Restore"
+  },
+  "table": {
+    "index": "Index",
+    "settingColumn": "Column settings",
+    "settingColumnShow": "Column display",
+    "settingDens": "Density",
+    "settingDensDefault": "Default",
+    "settingDensMiddle": "Middle",
+    "settingDensSmall": "Compact",
+    "settingFixedLeft": "Fixed Left",
+    "settingFixedRight": "Fixed Right",
+    "settingFullScreen": "Full Screen",
+    "settingIndexColumnShow": "Index Column",
+    "settingSelectColumnShow": "Selection Column",
+    "total": "total of {total}"
+  },
+  "time": {
+    "after": " after",
+    "before": " ago",
+    "days": " days",
+    "hours": " hours",
+    "just": "just now",
+    "minutes": " minutes",
+    "seconds": " seconds"
+  },
+  "tree": {
+    "checkStrictly": "Hierarchical association",
+    "checkUnStrictly": "Hierarchical independence",
+    "expandAll": "Expand All",
+    "selectAll": "Select All",
+    "unExpandAll": "Collapse all",
+    "unSelectAll": "Cancel Select"
+  },
+  "upload": {
+    "accept": "Support {0} format",
+    "acceptUpload": "Only upload files in {0} format",
+    "choose": "Select the file",
+    "del": "Delete",
+    "download": "download",
+    "fileName": "File name",
+    "fileSize": "File size",
+    "fileStatue": "File status",
+    "imgUpload": "ImageUpload",
+    "legend": "Legend",
+    "maxNumber": "Only upload up to {0} files",
+    "maxSize": "A single file does not exceed {0}MB ",
+    "maxSizeMultiple": "Only upload files up to {0}MB!",
+    "operating": "Operating",
+    "preview": "Preview",
+    "reUploadFailed": "Re-upload failed files",
+    "save": "Save",
+    "saveError": "There is no file successfully uploaded and cannot be saved!",
+    "saveWarn": "Please wait for the file to upload and save!",
+    "startUpload": "Start upload",
+    "upload": "Upload",
+    "uploadError": "Upload failed",
+    "uploadSuccess": "Upload successfully",
+    "uploadWait": "Please wait for the file upload to finish",
+    "uploaded": "Uploaded",
+    "uploading": "Uploading"
+  }
+}

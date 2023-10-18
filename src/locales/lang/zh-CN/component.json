@@ -1,0 +1,124 @@
+{
+  "app": {
+    "searchNotData": "暂无搜索结果",
+    "toNavigate": "切换",
+    "toSearch": "确认"
+  },
+  "captcha": {
+    "fail": "验证失败",
+    "point": "请依次点击",
+    "slide": "向右滑动完成验证",
+    "success": "验证成功",
+    "verification": "请完成安全验证"
+  },
+  "countdown": {
+    "normalText": "获取验证码",
+    "sendText": "{0}秒后重新获取"
+  },
+  "cropper": {
+    "btn_reset": "重置",
+    "btn_rotate_left": "逆时针旋转",
+    "btn_rotate_right": "顺时针旋转",
+    "btn_scale_x": "水平翻转",
+    "btn_scale_y": "垂直翻转",
+    "btn_zoom_in": "放大",
+    "btn_zoom_out": "缩小",
+    "imageTooBig": "图片超限",
+    "modalTitle": "头像上传",
+    "okText": "确认并上传",
+    "preview": "预览",
+    "selectImage": "选择图片",
+    "uploadSuccess": "上传成功"
+  },
+  "drawer": {
+    "cancelText": "关闭",
+    "loadingText": "加载中...",
+    "okText": "确认"
+  },
+  "excel": {
+    "exportModalTitle": "导出数据",
+    "fileName": "文件名",
+    "fileType": "文件类型"
+  },
+  "form": {
+    "apiSelectNotFound": "请等待数据加载完成...",
+    "maxTip": "字符数应小于{0}位",
+    "putAway": "收起",
+    "unfold": "展开"
+  },
+  "icon": {
+    "copy": "复制图标成功!",
+    "placeholder": "点击选择图标",
+    "search": "搜索图标"
+  },
+  "menu": {
+    "search": "菜单搜索"
+  },
+  "modal": {
+    "cancelText": "关闭",
+    "close": "关闭",
+    "maximize": "最大化",
+    "okText": "确认",
+    "restore": "还原"
+  },
+  "table": {
+    "index": "序号",
+    "settingColumn": "列设置",
+    "settingColumnShow": "列展示",
+    "settingDens": "密度",
+    "settingDensDefault": "默认",
+    "settingDensMiddle": "中等",
+    "settingDensSmall": "紧凑",
+    "settingFixedLeft": "固定到左侧",
+    "settingFixedRight": "固定到右侧",
+    "settingFullScreen": "全屏",
+    "settingIndexColumnShow": "序号列",
+    "settingSelectColumnShow": "勾选列",
+    "total": "共 {total} 条数据"
+  },
+  "time": {
+    "after": "后",
+    "before": "前",
+    "days": "天",
+    "hours": "小时",
+    "just": "刚刚",
+    "minutes": "分钟",
+    "seconds": "秒"
+  },
+  "tree": {
+    "checkStrictly": "层级关联",
+    "checkUnStrictly": "层级独立",
+    "expandAll": "展开全部",
+    "selectAll": "选择全部",
+    "unExpandAll": "折叠全部",
+    "unSelectAll": "取消选择"
+  },
+  "upload": {
+    "accept": "支持{0}格式",
+    "acceptUpload": "只能上传{0}格式文件",
+    "choose": "选择文件",
+    "del": "删除",
+    "download": "下载",
+    "fileName": "文件名",
+    "fileSize": "文件大小",
+    "fileStatue": "状态",
+    "imgUpload": "图片上传",
+    "legend": "略缩图",
+    "maxNumber": "最多只能上传{0}个文件",
+    "maxSize": "单个文件不超过{0}MB",
+    "maxSizeMultiple": "只能上传不超过{0}MB的文件!",
+    "operating": "操作",
+    "preview": "预览",
+    "reUploadFailed": "重新上传失败文件",
+    "save": "保存",
+    "saveError": "没有上传成功的文件，无法保存!",
+    "saveWarn": "请等待文件上传后，保存!",
+    "startUpload": "开始上传",
+    "upload": "上传",
+    "uploadError": "上传失败",
+    "uploadSuccess": "上传成功",
+    "uploadWait": "请等待文件上传结束后操作",
+    "uploaded": "已上传",
+    "uploading": "上传中"
+  }
+}

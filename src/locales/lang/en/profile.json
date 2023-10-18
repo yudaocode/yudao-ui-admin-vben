@@ -1,0 +1,38 @@
+{
+  "info": {
+    "basicInfo": "Basic Information",
+    "resetPwd": "Reset Password",
+    "title": "Basic Information",
+    "userSocial": "Social Information"
+  },
+  "password": {
+    "cfPwdMsg": "Please Enter Confirm Password",
+    "confirmPassword": "Confirm Password",
+    "diffPwd": "The Passwords Entered Twice No Match",
+    "newPassword": "New Password",
+    "newPwdMsg": "Please Enter New Password",
+    "oldPassword": "Old PassWord",
+    "oldPwdMsg": "Please Enter Old Password"
+  },
+  "rules": {
+    "mail": "Please Input The Email Address",
+    "nickname": "Please Enter User Nickname",
+    "phone": "Please Enter The Phone Number",
+    "truemail": "Please Input The Correct Email Address",
+    "truephone": "Please Enter The Correct Phone Number"
+  },
+  "user": {
+    "createTime": "Created Date",
+    "dept": "Department",
+    "email": "User Mail",
+    "man": "Man",
+    "mobile": "Phone Number",
+    "nickname": "Nick Name",
+    "posts": "Position",
+    "roles": "Own Role",
+    "sex": "Sex",
+    "title": "Personal Information",
+    "username": "User Name",
+    "woman": "Woman"
+  }
+}
