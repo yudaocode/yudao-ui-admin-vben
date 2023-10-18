@@ -2,7 +2,7 @@
 /**
  * VerifyPoints
  * @description 点选
- * */
+ */
 import { getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
 import { resetSize } from './../utils/util'
 import { aesEncrypt } from './../utils/ase'

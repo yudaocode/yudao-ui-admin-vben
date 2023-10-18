@@ -103,7 +103,7 @@ export default defineComponent({
     })
     /**
      * click menu
-     * @param menu
+     * @param path
      */
 
     function handleMenuClick(path: string) {
@@ -112,7 +112,7 @@ export default defineComponent({
 
     /**
      * before click menu
-     * @param menu
+     * @param path
      */
     async function beforeMenuClickFn(path: string) {
       if (!isUrl(path))
@@ -135,17 +135,17 @@ export default defineComponent({
         return null
       return !props.isHorizontal
         ? (
-        <SimpleMenu {...menuProps} isSplitMenu={unref(getSplit)} items={menus} />
+          <SimpleMenu {...menuProps} isSplitMenu={unref(getSplit)} items={menus} />
           )
         : (
-        <BasicMenu
-          {...(menuProps as any)}
-          isHorizontal={props.isHorizontal}
-          type={unref(getMenuType)}
-          showLogo={unref(getIsShowLogo)}
-          mode={unref(getComputedMenuMode as any)}
-          items={menus}
-        />
+          <BasicMenu
+            {...(menuProps as any)}
+            isHorizontal={props.isHorizontal}
+            type={unref(getMenuType)}
+            showLogo={unref(getIsShowLogo)}
+            mode={unref(getComputedMenuMode as any)}
+            items={menus}
+          />
           )
     }
 

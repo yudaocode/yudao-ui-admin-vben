@@ -33,18 +33,18 @@ export default defineComponent({
 
     return () => {
       return (
-          <div>
-            {getIsEdit.value
-              ? (
+        <div>
+          {getIsEdit.value
+            ? (
               <EditTableHeaderCell>{getTitle.value}</EditTableHeaderCell>
-                )
-              : (
+              )
+            : (
               <span class="default-header-cell">{getTitle.value}</span>
-                )}
-            {getHelpMessage.value && (
-              <BasicHelp text={getHelpMessage.value} class={`${prefixCls}__help`} />
-            )}
-          </div>
+              )}
+          {getHelpMessage.value && (
+            <BasicHelp text={getHelpMessage.value} class={`${prefixCls}__help`} />
+          )}
+        </div>
       )
     }
   },

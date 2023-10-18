@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { toRaw } from 'vue'
 import { defineStore } from 'pinia'
 
@@ -132,7 +133,7 @@ export const usePermissionStore = defineStore('app-permission', {
 
       /**
        * @description 根据设置的首页path，修正routes中的affix标记（固定首页）
-       * */
+       */
       const patchHomeAffix = (routes: AppRouteRecordRaw[]) => {
         if (!routes || routes.length === 0)
           return

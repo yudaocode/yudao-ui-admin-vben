@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import CronParser from 'cron-parser'
 import type { ValidatorRule } from 'ant-design-vue/lib/form/interface'
 

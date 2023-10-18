@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import type { RouteLocationNormalized, RouteLocationRaw, Router } from 'vue-router'
 
 import { toRaw, unref } from 'vue'
@@ -337,7 +336,7 @@ export const useMultipleTabStore = defineStore('app-multiple-tab', {
     },
     /**
      * replace tab's path
-     * *
+     *
      */
     updateTabPath(fullPath: string, route: RouteLocationNormalized) {
       const findTab = this.getTabList.find(item => item === route)

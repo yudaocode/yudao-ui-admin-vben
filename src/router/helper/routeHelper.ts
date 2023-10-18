@@ -64,7 +64,6 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
   }
   else if (matchKeys?.length > 1) {
     warn(
-      // eslint-disable-next-line max-len
       'Please do not create `.vue` and `.TSX` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure',
     )
   }

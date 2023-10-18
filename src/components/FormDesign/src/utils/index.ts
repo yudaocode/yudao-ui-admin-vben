@@ -199,7 +199,7 @@ export function strToReg(rules: IValidationRule[]) {
  */
 export function runCode<T>(code: any): T {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+    // eslint-disable-next-line no-new-func
     return new Function(`return ${code}`)()
   }
   catch {

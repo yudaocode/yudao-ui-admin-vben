@@ -33,7 +33,7 @@ function handleSelect(keys) {
   activeKey.value = keys[0]
 }
 
-/** 生成 files 目录 **/
+/** 生成 files 目录 */
 interface filesType {
   id: string
   label: string
@@ -102,7 +102,7 @@ function handleFiles(datas) {
   return files
 }
 
-/** 复制 **/
+/** 复制 */
 async function copy(text: string) {
   const { copy, copied, isSupported } = useClipboard({ source: text })
   if (!isSupported) {

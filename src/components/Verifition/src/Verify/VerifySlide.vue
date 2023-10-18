@@ -2,7 +2,7 @@
 /**
  * VerifySlide
  * @description 滑块
- * */
+ */
 import { computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { aesEncrypt } from './../utils/ase'
 import { resetSize } from './../utils/util'

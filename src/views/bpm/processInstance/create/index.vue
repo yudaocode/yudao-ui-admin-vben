@@ -33,7 +33,7 @@ const [registerTable] = useTable({
   },
 })
 
-/** 处理选择流程的按钮操作 **/
+/** 处理选择流程的按钮操作 */
 async function handleSelect(row) {
   // 设置选择的流程
   selectProcessInstance.value = row

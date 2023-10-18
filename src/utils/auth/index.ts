@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import type { BasicKeys } from '@/utils/cache/persistent'
 import { Persistent } from '@/utils/cache/persistent'
 import { ACCESS_TOKEN_KEY, CacheTypeEnum, REFRESH_TOKEN_KEY, TENANT_ID_KEY } from '@/enums/cacheEnum'

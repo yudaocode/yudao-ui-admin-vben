@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import type { FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 

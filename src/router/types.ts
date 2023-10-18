@@ -4,8 +4,6 @@ import type { RoleEnum } from '@/enums/roleEnum'
 
 export type Component<T = any> = ReturnType<typeof defineComponent> | (() => Promise<typeof import('*.vue')>) | (() => Promise<T>)
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 export interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
   keepAlive?: boolean
   visible?: boolean

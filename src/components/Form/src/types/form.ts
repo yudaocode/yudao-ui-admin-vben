@@ -35,7 +35,7 @@ export interface FormActionType {
   removeSchemaByField: (field: string | string[]) => Promise<void>
   appendSchemaByField: (schema: FormSchema | FormSchema[], prefixField: string | undefined, first?: boolean | undefined) => Promise<void>
   validateFields: (nameList?: NamePath[]) => Promise<any>
-  validate: <T = Recordable>(nameList?: NamePath[] | false) => Promise<T>
+  validate: <T = any>(nameList?: NamePath[] | false) => Promise<T>
   scrollToField: (name: NamePath, options?: ScrollOptions) => Promise<void>
 }
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import type { ComputedRef, Ref } from 'vue'
 import type { NamePath } from 'ant-design-vue/lib/form/interface'
 import { nextTick, toRaw, unref } from 'vue'

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import type { RouteLocationNormalized, Router } from 'vue-router'
 import { Modal, notification } from 'ant-design-vue'
 import { unref } from 'vue'

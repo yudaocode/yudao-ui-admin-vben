@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { HandlerEnum } from './enum'
 import { updateHeaderBgColor, updateSidebarBgColor } from '@/logics/theme/updateBackground'
 import { updateColorWeak } from '@/logics/theme/updateColorWeak'

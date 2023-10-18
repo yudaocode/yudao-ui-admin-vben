@@ -23,5 +23,6 @@ export function getBase64WithFile(file: File) {
     reader.readAsDataURL(file)
     reader.onload = () => resolve({ result: reader.result as string, file })
     reader.onerror = error => reject(error)
-  })
+  },
+  )
 }

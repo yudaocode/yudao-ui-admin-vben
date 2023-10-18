@@ -151,8 +151,7 @@ function copyFormItem(formItem: IVFormComponent) {
  * @param item {IVFormComponent} 当前点击的组件
  * @param isCopy {boolean} 是否复制
  */
-function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFormComponent,
-  isCopy = true) {
+function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFormComponent, isCopy = true) {
   const key = formConfig.value.currentItem?.key
   /**
    * 遍历当表单项配置，如果是复制，则复制一份表单项，如果不是复制，则直接添加到表单项中

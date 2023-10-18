@@ -27,6 +27,7 @@ export function urlToBase64(url: string, mineType?: string): Promise<string> {
     img.crossOrigin = ''
     img.onload = function () {
       if (!canvas || !ctx)
+        // eslint-disable-next-line prefer-promise-reject-errors
         return reject()
 
       canvas.height = img.height

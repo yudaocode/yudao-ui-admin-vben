@@ -12,8 +12,7 @@ export interface ComponentProps {
   getPopupContainer?: Fn
 }
 
-export function CellComponent({ component = 'Input', rule = true, ruleMessage, popoverOpen, getPopupContainer }: ComponentProps,
-  { attrs }) {
+export function CellComponent({ component = 'Input', rule = true, ruleMessage, popoverOpen, getPopupContainer }: ComponentProps, { attrs }) {
   const Comp = componentMap.get(component) as typeof defineComponent
 
   const DefaultComp = h(Comp, attrs)

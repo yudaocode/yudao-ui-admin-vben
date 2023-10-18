@@ -2,7 +2,7 @@
 /**
  * Verify 验证码组件
  * @description 分发验证码使用
- * */
+ */
 import { computed, ref, toRefs, watchEffect } from 'vue'
 import VerifySlide from './Verify/VerifySlide.vue'
 import VerifyPoints from './Verify/VerifyPoints.vue'
@@ -70,7 +70,7 @@ export default {
     /**
      * refresh
      * @description 刷新
-     * */
+     */
     const refresh = () => {
       if (instance.value.refresh)
         instance.value.refresh()

@@ -403,8 +403,6 @@ export interface BasicTableProps<T = any> {
 
 export type CellFormat = string | ((text: string, record: Recordable, index: number) => string | number) | Map<string | number, any>
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 export interface BasicColumn extends ColumnProps<Recordable> {
   children?: BasicColumn[]
   filters?: {

@@ -250,7 +250,7 @@ async function getDetail() {
   datas.value = res
 }
 
-/** 初始化 **/
+/** 初始化 */
 onMounted(async () => {
   await getDetail()
 })

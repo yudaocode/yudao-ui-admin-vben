@@ -93,7 +93,7 @@ function menuReset() {
  * 父子节点关联情况下 checkedKeys为选中的菜单 e.halfCheckedKeys为父节点数组
  * 父子节点独立情况下 checkedKeys为{checked: number[], halfChecked: number[]} e.halfCheckedKeys为null
  * @param checkedKeys 选中的菜单
- * @param e event
+ * @param event event
  */
 function menuCheck(checkedKeys: CheckedKeys, event: CheckedEvent) {
   if (Array.isArray(checkedKeys)) {

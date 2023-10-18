@@ -2,7 +2,7 @@
  * 判断是否 十六进制颜色值.
  * 输入形式可为 #fff000 #f00
  *
- * @param   String  color   十六进制颜色值
+ * @param   color   十六进制颜色值
  * @return  Boolean
  */
 export function isHexColor(color: string) {

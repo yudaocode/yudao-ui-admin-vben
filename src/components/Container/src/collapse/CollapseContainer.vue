@@ -72,12 +72,12 @@ export default defineComponent({
           <CollapseTransition enable={props.canExpan}>
             {props.loading
               ? (
-              <Skeleton active={props.loading} />
+                <Skeleton active={props.loading} />
                 )
               : (
-              <div class={`${prefixCls}__body`} v-show={show.value}>
-                {slots.default?.()}
-              </div>
+                <div class={`${prefixCls}__body`} v-show={show.value}>
+                  {slots.default?.()}
+                </div>
                 )}
           </CollapseTransition>
         </div>

@@ -1,6 +1,5 @@
 import { isNil } from 'lodash-es'
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
 const toString = Object.prototype.toString
 
 export function is(val: unknown, type: string) {

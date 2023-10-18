@@ -286,7 +286,9 @@ export default defineComponent({
       const renderLabel = subLabel
         ? (
           <span>
-            {label} <span class="text-secondary">{subLabel}</span>
+            {label}
+            {' '}
+            <span class="text-secondary">{subLabel}</span>
           </span>
           )
         : (

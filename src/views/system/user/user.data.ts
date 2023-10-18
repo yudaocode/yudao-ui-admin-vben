@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { h } from 'vue'
 import { Switch } from 'ant-design-vue'
 import dayjs from 'dayjs'
