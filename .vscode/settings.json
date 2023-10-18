@@ -150,6 +150,7 @@
     "lintstagedrc",
     "logicflow",
     "nprogress",
+    "picocolors",
     "pinia",
     "pnpm",
     "qrcode",
