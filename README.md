@@ -29,7 +29,7 @@
 | 框架                                                                 | 说明                  | 版本   |
 | -------------------------------------------------------------------- | --------------------- | ------ |
 | [Vue](https://staging-cn.vuejs.org/)                                 | Vue 框架              | 3.3.4  |
-| [Vite](https://cn.vitejs.dev//)                                      | 开发与构建工具        | 4.4.11 |
+| [Vite](https://cn.vitejs.dev//)                                      | 开发与构建工具        | 4.5.0  |
 | [ant-design-vue](https://antdv.com/)                                 | ant-design-vue        | 4.0.6  |
 | [TypeScript](https://www.typescriptlang.org/docs/)                   | JavaScript 的超集     | 5.1.6  |
 | [pinia](https://pinia.vuejs.org/)                                    | Vue 存储库 替代 vuex5 | 2.1.7  |
@@ -39,9 +39,7 @@
 | [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.56.5 |
 | [iconify](https://icon-sets.iconify.design/)                         | 在线图标库            | 3.1.1  |
 
-- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview1.png)
-- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview2.png)
-- ![alt VbenAdmin](https://anncwb.github.io/anncwb/images/preview3.png)
+- ![alt Admin](./public/resource/img/preview.png)
 
 ## 准备
 
