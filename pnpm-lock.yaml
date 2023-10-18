@@ -272,8 +272,8 @@ devDependencies:
     specifier: ^2.0.1
     version: 2.0.1(vite@4.5.0)
   vite-vue-plugin-html:
-    specifier: ^1.0.2
-    version: 1.0.2(rollup@4.1.4)(vite@4.5.0)
+    specifier: ^1.0.3
+    version: 1.0.3(rollup@4.1.4)(vite@4.5.0)
   vue-tsc:
     specifier: ^1.8.19
     version: 1.8.19(typescript@5.2.2)
@@ -2444,6 +2444,21 @@ packages:
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.2
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+      rollup: 4.1.4
+    dev: true
+
+  /@rollup/pluginutils@5.0.5(rollup@4.1.4):
+    resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -9795,12 +9810,12 @@ packages:
       - supports-color
     dev: true
 
-  /vite-vue-plugin-html@1.0.2(rollup@4.1.4)(vite@4.5.0):
-    resolution: {integrity: sha512-MADzWRhKRXQDefI2ttVukx5NMMh+Wh9S2bhmXW4Kce4F4IfTgy5dain6KYZvS5NtqMXiTj/bURPpdaAxwrQ9DA==}
+  /vite-vue-plugin-html@1.0.3(rollup@4.1.4)(vite@4.5.0):
+    resolution: {integrity: sha512-93yn3quIzimWKthEm7voI68GOp1DevCkm/srUNntTAhY78oD0FX1S1sF7L7C7sdteoG+PBccJdwLKiSO87k7sQ==}
     peerDependencies:
       vite: '>=4.2.0'
     dependencies:
-      '@rollup/pluginutils': 5.0.4(rollup@4.1.4)
+      '@rollup/pluginutils': 5.0.5(rollup@4.1.4)
       colorette: 2.0.20
       connect-history-api-fallback: 2.0.0
       consola: 3.2.3
