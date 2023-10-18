@@ -82,6 +82,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^1.0.0-beta.27",
     "@commitlint/cli": "^17.8.0",
     "@commitlint/config-conventional": "^17.8.0",
     "@iconify/json": "^2.2.129",
@@ -99,7 +100,6 @@
     "@vitejs/plugin-vue": "4.4.0",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/compiler-sfc": "^3.3.4",
-    "@xingyuv/eslint-config": "^0.2.0",
     "cross-env": "^7.0.3",
     "cz-git": "^1.7.1",
     "czg": "^1.7.1",
