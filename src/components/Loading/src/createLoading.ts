@@ -21,7 +21,6 @@ export function createLoading(props?: Partial<LoadingProps>, target?: HTMLElemen
   vm = createVNode(LoadingWrap)
 
   if (wait) {
-    // TODO fix https://gitee.com/xingyuv/issues/438
     setTimeout(() => {
       render(vm, document.createElement('div'))
     }, 0)
