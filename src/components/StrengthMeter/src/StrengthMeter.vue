@@ -46,7 +46,14 @@ watch(
 
 <template>
   <div :class="prefixCls" class="relative">
-    <InputPassword v-if="showInput" v-bind="$attrs" allow-clear :value="innerValueRef" :disabled="disabled" @change="handleChange">
+    <InputPassword
+      v-if="showInput"
+      v-bind="$attrs"
+      allow-clear
+      :value="innerValueRef"
+      :disabled="disabled"
+      @change="handleChange"
+    >
       <template v-for="item in Object.keys($slots)" #[item]="data">
         <slot :name="item" v-bind="data || {}" />
       </template>
@@ -96,9 +103,32 @@ watch(
       height: inherit;
       background-color: transparent;
       border-radius: inherit;
-      transition:
-        width 0.5s ease-in-out,
-        background 0.25s;
+      transition: width 0.5s ease-in-out, background 0.25s;
+
+      &[data-score='0'] {
+        width: 20%;
+        background-color: darken(@error-color, 10%);
+      }
+
+      &[data-score='1'] {
+        width: 40%;
+        background-color: @error-color;
+      }
+
+      &[data-score='2'] {
+        width: 60%;
+        background-color: @warning-color;
+      }
+
+      &[data-score='3'] {
+        width: 80%;
+        background-color: fade(@success-color, 50%);
+      }
+
+      &[data-score='4'] {
+        width: 100%;
+        background-color: @success-color;
+      }
     }
   }
 }
