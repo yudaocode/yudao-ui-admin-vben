@@ -40,10 +40,6 @@ const getAttrs = computed(() => {
   }
 })
 
-function handleChange(...args) {
-  emit('change', ...args)
-}
-
 watch(
   () => state.value,
   (v) => {
@@ -110,7 +106,7 @@ async function fetch() {
 </script>
 
 <template>
-  <Tree v-bind="getAttrs" v-model:selected-keys="state" @select="handleChange">
+  <Tree v-bind="getAttrs" v-model:selected-keys="state">
     <template v-for="item in Object.keys(slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>
