@@ -4,7 +4,7 @@ import { h } from 'vue'
 import { isString } from '@/utils/is'
 import { Icon } from '@/components/Icon'
 
-export const TreeIcon: FunctionalComponent = ({ icon }: { icon: VNode | string }) => {
+export const TreeIcon: FunctionalComponent = ({ icon }: { icon: VNode | string | undefined }) => {
   if (!icon)
     return null
   if (isString(icon))

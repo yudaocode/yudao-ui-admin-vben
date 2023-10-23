@@ -368,15 +368,21 @@ export default defineComponent({
           : (
               title
             )
+
+        const iconDom = icon ? (<TreeIcon icon={icon} />) : slots.icon ? (<span class="mr-1">{getSlot(slots, 'icon')}</span>) : null
+
         item[titleField] = (
           <span class={`${bem('title')} pl-2`} onClick={handleClickNode.bind(null, item[keyField], item[childrenField])}>
             {slots?.title
               ? (
-                  getSlot(slots, 'title', item)
+                <>
+                  {iconDom}
+                  {getSlot(slots, 'title', item)}
+                </>
                 )
               : (
                 <>
-                  {icon && <TreeIcon icon={icon} />}
+                  {iconDom}
                   {titleDom}
                   <span class={bem('actions')}>{renderAction(item)}</span>
                 </>
@@ -415,7 +421,9 @@ export default defineComponent({
           )}
           <Spin wrapperClassName={unref(props.treeWrapperClassName)} spinning={unref(props.loading)} tip="加载中...">
             <ScrollContainer style={scrollStyle} v-show={!unref(getNotFound)}>
-              <Tree {...unref(getBindValues)} showIcon={false} treeData={treeData.value} />
+              <Tree {...unref(getBindValues)} showIcon={false} treeData={treeData.value}>
+                {extendSlots(slots, ['title'])}
+              </Tree>
             </ScrollContainer>
             <Empty v-show={unref(getNotFound)} image={Empty.PRESENTED_IMAGE_SIMPLE} class="!mt-4" />
           </Spin>
