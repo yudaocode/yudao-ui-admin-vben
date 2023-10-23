@@ -1,6 +1,7 @@
 <script lang="tsx">
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
+import type { ColumnType } from 'ant-design-vue/lib/table/interface'
 import type { BasicColumn } from '../types/table'
 import BasicHelp from '/@/components/Basic/src/BasicHelp.vue'
 import EditTableHeaderCell from './EditTableHeaderIcon.vue'
@@ -14,22 +15,22 @@ export default defineComponent({
   },
   props: {
     column: {
-      type: Object as PropType<BasicColumn>,
+      type: Object as PropType<ColumnType<any>>,
       default: () => ({}),
     },
   },
   setup(props) {
     const { prefixCls } = useDesign('basic-table-header-cell')
 
-    const getIsEdit = computed(() => !!props.column?.edit)
+    const getIsEdit = computed(() => !!(props.column as BasicColumn)?.edit)
     const getTitle = computed(() => {
-      const column = props.column
+      const column = props.column as BasicColumn
       if (typeof column.customHeaderRender === 'function')
-        return column.customHeaderRender(props.column)
+        return column.customHeaderRender(column)
 
-      return props.column?.customTitle || props.column?.title
+      return column?.customTitle || props.column?.title
     })
-    const getHelpMessage = computed(() => props.column?.helpMessage)
+    const getHelpMessage = computed(() => (props.column as BasicColumn)?.helpMessage)
 
     return () => {
       return (

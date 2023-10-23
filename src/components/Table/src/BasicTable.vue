@@ -113,12 +113,12 @@ const {
   emit,
 )
 
-function handleTableChange(...args) {
-  onTableChange.call(undefined, ...args)
-  emit('change', ...args)
+function handleTableChange(pagination: any, filters: any, sorter: any, extra: any) {
+  onTableChange(pagination, filters, sorter)
+  emit('change', pagination, filters, sorter)
   // 解决通过useTable注册onChange时不起作用的问题
   const { onChange } = unref(getProps)
-  onChange && isFunction(onChange) && onChange.call(undefined, ...args)
+  onChange && isFunction(onChange) && onChange(pagination, filters, sorter, extra)
 }
 
 const { getViewColumns, getColumns, setCacheColumnsByField, setCacheColumns, setColumns, getColumnsRef, getCacheColumns } = useColumns(

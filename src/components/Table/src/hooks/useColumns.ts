@@ -1,6 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, reactive, ref, toRaw, unref, watch } from 'vue'
 import { cloneDeep, isEqual } from 'lodash-es'
+import type { ColumnType } from 'ant-design-vue/es/table'
 import type { BasicColumn, BasicTableProps, CellFormat, GetColumnsParams } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
 import { renderEditCell } from '../components/editable'
@@ -54,6 +55,7 @@ function handleIndexColumn(
     const indIndex = columns.findIndex(column => column.flag === INDEX_COLUMN_FLAG)
     if (showIndexColumn)
       pushIndexColumns = indIndex === -1
+
     else if (!showIndexColumn && indIndex !== -1)
       columns.splice(indIndex, 1)
   })
@@ -147,7 +149,7 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPagination
       if (!slots || !slots?.title)
         column.customTitle = column.title
 
-      const isDefaultAction = [INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG].includes(flag)
+      const isDefaultAction = [INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG].includes(flag!)
       if (!customRender && format && !edit && !isDefaultAction) {
         column.customRender = ({ text, record, index }) => {
           return formatCell(text, format, record, index)
@@ -252,12 +254,19 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPagination
       return
     cacheColumns = columns.filter(item => !item.flag)
   }
+  /**
+   * 拖拽列宽修改列的宽度
+   */
+  function setColumnWidth(w: number, col: ColumnType<BasicColumn>) {
+    col.width = w
+  }
 
   return {
     getColumnsRef,
     getCacheColumns,
     getColumns,
     setColumns,
+    setColumnWidth,
     getViewColumns,
     setCacheColumnsByField,
     setCacheColumns,
