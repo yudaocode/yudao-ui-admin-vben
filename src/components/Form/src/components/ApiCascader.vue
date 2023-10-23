@@ -21,7 +21,7 @@ const props = defineProps({
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
   childrenField: propTypes.string.def('children'),
-  asyncFetchParamKey: propTypes.string.def('parentCode'),
+  apiParamKey: propTypes.string.def('parentCode'),
   immediate: propTypes.bool.def(true),
   // init fetch params
   initFetchParams: {
@@ -120,7 +120,7 @@ async function loadData(selectedOptions: Option[]) {
     return
   try {
     const res = await api({
-      [props.asyncFetchParamKey]: Reflect.get(targetOption, 'value'),
+      [props.apiParamKey]: Reflect.get(targetOption, 'value'),
     })
     if (Array.isArray(res)) {
       const children = generatorOptions(res)
