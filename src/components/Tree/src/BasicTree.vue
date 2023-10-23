@@ -3,6 +3,7 @@ import type { CSSProperties } from 'vue'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw, unref, watch, watchEffect } from 'vue'
 import { Empty, Spin, Tree } from 'ant-design-vue'
 import { cloneDeep, difference, get, omit } from 'lodash-es'
+import type { TreeProps } from 'ant-design-vue/es/tree/Tree'
 import type { CheckKeys, FieldNames, KeyType, TreeActionType, TreeItem, TreeState } from './types/tree'
 
 import TreeHeader from './components/TreeHeader.vue'
@@ -98,11 +99,11 @@ export default defineComponent({
 
           const rawVal = toRaw(state.checkedKeys)
           emit('update:value', rawVal)
-          emit('check', state.checkStrictly ? rawVal.checked : rawVal, e)
+          emit('check', rawVal, e)
         },
         'onRightClick': handleRightClick,
       }
-      return omit(propsData, 'treeData', 'class')
+      return omit(propsData, 'treeData', 'class') as TreeProps
     })
 
     const getTreeData = computed((): TreeItem[] => (searchState.startSearch ? searchState.searchData : unref(treeDataRef)))
