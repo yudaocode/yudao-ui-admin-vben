@@ -55,7 +55,7 @@ const getProps = computed((): DrawerProps => {
     opt.rootClassName = wrapClassName ? `${wrapClassName} ${detailCls}` : detailCls
 
     if (!getContainer)
-      opt.getContainer = `.${prefixVar}-layout-content` as any
+      opt.getContainer = `.${prefixVar}-layout-content`
   }
   return opt as DrawerProps
 })
