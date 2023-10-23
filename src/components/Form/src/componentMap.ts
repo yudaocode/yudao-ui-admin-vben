@@ -20,7 +20,6 @@ import type { ComponentType } from './types'
 /**
  * Component list, register here to setting it in the form
  */
-
 import ApiRadioGroup from './components/ApiRadioGroup.vue'
 import RadioButtonGroup from './components/RadioButtonGroup.vue'
 import ApiSelect from './components/ApiSelect.vue'
@@ -29,6 +28,7 @@ import ApiTreeSelect from './components/ApiTreeSelect.vue'
 import ApiCascader from './components/ApiCascader.vue'
 import ApiTransfer from './components/ApiTransfer.vue'
 import FileUpload from './components/FileUpload.vue'
+import ImageUpload from './components/ImageUpload.vue'
 import { BasicUpload } from '@/components/Upload'
 import { StrengthMeter } from '@/components/StrengthMeter'
 import { IconPicker } from '@/components/Icon'
@@ -44,7 +44,7 @@ componentMap.set('InputSearch', Input.Search)
 componentMap.set('InputTextArea', Input.TextArea)
 componentMap.set('InputNumber', InputNumber)
 componentMap.set('AutoComplete', AutoComplete)
-
+componentMap.set('ImageUpload', ImageUpload)
 componentMap.set('Select', Select)
 componentMap.set('ApiSelect', ApiSelect)
 componentMap.set('ApiTree', ApiTree)
@@ -67,6 +67,7 @@ componentMap.set('MonthPicker', DatePicker.MonthPicker)
 componentMap.set('RangePicker', DatePicker.RangePicker)
 componentMap.set('WeekPicker', DatePicker.WeekPicker)
 componentMap.set('TimePicker', TimePicker)
+componentMap.set('TimeRangePicker', TimePicker.TimeRangePicker)
 componentMap.set('StrengthMeter', StrengthMeter)
 componentMap.set('IconPicker', IconPicker)
 componentMap.set('InputCountDown', CountdownInput)

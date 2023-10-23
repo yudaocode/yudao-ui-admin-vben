@@ -57,19 +57,15 @@ const isMaxCount = computed(() => props.maxCount > 0 && fileList.value.length >=
 const isImageMode = computed(() => props.fileType === 'image')
 // 合并 props 和 attrs
 const bindProps = computed(() => {
-  // update-begin-author:liusq date:20220411 for: [issue/455]上传组件传入accept限制上传文件类型无效
   const bind: any = Object.assign({}, props, unref(attrs))
-  // update-end-author:liusq date:20220411 for: [issue/455]上传组件传入accept限制上传文件类型无效
 
   bind.name = 'file'
   bind.listType = isImageMode.value ? 'picture-card' : 'text'
   bind.class = [bind.class, { 'upload-disabled': props.disabled }]
   bind.data = { biz: props.bizPath, ...bind.data }
-  // update-begin-author:taoyan date:20220407 for: 自定义beforeUpload return false，并不能中断上传过程
   if (!bind.beforeUpload)
     bind.beforeUpload = onBeforeUpload
 
-  // update-end-author:taoyan date:20220407 for: 自定义beforeUpload return false，并不能中断上传过程
   // 如果当前是图片上传模式，就只能上传图片
   if (isImageMode.value && !bind.accept)
     bind.accept = 'image/*'
