@@ -7,6 +7,7 @@ module.exports = antfu(
       'no-console': 'off',
       'node/prefer-global/process': 'off',
       'vue/custom-event-name-casing': 'off',
+      'vue/component-name-in-template-casing': 'off',
     },
   },
   unocss.configs.flat,
