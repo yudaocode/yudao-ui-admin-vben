@@ -87,7 +87,6 @@ export const treeProps = buildProps({
 
   expandedKeys: {
     type: Array as PropType<KeyType[]>,
-    default: () => [],
   },
 
   selectedKeys: {
