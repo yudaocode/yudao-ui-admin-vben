@@ -2,6 +2,7 @@
 import { computed, toRaw, unref } from 'vue'
 import { Table } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
+import type { ColumnType } from 'ant-design-vue/es/table/interface'
 import type { BasicColumn } from '../types/table'
 import { INDEX_COLUMN_FLAG } from '../const'
 import { useTableContext } from '../hooks/useTableContext'
@@ -71,7 +72,7 @@ const getColumns = computed(() => {
       customRender: ({ record }) => record[SUMMARY_ROW_KEY],
     })
   }
-  return columns as any
+  return columns as unknown as ColumnType[]
 })
 </script>
 
