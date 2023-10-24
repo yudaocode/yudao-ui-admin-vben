@@ -133,7 +133,7 @@ export const findFormItem: (
 /**
  * 打开json模态框时删除当前项属性
  * @param formConfig {IFormConfig}
- * @returns {IFormConfig}
+ * @returns {IFormConfig} copyFormConfig
  */
 export function removeAttrs(formConfig: IFormConfig): IFormConfig {
   const copyFormConfig = cloneDeep(formConfig)

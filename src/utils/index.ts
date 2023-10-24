@@ -154,7 +154,7 @@ export function withInstall<T extends CustomComponent>(component: T, alias?: str
  *
  * @param fn 要防抖的函数
  * @param delay 防抖的毫秒数
- * @returns {Function}
+ * @returns {Function} simpleDebounce
  */
 export function simpleDebounce(fn, delay = 100) {
   let timer: any | null = null

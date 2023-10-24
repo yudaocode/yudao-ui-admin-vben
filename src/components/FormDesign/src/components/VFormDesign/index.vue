@@ -102,8 +102,8 @@ function setGlobalConfigState(formItem: IVFormComponent) {
 
 /**
  * 添加属性
- * @param schemas
- * @param index
+ * @param _formItems
+ * @param _index
  */
 function handleAddAttrs(_formItems: IVFormComponent[], _index: number) {}
 
@@ -187,7 +187,7 @@ function handleCopy(item: IVFormComponent = formConfig.value.currentItem as IVFo
 
 /**
  * 添加到表单中
- * @param newIndex {object} 事件对象
+ * @param {newIndex} {object} 事件对象
  * @param schemas {IVFormComponent[]} 表单项列表
  * @param isCopy {boolean} 是否复制
  */

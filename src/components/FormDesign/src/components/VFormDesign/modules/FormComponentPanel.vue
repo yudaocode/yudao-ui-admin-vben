@@ -18,7 +18,6 @@ const { formConfig } = useFormDesignState()
 
 /**
  * 拖拽完成事件
- * @param newIndex
  */
 function addItem({ newIndex }: any) {
   formConfig.value.schemas = formConfig.value.schemas || []
@@ -77,8 +76,7 @@ const layoutTag = computed(() => {
     .list-main {
       display: flex;
       flex-wrap: wrap;
-      align-content: flex-start;
-      justify-content: flex-start;
+      place-content: flex-start flex-start;
 
       .layout-width {
         width: 100%;

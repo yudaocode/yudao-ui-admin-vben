@@ -43,7 +43,7 @@ export const useErrorLogStore = defineStore('app-error-log', {
     /**
      * Triggered after ajax request error
      * @param error
-     * @returns
+     * @return addAjaxErrorInfo
      */
     addAjaxErrorInfo(error) {
       const { useErrorHandle } = projectSetting
