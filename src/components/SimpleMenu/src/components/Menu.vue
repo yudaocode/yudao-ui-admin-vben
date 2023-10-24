@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, getCurrentInstance, nextTick, onMounted, provide, ref, watch, watchEffect } from 'vue'
 import type { SubMenuProvider } from './types'
-import { createSimpleRootMenuContext, type MenuEmitterEvents } from './useSimpleMenuContext'
+import { type MenuEmitterEvents, createSimpleRootMenuContext } from './useSimpleMenuContext'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import { mitt } from '@/utils/mitt'

@@ -47,14 +47,6 @@ function handleRemove(record: PreviewFileItem) {
   }
 }
 
-// // 预览
-// function handlePreview(record: PreviewFileItem) {
-//   const { url = '' } = record;
-//   createImgPreview({
-//     imageList: [url],
-//   });
-// }
-
 // 下载
 function handleDownload(record: PreviewFileItem) {
   const { url = '' } = record

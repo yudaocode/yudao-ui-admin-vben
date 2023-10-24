@@ -109,14 +109,6 @@ function handleRemove(record: FileItem) {
   emit('delete', record)
 }
 
-// 预览
-// function handlePreview(record: FileItem) {
-//   const { thumbUrl = '' } = record;
-//   createImgPreview({
-//     imageList: [thumbUrl],
-//   });
-// }
-
 async function uploadApiByItem(item: FileItem) {
   const { api } = props
   if (!api || !isFunction(api))

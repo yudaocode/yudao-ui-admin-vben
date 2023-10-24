@@ -108,6 +108,7 @@
     "maxSize": "单个文件不超过{0}MB",
     "maxSizeMultiple": "只能上传不超过{0}MB的文件!",
     "operating": "操作",
+    "pending": "待上传",
     "preview": "预览",
     "reUploadFailed": "重新上传失败文件",
     "save": "保存",

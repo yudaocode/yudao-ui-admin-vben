@@ -1,10 +1,7 @@
 import { Progress, Tag } from 'ant-design-vue'
-import type { FileItem, PreviewFileItem } from './typing'
+import type { FileBasicColumn, FileItem, PreviewFileItem } from './typing'
 import { UploadResultStatus } from './typing'
-import {
-  // checkImgType,
-  isImgTypeByName,
-} from './helper'
+import { isImgTypeByName } from './helper'
 import ThumbUrl from './ThumbUrl.vue'
 import type { ActionItem, BasicColumn } from '@/components/Table'
 import TableAction from '@/components/Table/src/components/TableAction.vue'
@@ -13,7 +10,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()
 
 // 文件上传列表
-export function createTableColumns(): BasicColumn[] {
+export function createTableColumns(): FileBasicColumn[] {
   return [
     {
       dataIndex: 'thumbUrl',
@@ -39,12 +36,12 @@ export function createTableColumns(): BasicColumn[] {
           status = 'success'
 
         return (
-          <span>
-            <p class="mb-1 truncate" title={text}>
+          <div>
+            <p class="mb-1 max-w-70 truncate" title={text}>
               {text}
             </p>
             <Progress percent={percent} size="small" status={status} />
-          </span>
+          </div>
         )
       },
     },
@@ -56,11 +53,6 @@ export function createTableColumns(): BasicColumn[] {
         return text && `${(text / 1024).toFixed(2)}KB`
       },
     },
-    // {
-    //   dataIndex: 'type',
-    //   title: '文件类型',
-    //   width: 100,
-    // },
     {
       dataIndex: 'status',
       title: t('component.upload.fileStatue'),
@@ -73,12 +65,12 @@ export function createTableColumns(): BasicColumn[] {
         else if (text === UploadResultStatus.UPLOADING)
           return <Tag color="blue">{() => t('component.upload.uploading')}</Tag>
 
-        return text
+        return text || t('component.upload.pending')
       },
     },
   ]
 }
-export function createActionColumn(handleRemove: Fn): BasicColumn {
+export function createActionColumn(handleRemove: Fn): FileBasicColumn {
   return {
     width: 120,
     title: t('component.upload.operating'),
@@ -92,12 +84,6 @@ export function createActionColumn(handleRemove: Fn): BasicColumn {
           onClick: handleRemove.bind(null, record),
         },
       ]
-      // if (checkImgType(record)) {
-      //   actions.unshift({
-      //     label: t('component.upload.preview'),
-      //     onClick: handlePreview.bind(null, record),
-      //   });
-      // }
       return <TableAction actions={actions} outside={true} />
     },
   }

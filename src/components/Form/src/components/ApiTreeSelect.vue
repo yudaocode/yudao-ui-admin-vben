@@ -13,6 +13,7 @@ const props = defineProps({
   api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
   params: { type: Object },
   immediate: propTypes.bool.def(true),
+  async: propTypes.bool.def(false),
   resultField: propTypes.string.def(''),
   handleTree: propTypes.string.def(''),
   parentId: propTypes.number.def(0),
@@ -20,7 +21,7 @@ const props = defineProps({
   parentFiled: propTypes.string.def('name'),
   alwaysLoad: propTypes.bool.def(true),
 })
-const emit = defineEmits(['optionsChange', 'change'])
+const emit = defineEmits(['optionsChange', 'change', 'load-data'])
 const attrs = useAttrs()
 
 const treeData = ref<Recordable[]>([])
@@ -64,6 +65,16 @@ onMounted(() => {
   props.immediate && fetch()
 })
 
+function onLoadData(treeNode) {
+  return new Promise((resolve: (value?: unknown) => void) => {
+    if (isArray(treeNode.children) && treeNode.children.length > 0) {
+      resolve()
+      return
+    }
+    emit('load-data', { treeData, treeNode, resolve })
+  })
+}
+
 async function fetch() {
   const { api } = props
   if (!api || !isFunction(api))
@@ -102,7 +113,7 @@ async function fetch() {
 </script>
 
 <template>
-  <TreeSelect v-bind="getAttrs" @change="handleChange">
+  <TreeSelect v-bind="getAttrs" :load-data="async ? onLoadData : undefined" @change="handleChange">
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

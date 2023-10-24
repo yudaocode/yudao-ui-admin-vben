@@ -108,6 +108,7 @@
     "maxSize": "A single file does not exceed {0}MB ",
     "maxSizeMultiple": "Only upload files up to {0}MB!",
     "operating": "Operating",
+    "pending": "Pendig",
     "preview": "Preview",
     "reUploadFailed": "Re-upload failed files",
     "save": "Save",
