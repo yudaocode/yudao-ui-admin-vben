@@ -34,7 +34,7 @@
 | [vueuse](https://vueuse.org/)                                        | 常用工具集            | 10.5.0 |
 | [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化                | 9.5.0  |
 | [vue-router](https://router.vuejs.org/)                              | Vue 路由              | 4.2.5  |
-| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.56.5 |
+| [unocss](https://uno.antfu.me/)                                      | 原子 css              | 0.57.1 |
 | [iconify](https://icon-sets.iconify.design/)                         | 在线图标库            | 3.1.1  |
 
 - ![alt Admin](./public/resource/img/preview.png)
