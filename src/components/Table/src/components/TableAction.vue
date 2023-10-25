@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed, toRaw, unref } from 'vue'
 import { DownOutlined } from '@ant-design/icons-vue'
 import type { TooltipProps } from 'ant-design-vue'
@@ -60,7 +61,7 @@ const getActions = computed(() => {
     .map((action) => {
       const { popConfirm } = action
       return {
-        getPopupContainer: () => unref((table as any)?.wrapRef.value) ?? document.body,
+        getPopupContainer: () => unref((table as any)?.wrapRef) ?? document.body,
         type: 'link',
         ...action,
         ...(popConfirm || {}),
@@ -96,7 +97,7 @@ const getAlign = computed(() => {
 
 function getTooltip(data: string | TooltipProps): TooltipProps {
   return {
-    getPopupContainer: () => unref((table as any)?.wrapRef.value) ?? document.body,
+    getPopupContainer: () => unref((table as any)?.wrapRef) ?? document.body,
     placement: 'bottom',
     ...(isString(data) ? { title: data } : data),
   }
@@ -130,9 +131,18 @@ function onCellClick(e: MouseEvent) {
           {{ action.label }}
         </template>
       </PopConfirmButton>
-      <Divider v-if="divider && index < getActions.length - 1" type="vertical" class="action-divider" />
+      <Divider
+        v-if="divider && index < getActions.length - 1"
+        type="vertical"
+        class="action-divider"
+      />
     </template>
-    <Dropdown v-if="dropDownActions && getDropdownList.length > 0" :trigger="['hover']" :drop-menu-list="getDropdownList" popconfirm>
+    <Dropdown
+      v-if="dropDownActions && getDropdownList.length > 0"
+      :trigger="['hover']"
+      :drop-menu-list="getDropdownList"
+      popconfirm
+    >
       <slot name="more" />
       <a-button v-if="!$slots.more" type="link">
         {{ t('action.more') }} <DownOutlined class="icon-more" />
@@ -191,6 +201,7 @@ function onCellClick(e: MouseEvent) {
 
   .icon-more {
     margin-left: 0.25rem;
+    transform: rotate(90deg);
 
     svg {
       font-size: 1.1em;

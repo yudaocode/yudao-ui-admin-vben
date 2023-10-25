@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed, unref } from 'vue'
 import type { ColumnChangeParam, TableSetting } from '../../types/table'
 import { useTableContext } from '../../hooks/useTableContext'
@@ -44,7 +45,11 @@ function getTableContainer() {
     <RedoSetting v-if="getSetting.redo" :get-popup-container="getTableContainer" />
     <FormSetting v-if="getSetting.form" :get-popup-container="getTableContainer" />
     <SizeSetting v-if="getSetting.size" :get-popup-container="getTableContainer" />
-    <ColumnSetting v-if="getSetting.setting" :get-popup-container="getTableContainer" @columns-change="handleColumnChange" />
+    <ColumnSetting
+      v-if="getSetting.setting"
+      :get-popup-container="getTableContainer"
+      @columns-change="handleColumnChange"
+    />
     <FullScreenSetting v-if="getSetting.fullScreen" :get-popup-container="getTableContainer" />
   </div>
 </template>

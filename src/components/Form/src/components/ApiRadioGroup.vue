@@ -2,6 +2,7 @@
  * @Description:It is troublesome to implement radio button group in the form. So it is extracted independently as a separate component
 -->
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed, ref, unref, watch, watchEffect } from 'vue'
 import { Radio } from 'ant-design-vue'
 import { get, omit } from 'lodash-es'
@@ -10,33 +11,35 @@ import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useAttrs } from '@/hooks/core/useAttrs'
 import { propTypes } from '@/utils/propTypes'
 
+interface OptionsItem { label: string; value: string | number | boolean; disabled?: boolean }
+
 defineOptions({ name: 'ApiRadioGroup' })
 
 const props = defineProps({
   api: {
-    type: Function as PropType<(arg?: Recordable | string) => Promise<OptionsItem[]>>,
+    type: Function as PropType<(arg?: any | string) => Promise<OptionsItem[]>>,
     default: null,
   },
   params: {
-    type: [Object, String] as PropType<Recordable | string>,
+    type: [Object, String] as PropType<any | string>,
     default: () => ({}),
   },
   value: {
     type: [String, Number, Boolean] as PropType<string | number | boolean>,
   },
-  isBtn: propTypes.bool.def(false),
+  isBtn: {
+    type: [Boolean] as PropType<boolean>,
+    default: false,
+  },
   numberToString: propTypes.bool,
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
-  alwaysLoad: propTypes.bool.def(true),
 })
-const emit = defineEmits(['optionsChange', 'change'])
+const emit = defineEmits(['options-change', 'change'])
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
-
-interface OptionsItem { label: string; value: string | number | boolean; disabled?: boolean }
 
 const options = ref<OptionsItem[]>([])
 const loading = ref(false)
@@ -44,13 +47,13 @@ const isFirstLoad = ref(true)
 const emitData = ref<any[]>([])
 const attrs = useAttrs()
 // Embedded in the form, just use the hook binding to perform form verification
-const [state] = useRuleFormItem(props)
+const [state] = useRuleFormItem(props, 'value', 'change', emitData)
 
 // Processing options value
 const getOptions = computed(() => {
   const { labelField, valueField, numberToString } = props
 
-  return unref(options).reduce((prev, next: Recordable) => {
+  return unref(options).reduce((prev, next: any) => {
     if (next) {
       const value = next[valueField]
       prev.push({
@@ -70,11 +73,7 @@ watchEffect(() => {
 watch(
   () => props.params,
   () => {
-    if (props.alwaysLoad)
-      fetch()
-
-    else
-      !unref(isFirstLoad) && fetch()
+    !unref(isFirstLoad) && fetch()
   },
   { deep: true },
 )
@@ -106,21 +105,26 @@ async function fetch() {
 }
 
 function emitChange() {
-  emit('optionsChange', unref(getOptions))
+  emit('options-change', unref(getOptions))
 }
 
-function handleChange(args) {
+function handleClick(...args) {
   emitData.value = args
 }
 </script>
 
 <template>
-  <RadioGroup v-bind="attrs" v-model:value="state" button-style="solid" @change="handleChange">
+  <RadioGroup v-bind="attrs" v-model:value="state" button-style="solid">
     <template v-for="item in getOptions" :key="`${item.value}`">
-      <RadioButton v-if="props.isBtn" :value="item.value" :disabled="item.disabled">
+      <RadioButton
+        v-if="props.isBtn"
+        :value="item.value"
+        :disabled="item.disabled"
+        @click="handleClick(item)"
+      >
         {{ item.label }}
       </RadioButton>
-      <Radio v-else :value="item.value" :disabled="item.disabled">
+      <Radio v-else :value="item.value" :disabled="item.disabled" @click="handleClick(item)">
         {{ item.label }}
       </Radio>
     </template>

@@ -103,7 +103,10 @@ function handleActionColumn(propsRef: ComputedRef<BasicTableProps>, columns: Bas
   }
 }
 
-export function useColumns(propsRef: ComputedRef<BasicTableProps>, getPaginationRef: ComputedRef<boolean | PaginationProps>) {
+export function useColumns(
+  propsRef: ComputedRef<BasicTableProps>,
+  getPaginationRef: ComputedRef<boolean | PaginationProps>,
+) {
   const columnsRef = ref(unref(propsRef).columns) as unknown as Ref<BasicColumn[]>
   let cacheColumns = unref(propsRef).columns
 

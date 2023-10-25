@@ -1,4 +1,4 @@
-import type { Ref, VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
 import type { TableRowSelection as ITableRowSelection, Key } from 'ant-design-vue/lib/table/interface'
 import type { ColumnProps } from 'ant-design-vue/lib/table'
 import type { PaginationProps } from './pagination'
@@ -55,6 +55,11 @@ export interface ColumnFilterItem {
   children?: any
 }
 
+export interface TableCustomRecord<T = Recordable> {
+  record?: T
+  index?: number
+}
+
 export interface SorterResult {
   column: ColumnProps
   order: SortOrder
@@ -89,7 +94,7 @@ export interface TableActionType {
   getSelectRowKeys: () => Key[]
   deleteSelectRowByKey: (key: string) => void
   setPagination: (info: Partial<PaginationProps>) => void
-  setTableData: <T extends Ref<Recordable<any>[]>>(values: T[]) => void
+  setTableData: <T = Recordable>(values: T[]) => void
   updateTableDataRecord: (rowKey: string | number, record: Recordable) => Recordable | void
   deleteTableDataRecord: (rowKey: string | number | string[] | number[]) => void
   insertTableDataRecord: (record: Recordable | Recordable[], index?: number) => Recordable[] | void
@@ -108,7 +113,7 @@ export interface TableActionType {
   getCacheColumns: () => BasicColumn[]
   emit?: EmitType
   updateTableData: (index: number, key: string, value: any) => Recordable
-  setShowPagination: (show: boolean) => void
+  setShowPagination: (show: boolean) => Promise<void>
   getShowPagination: () => boolean
   setCacheColumnsByField?: (dataIndex: string | undefined, value: BasicColumn) => void
   setCacheColumns?: (columns: BasicColumn[]) => void
@@ -257,7 +262,7 @@ export interface BasicTableProps<T = any> {
    * Customize row expand Icon.
    * @type Function | VNodeChild
    */
-  expandIcon?: Fn | VNodeChild | JSX.Element
+  expandIcon?: Function | VNodeChild | JSX.Element
 
   /**
    * Whether to expand row by clicking anywhere in the whole row
@@ -275,7 +280,7 @@ export interface BasicTableProps<T = any> {
    * Table footer renderer
    * @type Function | VNodeChild
    */
-  footer?: Fn | VNodeChild | JSX.Element
+  footer?: Function | VNodeChild | JSX.Element
 
   /**
    * Indent size in pixels of tree data
@@ -366,14 +371,19 @@ export interface BasicTableProps<T = any> {
    *
    * @version 1.5.4
    */
-  transformCellText?: Fn
+  transformCellText?: Function
 
   /**
    * Callback executed before editable cell submit value, not for row-editor
    *
    * The cell will not submit data while callback return false
    */
-  beforeEditSubmit?: (data: { record: Recordable; index: number; key: string | number; value: any }) => Promise<any>
+  beforeEditSubmit?: (data: {
+    record: Recordable
+    index: number
+    key: string | number
+    value: any
+  }) => Promise<any>
 
   /**
    * Callback executed when pagination, filters or sorter is changed
@@ -401,14 +411,19 @@ export interface BasicTableProps<T = any> {
   onColumnsChange?: (data: ColumnChangeParam[]) => void
 }
 
-export type CellFormat = string | ((text: string, record: Recordable, index: number) => string | number) | Map<string | number, any>
+export type CellFormat =
+  | string
+  | ((text: string, record: Recordable, index: number) => string | number)
+  | Map<string | number, any>
 
 export interface BasicColumn extends ColumnProps<Recordable> {
   children?: BasicColumn[]
   filters?: {
     text: string
     value: string
-    children?: unknown[] | (((props: Record<string, unknown>) => unknown[]) & (() => unknown[]) & (() => unknown[]))
+    children?:
+    | unknown[]
+    | (((props: Record<string, unknown>) => unknown[]) & (() => unknown[]) & (() => unknown[]))
   }[]
 
   //
@@ -419,7 +434,6 @@ export interface BasicColumn extends ColumnProps<Recordable> {
 
   // 自定义header渲染
   customHeaderRender?: (column: BasicColumn) => string | VNodeChild | JSX.Element
-
   // Whether to hide the column by default, it can be displayed in the column configuration
   defaultHidden?: boolean
 
@@ -434,7 +448,12 @@ export interface BasicColumn extends ColumnProps<Recordable> {
   editable?: boolean
   editComponent?: ComponentType
   editComponentProps?:
-  | ((opt: { text: string | number | boolean | Recordable; record: Recordable; column: BasicColumn; index: number }) => Recordable)
+  | ((opt: {
+    text: string | number | boolean | Recordable
+    record: Recordable
+    column: BasicColumn
+    index: number
+  }) => Recordable)
   | Recordable
   editRule?: boolean | ((text: string, record: Recordable) => Promise<string>)
   editValueMap?: (value: any) => string
@@ -457,7 +476,7 @@ export interface BasicColumn extends ColumnProps<Recordable> {
 export interface ColumnChangeParam {
   dataIndex: string
   fixed: boolean | 'left' | 'right' | undefined
-  open: boolean
+  visible: boolean
 }
 
 export interface InnerHandlers {

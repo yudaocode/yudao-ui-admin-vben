@@ -71,10 +71,13 @@ export interface ColumnProps<T> {
    * Customized filter overlay
    * @type any (slot)
    */
-  filterDropdown?: VNodeChild | JSX.Element | ((props: FilterDropdownProps) => VNodeChild | JSX.Element)
+  filterDropdown?:
+  | VNodeChild
+  | JSX.Element
+  | ((props: FilterDropdownProps) => VNodeChild | JSX.Element)
 
   /**
-   * Whether filterDropdown is open
+   * Whether filterDropdown is visible
    * @type boolean
    */
   filterDropdownOpen?: boolean
@@ -135,7 +138,7 @@ export interface ColumnProps<T> {
    * Sort function for local sort, see Array.sort's compareFunction. If you need sort buttons only, set to true
    * @type boolean | Function
    */
-  sorter?: boolean | Fn
+  sorter?: boolean | Function
 
   /**
    * Order of sorted values: 'ascend' 'descend' false
@@ -181,10 +184,10 @@ export interface ColumnProps<T> {
   onFilter?: (value: any, record: T) => boolean
 
   /**
-   * Callback executed when filterDropdownOpen is changed, Use as a filterDropdownOpen event when using template or jsx
+   * Callback executed when filterDropdownVisible is changed, Use as a filterDropdownVisible event when using template or jsx
    * @type Function
    */
-  onFilterDropdownOpenChange?: (open: boolean) => void
+  onFilterDropdownVisibleChange?: (visible: boolean) => void
 
   /**
    * When using columns, you can setting this property to configure the properties that support the slot,

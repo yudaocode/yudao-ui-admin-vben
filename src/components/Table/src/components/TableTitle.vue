@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { BasicTitle } from '@/components/Basic'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -8,10 +9,10 @@ defineOptions({ name: 'BasicTableTitle' })
 
 const props = defineProps({
   title: {
-    type: [Function, String] as PropType<string | ((data: Recordable) => string)>,
+    type: [Function, String] as PropType<string | ((data) => string)>,
   },
   getSelectRows: {
-    type: Function as PropType<() => Recordable[]>,
+    type: Function as PropType<() => any[]>,
   },
   helpMessage: {
     type: [String, Array] as PropType<string | string[]>,

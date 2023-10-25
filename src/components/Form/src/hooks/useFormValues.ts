@@ -48,7 +48,12 @@ function tryDeconstructObject(key: string, value: any, target: Recordable) {
   }
 }
 
-export function useFormValues({ defaultValueRef, getSchema, formModel, getProps }: UseFormValuesContext) {
+export function useFormValues({
+  defaultValueRef,
+  getSchema,
+  formModel,
+  getProps,
+}: UseFormValuesContext) {
   // Processing form values
   function handleFormValues(values: Recordable) {
     if (!isObject(values))
@@ -73,6 +78,7 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
         // remove params from URL
         if (value === '')
           value = undefined
+
         else
           value = value.trim()
       }
@@ -138,9 +144,9 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
       if (fieldKeys.length) {
         // eslint-disable-next-line array-callback-return
         fieldKeys.map((field) => {
-          obj[field] = defaultValueObj[field]
+          obj[field] = defaultValueObj![field]
           if (formModel[field] === undefined)
-            formModel[field] = defaultValueObj[field]
+            formModel[field] = defaultValueObj![field]
         })
       }
       if (!isNullOrUnDef(defaultValue)) {

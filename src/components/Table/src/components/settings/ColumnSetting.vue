@@ -16,10 +16,6 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { isFunction, isNullAndUnDef } from '@/utils/is'
 import { getPopupContainer as getParentContainer } from '@/utils'
 
-defineOptions({ name: 'ColumnSetting' })
-
-const emit = defineEmits(['columns-change'])
-
 interface State {
   checkAll: boolean
   isInit?: boolean
@@ -32,6 +28,10 @@ interface Options {
   value: string
   fixed?: boolean | 'left' | 'right'
 }
+
+defineOptions({ name: 'ColumnSetting' })
+
+const emit = defineEmits(['columns-change'])
 
 const CheckboxGroup = Checkbox.Group
 const attrs = useAttrs()
@@ -51,7 +51,7 @@ const plainOptions = ref<Options[] | any>([])
 
 const plainSortOptions = ref<Options[]>([])
 
-const columnListRef = ref<ComponentRef>(null)
+const columnListRef = ref(null)
 
 const state = reactive<State>({
   checkAll: true,
@@ -124,7 +124,6 @@ async function init(isReset = false) {
       return item.dataIndex || item.title
     })
     .filter(Boolean) as string[]
-
   plainOptions.value = columns
   plainSortOptions.value = columns
   // 更新缓存配置
@@ -136,13 +135,14 @@ async function init(isReset = false) {
   state.checkAll = checkList.length === columns.length
   inited = false
   handleOpenChange()
-  state.checkedList = checkList
 }
 
 // checkAll change
 function onCheckAllChange(e: CheckboxChangeEvent) {
   const checkList = plainSortOptions.value.map(item => item.value)
-  plainSortOptions.value.forEach(item => ((item as BasicColumn).defaultHidden = !e.target.checked))
+  plainSortOptions.value.forEach(
+    item => ((item as BasicColumn).defaultHidden = !e.target.checked),
+  )
   if (e.target.checked) {
     state.checkedList = checkList
     setColumns(checkList)
@@ -169,7 +169,7 @@ function onChange(checkedList: string[]) {
     return sortList.indexOf(prev) - sortList.indexOf(next)
   })
   unref(plainSortOptions).forEach((item) => {
-    ;(item as BasicColumn).defaultHidden = !checkedList.includes(item.value)
+    (item as BasicColumn).defaultHidden = !checkedList.includes(item.value)
   })
   setColumns(checkedList)
 }
@@ -197,7 +197,7 @@ function handleOpenChange() {
     const columnListEl = unref(columnListRef)
     if (!columnListEl)
       return
-    const el = columnListEl.$el as any
+    const el = (columnListEl as any).$el
     if (!el)
       return
     // Drag and drop sort
@@ -256,7 +256,9 @@ function handleColumnFixed(item: BasicColumn, fixed?: 'left' | 'right') {
   if (!state.checkedList.includes(item.dataIndex as string))
     return
 
-  const columns = getColumns().filter((c: BasicColumn) => state.checkedList.includes(c.dataIndex as string)) as BasicColumn[]
+  const columns = getColumns().filter((c: BasicColumn) =>
+    state.checkedList.includes(c.dataIndex as string),
+  ) as BasicColumn[]
   const isFixed = item.fixed === fixed ? false : fixed
   const index = columns.findIndex(col => col.dataIndex === item.dataIndex)
   if (index !== -1)
@@ -278,7 +280,10 @@ function setColumns(columns: BasicColumn[] | string[]) {
   table.setColumns(columns)
   const data: ColumnChangeParam[] = unref(plainSortOptions).map((col) => {
     const open
-      = columns.findIndex((c: BasicColumn | string) => c === col.value || (typeof c !== 'string' && c.dataIndex === col.value)) !== -1
+      = columns.findIndex(
+        (c: BasicColumn | string) =>
+          c === col.value || (typeof c !== 'string' && c.dataIndex === col.value),
+      ) !== -1
     return { dataIndex: col.value, fixed: col.fixed, open }
   })
 
@@ -286,7 +291,9 @@ function setColumns(columns: BasicColumn[] | string[]) {
 }
 
 function getPopupContainer() {
-  return isFunction(attrs.getPopupContainer) ? attrs.getPopupContainer() : getParentContainer()
+  return isFunction(attrs.getPopupContainer)
+    ? attrs.getPopupContainer()
+    : getParentContainer()
 }
 
 function updateSortOption(column: BasicColumn) {
@@ -406,6 +413,10 @@ function updateSortOption(column: BasicColumn) {
 
     .ant-checkbox-wrapper {
       width: 100%;
+
+      &:hover {
+        color: @primary-color;
+      }
     }
   }
 
@@ -413,6 +424,11 @@ function updateSortOption(column: BasicColumn) {
   &__fixed-right {
     color: rgb(0 0 0 / 45%);
     cursor: pointer;
+
+    &.active,
+    &:hover {
+      color: @primary-color;
+    }
 
     &.disabled {
       color: @disabled-color;

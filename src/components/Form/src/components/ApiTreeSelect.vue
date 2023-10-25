@@ -5,12 +5,13 @@ import { get, set } from 'lodash-es'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { isArray, isFunction } from '@/utils/is'
 import { propTypes } from '@/utils/propTypes'
+import type { Recordable } from '@/utils/types'
 import { handleTree as handleTreeFn } from '@/utils/tree'
 
 defineOptions({ name: 'ApiTreeSelect' })
 
 const props = defineProps({
-  api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
+  api: { type: Function as PropType<(arg?: Recordable<any>) => Promise<Recordable<any>>> },
   params: { type: Object },
   immediate: propTypes.bool.def(true),
   async: propTypes.bool.def(false),
@@ -19,12 +20,13 @@ const props = defineProps({
   parentId: propTypes.number.def(0),
   parentLabel: propTypes.string.def(''),
   parentFiled: propTypes.string.def('name'),
-  alwaysLoad: propTypes.bool.def(true),
+  labelField: propTypes.string.def('name'),
+  valueField: propTypes.string.def('id'),
+  childrenField: propTypes.string.def('children'),
 })
-const emit = defineEmits(['optionsChange', 'change', 'load-data'])
+const emit = defineEmits(['options-change', 'change', 'load-data'])
 const attrs = useAttrs()
-
-const treeData = ref<Recordable[]>([])
+const treeData = ref<Recordable<any>[]>([])
 const isFirstLoaded = ref<boolean>(false)
 const loading = ref(false)
 const getAttrs = computed(() => {
@@ -33,6 +35,11 @@ const getAttrs = computed(() => {
     ...attrs,
   }
 })
+const fieldNames = {
+  children: props.childrenField,
+  value: props.valueField,
+  label: props.labelField,
+}
 
 function handleChange(...args) {
   emit('change', ...args)
@@ -41,11 +48,7 @@ function handleChange(...args) {
 watch(
   () => props.params,
   () => {
-    if (props.alwaysLoad)
-      fetch()
-
-    else
-      !unref(isFirstLoaded) && fetch()
+    !unref(isFirstLoaded) && fetch()
   },
   { deep: true },
 )
@@ -53,11 +56,7 @@ watch(
 watch(
   () => props.immediate,
   (v) => {
-    if (props.alwaysLoad)
-      v && fetch()
-
-    else
-      v && !isFirstLoaded.value && fetch()
+    v && !isFirstLoaded.value && fetch()
   },
 )
 
@@ -77,7 +76,7 @@ function onLoadData(treeNode) {
 
 async function fetch() {
   const { api } = props
-  if (!api || !isFunction(api))
+  if (!api || !isFunction(api) || loading.value)
     return
   loading.value = true
   treeData.value = []
@@ -106,14 +105,18 @@ async function fetch() {
   else {
     treeData.value = (result as Recordable[]) || []
   }
-
   isFirstLoaded.value = true
-  emit('optionsChange', treeData.value)
+  emit('options-change', treeData.value)
 }
 </script>
 
 <template>
-  <TreeSelect v-bind="getAttrs" :load-data="async ? onLoadData : undefined" @change="handleChange">
+  <TreeSelect
+    v-bind="getAttrs"
+    :field-names="fieldNames"
+    :load-data="async ? onLoadData : undefined"
+    @change="handleChange"
+  >
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
     </template>

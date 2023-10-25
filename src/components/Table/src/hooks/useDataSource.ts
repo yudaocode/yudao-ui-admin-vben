@@ -2,11 +2,11 @@ import type { ComputedRef, Ref } from 'vue'
 import { computed, onMounted, reactive, ref, unref, watch, watchEffect } from 'vue'
 import { useTimeoutFn } from '@vueuse/core'
 import { cloneDeep, get, merge } from 'lodash-es'
-import type { BasicTableProps, FetchParams, SorterResult } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
+import type { BasicTableProps, FetchParams, SorterResult } from '../types/table'
 import { FETCH_SETTING, PAGE_SIZE, ROW_KEY } from '../const'
-import { buildUUID } from '@/utils/uuid'
 import { isBoolean, isFunction, isObject } from '@/utils/is'
+import { buildUUID } from '@/utils/uuid'
 
 interface ActionType {
   getPaginationInfo: ComputedRef<boolean | PaginationProps>
@@ -23,7 +23,14 @@ interface SearchState {
 }
 export function useDataSource(
   propsRef: ComputedRef<BasicTableProps>,
-  { getPaginationInfo, setPagination, setLoading, getFieldsValue, clearSelectedRowKeys, tableData }: ActionType,
+  {
+    getPaginationInfo,
+    setPagination,
+    setLoading,
+    getFieldsValue,
+    clearSelectedRowKeys,
+    tableData,
+  }: ActionType,
   emit: EmitType,
 ) {
   const searchState = reactive<SearchState>({
@@ -48,7 +55,11 @@ export function useDataSource(
     },
   )
 
-  function handleTableChange(pagination: PaginationProps, filters: Partial<Recordable<string[]>>, sorter: SorterResult) {
+  function handleTableChange(
+    pagination: PaginationProps,
+    filters: Partial<Recordable<string[]>>,
+    sorter: SorterResult,
+  ) {
     const { clearSelectOnPageChange, sortFn, filterFn } = unref(propsRef)
     if (clearSelectOnPageChange)
       clearSelectedRowKeys()
@@ -117,7 +128,7 @@ export function useDataSource(
     return unref(dataSourceRef)
   })
 
-  function updateTableData(index: number, key: string, value: any) {
+  async function updateTableData(index: number, key: string, value: any) {
     const record = dataSourceRef.value[index]
     if (record)
       dataSourceRef.value[index][key] = value
@@ -125,7 +136,10 @@ export function useDataSource(
     return dataSourceRef.value[index]
   }
 
-  function updateTableDataRecord(rowKey: string | number, record: Recordable): Recordable | undefined {
+  function updateTableDataRecord(
+    rowKey: string | number,
+    record: Recordable,
+  ): Recordable | undefined {
     const row = findTableDataRecord(rowKey)
 
     if (row) {
@@ -185,7 +199,10 @@ export function useDataSource(
     })
   }
 
-  function insertTableDataRecord(record: Recordable | Recordable[], index?: number): Recordable[] | undefined {
+  function insertTableDataRecord(
+    record: Recordable | Recordable[],
+    index?: number,
+  ): Recordable[] | undefined {
     // if (!dataSourceRef.value || dataSourceRef.value.length == 0) return;
     index = index ?? dataSourceRef.value?.length
     const _record = isObject(record) ? [record as Recordable] : (record as Recordable[])
@@ -207,7 +224,7 @@ export function useDataSource(
       let ret
       array.some(function iter(r) {
         if (typeof rowKeyName === 'function') {
-          if ((rowKeyName(r)) === rowKey) {
+          if ((rowKeyName(r) as string) === rowKey) {
             ret = r
             return true
           }
@@ -234,12 +251,25 @@ export function useDataSource(
   }
 
   async function fetch(opt?: FetchParams) {
-    const { api, searchInfo, defSort, fetchSetting, beforeFetch, afterFetch, useSearchForm, pagination } = unref(propsRef)
+    const {
+      api,
+      searchInfo,
+      defSort,
+      fetchSetting,
+      beforeFetch,
+      afterFetch,
+      useSearchForm,
+      pagination,
+    } = unref(propsRef)
     if (!api || !isFunction(api))
       return
     try {
       setLoading(true)
-      const { pageField, sizeField, listField, totalField } = Object.assign({}, FETCH_SETTING, fetchSetting)
+      const { pageField, sizeField, listField, totalField } = Object.assign(
+        {},
+        FETCH_SETTING,
+        fetchSetting,
+      )
       let pageParams: Recordable = {}
 
       const { current = 1, pageSize = PAGE_SIZE } = unref(getPaginationInfo) as PaginationProps
@@ -317,8 +347,8 @@ export function useDataSource(
     }
   }
 
-  function setTableData<T extends Ref<Recordable<any>[]>>(values: T[]) {
-    dataSourceRef.value = values
+  function setTableData<T = Recordable>(values: T[]) {
+    dataSourceRef.value = values as Recordable[]
   }
 
   function getDataSource<T = Recordable>() {

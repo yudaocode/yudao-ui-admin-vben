@@ -123,11 +123,6 @@ export const basicInfoSchemas: FormSchema[] = [
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleMenus(),
-      fieldNames: {
-        label: 'name',
-        key: 'id',
-        value: 'id',
-      },
       handleTree: 'id',
     },
     colProps: { span: 12 },

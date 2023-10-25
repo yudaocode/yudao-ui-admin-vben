@@ -70,10 +70,13 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
     const xxlWidth = Number.parseInt(itemCol.xxl as string) || xlWidth
     if (width <= screenEnum.LG)
       itemColSum += mdWidth
+
     else if (width < screenEnum.XL)
       itemColSum += lgWidth
+
     else if (width < screenEnum.XXL)
       itemColSum += xlWidth
+
     else
       itemColSum += xxlWidth
 
@@ -84,7 +87,10 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
         advanceState.hideAdvanceBtn = true
         advanceState.isAdvanced = true
       }
-      else if (itemColSum > BASIC_COL_LEN * 2 && itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)) {
+      else if (
+        itemColSum > BASIC_COL_LEN * 2
+        && itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)
+      ) {
         advanceState.hideAdvanceBtn = false
 
         // More than 3 lines collapsed by default
@@ -131,7 +137,10 @@ export default function ({ advanceState, emit, getProps, getSchema, formModel, d
       }
 
       if (isShow && (colProps || baseColProps)) {
-        const { itemColSum: sum, isAdvanced } = getAdvanced({ ...baseColProps, ...colProps }, itemColSum)
+        const { itemColSum: sum, isAdvanced } = getAdvanced(
+          { ...baseColProps, ...colProps },
+          itemColSum,
+        )
 
         itemColSum = sum || 0
         if (isAdvanced)

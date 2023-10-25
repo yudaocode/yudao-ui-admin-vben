@@ -14,13 +14,31 @@ type BiArgEmitter<T, Keys extends keyof T> = <K extends Keys>(evt: K, arg: T[K])
 
 export type EventEmitter<T extends Record<string, unknown>> = MonoArgEmitter<T, OptionalKeys<T>> & BiArgEmitter<T, RequiredKeys<T>>
 
-export type AnyFunction<T> = (...args: any[]) => T
+/**
+ * 任意类型的异步函数
+ */
+export type AnyPromiseFunction = (...arg: any[]) => PromiseLike<any>
+
+/**
+ * 任意类型的普通函数
+ */
+export type AnyNormalFunction = (...arg: any[]) => any
+
+/**
+ * 任意类型的函数
+ */
+export type AnyFunction = AnyNormalFunction | AnyPromiseFunction
 
 export type PartialReturnType<T extends (...args: unknown[]) => unknown> = Partial<ReturnType<T>>
 
 export type SFCWithInstall<T> = T & Plugin
 
 export type Nullable<T> = T | null
+
+/**
+ * 字符串类型对象
+ */
+export type Recordable<T = any> = Record<string, T>
 
 export type RefElement = Nullable<HTMLElement>
 

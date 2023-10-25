@@ -1,4 +1,5 @@
 import { tryOnMounted, tryOnUnmounted, useDebounceFn } from '@vueuse/core'
+import type { AnyFunction } from '@/utils/types'
 
 interface UseWindowSizeOptions {
   wait?: number
@@ -7,7 +8,7 @@ interface UseWindowSizeOptions {
   listenerOptions?: AddEventListenerOptions | boolean
 }
 
-function useWindowSizeFn<T>(fn: Fn<T>, options: UseWindowSizeOptions = {}) {
+function useWindowSizeFn(fn: AnyFunction, options: UseWindowSizeOptions = {}) {
   const { wait = 150, immediate } = options
   let handler = () => {
     fn()

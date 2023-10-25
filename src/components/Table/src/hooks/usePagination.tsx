@@ -16,6 +16,7 @@ interface ItemRender {
 function itemRender({ page, type, originalElement }: ItemRender) {
   if (type === 'prev')
     return page === 0 ? null : <LeftOutlined />
+
   else if (type === 'next')
     return page === 1 ? null : <RightOutlined />
 
@@ -76,7 +77,7 @@ export function usePagination(refProps: ComputedRef<BasicTableProps>) {
     return unref(show)
   }
 
-  function setShowPagination(flag: boolean) {
+  async function setShowPagination(flag: boolean) {
     show.value = flag
   }
 

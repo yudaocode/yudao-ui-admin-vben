@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <script lang="tsx">
-import type { CSSProperties } from 'vue'
+import type { CSSProperties, PropType } from 'vue'
 import { computed, defineComponent, nextTick, ref, toRaw, unref, watchEffect } from 'vue'
 import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue'
 import { pick, set } from 'lodash-es'
@@ -8,9 +8,8 @@ import { Spin } from 'ant-design-vue'
 import type { BasicColumn } from '../../types/table'
 import { useTableContext } from '../../hooks/useTableContext'
 import { CellComponent } from './CellComponent'
-import { createPlaceholderMessage } from './helper'
-import type { EditRecordRow } from './index'
 
+import { createPlaceholderMessage } from './helper'
 import { useDesign } from '@/hooks/web/useDesign'
 
 import clickOutside from '@/directives/clickOutside'
@@ -27,11 +26,13 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: [String, Number, Boolean, Object] as PropType<string | number | boolean | Recordable>,
+      type: [String, Number, Boolean, Object] as PropType<
+        string | number | boolean | Record<string, any>
+      >,
       default: '',
     },
     record: {
-      type: Object as PropType<EditRecordRow>,
+      type: Object as any,
     },
     column: {
       type: Object as PropType<BasicColumn>,
@@ -45,7 +46,7 @@ export default defineComponent({
     const elRef = ref()
     const ruleOpen = ref(false)
     const ruleMessage = ref('')
-    const optionsRef = ref<LabelValueOptions>([])
+    const optionsRef = ref([])
     const currentValueRef = ref<any>(props.value)
     const defaultValueRef = ref<any>(props.value)
     const spinning = ref<boolean>(false)
@@ -63,7 +64,6 @@ export default defineComponent({
       const component = unref(getComponent)
       return ['Checkbox', 'Switch'].includes(component)
     })
-
     const getDisable = computed(() => {
       const { editDynamicDisabled } = props.column
       let disabled = false
@@ -85,7 +85,7 @@ export default defineComponent({
 
       const value = isCheckValue ? (isNumber(val) || isBoolean(val) ? val : !!val) : val
 
-      let compProps = props.column?.editComponentProps ?? {}
+      let compProps = props.column?.editComponentProps ?? ({} as any)
       const { record, column, index } = props
 
       if (isFunction(compProps))
@@ -96,7 +96,7 @@ export default defineComponent({
       delete compProps.onChange
 
       const component = unref(getComponent)
-      const apiSelectProps: Recordable = {}
+      const apiSelectProps: Record<string, any> = {}
       if (component === 'ApiSelect')
         apiSelectProps.cache = true
 
@@ -133,12 +133,11 @@ export default defineComponent({
       if (!component.includes('Select') && !component.includes('Radio'))
         return value
 
-      const options: LabelValueOptions = unref(getComponentProps)?.options ?? (unref(optionsRef) || [])
+      const options = unref(getComponentProps)?.options ?? (unref(optionsRef) || [])
       const option = options.find(item => `${item.value}` === `${value}`)
 
       return option?.label ?? value
     })
-
     const getRowEditable = computed(() => {
       const { editable } = props.record || {}
       return !!editable
@@ -184,12 +183,16 @@ export default defineComponent({
       const component = unref(getComponent)
       if (!e)
         currentValueRef.value = e
+
       else if (component === 'Checkbox')
-        currentValueRef.value = (e as ChangeEvent).target.checked
+        currentValueRef.value = e.target.checked
+
       else if (component === 'Switch')
         currentValueRef.value = e
+
       else if (e?.target && Reflect.has(e.target, 'value'))
-        currentValueRef.value = (e as ChangeEvent).target.value
+        currentValueRef.value = e.target.value
+
       else if (isString(e) || isBoolean(e) || isNumber(e) || isArray(e))
         currentValueRef.value = e
 
@@ -219,7 +222,7 @@ export default defineComponent({
           return false
         }
         if (isFunction(editRule)) {
-          const res = await editRule(currentValue, record as Recordable)
+          const res = await editRule(currentValue, record)
           if (res) {
             ruleMessage.value = res
             ruleOpen.value = true
@@ -259,7 +262,9 @@ export default defineComponent({
 
         if (beforeEditSubmit && isFunction(beforeEditSubmit)) {
           spinning.value = true
-          const keys: string[] = columns.map(_column => _column.dataIndex).filter(field => !!field) as string[]
+          const keys: string[] = columns
+            .map(_column => _column.dataIndex)
+            .filter(field => !!field) as string[]
           let result: any = true
           try {
             result = await beforeEditSubmit({
@@ -322,28 +327,31 @@ export default defineComponent({
     }
 
     // only ApiSelect or TreeSelect
-    function handleOptionsChange(options: LabelValueOptions) {
+    function handleOptionsChange(options) {
       const { replaceFields } = unref(getComponentProps)
       const component = unref(getComponent)
       if (component === 'ApiTreeSelect') {
         const { title = 'title', value = 'value', children = 'children' } = replaceFields || {}
-        let listOptions: Recordable[] = treeToList(options, { children })
+        let listOptions = treeToList(options, { children })
         listOptions = listOptions.map((item) => {
           return {
             label: item[title],
             value: item[value],
           }
         })
-        optionsRef.value = listOptions as LabelValueOptions
+        optionsRef.value = listOptions
       }
       else {
         optionsRef.value = options
       }
     }
 
-    function initCbs(cbs: 'submitCbs' | 'validCbs' | 'cancelCbs', handle: Fn) {
-      if (props.record)
-        isArray(props.record[cbs]) ? props.record[cbs]?.push(handle) : (props.record[cbs] = [handle])
+    function initCbs(cbs: 'submitCbs' | 'validCbs' | 'cancelCbs', handle) {
+      if (props.record) {
+        isArray(props.record[cbs])
+          ? props.record[cbs]?.push(handle)
+          : (props.record[cbs] = [handle])
+      }
     }
 
     if (props.record) {
@@ -434,7 +442,10 @@ export default defineComponent({
               />
               {!this.getRowEditable && (
                 <div class={`${this.prefixCls}__action`}>
-                  <CheckOutlined class={[`${this.prefixCls}__icon`, 'mx-2']} onClick={this.handleSubmitClick} />
+                  <CheckOutlined
+                    class={[`${this.prefixCls}__icon`, 'mx-2']}
+                    onClick={this.handleSubmitClick}
+                  />
                   <CloseOutlined class={`${this.prefixCls}__icon `} onClick={this.handleCancel} />
                 </div>
               )}
@@ -477,10 +488,12 @@ export default defineComponent({
 .edit-cell-rule-popover {
   .ant-popover-inner-content {
     padding: 4px 8px;
+    color: @error-color;
     // border: 1px solid @error-color;
     border-radius: 2px;
   }
 }
+
 .@{prefix-cls} {
   position: relative;
   min-height: 24px; // 设置高度让其始终可被hover
@@ -490,7 +503,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
 
-    > .ant-select {
+    >.ant-select {
       min-width: calc(100% - 50px);
     }
   }
@@ -498,6 +511,10 @@ export default defineComponent({
   &__icon {
     &:hover {
       transform: scale(1.2);
+
+      svg {
+        color: @primary-color;
+      }
     }
   }
 

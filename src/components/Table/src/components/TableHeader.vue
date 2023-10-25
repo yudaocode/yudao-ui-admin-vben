@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { Divider } from 'ant-design-vue'
 import type { ColumnChangeParam, TableSetting } from '../types/table'
 import TableSettingComponent from './settings/index.vue'
@@ -9,7 +10,7 @@ defineOptions({ name: 'BasicTableHeader' })
 
 defineProps({
   title: {
-    type: [Function, String] as PropType<string | ((data: Recordable) => string)>,
+    type: [Function, String] as PropType<string | ((data) => string)>,
   },
   tableSetting: {
     type: Object as PropType<TableSetting>,
@@ -37,11 +38,19 @@ function handleColumnChange(data: ColumnChangeParam[]) {
     </div>
     <div class="flex items-center">
       <slot v-if="$slots.tableTitle" name="tableTitle" />
-      <TableTitle v-if="!$slots.tableTitle && title" :help-message="titleHelpMessage" :title="title" />
+      <TableTitle
+        v-if="!$slots.tableTitle && title"
+        :help-message="titleHelpMessage"
+        :title="title"
+      />
       <div :class="`${prefixCls}__toolbar`">
         <slot name="toolbar" />
         <Divider v-if="$slots.toolbar && showTableSetting" type="vertical" />
-        <TableSettingComponent v-if="showTableSetting" :setting="tableSetting" @columns-change="handleColumnChange" />
+        <TableSettingComponent
+          v-if="showTableSetting"
+          :setting="tableSetting"
+          @columns-change="handleColumnChange"
+        />
       </div>
     </div>
   </div>

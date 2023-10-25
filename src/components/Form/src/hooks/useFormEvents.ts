@@ -91,7 +91,7 @@ export function useFormEvents({
       if (fieldKeys.length) {
         // eslint-disable-next-line array-callback-return
         fieldKeys.map((field) => {
-          formModel[field] = defaultValueObj[field]
+          formModel[field] = defaultValueObj![field]
         })
       }
       formModel[key] = getDefaultValue(schema, defaultValueRef, key)
@@ -127,7 +127,7 @@ export function useFormEvents({
 
       value = handleInputNumberValue(schema?.component, value)
       const { componentProps } = schema || {}
-      let _props = componentProps
+      let _props = componentProps as any
       if (typeof componentProps === 'function')
         _props = _props({ formModel: unref(formModel) })
 
@@ -230,18 +230,14 @@ export function useFormEvents({
     }
     const index = schemaList.findIndex(schema => schema.field === prefixField)
     const _schemaList = isObject(schema) ? [schema as FormSchema] : (schema as FormSchema[])
-    if (!prefixField || index === -1 || first) {
+    if (!prefixField || index === -1 || first)
       first ? schemaList.unshift(..._schemaList) : schemaList.push(..._schemaList)
-      schemaRef.value = schemaList
-      _setDefaultValue(schema)
-      return
-    }
-    if (index !== -1)
+
+    else if (index !== -1)
       schemaList.splice(index + 1, 0, ..._schemaList)
 
-    _setDefaultValue(schema)
-
     schemaRef.value = schemaList
+    _setDefaultValue(schema)
   }
 
   async function resetSchema(data: Partial<FormSchema> | Partial<FormSchema>[]) {
@@ -262,7 +258,7 @@ export function useFormEvents({
       )
       return
     }
-    schemaRef.value = updateData
+    schemaRef.value = updateData as FormSchema[]
   }
 
   async function updateSchema(data: Partial<FormSchema> | Partial<FormSchema>[]) {

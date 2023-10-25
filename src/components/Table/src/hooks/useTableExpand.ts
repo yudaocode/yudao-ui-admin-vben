@@ -3,7 +3,11 @@ import { computed, ref, toRaw, unref } from 'vue'
 import type { BasicTableProps } from '../types/table'
 import { ROW_KEY } from '../const'
 
-export function useTableExpand(propsRef: ComputedRef<BasicTableProps>, tableData: Ref<Recordable[]>, emit: EmitType) {
+export function useTableExpand(
+  propsRef: ComputedRef<BasicTableProps>,
+  tableData: Ref<Recordable[]>,
+  emit: EmitType,
+) {
   const expandedRowKeys = ref<(string | number)[]>([])
 
   const getAutoCreateKey = computed(() => {

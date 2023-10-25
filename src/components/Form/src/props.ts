@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'vue'
+import type { CSSProperties, PropType } from 'vue'
 import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes'
 import type { RowProps } from 'ant-design-vue/lib/grid/Row'
 import type { FieldMapToTime, FormSchema } from './types/form'
@@ -41,7 +41,7 @@ export const basicProps = {
   autoSubmitOnEnter: propTypes.bool.def(false),
   submitOnReset: propTypes.bool,
   submitOnChange: propTypes.bool,
-  size: propTypes.oneOf(['default', 'small', 'large']),
+  size: propTypes.oneOf(['default', 'small', 'large']).def('default'),
   // 禁用表单
   disabled: propTypes.bool,
   emptySpan: {

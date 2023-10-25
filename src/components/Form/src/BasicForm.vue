@@ -11,18 +11,17 @@ import FormItem from './components/FormItem.vue'
 import FormAction from './components/FormAction.vue'
 
 import { dateItemType } from './helper'
+
 import { useFormValues } from './hooks/useFormValues'
 import useAdvanced from './hooks/useAdvanced'
 import { useFormEvents } from './hooks/useFormEvents'
 import { createFormContext } from './hooks/useFormContext'
 import { useAutoFocus } from './hooks/useAutoFocus'
 import { basicProps } from './props'
-import { dateUtil } from '@/utils/dateUtil'
-
-import { deepMerge } from '@/utils'
-
 import { useModalContext } from '@/components/Modal'
 
+import { deepMerge } from '@/utils'
+import { dateUtil } from '@/utils/dateUtil'
 import { useDesign } from '@/hooks/web/useDesign'
 
 defineOptions({ name: 'BasicForm' })
@@ -30,7 +29,7 @@ defineOptions({ name: 'BasicForm' })
 const props = defineProps(basicProps)
 const emit = defineEmits(['advanced-change', 'reset', 'submit', 'register', 'field-value-change'])
 const attrs = useAttrs()
-const formModel = reactive<Recordable>({})
+const formModel = reactive({})
 const modalFn = useModalContext()
 
 const advanceState = reactive<AdvanceState>({
@@ -40,11 +39,11 @@ const advanceState = reactive<AdvanceState>({
   actionSpan: 6,
 })
 
-const defaultValueRef = ref<Recordable>({})
+const defaultValueRef = ref({})
 const isInitedDefaultRef = ref(false)
 const propsRef = ref<Partial<FormProps>>()
-const schemaRef = ref<Nullable<FormSchema[]>>(null)
-const formElRef = ref<Nullable<FormActionType>>(null)
+const schemaRef = ref<FormSchema[] | null>(null)
+const formElRef = ref<FormActionType | null>(null)
 
 const { prefixCls } = useDesign('basic-form')
 
@@ -63,7 +62,7 @@ const getFormClass = computed(() => {
 })
 
 // Get uniform row style and Row configuration for the entire form
-const getRow = computed((): Recordable => {
+const getRow = computed(() => {
   const { baseRowStyle = {}, rowProps } = unref(getProps)
   return {
     style: baseRowStyle,
@@ -85,10 +84,14 @@ const getSchema = computed((): FormSchema[] => {
       isHandleDateDefaultValue = true,
     } = schema
 
-    // eslint-disable-next-line dot-notation
-    const valueFormat = componentProps ? componentProps['valueFormat'] : null
+    const valueFormat = componentProps ? componentProps.valueFormat : null
     // handle date type
-    if (isHandleDateDefaultValue && defaultValue && component && dateItemType.includes(component)) {
+    if (
+      isHandleDateDefaultValue
+            && defaultValue
+            && component
+            && dateItemType.includes(component)
+    ) {
       if (!Array.isArray(defaultValue)) {
         schema.defaultValue = valueFormat
           ? dateUtil(defaultValue).format(valueFormat)
@@ -97,16 +100,20 @@ const getSchema = computed((): FormSchema[] => {
       else {
         const def: any[] = []
         defaultValue.forEach((item) => {
-          def.push(dateUtil(item))
+          def.push(valueFormat ? dateUtil(item).format(valueFormat) : dateUtil(item))
         })
         schema.defaultValue = def
       }
     }
   }
-  if (unref(getProps).showAdvancedButton)
-    return cloneDeep(schemas.filter(schema => schema.component !== 'Divider') as FormSchema[])
-  else
+  if (unref(getProps).showAdvancedButton) {
+    return cloneDeep(
+      schemas.filter(schema => schema.component !== 'Divider') as FormSchema[],
+    )
+  }
+  else {
     return cloneDeep(schemas as FormSchema[])
+  }
 })
 
 const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
@@ -215,7 +222,7 @@ function setFormModel(key: string, value: any, schema: FormSchema) {
   emit('field-value-change', key, value)
   // TODO 优化验证，这里如果是autoLink=false手动关联的情况下才会再次触发此函数
   if (schema && schema.itemProps && !schema.itemProps.autoLink)
-    validateFields([key]).catch((_) => { })
+    validateFields([key]).catch((_) => {})
 }
 
 function handleEnterPress(e: KeyboardEvent) {
@@ -254,14 +261,25 @@ const getFormActionBindProps = computed(() => ({ ...getProps.value, ...advanceSt
 </script>
 
 <template>
-  <Form v-bind="getBindValue" ref="formElRef" :class="getFormClass" :model="formModel" @keypress.enter="handleEnterPress">
+  <Form
+    v-bind="getBindValue"
+    ref="formElRef"
+    :class="getFormClass"
+    :model="formModel"
+    @keypress.enter="handleEnterPress"
+  >
     <Row v-bind="getRow">
       <slot name="formHeader" />
       <template v-for="schema in getSchema" :key="schema.field">
         <FormItem
-          :is-advanced="fieldsIsAdvancedMap[schema.field]" :table-action="tableAction"
-          :form-action-type="formActionType as any" :schema="schema" :form-props="getProps"
-          :all-default-values="defaultValueRef" :form-model="formModel" :set-form-model="setFormModel"
+          :is-advanced="fieldsIsAdvancedMap[schema.field]"
+          :table-action="tableAction"
+          :form-action-type="formActionType"
+          :schema="schema"
+          :form-props="getProps"
+          :all-default-values="defaultValueRef"
+          :form-model="formModel"
+          :set-form-model="setFormModel"
         >
           <template v-for="item in Object.keys($slots)" #[item]="data">
             <slot :name="item" v-bind="data || {}" />
@@ -270,7 +288,10 @@ const getFormActionBindProps = computed(() => ({ ...getProps.value, ...advanceSt
       </template>
 
       <FormAction v-bind="getFormActionBindProps" @toggle-advanced="handleToggleAdvanced">
-        <template v-for="item in ['resetBefore', 'submitBefore', 'advanceBefore', 'advanceAfter']" #[item]="data">
+        <template
+          v-for="item in ['resetBefore', 'submitBefore', 'advanceBefore', 'advanceAfter']"
+          #[item]="data"
+        >
           <slot :name="item" v-bind="data || {}" />
         </template>
       </FormAction>

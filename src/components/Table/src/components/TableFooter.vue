@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed, toRaw, unref } from 'vue'
 import { Table } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
@@ -10,6 +11,7 @@ import { propTypes } from '@/utils/propTypes'
 import { isFunction } from '@/utils/is'
 
 defineOptions({ name: 'BasicTableFooter' })
+
 const props = defineProps({
   summaryFunc: {
     type: Function as PropType<Fn>,

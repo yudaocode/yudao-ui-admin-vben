@@ -179,7 +179,7 @@ export function useTableScroll(
 
     handleScrollBar(bodyEl, tableEl)
 
-    bodyEl.style.height = 'unset'
+    bodyEl!.style.height = 'unset'
 
     if (!unref(getCanResize) || !unref(tableData) || tableData.length === 0)
       return
@@ -207,7 +207,7 @@ export function useTableScroll(
     height = (height > maxHeight! ? (maxHeight as number) : height) ?? height
     setHeight(height)
 
-    bodyEl.style.height = `${height}px`
+    bodyEl!.style.height = `${height}px`
   }
   useWindowSizeFn(calcTableHeight, { wait: 280 })
   onMountedOrActivated(() => {

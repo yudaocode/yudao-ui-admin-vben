@@ -33,9 +33,13 @@ export interface FormActionType {
   resetSchema: (data: Partial<FormSchemaInner> | Partial<FormSchemaInner>[]) => Promise<void>
   setProps: (formProps: Partial<FormProps>) => Promise<void>
   removeSchemaByField: (field: string | string[]) => Promise<void>
-  appendSchemaByField: (schema: FormSchema | FormSchema[], prefixField: string | undefined, first?: boolean | undefined) => Promise<void>
+  appendSchemaByField: (
+    schema: FormSchemaInner | FormSchemaInner[],
+    prefixField: string | undefined,
+    first?: boolean | undefined,
+  ) => Promise<void>
   validateFields: (nameList?: NamePath[]) => Promise<any>
-  validate: <T = any>(nameList?: NamePath[] | false) => Promise<T>
+  validate: <T = Recordable>(nameList?: NamePath[] | false) => Promise<T>
   scrollToField: (name: NamePath, options?: ScrollOptions) => Promise<void>
 }
 
@@ -139,13 +143,25 @@ interface BaseFormSchema {
   // Auxiliary text
   subLabel?: string
   // Help text on the right side of the text
-  helpMessage?: string | string[] | ((renderCallbackParams: RenderCallbackParams) => string | string[])
+  helpMessage?:
+  | string
+  | string[]
+  | ((renderCallbackParams: RenderCallbackParams) => string | string[])
   // BaseHelp component props
   helpComponentProps?: Partial<HelpComponentProps>
   // Label width, if it is passed, the labelCol and WrapperCol configured by itemProps will be invalid
   labelWidth?: string | number
   // Disable the adjustment of labelWidth with global settings of formModel, and manually set labelCol and wrapperCol by yourself
   disabledLabelWidth?: boolean
+  // Component parameters
+  componentProps?:
+  | ((opt: {
+    schema: FormSchema
+    tableAction: TableActionType
+    formActionType: FormActionType
+    formModel: Recordable
+  }) => Recordable)
+  | object
   // Required
   required?: boolean | ((renderCallbackParams: RenderCallbackParams) => boolean)
 
@@ -192,7 +208,11 @@ interface BaseFormSchema {
     opts: RenderOpts,
   ) => VNode | VNode[] | string
 
-  renderComponentContent?: ((renderCallbackParams: RenderCallbackParams, opts: RenderOpts) => any) | VNode | VNode[] | string
+  renderComponentContent?:
+  | ((renderCallbackParams: RenderCallbackParams, opts: RenderOpts) => any)
+  | VNode
+  | VNode[]
+  | string
 
   // Custom slot, similar to renderColContent
   colSlot?: string
@@ -201,24 +221,14 @@ interface BaseFormSchema {
 
   dynamicRules?: (renderCallbackParams: RenderCallbackParams) => Rule[]
 }
-
-interface ComponentFormSchema extends BaseFormSchema {
+export interface ComponentFormSchema extends BaseFormSchema {
   // render component
   component: ComponentType
-  // Component parameters
-  componentProps?:
-  | ((opt: {
-    schema: FormSchema
-    tableAction: TableActionType
-    formActionType: FormActionType
-    formModel: Recordable
-  }) => Recordable)
-  | object
 }
 
-interface SlotFormSchema extends BaseFormSchema {
+export interface SlotFormSchema extends BaseFormSchema {
   // Custom slot, in from-item
-  slot?: string
+  slot: string
 }
 
 export type FormSchema = ComponentFormSchema | SlotFormSchema

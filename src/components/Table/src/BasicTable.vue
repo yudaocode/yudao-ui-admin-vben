@@ -6,6 +6,7 @@ import { omit } from 'lodash-es'
 import type { BasicTableProps, ColumnChangeParam, InnerHandlers, SizeType, TableActionType } from './types/table'
 import HeaderCell from './components/HeaderCell.vue'
 import { usePagination } from './hooks/usePagination'
+
 import { useColumns } from './hooks/useColumns'
 import { useDataSource } from './hooks/useDataSource'
 import { useLoading } from './hooks/useLoading'
@@ -21,14 +22,16 @@ import { useTableFooter } from './hooks/useTableFooter'
 import { useTableForm } from './hooks/useTableForm'
 import { basicProps } from './props'
 import { useDesign } from '@/hooks/web/useDesign'
-import { BasicForm, useForm } from '@/components/Form'
+
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
+import { BasicForm, useForm } from '@/components/Form'
 import { isFunction } from '@/utils/is'
 import { warn } from '@/utils/log'
 
 defineOptions({ name: 'BasicTable' })
 
 const props = defineProps(basicProps)
+
 const emit = defineEmits([
   'fetch-success',
   'fetch-error',
@@ -47,11 +50,11 @@ const emit = defineEmits([
   'change',
   'columns-change',
 ])
+
 const slots = useSlots()
 const attrs = useAttrs()
-
 const tableElRef = ref(null)
-const tableData = ref<Recordable[]>([])
+const tableData = ref([])
 
 const wrapRef = ref(null)
 const formRef = ref(null)
@@ -72,7 +75,13 @@ watchEffect(() => {
 })
 
 const { getLoading, setLoading } = useLoading(getProps)
-const { getPaginationInfo, getPagination, setPagination, setShowPagination, getShowPagination } = usePagination(getProps)
+const {
+  getPaginationInfo,
+  getPagination,
+  setPagination,
+  setShowPagination,
+  getShowPagination,
+} = usePagination(getProps)
 
 const {
   getRowSelection,
@@ -121,10 +130,16 @@ function handleTableChange(pagination: any, filters: any, sorter: any, extra: an
   onChange && isFunction(onChange) && onChange(pagination, filters, sorter, extra)
 }
 
-const { getViewColumns, getColumns, setCacheColumnsByField, setCacheColumns, setColumns, getColumnsRef, getCacheColumns } = useColumns(
-  getProps,
-  getPaginationInfo,
-)
+const {
+  getViewColumns,
+  getColumns,
+  setCacheColumnsByField,
+  setCacheColumns,
+  setColumnWidth,
+  setColumns,
+  getColumnsRef,
+  getCacheColumns,
+} = useColumns(getProps, getPaginationInfo)
 
 const { getScrollRef, redoHeight } = useTableScroll(
   getProps,
@@ -148,7 +163,11 @@ const { customRow } = useCustomRow(getProps, {
 
 const { getRowClassName } = useTableStyle(getProps, prefixCls)
 
-const { getExpandOption, expandAll, expandRows, collapseAll } = useTableExpand(getProps, tableData, emit)
+const { getExpandOption, expandAll, expandRows, collapseAll } = useTableExpand(
+  getProps,
+  tableData,
+  emit,
+)
 
 const handlers: InnerHandlers = {
   onColumnsChange: (data: ColumnChangeParam[]) => {
@@ -160,18 +179,19 @@ const handlers: InnerHandlers = {
 
 const { getHeaderProps } = useTableHeader(getProps, slots, handlers)
 
-const { getFooterProps } = useTableFooter(getProps, getScrollRef, tableElRef, getDataSourceRef)
-
-const { getFormProps, replaceFormSlotKey, getFormSlotKeys, handleSearchInfoChange, getShowForm, setShowForm } = useTableForm(
+const { getFooterProps } = useTableFooter(
   getProps,
-  slots,
-  fetch,
-  getLoading,
+  getScrollRef,
+  tableElRef,
+  getDataSourceRef,
 )
+
+const { getFormProps, replaceFormSlotKey, getFormSlotKeys, handleSearchInfoChange, getShowForm, setShowForm }
+        = useTableForm(getProps, slots, fetch, getLoading)
 
 const getBindValues = computed(() => {
   const dataSource = unref(getDataSourceRef)
-  let propsData: Recordable = {
+  let propsData: any = {
     ...attrs,
     customRow,
     ...unref(getProps),
@@ -219,10 +239,6 @@ function setProps(props: Partial<BasicTableProps>) {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
 }
 
-function handleResizeColumn(w, col) {
-  col.width = w
-}
-
 const tableAction: TableActionType = {
   reload,
   getSelectRows,
@@ -265,7 +281,7 @@ const tableAction: TableActionType = {
 }
 createTableContext({ ...tableAction, wrapRef, getBindValues })
 
-defineExpose({ tableAction })
+defineExpose(tableAction)
 
 emit('register', tableAction, formActions)
 </script>
@@ -293,7 +309,7 @@ emit('register', tableAction, formActions)
       v-bind="getBindValues"
       :row-class-name="getRowClassName"
       @change="handleTableChange"
-      @resize-column="handleResizeColumn"
+      @resize-column="setColumnWidth"
     >
       <template v-for="item in Object.keys($slots)" #[item]="data" :key="item">
         <slot :name="item" v-bind="data || {}" />
@@ -315,9 +331,10 @@ emit('register', tableAction, formActions)
 </template>
 
 <style lang="less">
+@border-color: #cecece4d;
 @prefix-cls: ~'@{namespace}-basic-table';
 
-html[data-theme='dark'] {
+[data-theme='dark'] {
   .ant-table-tbody > tr:hover.ant-table-row-selected > td,
   .ant-table-tbody > tr.ant-table-row-selected td {
     background-color: #262626;
@@ -378,7 +395,7 @@ html[data-theme='dark'] {
     //}
   }
 
-  .ant-pagination {
+  .ant-table-wrapper .ant-pagination {
     margin: 10px 0 0;
   }
 

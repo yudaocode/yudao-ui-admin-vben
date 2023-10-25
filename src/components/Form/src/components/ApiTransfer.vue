@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref, unref, useAttrs, watch, watchEffect } from 'vue'
+import type { PropType } from 'vue'
+import { computed, ref, unref, watch, watchEffect } from 'vue'
 import { Transfer } from 'ant-design-vue'
 import { get, omit } from 'lodash-es'
 import type { TransferDirection, TransferItem } from 'ant-design-vue/lib/transfer'
@@ -9,16 +10,16 @@ import { propTypes } from '@/utils/propTypes'
 defineOptions({ name: 'ApiTransfer' })
 
 const props = defineProps({
-  value: { type: Array as PropType<Array<any>> },
+  value: { type: Array as PropType<Array<string>> },
   api: {
-    type: Function as PropType<(arg?: Recordable) => Promise<TransferItem[]>>,
+    type: Function as PropType<(arg) => Promise<TransferItem[]>>,
     default: null,
   },
   params: { type: Object },
   dataSource: { type: Array as PropType<Array<TransferItem>> },
   immediate: propTypes.bool.def(true),
-  alwaysLoad: propTypes.bool.def(true),
-  afterFetch: { type: Function as PropType<Fn> },
+  alwaysLoad: propTypes.bool.def(false),
+  afterFetch: { type: Function },
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('title'),
   valueField: propTypes.string.def('key'),
@@ -31,20 +32,22 @@ const props = defineProps({
   showSelectAll: { type: Boolean, default: true },
   targetKeys: { type: Array as PropType<Array<string>> },
 })
-const emit = defineEmits(['optionsChange', 'change'])
-const attrs = useAttrs()
+const emit = defineEmits(['options-change', 'change'])
+// const attrs = useAttrs()
 
 const _dataSource = ref<TransferItem[]>([])
 const _targetKeys = ref<string[]>([])
-const getAttrs = computed(() => {
-  return {
-    ...(!props.api ? { dataSource: unref(_dataSource) } : {}),
-    ...attrs,
-  }
-})
+
+// const getAttrs = computed(() => {
+//   return {
+//     ...(!props.api ? { dataSource: unref(_dataSource) } : {}),
+//     ...attrs,
+//   }
+// })
 const getdataSource = computed(() => {
   const { labelField, valueField } = props
-  return unref(_dataSource).reduce((prev, next: Recordable) => {
+
+  return unref(_dataSource).reduce((prev, next) => {
     if (next) {
       prev.push({
         ...omit(next, [labelField, valueField]),
@@ -56,9 +59,9 @@ const getdataSource = computed(() => {
   }, [] as TransferItem[])
 })
 const getTargetKeys = computed<string[]>(() => {
-  // if (unref(_targetKeys).length > 0)
-  //   return unref(_targetKeys)
-
+  /* if (unref(_targetKeys).length > 0) {
+          return unref(_targetKeys);
+        } */
   if (Array.isArray(props.value))
     return props.value
 
@@ -67,15 +70,18 @@ const getTargetKeys = computed<string[]>(() => {
 
   return []
 })
+
 function handleChange(keys: string[], direction: TransferDirection, moveKeys: string[]) {
   _targetKeys.value = keys
   console.log(direction)
   console.log(moveKeys)
   emit('change', keys)
 }
+
 watchEffect(() => {
   props.immediate && !props.alwaysLoad && fetch()
 })
+
 watch(
   () => props.params,
   () => {
@@ -83,6 +89,7 @@ watch(
   },
   { deep: true },
 )
+
 async function fetch() {
   const api = props.api
   if (!api || !isFunction(api)) {
@@ -109,13 +116,12 @@ async function fetch() {
   }
 }
 function emitChange() {
-  emit('optionsChange', unref(getdataSource))
+  emit('options-change', unref(getdataSource))
 }
 </script>
 
 <template>
   <Transfer
-    v-bind="getAttrs"
     :data-source="getdataSource"
     :filter-option="filterOption"
     :render="(item) => item.title"

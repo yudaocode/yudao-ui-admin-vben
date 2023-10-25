@@ -1,7 +1,6 @@
-import { ref, unref } from 'vue'
-import { isFunction, isUnDef } from '@/utils/is'
+import { shallowRef, unref } from 'vue'
 
-export interface ScrollToParams {
+interface UseScrollToOptions {
   el: any
   to: number
   duration?: number
@@ -16,6 +15,7 @@ function easeInOutQuad(t: number, b: number, c: number, d: number) {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
+
 function move(el: HTMLElement, amount: number) {
   el.scrollTop = amount
 }
@@ -23,13 +23,13 @@ function move(el: HTMLElement, amount: number) {
 function position(el: HTMLElement) {
   return el.scrollTop
 }
-export function useScrollTo({ el, to, duration = 500, callback }: ScrollToParams) {
-  const isActiveRef = ref(false)
+
+function useScrollTo({ el, to, duration = 500, callback }: UseScrollToOptions) {
+  const isActiveRef = shallowRef(false)
   const start = position(el)
   const change = to - start
   const increment = 20
   let currentTime = 0
-  duration = isUnDef(duration) ? 500 : duration
 
   const animateScroll = function () {
     if (!unref(isActiveRef))
@@ -42,7 +42,7 @@ export function useScrollTo({ el, to, duration = 500, callback }: ScrollToParams
       requestAnimationFrame(animateScroll)
     }
     else {
-      if (callback && isFunction(callback))
+      if (callback && typeof callback === 'function')
         callback()
     }
   }
@@ -57,3 +57,5 @@ export function useScrollTo({ el, to, duration = 500, callback }: ScrollToParams
 
   return { start: run, stop }
 }
+
+export { useScrollTo, type UseScrollToOptions }

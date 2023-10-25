@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { ref, unref, watch, watchEffect } from 'vue'
 import { Cascader } from 'ant-design-vue'
 import { get, omit } from 'lodash-es'
@@ -8,12 +9,22 @@ import { isFunction } from '@/utils/is'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useI18n } from '@/hooks/web/useI18n'
 
+interface Option {
+  value: string
+  label: string
+  loading?: boolean
+  isLeaf?: boolean
+  children?: Option[]
+}
+
 defineOptions({ name: 'ApiCascader' })
 
 const props = defineProps({
-  value: propTypes.array.def([]),
+  value: {
+    type: Array,
+  },
   api: {
-    type: Function as PropType<(arg?: Recordable) => Promise<Option[]>>,
+    type: Function as PropType<(arg?: Recordable<any>) => Promise<Option[]>>,
     default: null,
   },
   numberToString: propTypes.bool.def(false),
@@ -25,38 +36,28 @@ const props = defineProps({
   immediate: propTypes.bool.def(true),
   // init fetch params
   initFetchParams: {
-    type: Object as PropType<Recordable>,
+    type: Object as PropType<Recordable<any>>,
     default: () => ({}),
   },
   // 是否有下级，默认是
   isLeaf: {
-    type: Function as PropType<(arg: Recordable) => boolean>,
+    type: Function as PropType<(arg: Recordable<any>) => boolean>,
     default: null,
   },
   displayRenderArray: {
     type: Array,
   },
-  alwaysLoad: propTypes.bool.def(true),
 })
 
 const emit = defineEmits(['change', 'defaultChange'])
-
-interface Option {
-  value: string
-  label: string
-  loading?: boolean
-  isLeaf?: boolean
-  children?: Option[]
-}
-
 const apiData = ref<any[]>([])
 const options = ref<Option[]>([])
 const loading = ref<boolean>(false)
 const emitData = ref<any[]>([])
-const isFirstLoad = ref(false)
+const isFirstLoad = ref(true)
 const { t } = useI18n()
 // Embedded in the form, just use the hook binding to perform form verification
-const [state]: any = useRuleFormItem(props, 'value', 'change', emitData)
+const [state]: any[] = useRuleFormItem(props, 'value', 'change', emitData)
 
 watch(
   apiData,
@@ -69,7 +70,7 @@ watch(
 
 function generatorOptions(options: any[]): Option[] {
   const { labelField, valueField, numberToString, childrenField, isLeaf } = props
-  return options.reduce((prev, next: Recordable) => {
+  return options.reduce((prev, next: Recordable<any>) => {
     if (next) {
       const value = next[valueField]
       const item = {
@@ -147,17 +148,13 @@ watchEffect(() => {
 watch(
   () => props.initFetchParams,
   () => {
-    if (props.alwaysLoad)
-      initialFetch()
-
-    else
-      !unref(isFirstLoad) && initialFetch()
+    !unref(isFirstLoad) && initialFetch()
   },
   { deep: true },
 )
 
 function handleChange(keys, args) {
-  emitData.value = keys
+  emitData.value = args
   emit('defaultChange', keys, args)
 }
 
@@ -174,8 +171,12 @@ function handleRenderDisplay({ labels, selectedOptions }) {
 
 <template>
   <Cascader
-    v-model:value="state" :options="options" :load-data="loadData" change-on-select
-    :display-render="handleRenderDisplay" @change="handleChange"
+    v-model:value="state"
+    :options="options"
+    :load-data="loadData"
+    change-on-select
+    :display-render="handleRenderDisplay"
+    @change="handleChange"
   >
     <template v-if="loading" #suffixIcon>
       <LoadingOutlined spin />

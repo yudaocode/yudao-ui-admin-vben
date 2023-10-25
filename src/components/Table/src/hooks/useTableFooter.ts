@@ -20,7 +20,9 @@ export function useTableFooter(
 
   const getFooterProps = computed((): Recordable | undefined => {
     const { summaryFunc, showSummary, summaryData } = unref(propsRef)
-    return showSummary && !unref(getIsEmptyData) ? () => h(TableFooter, { summaryFunc, summaryData, scroll: unref(scrollRef) }) : undefined
+    return showSummary && !unref(getIsEmptyData)
+      ? () => h(TableFooter, { summaryFunc, summaryData, scroll: unref(scrollRef) })
+      : undefined
   })
 
   watchEffect(() => {
@@ -41,7 +43,9 @@ export function useTableFooter(
         el: bodyDom,
         name: 'scroll',
         listener: () => {
-          const footerBodyDom = tableEl.$el.querySelector('.ant-table-footer .ant-table-content') as HTMLDivElement
+          const footerBodyDom = tableEl.$el.querySelector(
+            '.ant-table-footer .ant-table-content',
+          ) as HTMLDivElement
           if (!footerBodyDom || !bodyDom)
             return
           footerBodyDom.scrollLeft = bodyDom.scrollLeft

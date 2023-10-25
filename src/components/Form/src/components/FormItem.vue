@@ -1,7 +1,7 @@
 <script lang="tsx">
-import type { Ref } from 'vue'
+import type { PropType, Ref } from 'vue'
 import { computed, defineComponent, toRefs, unref } from 'vue'
-import type { Rule } from 'ant-design-vue/lib/form'
+import type { Rule as ValidationRule } from 'ant-design-vue/lib/form'
 import { Col, Divider, Form } from 'ant-design-vue'
 import { cloneDeep, upperFirst } from 'lodash-es'
 import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form'
@@ -13,6 +13,7 @@ import type { TableActionType } from '@/components/Table'
 import { BasicHelp } from '@/components/Basic'
 import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { getSlot } from '@/utils/helper/tsxHelper'
+import type { Nullable, Recordable } from '@/utils/types'
 import { useI18n } from '@/hooks/web/useI18n'
 
 export default defineComponent({
@@ -28,11 +29,11 @@ export default defineComponent({
       default: () => ({}),
     },
     allDefaultValues: {
-      type: Object as PropType<Recordable>,
+      type: Object as PropType<Recordable<any>>,
       default: () => ({}),
     },
     formModel: {
-      type: Object as PropType<Recordable>,
+      type: Object as PropType<Recordable<any>>,
       default: () => ({}),
     },
     setFormModel: {
@@ -69,7 +70,7 @@ export default defineComponent({
           ...mergeDynamicData,
           ...allDefaultValues,
           ...formModel,
-        } as Recordable,
+        } as Recordable<any>,
         schema,
       }
     })
@@ -90,7 +91,7 @@ export default defineComponent({
           componentProps,
         )
       }
-      return componentProps as Recordable
+      return componentProps as Recordable<any>
     })
 
     const getDisable = computed(() => {
@@ -110,7 +111,11 @@ export default defineComponent({
     function getShow(): { isShow: boolean; isIfShow: boolean } {
       const { show, ifShow } = props.schema
       const { showAdvancedButton } = props.formProps
-      const itemIsAdvanced = showAdvancedButton ? (isBoolean(props.isAdvanced) ? props.isAdvanced : true) : true
+      const itemIsAdvanced = showAdvancedButton
+        ? isBoolean(props.isAdvanced)
+          ? props.isAdvanced
+          : true
+        : true
 
       let isShow = true
       let isIfShow = true
@@ -131,18 +136,29 @@ export default defineComponent({
       return { isShow, isIfShow }
     }
 
-    function handleRules(): Rule[] {
-      const { rules: defRules = [], component, rulesMessageJoinLabel, label, dynamicRules, required } = props.schema
+    function handleRules(): ValidationRule[] {
+      const {
+        rules: defRules = [],
+        component,
+        rulesMessageJoinLabel,
+        label,
+        dynamicRules,
+        required,
+      } = props.schema
 
       if (isFunction(dynamicRules))
-        return dynamicRules(unref(getValues)) as Rule[]
+        return dynamicRules(unref(getValues)) as ValidationRule[]
 
-      let rules: Rule[] = cloneDeep(defRules) as Rule[]
+      let rules: ValidationRule[] = cloneDeep(defRules) as ValidationRule[]
       const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = props.formProps
 
-      const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel') ? rulesMessageJoinLabel : globalRulesMessageJoinLabel
+      const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel')
+        ? rulesMessageJoinLabel
+        : globalRulesMessageJoinLabel
       const assertLabel = joinLabel ? label : ''
-      const defaultMsg = component ? createPlaceholderMessage(component) + assertLabel : assertLabel
+      const defaultMsg = component
+        ? createPlaceholderMessage(component) + assertLabel
+        : assertLabel
 
       function validator(rule: any, value: any) {
         const msg = rule.message || defaultMsg
@@ -192,7 +208,9 @@ export default defineComponent({
         }
       }
 
-      const requiredRuleIndex: number = rules.findIndex(rule => Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator'))
+      const requiredRuleIndex: number = rules.findIndex(
+        rule => Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator'),
+      )
 
       if (requiredRuleIndex !== -1) {
         const rule = rules[requiredRuleIndex]
@@ -213,9 +231,11 @@ export default defineComponent({
 
       // Maximum input length rule check
       const characterInx = rules.findIndex(val => val.max)
-      if (characterInx !== -1 && !rules[characterInx].validator)
-        rules[characterInx].message = rules[characterInx].message || t('component.form.maxTip', [rules[characterInx].max] as Recordable)
-
+      if (characterInx !== -1 && !rules[characterInx].validator) {
+        rules[characterInx].message
+          = rules[characterInx].message
+          || t('component.form.maxTip', [rules[characterInx].max] as Recordable<any>)
+      }
       return rules
     }
 
@@ -223,24 +243,29 @@ export default defineComponent({
       if (!isComponentFormSchema(props.schema))
         return null
 
-      const { renderComponentContent, component, field, changeEvent = 'change', valueField } = props.schema
+      const {
+        renderComponentContent,
+        component,
+        field,
+        changeEvent = 'change',
+        valueField,
+      } = props.schema
 
       const isCheck = component && ['Switch', 'Checkbox'].includes(component)
 
       const eventKey = `on${upperFirst(changeEvent)}`
 
       const { autoSetPlaceHolder, size } = props.formProps
-
-      const propsData: Recordable = {
+      const propsData: Recordable<any> = {
         allowClear: true,
-        getPopupContainer: (trigger: Element) => trigger.parentNode!.parentNode,
+        getPopupContainer: (trigger: Element) => trigger.parentNode,
         size,
         ...unref(getComponentsProps),
         disabled: unref(getDisable),
       }
 
       const on = {
-        [eventKey]: (...args: Nullable<Recordable>[]) => {
+        [eventKey]: (...args: Nullable<Recordable<any>>[]) => {
           const [e] = args
           if (propsData[eventKey])
             propsData[eventKey](...args)
@@ -254,17 +279,18 @@ export default defineComponent({
 
       const isCreatePlaceholder = !propsData.disabled && autoSetPlaceHolder
       // RangePicker place is an array
-      if (isCreatePlaceholder && component !== 'RangePicker' && component)
-        propsData.placeholder = unref(getComponentsProps)?.placeholder || createPlaceholderMessage(component)
-
+      if (isCreatePlaceholder && component !== 'RangePicker' && component) {
+        propsData.placeholder
+          = unref(getComponentsProps)?.placeholder || createPlaceholderMessage(component)
+      }
       propsData.codeField = field
       propsData.formValues = unref(getValues)
 
-      const bindValue: Recordable = {
+      const bindValue: Recordable<any> = {
         [valueField || (isCheck ? 'checked' : 'value')]: props.formModel[field],
       }
 
-      const compAttr: Recordable = {
+      const compAttr: Recordable<any> = {
         ...propsData,
         ...on,
         ...bindValue,
@@ -294,7 +320,9 @@ export default defineComponent({
         : (
             label
           )
-      const getHelpMessage = isFunction(helpMessage) ? helpMessage(unref(getValues)) : helpMessage
+      const getHelpMessage = isFunction(helpMessage)
+        ? helpMessage(unref(getValues))
+        : helpMessage
       if (!getHelpMessage || (Array.isArray(getHelpMessage) && getHelpMessage.length === 0))
         return renderLabel
 
@@ -310,9 +338,7 @@ export default defineComponent({
       const { itemProps, slot, render, field, suffix, component } = props.schema
       const { labelCol, wrapperCol } = unref(itemLabelWidthProp)
       const { colon } = props.formProps
-
       const opts = { disabled: unref(getDisable) }
-
       if (component === 'Divider') {
         return (
           <Col span={24}>
@@ -322,7 +348,11 @@ export default defineComponent({
       }
       else {
         const getContent = () => {
-          return slot ? getSlot(slots, slot, unref(getValues), opts) : render ? render(unref(getValues), opts) : renderComponent()
+          return slot
+            ? getSlot(slots, slot, unref(getValues), opts)
+            : render
+              ? render(unref(getValues), opts)
+              : renderComponent()
         }
 
         const showSuffix = !!suffix
@@ -342,7 +372,7 @@ export default defineComponent({
             name={field}
             colon={colon}
             class={{ 'suffix-item': showSuffix }}
-            {...(itemProps as Recordable)}
+            {...(itemProps as Recordable<any>)}
             label={renderLabelHelpMessage()}
             rules={handleRules()}
             labelCol={labelCol}
@@ -369,7 +399,11 @@ export default defineComponent({
       const opts = { disabled: unref(getDisable) }
 
       const getContent = () => {
-        return colSlot ? getSlot(slots, colSlot, values, opts) : renderColContent ? renderColContent(values, opts) : renderItem()
+        return colSlot
+          ? getSlot(slots, colSlot, values, opts)
+          : renderColContent
+            ? renderColContent(values, opts)
+            : renderItem()
       }
 
       return (

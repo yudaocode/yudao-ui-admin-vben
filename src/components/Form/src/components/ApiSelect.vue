@@ -1,13 +1,16 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import { computed, ref, unref, watch } from 'vue'
 import { Select } from 'ant-design-vue'
+import type { SelectValue } from 'ant-design-vue/es/select'
 import { get, omit } from 'lodash-es'
 import { LoadingOutlined } from '@ant-design/icons-vue'
-import type { SelectValue } from 'ant-design-vue/lib/select'
 import { isFunction } from '@/utils/is'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
+
+interface OptionsItem { label: string; value: string; disabled?: boolean }
 
 defineOptions({ name: 'ApiSelect', inheritAttrs: false })
 
@@ -15,35 +18,29 @@ const props = defineProps({
   value: { type: [Array, Object, String, Number] as PropType<SelectValue> },
   numberToString: propTypes.bool,
   api: {
-    type: Function as PropType<(arg?: Recordable) => Promise<OptionsItem[]>>,
+    type: Function as PropType<(arg?: any) => Promise<OptionsItem[]>>,
     default: null,
   },
   // api params
-  params: {
-    type: Object as PropType<Recordable>,
-    default: () => ({}),
-  },
+  params: propTypes.any.def({}),
   // support xxx.xxx.xx
   resultField: propTypes.string.def(''),
   labelField: propTypes.string.def('label'),
   valueField: propTypes.string.def('value'),
   immediate: propTypes.bool.def(true),
-  alwaysLoad: propTypes.bool.def(true),
+  alwaysLoad: propTypes.bool.def(false),
   options: {
     type: Array<OptionsItem>,
     default: [],
   },
 })
-
-const emit = defineEmits(['optionsChange', 'change', 'update:value'])
-
-interface OptionsItem { label: string; value: string; disabled?: boolean }
-
+const emit = defineEmits(['options-change', 'change', 'update:value'])
 const options = ref<OptionsItem[]>([])
 const loading = ref(false)
 // 首次是否加载过了
 const isFirstLoaded = ref(false)
 const emitData = ref<OptionsItem[]>([])
+
 const { t } = useI18n()
 
 // Embedded in the form, just use the hook binding to perform form verification
@@ -52,7 +49,7 @@ const [state] = useRuleFormItem(props, 'value', 'change', emitData)
 const getOptions = computed(() => {
   const { labelField, valueField, numberToString } = props
 
-  return unref(options).reduce((prev, next: Recordable) => {
+  const data = unref(options).reduce((prev, next: any) => {
     if (next) {
       const value = get(next, valueField)
       prev.push({
@@ -63,6 +60,7 @@ const getOptions = computed(() => {
     }
     return prev
   }, [] as OptionsItem[])
+  return data.length > 0 ? data : props.options
 })
 
 watch(
@@ -75,11 +73,7 @@ watch(
 watch(
   () => props.params,
   () => {
-    if (props.alwaysLoad)
-      fetch()
-
-    else
-      !unref(isFirstLoaded) && fetch()
+    !unref(isFirstLoaded) && fetch()
   },
   { deep: true, immediate: props.immediate },
 )
@@ -113,18 +107,15 @@ async function fetch() {
 
 async function handleFetch(open: boolean) {
   if (open) {
-    if (props.alwaysLoad) {
+    if (props.alwaysLoad)
       await fetch()
-    }
-    else if (!props.immediate && !unref(isFirstLoaded)) {
+    else if (!props.immediate && !unref(isFirstLoaded))
       await fetch()
-      isFirstLoaded.value = false
-    }
   }
 }
 
 function emitChange() {
-  emit('optionsChange', unref(getOptions))
+  emit('options-change', unref(getOptions))
 }
 
 function handleChange(_, ...args) {
@@ -134,7 +125,10 @@ function handleChange(_, ...args) {
 
 <template>
   <Select
-    v-bind="$attrs" v-model:value="state" :options="getOptions" @dropdown-visible-change="handleFetch"
+    v-bind="$attrs"
+    v-model:value="state"
+    :options="getOptions"
+    @dropdown-visible-change="handleFetch"
     @change="handleChange"
   >
     <template v-for="item in Object.keys($slots)" #[item]="data">
