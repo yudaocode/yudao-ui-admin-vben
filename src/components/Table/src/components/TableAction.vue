@@ -201,7 +201,6 @@ function onCellClick(e: MouseEvent) {
 
   .icon-more {
     margin-left: 0.25rem;
-    transform: rotate(90deg);
 
     svg {
       font-size: 1.1em;
