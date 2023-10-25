@@ -85,11 +85,6 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       api: () => listSimpleMenus(),
       parentLabel: '主类目',
-      fieldNames: {
-        label: 'name',
-        key: 'id',
-        value: 'id',
-      },
       handleTree: 'id',
     },
   },

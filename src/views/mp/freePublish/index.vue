@@ -6,7 +6,7 @@ import { getSimpleAccounts } from '@/api/mp/account'
 import { deleteFreePublish, getFreePublishPage } from '@/api/mp/freePublish'
 import type { FormSchema } from '@/components/Form'
 
-const simpleAccountsOptinos = await getSimpleAccounts()
+const simpleAccountsOptions = await getSimpleAccounts()
 
 const searchSchema: FormSchema[] = [
   {
@@ -14,9 +14,9 @@ const searchSchema: FormSchema[] = [
     field: 'accountId',
     component: 'Select',
     required: true,
-    defaultValue: simpleAccountsOptinos[0].id,
+    defaultValue: simpleAccountsOptions[0].id,
     componentProps: {
-      options: simpleAccountsOptinos,
+      options: simpleAccountsOptions,
       fieldNames: {
         label: 'name',
         value: 'id',

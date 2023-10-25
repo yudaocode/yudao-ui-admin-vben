@@ -149,11 +149,6 @@ export const formSchema: FormSchema[] = [
     component: 'ApiTreeSelect',
     componentProps: {
       api: () => listSimpleDept(),
-      fieldNames: {
-        label: 'name',
-        key: 'id',
-        value: 'id',
-      },
       handleTree: 'id',
     },
   },

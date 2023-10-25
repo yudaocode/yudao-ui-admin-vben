@@ -28,7 +28,7 @@ export const columns: BasicColumn[] = [
   },
 ]
 
-const simpleAccountsOptinos = await getSimpleAccounts()
+const simpleAccountsOptions = await getSimpleAccounts()
 
 export const searchFormSchema: FormSchema[] = [
   {
@@ -36,9 +36,9 @@ export const searchFormSchema: FormSchema[] = [
     field: 'accountId',
     component: 'Select',
     required: true,
-    defaultValue: simpleAccountsOptinos[0].id,
+    defaultValue: simpleAccountsOptions[0].id,
     componentProps: {
-      options: simpleAccountsOptinos,
+      options: simpleAccountsOptions,
       fieldNames: {
         label: 'name',
         value: 'id',
