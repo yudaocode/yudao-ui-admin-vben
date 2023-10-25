@@ -26,7 +26,7 @@
 
 | 框架                                                                 | 说明                  | 版本   |
 | -------------------------------------------------------------------- | --------------------- | ------ |
-| [Vue](https://staging-cn.vuejs.org/)                                 | Vue 框架              | 3.3.6  |
+| [Vue](https://staging-cn.vuejs.org/)                                 | Vue 框架              | 3.3.7  |
 | [Vite](https://cn.vitejs.dev//)                                      | 开发与构建工具        | 4.5.0  |
 | [ant-design-vue](https://antdv.com/)                                 | ant-design-vue        | 4.0.6  |
 | [TypeScript](https://www.typescriptlang.org/docs/)                   | JavaScript 的超集     | 5.1.6  |
