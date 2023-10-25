@@ -17,8 +17,13 @@ export const columns: BasicColumn[] = [
     },
   },
   {
-    title: '获得积分',
+    title: '奖励积分',
     dataIndex: 'point',
+    width: 180,
+  },
+  {
+    title: '奖励经验',
+    dataIndex: 'experience',
     width: 180,
   },
   {
@@ -51,8 +56,17 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '签到分数',
+    label: '奖励积分',
     field: 'point',
+    required: true,
+    component: 'InputNumber',
+    componentProps: {
+      precision: 0,
+    },
+  },
+  {
+    label: '奖励经验',
+    field: 'experience',
     required: true,
     component: 'InputNumber',
     componentProps: {

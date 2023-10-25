@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { BasicForm, useForm } from '@/components/Form'
-import type { FormSchema } from '@/components/From'
+import type { FormSchema } from '@/components/Table'
 import { PageWrapper } from '@/components/Page'
-import { getConfig, saveConfig } from '@/api/member/point/config'
+import { getConfig, saveConfig } from '@/api/member/config'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 
-defineOptions({ name: 'MemberPointConfig' })
+defineOptions({ name: 'MemberConfig' })
+
 const { t } = useI18n()
 const { createMessage } = useMessage()
 

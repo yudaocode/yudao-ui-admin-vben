@@ -9,5 +9,5 @@ export interface SignInRecordVO {
 
 // 查询用户签到积分列表
 export function getSignInRecordPage(params) {
-  return defHttp.get({ url: '/member/point/sign-in-record/page', params })
+  return defHttp.get({ url: '/member/sign-in/record/page', params })
 }
