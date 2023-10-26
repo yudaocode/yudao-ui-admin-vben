@@ -35,12 +35,6 @@ const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data
 async function handleSubmit() {
   try {
     const values = await validate()
-    const config: any = {}
-    for (const item in values) {
-      if (item.startsWith('config.'))
-        config[item.substring(7)] = values[item]
-    }
-    values.config = config
     setModalProps({ confirmLoading: true })
     if (unref(isUpdate))
       await updateFileConfig(values)

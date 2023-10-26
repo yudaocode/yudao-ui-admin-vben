@@ -46,12 +46,12 @@ export function updateFileConfigMaster(id: number) {
 }
 
 // 新增文件配置
-export function createFileConfig(data: FileConfigVO) {
+export function createFileConfig(data) {
   return defHttp.post({ url: '/infra/file-config/create', data })
 }
 
 // 修改文件配置
-export function updateFileConfig(data: FileConfigVO) {
+export function updateFileConfig(data) {
   return defHttp.put({ url: '/infra/file-config/update', data })
 }
 
