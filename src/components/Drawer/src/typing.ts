@@ -82,7 +82,7 @@ export interface DrawerProps extends DrawerFooterProps {
   closeFunc?: () => Promise<any>
   triggerWindowResize?: boolean
   /**
-   * Whether a close (x) button is open on top right of the Drawer dialog or not.
+   * Whether a close (x) button is visible on top right of the Drawer dialog or not.
    * @default true
    * @type boolean
    */
@@ -127,7 +127,7 @@ export interface DrawerProps extends DrawerFooterProps {
    * The title for Drawer.
    * @type any (string | slot)
    */
-  title?: VNodeChild | JSX.Element
+  title?: string | VNodeChild | JSX.Element
   /**
    * The class name of the container of the Drawer dialog.
    * @type string

@@ -6,27 +6,28 @@ import type { DrawerInstance, DrawerProps } from './typing'
 import DrawerFooter from './components/DrawerFooter.vue'
 import DrawerHeader from './components/DrawerHeader.vue'
 import { basicProps } from './props'
+import { useAttrs } from '@/hooks/core/useAttrs'
 import { useI18n } from '@/hooks/web/useI18n'
+import { isFunction, isNumber } from '@/utils/is'
 import { deepMerge } from '@/utils'
 import { ScrollContainer } from '@/components/Container'
-import { isFunction, isNumber } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
-import { useAttrs } from '@/hooks/core/useAttrs'
 
 defineOptions({ inheritAttrs: false })
 
 const props = defineProps(basicProps)
-const emit = defineEmits(['openChange', 'ok', 'close', 'register'])
+
+const emit = defineEmits(['open-change', 'ok', 'close', 'register'])
 
 const openRef = ref(false)
 const attrs = useAttrs()
-const propsRef = ref<Partial<Nullable<DrawerProps>>>(null)
+const propsRef = ref<Partial<DrawerProps | null>>(null)
 
 const { t } = useI18n()
 const { prefixVar, prefixCls } = useDesign('basic-drawer')
 
 const drawerInstance: DrawerInstance = {
-  setDrawerProps,
+  setDrawerProps: setDrawerProps as any,
   emitOpen: undefined,
 }
 
@@ -34,8 +35,8 @@ const instance = getCurrentInstance()
 
 instance && emit('register', drawerInstance, instance.uid)
 
-const getMergeProps = computed((): DrawerProps => {
-  return deepMerge(toRaw(props), unref(propsRef))
+const getMergeProps: any = computed((): DrawerProps => {
+  return deepMerge(toRaw(props), unref(propsRef)) as any
 })
 
 const getProps = computed((): DrawerProps => {
@@ -70,10 +71,12 @@ const getBindValues = computed((): DrawerProps => {
 // Custom implementation of the bottom button,
 const getFooterHeight = computed(() => {
   const { footerHeight, showFooter } = unref(getProps)
-  if (showFooter && footerHeight)
-    return isNumber(footerHeight) ? `${footerHeight}px` : `${footerHeight.replace('px', '')}px`
-
-  return '0px'
+  if (showFooter && footerHeight) {
+    return isNumber(footerHeight)
+      ? `${footerHeight}px`
+      : `${footerHeight.replace('px', '')}px`
+  }
+  return `0px`
 })
 
 const getScrollContentStyle = computed((): CSSProperties => {
@@ -101,14 +104,14 @@ watch(
   () => openRef.value,
   (open) => {
     nextTick(() => {
-      emit('openChange', open)
+      emit('open-change', open)
       instance && drawerInstance.emitOpen?.(open, instance.uid)
     })
   },
 )
 
 // Cancel event
-async function onClose(e: Recordable) {
+async function onClose(e) {
   const { closeFunc } = unref(getProps)
   emit('close', e)
   if (closeFunc && isFunction(closeFunc)) {
@@ -133,10 +136,12 @@ function handleOk() {
 </script>
 
 <template>
-  <Drawer v-bind="getBindValues" @close="onClose">
+  <Drawer v-bind="getBindValues" :class="prefixCls" @close="onClose">
     <template v-if="!$slots.title" #title>
       <DrawerHeader
-        :title="getMergeProps.title as any" :is-detail="isDetail" :show-detail-back="showDetailBack"
+        :title="getMergeProps.title"
+        :is-detail="isDetail"
+        :show-detail-back="showDetailBack"
         @close="onClose"
       >
         <template #titleToolbar>
@@ -171,6 +176,12 @@ function handleOk() {
 .@{prefix-cls} {
   .ant-drawer-wrapper-body {
     overflow: hidden;
+  }
+
+  .ant-drawer-close {
+    &:hover {
+      color: @error-color;
+    }
   }
 
   .ant-drawer-body {
