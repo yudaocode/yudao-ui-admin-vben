@@ -11,7 +11,7 @@ import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useAttrs } from '@/hooks/core/useAttrs'
 import { propTypes } from '@/utils/propTypes'
 
-interface OptionsItem { label: string; value: string | number | boolean; disabled?: boolean }
+interface OptionsItem { label: string; value: string | number | boolean; disabled?: boolean; [name: string]: any }
 
 defineOptions({ name: 'ApiRadioGroup' })
 
