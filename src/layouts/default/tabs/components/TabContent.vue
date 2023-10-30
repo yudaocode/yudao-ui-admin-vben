@@ -58,7 +58,7 @@ function handleContext(e) {
   <Dropdown
     :drop-menu-list="getDropMenuList"
     :trigger="getTrigger"
-    placement="bottom"
+    placement="bottomLeft"
     overlay-class-name="multiple-tabs__dropdown"
     @menu-event="handleMenuEvent"
   >
