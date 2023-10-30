@@ -1,6 +1,6 @@
-import fs from 'node:fs'
-import path from 'node:path'
+import path, { join } from 'node:path'
 import dotenv from 'dotenv'
+import { readFile } from 'fs-extra'
 
 export function isDevFn(mode: string): boolean {
   return mode === 'development'
@@ -50,11 +50,11 @@ export function wrapperEnv(envConf: Recordable): ViteEnv {
  * 获取当前环境下生效的配置文件名
  */
 function getConfFiles() {
-  const script = process.env.npm_lifecycle_script
+  const script = process.env.npm_lifecycle_script as string
   const reg = /--mode ([a-z_\d]+)/
-  const result = reg.exec(script as string) as any
+  const result = reg.exec(script)
   if (result) {
-    const mode = result[1] as string
+    const mode = result[1]
     return ['.env', `.env.${mode}`]
   }
   return ['.env', '.env.production']
@@ -65,22 +65,24 @@ function getConfFiles() {
  * @param match prefix
  * @param confFiles ext
  */
-export function getEnvConfig(
+export async function getEnvConfig(
   match = 'VITE_GLOB_',
   confFiles = getConfFiles(),
 ): Promise<{
-  [key: string]: string;
+  [key: string]: string
 }> {
   let envConfig = {}
-  confFiles.forEach((item) => {
+
+  for (const confFile of confFiles) {
     try {
-      const env = dotenv.parse(fs.readFileSync(path.resolve(process.cwd(), item)))
+      const envPath = await readFile(join(process.cwd(), confFile), { encoding: 'utf8' })
+      const env = dotenv.parse(envPath)
       envConfig = { ...envConfig, ...env }
     }
     catch (e) {
-      console.error(`Error in parsing ${item}`, e)
+      console.error(`Error in parsing ${confFile}`, e)
     }
-  })
+  }
   const reg = new RegExp(`^(${match})`)
   Object.keys(envConfig).forEach((key) => {
     if (!reg.test(key))

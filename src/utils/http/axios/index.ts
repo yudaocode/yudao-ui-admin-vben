@@ -123,7 +123,7 @@ const transform: AxiosTransform = {
         let url = `${config.url}?`
         for (const propName of Object.keys(params)) {
           const value = params[propName]
-          // eslint-disable-next-line no-void
+
           if (value !== void 0 && value !== null && typeof value !== 'undefined') {
             if (typeof value === 'object') {
               for (const val of Object.keys(value)) {
