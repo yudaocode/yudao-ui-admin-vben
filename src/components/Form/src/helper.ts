@@ -35,11 +35,7 @@ function genType() {
   return [...DATE_TYPE, 'RangePicker']
 }
 
-export function setComponentRuleType(
-  rule: ValidationRule,
-  component: ComponentType,
-  valueFormat: string,
-) {
+export function setComponentRuleType(rule: ValidationRule, component: ComponentType, valueFormat: string) {
   if (Reflect.has(rule, 'type'))
     return
 

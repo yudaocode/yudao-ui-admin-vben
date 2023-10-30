@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { Upload } from 'ant-design-vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useGlobSetting } from '@/hooks/setting'
 import { useI18n } from '@/hooks/web/useI18n'
+import { getAccessToken, getTenantId } from '@/utils/auth'
 
 defineOptions({ name: 'TinymceImageUpload' })
 
@@ -17,6 +18,10 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['uploading', 'done', 'error'])
+const headers = reactive({
+  'Authorization': `Bearer ${getAccessToken()}`,
+  'tenant-id': getTenantId(),
+})
 let uploading = false
 
 const { uploadUrl } = useGlobSetting()
@@ -55,7 +60,7 @@ function handleChange(info: Recordable) {
 
 <template>
   <div :class="[prefixCls, { fullscreen }]">
-    <Upload name="file" multiple :action="uploadUrl" :show-upload-list="false" accept=".jpg,.jpeg,.gif,.png,.webp" @change="handleChange">
+    <Upload name="file" :headers="headers" multiple :action="uploadUrl" :show-upload-list="false" accept=".jpg,.jpeg,.gif,.png,.webp" @change="handleChange">
       <a-button type="primary" v-bind="{ ...getButtonProps }">
         {{ t('component.upload.imgUpload') }}
       </a-button>

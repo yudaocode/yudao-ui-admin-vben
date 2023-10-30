@@ -8,6 +8,7 @@ import { join } from 'lodash-es'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { buildShortUUID } from '@/utils/uuid'
+import { getAccessToken, getTenantId } from '@/utils/auth'
 import { isArray, isNotEmpty, isUrl } from '@/utils/is'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useAttrs } from '@/hooks/core/useAttrs'
@@ -53,7 +54,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['change', 'update:value'])
-
+const headers = reactive({
+  'Authorization': `Bearer ${getAccessToken()}`,
+  'tenant-id': getTenantId(),
+})
 const attrs = useAttrs()
 const { t } = useI18n()
 const previewOpen = ref(false)
@@ -189,6 +193,7 @@ function getBase64(file: File) {
       v-model:file-list="fileList"
       v-bind="attrs"
       v-model:value="state"
+      :headers="headers"
       :list-type="listType"
       :multiple="multiple"
       :max-count="maxCount"
