@@ -7,6 +7,7 @@ import type { UploadFile } from 'ant-design-vue/lib/upload/interface'
 import { join } from 'lodash-es'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useI18n } from '@/hooks/web/useI18n'
+import { propTypes } from '@/utils/propTypes'
 import { buildShortUUID } from '@/utils/uuid'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import { isArray, isNotEmpty, isUrl } from '@/utils/is'
@@ -32,25 +33,13 @@ const props = defineProps({
     type: Array,
     default: () => ['image/png', 'image/jpeg'],
   },
-  multiple: {
-    type: Boolean,
-    default: () => false,
-  },
+  multiple: propTypes.bool.def(false),
   // 最大数量的文件
-  maxCount: {
-    type: Number,
-    default: () => 1,
-  },
+  maxCount: propTypes.number.def(1),
   // 最小数量的文件
-  minCount: {
-    type: Number,
-    default: () => 0,
-  },
+  minCount: propTypes.number.def(0),
   // 文件最大多少MB
-  maxSize: {
-    type: Number,
-    default: () => 2,
-  },
+  maxSize: propTypes.number.def(5),
 })
 
 const emit = defineEmits(['change', 'update:value'])
