@@ -258,7 +258,6 @@ export default defineComponent({
       const { autoSetPlaceHolder, size } = props.formProps
       const propsData: Recordable<any> = {
         allowClear: true,
-        getPopupContainer: (trigger: Element) => trigger.parentNode,
         size,
         ...unref(getComponentsProps),
         disabled: unref(getDisable),
