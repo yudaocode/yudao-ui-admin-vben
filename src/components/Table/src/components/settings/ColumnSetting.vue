@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, reactive, ref, unref, useAttrs, watchEffect } from 'vue'
 import { Checkbox, Divider, Popover, Tooltip } from 'ant-design-vue'
-import type { CheckboxChangeEvent } from 'ant-design-vue/lib/checkbox/interface'
+import type { CheckboxChangeEvent, CheckboxValueType } from 'ant-design-vue/lib/checkbox/interface'
 import { DragOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { cloneDeep, omit } from 'lodash-es'
 import Sortablejs from 'sortablejs'
@@ -161,17 +161,17 @@ const indeterminate = computed(() => {
 })
 
 // Trigger when check/uncheck a column
-function onChange(checkedList: string[]) {
+function onChange(checkedList: CheckboxValueType[]) {
   const len = plainSortOptions.value.length
   state.checkAll = checkedList.length === len
   const sortList = unref(plainSortOptions).map(item => item.value)
   checkedList.sort((prev, next) => {
-    return sortList.indexOf(prev) - sortList.indexOf(next)
+    return sortList.indexOf(String(prev)) - sortList.indexOf(String(next))
   })
   unref(plainSortOptions).forEach((item) => {
     (item as BasicColumn).defaultHidden = !checkedList.includes(item.value)
   })
-  setColumns(checkedList)
+  setColumns(checkedList as string[])
 }
 
 let sortable: Sortable
