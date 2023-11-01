@@ -73,6 +73,7 @@
     "tinymce": "5.10.7",
     "vditor": "^3.9.6",
     "video-js": "^0.7.0",
+    "video.js": "^8.6.1",
     "vue": "^3.3.7",
     "vue-i18n": "^9.6.2",
     "vue-json-pretty": "^2.2.4",
