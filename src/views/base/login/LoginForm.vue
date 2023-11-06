@@ -203,19 +203,19 @@ async function handleLogin(params) {
       萌新必读
     </Divider>
     <div class="enter-x flex justify-evenly" :class="`${prefixCls}-sign-in-way`">
-      <a-button href="https://doc.iocoder.cn/" target="_blank">
+      <a-button href="https://doc.iocoder.cn/" target="_blank" class="w-1/4">
         📚开发指南
       </a-button>
-      <a-button href="https://doc.iocoder.cn/video/" target="_blank" class="pl-2">
+      <a-button href="https://doc.iocoder.cn/video/" target="_blank" class="w-1/4 pl-1">
         🔥视频教程
       </a-button>
-      <a-button href="https://www.iocoder.cn/Interview/good-collection/" target="_blank" class="pl-2">
+      <a-button href="https://www.iocoder.cn/Interview/good-collection/" target="_blank" class="w-1/4 pl-1">
         ⚡面试手册
       </a-button>
-      <a-button href="http://static.yudao.iocoder.cn/mp/xinyu370.jpeg" target="_blank" class="pl-2">
+      <a-button href="http://static.yudao.iocoder.cn/mp/xinyu370.jpeg" target="_blank" class="w-1/4 pl-1">
         🤝外包咨询
       </a-button>
     </div>
   </Form>
-  <Verify ref="verify" mode="pop" :captcha-type="captchaType" :img-size="{ width: '400px', height: '200px' }" @success="handleLogin" />
+  <Verify ref="verify" mode="pop" :captcha-type="captchaType" :img-size="{ width: '360px', height: '180px' }" @success="handleLogin" />
 </template>
