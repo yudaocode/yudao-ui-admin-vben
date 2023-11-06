@@ -22,7 +22,7 @@ import { getChildrenMenus, getCurrentParentPath, getShallowMenus } from '@/route
 import { listenerRouteChange } from '@/logics/mitt/routeChange'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
 
-const SimpleMenuTag = createAsyncComponent(() => import('/@/components/SimpleMenu/src/SimpleMenuTag.vue'))
+const SimpleMenuTag = createAsyncComponent(() => import('@/components/SimpleMenu/src/SimpleMenuTag.vue'))
 
 const wrap = ref(null)
 const menuModules = ref<Menu[]>([])

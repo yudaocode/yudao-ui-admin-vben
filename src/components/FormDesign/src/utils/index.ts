@@ -3,7 +3,7 @@ import { cloneDeep, isArray, isFunction, isNumber, uniqueId } from 'lodash-es'
 import type { IFormConfig, IVFormComponent, IValidationRule } from '../typings/v-form-component'
 
 // import { del } from '@vue/composition-api';
-// import { withInstall } from '/@/utils';
+// import { withInstall } from '@/utils';
 
 /**
  * 组件install方法

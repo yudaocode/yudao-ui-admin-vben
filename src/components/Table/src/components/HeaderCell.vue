@@ -3,8 +3,8 @@ import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 import type { ColumnType } from 'ant-design-vue/lib/table/interface'
 import type { BasicColumn } from '../types/table'
-import BasicHelp from '/@/components/Basic/src/BasicHelp.vue'
 import EditTableHeaderCell from './EditTableHeaderIcon.vue'
+import BasicHelp from '@/components/Basic/src/BasicHelp.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
 export default defineComponent({
