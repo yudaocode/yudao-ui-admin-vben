@@ -2,10 +2,10 @@
  * Multi-language related operations
  */
 import { computed, unref } from 'vue'
+import type { Locale } from 'ant-design-vue/es/locale'
 import { i18n } from './setupI18n'
 import { loadLocalePool, setHtmlPageLang } from './helper'
 import type { LocaleType } from '@/types/config'
-
 import { useLocaleStoreWithOut } from '@/store/modules/locale'
 
 interface LangModule {
@@ -33,7 +33,8 @@ export function useLocale() {
   const getShowLocalePicker = computed(() => localeStore.getShowPicker)
 
   const getAntdLocale = computed((): any => {
-    return i18n.global.getLocaleMessage(unref(getLocale))?.antdLocale ?? {}
+    const localeMessage = i18n.global.getLocaleMessage<{ antdLocale: Locale }>(unref(getLocale))
+    return localeMessage?.antdLocale ?? {}
   })
 
   // Switching the language will change the locale of useI18n
