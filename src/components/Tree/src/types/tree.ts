@@ -159,7 +159,7 @@ export interface TreeActionItem {
 
 export interface InsertNodeParams {
   parentKey: string | null
-  node: TreeDataItem
+  node?: TreeDataItem
   list?: TreeDataItem[]
   push?: 'push' | 'unshift'
 }
@@ -176,7 +176,7 @@ export interface TreeActionType {
   filterByLevel: (level: number) => void
   insertNodeByKey: (opt: InsertNodeParams) => void
   insertNodesByKey: (opt: InsertNodeParams) => void
-  deleteNodeByKey: (key: string) => void
+  deleteNodeByKey: (key: string, list?: TreeDataItem[]) => void
   updateNodeByKey: (key: string, node: Omit<TreeDataItem, 'key'>) => void
   setSearchValue: (value: string) => void
   getSearchValue: () => string
