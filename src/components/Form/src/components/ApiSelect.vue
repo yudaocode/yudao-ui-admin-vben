@@ -102,6 +102,8 @@ async function fetch() {
   }
   finally {
     loading.value = false
+    // reset status
+    isFirstLoaded.value = false
   }
 }
 
