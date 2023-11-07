@@ -66,7 +66,7 @@ export function isString(val: unknown): val is string {
   return is(val, 'String')
 }
 
-export function isFunction(val: unknown): val is Fn {
+export function isFunction(val: unknown): val is Function {
   return typeof val === 'function'
 }
 
@@ -99,6 +99,6 @@ export const isServer = typeof window === 'undefined'
 export const isClient = !isServer
 
 export function isUrl(path: string): boolean {
-  const reg = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/
+  const reg = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?/
   return reg.test(path)
 }

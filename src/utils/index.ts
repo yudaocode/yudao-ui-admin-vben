@@ -1,6 +1,5 @@
 import type { RouteLocationNormalized, RouteRecordNormalized } from 'vue-router'
 import type { App, Component } from 'vue'
-
 import { intersectionWith, isEqual, mergeWith, unionWith } from 'lodash-es'
 import { unref } from 'vue'
 import { isArray, isObject } from '@/utils/is'
@@ -80,7 +79,10 @@ export function deepMerge<T extends object | null | undefined, U extends object 
   })
 }
 
-export function openWindow(url: string, opt?: { target?: TargetContext | string; noopener?: boolean; noreferrer?: boolean }) {
+export function openWindow(
+  url: string,
+  opt?: { target?: TargetContext | string; noopener?: boolean; noreferrer?: boolean },
+) {
   const { target = '__blank', noopener = true, noreferrer = true } = opt || {}
   const feature: string[] = []
 
@@ -134,7 +136,7 @@ export type WithInstall<T> = T & {
 export type CustomComponent = Component & { displayName?: string }
 
 export function withInstall<T extends CustomComponent>(component: T, alias?: string) {
-  ;(component as Record<string, unknown>).install = (app: App) => {
+  (component as Record<string, unknown>).install = (app: App) => {
     const compName = component.name || component.displayName
     if (!compName)
       return
