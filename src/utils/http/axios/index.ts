@@ -72,6 +72,7 @@ const transform: AxiosTransform = {
 
       if (options.successMessageMode === 'modal')
         createSuccessModal({ title: t('sys.api.successTip'), content: successMsg })
+
       else if (options.successMessageMode === 'message')
         createMessage.success(successMsg)
 
@@ -98,6 +99,7 @@ const transform: AxiosTransform = {
     // errorMessageMode='none' 一般是调用时明确表示不希望自动弹出错误提示
     if (options.errorMessageMode === 'modal')
       createErrorModal({ title: t('sys.api.errorTip'), content: timeoutMsg })
+
     else if (options.errorMessageMode === 'message')
       createMessage.error(timeoutMsg)
 
@@ -150,7 +152,11 @@ const transform: AxiosTransform = {
     else {
       if (!isString(params)) {
         formatDate && formatRequestDate(params)
-        if (Reflect.has(config, 'data') && config.data && (Object.keys(config.data).length > 0 || config.data instanceof FormData)) {
+        if (
+          Reflect.has(config, 'data')
+          && config.data
+          && (Object.keys(config.data).length > 0 || config.data instanceof FormData)
+        ) {
           config.data = data
           config.params = params
         }
@@ -159,8 +165,12 @@ const transform: AxiosTransform = {
           config.data = params
           config.params = undefined
         }
-        if (joinParamsToUrl)
-          config.url = setObjToUrlParams(config.url as string, Object.assign({}, config.params, config.data))
+        if (joinParamsToUrl) {
+          config.url = setObjToUrlParams(
+            config.url as string,
+            Object.assign({}, config.params, config.data),
+          )
+        }
       }
       else {
         // 兼容restful风格
@@ -188,7 +198,9 @@ const transform: AxiosTransform = {
     const token = getAccessToken()
     if (token && !isToken) {
       // jwt token
-      ;(config as Recordable).headers.Authorization = options.authenticationScheme ? `${options.authenticationScheme} ${token}` : token
+      (config as Recordable).headers.Authorization = options.authenticationScheme
+        ? `${options.authenticationScheme} ${token}`
+        : token
     }
     // 设置租户
     if (tenantEnable && tenantEnable === 'true') {
@@ -232,6 +244,7 @@ const transform: AxiosTransform = {
       if (errMessage) {
         if (errorMessageMode === 'modal')
           createErrorModal({ title: t('sys.api.errorTip'), content: errMessage })
+
         else if (errorMessageMode === 'message')
           createMessage.error(errMessage)
 
@@ -239,7 +252,7 @@ const transform: AxiosTransform = {
       }
     }
     catch (error) {
-      throw new Error(error as string)
+      throw new Error(error as unknown as string)
     }
 
     checkStatus(error?.response?.status, msg, errorMessageMode)
@@ -250,7 +263,6 @@ const transform: AxiosTransform = {
     config.method?.toUpperCase() === RequestEnum.GET
       && isOpenRetry
       && retryRequest.retry(axiosInstance, error)
-
     return Promise.reject(error)
   },
 }

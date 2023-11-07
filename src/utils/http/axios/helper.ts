@@ -2,7 +2,10 @@ import { isObject, isString } from '@/utils/is'
 
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
-export function joinTimestamp<T extends boolean>(join: boolean, restful: T): T extends true ? string : object
+export function joinTimestamp<T extends boolean>(
+  join: boolean,
+  restful: T,
+): T extends true ? string : object
 
 export function joinTimestamp(join: boolean, restful = false): string | object {
   if (!join)

@@ -1,4 +1,10 @@
-import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios'
 import axios from 'axios'
 import qs from 'qs'
 import { cloneDeep } from 'lodash-es'
@@ -12,6 +18,7 @@ import { useGlobSetting } from '@/hooks/setting'
 import { getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
 
 export * from './axiosTransform'
+
 const globSetting = useGlobSetting()
 // 请求队列
 let requestList: any[] = []
@@ -77,6 +84,7 @@ export class VAxios {
    * @description: Interceptor configuration 拦截器配置
    */
   private setupInterceptors() {
+    // const transform = this.getTransform();
     const {
       axiosInstance,
       options: { transform },
@@ -84,13 +92,20 @@ export class VAxios {
     if (!transform)
       return
 
-    const { requestInterceptors, requestInterceptorsCatch, responseInterceptors, responseInterceptorsCatch } = transform
+    const {
+      requestInterceptors,
+      requestInterceptorsCatch,
+      responseInterceptors,
+      responseInterceptorsCatch,
+    } = transform
 
     const axiosCanceler = new AxiosCanceler()
 
     // 请求拦截器配置处理
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      const requestOptions = (config as unknown as any).requestOptions ?? this.options.requestOptions
+      // If cancel repeat request is turned on, then cancel repeat request is prohibited
+      const requestOptions
+        = (config as unknown as any).requestOptions ?? this.options.requestOptions
       const ignoreCancelToken = requestOptions?.ignoreCancelToken ?? true
 
       !ignoreCancelToken && axiosCanceler.addPending(config)
@@ -177,6 +192,7 @@ export class VAxios {
 
     if (params.filename)
       formData.append(customFilename, params.file, params.filename)
+
     else
       formData.append(customFilename, params.file)
 
