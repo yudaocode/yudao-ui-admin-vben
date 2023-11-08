@@ -23,6 +23,11 @@ export function getTenantIdByName(name: string) {
   return defHttp.get<TentantNameVO>({ url: Api.GetTenantIdByName + name })
 }
 
+// 使用租户域名，获得租户信息
+export function getTenantByWebsite(website: string) {
+  return defHttp.get({ url: `/system/tenant/get-by-website?website=${website}` })
+}
+
 // 登出
 export function loginOut() {
   return defHttp.delete({ url: Api.LoginOut })

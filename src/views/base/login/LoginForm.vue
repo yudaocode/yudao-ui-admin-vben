@@ -18,7 +18,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 import * as authUtil from '@/utils/auth'
 
 import { Verify } from '@/components/Verifition'
-import { getTenantIdByName } from '@/api/base/login'
+import { getTenantByWebsite, getTenantIdByName } from '@/api/base/login'
 
 const FormItem = Form.Item
 const InputPassword = Input.Password
@@ -67,11 +67,19 @@ async function getCode() {
   }
 }
 
-// 获取租户ID
+// 根据域名，获得租户信息 && 获取租户ID
 async function getTenantId() {
   if (tenantEnable === 'true') {
-    const res = await getTenantIdByName(formData.tenantName)
-    authUtil.setTenantId(res)
+    const website = location.host
+    const tenant = await getTenantByWebsite(website)
+    if (tenant) {
+      formData.tenantName = tenant.name
+      authUtil.setTenantId(tenant.id)
+    }
+    else {
+      const res = await getTenantIdByName(formData.tenantName)
+      authUtil.setTenantId(res)
+    }
   }
 }
 
