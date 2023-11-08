@@ -47,7 +47,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '绑定域名',
-    dataIndex: 'domain',
+    dataIndex: 'website',
     width: 200,
   },
   {
@@ -176,7 +176,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '绑定域名',
-    field: 'domain',
+    field: 'website',
     required: true,
     component: 'Input',
   },
