@@ -3,7 +3,7 @@ import type { RouteParams } from 'vue-router'
 import { toRaw } from 'vue'
 import type { AppRouteModule, AppRouteRecordRaw, Menu, MenuModule } from '@/router/types'
 import { findPath, treeMap } from '@/utils/helper/treeHelper'
-import { isUrl } from '@/utils/is'
+import { isHttpUrl } from '@/utils/is'
 
 export function getAllParentPath<T = Recordable>(treeData: T[], path: string) {
   const menuList = findPath(treeData, n => n.path === path) as Menu[]
@@ -19,7 +19,7 @@ function joinParentPath(menus: Menu[], parentPath = '') {
     // 请注意，以 / 开头的嵌套路径将被视为根路径。
     // This allows you to leverage the component nesting without having to use a nested URL.
     // 这允许你利用组件嵌套，而无需使用嵌套 URL。
-    if (!(menu.path.startsWith('/') || isUrl(menu.path))) {
+    if (!(menu.path.startsWith('/') || isHttpUrl(menu.path))) {
       // path doesn't start with /, nor is it a url, join parent path
       // 路径不以 / 开头，也不是 url，加入父路径
       menu.path = `${parentPath}/${menu.path}`

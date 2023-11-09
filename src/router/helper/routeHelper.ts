@@ -4,7 +4,7 @@ import { cloneDeep, omit } from 'lodash-es'
 import { EXCEPTION_COMPONENT, LAYOUT, getParentLayout } from '@/router/constant'
 import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
 import { warn } from '@/utils/log'
-import { isUrl } from '@/utils/is'
+import { isHttpUrl } from '@/utils/is'
 
 export type LayoutMapKey = 'LAYOUT'
 const IFRAME = () => import('@/views/base/iframe/FrameBlank.vue')
@@ -77,7 +77,7 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
 // 将背景对象变成路由对象
 export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModule[]): T[] {
   routeList.forEach((route) => {
-    if (isUrl(route.path))
+    if (isHttpUrl(route.path))
       route.component = 'IFrame'
     else if (route.children && route.parentId === 0)
       route.component = 'LAYOUT'

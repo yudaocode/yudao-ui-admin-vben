@@ -11,7 +11,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { listenerRouteChange } from '@/logics/mitt/routeChange'
 import { propTypes } from '@/utils/propTypes'
 import { REDIRECT_NAME } from '@/router/constant'
-import { isFunction, isUrl } from '@/utils/is'
+import { isFunction, isHttpUrl } from '@/utils/is'
 import { openWindow } from '@/utils'
 
 defineOptions({ name: 'SimpleMenu', inheritAttrs: false })
@@ -99,7 +99,7 @@ async function handleMenuChange(route?: RouteLocationNormalizedLoaded) {
 }
 
 async function handleSelect(key: string) {
-  if (isUrl(key)) {
+  if (isHttpUrl(key)) {
     openWindow(key)
     return
   }

@@ -13,7 +13,7 @@ import { ScrollContainer } from '@/components/Container'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
 
-import { isFunction, isNullAndUnDef } from '@/utils/is'
+import { isFunction, isNil } from '@/utils/is'
 import { getPopupContainer as getParentContainer } from '@/utils'
 
 interface State {
@@ -208,7 +208,7 @@ function handleOpenChange() {
       handle: '.table-column-drag-icon ',
       onEnd: (evt) => {
         const { oldIndex, newIndex } = evt
-        if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex)
+        if (isNil(oldIndex) || isNil(newIndex) || oldIndex === newIndex)
           return
 
         // Sort column

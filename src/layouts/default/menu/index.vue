@@ -15,7 +15,7 @@ import { ScrollContainer } from '@/components/Container'
 import { useGo } from '@/hooks/web/usePage'
 import { openWindow } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
-import { isUrl } from '@/utils/is'
+import { isHttpUrl } from '@/utils/is'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useAppInject } from '@/hooks/web/useAppInject'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -115,7 +115,7 @@ export default defineComponent({
      * @param path
      */
     async function beforeMenuClickFn(path: string) {
-      if (!isUrl(path))
+      if (!isHttpUrl(path))
         return true
 
       openWindow(path)

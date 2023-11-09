@@ -4,15 +4,7 @@ import { nextTick, toRaw, unref } from 'vue'
 import { cloneDeep, get, set, uniqBy } from 'lodash-es'
 import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form'
 import { dateItemType, defaultValueComponents, handleInputNumberValue } from '../helper'
-import {
-  isArray,
-  isDef,
-  isEmpty,
-  isFunction,
-  isNullOrUnDef,
-  isObject,
-  isString,
-} from '@/utils/is'
+import { isArray, isDef, isEmpty, isFunction, isNil, isObject, isString } from '@/utils/is'
 import { deepMerge } from '@/utils'
 import { dateUtil } from '@/utils/dateUtil'
 import { error } from '@/utils/log'
@@ -317,9 +309,9 @@ export function useFormEvents({
         item.component !== 'Divider'
         && Reflect.has(item, 'field')
         && item.field
-        && !isNullOrUnDef(item.defaultValue)
+        && !isNil(item.defaultValue)
         && (!(item.field in currentFieldsValue)
-          || isNullOrUnDef(currentFieldsValue[item.field])
+          || isNil(currentFieldsValue[item.field])
           || isEmpty(currentFieldsValue[item.field]))
       )
         obj[item.field] = item.defaultValue

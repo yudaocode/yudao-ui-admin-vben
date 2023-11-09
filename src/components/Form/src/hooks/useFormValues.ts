@@ -3,7 +3,7 @@ import type { ComputedRef, Ref } from 'vue'
 import { cloneDeep, get, set, unset } from 'lodash-es'
 import type { FormProps, FormSchemaInner as FormSchema } from '../types/form'
 import { dateUtil } from '@/utils/dateUtil'
-import { isArray, isFunction, isNotEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
+import { isArray, isEmpty, isFunction, isNil, isObject, isString } from '@/utils/is'
 
 interface UseFormValuesContext {
   defaultValueRef: Ref<any>
@@ -113,10 +113,10 @@ export function useFormValues({
 
       const [startTimeFormat, endTimeFormat] = Array.isArray(format) ? format : [format, format]
 
-      if (isNotEmpty(startTime))
+      if (!isNil(startTime) && !isEmpty(startTime))
         set(values, startTimeKey, formatTime(startTime, startTimeFormat))
 
-      if (isNotEmpty(endTime))
+      if (!isNil(startTime) && !isEmpty(startTime))
         set(values, endTimeKey, formatTime(endTime, endTimeFormat))
 
       unset(values, field)
@@ -149,7 +149,7 @@ export function useFormValues({
             formModel[field] = defaultValueObj![field]
         })
       }
-      if (!isNullOrUnDef(defaultValue)) {
+      if (!isNil(defaultValue)) {
         obj[item.field] = defaultValue
 
         if (formModel[item.field] === undefined)

@@ -10,7 +10,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
 import { buildShortUUID } from '@/utils/uuid'
 import { getAccessToken, getTenantId } from '@/utils/auth'
-import { isArray, isNotEmpty, isUrl } from '@/utils/is'
+import { isArray, isHttpUrl, isNil } from '@/utils/is'
 import { useRuleFormItem } from '@/hooks/component/useFormItem'
 import { useAttrs } from '@/hooks/core/useAttrs'
 
@@ -69,7 +69,7 @@ watch(
   (v) => {
     fileState.newList = v
       .filter((item: any) => {
-        return item?.url && item.status === 'done' && isUrl(item?.url)
+        return item?.url && item.status === 'done' && isHttpUrl(item?.url)
       })
       .map((item: any) => item?.url)
     fileState.newStr = join(fileState.newList)
@@ -97,7 +97,7 @@ function changeFileValue(value: any) {
     fileState.oldStr = stateStr
     let list: string[] = []
     if (props.multiple) {
-      if (isNotEmpty(value)) {
+      if (!isNil(value)) {
         if (isArray(value))
           list = value as string[]
         else
@@ -105,7 +105,7 @@ function changeFileValue(value: any) {
       }
     }
     else {
-      if (isNotEmpty(value))
+      if (!isNil(value))
         list.push(value as string)
     }
     fileList.value = list.map((item) => {

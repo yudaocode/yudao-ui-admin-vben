@@ -12,7 +12,7 @@ import type { RequestOptions, Result } from '@/types/axios'
 import { useGlobSetting } from '@/hooks/setting'
 import { useMessage } from '@/hooks/web/useMessage'
 import { ContentTypeEnum, RequestEnum, ResultEnum } from '@/enums/httpEnum'
-import { isEmpty, isNull, isString, isUnDef } from '@/utils/is'
+import { isEmpty, isNull, isString, isUndefined } from '@/utils/is'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import { deepMerge, setObjToUrlParams } from '@/utils'
 import { useErrorLogStoreWithOut } from '@/store/modules/errorLog'
@@ -67,7 +67,7 @@ const transform: AxiosTransform = {
       if (successMsg === null || successMsg === undefined || successMsg === '')
         successMsg = t('sys.api.operationSuccess')
 
-      if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg))
+      if (isNull(successMsg) || isUndefined(successMsg) || isEmpty(successMsg))
         successMsg = t('sys.api.operationSuccess')
 
       if (options.successMessageMode === 'modal')
