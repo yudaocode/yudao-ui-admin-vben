@@ -64,8 +64,6 @@ const transform: AxiosTransform = {
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS
     if (hasSuccess) {
       let successMsg = msg
-      if (successMsg === null || successMsg === undefined || successMsg === '')
-        successMsg = t('sys.api.operationSuccess')
 
       if (isNull(successMsg) || isUndefined(successMsg) || isEmpty(successMsg))
         successMsg = t('sys.api.operationSuccess')
