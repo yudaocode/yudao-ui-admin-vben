@@ -10,4 +10,4 @@ export const cacheCipher = {
 }
 
 // 是否加密缓存，默认生产环境加密
-export const enableStorageEncryption = !isDevMode()
+export const SHOULD_ENABLE_STORAGE_ENCRYPTION = !isDevMode()
