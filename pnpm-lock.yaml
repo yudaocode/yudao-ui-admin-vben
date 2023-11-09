@@ -30,8 +30,8 @@ dependencies:
     specifier: ^4.0.6
     version: 4.0.6(vue@3.3.8)
   axios:
-    specifier: ^1.6.0
-    version: 1.6.0(debug@4.3.4)
+    specifier: ^1.6.1
+    version: 1.6.1(debug@4.3.4)
   benz-amr-recorder:
     specifier: ^1.1.5
     version: 1.1.5
@@ -122,8 +122,8 @@ devDependencies:
     specifier: ^18.1.0
     version: 18.1.0
   '@iconify/json':
-    specifier: ^2.2.138
-    version: 2.2.138
+    specifier: ^2.2.139
+    version: 2.2.139
   '@purge-icons/generated':
     specifier: ^0.9.0
     version: 0.9.0
@@ -158,8 +158,8 @@ devDependencies:
     specifier: ^0.57.2
     version: 0.57.2(eslint@8.53.0)(typescript@5.2.2)
   '@vitejs/plugin-vue':
-    specifier: 4.4.0
-    version: 4.4.0(vite@4.5.0)(vue@3.3.8)
+    specifier: 4.4.1
+    version: 4.4.1(vite@4.5.0)(vue@3.3.8)
   '@vitejs/plugin-vue-jsx':
     specifier: ^3.0.2
     version: 3.0.2(vite@4.5.0)(vue@3.3.8)
@@ -275,8 +275,8 @@ devDependencies:
     specifier: ^2.0.1
     version: 2.0.1(vite@4.5.0)
   vite-vue-plugin-html:
-    specifier: ^1.0.4
-    version: 1.0.4(rollup@4.3.0)(vite@4.5.0)
+    specifier: ^1.0.5
+    version: 1.0.5(rollup@4.3.0)(vite@4.5.0)
   vue-tsc:
     specifier: ^1.8.22
     version: 1.8.22(typescript@5.2.2)
@@ -2061,8 +2061,8 @@ packages:
     dependencies:
       '@iconify/types': 2.0.0
 
-  /@iconify/json@2.2.138:
-    resolution: {integrity: sha512-Xadn4xiIiaF02VLbJwviPSNqB2pNH2NQ+mxgtM5SuYQ/U/D9Sa+hr2Jwc/YlcOWgeqIp+hIVR2YzJDtSiL3fPA==}
+  /@iconify/json@2.2.139:
+    resolution: {integrity: sha512-RQrUtjDN7qzGP+75I4lqH4XO2/PjOA7g9yQEoVB/DQf3S1ND7qLxlgbMa5vZV7oFMydl0ifmeIzBtgKL78B11Q==}
     dependencies:
       '@iconify/types': 2.0.0
       pathe: 1.1.1
@@ -3176,8 +3176,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue@4.4.0(vite@4.5.0)(vue@3.3.8):
-    resolution: {integrity: sha512-xdguqb+VUwiRpSg+nsc2HtbAUSGak25DXYvpQQi4RVU1Xq1uworyoH/md9Rfd8zMmPR/pSghr309QNcftUVseg==}
+  /@vitejs/plugin-vue@4.4.1(vite@4.5.0)(vue@3.3.8):
+    resolution: {integrity: sha512-HCQG8VDFDM7YDAdcj5QI5DvUi+r6xvo9LgvYdk7LSkUNwdpempdB5horkMSZsbdey9Ywsf5aaU8kEPw9M5kREA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
@@ -3711,8 +3711,8 @@ packages:
       - debug
     dev: true
 
-  /axios@1.6.0(debug@4.3.4):
-    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
+  /axios@1.6.1(debug@4.3.4):
+    resolution: {integrity: sha512-vfBmhDpKafglh0EldBEbVuoe7DyAavGSLWhuSm5ZSEKQnHhBf0xAAwybbNH1IkrJNGnS/VG4I5yxig1pCEXE4g==}
     dependencies:
       follow-redirects: 1.15.3(debug@4.3.4)
       form-data: 4.0.0
@@ -5507,6 +5507,17 @@ packages:
 
   /fast-glob@3.3.1:
     resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
+    engines: {node: '>=8.6.0'}
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      '@nodelib/fs.walk': 1.2.8
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.5
+    dev: true
+
+  /fast-glob@3.3.2:
+    resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -9580,7 +9591,7 @@ packages:
       vite: '>=3'
     dependencies:
       '@octokit/rest': 19.0.13
-      axios: 1.6.0(debug@4.3.4)
+      axios: 1.6.1(debug@4.3.4)
       debug: 4.3.4
       picocolors: 1.0.0
       vite: 4.5.0(@types/node@20.9.0)(less@4.2.0)(terser@5.24.0)
@@ -9652,10 +9663,10 @@ packages:
       - supports-color
     dev: true
 
-  /vite-vue-plugin-html@1.0.4(rollup@4.3.0)(vite@4.5.0):
-    resolution: {integrity: sha512-V9SqhUz4tL/P9Nq9F3LEhtAI+oIPTwKN+gXh1n39zQ5OMeQoI6OHoCWIg5cxr9TOyAwXi9OJOFUu9OsG2YdWFw==}
+  /vite-vue-plugin-html@1.0.5(rollup@4.3.0)(vite@4.5.0):
+    resolution: {integrity: sha512-JkujFlWltip25WESJfinONIE6FrFkD9tDnNpDxp4PtBXpfeViXBhWraWDsAmMba39kAo7SwsR9G1PWb4kcvLYg==}
     peerDependencies:
-      vite: '>=4.2.0'
+      vite: '>=4.5.0'
     dependencies:
       '@rollup/pluginutils': 5.0.5(rollup@4.3.0)
       colorette: 2.0.20
@@ -9664,7 +9675,7 @@ packages:
       dotenv: 16.3.1
       dotenv-expand: 10.0.0
       ejs: 3.1.9
-      fast-glob: 3.3.1
+      fast-glob: 3.3.2
       fs-extra: 11.1.1
       html-minifier-terser: 7.2.0
       node-html-parser: 6.1.11
