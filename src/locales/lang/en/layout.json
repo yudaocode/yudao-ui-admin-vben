@@ -28,6 +28,7 @@
   "setting": {
     "animation": "Animation",
     "animationType": "Animation type",
+    "autoCollapseTabsInFold": "Auto collapse tabs in fold",
     "autoScreenLock": "Auto screen lock",
     "breadcrumb": "Breadcrumbs",
     "breadcrumbIcon": "Breadcrumbs Icon",

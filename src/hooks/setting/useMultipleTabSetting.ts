@@ -16,6 +16,8 @@ export function useMultipleTabSetting() {
 
   const getShowFold = computed(() => appStore.getMultiTabsSetting.showFold)
 
+  const getAutoCollapse = computed(() => appStore.getMultiTabsSetting.autoCollapse)
+
   function setMultipleTabSetting(multiTabsSetting: Partial<MultiTabsSetting>) {
     appStore.setProjectConfig({ multiTabsSetting })
   }
@@ -26,5 +28,6 @@ export function useMultipleTabSetting() {
     getShowQuick,
     getShowRedo,
     getShowFold,
+    getAutoCollapse,
   }
 }

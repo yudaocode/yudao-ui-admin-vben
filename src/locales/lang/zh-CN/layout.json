@@ -28,6 +28,7 @@
   "setting": {
     "animation": "动画",
     "animationType": "动画类型",
+    "autoCollapseTabsInFold": "fold模式下自动收起标签页",
     "autoScreenLock": "自动锁屏",
     "breadcrumb": "面包屑",
     "breadcrumbIcon": "面包屑图标",

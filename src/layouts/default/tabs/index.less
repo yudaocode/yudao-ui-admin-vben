@@ -1,4 +1,26 @@
 @prefix-cls: ~"@{namespace}-multiple-tabs";
+@prefix-cls-default-layout: ~"@{namespace}-default-layout";
+
+.@{prefix-cls-default-layout}-out {
+  &.ant-layout-auto-collapse-tabs {
+    .@{prefix-cls} {
+      margin-top: -(@multiple-height + 2);
+      opacity: 0.1;
+
+      &:hover,
+      &--hover {
+        margin-top: 0;
+        opacity: 1;
+        transition-delay: 0s;
+      }
+    }
+  }
+  .@{prefix-cls} {
+    transition:
+      margin 0.2s ease-in-out 0.6s,
+      opacity 0.2s ease-in-out 0.6s;
+  }
+}
 
 .@{prefix-cls} {
   z-index: 10;

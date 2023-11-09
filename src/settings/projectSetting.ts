@@ -129,6 +129,7 @@ const setting: ProjectConfig = {
     showRedo: true,
     // 是否显示折叠按钮
     showFold: true,
+    autoCollapse: false,
   },
 
   // 动画配置

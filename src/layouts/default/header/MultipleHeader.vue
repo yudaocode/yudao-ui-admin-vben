@@ -24,13 +24,13 @@ const { setHeaderHeight } = useLayoutHeight()
 const tabStore = useMultipleTabStore()
 const { prefixCls } = useDesign('layout-multiple-header')
 
-const { getCalcContentWidth, getSplit } = useMenuSetting()
+const { getCalcContentWidth, getSplit, getShowMenu } = useMenuSetting()
 const { getIsMobile } = useAppInject()
 const { getFixed, getShowInsetHeaderRef, getShowFullHeaderRef, getHeaderTheme, getShowHeader } = useHeaderSetting()
 
 const { getFullContent } = useFullContent()
 
-const { getShowMultipleTab } = useMultipleTabSetting()
+const { getShowMultipleTab, getAutoCollapse } = useMultipleTabSetting()
 
 const getShowTabs = computed(() => {
   return unref(getShowMultipleTab) && !unref(getFullContent)
@@ -39,6 +39,8 @@ const getShowTabs = computed(() => {
 const getIsShowPlaceholderDom = computed(() => {
   return unref(getFixed) || unref(getShowFullHeaderRef)
 })
+
+const getIsUnFold = computed(() => !unref(getShowMenu) && !unref(getShowHeader))
 
 const getWrapStyle = computed((): CSSProperties => {
   const style: CSSProperties = {}
@@ -57,13 +59,19 @@ const getIsFixed = computed(() => {
 
 const getPlaceholderDomStyle = computed((): CSSProperties => {
   let height = 0
-  if ((unref(getShowFullHeaderRef) || !unref(getSplit)) && unref(getShowHeader) && !unref(getFullContent))
-    height += HEADER_HEIGHT
+  if (!(unref(getAutoCollapse) && unref(getIsUnFold))) {
+    if (
+      (unref(getShowFullHeaderRef) || !unref(getSplit))
+            && unref(getShowHeader)
+            && !unref(getFullContent)
+    )
+      height += HEADER_HEIGHT
 
-  if (unref(getShowMultipleTab) && !unref(getFullContent))
-    height += TABS_HEIGHT
+    if (unref(getShowMultipleTab) && !unref(getFullContent))
+      height += TABS_HEIGHT
 
-  setHeaderHeight(height)
+    setHeaderHeight(height)
+  }
   return {
     height: `${height}px`,
   }
@@ -75,7 +83,11 @@ const getClass = computed(() => {
 </script>
 
 <template>
-  <div v-if="getIsShowPlaceholderDom" :style="getPlaceholderDomStyle" />
+  <div
+    v-if="getIsShowPlaceholderDom"
+    :class="[`${prefixCls}__placeholder`]"
+    :style="getPlaceholderDomStyle"
+  />
   <div :style="getWrapStyle" :class="getClass">
     <LayoutHeader v-if="getShowInsetHeaderRef" />
     <MultipleTabs v-if="getShowTabs" :key="tabStore.getLastDragEndIndex" />
@@ -98,6 +110,10 @@ const getClass = computed(() => {
     top: 0;
     z-index: @multiple-tab-fixed-z-index;
     width: 100%;
+  }
+
+  &__placeholder {
+     transition: height 0.6s ease-in-out;
   }
 }
 </style>

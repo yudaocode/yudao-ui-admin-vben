@@ -2,6 +2,8 @@ import { ThemeEnum } from '../enums/appEnum'
 
 export const prefixCls = 'xingyuv'
 
+export const multipleTabHeight = 30
+
 export const darkMode = ThemeEnum.LIGHT
 
 // app主题色预设

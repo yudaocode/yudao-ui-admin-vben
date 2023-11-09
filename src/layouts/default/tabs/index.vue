@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { RouteLocationNormalized, RouteMeta } from 'vue-router'
 
+import { useMouse } from '@vueuse/core'
+
 import { computed, ref, unref } from 'vue'
 
 import { Tabs } from 'ant-design-vue'
@@ -10,6 +12,7 @@ import FoldButton from './components/FoldButton.vue'
 import TabRedo from './components/TabRedo.vue'
 
 import { initAffixTabs, useTabsDrag } from './useMultipleTabs'
+import { multipleTabHeight } from '@/settings/designSetting'
 import { useGo } from '@/hooks/web/usePage'
 
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
@@ -41,11 +44,14 @@ const getTabsState = computed(() => {
 
 const unClose = computed(() => unref(getTabsState).length === 1)
 
+const { y: mouseY } = useMouse()
+
 const getWrapClass = computed(() => {
   return [
     prefixCls,
     {
       [`${prefixCls}--hide-close`]: unref(unClose),
+      [`${prefixCls}--hover`]: unref(mouseY) < multipleTabHeight,
     },
   ]
 })

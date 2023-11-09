@@ -70,7 +70,7 @@ export default defineComponent({
 
     const { getShowHeader, getFixed: getHeaderFixed, getHeaderBgColor, getShowSearch } = useHeaderSetting()
 
-    const { getShowMultipleTab, getShowMultipleTabIcon, getShowQuick, getShowRedo, getShowFold } = useMultipleTabSetting()
+    const { getShowMultipleTab, getShowMultipleTabIcon, getShowQuick, getShowRedo, getShowFold, getAutoCollapse } = useMultipleTabSetting()
 
     const getShowMenuRef = computed(() => {
       return unref(getShowMenu) && !unref(getIsHorizontal)
@@ -182,6 +182,12 @@ export default defineComponent({
             event={HandlerEnum.MENU_FIXED}
             def={unref(getMenuFixed)}
             disabled={!unref(getShowMenuRef) || unref(getIsMixSidebar)}
+          />
+          <SwitchItem
+            title={t('layout.setting.autoCollapseTabsInFold')}
+            event={HandlerEnum.TABS_AUTO_COLLAPSE}
+            def={unref(getAutoCollapse)}
+            disabled={!unref(getShowMultipleTab)}
           />
           <SelectItem
             title={t('layout.setting.mixSidebarTrigger')}
