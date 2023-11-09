@@ -297,6 +297,7 @@ export default defineComponent({
     })
 
     const instance: TreeActionType = {
+      treeData: treeDataRef,
       setExpandedKeys,
       getExpandedKeys,
       setSelectedKeys,
