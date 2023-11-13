@@ -11,7 +11,7 @@
 
 - [预览地址](http://dashboard-vben.yudao.iocoder.cn/)
 - [启动文档](https://doc.iocoder.cn/quick-start/)
-- [开发文档](http://vben-doc.x-surge.com/)
+- [开发文档](https://doc.vvbin.cn/)
 - [视频教程](https://doc.iocoder.cn/video/)
 
 ## 外包项目请联系 [ xinyu370 ]
