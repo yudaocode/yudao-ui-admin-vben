@@ -50,7 +50,7 @@
     "@iconify/iconify": "^3.1.1",
     "@videojs-player/vue": "^1.0.0",
     "@vue/runtime-core": "^3.3.8",
-    "@vueuse/core": "^10.6.0",
+    "@vueuse/core": "^10.6.1",
     "@zxcvbn-ts/core": "^3.0.4",
     "ant-design-vue": "^4.0.7",
     "axios": "^1.6.1",
