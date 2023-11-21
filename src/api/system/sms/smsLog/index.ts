@@ -14,8 +14,6 @@ export interface SmsLogVO {
   userType: number
   sendStatus: number
   sendTime: Date
-  sendCode: number
-  sendMsg: string
   apiSendCode: string
   apiSendMsg: string
   apidefHttpId: string
