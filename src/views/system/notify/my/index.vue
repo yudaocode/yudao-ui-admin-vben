@@ -9,6 +9,7 @@ import { getMyNotifyMessagePage, updateAllNotifyMessageRead, updateNotifyMessage
 import MessageInfoModal from '@/views/system/notify/components/MessageInfoModal.vue'
 import { useModal } from '@/components/Modal'
 import { useUserMessageStore } from '@/store/modules/userMessage'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemMyMessage' })
 
@@ -86,6 +87,8 @@ function handleInfo(record: any) {
 
 <template>
   <div>
+    <DocAlert title="站内信配置" url="https://doc.iocoder.cn/notify/" />
+
     <BasicTable bordered @register="registerTable">
       <template #toolbar>
         <a-button pre-icon="solar:check-read-line-duotone" type="primary" :disabled="readedDisabled" @click="handleUpdateList">

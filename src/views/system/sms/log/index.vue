@@ -6,6 +6,7 @@ import type { SmsLogExportReqVO } from '@/api/system/sms/smsLog'
 import { exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemSmsLog' })
 
@@ -36,6 +37,8 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:sms-log:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">

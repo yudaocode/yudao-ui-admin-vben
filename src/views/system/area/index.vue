@@ -6,6 +6,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
 import { getAreaTree } from '@/api/system/area'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemArea' })
 
@@ -34,8 +35,10 @@ function handleCreate() {
 </script>
 
 <template>
-  <div class="p-4">
-    <BasicTable @register="register">
+  <div>
+    <DocAlert title="地区 & IP" url="https://doc.iocoder.cn/area-and-ip/" />
+
+    <BasicTable class="p-4" @register="register">
       <template #toolbar>
         <a-button type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
           IP 查询

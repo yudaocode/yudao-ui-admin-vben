@@ -8,6 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteNotifyTemplate, getNotifyTemplatePage } from '@/api/system/notify/template'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemMessageTemplate' })
 
@@ -53,6 +54,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="站内信配置" url="https://doc.iocoder.cn/notify/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:notify-template:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

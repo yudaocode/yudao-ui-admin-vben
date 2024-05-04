@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteSmsChannel, getSmsChannelPage } from '@/api/system/sms/smsChannel'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemSmsChannel' })
 
@@ -47,6 +48,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:sms-channel:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

@@ -8,6 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMailTemplate, getMailTemplatePage } from '@/api/system/mail/template'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemMailTemplate' })
 
@@ -52,6 +53,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:mail-template:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

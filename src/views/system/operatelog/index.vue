@@ -8,6 +8,7 @@ import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { OperateLogPageReqVO } from '@/api/system/operatelog'
 import { exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
 import { useModal } from '@/components/Modal'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemOperateLog' })
 
@@ -49,6 +50,8 @@ function handleShowInfo(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button :pre-icon="IconEnum.EXPORT" @click="handleExport">

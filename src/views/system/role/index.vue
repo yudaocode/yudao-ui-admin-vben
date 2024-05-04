@@ -10,6 +10,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { RoleExportReqVO } from '@/api/system/role'
 import { deleteRole, exportRole, getRolePage } from '@/api/system/role'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemRole' })
 
@@ -71,6 +72,9 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
+    <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:role:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

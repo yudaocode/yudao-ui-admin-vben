@@ -6,6 +6,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getMailAccountPage } from '@/api/system/mail/log'
 import { useModal } from '@/components/Modal'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemOperateLog' })
 
@@ -35,6 +36,8 @@ function handleShowInfo(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">

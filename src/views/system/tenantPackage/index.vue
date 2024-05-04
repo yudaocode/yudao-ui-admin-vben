@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteTenantPackage, getTenantPackagePage } from '@/api/system/tenantPackage'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemTenantPackage' })
 
@@ -46,6 +47,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="SaaS 多租户" url="https://doc.iocoder.cn/saas-tenant/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:tenant-package:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

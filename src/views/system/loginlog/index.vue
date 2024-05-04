@@ -5,6 +5,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'
 import type { LoginLogReqVO } from '@/api/system/loginLog'
 import { exportLoginLog, getLoginLogPage } from '@/api/system/loginLog'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemLoginLog' })
 
@@ -35,6 +36,8 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:login-log:export']" @click="handleExport">

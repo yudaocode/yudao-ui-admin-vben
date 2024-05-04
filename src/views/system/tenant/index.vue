@@ -8,6 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemTenant' })
 
@@ -59,6 +60,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="SaaS 多租户" url="https://doc.iocoder.cn/saas-tenant/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:tenant:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteOAuth2Client, getOAuth2ClientPage } from '@/api/system/oauth2/client'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemClient' })
 
@@ -46,6 +47,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="OAuth 2.0（SSO 单点登录)" url="https://doc.iocoder.cn/oauth2/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['system:oauth2-client:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

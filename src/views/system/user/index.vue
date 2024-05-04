@@ -12,6 +12,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { UserExportReqVO } from '@/api/system/user'
 import { deleteUser, exportUser, getUserPage } from '@/api/system/user'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemUser' })
 
@@ -89,52 +90,60 @@ function handleSelect(deptId = '') {
 </script>
 
 <template>
-  <div class="flex">
-    <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
-    <BasicTable class="w-3/4 xl:w-4/5" :search-info="searchInfo" @register="registerTable">
-      <template #toolbar>
-        <a-button v-auth="['system:user:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
-          {{ t('action.create') }}
-        </a-button>
-        <a-button v-auth="['system:user:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
-          {{ t('action.export') }}
-        </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:user:update', onClick: handleEdit.bind(null, record) },
-            ]"
-            :drop-down-actions="[
-              {
-                icon: IconEnum.EDIT,
-                label: '分配角色',
-                auth: 'system:permission:assign-user-role',
-                onClick: handleRole.bind(null, record),
-              },
-              {
-                icon: IconEnum.EDIT,
-                label: '重置密码',
-                auth: 'system:user:update-password',
-                onClick: handleResetPwd.bind(null, record),
-              },
-              {
-                icon: IconEnum.DELETE,
-                danger: true,
-                label: t('action.delete'),
-                auth: 'system:user:delete',
-                popConfirm: {
-                  title: t('common.delMessage'),
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record),
-                },
-              },
-            ]"
-          />
+  <div>
+    <div>
+      <DocAlert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
+      <DocAlert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
+      <DocAlert title="Excel 导入导出" url="https://doc.iocoder.cn/excel-import-and-export/" />
+    </div>
+
+    <div class="flex">
+      <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
+      <BasicTable class="w-3/4 xl:w-4/5" :search-info="searchInfo" @register="registerTable">
+        <template #toolbar>
+          <a-button v-auth="['system:user:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
+            {{ t('action.create') }}
+          </a-button>
+          <a-button v-auth="['system:user:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">
+            {{ t('action.export') }}
+          </a-button>
         </template>
-      </template>
-    </BasicTable>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'action'">
+            <TableAction
+              :actions="[
+                { icon: IconEnum.EDIT, label: t('action.edit'), auth: 'system:user:update', onClick: handleEdit.bind(null, record) },
+              ]"
+              :drop-down-actions="[
+                {
+                  icon: IconEnum.EDIT,
+                  label: '分配角色',
+                  auth: 'system:permission:assign-user-role',
+                  onClick: handleRole.bind(null, record),
+                },
+                {
+                  icon: IconEnum.EDIT,
+                  label: '重置密码',
+                  auth: 'system:user:update-password',
+                  onClick: handleResetPwd.bind(null, record),
+                },
+                {
+                  icon: IconEnum.DELETE,
+                  danger: true,
+                  label: t('action.delete'),
+                  auth: 'system:user:delete',
+                  popConfirm: {
+                    title: t('common.delMessage'),
+                    placement: 'left',
+                    confirm: handleDelete.bind(null, record),
+                  },
+                },
+              ]"
+            />
+          </template>
+        </template>
+      </BasicTable>
+    </div>
     <UserModal @register="registerModal" @success="reload()" />
     <UserRoleModal @register="registerRoleModal" @success="reload()" />
     <ResetPwdModal @register="registerPwdModal" @success="reload()" />

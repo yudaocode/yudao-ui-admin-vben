@@ -5,6 +5,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteAccessToken, getAccessTokenPage } from '@/api/system/oauth2/token'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DocAlert } from '@/components/DocAlert';
 
 defineOptions({ name: 'SystemToken' })
 
@@ -35,6 +36,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="OAuth 2.0（SSO 单点登录)" url="https://doc.iocoder.cn/oauth2/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
