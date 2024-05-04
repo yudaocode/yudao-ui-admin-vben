@@ -9,6 +9,7 @@ import { useDrawer } from '@/components/Drawer'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getUserPage } from '@/api/member/user'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MemberUser' })
 
@@ -47,6 +48,8 @@ function updateLevelFormRef(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="会员用户、标签、分组" url="https://doc.iocoder.cn/member/user/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">

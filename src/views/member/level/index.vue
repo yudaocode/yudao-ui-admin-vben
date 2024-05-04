@@ -6,6 +6,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getLevelList } from '@/api/member/level'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MemberLevel' })
 
@@ -34,6 +35,8 @@ function handleEdit(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="会员等级、积分、签到" url="https://doc.iocoder.cn/member/level/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">

@@ -2,6 +2,7 @@
 import { columns, searchFormSchema } from './record.data'
 import { BasicTable, useTable } from '@/components/Table'
 import { getRecordPage } from '@/api/member/point/record'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PointRecord' })
 
@@ -18,6 +19,8 @@ const [registerTable] = useTable({
 
 <template>
   <div>
+    <DocAlert title="会员等级、积分、签到" url="https://doc.iocoder.cn/member/level/" />
+
     <BasicTable @register="registerTable" />
   </div>
 </template>

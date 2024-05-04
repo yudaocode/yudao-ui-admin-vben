@@ -6,6 +6,7 @@ import { PageWrapper } from '@/components/Page'
 import { getConfig, saveConfig } from '@/api/member/config'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MemberConfig' })
 
@@ -90,6 +91,8 @@ onMounted(async () => {
 
 <template>
   <PageWrapper>
+    <DocAlert title="会员手册（功能开启）" url="https://doc.iocoder.cn/member/build/" />
+
     <BasicForm class="w-200" @register="registerForm" @submit="handleSubmit" />
   </PageWrapper>
 </template>

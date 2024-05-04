@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMemberTag, getMemberTagPage } from '@/api/member/tag'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MemberTag' })
 
@@ -46,6 +47,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="会员用户、标签、分组" url="https://doc.iocoder.cn/member/user/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['member:tag:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

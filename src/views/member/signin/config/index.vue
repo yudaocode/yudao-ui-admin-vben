@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteSignInConfig, getSignInConfigList } from '@/api/member/signin/config'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SignInConfig' })
 
@@ -43,6 +44,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="会员等级、积分、签到" url="https://doc.iocoder.cn/member/level/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['point:sign-in-config:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
