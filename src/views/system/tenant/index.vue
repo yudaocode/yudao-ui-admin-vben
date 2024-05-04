@@ -8,7 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemTenant' })
 

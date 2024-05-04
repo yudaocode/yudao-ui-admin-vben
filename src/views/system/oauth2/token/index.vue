@@ -5,7 +5,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteAccessToken, getAccessTokenPage } from '@/api/system/oauth2/token'
 import { useMessage } from '@/hooks/web/useMessage'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemToken' })
 

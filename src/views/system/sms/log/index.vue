@@ -6,7 +6,7 @@ import type { SmsLogExportReqVO } from '@/api/system/sms/smsLog'
 import { exportSmsLog, getSmsLogPage } from '@/api/system/sms/smsLog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemSmsLog' })
 

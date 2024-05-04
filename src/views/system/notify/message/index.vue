@@ -6,7 +6,7 @@ import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getNotifyMessagePage } from '@/api/system/notify/message'
 import MessageInfoModal from '@/views/system/notify/components/MessageInfoModal.vue'
 import { useModal } from '@/components/Modal'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemMessage' })
 

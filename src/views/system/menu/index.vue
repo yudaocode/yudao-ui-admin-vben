@@ -9,7 +9,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteMenu, getMenuList } from '@/api/system/menu'
 import { usePermission } from '@/hooks/web/usePermission'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemMenu' })
 

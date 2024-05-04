@@ -5,6 +5,7 @@ import { useWebSocket } from '@vueuse/core'
 import { PageWrapper } from '@/components/Page'
 import { formatToDateTime } from '@/utils/dateUtil'
 import { useUserStore } from '@/store/modules/user'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraWebSocket' })
 
@@ -57,6 +58,8 @@ function toggle() {
 
 <template>
   <PageWrapper title="WebSocket 示例">
+    <DocAlert title="WebSocket 实时通信" url="https://doc.iocoder.cn/websocket/" />
+
     <div class="flex">
       <div class="w-1/3 p-4">
         <div class="flex items-center">

@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { IFrame } from '@/components/IFrame'
 import { getConfigKey } from '@/api/infra/config'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraAdminServer' })
 
@@ -24,6 +25,8 @@ onMounted(() => {
 
 <template>
   <div>
+    <DocAlert title="服务监控" url="https://doc.iocoder.cn/server-monitor/" />
+
     <IFrame v-if="!loading" :src="src" />
   </div>
 </template>

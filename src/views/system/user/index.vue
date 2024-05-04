@@ -12,7 +12,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { UserExportReqVO } from '@/api/system/user'
 import { deleteUser, exportUser, getUserPage } from '@/api/system/user'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemUser' })
 

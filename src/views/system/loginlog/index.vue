@@ -5,7 +5,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, useTable } from '@/components/Table'
 import type { LoginLogReqVO } from '@/api/system/loginLog'
 import { exportLoginLog, getLoginLogPage } from '@/api/system/loginLog'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemLoginLog' })
 

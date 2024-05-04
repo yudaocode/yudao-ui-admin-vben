@@ -9,7 +9,7 @@ import { getMyNotifyMessagePage, updateAllNotifyMessageRead, updateNotifyMessage
 import MessageInfoModal from '@/views/system/notify/components/MessageInfoModal.vue'
 import { useModal } from '@/components/Modal'
 import { useUserMessageStore } from '@/store/modules/userMessage'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemMyMessage' })
 

@@ -8,7 +8,7 @@ import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { OperateLogPageReqVO } from '@/api/system/operatelog'
 import { exportOperateLog, getOperateLogPage } from '@/api/system/operatelog'
 import { useModal } from '@/components/Modal'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemOperateLog' })
 

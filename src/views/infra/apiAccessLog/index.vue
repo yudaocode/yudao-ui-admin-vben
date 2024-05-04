@@ -8,6 +8,7 @@ import { IconEnum } from '@/enums/appEnum'
 import type { ApiAccessLogExportReqVO } from '@/api/infra/apiAccessLog'
 import { exportApiAccessLog, getApiAccessLogPage } from '@/api/infra/apiAccessLog'
 import { useModal } from '@/components/Modal'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraApiErrorLog' })
 
@@ -49,6 +50,8 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['infra:api-access-log:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">

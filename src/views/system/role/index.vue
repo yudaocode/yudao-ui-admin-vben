@@ -10,7 +10,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { RoleExportReqVO } from '@/api/system/role'
 import { deleteRole, exportRole, getRolePage } from '@/api/system/role'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemRole' })
 

@@ -8,6 +8,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { ConfigExportReqVO } from '@/api/infra/config'
 import { deleteConfig, exportConfig, getConfigPage } from '@/api/infra/config'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraConfig' })
 
@@ -60,6 +61,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="配置中心" url="https://doc.iocoder.cn/config-center/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['infra:config:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

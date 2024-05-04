@@ -4,6 +4,7 @@ import { baseInfoSchema } from './redis.data'
 import { Description } from '@/components/Description'
 import { getCache } from '@/api/infra/redis'
 import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraRedis' })
 const CommandStats = createAsyncComponent(() => import('./components/CommandStats.vue'))
@@ -31,6 +32,11 @@ onMounted(async () => {
 
 <template>
   <div class="p-4">
+    <div class="-mr-4 -ml-4 mb-4">
+      <DocAlert title="Redis 缓存" url="https://doc.iocoder.cn/redis-cache/" />
+      <DocAlert title="本地缓存" url="https://doc.iocoder.cn/local-cache/" />
+    </div>
+
     <Description
       title="基础信息"
       :collapse-options="{ canExpand: true, helpMessage: 'Redis 基本信息' }"

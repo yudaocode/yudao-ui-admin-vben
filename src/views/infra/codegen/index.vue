@@ -9,6 +9,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '@/api/infra/codegen'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraCodegen' })
 
@@ -64,6 +65,11 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="代码生成（单表）" url="https://doc.iocoder.cn/new-feature/" />
+    <DocAlert title="代码生成（树表）" url="https://doc.iocoder.cn/new-feature/tree/" />
+    <DocAlert title="代码生成（主子表）" url="https://doc.iocoder.cn/new-feature/master-sub/" />
+    <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['infra:codegen:create']" type="primary" :pre-icon="IconEnum.IMPORT" @click="openImportTableModal(true)">

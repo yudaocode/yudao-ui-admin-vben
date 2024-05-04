@@ -9,6 +9,7 @@ import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { ApiErrorLogExportReqVO } from '@/api/infra/apiErrorLog'
 import { exportApiErrorLog, getApiErrorLogPage, updateApiErrorLogProcess } from '@/api/infra/apiErrorLog'
 import { useModal } from '@/components/Modal'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraApiErrorLog' })
 
@@ -62,6 +63,8 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['infra:api-error-log:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">

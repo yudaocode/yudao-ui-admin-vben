@@ -6,7 +6,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, useTable } from '@/components/Table'
 import { getAreaTree } from '@/api/system/area'
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'SystemArea' })
 

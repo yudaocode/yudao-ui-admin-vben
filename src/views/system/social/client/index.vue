@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DocAlert } from '@/components/DocAlert';
+import { DocAlert } from '@/components/DocAlert'
 </script>
 
 <template>
