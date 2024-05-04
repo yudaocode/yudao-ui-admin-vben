@@ -102,7 +102,7 @@ function parsePathsValue(paths) {
       name: getFileName(item),
       status: 'done',
       url: item,
-      response: { status: 'history', message: item },
+      response: { status: 'history', data: item },
     })
   }
   fileList.value = list
@@ -121,7 +121,7 @@ function parseArrayValue(array) {
       name: item.fileName,
       url: item.filePath,
       status: 'done',
-      response: { status: 'history', message: item.filePath },
+      response: { status: 'history', data: item.filePath },
     })
   }
   fileList.value = list
@@ -179,10 +179,10 @@ function onFileChange(info) {
   }
   if (info.file.status === 'done') {
     let successFileList = []
-    if (info.file.response.success) {
+    if (info.file.response.code === 0) {
       successFileList = fileListTemp.map((file) => {
         if (file.response) {
-          const reUrl = file.response.message
+          const reUrl = file.response.data
           file.url = reUrl
         }
         return file
@@ -212,7 +212,7 @@ function onFileChange(info) {
         if (item.status === 'done') {
           const fileJson = {
             fileName: item.name,
-            filePath: item.response.message,
+            filePath: item.response.data,
             fileSize: item.size,
           }
           newFileList.push(fileJson)
