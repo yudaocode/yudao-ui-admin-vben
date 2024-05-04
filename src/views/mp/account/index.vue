@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { clearAccountQuota, deleteAccount, generateAccountQrCode, getAccountPage } from '@/api/mp/account'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MpAccount' })
 
@@ -75,6 +76,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="公众号接入" url="https://doc.iocoder.cn/mp/account/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['mp:account:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

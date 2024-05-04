@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getUserPage, syncUser } from '@/api/mp/mpuser'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MpUser' })
 
@@ -50,6 +51,8 @@ function handleEdit(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="公众号粉丝" url="https://doc.iocoder.cn/mp/user/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['mp:user:sync']" type="primary" :pre-icon="IconEnum.RESET" @click="handleSync">

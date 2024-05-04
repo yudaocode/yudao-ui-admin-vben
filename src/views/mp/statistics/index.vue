@@ -1,24 +1,17 @@
-<!-- <template>
-  <div>
-    <UserSummaryChart class="md:w-1/2 w-full" :loading="loading" :accountId="accountId" />
-    <UserCumulateChart class="md:w-1/2 w-full" :loading="loading" :accountId="accountId" />
-    <UpstreamMessageChart class="md:w-1/2 w-full" :loading="loading" :accountId="accountId" />
-    <InterfaceSummaryChart class="md:w-1/2 w-full" :loading="loading" :accountId="accountId" />
-  </div>
-</template>
 <script lang="ts" setup>
-import { ref } from 'vue'
-import UserSummaryChart from './components/UserSummaryChart.vue'
-import UserCumulateChart from './components/UserCumulateChart.vue'
-import UpstreamMessageChart from './components/UpstreamMessageChart.vue'
-import InterfaceSummaryChart from './components/InterfaceSummaryChart.vue'
+import { DocAlert } from '@/components/DocAlert'
+</script>
 
-defineOptions({ name: 'Statistics' })
-
-const loading = ref(true)
-
-const accountId = ref(1)
-</script> -->
 <template>
-  <div>开发中</div>
+  <div>
+    <DocAlert title="公众号手册" url="https://doc.iocoder.cn/mp/build/" />
+
+    <a-button danger type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3">
+      该功能支持 Vue3 + element-plus 版本！
+    </a-button>
+    <br />
+    <a-button type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/menu/index.vue">
+      可参考 https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/menu/index.vue 代码，pull request 贡献给我们！
+    </a-button>
+  </div>
 </template>

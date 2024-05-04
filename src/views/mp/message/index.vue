@@ -6,6 +6,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getMessagePage } from '@/api/mp/message'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'MpMessage' })
 
@@ -35,6 +36,8 @@ function handleEdit(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="公众号手册" url="https://doc.iocoder.cn/mp/build/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">

@@ -1,46 +1,17 @@
 <script lang="ts" setup>
-// import { Icon } from '@/components/Icon'
-import WxNews from '../components/WxNews/index.vue'
-import { PageWrapper } from '@/components/Page'
-import { getSimpleAccounts } from '@/api/mp/account'
-import { deleteFreePublish, getFreePublishPage } from '@/api/mp/freePublish'
-import type { FormSchema } from '@/components/Form'
-
-const simpleAccountsOptions = await getSimpleAccounts()
-
-const searchSchema: FormSchema[] = [
-  {
-    label: '公众号',
-    field: 'accountId',
-    component: 'Select',
-    required: true,
-    defaultValue: simpleAccountsOptions[0].id,
-    componentProps: {
-      options: simpleAccountsOptions,
-      fieldNames: {
-        label: 'name',
-        value: 'id',
-      },
-    },
-    colProps: { span: 8 },
-  },
-]
-
-let reload = () => {}
-// 获取内部fetch方法;
-function getMethod(m: any) {
-  reload = m
-}
-
-// 删除按钮事件
-function handleDelete(id) {
-  deleteFreePublish(id, id)
-  reload()
-}
+import { DocAlert } from '@/components/DocAlert'
 </script>
 
 <template>
-  <PageWrapper title="公众号图文">
-    <WxNews :search-schema="searchSchema" :api="getFreePublishPage" @get-method="getMethod" @delete="handleDelete" />
-  </PageWrapper>
+  <div>
+    <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
+
+    <a-button danger type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3">
+      该功能支持 Vue3 + element-plus 版本！
+    </a-button>
+    <br />
+    <a-button type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/freePublish/index.vue">
+      可参考 https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/freePublish/index.vue 代码，pull request 贡献给我们！
+    </a-button>
+  </div>
 </template>
