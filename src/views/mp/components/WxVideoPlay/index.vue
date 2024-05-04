@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import 'video.js/dist/video-js.css'
+// import 'video.js/dist/video-js.css'
 import { VideoPlayer } from '@videojs-player/vue'
 import { ref } from 'vue'
 import { Modal } from 'ant-design-vue'
