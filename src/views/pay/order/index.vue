@@ -8,6 +8,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { OrderExportReqVO } from '@/api/pay/order'
 import { exportOrder, getOrderPage } from '@/api/pay/order'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PayOrder' })
 
@@ -49,6 +50,10 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="支付宝支付接入" url="https://doc.iocoder.cn/pay/alipay-pay-demo/" />
+    <DocAlert title="微信公众号支付接入" url="https://doc.iocoder.cn/pay/wx-pub-pay-demo/" />
+    <DocAlert title="微信小程序支付接入" url="https://doc.iocoder.cn/pay/wx-lite-pay-demo/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['pay:order:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">

@@ -8,6 +8,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import type { PayRefundExportReqVO } from '@/api/pay/refund'
 import { exportRefund, getRefundPage } from '@/api/pay/refund'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PayRefund' })
 
@@ -49,6 +50,8 @@ async function handleExport() {
 
 <template>
   <div>
+    <DocAlert title="支付宝、微信退款接入" url="https://doc.iocoder.cn/pay/refund-demo/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['pay:order:export']" :pre-icon="IconEnum.EXPORT" @click="handleExport">

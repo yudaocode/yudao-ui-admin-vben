@@ -8,6 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getDemoOrderPage, refundDemoOrder } from '@/api/pay/demo'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PayDemo' })
 
@@ -58,6 +59,11 @@ async function handleRefund(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="支付宝支付接入" url="https://doc.iocoder.cn/pay/alipay-pay-demo/" />
+    <DocAlert title="支付宝、微信退款接入" url="https://doc.iocoder.cn/pay/refund-demo/" />
+    <DocAlert title="微信公众号支付接入" url="https://doc.iocoder.cn/pay/wx-pub-pay-demo/" />
+    <DocAlert title="微信小程序支付接入" url="https://doc.iocoder.cn/pay/wx-lite-pay-demo/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['pay:app:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleAdd">

@@ -10,6 +10,7 @@ import { IconEnum } from '@/enums/appEnum'
 import { Icon } from '@/components/Icon'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteApp, getAppPage } from '@/api/pay/app'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PayApp' })
 
@@ -67,6 +68,8 @@ function isChannelExists(channels, channelCode) {
 
 <template>
   <div>
+    <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['pay:app:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

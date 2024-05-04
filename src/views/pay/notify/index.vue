@@ -6,6 +6,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getNotifyTaskPage } from '@/api/pay/notify'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'PayNotify' })
 
@@ -34,6 +35,8 @@ async function handleQueryDetails(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
