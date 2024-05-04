@@ -4,14 +4,14 @@ import { DocAlert } from '@/components/DocAlert'
 
 <template>
   <div>
-    <DocAlert title="自动回复" url="https://doc.iocoder.cn/mall/auto-reply/" />
+    <doc-alert title="【统计】会员、商品、交易统计" url="https://doc.iocoder.cn/mall/statistics/" />
 
     <a-button danger type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3">
       该功能支持 Vue3 + element-plus 版本！
     </a-button>
     <br />
-    <a-button type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/autoReply/index.vue">
-      可参考 https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/autoReply/index.vue 代码，pull request 贡献给我们！
+    <a-button type="link" target="_blank" href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/statistics/trade/index.vue">
+      可参考 https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/statistics/trade/index.vue 代码，pull request 贡献给我们！
     </a-button>
   </div>
 </template>
