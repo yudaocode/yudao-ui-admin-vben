@@ -9,6 +9,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteModel, deployModel, getModelPage } from '@/api/bpm/model'
+import { DocAlert } from '@/components/DocAlert'
 
 // import { getAccessToken, getTenantId } from '@/utils/auth'
 
@@ -79,6 +80,14 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="流程设计器（BPMN）" url="https://doc.iocoder.cn/bpm/model-designer-dingding/" />
+    <DocAlert
+      title="流程设计器（钉钉、飞书）"
+      url="https://doc.iocoder.cn/bpm/model-designer-bpmn/"
+    />
+    <DocAlert title="选择审批人、发起人自选" url="https://doc.iocoder.cn/bpm/assignee/" />
+    <DocAlert title="会签、或签、依次审批" url="https://doc.iocoder.cn/bpm/multi-instance/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['bpm:model:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

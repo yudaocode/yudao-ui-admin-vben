@@ -11,6 +11,7 @@ import Icon from '@/components/Icon'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { getProcessDefinitionBpmnXML, getProcessDefinitionList } from '@/api/bpm/definition'
 import { createProcessInstance } from '@/api/bpm/processInstance'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'BpmProcessInstanceCreate' })
 
@@ -78,6 +79,8 @@ async function submitForm(formData) {
 
 <template>
   <PageWrapper>
+    <DocAlert title="流程发起、取消、重新发起" url="https://doc.iocoder.cn/bpm/process-instance/" />
+
     <div class="mx-auto my-0 mt-2.5 w-200">
       <Steps :current="current">
         <Steps.Step title="选择流程" />

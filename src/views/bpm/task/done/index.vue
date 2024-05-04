@@ -5,6 +5,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { getDoneTaskPage } from '@/api/bpm/task'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'BpmDoneTask' })
 
@@ -37,6 +38,14 @@ function handleAudit(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="审批通过、不通过、驳回" url="https://doc.iocoder.cn/bpm/task-todo-done/" />
+    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+    <DocAlert
+      title="审批转办、委派、抄送"
+      url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
+    />
+    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">

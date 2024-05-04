@@ -6,6 +6,7 @@ import { useMessage } from '@/hooks/web/useMessage'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { IconEnum } from '@/enums/appEnum'
 import { cancelProcessInstance, getMyProcessInstancePage } from '@/api/bpm/processInstance'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'InfraApiErrorLog' })
 
@@ -47,6 +48,8 @@ async function handleCancel(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="流程发起、取消、重新发起" url="https://doc.iocoder.cn/bpm/process-instance/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['bpm:process-instance:query']" :pre-icon="IconEnum.ADD" @click="handleCreate">

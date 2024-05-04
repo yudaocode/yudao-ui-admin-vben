@@ -7,6 +7,7 @@ import { getLeavePage } from '@/api/bpm/leave'
 import { useGo } from '@/hooks/web/usePage'
 import { useMessage } from '@/hooks/web/useMessage'
 import { cancelProcessInstance } from '@/api/bpm/processInstance'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'BpmLeave' })
 
@@ -73,6 +74,8 @@ function handleProcessDetail(row) {
 
 <template>
   <div>
+    <DocAlert title="审批接入（业务表单）" url="https://doc.iocoder.cn/bpm/use-business-form/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

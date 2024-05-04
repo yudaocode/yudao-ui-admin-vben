@@ -8,6 +8,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteForm, getFormPage } from '@/api/bpm/form'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'BpmForm' })
 
@@ -53,6 +54,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="审批接入（流程表单）" url="https://doc.iocoder.cn/bpm/use-bpm-form/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['bpm:form:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">

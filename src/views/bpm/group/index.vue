@@ -7,6 +7,7 @@ import { useModal } from '@/components/Modal'
 import { IconEnum } from '@/enums/appEnum'
 import { BasicTable, TableAction, useTable } from '@/components/Table'
 import { deleteUserGroup, getUserGroupPage } from '@/api/bpm/userGroup'
+import { DocAlert } from '@/components/DocAlert'
 
 defineOptions({ name: 'BpmGroup' })
 
@@ -46,6 +47,8 @@ async function handleDelete(record: Recordable) {
 
 <template>
   <div>
+    <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
+
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button v-auth="['bpm:user-group:create']" type="primary" :pre-icon="IconEnum.ADD" @click="handleCreate">
