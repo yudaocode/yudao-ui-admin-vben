@@ -78,7 +78,7 @@ export const formSchema: FormSchema[] = [
       {
         required: true,
         message: '请输入正确的邮箱地址',
-        pattern: /^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/,
+        pattern: /^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/,
         trigger: 'blur',
       },
     ],
