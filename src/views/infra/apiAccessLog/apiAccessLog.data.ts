@@ -2,7 +2,7 @@ import { h } from 'vue'
 import type { BasicColumn, FormSchema } from '@/components/Table'
 import { useRender } from '@/components/Table'
 import { DICT_TYPE, getDictOptions } from '@/utils/dict'
-import type { DescItem } from '@/components/Description/index'
+import type { DescItem } from '@/components/Description'
 
 export const columns: BasicColumn[] = [
   {
@@ -62,6 +62,24 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => {
       const success = record.resultCode === 0
       return useRender.renderTag(success ? '成功' : '失败', success ? '#87d068' : '#f50')
+    },
+  },
+  {
+    title: '操作模块',
+    dataIndex: 'operateModule',
+    width: 200,
+  },
+  {
+    title: '操作名',
+    dataIndex: 'operateName',
+    width: 180,
+  },
+  {
+    title: '操作类型',
+    dataIndex: 'operateType',
+    width: 120,
+    customRender: ({ text }) => {
+      return useRender.renderDict(text, DICT_TYPE.INFRA_OPERATE_TYPE)
     },
   },
 ]
@@ -217,6 +235,21 @@ export const infoSchema: DescItem[] = [
     render(value) {
       // 为0的话需要转为string  否则不会显示
       return useRender.renderText(String(value), 'ms')
+    },
+  },
+  {
+    field: 'operateModule',
+    label: '操作模块',
+  },
+  {
+    field: 'operateName',
+    label: '操作名',
+  },
+  {
+    field: 'operateType',
+    label: '操作类型',
+    render(value) {
+      return useRender.renderDict(value, DICT_TYPE.INFRA_OPERATE_TYPE)
     },
   },
 ]
