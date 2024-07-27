@@ -15,7 +15,7 @@ import type { RequestOptions, Result, UploadFileParams } from '@/types/axios'
 import { ContentTypeEnum, RequestEnum } from '@/enums/httpEnum'
 import { downloadByData } from '@/utils/file/download'
 import { useGlobSetting } from '@/hooks/setting'
-import { getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
+import {getAccessToken, getRefreshToken, getTenantId, setAccessToken} from '@/utils/auth'
 
 export * from './axiosTransform'
 
@@ -134,15 +134,14 @@ export class VAxios {
             try {
               const refreshTokenRes = await this.refreshToken()
               // 2.1 刷新成功，则回放队列的请求 + 当前请求
-              const refreshToken = getRefreshToken()
               setAccessToken(refreshTokenRes.data.data.accessToken)
-              ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}`
+              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}`
               requestList.forEach((cb: any) => {
                 cb()
               })
               requestList = []
               return new Promise((resolve) => {
-                resolve(this.axiosInstance(config))
+                resolve(this.axiosInstance.request(config))
               })
               // res = await Promise.all([this.axiosInstance(config)])[0]
             }
@@ -160,9 +159,8 @@ export class VAxios {
         else {
           // 添加到队列，等待刷新获取到新的令牌
           return new Promise((resolve) => {
-            const refreshToken = getRefreshToken()
             requestList.push(() => {
-              ;(config as Recordable).headers.Authorization = `Bearer ${refreshToken}` // 让每个请求携带自定义token 请根据实际情况自行修改
+              ;(config as Recordable).headers.Authorization = `Bearer ${getAccessToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
               resolve(this.axiosInstance(config))
             })
           })
@@ -215,7 +213,7 @@ export class VAxios {
       method: 'POST',
       data: formData,
       headers: {
-        'Content-type': ContentTypeEnum.FORM_DATA,
+        'Content-Type': ContentTypeEnum.FORM_DATA,
         'ignoreCancelToken': true,
       },
     })
