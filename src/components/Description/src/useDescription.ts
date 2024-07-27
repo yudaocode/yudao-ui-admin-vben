@@ -10,7 +10,7 @@ export function useDescription(props?: Partial<DescriptionProps>): UseDescReturn
   const loaded = ref(false)
 
   function register(instance: DescInstance) {
-    if (unref(loaded) && isProdMode())
+    if (unref(loaded) && isProdMode() && instance == unref(desc))
       return
 
     desc.value = instance
