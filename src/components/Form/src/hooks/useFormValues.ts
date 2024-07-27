@@ -77,9 +77,6 @@ export function useFormValues({
       if (isString(value)) {
         // remove params from URL
         if (value === '')
-          value = undefined
-
-        else
           value = value.trim()
       }
       if (!tryDeconstructArray(key, value, res) && !tryDeconstructObject(key, value, res)) {
