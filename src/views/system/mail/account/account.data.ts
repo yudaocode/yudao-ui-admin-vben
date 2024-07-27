@@ -37,6 +37,14 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: '是否开启 STARTTLS',
+    dataIndex: 'starttlsEnable',
+    width: 180,
+    customRender: ({ text }) => {
+      return useRender.renderDict(text, DICT_TYPE.INFRA_BOOLEAN_STRING)
+    }
+  },
+  {
     title: '创建时间',
     dataIndex: 'createTime',
     width: 180,
@@ -111,6 +119,16 @@ export const formSchema: FormSchema[] = [
   {
     label: '是否开启 SSL',
     field: 'sslEnable',
+    required: true,
+    defaultValue: false,
+    component: 'RadioButtonGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+    },
+  },
+  {
+    label: '是否开启 STARTTLS',
+    field: 'starttlsEnable',
     required: true,
     defaultValue: false,
     component: 'RadioButtonGroup',
