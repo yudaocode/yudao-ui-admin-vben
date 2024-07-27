@@ -124,6 +124,17 @@ export class VAxios {
     // 响应结果拦截器处理
     this.axiosInstance.interceptors.response.use(async (res: AxiosResponse<any>) => {
       const config = res.config
+      // 二进制数据则直接返回，例如说 Excel 导出
+      if (
+        res.request.responseType === 'blob' ||
+        res.request.responseType === 'arraybuffer'
+      ) {
+        // 注意：如果导出的响应为 json，说明可能失败了，不直接返回进行下载
+        if (res.data.type === 'application/json') {
+          res.data = await new Response(res.data).json()
+        }
+      }
+      // 处理 accessToken 过期的情况
       if (res.data.code === 401) {
         // 如果未认证，并且未进行刷新令牌，说明可能是访问令牌过期了
         if (!isRefreshToken) {
@@ -265,7 +276,7 @@ export class VAxios {
 
     const opt: RequestOptions = Object.assign({}, requestOptions, options)
 
-    const { beforeRequestHook, requestCatchHook } = transform || {}
+    const { beforeRequestHook, requestCatchHook, transformResponseHook } = transform || {}
 
     if (beforeRequestHook && isFunction(beforeRequestHook))
       conf = beforeRequestHook(conf, opt)
@@ -278,6 +289,17 @@ export class VAxios {
       this.axiosInstance
         .request<any, AxiosResponse<Result>>(conf)
         .then((res: AxiosResponse<Result>) => {
+          debugger
+          if (transformResponseHook && isFunction(transformResponseHook)) {
+            try {
+              const ret = transformResponseHook(res, opt)
+              resolve(ret)
+            }
+            catch (err) {
+              reject(err || new Error('request error!'))
+            }
+            return
+          }
           resolve(res as unknown as Promise<T>)
           // download file
           if (typeof res != 'undefined')
@@ -296,6 +318,7 @@ export class VAxios {
     })
   }
 
+  // 和 download 类似，只是 method 是 'POST'
   export<T = any>(config: AxiosRequestConfig, title: string, options?: RequestOptions): Promise<T> {
     let conf: CreateAxiosOptions = cloneDeep({
       ...config,
@@ -308,7 +331,7 @@ export class VAxios {
 
     const opt: RequestOptions = Object.assign({}, requestOptions, options)
 
-    const { beforeRequestHook, requestCatchHook } = transform || {}
+    const { beforeRequestHook, requestCatchHook, transformResponseHook } = transform || {}
 
     if (beforeRequestHook && isFunction(beforeRequestHook))
       conf = beforeRequestHook(conf, opt)
@@ -321,6 +344,17 @@ export class VAxios {
       this.axiosInstance
         .request<any, AxiosResponse<Result>>(conf)
         .then((res: AxiosResponse<Result>) => {
+          debugger
+          if (transformResponseHook && isFunction(transformResponseHook)) {
+            try {
+              const ret = transformResponseHook(res, opt)
+              resolve(ret)
+            }
+            catch (err) {
+              reject(err || new Error('request error!'))
+            }
+            return
+          }
           resolve(res as unknown as Promise<T>)
           // download file
           if (typeof res != 'undefined')

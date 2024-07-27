@@ -39,7 +39,8 @@ const transform: AxiosTransform = {
     const { t } = useI18n()
     const { isTransformResponse, isReturnNativeResponse } = options
     // 二进制数据则直接返回
-    if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer')
+    if ((res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer')
+      && res.data?.code === undefined) // 这个判断的目的是：excel 导出等情况下，系统执行异常，此时返回的是 json，而不是二进制数据
       return res.data
 
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
@@ -256,11 +257,13 @@ const transform: AxiosTransform = {
     checkStatus(error?.response?.status, msg, errorMessageMode)
 
     // 添加自动重试机制 保险起见 只针对GET请求
-    const retryRequest = new AxiosRetry()
-    const { isOpenRetry } = config.requestOptions.retryRequest
-    config.method?.toUpperCase() === RequestEnum.GET
+    if (config?.requestOptions) {
+      const retryRequest = new AxiosRetry()
+      const {isOpenRetry} = config.requestOptions.retryRequest
+      config.method?.toUpperCase() === RequestEnum.GET
       && isOpenRetry
       && retryRequest.retry(axiosInstance, error)
+    }
     return Promise.reject(error)
   },
 }
