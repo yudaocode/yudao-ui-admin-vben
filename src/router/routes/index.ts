@@ -207,18 +207,6 @@ export const BpmRoute: AppRouteRecordRaw = {
       },
     },
     {
-      path: '/manager/task-assign-rule',
-      component: () => import('@/views/bpm/taskAssignRule/index.vue'),
-      name: 'BpmTaskAssignRuleList',
-      meta: {
-        canTo: true,
-        hidden: true,
-        noTagsView: false,
-        icon: 'ant-design:edit-outlined',
-        title: '任务分配规则',
-      },
-    },
-    {
       path: '/process-instance/create',
       component: () => import('@/views/bpm/processInstance/create/index.vue'),
       name: 'BpmProcessInstanceCreate',
