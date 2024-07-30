@@ -3,7 +3,7 @@
 -->
 <script lang="ts" setup>
 import { computed, watch, defineComponent } from 'vue'
-import { Checkbox, Col, Empty, Form, FormItem, Input, Switch } from 'ant-design-vue'
+import { Checkbox, Col, Empty, FormItem, Input, Switch } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import {
   advanceFormItemColProps,
@@ -11,7 +11,7 @@ import {
   baseFormItemControlAttrs,
   baseFormItemProps,
 } from '../../VFormDesign/config/formItemPropsConfig'
-import { componentMap } from '../../../../../Form/src/componentMap.ts'
+import { componentMap } from '@/components/Form/src/componentMap'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import RuleProps from './RuleProps.vue'
 

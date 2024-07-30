@@ -2,13 +2,13 @@
  * @Description: 表单项属性
 -->
 <script lang="ts" setup>
-import {computed, defineComponent} from 'vue'
-import { Empty, Form, FormItem,  } from 'ant-design-vue'
+import { computed, defineComponent} from 'vue'
+import { Empty, FormItem  } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import { baseItemColumnProps } from '../config/formItemPropsConfig'
 
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
-import { componentMap } from '../../../../../Form/src/componentMap.ts'
+import { componentMap } from '@/components/Form/src/componentMap'
 
 const { formConfig } = useFormDesignState()
 function showProps(exclude: string[] | undefined) {
@@ -21,7 +21,6 @@ function showProps(exclude: string[] | undefined) {
 const Com = computed(() => {
   return com => componentMap.get(com) as ReturnType<typeof defineComponent>
 })
-console.log(baseItemColumnProps);
 
 </script>
 

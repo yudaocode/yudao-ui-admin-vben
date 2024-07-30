@@ -2,7 +2,7 @@
  * @Description: 组件属性控件
 -->
 <script lang="ts" setup>
-import { Checkbox, Col, Empty, Form, FormItem, Select } from 'ant-design-vue'
+import { Checkbox, Col, Empty, FormItem, Select } from 'ant-design-vue'
 import { computed, ref, watch } from 'vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import {
@@ -14,10 +14,10 @@ import {
 import { formItemsForEach, remove } from '../../../utils'
 import type { IBaseFormAttrs } from '../config/formItemPropsConfig'
 import FormOptions from './FormOptions.vue'
-import { componentMap } from '../../../../../Form/src/componentMap.ts'
+import { componentMap } from '@/components/Form/src/componentMap'
 
 const { formConfig } = useFormDesignState()
-// 让compuated属性自动更新
+// 让 computed 属性自动更新
 const allOptions = ref([] as Omit<IBaseFormAttrs, 'tag'>[])
 function showControlAttrs(includes: string[] | undefined) {
   if (!includes)
