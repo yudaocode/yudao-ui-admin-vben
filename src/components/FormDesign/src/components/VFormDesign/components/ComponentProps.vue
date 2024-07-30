@@ -14,6 +14,7 @@ import {
 import { formItemsForEach, remove } from '../../../utils'
 import type { IBaseFormAttrs } from '../config/formItemPropsConfig'
 import FormOptions from './FormOptions.vue'
+import { componentMap } from '../../../../../Form/src/componentMap.ts'
 
 const { formConfig } = useFormDesignState()
 // 让compuated属性自动更新
@@ -106,6 +107,10 @@ const inputOptions = computed(() => {
   })
 })
 
+const Com = computed(() => {
+  return com => componentMap.get(com) as ReturnType<typeof defineComponent>
+})
+
 watch(
   () => formConfig.value.currentItem!.componentProps,
   () => {
@@ -133,7 +138,7 @@ const linkOptions = computed(() => {
     <div v-if="formConfig.currentItem" class="properties-body">
       <Empty v-if="!formConfig.currentItem.key" class="hint-box" description="未选择组件" />
 
-      <Form label-align="left" layout="vertical">
+      <aForm label-align="left" layout="vertical">
         <!--    循环遍历渲染组件属性      -->
 
         <div v-if="formConfig.currentItem && formConfig.currentItem.componentProps">
@@ -144,7 +149,7 @@ const linkOptions = computed(() => {
               <template v-for="(child, index) of item.children" :key="index">
                 <component
                   v-bind="child.componentProps"
-                  :is="child.component"
+                  :is="Com(child.component)"
                   v-if="child.component"
                   v-model:value="formConfig.currentItem.componentProps[item.name][index]"
                 />
@@ -152,7 +157,7 @@ const linkOptions = computed(() => {
             </div>
             <!--     如果不是数组，则正常处理属性值       -->
             <component
-              v-bind="item.componentProps" :is="item.component" v-else-if="item.component"
+              v-bind="item.componentProps" :is="Com(item.component)" v-else-if="item.component"
               v-model:value="formConfig.currentItem.componentProps[item.name]" class="component-prop"
             />
           </FormItem>
@@ -188,7 +193,7 @@ const linkOptions = computed(() => {
         <FormItem v-if="['Grid'].includes(formConfig.currentItem.component)" label="栅格">
           <FormOptions />
         </FormItem>
-      </Form>
+      </aForm>
     </div>
   </div>
 </template>

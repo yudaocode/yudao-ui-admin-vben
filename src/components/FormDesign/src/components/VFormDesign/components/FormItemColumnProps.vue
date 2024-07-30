@@ -2,11 +2,13 @@
  * @Description: 表单项属性
 -->
 <script lang="ts" setup>
-import { Empty, Form, FormItem } from 'ant-design-vue'
+import {computed, defineComponent} from 'vue'
+import { Empty, Form, FormItem,  } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import { baseItemColumnProps } from '../config/formItemPropsConfig'
 
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
+import { componentMap } from '../../../../../Form/src/componentMap.ts'
 
 const { formConfig } = useFormDesignState()
 function showProps(exclude: string[] | undefined) {
@@ -15,22 +17,28 @@ function showProps(exclude: string[] | undefined) {
 
   return isArray(exclude) ? !exclude.includes(formConfig.value.currentItem!.component) : true
 }
+
+const Com = computed(() => {
+  return com => componentMap.get(com) as ReturnType<typeof defineComponent>
+})
+console.log(baseItemColumnProps);
+
 </script>
 
 <template>
   <div class="properties-content">
     <div v-if="formConfig.currentItem" class="properties-body">
       <Empty v-if="!formConfig.currentItem.key" class="hint-box" description="未选择控件" />
-      <Form v-else label-align="left" layout="vertical">
+      <aForm v-else label-align="left" layout="vertical">
         <div v-for="item of baseItemColumnProps" :key="item.name">
           <FormItem v-if="showProps(item.exclude)" :label="item.label">
             <component
-              v-bind="item.componentProps" :is="item.component" v-if="formConfig.currentItem.colProps && item.component"
+              v-bind="item.componentProps" :is="Com(item.component)" v-if="formConfig.currentItem.colProps && item.component"
               v-model:value="formConfig.currentItem.colProps[item.name]" class="component-props"
             />
           </FormItem>
         </div>
-      </Form>
+      </aForm>
     </div>
   </div>
 </template>

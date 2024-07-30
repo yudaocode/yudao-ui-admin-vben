@@ -2,7 +2,7 @@
  * @Description: 表单项属性，控件属性面板
 -->
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { computed, watch, defineComponent } from 'vue'
 import { Checkbox, Col, Empty, Form, FormItem, Input, Switch } from 'ant-design-vue'
 import { isArray } from 'lodash-es'
 import {
@@ -11,7 +11,7 @@ import {
   baseFormItemControlAttrs,
   baseFormItemProps,
 } from '../../VFormDesign/config/formItemPropsConfig'
-
+import { componentMap } from '../../../../../Form/src/componentMap.ts'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 import RuleProps from './RuleProps.vue'
 
@@ -44,18 +44,22 @@ const controlPropsList = computed(() => {
     return showProps(item.exclude)
   })
 })
+
+const Com = computed(() => {
+  return com => componentMap.get(com) as ReturnType<typeof defineComponent>
+})
 </script>
 
 <template>
   <div class="properties-content">
     <div v-if="formConfig.currentItem?.itemProps" class="properties-body">
       <Empty v-if="!formConfig.currentItem.key" class="hint-box" description="未选择控件" />
-      <Form v-else label-align="left" layout="vertical">
+      <aForm v-else label-align="left" layout="vertical">
         <div v-for="item of baseFormItemProps" :key="item.name">
           <FormItem v-if="showProps(item.exclude)" :label="item.label">
             <component
               v-bind="item.componentProps"
-              :is="item.component"
+              :is="Com(item.component)"
               v-if="item.component"
               v-model:value="formConfig.currentItem[item.name]"
               class="component-props"
@@ -66,7 +70,7 @@ const controlPropsList = computed(() => {
           <FormItem v-if="showProps(item.exclude)" :label="item.label">
             <component
               v-bind="item.componentProps"
-              :is="item.component"
+              :is="Com(item.component)"
               v-if="item.component"
               v-model:value="formConfig.currentItem.itemProps[item.name]"
               class="component-props"
@@ -76,7 +80,7 @@ const controlPropsList = computed(() => {
           <FormItem v-if="showProps(item.exclude)" :label="item.label">
             <component
               v-bind="item.componentProps"
-              :is="item.component"
+              :is="Com(item.component)"
               v-if="item.component"
               v-model:value="formConfig.currentItem.itemProps[item.name].span"
               class="component-props"
@@ -105,7 +109,7 @@ const controlPropsList = computed(() => {
         >
           <RuleProps />
         </FormItem>
-      </Form>
+      </aForm>
     </div>
   </div>
 </template>
