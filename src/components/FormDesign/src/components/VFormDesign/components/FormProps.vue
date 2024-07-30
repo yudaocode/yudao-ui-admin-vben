@@ -11,6 +11,8 @@ import {
   FormItem,
   InputNumber,
   Slider,
+  RadioGroup,
+  RadioButton
 } from 'ant-design-vue'
 import { useFormDesignState } from '../../../hooks/useFormDesignState'
 
@@ -38,7 +40,7 @@ const sliderSpan = computed(() => {
 
 <template>
   <div class="properties-content">
-    <Form class="properties-body" label-align="left" layout="vertical">
+    <aForm class="properties-body" label-align="left" layout="vertical">
       <!--      <e-upload v-model="fileList"></e-upload> -->
 
       <FormItem label="表单布局">
@@ -129,6 +131,6 @@ const sliderSpan = computed(() => {
           </Checkbox>
         </Col>
       </FormItem>
-    </Form>
+    </aForm>
   </div>
 </template>
