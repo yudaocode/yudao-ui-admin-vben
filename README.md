@@ -15,9 +15,8 @@
 - 视频教程：<https://doc.iocoder.cn/video/>
 - 交流群：<https://doc.iocoder.cn/qun/>
 
-## 外包项目请联系
+## 外包项目请联系【非项目需求请勿扫码，非客服，不解答项目问题】
 
-微信号：xinyu370
 
 ![alt 定制开发](./public/resource/img/wx2.png)
 
