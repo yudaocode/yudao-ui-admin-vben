@@ -289,7 +289,6 @@ export class VAxios {
       this.axiosInstance
         .request<any, AxiosResponse<Result>>(conf)
         .then((res: AxiosResponse<Result>) => {
-          debugger
           if (transformResponseHook && isFunction(transformResponseHook)) {
             try {
               const ret = transformResponseHook(res, opt)
@@ -298,7 +297,8 @@ export class VAxios {
             catch (err) {
               reject(err || new Error('request error!'))
             }
-            return
+            // 注释 return，解决无法导出的问题。参见 https://t.zsxq.com/79cmo 说明。
+            // return
           }
           resolve(res as unknown as Promise<T>)
           // download file
