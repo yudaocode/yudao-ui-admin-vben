@@ -15,7 +15,7 @@ import type { RequestOptions, Result, UploadFileParams } from '@/types/axios'
 import { ContentTypeEnum, RequestEnum } from '@/enums/httpEnum'
 import { downloadByData } from '@/utils/file/download'
 import { useGlobSetting } from '@/hooks/setting'
-import {getAccessToken, getRefreshToken, getTenantId, setAccessToken} from '@/utils/auth'
+import { getAccessToken, getRefreshToken, getTenantId, setAccessToken } from '@/utils/auth'
 
 export * from './axiosTransform'
 
@@ -126,13 +126,12 @@ export class VAxios {
       const config = res.config
       // 二进制数据则直接返回，例如说 Excel 导出
       if (
-        res.request.responseType === 'blob' ||
-        res.request.responseType === 'arraybuffer'
+        res.request.responseType === 'blob'
+        || res.request.responseType === 'arraybuffer'
       ) {
         // 注意：如果导出的响应为 json，说明可能失败了，不直接返回进行下载
-        if (res.data.type === 'application/json') {
+        if (res.data.type === 'application/json')
           res.data = await new Response(res.data).json()
-        }
       }
       // 处理 accessToken 过期的情况
       if (res.data.code === 401) {
@@ -298,12 +297,18 @@ export class VAxios {
               reject(err || new Error('request error!'))
             }
             // 注释 return，解决无法导出的问题。参见 https://t.zsxq.com/79cmo 说明。
-            // return
           }
-          resolve(res as unknown as Promise<T>)
+          else {
+            resolve(res as unknown as Promise<T>)
+          }
+
           // download file
-          if (typeof res != 'undefined')
-            downloadByData(res?.data as unknown as BlobPart, title || 'export')
+          if (res && typeof res !== 'undefined' && res.headers) {
+            const contentType = res.headers['content-type']
+            // ExcelUtils.java的write函数setContentType顺序问题，导致没有contentType
+            if (!contentType || !contentType.startsWith('application/json'))
+              downloadByData(res?.data as unknown as BlobPart, title || 'export')
+          }
         })
         .catch((e: Error | AxiosError) => {
           if (requestCatchHook && isFunction(requestCatchHook)) {
@@ -344,7 +349,6 @@ export class VAxios {
       this.axiosInstance
         .request<any, AxiosResponse<Result>>(conf)
         .then((res: AxiosResponse<Result>) => {
-          debugger
           if (transformResponseHook && isFunction(transformResponseHook)) {
             try {
               const ret = transformResponseHook(res, opt)
