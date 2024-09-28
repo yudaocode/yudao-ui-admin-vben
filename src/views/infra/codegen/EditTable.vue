@@ -7,6 +7,7 @@ import CloumInfoForm from './components/CloumInfoForm.vue'
 import FinishForm from './components/FinishForm.vue'
 import { PageWrapper } from '@/components/Page'
 import { getCodegenTable, updateCodegenTable } from '@/api/infra/codegen'
+import { cloneDeep } from 'lodash-es'
 
 const Step = Steps.Step
 
@@ -47,9 +48,15 @@ async function handleStep2Next(step2Values: any) {
 async function handleSubmit() {
   basicInfoValue.value.id = query.id as unknown as number
   const genTable = {
-    table: basicInfoValue.value,
-    columns: columnsInfoValue.value,
+    table: cloneDeep(basicInfoValue.value),
+    columns: cloneDeep(columnsInfoValue.value),
   }
+  genTable.columns.forEach((column: any) => {
+    delete column.editValueRefs
+    delete column.submitCbs
+    delete column.cancelCbs
+    delete column.validCbs
+  })
   await updateCodegenTable(genTable)
 }
 
