@@ -15,9 +15,12 @@ export function useAppConfig(
     ? window._VBEN_ADMIN_PRO_APP_CONF_
     : (env as VbenAdminProAppConfigRaw);
 
-  const { VITE_GLOB_API_URL } = config;
+  const { VITE_APP_CAPTCHA_ENABLE, VITE_APP_TENANT_ENABLE, VITE_GLOB_API_URL } =
+    config;
 
   return {
     apiURL: VITE_GLOB_API_URL,
+    captchaEnable: VITE_APP_CAPTCHA_ENABLE,
+    tenantEnable: VITE_APP_TENANT_ENABLE,
   };
 }
