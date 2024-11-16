@@ -82,7 +82,7 @@ export function getUserInfo() {
  * 获取验证图片 以及token
  */
 export function getCaptcha(data: any) {
-  return requestClient.post('/system/captcha/get', data, {
+  return baseRequestClient.post('/system/captcha/get', data, {
     // isReturnNativeResponse: true,
   });
 }
@@ -91,7 +91,7 @@ export function getCaptcha(data: any) {
  * 滑动或者点选验证
  */
 export function checkCaptcha(data: any) {
-  return requestClient.post('/system/captcha/check', data, {
+  return baseRequestClient.post('/system/captcha/check', data, {
     // isReturnNativeResponse: true,
   });
 }

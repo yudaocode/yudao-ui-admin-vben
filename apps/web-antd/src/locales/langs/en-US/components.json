@@ -1,0 +1,9 @@
+{
+  "captcha": {
+    "fail": "verification failed",
+    "point": "Please click",
+    "slide": "Swipe right to complete verification",
+    "success": "Verification succeeded",
+    "verification": "Please complete security verification"
+  }
+}

@@ -4,7 +4,14 @@
     "register": "注册",
     "codeLogin": "验证码登录",
     "qrcodeLogin": "二维码登录",
-    "forgetPassword": "忘记密码"
+    "forgetPassword": "忘记密码",
+    "tenantname": "租户",
+    "username": "账号",
+    "password": "密码",
+    "usernameTip": "请输入用户名",
+    "tenantNameTip": "请输入租户名",
+    "passwordTip": "请输入密码",
+    "rememberMe": "记住账号"
   },
   "dashboard": {
     "title": "概览",
