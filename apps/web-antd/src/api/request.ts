@@ -15,10 +15,14 @@ import { useAccessStore } from '@vben/stores';
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '#/store';
+import { getTenantId } from '#/utils';
 
 import { refreshTokenApi } from './core';
 
-const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { apiURL, tenantEnable } = useAppConfig(
+  import.meta.env,
+  import.meta.env.PROD,
+);
 
 function createRequestClient(baseURL: string) {
   const client = new RequestClient({
@@ -49,7 +53,7 @@ function createRequestClient(baseURL: string) {
   async function doRefreshToken() {
     const accessStore = useAccessStore();
     const resp = await refreshTokenApi();
-    const newToken = resp.data;
+    const newToken = resp.refreshToken;
     accessStore.setAccessToken(newToken);
     return newToken;
   }
@@ -62,9 +66,11 @@ function createRequestClient(baseURL: string) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-
+      const tenantId = getTenantId();
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      config.headers['tenant-id'] =
+        tenantEnable && tenantId ? tenantId : undefined;
       return config;
     },
   });
@@ -72,11 +78,30 @@ function createRequestClient(baseURL: string) {
   // response数据解构
   client.addResponseInterceptor<HttpResponse>({
     fulfilled: (response) => {
-      const { data: responseData, status } = response;
+      // const { config, data: responseData, status, request } = response;
+      const { data: responseData, request } = response;
+      // 这个判断的目的是：excel 导出等情况下，系统执行异常，此时返回的是 json，而不是二进制数据
+      if (
+        (request.responseType === 'blob' ||
+          request.responseType === 'arraybuffer') &&
+        responseData?.code === undefined
+      ) {
+        return responseData;
+      }
 
-      const { code, data } = responseData;
-      if (status >= 200 && status < 400 && code === 0) {
-        return data;
+      // const { isReturnNativeResponse, isTransformResponse } = config;
+      // // 是否返回原生响应头 比如：需要获取响应头时使用该属性
+      // if (isReturnNativeResponse) {
+      //   return response;
+      // }
+      // // 不进行任何处理，直接返回,用于页面代码可能需要直接获取code，data，message这些信息时开启
+      // if (!isTransformResponse) {
+      //   return response.data;
+      // }
+
+      const { code, data: result } = responseData;
+      if (responseData && Reflect.has(responseData, 'code') && code === 0) {
+        return result;
       }
 
       throw Object.assign({}, response, { response });

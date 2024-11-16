@@ -1,4 +1,6 @@
-import type { Recordable, UserInfo } from '@vben/types';
+import type { Recordable } from '@vben/types';
+
+import type { YudaoUserInfo } from '#/types';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -9,8 +11,9 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { getUserInfo, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
+import { setAccessToken, setRefreshToken } from '#/utils';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -29,40 +32,42 @@ export const useAuthStore = defineStore('auth', () => {
     onSuccess?: () => Promise<void> | void,
   ) {
     // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
+    let userInfo: null | YudaoUserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
+      const { accessToken, expiresTime, refreshToken } = await loginApi(params);
 
       // 如果成功获取到 accessToken
       if (accessToken) {
         accessStore.setAccessToken(accessToken);
+        accessStore.setRefreshToken(refreshToken);
+        setAccessToken(accessToken, expiresTime);
+        setRefreshToken(refreshToken);
 
         // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
-
+        const fetchUserInfoResult = await fetchUserInfo();
         userInfo = fetchUserInfoResult;
+        if (userInfo) {
+          if (userInfo.roles) {
+            userStore.setUserRoles(userInfo.roles);
+          }
+          // userStore.setMenus(userInfo.menus);
+          accessStore.setAccessCodes(userInfo.permissions);
+          if (accessStore.loginExpired) {
+            accessStore.setLoginExpired(false);
+          } else {
+            onSuccess
+              ? await onSuccess?.()
+              : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
+          }
 
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
-
-        if (accessStore.loginExpired) {
-          accessStore.setLoginExpired(false);
-        } else {
-          onSuccess
-            ? await onSuccess?.()
-            : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
-        }
-
-        if (userInfo?.realName) {
-          notification.success({
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
-            duration: 3,
-            message: $t('authentication.loginSuccess'),
-          });
+          if (userInfo?.realName) {
+            notification.success({
+              description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
+              duration: 3,
+              message: $t('authentication.loginSuccess'),
+            });
+          }
         }
       }
     } finally {
@@ -95,8 +100,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
+    let userInfo: null | YudaoUserInfo = null;
+    userInfo = await getUserInfo();
     userStore.setUserInfo(userInfo);
     return userInfo;
   }
