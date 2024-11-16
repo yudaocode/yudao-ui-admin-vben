@@ -19,9 +19,9 @@ import { buildMenus } from './helper';
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
 
 /**
- * dashboard路由
+ * base路由
  */
-const dashboardMenus: RouteRecordStringComponent[] = [
+const baseMenus: RouteRecordStringComponent[] = [
   {
     component: 'BasicLayout',
     meta: {
@@ -38,6 +38,7 @@ const dashboardMenus: RouteRecordStringComponent[] = [
         component: '/dashboard/analytics/index',
         meta: {
           affixTab: true,
+          icon: 'lucide:area-chart',
           title: 'page.dashboard.analytics',
         },
       },
@@ -46,7 +47,40 @@ const dashboardMenus: RouteRecordStringComponent[] = [
         path: '/workspace',
         component: '/dashboard/workspace/index',
         meta: {
+          icon: 'carbon:workspace',
           title: 'page.dashboard.workspace',
+        },
+      },
+      {
+        name: 'VbenAbout',
+        path: '/about',
+        component: '/_core/about/index.vue',
+        meta: {
+          icon: 'lucide:copyright',
+          title: 'demos.vben.about',
+        },
+      },
+    ],
+  },
+  {
+    component: 'BasicLayout',
+    meta: {
+      icon: 'ant-design:user-outlined',
+      order: -1,
+      title: '个人中心',
+      hideInMenu: true,
+    },
+    name: 'profile',
+    path: '/profile',
+    children: [
+      {
+        name: 'UserProfile',
+        path: '/profile/index',
+        component: '/_core/profile/profile.vue',
+        meta: {
+          icon: 'ant-design:user-outlined',
+          title: '个人中心',
+          hideInMenu: true,
         },
       },
     ],
@@ -71,7 +105,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
       const userStore = useUserStore();
       const menus = userStore.userInfo?.menus;
       const routes = buildMenus(menus);
-      const menuList = [...cloneDeep(dashboardMenus), ...routes];
+      const menuList = [...cloneDeep(baseMenus), ...routes];
       return menuList;
     },
     // 可以指定没有权限跳转403页面

@@ -2,11 +2,12 @@
 import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
-import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
+import { VBEN_DOC_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, MdiGithub } from '@vben/icons';
+import { BookOpenText, CircleHelp, Info, MdiGithub } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -20,6 +21,8 @@ import { openWindow } from '@vben/utils';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
+
+const router = useRouter();
 
 const notifications = ref<NotificationItem[]>([
   {
@@ -63,6 +66,13 @@ const showDot = computed(() =>
 const menus = computed(() => [
   {
     handler: () => {
+      router.push('/profile/index');
+    },
+    icon: Info,
+    text: '个人中心',
+  },
+  {
+    handler: () => {
       openWindow(VBEN_DOC_URL, {
         target: '_blank',
       });
@@ -72,16 +82,16 @@ const menus = computed(() => [
   },
   {
     handler: () => {
-      openWindow(VBEN_GITHUB_URL, {
+      openWindow('https://gitee.com/yudaocode/yudao-ui-admin-vben', {
         target: '_blank',
       });
     },
     icon: MdiGithub,
-    text: 'GitHub',
+    text: 'Gitee',
   },
   {
     handler: () => {
-      openWindow(`${VBEN_GITHUB_URL}/issues`, {
+      openWindow(`https://gitee.com/yudaocode/yudao-ui-admin-vben/issues`, {
         target: '_blank',
       });
     },
@@ -91,7 +101,7 @@ const menus = computed(() => [
 ]);
 
 const avatar = computed(() => {
-  return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
+  return userStore.userInfo?.user.avatar ?? preferences.app.defaultAvatar;
 });
 
 async function handleLogout() {
@@ -128,9 +138,8 @@ watch(
       <UserDropdown
         :avatar
         :menus
-        :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
-        tag-text="Pro"
+        :text="userStore.userInfo?.user.nickname"
+        tag-text="Admin"
         @logout="handleLogout"
       />
     </template>

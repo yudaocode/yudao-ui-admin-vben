@@ -224,5 +224,5 @@
   "vue.server.hybridMode": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "oxc.enable": false,
-  "cSpell.words": ["Yudao", "xingyu", "xingyuv"]
+  "cSpell.words": ["Gitee", "xingyu", "xingyuv", "Yudao"]
 }
