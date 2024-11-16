@@ -11,6 +11,6 @@ export const overridesPreferences = defineOverridesPreferences({
     /** 后端路由模式 */
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
-    enableRefreshToken: false,
+    enableRefreshToken: true,
   },
 });

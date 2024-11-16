@@ -89,22 +89,21 @@ function createRequestClient(baseURL: string) {
         return responseData;
       }
 
-      // const { isReturnNativeResponse, isTransformResponse } = config;
-      // // 是否返回原生响应头 比如：需要获取响应头时使用该属性
-      // if (isReturnNativeResponse) {
-      //   return response;
-      // }
-      // // 不进行任何处理，直接返回,用于页面代码可能需要直接获取code，data，message这些信息时开启
-      // if (!isTransformResponse) {
-      //   return response.data;
-      // }
-
       const { code, data: result } = responseData;
       if (responseData && Reflect.has(responseData, 'code') && code === 0) {
         return result;
       }
 
-      throw Object.assign({}, response, { response });
+      switch (code) {
+        case 401: {
+          response.status = 401;
+          throw Object.assign({}, response, { response });
+        }
+        default: {
+          response.status = code;
+          throw Object.assign({}, response, { response });
+        }
+      }
     },
   });
 
