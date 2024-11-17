@@ -28,14 +28,14 @@ export namespace AuthApi {
 /**
  * 登录
  */
-export async function loginApi(data: AuthApi.LoginParams) {
+export function loginApi(data: AuthApi.LoginParams) {
   return requestClient.post<AuthApi.LoginResult>('/system/auth/login', data);
 }
 
 /**
  * 刷新accessToken
  */
-export async function refreshTokenApi() {
+export function refreshTokenApi() {
   return baseRequestClient.post<AuthApi.LoginResult>(
     `/system/auth/refresh-token?refreshToken=${getRefreshToken()}`,
     {
@@ -67,7 +67,7 @@ export function getTenantByWebsite(website: string) {
 /**
  * 退出登录
  */
-export async function logoutApi() {
+export function logoutApi() {
   return baseRequestClient.post('/system/auth/logout', {
     withCredentials: true,
   });

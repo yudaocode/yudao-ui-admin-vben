@@ -133,6 +133,11 @@ function createRequestClient(baseURL: string) {
   return client;
 }
 
+export type PageParam = {
+  pageNo?: number;
+  pageSize?: number;
+};
+
 export const requestClient = createRequestClient(apiURL);
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
