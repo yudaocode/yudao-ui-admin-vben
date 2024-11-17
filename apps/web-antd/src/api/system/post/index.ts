@@ -12,7 +12,7 @@ export interface PostVO {
 
 // 查询岗位列表
 export function getPostPage(params: any) {
-  return requestClient.get('/system/post/page', params);
+  return requestClient.get('/system/post/page', { params });
 }
 
 // 获取岗位精简信息列表

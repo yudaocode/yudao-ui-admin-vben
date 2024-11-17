@@ -2,48 +2,21 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getPostPage, type PostVO } from '#/api/system/post';
+import { exportPost, getPostPage, type PostVO } from '#/api/system/post';
+
+import { columns, formSchema } from './post.data';
+import PostModal from './PostModal.vue';
 
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'name',
-      label: '岗位名称',
-    },
-    {
-      component: 'Input',
-      fieldName: 'code',
-      label: '岗位编码',
-    },
-    // TODO: dict
-    {
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        options: [
-          {
-            label: 'Color1',
-            value: '1',
-          },
-          {
-            label: 'Color2',
-            value: '2',
-          },
-        ],
-        placeholder: '请选择',
-      },
-      fieldName: 'status',
-      label: '状态',
-    },
-  ],
+  schema: formSchema,
   // 控制表单是否显示折叠按钮
   showCollapseButton: true,
   // 按下回车时是否提交表单
@@ -53,32 +26,15 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<PostVO> = {
   checkboxConfig: {
     highlight: true,
-    labelField: 'name',
+    labelField: 'id',
   },
-  columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'id', title: '岗位编号' },
-    { field: 'name', title: '岗位名称' },
-    { field: 'code', title: '岗位编码' },
-    { field: 'sort', title: '岗位顺序' },
-    { field: 'remark', title: '岗位备注' },
-    { field: 'status', title: '状态' },
-    { field: 'createTime', formatter: 'formatDateTime', title: '创建时间' },
-    {
-      cellRender: { name: 'CellLink', props: { text: '编辑' } },
-      field: 'action',
-      fixed: 'right',
-      title: '操作',
-      width: 120,
-    },
-  ],
+  columns,
   height: 'auto',
   keepSource: true,
   pagerConfig: {},
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        message.success(`Query params: ${JSON.stringify(formValues)}`);
         return await getPostPage({
           page: page.currentPage,
           pageSize: page.pageSize,
@@ -89,17 +45,69 @@ const gridOptions: VxeGridProps<PostVO> = {
   },
 };
 
-const [Grid] = useVbenVxeGrid({ formOptions, gridOptions });
+const [Grid, tableApi] = useVbenVxeGrid({ formOptions, gridOptions });
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: PostModal,
+});
+
+function handleCreate() {
+  formModalApi.setData({
+    valuse: {},
+  });
+  formModalApi.open();
+}
+async function handleEdit(id: number) {
+  formModalApi.setData({ id });
+  formModalApi.open();
+}
+// TODO
+function handleDelete(id: number) {
+  message.success(id);
+}
+// TODO
+async function handleExport() {
+  await exportPost(tableApi.formApi.form.values);
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid>
-      <template #action>
-        <!-- TODO: 操作 -->
-        <Button type="link">编辑</Button>
-        <Button type="link">删除</Button>
+      <template #toolbar-actions>
+        <Button
+          type="primary"
+          v-access:code="['system:post:create']"
+          @click="handleCreate"
+        >
+          {{ $t('page.action.add') }}
+        </Button>
+        <Button
+          class="ml-4"
+          v-access:code="['system:post:export']"
+          @click="handleExport"
+        >
+          {{ $t('page.action.export') }}
+        </Button>
+      </template>
+      <template #action="{ row }">
+        <Button
+          type="link"
+          v-access:code="['system:post:update']"
+          @click="handleEdit(row.id)"
+        >
+          {{ $t('page.action.edit') }}
+        </Button>
+        <Button
+          danger
+          type="link"
+          v-access:code="['system:post:delete']"
+          @click="handleDelete(row.id)"
+        >
+          {{ $t('page.action.delete') }}
+        </Button>
       </template>
     </Grid>
+    <FormModal />
   </Page>
 </template>
