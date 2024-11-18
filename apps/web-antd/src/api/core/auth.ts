@@ -23,6 +23,15 @@ export namespace AuthApi {
     data: string;
     status: number;
   }
+  export interface SmsCodeVO {
+    mobile: string;
+    scene: number;
+  }
+
+  export interface SmsLoginVO {
+    mobile: string;
+    code: string;
+  }
 }
 
 /**
@@ -36,11 +45,8 @@ export function loginApi(data: AuthApi.LoginParams) {
  * 刷新accessToken
  */
 export function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.LoginResult>(
+  return requestClient.post<AuthApi.LoginResult>(
     `/system/auth/refresh-token?refreshToken=${getRefreshToken()}`,
-    {
-      withCredentials: true,
-    },
   );
 }
 
@@ -68,30 +74,60 @@ export function getTenantByWebsite(website: string) {
  * 退出登录
  */
 export function logoutApi() {
-  return baseRequestClient.post('/system/auth/logout', {
-    withCredentials: true,
+  return requestClient.post('/system/auth/logout');
+}
+
+/**
+ * 获取用户权限信息
+ */
+export function getUserInfo() {
+  return requestClient.get<YudaoUserInfo>('/system/auth/get-permission-info');
+}
+
+/**
+ * 获取登录验证码
+ */
+export function sendSmsCode(data: AuthApi.SmsCodeVO) {
+  return requestClient.post('/system/auth/send-sms-code', data);
+}
+
+/**
+ * 短信验证码登录
+ */
+export function smsLogin(data: AuthApi.SmsLoginVO) {
+  return requestClient.post('/system/auth/sms-login', data);
+}
+
+/**
+ * 社交快捷登录，使用 code 授权码
+ */
+export function socialLogin(type: string, code: string, state: string) {
+  return requestClient.post('/system/auth/social-login', {
+    type,
+    code,
+    state,
   });
 }
 
-// 获取用户权限信息
-export function getUserInfo() {
-  return requestClient.get<YudaoUserInfo>('/system/auth/get-permission-info');
+/**
+ * 社交授权的跳转
+ */
+export function socialAuthRedirect(type: number, redirectUri: string) {
+  return requestClient.get(
+    `/system/auth/social-auth-redirect?type=${type}&redirectUri=${redirectUri}`,
+  );
 }
 
 /**
  * 获取验证图片 以及token
  */
 export function getCaptcha(data: any) {
-  return baseRequestClient.post('/system/captcha/get', data, {
-    // isReturnNativeResponse: true,
-  });
+  return baseRequestClient.post('/system/captcha/get', data);
 }
 
 /**
  * 滑动或者点选验证
  */
 export function checkCaptcha(data: any) {
-  return baseRequestClient.post('/system/captcha/check', data, {
-    // isReturnNativeResponse: true,
-  });
+  return baseRequestClient.post('/system/captcha/check', data);
 }
