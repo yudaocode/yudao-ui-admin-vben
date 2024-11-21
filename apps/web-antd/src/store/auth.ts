@@ -15,9 +15,12 @@ import { getUserInfo, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
 import { setAccessToken, setRefreshToken } from '#/utils';
 
+import { useDictStore } from './dict';
+
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
   const userStore = useUserStore();
+  const dictStore = useDictStore();
   const router = useRouter();
 
   const loginLoading = ref(false);
@@ -60,6 +63,8 @@ export const useAuthStore = defineStore('auth', () => {
               ? await onSuccess?.()
               : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
           }
+
+          dictStore.setDictMap();
 
           if (userInfo?.realName) {
             notification.success({
