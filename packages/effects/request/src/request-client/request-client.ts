@@ -8,6 +8,7 @@ import type {
 import { bindMethods, merge } from '@vben/utils';
 
 import axios from 'axios';
+import qs from 'qs';
 
 import { FileDownloader } from './modules/downloader';
 import { InterceptorManager } from './modules/interceptor';
@@ -39,6 +40,10 @@ class RequestClient {
       },
       // 默认超时时间
       timeout: 10_000,
+      // 处理请求参数 默认使用qs库处理
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: 'repeat' });
+      },
     };
     const { ...axiosConfig } = options;
     const requestConfig = merge(axiosConfig, defaultConfig);

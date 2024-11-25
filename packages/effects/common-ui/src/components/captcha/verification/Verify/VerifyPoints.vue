@@ -1,9 +1,8 @@
-<script type="text/babel" setup>
-/**
- * VerifyPoints
- * @description 点选
- */
+<script lang="ts" setup>
+import type { VerificationProps } from '../types';
+
 import {
+  type ComponentInternalInstance,
   getCurrentInstance,
   nextTick,
   onMounted,
@@ -14,68 +13,91 @@ import {
 
 import { $t } from '@vben/locales';
 
-import { checkCaptcha, getCaptcha } from '#/api/core/auth';
+import { aesEncrypt } from '../utils/ase';
+import { resetSize } from '../utils/util';
 
-import { aesEncrypt } from './../utils/ase';
-import { resetSize } from './../utils/util';
+/**
+ * VerifyPoints
+ * @description 点选
+ */
 
-const props = defineProps({
-  barSize: {
-    default() {
-      return {
-        height: '40px',
-        width: '310px',
-      };
-    },
-    type: Object,
-  },
-  captchaType: {
-    default() {
-      return 'VerifyPoints';
-    },
-    type: String,
-  },
-  imgSize: {
-    default() {
-      return {
-        height: '155px',
-        width: '310px',
-      };
-    },
-    type: Object,
-  },
-  // 弹出式pop，固定fixed
-  mode: {
-    default: 'fixed',
-    type: String,
-  },
-  // 间隔
-  vSpace: {
-    default: 5,
-    type: Number,
-  },
+// const props = defineProps({
+//   barSize: {
+//     default() {
+//       return {
+//         height: '40px',
+//         width: '310px',
+//       };
+//     },
+//     type: Object,
+//   },
+//   captchaType: {
+//     default() {
+//       return 'VerifyPoints';
+//     },
+//     type: String,
+//   },
+//   imgSize: {
+//     default() {
+//       return {
+//         height: '155px',
+//         width: '310px',
+//       };
+//     },
+//     type: Object,
+//   },
+//   // 弹出式pop，固定fixed
+//   mode: {
+//     default: 'fixed',
+//     type: String,
+//   },
+//   // 间隔
+//   vSpace: {
+//     default: 5,
+//     type: Number,
+//   },
+// });
+
+defineOptions({
+  name: 'VerifyPoints',
 });
 
-const { captchaType, mode } = toRefs(props);
-const { proxy } = getCurrentInstance();
-const secretKey = ref(''); // 后端返回的ase加密秘钥
+const props = withDefaults(defineProps<VerificationProps>(), {
+  barSize: () => ({
+    height: '40px',
+    width: '310px',
+  }),
+  captchaType: 'clickWord',
+  imgSize: () => ({
+    height: '155px',
+    width: '310px',
+  }),
+  mode: 'fixed',
+  space: 5,
+});
+
+const emit = defineEmits(['onSuccess', 'onError', 'onClose', 'onReady']);
+
+const { captchaType, mode, checkCaptchaApi, getCaptchaApi } = toRefs(props);
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const secretKey = ref(); // 后端返回的ase加密秘钥
 const checkNum = ref(3); // 默认需要点击的字数
-const fontPos = reactive([]); // 选中的坐标信息
-const checkPosArr = reactive([]); // 用户点击的坐标
+const fontPos = reactive<any[]>([]); // 选中的坐标信息
+const checkPosArr = reactive<any[]>([]); // 用户点击的坐标
 const num = ref(1); // 点击的记数
-const pointBackImgBase = ref(''); // 后端获取到的背景图片
-const poinTextList = reactive([]); // 后端返回的点击字体顺序
-const backToken = ref(''); // 后端返回的token值
+const pointBackImgBase = ref(); // 后端获取到的背景图片
+const poinTextList = ref<any[]>([]); // 后端返回的点击字体顺序
+const backToken = ref(); // 后端返回的token值
 const setSize = reactive({
   barHeight: 0,
   barWidth: 0,
   imgHeight: 0,
   imgWidth: 0,
 });
-const tempPoints = reactive([]);
-const text = ref('');
-const barAreaColor = ref(undefined);
-const barAreaBorderColor = ref(undefined);
+const tempPoints = reactive<any[]>([]);
+const text = ref();
+const barAreaColor = ref();
+const barAreaBorderColor = ref();
 const showRefresh = ref(true);
 const bindingClick = ref(true);
 
@@ -91,33 +113,34 @@ function init() {
     setSize.imgWidth = imgWidth;
     setSize.barHeight = barHeight;
     setSize.barWidth = barWidth;
-    proxy.$parent.$emit('ready', proxy);
+    emit('onReady', proxy);
   });
 }
+
 onMounted(() => {
   // 禁止拖拽
   init();
-  proxy.$el.addEventListener('selectstart', () => {
+  proxy?.$el?.addEventListener('selectstart', () => {
     return false;
   });
 });
 const canvas = ref(null);
 
 // 获取坐标
-const getMousePos = function (obj, e) {
+const getMousePos = function (obj: any, e: any) {
   const x = e.offsetX;
   const y = e.offsetY;
   return { x, y };
 };
 // 创建坐标点
-const createPoint = function (pos) {
+const createPoint = function (pos: any) {
   tempPoints.push(Object.assign({}, pos));
   return num.value + 1;
 };
 
 // 坐标转换函数
-const pointTransfrom = function (pointArr, imgSize) {
-  const newPointArr = pointArr.map((p) => {
+const pointTransfrom = function (pointArr: any, imgSize: any) {
+  const newPointArr = pointArr.map((p: any) => {
     const x = Math.round((310 * p.x) / Number.parseInt(imgSize.imgWidth));
     const y = Math.round((155 * p.y) / Number.parseInt(imgSize.imgHeight));
     return { x, y };
@@ -137,7 +160,7 @@ const refresh = async function () {
   showRefresh.value = true;
 };
 
-function canvasClick(e) {
+function canvasClick(e: any) {
   checkPosArr.push(getMousePos(canvas, e));
   if (num.value === checkNum.value) {
     num.value = createPoint(getMousePos(canvas, e));
@@ -162,25 +185,25 @@ function canvasClick(e) {
           : JSON.stringify(checkPosArr),
         token: backToken.value,
       };
-      checkCaptcha(data).then((response) => {
+      checkCaptchaApi?.value?.(data).then((response: any) => {
         const res = response.data;
         if (res.repCode === '0000') {
           barAreaColor.value = '#4cae4c';
           barAreaBorderColor.value = '#5cb85c';
-          text.value = $t('components.captcha.success');
+          text.value = $t('ui.captcha.success');
           bindingClick.value = false;
           if (mode.value === 'pop') {
             setTimeout(() => {
-              proxy.$parent.clickShow = false;
+              emit('onClose');
               refresh();
             }, 1500);
           }
-          proxy.$parent.$emit('success', { captchaVerification });
+          emit('onSuccess', { captchaVerification });
         } else {
-          proxy.$parent.$emit('error', proxy);
+          emit('onError', proxy);
           barAreaColor.value = '#d9534f';
           barAreaBorderColor.value = '#d9534f';
-          text.value = $t('components.captcha.fail');
+          text.value = $t('ui.captcha.sliderRotateFailTip');
           setTimeout(() => {
             refresh();
           }, 700);
@@ -197,17 +220,22 @@ async function getPictrue() {
   const data = {
     captchaType: captchaType.value,
   };
-  const res = await getCaptcha(data);
-  if (res.data.repCode === '0000') {
-    pointBackImgBase.value = res.data.repData.originalImageBase64;
+  const res = await getCaptchaApi?.value?.(data);
+
+  if (res?.data?.repCode === '0000') {
+    pointBackImgBase.value = `data:image/png;base64,${res?.data?.repData?.originalImageBase64}`;
     backToken.value = res.data.repData.token;
     secretKey.value = res.data.repData.secretKey;
     poinTextList.value = res.data.repData.wordList;
-    text.value = `${$t('components.captcha.point')}【${poinTextList.value.join(',')}】`;
+    text.value = `${$t('ui.captcha.point')}【${poinTextList.value.join(',')}】`;
   } else {
-    text.value = res.data.repMsg;
+    text.value = res?.data?.repMsg;
   }
 }
+defineExpose({
+  init,
+  refresh,
+});
 </script>
 
 <template>
@@ -218,7 +246,7 @@ async function getPictrue() {
           width: setSize.imgWidth,
           height: setSize.imgHeight,
           'background-size': `${setSize.imgWidth} ${setSize.imgHeight}`,
-          'margin-bottom': `${vSpace}px`,
+          'margin-bottom': `${space}px`,
         }"
         class="verify-img-panel"
       >
@@ -232,7 +260,7 @@ async function getPictrue() {
         </div>
         <img
           ref="canvas"
-          :src="`data:image/png;base64,${pointBackImgBase}`"
+          :src="pointBackImgBase"
           alt=""
           style="display: block; width: 100%; height: 100%"
           @click="bindingClick ? canvasClick($event) : undefined"
@@ -251,8 +279,8 @@ async function getPictrue() {
             'line-height': '20px',
             'border-radius': '50%',
             position: 'absolute',
-            top: `${parseInt(tempPoint.y - 10)}px`,
-            left: `${parseInt(tempPoint.x - 10)}px`,
+            top: `${tempPoint.y - 10}px`,
+            left: `${tempPoint.x - 10}px`,
           }"
           class="point-area"
         >

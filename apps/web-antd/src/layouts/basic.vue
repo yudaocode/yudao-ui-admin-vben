@@ -101,7 +101,7 @@ const menus = computed(() => [
 ]);
 
 const avatar = computed(() => {
-  return userStore.userInfo?.user.avatar ?? preferences.app.defaultAvatar;
+  return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
 async function handleLogout() {
@@ -138,7 +138,7 @@ watch(
       <UserDropdown
         :avatar
         :menus
-        :text="userStore.userInfo?.user.nickname"
+        :text="userStore.userInfo?.nickname"
         tag-text="Admin"
         @logout="handleLogout"
       />

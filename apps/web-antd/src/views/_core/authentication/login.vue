@@ -1,129 +1,132 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
+import type { Recordable } from '@vben/types';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
-import { AuthenticationLogin, z } from '@vben/common-ui';
+import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
+import { useDictStore, useTenantStore } from '@vben/stores';
 
-import { getTenantByWebsite, getTenantIdByName } from '#/api/core/auth';
-import { Verify } from '#/components/Verification';
+import {
+  checkCaptcha,
+  getCaptcha,
+  getTenantByWebsite,
+  getTenantIdByName,
+} from '#/api';
+import { getSimpleDictDataList } from '#/api/system/dict-data';
 import { useAuthStore } from '#/store';
-import { setTenantId } from '#/utils';
 
 defineOptions({ name: 'Login' });
-
-const authStore = useAuthStore();
-/**
- * 初始化验证码
- * blockPuzzle 滑块
- * clickWord 点击文字
- */
-const verify = ref();
-const captchaType = ref('blockPuzzle');
 
 const { tenantEnable, captchaEnable } = useAppConfig(
   import.meta.env,
   import.meta.env.PROD,
 );
 
+const authStore = useAuthStore();
+const tenantStore = useTenantStore();
+const dictStore = useDictStore();
+
+const captchaType = 'blockPuzzle';
+const loginData = ref<Recordable<any>>({});
+
+const verifyRef = ref();
+
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {
       component: 'VbenInput',
       componentProps: {
-        placeholder: $t('page.auth.tenantNameTip'),
+        placeholder: $t('authentication.tenantName'),
       },
       fieldName: 'tenantName',
-      label: $t('page.auth.tenantname'),
-      rules: z.string().min(1, { message: $t('page.auth.tenantNameTip') }),
-      defaultValue: import.meta.env.VITE_APP_DEFAULT_LOGIN_TENANT || '',
+      label: $t('authentication.tenantName'),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.tenantNameTip') })
+        .default(import.meta.env.VITE_APP_DEFAULT_TENANT_NAME),
+      dependencies: {
+        triggerFields: ['tenantName'],
+        if: tenantEnable && !tenantStore.tenantId,
+        trigger: (values) => {
+          tenantStore.setTenantName(values.tenantName);
+        },
+      },
     },
     {
       component: 'VbenInput',
       componentProps: {
-        placeholder: $t('page.auth.usernameTip'),
+        placeholder: $t('authentication.usernameTip'),
       },
       fieldName: 'username',
-      label: $t('page.auth.username'),
-      rules: z.string().min(1, { message: $t('page.auth.usernameTip') }),
-      defaultValue: import.meta.env.VITE_APP_DEFAULT_LOGIN_USERNAME || '',
+      label: $t('authentication.username'),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.usernameTip') })
+        .default(import.meta.env.VITE_APP_DEFAULT_USERNAME),
     },
     {
       component: 'VbenInputPassword',
       componentProps: {
-        placeholder: $t('page.auth.passwordTip'),
+        placeholder: $t('authentication.password'),
       },
       fieldName: 'password',
-      label: $t('page.auth.password'),
-      rules: z.string().min(1, { message: $t('page.auth.passwordTip') }),
-      defaultValue: import.meta.env.VITE_APP_DEFAULT_LOGIN_PASSWORD || '',
+      label: $t('authentication.password'),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.passwordTip') })
+        .default(import.meta.env.VITE_APP_DEFAULT_PASSWORD),
     },
   ];
 });
-const loginData = reactive({
-  loginForm: {
-    username: '',
-    password: '',
-    tenantName: '',
-  },
-});
-const captchaVerification = ref('');
-// 获取验证码
-async function getCode(params: any) {
-  if (params) {
-    loginData.loginForm = params;
-  }
-  try {
-    await getTenant();
-    if (captchaEnable) {
-      // 情况二，已开启：则展示验证码；只有完成验证码的情况，才进行登录
-      // 弹出验证码
-      verify.value.show();
-    } else {
-      // 情况一，未开启：则直接登录
-      await handleLogin({});
-    }
-  } catch (error) {
-    console.error('Error in getCode:', error);
-  }
-}
 
-// 根据域名，获得租户信息 && 获取租户ID
-async function getTenant() {
+/**
+ * 处理登录
+ */
+const handleLogin = async (values: any) => {
+  // 是否开启租户
+  if (tenantEnable && !tenantStore.tenantId) {
+    const tenantId = await getTenantIdByName(values.tenantName);
+    if (tenantId) {
+      tenantStore.setTenantId(tenantId);
+    }
+  }
+  // 是否开启验证码
+  if (captchaEnable) {
+    loginData.value = values;
+    verifyRef.value.show();
+  } else {
+    authStore.authLogin(values);
+  }
+};
+
+const handleVerifySuccess = async ({ captchaVerification }: any) => {
+  await authStore.authLogin(
+    {
+      ...loginData.value,
+      captchaVerification,
+    },
+    () => {
+      // 设置字典数据
+      dictStore.setDictCacheByApi(getSimpleDictDataList, 'label', 'value');
+    },
+  );
+};
+
+watchEffect(async () => {
   if (tenantEnable) {
-    const website = location.host;
-    try {
-      const tenant = await getTenantByWebsite(website);
-      if (tenant) {
-        loginData.loginForm.tenantName = tenant.name;
-        setTenantId(tenant.id);
-      } else {
-        const res = await getTenantIdByName(loginData.loginForm.tenantName);
-        setTenantId(res);
-      }
-    } catch (error) {
-      console.error('Error in getTenant:', error);
+    const website = window.location.hostname;
+    const tenant = await getTenantByWebsite(website);
+    if (tenant) {
+      tenantStore.setTenant({
+        tenantId: tenant.id,
+        tenantName: tenant.name,
+      });
     }
   }
-}
-
-async function handleLogin(params: any) {
-  if (!params.captchaVerification && captchaEnable) {
-    console.error('Captcha verification is required');
-    return;
-  }
-  captchaVerification.value = params.captchaVerification;
-  try {
-    await authStore.authLogin({
-      ...loginData.loginForm,
-      captchaVerification: captchaVerification.value,
-    });
-  } catch (error) {
-    console.error('Error in handleLogin:', error);
-  }
-}
+});
 </script>
 
 <template>
@@ -131,14 +134,16 @@ async function handleLogin(params: any) {
     <AuthenticationLogin
       :form-schema="formSchema"
       :loading="authStore.loginLoading"
-      @submit="getCode"
+      @submit="handleLogin"
     />
-    <Verify
-      ref="verify"
+    <Verification
+      ref="verifyRef"
       :captcha-type="captchaType"
+      :check-captcha-api="checkCaptcha"
+      :get-captcha-api="getCaptcha"
       :img-size="{ width: '400px', height: '200px' }"
       mode="pop"
-      @success="handleLogin"
+      @on-success="handleVerifySuccess"
     />
   </div>
 </template>
