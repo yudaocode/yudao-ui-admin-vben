@@ -15,12 +15,22 @@ interface DictState {
 
 export const useDictStore = defineStore('dict', {
   actions: {
-    getDictData(dictType: string, value?: string) {
+    getDictData(dictType: string, value: any) {
       const dict = this.dictCache[dictType];
       if (!dict) {
         return undefined;
       }
-      return value ? dict.find((d) => d.value === value) : dict;
+      return (
+        dict.find((d) => d.value === value || d.value === value.toString()) ??
+        undefined
+      );
+    },
+    getDictOptions(dictType: string) {
+      const dictOptions = this.dictCache[dictType];
+      if (!dictOptions) {
+        return [];
+      }
+      return dictOptions;
     },
     setDictCache(dicts: Dict) {
       this.dictCache = dicts;

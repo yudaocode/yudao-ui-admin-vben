@@ -1,8 +1,9 @@
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
+import { useDictStore } from '@vben/stores';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button, Image, Tag } from 'ant-design-vue';
 
 import { useVbenForm } from './form';
 
@@ -69,6 +70,32 @@ setupVbenVxeTable({
           { size: 'small', type: 'link' },
           { default: () => props?.text },
         );
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'CellDict',props:{dictType: ''} },
+    vxeUI.renderer.add('CellDict', {
+      renderTableDefault(renderOpts, params) {
+        const dictStore = useDictStore();
+        const { props } = renderOpts;
+        const { column, row } = params;
+        if (!props) {
+          return '';
+        }
+        const dict = dictStore.getDictData(props.type, row[column.field]);
+        // 转义
+        if (dict) {
+          if (`${dict.colorType}` === 'primary') dict.colorType = 'processing';
+          else if (`${dict.colorType}` === 'danger') dict.colorType = 'error';
+          else if (`${dict.colorType}` === 'info') dict.colorType = 'default';
+          else if (!dict.colorType) dict.colorType = 'default';
+          return h(
+            Tag,
+            { color: dict.colorType },
+            { default: () => dict.label },
+          );
+        }
+        return '';
       },
     });
 
