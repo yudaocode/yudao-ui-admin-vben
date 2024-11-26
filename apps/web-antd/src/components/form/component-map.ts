@@ -2,7 +2,7 @@ import type { CustomComponentType } from './types';
 
 import type { Component } from 'vue';
 
-import { kebabToCamelCase } from '@vben/utils';
+import { capitalizeFirstLetter, kebabToCamelCase } from '@vben/utils';
 
 const componentMap = new Map<CustomComponentType | string, Component>();
 // import.meta.glob() 直接引入所有的模块 Vite 独有的功能
@@ -14,7 +14,7 @@ Object.keys(modules).forEach((key) => {
     // ./components/ApiDict.vue
     // 获取ApiDict
     const compName = key.replace('./components/', '').replace('.vue', '');
-    componentMap.set(kebabToCamelCase(compName), mod);
+    componentMap.set(capitalizeFirstLetter(kebabToCamelCase(compName)), mod);
   }
 });
 
