@@ -3,6 +3,8 @@ import type { VbenFormProps } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { CodegenApi } from '#/api/infra/codegen';
 
+import { getDataSourceConfigList } from '#/api/infra/data-source-config';
+
 export namespace CodegenDefaultData {
   /**
    * 代码生成字段定义 表格配置
@@ -78,10 +80,22 @@ export namespace CodegenImportTableModalData {
     {
       label: '数据源',
       fieldName: 'dataSourceConfigId',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
+        defaultSelectedFirst: true,
         allowClear: true,
         placeholder: '请选择数据源',
+        api: getDataSourceConfigList,
+        labelField: 'name',
+        valueField: 'id',
+      },
+      componentEvents: (events, formApi) => {
+        return {
+          optionsChange: (value: any) => {
+            // 设置默认选中第一个
+            formApi.setFieldValue('dataSourceConfigId', value[0].id);
+          },
+        };
       },
     },
     {

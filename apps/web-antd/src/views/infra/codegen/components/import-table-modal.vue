@@ -9,18 +9,11 @@ import {
 } from '@vben/plugins/vxe-table';
 
 import { getSchemaTableList } from '#/api/infra/codegen';
-import {
-  type DataSourceConfigApi,
-  getDataSourceConfigList,
-} from '#/api/infra/data-source-config';
 
 import { CodegenImportTableModalData } from '../codegen.data';
 
 // checked
 const checkedStatus = ref<boolean>(false);
-
-const dataSourceConfigList =
-  ref<DataSourceConfigApi.DataSourceConfigRespVO[]>();
 
 /**
  * 表格查询表单配置
@@ -82,31 +75,8 @@ const [Grid, gridApi] = useVbenVxeGrid(
 
 const [Modal] = useVbenModal({
   class: 'w-[800px] h-[800px]',
-  onOpenChange: async (isOpen) => {
-    if (isOpen) {
-      // 获取数据源配置列表
-      dataSourceConfigList.value = await getDataSourceConfigList();
-      // 设置下拉框
-      gridApi.formApi.updateSchema([
-        {
-          fieldName: 'dataSourceConfigId',
-          componentProps: {
-            options: dataSourceConfigList.value?.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })),
-          },
-        },
-      ]);
-      // 设置默认值
-      gridApi.formApi.setFieldValue(
-        'dataSourceConfigId',
-        dataSourceConfigList.value?.[0]?.id,
-      );
-
-      // 加载表格数据
-      gridApi.reload(await gridApi.formApi.getValues());
-    }
+  onOpened: async () => {
+    gridApi.reload(await gridApi.formApi.getValues());
   },
 });
 </script>
