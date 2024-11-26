@@ -39,6 +39,7 @@ catalog:
   '@tanstack/vue-query': ^5.61.3
   '@tanstack/vue-store': ^0.5.7
   '@types/archiver': ^6.0.3
+  '@types/crypto-js': ^4.2.2
   '@types/eslint': ^9.6.1
   '@types/html-minifier-terser': ^7.0.2
   '@types/jsonwebtoken': ^9.0.7
@@ -47,6 +48,7 @@ catalog:
   '@types/nprogress': ^0.2.3
   '@types/postcss-import': ^14.0.3
   '@types/qrcode': ^1.5.5
+  '@types/qs': ^6.9.17
   '@types/sortablejs': ^1.15.8
   '@typescript-eslint/eslint-plugin': ^8.15.0
   '@typescript-eslint/parser': ^8.15.0
@@ -73,6 +75,7 @@ catalog:
   commitlint-plugin-function-rules: ^4.0.1
   consola: ^3.2.3
   cross-env: ^7.0.3
+  crypto-js: ^4.2.0
   cspell: ^8.16.0
   cssnano: ^7.0.6
   cz-git: ^1.11.0
@@ -132,6 +135,7 @@ catalog:
   prettier-plugin-tailwindcss: ^0.6.9
   publint: ^0.2.12
   qrcode: ^1.5.4
+  qs: ^6.13.1
   radix-vue: ^1.9.10
   resolve.exports: ^2.0.2
   rimraf: ^6.0.1

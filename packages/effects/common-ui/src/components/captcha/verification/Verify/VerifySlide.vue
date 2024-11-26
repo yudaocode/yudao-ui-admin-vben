@@ -1,4 +1,6 @@
-<script type="text/babel" setup>
+<script lang="ts" setup>
+import type { VerificationProps } from '../types';
+
 /**
  * VerifySlide
  * @description 滑块
@@ -11,107 +13,81 @@ import {
   reactive,
   ref,
   toRefs,
-  watch,
 } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { checkCaptcha, getCaptcha } from '#/api/core/auth';
-
 import { aesEncrypt } from './../utils/ase';
 import { resetSize } from './../utils/util';
 
-const props = defineProps({
-  barSize: {
-    default() {
-      return {
-        height: '30px',
-        width: '310px',
-      };
-    },
-    type: Object,
-  },
-  blockSize: {
-    default() {
-      return {
-        height: '50px',
-        width: '50px',
-      };
-    },
-    type: Object,
-  },
-  captchaType: {
-    default() {
-      return 'VerifySlide';
-    },
-    type: String,
-  },
-  explain: {
-    default: '',
-    type: String,
-  },
-  imgSize: {
-    default() {
-      return {
-        height: '155px',
-        width: '310px',
-      };
-    },
-    type: Object,
-  },
-  // 弹出式pop，固定fixed
-  mode: {
-    default: 'fixed',
-    type: String,
-  },
-  type: {
-    default: '1',
-    type: String,
-  },
-  vSpace: {
-    default: 5,
-    type: Number,
-  },
+const props = withDefaults(defineProps<VerificationProps>(), {
+  barSize: () => ({
+    height: '40px',
+    width: '310px',
+  }),
+  blockSize: () => ({
+    height: '50px',
+    width: '50px',
+  }),
+  captchaType: 'blockPuzzle',
+  explain: '',
+  imgSize: () => ({
+    height: '155px',
+    width: '310px',
+  }),
+  mode: 'fixed',
+  type: '1',
+  space: 5,
 });
 
-const { blockSize, captchaType, explain, mode, type } = toRefs(props);
-const { proxy } = getCurrentInstance();
-const secretKey = ref(''); // 后端返回的ase加密秘钥
-const passFlag = ref(''); // 是否通过的标识
-const backImgBase = ref(''); // 验证码背景图片
-const blockBackImgBase = ref(''); // 验证滑块的背景图片
-const backToken = ref(''); // 后端返回的唯一token值
-const startMoveTime = ref(''); // 移动开始的时间
-const endMovetime = ref(''); // 移动结束的时间
-const tipWords = ref('');
-const text = ref('');
-const finishText = ref('');
+const emit = defineEmits(['onSuccess', 'onError', 'onClose']);
+
+const {
+  blockSize,
+  captchaType,
+  explain,
+  mode,
+  checkCaptchaApi,
+  getCaptchaApi,
+} = toRefs(props);
+
+const { proxy } = getCurrentInstance()!;
+const secretKey = ref(); // 后端返回的ase加密秘钥
+const passFlag = ref(); // 是否通过的标识
+const backImgBase = ref(); // 验证码背景图片
+const blockBackImgBase = ref(); // 验证滑块的背景图片
+const backToken = ref(); // 后端返回的唯一token值
+const startMoveTime = ref(); // 移动开始的时间
+const endMovetime = ref(); // 移动结束的时间
+const tipWords = ref();
+const text = ref();
+const finishText = ref();
 const setSize = reactive({
-  barHeight: 0,
-  barWidth: 0,
-  imgHeight: 0,
-  imgWidth: 0,
+  barHeight: '0px',
+  barWidth: '0px',
+  imgHeight: '0px',
+  imgWidth: '0px',
 });
-const moveBlockLeft = ref(undefined);
-const leftBarWidth = ref(undefined);
+const moveBlockLeft = ref();
+const leftBarWidth = ref();
 // 移动中样式
-const moveBlockBackgroundColor = ref(undefined);
+const moveBlockBackgroundColor = ref();
 const leftBarBorderColor = ref('#ddd');
-const iconColor = ref(undefined);
+const iconColor = ref();
 const iconClass = ref('icon-right');
 const status = ref(false); // 鼠标状态
 const isEnd = ref(false); // 是够验证完成
 const showRefresh = ref(true);
-const transitionLeft = ref('');
-const transitionWidth = ref('');
+const transitionLeft = ref();
+const transitionWidth = ref();
 const startLeft = ref(0);
 
 const barArea = computed(() => {
-  return proxy.$el.querySelector('.verify-bar-area');
+  return proxy?.$el.querySelector('.verify-bar-area');
 });
 function init() {
   text.value =
-    explain.value === '' ? $t('components.captcha.slide') : explain.value;
+    explain.value === '' ? $t('ui.captcha.sliderDefaultText') : explain.value;
 
   getPictrue();
   nextTick(() => {
@@ -120,7 +96,7 @@ function init() {
     setSize.imgWidth = imgWidth;
     setSize.barHeight = barHeight;
     setSize.barWidth = barWidth;
-    proxy.$parent.$emit('ready', proxy);
+    proxy?.$parent?.$emit('ready', proxy);
   });
 
   window.removeEventListener('touchmove', move);
@@ -137,20 +113,21 @@ function init() {
   window.addEventListener('touchend', end);
   window.addEventListener('mouseup', end);
 }
-watch(type, () => {
-  init();
-});
+
 onMounted(() => {
   // 禁止拖拽
   init();
-  proxy.$el.addEventListener('selectstart', () => {
+  proxy?.$el.addEventListener('selectstart', () => {
     return false;
   });
 });
+
 // 鼠标按下
-function start(e) {
-  e = e || window.event;
-  const x = e.touches ? e.touches[0].pageX : e.clientX;
+function start(e: MouseEvent | TouchEvent) {
+  const x =
+    ((e as TouchEvent).touches
+      ? (e as TouchEvent).touches[0]?.pageX
+      : (e as MouseEvent).clientX) || 0;
   startLeft.value = Math.floor(x - barArea.value.getBoundingClientRect().left);
   startMoveTime.value = Date.now(); // 开始滑动的时间
   if (isEnd.value === false) {
@@ -163,27 +140,25 @@ function start(e) {
   }
 }
 // 鼠标移动
-function move(e) {
-  e = e || window.event;
+function move(e: MouseEvent | TouchEvent) {
   if (status.value && isEnd.value === false) {
-    const x = e.touches ? e.touches[0].pageX : e.clientX;
+    const x =
+      ((e as TouchEvent).touches
+        ? (e as TouchEvent).touches[0]?.pageX
+        : (e as MouseEvent).clientX) || 0;
     const bar_area_left = barArea.value.getBoundingClientRect().left;
     let move_block_left = x - bar_area_left; // 小方块相对于父元素的left值
     if (
       move_block_left >=
-      barArea.value.offsetWidth -
-        Number.parseInt(Number.parseInt(blockSize.value.width) / 2) -
-        2
+      barArea.value.offsetWidth - Number.parseInt(blockSize.value.width) / 2 - 2
     )
       move_block_left =
         barArea.value.offsetWidth -
-        Number.parseInt(Number.parseInt(blockSize.value.width) / 2) -
+        Number.parseInt(blockSize.value.width) / 2 -
         2;
 
     if (move_block_left <= 0)
-      move_block_left = Number.parseInt(
-        Number.parseInt(blockSize.value.width) / 2,
-      );
+      move_block_left = Number.parseInt(blockSize.value.width) / 2;
 
     // 拖动后小方块的left值
     moveBlockLeft.value = `${move_block_left - startLeft.value}px`;
@@ -211,7 +186,7 @@ function end() {
         : JSON.stringify({ x: moveLeftDistance, y: 5 }),
       token: backToken.value,
     };
-    checkCaptcha(data).then((response) => {
+    checkCaptchaApi?.value?.(data).then((response) => {
       const res = response.data;
       if (res.repCode === '0000') {
         moveBlockBackgroundColor.value = '#5cb85c';
@@ -222,13 +197,13 @@ function end() {
         isEnd.value = true;
         if (mode.value === 'pop') {
           setTimeout(() => {
-            proxy.$parent.clickShow = false;
+            emit('onClose');
             refresh();
           }, 1500);
         }
         passFlag.value = true;
         tipWords.value = `${((endMovetime.value - startMoveTime.value) / 1000).toFixed(2)}s
-            ${$t('components.captcha.success')}`;
+            ${$t('ui.captcha.title')}`;
         const captchaVerification = secretKey.value
           ? aesEncrypt(
               `${backToken.value}---${JSON.stringify({ x: moveLeftDistance, y: 5 })}`,
@@ -237,8 +212,8 @@ function end() {
           : `${backToken.value}---${JSON.stringify({ x: moveLeftDistance, y: 5 })}`;
         setTimeout(() => {
           tipWords.value = '';
-          proxy.$parent.closeBox();
-          proxy.$parent.$emit('success', { captchaVerification });
+          emit('onSuccess', { captchaVerification });
+          emit('onClose');
         }, 1000);
       } else {
         moveBlockBackgroundColor.value = '#d9534f';
@@ -249,8 +224,8 @@ function end() {
         setTimeout(() => {
           refresh();
         }, 1000);
-        proxy.$parent.$emit('error', proxy);
-        tipWords.value = $t('components.captcha.fail');
+        emit('onError', proxy);
+        tipWords.value = $t('ui.captcha.sliderRotateFailTip');
         setTimeout(() => {
           tipWords.value = '';
         }, 1000);
@@ -289,23 +264,28 @@ async function getPictrue() {
   const data = {
     captchaType: captchaType.value,
   };
-  const res = await getCaptcha(data);
-  if (res.data.repCode === '0000') {
-    backImgBase.value = res.data.repData.originalImageBase64;
-    blockBackImgBase.value = `data:image/png;base64,${res.data.repData.jigsawImageBase64}`;
+  const res = await getCaptchaApi?.value?.(data);
+
+  if (res?.data?.repCode === '0000') {
+    backImgBase.value = `data:image/png;base64,${res?.data?.repData?.originalImageBase64}`;
+    blockBackImgBase.value = `data:image/png;base64,${res?.data?.repData?.jigsawImageBase64}`;
     backToken.value = res.data.repData.token;
     secretKey.value = res.data.repData.secretKey;
   } else {
-    tipWords.value = res.data.repMsg;
+    tipWords.value = res?.data?.repMsg;
   }
 }
+defineExpose({
+  init,
+  refresh,
+});
 </script>
 
 <template>
   <div style="position: relative">
     <div
       v-if="type === '2'"
-      :style="{ height: `${parseInt(setSize.imgHeight) + vSpace}px` }"
+      :style="{ height: `${Number.parseInt(setSize.imgHeight) + space}px` }"
       class="verify-img-out"
     >
       <div
@@ -313,7 +293,7 @@ async function getPictrue() {
         class="verify-img-panel"
       >
         <img
-          :src="`data:image/png;base64,${backImgBase}`"
+          :src="backImgBase"
           alt=""
           style="display: block; width: 100%; height: 100%"
         />
@@ -346,7 +326,7 @@ async function getPictrue() {
           width: leftBarWidth !== undefined ? leftBarWidth : barSize.height,
           height: barSize.height,
           'border-color': leftBarBorderColor,
-          transaction: transitionWidth,
+          transition: transitionWidth,
         }"
         class="verify-left-bar"
       >
@@ -371,9 +351,9 @@ async function getPictrue() {
           <div
             v-if="type === '2'"
             :style="{
-              width: `${Math.floor((parseInt(setSize.imgWidth) * 47) / 310)}px`,
+              width: `${Math.floor((Number.parseInt(setSize.imgWidth) * 47) / 310)}px`,
               height: setSize.imgHeight,
-              top: `-${parseInt(setSize.imgHeight) + vSpace}px`,
+              top: `-${Number.parseInt(setSize.imgHeight) + space}px`,
               'background-size': `${setSize.imgWidth} ${setSize.imgHeight}`,
             }"
             class="verify-sub-block"

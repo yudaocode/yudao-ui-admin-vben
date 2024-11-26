@@ -1,20 +1,18 @@
 import type { BasicUserInfo } from '@vben-core/typings';
 
-/** 用户信息 */
-interface UserInfo extends BasicUserInfo {
-  /**
-   * 用户描述
-   */
-  desc: string;
-  /**
-   * 首页地址
-   */
-  homePath: string;
+import type { AppRouteRecordRaw } from './menu';
 
-  /**
-   * accessToken
-   */
-  token: string;
+interface ExUserInfo extends BasicUserInfo {
+  deptId: number;
+  nickname: string;
 }
 
-export type { UserInfo };
+interface AuthPermissionInfo {
+  permissions: string[];
+  menus: AppRouteRecordRaw[];
+  roles: string[];
+  homePath: string;
+  user: ExUserInfo;
+}
+
+export type { AuthPermissionInfo, ExUserInfo };

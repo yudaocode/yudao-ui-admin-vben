@@ -78,6 +78,9 @@ catalogs:
     '@types/archiver':
       specifier: ^6.0.3
       version: 6.0.3
+    '@types/crypto-js':
+      specifier: ^4.2.2
+      version: 4.2.2
     '@types/eslint':
       specifier: ^9.6.1
       version: 9.6.1
@@ -102,6 +105,9 @@ catalogs:
     '@types/qrcode':
       specifier: ^1.5.5
       version: 1.5.5
+    '@types/qs':
+      specifier: ^6.9.17
+      version: 6.9.17
     '@types/sortablejs':
       specifier: ^1.15.8
       version: 1.15.8
@@ -174,6 +180,9 @@ catalogs:
     cross-env:
       specifier: ^7.0.3
       version: 7.0.3
+    crypto-js:
+      specifier: ^4.2.0
+      version: 4.2.0
     cspell:
       specifier: ^8.16.0
       version: 8.16.0
@@ -348,6 +357,9 @@ catalogs:
     qrcode:
       specifier: ^1.5.4
       version: 1.5.4
+    qs:
+      specifier: ^6.13.1
+      version: 6.13.1
     radix-vue:
       specifier: ^1.9.10
       version: 1.9.10
@@ -661,9 +673,6 @@ importers:
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.13(typescript@5.7.2))
-      crypto-js:
-        specifier: ^4.2.0
-        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -676,10 +685,6 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.4.5(vue@3.5.13(typescript@5.7.2))
-    devDependencies:
-      '@types/crypto-js':
-        specifier: ^4.2.2
-        version: 4.2.2
 
   apps/web-ele:
     dependencies:
@@ -1494,6 +1499,9 @@ importers:
       '@vueuse/integrations':
         specifier: 'catalog:'
         version: 11.3.0(async-validator@4.2.5)(axios@1.7.7)(change-case@5.4.4)(focus-trap@7.6.2)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.4)(vue@3.5.13(typescript@5.7.2))
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       qrcode:
         specifier: 'catalog:'
         version: 1.5.4
@@ -1504,6 +1512,9 @@ importers:
         specifier: 'catalog:'
         version: 4.4.5(vue@3.5.13(typescript@5.7.2))
     devDependencies:
+      '@types/crypto-js':
+        specifier: 'catalog:'
+        version: 4.2.2
       '@types/qrcode':
         specifier: 'catalog:'
         version: 1.5.5
@@ -1651,7 +1662,13 @@ importers:
       axios:
         specifier: 'catalog:'
         version: 1.7.7
+      qs:
+        specifier: 'catalog:'
+        version: 6.13.1
     devDependencies:
+      '@types/qs':
+        specifier: 'catalog:'
+        version: 6.9.17
       axios-mock-adapter:
         specifier: 'catalog:'
         version: 2.1.0(axios@1.7.7)
@@ -4348,6 +4365,9 @@ packages:
 
   '@types/qrcode@1.5.5':
     resolution: {integrity: sha512-CdfBi/e3Qk+3Z/fXYShipBT13OJ2fDO2Q2w5CIP5anLTLIndQG9z6P1cnm+8zCWSpm5dnxMFd/uREtb0EXuQzg==}
+
+  '@types/qs@6.9.17':
+    resolution: {integrity: sha512-rX4/bPcfmvxHDv0XjfJELTTr+iB+tn032nPILqHm5wbthUUUuVtNGGqzhya9XUxjTP8Fpr0qYgSZZKxGY++svQ==}
 
   '@types/readdir-glob@1.1.5':
     resolution: {integrity: sha512-raiuEPUYqXu+nvtY2Pe8s8FEmZ3x5yAH4VkLdihcPdalvsHltomrRC9BzuStrJ9yk06470hS0Crw0f1pXqD+Hg==}
@@ -8596,6 +8616,10 @@ packages:
     resolution: {integrity: sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
+
+  qs@6.13.1:
+    resolution: {integrity: sha512-EJPeIn0CYrGu+hli1xilKAPXODtJ12T0sP63Ijx2/khC2JtuaN3JyNIpvmnkmaEtha9ocbG4A4cMcr+TvqvwQg==}
+    engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -13094,6 +13118,8 @@ snapshots:
   '@types/qrcode@1.5.5':
     dependencies:
       '@types/node': 22.9.3
+
+  '@types/qs@6.9.17': {}
 
   '@types/readdir-glob@1.1.5':
     dependencies:
@@ -17798,6 +17824,10 @@ snapshots:
       dijkstrajs: 1.0.3
       pngjs: 5.0.0
       yargs: 15.4.1
+
+  qs@6.13.1:
+    dependencies:
+      side-channel: 1.0.6
 
   queue-microtask@1.2.3: {}
 

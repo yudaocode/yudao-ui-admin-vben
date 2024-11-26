@@ -31,11 +31,13 @@
     "@vben/types": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
+    "crypto-js": "catalog:",
     "qrcode": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {
+    "@types/crypto-js": "catalog:",
     "@types/qrcode": "catalog:"
   }
 }

@@ -39,12 +39,25 @@ interface HttpResponse<T = any> {
    */
   code: number;
   data: T;
-  message: string;
+  msg: string;
+}
+
+interface PageParam {
+  [key: string]: any;
+  pageNo: number;
+  pageSize: number;
+}
+
+interface PageResult<T> {
+  list: T[];
+  total: number;
 }
 
 export type {
   HttpResponse,
   MakeErrorMessageFn,
+  PageParam,
+  PageResult,
   RequestClientOptions,
   RequestContentType,
   RequestInterceptorConfig,

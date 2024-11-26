@@ -1,6 +1,7 @@
-import type { RouteRecordStringComponent } from '@vben/types';
-
-import type { AppRouteRecordRaw } from '#/types';
+import type {
+  AppRouteRecordRaw,
+  RouteRecordStringComponent,
+} from '@vben/types';
 
 import { isHttpUrl } from '@vben/utils';
 

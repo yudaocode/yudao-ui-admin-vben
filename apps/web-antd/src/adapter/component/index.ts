@@ -5,6 +5,8 @@
 
 import type { BaseFormComponentType } from '@vben/common-ui';
 
+import type { CustomComponentType } from '#/components/form/types';
+
 import type { Component, SetupContext } from 'vue';
 import { h } from 'vue';
 
@@ -35,6 +37,8 @@ import {
   TreeSelect,
   Upload,
 } from 'ant-design-vue';
+
+import { registerComponent as registerCustomFormComponent } from '#/components/form/component-map';
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -70,7 +74,8 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
-  | BaseFormComponentType;
+  | BaseFormComponentType
+  | CustomComponentType;
 
 async function initComponentAdapter() {
   const components: Partial<Record<ComponentType, Component>> = {
@@ -107,6 +112,9 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload,
   };
+
+  // 注册自定义组件
+  registerCustomFormComponent(components);
 
   // 将组件注册到全局共享状态中
   globalShareState.setComponents(components);
