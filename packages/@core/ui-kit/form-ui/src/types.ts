@@ -60,6 +60,8 @@ export type MaybeComponentPropKey =
   | keyof HtmlHTMLAttributes
   | (Record<never, never> & string);
 
+export type MaybeComponentEvents = { [K in MaybeComponentPropKey]?: any };
+
 export type MaybeComponentProps = { [K in MaybeComponentPropKey]?: any };
 
 export type FormActions = FormContext<GenericObject>;
@@ -127,6 +129,13 @@ export interface FormItemDependencies {
    */
   triggerFields: string[];
 }
+
+type ComponentEvents =
+  | ((
+      value: Partial<Record<string, any>>,
+      actions: FormActions,
+    ) => MaybeComponentEvents)
+  | MaybeComponentEvents;
 
 type ComponentProps =
   | ((
@@ -217,6 +226,8 @@ export interface FormSchema<
 > extends FormCommonConfig {
   /** 组件 */
   component: Component | T;
+  /** 组件事件 */
+  componentEvents?: ComponentEvents;
   /** 组件参数 */
   componentProps?: ComponentProps;
   /** 默认值 */
