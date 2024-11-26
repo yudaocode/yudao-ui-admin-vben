@@ -3,6 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { $t } from '@vben/locales';
 
 import { type VbenFormSchema } from '#/adapter/form';
+import { getDictOptions } from '#/utils/dict';
 
 export const formSchema: VbenFormSchema[] = [
   {
@@ -20,16 +21,7 @@ export const formSchema: VbenFormSchema[] = [
     component: 'Select',
     componentProps: {
       allowClear: true,
-      options: [
-        {
-          label: 'Color1',
-          value: '1',
-        },
-        {
-          label: 'Color2',
-          value: '2',
-        },
-      ],
+      options: getDictOptions('common_status', 'number'),
       placeholder: '请选择',
     },
     fieldName: 'status',
@@ -90,10 +82,7 @@ export const modalSchema: VbenFormSchema[] = [
   {
     component: 'Select',
     componentProps: {
-      options: [
-        { label: '选项1', value: '1' },
-        { label: '选项2', value: '2' },
-      ],
+      options: getDictOptions('common_status', 'number'),
     },
     fieldName: 'status',
     label: '状态',
