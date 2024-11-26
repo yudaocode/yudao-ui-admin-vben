@@ -31,8 +31,21 @@ export const formSchema: VbenFormSchema[] = [
 export const columns: VxeGridProps['columns'] = [
   // { title: '序号', type: 'seq', width: 50 },
   // { field: 'id', title: '岗位编号' },
-  { field: 'name', title: '菜单名称', minWidth: 200, treeNode: true },
-  { field: 'icon', title: '图标' },
+  { field: 'name', title: '菜单名称', minWidth: 100, treeNode: true },
+  {
+    field: 'icon',
+    title: '菜单图标',
+    cellRender: { name: 'CellIcon' },
+    width: 100,
+  },
+  {
+    field: 'type',
+    title: '菜单类型',
+    cellRender: {
+      name: 'CellDict',
+      props: { type: DICT_TYPE.SYSTEM_MENU_TYPE },
+    },
+  },
   { field: 'permission', title: '权限标识' },
   { field: 'component', title: '组件路径' },
   { field: 'componentName', title: '组件名称' },

@@ -1,5 +1,6 @@
 import { h } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
 import { Button, Image, Tag } from 'ant-design-vue';
@@ -74,7 +75,7 @@ setupVbenVxeTable({
       },
     });
 
-    // 表格配置项可以用 cellRender: { name: 'CellDict',props:{dictType: ''} },
+    // 字典 表格配置项可以用 cellRender: { name: 'CellDict',props:{dictType: ''} },
     vxeUI.renderer.add('CellDict', {
       renderTableDefault(renderOpts, params) {
         const { props } = renderOpts;
@@ -96,6 +97,13 @@ setupVbenVxeTable({
           );
         }
         return '';
+      },
+    });
+    // 图标 表格配置项可以用 cellRender: { name: 'CellIcon' },
+    vxeUI.renderer.add('CellIcon', {
+      renderTableDefault(_renderOpts, params) {
+        const { column, row } = params;
+        return h(IconifyIcon, { icon: row[column.field], size: 14 });
       },
     });
 
