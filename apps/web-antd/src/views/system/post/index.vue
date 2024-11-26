@@ -13,6 +13,8 @@ import { exportPost, getPostPage, type PostVO } from '#/api/system/post';
 import { columns, formSchema } from './post.data';
 import PostModal from './PostModal.vue';
 
+defineOptions({ name: 'SystemPost' });
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
