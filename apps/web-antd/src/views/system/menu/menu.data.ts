@@ -3,6 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { $t } from '@vben/locales';
 
 import { type VbenFormSchema } from '#/adapter/form';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 export const formSchema: VbenFormSchema[] = [
   {
@@ -15,21 +16,11 @@ export const formSchema: VbenFormSchema[] = [
     fieldName: 'code',
     label: '岗位编码',
   },
-  // TODO: dict
   {
     component: 'Select',
     componentProps: {
       allowClear: true,
-      options: [
-        {
-          label: 'Color1',
-          value: '1',
-        },
-        {
-          label: 'Color2',
-          value: '2',
-        },
-      ],
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       placeholder: '请选择',
     },
     fieldName: 'status',
@@ -48,7 +39,7 @@ export const columns: VxeGridProps['columns'] = [
   {
     field: 'status',
     title: '状态',
-    cellRender: { name: 'CellDict', props: { type: 'common_status' } },
+    cellRender: { name: 'CellDict', props: { type: DICT_TYPE.COMMON_STATUS } },
   },
   { field: 'createTime', formatter: 'formatDateTime', title: '创建时间' },
   {
