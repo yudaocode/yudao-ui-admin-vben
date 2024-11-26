@@ -5,10 +5,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportPost, getPostPage, type PostVO } from '#/api/system/post';
+import { ActionButtons, IconEnum } from '#/components/action-buttons';
 
 import { columns, formSchema } from './post.data';
 import PostModal from './PostModal.vue';
@@ -54,9 +55,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 function handleCreate() {
-  formModalApi.setData({
-    valuse: {},
-  });
+  formModalApi.setData({});
   formModalApi.open();
 }
 async function handleEdit(id: number) {
@@ -77,37 +76,44 @@ async function handleExport() {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Button
-          type="primary"
-          v-access:code="['system:post:create']"
-          @click="handleCreate"
-        >
-          {{ $t('page.action.add') }}
-        </Button>
-        <Button
-          class="ml-4"
-          v-access:code="['system:post:export']"
-          @click="handleExport"
-        >
-          {{ $t('page.action.export') }}
-        </Button>
+        <ActionButtons
+          :actions="[
+            {
+              type: 'primary',
+              label: $t('page.action.add'),
+              preIcon: IconEnum.ADD,
+              auth: ['system:post:create'],
+              onClick: handleCreate.bind(null),
+            },
+            {
+              label: $t('page.action.export'),
+              preIcon: IconEnum.EXPORT,
+              auth: ['system:post:export'],
+              onClick: handleExport.bind(null),
+            },
+          ]"
+        />
       </template>
       <template #action="{ row }">
-        <Button
-          type="link"
-          v-access:code="['system:post:update']"
-          @click="handleEdit(row.id)"
-        >
-          {{ $t('page.action.edit') }}
-        </Button>
-        <Button
-          danger
-          type="link"
-          v-access:code="['system:post:delete']"
-          @click="handleDelete(row.id)"
-        >
-          {{ $t('page.action.delete') }}
-        </Button>
+        <ActionButtons
+          :actions="[
+            {
+              type: 'link',
+              label: $t('page.action.edit'),
+              preIcon: IconEnum.EDIT,
+              auth: ['system:post:update'],
+              onClick: handleEdit.bind(null, row.id),
+            },
+            {
+              type: 'link',
+              danger: true,
+              label: $t('page.action.delete'),
+              preIcon: IconEnum.DELETE,
+              auth: ['system:post:delete'],
+              onClick: handleDelete.bind(null, row.id),
+            },
+          ]"
+        />
       </template>
     </Grid>
     <FormModal />

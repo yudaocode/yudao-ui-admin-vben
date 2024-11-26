@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { useVbenForm } from '#/adapter/form';
 import { createPost, getPost, updatePost } from '#/api/system/post';
@@ -29,14 +30,15 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const { id } = modalApi.getData<Record<string, any>>();
-      isUpdate.value = !!id;
+
+      isUpdate.value = !isEmpty(id);
       if (id) {
         const values = await getPost(id);
         formApi.setValues(values);
       }
+      modalApi.setState({ title: isUpdate.value ? '编辑岗位' : '新增岗位' });
     }
   },
-  title: isUpdate.value ? '新增岗位' : '编辑岗位',
 });
 
 async function onSubmit(values: Record<string, any>) {
@@ -48,7 +50,7 @@ async function onSubmit(values: Record<string, any>) {
 }
 </script>
 <template>
-  <Modal class="w-1/2">
+  <Modal class="w-1/3">
     <Form />
   </Modal>
 </template>
