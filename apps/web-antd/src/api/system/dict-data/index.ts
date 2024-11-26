@@ -54,36 +54,36 @@ export namespace DictDataApi {
 }
 
 // 查询字典数据（精简)列表
-export const getSimpleDictDataList = () => {
+export function getSimpleDictDataList() {
   return requestClient.get('/system/dict-data/simple-list');
-};
+}
 
 // 查询字典数据列表
-export const getDictDataPage = (params: PageParam) => {
+export function getDictDataPage(params: PageParam) {
   return requestClient.get('/system/dict-data/page', { params });
-};
+}
 
 // 查询字典数据详情
-export const getDictData = (id: number) => {
+export function getDictData(id: number) {
   return requestClient.get(`/system/dict-data/get?id=${id}`);
-};
+}
 
 // 新增字典数据
-export const createDictData = (data: DictDataApi.DictDataSaveReqVO) => {
+export function createDictData(data: DictDataApi.DictDataSaveReqVO) {
   return requestClient.post('/system/dict-data/create', data);
-};
+}
 
 // 修改字典数据
-export const updateDictData = (data: DictDataApi.DictDataSaveReqVO) => {
+export function updateDictData(data: DictDataApi.DictDataSaveReqVO) {
   return requestClient.put('/system/dict-data/update', data);
-};
+}
 
 // 删除字典数据
-export const deleteDictData = (id: number) => {
+export function deleteDictData(id: number) {
   return requestClient.delete(`/system/dict-data/delete?id=${id}`);
-};
+}
 
 // 导出字典类型数据
-export const exportDictData = (params: DictDataApi.DictDataPageReqVO) => {
+export function exportDictData(params: DictDataApi.DictDataPageReqVO) {
   return requestClient.download('/system/dict-data/export', { params });
-};
+}

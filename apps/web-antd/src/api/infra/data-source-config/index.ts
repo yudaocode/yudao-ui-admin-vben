@@ -18,34 +18,34 @@ export namespace DataSourceConfigApi {
   }
 }
 // 新增数据源配置
-export const createDataSourceConfig = (
+export function createDataSourceConfig(
   data: DataSourceConfigApi.DataSourceConfigSaveReqVO,
-) => {
+) {
   return requestClient.post('/infra/data-source-config/create', data);
-};
+}
 
 // 修改数据源配置
-export const updateDataSourceConfig = (
+export function updateDataSourceConfig(
   data: DataSourceConfigApi.DataSourceConfigSaveReqVO,
-) => {
+) {
   return requestClient.put('/infra/data-source-config/update', data);
-};
+}
 
 // 删除数据源配置
-export const deleteDataSourceConfig = (id: number) => {
+export function deleteDataSourceConfig(id: number) {
   return requestClient.delete(`/infra/data-source-config/delete?id=${id}`);
-};
+}
 
 // 查询数据源配置详情
-export const getDataSourceConfig = (id: number) => {
+export function getDataSourceConfig(id: number) {
   return requestClient.get<DataSourceConfigApi.DataSourceConfigRespVO>(
     `/infra/data-source-config/get?id=${id}`,
   );
-};
+}
 
 // 查询数据源配置列表
-export const getDataSourceConfigList = () => {
+export function getDataSourceConfigList() {
   return requestClient.get<DataSourceConfigApi.DataSourceConfigRespVO[]>(
     '/infra/data-source-config/list',
   );
-};
+}

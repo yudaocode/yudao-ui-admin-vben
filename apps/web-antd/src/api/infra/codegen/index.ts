@@ -243,70 +243,70 @@ export namespace CodegenApi {
 }
 
 // 查询列表代码生成表定义
-export const getCodegenTableList = (dataSourceConfigId: number) => {
+export function getCodegenTableList(dataSourceConfigId: number) {
   return requestClient.get<CodegenApi.CodegenTableRespVO[]>(
     `/infra/codegen/table/list?dataSourceConfigId=${dataSourceConfigId}`,
   );
-};
+}
 
 // 查询列表代码生成表定义
-export const getCodegenTablePage = (params: PageParam) => {
+export function getCodegenTablePage(params: PageParam) {
   return requestClient.get<CodegenApi.CodegenTableRespVO[]>(
     '/infra/codegen/table/page',
     { params },
   );
-};
+}
 
 // 查询详情代码生成表定义
-export const getCodegenTable = (id: number) => {
+export function getCodegenTable(id: number) {
   return requestClient.get<CodegenApi.CodegenDetailRespVO>(
     `/infra/codegen/detail?tableId=${id}`,
   );
-};
+}
 
 // 新增代码生成表定义
-export const createCodegenTable = (data: CodegenApi.CodegenCreateListReqVO) => {
+export function createCodegenTable(data: CodegenApi.CodegenCreateListReqVO) {
   return requestClient.post('/infra/codegen/create', data);
-};
+}
 
 // 修改代码生成表定义
-export const updateCodegenTable = (data: CodegenApi.CodegenUpdateReqVO) => {
+export function updateCodegenTable(data: CodegenApi.CodegenUpdateReqVO) {
   return requestClient.put('/infra/codegen/update', data);
-};
+}
 
 // 基于数据库的表结构，同步数据库的表和字段定义
-export const syncCodegenFromDB = (id: number) => {
+export function syncCodegenFromDB(id: number) {
   return requestClient.put(`/infra/codegen/sync-from-db?tableId=${id}`);
-};
+}
 
 // 预览生成代码
-export const previewCodegen = (id: number) => {
+export function previewCodegen(id: number) {
   return requestClient.get(`/infra/codegen/preview?tableId=${id}`);
-};
+}
 
 // 下载生成代码
-export const downloadCodegen = (id: number) => {
+export function downloadCodegen(id: number) {
   return requestClient.download(`/infra/codegen/download?tableId=${id}`);
-};
+}
 
 // 获得表定义
-export const getSchemaTableList = (params: {
+export function getSchemaTableList(params: {
   comment?: string;
   dataSourceConfigId: number;
   name?: string;
-}) => {
+}) {
   return requestClient.get<CodegenApi.DatabaseTableRespVO[]>(
     '/infra/codegen/db/table/list',
     { params },
   );
-};
+}
 
 // 基于数据库的表结构，创建代码生成器的表定义
-export const createCodegenList = (data: CodegenApi.CodegenCreateListReqVO) => {
+export function createCodegenList(data: CodegenApi.CodegenCreateListReqVO) {
   return requestClient.post('/infra/codegen/create-list', data);
-};
+}
 
 // 删除代码生成表定义
-export const deleteCodegenTable = (id: number) => {
+export function deleteCodegenTable(id: number) {
   return requestClient.delete(`/infra/codegen/delete?tableId=${id}`);
-};
+}
