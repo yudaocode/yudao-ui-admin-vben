@@ -13,4 +13,12 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend',
     enableRefreshToken: true,
   },
+  footer: {
+    enable: true,
+    fixed: true,
+  },
+  copyright: {
+    companyName: import.meta.env.VITE_APP_TITLE,
+    companySiteLink: 'https://gitee.com/yudaocode/yudao-ui-admin-vben',
+  },
 });
