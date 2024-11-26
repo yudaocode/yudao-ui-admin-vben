@@ -60,6 +60,8 @@ export type MaybeComponentPropKey =
   | keyof HtmlHTMLAttributes
   | (Record<never, never> & string);
 
+export type MaybeComponentEvents = { [K in MaybeComponentPropKey]?: any };
+
 export type MaybeComponentProps = { [K in MaybeComponentPropKey]?: any };
 
 export type FormActions = FormContext<GenericObject>;
@@ -128,9 +130,12 @@ export interface FormItemDependencies {
   triggerFields: string[];
 }
 
-type ComponentEvents = {
-  [K: string]: (...args: any[]) => void;
-} & Record<string, any>;
+type ComponentEvents =
+  | ((
+      value: Partial<Record<string, any>>,
+      actions: FormActions,
+    ) => MaybeComponentEvents)
+  | MaybeComponentEvents;
 
 type ComponentProps =
   | ((
