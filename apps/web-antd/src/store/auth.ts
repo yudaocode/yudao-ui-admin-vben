@@ -4,17 +4,24 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DEFAULT_HOME_PATH, LOGIN_PATH } from '@vben/constants';
-import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
+import {
+  resetAllStores,
+  useAccessStore,
+  useDictStore,
+  useUserStore,
+} from '@vben/stores';
 
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { getAuthPermissionInfoApi, loginApi, logoutApi } from '#/api';
+import { getSimpleDictDataList } from '#/api/system/dict-data';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
   const userStore = useUserStore();
+  const dictStore = useDictStore();
   const router = useRouter();
 
   const loginLoading = ref(false);
@@ -50,6 +57,14 @@ export const useAuthStore = defineStore('auth', () => {
           // 跳转首页
           await router.push(authPermissionInfo.homePath || DEFAULT_HOME_PATH);
         }
+
+        // 设置字典数据
+        dictStore.setDictCacheByApi(
+          getSimpleDictDataList,
+          {},
+          'label',
+          'value',
+        );
 
         if (
           authPermissionInfo?.user.realName ||

@@ -7,7 +7,7 @@ import { computed, ref, watchEffect } from 'vue';
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
-import { useDictStore, useTenantStore } from '@vben/stores';
+import { useTenantStore } from '@vben/stores';
 
 import {
   checkCaptcha,
@@ -15,7 +15,6 @@ import {
   getTenantByWebsite,
   getTenantIdByName,
 } from '#/api';
-import { getSimpleDictDataList } from '#/api/system/dict-data';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
@@ -27,7 +26,6 @@ const { tenantEnable, captchaEnable } = useAppConfig(
 
 const authStore = useAuthStore();
 const tenantStore = useTenantStore();
-const dictStore = useDictStore();
 
 const captchaType = 'blockPuzzle';
 const loginData = ref<Recordable<any>>({});
@@ -103,16 +101,14 @@ const handleLogin = async (values: any) => {
 };
 
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
-  await authStore.authLogin(
-    {
+  try {
+    await authStore.authLogin({
       ...loginData.value,
       captchaVerification,
-    },
-    () => {
-      // 设置字典数据
-      dictStore.setDictCacheByApi(getSimpleDictDataList, 'label', 'value');
-    },
-  );
+    });
+  } catch (error) {
+    console.error('Error in handleLogin:', error);
+  }
 };
 
 watchEffect(async () => {
