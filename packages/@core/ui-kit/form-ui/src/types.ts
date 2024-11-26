@@ -128,6 +128,10 @@ export interface FormItemDependencies {
   triggerFields: string[];
 }
 
+type ComponentEvents = {
+  [K: string]: (...args: any[]) => void;
+} & Record<string, any>;
+
 type ComponentProps =
   | ((
       value: Partial<Record<string, any>>,
@@ -217,6 +221,8 @@ export interface FormSchema<
 > extends FormCommonConfig {
   /** 组件 */
   component: Component | T;
+  /** 组件事件 */
+  componentEvents?: ComponentEvents;
   /** 组件参数 */
   componentProps?: ComponentProps;
   /** 默认值 */

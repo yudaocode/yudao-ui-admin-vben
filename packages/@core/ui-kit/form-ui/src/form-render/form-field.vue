@@ -28,6 +28,7 @@ interface Props extends FormSchema {}
 const {
   commonComponentProps,
   component,
+  componentEvents,
   componentProps,
   dependencies,
   description,
@@ -157,6 +158,12 @@ const computedProps = computed(() => {
     ...finalComponentProps,
     ...dynamicComponentProps.value,
   };
+});
+
+const computedEvents = computed(() => {
+  return isFunction(componentEvents)
+    ? componentEvents(values.value, formApi!)
+    : componentEvents;
 });
 
 watch(
@@ -315,6 +322,7 @@ function autofocus() {
                 'border-destructive focus:border-destructive hover:border-destructive/80 focus:shadow-[0_0_0_2px_rgba(255,38,5,0.06)]':
                   isInValid,
               }"
+              v-on="computedEvents"
               v-bind="createComponentProps(slotProps)"
               :disabled="shouldDisabled"
             >
