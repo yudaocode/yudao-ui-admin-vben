@@ -8,15 +8,16 @@ import { preferences } from '@vben/preferences';
 
 import { message } from 'ant-design-vue';
 
-import { getAuthPermissionInfoApi } from '#/api';
 import { BasicLayout, IFrameView } from '#/layouts';
 import { $t } from '#/locales';
+import { useAuthStore } from '#/store';
 
 import { buildMenus } from './helper';
 
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
 
 async function generateAccess(options: GenerateMenuAndRoutesOptions) {
+  const authStore = useAuthStore();
   const pageMap: ComponentRecordType = import.meta.glob('../views/**/*.vue');
 
   const layoutMap: ComponentRecordType = {
@@ -31,7 +32,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         content: `${$t('common.loadingMenu')}...`,
         duration: 1.5,
       });
-      const authPermissionInfo = await getAuthPermissionInfoApi();
+      const authPermissionInfo = await authStore.getAuthPermissionInfo();
       const menus = authPermissionInfo.menus;
       const routes = buildMenus(menus);
       const menuList = [...routes];
