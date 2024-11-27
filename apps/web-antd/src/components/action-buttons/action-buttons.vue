@@ -125,7 +125,7 @@ const handleMenuClick = (e: any) => {
 </script>
 
 <template>
-  <div class="m-table-action">
+  <div class="m-table-action w-fit">
     <Space :size="2">
       <template v-for="(action, index) in getActions" :key="index">
         <Popconfirm
