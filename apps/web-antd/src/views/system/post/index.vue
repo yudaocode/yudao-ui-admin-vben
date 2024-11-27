@@ -81,15 +81,25 @@ async function handleExport() {
             {
               type: 'primary',
               label: $t('page.action.add'),
-              preIcon: IconEnum.ADD,
+              icon: IconEnum.ADD,
               auth: ['system:post:create'],
               onClick: handleCreate.bind(null),
             },
             {
               label: $t('page.action.export'),
-              preIcon: IconEnum.EXPORT,
+              class:
+                'bg-green-500 text-white border-green-400 hover:bg-green-400 hover:!text-white hover:!border-green-400 active:!bg-green-600 active:!text-white active:!border-green-600',
+              icon: IconEnum.EXPORT,
               auth: ['system:post:export'],
               onClick: handleExport.bind(null),
+            },
+            {
+              label: $t('page.action.delete'),
+              icon: IconEnum.DELETE,
+              class:
+                'bg-red-500 text-white border-red-400 hover:bg-red-400 hover:!text-white hover:!border-red-400 active:!bg-red-600 active:!text-white active:!border-red-600',
+              auth: ['system:post:delete'],
+              onClick: handleDelete.bind(null, 1),
             },
           ]"
         />
@@ -100,7 +110,7 @@ async function handleExport() {
             {
               type: 'link',
               label: $t('page.action.edit'),
-              preIcon: IconEnum.EDIT,
+              icon: IconEnum.EDIT,
               auth: ['system:post:update'],
               onClick: handleEdit.bind(null, row.id),
             },
@@ -108,9 +118,15 @@ async function handleExport() {
               type: 'link',
               danger: true,
               label: $t('page.action.delete'),
-              preIcon: IconEnum.DELETE,
+              icon: IconEnum.DELETE,
               auth: ['system:post:delete'],
               onClick: handleDelete.bind(null, row.id),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              type: 'link',
+              label: $t('page.action.edit'),
             },
           ]"
         />
