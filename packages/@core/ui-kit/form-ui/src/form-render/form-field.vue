@@ -161,9 +161,11 @@ const computedProps = computed(() => {
 });
 
 const computedEvents = computed(() => {
-  return isFunction(componentEvents)
-    ? componentEvents(values.value, formApi!)
-    : componentEvents;
+  return (
+    (isFunction(componentEvents)
+      ? componentEvents(values.value, formApi!)
+      : componentEvents) ?? {}
+  );
 });
 
 watch(
