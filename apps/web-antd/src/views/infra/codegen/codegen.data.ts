@@ -4,6 +4,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { CodegenApi } from '#/api/infra/codegen';
 
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
+import { $t } from '#/locales';
 
 export namespace CodegenDefaultData {
   /**
@@ -26,10 +27,11 @@ export namespace CodegenDefaultData {
       { field: 'createTime', title: '创建时间', formatter: 'formatDateTime' },
       { field: 'updateTime', title: '更新时间', formatter: 'formatDateTime' },
       {
-        title: '操作',
-        width: 'auto',
+        field: 'action',
         fixed: 'right',
+        width: 'auto',
         slots: { default: 'action' },
+        title: $t('page.action.action'),
       },
     ];
   /**

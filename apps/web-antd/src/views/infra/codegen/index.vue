@@ -3,23 +3,15 @@ import { defineAsyncComponent, reactive, ref } from 'vue';
 
 import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
-
 import {
   useVbenVxeGrid,
   type VxeGridListeners,
   type VxeGridProps,
 } from '#/adapter/vxe-table';
 import { type CodegenApi, getCodegenTablePage } from '#/api/infra/codegen';
+import { ActionButtons, IconEnum } from '#/components/action-buttons';
 
 import { CodegenDefaultData } from './codegen.data';
-
-// 使用导入表弹窗组件
-const [ImportTableModal, importTableModalApi] = useVbenModal({
-  connectedComponent: defineAsyncComponent(
-    () => import('./components/import-table-modal.vue'),
-  ),
-});
 
 // checked
 const checkedStatus = ref<boolean>(false);
@@ -50,14 +42,6 @@ const handleDelete = (_row: CodegenApi.CodegenTableRespVO) => {
  */
 const handleBatchDelete = (_rows: CodegenApi.CodegenTableRespVO[]) => {
   // console.log('批量删除', rows);
-};
-
-/**
- * 导入表
- */
-const handleImportTable = () => {
-  // console.log('导入表', importTableModalApi);
-  importTableModalApi.open();
 };
 
 /**
@@ -109,10 +93,9 @@ const formOptions = reactive<any>({
  */
 const gridOptions = reactive<any>({
   columns: CodegenDefaultData.tableColumns,
-  toolbarConfig: {
-    slots: {
-      buttons: 'toolbar_buttons',
-    },
+  height: 'auto',
+  checkboxConfig: {
+    reserve: true,
   },
   proxyConfig: {
     ajax: {
@@ -140,53 +123,99 @@ const gridEvents = reactive<any>({
 } as VxeGridListeners);
 
 // 使用表格组件
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
   gridEvents,
+});
+
+// 使用导入表弹窗组件
+const [ImportTableModal, importTableModalApi] = useVbenModal({
+  connectedComponent: defineAsyncComponent(
+    () => import('./components/import-table-modal.vue'),
+  ),
+  onClosed: () => {
+    gridApi.reload(formOptions.values);
+  },
 });
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid>
-      <template #toolbar_buttons="{ $grid }">
-        <div class="flex items-center gap-2">
-          <Button type="primary" @click="handleImportTable">导入表</Button>
-          <Button
-            :disabled="!checkedStatus"
-            type="primary"
-            @click="handleBatchSync($grid.getCheckboxRecords())"
-          >
-            批量同步
-          </Button>
-          <Button
-            :disabled="!checkedStatus"
-            type="primary"
-            @click="handleBatchGenerateCode($grid.getCheckboxRecords())"
-          >
-            批量生成
-          </Button>
-          <Button
-            :disabled="!checkedStatus"
-            danger
-            type="primary"
-            @click="handleBatchDelete($grid.getCheckboxRecords())"
-          >
-            批量删除
-          </Button>
-        </div>
+      <template #toolbar-actions>
+        <ActionButtons
+          :actions="[
+            {
+              type: 'primary',
+              label: '导入表',
+              icon: IconEnum.ADD,
+              onClick: () => importTableModalApi.open(),
+            },
+            {
+              label: '批量同步',
+              disabled: !checkedStatus,
+              class: checkedStatus
+                ? 'bg-emerald-500 text-white border-emerald-400 hover:bg-emerald-400 hover:!text-white hover:!border-emerald-400 active:!bg-emerald-600 active:!text-white active:!border-emerald-600'
+                : '',
+              icon: 'ant-design:sync-outlined',
+              onClick: handleBatchSync,
+            },
+            {
+              label: '批量生成',
+              disabled: !checkedStatus,
+              class: checkedStatus
+                ? 'bg-emerald-500 text-white border-emerald-400 hover:bg-emerald-400 hover:!text-white hover:!border-emerald-400 active:!bg-emerald-600 active:!text-white active:!border-emerald-600'
+                : '',
+              icon: 'ant-design:code-outlined',
+              onClick: handleBatchGenerateCode,
+            },
+            {
+              label: '批量删除',
+              disabled: !checkedStatus,
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              onClick: handleBatchDelete,
+            },
+          ]"
+        />
       </template>
       <template #action="{ row }">
-        <div class="flex w-fit items-center justify-around">
-          <Button type="link" @click="handleView(row)">查看</Button>
-          <Button type="link" @click="handleEdit(row)">编辑</Button>
-          <Button type="link" @click="handleSync(row)">同步</Button>
-          <Button type="link" @click="handleGenerateCode(row)">
-            生成代码
-          </Button>
-          <Button danger type="link" @click="handleDelete(row)">删除</Button>
-        </div>
+        <ActionButtons
+          :actions="[
+            {
+              type: 'link',
+              label: '查看',
+              icon: 'ant-design:eye-outlined',
+              onClick: handleView.bind(null, row),
+            },
+            {
+              type: 'link',
+              label: '编辑',
+              icon: 'ant-design:edit-outlined',
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              type: 'link',
+              label: '删除',
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              onClick: handleDelete.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: '同步',
+              icon: 'ant-design:sync-outlined',
+              onClick: handleSync.bind(null, row),
+            },
+            {
+              label: '生成代码',
+              icon: 'ant-design:code-outlined',
+              onClick: handleGenerateCode.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
     <ImportTableModal />

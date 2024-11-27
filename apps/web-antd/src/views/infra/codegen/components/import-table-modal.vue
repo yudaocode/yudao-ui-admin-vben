@@ -8,13 +8,19 @@ import {
   type VxeGridProps,
 } from '@vben/plugins/vxe-table';
 
-import { getSchemaTableList } from '#/api/infra/codegen';
+import {
+  type CodegenApi,
+  createCodegenList,
+  getSchemaTableList,
+} from '#/api/infra/codegen';
 
 import { CodegenImportTableModalData } from '../codegen.data';
 
+const confirmLoading = ref<boolean>(false);
+
 // checked
 const checkedStatus = ref<boolean>(false);
-
+const checkedRecords = ref<any[]>([]);
 /**
  * 表格查询表单配置
  */
@@ -55,8 +61,9 @@ const gridOptions = reactive<any>({
 
 const gridEvents = reactive<any>({
   checkboxChange: (params) => {
-    const { checked } = params;
+    const { checked, $grid } = params;
     checkedStatus.value = checked;
+    checkedRecords.value = $grid.getCheckboxRecords();
   },
   checkboxAll: (params) => {
     const { checked } = params;
@@ -73,10 +80,29 @@ const [Grid, gridApi] = useVbenVxeGrid(
   }),
 );
 
-const [Modal] = useVbenModal({
+const [Modal, modalApi] = useVbenModal({
   class: 'w-[800px] h-[800px]',
+  confirmLoading: confirmLoading.value,
+  closeOnClickModal: false,
+  closeOnPressEscape: false,
   onOpened: async () => {
     gridApi.reload(await gridApi.formApi.getValues());
+  },
+  onConfirm: async () => {
+    modalApi.setState({ confirmLoading: true });
+    const formValues = await gridApi.formApi.getValues();
+    // 获取选中的数据
+    const checkedRecords =
+      gridApi.grid.getCheckboxRecords() as CodegenApi.DatabaseTableRespVO[];
+    try {
+      await createCodegenList({
+        dataSourceConfigId: formValues.dataSourceConfigId,
+        tableNames: checkedRecords.map((item) => item.name),
+      });
+    } finally {
+      modalApi.setState({ confirmLoading: false });
+    }
+    modalApi.close();
   },
 });
 </script>
