@@ -17,13 +17,6 @@ import { CodegenDefaultData } from './codegen.data';
 const checkedStatus = ref<boolean>(false);
 
 /**
- * 查看详情
- */
-const handleView = (_row: CodegenApi.CodegenTableRespVO) => {
-  // console.log('查看详情', row);
-};
-
-/**
  * 编辑
  */
 const handleEdit = (_row: CodegenApi.CodegenTableRespVO) => {
@@ -96,7 +89,13 @@ const gridOptions = reactive<any>({
   height: 'auto',
   checkboxConfig: {
     reserve: true,
+    highlight: true,
+    // labelField: 'id',
   },
+  rowConfig: {
+    keyField: 'id',
+  },
+  keepSource: true,
   proxyConfig: {
     ajax: {
       query: async ({ page }, params) => {
@@ -138,6 +137,28 @@ const [ImportTableModal, importTableModalApi] = useVbenModal({
     gridApi.reload(formOptions.values);
   },
 });
+
+// 使用预览代码弹窗组件
+const [PreviewCodeModal, previewCodeModalApi] = useVbenModal({
+  connectedComponent: defineAsyncComponent(
+    () => import('./components/preview-code-modal.vue'),
+  ),
+});
+
+/**
+ * 打开导入表弹窗
+ */
+const handleOpenImportTableModal = () => {
+  importTableModalApi.open();
+};
+
+/**
+ * 打开预览代码弹窗
+ */
+const handleOpenPreviewCodeModal = (row: CodegenApi.CodegenTableRespVO) => {
+  previewCodeModalApi.setData(row);
+  previewCodeModalApi.open();
+};
 </script>
 
 <template>
@@ -150,7 +171,7 @@ const [ImportTableModal, importTableModalApi] = useVbenModal({
               type: 'primary',
               label: '导入表',
               icon: IconEnum.ADD,
-              onClick: () => importTableModalApi.open(),
+              onClick: handleOpenImportTableModal,
             },
             {
               label: '批量同步',
@@ -187,7 +208,7 @@ const [ImportTableModal, importTableModalApi] = useVbenModal({
               type: 'link',
               label: '查看',
               icon: 'ant-design:eye-outlined',
-              onClick: handleView.bind(null, row),
+              onClick: handleOpenPreviewCodeModal.bind(null, row),
             },
             {
               type: 'link',
@@ -219,5 +240,6 @@ const [ImportTableModal, importTableModalApi] = useVbenModal({
       </template>
     </Grid>
     <ImportTableModal />
+    <PreviewCodeModal />
   </Page>
 </template>
