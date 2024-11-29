@@ -125,15 +125,6 @@ watch(
   },
   { deep: true },
 );
-
-watch(
-  () => mValue.value,
-  (newValue) => {
-    if (typeof newValue === 'number') {
-      mValue.value = `${newValue}`;
-    }
-  },
-);
 </script>
 
 <template>

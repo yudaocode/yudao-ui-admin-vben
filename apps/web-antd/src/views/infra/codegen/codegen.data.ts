@@ -2,6 +2,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { CodegenApi } from '#/api/infra/codegen';
 
 import { type VbenFormProps, z } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
@@ -207,9 +208,16 @@ export namespace CodegenOptionsModalData {
       component: 'ApiTreeSelect',
       componentProps: {
         class: 'w-full',
+        api: () => {
+          const { accessMenus } = useUserStore();
+          return accessMenus;
+        },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择上级菜单',
       },
-      rules: z.string().min(1, { message: '上级菜单不能为空' }),
+      rules: z.number().min(1, { message: '上级菜单不能为空' }),
+      defaultValue: null,
     },
     {
       label: '模块名',

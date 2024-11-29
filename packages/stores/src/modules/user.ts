@@ -26,6 +26,10 @@ interface BasicUserInfo {
 
 interface AccessState {
   /**
+   * 用户菜单
+   */
+  accessMenus: [];
+  /**
    * 用户信息
    */
   userInfo: BasicUserInfo | null;
@@ -40,6 +44,9 @@ interface AccessState {
  */
 export const useUserStore = defineStore('core-user', {
   actions: {
+    setAccessMenus(menus: []) {
+      this.accessMenus = menus;
+    },
     setUserInfo(userInfo: BasicUserInfo | null) {
       // 设置用户信息
       this.userInfo = userInfo;
@@ -56,6 +63,7 @@ export const useUserStore = defineStore('core-user', {
     pick: ['userInfo', 'userRoles'],
   },
   state: (): AccessState => ({
+    accessMenus: [],
     userInfo: null,
     userRoles: [],
   }),
