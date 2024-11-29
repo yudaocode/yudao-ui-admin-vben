@@ -13,10 +13,12 @@ export namespace CodegenDefaultData {
   export const tableColumns: VxeGridProps<CodegenApi.CodegenTableRespVO>['columns'] =
     [
       {
+        fixed: 'left',
         type: 'checkbox',
         width: 50,
       },
       {
+        fixed: 'left',
         type: 'seq',
         width: 50,
       },

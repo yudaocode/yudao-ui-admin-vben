@@ -14,27 +14,16 @@ function buildMenus(
     // 处理顶级链接菜单
     if (isHttpUrl(menu.path) && menu.parentId === 0) {
       const urlMenu: RouteRecordStringComponent = {
-        component: 'BasicLayout',
+        component: 'IFrameView',
         meta: {
+          hideInMenu: !menu.visible,
           icon: menu.icon,
+          link: menu.path,
+          orderNo: menu.sort,
           title: menu.name,
         },
         name: menu.name,
-        path: `/${menu.path}`,
-        children: [
-          {
-            component: 'IFrameView',
-            meta: {
-              hideInMenu: !menu.visible,
-              icon: menu.icon,
-              link: menu.path,
-              orderNo: menu.sort,
-              title: menu.name,
-            },
-            name: menu.name,
-            path: `/${menu.path}/index`,
-          },
-        ],
+        path: `/${menu.path}/index`,
       };
       menus.push(urlMenu);
       return;

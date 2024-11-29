@@ -280,7 +280,7 @@ export function syncCodegenFromDB(id: number) {
 }
 
 // 预览生成代码
-export function previewCodegen(id: number) {
+export function getPreviewCodegen(id: number) {
   return requestClient.get(`/infra/codegen/preview?tableId=${id}`);
 }
 
