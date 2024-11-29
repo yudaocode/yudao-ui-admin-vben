@@ -17,13 +17,6 @@ import { CodegenDefaultData } from './codegen.data';
 const checkedStatus = ref<boolean>(false);
 
 /**
- * 编辑
- */
-const handleEdit = (_row: CodegenApi.CodegenTableRespVO) => {
-  // console.log('编辑', row);
-};
-
-/**
  * 删除
  */
 const handleDelete = (_row: CodegenApi.CodegenTableRespVO) => {
@@ -145,6 +138,13 @@ const [PreviewCodeModal, previewCodeModalApi] = useVbenModal({
   ),
 });
 
+// 使用修改代码生成配置弹窗组件
+const [CodegenOptionsModal, codegenOptionsModalApi] = useVbenModal({
+  connectedComponent: defineAsyncComponent(
+    () => import('./components/codegen-options-modal.vue'),
+  ),
+});
+
 /**
  * 打开导入表弹窗
  */
@@ -158,6 +158,14 @@ const handleOpenImportTableModal = () => {
 const handleOpenPreviewCodeModal = (row: CodegenApi.CodegenTableRespVO) => {
   previewCodeModalApi.setData(row);
   previewCodeModalApi.open();
+};
+
+/**
+ * 打开修改代码生成配置弹窗
+ */
+const handleOpenCodegenOptionsModal = (row: CodegenApi.CodegenTableRespVO) => {
+  codegenOptionsModalApi.setData(row);
+  codegenOptionsModalApi.open();
 };
 </script>
 
@@ -214,7 +222,7 @@ const handleOpenPreviewCodeModal = (row: CodegenApi.CodegenTableRespVO) => {
               type: 'link',
               label: '编辑',
               icon: 'ant-design:edit-outlined',
-              onClick: handleEdit.bind(null, row),
+              onClick: handleOpenCodegenOptionsModal.bind(null, row),
             },
             {
               type: 'link',
@@ -241,5 +249,6 @@ const handleOpenPreviewCodeModal = (row: CodegenApi.CodegenTableRespVO) => {
     </Grid>
     <ImportTableModal />
     <PreviewCodeModal />
+    <CodegenOptionsModal />
   </Page>
 </template>
