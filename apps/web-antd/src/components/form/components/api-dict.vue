@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue';
 
-import { requestClient } from '#/api/request';
+import { useDictStore } from '@vben/stores';
 
 import { ApiCheckboxGroup, ApiRadioGroup, ApiSelect } from '..';
 
@@ -42,9 +42,10 @@ const DictComponent = computed(() => {
   return ApiSelect;
 });
 const fetch = () => {
-  return requestClient.post('/sys/dict/getByDictType', {
-    dictType: props.code,
-    ...props.params,
+  return new Promise<OptionsItem[]>((resolve) => {
+    const dict = useDictStore().getDictOptions(props.code!);
+    const options: OptionsItem[] = dict as OptionsItem[];
+    resolve(options);
   });
 };
 </script>

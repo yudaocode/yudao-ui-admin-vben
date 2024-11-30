@@ -1,10 +1,12 @@
-import type { VbenFormProps } from '@vben/common-ui';
-
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { CodegenApi } from '#/api/infra/codegen';
 
+import { type VbenFormProps, z } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
+
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
+import { DICT_TYPE } from '#/utils/dict';
 
 export namespace CodegenDefaultData {
   /**
@@ -111,6 +113,141 @@ export namespace CodegenImportTableModalData {
       label: '表描述',
       fieldName: 'comment',
       component: 'Input',
+    },
+  ];
+}
+
+//* ****************************** CodegenOptionsModal.vue *******************************//
+export namespace CodegenOptionsModalData {
+  export const formSchema: VbenFormProps['schema'] = [
+    {
+      label: '表名称',
+      fieldName: 'tableName',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入表名称',
+      },
+      rules: z.string().min(1, { message: '表名称不能为空' }),
+    },
+    {
+      label: '表描述',
+      fieldName: 'tableComment',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入表描述',
+      },
+      rules: z.string().min(1, { message: '表描述不能为空' }),
+    },
+    {
+      label: '实体类名',
+      fieldName: 'className',
+      component: 'Input',
+      rules: z.string().min(1, { message: '实体类名不能为空' }),
+      componentProps: {
+        tooltip:
+          '默认去除表名的前缀。如果存在重复，则需要手动添加前缀，避免 MyBatis 报 Alias 重复的问题。',
+        placeholder: '请输入实体类名',
+      },
+    },
+    {
+      label: '作者',
+      fieldName: 'author',
+      component: 'Input',
+      rules: z.string().min(1, { message: '作者不能为空' }),
+      componentProps: {
+        placeholder: '请输入作者',
+      },
+    },
+    {
+      label: '备注',
+      fieldName: 'remark',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
+    {
+      label: '生成模版',
+      fieldName: 'template',
+      component: 'ApiDict',
+      componentProps: {
+        code: DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE,
+        class: 'w-full',
+        placeholder: '请选择生成模版',
+      },
+      rules: z.string().min(1, { message: '生成模版不能为空' }),
+      defaultValue: '1',
+    },
+    {
+      label: '前端类型',
+      fieldName: 'frontType',
+      component: 'ApiDict',
+      componentProps: {
+        code: DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE,
+        class: 'w-full',
+        placeholder: '请选择前端类型',
+      },
+      rules: z.string().min(1, { message: '前端类型不能为空' }),
+      defaultValue: '31',
+    },
+    {
+      label: '生成场景',
+      fieldName: 'scene',
+      component: 'ApiDict',
+      componentProps: {
+        code: DICT_TYPE.INFRA_CODEGEN_SCENE,
+        class: 'w-full',
+        placeholder: '请选择生成场景',
+      },
+      rules: z.string().min(1, { message: '生成场景不能为空' }),
+      defaultValue: '1',
+    },
+    {
+      label: '上级菜单',
+      fieldName: 'parentMenuId',
+      component: 'ApiTreeSelect',
+      componentProps: {
+        class: 'w-full',
+        api: () => {
+          const { accessMenus } = useUserStore();
+          return accessMenus;
+        },
+        labelField: 'name',
+        valueField: 'id',
+        placeholder: '请选择上级菜单',
+      },
+      rules: z.number().min(1, { message: '上级菜单不能为空' }),
+      defaultValue: null,
+    },
+    {
+      label: '模块名',
+      fieldName: 'moduleName',
+      component: 'Input',
+      rules: z.string().min(1, { message: '模块名不能为空' }),
+      componentProps: {
+        placeholder: '请输入模块名',
+      },
+    },
+    {
+      label: '业务名',
+      fieldName: 'businessName',
+      component: 'Input',
+      rules: z.string().min(1, { message: '业务名不能为空' }),
+      componentProps: {
+        placeholder: '请输入业务名',
+      },
+    },
+    {
+      label: '类名',
+      fieldName: 'className',
+      component: 'Input',
+      rules: z.string().min(1, { message: '类名不能为空' }),
+    },
+    {
+      label: '类描述',
+      fieldName: 'classComment',
+      component: 'Input',
+      rules: z.string().min(1, { message: '类描述不能为空' }),
     },
   ];
 }

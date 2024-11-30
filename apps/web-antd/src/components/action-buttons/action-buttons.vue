@@ -160,22 +160,24 @@ const handleMenuClick = (e: any) => {
         </Button>
       </slot>
       <template #overlay>
-        <Menu @click="handleMenuClick">
+        <Menu class="w-full" @click="handleMenuClick">
           <MenuItem v-for="(action, index) in getDropdownList" :key="index">
             <template v-if="action.popConfirm">
               <Popconfirm v-bind="getPopConfirmProps(action.popConfirm)">
                 <template v-if="action.popConfirm.icon" #icon>
                   <IconifyIcon :icon="action.popConfirm.icon" />
                 </template>
-                <div>
+                <div class="flex items-center">
                   <IconifyIcon v-if="action.icon" :icon="action.icon" />
                   <span class="ml-1">{{ action.text }}</span>
                 </div>
               </Popconfirm>
             </template>
             <template v-else>
-              <IconifyIcon v-if="action.icon" :icon="action.icon" />
-              <span class="ml-1">{{ action.label }}</span>
+              <div class="flex items-center">
+                <IconifyIcon v-if="action.icon" :icon="action.icon" />
+                <span class="ml-1">{{ action.text }}</span>
+              </div>
             </template>
           </MenuItem>
         </Menu>

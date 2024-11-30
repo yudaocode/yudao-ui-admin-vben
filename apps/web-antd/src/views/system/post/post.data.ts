@@ -79,9 +79,9 @@ export const modalSchema: VbenFormSchema[] = [
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'ApiDict',
     componentProps: {
-      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+      code: DICT_TYPE.COMMON_STATUS,
     },
     fieldName: 'status',
     label: '状态',
