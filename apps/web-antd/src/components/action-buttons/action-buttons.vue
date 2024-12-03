@@ -130,6 +130,7 @@ const handleMenuClick = (e: any) => {
       <template v-for="(action, index) in getActions" :key="index">
         <Popconfirm
           v-if="action.popConfirm"
+          :disabled="action.disabled"
           v-bind="getPopConfirmProps(action.popConfirm)"
         >
           <template v-if="action.popConfirm.icon" #icon>

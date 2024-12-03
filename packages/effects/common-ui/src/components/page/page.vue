@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
 
+import { useLayoutFooterStyle } from '@vben/hooks';
+
 interface Props {
   title?: string;
   description?: string;
@@ -46,8 +48,9 @@ async function calcContentHeight() {
     return;
   }
   await nextTick();
+  const { getLayoutFooterHeight } = await useLayoutFooterStyle();
   headerHeight.value = headerRef.value?.offsetHeight || 0;
-  footerHeight.value = footerRef.value?.offsetHeight || 0;
+  footerHeight.value = getLayoutFooterHeight() || 0;
   setTimeout(() => {
     shouldAutoHeight.value = true;
   }, 30);
@@ -88,7 +91,12 @@ onMounted(() => {
       </div>
     </div>
 
-    <div :class="contentClass" :style="contentStyle" class="h-full p-4">
+    <div
+      v-if="shouldAutoHeight"
+      :class="contentClass"
+      :style="contentStyle"
+      class="h-full p-4"
+    >
       <slot></slot>
     </div>
 

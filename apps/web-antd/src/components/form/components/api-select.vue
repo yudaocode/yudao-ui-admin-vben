@@ -125,6 +125,19 @@ watch(
   },
   { deep: true },
 );
+
+// 监听 value 的变化，确保 mValue 的类型与 options 中的 value 类型一致
+watch(
+  () => props.value,
+  () => {
+    if (props.numberToString && typeof mValue.value === 'number') {
+      mValue.value = `${mValue.value}`;
+    }
+    if (props.numberToString && Array.isArray(mValue.value)) {
+      mValue.value = mValue.value.map((item) => `${item}`);
+    }
+  },
+);
 </script>
 
 <template>
