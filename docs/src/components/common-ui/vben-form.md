@@ -87,7 +87,7 @@ import type { BaseFormComponentType } from '@vben/common-ui';
 import type { Component, SetupContext } from 'vue';
 import { h } from 'vue';
 
-import { globalShareState } from '@vben/common-ui';
+import { globalShareState, IconPicker } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import {
@@ -149,6 +149,7 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
+  | 'IconPicker';
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -166,6 +167,7 @@ async function initComponentAdapter() {
       return h(Button, { ...props, attrs, type: 'default' }, slots);
     },
     Divider,
+    IconPicker,
     Input: withDefaultPlaceholder(Input, 'input'),
     InputNumber: withDefaultPlaceholder(InputNumber, 'input'),
     InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
@@ -314,6 +316,7 @@ useVbenForm 返回的第二个参数，是一个对象，包含了一些表单�
 | commonConfig | 表单项的通用配置，每个配置都会传递到每个表单项，表单项可覆盖 | `FormCommonConfig` | - |
 | schema | 表单项的每一项配置 | `FormSchema` | - |
 | submitOnEnter | 按下回车健时提交表单 | `boolean` | false |
+| submitOnChange | 字段值改变时提交表单 | `boolean` | false |
 
 ### TS 类型说明
 

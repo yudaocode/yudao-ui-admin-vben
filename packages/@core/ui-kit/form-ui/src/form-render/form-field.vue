@@ -307,7 +307,11 @@ function autofocus() {
       >
         {{ label }}
       </FormLabel>
-      <div :class="cn('relative flex w-full items-center', wrapperClass)">
+      <div
+        :class="
+          cn('relative flex w-full items-center overflow-hidden', wrapperClass)
+        "
+      >
         <FormControl :class="cn(controlClass)">
           <slot
             v-bind="{
