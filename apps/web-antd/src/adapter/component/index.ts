@@ -10,7 +10,7 @@ import type { CustomComponentType } from '#/components/form/types';
 import type { Component, SetupContext } from 'vue';
 import { h } from 'vue';
 
-import { ApiSelect, globalShareState, IconPicker } from '@vben/common-ui';
+import { ApiComponent, globalShareState, IconPicker } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import {
@@ -53,6 +53,7 @@ const withDefaultPlaceholder = <T extends Component>(
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
   | 'ApiSelect'
+  | 'ApiTreeSelect'
   | 'AutoComplete'
   | 'Checkbox'
   | 'CheckboxGroup'
@@ -86,14 +87,32 @@ async function initComponentAdapter() {
     // import('xxx').then((res) => res.Button),
     ApiSelect: (props, { attrs, slots }) => {
       return h(
-        ApiSelect,
+        ApiComponent,
         {
+          placeholder: $t('ui.placeholder.select'),
           ...props,
           ...attrs,
           component: Select,
           loadingSlot: 'suffixIcon',
           visibleEvent: 'onDropdownVisibleChange',
-          modelField: 'value',
+          modelPropName: 'value',
+        },
+        slots,
+      );
+    },
+    ApiTreeSelect: (props, { attrs, slots }) => {
+      return h(
+        ApiComponent,
+        {
+          placeholder: $t('ui.placeholder.select'),
+          ...props,
+          ...attrs,
+          component: TreeSelect,
+          fieldNames: { label: 'label', value: 'value', children: 'children' },
+          loadingSlot: 'suffixIcon',
+          modelPropName: 'value',
+          optionsPropName: 'treeData',
+          visibleEvent: 'onVisibleChange',
         },
         slots,
       );
