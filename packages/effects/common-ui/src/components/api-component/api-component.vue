@@ -81,6 +81,7 @@ const emit = defineEmits<{
 const modelValue = defineModel({ default: '' });
 
 const attrs = useAttrs();
+const { class: className, style }: Record<string, any> = attrs;
 
 const refOptions = ref<OptionsItem[]>([]);
 const loading = ref(false);
@@ -188,7 +189,7 @@ function emitChange() {
 }
 </script>
 <template>
-  <div v-bind="{ ...$attrs }">
+  <div v-bind="{ class: className, style }">
     <component
       :is="component"
       v-bind="bindProps"
