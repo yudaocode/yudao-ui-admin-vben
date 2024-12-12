@@ -3,6 +3,8 @@ import type { FileConfigApi } from '#/api/infra/file-config';
 
 import { h } from 'vue';
 
+import { useDictStore } from '@vben/stores';
+
 import { Tag } from 'ant-design-vue';
 
 import { type VbenFormProps, z } from '#/adapter/form';
@@ -24,11 +26,13 @@ export const formSchema: VbenFormProps['schema'] = [
   {
     fieldName: 'storage',
     label: '储存器',
-    component: 'ApiDict',
+    component: 'ApiSelect',
     componentProps: {
-      code: DICT_TYPE.INFRA_FILE_STORAGE,
       class: 'w-full',
       placeholder: '请选择储存器',
+      api: () => {
+        return useDictStore().getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE);
+      },
     },
   },
   {
@@ -118,14 +122,15 @@ export const editFormSchema: VbenFormProps['schema'] = [
   {
     fieldName: 'storage',
     label: '储存器',
-    component: 'ApiDict',
+    component: 'ApiSelect',
     componentProps: {
-      code: DICT_TYPE.INFRA_FILE_STORAGE,
       class: 'w-full',
       placeholder: '请选择储存器',
-      numberToString: true,
+      api: () => {
+        return useDictStore().getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE);
+      },
     },
-    rules: z.string().min(1, '请选择储存器').or(z.number()),
+    rules: 'required',
     defaultValue: '1',
   },
   {
@@ -135,7 +140,7 @@ export const editFormSchema: VbenFormProps['schema'] = [
     componentProps: {
       placeholder: '请输入基础路径',
     },
-    rules: z.string().min(1, '请输入基础路径'),
+    rules: 'required',
     dependencies: {
       triggerFields: ['storage'],
       if: (values: Record<string, any>) => {
@@ -150,7 +155,7 @@ export const editFormSchema: VbenFormProps['schema'] = [
     componentProps: {
       placeholder: '请输入主机地址',
     },
-    rules: z.string().min(1, '请输入主机地址'),
+    rules: 'required',
     dependencies: {
       triggerFields: ['storage'],
       if: (values: Record<string, any>) => [11, 12].includes(values.storage),
@@ -163,7 +168,7 @@ export const editFormSchema: VbenFormProps['schema'] = [
     componentProps: {
       placeholder: '请输入主机端口',
     },
-    rules: z.string().min(1, '请输入主机端口'),
+    rules: 'required',
     dependencies: {
       triggerFields: ['storage'],
       if: (values: Record<string, any>) => [11, 12].includes(values.storage),
