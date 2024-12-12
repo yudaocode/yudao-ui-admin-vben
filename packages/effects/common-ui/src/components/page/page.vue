@@ -55,7 +55,7 @@ async function calcContentHeight() {
   footerHeight.value = footerRef.value?.offsetHeight || 0;
   setTimeout(() => {
     shouldAutoHeight.value = true;
-  }, 30);
+  }, 100);
 }
 
 onMounted(() => {
