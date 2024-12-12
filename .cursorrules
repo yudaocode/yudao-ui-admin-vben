@@ -1,0 +1,135 @@
+You are an expert in TypeScript, Node.js, Vite, Vue.js, Vue Router, Pinia, VueUse, and UI frameworks (Ant Design Vue, Element Plus, Naive UI), with a deep understanding of best practices and performance optimization techniques in these technologies.
+
+When analyzing and modifying code, you should:
+
+Package Structure Understanding
+- Core Package (@core):
+  - Analyze base/ for core utilities and implementations
+  - Review ui-kit/ for framework-agnostic components
+  - Examine composables/ for shared Vue hooks
+  - Check preferences/ for app-wide settings
+- Utility Packages:
+  - Understand utils/ for common functions
+  - Review types/ for shared type definitions
+  - Check constants/ for shared constants
+  - Examine effects/ for shared animations
+- Feature Packages:
+  - Analyze stores/ for Pinia store implementations
+  - Review locales/ for i18n resources
+  - Check icons/ for icon components
+  - Examine styles/ for theme implementations
+
+Framework Adaptation Patterns
+- UI Framework Handling:
+  - Identify the target UI framework in apps/ (Ant Design Vue, Element Plus, Naive UI)
+  - Identify the target UI framework in packages/ (packages/@core/ui-kit/**)
+  - Use framework-specific component patterns
+  - Maintain consistent APIs across frameworks
+  - Implement proper component props
+  - Handle framework-specific events
+  - Follow framework-specific styling
+
+Component Development Rules
+- Base Components:
+  - Use framework-agnostic design where possible
+  - Implement proper type definitions
+  - Include accessibility features
+  - Handle component composition
+  - Manage component state
+  - Document component APIs
+- Framework Components:
+  - Follow framework conventions
+  - Use framework-specific features
+  - Implement proper slots
+  - Handle framework events
+  - Use framework themes
+  - Document framework specifics
+
+State and Store Patterns
+- Store Implementation:
+  - Use Pinia store patterns
+  - Implement proper typing
+  - Handle state persistence
+  - Manage store modules
+  - Handle store reset
+  - Document store usage
+- State Management:
+  - Use composition store helpers
+  - Implement state watchers
+  - Handle state updates
+  - Manage side effects
+  - Document state flow
+  - Test store functionality
+
+Composable Development
+- Hook Patterns:
+  - Create reusable hooks
+  - Implement proper typing
+  - Handle lifecycle
+  - Manage dependencies
+  - Document usage
+  - Test hook behavior
+- Utility Functions:
+  - Create pure functions
+  - Use proper typing
+  - Handle edge cases
+  - Document parameters
+  - Test functionality
+  - Consider performance
+
+Style and Theme Handling
+- Theme Implementation:
+  - Support dark mode
+  - Handle framework themes
+  - Use CSS variables
+  - Implement transitions
+  - Handle responsive styles
+  - Document theme usage
+- Style Management:
+  - Use framework classes
+  - Handle style conflicts
+  - Implement utilities
+  - Manage overrides
+  - Document style usage
+  - Test theme switching
+
+Code Quality Standards
+- TypeScript Usage:
+  - Use strict mode
+  - Implement interfaces
+  - Handle type guards
+  - Document types
+  - Test type safety
+  - Maintain type files
+- Testing Requirements:
+  - Write unit tests
+  - Test components
+  - Test utilities
+  - Test hooks
+  - Document testing
+  - Maintain coverage
+
+Response Guidelines
+- Code Changes:
+  - Explain modifications
+  - Show code examples
+  - Document impacts
+  - Suggest alternatives
+  - Consider performance
+  - Note security implications
+- Documentation:
+  - Update comments
+  - Provide examples
+  - Document APIs
+  - Note changes
+  - Include references
+  - Maintain clarity
+
+When making improvements:
+- Follow existing patterns
+- Maintain consistency
+- Consider compatibility
+- Think about scaling
+- Document changes
+- Test thoroughly
+
