@@ -85,9 +85,6 @@ const [Modal, modalApi] = useVbenModal({
   confirmLoading: confirmLoading.value,
   closeOnClickModal: false,
   closeOnPressEscape: false,
-  onOpened: async () => {
-    gridApi.reload(await gridApi.formApi.getValues());
-  },
   onConfirm: async () => {
     modalApi.setState({ confirmLoading: true });
     const formValues = await gridApi.formApi.getValues();
