@@ -5,8 +5,6 @@
 
 import type { BaseFormComponentType } from '@vben/common-ui';
 
-import type { CustomComponentType } from '#/components/form/types';
-
 import type { Component, SetupContext } from 'vue';
 import { h } from 'vue';
 
@@ -38,8 +36,6 @@ import {
   Upload,
 } from 'ant-design-vue';
 
-import { registerComponent as registerCustomFormComponent } from '#/components/form/component-map';
-
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
   type: 'input' | 'select',
@@ -52,6 +48,7 @@ const withDefaultPlaceholder = <T extends Component>(
 
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
+  | 'ApiCheckbox'
   | 'ApiSelect'
   | 'ApiTreeSelect'
   | 'AutoComplete'
@@ -77,14 +74,26 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
-  | BaseFormComponentType
-  | CustomComponentType;
+  | BaseFormComponentType;
 
 async function initComponentAdapter() {
   const components: Partial<Record<ComponentType, Component>> = {
     // 如果你的组件体积比较大，可以使用异步加载
     // Button: () =>
     // import('xxx').then((res) => res.Button),
+
+    ApiCheckbox: (props, { attrs, slots }) => {
+      return h(
+        ApiComponent,
+        {
+          ...props,
+          ...attrs,
+          component: CheckboxGroup,
+          modelPropName: 'value',
+        },
+        slots,
+      );
+    },
     ApiSelect: (props, { attrs, slots }) => {
       return h(
         ApiComponent,
@@ -94,8 +103,8 @@ async function initComponentAdapter() {
           ...attrs,
           component: Select,
           loadingSlot: 'suffixIcon',
-          visibleEvent: 'onDropdownVisibleChange',
           modelPropName: 'value',
+          visibleEvent: 'onVisibleChange',
         },
         slots,
       );
@@ -153,9 +162,6 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload,
   };
-
-  // 注册自定义组件
-  registerCustomFormComponent(components);
 
   // 将组件注册到全局共享状态中
   globalShareState.setComponents(components);
