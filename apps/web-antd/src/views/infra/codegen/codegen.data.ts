@@ -2,7 +2,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { CodegenApi } from '#/api/infra/codegen';
 
 import { type VbenFormProps, z } from '@vben/common-ui';
-import { useUserStore } from '@vben/stores';
+import { useDictStore, useUserStore } from '@vben/stores';
 
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
@@ -88,20 +88,10 @@ export namespace CodegenImportTableModalData {
       fieldName: 'dataSourceConfigId',
       component: 'ApiSelect',
       componentProps: {
-        defaultSelectedFirst: true,
-        allowClear: true,
         placeholder: '请选择数据源',
         api: getDataSourceConfigList,
         labelField: 'name',
         valueField: 'id',
-      },
-      componentEvents: (events, formApi) => {
-        return {
-          optionsChange: (value: any) => {
-            // 设置默认选中第一个
-            formApi.setFieldValue('dataSourceConfigId', value[0].id);
-          },
-        };
       },
     },
     {
@@ -169,37 +159,47 @@ export namespace CodegenOptionsModalData {
     {
       label: '生成模版',
       fieldName: 'template',
-      component: 'ApiDict',
+      component: 'ApiSelect',
       componentProps: {
-        code: DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE,
         class: 'w-full',
         placeholder: '请选择生成模版',
+        api: () => {
+          return useDictStore().getDictOptions(
+            DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE,
+          );
+        },
       },
-      rules: z.string().min(1, { message: '生成模版不能为空' }),
+      rules: 'required',
       defaultValue: '1',
     },
     {
       label: '前端类型',
       fieldName: 'frontType',
-      component: 'ApiDict',
+      component: 'ApiSelect',
       componentProps: {
-        code: DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE,
         class: 'w-full',
         placeholder: '请选择前端类型',
+        api: () => {
+          return useDictStore().getDictOptions(
+            DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE,
+          );
+        },
       },
-      rules: z.string().min(1, { message: '前端类型不能为空' }),
+      rules: 'required',
       defaultValue: '31',
     },
     {
       label: '生成场景',
       fieldName: 'scene',
-      component: 'ApiDict',
+      component: 'ApiSelect',
       componentProps: {
-        code: DICT_TYPE.INFRA_CODEGEN_SCENE,
         class: 'w-full',
         placeholder: '请选择生成场景',
+        api: () => {
+          return useDictStore().getDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE);
+        },
       },
-      rules: z.string().min(1, { message: '生成场景不能为空' }),
+      rules: 'required',
       defaultValue: '1',
     },
     {
@@ -214,16 +214,17 @@ export namespace CodegenOptionsModalData {
         },
         labelField: 'name',
         valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择上级菜单',
       },
-      rules: z.number().min(1, { message: '上级菜单不能为空' }),
+      rules: 'required',
       defaultValue: null,
     },
     {
       label: '模块名',
       fieldName: 'moduleName',
       component: 'Input',
-      rules: z.string().min(1, { message: '模块名不能为空' }),
+      rules: 'required',
       componentProps: {
         placeholder: '请输入模块名',
       },
@@ -232,22 +233,19 @@ export namespace CodegenOptionsModalData {
       label: '业务名',
       fieldName: 'businessName',
       component: 'Input',
-      rules: z.string().min(1, { message: '业务名不能为空' }),
+      rules: 'required',
       componentProps: {
         placeholder: '请输入业务名',
       },
     },
     {
-      label: '类名',
-      fieldName: 'className',
-      component: 'Input',
-      rules: z.string().min(1, { message: '类名不能为空' }),
-    },
-    {
       label: '类描述',
       fieldName: 'classComment',
       component: 'Input',
-      rules: z.string().min(1, { message: '类描述不能为空' }),
+      rules: 'required',
+      componentProps: {
+        placeholder: '请输入类描述',
+      },
     },
   ];
 }
