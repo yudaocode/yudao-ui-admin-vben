@@ -206,7 +206,7 @@ function end() {
   endMovetime.value = +new Date()
   // 判断是否重合
   if (status.value && isEnd.value === false) {
-    let moveLeftDistance = Number.parseInt((moveBlockLeft.value || '').replace('px', ''))
+    let moveLeftDistance = Number.parseInt((moveBlockLeft.value || 0))
     moveLeftDistance = (moveLeftDistance * 310) / Number.parseInt(setSize.imgWidth)
     const data = {
       captchaType: captchaType.value,
