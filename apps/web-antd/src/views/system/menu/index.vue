@@ -11,7 +11,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMenuList, type MenuVO } from '#/api/system/menu';
 
 import { columns, formSchema } from './menu.data';
-import MenuModal from './MenuModal.vue';
+import MenuForm from './menu-form.vue';
 
 defineOptions({ name: 'SystemMenu' });
 
@@ -55,7 +55,7 @@ const gridOptions: VxeGridProps<MenuVO> = {
 const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: MenuModal,
+  connectedComponent: MenuForm,
 });
 
 function handleCreate() {

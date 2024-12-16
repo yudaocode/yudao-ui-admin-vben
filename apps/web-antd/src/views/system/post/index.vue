@@ -12,7 +12,7 @@ import { exportPost, getPostPage, type PostVO } from '#/api/system/post';
 import { ActionButtons, IconEnum } from '#/components/action-buttons';
 
 import { columns, formSchema } from './post.data';
-import PostModal from './PostModal.vue';
+import PostForm from './post-form.vue';
 
 defineOptions({ name: 'SystemPost' });
 
@@ -51,7 +51,7 @@ const gridOptions: VxeGridProps<PostVO> = {
 const [Grid, tableApi] = useVbenVxeGrid({ formOptions, gridOptions });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: PostModal,
+  connectedComponent: PostForm,
 });
 
 function handleCreate() {
@@ -92,14 +92,6 @@ async function handleExport() {
               icon: IconEnum.EXPORT,
               auth: ['system:post:export'],
               onClick: handleExport.bind(null),
-            },
-            {
-              label: $t('page.action.delete'),
-              icon: IconEnum.DELETE,
-              class:
-                'bg-red-500 text-white border-red-400 hover:bg-red-400 hover:!text-white hover:!border-red-400 active:!bg-red-600 active:!text-white active:!border-red-600',
-              auth: ['system:post:delete'],
-              onClick: handleDelete.bind(null, 1),
             },
           ]"
         />
