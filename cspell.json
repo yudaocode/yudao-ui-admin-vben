@@ -52,7 +52,11 @@
     "vitepress",
     "vnode",
     "vueuse",
-    "yxxx"
+    "yxxx",
+    "gitee",
+    "xingyu",
+    "xingyuv",
+    "yudao"
   ],
   "ignorePaths": [
     "**/node_modules/**",

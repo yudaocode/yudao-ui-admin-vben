@@ -222,7 +222,5 @@
   "commentTranslate.hover.enabled": false,
   "commentTranslate.multiLineMerge": true,
   "vue.server.hybridMode": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "oxc.enable": false,
-  "cSpell.words": ["Gitee", "xingyu", "xingyuv", "Yudao"]
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
