@@ -52,7 +52,9 @@ export function getDictOptions(dictType: string, valueType?: 'string' | 'number'
             ? `${dict.value}`
             : valueType === 'boolean'
               ? `${dict.value}` === 'true'
-              : Number.parseInt(`${dict.value}`),
+              : valueType === 'number' && !isNaN(parseFloat(`${dict.value}`))
+                ? Number.parseInt(`${dict.value}`)
+                : dict.value,
       })
     })
   }
