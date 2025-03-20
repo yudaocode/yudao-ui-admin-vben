@@ -21,6 +21,13 @@ export namespace AuthApi {
     data: string;
     status: number;
   }
+
+  /** 租户信息返回值 */
+  export interface TenantResult {
+    id: number;
+    name: string;
+  }
+
 }
 
 /**
@@ -34,7 +41,8 @@ export async function loginApi(data: AuthApi.LoginParams) {
  * 刷新 accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/auth/refresh', {
+  // TODO @芋艿：refreshToken 传递
+  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/system/auth/refresh', {
     withCredentials: true,
   });
 }
@@ -43,7 +51,7 @@ export async function refreshTokenApi() {
  * 退出登录
  */
 export async function logoutApi() {
-  return baseRequestClient.post('/auth/logout', {
+  return baseRequestClient.post('/system/auth/logout', {
     withCredentials: true,
   });
 }
@@ -63,3 +71,31 @@ export function getAuthPermissionInfoApi() {
     '/system/auth/get-permission-info',
   );
 }
+
+/**
+ * 获取租户列表
+ */
+export function getTenantSimpleList() {
+  return requestClient.get<AuthApi.TenantResult[]>(
+    `/system/tenant/simple-list`,
+  );
+}
+
+/**
+ * 使用租户域名，获得租户信息
+ */
+export function getTenantByWebsite(website: string) {
+  // TODO @芋艿：改成 params 传递？
+  return requestClient.get<AuthApi.TenantResult>(`/system/tenant/get-by-website?website=${website}`);
+}
+
+// TODO 芋艿：后续怎么放好。
+// // 获取验证图片 以及token
+// export async function getCaptcha(data: any) {
+//   return baseRequestClient.post('/system/captcha/get', data);
+// }
+//
+// // 滑动或者点选验证
+// export async function checkCaptcha(data: any) {
+//   return baseRequestClient.post('/system/captcha/check', data);
+// }

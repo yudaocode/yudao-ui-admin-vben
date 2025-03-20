@@ -19,7 +19,7 @@ import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
 
-const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { apiURL, tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({
@@ -67,10 +67,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
-      config.headers['tenant-id'] = 1
-      // TODO @芋艿：优化一下
-      // config.headers['tenant-id'] =
-      //   tenantEnable && tenantId ? tenantId : undefined;
+      config.headers['tenant-id'] = tenantEnable ? accessStore.tenantId : undefined;
       return config;
     },
   });

@@ -35,6 +35,10 @@ interface AccessState {
    * 登录 accessToken
    */
   refreshToken: AccessToken;
+  /**
+   * 登录租户编号
+   */
+  tenantId: null | number;
 }
 
 /**
@@ -82,10 +86,13 @@ export const useAccessStore = defineStore('core-access', {
     setRefreshToken(token: AccessToken) {
       this.refreshToken = token;
     },
+    setTenantId(tenantId: null | number) {
+      this.tenantId = tenantId;
+    }
   },
   persist: {
     // 持久化
-    pick: ['accessToken', 'refreshToken', 'accessCodes'], // TODO @芋艿：accessCodes 不持久化
+    pick: ['accessToken', 'refreshToken', 'tenantId'],
   },
   state: (): AccessState => ({
     accessCodes: [],
@@ -95,6 +102,7 @@ export const useAccessStore = defineStore('core-access', {
     isAccessChecked: false,
     loginExpired: false,
     refreshToken: null,
+    tenantId: null
   }),
 });
 
