@@ -30,7 +30,8 @@ async function generateRoutesByBackend(
 
     const routes = convertRoutes(menuRoutes, layoutMap, normalizePageMap);
 
-    return routes;
+    // add by 芋艿：合并静态路由和动态路由
+    return [...options.routes, ...routes];
   } catch (error) {
     console.error(error);
     return [];

@@ -1,8 +1,9 @@
 import type { Router, RouteRecordRaw } from 'vue-router';
 
-import type { ExRouteRecordRaw, MenuRecordRaw } from '@vben-core/typings';
+import type { ExRouteRecordRaw, MenuRecordRaw, RouteRecordStringComponent } from '@vben-core/typings';
 
-import { filterTree, mapTree } from '@vben-core/shared/utils';
+import { filterTree, mapTree, isHttpUrl } from '@vben-core/shared/utils';
+import type { AppRouteRecordRaw } from '@vben/types'; // TODO @芋艿：这里的报错，解决
 
 /**
  * 根据 routes 生成菜单列表
@@ -78,4 +79,76 @@ async function generateMenus(
   return finalMenus;
 }
 
-export { generateMenus };
+/**
+ * 转换后端菜单数据为路由数据
+ * @param menuList 后端菜单数据
+ * @param parent 父级菜单
+ * @returns 路由数据
+ */
+function convertServerMenuToRouteRecordStringComponent(
+  menuList: AppRouteRecordRaw[],
+  parent = '',
+): RouteRecordStringComponent[] {
+  const menus: RouteRecordStringComponent[] = [];
+  menuList.forEach((menu) => {
+    // 处理顶级链接菜单
+    if (isHttpUrl(menu.path) && menu.parentId === 0) {
+      const urlMenu: RouteRecordStringComponent = {
+        component: 'IFrameView',
+        meta: {
+          hideInMenu: !menu.visible,
+          icon: menu.icon,
+          link: menu.path,
+          orderNo: menu.sort,
+          title: menu.name,
+        },
+        name: menu.name,
+        path: `/${menu.path}/index`,
+      };
+      menus.push(urlMenu);
+      return;
+    } else if (menu.children && menu.parentId === 0) {
+      menu.component = 'BasicLayout';
+    } else if (!menu.children) {
+      menu.component = menu.component as string;
+    }
+    if (menu.component === 'Layout') {
+      menu.component = 'BasicLayout';
+    }
+
+    if (menu.children && menu.parentId !== 0) {
+      menu.component = '';
+    }
+
+    // path
+    if (parent) {
+      menu.path = `${parent}/${menu.path}`;
+    }
+
+    if (!menu.path.startsWith('/')) {
+      menu.path = `/${menu.path}`;
+    }
+
+    const buildMenu: RouteRecordStringComponent = {
+      component: menu.component,
+      meta: {
+        hideInMenu: !menu.visible,
+        icon: menu.icon,
+        keepAlive: menu.keepAlive,
+        orderNo: menu.sort,
+        title: menu.name,
+      },
+      name: menu.name,
+      path: menu.path,
+    };
+
+    if (menu.children && menu.children.length > 0) {
+      buildMenu.children = convertServerMenuToRouteRecordStringComponent(menu.children, menu.path);
+    }
+
+    menus.push(buildMenu);
+  });
+  return menus;
+}
+
+export { generateMenus, convertServerMenuToRouteRecordStringComponent };

@@ -67,6 +67,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      config.headers['tenant-id'] = 1
+      // TODO @芋艿：优化一下
+      // config.headers['tenant-id'] =
+      //   tenantEnable && tenantId ? tenantId : undefined;
       return config;
     },
   });

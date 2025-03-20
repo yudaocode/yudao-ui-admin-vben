@@ -1,4 +1,4 @@
-import type { Recordable, UserInfo } from '@vben/types';
+import type { AuthPermissionInfo, Recordable, UserInfo} from '@vben/types';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -9,7 +9,7 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { getAuthPermissionInfoApi, loginApi, logoutApi} from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -32,22 +32,22 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
+      const { accessToken, refreshToken } = await loginApi(params);
 
       // 如果成功获取到 accessToken
       if (accessToken) {
         accessStore.setAccessToken(accessToken);
+        accessStore.setRefreshToken(refreshToken);
 
-        // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
+        // 获取用户信息并存储到 userStore、accessStore 中
+        // TODO @芋艿：清理掉 accessCodes 相关的逻辑
+        // const [fetchUserInfoResult, accessCodes] = await Promise.all([
+        //   fetchUserInfo(),
+        //   // getAccessCodesApi(),
+        // ]);
+        const fetchUserInfoResult = await fetchUserInfo();
 
-        userInfo = fetchUserInfoResult;
-
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
+        userInfo = fetchUserInfoResult.user;
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
@@ -95,10 +95,16 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
-    userStore.setUserInfo(userInfo);
-    return userInfo;
+    // 加载
+    let authPermissionInfo: AuthPermissionInfo | null = null;
+    authPermissionInfo = await getAuthPermissionInfoApi();
+    // userStore
+    userStore.setUserInfo(authPermissionInfo.user);
+    userStore.setUserRoles(authPermissionInfo.roles);
+    // accessStore
+    accessStore.setAccessMenus(authPermissionInfo.menus);
+    accessStore.setAccessCodes(authPermissionInfo.permissions);
+    return authPermissionInfo;
   }
 
   function $reset() {

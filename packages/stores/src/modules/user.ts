@@ -11,7 +11,7 @@ interface BasicUserInfo {
    */
   realName: string;
   /**
-   * 用户角色
+   * 用户角色（TODO 已废弃，add by 芋艿）
    */
   roles?: string[];
   /**

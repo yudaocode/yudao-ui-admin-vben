@@ -9,6 +9,8 @@ import { accessRoutes, coreRouteNames } from '#/router/routes';
 import { useAuthStore } from '#/store';
 
 import { generateAccess } from './access';
+import { message } from 'ant-design-vue';
+import { $t } from '@vben/locales';
 
 /**
  * 通用守卫配置
@@ -92,10 +94,22 @@ function setupAccessGuard(router: Router) {
 
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
-    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
-    const userRoles = userInfo.roles ?? [];
+    let userInfo = userStore.userInfo;
+    if (!userInfo) {
+      // addy by 芋艿：由于 yudao 是 fetchUserInfo 统一加载用户 + 权限信息，所以将 fetchMenuListAsync
+      const loading = message.loading({
+        content: `${$t('common.loadingMenu')}...`,
+      });
+      try {
+        userInfo = (await authStore.fetchUserInfo()).user;
+      } finally {
+        loading();
+      }
+    }
+    const userRoles = userStore.userRoles ?? [];
 
     // 生成菜单和路由
+    debugger;
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
       roles: userRoles,
       router,
@@ -107,6 +121,7 @@ function setupAccessGuard(router: Router) {
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
+    userStore.setUserRoles(userRoles);
     const redirectPath = (from.query.redirect ??
       (to.path === DEFAULT_HOME_PATH
         ? userInfo.homePath || DEFAULT_HOME_PATH
