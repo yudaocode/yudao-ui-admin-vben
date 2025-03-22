@@ -13,6 +13,7 @@ import { useAuthStore } from '#/store';
 import { useAccessStore } from '@vben/stores';
 
 import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
+const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 defineOptions({ name: 'Login' });
 
@@ -21,10 +22,11 @@ const accessStore = useAccessStore();
 
 // 租户列表
 const tenantList = ref<AuthApi.TenantResult[]>([]);
-// 当前选中的租户编号
-const currentTenantId = ref<null | number>();
 
-// 获取租户列表，并默认选中
+// 获取 AuthenticationLogin 组件的引用
+const loginRef = ref();
+
+/** 获取租户列表，并默认选中 */
 const fetchTenantList = async () => {
   try {
     // 获取租户列表、域名对应租户
@@ -38,7 +40,6 @@ const fetchTenantList = async () => {
       tenantId = websiteTenant.id;
     }
     // 如果没有从域名获取到租户，尝试从 store 中获取
-    debugger;
     if (!tenantId && accessStore.tenantId) {
       tenantId = accessStore.tenantId;
     }
@@ -48,8 +49,8 @@ const fetchTenantList = async () => {
     }
 
     // 设置选中的租户编号
-    currentTenantId.value = tenantId;
     accessStore.setTenantId(tenantId);
+    loginRef.value.getFormApi().setFieldValue('tenantId', tenantId);
   } catch (error) {
     console.error('获取租户列表失败:', error);
   }
@@ -69,17 +70,24 @@ const formSchema = computed((): VbenFormSchema[] => {
           label: item.name,
           value: item.id,
         })),
-        placeholder: $t('authentication.selectTenant'),
-        // value: currentTenantId.value ?? null, // TODO @芋艿：change 的设置
-        onChange: (value: number) => {
-          // currentTenantId.value = value ?? null;
-          accessStore.setTenantId(value);
-        },
+        placeholder: $t('authentication.tenantTip'),
       },
       fieldName: 'tenantId',
-      label: $t('authentication.selectTenant'),
-      // TODO @芋艿：开关租户的逻辑
-      rules: z.number().default(currentTenantId.value), // TODO @芋艿：默认值的设置
+      label: $t('authentication.tenant'),
+      rules: z
+        .number()
+        .nullable()
+        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
+        .default(null),
+      dependencies: {
+        triggerFields: ['tenantId'],
+        if: tenantEnable,
+        trigger(values) {
+          if (values.tenantId) {
+            accessStore.setTenantId(values.tenantId);
+          }
+        },
+      },
     },
     {
       component: 'VbenInput',
@@ -96,7 +104,7 @@ const formSchema = computed((): VbenFormSchema[] => {
     {
       component: 'VbenInputPassword',
       componentProps: {
-        placeholder: $t('authentication.password'),
+        placeholder: $t('authentication.passwordTip'),
       },
       fieldName: 'password',
       label: $t('authentication.password'),
@@ -111,6 +119,7 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 <template>
   <AuthenticationLogin
+    ref="loginRef"
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
     @submit="authStore.authLogin"
