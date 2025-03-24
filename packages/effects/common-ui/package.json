@@ -37,9 +37,11 @@
     "vue": "catalog:",
     "vue-json-viewer": "catalog:",
     "vue-router": "catalog:",
-    "vue-tippy": "catalog:"
+    "vue-tippy": "catalog:",
+    "crypto-js": "catalog:"
   },
   "devDependencies": {
-    "@types/qrcode": "catalog:"
+    "@types/qrcode": "catalog:",
+    "@types/crypto-js": "catalog:"
   }
 }

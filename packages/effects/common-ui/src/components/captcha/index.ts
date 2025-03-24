@@ -4,3 +4,5 @@ export { default as PointSelectionCaptchaCard } from './point-selection-captcha/
 export { default as SliderCaptcha } from './slider-captcha/index.vue';
 export { default as SliderRotateCaptcha } from './slider-rotate-captcha/index.vue';
 export type * from './types';
+
+export { default as Verification } from './verification/index.vue';
