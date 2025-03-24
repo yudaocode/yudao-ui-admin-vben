@@ -17,6 +17,7 @@ export namespace AuthApi {
     expiresTime: number;
   }
 
+  /** 刷新 token 返回值 */
   export interface RefreshTokenResult {
     data: string;
     status: number;
@@ -26,6 +27,18 @@ export namespace AuthApi {
   export interface TenantResult {
     id: number;
     name: string;
+  }
+
+  /** 手机验证码获取接口参数 */
+  export interface SmsCodeVO {
+    mobile: string;
+    scene: number;
+  }
+
+  /** 手机验证码登录接口参数 */
+  export interface SmsLoginVO {
+    mobile: string;
+    code: string;
   }
 
 }
