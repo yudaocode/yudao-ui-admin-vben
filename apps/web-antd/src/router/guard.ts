@@ -109,7 +109,6 @@ function setupAccessGuard(router: Router) {
     const userRoles = userStore.userRoles ?? [];
 
     // 生成菜单和路由
-    debugger;
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
       roles: userRoles,
       router,

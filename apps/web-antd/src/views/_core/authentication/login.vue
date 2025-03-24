@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
-import type { AuthApi } from '#/api/core/auth';
+import {type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
 
 import { computed, markRaw, onMounted, ref } from 'vue';
 
-import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
+import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { useAppConfig } from '@vben/hooks';
 
@@ -13,21 +12,24 @@ import { useAuthStore } from '#/store';
 import { useAccessStore } from '@vben/stores';
 
 import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
-const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 
-// 租户列表
-const tenantList = ref<AuthApi.TenantResult[]>([]);
-
-// 获取 AuthenticationLogin 组件的引用
 const loginRef = ref();
+const verifyRef = ref();
+
+const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWord'
+const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
 
 /** 获取租户列表，并默认选中 */
 const fetchTenantList = async () => {
+  if (!tenantEnable) {
+    return;
+  }
   try {
     // 获取租户列表、域名对应租户
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
@@ -56,7 +58,31 @@ const fetchTenantList = async () => {
   }
 };
 
-// 组件挂载时获取租户信息
+/** 处理登录 */
+const handleLogin = async (values: any) => {
+  // 如果开启验证码，则先验证验证码
+  if (captchaEnable) {
+    verifyRef.value.show();
+    return;
+  }
+
+  // 无验证码，直接登录
+  await authStore.authLogin(values);
+}
+
+/** 验证码通过，执行登录 */
+const handleVerifySuccess = async ({ captchaVerification }: any) => {
+  try {
+    await authStore.authLogin({
+      ...(await loginRef.value.getFormApi().getValues()),
+      captchaVerification,
+    });
+  } catch (error) {
+    console.error('Error in handleLogin:', error);
+  }
+};
+
+/** 组件挂载时获取租户信息 */
 onMounted(() => {
   fetchTenantList();
 });
@@ -122,6 +148,17 @@ const formSchema = computed((): VbenFormSchema[] => {
     ref="loginRef"
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
-    @submit="authStore.authLogin"
+    @submit="handleLogin"
+  />
+  <!-- TODO @芋艿：貌似加了后，登录界面变形了 -->
+  <Verification
+    ref="verifyRef"
+    v-if="captchaEnable"
+    :captcha-type="captchaType"
+    :check-captcha-api="checkCaptcha"
+    :get-captcha-api="getCaptcha"
+    :img-size="{ width: '400px', height: '200px' }"
+    mode="pop"
+    @on-success="handleVerifySuccess"
   />
 </template>
