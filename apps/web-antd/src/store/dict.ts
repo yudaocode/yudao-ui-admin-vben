@@ -1,69 +1,78 @@
-// TODO @芋艿：【可优化】挪到 packages/stores/src/modules
+import { StorageManager } from '@vben/utils';
+
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-export interface DictItem {
+import { getSimpleDictDataList } from '#/api/system/dict/dict.data';
+
+const DICT_STORAGE_KEY = 'DICT_STORAGE__';
+
+interface DictValueType {
+  value: any;
+  label: string;
   colorType?: string;
   cssClass?: string;
-  label: string;
-  value: string;
 }
 
-export type Dict = Record<string, DictItem[]>;
+// interface DictTypeType {
+//   dictType: string;
+//   dictValue: DictValueType[];
+// }
 
 interface DictState {
-  dictCache: Dict;
+  dictMap: Map<string, DictValueType[]>;
+  isSetDict: boolean;
 }
+
+const storage = new StorageManager({
+  prefix: import.meta.env.VITE_APP_NAMESPACE,
+  storageType: 'sessionStorage',
+});
 
 export const useDictStore = defineStore('dict', {
   actions: {
-    getDictData(dictType: string, value: any) {
-      const dict = this.dictCache[dictType];
-      if (!dict) {
-        return undefined;
-      }
-      return (
-        dict.find((d) => d.value === value || d.value === value.toString()) ??
-        undefined
-      );
-    },
-    getDictOptions(dictType: string) {
-      const dictOptions = this.dictCache[dictType];
-      if (!dictOptions) {
-        return [];
-      }
-      return dictOptions;
-    },
-    setDictCache(dicts: Dict) {
-      this.dictCache = dicts;
-    },
-    setDictCacheByApi(
-      api: (params: Record<string, any>) => Promise<Record<string, any>[]>,
-      params: Record<string, any>,
-      labelField: string = 'label',
-      valueField: string = 'value',
-    ) {
-      api(params).then((dicts) => {
-        const dictCacheData: Dict = {};
-        dicts.forEach((dict) => {
-          dictCacheData[dict.dictType] = dicts
-            .filter((d) => d.dictType === dict.dictType)
-            .map((d) => ({
-              colorType: d.colorType,
-              cssClass: d.cssClass,
-              label: d[labelField],
-              value: d[valueField],
-            }));
+    async setDictMap() {
+      try {
+        const dataRes = await getSimpleDictDataList();
+
+        const dictDataMap = new Map<string, DictValueType[]>();
+
+        dataRes.forEach((item: any) => {
+          let dictTypeArray = dictDataMap.get(item.dictType);
+          if (!dictTypeArray) {
+            dictTypeArray = [];
+          }
+          dictTypeArray.push({
+            value: item.value,
+            label: item.label,
+            colorType: item.colorType,
+            cssClass: item.cssClass,
+          });
+          dictDataMap.set(item.dictType, dictTypeArray);
         });
-        this.setDictCache(dictCacheData);
-      });
+
+        this.dictMap = dictDataMap;
+        this.isSetDict = true;
+
+        // 将字典数据存储到 sessionStorage 中
+        storage.setItem(DICT_STORAGE_KEY, dictDataMap, 60);
+      } catch (error) {
+        console.error('Failed to set dictionary values:', error);
+      }
     },
   },
-  persist: {
-    // 持久化
-    pick: ['dictCache'],
+  getters: {
+    getDictMap: (state) => state.dictMap,
+    getDictData: (state) => (dictType: string) => {
+      return state.dictMap.get(dictType);
+    },
+    getDictOptions: (state) => (dictType: string) => {
+      return state.dictMap.get(dictType);
+    },
   },
+  persist: [{ pick: ['dictMap', 'isSetDict'] }],
   state: (): DictState => ({
-    dictCache: {},
+    dictMap: new Map<string, DictValueType[]>(),
+    isSetDict: false,
   }),
 });
 

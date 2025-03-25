@@ -6,7 +6,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
 import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore } from '#/store';
+import { useAuthStore, useDictStore } from '#/store';
 
 import { generateAccess } from './access';
 import { message } from 'ant-design-vue';
@@ -51,6 +51,7 @@ function setupAccessGuard(router: Router) {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
+    const dictStore = useDictStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -91,6 +92,9 @@ function setupAccessGuard(router: Router) {
     if (accessStore.isAccessChecked) {
       return true;
     }
+
+    // 加载字典数据（不阻塞加载）
+    dictStore.setDictMap();
 
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
