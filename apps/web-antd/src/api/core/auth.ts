@@ -64,21 +64,21 @@ export async function logoutApi() {
 }
 
 /** 获取权限信息 */
-export function getAuthPermissionInfoApi() {
+export async function getAuthPermissionInfoApi() {
   return requestClient.get<AuthPermissionInfo>(
     '/system/auth/get-permission-info',
   );
 }
 
 /** 获取租户列表 */
-export function getTenantSimpleList() {
+export async function getTenantSimpleList() {
   return requestClient.get<AuthApi.TenantResult[]>(
     `/system/tenant/simple-list`,
   );
 }
 
 /** 使用租户域名，获得租户信息 */
-export function getTenantByWebsite(website: string) {
+export async function getTenantByWebsite(website: string) {
   return requestClient.get<AuthApi.TenantResult>(`/system/tenant/get-by-website?website=${website}`);
 }
 

@@ -57,9 +57,9 @@ export const useAuthStore = defineStore('auth', () => {
             : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
         }
 
-        if (userInfo?.realName) {
+        if (userInfo?.nickname) {
           notification.success({
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
+            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.nickname}`,
             duration: 3,
             message: $t('authentication.loginSuccess'),
           });
@@ -99,7 +99,7 @@ export const useAuthStore = defineStore('auth', () => {
     let authPermissionInfo: AuthPermissionInfo | null = null;
     authPermissionInfo = await getAuthPermissionInfoApi();
     // userStore
-    userStore.setUserInfo(authPermissionInfo.user);
+    userStore.setUserInfo(authPermissionInfo.user); // TODO @芋艿：这里有报错
     userStore.setUserRoles(authPermissionInfo.roles);
     // accessStore
     accessStore.setAccessMenus(authPermissionInfo.menus);

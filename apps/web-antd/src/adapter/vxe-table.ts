@@ -20,6 +20,17 @@ setupVbenVxeTable({
           // 全局禁用vxe-table的表单配置，使用formOptions
           enabled: false,
         },
+        toolbarConfig: {
+          import: true,
+          export: true,
+          refresh: true,
+          print: true,
+          zoom: true,
+          custom: true,
+        },
+        customConfig: {
+          mode: 'modal',
+        },
         proxyConfig: {
           autoLoad: true,
           response: {
@@ -28,6 +39,12 @@ setupVbenVxeTable({
           },
           showActiveMsg: true,
           showResponseMsg: false,
+        },
+        pagerConfig: {
+          enabled: true,
+        },
+        sortConfig: {
+          multiple: true,
         },
         round: true,
         showOverflow: true,

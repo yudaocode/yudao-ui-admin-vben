@@ -55,6 +55,7 @@ export const useUserStore = defineStore('core-user', {
     userInfo: null,
     userRoles: [],
   }),
+  // TODO @芋艿：pick: ['userInfo', 'userRoles'], 是否要持久化
 });
 
 // 解决热更新问题
