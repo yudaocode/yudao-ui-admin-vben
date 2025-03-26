@@ -50,9 +50,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    */
   async function doRefreshToken() {
     const accessStore = useAccessStore();
-    debugger
-    const resp = await refreshTokenApi();
-    const newToken = resp.data;
+    const refreshToken = accessStore.refreshToken as string;
+    const resp = await refreshTokenApi(refreshToken);
+    const newToken = resp?.data?.data?.accessToken;
     accessStore.setAccessToken(newToken);
     return newToken;
   }
@@ -68,6 +68,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      // 添加租户编号
       config.headers['tenant-id'] = tenantEnable ? accessStore.tenantId : undefined;
       return config;
     },
@@ -99,7 +100,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
-      const errorMessage = responseData?.error ?? responseData?.message ?? '';
+      const errorMessage =
+        responseData?.error ?? responseData?.message ?? responseData.msg ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
       message.error(errorMessage || msg);
     }),
@@ -113,3 +115,11 @@ export const requestClient = createRequestClient(apiURL, {
 });
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
+baseRequestClient.addRequestInterceptor({
+  fulfilled: (config) => {
+    const accessStore = useAccessStore();
+    // 添加租户编号
+    config.headers['tenant-id'] = tenantEnable? accessStore.tenantId : undefined;
+    return config;
+  },
+});

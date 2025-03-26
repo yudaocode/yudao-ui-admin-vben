@@ -11,6 +11,6 @@ export const overridesPreferences = defineOverridesPreferences({
     /** 后端路由模式 */
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
-    enableRefreshToken: false, // TODO @芋艿：后续跟进下
+    enableRefreshToken: true
   },
 });

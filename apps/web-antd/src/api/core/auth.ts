@@ -17,12 +17,6 @@ export namespace AuthApi {
     expiresTime: number;
   }
 
-  /** 刷新 token 返回值 */
-  export interface RefreshTokenResult {
-    data: string;
-    status: number;
-  }
-
   /** 租户信息返回值 */
   export interface TenantResult {
     id: number;
@@ -49,14 +43,12 @@ export async function loginApi(data: AuthApi.LoginParams) {
 }
 
 /** 刷新 accessToken */
-export async function refreshTokenApi() {
-  // TODO @芋艿：refreshToken 传递
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/system/auth/refresh', {
-    withCredentials: true,
-  });
+export async function refreshTokenApi(refreshToken: string) {
+  return baseRequestClient.post(`/system/auth/refresh-token?refreshToken=${refreshToken}`);
 }
 
 /** 退出登录 */
+// TODO @芋艿：有问题 baseRequestClient
 export async function logoutApi() {
   return baseRequestClient.post('/system/auth/logout', {
     withCredentials: true,
