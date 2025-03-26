@@ -44,7 +44,11 @@ export const columns: VxeGridProps['columns'] = [
   { field: 'code', title: '岗位编码' },
   { field: 'sort', title: '岗位顺序' },
   { field: 'remark', title: '岗位备注' },
-  { field: 'status', title: '状态' },
+  {
+    field: 'status',
+    title: '状态',
+    cellRender: { name: 'CellDict', props: { type: 'common_status' } },
+  },
   { field: 'createTime', formatter: 'formatDateTime', title: '创建时间' },
   {
     field: 'action',
