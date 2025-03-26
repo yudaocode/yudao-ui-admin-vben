@@ -11,6 +11,14 @@ export const overridesPreferences = defineOverridesPreferences({
     /** 后端路由模式 */
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
-    enableRefreshToken: true
+    enableRefreshToken: true,
+  },
+  footer: {
+    enable: true,
+    fixed: true,
+  },
+  copyright: {
+    companyName: import.meta.env.VITE_APP_TITLE,
+    companySiteLink: 'https://gitee.com/yudaocode/yudao-ui-admin-vben',
   },
 });
