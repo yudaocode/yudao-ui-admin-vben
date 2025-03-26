@@ -1,9 +1,10 @@
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
-import { useDictStore } from '#/store';
 
 import { Button, Image, Tag } from 'ant-design-vue';
+
+import { getDictObj } from '#/utils/dict';
 
 import { useVbenForm } from './form';
 
@@ -77,13 +78,12 @@ setupVbenVxeTable({
     // TODO @芋艿：后续研究下，看看有没优解
     vxeUI.renderer.add('CellDict', {
       renderTableDefault(renderOpts, params) {
-        const dictStore = useDictStore();
         const { props } = renderOpts;
         const { column, row } = params;
         if (!props) {
           return '';
         }
-        const dict = dictStore.getDictData(props.type, row[column.field]);
+        const dict = getDictObj(props.type, row[column.field]);
         // 转义
         if (dict) {
           if (`${dict.colorType}` === 'primary') dict.colorType = 'processing';
