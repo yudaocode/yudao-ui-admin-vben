@@ -11,6 +11,7 @@ import { useAuthStore, useDictStore } from '#/store';
 import { generateAccess } from './access';
 import { message } from 'ant-design-vue';
 import { $t } from '@vben/locales';
+import { getSimpleDictDataList } from '#/api/system/dict/dict.data';
 
 /**
  * 通用守卫配置
@@ -94,7 +95,7 @@ function setupAccessGuard(router: Router) {
     }
 
     // 加载字典数据（不阻塞加载）
-    dictStore.setDictMap();
+    dictStore.setDictCacheByApi(getSimpleDictDataList);
 
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
