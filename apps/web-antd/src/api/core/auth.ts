@@ -48,10 +48,11 @@ export async function refreshTokenApi(refreshToken: string) {
 }
 
 /** 退出登录 */
-// TODO @芋艿：有问题 baseRequestClient
-export async function logoutApi() {
-  return baseRequestClient.post('/system/auth/logout', {
-    withCredentials: true,
+export async function logoutApi(accessToken: string) {
+  return baseRequestClient.post('/system/auth/logout', {}, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    }
   });
 }
 

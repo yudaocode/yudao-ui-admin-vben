@@ -53,6 +53,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     const refreshToken = accessStore.refreshToken as string;
     const resp = await refreshTokenApi(refreshToken);
     const newToken = resp?.data?.data?.accessToken;
+    // add by 芋艿：这里一定要抛出 resp.data，从而触发 authenticateResponseInterceptor 中，刷新令牌失败！！！
+    if (!newToken) {
+      throw resp.data;
+    }
     accessStore.setAccessToken(newToken);
     return newToken;
   }
@@ -102,6 +106,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       const responseData = error?.response?.data ?? {};
       const errorMessage =
         responseData?.error ?? responseData?.message ?? responseData.msg ?? '';
+      // add by 芋艿：特殊：避免 401 “账号未登录”，重复提示。因为，此时会跳转到登录界面，只需提示一次！！！
+      if (error?.data?.code === 401) {
+        return;
+      }
       // 如果没有错误信息，则会根据状态码进行提示
       message.error(errorMessage || msg);
     }),
