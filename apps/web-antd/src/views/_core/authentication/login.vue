@@ -144,21 +144,22 @@ const formSchema = computed((): VbenFormSchema[] => {
 </script>
 
 <template>
-  <AuthenticationLogin
-    ref="loginRef"
-    :form-schema="formSchema"
-    :loading="authStore.loginLoading"
-    @submit="handleLogin"
-  />
-  <!-- TODO @芋艿：貌似加了后，登录界面变形了 -->
-  <Verification
-    ref="verifyRef"
-    v-if="captchaEnable"
-    :captcha-type="captchaType"
-    :check-captcha-api="checkCaptcha"
-    :get-captcha-api="getCaptcha"
-    :img-size="{ width: '400px', height: '200px' }"
-    mode="pop"
-    @on-success="handleVerifySuccess"
-  />
+  <div>
+    <AuthenticationLogin
+      ref="loginRef"
+      :form-schema="formSchema"
+      :loading="authStore.loginLoading"
+      @submit="handleLogin"
+    />
+    <Verification
+      ref="verifyRef"
+      v-if="captchaEnable"
+      :captcha-type="captchaType"
+      :check-captcha-api="checkCaptcha"
+      :get-captcha-api="getCaptcha"
+      :img-size="{ width: '400px', height: '200px' }"
+      mode="pop"
+      @on-success="handleVerifySuccess"
+    />
+  </div>
 </template>
