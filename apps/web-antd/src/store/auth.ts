@@ -102,7 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
     let authPermissionInfo: AuthPermissionInfo | null = null;
     authPermissionInfo = await getAuthPermissionInfoApi();
     // userStore
-    userStore.setUserInfo(authPermissionInfo.user); // TODO @芋艿：这里有报错
+    userStore.setUserInfo(authPermissionInfo.user);
     userStore.setUserRoles(authPermissionInfo.roles);
     // accessStore
     accessStore.setAccessMenus(authPermissionInfo.menus);

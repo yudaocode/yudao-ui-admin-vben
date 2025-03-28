@@ -9,11 +9,7 @@ interface BasicUserInfo {
   /**
    * 用户昵称
    */
-  realName: string;
-  /**
-   * 用户角色（TODO 已废弃，add by 芋艿）
-   */
-  roles?: string[];
+  nickname: string;
   /**
    * 用户id
    */
@@ -41,11 +37,7 @@ interface AccessState {
 export const useUserStore = defineStore('core-user', {
   actions: {
     setUserInfo(userInfo: BasicUserInfo | null) {
-      // 设置用户信息
       this.userInfo = userInfo;
-      // 设置角色信息
-      const roles = userInfo?.roles ?? [];
-      this.setUserRoles(roles);
     },
     setUserRoles(roles: string[]) {
       this.userRoles = roles;
@@ -54,8 +46,7 @@ export const useUserStore = defineStore('core-user', {
   state: (): AccessState => ({
     userInfo: null,
     userRoles: [],
-  }),
-  // TODO @芋艿：pick: ['userInfo', 'userRoles'], 是否要持久化
+  })
 });
 
 // 解决热更新问题
