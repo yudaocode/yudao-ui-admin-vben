@@ -5,6 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
+import { ref } from 'vue';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptList } from '#/api/system/dept';
@@ -92,6 +93,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         },
       },
     },
+    rowConfig: {
+      keyField: 'id',
+    },
     toolbarConfig: {
       custom: true,
       export: false,
@@ -103,6 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       rowField: 'id',
       transform: true,
       expandAll: true,
+      reserve: true,
     },
   } as VxeTableGridOptions,
 });
@@ -111,8 +116,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 function refreshGrid() {
   gridApi.query();
 }
-// TODO @芋艿：展开/折叠所有
-// TODO @芋艿：刷新后，就折叠起来了！
+
+/** 切换树形展开/收缩状态 */
+const isExpanded = ref(true);
+function toggleExpand() {
+  isExpanded.value = !isExpanded.value;
+  gridApi.grid.setAllTreeExpand(isExpanded.value);
+}
 </script>
 <template>
   <Page auto-content-height>
@@ -122,6 +132,9 @@ function refreshGrid() {
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['部门']) }}
+        </Button>
+        <Button class="ml-2" @click="toggleExpand">
+          {{ isExpanded ? '收缩' : '展开' }}
         </Button>
       </template>
     </Grid>

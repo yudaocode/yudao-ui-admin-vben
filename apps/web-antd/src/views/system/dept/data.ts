@@ -115,9 +115,7 @@ export function useSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        buttonStyle: 'solid',
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        optionType: 'button',
       },
       fieldName: 'status',
       label: '状态',
@@ -127,6 +125,7 @@ export function useSchema(): VbenFormSchema[] {
 }
 
 /** 获取表格列配置 */
+const userList = await getSimpleUserList();
 export function useColumns(
   onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
 ): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
@@ -139,11 +138,15 @@ export function useColumns(
       treeNode: true,
       minWidth: 150,
     },
-    // TODO @芋艿：需要通过 userList 翻译
     {
-      field: 'leader',
+      field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
+      formatter: (row) => {
+        return (
+          userList.find((user) => user.id === row.cellValue)?.nickname || '-'
+        );
+      },
     },
     {
       field: 'sort',
