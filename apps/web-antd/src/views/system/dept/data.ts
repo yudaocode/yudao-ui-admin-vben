@@ -1,18 +1,30 @@
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
-// import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { z } from '#/adapter/form';
-// import { getDeptList } from '#/api/system/dept';
+import { getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
+import { DICT_TYPE } from '#/utils/dict';
 
-/**
- * 获取编辑表单的字段配置。如果没有使用多语言，可以直接export一个数组常量
- */
+/** 获取编辑表单的字段配置 */
+// TODO @芋艿：表单的整理
 export function useSchema(): VbenFormSchema[] {
   return [
+    {
+      component: 'ApiTreeSelect',
+      componentProps: {
+        allowClear: true,
+        api: getDeptList,
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children'
+      },
+      fieldName: 'parentId',
+      label: '上级部门',
+    },
     {
       component: 'Input',
       fieldName: 'name',
@@ -25,19 +37,6 @@ export function useSchema(): VbenFormSchema[] {
           $t('ui.formRules.maxLength', [$t('system.dept.deptName'), 20]),
         ),
     },
-    // {
-    //   component: 'ApiTreeSelect',
-    //   componentProps: {
-    //     allowClear: true,
-    //     api: getDeptList,
-    //     class: 'w-full',
-    //     labelField: 'name',
-    //     valueField: 'id',
-    //     childrenField: 'children',
-    //   },
-    //   fieldName: 'pid',
-    //   label: $t('system.dept.parentDept'),
-    // },
     {
       component: 'RadioGroup',
       componentProps: {
@@ -69,11 +68,7 @@ export function useSchema(): VbenFormSchema[] {
   ];
 }
 
-/**
- * 获取表格列配置
- * @description 使用函数的形式返回列数据而不是直接export一个Array常量，是为了响应语言切换时重新翻译表头
- * @param onActionClick 表格操作按钮点击事件
- */
+/** 获取表格列配置 */
 export function useColumns(
   onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
 ): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
@@ -82,31 +77,39 @@ export function useColumns(
       align: 'left',
       field: 'name',
       fixed: 'left',
-      title: $t('system.dept.deptName'),
+      title: '部门名称',
       treeNode: true,
-      width: 150,
+      minWidth: 150,
+    },
+    // TODO @芋艿：需要通过 userList 翻译
+    {
+      field: 'leader',
+      title: '负责人',
+      minWidth: 150,
     },
     {
-      cellRender: { name: 'CellTag' },
+      field: 'sort',
+      title: '排序',
+      minWidth: 100,
+    },
+    {
+      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.COMMON_STATUS } },
       field: 'status',
-      title: $t('system.dept.status'),
-      width: 100,
+      title: '状态',
+      minWidth: 100,
     },
     {
       field: 'createTime',
-      title: $t('system.dept.createTime'),
-      width: 180,
-    },
-    {
-      field: 'remark',
-      title: $t('system.dept.remark'),
+      title: '创建时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
     },
     {
       align: 'right',
       cellRender: {
         attrs: {
           nameField: 'name',
-          nameTitle: $t('system.dept.name'),
+          nameTitle: '部门',
           onClick: onActionClick,
         },
         name: 'CellOperation',
@@ -128,8 +131,8 @@ export function useColumns(
       fixed: 'right',
       headerAlign: 'center',
       showOverflow: false,
-      title: $t('system.dept.operation'),
-      width: 200,
+      title: '操作',
+      minWidth: 200,
     },
   ];
 }

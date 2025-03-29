@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-// import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-
 import { Button } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-// import { createDept, updateDept } from '#/api/system/dept';
+import { createDept, updateDept } from '#/api/system/dept';
 import { $t } from '#/locales';
 
 import { useSchema } from '../data';
@@ -17,8 +16,8 @@ const emit = defineEmits(['success']);
 const formData = ref<SystemDeptApi.SystemDept>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', [$t('system.dept.name')])
-    : $t('ui.actionTitle.create', [$t('system.dept.name')]);
+    ? $t('ui.actionTitle.edit', ['部门'])
+    : $t('ui.actionTitle.create', ['部门']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -32,6 +31,7 @@ function resetForm() {
   formApi.setValues(formData.value || {});
 }
 
+// TODO @芋艿：这里没接入
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -50,11 +50,13 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
   onOpenChange(isOpen) {
+    // TODO @芋艿：这里也改下
     if (isOpen) {
       const data = modalApi.getData<SystemDeptApi.SystemDept>();
       if (data) {
-        if (data.pid === 0) {
-          data.pid = undefined;
+        // TODO @芋艿：要不要做这个处理？
+        if (data.parentId === 0) {
+          data.parentId = undefined;
         }
         formData.value = data;
         formApi.setValues(formData.value);

@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
-// import type { SystemDeptApi } from '#/api/system/dept';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemDeptApi } from '#/api/system/dept';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteDept, getDeptList } from '#/api/system/dept';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-// import { deleteDept, getDeptList } from '#/api/system/dept';
-import { $t } from '#/locales';
+import { Plus } from '@vben/icons';
 
 import { useColumns } from './data';
 import Form from './modules/form.vue';
@@ -22,40 +18,30 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/**
- * 编辑部门
- * @param row
- */
+/** 编辑部门 */
 function onEdit(row: SystemDeptApi.SystemDept) {
   formModalApi.setData(row).open();
 }
 
-/**
- * 添加下级部门
- * @param row
- */
+/** 添加下级部门 */
 function onAppend(row: SystemDeptApi.SystemDept) {
   formModalApi.setData({ pid: row.id }).open();
 }
 
-/**
- * 创建新部门
- */
+/** 创建新部门 */
 function onCreate() {
   formModalApi.setData(null).open();
 }
 
-/**
- * 删除部门
- * @param row
- */
+/** 删除部门 */
 function onDelete(row: SystemDeptApi.SystemDept) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  deleteDept(row.id)
+  // TODO @芋艿：改成 await 写法
+  deleteDept(row.id as number)
     .then(() => {
       message.success({
         content: $t('ui.actionMessage.deleteSuccess', [row.name]),
@@ -68,9 +54,7 @@ function onDelete(row: SystemDeptApi.SystemDept) {
     });
 }
 
-/**
- * 表格操作按钮的回调函数
- */
+/** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
@@ -114,19 +98,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
       zoom: true,
     },
     treeConfig: {
-      parentField: 'pid',
+      parentField: 'parentId',
       rowField: 'id',
-      transform: false,
+      transform: true,
+      expandAll: true,
     },
   } as VxeTableGridOptions,
 });
 
-/**
- * 刷新表格
- */
+/** 刷新表格 */
 function refreshGrid() {
   gridApi.query();
 }
+// TODO @芋艿：展开/折叠所有
+// TODO @芋艿：刷新后，就折叠起来了！
 </script>
 <template>
   <Page auto-content-height>
@@ -135,7 +120,7 @@ function refreshGrid() {
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', [$t('system.dept.name')]) }}
+          {{ $t('ui.actionTitle.create', ['部门']) }}
         </Button>
       </template>
     </Grid>
