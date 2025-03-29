@@ -13,6 +13,7 @@ interface DictState {
   dictCache: Dict;
 }
 
+// TODO @芋艿：可以共享么？
 export const useDictStore = defineStore('dict', {
   actions: {
     getDictData(dictType: string, value: any) {

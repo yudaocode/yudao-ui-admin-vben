@@ -3,67 +3,125 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
+import { $t } from '#/locales';
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
-import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils/dict';
+import { getSimpleUserList } from '#/api/system/user';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { CommonStatusEnum } from '#/utils/constants';
+import { handleTree } from '#/utils/tree';
 
 /** 获取编辑表单的字段配置 */
-// TODO @芋艿：表单的整理
 export function useSchema(): VbenFormSchema[] {
   return [
     {
       component: 'ApiTreeSelect',
       componentProps: {
         allowClear: true,
-        api: getDeptList,
+        api: async () => {
+          const data = await getDeptList();
+          data.unshift({
+            id: 0,
+            name: '顶级部门',
+          });
+          return handleTree(data);
+        },
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',
-        childrenField: 'children'
+        childrenField: 'children',
+        placeholder: '请选择上级部门',
+        treeDefaultExpandAll: true,
       },
       fieldName: 'parentId',
       label: '上级部门',
+      // TODO @芋艿：number 的必填，写起来有点麻烦，后续得研究下；
+      rules: z
+        .number()
+        .nullable()
+        .refine((val) => val != null && val >= 0, '上级部门不能为空')
+        .default(null),
     },
     {
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入部门名称',
+      },
       fieldName: 'name',
-      label: $t('system.dept.deptName'),
+      label: '部门名称',
       rules: z
         .string()
-        .min(2, $t('ui.formRules.minLength', [$t('system.dept.deptName'), 2]))
-        .max(
-          20,
-          $t('ui.formRules.maxLength', [$t('system.dept.deptName'), 20]),
-        ),
+        .min(2, $t('ui.formRules.minLength', ['部门名称', 2]))
+        .max(20, $t('ui.formRules.maxLength', ['部门名称', 20])),
+    },
+    {
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        class: 'w-full',
+        controlsPosition: 'right',
+        placeholder: '请输入显示排序',
+      },
+      fieldName: 'sort',
+      label: '显示排序',
+      rules: z
+        .number()
+        .nullable()
+        .refine((val) => val != null && val >= 0, '显示排序不能为空')
+        .default(null),
+    },
+    {
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleUserList,
+        class: 'w-full',
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择负责人',
+        allowClear: true,
+      },
+      fieldName: 'leaderUserId',
+      label: '负责人',
+      rules: z.number().optional(),
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        maxLength: 11,
+        placeholder: '请输入联系电话',
+      },
+      fieldName: 'phone',
+      label: '联系电话',
+      rules: z
+        .string()
+        // TODO @芋艿：未来怎么拓展一个手机的
+        .regex(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/, '请输入正确的手机号码')
+        .optional(),
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        maxLength: 50,
+        placeholder: '请输入邮箱',
+      },
+      fieldName: 'email',
+      label: '邮箱',
+      rules: z
+        .string()
+        .email('请输入正确的邮箱地址')
+        .max(50, $t('ui.formRules.maxLength', ['邮箱', 50]))
+        .optional(),
     },
     {
       component: 'RadioGroup',
       componentProps: {
         buttonStyle: 'solid',
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         optionType: 'button',
       },
-      defaultValue: 1,
       fieldName: 'status',
-      label: $t('system.dept.status'),
-    },
-    {
-      component: 'Textarea',
-      componentProps: {
-        maxLength: 50,
-        rows: 3,
-        showCount: true,
-      },
-      fieldName: 'remark',
-      label: $t('system.dept.remark'),
-      rules: z
-        .string()
-        .max(50, $t('ui.formRules.maxLength', [$t('system.dept.remark'), 50]))
-        .optional(),
+      label: '状态',
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
   ];
 }
@@ -93,7 +151,10 @@ export function useColumns(
       minWidth: 100,
     },
     {
-      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.COMMON_STATUS } },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
       field: 'status',
       title: '状态',
       minWidth: 100,

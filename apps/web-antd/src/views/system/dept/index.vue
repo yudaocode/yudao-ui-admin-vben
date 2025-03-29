@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { $t } from '#/locales';
@@ -25,7 +28,7 @@ function onEdit(row: SystemDeptApi.SystemDept) {
 
 /** 添加下级部门 */
 function onAppend(row: SystemDeptApi.SystemDept) {
-  formModalApi.setData({ pid: row.id }).open();
+  formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 创建新部门 */
@@ -34,24 +37,22 @@ function onCreate() {
 }
 
 /** 删除部门 */
-function onDelete(row: SystemDeptApi.SystemDept) {
+async function onDelete(row: SystemDeptApi.SystemDept) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  // TODO @芋艿：改成 await 写法
-  deleteDept(row.id as number)
-    .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
-      });
-      refreshGrid();
-    })
-    .catch(() => {
-      hideLoading();
+  try {
+    await deleteDept(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_process_msg',
     });
+    refreshGrid();
+  } catch (error) {
+    hideLoading();
+  }
 }
 
 /** 表格操作按钮的回调函数 */

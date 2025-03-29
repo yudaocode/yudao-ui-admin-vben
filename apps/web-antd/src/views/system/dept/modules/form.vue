@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDept, updateDept } from '#/api/system/dept';
+import { createDept, updateDept, getDept } from '#/api/system/dept';
 import { $t } from '#/locales';
 
 import { useSchema } from '../data';
@@ -21,7 +21,7 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
-  layout: 'vertical',
+  layout: 'horizontal',
   schema: useSchema(),
   showDefaultActions: false,
 });
@@ -31,37 +31,42 @@ function resetForm() {
   formApi.setValues(formData.value || {});
 }
 
-// TODO @芋艿：这里没接入
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
-    if (valid) {
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    const data = (await formApi.getValues()) as SystemDeptApi.SystemDept;
+    try {
+      await (formData.value?.id
+        ? updateDept({ id: formData.value.id, ...data })
+        : createDept(data));
+      await modalApi.close();
+      emit('success');
+    } finally {
+      modalApi.lock(false);
+    }
+  },
+  async onOpenChange(isOpen) {
+    if (!isOpen) {
+      return;
+    }
+    let data = modalApi.getData<SystemDeptApi.SystemDept>();
+    if (!data) {
+      return;
+    }
+    if (data.id) {
       modalApi.lock();
-      const data = formApi.getValues();
       try {
-        await (formData.value?.id
-          ? updateDept(formData.value.id, data)
-          : createDept(data));
-        modalApi.close();
-        emit('success');
+        data = await getDept(data.id);
       } finally {
         modalApi.lock(false);
       }
     }
-  },
-  onOpenChange(isOpen) {
-    // TODO @芋艿：这里也改下
-    if (isOpen) {
-      const data = modalApi.getData<SystemDeptApi.SystemDept>();
-      if (data) {
-        // TODO @芋艿：要不要做这个处理？
-        if (data.parentId === 0) {
-          data.parentId = undefined;
-        }
-        formData.value = data;
-        formApi.setValues(formData.value);
-      }
-    }
+    formData.value = data;
+    await formApi.setValues(formData.value);
   },
 });
 </script>
