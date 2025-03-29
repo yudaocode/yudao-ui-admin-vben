@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
         optionType: 'button',
       },
       fieldName: 'status',
-      label: '岗位岗位',
+      label: '岗位状态',
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
