@@ -11,10 +11,11 @@ import { getPostPage, deletePost, exportPost } from '#/api/system/post';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
-import { Plus } from '@vben/icons';
+import { Plus, Download } from '@vben/icons';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import {downloadByData} from '#/utils/download';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -90,7 +91,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      export: true, // TODO @芋艿：导出
       refresh: { code: 'query' },
       search: true,
     },
@@ -101,6 +101,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 function refreshGrid() {
   gridApi.query();
 }
+
+/** 导出表格 */
+async function onExport() {
+  const data = await exportPost(await gridApi.formApi.getValues());
+  downloadByData(data, '导出岗位.xls');
+}
 </script>
 <template>
   <Page auto-content-height>
@@ -110,6 +116,10 @@ function refreshGrid() {
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['岗位']) }}
+        </Button>
+        <Button type="primary" class="ml-2" @click="onExport">
+          <Download class="size-5" />
+          {{ $t('ui.actionTitle.export') }}
         </Button>
       </template>
     </Grid>

@@ -48,5 +48,7 @@ export function deletePost(id: number) {
 
 /** 导出岗位 */
 export function exportPost(params: any) {
-  return requestClient.download('/system/post/export', params);
+  return requestClient.download('/system/post/export', {
+    params
+  });
 }

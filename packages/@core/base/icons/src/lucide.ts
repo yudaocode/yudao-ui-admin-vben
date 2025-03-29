@@ -63,4 +63,5 @@ export {
   SwatchBook,
   UserRoundPen,
   X,
+  Download,
 } from 'lucide-vue-next';
