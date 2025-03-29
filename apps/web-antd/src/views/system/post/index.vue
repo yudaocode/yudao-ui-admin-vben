@@ -1,115 +1,117 @@
 <script lang="ts" setup>
-import type { VbenFormProps } from '#/adapter/form';
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
+import type { SystemPostApi } from '#/api/system/post';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getPostPage, deletePost, exportPost } from '#/api/system/post';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { $t } from '@vben/locales';
-
 import { Button, message } from 'ant-design-vue';
+import { Plus } from '@vben/icons';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { exportPost, getPostPage, type PostVO } from '#/api/system/post';
-
-import { columns, formSchema } from './post.data';
-import PostModal from './PostModal.vue';
-
-defineOptions({ name: 'SystemPost' });
-
-const formOptions: VbenFormProps = {
-  // 默认展开
-  collapsed: false,
-  schema: formSchema,
-  // 控制表单是否显示折叠按钮
-  showCollapseButton: true,
-  // 按下回车时是否提交表单
-  submitOnEnter: false,
-};
-
-const gridOptions: VxeGridProps<PostVO> = {
-  checkboxConfig: {
-    highlight: true,
-    labelField: 'id',
-  },
-  columns,
-  height: 'auto',
-  keepSource: true,
-  pagerConfig: {},
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }, formValues) => {
-        return await getPostPage({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
-      },
-    },
-  },
-};
-
-const [Grid, tableApi] = useVbenVxeGrid({ formOptions, gridOptions });
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: PostModal,
+  connectedComponent: Form,
+  destroyOnClose: true,
 });
 
-function handleCreate() {
-  formModalApi.setData({
-    valuse: {},
+/** 编辑岗位 */
+function onEdit(row: SystemPostApi.SystemPost) {
+  formModalApi.setData(row).open();
+}
+
+/** 创建岗位 */
+function onCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 删除岗位 */
+async function onDelete(row: SystemPostApi.SystemPost) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
+    key: 'action_process_msg',
   });
-  formModalApi.open();
+  try {
+    await deletePost(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_process_msg',
+    });
+    refreshGrid();
+  } catch (error) {
+    hideLoading();
+  }
 }
-async function handleEdit(id: number) {
-  formModalApi.setData({ id });
-  formModalApi.open();
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemPostApi.SystemPost>) {
+  switch (code) {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
+  }
 }
-// TODO
-function handleDelete(id: number) {
-  message.success(id);
-}
-// TODO
-async function handleExport() {
-  await exportPost(tableApi.formApi.form.values);
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema()
+  },
+  gridOptions: {
+    columns: useGridColumns(onActionClick),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getPostPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      export: true, // TODO @芋艿：导出
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<SystemPostApi.SystemPost>,
+});
+
+/** 刷新表格 */
+function refreshGrid() {
+  gridApi.query();
 }
 </script>
-
 <template>
   <Page auto-content-height>
-    <Grid>
-      <template #toolbar-actions>
-        <Button
-          type="primary"
-          v-access:code="['system:post:create']"
-          @click="handleCreate"
-        >
-          {{ $t('page.action.add') }}
-        </Button>
-        <Button
-          class="ml-4"
-          v-access:code="['system:post:export']"
-          @click="handleExport"
-        >
-          {{ $t('page.action.export') }}
-        </Button>
-      </template>
-      <template #action="{ row }">
-        <Button
-          type="link"
-          v-access:code="['system:post:update']"
-          @click="handleEdit(row.id)"
-        >
-          {{ $t('page.action.edit') }}
-        </Button>
-        <Button
-          danger
-          type="link"
-          v-access:code="['system:post:delete']"
-          @click="handleDelete(row.id)"
-        >
-          {{ $t('page.action.delete') }}
+    <FormModal @success="refreshGrid" />
+    <Grid table-title="岗位列表">
+      <template #toolbar-tools>
+        <Button type="primary" @click="onCreate">
+          <Plus class="size-5" />
+          {{ $t('ui.actionTitle.create', ['岗位']) }}
         </Button>
       </template>
     </Grid>
-    <FormModal />
   </Page>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemPostApi } from '#/api/system/post';
 
 import { computed, ref } from 'vue';
 
@@ -7,17 +7,17 @@ import { useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDept, updateDept, getDept } from '#/api/system/dept';
+import { createPost, updatePost, getPost } from '#/api/system/post';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemDeptApi.SystemDept>();
+const formData = ref<SystemPostApi.SystemPost>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['部门'])
-    : $t('ui.actionTitle.create', ['部门']);
+    ? $t('ui.actionTitle.edit', ['岗位'])
+    : $t('ui.actionTitle.create', ['岗位']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -38,11 +38,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as SystemDeptApi.SystemDept;
+    const data = (await formApi.getValues()) as SystemPostApi.SystemPost;
     try {
       await (formData.value?.id
-        ? updateDept(data)
-        : createDept(data));
+        ? updatePost(data)
+        : createPost(data));
       await modalApi.close();
       emit('success');
       message.success({
@@ -57,20 +57,17 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    let data = modalApi.getData<SystemDeptApi.SystemDept>();
-    if (!data) {
+    const data = modalApi.getData<SystemPostApi.SystemPost>();
+    if (!data || !data.id) {
       return;
     }
-    if (data.id) {
-      modalApi.lock();
-      try {
-        data = await getDept(data.id);
-      } finally {
-        modalApi.lock(false);
-      }
+    modalApi.lock();
+    try {
+      formData.value = await getPost(data.id as number);
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.lock(false);
     }
-    formData.value = data;
-    await formApi.setValues(formData.value);
   },
 });
 </script>

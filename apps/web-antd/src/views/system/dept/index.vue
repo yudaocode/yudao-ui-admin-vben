@@ -8,13 +8,13 @@ import type { SystemDeptApi } from '#/api/system/dept';
 import { ref } from 'vue';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDept, getDeptList } from '#/api/system/dept';
+import { getDeptList, deleteDept } from '#/api/system/dept';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { Plus } from '@vben/icons';
 
-import { useColumns } from './data';
+import { useGridColumns } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -32,7 +32,7 @@ function onAppend(row: SystemDeptApi.SystemDept) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
-/** 创建新部门 */
+/** 创建部门 */
 function onCreate() {
   formModalApi.setData(null).open();
 }
@@ -78,9 +78,8 @@ function onActionClick({
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  gridEvents: {},
   gridOptions: {
-    columns: useColumns(onActionClick),
+    columns: useGridColumns(onActionClick),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -97,10 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      custom: true,
-      export: false,
       refresh: { code: 'query' },
-      zoom: true,
     },
     treeConfig: {
       parentField: 'parentId',

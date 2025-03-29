@@ -12,8 +12,17 @@ import { CommonStatusEnum } from '#/utils/constants';
 import { handleTree } from '#/utils/tree';
 
 /** 获取编辑表单的字段配置 */
-export function useSchema(): VbenFormSchema[] {
+export function useFormSchema(): VbenFormSchema[] {
   return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
     {
       component: 'ApiTreeSelect',
       componentProps: {
@@ -35,12 +44,7 @@ export function useSchema(): VbenFormSchema[] {
       },
       fieldName: 'parentId',
       label: '上级部门',
-      // TODO @芋艿：number 的必填，写起来有点麻烦，后续得研究下；
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val >= 0, '上级部门不能为空')
-        .default(null),
+      rules: 'selectRequired'
     },
     {
       component: 'Input',
@@ -49,10 +53,7 @@ export function useSchema(): VbenFormSchema[] {
       },
       fieldName: 'name',
       label: '部门名称',
-      rules: z
-        .string()
-        .min(2, $t('ui.formRules.minLength', ['部门名称', 2]))
-        .max(20, $t('ui.formRules.maxLength', ['部门名称', 20])),
+      rules: 'required',
     },
     {
       component: 'InputNumber',
@@ -60,15 +61,11 @@ export function useSchema(): VbenFormSchema[] {
         min: 0,
         class: 'w-full',
         controlsPosition: 'right',
-        placeholder: '请输入显示排序',
+        placeholder: '请输入部门顺序',
       },
       fieldName: 'sort',
-      label: '显示排序',
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val >= 0, '显示排序不能为空')
-        .default(null),
+      label: '部门顺序',
+      rules: 'required',
     },
     {
       component: 'ApiSelect',
@@ -116,6 +113,8 @@ export function useSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
       fieldName: 'status',
       label: '状态',
@@ -126,7 +125,7 @@ export function useSchema(): VbenFormSchema[] {
 
 /** 获取表格列配置 */
 const userList = await getSimpleUserList();
-export function useColumns(
+export function useGridColumns(
   onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
 ): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
   return [
@@ -150,7 +149,7 @@ export function useColumns(
     },
     {
       field: 'sort',
-      title: '排序',
+      title: '部门顺序',
       minWidth: 100,
     },
     {
@@ -159,7 +158,7 @@ export function useColumns(
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
       field: 'status',
-      title: '状态',
+      title: '部门状态',
       minWidth: 100,
     },
     {

@@ -1,37 +1,43 @@
 import { requestClient } from '#/api/request';
+import type {PageParam, PageResult} from '@vben/request';
 
-export interface PostVO {
-  id?: number;
-  name: string;
-  code: string;
-  sort: number;
-  status: number;
-  remark: string;
-  createTime?: Date;
+export namespace SystemPostApi {
+  /** 岗位信息 */
+  export interface SystemPost {
+    id?: number;
+    name: string;
+    code: string;
+    sort: number;
+    status: number;
+    remark: string;
+    createTime?: Date;
+  }
 }
 
 /** 查询岗位列表 */
-export function getPostPage(params: any) {
-  return requestClient.get('/system/post/page', { params });
+export function getPostPage(params: PageParam) {
+  return requestClient.get<PageResult<SystemPostApi.SystemPost>>('/system/post/page', {
+    params
+  });
 }
 
 /** 获取岗位精简信息列表 */
 export function getSimplePostList() {
-  return requestClient.get('/system/post/simple-list');
+  return requestClient.get<SystemPostApi.SystemPost[]>('/system/post/simple-list');
 }
 
  /** 查询岗位详情 */
 export function getPost(id: number) {
-  return requestClient.get(`/system/post/get?id=${id}`);
+  return requestClient.get<SystemPostApi.SystemPost>(`/system/post/get?id=${id}`);
 }
 
 /** 新增岗位 */
-export function createPost(data: PostVO) {
+export function createPost(data: SystemPostApi.SystemPost) {
   return requestClient.post('/system/post/create', data);
 }
 
 /** 修改岗位 */
-export function updatePost(data: PostVO) {
+export function updatePost(data: SystemPostApi.SystemPost) {
   return requestClient.put('/system/post/update', data);
 }
 
