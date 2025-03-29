@@ -29,12 +29,12 @@ setupVbenVxeTable({
           enabled: false,
         },
         toolbarConfig: {
-          import: true,
-          export: true,
-          refresh: true,
-          print: true,
-          zoom: true,
-          custom: true,
+          import: false, // 是否导入
+          export: false, // 四否导出
+          refresh: true, // 是否刷新
+          print: false, // 是否打印
+          zoom: true, // 是否缩放
+          custom: true, // 是否自定义配置
         },
         customConfig: {
           mode: 'modal',
