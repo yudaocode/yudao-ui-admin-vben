@@ -61,10 +61,7 @@ class RequestClient {
       responseReturn: 'raw',
       // 默认超时时间
       timeout: 10_000,
-      // 处理请求参数 默认使用 qs 库处理
-      paramsSerializer: (params) => {
-        return qs.stringify(params, { arrayFormat: 'repeat' });
-      },
+      paramsSerializer: 'repeat'
     };
     const { ...axiosConfig } = options;
     const requestConfig = merge(axiosConfig, defaultConfig);
