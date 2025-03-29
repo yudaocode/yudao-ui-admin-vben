@@ -3,11 +3,11 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemPostApi } from '#/api/system/post';
+import type { SystemRoleApi } from '#/api/system/role';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getPostPage, deletePost, exportPost } from '#/api/system/post';
+import { getRolePage, deleteRole, exportRole } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
@@ -22,25 +22,25 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 编辑岗位 */
-function onEdit(row: SystemPostApi.SystemPost) {
+/** 编辑角色 */
+function onEdit(row: SystemRoleApi.SystemRole) {
   formModalApi.setData(row).open();
 }
 
-/** 创建岗位 */
+/** 创建角色 */
 function onCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 删除岗位 */
-async function onDelete(row: SystemPostApi.SystemPost) {
+/** 删除角色 */
+async function onDelete(row: SystemRoleApi.SystemRole) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await deletePost(row.id as number);
+    await deleteRole(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
       key: 'action_process_msg',
@@ -52,17 +52,14 @@ async function onDelete(row: SystemPostApi.SystemPost) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemPostApi.SystemPost>) {
-  switch (code) {
+function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
+  switch (e.code) {
     case 'delete': {
-      onDelete(row);
+      onDelete(e.row);
       break;
     }
     case 'edit': {
-      onEdit(row);
+      onEdit(e.row);
       break;
     }
   }
@@ -70,7 +67,9 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    // TODO @芋艿：时间范围的检索
+    fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -79,8 +78,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getPostPage({
-            pageNo: page.currentPage,
+          return await getRolePage({
+            page: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
@@ -94,7 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemPostApi.SystemPost>,
+  } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
 });
 
 /** 刷新表格 */
@@ -104,18 +103,18 @@ function onRefresh() {
 
 /** 导出表格 */
 async function onExport() {
-  const data = await exportPost(await gridApi.formApi.getValues());
-  downloadByData(data, '岗位.xls');
+  const data = await exportRole(await gridApi.formApi.getValues());
+  downloadByData(data, '角色.xls');
 }
 </script>
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
-    <Grid table-title="岗位列表">
+    <Grid table-title="角色列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['岗位']) }}
+          {{ $t('ui.actionTitle.create', ['角色']) }}
         </Button>
         <Button type="primary" class="ml-2" @click="onExport">
           <Download class="size-5" />

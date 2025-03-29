@@ -50,7 +50,7 @@ async function onDelete(row: SystemDeptApi.SystemDept) {
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
       key: 'action_process_msg',
     });
-    refreshGrid();
+    onRefresh();
   } catch (error) {
     hideLoading();
   }
@@ -109,7 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 刷新表格 */
-function refreshGrid() {
+function onRefresh() {
   gridApi.query();
 }
 
@@ -122,7 +122,7 @@ function toggleExpand() {
 </script>
 <template>
   <Page auto-content-height>
-    <FormModal @success="refreshGrid" />
+    <FormModal @success="onRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">

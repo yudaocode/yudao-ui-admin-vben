@@ -1,4 +1,5 @@
 import { requestClient } from '#/api/request';
+import type { PageParam } from '@vben/request';
 
 export namespace SystemUserApi {
   /** 用户信息 */
@@ -20,7 +21,7 @@ export namespace SystemUserApi {
 }
 
 /** 查询用户管理列表 */
-export function getUserPage(params: any) {
+export function getUserPage(params: PageParam) {
   return requestClient.get('/system/user/page', { params });
 }
 
