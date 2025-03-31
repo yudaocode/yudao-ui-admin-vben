@@ -23,10 +23,9 @@ const formData = ref<SystemRoleApi.SystemRole>();
 const deptTree = ref<SystemDeptApi.SystemDept[]>([]); // 部门树
 const deptLoading = ref(false); // 加载部门列表
 const isAllSelected = ref(false); // 全选状态
-const isExpanded = ref(true); // 展开状态
-const isDeptCheckStrictly = ref(true); // 父子联动状态
-
-const treeRef = ref(); // 树组件引用
+const isExpanded = ref(false); // 展开状态
+const isCheckStrictly = ref(true); // 父子联动状态
+const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -75,6 +74,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.setValues(formData.value);
       // 加载部门列表
       await loadDeptTree();
+      toggleExpandAll();
     } finally {
       modalApi.lock(false);
     }
@@ -85,8 +85,8 @@ const [Modal, modalApi] = useVbenModal({
 async function loadDeptTree() {
   deptLoading.value = true;
   try {
-    const res = await getDeptList();
-    deptTree.value = handleTree(res);
+    const data = await getDeptList();
+    deptTree.value = handleTree(data);
   } finally {
     deptLoading.value = false;
   }
@@ -95,40 +95,33 @@ async function loadDeptTree() {
 /** 全选/全不选 */
 function toggleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
-  if (treeRef.value) {
-    // 根据VbenTree组件的API，调用相应方法全选或全不选
-    if (isAllSelected.value) {
-      // 全选逻辑，可能需要根据实际实现调整
-      const allIds = getAllNodeIds(deptTree.value);
-      formApi.setFieldValue('dataScopeDeptIds', allIds);
-    } else {
-      // 全不选
-      formApi.setFieldValue('dataScopeDeptIds', []);
-    }
+  if (isAllSelected.value) {
+    const allIds = getAllNodeIds(deptTree.value);
+    formApi.setFieldValue('dataScopeDeptIds', allIds);
+  } else {
+    formApi.setFieldValue('dataScopeDeptIds', []);
   }
 }
 
 /** 展开/折叠所有节点 */
-function toggleExpandAll() {
+async function toggleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  debugger
-  if (treeRef.value) {
-    if (isExpanded.value) {
-      treeRef.value.expandAll(); // 展开所有节点
-    } else {
-      treeRef.value.collapseAll(); // 折叠所有节点
-    }
+  if (isExpanded.value) {
+    // 获取所有节点的 ID
+    expandedKeys.value = getAllNodeIds(deptTree.value);
+  } else {
+    expandedKeys.value = [];
   }
 }
 
 /** 切换父子联动 */
 function toggleCheckStrictly() {
-  isDeptCheckStrictly.value = !isDeptCheckStrictly.value;
+  isCheckStrictly.value = !isCheckStrictly.value;
 }
 
-/** 递归获取所有节点ID */
-function getAllNodeIds(nodes, ids = []) {
-  nodes.forEach((node) => {
+/** 递归获取所有节点 ID */
+function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
+  nodes.forEach((node: any) => {
     ids.push(node.id);
     if (node.children && node.children.length > 0) {
       getAllNodeIds(node.children, ids);
@@ -143,16 +136,17 @@ function getAllNodeIds(nodes, ids = []) {
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
         <Spin :spinning="deptLoading" class="w-full">
+          <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
           <VbenTree
-            ref="treeRef"
             :tree-data="deptTree"
             multiple
             bordered
-            :default-expanded-level="isExpanded ? 100 : 0"
+            :expanded="expandedKeys"
             v-bind="slotProps"
             value-field="id"
             label-field="name"
-            :check-strictly="!isDeptCheckStrictly"
+            :auto-check-parent="false"
+            :check-strictly="!isCheckStrictly"
           />
         </Spin>
       </template>
@@ -165,7 +159,7 @@ function getAllNodeIds(nodes, ids = []) {
         <Checkbox :checked="isExpanded" @change="toggleExpandAll">
           全部展开
         </Checkbox>
-        <Checkbox :checked="isDeptCheckStrictly" @change="toggleCheckStrictly">
+        <Checkbox :checked="isCheckStrictly" @change="toggleCheckStrictly">
           父子联动
         </Checkbox>
       </div>
