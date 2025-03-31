@@ -110,7 +110,7 @@ watch(
   async (enable) => {
     if (enable) {
       await updateWatermark({
-        content: `${userStore.userInfo?.username} - ${userStore.userInfo?.realName}`,
+        content: `${userStore.userInfo?.id} - ${userStore.userInfo?.nickname}`,
       });
     } else {
       destroyWatermark();
