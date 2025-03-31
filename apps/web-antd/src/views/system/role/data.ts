@@ -3,8 +3,9 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { CommonStatusEnum } from '#/utils/constants';
+import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
 
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -59,6 +60,60 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 分配数据权限的表单 */
+export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'name',
+      label: '角色名称',
+      componentProps: {
+        disabled: true,
+      }
+    },
+    {
+      component: 'Input',
+      fieldName: 'code',
+      label: '角色标识',
+      componentProps: {
+        disabled: true,
+      }
+    },
+    {
+      component: 'Select',
+      fieldName: 'dataScope',
+      label: '权限范围',
+      componentProps: {
+        class: 'w-full',
+        options: getDictOptions(DICT_TYPE.SYSTEM_DATA_SCOPE, 'number'),
+      }
+    },
+    {
+      component: 'Input',
+      fieldName: 'dataScopeDeptIds',
+      label: '部门范围',
+      // dependencies: {
+      //   triggerFields: ['dataScope'],
+      //   show: (values) => {
+      //     return values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM;
+      //   }
+      // },
+      formItemClass: 'items-start', // TODO @芋艿：
+      modelPropName: 'modelValue', // TODO @芋艿：
+    }
+  ]
+}
+
+/** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -88,6 +143,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 列表的字段 */
 export function useGridColumns<T = SystemRoleApi.SystemRole>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
@@ -150,11 +206,19 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          'edit', // 默认的编辑按钮
+          'delete', // 默认的删除按钮
+          {
+            code: 'assign-data-permission',
+            text: '数据权限',
+          },
+        ],
       },
       field: 'operation',
       fixed: 'right',
       title: '操作',
-      width: 130,
+      width: 220,
     },
   ];
 }

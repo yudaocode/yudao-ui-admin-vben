@@ -15,10 +15,16 @@ import { Plus, Download } from '@vben/icons';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
 import { downloadByData } from '#/utils/download';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [AssignDataPermissionFormModel, assignDataPermissionFormApi] = useVbenModal({
+  connectedComponent: AssignDataPermissionForm,
   destroyOnClose: true,
 });
 
@@ -51,15 +57,27 @@ async function onDelete(row: SystemRoleApi.SystemRole) {
   }
 }
 
+/** 分配角色的数据权限 */
+function onAssignDataPermission(row: SystemRoleApi.SystemRole) {
+  assignDataPermissionFormApi.setData(row).open();
+}
+
 /** 表格操作按钮的回调函数 */
-function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
-  switch (e.code) {
+function onActionClick({
+   code,
+   row
+}: OnActionClickParams<SystemRoleApi.SystemRole>) {
+  switch (code) {
     case 'delete': {
-      onDelete(e.row);
+      onDelete(row);
       break;
     }
     case 'edit': {
-      onEdit(e.row);
+      onEdit(row);
+      break;
+    }
+    case 'assign-data-permission': {
+      onAssignDataPermission(row);
       break;
     }
   }
@@ -110,6 +128,7 @@ async function onExport() {
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
+    <AssignDataPermissionFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">

@@ -1,5 +1,5 @@
 import { requestClient } from '#/api/request';
-import type { PageParam } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 export namespace SystemRoleApi {
   /** 角色信息 */
@@ -18,17 +18,17 @@ export namespace SystemRoleApi {
 
 /** 查询角色列表 */
 export function getRolePage(params: PageParam) {
-  return requestClient.get('/system/role/page', { params });
+  return requestClient.get<PageResult<SystemRoleApi.SystemRole>>('/system/role/page', { params });
 }
 
 /** 查询角色（精简)列表 */
 export function getSimpleRoleList(): Promise<SystemRoleApi.SystemRole[]> {
-  return requestClient.get('/system/role/simple-list');
+  return requestClient.get<SystemRoleApi.SystemRole[]>('/system/role/simple-list');
 }
 
 /** 查询角色详情 */
 export function getRole(id: number) {
-  return requestClient.get(`/system/role/get?id=${id}`);
+  return requestClient.get<SystemRoleApi.SystemRole>(`/system/role/get?id=${id}`);
 }
 
 /** 新增角色 */
