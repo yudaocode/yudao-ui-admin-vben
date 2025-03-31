@@ -1,7 +1,8 @@
-import {type VbenFormSchema, z} from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
+import { z } from '#/adapter/form';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
 
@@ -27,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       fieldName: 'code',
       label: '角色标识',
-      rules:'required',
+      rules: 'required',
     },
     {
       component: 'InputNumber',
@@ -56,7 +57,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       fieldName: 'remark',
       label: '角色备注',
-    }
+    },
   ];
 }
 
@@ -78,7 +79,7 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
       label: '角色名称',
       componentProps: {
         disabled: true,
-      }
+      },
     },
     {
       component: 'Input',
@@ -86,7 +87,7 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
       label: '角色标识',
       componentProps: {
         disabled: true,
-      }
+      },
     },
     {
       component: 'Select',
@@ -95,22 +96,22 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
       componentProps: {
         class: 'w-full',
         options: getDictOptions(DICT_TYPE.SYSTEM_DATA_SCOPE, 'number'),
-      }
+      },
     },
     {
       component: 'Input',
       fieldName: 'dataScopeDeptIds',
       label: '部门范围',
-      // dependencies: {
-      //   triggerFields: ['dataScope'],
-      //   show: (values) => {
-      //     return values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM;
-      //   }
-      // },
-      formItemClass: 'items-start', // TODO @芋艿：
-      modelPropName: 'modelValue', // TODO @芋艿：
-    }
-  ]
+      dependencies: {
+        triggerFields: ['dataScope'],
+        show: (values) => {
+          return values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM;
+        },
+      },
+      formItemClass: 'items-start',
+      modelPropName: 'modelValue', // TODO @芋艿：这个是不是可以去掉哈
+    },
+  ];
 }
 
 /** 列表的搜索表单 */
@@ -224,4 +225,3 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
 }
 
 // TODO @芋艿：角色分配
-// TODO @芋艿：数据权限

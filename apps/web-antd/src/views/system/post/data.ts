@@ -5,6 +5,7 @@ import type { SystemPostApi } from '#/api/system/post';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
 
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -59,6 +60,7 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -83,6 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 列表的字段 */
 export function useGridColumns<T = SystemPostApi.SystemPost>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {

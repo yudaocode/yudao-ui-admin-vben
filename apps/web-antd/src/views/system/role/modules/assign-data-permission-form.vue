@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import type { SystemRoleApi } from '#/api/system/role';
+import type { SystemDeptApi } from '#/api/system/dept';
 
-import { ref } from 'vue';
-
+import { VbenTree } from '@vben/common-ui';
 import { useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
-import { useVbenForm } from '#/adapter/form';
-import { createRole, updateRole, getRole } from '#/api/system/role';
+import { ref } from 'vue';
 import { $t } from '#/locales';
+import { useVbenForm } from '#/adapter/form';
+import { getRole } from '#/api/system/role';
+import { assignRoleDataScope} from '#/api/system/permission';
+import { getDeptList } from '#/api/system/dept';
+import { handleTree } from '#/utils/tree';
 
 import { useAssignDataPermissionFormSchema } from '../data';
+import { SystemDataScopeEnum } from '#/utils/constants';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemRoleApi.SystemRole>();
 
-// TODO @待处理
-import { getDeptList, type SystemDeptApi } from '#/api/system/dept';
-import { handleTree } from '#/utils/tree';
-import type { Recordable } from '@vben-core/typings';
+const deptTree = ref<SystemDeptApi.SystemDept[]>([]); // 部门树
+const deptLoading = ref(false); // 加载部门列表
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -38,11 +41,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as SystemRoleApi.SystemRole;
+    const data = await formApi.getValues();
     try {
-      await (formData.value?.id
-        ? updateRole(data)
-        : createRole(data));
+      await assignRoleDataScope({
+        roleId: data.id,
+        dataScope: data.dataScope,
+        dataScopeDeptIds: data.dataScope === SystemDataScopeEnum.DEPT_CUSTOM ? data.dataScopeDeptIds : undefined,
+      });
       await modalApi.close();
       emit('success');
       message.success({
@@ -65,40 +70,23 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getRole(data.id as number);
       await formApi.setValues(formData.value);
-      await loadPermissions();
+      // 加载部门列表
+      await loadDeptTree();
     } finally {
       modalApi.lock(false);
     }
   },
 });
 
-// TODO 待处理
-const permissions = ref<SystemDeptApi.SystemDept[]>([]);
-const loadingPermissions = ref(false);
-
-// TODO 待处理
-async function loadPermissions() {
-  loadingPermissions.value = true;
+/** 加载部门树 */
+async function loadDeptTree() {
+  deptLoading.value = true;
   try {
-    debugger
     const res = await getDeptList();
-    permissions.value = handleTree(res);
+    deptTree.value = handleTree(res);
   } finally {
-    loadingPermissions.value = false;
+    deptLoading.value = false;
   }
-}
-
-// TODO 待处理
-function getNodeClass(node: Recordable<any>) {
-  const classes: string[] = [];
-  if (node.value?.type === 'button') {
-    classes.push('inline-flex');
-    if (node.index % 3 >= 1) {
-      classes.push('!pl-0');
-    }
-  }
-
-  return classes.join(' ');
 }
 </script>
 
@@ -106,13 +94,12 @@ function getNodeClass(node: Recordable<any>) {
   <Modal title="数据权限">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <Spin :spinning="loadingPermissions" wrapper-class-name="w-full">
+        <Spin :spinning="deptLoading" class="w-full">
           <VbenTree
-            :tree-data="permissions"
+            :tree-data="deptTree"
             multiple
             bordered
             :default-expanded-level="2"
-            :get-node-class="getNodeClass"
             v-bind="slotProps"
             value-field="id"
             label-field="name"
@@ -129,21 +116,3 @@ function getNodeClass(node: Recordable<any>) {
     </template>
   </Modal>
 </template>
-<!-- TODO @芋艿：测试 -->
-<style lang="css" scoped>
-:deep(.ant-tree-title) {
-  .tree-actions {
-    display: none;
-    margin-left: 20px;
-  }
-}
-
-:deep(.ant-tree-title:hover) {
-  .tree-actions {
-    display: flex;
-    flex: auto;
-    justify-content: flex-end;
-    margin-left: 20px;
-  }
-}
-</style>

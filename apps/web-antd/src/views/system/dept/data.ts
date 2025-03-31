@@ -11,7 +11,7 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
 import { handleTree } from '#/utils/tree';
 
-/** 获取编辑表单的字段配置 */
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -123,7 +123,7 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 获取表格列配置 */
+/** 列表的字段 */
 const userList = await getSimpleUserList();
 export function useGridColumns(
   onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
