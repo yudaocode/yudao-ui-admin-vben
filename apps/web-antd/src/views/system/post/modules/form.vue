@@ -4,7 +4,7 @@ import type { SystemPostApi } from '#/api/system/post';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createPost, updatePost, getPost } from '#/api/system/post';
@@ -25,11 +25,6 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
 });
-
-function resetForm() {
-  formApi.resetForm();
-  formApi.setValues(formData.value || {});
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -75,12 +70,5 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle">
     <Form class="mx-4" />
-    <template #prepend-footer>
-      <div class="flex-auto">
-        <Button type="primary" danger @click="resetForm">
-          {{ $t('common.reset') }}
-        </Button>
-      </div>
-    </template>
   </Modal>
 </template>
