@@ -2,7 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemMenuApi {
   /** 菜单信息 */
-  export interface MenuVO {
+  export interface SystemMenu {
     id: number;
     name: string;
     permission: string;
@@ -23,26 +23,26 @@ export namespace SystemMenuApi {
 
 /** 查询菜单（精简）列表 */
 export async function getSimpleMenusList() {
-  return requestClient.get('/system/menu/simple-list');
+  return requestClient.get<SystemMenuApi.SystemMenu[]>('/system/menu/simple-list');
 }
 
 /** 查询菜单列表 */
 export async function getMenuList(params?: Record<string, any>) {
-  return requestClient.get('/system/menu/list', { params });
+  return requestClient.get<SystemMenuApi.SystemMenu[]>('/system/menu/list', { params });
 }
 
 /** 获取菜单详情 */
 export async function getMenu(id: number) {
-  return requestClient.get(`/system/menu/get?id=${id}`);
+  return requestClient.get<SystemMenuApi.SystemMenu>(`/system/menu/get?id=${id}`);
 }
 
 /** 新增菜单 */
-export async function createMenu(data: SystemMenuApi.MenuVO) {
+export async function createMenu(data: SystemMenuApi.SystemMenu) {
   return requestClient.post('/system/menu/create', data);
 }
 
 /** 修改菜单 */
-export async function updateMenu(data: SystemMenuApi.MenuVO) {
+export async function updateMenu(data: SystemMenuApi.SystemMenu) {
   return requestClient.put('/system/menu/update', data);
 }
 
