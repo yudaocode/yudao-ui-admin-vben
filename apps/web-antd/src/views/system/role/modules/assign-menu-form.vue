@@ -9,26 +9,23 @@ import { message, Checkbox } from 'ant-design-vue';
 import { ref } from 'vue';
 import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
-import { getRole } from '#/api/system/role';
-import { assignRoleDataScope } from '#/api/system/permission';
-import { getDeptList } from '#/api/system/dept';
+import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
+import { getMenuList } from '#/api/system/menu';
 import { handleTree } from '#/utils/tree';
 
-import { useAssignDataPermissionFormSchema } from '../data';
-import { SystemDataScopeEnum } from '#/utils/constants';
+import { useAssignMenuFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-const deptTree = ref<SystemDeptApi.SystemDept[]>([]); // 部门树
-const deptLoading = ref(false); // 加载部门列表
+const menuTree = ref<SystemDeptApi.SystemDept[]>([]); // 菜单树
+const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
-const isCheckStrictly = ref(true); // 父子联动状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: useAssignDataPermissionFormSchema(),
+  schema: useAssignMenuFormSchema(),
   showDefaultActions: false,
 });
 
@@ -41,13 +38,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     const data = await formApi.getValues();
     try {
-      await assignRoleDataScope({
+      await assignRoleMenu({
         roleId: data.id,
-        dataScope: data.dataScope,
-        dataScopeDeptIds:
-          data.dataScope === SystemDataScopeEnum.DEPT_CUSTOM
-            ? data.dataScopeDeptIds
-            : undefined,
+        menuIds: data.menuIds
       });
       await modalApi.close();
       emit('success');
@@ -69,24 +62,26 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      await formApi.setValues(await getRole(data.id as number));
-      // 加载部门列表
-      await loadDeptTree();
-      toggleExpandAll();
+      await formApi.setValues(data);
+      // 加载角色菜单
+      const menuIds = await getRoleMenuList(data.id as number);
+      await formApi.setFieldValue('menuIds', menuIds);
+      // 加载菜单列表
+      await loadMenuTree();
     } finally {
       modalApi.lock(false);
     }
   },
 });
 
-/** 加载部门树 */
-async function loadDeptTree() {
-  deptLoading.value = true;
+/** 加载菜单树 */
+async function loadMenuTree() {
+  menuLoading.value = true;
   try {
-    const data = await getDeptList();
-    deptTree.value = handleTree(data);
+    const data = await getMenuList();
+    menuTree.value = handleTree(data);
   } finally {
-    deptLoading.value = false;
+    menuLoading.value = false;
   }
 }
 
@@ -94,10 +89,10 @@ async function loadDeptTree() {
 function toggleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
   if (isAllSelected.value) {
-    const allIds = getAllNodeIds(deptTree.value);
-    formApi.setFieldValue('dataScopeDeptIds', allIds);
+    const allIds = getAllNodeIds(menuTree.value);
+    formApi.setFieldValue('menuIds', allIds);
   } else {
-    formApi.setFieldValue('dataScopeDeptIds', []);
+    formApi.setFieldValue('menuIds', []);
   }
 }
 
@@ -106,15 +101,10 @@ function toggleExpandAll() {
   isExpanded.value = !isExpanded.value;
   if (isExpanded.value) {
     // 获取所有节点的 ID
-    expandedKeys.value = getAllNodeIds(deptTree.value);
+    expandedKeys.value = getAllNodeIds(menuTree.value);
   } else {
     expandedKeys.value = [];
   }
-}
-
-/** 切换父子联动 */
-function toggleCheckStrictly() {
-  isCheckStrictly.value = !isCheckStrictly.value;
 }
 
 /** 递归获取所有节点 ID */
@@ -132,19 +122,17 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
 <template>
   <Modal title="数据权限">
     <Form class="mx-4">
-      <template #dataScopeDeptIds="slotProps">
-        <Spin :spinning="deptLoading" class="w-full">
+      <template #menuIds="slotProps">
+        <Spin :spinning="menuLoading" class="w-full">
           <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
           <VbenTree
-            :tree-data="deptTree"
+            :tree-data="menuTree"
             multiple
             bordered
             :expanded="expandedKeys"
             v-bind="slotProps"
             value-field="id"
             label-field="name"
-            :auto-check-parent="false"
-            :check-strictly="!isCheckStrictly"
           />
         </Spin>
       </template>
@@ -156,9 +144,6 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
         </Checkbox>
         <Checkbox :checked="isExpanded" @change="toggleExpandAll">
           全部展开
-        </Checkbox>
-        <Checkbox :checked="isCheckStrictly" @change="toggleCheckStrictly">
-          父子联动
         </Checkbox>
       </div>
     </template>

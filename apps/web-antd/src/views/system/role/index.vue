@@ -16,6 +16,7 @@ import { Plus, Download } from '@vben/icons';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
+import AssignMenuForm from '#/views/system/role/modules/assign-menu-form.vue';
 import { downloadByData } from '#/utils/download';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -27,6 +28,11 @@ const [AssignDataPermissionFormModel, assignDataPermissionFormApi] = useVbenModa
   connectedComponent: AssignDataPermissionForm,
   destroyOnClose: true,
 });
+
+const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
+  connectedComponent: AssignMenuForm,
+  destroyOnClose: true,
+})
 
 /** 编辑角色 */
 function onEdit(row: SystemRoleApi.SystemRole) {
@@ -62,6 +68,11 @@ function onAssignDataPermission(row: SystemRoleApi.SystemRole) {
   assignDataPermissionFormApi.setData(row).open();
 }
 
+/** 分配角色的菜单权限 */
+function onAssignMenu(row: SystemRoleApi.SystemRole) {
+  assignMenuFormApi.setData(row).open();
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({
    code,
@@ -78,6 +89,10 @@ function onActionClick({
     }
     case 'assign-data-permission': {
       onAssignDataPermission(row);
+      break;
+    }
+    case 'assign-menu': {
+      onAssignMenu(row);
       break;
     }
   }
@@ -129,6 +144,7 @@ async function onExport() {
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
     <AssignDataPermissionFormModel @success="onRefresh" />
+    <AssignMenuFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">

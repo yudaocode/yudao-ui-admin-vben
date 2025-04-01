@@ -114,6 +114,44 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 分配菜单的表单 */
+export function useAssignMenuFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'name',
+      label: '角色名称',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'code',
+      label: '角色标识',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'menuIds',
+      label: '菜单权限',
+      formItemClass: 'items-start',
+      modelPropName: 'modelValue', // TODO @芋艿：这个是不是可以去掉哈
+    },
+  ];
+}
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -214,14 +252,16 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
             code: 'assign-data-permission',
             text: '数据权限',
           },
+          {
+            code: 'assign-menu',
+            text: '菜单权限',
+          }
         ],
       },
       field: 'operation',
       fixed: 'right',
       title: '操作',
-      width: 220,
+      width: 240,
     },
   ];
 }
-
-// TODO @芋艿：角色分配
