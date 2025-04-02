@@ -5,6 +5,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 
 import { $t } from '#/locales';
 import { computed, h, ref } from 'vue';
+import { componentKeys } from '#/router/routes';
 import { useVbenForm, z } from '#/adapter/form';
 import { createMenu, getMenu, updateMenu } from '#/api/system/menu';
 import { getMenuList } from '#/api/system/menu';
@@ -17,8 +18,6 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { message } from 'ant-design-vue';
 
-// import { componentKeys } from '#/router/routes'; // TODO @芋艿：后续搞
-
 const emit = defineEmits(['success']);
 const formData = ref<SystemMenuApi.SystemMenu>();
 const getTitle = computed(() =>
@@ -28,6 +27,16 @@ const getTitle = computed(() =>
 );
 const schema: VbenFormSchema[] = [
   {
+    component: 'Input',
+    fieldName: 'id',
+    dependencies: {
+      triggerFields: [''],
+      show: () => false,
+    },
+  },
+  {
+    fieldName: 'parentId',
+    label: '上级菜单',
     component: 'ApiTreeSelect',
     componentProps: {
       allowClear: true,
@@ -55,8 +64,6 @@ const schema: VbenFormSchema[] = [
       showSearch: true,
       treeDefaultExpandedKeys: [0],
     },
-    fieldName: 'parentId',
-    label: '上级菜单',
     rules: 'selectRequired',
     renderComponentContent() {
       return {
@@ -73,87 +80,84 @@ const schema: VbenFormSchema[] = [
     },
   },
   {
+    fieldName: 'name',
+    label: '菜单名称',
     component: 'Input',
     componentProps: {
       placeholder: '请输入菜单名称',
     },
-    fieldName: 'name',
-    label: '菜单名称',
     rules: 'required',
   },
   {
+    fieldName: 'type',
+    label: '菜单类型',
     component: 'RadioGroup',
     componentProps: {
       options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE, 'number'),
       buttonStyle: 'solid',
       optionType: 'button',
     },
-    fieldName: 'type',
-    label: '菜单类型',
     rules: z.number().default(SystemMenuTypeEnum.DIR),
   },
   {
+    fieldName: 'icon',
+    label: '菜单图标',
     component: 'IconPicker',
     componentProps: {
       placeholder: '请选择菜单图标',
       prefix: 'carbon',
     },
+    rules: 'required',
     dependencies: {
-      show: (values) => {
-        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
-          values.type,
-        );
-      },
       triggerFields: ['type'],
+      show: (values) => {
+        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(values.type);
+      },
     },
-    fieldName: 'icon',
-    label: '菜单图标',
   },
   {
+    fieldName: 'path',
+    label: '路由地址',
     component: 'Input',
     componentProps: {
       placeholder: '请输入路由地址',
     },
+    rules: z.string(),
+    help: '访问的路由地址，如：`user`。如需外网地址时，则以 `http(s)://` 开头',
     dependencies: {
-      show: (values) => {
-        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
-          values.type,
-        );
-      },
       triggerFields: ['type', 'parentId'],
+      show: (values) => {
+        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(values.type);
+      },
       rules: (values) => {
-        let schema = z.string();
+        const schema = z.string().min(1, '路由地址不能为空');
         if (isHttpUrl(values.path)) {
-          return 'required';
+          return schema;
         }
         if (values.parentId === 0) {
-          return schema.refine((path) => path.charAt(0) === '/', {
-            message: '路径必须以 / 开头',
-          });
+          return schema.refine((path) => path.charAt(0) === '/', '路径必须以 / 开头');
         }
-        return schema.refine((path) => path.charAt(0) !== '/', {
-          message: '路径不能以 / 开头',
-        });
+        return schema.refine((path) => path.charAt(0) !== '/', '路径不能以 / 开头');
       },
-    },
-    fieldName: 'path',
-    label: '路由地址',
+    }
   },
   {
+    fieldName: 'component',
+    label: '组件地址',
     component: 'Input',
     componentProps: {
       placeholder: '请输入组件地址',
     },
     dependencies: {
+      triggerFields: ['type'],
       show: (values) => {
         return [SystemMenuTypeEnum.MENU].includes(values.type);
-      },
-      triggerFields: ['type'],
+      }
     },
-    fieldName: 'component',
-    label: '组件地址',
   },
   {
+    fieldName: 'componentName',
+    label: '组件名称',
     component: 'AutoComplete',
     componentProps: {
       allowClear: true,
@@ -162,20 +166,14 @@ const schema: VbenFormSchema[] = [
         return option.value.toLowerCase().includes(input.toLowerCase());
       },
       placeholder: '请选择组件名称',
-      // options: componentKeys.map((v) => ({ value: v })), // TODO @芋艿：后续完善
+      options: componentKeys.map((v) => ({ value: v })),
     },
     dependencies: {
-      // TODO @芋艿：后续完善
-      rules: (values) => {
-        return values.type === 'menu' ? 'required' : null;
-      },
+      triggerFields: ['type'],
       show: (values) => {
         return [SystemMenuTypeEnum.MENU].includes(values.type);
-      },
-      triggerFields: ['type'],
+      }
     },
-    fieldName: 'componentName',
-    label: '组件名称',
   },
   {
     component: 'Input',
@@ -217,13 +215,9 @@ const schema: VbenFormSchema[] = [
     rules: z.number().default(CommonStatusEnum.ENABLE),
   },
   {
+    fieldName: 'alwaysShow',
+    label: '总是显示',
     component: 'RadioGroup',
-    dependencies: {
-      show: (values) => {
-        return [SystemMenuTypeEnum.MENU].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
     componentProps: {
       options: [
         { label: '总是', value: true },
@@ -232,19 +226,20 @@ const schema: VbenFormSchema[] = [
       buttonStyle: 'solid',
       optionType: 'button',
     },
-    fieldName: 'alwaysShow',
-    label: '总是显示',
     rules: 'required',
     defaultValue: true,
-  },
-  {
-    component: 'RadioGroup',
+    help: '选择不是时，当该菜单只有一个子菜单时，不展示自己，直接展示子菜单',
     dependencies: {
+      triggerFields: ['type'],
       show: (values) => {
         return [SystemMenuTypeEnum.MENU].includes(values.type);
       },
-      triggerFields: ['type'],
     },
+  },
+  {
+    fieldName: 'keepAlive',
+    label: '缓存状态',
+    component: 'RadioGroup',
     componentProps: {
       options: [
         { label: '缓存', value: true },
@@ -253,10 +248,15 @@ const schema: VbenFormSchema[] = [
       buttonStyle: 'solid',
       optionType: 'button',
     },
-    fieldName: 'keepAlive',
-    label: '缓存状态',
     rules: 'required',
     defaultValue: true,
+    help: '选择缓存时，则会被 `keep-alive` 缓存，必须填写「组件名称」字段',
+    dependencies: {
+      triggerFields: ['type'],
+      show: (values) => {
+        return [SystemMenuTypeEnum.MENU].includes(values.type);
+      },
+    },
   },
 ];
 

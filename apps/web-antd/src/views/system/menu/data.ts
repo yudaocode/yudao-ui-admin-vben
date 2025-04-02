@@ -1,8 +1,7 @@
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
-import { $t } from '#/locales';
-import {DICT_TYPE} from '#/utils/dict';
+import { DICT_TYPE } from '#/utils/dict';
 
 export function useGridColumns(
   onActionClick: OnActionClickFn<SystemMenuApi.SystemMenu>,
