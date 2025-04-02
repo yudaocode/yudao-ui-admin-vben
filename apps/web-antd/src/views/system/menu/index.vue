@@ -133,7 +133,7 @@ function toggleExpand() {
           {{ isExpanded ? '收缩' : '展开' }}
         </Button>
       </template>
-      <template #title="{ row }">
+      <template #name="{ row }">
         <div class="flex w-full items-center gap-1">
           <div class="size-5 flex-shrink-0">
             <IconifyIcon
@@ -141,6 +141,7 @@ function toggleExpand() {
               icon="carbon:square-outline"
               class="size-full"
             />
+            <!-- TODO @芋艿：这里的 空串的情况 -->
             <IconifyIcon
               v-else-if="row.icon"
               :icon="row.icon || 'carbon:circle-dash'"

@@ -1,208 +1,157 @@
 <script lang="ts" setup>
-import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface';
-
+import type { SystemMenuApi } from '#/api/system/menu';
 import type { Recordable } from '@vben/types';
-
 import type { VbenFormSchema } from '#/adapter/form';
 
-import { computed, h, ref } from 'vue';
-
-import { useVbenDrawer } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
-import { $te } from '@vben/locales';
-import { getPopupContainer } from '@vben/utils';
-
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-
-import { useVbenForm, z } from '#/adapter/form';
-// import {
-//   createMenu,
-//   getMenuList,
-//   isMenuNameExists,
-//   isMenuPathExists,
-//   SystemMenuApi,
-//   updateMenu,
-// } from '#/api/system/menu';
 import { $t } from '#/locales';
+import { computed, h, ref } from 'vue';
+import { useVbenForm, z } from '#/adapter/form';
+import { createMenu, getMenu, updateMenu } from '#/api/system/menu';
+import { getMenuList } from '#/api/system/menu';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { handleTree } from '#/utils/tree';
+import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
+import { isHttpUrl } from '@vben/utils';
+
+import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+import { message } from 'ant-design-vue';
+
 // import { componentKeys } from '#/router/routes'; // TODO @芋艿：后续搞
 
-import { getMenuTypeOptions } from '../data';
-import { getMenuList } from '#/api/system/menu';
-
-const emit = defineEmits<{
-  success: [];
-}>();
+const emit = defineEmits(['success']);
 const formData = ref<SystemMenuApi.SystemMenu>();
-const titleSuffix = ref<string>();
+const getTitle = computed(() =>
+  formData.value?.id
+    ? $t('ui.actionTitle.edit', ['菜单'])
+    : $t('ui.actionTitle.create', ['菜单']),
+);
 const schema: VbenFormSchema[] = [
-  {
-    component: 'RadioGroup',
-    componentProps: {
-      buttonStyle: 'solid',
-      options: getMenuTypeOptions(),
-      optionType: 'button',
-    },
-    defaultValue: 'menu',
-    fieldName: 'type',
-    formItemClass: 'col-span-2 md:col-span-2',
-    label: $t('system.menu.type'),
-  },
-  {
-    component: 'Input',
-    fieldName: 'name',
-    label: $t('system.menu.menuName'),
-    rules: z
-      .string()
-      .min(2, $t('ui.formRules.minLength', [$t('system.menu.menuName'), 2]))
-      .max(30, $t('ui.formRules.maxLength', [$t('system.menu.menuName'), 30]))
-      .refine(
-        async (value: string) => {
-          return !(await isMenuNameExists(value, formData.value?.id));
-        },
-        (value) => ({
-          message: $t('ui.formRules.alreadyExists', [
-            $t('system.menu.menuName'),
-            value,
-          ]),
-        }),
-      ),
-  },
   {
     component: 'ApiTreeSelect',
     componentProps: {
-      api: getMenuList,
+      allowClear: true,
+      api: async () => {
+        const data = await getMenuList();
+        data.unshift({
+          id: 0,
+          name: '顶级部门',
+        } as SystemMenuApi.SystemMenu);
+        return handleTree(data);
+      },
       class: 'w-full',
+      labelField: 'name',
+      valueField: 'id',
+      childrenField: 'children',
+      placeholder: '请选择上级菜单',
       filterTreeNode(input: string, node: Recordable<any>) {
         if (!input || input.length === 0) {
           return true;
         }
-        const title: string = node.meta?.title ?? '';
-        if (!title) return false;
-        return title.includes(input) || $t(title).includes(input);
+        const name: string = node.label ?? '';
+        if (!name) return false;
+        return name.includes(input) || $t(name).includes(input);
       },
-      getPopupContainer,
-      labelField: 'meta.title',
       showSearch: true,
-      treeDefaultExpandAll: true,
-      valueField: 'id',
-      childrenField: 'children',
+      treeDefaultExpandedKeys: [0],
     },
-    fieldName: 'pid',
-    label: $t('system.menu.parent'),
+    fieldName: 'parentId',
+    label: '上级菜单',
+    rules: 'selectRequired',
     renderComponentContent() {
       return {
-        title({ label, meta }: { label: string; meta: Recordable<any> }) {
-          const coms = [];
+        title({ label, icon }: { label: string; icon: string }) {
+          const components = [];
           if (!label) return '';
-          if (meta?.icon) {
-            coms.push(h(IconifyIcon, { class: 'size-4', icon: meta.icon }));
+          if (icon) {
+            components.push(h(IconifyIcon, { class: 'size-4', icon }));
           }
-          coms.push(h('span', { class: '' }, $t(label || '')));
-          return h('div', { class: 'flex items-center gap-1' }, coms);
+          components.push(h('span', { class: '' }, $t(label || '')));
+          return h('div', { class: 'flex items-center gap-1' }, components);
         },
       };
     },
   },
   {
     component: 'Input',
-    componentProps() {
-      // 不需要处理多语言时就无需这么做
-      return {
-        addonAfter: titleSuffix.value,
-        onChange({ target: { value } }: ChangeEvent) {
-          titleSuffix.value = value && $te(value) ? $t(value) : undefined;
-        },
-      };
+    componentProps: {
+      placeholder: '请输入菜单名称',
     },
-    fieldName: 'meta.title',
-    label: $t('system.menu.menuTitle'),
+    fieldName: 'name',
+    label: '菜单名称',
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE, 'number'),
+      buttonStyle: 'solid',
+      optionType: 'button',
+    },
+    fieldName: 'type',
+    label: '菜单类型',
+    rules: z.number().default(SystemMenuTypeEnum.DIR),
+  },
+  {
+    component: 'IconPicker',
+    componentProps: {
+      placeholder: '请选择菜单图标',
+      prefix: 'carbon',
+    },
     dependencies: {
       show: (values) => {
-        return ['catalog', 'embedded', 'menu'].includes(values.type);
+        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+          values.type,
+        );
       },
       triggerFields: ['type'],
+    },
+    fieldName: 'icon',
+    label: '菜单图标',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入路由地址',
+    },
+    dependencies: {
+      show: (values) => {
+        return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+          values.type,
+        );
+      },
+      triggerFields: ['type', 'parentId'],
+      rules: (values) => {
+        let schema = z.string();
+        if (isHttpUrl(values.path)) {
+          return 'required';
+        }
+        if (values.parentId === 0) {
+          return schema.refine((path) => path.charAt(0) === '/', {
+            message: '路径必须以 / 开头',
+          });
+        }
+        return schema.refine((path) => path.charAt(0) !== '/', {
+          message: '路径不能以 / 开头',
+        });
+      },
     },
     fieldName: 'path',
-    label: $t('system.menu.path'),
-    rules: z
-      .string()
-      .min(2, $t('ui.formRules.minLength', [$t('system.menu.path'), 2]))
-      .max(100, $t('ui.formRules.maxLength', [$t('system.menu.path'), 100]))
-      .refine(
-        (value: string) => {
-          return value.startsWith('/');
-        },
-        $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
-      )
-      .refine(
-        async (value: string) => {
-          return !(await isMenuPathExists(value, formData.value?.id));
-        },
-        (value) => ({
-          message: $t('ui.formRules.alreadyExists', [
-            $t('system.menu.path'),
-            value,
-          ]),
-        }),
-      ),
+    label: '路由地址',
   },
   {
     component: 'Input',
-    dependencies: {
-      show: (values) => {
-        return ['embedded', 'menu'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'activePath',
-    help: $t('system.menu.activePathHelp'),
-    label: $t('system.menu.activePath'),
-    rules: z
-      .string()
-      .min(2, $t('ui.formRules.minLength', [$t('system.menu.path'), 2]))
-      .max(100, $t('ui.formRules.maxLength', [$t('system.menu.path'), 100]))
-      .refine(
-        (value: string) => {
-          return value.startsWith('/');
-        },
-        $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
-      )
-      .refine(async (value: string) => {
-        return await isMenuPathExists(value, formData.value?.id);
-      }, $t('system.menu.activePathMustExist'))
-      .optional(),
-  },
-  {
-    component: 'IconPicker',
     componentProps: {
-      prefix: 'carbon',
+      placeholder: '请输入组件地址',
     },
     dependencies: {
       show: (values) => {
-        return ['catalog', 'embedded', 'link', 'menu'].includes(values.type);
+        return [SystemMenuTypeEnum.MENU].includes(values.type);
       },
       triggerFields: ['type'],
     },
-    fieldName: 'meta.icon',
-    label: $t('system.menu.icon'),
-  },
-  {
-    component: 'IconPicker',
-    componentProps: {
-      prefix: 'carbon',
-    },
-    dependencies: {
-      show: (values) => {
-        return ['catalog', 'embedded', 'menu'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.activeIcon',
-    label: $t('system.menu.activeIcon'),
+    fieldName: 'component',
+    label: '组件地址',
   },
   {
     component: 'AutoComplete',
@@ -212,262 +161,154 @@ const schema: VbenFormSchema[] = [
       filterOption(input: string, option: { value: string }) {
         return option.value.toLowerCase().includes(input.toLowerCase());
       },
+      placeholder: '请选择组件名称',
       // options: componentKeys.map((v) => ({ value: v })), // TODO @芋艿：后续完善
     },
     dependencies: {
+      // TODO @芋艿：后续完善
       rules: (values) => {
         return values.type === 'menu' ? 'required' : null;
       },
       show: (values) => {
-        return values.type === 'menu';
+        return [SystemMenuTypeEnum.MENU].includes(values.type);
       },
       triggerFields: ['type'],
     },
-    fieldName: 'component',
-    label: $t('system.menu.component'),
+    fieldName: 'componentName',
+    label: '组件名称',
   },
   {
     component: 'Input',
+    componentProps: {
+      placeholder: '请输入菜单描述',
+    },
     dependencies: {
       show: (values) => {
-        return ['embedded', 'link'].includes(values.type);
+        return [SystemMenuTypeEnum.MENU, SystemMenuTypeEnum.BUTTON].includes(
+          values.type,
+        );
       },
       triggerFields: ['type'],
     },
-    fieldName: 'linkSrc',
-    label: $t('system.menu.linkSrc'),
-    rules: z.string().url($t('ui.formRules.invalidURL')),
+    fieldName: 'permission',
+    label: '权限标识',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      min: 0,
+      class: 'w-full',
+      controlsPosition: 'right',
+      placeholder: '请输入菜单顺序',
+    },
+    fieldName: 'sort',
+    label: '菜单顺序',
+    rules: 'required',
   },
   {
     component: 'RadioGroup',
     componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       buttonStyle: 'solid',
-      options: [
-        { label: $t('common.enabled'), value: 1 },
-        { label: $t('common.disabled'), value: 0 },
-      ],
       optionType: 'button',
     },
-    defaultValue: 1,
     fieldName: 'status',
-    label: $t('system.menu.status'),
+    label: '菜单状态',
+    rules: z.number().default(CommonStatusEnum.ENABLE),
   },
   {
-    component: 'Select',
+    component: 'RadioGroup',
+    dependencies: {
+      show: (values) => {
+        return [SystemMenuTypeEnum.MENU].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
     componentProps: {
-      allowClear: true,
-      class: 'w-full',
       options: [
-        { label: $t('system.menu.badgeType.dot'), value: 'dot' },
-        { label: $t('system.menu.badgeType.normal'), value: 'normal' },
+        { label: '总是', value: true },
+        { label: '不是', value: false },
       ],
+      buttonStyle: 'solid',
+      optionType: 'button',
     },
-    dependencies: {
-      show: (values) => {
-        return values.type !== 'button';
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.badgeType',
-    label: $t('system.menu.badgeType.title'),
+    fieldName: 'alwaysShow',
+    label: '总是显示',
+    rules: 'required',
+    defaultValue: true,
   },
   {
-    component: 'Input',
-    componentProps: (values) => {
-      return {
-        allowClear: true,
-        class: 'w-full',
-        disabled: values.meta?.badgeType !== 'normal',
-      };
-    },
+    component: 'RadioGroup',
     dependencies: {
       show: (values) => {
-        return values.type !== 'button';
+        return [SystemMenuTypeEnum.MENU].includes(values.type);
       },
       triggerFields: ['type'],
     },
-    fieldName: 'meta.badge',
-    label: $t('system.menu.badge'),
-  },
-  {
-    component: 'Divider',
-    dependencies: {
-      show: (values) => {
-        return !['button', 'link'].includes(values.type);
-      },
-      triggerFields: ['type'],
+    componentProps: {
+      options: [
+        { label: '缓存', value: true },
+        { label: '不缓存', value: false },
+      ],
+      buttonStyle: 'solid',
+      optionType: 'button',
     },
-    fieldName: 'divider1',
-    formItemClass: 'col-span-2 md:col-span-2 pb-0',
-    hideLabel: true,
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.advancedSettings'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return ['menu'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.keepAlive',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.keepAlive'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return ['embedded', 'menu'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.affixTab',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.affixTab'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return !['button'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.hideInMenu',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.hideInMenu'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return ['catalog', 'menu'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.hideChildrenInMenu',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.hideChildrenInMenu'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return !['button', 'link'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.hideInBreadcrumb',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.hideInBreadcrumb'),
-      };
-    },
-  },
-  {
-    component: 'Checkbox',
-    dependencies: {
-      show: (values) => {
-        return !['button', 'link'].includes(values.type);
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'meta.hideInTab',
-    renderComponentContent() {
-      return {
-        default: () => $t('system.menu.hideInTab'),
-      };
-    },
+    fieldName: 'keepAlive',
+    label: '缓存状态',
+    rules: 'required',
+    defaultValue: true,
   },
 ];
 
-const breakpoints = useBreakpoints(breakpointsTailwind);
-const isHorizontal = computed(() => breakpoints.greaterOrEqual('md').value);
-
 const [Form, formApi] = useVbenForm({
-  commonConfig: {
-    colon: true,
-    formItemClass: 'col-span-2 md:col-span-1',
-  },
+  layout: 'horizontal',
   schema,
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-2 gap-x-4',
 });
 
-const [Drawer, drawerApi] = useVbenDrawer({
-  onConfirm: onSubmit,
-  onOpenChange(isOpen) {
-    if (isOpen) {
-      const data = drawerApi.getData<SystemMenuApi.SystemMenu>();
-      if (data?.type === 'link') {
-        data.linkSrc = data.meta?.link;
-      } else if (data?.type === 'embedded') {
-        data.linkSrc = data.meta?.iframeSrc;
-      }
-      if (data) {
-        formData.value = data;
-        formApi.setValues(formData.value);
-        titleSuffix.value = formData.value.meta?.title
-          ? $t(formData.value.meta.title)
-          : '';
-      } else {
-        formApi.resetForm();
-        titleSuffix.value = '';
-      }
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    const data = (await formApi.getValues()) as SystemMenuApi.SystemMenu;
+    try {
+      await (formData.value?.id ? updateMenu(data) : createMenu(data));
+      await modalApi.close();
+      emit('success');
+      message.success({
+        content: $t('ui.actionMessage.operationSuccess'),
+        key: 'action_process_msg',
+      });
+    } finally {
+      modalApi.lock(false);
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) {
+      return;
+    }
+    let data = modalApi.getData<SystemMenuApi.SystemMenu>();
+    if (!data) {
+      return;
+    }
+    if (data.id) {
+      modalApi.lock();
+      try {
+        data = await getMenu(data.id as number);
+      } finally {
+        modalApi.lock(false);
+      }
+    }
+    formData.value = data;
+    await formApi.setValues(formData.value);
+  },
 });
-
-async function onSubmit() {
-  const { valid } = await formApi.validate();
-  if (valid) {
-    drawerApi.lock();
-    const data =
-      await formApi.getValues<
-        Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>
-      >();
-    if (data.type === 'link') {
-      data.meta = { ...data.meta, link: data.linkSrc };
-    } else if (data.type === 'embedded') {
-      data.meta = { ...data.meta, iframeSrc: data.linkSrc };
-    }
-    delete data.linkSrc;
-    try {
-      await (formData.value?.id
-        ? updateMenu(formData.value.id, data)
-        : createMenu(data));
-      drawerApi.close();
-      emit('success');
-    } finally {
-      drawerApi.unlock();
-    }
-  }
-}
-const getDrawerTitle = computed(() =>
-  formData.value?.id
-    ? $t('ui.actionTitle.edit', ['菜单'])
-    : $t('ui.actionTitle.create', ['菜单']),
-);
 </script>
 <template>
-  <Drawer class="w-full max-w-[800px]" :title="getDrawerTitle">
-    <Form class="mx-4" :layout="isHorizontal ? 'horizontal' : 'vertical'" />
-  </Drawer>
+  <Modal :title="getTitle">
+    <Form class="mx-4" />
+  </Modal>
 </template>

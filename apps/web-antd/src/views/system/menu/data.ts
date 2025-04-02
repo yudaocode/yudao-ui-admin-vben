@@ -1,25 +1,8 @@
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-// import type { SystemMenuApi } from '#/api/system/menu';
+import type { SystemMenuApi } from '#/api/system/menu';
 
 import { $t } from '#/locales';
-
-export function getMenuTypeOptions() {
-  return [
-    {
-      color: 'processing',
-      label: $t('system.menu.typeCatalog'),
-      value: 'catalog',
-    },
-    { color: 'default', label: $t('system.menu.typeMenu'), value: 'menu' },
-    { color: 'error', label: $t('system.menu.typeButton'), value: 'button' },
-    {
-      color: 'success',
-      label: $t('system.menu.typeEmbedded'),
-      value: 'embedded',
-    },
-    { color: 'warning', label: $t('system.menu.typeLink'), value: 'link' },
-  ];
-}
+import {DICT_TYPE} from '#/utils/dict';
 
 export function useGridColumns(
   onActionClick: OnActionClickFn<SystemMenuApi.SystemMenu>,
@@ -27,55 +10,51 @@ export function useGridColumns(
   return [
     {
       align: 'left',
-      field: 'meta.title',
+      field: 'name',
       fixed: 'left',
-      slots: { default: 'title' },
-      title: $t('system.menu.menuTitle'),
+      slots: { default: 'name' },
+      title: '菜单名称',
       treeNode: true,
-      width: 250,
+      minWidth: 250,
     },
     {
-      align: 'center',
-      cellRender: { name: 'CellTag', options: getMenuTypeOptions() },
-      field: 'type',
-      title: $t('system.menu.type'),
-      width: 100,
-    },
-    {
-      align: 'left',
-      field: 'path',
-      title: $t('system.menu.path'),
-      width: 200,
-    },
-
-    {
-      align: 'left',
-      field: 'component',
-      formatter: ({ row }) => {
-        switch (row.type) {
-          case 'catalog':
-          case 'menu': {
-            return row.component ?? '';
-          }
-          case 'embedded': {
-            return row.meta?.iframeSrc ?? '';
-          }
-          case 'link': {
-            return row.meta?.link ?? '';
-          }
-        }
-        return '';
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_MENU_TYPE },
       },
-      minWidth: 200,
-      title: $t('system.menu.component'),
+      field: 'type',
+      title: '菜单类型',
+      minWidth: 100,
     },
     {
-      cellRender: { name: 'CellTag' },
-      field: 'status',
-      title: $t('system.menu.status'),
-      width: 100,
+      field: 'sort',
+      title: '显示排序',
+      minWidth: 100,
     },
-
+    {
+      field: 'permission',
+      title: '权限标识',
+      minWidth: 200,
+    },
+    {
+      field: 'path',
+      title: '组件路径',
+      minWidth: 200,
+    },
+    {
+      field: 'componentName',
+      minWidth: 200,
+      title: '组件名称',
+    },
+    {
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
+      field: 'status',
+      title: '状态',
+      minWidth: 100,
+    },
     {
       align: 'right',
       cellRender: {
@@ -97,8 +76,8 @@ export function useGridColumns(
       fixed: 'right',
       headerAlign: 'center',
       showOverflow: false,
-      title: $t('system.menu.operation'),
-      width: 200,
+      title: '操作',
+      minWidth: 200,
     },
   ];
 }
