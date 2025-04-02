@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
 
-
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
@@ -33,11 +32,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as SystemDeptApi.SystemDept;
     try {
-      await (formData.value?.id
-        ? updateDept(data)
-        : createDept(data));
+      await (formData.value?.id ? updateDept(data) : createDept(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
@@ -52,6 +51,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+    // 加载数据
     let data = modalApi.getData<SystemDeptApi.SystemDept>();
     if (!data) {
       return;
@@ -64,6 +64,7 @@ const [Modal, modalApi] = useVbenModal({
         modalApi.lock(false);
       }
     }
+    // 设置到 values
     formData.value = data;
     await formApi.setValues(formData.value);
   },

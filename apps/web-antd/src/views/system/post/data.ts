@@ -30,32 +30,32 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      fieldName: 'sort',
+      label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
         min: 0,
         class: 'w-full',
         controlsPosition: 'right',
-        placeholder: '请输入岗位顺序',
+        placeholder: '请输入显示顺序',
       },
-      fieldName: 'sort',
-      label: '岗位顺序',
       rules: 'required',
     },
     {
+      fieldName: 'status',
+      label: '岗位状态',
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      fieldName: 'status',
-      label: '岗位状态',
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
-      component: 'Textarea',
       fieldName: 'remark',
       label: '岗位备注',
+      component: 'Textarea',
     },
   ];
 }
@@ -64,23 +64,23 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'name',
       label: '岗位名称',
+      component: 'Input',
     },
     {
-      component: 'Input',
       fieldName: 'code',
       label: '岗位编码',
+      component: 'Input',
     },
     {
+      fieldName: 'status',
+      label: '岗位状态',
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
-      fieldName: 'status',
-      label: '岗位状态',
     }
   ];
 }
@@ -107,7 +107,7 @@ export function useGridColumns<T = SystemPostApi.SystemPost>(
     },
     {
       field: 'sort',
-      title: '岗位顺序',
+      title: '显示顺序',
       minWidth: 100,
     },
     {
@@ -116,13 +116,13 @@ export function useGridColumns<T = SystemPostApi.SystemPost>(
       minWidth: 200,
     },
     {
+      field: 'status',
+      title: '岗位状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-      field: 'status',
-      title: '岗位状态',
-      minWidth: 100,
     },
     {
       field: 'createTime',
@@ -131,7 +131,11 @@ export function useGridColumns<T = SystemPostApi.SystemPost>(
       formatter: 'formatDateTime',
     },
     {
+      field: 'operation',
+      title: '操作',
+      minWidth: 130,
       align: 'center',
+      fixed: 'right',
       cellRender: {
         attrs: {
           nameField: 'name',
@@ -140,10 +144,6 @@ export function useGridColumns<T = SystemPostApi.SystemPost>(
         },
         name: 'CellOperation',
       },
-      field: 'operation',
-      fixed: 'right',
-      title: '操作',
-      minWidth: 130,
     },
   ];
 }

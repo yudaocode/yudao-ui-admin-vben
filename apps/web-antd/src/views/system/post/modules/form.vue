@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { SystemPostApi } from '#/api/system/post';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
+import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { createPost, updatePost, getPost } from '#/api/system/post';
 import { $t } from '#/locales';
@@ -33,11 +32,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as SystemPostApi.SystemPost;
     try {
-      await (formData.value?.id
-        ? updatePost(data)
-        : createPost(data));
+      await (formData.value?.id ? updatePost(data) : createPost(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
@@ -52,6 +51,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+    // 加载数据
     const data = modalApi.getData<SystemPostApi.SystemPost>();
     if (!data || !data.id) {
       return;
@@ -59,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getPost(data.id as number);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.lock(false);

@@ -1,20 +1,16 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemPostApi } from '#/api/system/post';
-
-import { $t } from '#/locales';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getPostPage, deletePost, exportPost } from '#/api/system/post';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { Plus, Download } from '@vben/icons';
-
-import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getPostPage, deletePost, exportPost } from '#/api/system/post';
+import { useGridColumns, useGridFormSchema } from './data';
 import { downloadByData } from '#/utils/download';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -22,14 +18,25 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 编辑岗位 */
-function onEdit(row: SystemPostApi.SystemPost) {
-  formModalApi.setData(row).open();
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 导出表格 */
+async function onExport() {
+  const data = await exportPost(await gridApi.formApi.getValues());
+  downloadByData(data, '岗位.xls');
 }
 
 /** 创建岗位 */
 function onCreate() {
   formModalApi.setData(null).open();
+}
+
+/** 编辑岗位 */
+function onEdit(row: SystemPostApi.SystemPost) {
+  formModalApi.setData(row).open();
 }
 
 /** 删除岗位 */
@@ -57,12 +64,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemPostApi.SystemPost>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -96,18 +103,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<SystemPostApi.SystemPost>,
 });
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 导出表格 */
-async function onExport() {
-  const data = await exportPost(await gridApi.formApi.getValues());
-  downloadByData(data, '岗位.xls');
-}
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

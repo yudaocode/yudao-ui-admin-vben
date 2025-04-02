@@ -1,18 +1,19 @@
 <script lang="ts" setup>
-import type { OnActionClickFn, OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message } from 'ant-design-vue';
+import { IconifyIcon, Plus } from '@vben/icons';
+import Form from './modules/form.vue';
 
 import { ref } from 'vue';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMenuList, deleteMenu } from '#/api/system/menu';
 import { SystemMenuTypeEnum } from '#/utils/constants';
-import { DICT_TYPE } from '#/utils/dict';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { IconifyIcon, Plus } from '@vben/icons';
-import Form from './modules/form.vue';
+import { useGridColumns } from './data';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -22,27 +23,6 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 刷新表格 */
 function onRefresh() {
   gridApi.query();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-   code,
-   row,
-}: OnActionClickParams<SystemMenuApi.SystemMenu>) {
-  switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-  }
 }
 
 /** 创建菜单 */
@@ -79,89 +59,32 @@ async function onDelete(row: SystemMenuApi.SystemMenu) {
   }
 }
 
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+   code,
+   row,
+}: OnActionClickParams<SystemMenuApi.SystemMenu>) {
+  switch (code) {
+    case 'append': {
+      onAppend(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+  }
+}
+
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(false);
 function toggleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
-}
-
-function useGridColumns(
-  onActionClick: OnActionClickFn<SystemMenuApi.SystemMenu>,
-): VxeTableGridOptions<SystemMenuApi.SystemMenu>['columns'] {
-  return [
-    {
-      align: 'left',
-      field: 'name',
-      fixed: 'left',
-      slots: { default: 'name' },
-      title: '菜单名称',
-      treeNode: true,
-      minWidth: 250,
-    },
-    {
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_MENU_TYPE },
-      },
-      field: 'type',
-      title: '菜单类型',
-      minWidth: 100,
-    },
-    {
-      field: 'sort',
-      title: '显示排序',
-      minWidth: 100,
-    },
-    {
-      field: 'permission',
-      title: '权限标识',
-      minWidth: 200,
-    },
-    {
-      field: 'path',
-      title: '组件路径',
-      minWidth: 200,
-    },
-    {
-      field: 'componentName',
-      minWidth: 200,
-      title: '组件名称',
-    },
-    {
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
-      },
-      field: 'status',
-      title: '状态',
-      minWidth: 100,
-    },
-    {
-      align: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-          },
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
-        ],
-      },
-      field: 'operation',
-      fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      title: '操作',
-      minWidth: 200,
-    },
-  ];
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -194,6 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions,
 });
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

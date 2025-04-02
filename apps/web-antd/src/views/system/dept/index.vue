@@ -1,30 +1,39 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message } from 'ant-design-vue';
+import { Plus } from '@vben/icons';
+import Form from './modules/form.vue';
 
 import { ref } from 'vue';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeptList, deleteDept } from '#/api/system/dept';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus } from '@vben/icons';
-
 import { useGridColumns } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-/** 编辑部门 */
-function onEdit(row: SystemDeptApi.SystemDept) {
-  formModalApi.setData(row).open();
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 切换树形展开/收缩状态 */
+const isExpanded = ref(true);
+function toggleExpand() {
+  isExpanded.value = !isExpanded.value;
+  gridApi.grid.setAllTreeExpand(isExpanded.value);
+}
+
+/** 创建部门 */
+function onCreate() {
+  formModalApi.setData(null).open();
 }
 
 /** 添加下级部门 */
@@ -32,9 +41,9 @@ function onAppend(row: SystemDeptApi.SystemDept) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
-/** 创建部门 */
-function onCreate() {
-  formModalApi.setData(null).open();
+/** 编辑部门 */
+function onEdit(row: SystemDeptApi.SystemDept) {
+  formModalApi.setData(row).open();
 }
 
 /** 删除部门 */
@@ -66,12 +75,12 @@ function onActionClick({
       onAppend(row);
       break;
     }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -107,19 +116,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions,
 });
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 切换树形展开/收缩状态 */
-const isExpanded = ref(true);
-function toggleExpand() {
-  isExpanded.value = !isExpanded.value;
-  gridApi.grid.setAllTreeExpand(isExpanded.value);
-}
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

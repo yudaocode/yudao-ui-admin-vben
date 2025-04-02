@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
+import { $t } from '#/locales';
+import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { createRole, updateRole, getRole } from '#/api/system/role';
-import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -33,11 +32,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as SystemRoleApi.SystemRole;
     try {
-      await (formData.value?.id
-        ? updateRole(data)
-        : createRole(data));
+      await (formData.value?.id ? updateRole(data) : createRole(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
@@ -52,6 +51,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+    // 加载数据
     const data = modalApi.getData<SystemRoleApi.SystemRole>();
     if (!data || !data.id) {
       return;
@@ -59,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getRole(data.id as number);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.lock(false);

@@ -36,12 +36,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = await formApi.getValues();
     try {
       await assignRoleMenu({
         roleId: data.id,
         menuIds: data.menuIds
       });
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
@@ -63,6 +65,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       await formApi.setValues(data);
+
       // 加载角色菜单
       const menuIds = await getRoleMenuList(data.id as number);
       await formApi.setFieldValue('menuIds', menuIds);

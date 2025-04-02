@@ -13,9 +13,9 @@ import { getRole } from '#/api/system/role';
 import { assignRoleDataScope } from '#/api/system/permission';
 import { getDeptList } from '#/api/system/dept';
 import { handleTree } from '#/utils/tree';
+import { SystemDataScopeEnum } from '#/utils/constants';
 
 import { useAssignDataPermissionFormSchema } from '../data';
-import { SystemDataScopeEnum } from '#/utils/constants';
 
 const emit = defineEmits(['success']);
 
@@ -70,6 +70,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       await formApi.setValues(await getRole(data.id as number));
+
       // 加载部门列表
       await loadDeptTree();
       toggleExpandAll();

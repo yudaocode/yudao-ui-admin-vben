@@ -3,7 +3,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { $t } from '#/locales';
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
@@ -15,15 +14,16 @@ import { handleTree } from '#/utils/tree';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
-      label: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
+      fieldName: 'parentId',
+      label: '上级部门',
       component: 'ApiTreeSelect',
       componentProps: {
         allowClear: true,
@@ -42,32 +42,32 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择上级部门',
         treeDefaultExpandAll: true,
       },
-      fieldName: 'parentId',
-      label: '上级部门',
-      rules: 'selectRequired'
+      rules: 'selectRequired',
     },
     {
+      fieldName: 'name',
+      label: '部门名称',
       component: 'Input',
       componentProps: {
         placeholder: '请输入部门名称',
       },
-      fieldName: 'name',
-      label: '部门名称',
       rules: 'required',
     },
     {
+      fieldName: 'sort',
+      label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
         min: 0,
         class: 'w-full',
         controlsPosition: 'right',
-        placeholder: '请输入部门顺序',
+        placeholder: '请输入显示顺序',
       },
-      fieldName: 'sort',
-      label: '部门顺序',
       rules: 'required',
     },
     {
+      fieldName: 'leaderUserId',
+      label: '负责人',
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
@@ -77,18 +77,16 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择负责人',
         allowClear: true,
       },
-      fieldName: 'leaderUserId',
-      label: '负责人',
       rules: z.number().optional(),
     },
     {
+      fieldName: 'phone',
+      label: '联系电话',
       component: 'Input',
       componentProps: {
         maxLength: 11,
         placeholder: '请输入联系电话',
       },
-      fieldName: 'phone',
-      label: '联系电话',
       rules: z
         .string()
         // TODO @芋艿：未来怎么拓展一个手机的
@@ -96,28 +94,26 @@ export function useFormSchema(): VbenFormSchema[] {
         .optional(),
     },
     {
-      component: 'Input',
-      componentProps: {
-        maxLength: 50,
-        placeholder: '请输入邮箱',
-      },
       fieldName: 'email',
       label: '邮箱',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
       rules: z
         .string()
         .email('请输入正确的邮箱地址')
-        .max(50, $t('ui.formRules.maxLength', ['邮箱', 50]))
         .optional(),
     },
     {
+      fieldName: 'status',
+      label: '状态',
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      fieldName: 'status',
-      label: '状态',
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
   ];
@@ -130,36 +126,34 @@ export function useGridColumns(
 ): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
   return [
     {
-      align: 'left',
       field: 'name',
-      fixed: 'left',
       title: '部门名称',
-      treeNode: true,
       minWidth: 150,
+      align: 'left',
+      fixed: 'left',
+      treeNode: true,
     },
     {
       field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
       formatter: (row) => {
-        return (
-          userList.find((user) => user.id === row.cellValue)?.nickname || '-'
-        );
+        return userList.find((user) => user.id === row.cellValue)?.nickname || '-';
       },
     },
     {
       field: 'sort',
-      title: '部门顺序',
+      title: '显示顺序',
       minWidth: 100,
     },
     {
+      field: 'status',
+      title: '部门状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-      field: 'status',
-      title: '部门状态',
-      minWidth: 100,
     },
     {
       field: 'createTime',
@@ -168,7 +162,13 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
+      field: 'operation',
+      title: '操作',
+      minWidth: 200,
       align: 'right',
+      fixed: 'right',
+      headerAlign: 'center',
+      showOverflow: false,
       cellRender: {
         attrs: {
           nameField: 'name',
@@ -190,12 +190,6 @@ export function useGridColumns(
           },
         ],
       },
-      field: 'operation',
-      fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      title: '操作',
-      minWidth: 200,
     },
   ];
 }

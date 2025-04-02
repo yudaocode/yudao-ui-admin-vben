@@ -1,23 +1,20 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
-
-import { $t } from '#/locales';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getRolePage, deleteRole, exportRole } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { Plus, Download } from '@vben/icons';
+import Form from './modules/form.vue';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getRolePage, deleteRole, exportRole } from '#/api/system/role';
+import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
+import AssignMenuForm from './modules/assign-menu-form.vue';
+import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
-import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
-import AssignMenuForm from '#/views/system/role/modules/assign-menu-form.vue';
-import { downloadByData } from '#/utils/download';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -33,6 +30,17 @@ const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
   connectedComponent: AssignMenuForm,
   destroyOnClose: true,
 })
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 导出表格 */
+async function onExport() {
+  const data = await exportRole(await gridApi.formApi.getValues());
+  downloadByData(data, '角色.xls');
+}
 
 /** 编辑角色 */
 function onEdit(row: SystemRoleApi.SystemRole) {
@@ -128,18 +136,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
 });
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 导出表格 */
-async function onExport() {
-  const data = await exportRole(await gridApi.formApi.getValues());
-  downloadByData(data, '角色.xls');
-}
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

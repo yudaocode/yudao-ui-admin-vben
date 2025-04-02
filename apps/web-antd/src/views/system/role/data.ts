@@ -10,53 +10,52 @@ import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
-      label: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '角色名称',
+      component: 'Input',
       rules: 'required',
     },
     {
-      component: 'Input',
       fieldName: 'code',
       label: '角色标识',
+      component: 'Input',
       rules: 'required',
     },
     {
+      fieldName: 'sort',
+      label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
         min: 0,
         class: 'w-full',
         controlsPosition: 'right',
-        placeholder: '请输入角色顺序',
+        placeholder: '请输入显示顺序',
       },
-      fieldName: 'sort',
-      label: '角色顺序',
       rules: 'required',
     },
     {
+      fieldName: 'status',
+      label: '角色状态',
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      fieldName: 'status',
-      label: '角色状态',
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
-      component: 'Textarea',
       fieldName: 'remark',
       label: '角色备注',
+      component: 'Textarea',
     },
   ];
 }
@@ -67,16 +66,15 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'id',
-      label: 'id',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '角色名称',
+      component: 'Input',
       componentProps: {
         disabled: true,
       },
@@ -99,17 +97,16 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Input',
       fieldName: 'dataScopeDeptIds',
       label: '部门范围',
+      component: 'Input',
+      formItemClass: 'items-start',
       dependencies: {
         triggerFields: ['dataScope'],
         show: (values) => {
           return values.dataScope === SystemDataScopeEnum.DEPT_CUSTOM;
         },
       },
-      formItemClass: 'items-start',
-      modelPropName: 'modelValue', // TODO @芋艿：这个是不是可以去掉哈
     },
   ];
 }
@@ -118,36 +115,34 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
 export function useAssignMenuFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
-      label: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '角色名称',
+      component: 'Input',
       componentProps: {
         disabled: true,
       },
     },
     {
-      component: 'Input',
       fieldName: 'code',
       label: '角色标识',
+      component: 'Input',
       componentProps: {
         disabled: true,
       },
     },
     {
-      component: 'Input',
       fieldName: 'menuIds',
       label: '菜单权限',
+      component: 'Input',
       formItemClass: 'items-start',
-      modelPropName: 'modelValue', // TODO @芋艿：这个是不是可以去掉哈
     },
   ];
 }
@@ -156,28 +151,28 @@ export function useAssignMenuFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'name',
       label: '角色名称',
+      component: 'Input',
     },
     {
-      component: 'Input',
       fieldName: 'code',
       label: '角色标识',
+      component: 'Input',
     },
     {
+      fieldName: 'status',
+      label: '角色状态',
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
-      fieldName: 'status',
-      label: '角色状态',
     },
     {
-      component: 'RangePicker',
       fieldName: 'createTime',
       label: '创建时间',
+      component: 'RangePicker',
     },
   ];
 }
@@ -198,13 +193,13 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
       minWidth: 200,
     },
     {
+      field: 'type',
+      title: '角色类型',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_ROLE_TYPE },
       },
-      field: 'type',
-      title: '角色类型',
-      minWidth: 100,
     },
     {
       field: 'code',
@@ -213,22 +208,22 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
     },
     {
       field: 'sort',
-      title: '角色顺序',
+      title: '显示顺序',
       minWidth: 100,
     },
     {
       field: 'remark',
-      minWidth: 100,
       title: '角色备注',
+      minWidth: 100,
     },
     {
+      field: 'status',
+      title: '角色状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-      field: 'status',
-      title: '角色状态',
-      minWidth: 100,
     },
     {
       field: 'createTime',
@@ -237,6 +232,10 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
       formatter: 'formatDateTime',
     },
     {
+      field: 'operation',
+      title: '操作',
+      width: 240,
+      fixed: 'right',
       align: 'center',
       cellRender: {
         attrs: {
@@ -258,10 +257,6 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
           }
         ],
       },
-      field: 'operation',
-      fixed: 'right',
-      title: '操作',
-      width: 240,
     },
   ];
 }
