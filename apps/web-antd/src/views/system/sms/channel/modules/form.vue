@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SystemSmsChannelApi } from '#/api/system/sms/smsChannel';
+import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { computed, ref } from 'vue';
 
@@ -12,7 +12,7 @@ import {
   createSmsChannel,
   getSmsChannel,
   updateSmsChannel,
-} from '#/api/system/sms/smsChannel';
+} from '#/api/system/sms/channel';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

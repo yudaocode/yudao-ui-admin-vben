@@ -1,10 +1,8 @@
-import type { SystemSmsLogApi } from 'src/api/system/sms/log';
-
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
-import { getSimpleSmsChannelList } from 'src/api/system/sms/channel';
-
+import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 列表的搜索表单 */

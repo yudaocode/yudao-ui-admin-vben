@@ -1,6 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSmsChannelApi } from '#/api/system/sms/smsChannel';
+import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';

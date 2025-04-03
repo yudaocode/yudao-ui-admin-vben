@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import type { SystemSmsLogApi } from 'src/api/system/sms/log';
-
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 
 import { Button } from 'ant-design-vue';
-import { exportSmsLog, getSmsLogPage } from 'src/api/system/sms/log';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 

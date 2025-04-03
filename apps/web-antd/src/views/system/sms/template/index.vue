@@ -3,7 +3,7 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemSmsTemplateApi } from '#/api/system/sms/smsTemplate';
+import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -15,7 +15,7 @@ import {
   deleteSmsTemplate,
   exportSmsTemplate,
   getSmsTemplatePage,
-} from '#/api/system/sms/smsTemplate';
+} from '#/api/system/sms/template';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SystemSmsLogApi } from 'src/api/system/sms/log';
+import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { computed, ref } from 'vue';
 

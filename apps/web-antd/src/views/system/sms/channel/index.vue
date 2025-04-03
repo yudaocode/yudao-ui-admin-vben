@@ -3,7 +3,7 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemSmsChannelApi } from '#/api/system/sms/smsChannel';
+import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -15,7 +15,7 @@ import {
   deleteSmsChannel,
   exportSmsChannel,
   getSmsChannelPage,
-} from '#/api/system/sms/smsChannel';
+} from '#/api/system/sms/channel';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 

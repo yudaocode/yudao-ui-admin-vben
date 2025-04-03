@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SystemSmsTemplateApi } from '#/api/system/sms/smsTemplate';
+import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
 import { computed, ref } from 'vue';
 
@@ -12,7 +12,7 @@ import {
   createSmsTemplate,
   getSmsTemplate,
   updateSmsTemplate,
-} from '#/api/system/sms/smsTemplate';
+} from '#/api/system/sms/template';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
