@@ -1,4 +1,4 @@
-import type { PageParam } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -29,10 +29,10 @@ export namespace SystemSmsTemplateApi {
 
 /** 查询短信模板列表 */
 export function getSmsTemplatePage(params: PageParam) {
-  return requestClient.get<{
-    list: SystemSmsTemplateApi.SmsTemplateVO[];
-    total: number;
-  }>('/system/sms-template/page', { params });
+  return requestClient.get<PageResult<SystemSmsTemplateApi.SmsTemplateVO>>(
+    '/system/sms-template/page',
+    { params },
+  );
 }
 
 /** 查询短信模板详情 */

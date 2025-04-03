@@ -1,42 +1,42 @@
-import type { PageParam } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
 export namespace SystemSmsLogApi {
   /** 短信日志信息 */
   export interface SmsLogVO {
-    id: null | number;
-    channelId: null | number;
+    id?: number;
+    channelId?: number;
     channelCode: string;
-    templateId: null | number;
+    templateId?: number;
     templateCode: string;
-    templateType: null | number;
+    templateType?: number;
     templateContent: string;
-    templateParams: null | Record<string, any>;
+    templateParams?: Record<string, any>;
     apiTemplateId: string;
     mobile: string;
-    userId: null | number;
-    userType: null | number;
-    sendStatus: null | number;
-    sendTime: Date | null;
+    userId?: number;
+    userType?: number;
+    sendStatus?: number;
+    sendTime?: Date;
     apiSendCode: string;
     apiSendMsg: string;
     apiRequestId: string;
     apiSerialNo: string;
-    receiveStatus: null | number;
-    receiveTime: Date | null;
+    receiveStatus?: number;
+    receiveTime?: Date;
     apiReceiveCode: string;
     apiReceiveMsg: string;
-    createTime: Date | null;
+    createTime?: Date;
   }
 }
 
 /** 查询短信日志列表 */
 export function getSmsLogPage(params: PageParam) {
-  return requestClient.get<{
-    list: SystemSmsLogApi.SmsLogVO[];
-    total: number;
-  }>('/system/sms-log/page', { params });
+  return requestClient.get<PageResult<SystemSmsLogApi.SmsLogVO>>(
+    '/system/sms-log/page',
+    { params },
+  );
 }
 
 /** 导出短信日志 */

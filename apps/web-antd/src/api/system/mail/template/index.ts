@@ -1,4 +1,4 @@
-import type { PageParam } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -26,10 +26,9 @@ export namespace SystemMailTemplateApi {
 
 // 查询邮件模版列表
 export const getMailTemplatePage = async (params: PageParam) => {
-  return await requestClient.get<{
-    list: SystemMailTemplateApi.MailTemplateVO[];
-    total: number;
-  }>('/system/mail-template/page', { params });
+  return await requestClient.get<
+    PageResult<SystemMailTemplateApi.MailTemplateVO>
+  >('/system/mail-template/page', { params });
 };
 
 // 查询邮件模版详情
