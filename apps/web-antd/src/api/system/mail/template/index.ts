@@ -11,7 +11,7 @@ export namespace SystemMailTemplateApi {
     nickname: string;
     title: string;
     content: string;
-    params: string;
+    params: string[];
     status: number;
     remark: string;
     createTime: Date;
