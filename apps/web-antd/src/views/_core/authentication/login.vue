@@ -1,20 +1,30 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import {type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
 
-import { computed, markRaw, onMounted, ref } from 'vue';
+import type { AuthApi } from '#/api/core/auth';
+
+import { computed, onMounted, ref } from 'vue';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
 import { useAppConfig } from '@vben/hooks';
-
-import { useAuthStore } from '#/store';
+import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
-const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+import {
+  checkCaptcha,
+  getCaptcha,
+  getTenantByWebsite,
+  getTenantSimpleList,
+} from '#/api/core/auth';
+import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
+
+const isProduction = import.meta.env.PROD;
+const { tenantEnable, captchaEnable, website } = useAppConfig(
+  import.meta.env,
+  isProduction,
+);
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
@@ -32,11 +42,13 @@ const fetchTenantList = async () => {
   }
   try {
     // 获取租户列表、域名对应租户
-    const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
+    const websiteTenantPromise = getTenantByWebsite(
+      isProduction ? window.location.hostname : website, // 生成环境使用真实域名开发环境固定
+    );
     tenantList.value = await getTenantSimpleList();
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -68,7 +80,7 @@ const handleLogin = async (values: any) => {
 
   // 无验证码，直接登录
   await authStore.authLogin(values);
-}
+};
 
 /** 验证码通过，执行登录 */
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
