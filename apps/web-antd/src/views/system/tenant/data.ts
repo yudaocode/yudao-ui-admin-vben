@@ -3,11 +3,11 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { z } from '#/adapter/form';
-import { getTenantPackageList } from '#/api/system/tenantPackage';
-import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { getTenantPackageList } from '#/api/system/tenant-package';
+import { CommonStatusEnum } from '#/utils/constants';
 
-/** 新增、修改表单 */
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -19,16 +19,15 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '租户名称',
+      component: 'Input',
       rules: 'required',
     },
     {
-      component: 'ApiSelect',
       fieldName: 'packageId',
       label: '租户套餐',
-      rules: 'required',
+      component: 'ApiSelect',
       componentProps: {
         api: () => getTenantPackageList(),
         class: 'w-full',
@@ -36,22 +35,23 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         placeholder: '请选择租户套餐',
       },
-    },
-    {
-      component: 'Input',
-      fieldName: 'contactName',
-      label: '联系人',
       rules: 'required',
     },
     {
+      fieldName: 'contactName',
+      label: '联系人',
       component: 'Input',
-      fieldName: 'contactMobile',
-      label: '联系手机',
+      rules: 'required',
     },
     {
+      fieldName: 'contactMobile',
+      label: '联系手机',
       component: 'Input',
+    },
+    {
       label: '用户名称',
       fieldName: 'username',
+      component: 'Input',
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
@@ -69,31 +69,30 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'InputNumber',
       label: '账号额度',
       fieldName: 'accountCount',
-      rules: 'required',
-      defaultValue: 0,
+      component: 'InputNumber',
       componentProps: {
         class: 'w-full',
+        placeholder: '请输入账号额度',
       },
+      rules: 'required',
     },
     {
-      component: 'DatePicker',
       label: '过期时间',
       fieldName: 'expireTime',
-      rules: 'required',
+      component: 'DatePicker',
       componentProps: {
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
       },
+      rules: 'required',
     },
     {
-      component: 'Input',
       label: '绑定域名',
       fieldName: 'website',
+      component: 'Input',
       rules: 'required',
     },
     {
@@ -150,11 +149,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
+      componentProps: {
+        allowClear: true,
+      }
     },
   ];
 }
 
 /** 列表的字段 */
+const tenantPackageList = await getTenantPackageList();
 export function useGridColumns<T = SystemTenantApi.SystemTenant>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
@@ -162,17 +165,22 @@ export function useGridColumns<T = SystemTenantApi.SystemTenant>(
     {
       field: 'id',
       title: '租户编号',
-      minWidth: 200,
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '租户名',
-      minWidth: 200,
+      minWidth: 180,
     },
     {
       field: 'packageId',
       title: '租户套餐',
-      minWidth: 200,
+      minWidth: 180,
+      formatter: (row) => {
+        const packageId = row.cellValue;
+        return packageId === 0 ? '系统租户' :
+          tenantPackageList.find((tenantPackage) => tenantPackage.id === packageId)?.name || '-';
+      }
     },
     {
       field: 'contactName',
@@ -182,7 +190,7 @@ export function useGridColumns<T = SystemTenantApi.SystemTenant>(
     {
       field: 'contactMobile',
       title: '联系手机',
-      minWidth: 200,
+      minWidth: 180,
     },
     {
       field: 'accountCount',

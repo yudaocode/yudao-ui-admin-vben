@@ -1,21 +1,18 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-
 import { Button, message } from 'ant-design-vue';
+import { Plus, Download } from '@vben/icons';
+import Form from './modules/form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getTenantPage, deleteTenant, exportTenant } from '#/api/system/tenant';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -68,12 +65,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemTenantApi.SystemTenant>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -82,6 +79,7 @@ function onActionClick({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
+    // TODO @芋艿：时间筛选，后续处理；
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),

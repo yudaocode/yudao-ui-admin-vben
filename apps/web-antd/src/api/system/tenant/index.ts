@@ -1,11 +1,9 @@
-import type { PageParam } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
 export namespace SystemTenantApi {
-  /**
-   * 租户信息
-   */
+  /** 租户信息 */
   export interface SystemTenant {
     id?: number;
     name: string;
@@ -19,25 +17,19 @@ export namespace SystemTenantApi {
   }
 }
 
-/**
- * 租户列表
- */
+/** 租户列表 */
 export function getTenantPage(params: PageParam) {
-  return requestClient.get('/system/tenant/page', { params });
+  return requestClient.get<PageResult<SystemTenantApi.SystemTenant>>('/system/tenant/page', { params });
 }
 
 /** 获取租户精简信息列表 */
 export function getSimpleTenantList() {
-  return requestClient.get<SystemTenantApi.SystemTenant[]>(
-    '/system/tenant/simple-list',
-  );
+  return requestClient.get<SystemTenantApi.SystemTenant[]>('/system/tenant/simple-list');
 }
 
 /** 查询租户详情 */
 export function getTenant(id: number) {
-  return requestClient.get<SystemTenantApi.SystemTenant>(
-    `/system/tenant/get?id=${id}`,
-  );
+  return requestClient.get<SystemTenantApi.SystemTenant>(`/system/tenant/get?id=${id}`,);
 }
 
 /** 新增租户 */
