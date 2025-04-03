@@ -1,6 +1,5 @@
-import type { AuthPermissionInfo } from '@vben/types';
-
 import { baseRequestClient, requestClient } from '#/api/request';
+import type { AuthPermissionInfo } from '@vben/types';
 
 export namespace AuthApi {
   /** 登录接口参数 */
@@ -35,6 +34,7 @@ export namespace AuthApi {
     mobile: string;
     code: string;
   }
+
 }
 
 /** 登录 */
@@ -44,22 +44,16 @@ export async function loginApi(data: AuthApi.LoginParams) {
 
 /** 刷新 accessToken */
 export async function refreshTokenApi(refreshToken: string) {
-  return baseRequestClient.post(
-    `/system/auth/refresh-token?refreshToken=${refreshToken}`,
-  );
+  return baseRequestClient.post(`/system/auth/refresh-token?refreshToken=${refreshToken}`);
 }
 
 /** 退出登录 */
 export async function logoutApi(accessToken: string) {
-  return baseRequestClient.post(
-    '/system/auth/logout',
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
-  );
+  return baseRequestClient.post('/system/auth/logout', {}, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    }
+  });
 }
 
 /** 获取权限信息 */
@@ -78,9 +72,7 @@ export async function getTenantSimpleList() {
 
 /** 使用租户域名，获得租户信息 */
 export async function getTenantByWebsite(website: string) {
-  return requestClient.get<AuthApi.TenantResult>(
-    `/system/tenant/get-by-website?website=${website}`,
-  );
+  return requestClient.get<AuthApi.TenantResult>(`/system/tenant/get-by-website?website=${website}`);
 }
 
 /** 获取验证码 */

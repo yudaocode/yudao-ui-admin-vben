@@ -15,18 +15,13 @@ export function useAppConfig(
     ? window._VBEN_ADMIN_PRO_APP_CONF_
     : (env as VbenAdminProAppConfigRaw);
 
-  const {
-    VITE_APP_CAPTCHA_ENABLE,
-    VITE_APP_TENANT_ENABLE,
-    VITE_GLOB_API_URL,
-    VITE_APP_WEBSITE,
-  } = config;
+  const { VITE_APP_CAPTCHA_ENABLE, VITE_APP_TENANT_ENABLE, VITE_GLOB_API_URL } =
+    config;
 
   // TODO @芋艿：貌似 VITE_APP_CAPTCHA_ENABLE 读取的是字符串，所以这里暂时这么转换
   return {
     apiURL: VITE_GLOB_API_URL,
     captchaEnable: VITE_APP_CAPTCHA_ENABLE === 'true',
     tenantEnable: VITE_APP_TENANT_ENABLE === 'true',
-    website: VITE_APP_WEBSITE,
   };
 }
