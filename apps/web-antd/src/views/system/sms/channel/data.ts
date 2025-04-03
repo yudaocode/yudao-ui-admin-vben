@@ -10,18 +10,18 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
       label: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'signature',
       label: '短信签名',
+      component: 'Input',
       rules: 'required',
     },
     {

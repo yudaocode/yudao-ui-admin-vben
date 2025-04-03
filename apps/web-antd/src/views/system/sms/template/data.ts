@@ -11,9 +11,9 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
       label: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -30,15 +30,15 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '模板名称',
+      component: 'Input',
       rules: 'required',
     },
     {
-      component: 'Input',
       fieldName: 'code',
       label: '模板编码',
+      component: 'Input',
       rules: 'required',
     },
     {
@@ -65,15 +65,15 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
-      component: 'Textarea',
       fieldName: 'content',
       label: '模板内容',
+      component: 'Textarea',
       rules: 'required',
     },
     {
-      component: 'Input',
       fieldName: 'apiTemplateId',
       label: '短信 API 的模板编号',
+      component: 'Input',
     },
     {
       fieldName: 'remark',
@@ -140,9 +140,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useSendSmsFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'mobile',
       label: '手机号码',
+      component: 'Input',
       rules: 'required',
     },
     {
