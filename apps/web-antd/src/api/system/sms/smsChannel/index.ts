@@ -41,17 +41,17 @@ export function getSmsChannel(id: number) {
 
 /** 新增短信渠道 */
 export function createSmsChannel(data: SystemSmsChannelApi.SmsChannelVO) {
-  return requestClient.post({ url: '/system/sms-channel/create', data });
+  return requestClient.post('/system/sms-channel/create', data);
 }
 
 /** 修改短信渠道 */
 export function updateSmsChannel(data: SystemSmsChannelApi.SmsChannelVO) {
-  return requestClient.put({ url: '/system/sms-channel/update', data });
+  return requestClient.put('/system/sms-channel/update', data);
 }
 
 /** 删除短信渠道 */
 export function deleteSmsChannel(id: number) {
-  return requestClient.delete({ url: `/system/sms-channel/delete?id=${id}` });
+  return requestClient.delete(`/system/sms-channel/delete?id=${id}`);
 }
 
 /** 导出短信渠道 */

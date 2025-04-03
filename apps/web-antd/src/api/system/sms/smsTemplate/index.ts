@@ -44,17 +44,17 @@ export function getSmsTemplate(id: number) {
 
 /** 新增短信模板 */
 export function createSmsTemplate(data: SystemSmsTemplateApi.SmsTemplateVO) {
-  return requestClient.post({ url: '/system/sms-template/create', data });
+  return requestClient.post('/system/sms-template/create', data);
 }
 
 /** 修改短信模板 */
 export function updateSmsTemplate(data: SystemSmsTemplateApi.SmsTemplateVO) {
-  return requestClient.put({ url: '/system/sms-template/update', data });
+  return requestClient.put('/system/sms-template/update', data);
 }
 
 /** 删除短信模板 */
 export function deleteSmsTemplate(id: number) {
-  return requestClient.delete({ url: `/system/sms-template/delete?id=${id}` });
+  return requestClient.delete(`/system/sms-template/delete?id=${id}`);
 }
 
 /** 导出短信模板 */
@@ -66,5 +66,5 @@ export function exportSmsTemplate(params: SystemSmsTemplateApi.SmsTemplateVO) {
 
 /** 发送短信 */
 export function sendSms(data: SystemSmsTemplateApi.SendSmsReqVO) {
-  return requestClient.post({ url: '/system/sms-template/send-sms', data });
+  return requestClient.post('/system/sms-template/send-sms', data);
 }
