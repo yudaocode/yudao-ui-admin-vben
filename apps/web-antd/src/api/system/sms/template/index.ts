@@ -1,4 +1,4 @@
-import type { PageParam, PageResult } from '@vben/request';
+import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -28,7 +28,7 @@ export namespace SystemSmsTemplateApi {
 }
 
 /** 查询短信模板列表 */
-export function getSmsTemplatePage(params: PageParam) {
+export function getSmsTemplatePage(params: any) {
   return requestClient.get<PageResult<SystemSmsTemplateApi.SmsTemplateVO>>(
     '/system/sms-template/page',
     { params },
@@ -58,7 +58,7 @@ export function deleteSmsTemplate(id: number) {
 }
 
 /** 导出短信模板 */
-export function exportSmsTemplate(params: SystemSmsTemplateApi.SmsTemplateVO) {
+export function exportSmsTemplate(params: any) {
   return requestClient.download('/system/sms-template/export-excel', {
     params,
   });

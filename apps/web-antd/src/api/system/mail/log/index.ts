@@ -1,4 +1,4 @@
-import type { PageParam, PageResult } from '@vben/request';
+import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -25,7 +25,7 @@ export namespace SystemMailLogApi {
 }
 
 // 查询邮件日志列表
-export const getMailLogPage = async (params: PageParam) => {
+export const getMailLogPage = async (params: any) => {
   return await requestClient.get<PageResult<SystemMailLogApi.MailLogVO>>(
     '/system/mail-log/page',
     { params },

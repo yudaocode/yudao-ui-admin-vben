@@ -1,4 +1,4 @@
-import type { PageParam, PageResult } from '@vben/request';
+import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -18,7 +18,7 @@ export namespace SystemSmsChannelApi {
 }
 
 /** 查询短信渠道列表 */
-export function getSmsChannelPage(params: PageParam) {
+export function getSmsChannelPage(params: any) {
   return requestClient.get<PageResult<SystemSmsChannelApi.SmsChannelVO>>(
     '/system/sms-channel/page',
     { params },
@@ -55,6 +55,6 @@ export function deleteSmsChannel(id: number) {
 }
 
 /** 导出短信渠道 */
-export function exportSmsChannel(params: SystemSmsChannelApi.SmsChannelVO) {
+export function exportSmsChannel(params: any) {
   return requestClient.download('/system/sms-channel/export', { params });
 }

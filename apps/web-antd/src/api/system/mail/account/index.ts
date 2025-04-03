@@ -1,4 +1,4 @@
-import type { PageParam, PageResult } from '@vben/request';
+import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -19,7 +19,7 @@ export namespace SystemMailAccountApi {
 }
 
 // 查询邮箱账号列表
-export const getMailAccountPage = async (params: PageParam) => {
+export const getMailAccountPage = async (params: any) => {
   return await requestClient.get<
     PageResult<SystemMailAccountApi.MailAccountVO>
   >('/system/mail-account/page', { params });
