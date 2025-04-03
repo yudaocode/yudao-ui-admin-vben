@@ -1,5 +1,6 @@
-import { requestClient } from '#/api/request';
 import type { PageParam } from '@vben/request';
+
+import { requestClient } from '#/api/request';
 
 export namespace SystemUserApi {
   /** 用户信息 */
