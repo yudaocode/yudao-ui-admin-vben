@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock(false);
     }
   },
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
     }

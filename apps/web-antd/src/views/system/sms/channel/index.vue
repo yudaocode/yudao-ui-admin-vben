@@ -1,26 +1,18 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
+import { Download, Plus } from '@vben/icons';
+import Form from './modules/form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteSmsChannel,
-  exportSmsChannel,
-  getSmsChannelPage,
-} from '#/api/system/sms/channel';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSmsChannelPage, deleteSmsChannel, exportSmsChannel } from '#/api/system/sms/channel';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -44,12 +36,12 @@ function onCreate() {
 }
 
 /** 编辑短信渠道 */
-function onEdit(row: SystemSmsChannelApi.SmsChannelVO) {
+function onEdit(row: SystemSmsChannelApi.SmsChannel) {
   formModalApi.setData(row).open();
 }
 
 /** 删除短信渠道 */
-async function onDelete(row: SystemSmsChannelApi.SmsChannelVO) {
+async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.signature]),
     duration: 0,
@@ -71,14 +63,14 @@ async function onDelete(row: SystemSmsChannelApi.SmsChannelVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsChannelApi.SmsChannelVO>) {
+}: OnActionClickParams<SystemSmsChannelApi.SmsChannel>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -110,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsChannelApi.SmsChannelVO>,
+  } as VxeTableGridOptions<SystemSmsChannelApi.SmsChannel>,
 });
 </script>
 

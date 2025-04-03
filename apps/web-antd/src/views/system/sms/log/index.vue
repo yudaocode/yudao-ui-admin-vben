@@ -1,22 +1,18 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
-
 import { Button } from 'ant-design-vue';
+import Form from './modules/form.vue';
 
+import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
-import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,

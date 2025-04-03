@@ -1,4 +1,4 @@
-import type { PageResult } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -32,11 +32,8 @@ export namespace SystemSmsLogApi {
 }
 
 /** 查询短信日志列表 */
-export function getSmsLogPage(params: any) {
-  return requestClient.get<PageResult<SystemSmsLogApi.SmsLogVO>>(
-    '/system/sms-log/page',
-    { params },
-  );
+export function getSmsLogPage(params: PageParam) {
+  return requestClient.get<PageResult<SystemSmsLogApi.SmsLogVO>>('/system/sms-log/page', { params });
 }
 
 /** 导出短信日志 */

@@ -12,7 +12,6 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      label: 'id',
       component: 'Input',
       dependencies: {
         triggerFields: [''],
@@ -24,8 +23,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '短信类型',
       component: 'Select',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
+        class: 'w-full',
+        placeholder: '请选择短信类型',
       },
       rules: 'required',
     },
@@ -33,12 +33,18 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '模板名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入模板名称',
+      },
       rules: 'required',
     },
     {
       fieldName: 'code',
       label: '模板编码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入模板编码',
+      },
       rules: 'required',
     },
     {
@@ -50,6 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
         class: 'w-full',
         labelField: 'signature',
         valueField: 'id',
+        placeholder: '请选择短信渠道',
       },
       rules: 'required',
     },
@@ -68,17 +75,27 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'content',
       label: '模板内容',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入模板内容',
+      },
       rules: 'required',
     },
     {
       fieldName: 'apiTemplateId',
       label: '短信 API 的模板编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信 API 的模板编号',
+      },
+      rules: 'required',
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      }
     },
   ];
 }
@@ -91,8 +108,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '短信类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
+        allowClear: true,
+        placeholder: '请选择短信类型',
       },
     },
     {
@@ -100,19 +118,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '开启状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择开启状态',
       },
     },
     {
       fieldName: 'code',
       label: '模板编码',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入模板编码',
+      }
     },
     {
       fieldName: 'name',
       label: '模板名称',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入模板名称',
+      }
     },
     {
       fieldName: 'channelId',
@@ -123,8 +150,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'signature',
         valueField: 'id',
         allowClear: true,
+        placeholder: '请选择短信渠道',
       },
     },
+    // TODO @芋艿：范围检索的处理
     {
       fieldName: 'createTime',
       label: '创建时间',
@@ -143,6 +172,9 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+      },
       rules: 'required',
     },
     {
@@ -158,7 +190,7 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplateVO>(
+export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -228,7 +260,7 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplateVO>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 300,
+      minWidth: 180,
       align: 'center',
       fixed: 'right',
       cellRender: {

@@ -1,24 +1,19 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
+import { ref } from 'vue';
 import { message } from 'ant-design-vue';
-
 import { useVbenForm } from '#/adapter/form';
 import { sendSms } from '#/api/system/sms/template';
-import { $t } from '#/locales';
 
 import { useSendSmsFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemSmsTemplateApi.SmsTemplateVO>();
-const getTitle = computed(() => {
-  return $t('ui.actionTitle.send', ['短信']);
-});
+const templateData = ref<SystemSmsTemplateApi.SmsTemplate>();
 
+// TODO @puhui999：貌似发送短信，少了参数展示
 // 动态构建表单
 const buildSchema = () => {
   const schema = useSendSmsFormSchema();
@@ -63,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 构建发送短信请求
-    const data: SystemSmsTemplateApi.SendSmsReqVO = {
+    const data: SystemSmsTemplateApi.SmsSendReqVO = {
       mobile: values.mobile,
       templateCode: templateData.value?.code || '',
       templateParams: paramsObj,
@@ -84,12 +79,12 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock(false);
     }
   },
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplateVO>();
+    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
     if (!data) {
       return;
     }
@@ -103,7 +98,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal title="发送短信">
     <Form class="mx-4" />
   </Modal>
 </template>

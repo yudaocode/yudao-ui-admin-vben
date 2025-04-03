@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
+import { ref } from 'vue';
+
 const formData = ref<SystemSmsLogApi.SmsLogVO>();
-const getTitle = computed(() => {
-  return '短信日志详情';
-});
 
 const [Modal, modalApi] = useVbenModal({
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
     }
@@ -30,8 +27,9 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 
+<!-- TODO @puhui999：https://ant-design.antgroup.com/components/descriptions-cn 参考这个？ -->
 <template>
-  <Modal :title="getTitle">
+  <Modal title="短信日志详情">
     <div class="p-4">
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="form-item">
@@ -39,6 +37,7 @@ const [Modal, modalApi] = useVbenModal({
           <div>{{ formData?.id }}</div>
         </div>
         <div class="form-item">
+          <!-- TODO @puhui：格式不对 -->
           <div class="form-label">创建时间：</div>
           <div>{{ formData?.createTime }}</div>
         </div>
@@ -67,6 +66,7 @@ const [Modal, modalApi] = useVbenModal({
 
       <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="form-item">
+          <!-- TODO @puhui：格式不对 -->
           <div class="form-label">发送状态：</div>
           <div>{{ formData?.sendStatus }}</div>
         </div>
@@ -83,6 +83,7 @@ const [Modal, modalApi] = useVbenModal({
           <div>{{ formData?.apiSendMsg }}</div>
         </div>
         <div class="form-item">
+          <!-- TODO @puhui：格式不对 -->
           <div class="form-label">接收状态：</div>
           <div>{{ formData?.receiveStatus }}</div>
         </div>
@@ -91,19 +92,19 @@ const [Modal, modalApi] = useVbenModal({
           <div>{{ formData?.receiveTime }}</div>
         </div>
         <div class="form-item">
-          <div class="form-label">API接收编码：</div>
+          <div class="form-label">API 接收编码：</div>
           <div>{{ formData?.apiReceiveCode }}</div>
         </div>
         <div class="form-item">
-          <div class="form-label">API接收消息：</div>
+          <div class="form-label">API 接收消息：</div>
           <div>{{ formData?.apiReceiveMsg }}</div>
         </div>
         <div class="form-item">
-          <div class="form-label">API请求ID：</div>
+          <div class="form-label">API 请求 ID：</div>
           <div>{{ formData?.apiRequestId }}</div>
         </div>
         <div class="form-item">
-          <div class="form-label">API序列号：</div>
+          <div class="form-label">API 序列号：</div>
           <div>{{ formData?.apiSerialNo }}</div>
         </div>
       </div>
