@@ -95,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -130,7 +130,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板编码',
-      }
+      },
     },
     {
       fieldName: 'name',
@@ -139,7 +139,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板名称',
-      }
+      },
     },
     {
       fieldName: 'channelId',
@@ -168,6 +168,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 发送短信表单 */
 export function useSendSmsFormSchema(): VbenFormSchema[] {
   return [
+    {
+      fieldName: 'content',
+      label: '模板内容',
+      component: 'Textarea',
+      componentProps: {
+        disabled: true,
+      },
+    },
     {
       fieldName: 'mobile',
       label: '手机号码',

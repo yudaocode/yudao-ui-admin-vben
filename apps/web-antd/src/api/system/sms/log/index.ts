@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemSmsLogApi {
   /** 短信日志信息 */
-  export interface SmsLogVO {
+  export interface SmsLog {
     id?: number;
     channelId?: number;
     channelCode: string;
@@ -18,22 +18,25 @@ export namespace SystemSmsLogApi {
     userId?: number;
     userType?: number;
     sendStatus?: number;
-    sendTime?: Date;
+    sendTime?: string;
     apiSendCode: string;
     apiSendMsg: string;
     apiRequestId: string;
     apiSerialNo: string;
     receiveStatus?: number;
-    receiveTime?: Date;
+    receiveTime?: string;
     apiReceiveCode: string;
     apiReceiveMsg: string;
-    createTime?: Date;
+    createTime: string;
   }
 }
 
 /** 查询短信日志列表 */
 export function getSmsLogPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemSmsLogApi.SmsLogVO>>('/system/sms-log/page', { params });
+  return requestClient.get<PageResult<SystemSmsLogApi.SmsLog>>(
+    '/system/sms-log/page',
+    { params },
+  );
 }
 
 /** 导出短信日志 */

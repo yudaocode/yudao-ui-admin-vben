@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
-import { Button } from 'ant-design-vue';
-import Form from './modules/form.vue';
 
-import { $t } from '#/locales';
+import { Button } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -31,7 +35,7 @@ async function onExport() {
 }
 
 /** 查看短信日志详情 */
-function onView(row: SystemSmsLogApi.SmsLogVO) {
+function onView(row: SystemSmsLogApi.SmsLog) {
   formModalApi.setData(row).open();
 }
 
@@ -39,7 +43,7 @@ function onView(row: SystemSmsLogApi.SmsLogVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsLogApi.SmsLogVO>) {
+}: OnActionClickParams<SystemSmsLogApi.SmsLog>) {
   switch (code) {
     case 'view': {
       onView(row);
@@ -74,7 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsLogApi.SmsLogVO>,
+  } as VxeTableGridOptions<SystemSmsLogApi.SmsLog>,
 });
 </script>
 

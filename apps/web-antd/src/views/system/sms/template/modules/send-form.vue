@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
-import { ref } from 'vue';
 import { message } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
 import { sendSms } from '#/api/system/sms/template';
 
@@ -13,7 +15,6 @@ import { useSendSmsFormSchema } from '../data';
 const emit = defineEmits(['success']);
 const templateData = ref<SystemSmsTemplateApi.SmsTemplate>();
 
-// TODO @puhui999：貌似发送短信，少了参数展示
 // 动态构建表单
 const buildSchema = () => {
   const schema = useSendSmsFormSchema();
@@ -22,9 +23,12 @@ const buildSchema = () => {
   if (templateData.value?.params && templateData.value.params.length > 0) {
     templateData.value.params.forEach((param) => {
       schema.push({
-        component: 'Input',
         fieldName: `param_${param}`,
         label: `参数 ${param}`,
+        component: 'Input',
+        componentProps: {
+          placeholder: '请输入',
+        },
         rules: 'required',
       });
     });
@@ -58,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 构建发送短信请求
-    const data: SystemSmsTemplateApi.SmsSendReqVO = {
+    const data: SystemSmsTemplateApi.SmsSendReq = {
       mobile: values.mobile,
       templateCode: templateData.value?.code || '',
       templateParams: paramsObj,
@@ -92,7 +96,12 @@ const [Modal, modalApi] = useVbenModal({
     templateData.value = data;
     // 更新表单结构
     const schema = buildSchema();
-    await formApi.updateSchema(schema);
+    formApi.setState({ schema });
+
+    // 设置表单初始值，包括模板内容
+    await formApi.setValues({
+      content: data.content,
+    });
   },
 });
 </script>

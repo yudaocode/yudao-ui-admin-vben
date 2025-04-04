@@ -27,12 +27,16 @@ export function getSmsChannelPage(params: PageParam) {
 
 /** 获得短信渠道精简列表 */
 export function getSimpleSmsChannelList() {
-  return requestClient.get<SystemSmsChannelApi.SmsChannel[]>('/system/sms-channel/simple-list');
+  return requestClient.get<SystemSmsChannelApi.SmsChannel[]>(
+    '/system/sms-channel/simple-list',
+  );
 }
 
 /** 查询短信渠道详情 */
 export function getSmsChannel(id: number) {
-  return requestClient.get<SystemSmsChannelApi.SmsChannel>(`/system/sms-channel/get?id=${id}`);
+  return requestClient.get<SystemSmsChannelApi.SmsChannel>(
+    `/system/sms-channel/get?id=${id}`,
+  );
 }
 
 /** 新增短信渠道 */

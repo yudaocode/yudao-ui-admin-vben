@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入手机号',
-      }
+      },
     },
     {
       fieldName: 'channelId',
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板编号',
-      }
+      },
     },
     {
       fieldName: 'sendStatus',
@@ -80,7 +80,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsLogApi.SmsLogVO>(
+export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
