@@ -3,9 +3,9 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { getTenantPackageList } from '#/api/system/tenant-package';
+import { getTenantPackageList } from '#/api/system/tenantPackage';
 import { CommonStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -151,16 +151,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
-      }
+      },
     },
   ];
 }
 
 /** 列表的字段 */
 const tenantPackageList = await getTenantPackageList();
-export function useGridColumns<T = SystemTenantApi.SystemTenant>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns<T = SystemTenantApi.SystemTenant>(onActionClick: OnActionClickFn<T>): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -178,9 +176,8 @@ export function useGridColumns<T = SystemTenantApi.SystemTenant>(
       minWidth: 180,
       formatter: (row) => {
         const packageId = row.cellValue;
-        return packageId === 0 ? '系统租户' :
-          tenantPackageList.find((tenantPackage) => tenantPackage.id === packageId)?.name || '-';
-      }
+        return packageId === 0 ? '系统租户' : tenantPackageList.find((tenantPackage) => tenantPackage.id === packageId)?.name || '-';
+      },
     },
     {
       field: 'contactName',
