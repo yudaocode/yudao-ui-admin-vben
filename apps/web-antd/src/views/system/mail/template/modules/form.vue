@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
+import { $t } from '#/locales';
+import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import {
   createMailTemplate,
   getMailTemplate,
   updateMailTemplate,
 } from '#/api/system/mail/template';
-import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 

@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
-
 import { Descriptions, Tag } from 'ant-design-vue';
 
+import { computed, ref } from 'vue';
+import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 
 const formData = ref<SystemMailLogApi.MailLog>();

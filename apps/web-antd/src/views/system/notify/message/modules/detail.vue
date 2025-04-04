@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
-
 import { Descriptions, Tag } from 'ant-design-vue';
 
+import { ref } from 'vue';
+import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 
 const messageData = ref<SystemNotifyMessageApi.NotifyMessage>();
@@ -83,7 +81,7 @@ const [Modal, modalApi] = useVbenModal({
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="阅读时间">
-        {{ messageData?.readTime }}
+        {{ formatDateTime(messageData?.readTime || '') }}
       </Descriptions.Item>
       <Descriptions.Item label="创建时间">
         {{ formatDateTime(messageData?.createTime || '') }}
