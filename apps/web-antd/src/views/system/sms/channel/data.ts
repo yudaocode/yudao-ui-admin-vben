@@ -5,6 +5,7 @@ import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { rangePickerExtend } from '#/utils/TimeUtils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -54,7 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
     {
       fieldName: 'apiKey',
@@ -71,7 +72,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入短信 API 的密钥',
-      }
+      },
     },
     {
       fieldName: 'callbackUrl',
@@ -79,7 +80,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入短信发送回调 URL',
-      }
+      },
     },
   ];
 }
@@ -94,7 +95,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入短信签名',
-      }
+      },
     },
     {
       fieldName: 'code',
@@ -116,12 +117,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      // TODO @芋艿：怎么解决范围检索
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
+        ...rangePickerExtend(),
       },
     },
   ];

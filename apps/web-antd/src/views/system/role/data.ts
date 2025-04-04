@@ -3,8 +3,9 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { rangePickerExtend } from '#/utils/TimeUtils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -173,6 +174,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
+      componentProps: {
+        allowClear: true,
+        ...rangePickerExtend(),
+      },
     },
   ];
 }
@@ -254,7 +259,7 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
           {
             code: 'assign-menu',
             text: '菜单权限',
-          }
+          },
         ],
       },
     },
