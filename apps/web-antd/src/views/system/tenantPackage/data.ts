@@ -5,6 +5,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -81,6 +82,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

@@ -5,7 +5,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { rangePickerExtend } from '#/utils/TimeUtils';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -175,8 +175,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
-        ...rangePickerExtend(),
       },
     },
   ];

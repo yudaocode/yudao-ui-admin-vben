@@ -4,6 +4,7 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -13,6 +14,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

@@ -6,6 +6,7 @@ import { z } from '#/adapter/form';
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -153,12 +154,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择短信渠道',
       },
     },
-    // TODO @芋艿：范围检索的处理
     {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

@@ -4,7 +4,7 @@ import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { rangePickerExtend } from '#/utils/TimeUtils';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -54,8 +54,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
-        ...rangePickerExtend(),
       },
     },
     {
@@ -73,8 +73,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '接收时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
-        ...rangePickerExtend(),
       },
     },
   ];

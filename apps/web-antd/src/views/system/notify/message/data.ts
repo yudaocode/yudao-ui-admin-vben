@@ -3,6 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -40,11 +41,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模版类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(
           DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           'number',
         ),
+        allowClear: true,
         placeholder: '请选择模版类型',
       },
     },
@@ -53,6 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

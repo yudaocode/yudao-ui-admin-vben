@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
 
+// TODO @芋艿：后续整理下
+
+// TODO @puhui999：转成 function 方式哈
 /** 时间段选择器拓展  */
-export const rangePickerExtend = () => {
+export const getRangePickerDefaultProps = () => {
   return {
     showTime: {
       format: 'HH:mm:ss',
@@ -10,28 +13,22 @@ export const rangePickerExtend = () => {
         dayjs('23:59:59', 'HH:mm:ss'),
       ],
     },
-    // 如果需要10位时间戳（秒级）可以使用 valueFormat: 'X'
     valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    format: 'YYYY-MM-DD HH:mm:ss', // 显示格式
+    format: 'YYYY-MM-DD HH:mm:ss',
     placeholder: ['开始时间', '结束时间'],
     ranges: {
-      今天: [dayjs().startOf('day'), dayjs().endOf('day')],
-
-      昨天: [
+      '今天': [dayjs().startOf('day'), dayjs().endOf('day')],
+      '昨天': [
         dayjs().subtract(1, 'day').startOf('day'),
         dayjs().subtract(1, 'day').endOf('day'),
       ],
-
-      本周: [dayjs().startOf('week'), dayjs().endOf('day')],
-
-      本月: [dayjs().startOf('month'), dayjs().endOf('day')],
-
-      最近7天: [
+      '本周': [dayjs().startOf('week'), dayjs().endOf('day')],
+      '本月': [dayjs().startOf('month'), dayjs().endOf('day')],
+      '最近 7 天': [
         dayjs().subtract(7, 'day').startOf('day'),
         dayjs().endOf('day'),
       ],
-
-      最近30天: [
+      '最近 30 天': [
         dayjs().subtract(30, 'day').startOf('day'),
         dayjs().endOf('day'),
       ],

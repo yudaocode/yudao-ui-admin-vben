@@ -9,6 +9,7 @@ import { getDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { handleTree } from '#/utils/tree';
+import { getRangePickerDefaultProps } from '#/utils/date';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -245,10 +246,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];
