@@ -1,4 +1,4 @@
-import type { PageParam } from '@vben/request';
+import type {PageParam, PageResult} from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
@@ -23,17 +23,12 @@ export namespace SystemUserApi {
 
 /** 查询用户管理列表 */
 export function getUserPage(params: PageParam) {
-  return requestClient.get('/system/user/page', { params });
-}
-
-/** 查询所有用户列表 */
-export function getAllUser() {
-  return requestClient.get('/system/user/all');
+  return requestClient.get<PageResult<SystemUserApi.SystemUser>>('/system/user/page', { params });
 }
 
 /** 查询用户详情 */
 export function getUser(id: number) {
-  return requestClient.get(`/system/user/get?id=${id}`);
+  return requestClient.get<SystemUserApi.SystemUser>(`/system/user/get?id=${id}`);
 }
 
 /** 新增用户 */
@@ -62,7 +57,7 @@ export function importUserTemplate() {
 }
 
 /** 用户密码重置 */
-export function resetUserPwd(id: number, password: string) {
+export function resetUserPassword(id: number, password: string) {
   return requestClient.put('/system/user/update-password', { id, password });
 }
 
@@ -72,6 +67,6 @@ export function updateUserStatus(id: number, status: number) {
 }
 
 /** 获取用户精简信息列表 */
-export function getSimpleUserList(): Promise<SystemUserApi.SystemUser[]> {
-  return requestClient.get('/system/user/simple-list');
+export function getSimpleUserList() {
+  return requestClient.get<SystemUserApi.SystemUser[]>('/system/user/simple-list');
 }

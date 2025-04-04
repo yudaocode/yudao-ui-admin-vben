@@ -1,9 +1,14 @@
-import { type VbenFormSchema, z } from '#/adapter/form';
+import type {  VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
+import { z } from '#/adapter/form';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
+import { getDeptList } from '#/api/system/dept';
+import { getSimplePostList } from '#/api/system/post';
+import { getSimpleRoleList } from '#/api/system/role';
+import { handleTree } from '#/utils/tree';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -18,15 +23,34 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Input',
       fieldName: 'username',
       label: '用户名称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户名称',
+      },
       rules: 'required',
     },
     {
-      component: 'Input',
+      label: '用户密码',
+      fieldName: 'password',
+      component: 'InputPassword',
+      componentProps: {
+        placeholder: '请输入用户密码',
+      },
+      rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
+    },
+    {
       fieldName: 'nickname',
       label: '用户昵称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户昵称',
+      },
       rules: 'required',
     },
     {
@@ -34,37 +58,47 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '归属部门',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: () => Promise.resolve([]),
-        fieldNames: {
-          label: 'name',
-          key: 'id',
-          value: 'id',
+        api: async () => {
+          const data = await getDeptList();
+          return handleTree(data);
         },
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
+        placeholder: '请选择归属部门',
+        treeDefaultExpandAll: true,
       },
-      rules: 'required',
     },
     {
       fieldName: 'postIds',
       label: '岗位',
       component: 'ApiSelect',
       componentProps: {
-        api: () => Promise.resolve([]),
+        api: getSimplePostList,
+        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
+        placeholder: '请选择岗位',
       },
-      rules: 'required',
     },
     {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
       rules: z.string().email('邮箱格式不正确').optional(),
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+      }
     },
     {
       fieldName: 'sex',
@@ -92,8 +126,97 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      }
     },
   ];
+}
+
+/** 重置密码的表单 */
+export function useResetPasswordFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'newPassword',
+      label: '新密码',
+      component: 'InputPassword',
+      componentProps: {
+        placeholder: '请输入新密码',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'confirmPassword',
+      label: '确认密码',
+      component: 'InputPassword',
+      componentProps: {
+        placeholder: '请再次输入新密码',
+      },
+      dependencies: {
+        rules(values: Record<string, any>) {
+          const { newPassword } = values;
+          return z
+            .string()
+            .nonempty('确认密码不能为空')
+            .refine((value) => value === newPassword, '两次输入的密码不一致');
+        },
+        triggerFields: ['newPassword'],
+      },
+    },
+  ]
+}
+
+/** 分配角色的表单 */
+export function useAssignRoleFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'username',
+      label: '用户名称',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'nickname',
+      label: '用户昵称',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'roleIds',
+      label: '角色',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleRoleList,
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+        mode: 'multiple',
+        placeholder: '请选择角色',
+      },
+    },
+  ]
 }
 
 /** 列表的搜索表单 */
@@ -118,16 +241,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请输入用户状态',
-        allowClear: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-    },
-    {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
@@ -144,6 +257,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
+  onStatusChange?: (newStatus: number, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -171,17 +285,17 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
       title: '手机号码',
       minWidth: 120,
     },
-    // TODO @芋艿：switch 的接入
     {
       field: 'status',
       title: '状态',
       minWidth: 100,
       align: 'center',
       cellRender: {
+        attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
-          activeValue: 0,
-          inactiveValue: 1
+          checkedValue: CommonStatusEnum.ENABLE,
+          unCheckedValue: CommonStatusEnum.DISABLE,
         },
       },
     },
@@ -199,22 +313,23 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
       align: 'center',
       cellRender: {
         attrs: {
-          nameField: 'name',
-          nameTitle: '角色',
+          nameField: 'username',
+          nameTitle: '用户',
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成“更多”
         options: [
           'edit', // 默认的编辑按钮
           'delete', // 默认的删除按钮
           {
-            code: 'assign-data-permission',
-            text: '数据权限',
+            code: 'assign-role',
+            text: '分配角色',
           },
           {
-            code: 'assign-menu',
-            text: '菜单权限',
-          }
+            code: 'reset-password',
+            text: '重置密码',
+          },
         ],
       },
     },
