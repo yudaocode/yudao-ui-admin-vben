@@ -5,6 +5,7 @@ import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { rangePickerExtend } from '#/utils/TimeUtils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -139,6 +140,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
+        ...rangePickerExtend(),
       },
     },
   ];
