@@ -1,32 +1,29 @@
 <script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
-import type { SystemTenantPackageApi } from '#/api/system/tenantPackage';
-
-import { computed, ref } from 'vue';
+import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
-
 import { Checkbox, message } from 'ant-design-vue';
 
+import { computed, ref } from 'vue';
+import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
-import { createTenantPackage, getTenantPackage, updateTenantPackage } from '#/api/system/tenantPackage';
-import { $t } from '#/locales';
+import { createTenantPackage, getTenantPackage, updateTenantPackage } from '#/api/system/tenant-package';
 import { handleTree } from '#/utils/tree';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemTenantPackageApi.SystemTenantPackage>();
+const getTitle = computed(() => {
+  return formData.value ? $t('ui.actionTitle.edit', ['套餐']) : $t('ui.actionTitle.create', ['套餐']);
+});
 const menuTree = ref<SystemDeptApi.SystemDept[]>([]); // 菜单树
 const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
-
-const getTitle = computed(() => {
-  return formData.value ? $t('ui.actionTitle.edit', ['套餐']) : $t('ui.actionTitle.create', ['套餐']);
-});
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -56,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock(false);
     }
   },
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     // 加载菜单列表
     await loadMenuTree();
     if (!isOpen) {

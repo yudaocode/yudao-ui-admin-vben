@@ -1,6 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemTenantPackageApi } from '#/api/system/tenantPackage';
+import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
@@ -21,6 +21,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '套餐名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入套餐名称',
+      },
       rules: 'required',
     },
     {
@@ -44,6 +47,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      }
     },
   ];
 }
@@ -57,6 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         allowClear: true,
+        placeholder: '请输入套餐名称',
       },
     },
     {
@@ -64,8 +71,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择状态',
       },
     },
     {

@@ -2,7 +2,6 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-// TODO @芋艿：
 export namespace SystemTenantPackageApi {
   /** 租户套餐信息 */
   export interface SystemTenantPackage {
@@ -20,7 +19,10 @@ export namespace SystemTenantPackageApi {
 
 /** 租户套餐列表 */
 export function getTenantPackagePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemTenantPackageApi.SystemTenantPackage>>('/system/tenant-package/page', { params });
+  return requestClient.get<PageResult<SystemTenantPackageApi.SystemTenantPackage>>(
+    '/system/tenant-package/page',
+    { params }
+  );
 }
 
 /** 查询租户套餐详情 */

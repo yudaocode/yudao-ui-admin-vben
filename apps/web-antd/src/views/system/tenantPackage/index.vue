@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemTenantPackageApi } from '#/api/system/tenantPackage';
+import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-
 import { Button, message } from 'ant-design-vue';
+import Form from './modules/form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteTenantPackage, getTenantPackagePage } from '#/api/system/tenantPackage';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteTenantPackage, getTenantPackagePage } from '#/api/system/tenant-package';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -55,12 +54,12 @@ async function onDelete(row: SystemTenantPackageApi.SystemTenantPackage) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<SystemTenantPackageApi.SystemTenantPackage>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -96,10 +95,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<SystemTenantPackageApi.SystemTenantPackage>,
 });
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
-    <Grid table-title="套餐列表">
+    <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
