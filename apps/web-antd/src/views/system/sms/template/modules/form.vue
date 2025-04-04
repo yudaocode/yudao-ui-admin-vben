@@ -1,24 +1,18 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
-import { useVbenForm } from '#/adapter/form';
-import {
-  createSmsTemplate,
-  getSmsTemplate,
-  updateSmsTemplate,
-} from '#/api/system/sms/template';
 import { $t } from '#/locales';
+import { computed, ref } from 'vue';
+import { useVbenForm } from '#/adapter/form';
+import { createSmsTemplate, getSmsTemplate, updateSmsTemplate } from '#/api/system/sms/template';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemSmsTemplateApi.SmsTemplateVO>();
+const formData = ref<SystemSmsTemplateApi.SmsTemplate>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['短信模板'])
@@ -29,6 +23,9 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
+  commonConfig: {
+    labelWidth: 140
+  }
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -40,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as SystemSmsTemplateApi.SmsTemplateVO;
+      (await formApi.getValues()) as SystemSmsTemplateApi.SmsTemplate;
     try {
       await (formData.value?.id
         ? updateSmsTemplate(data)
@@ -56,12 +53,12 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock(false);
     }
   },
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplateVO>();
+    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
     if (!data || !data.id) {
       return;
     }

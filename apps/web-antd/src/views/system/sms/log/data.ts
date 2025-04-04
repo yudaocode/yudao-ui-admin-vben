@@ -12,6 +12,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'mobile',
       label: '手机号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入手机号',
+      }
     },
     {
       fieldName: 'channelId',
@@ -22,23 +26,30 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'signature',
         valueField: 'id',
         allowClear: true,
+        placeholder: '请选择短信渠道',
       },
     },
     {
       fieldName: 'templateId',
       label: '模板编号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入模板编号',
+      }
     },
     {
       fieldName: 'sendStatus',
       label: '发送状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_SEND_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择发送状态',
       },
     },
     {
+      // TODO @芋艿：怎么解决范围检索
       fieldName: 'sendTime',
       label: '发送时间',
       component: 'RangePicker',
@@ -51,11 +62,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '接收状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择接收状态',
       },
     },
     {
+      // TODO @芋艿：怎么解决范围检索
       fieldName: 'receiveTime',
       label: '接收时间',
       component: 'RangePicker',

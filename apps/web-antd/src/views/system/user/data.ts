@@ -103,17 +103,26 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'username',
       label: '用户名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
       label: '状态',
       component: 'Select',
       componentProps: {
+        placeholder: '请输入用户状态',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
@@ -124,6 +133,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];
@@ -150,7 +162,7 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
       minWidth: 120,
     },
     {
-      field: 'deptId',
+      field: 'deptName',
       title: '部门',
       minWidth: 120,
     },
@@ -159,13 +171,18 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
       title: '手机号码',
       minWidth: 120,
     },
+    // TODO @芋艿：switch 的接入
     {
       field: 'status',
       title: '状态',
       minWidth: 100,
+      align: 'center',
       cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        name: 'CellSwitch',
+        props: {
+          activeValue: 0,
+          inactiveValue: 1
+        },
       },
     },
     {
@@ -177,16 +194,28 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      minWidth: 160,
       fixed: 'right',
+      align: 'center',
       cellRender: {
         attrs: {
-          nameField: 'username',
-          nameTitle: '用户',
+          nameField: 'name',
+          nameTitle: '角色',
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          'edit', // 默认的编辑按钮
+          'delete', // 默认的删除按钮
+          {
+            code: 'assign-data-permission',
+            text: '数据权限',
+          },
+          {
+            code: 'assign-menu',
+            text: '菜单权限',
+          }
+        ],
       },
     },
   ];

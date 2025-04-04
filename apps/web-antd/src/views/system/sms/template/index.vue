@@ -1,27 +1,19 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteSmsTemplate,
-  exportSmsTemplate,
-  getSmsTemplatePage,
-} from '#/api/system/sms/template';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '#/api/system/sms/template';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -50,17 +42,17 @@ function onCreate() {
 }
 
 /** 编辑短信模板 */
-function onEdit(row: SystemSmsTemplateApi.SmsTemplateVO) {
+function onEdit(row: SystemSmsTemplateApi.SmsTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试短信 */
-function onSend(row: SystemSmsTemplateApi.SmsTemplateVO) {
+function onSend(row: SystemSmsTemplateApi.SmsTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除短信模板 */
-async function onDelete(row: SystemSmsTemplateApi.SmsTemplateVO) {
+async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -82,14 +74,14 @@ async function onDelete(row: SystemSmsTemplateApi.SmsTemplateVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsTemplateApi.SmsTemplateVO>) {
+}: OnActionClickParams<SystemSmsTemplateApi.SmsTemplate>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
     case 'sms-send': {
@@ -125,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsTemplateApi.SmsTemplateVO>,
+  } as VxeTableGridOptions<SystemSmsTemplateApi.SmsTemplate>,
 });
 </script>
 

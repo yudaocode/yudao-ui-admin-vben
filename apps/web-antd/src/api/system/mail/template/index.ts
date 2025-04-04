@@ -2,6 +2,7 @@ import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
+// TODO @puhui999：代码风格的统一
 export namespace SystemMailTemplateApi {
   export interface MailTemplateVO {
     id: number;

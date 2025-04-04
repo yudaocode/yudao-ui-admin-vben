@@ -11,7 +11,6 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      label: 'id',
       component: 'Input',
       dependencies: {
         triggerFields: [''],
@@ -22,6 +21,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'signature',
       label: '短信签名',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信签名',
+      },
       rules: 'required',
     },
     {
@@ -29,8 +31,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '渠道编码',
       component: 'Select',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string'),
+        class: 'w-full',
+        placeholder: '请选择短信渠道',
       },
       rules: 'required',
     },
@@ -49,22 +52,34 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      }
     },
     {
       fieldName: 'apiKey',
       label: '短信 API 的账号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信 API 的账号',
+      },
       rules: 'required',
     },
     {
       fieldName: 'apiSecret',
       label: '短信 API 的密钥',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信 API 的密钥',
+      }
     },
     {
       fieldName: 'callbackUrl',
       label: '短信发送回调 URL',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信发送回调 URL',
+      }
     },
   ];
 }
@@ -76,6 +91,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'signature',
       label: '短信签名',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入短信签名',
+      }
     },
     {
       fieldName: 'code',
@@ -84,6 +103,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string'),
+        placeholder: '请选择短信渠道',
       },
     },
     {
@@ -96,6 +116,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      // TODO @芋艿：怎么解决范围检索
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
@@ -107,7 +128,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsChannelApi.SmsChannelVO>(
+export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

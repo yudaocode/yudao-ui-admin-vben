@@ -34,7 +34,7 @@ async function generateRoutesByBackend(
     return [...options.routes, ...routes];
   } catch (error) {
     console.error(error);
-    return [];
+    throw error;
   }
 }
 
