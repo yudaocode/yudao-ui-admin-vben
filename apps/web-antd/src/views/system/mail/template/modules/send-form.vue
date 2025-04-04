@@ -25,7 +25,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 构建发送邮件请求
+    // 构建发送请求
     const values = await formApi.getValues();
     const paramsObj: Record<string, string> = {};
     if (formData.value?.params) {

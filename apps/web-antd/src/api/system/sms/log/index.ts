@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemSmsLogApi {
   /** 短信日志信息 */
-  export interface SmsLog {
+  export interface SystemSmsLog {
     id?: number;
     channelId?: number;
     channelCode: string;
@@ -33,10 +33,7 @@ export namespace SystemSmsLogApi {
 
 /** 查询短信日志列表 */
 export function getSmsLogPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemSmsLogApi.SmsLog>>(
-    '/system/sms-log/page',
-    { params },
-  );
+  return requestClient.get<PageResult<SystemSmsLogApi.SystemSmsLog>>('/system/sms-log/page', { params });
 }
 
 /** 导出短信日志 */

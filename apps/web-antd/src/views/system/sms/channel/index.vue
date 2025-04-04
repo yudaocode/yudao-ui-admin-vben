@@ -36,12 +36,12 @@ function onCreate() {
 }
 
 /** 编辑短信渠道 */
-function onEdit(row: SystemSmsChannelApi.SmsChannel) {
+function onEdit(row: SystemSmsChannelApi.SystemSmsChannel) {
   formModalApi.setData(row).open();
 }
 
 /** 删除短信渠道 */
-async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
+async function onDelete(row: SystemSmsChannelApi.SystemSmsChannel) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.signature]),
     duration: 0,
@@ -63,7 +63,7 @@ async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsChannelApi.SmsChannel>) {
+}: OnActionClickParams<SystemSmsChannelApi.SystemSmsChannel>) {
   switch (code) {
     case 'edit': {
       onEdit(row);
@@ -102,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsChannelApi.SmsChannel>,
+  } as VxeTableGridOptions<SystemSmsChannelApi.SystemSmsChannel>,
 });
 </script>
 

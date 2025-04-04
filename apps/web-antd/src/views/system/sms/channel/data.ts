@@ -128,7 +128,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
+export function useGridColumns<T = SystemSmsChannelApi.SystemSmsChannel>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

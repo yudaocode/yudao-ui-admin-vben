@@ -12,7 +12,7 @@ import { getSmsChannel, createSmsChannel, updateSmsChannel } from '#/api/system/
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemSmsChannelApi.SmsChannel>();
+const formData = ref<SystemSmsChannelApi.SystemSmsChannel>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['短信渠道'])
@@ -36,7 +36,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemSmsChannelApi.SmsChannel;
+    const data = (await formApi.getValues()) as SystemSmsChannelApi.SystemSmsChannel;
     try {
       await (formData.value?.id ? updateSmsChannel(data) : createSmsChannel(data));
       // 关闭并提示
@@ -55,7 +55,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSmsChannelApi.SmsChannel>();
+    const data = modalApi.getData<SystemSmsChannelApi.SystemSmsChannel>();
     if (!data || !data.id) {
       return;
     }

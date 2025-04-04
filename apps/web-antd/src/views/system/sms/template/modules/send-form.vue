@@ -1,46 +1,24 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
+import { ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { sendSms } from '#/api/system/sms/template';
 
 import { useSendSmsFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemSmsTemplateApi.SmsTemplate>();
-
-// 动态构建表单
-const buildSchema = () => {
-  const schema = useSendSmsFormSchema();
-
-  // 添加参数字段
-  if (templateData.value?.params && templateData.value.params.length > 0) {
-    templateData.value.params.forEach((param) => {
-      schema.push({
-        fieldName: `param_${param}`,
-        label: `参数 ${param}`,
-        component: 'Input',
-        componentProps: {
-          placeholder: '请输入',
-        },
-        rules: 'required',
-      });
-    });
-  }
-
-  return schema;
-};
+const formData = ref<SystemSmsTemplateApi.SystemSmsTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: buildSchema(),
   showDefaultActions: false,
+  commonConfig: {
+    labelWidth: 120,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -50,24 +28,21 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 获取表单数据
+    // 构建发送请求
     const values = await formApi.getValues();
-
-    // 提取参数
     const paramsObj: Record<string, string> = {};
-    if (templateData.value?.params) {
-      templateData.value.params.forEach((param) => {
+    if (formData.value?.params) {
+      formData.value.params.forEach((param) => {
         paramsObj[param] = values[`param_${param}`];
       });
     }
-
-    // 构建发送短信请求
-    const data: SystemSmsTemplateApi.SmsSendReq = {
+    const data: SystemSmsTemplateApi.SystemSmsSendReqVO = {
       mobile: values.mobile,
-      templateCode: templateData.value?.code || '',
+      templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
 
+    // 提交表单
     try {
       await sendSms(data);
       // 关闭并提示
@@ -88,22 +63,39 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
+    const data = modalApi.getData<SystemSmsTemplateApi.SystemSmsTemplate>();
     if (!data) {
       return;
     }
-
-    templateData.value = data;
-    // 更新表单结构
-    const schema = buildSchema();
+    formData.value = data;
+    // 更新 form schema
+    const schema = buildFormSchema();
     formApi.setState({ schema });
-
-    // 设置表单初始值，包括模板内容
+    // 设置到 values
     await formApi.setValues({
       content: data.content,
     });
   },
 });
+
+/** 动态构建表单 schema */
+const buildFormSchema = () => {
+  const schema = useSendSmsFormSchema();
+  if (formData.value?.params) {
+    formData.value.params.forEach((param) => {
+      schema.push({
+        fieldName: `param_${param}`,
+        label: `参数 ${param}`,
+        component: 'Input',
+        componentProps: {
+          placeholder: `请输入参数 ${param}`,
+        },
+        rules: 'required',
+      });
+    });
+  }
+  return schema;
+};
 </script>
 
 <template>

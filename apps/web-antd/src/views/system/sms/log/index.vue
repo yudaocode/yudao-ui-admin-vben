@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
-
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -16,10 +12,10 @@ import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
+import Detail from './modules/detail.vue';
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
   destroyOnClose: true,
 });
 
@@ -35,15 +31,15 @@ async function onExport() {
 }
 
 /** 查看短信日志详情 */
-function onView(row: SystemSmsLogApi.SmsLog) {
-  formModalApi.setData(row).open();
+function onView(row: SystemSmsLogApi.SystemSmsLog) {
+  detailModalApi.setData(row).open();
 }
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsLogApi.SmsLog>) {
+}: OnActionClickParams<SystemSmsLogApi.SystemSmsLog>) {
   switch (code) {
     case 'view': {
       onView(row);
@@ -78,13 +74,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsLogApi.SmsLog>,
+  } as VxeTableGridOptions<SystemSmsLogApi.SystemSmsLog>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <DetailModal @success="onRefresh" />
     <Grid table-title="短信日志列表">
       <template #toolbar-tools>
         <Button type="primary" class="ml-2" @click="onExport">

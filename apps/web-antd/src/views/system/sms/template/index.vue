@@ -42,17 +42,17 @@ function onCreate() {
 }
 
 /** 编辑短信模板 */
-function onEdit(row: SystemSmsTemplateApi.SmsTemplate) {
+function onEdit(row: SystemSmsTemplateApi.SystemSmsTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试短信 */
-function onSend(row: SystemSmsTemplateApi.SmsTemplate) {
+function onSend(row: SystemSmsTemplateApi.SystemSmsTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除短信模板 */
-async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
+async function onDelete(row: SystemSmsTemplateApi.SystemSmsTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -74,7 +74,7 @@ async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsTemplateApi.SmsTemplate>) {
+}: OnActionClickParams<SystemSmsTemplateApi.SystemSmsTemplate>) {
   switch (code) {
     case 'edit': {
       onEdit(row);
@@ -117,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsTemplateApi.SmsTemplate>,
+  } as VxeTableGridOptions<SystemSmsTemplateApi.SystemSmsTemplate>,
 });
 </script>
 
