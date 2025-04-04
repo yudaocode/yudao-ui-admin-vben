@@ -9,7 +9,20 @@ import { useDictStore } from '#/store';
 const dictStore = useDictStore();
 
 /**
+ * 获取字典标签
+ *
+ * @param dictType 字典类型
+ * @param value 字典值
+ * @returns 字典标签
+ */
+function getDictLabel(dictType: string, value: any) {
+  const dictObj = dictStore.getDictData(dictType, value);
+  return isObject(dictObj)? dictObj.label : '';
+}
+
+/**
  * 获取字典对象
+ *
  * @param dictType 字典类型
  * @param value 字典值
  * @returns 字典对象
@@ -21,6 +34,7 @@ function getDictObj(dictType: string, value: any) {
 
 /**
  * 获取字典数组 用于select radio 等
+ *
  * @param dictType 字典类型
  * @returns 字典数组
  */
@@ -191,4 +205,4 @@ enum DICT_TYPE {
   TRADE_ORDER_TYPE = 'trade_order_type', // 订单 - 类型
   USER_TYPE = 'user_type',
 }
-export { DICT_TYPE, getDictObj, getDictOptions };
+export { DICT_TYPE, getDictObj, getDictLabel, getDictOptions };

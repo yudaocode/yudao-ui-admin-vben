@@ -22,7 +22,7 @@ export function getRolePage(params: PageParam) {
 }
 
 /** 查询角色（精简)列表 */
-export function getSimpleRoleList(): Promise<SystemRoleApi.SystemRole[]> {
+export function getSimpleRoleList() {
   return requestClient.get<SystemRoleApi.SystemRole[]>('/system/role/simple-list');
 }
 
