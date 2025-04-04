@@ -2,21 +2,17 @@
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { useVbenModal } from '@vben/common-ui';
-import { message } from 'ant-design-vue';
 
 import { $t } from '#/locales';
+import { message } from 'ant-design-vue';
 import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import {
-  createMailTemplate,
-  getMailTemplate,
-  updateMailTemplate,
-} from '#/api/system/mail/template';
+import { createMailTemplate, getMailTemplate, updateMailTemplate} from '#/api/system/mail/template';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemMailTemplateApi.MailTemplate>();
+const formData = ref<SystemMailTemplateApi.SystemMailTemplate>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['邮件模板'])
@@ -37,12 +33,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemMailTemplateApi.MailTemplate;
+    const data = (await formApi.getValues()) as SystemMailTemplateApi.SystemMailTemplate;
     try {
-      await (formData.value?.id
-        ? updateMailTemplate(data)
-        : createMailTemplate(data));
+      await (formData.value?.id ? updateMailTemplate(data) : createMailTemplate(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -59,7 +52,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
+    const data = modalApi.getData<SystemMailTemplateApi.SystemMailTemplate>();
     if (!data || !data.id) {
       return;
     }

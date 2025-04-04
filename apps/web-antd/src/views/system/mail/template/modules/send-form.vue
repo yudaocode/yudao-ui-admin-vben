@@ -1,46 +1,20 @@
 <script lang="ts" setup>
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
+import { ref } from 'vue';
 import { message } from 'ant-design-vue';
-
 import { useVbenForm } from '#/adapter/form';
 import { sendMail } from '#/api/system/mail/template';
-import { $t } from '#/locales';
 
 import { useSendMailFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemMailTemplateApi.MailTemplate>();
-const getTitle = computed(() => {
-  return $t('ui.actionTitle.send', ['邮件']);
-});
-
-// 动态构建表单
-const buildSchema = () => {
-  const schema = useSendMailFormSchema();
-
-  // 添加参数字段
-  if (templateData.value?.params && templateData.value.params.length > 0) {
-    templateData.value.params?.forEach((param) => {
-      schema.push({
-        component: 'Input',
-        fieldName: `param_${param}`,
-        label: `参数 ${param}`,
-        rules: 'required',
-      });
-    });
-  }
-
-  return schema;
-};
+const formData = ref<SystemMailTemplateApi.SystemMailTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: buildSchema(),
   showDefaultActions: false,
 });
 
@@ -51,24 +25,21 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 获取表单数据
+    // 构建发送邮件请求
     const values = await formApi.getValues();
-
-    // 提取参数
     const paramsObj: Record<string, string> = {};
-    if (templateData.value?.params) {
-      templateData.value.params.forEach((param) => {
+    if (formData.value?.params) {
+      formData.value.params.forEach((param: string) => {
         paramsObj[param] = values[`param_${param}`];
       });
     }
-
-    // 构建发送邮件请求
-    const data: SystemMailTemplateApi.MailSendReq = {
+    const data: SystemMailTemplateApi.MailSendReqVO = {
       mail: values.mail,
-      templateCode: templateData.value?.code || '',
+      templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
 
+    // 提交表单
     try {
       await sendMail(data);
       // 关闭并提示
@@ -89,26 +60,43 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
+    const data = modalApi.getData<SystemMailTemplateApi.SystemMailTemplate>();
     if (!data) {
       return;
     }
-
-    templateData.value = data;
-    // 更新表单结构
-    const schema = buildSchema();
+    formData.value = data;
+    // 更新 form schema
+    const schema = buildFormSchema();
     formApi.setState({ schema });
-
-    // 设置表单初始值，包括模板内容
+    // 设置到 values
     await formApi.setValues({
       content: data.content,
     });
   },
 });
+
+/** 动态构建表单 schema */
+const buildFormSchema = () => {
+  const schema = useSendMailFormSchema();
+  if (formData.value?.params?.length > 0) {
+    formData.value.params?.forEach((param: string) => {
+      schema.push({
+        fieldName: `param_${param}`,
+        label: `参数 ${param}`,
+        component: 'Input',
+        componentProps: {
+          placeholder: `请输入参数 ${param}`,
+        },
+        rules: 'required',
+      });
+    });
+  }
+  return schema;
+};
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal title="测试发送邮件">
     <Form class="mx-4" />
   </Modal>
 </template>

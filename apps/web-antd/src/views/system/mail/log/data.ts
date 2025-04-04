@@ -9,36 +9,6 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'toMail',
-      label: '收件邮箱',
-      component: 'Input',
-    },
-    {
-      fieldName: 'accountId',
-      label: '邮箱账号',
-      component: 'ApiSelect',
-      componentProps: {
-        api: async () => await getSimpleMailAccountList(),
-        labelField: 'mail',
-        valueField: 'id',
-        allowClear: true,
-      },
-    },
-    {
-      fieldName: 'templateId',
-      label: '模板编号',
-      component: 'Input',
-    },
-    {
-      fieldName: 'sendStatus',
-      label: '发送状态',
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        options: getDictOptions(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS, 'number'),
-      },
-    },
-    {
       fieldName: 'sendTime',
       label: '发送时间',
       component: 'RangePicker',
@@ -50,21 +20,57 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'userId',
       label: '用户编号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入用户编号',
+      }
     },
     {
       fieldName: 'userType',
       label: '用户类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
+        allowClear: true,
+        placeholder: '请选择用户类型',
       },
+    },
+    {
+      fieldName: 'sendStatus',
+      label: '发送状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择发送状态',
+      },
+    },
+    {
+      fieldName: 'accountId',
+      label: '邮箱账号',
+      component: 'ApiSelect',
+      componentProps: {
+        api: async () => await getSimpleMailAccountList(),
+        labelField: 'mail',
+        valueField: 'id',
+        allowClear: true,
+        placeholder: '请选择邮箱账号',
+      },
+    },
+    {
+      fieldName: 'templateId',
+      label: '模板编号',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入模板编号',
+      }
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailLogApi.MailLog>(
+export function useGridColumns<T = SystemMailLogApi.SystemMailLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -74,20 +80,15 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       minWidth: 100,
     },
     {
-      field: 'createTime',
-      title: '创建时间',
+      field: 'sendTime',
+      title: '发送时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'toMail',
       title: '收件邮箱',
-      minWidth: 120,
-    },
-    {
-      field: 'fromMail',
-      title: '发送邮箱',
-      minWidth: 120,
+      minWidth: 160,
     },
     {
       field: 'templateTitle',
@@ -100,6 +101,11 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       minWidth: 300,
     },
     {
+      field: 'fromMail',
+      title: '发送邮箱',
+      minWidth: 120,
+    },
+    {
       field: 'sendStatus',
       title: '发送状态',
       minWidth: 120,
@@ -109,39 +115,14 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       },
     },
     {
-      field: 'sendTime',
-      title: '发送时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    {
-      field: 'templateId',
-      title: '模板编号',
-      minWidth: 100,
-    },
-    {
       field: 'templateCode',
       title: '模板编码',
       minWidth: 120,
     },
     {
-      field: 'userId',
-      title: '用户编号',
-      minWidth: 100,
-    },
-    {
-      field: 'userType',
-      title: '用户类型',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.USER_TYPE },
-      },
-    },
-    {
       field: 'operation',
       title: '操作',
-      minWidth: 120,
+      minWidth: 80,
       align: 'center',
       fixed: 'right',
       cellRender: {
@@ -155,11 +136,7 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
           {
             code: 'view',
             text: '查看',
-          },
-          {
-            code: 'resend',
-            text: '重发',
-          },
+          }
         ],
       },
     },

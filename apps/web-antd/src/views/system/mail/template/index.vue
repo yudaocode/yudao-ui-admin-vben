@@ -1,25 +1,18 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteMailTemplate,
-  getMailTemplatePage,
-} from '#/api/system/mail/template';
-import { $t } from '#/locales';
-
-import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteMailTemplate, getMailTemplatePage } from '#/api/system/mail/template';
+
+import { useGridColumns, useGridFormSchema } from './data';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -42,17 +35,17 @@ function onCreate() {
 }
 
 /** 编辑邮件模板 */
-function onEdit(row: SystemMailTemplateApi.MailTemplate) {
+function onEdit(row: SystemMailTemplateApi.SystemMailTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试邮件 */
-function onSend(row: SystemMailTemplateApi.MailTemplate) {
+function onSend(row: SystemMailTemplateApi.SystemMailTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除邮件模板 */
-async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
+async function onDelete(row: SystemMailTemplateApi.SystemMailTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -74,17 +67,17 @@ async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailTemplateApi.MailTemplate>) {
+}: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
       break;
     }
-    case 'mail-send': {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'send': {
       onSend(row);
       break;
     }
@@ -117,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplate>,
+  } as VxeTableGridOptions<SystemMailTemplateApi.SystemMailTemplate>,
 });
 </script>
 <template>

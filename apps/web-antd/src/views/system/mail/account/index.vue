@@ -1,25 +1,17 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
+import Form from './modules/form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteMailAccount,
-  getMailAccountPage,
-  testMailAccount,
-} from '#/api/system/mail/account';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteMailAccount, getMailAccountPage } from '#/api/system/mail/account';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -37,30 +29,12 @@ function onCreate() {
 }
 
 /** 编辑邮箱账号 */
-function onEdit(row: SystemMailAccountApi.MailAccount) {
+function onEdit(row: SystemMailAccountApi.SystemMailAccount) {
   formModalApi.setData(row).open();
 }
 
-/** 测试邮箱连接 */
-async function onTest(row: SystemMailAccountApi.MailAccount) {
-  const hideLoading = message.loading({
-    content: '正在测试邮箱连接...',
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await testMailAccount(row.id as number);
-    message.success({
-      content: '邮箱连接测试成功',
-      key: 'action_process_msg',
-    });
-  } finally {
-    hideLoading();
-  }
-}
-
 /** 删除邮箱账号 */
-async function onDelete(row: SystemMailAccountApi.MailAccount) {
+async function onDelete(row: SystemMailAccountApi.SystemMailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
     duration: 0,
@@ -82,7 +56,7 @@ async function onDelete(row: SystemMailAccountApi.MailAccount) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailAccountApi.MailAccount>) {
+}: OnActionClickParams<SystemMailAccountApi.SystemMailAccount>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -90,10 +64,6 @@ function onActionClick({
     }
     case 'edit': {
       onEdit(row);
-      break;
-    }
-    case 'test': {
-      onTest(row);
       break;
     }
   }
@@ -125,7 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailAccountApi.MailAccount>,
+  } as VxeTableGridOptions<SystemMailAccountApi.SystemMailAccount>,
 });
 </script>
 <template>

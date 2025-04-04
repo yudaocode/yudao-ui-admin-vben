@@ -4,14 +4,11 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 import { useVbenModal } from '@vben/common-ui';
 import { Descriptions, Tag } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 
-const formData = ref<SystemMailLogApi.MailLog>();
-const getTitle = computed(() => {
-  return '邮件日志详情';
-});
+const formData = ref<SystemMailLogApi.SystemMailLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -19,7 +16,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailLogApi.MailLog>();
+    const data = modalApi.getData<SystemMailLogApi.SystemMailLog>();
     if (!data || !data.id) {
       return;
     }
@@ -34,7 +31,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal title="邮件日志详情" class="w-1/2">
     <div class="p-4">
       <Descriptions :column="2" bordered>
         <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
@@ -68,12 +65,7 @@ const [Modal, modalApi] = useVbenModal({
         <Descriptions.Item label="发送状态">
           <!-- TODO @芋艿: 数据字典-->
           <Tag color="processing">
-            {{
-              getDictLabel(
-                DICT_TYPE.SYSTEM_MAIL_SEND_STATUS,
-                formData?.sendStatus,
-              )
-            }}
+            {{ getDictLabel(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS, formData?.sendStatus ) }}
           </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="发送时间">

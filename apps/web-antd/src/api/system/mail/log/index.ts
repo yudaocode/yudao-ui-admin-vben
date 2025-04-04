@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemMailLogApi {
   /** 邮件日志 */
-  export interface MailLog {
+  export interface SystemMailLog {
     id: number;
     userId: number;
     userType: number;
@@ -24,35 +24,21 @@ export namespace SystemMailLogApi {
     createTime: string;
   }
 }
-
+// TODO @puhui999：改成 function 风格；不用 await
 /** 查询邮件日志列表 */
 export const getMailLogPage = async (params: PageParam) => {
-  return await requestClient.get<PageResult<SystemMailLogApi.MailLog>>(
+  return await requestClient.get<PageResult<SystemMailLogApi.SystemMailLog>>(
     '/system/mail-log/page',
-    { params },
+    { params }
   );
 };
 
 /** 查询邮件日志详情 */
 export const getMailLog = async (id: number) => {
-  return await requestClient.get<SystemMailLogApi.MailLog>(
-    '/system/mail-log/get',
-    {
-      params: { id },
-    },
-  );
+  return await requestClient.get<SystemMailLogApi.SystemMailLog>(`/system/mail-log/get?${id}`);
 };
 
 /** 重新发送邮件 */
 export const resendMail = async (id: number) => {
-  return await requestClient.put<boolean>('/system/mail-log/resend', null, {
-    params: { id },
-  });
-};
-
-/** 批量删除邮件日志 */
-export const deleteMailLogs = async (ids: number[]) => {
-  return await requestClient.delete<boolean>('/system/mail-log/delete', {
-    data: { ids },
-  });
+  return await requestClient.put<boolean>(`/system/mail-log/resend?id=${id}`);
 };

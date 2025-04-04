@@ -3,8 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace SystemMailAccountApi {
-  /** 邮箱信息 */
-  export interface MailAccount {
+  /** 邮箱账号 */
+  export interface SystemMailAccount {
     id: number;
     mail: string;
     username: string;
@@ -18,10 +18,10 @@ export namespace SystemMailAccountApi {
     remark: string;
   }
 }
-
+// TODO @puhui999：改成 function 风格；不用 await
 /** 查询邮箱账号列表 */
 export const getMailAccountPage = async (params: PageParam) => {
-  return await requestClient.get<PageResult<SystemMailAccountApi.MailAccount>>(
+  return await requestClient.get<PageResult<SystemMailAccountApi.SystemMailAccount>>(
     '/system/mail-account/page',
     { params },
   );
@@ -29,51 +29,25 @@ export const getMailAccountPage = async (params: PageParam) => {
 
 /** 查询邮箱账号详情 */
 export const getMailAccount = async (id: number) => {
-  return await requestClient.get<SystemMailAccountApi.MailAccount>(
-    '/system/mail-account/get',
-    {
-      params: { id },
-    },
-  );
+  return await requestClient.get<SystemMailAccountApi.SystemMailAccount>(`/system/mail-account/get?id=${id}`);
 };
 
 /** 新增邮箱账号 */
-export const createMailAccount = async (
-  data: SystemMailAccountApi.MailAccount,
-) => {
-  return await requestClient.post<SystemMailAccountApi.MailAccount>(
-    '/system/mail-account/create',
-    data,
-  );
+export const createMailAccount = async (data: SystemMailAccountApi.SystemMailAccount) => {
+  return await requestClient.post<SystemMailAccountApi.SystemMailAccount>('/system/mail-account/create', data);
 };
 
 /** 修改邮箱账号 */
-export const updateMailAccount = async (
-  data: SystemMailAccountApi.MailAccount,
-) => {
-  return await requestClient.put<SystemMailAccountApi.MailAccount>(
-    '/system/mail-account/update',
-    data,
-  );
+export const updateMailAccount = async (data: SystemMailAccountApi.SystemMailAccount) => {
+  return await requestClient.put<SystemMailAccountApi.SystemMailAccount>('/system/mail-account/update', data);
 };
 
 /** 删除邮箱账号 */
 export const deleteMailAccount = async (id: number) => {
-  return await requestClient.delete<boolean>('/system/mail-account/delete', {
-    params: { id },
-  });
+  return await requestClient.delete<boolean>(`/system/mail-account/delete?id=${id}`);
 };
 
 /** 获得邮箱账号精简列表 */
 export const getSimpleMailAccountList = async () => {
-  return await requestClient.get<SystemMailAccountApi.MailAccount[]>(
-    '/system/mail-account/simple-list',
-  );
-};
-
-/** 测试邮箱连接 */
-export const testMailAccount = async (id: number) => {
-  return await requestClient.post<boolean>('/system/mail-account/test', null, {
-    params: { id },
-  });
+  return await requestClient.get<SystemMailAccountApi.SystemMailAccount[]>('/system/mail-account/simple-list');
 };

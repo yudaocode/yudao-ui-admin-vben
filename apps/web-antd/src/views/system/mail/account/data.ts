@@ -21,24 +21,36 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'mail',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
       rules: 'required',
     },
     {
       fieldName: 'username',
       label: '用户名',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户名',
+      },
       rules: 'required',
     },
     {
       fieldName: 'password',
       label: '密码',
       component: 'InputPassword',
+      componentProps: {
+        placeholder: '请输入密码',
+      },
       rules: 'required',
     },
     {
       fieldName: 'host',
       label: 'SMTP 服务器域名',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入 SMTP 服务器域名',
+      },
       rules: 'required',
     },
     {
@@ -46,6 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: 'SMTP 服务器端口',
       component: 'InputNumber',
       componentProps: {
+        placeholder: '请输入 SMTP 服务器端口',
         min: 0,
         max: 65_535,
       },
@@ -77,6 +90,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      }
     },
   ];
 }
@@ -88,25 +104,25 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'mail',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+        clearable: true,
+      }
     },
     {
       fieldName: 'username',
       label: '用户名',
       component: 'Input',
-    },
-    {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
       componentProps: {
-        allowClear: true,
-      },
-    },
+        placeholder: '请输入用户名',
+        clearable: true,
+      }
+    }
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
+export function useGridColumns<T = SystemMailAccountApi.SystemMailAccount>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -118,12 +134,12 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
     {
       field: 'mail',
       title: '邮箱',
-      minWidth: 120,
+      minWidth: 160,
     },
     {
       field: 'username',
       title: '用户名',
-      minWidth: 120,
+      minWidth: 160,
     },
     {
       field: 'host',
@@ -133,7 +149,7 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
     {
       field: 'port',
       title: 'SMTP 服务器端口',
-      minWidth: 120,
+      minWidth: 130,
     },
     {
       field: 'sslEnable',
@@ -147,16 +163,11 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
     {
       field: 'starttlsEnable',
       title: '是否开启 STARTTLS',
-      minWidth: 120,
+      minWidth: 145,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
       },
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 120,
     },
     {
       field: 'createTime',
@@ -167,7 +178,7 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 220,
+      minWidth: 130,
       align: 'center',
       fixed: 'right',
       cellRender: {
@@ -176,15 +187,7 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
           nameTitle: '邮箱账号',
           onClick: onActionClick,
         },
-        name: 'CellOperation',
-        options: [
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
-          {
-            code: 'test',
-            text: '测试连接',
-          },
-        ],
+        name: 'CellOperation'
       },
     },
   ];
