@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message, Modal, Row, Col } from 'ant-design-vue';
 import { Plus, Download } from '@vben/icons';
 import Form from './modules/form.vue';
 import ResetPasswordForm from './modules/reset-password-form.vue';
 import AssignRoleForm from './modules/assign-role-form.vue';
+import DeptTree from './modules/dept-tree.vue';
 
 import { $t } from '#/locales';
+import { ref } from 'vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage, deleteUser, exportUser, updateUserStatus } from '#/api/system/user';
 import { downloadByData } from '#/utils/download';
@@ -41,6 +44,13 @@ function onRefresh() {
 async function onExport() {
   const data = await exportUser(await gridApi.formApi.getValues());
   downloadByData(data, '用户.xls');
+}
+
+/** 选择部门 */
+const searchDeptId = ref<number | undefined>(undefined);
+async function onDeptSelect (dept: SystemDeptApi.SystemDept) {
+  searchDeptId.value = dept.id;
+  onRefresh();
 }
 
 /** 创建用户 */
@@ -94,18 +104,16 @@ async function onStatusChange(newStatus: number, row: SystemUserApi.SystemUser):
       },
       onOk() {
         // 更新用户状态
-        updateUserStatus(row.id as number, newStatus)
-          .then(() => {
-            // 提示并返回成功
-            message.success({
-              content: $t('ui.actionMessage.operationSuccess'),
-              key: 'action_process_msg',
-            });
-            resolve(true);
-          })
-          .catch((error) => {
-            reject(error);
+        updateUserStatus(row.id as number, newStatus).then(() => {
+          // 提示并返回成功
+          message.success({
+            content: $t('ui.actionMessage.operationSuccess'),
+            key: 'action_process_msg',
           });
+          resolve(true);
+        }).catch((error) => {
+          reject(error);
+        });
       },
     });
   });
@@ -151,6 +159,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
+            deptId: searchDeptId.value,
           });
         },
       },
@@ -171,17 +180,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <ResetPasswordModal @success="onRefresh" />
     <AssignRoleModal @success="onRefresh" />
-    <Grid table-title="用户列表">
-      <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['用户']) }}
-        </Button>
-        <Button type="primary" class="ml-2" @click="onExport">
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
-      </template>
-    </Grid>
+
+    <div class="flex h-full">
+      <!-- 左侧部门树 -->
+      <div class="w-4/24 pr-3">
+        <DeptTree @select="onDeptSelect" />
+      </div>
+      <!-- 右侧用户列表 -->
+      <div class="w-18/24">
+        <Grid table-title="用户列表">
+          <template #toolbar-tools>
+            <Button type="primary" @click="onCreate">
+              <Plus class="size-5" />
+              {{ $t('ui.actionTitle.create', ['用户']) }}
+            </Button>
+            <Button type="primary" class="ml-2" @click="onExport">
+              <Download class="size-5" />
+              {{ $t('ui.actionTitle.export') }}
+            </Button>
+          </template>
+        </Grid>
+      </div>
+    </div>
   </Page>
 </template>
