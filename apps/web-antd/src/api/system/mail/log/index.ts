@@ -1,10 +1,10 @@
-import type { PageResult } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-// TODO @puhui999：代码风格的统一
 export namespace SystemMailLogApi {
-  export interface MailLogVO {
+  /** 邮件日志 */
+  export interface MailLog {
     id: number;
     userId: number;
     userType: number;
@@ -18,24 +18,24 @@ export namespace SystemMailLogApi {
     templateContent: string;
     templateParams: string;
     sendStatus: number;
-    sendTime: Date;
+    sendTime: string;
     sendMessageId: string;
     sendException: string;
-    createTime: Date;
+    createTime: string;
   }
 }
 
-// 查询邮件日志列表
-export const getMailLogPage = async (params: any) => {
-  return await requestClient.get<PageResult<SystemMailLogApi.MailLogVO>>(
+/** 查询邮件日志列表 */
+export const getMailLogPage = async (params: PageParam) => {
+  return await requestClient.get<PageResult<SystemMailLogApi.MailLog>>(
     '/system/mail-log/page',
     { params },
   );
 };
 
-// 查询邮件日志详情
+/** 查询邮件日志详情 */
 export const getMailLog = async (id: number) => {
-  return await requestClient.get<SystemMailLogApi.MailLogVO>(
+  return await requestClient.get<SystemMailLogApi.MailLog>(
     '/system/mail-log/get',
     {
       params: { id },
@@ -43,14 +43,14 @@ export const getMailLog = async (id: number) => {
   );
 };
 
-// 重新发送邮件
+/** 重新发送邮件 */
 export const resendMail = async (id: number) => {
   return await requestClient.put<boolean>('/system/mail-log/resend', null, {
     params: { id },
   });
 };
 
-// 批量删除邮件日志
+/** 批量删除邮件日志 */
 export const deleteMailLogs = async (ids: number[]) => {
   return await requestClient.delete<boolean>('/system/mail-log/delete', {
     data: { ids },

@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useSendMailFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemMailTemplateApi.MailTemplateVO>();
+const templateData = ref<SystemMailTemplateApi.MailTemplate>();
 const getTitle = computed(() => {
   return $t('ui.actionTitle.send', ['邮件']);
 });
@@ -63,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 构建发送邮件请求
-    const data: SystemMailTemplateApi.MailSendReqVO = {
+    const data: SystemMailTemplateApi.MailSendReq = {
       mail: values.mail,
       templateCode: templateData.value?.code || '',
       templateParams: paramsObj,
@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemMailTemplateApi.MailTemplateVO>();
+    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
     if (!data) {
       return;
     }
@@ -97,7 +97,12 @@ const [Modal, modalApi] = useVbenModal({
     templateData.value = data;
     // 更新表单结构
     const schema = buildSchema();
-    formApi.updateSchema(schema);
+    formApi.setState({ schema });
+
+    // 设置表单初始值，包括模板内容
+    await formApi.setValues({
+      content: data.content,
+    });
   },
 });
 </script>

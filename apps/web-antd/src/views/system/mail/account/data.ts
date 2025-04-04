@@ -106,7 +106,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailAccountApi.MailAccountVO>(
+export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

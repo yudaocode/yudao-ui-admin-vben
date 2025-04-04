@@ -42,17 +42,17 @@ function onCreate() {
 }
 
 /** 编辑邮件模板 */
-function onEdit(row: SystemMailTemplateApi.MailTemplateVO) {
+function onEdit(row: SystemMailTemplateApi.MailTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试邮件 */
-function onSend(row: SystemMailTemplateApi.MailTemplateVO) {
+function onSend(row: SystemMailTemplateApi.MailTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除邮件模板 */
-async function onDelete(row: SystemMailTemplateApi.MailTemplateVO) {
+async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -74,7 +74,7 @@ async function onDelete(row: SystemMailTemplateApi.MailTemplateVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailTemplateApi.MailTemplateVO>) {
+}: OnActionClickParams<SystemMailTemplateApi.MailTemplate>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -117,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplateVO>,
+  } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplate>,
 });
 </script>
 <template>

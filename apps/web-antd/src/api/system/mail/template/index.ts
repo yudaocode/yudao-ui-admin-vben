@@ -1,10 +1,10 @@
-import type { PageResult } from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-// TODO @puhui999：代码风格的统一
 export namespace SystemMailTemplateApi {
-  export interface MailTemplateVO {
+  /** 邮件模版信息 */
+  export interface MailTemplate {
     id: number;
     name: string;
     code: string;
@@ -18,23 +18,24 @@ export namespace SystemMailTemplateApi {
     createTime: Date;
   }
 
-  export interface MailSendReqVO {
+  /** 邮件发送信息 */
+  export interface MailSendReq {
     mail: string;
     templateCode: string;
     templateParams: Record<string, any>;
   }
 }
 
-// 查询邮件模版列表
-export const getMailTemplatePage = async (params: any) => {
+/** 查询邮件模版列表 */
+export const getMailTemplatePage = async (params: PageParam) => {
   return await requestClient.get<
-    PageResult<SystemMailTemplateApi.MailTemplateVO>
+    PageResult<SystemMailTemplateApi.MailTemplate>
   >('/system/mail-template/page', { params });
 };
 
-// 查询邮件模版详情
+/** 查询邮件模版详情 */
 export const getMailTemplate = async (id: number) => {
-  return await requestClient.get<SystemMailTemplateApi.MailTemplateVO>(
+  return await requestClient.get<SystemMailTemplateApi.MailTemplate>(
     '/system/mail-template/get',
     {
       params: { id },
@@ -42,35 +43,35 @@ export const getMailTemplate = async (id: number) => {
   );
 };
 
-// 新增邮件模版
+/** 新增邮件模版 */
 export const createMailTemplate = async (
-  data: SystemMailTemplateApi.MailTemplateVO,
+  data: SystemMailTemplateApi.MailTemplate,
 ) => {
-  return await requestClient.post<SystemMailTemplateApi.MailTemplateVO>(
+  return await requestClient.post<SystemMailTemplateApi.MailTemplate>(
     '/system/mail-template/create',
     data,
   );
 };
 
-// 修改邮件模版
+/** 修改邮件模版 */
 export const updateMailTemplate = async (
-  data: SystemMailTemplateApi.MailTemplateVO,
+  data: SystemMailTemplateApi.MailTemplate,
 ) => {
-  return await requestClient.put<SystemMailTemplateApi.MailTemplateVO>(
+  return await requestClient.put<SystemMailTemplateApi.MailTemplate>(
     '/system/mail-template/update',
     data,
   );
 };
 
-// 删除邮件模版
+/** 删除邮件模版 */
 export const deleteMailTemplate = async (id: number) => {
   return await requestClient.delete<boolean>('/system/mail-template/delete', {
     params: { id },
   });
 };
 
-// 发送邮件
-export const sendMail = async (data: SystemMailTemplateApi.MailSendReqVO) => {
+/** 发送邮件 */
+export const sendMail = async (data: SystemMailTemplateApi.MailSendReq) => {
   return await requestClient.post<boolean>(
     '/system/mail-template/send-mail',
     data,

@@ -26,12 +26,12 @@ function onRefresh() {
 }
 
 /** 查看邮件日志详情 */
-function onView(row: SystemMailLogApi.MailLogVO) {
+function onView(row: SystemMailLogApi.MailLog) {
   formModalApi.setData(row).open();
 }
 
 /** 重新发送邮件 */
-async function onResend(row: SystemMailLogApi.MailLogVO) {
+async function onResend(row: SystemMailLogApi.MailLog) {
   const hideLoading = message.loading({
     content: '重新发送邮件中...',
     duration: 0,
@@ -53,7 +53,7 @@ async function onResend(row: SystemMailLogApi.MailLogVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailLogApi.MailLogVO>) {
+}: OnActionClickParams<SystemMailLogApi.MailLog>) {
   switch (code) {
     case 'resend': {
       onResend(row);
@@ -92,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailLogApi.MailLogVO>,
+  } as VxeTableGridOptions<SystemMailLogApi.MailLog>,
 });
 </script>
 <template>

@@ -37,12 +37,12 @@ function onCreate() {
 }
 
 /** 编辑邮箱账号 */
-function onEdit(row: SystemMailAccountApi.MailAccountVO) {
+function onEdit(row: SystemMailAccountApi.MailAccount) {
   formModalApi.setData(row).open();
 }
 
 /** 测试邮箱连接 */
-async function onTest(row: SystemMailAccountApi.MailAccountVO) {
+async function onTest(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: '正在测试邮箱连接...',
     duration: 0,
@@ -60,7 +60,7 @@ async function onTest(row: SystemMailAccountApi.MailAccountVO) {
 }
 
 /** 删除邮箱账号 */
-async function onDelete(row: SystemMailAccountApi.MailAccountVO) {
+async function onDelete(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
     duration: 0,
@@ -82,7 +82,7 @@ async function onDelete(row: SystemMailAccountApi.MailAccountVO) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailAccountApi.MailAccountVO>) {
+}: OnActionClickParams<SystemMailAccountApi.MailAccount>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -125,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailAccountApi.MailAccountVO>,
+  } as VxeTableGridOptions<SystemMailAccountApi.MailAccount>,
 });
 </script>
 <template>

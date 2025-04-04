@@ -54,11 +54,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
     },
-    // TODO puhui999: 富文本组件缺失
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Editor',
+      component: 'Textarea',
       componentProps: {
         height: 300,
       },
@@ -131,6 +130,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useSendMailFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'content',
+      label: '模板内容',
+      component: 'Textarea',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
       fieldName: 'mail',
       label: '收件邮箱',
       component: 'Input',
@@ -149,7 +156,7 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailTemplateApi.MailTemplateVO>(
+export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
