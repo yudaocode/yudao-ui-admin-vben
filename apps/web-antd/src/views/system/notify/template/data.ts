@@ -156,15 +156,6 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'userId',
-      label: '用户编号',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入用户编号',
-      },
-      rules: 'required',
-    },
-    {
       fieldName: 'templateCode',
       label: '模板编码',
       component: 'Input',
@@ -172,6 +163,15 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
         triggerFields: [''],
         show: () => false,
       },
+    },
+    {
+      fieldName: 'userId',
+      label: '用户编号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户编号',
+      },
+      rules: 'required',
     },
     {
       fieldName: 'templateParams',
@@ -186,7 +186,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
+export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -258,9 +258,9 @@ export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
         },
         name: 'CellOperation',
         options: [
-          { code: 'edit', text: '编辑' },
-          { code: 'notify-send', text: '测试' },
-          { code: 'delete', text: '删除' },
+          'edit', // 默认的编辑按钮
+          { code: 'send', text: '测试' },
+          'delete', // 默认的删除按钮
         ],
       },
     },

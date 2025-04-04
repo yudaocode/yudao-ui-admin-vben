@@ -3,15 +3,15 @@ import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-tab
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import Form from './modules/form.vue';
+import Detail from './modules/detail.vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
   destroyOnClose: true,
 });
 
@@ -22,7 +22,7 @@ function onRefresh() {
 
 /** 查看邮件日志 */
 function onView(row: SystemMailLogApi.SystemMailLog) {
-  formModalApi.setData(row).open();
+  detailModalApi.setData(row).open();
 }
 
 /** 表格操作按钮的回调函数 */
@@ -69,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <DetailModal @success="onRefresh" />
     <Grid table-title="邮件日志列表">
       <template #toolbar-tools> </template>
     </Grid>

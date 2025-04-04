@@ -60,7 +60,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
+export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -98,6 +98,7 @@ export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
       title: '模版内容',
       minWidth: 200,
     },
+    // TODO @puhui999：这个参数展示不对
     {
       field: 'templateParams',
       title: '模版参数',

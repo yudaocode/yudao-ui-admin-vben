@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemNotifyMessageApi {
   /** 站内信消息信息 */
-  export interface NotifyMessage {
+  export interface SystemNotifyMessage {
     id: number;
     userId: number;
     userType: number;
@@ -22,7 +22,7 @@ export namespace SystemNotifyMessageApi {
 
 /** 查询站内信消息列表 */
 export function getNotifyMessagePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemNotifyMessageApi.NotifyMessage>>(
+  return requestClient.get<PageResult<SystemNotifyMessageApi.SystemNotifyMessage>>(
     '/system/notify-message/page',
     { params },
   );
@@ -30,7 +30,7 @@ export function getNotifyMessagePage(params: PageParam) {
 
 /** 获得我的站内信分页 */
 export function getMyNotifyMessagePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemNotifyMessageApi.NotifyMessage>>(
+  return requestClient.get<PageResult<SystemNotifyMessageApi.SystemNotifyMessage>>(
     '/system/notify-message/my-page',
     { params },
   );
@@ -48,9 +48,7 @@ export function updateAllNotifyMessageRead() {
 
 /** 获取当前用户的最新站内信列表 */
 export function getUnreadNotifyMessageList() {
-  return requestClient.get<SystemNotifyMessageApi.NotifyMessage[]>(
-    '/system/notify-message/get-unread-list',
-  );
+  return requestClient.get<SystemNotifyMessageApi.SystemNotifyMessage[]>('/system/notify-message/get-unread-list');
 }
 
 /** 获得当前用户的未读站内信数量 */

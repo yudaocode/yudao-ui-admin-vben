@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemNotifyTemplateApi {
   /** 站内信模板信息 */
-  export interface NotifyTemplate {
+  export interface SystemNotifyTemplate {
     id?: number;
     name: string;
     nickname: string;
@@ -17,7 +17,7 @@ export namespace SystemNotifyTemplateApi {
   }
 
   /** 发送站内信请求 */
-  export interface NotifySendReq {
+  export interface SystemNotifySendReqVO {
     userId: number;
     templateCode: string;
     templateParams: Record<string, any>;
@@ -26,7 +26,7 @@ export namespace SystemNotifyTemplateApi {
 
 /** 查询站内信模板列表 */
 export function getNotifyTemplatePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemNotifyTemplateApi.NotifyTemplate>>(
+  return requestClient.get<PageResult<SystemNotifyTemplateApi.SystemNotifyTemplate>>(
     '/system/notify-template/page',
     { params },
   );
@@ -34,22 +34,16 @@ export function getNotifyTemplatePage(params: PageParam) {
 
 /** 查询站内信模板详情 */
 export function getNotifyTemplate(id: number) {
-  return requestClient.get<SystemNotifyTemplateApi.NotifyTemplate>(
-    `/system/notify-template/get?id=${id}`,
-  );
+  return requestClient.get<SystemNotifyTemplateApi.SystemNotifyTemplate>(`/system/notify-template/get?id=${id}`);
 }
 
 /** 新增站内信模板 */
-export function createNotifyTemplate(
-  data: SystemNotifyTemplateApi.NotifyTemplate,
-) {
+export function createNotifyTemplate(data: SystemNotifyTemplateApi.SystemNotifyTemplate) {
   return requestClient.post('/system/notify-template/create', data);
 }
 
 /** 修改站内信模板 */
-export function updateNotifyTemplate(
-  data: SystemNotifyTemplateApi.NotifyTemplate,
-) {
+export function updateNotifyTemplate(data: SystemNotifyTemplateApi.SystemNotifyTemplate) {
   return requestClient.put('/system/notify-template/update', data);
 }
 
@@ -60,12 +54,10 @@ export function deleteNotifyTemplate(id: number) {
 
 /** 导出站内信模板 */
 export function exportNotifyTemplate(params: any) {
-  return requestClient.download('/system/notify-template/export-excel', {
-    params,
-  });
+  return requestClient.download('/system/notify-template/export-excel', { params });
 }
 
 /** 发送站内信 */
-export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReq) {
+export function sendNotify(data: SystemNotifyTemplateApi.SystemNotifySendReqVO) {
   return requestClient.post('/system/notify-template/send-notify', data);
 }

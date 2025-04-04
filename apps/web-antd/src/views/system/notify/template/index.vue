@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -11,13 +8,9 @@ import { Button, message } from 'ant-design-vue';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteNotifyTemplate,
-  exportNotifyTemplate,
-  getNotifyTemplatePage,
-} from '#/api/system/notify/template';
 import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteNotifyTemplate, exportNotifyTemplate, getNotifyTemplatePage } from '#/api/system/notify/template';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -49,17 +42,17 @@ function onCreate() {
 }
 
 /** 编辑站内信模板 */
-function onEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function onEdit(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试站内信 */
-function onSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function onSend(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除站内信模板 */
-async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
+async function onDelete(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -81,17 +74,17 @@ async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemNotifyTemplateApi.NotifyTemplate>) {
+}: OnActionClickParams<SystemNotifyTemplateApi.SystemNotifyTemplate>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
       break;
     }
-    case 'notify-send': {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'send': {
       onSend(row);
       break;
     }
@@ -124,9 +117,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemNotifyTemplateApi.NotifyTemplate>,
+  } as VxeTableGridOptions<SystemNotifyTemplateApi.SystemNotifyTemplate>,
 });
 </script>
+
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

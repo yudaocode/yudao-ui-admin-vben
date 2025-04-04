@@ -78,7 +78,7 @@ const [Modal, modalApi] = useVbenModal({
 /** 动态构建表单 schema */
 const buildFormSchema = () => {
   const schema = useSendMailFormSchema();
-  if (formData.value?.params?.length > 0) {
+  if (formData.value?.params) {
     formData.value.params?.forEach((param: string) => {
       schema.push({
         fieldName: `param_${param}`,

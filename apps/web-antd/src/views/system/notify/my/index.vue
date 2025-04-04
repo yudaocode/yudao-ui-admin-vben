@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @puhui999：需要看看，vben 哪里改下哈。一个是 vben 右上角的站内信、一个是点击查看所有消息，应该跳转到这里。
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
@@ -30,7 +31,7 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onView(row: SystemNotifyMessageApi.NotifyMessage) {
+function onView(row: SystemNotifyMessageApi.SystemNotifyMessage) {
   // 标记已读
   if (!row.readStatus) {
     handleReadOne(row.id);
@@ -55,7 +56,7 @@ async function onMarkRead() {
     return;
   }
 
-  const ids = rows.map((row: SystemNotifyMessageApi.NotifyMessage) => row.id);
+  const ids = rows.map((row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id);
   const hideLoading = message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -98,7 +99,7 @@ async function onMarkAllRead() {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
+}: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
   switch (code) {
     case 'view': {
       onView(row);
@@ -108,7 +109,7 @@ function onActionClick({
 }
 
 // 是否允许勾选的过滤函数（只允许未读的消息被选择）
-function checkboxConfig(params: { row: SystemNotifyMessageApi.NotifyMessage }) {
+function checkboxConfig(params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) {
   return !params.row.readStatus;
 }
 
@@ -141,7 +142,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxConfig: {
       checkMethod: checkboxConfig,
     },
-  } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
+  } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,
 });
 </script>
 <template>

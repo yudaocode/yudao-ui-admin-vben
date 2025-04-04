@@ -7,16 +7,12 @@ import { message } from 'ant-design-vue';
 import { $t } from '#/locales';
 import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import {
-  createNotifyTemplate,
-  getNotifyTemplate,
-  updateNotifyTemplate,
-} from '#/api/system/notify/template';
+import { createNotifyTemplate, getNotifyTemplate, updateNotifyTemplate } from '#/api/system/notify/template';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemNotifyTemplateApi.NotifyTemplate>();
+const formData = ref<SystemNotifyTemplateApi.SystemNotifyTemplate>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['站内信模板'])
@@ -27,9 +23,6 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
-  commonConfig: {
-    labelWidth: 120,
-  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -40,12 +33,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemNotifyTemplateApi.NotifyTemplate;
+    const data = (await formApi.getValues()) as SystemNotifyTemplateApi.SystemNotifyTemplate;
     try {
-      await (formData.value?.id
-        ? updateNotifyTemplate(data)
-        : createNotifyTemplate(data));
+      await (formData.value?.id ? updateNotifyTemplate(data) : createNotifyTemplate(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -62,7 +52,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNotifyTemplateApi.NotifyTemplate>();
+    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
     if (!data || !data.id) {
       return;
     }

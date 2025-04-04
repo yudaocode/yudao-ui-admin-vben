@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 
-const messageData = ref<SystemNotifyMessageApi.NotifyMessage>();
+const messageData = ref<SystemNotifyMessageApi.SystemNotifyMessage>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -16,7 +16,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNotifyMessageApi.NotifyMessage>();
+    const data = modalApi.getData<SystemNotifyMessageApi.SystemNotifyMessage>();
     if (!data || !data.id) {
       return;
     }
@@ -31,7 +31,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="站内信详情">
+  <Modal title="站内信详情" class="w-1/2">
     <Descriptions bordered :column="1" size="middle" class="mx-4">
       <Descriptions.Item label="编号">{{ messageData?.id }}</Descriptions.Item>
       <Descriptions.Item label="用户类型">
@@ -61,23 +61,13 @@ const [Modal, modalApi] = useVbenModal({
       <Descriptions.Item label="模版类型">
         <!-- TODO @芋艿: 数据字典-->
         <Tag color="processing">
-          {{
-            getDictLabel(
-              DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
-              messageData?.templateType,
-            )
-          }}
+          {{ getDictLabel(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, messageData?.templateType) }}
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="是否已读">
         <!-- TODO @芋艿: 数据字典-->
         <Tag color="processing">
-          {{
-            getDictLabel(
-              DICT_TYPE.INFRA_BOOLEAN_STRING,
-              messageData?.readStatus,
-            )
-          }}
+          {{ getDictLabel(DICT_TYPE.INFRA_BOOLEAN_STRING, messageData?.readStatus) }}
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="阅读时间">

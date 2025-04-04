@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 
-const messageData = ref<SystemNotifyMessageApi.NotifyMessage>();
+const messageData = ref<SystemNotifyMessageApi.SystemNotifyMessage>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -16,7 +16,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNotifyMessageApi.NotifyMessage>();
+    const data = modalApi.getData<SystemNotifyMessageApi.SystemNotifyMessage>();
     if (!data || !data.id) {
       return;
     }

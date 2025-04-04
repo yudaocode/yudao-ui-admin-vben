@@ -4,7 +4,7 @@ import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { sendNotify } from '#/api/system/notify/template';
 import { $t } from '#/locales';
@@ -12,39 +12,17 @@ import { $t } from '#/locales';
 import { useSendNotifyFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemNotifyTemplateApi.NotifyTemplate>();
-const getTitle = computed(() => {
-  return $t('ui.actionTitle.send', ['站内信']);
-});
-
-// 动态构建表单
-const buildSchema = () => {
-  const schema = useSendNotifyFormSchema();
-
-  // 添加参数字段
-  if (templateData.value?.params) {
-    templateData.value.params.forEach((param) => {
-      schema.push({
-        fieldName: `param_${param}`,
-        label: `参数 ${param}`,
-        component: 'Input',
-        rules: 'required',
-      });
-    });
-  }
-
-  return schema;
-};
+const formData = ref<SystemNotifyTemplateApi.SystemNotifyTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: buildSchema(),
   showDefaultActions: false,
   commonConfig: {
     labelWidth: 120,
   },
 });
 
+// TODO @puhui999：有个用户类型的选项。不同的用户类型，对应的接收人处理不同。
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -52,24 +30,21 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 获取表单数据
+    // 构建发送邮件请求
     const values = await formApi.getValues();
-
-    // 提取参数
     const paramsObj: Record<string, string> = {};
-    if (templateData.value?.params) {
-      templateData.value.params.forEach((param) => {
+    if (formData.value?.params) {
+      formData.value.params.forEach((param) => {
         paramsObj[param] = values[`param_${param}`];
       });
     }
-
-    // 构建发送站内信请求
-    const data: SystemNotifyTemplateApi.NotifySendReq = {
+    const data: SystemNotifyTemplateApi.SystemNotifySendReqVO = {
       userId: values.userId,
-      templateCode: templateData.value?.code || '',
+      templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
 
+    // 提交表单
     try {
       await sendNotify(data);
       // 关闭并提示
@@ -90,27 +65,44 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemNotifyTemplateApi.NotifyTemplate>();
+    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
     if (!data || !data.id) {
       return;
     }
-
-    templateData.value = data;
-    // 更新表单结构
-    const schema = buildSchema();
+    formData.value = data;
+    // 更新 form schema
+    const schema = buildFormSchema();
     formApi.setState({ schema });
-
-    // 设置表单初始值
+    // 设置到 values
     await formApi.setValues({
       content: data.content,
       templateCode: data.code,
     });
   },
 });
+
+/** 动态构建表单 schema */
+const buildFormSchema = () => {
+  const schema = useSendNotifyFormSchema();
+  if (formData.value?.params) {
+    formData.value.params.forEach((param: string) => {
+      schema.push({
+        fieldName: `param_${param}`,
+        label: `参数 ${param}`,
+        component: 'Input',
+        rules: 'required',
+        componentProps: {
+          placeholder: `请输入参数 ${param}`,
+        }
+      });
+    });
+  }
+  return schema;
+};
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal title="测试发送站内信">
     <Form class="mx-4" />
   </Modal>
 </template>

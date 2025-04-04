@@ -1,17 +1,14 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyMessagePage } from '#/api/system/notify/message';
+import Detail from './modules/detail.vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -24,7 +21,7 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onView(row: SystemNotifyMessageApi.NotifyMessage) {
+function onView(row: SystemNotifyMessageApi.SystemNotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
@@ -32,7 +29,7 @@ function onView(row: SystemNotifyMessageApi.NotifyMessage) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
+}: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
   switch (code) {
     case 'view': {
       onView(row);
@@ -67,9 +64,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
+  } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,
 });
 </script>
+
 <template>
   <Page auto-content-height>
     <DetailModal @success="onRefresh" />
