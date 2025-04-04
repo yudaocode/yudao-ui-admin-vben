@@ -1,34 +1,35 @@
 <script lang="ts" setup>
-import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
+import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { sendSms } from '#/api/system/sms/template';
+import { sendMail } from '#/api/system/mail/template';
+import { $t } from '#/locales';
 
-import { useSendSmsFormSchema } from '../data';
+import { useSendMailFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemSmsTemplateApi.SmsTemplate>();
+const templateData = ref<SystemMailTemplateApi.MailTemplate>();
+const getTitle = computed(() => {
+  return $t('ui.actionTitle.send', ['邮件']);
+});
 
 // 动态构建表单
 const buildSchema = () => {
-  const schema = useSendSmsFormSchema();
+  const schema = useSendMailFormSchema();
 
   // 添加参数字段
   if (templateData.value?.params && templateData.value.params.length > 0) {
-    templateData.value.params.forEach((param) => {
+    templateData.value.params?.forEach((param) => {
       schema.push({
+        component: 'Input',
         fieldName: `param_${param}`,
         label: `参数 ${param}`,
-        component: 'Input',
-        componentProps: {
-          placeholder: '请输入',
-        },
         rules: 'required',
       });
     });
@@ -61,24 +62,24 @@ const [Modal, modalApi] = useVbenModal({
       });
     }
 
-    // 构建发送短信请求
-    const data: SystemSmsTemplateApi.SmsSendReq = {
-      mobile: values.mobile,
+    // 构建发送邮件请求
+    const data: SystemMailTemplateApi.MailSendReq = {
+      mail: values.mail,
       templateCode: templateData.value?.code || '',
       templateParams: paramsObj,
     };
 
     try {
-      await sendSms(data);
+      await sendMail(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
-        content: '短信发送成功',
+        content: '邮件发送成功',
         key: 'action_process_msg',
       });
     } catch (error) {
-      console.error('发送短信失败', error);
+      console.error('发送邮件失败', error);
     } finally {
       modalApi.lock(false);
     }
@@ -88,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
+    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
     if (!data) {
       return;
     }
@@ -107,7 +108,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="发送短信">
+  <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>

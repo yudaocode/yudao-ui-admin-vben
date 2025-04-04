@@ -3,23 +3,18 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemSmsLogApi } from '#/api/system/sms/log';
+import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
-
-import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
-import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
+import { getNotifyMessagePage } from '#/api/system/notify/message';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
+import Detail from './modules/detail.vue';
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
   destroyOnClose: true,
 });
 
@@ -28,22 +23,16 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function onExport() {
-  const data = await exportSmsLog(await gridApi.formApi.getValues());
-  downloadByData(data, '短信日志.xls');
-}
-
-/** 查看短信日志详情 */
-function onView(row: SystemSmsLogApi.SmsLog) {
-  formModalApi.setData(row).open();
+/** 查看站内信详情 */
+function onView(row: SystemNotifyMessageApi.NotifyMessage) {
+  detailModalApi.setData(row).open();
 }
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsLogApi.SmsLog>) {
+}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
   switch (code) {
     case 'view': {
       onView(row);
@@ -63,7 +52,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getSmsLogPage({
+          return await getNotifyMessagePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -78,20 +67,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsLogApi.SmsLog>,
+  } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
 });
 </script>
-
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
-    <Grid table-title="短信日志列表">
-      <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport">
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
-      </template>
-    </Grid>
+    <DetailModal @success="onRefresh" />
+    <Grid table-title="站内信列表" />
   </Page>
 </template>

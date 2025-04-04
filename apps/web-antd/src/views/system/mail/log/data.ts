@@ -1,55 +1,44 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSmsLogApi } from '#/api/system/sms/log';
+import type { SystemMailLogApi } from '#/api/system/mail/log';
 
-import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
+import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'mobile',
-      label: '手机号',
+      fieldName: 'toMail',
+      label: '收件邮箱',
       component: 'Input',
-      componentProps: {
-        allowClear: true,
-        placeholder: '请输入手机号',
-      },
     },
     {
-      fieldName: 'channelId',
-      label: '短信渠道',
+      fieldName: 'accountId',
+      label: '邮箱账号',
       component: 'ApiSelect',
       componentProps: {
-        api: async () => await getSimpleSmsChannelList(),
-        labelField: 'signature',
+        api: async () => await getSimpleMailAccountList(),
+        labelField: 'mail',
         valueField: 'id',
         allowClear: true,
-        placeholder: '请选择短信渠道',
       },
     },
     {
       fieldName: 'templateId',
       label: '模板编号',
       component: 'Input',
-      componentProps: {
-        allowClear: true,
-        placeholder: '请输入模板编号',
-      },
     },
     {
       fieldName: 'sendStatus',
       label: '发送状态',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_SMS_SEND_STATUS, 'number'),
         allowClear: true,
-        placeholder: '请选择发送状态',
+        options: getDictOptions(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS, 'number'),
       },
     },
     {
-      // TODO @芋艿：怎么解决范围检索
       fieldName: 'sendTime',
       label: '发送时间',
       component: 'RangePicker',
@@ -58,29 +47,24 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'receiveStatus',
-      label: '接收状态',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS, 'number'),
-        allowClear: true,
-        placeholder: '请选择接收状态',
-      },
+      fieldName: 'userId',
+      label: '用户编号',
+      component: 'Input',
     },
     {
-      // TODO @芋艿：怎么解决范围检索
-      fieldName: 'receiveTime',
-      label: '接收时间',
-      component: 'RangePicker',
+      fieldName: 'userType',
+      label: '用户类型',
+      component: 'Select',
       componentProps: {
         allowClear: true,
+        options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
+export function useGridColumns<T = SystemMailLogApi.MailLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -96,13 +80,23 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'mobile',
-      title: '手机号',
+      field: 'toMail',
+      title: '收件邮箱',
+      minWidth: 120,
+    },
+    {
+      field: 'fromMail',
+      title: '发送邮箱',
+      minWidth: 120,
+    },
+    {
+      field: 'templateTitle',
+      title: '邮件标题',
       minWidth: 120,
     },
     {
       field: 'templateContent',
-      title: '短信内容',
+      title: '邮件内容',
       minWidth: 300,
     },
     {
@@ -111,7 +105,7 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
       minWidth: 120,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_SEND_STATUS },
+        props: { type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS },
       },
     },
     {
@@ -121,41 +115,27 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'receiveStatus',
-      title: '接收状态',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS },
-      },
-    },
-    {
-      field: 'receiveTime',
-      title: '接收时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    {
-      field: 'channelCode',
-      title: '短信渠道',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
-      },
-    },
-    {
       field: 'templateId',
       title: '模板编号',
       minWidth: 100,
     },
     {
-      field: 'templateType',
-      title: '短信类型',
+      field: 'templateCode',
+      title: '模板编码',
+      minWidth: 120,
+    },
+    {
+      field: 'userId',
+      title: '用户编号',
+      minWidth: 100,
+    },
+    {
+      field: 'userType',
+      title: '用户类型',
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE },
+        props: { type: DICT_TYPE.USER_TYPE },
       },
     },
     {
@@ -166,8 +146,8 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
       fixed: 'right',
       cellRender: {
         attrs: {
-          nameField: 'mobile',
-          nameTitle: '短信日志',
+          nameField: 'toMail',
+          nameTitle: '邮件日志',
           onClick: onActionClick,
         },
         name: 'CellOperation',
@@ -175,6 +155,10 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
           {
             code: 'view',
             text: '查看',
+          },
+          {
+            code: 'resend',
+            text: '重发',
           },
         ],
       },

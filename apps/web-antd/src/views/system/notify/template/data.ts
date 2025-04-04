@@ -1,9 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
+import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { z } from '#/adapter/form';
-import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
@@ -17,17 +16,6 @@ export function useFormSchema(): VbenFormSchema[] {
         triggerFields: [''],
         show: () => false,
       },
-    },
-    {
-      fieldName: 'type',
-      label: '短信类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
-        class: 'w-full',
-        placeholder: '请选择短信类型',
-      },
-      rules: 'required',
     },
     {
       fieldName: 'name',
@@ -48,28 +36,13 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'channelId',
-      label: '短信渠道',
-      component: 'ApiSelect',
+      fieldName: 'nickname',
+      label: '发送人名称',
+      component: 'Input',
       componentProps: {
-        api: async () => await getSimpleSmsChannelList(),
-        class: 'w-full',
-        labelField: 'signature',
-        valueField: 'id',
-        placeholder: '请选择短信渠道',
+        placeholder: '请输入发送人名称',
       },
       rules: 'required',
-    },
-    {
-      fieldName: 'status',
-      label: '开启状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'content',
@@ -81,13 +54,29 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'apiTemplateId',
-      label: '短信 API 的模板编号',
-      component: 'Input',
+      fieldName: 'type',
+      label: '模板类型',
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入短信 API 的模板编号',
+        options: getDictOptions(
+          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          'number',
+        ),
+        class: 'w-full',
+        placeholder: '请选择模板类型',
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'remark',
@@ -104,23 +93,12 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'type',
-      label: '短信类型',
-      component: 'Select',
+      fieldName: 'name',
+      label: '模板名称',
+      component: 'Input',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
         allowClear: true,
-        placeholder: '请选择短信类型',
-      },
-    },
-    {
-      fieldName: 'status',
-      label: '开启状态',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
-        placeholder: '请选择开启状态',
+        placeholder: '请输入模板名称',
       },
     },
     {
@@ -133,27 +111,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'name',
-      label: '模板名称',
-      component: 'Input',
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
       componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         allowClear: true,
-        placeholder: '请输入模板名称',
+        placeholder: '请选择状态',
       },
     },
     {
-      fieldName: 'channelId',
-      label: '短信渠道',
-      component: 'ApiSelect',
+      fieldName: 'type',
+      label: '模板类型',
+      component: 'Select',
       componentProps: {
-        api: async () => await getSimpleSmsChannelList(),
-        labelField: 'signature',
-        valueField: 'id',
+        options: getDictOptions(
+          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          'number',
+        ),
         allowClear: true,
-        placeholder: '请选择短信渠道',
+        placeholder: '请选择模板类型',
       },
     },
-    // TODO @芋艿：范围检索的处理
     {
       fieldName: 'createTime',
       label: '创建时间',
@@ -165,8 +144,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 发送短信表单 */
-export function useSendSmsFormSchema(): VbenFormSchema[] {
+/** 发送站内信表单 */
+export function useSendNotifyFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'content',
@@ -177,13 +156,22 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'mobile',
-      label: '手机号码',
+      fieldName: 'userId',
+      label: '用户编号',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入手机号码',
+        placeholder: '请输入用户编号',
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'templateCode',
+      label: '模板编码',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
       fieldName: 'templateParams',
@@ -198,7 +186,7 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
+export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -206,15 +194,6 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
       field: 'id',
       title: '编号',
       minWidth: 100,
-    },
-    {
-      field: 'type',
-      title: '短信类型',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE },
-      },
     },
     {
       field: 'name',
@@ -227,13 +206,27 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
       minWidth: 120,
     },
     {
+      field: 'nickname',
+      title: '发送人名称',
+      minWidth: 120,
+    },
+    {
       field: 'content',
       title: '模板内容',
       minWidth: 200,
     },
     {
+      field: 'type',
+      title: '模板类型',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
+      },
+    },
+    {
       field: 'status',
-      title: '开启状态',
+      title: '状态',
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
@@ -244,20 +237,6 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
       field: 'remark',
       title: '备注',
       minWidth: 120,
-    },
-    {
-      field: 'apiTemplateId',
-      title: '短信 API 的模板编号',
-      minWidth: 180,
-    },
-    {
-      field: 'channelCode',
-      title: '短信渠道',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
-      },
     },
     {
       field: 'createTime',
@@ -274,17 +253,14 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
       cellRender: {
         attrs: {
           nameField: 'name',
-          nameTitle: '短信模板',
+          nameTitle: '站内信模板',
           onClick: onActionClick,
         },
         name: 'CellOperation',
         options: [
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
-          {
-            code: 'sms-send',
-            text: '发送短信',
-          },
+          { code: 'edit', text: '编辑' },
+          { code: 'notify-send', text: '测试' },
+          { code: 'delete', text: '删除' },
         ],
       },
     },

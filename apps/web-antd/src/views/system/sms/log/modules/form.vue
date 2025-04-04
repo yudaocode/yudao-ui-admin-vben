@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
-import { useVbenModal } from '@vben/common-ui';
-
 import { ref } from 'vue';
 
-const formData = ref<SystemSmsLogApi.SmsLogVO>();
+import { useVbenModal } from '@vben/common-ui';
+import { formatDateTime } from '@vben/utils';
+
+import { Descriptions, Tag } from 'ant-design-vue';
+
+import { DICT_TYPE, getDictLabel } from '#/utils/dict';
+
+const formData = ref<SystemSmsLogApi.SmsLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -13,7 +18,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSmsLogApi.SmsLogVO>();
+    const data = modalApi.getData<SystemSmsLogApi.SmsLog>();
     if (!data || !data.id) {
       return;
     }
@@ -27,97 +32,78 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 
-<!-- TODO @puhui999：https://ant-design.antgroup.com/components/descriptions-cn 参考这个？ -->
 <template>
   <Modal title="短信日志详情">
     <div class="p-4">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="form-item">
-          <div class="form-label">编号：</div>
-          <div>{{ formData?.id }}</div>
-        </div>
-        <div class="form-item">
-          <!-- TODO @puhui：格式不对 -->
-          <div class="form-label">创建时间：</div>
-          <div>{{ formData?.createTime }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">手机号：</div>
-          <div>{{ formData?.mobile }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">短信渠道：</div>
-          <div>{{ formData?.channelCode }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">模板编号：</div>
-          <div>{{ formData?.templateId }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">模板类型：</div>
-          <div>{{ formData?.templateType }}</div>
-        </div>
-      </div>
-
-      <div class="mt-4">
-        <div class="form-label">短信内容：</div>
-        <div>{{ formData?.templateContent }}</div>
-      </div>
-
-      <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="form-item">
-          <!-- TODO @puhui：格式不对 -->
-          <div class="form-label">发送状态：</div>
-          <div>{{ formData?.sendStatus }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">发送时间：</div>
-          <div>{{ formData?.sendTime }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API发送编码：</div>
-          <div>{{ formData?.apiSendCode }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API发送消息：</div>
-          <div>{{ formData?.apiSendMsg }}</div>
-        </div>
-        <div class="form-item">
-          <!-- TODO @puhui：格式不对 -->
-          <div class="form-label">接收状态：</div>
-          <div>{{ formData?.receiveStatus }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">接收时间：</div>
-          <div>{{ formData?.receiveTime }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API 接收编码：</div>
-          <div>{{ formData?.apiReceiveCode }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API 接收消息：</div>
-          <div>{{ formData?.apiReceiveMsg }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API 请求 ID：</div>
-          <div>{{ formData?.apiRequestId }}</div>
-        </div>
-        <div class="form-item">
-          <div class="form-label">API 序列号：</div>
-          <div>{{ formData?.apiSerialNo }}</div>
-        </div>
-      </div>
+      <Descriptions
+        :column="{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 2, xs: 1 }"
+        bordered
+      >
+        <Descriptions.Item label="创建时间">
+          {{ formatDateTime(formData?.createTime || '') }}
+        </Descriptions.Item>
+        <Descriptions.Item label="手机号">
+          {{ formData?.mobile }}
+        </Descriptions.Item>
+        <Descriptions.Item label="短信渠道">
+          {{ formData?.channelCode }}
+        </Descriptions.Item>
+        <Descriptions.Item label="模板编号">
+          {{ formData?.templateId }}
+        </Descriptions.Item>
+        <Descriptions.Item label="模板类型">
+          {{ formData?.templateType }}
+        </Descriptions.Item>
+        <Descriptions.Item label="短信内容" :span="3">
+          {{ formData?.templateContent }}
+        </Descriptions.Item>
+        <Descriptions.Item label="发送状态">
+          <!-- TODO @芋艿: 数据字典-->
+          <Tag color="processing">
+            {{
+              getDictLabel(
+                DICT_TYPE.SYSTEM_SMS_SEND_STATUS,
+                formData?.sendStatus,
+              )
+            }}
+          </Tag>
+        </Descriptions.Item>
+        <Descriptions.Item label="发送时间">
+          {{ formatDateTime(formData?.sendTime || '') }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API发送编码">
+          {{ formData?.apiSendCode }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API发送消息" :span="2">
+          {{ formData?.apiSendMsg }}
+        </Descriptions.Item>
+        <Descriptions.Item label="接收状态">
+          <!-- TODO @芋艿: 数据字典-->
+          <Tag color="processing">
+            {{
+              getDictLabel(
+                DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS,
+                formData?.receiveStatus,
+              )
+            }}
+          </Tag>
+        </Descriptions.Item>
+        <Descriptions.Item label="接收时间">
+          {{ formatDateTime(formData?.receiveTime || '') }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API接收编码">
+          {{ formData?.apiReceiveCode }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API接收消息" :span="2">
+          {{ formData?.apiReceiveMsg }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API请求ID">
+          {{ formData?.apiRequestId }}
+        </Descriptions.Item>
+        <Descriptions.Item label="API序列号">
+          {{ formData?.apiSerialNo }}
+        </Descriptions.Item>
+      </Descriptions>
     </div>
   </Modal>
 </template>
-
-<style scoped>
-.form-item {
-  @apply mb-2;
-}
-
-.form-label {
-  @apply font-medium;
-}
-</style>

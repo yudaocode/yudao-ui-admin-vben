@@ -3,17 +3,14 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemSmsLogApi } from '#/api/system/sms/log';
+import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
-import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
+import { getMailLogPage, resendMail } from '#/api/system/mail/log';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -28,23 +25,40 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function onExport() {
-  const data = await exportSmsLog(await gridApi.formApi.getValues());
-  downloadByData(data, '短信日志.xls');
+/** 查看邮件日志详情 */
+function onView(row: SystemMailLogApi.MailLog) {
+  formModalApi.setData(row).open();
 }
 
-/** 查看短信日志详情 */
-function onView(row: SystemSmsLogApi.SmsLog) {
-  formModalApi.setData(row).open();
+/** 重新发送邮件 */
+async function onResend(row: SystemMailLogApi.MailLog) {
+  const hideLoading = message.loading({
+    content: '重新发送邮件中...',
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await resendMail(row.id as number);
+    message.success({
+      content: '重新发送邮件成功',
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsLogApi.SmsLog>) {
+}: OnActionClickParams<SystemMailLogApi.MailLog>) {
   switch (code) {
+    case 'resend': {
+      onResend(row);
+      break;
+    }
     case 'view': {
       onView(row);
       break;
@@ -63,7 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getSmsLogPage({
+          return await getMailLogPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -78,20 +92,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsLogApi.SmsLog>,
+  } as VxeTableGridOptions<SystemMailLogApi.MailLog>,
 });
 </script>
-
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
-    <Grid table-title="短信日志列表">
-      <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport">
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
-      </template>
+    <Grid table-title="邮件日志列表">
+      <template #toolbar-tools> </template>
     </Grid>
   </Page>
 </template>

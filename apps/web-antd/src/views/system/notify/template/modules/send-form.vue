@@ -1,34 +1,33 @@
 <script lang="ts" setup>
-import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
-
-import { ref } from 'vue';
+import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
+import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { sendSms } from '#/api/system/sms/template';
+import { sendNotify } from '#/api/system/notify/template';
+import { $t } from '#/locales';
 
-import { useSendSmsFormSchema } from '../data';
+import { useSendNotifyFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const templateData = ref<SystemSmsTemplateApi.SmsTemplate>();
+const templateData = ref<SystemNotifyTemplateApi.NotifyTemplate>();
+const getTitle = computed(() => {
+  return $t('ui.actionTitle.send', ['站内信']);
+});
 
 // 动态构建表单
 const buildSchema = () => {
-  const schema = useSendSmsFormSchema();
+  const schema = useSendNotifyFormSchema();
 
   // 添加参数字段
-  if (templateData.value?.params && templateData.value.params.length > 0) {
+  if (templateData.value?.params) {
     templateData.value.params.forEach((param) => {
       schema.push({
         fieldName: `param_${param}`,
         label: `参数 ${param}`,
         component: 'Input',
-        componentProps: {
-          placeholder: '请输入',
-        },
         rules: 'required',
       });
     });
@@ -41,6 +40,9 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: buildSchema(),
   showDefaultActions: false,
+  commonConfig: {
+    labelWidth: 120,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -61,24 +63,24 @@ const [Modal, modalApi] = useVbenModal({
       });
     }
 
-    // 构建发送短信请求
-    const data: SystemSmsTemplateApi.SmsSendReq = {
-      mobile: values.mobile,
+    // 构建发送站内信请求
+    const data: SystemNotifyTemplateApi.NotifySendReq = {
+      userId: values.userId,
       templateCode: templateData.value?.code || '',
       templateParams: paramsObj,
     };
 
     try {
-      await sendSms(data);
+      await sendNotify(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success({
-        content: '短信发送成功',
+        content: $t('ui.actionMessage.operationSuccess'),
         key: 'action_process_msg',
       });
     } catch (error) {
-      console.error('发送短信失败', error);
+      console.error('发送站内信失败', error);
     } finally {
       modalApi.lock(false);
     }
@@ -88,8 +90,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
-    if (!data) {
+    const data = modalApi.getData<SystemNotifyTemplateApi.NotifyTemplate>();
+    if (!data || !data.id) {
       return;
     }
 
@@ -98,16 +100,17 @@ const [Modal, modalApi] = useVbenModal({
     const schema = buildSchema();
     formApi.setState({ schema });
 
-    // 设置表单初始值，包括模板内容
+    // 设置表单初始值
     await formApi.setValues({
       content: data.content,
+      templateCode: data.code,
     });
   },
 });
 </script>
 
 <template>
-  <Modal title="发送短信">
+  <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>
