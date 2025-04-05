@@ -6,6 +6,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { Plus, Download } from '@vben/icons';
 import Form from './modules/form.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -79,7 +80,6 @@ function onActionClick({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    // TODO @芋艿：时间筛选，后续处理；
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -108,6 +108,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
+    <DocAlert title="SaaS 多租户" url="https://doc.iocoder.cn/saas-tenant/" />
+
     <FormModal @success="onRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>

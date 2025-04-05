@@ -6,6 +6,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { IconifyIcon, Plus } from '@vben/icons';
 import Form from './modules/form.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { ref } from 'vue';
 import { $t } from '#/locales';
@@ -120,6 +121,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
+    <DocAlert title="菜单路由" url="https://doc.iocoder.cn/vue3/route/" />
+
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>

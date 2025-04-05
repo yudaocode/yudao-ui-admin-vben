@@ -6,6 +6,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 import Form from './modules/form.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -100,6 +101,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
+    <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+
     <FormModal @success="onRefresh" />
     <Grid table-title="邮箱账号列表">
       <template #toolbar-tools>

@@ -6,6 +6,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 import { Plus, Download } from '@vben/icons';
 import Form from './modules/form.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -108,8 +109,6 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    // TODO @芋艿：时间范围的检索
-    fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -140,6 +139,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
+    <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
+
     <FormModal @success="onRefresh" />
     <AssignDataPermissionFormModel @success="onRefresh" />
     <AssignMenuFormModel @success="onRefresh" />

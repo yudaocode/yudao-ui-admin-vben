@@ -11,6 +11,7 @@ import ResetPasswordForm from './modules/reset-password-form.vue';
 import AssignRoleForm from './modules/assign-role-form.vue';
 import ImportForm from './modules/import-form.vue';
 import DeptTree from './modules/dept-tree.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { $t } from '#/locales';
 import { ref } from 'vue';
@@ -188,6 +189,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
+    <DocAlert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
+    <DocAlert title="Excel 导入导出" url="https://doc.iocoder.cn/excel-import-and-export/" />
+
     <FormModal @success="onRefresh" />
     <ResetPasswordModal @success="onRefresh" />
     <AssignRoleModal @success="onRefresh" />

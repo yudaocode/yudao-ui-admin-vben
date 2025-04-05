@@ -10,6 +10,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { MdiCheckboxMarkedCircleOutline } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 import Detail from './modules/detail.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -147,6 +148,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
+    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+
     <DetailModal @success="onRefresh" />
     <Grid table-title="我的站内信">
       <template #toolbar-tools>

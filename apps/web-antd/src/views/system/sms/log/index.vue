@@ -5,6 +5,7 @@ import type { SystemSmsLogApi } from '#/api/system/sms/log';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 import { Button } from 'ant-design-vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
@@ -80,6 +81,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+
     <DetailModal @success="onRefresh" />
     <Grid table-title="短信日志列表">
       <template #toolbar-tools>

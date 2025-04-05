@@ -7,6 +7,7 @@ import { Download, Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -123,6 +124,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+
     <FormModal @success="onRefresh" />
     <SendModal />
     <Grid table-title="站内信模板列表">

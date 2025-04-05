@@ -4,6 +4,7 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import Detail from './modules/detail.vue';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
@@ -68,6 +69,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 </script>
 <template>
+  <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+
   <Page auto-content-height>
     <DetailModal @success="onRefresh" />
     <Grid table-title="邮件日志列表">
