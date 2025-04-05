@@ -4,6 +4,9 @@ import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -153,6 +156,7 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
           {
             code: 'view',
             text: '查看',
+            show: hasAccessByCodes(['system:notify-message:query']),
           },
         ],
       },

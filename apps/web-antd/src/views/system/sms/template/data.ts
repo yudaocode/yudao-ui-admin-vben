@@ -7,6 +7,9 @@ import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -280,11 +283,18 @@ export function useGridColumns<T = SystemSmsTemplateApi.SystemSmsTemplate>(
         },
         name: 'CellOperation',
         options: [
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:sms-template:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:sms-template:delete']),
+          },
           {
             code: 'sms-send',
             text: '发送短信',
+            show: hasAccessByCodes(['system:sms-template:send-sms']),
           },
         ],
       },

@@ -127,11 +127,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button type="primary" @click="onCreate" v-access:code="['system:notify-template:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['站内信模板']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport">
+        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:notify-template:export']">
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

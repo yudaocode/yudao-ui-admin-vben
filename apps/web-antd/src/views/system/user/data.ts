@@ -10,6 +10,9 @@ import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { handleTree } from '#/utils/tree';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -344,15 +347,24 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
         name: 'CellOperation',
         // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成"更多"
         options: [
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:user:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:user:delete']),
+          },
           {
             code: 'assign-role',
             text: '分配角色',
+            show: hasAccessByCodes(['system:permission:assign-user-role']),
+            'v-access:code': 'system:user:assign-role1',
           },
           {
             code: 'reset-password',
             text: '重置密码',
+            show: hasAccessByCodes(['system:user:update-password']),
           },
         ],
       },

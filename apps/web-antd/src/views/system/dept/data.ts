@@ -9,6 +9,9 @@ import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
 import { handleTree } from '#/utils/tree';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -180,10 +183,15 @@ export function useGridColumns(
           {
             code: 'append',
             text: '新增下级',
+            show: hasAccessByCodes(['system:dept:create']),
           },
-          'edit', // 默认的编辑按钮
           {
-            code: 'delete', // 默认的删除按钮
+            code: 'edit',
+            show: hasAccessByCodes(['system:dept:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:dept:delete']),
             disabled: (row: SystemDeptApi.SystemDept) => {
               return !!(row.children && row.children.length > 0);
             },

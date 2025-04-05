@@ -123,7 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button type="primary" @click="onCreate" v-access:code="['system:menu:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['菜单']) }}
         </Button>

@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="邮箱账号列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button type="primary" @click="onCreate" v-access:code="['system:mail-account:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['邮箱账号']) }}
         </Button>

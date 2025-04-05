@@ -14,6 +14,9 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { handleTree } from '#/utils/tree';
 import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
 import { isHttpUrl } from '@vben/utils';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -323,9 +326,16 @@ export function useGridColumns(
           {
             code: 'append',
             text: '新增下级',
+            show: hasAccessByCodes(['system:menu:create']),
           },
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:menu:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:menu:delete']),
+          },
         ],
       },
     },

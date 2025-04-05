@@ -6,6 +6,9 @@ import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -135,6 +138,16 @@ export function useGridColumns<T = SystemTenantPackageApi.SystemTenantPackage>(o
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:tenant-package:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:tenant-package:delete']),
+          },
+        ],
       },
     },
   ];

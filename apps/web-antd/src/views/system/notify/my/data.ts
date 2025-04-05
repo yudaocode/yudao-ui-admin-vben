@@ -2,7 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
+import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -23,6 +27,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
+        ...getRangePickerDefaultProps(),
       },
     },
   ];
@@ -90,6 +95,7 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
           {
             code: 'view',
             text: '查看',
+            show: hasAccessByCodes(['system:notify-message:query']),
           },
         ],
       },

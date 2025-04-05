@@ -6,6 +6,9 @@ import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -260,9 +263,19 @@ export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>
         },
         name: 'CellOperation',
         options: [
-          'edit', // 默认的编辑按钮
-          { code: 'send', text: '测试' },
-          'delete', // 默认的删除按钮
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:notify-template:update']),
+          },
+          { 
+            code: 'send', 
+            text: '测试',
+            show: hasAccessByCodes(['system:notify-template:send-notify']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:notify-template:delete']),
+          },
         ],
       },
     },

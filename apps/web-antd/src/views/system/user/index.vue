@@ -202,15 +202,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <div class="w-18/24">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
-            <Button type="primary" @click="onCreate">
+            <Button type="primary" @click="onCreate" v-access:code="['system:user:create']">
               <Plus class="size-5" />
               {{ $t('ui.actionTitle.create', ['用户']) }}
             </Button>
-            <Button type="primary" class="ml-2" @click="onExport">
+            <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:user:export']">
               <Download class="size-5" />
               {{ $t('ui.actionTitle.export') }}
             </Button>
-            <Button type="primary" class="ml-2" @click="onImport">
+            <Button type="primary" class="ml-2" @click="onImport" v-access:code="['system:user:import']">
               <Upload class="size-5" />
               {{ $t('ui.actionTitle.import', ['用户']) }}
             </Button>

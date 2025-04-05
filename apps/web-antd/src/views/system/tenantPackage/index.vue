@@ -101,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button type="primary" @click="onCreate" v-access:code="['system:tenant-package:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['套餐']) }}
         </Button>

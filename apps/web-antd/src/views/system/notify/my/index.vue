@@ -150,11 +150,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="我的站内信">
       <template #toolbar-tools>
-        <Button type="primary" @click="onMarkRead">
+        <Button type="primary" @click="onMarkRead" v-access:code="['system:notify-message:update-read']">
           <MdiCheckboxMarkedCircleOutline />
           标记已读
         </Button>
-        <Button type="primary" class="ml-2" @click="onMarkAllRead">
+        <Button type="primary" class="ml-2" @click="onMarkAllRead" v-access:code="['system:notify-message:update-all-read']">
           <MdiCheckboxMarkedCircleOutline />
           全部已读
         </Button>

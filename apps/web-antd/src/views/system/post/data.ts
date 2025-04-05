@@ -4,6 +4,9 @@ import type { SystemPostApi } from '#/api/system/post';
 
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -143,6 +146,16 @@ export function useGridColumns<T = SystemPostApi.SystemPost>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:post:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:post:delete']),
+          },
+        ],
       },
     },
   ];

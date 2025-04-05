@@ -145,11 +145,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <AssignMenuFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button type="primary" @click="onCreate" v-access:code="['system:role:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['角色']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport">
+        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:role:export']">
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

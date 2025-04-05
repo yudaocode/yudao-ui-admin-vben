@@ -5,6 +5,9 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -138,6 +141,7 @@ export function useGridColumns<T = SystemMailLogApi.SystemMailLog>(
           {
             code: 'view',
             text: '查看',
+            show: hasAccessByCodes(['system:mail-log:query']),
           }
         ],
       },

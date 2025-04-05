@@ -4,6 +4,9 @@ import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
 import { z } from '#/adapter/form';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -187,7 +190,17 @@ export function useGridColumns<T = SystemMailAccountApi.SystemMailAccount>(
           nameTitle: '邮箱账号',
           onClick: onActionClick,
         },
-        name: 'CellOperation'
+        name: 'CellOperation',
+        options: [
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:mail-account:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:mail-account:delete']),
+          }
+        ],
       },
     },
   ];

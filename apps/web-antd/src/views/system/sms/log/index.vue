@@ -83,7 +83,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="短信日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport">
+        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:sms-log:export']">
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

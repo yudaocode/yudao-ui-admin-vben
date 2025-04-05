@@ -6,6 +6,9 @@ import { z } from '#/adapter/form';
 import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { useAccess } from '@vben/access';
+
+const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -250,15 +253,23 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
         },
         name: 'CellOperation',
         options: [
-          'edit', // 默认的编辑按钮
-          'delete', // 默认的删除按钮
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['system:role:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['system:role:delete']),
+          },
           {
             code: 'assign-data-permission',
             text: '数据权限',
+            show: hasAccessByCodes(['system:permission:assign-role-data-scope']),
           },
           {
             code: 'assign-menu',
             text: '菜单权限',
+            show: hasAccessByCodes(['system:permission:assign-role-menu']),
           },
         ],
       },
