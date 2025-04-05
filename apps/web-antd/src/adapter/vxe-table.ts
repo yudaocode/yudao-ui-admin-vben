@@ -5,9 +5,8 @@ import { $te } from '@vben/locales';
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import { isFunction, isString } from '@vben/utils';
 
-import { Button, Image, Popconfirm, Switch, Tag } from 'ant-design-vue';
-
-import { getDictObj } from '#/utils/dict';
+import { Button, Image, Popconfirm, Switch } from 'ant-design-vue';
+import { DictTag } from '#/components/dict-tag';
 
 import { useVbenForm } from './form';
 import type { Recordable } from '@vben/types';
@@ -81,7 +80,6 @@ setupVbenVxeTable({
     });
 
     // 表格配置项可以用 cellRender: { name: 'CellDict', props:{dictType: ''} },
-    // TODO @芋艿：后续研究下，看看有没优解
     vxeUI.renderer.add('CellDict', {
       renderTableDefault(renderOpts, params) {
         const { props } = renderOpts;
@@ -89,20 +87,11 @@ setupVbenVxeTable({
         if (!props) {
           return '';
         }
-        const dict = getDictObj(props.type, row[column.field]);
-        // 转义
-        if (dict) {
-          if (`${dict.colorType}` === 'primary') dict.colorType = 'processing';
-          else if (`${dict.colorType}` === 'danger') dict.colorType = 'error';
-          else if (`${dict.colorType}` === 'info') dict.colorType = 'default';
-          else if (!dict.colorType) dict.colorType = 'default';
-          return h(
-            Tag,
-            { color: dict.colorType },
-            { default: () => dict.label },
-          );
-        }
-        return '';
+        // 使用 DictTag 组件替代原来的实现
+        return h(DictTag, {
+          type: props.type,
+          value: row[column.field]?.toString(),
+        });
       },
     });
 
