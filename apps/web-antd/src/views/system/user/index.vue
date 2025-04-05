@@ -4,11 +4,12 @@ import type { SystemUserApi } from '#/api/system/user';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Row, Col } from 'ant-design-vue';
-import { Plus, Download } from '@vben/icons';
+import { Button, message, Modal } from 'ant-design-vue';
+import { Plus, Download, Upload } from '@vben/icons';
 import Form from './modules/form.vue';
 import ResetPasswordForm from './modules/reset-password-form.vue';
 import AssignRoleForm from './modules/assign-role-form.vue';
+import ImportForm from './modules/import-form.vue';
 import DeptTree from './modules/dept-tree.vue';
 
 import { $t } from '#/locales';
@@ -35,6 +36,11 @@ const [AssignRoleModal, assignRoleModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+const [ImportModal, importModalApi] = useVbenModal({
+  connectedComponent: ImportForm,
+  destroyOnClose: true,
+});
+
 /** 刷新表格 */
 function onRefresh() {
   gridApi.query();
@@ -56,6 +62,11 @@ async function onDeptSelect (dept: SystemDeptApi.SystemDept) {
 /** 创建用户 */
 function onCreate() {
   formModalApi.setData(null).open();
+}
+
+/** 导入用户 */
+function onImport() {
+  importModalApi.open();
 }
 
 /** 编辑用户 */
@@ -180,6 +191,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <ResetPasswordModal @success="onRefresh" />
     <AssignRoleModal @success="onRefresh" />
+    <ImportModal @success="onRefresh" />
 
     <div class="flex h-full">
       <!-- 左侧部门树 -->
@@ -197,6 +209,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
             <Button type="primary" class="ml-2" @click="onExport">
               <Download class="size-5" />
               {{ $t('ui.actionTitle.export') }}
+            </Button>
+            <Button type="primary" class="ml-2" @click="onImport">
+              <Upload class="size-5" />
+              {{ $t('ui.actionTitle.import', ['用户']) }}
             </Button>
           </template>
         </Grid>

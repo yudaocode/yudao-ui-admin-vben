@@ -66,4 +66,5 @@ export {
   UserRoundPen,
   X,
   Download,
+  Upload,
 } from 'lucide-vue-next';

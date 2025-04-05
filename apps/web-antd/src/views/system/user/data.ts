@@ -220,6 +220,31 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
   ]
 }
 
+/** 用户导入的表单 */
+export function useImportFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'file',
+      label: '用户数据',
+      component: 'Upload',
+      rules: 'required',
+      help: '仅允许导入 xls、xlsx 格式文件',
+    },
+    {
+      fieldName: 'updateSupport',
+      label: '是否覆盖',
+      component: 'Switch',
+      componentProps: {
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+      },
+      rules: z.boolean().default(false),
+      help: '是否更新已经存在的用户数据',
+    },
+  ];
+}
+
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -317,7 +342,7 @@ export function useGridColumns<T = SystemUserApi.SystemUser>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
-        // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成“更多”
+        // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成"更多"
         options: [
           'edit', // 默认的编辑按钮
           'delete', // 默认的删除按钮

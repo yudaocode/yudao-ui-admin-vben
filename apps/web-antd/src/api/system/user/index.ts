@@ -56,6 +56,14 @@ export function importUserTemplate() {
   return requestClient.download('/system/user/get-import-template');
 }
 
+/** 导入用户 */
+export function importUser(file: File, updateSupport: boolean) {
+  return requestClient.upload('/system/user/import', {
+    file,
+    updateSupport
+  });
+}
+
 /** 用户密码重置 */
 export function resetUserPassword(id: number, password: string) {
   return requestClient.put('/system/user/update-password', { id, password });

@@ -14,6 +14,7 @@
     "create": "Create {0}",
     "delete": "Delete {0}",
     "view": "View {0}",
+    "import": "Import",
     "export": "Export"
   },
   "actionMessage": {
@@ -21,7 +22,10 @@
     "deleting": "Deleting {0} ...",
     "deleteSuccess": "{0} deleted successfully",
     "operationSuccess": "Operation succeeded",
-    "operationFailed": "Operation failed"
+    "operationFailed": "Operation failed",
+    "importSuccess": "Import succeeded",
+    "importFail": "Import failed",
+    "downloadTemplateFail": "Download template failed"
   },
   "placeholder": {
     "input": "Please enter",
