@@ -1,0 +1,78 @@
+<script lang="ts" setup>
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemSocialUserApi } from '#/api/system/social/user';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import Detail from './modules/detail.vue';
+import { DocAlert } from '#/components/doc-alert';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSocialUserPage } from '#/api/system/social/user';
+import { useGridColumns, useGridFormSchema } from './data';
+
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 查看详情 */
+function onView(row: SystemSocialUserApi.SystemSocialUser) {
+  detailModalApi.setData(row).open();
+}
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemSocialUserApi.SystemSocialUser>) {
+  switch (code) {
+    case 'view': {
+      onView(row);
+      break;
+    }
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema()
+  },
+  gridOptions: {
+    columns: useGridColumns(onActionClick),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getSocialUserPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<SystemSocialUserApi.SystemSocialUser>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <DocAlert title="三方登录" url="https://doc.iocoder.cn/social-user/" />
+
+    <DetailModal />
+    <Grid table-title="社交用户列表" />
+  </Page>
+</template>
