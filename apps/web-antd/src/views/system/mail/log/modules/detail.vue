@@ -32,9 +32,9 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="邮件日志详情" class="w-1/2">
+  <Modal title="邮件日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
     <div class="p-4">
-      <Descriptions :column="2" bordered>
+      <Descriptions :column="2" bordered :label-style="{ width: '140px' }">
         <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
         <Descriptions.Item label="创建时间">
           {{ formatDateTime(formData?.createTime || '') }}

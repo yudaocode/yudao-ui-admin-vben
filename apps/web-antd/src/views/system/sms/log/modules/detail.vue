@@ -2,12 +2,12 @@
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Descriptions, Tag } from 'ant-design-vue';
+import { Descriptions } from 'ant-design-vue';
+import { DictTag } from '#/components/dict-tag';
 
 import { ref } from 'vue';
 import { formatDateTime } from '@vben/utils';
 import { DICT_TYPE } from '#/utils/dict';
-import { DictTag } from '#/components/dict-tag';
 
 const formData = ref<SystemSmsLogApi.SystemSmsLog>();
 
@@ -32,8 +32,8 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="短信日志详情" class="w-1/2">
-    <Descriptions bordered :column="2" size="middle" class="mx-4">
+  <Modal title="短信日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
+    <Descriptions bordered :column="2" size="middle" class="mx-4" :label-style="{ width: '140px' }">
       <Descriptions.Item label="创建时间">
         {{ formatDateTime(formData?.createTime || '') }}
       </Descriptions.Item>

@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="站内信详情" class="w-1/2">
+  <Modal title="站内信详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
     <Descriptions bordered :column="1" size="middle" class="mx-4">
       <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
       <Descriptions.Item label="用户类型">
