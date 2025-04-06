@@ -1,0 +1,75 @@
+<script lang="ts" setup>
+import type { InfraConfigApi } from '#/api/infra/config';
+
+import { useVbenModal } from '@vben/common-ui';
+import { message } from 'ant-design-vue';
+
+import { $t } from '#/locales';
+import { computed, ref } from 'vue';
+import { useVbenForm } from '#/adapter/form';
+import { createConfig, updateConfig, getConfig } from '#/api/infra/config';
+
+import { useFormSchema } from '../data';
+
+const emit = defineEmits(['success']);
+const formData = ref<InfraConfigApi.InfraConfig>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['参数'])
+    : $t('ui.actionTitle.create', ['参数']);
+});
+
+const [Form, formApi] = useVbenForm({
+  layout: 'horizontal',
+  schema: useFormSchema(),
+  showDefaultActions: false,
+});
+
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    // 提交表单
+    const data = (await formApi.getValues()) as InfraConfigApi.InfraConfig;
+    try {
+      await (formData.value?.id ? updateConfig(data) : createConfig(data));
+      // 关闭并提示
+      await modalApi.close();
+      emit('success');
+      message.success({
+        content: $t('ui.actionMessage.operationSuccess'),
+        key: 'action_process_msg',
+      });
+    } finally {
+      modalApi.lock(false);
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      return;
+    }
+    // 加载数据
+    const data = modalApi.getData<InfraConfigApi.InfraConfig>();
+    if (!data || !data.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getConfig(data.id as number);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.lock(false);
+    }
+  },
+});
+</script>
+
+<template>
+  <Modal :title="getTitle">
+    <Form class="mx-4" />
+  </Modal>
+</template>
