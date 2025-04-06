@@ -1,13 +1,16 @@
 import { requestClient } from '#/api/request';
 
-export type DictTypeVO = {
-  createTime: Date;
-  id: number | undefined;
-  name: string;
-  remark: string;
-  status: number;
-  type: string;
-};
+export namespace SystemDictTypeApi {
+  /** 字典类型 */
+  export type SystemDictType = {
+    id?: number;
+    name: string;
+    remark: string;
+    status: number;
+    type: string;
+    createTime: Date;
+  };
+}
 
 // 查询字典（精简)列表
 export function getSimpleDictTypeList() {
@@ -16,7 +19,7 @@ export function getSimpleDictTypeList() {
 
 // 查询字典列表
 export function getDictTypePage(params: any) {
-  return requestClient.get('/system/dict-type/page', params);
+  return requestClient.get('/system/dict-type/page', { params });
 }
 
 // 查询字典详情
@@ -25,12 +28,12 @@ export function getDictType(id: number) {
 }
 
 // 新增字典
-export function createDictType(data: DictTypeVO) {
+export function createDictType(data: SystemDictTypeApi.SystemDictType) {
   return requestClient.post('/system/dict-type/create', data);
 }
 
 // 修改字典
-export function updateDictType(data: DictTypeVO) {
+export function updateDictType(data: SystemDictTypeApi.SystemDictType) {
   return requestClient.put('/system/dict-type/update', data);
 }
 
@@ -38,7 +41,8 @@ export function updateDictType(data: DictTypeVO) {
 export function deleteDictType(id: number) {
   return requestClient.delete(`/system/dict-type/delete?id=${id}`);
 }
+
 // 导出字典类型
 export function exportDictType(params: any) {
-  return requestClient.download('/system/dict-type/export', params);
+  return requestClient.download('/system/dict-type/export', { params });
 }

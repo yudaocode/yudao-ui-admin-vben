@@ -11,7 +11,7 @@ import { useAuthStore, useDictStore } from '#/store';
 import { generateAccess } from './access';
 import { message } from 'ant-design-vue';
 import { $t } from '@vben/locales';
-import { getSimpleDictDataList } from '#/api/system/dict/dict.data';
+import { getSimpleDictDataList } from '#/api/system/dict/data';
 
 /**
  * 通用守卫配置

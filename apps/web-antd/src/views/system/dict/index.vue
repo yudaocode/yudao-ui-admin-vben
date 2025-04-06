@@ -1,0 +1,30 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { Page } from '@vben/common-ui'
+import { DocAlert } from '#/components/doc-alert'
+import TypeGrid from './modules/type-grid.vue'
+import DataGrid from './modules/data-grid.vue'
+
+const searchDictType = ref<string>() // 搜索的字典类型
+
+function onDictTypeSelect(dictType: string) {
+  searchDictType.value = dictType
+}
+</script>
+
+<template>
+  <Page auto-content-height>
+    <DocAlert title="字典管理" url="https://doc.iocoder.cn/system-dict/" />
+
+    <div class="flex h-full">
+      <!-- 左侧字典类型列表 -->
+      <div class="w-1/2 pr-3">
+        <TypeGrid @select="onDictTypeSelect" />
+      </div>
+      <!-- 右侧字典数据列表 -->
+      <div class="w-1/2">
+        <DataGrid :dict-type="searchDictType" />
+      </div>
+    </div>
+  </Page>
+</template>
