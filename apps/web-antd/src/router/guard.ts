@@ -1,17 +1,18 @@
 import type { Router } from 'vue-router';
 
 import { DEFAULT_HOME_PATH, LOGIN_PATH } from '@vben/constants';
+import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
+import { message } from 'ant-design-vue';
+
+import { getSimpleDictDataList } from '#/api/system/dict/data';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
 import { useAuthStore, useDictStore } from '#/store';
 
 import { generateAccess } from './access';
-import { message } from 'ant-design-vue';
-import { $t } from '@vben/locales';
-import { getSimpleDictDataList } from '#/api/system/dict/data';
 
 /**
  * 通用守卫配置
@@ -101,12 +102,15 @@ function setupAccessGuard(router: Router) {
     // 当前登录用户拥有的角色标识列表
     let userInfo = userStore.userInfo;
     if (!userInfo) {
-      // addy by 芋艿：由于 yudao 是 fetchUserInfo 统一加载用户 + 权限信息，所以将 fetchMenuListAsync
+      // add by 芋艿：由于 yudao 是 fetchUserInfo 统一加载用户 + 权限信息，所以将 fetchMenuListAsync
       const loading = message.loading({
         content: `${$t('common.loadingMenu')}...`,
       });
       try {
-        userInfo = (await authStore.fetchUserInfo()).user;
+        const authPermissionInfo = await authStore.fetchUserInfo();
+        if (authPermissionInfo) {
+          userInfo = authPermissionInfo.user;
+        }
       } finally {
         loading();
       }
@@ -128,7 +132,7 @@ function setupAccessGuard(router: Router) {
     userStore.setUserRoles(userRoles);
     const redirectPath = (from.query.redirect ??
       (to.path === DEFAULT_HOME_PATH
-        ? userInfo.homePath || DEFAULT_HOME_PATH
+        ? userInfo?.homePath || DEFAULT_HOME_PATH
         : to.fullPath)) as string;
 
     return {
