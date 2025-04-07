@@ -25,7 +25,8 @@
     "operationFailed": "操作失败",
     "importSuccess": "导入成功",
     "importFail": "导入失败",
-    "downloadTemplateFail": "下载模板失败"
+    "downloadTemplateFail": "下载模板失败",
+    "updating": "正在更新 {0}..."
   },
   "placeholder": {
     "input": "请输入",

@@ -3,7 +3,7 @@ import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-tab
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import {Button, message, Modal} from 'ant-design-vue';
+import { Button, message, Modal } from 'ant-design-vue';
 import { Download } from '@vben/icons';
 import Detail from './modules/detail.vue';
 import { DocAlert } from '#/components/doc-alert';

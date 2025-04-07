@@ -25,7 +25,8 @@
     "operationFailed": "Operation failed",
     "importSuccess": "Import succeeded",
     "importFail": "Import failed",
-    "downloadTemplateFail": "Download template failed"
+    "downloadTemplateFail": "Download template failed",
+    "updating": "Updating {0}..."
   },
   "placeholder": {
     "input": "Please enter",

@@ -20,7 +20,6 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'id',
-      label: 'id',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -143,7 +142,6 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'id',
-      label: 'id',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -185,7 +183,6 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'id',
-      label: 'id',
       dependencies: {
         triggerFields: [''],
         show: () => false,

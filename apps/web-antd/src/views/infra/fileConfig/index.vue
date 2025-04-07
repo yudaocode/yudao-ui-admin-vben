@@ -1,0 +1,165 @@
+<script lang="ts" setup>
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraFileConfigApi } from '#/api/infra/file-config';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message, Modal } from 'ant-design-vue';
+import { Plus } from '@vben/icons';
+import Form from './modules/form.vue';
+
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getFileConfigPage, deleteFileConfig, updateFileConfigMaster, testFileConfig } from '#/api/infra/file-config';
+import { useGridColumns, useGridFormSchema } from './data';
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建文件配置 */
+function onCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑文件配置 */
+function onEdit(row: InfraFileConfigApi.InfraFileConfig) {
+  formModalApi.setData(row).open();
+}
+
+/** 设为主配置 */
+async function onMaster(row: InfraFileConfigApi.InfraFileConfig) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.updating', [row.name]),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await updateFileConfigMaster(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.operationSuccess'),
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } catch (error) {
+    hideLoading();
+  }
+}
+
+/** 测试文件配置 */
+async function onTest(row: InfraFileConfigApi.InfraFileConfig) {
+  const hideLoading = message.loading({
+    content: '测试上传中...',
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    const response = await testFileConfig(row.id as number);
+    hideLoading();
+    // 确认是否访问该文件
+    Modal.confirm({
+      title: '测试上传成功',
+      content: '是否要访问该文件？',
+      okText: '访问',
+      cancelText: '取消',
+      onOk: () => {
+        window.open(response, '_blank');
+      },
+    });
+  } catch (error) {
+    hideLoading();
+  }
+}
+
+/** 删除文件配置 */
+async function onDelete(row: InfraFileConfigApi.InfraFileConfig) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteFileConfig(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } catch (error) {
+    hideLoading();
+  }
+}
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<InfraFileConfigApi.InfraFileConfig>) {
+  switch (code) {
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
+    case 'master': {
+      onMaster(row);
+      break;
+    }
+    case 'test': {
+      onTest(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema()
+  },
+  gridOptions: {
+    columns: useGridColumns(onActionClick),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getFileConfigPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<InfraFileConfigApi.InfraFileConfig>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="文件配置列表">
+      <template #toolbar-tools>
+        <Button type="primary" @click="onCreate" v-access:code="['infra:file-config:create']">
+          <Plus class="size-5" />
+          {{ $t('ui.actionTitle.create', ['文件配置']) }}
+        </Button>
+      </template>
+    </Grid>
+  </Page>
+</template>
