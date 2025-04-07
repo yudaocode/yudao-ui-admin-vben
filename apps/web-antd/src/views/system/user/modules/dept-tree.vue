@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { SystemDeptApi } from '#/api/system/dept';
+import { type SystemDeptApi} from '#/api/system/dept';
 
 import { Tree, Input, Spin } from 'ant-design-vue';
 
 import { ref, onMounted } from 'vue';
 import { Search } from '@vben/icons';
-import { getDeptList } from '#/api/system/dept';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { handleTree } from '#/utils/tree';
 
 const emit = defineEmits(['select']);
@@ -36,7 +36,7 @@ const handleSelect = (_selectedKeys: any[], info: any) => {
 onMounted(async () => {
   try {
     loading.value = true;
-    const data = await getDeptList();
+    const data = await getSimpleDeptList();
     deptList.value = data;
     deptTree.value = handleTree(data);
   } catch (error) {
