@@ -6,51 +6,56 @@
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
-export const handleTree = (data: any[], id?: string, parentId?: string, children?: string) => {
+export const handleTree = (
+  data: any[],
+  id?: string,
+  parentId?: string,
+  children?: string,
+) => {
   if (!Array.isArray(data)) {
-    console.warn('data must be an array')
-    return []
+    console.warn('data must be an array');
+    return [];
   }
   const config = {
     id: id || 'id',
     parentId: parentId || 'parentId',
-    childrenList: children || 'children'
-  }
+    childrenList: children || 'children',
+  };
 
-  const childrenListMap = {}
-  const nodeIds = {}
-  const tree: any[] = []
+  const childrenListMap: any = {};
+  const nodeIds: any = {};
+  const tree: any[] = [];
 
   for (const d of data) {
-    const parentId = d[config.parentId]
-    if (childrenListMap[parentId] == null) {
-      childrenListMap[parentId] = []
+    const parentId = d[config.parentId];
+    if (childrenListMap[parentId] === null) {
+      childrenListMap[parentId] = [];
     }
-    nodeIds[d[config.id]] = d
-    childrenListMap[parentId].push(d)
+    nodeIds[d[config.id]] = d;
+    childrenListMap[parentId].push(d);
   }
 
   for (const d of data) {
-    const parentId = d[config.parentId]
-    if (nodeIds[parentId] == null) {
-      tree.push(d)
+    const parentId = d[config.parentId];
+    if (nodeIds[parentId] === null) {
+      tree.push(d);
     }
   }
 
   for (const t of tree) {
-    adaptToChildrenList(t)
+    adaptToChildrenList(t);
   }
 
-  function adaptToChildrenList(o) {
+  function adaptToChildrenList(o: any) {
     if (childrenListMap[o[config.id]] !== null) {
-      o[config.childrenList] = childrenListMap[o[config.id]]
+      o[config.childrenList] = childrenListMap[o[config.id]];
     }
     if (o[config.childrenList]) {
       for (const c of o[config.childrenList]) {
-        adaptToChildrenList(c)
+        adaptToChildrenList(c);
       }
     }
   }
 
-  return tree
-}
+  return tree;
+};
