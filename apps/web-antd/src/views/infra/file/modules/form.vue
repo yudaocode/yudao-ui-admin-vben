@@ -3,7 +3,7 @@ import type { FileType } from 'ant-design-vue/es/upload/interface';
 
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
-import { Upload, Button } from 'ant-design-vue';
+import { Upload } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
@@ -15,8 +15,11 @@ const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: useFormSchema().map(item => ({ ...item, label: '' })), // 去除label
   showDefaultActions: false,
+  commonConfig: {
+    hideLabel: true,
+  }
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -55,9 +58,22 @@ function beforeUpload(file: FileType) {
     <Form class="mx-4">
       <template #file>
         <div class="w-full">
-          <Upload :max-count="1" accept=".jpg,.png,.gif,.webp" :beforeUpload="beforeUpload">
-            <Button type="primary"> 选择图片 </Button>
-          </Upload>
+          <!-- 上传区域 -->
+          <Upload.Dragger
+            name="file"
+            :max-count="1"
+            accept=".jpg,.png,.gif,.webp"
+            :beforeUpload="beforeUpload"
+            list-type="picture-card"
+          >
+            <p class="ant-upload-drag-icon">
+              <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
+            </p>
+            <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
+            <p class="ant-upload-hint">
+              支持 .jpg、.png、.gif、.webp 格式图片文件
+            </p>
+          </Upload.Dragger>
         </div>
       </template>
     </Form>

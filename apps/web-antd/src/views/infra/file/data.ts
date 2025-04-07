@@ -14,10 +14,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'file',
       label: '文件上传',
       component: 'Upload',
-      rules: 'required',
       componentProps: {
         placeholder: '请选择要上传的文件',
       },
+      rules: 'required',
     }
   ];
 }
