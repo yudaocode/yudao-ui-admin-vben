@@ -154,8 +154,8 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
-            text: '查看',
+            code: 'detail',
+            text: '详情',
             show: hasAccessByCodes(['system:notify-message:query']),
           },
         ],

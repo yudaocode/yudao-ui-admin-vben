@@ -202,7 +202,7 @@ export function useGridColumns<T = InfraJobApi.InfraJob>(
           },
           // TODO @芋艿：增加一个“更多”选项
           {
-            code: 'view',
+            code: 'detail',
             text: '详细',
             show: hasAccessByCodes(['infra:job:query']),
           },

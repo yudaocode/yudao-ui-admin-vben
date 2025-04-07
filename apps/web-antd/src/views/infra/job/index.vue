@@ -53,7 +53,7 @@ function onEdit(row: InfraJobApi.InfraJob) {
 }
 
 /** 查看任务详情 */
-function onView(row: InfraJobApi.InfraJob) {
+function onDetail(row: InfraJobApi.InfraJob) {
   detailModalApi.setData({ id: row.id }).open();
 }
 
@@ -139,8 +139,8 @@ function onActionClick({
       onTrigger(row);
       break;
     }
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
     case 'log': {

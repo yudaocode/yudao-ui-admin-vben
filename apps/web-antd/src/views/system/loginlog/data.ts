@@ -105,7 +105,7 @@ export function useGridColumns<T = SystemLoginLogApi.SystemLoginLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '详情',
             show: hasAccessByCodes(['system:login-log:query']),
           },

@@ -177,8 +177,8 @@ export function useGridColumns<T = SystemSmsLogApi.SystemSmsLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
-            text: '查看',
+            code: 'detail',
+            text: '详情',
             show: hasAccessByCodes(['system:sms-log:query']),
           },
         ],

@@ -22,7 +22,7 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onView(row: SystemNotifyMessageApi.SystemNotifyMessage) {
+function onDetail(row: SystemNotifyMessageApi.SystemNotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
@@ -32,8 +32,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

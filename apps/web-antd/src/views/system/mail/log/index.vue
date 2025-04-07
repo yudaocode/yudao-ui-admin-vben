@@ -22,7 +22,7 @@ function onRefresh() {
 }
 
 /** 查看邮件日志 */
-function onView(row: SystemMailLogApi.SystemMailLog) {
+function onDetail(row: SystemMailLogApi.SystemMailLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -32,8 +32,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemMailLogApi.SystemMailLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

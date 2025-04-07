@@ -137,7 +137,7 @@ export function useGridColumns<T = InfraApiErrorLogApi.SystemApiErrorLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '详情',
             show: hasAccessByCodes(['infra:api-error-log:query']),
           },

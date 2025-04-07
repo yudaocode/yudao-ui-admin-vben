@@ -134,7 +134,7 @@ export function useGridColumns<T = SystemOperateLogApi.SystemOperateLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '详情',
             show: hasAccessByCodes(['system:operate-log:query']),
           },

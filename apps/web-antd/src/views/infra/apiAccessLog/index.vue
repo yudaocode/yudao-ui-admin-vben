@@ -32,7 +32,7 @@ async function onExport() {
 }
 
 /** 查看 API 访问日志详情 */
-function onView(row: InfraApiAccessLogApi.SystemApiAccessLog) {
+function onDetail(row: InfraApiAccessLogApi.SystemApiAccessLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -42,8 +42,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<InfraApiAccessLogApi.SystemApiAccessLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

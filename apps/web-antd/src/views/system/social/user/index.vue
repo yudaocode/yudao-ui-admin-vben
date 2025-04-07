@@ -21,7 +21,7 @@ function onRefresh() {
 }
 
 /** 查看详情 */
-function onView(row: SystemSocialUserApi.SystemSocialUser) {
+function onDetail(row: SystemSocialUserApi.SystemSocialUser) {
   detailModalApi.setData(row).open();
 }
 
@@ -31,8 +31,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemSocialUserApi.SystemSocialUser>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

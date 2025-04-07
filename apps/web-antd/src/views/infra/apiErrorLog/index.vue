@@ -33,7 +33,7 @@ async function onExport() {
 }
 
 /** 查看 API 错误日志详情 */
-function onView(row: InfraApiErrorLogApi.SystemApiErrorLog) {
+function onDetail(row: InfraApiErrorLogApi.SystemApiErrorLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -49,7 +49,7 @@ async function onProcess(id: number, processStatus: number) {
         content: $t('ui.actionMessage.operationSuccess'),
         key: 'action_process_msg',
       });
-      await onRefresh();
+      onRefresh();
     }
   });
 }
@@ -60,8 +60,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<InfraApiErrorLogApi.SystemApiErrorLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
     case 'done': {

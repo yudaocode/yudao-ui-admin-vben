@@ -110,7 +110,7 @@ export function useGridColumns<T = SystemSocialUserApi.SystemSocialUser>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '详情',
             show: hasAccessByCodes(['system:social-user:query']),
           },

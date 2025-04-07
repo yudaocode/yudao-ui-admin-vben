@@ -32,7 +32,7 @@ async function onExport() {
 }
 
 /** 查看登录日志详情 */
-function onView(row: SystemLoginLogApi.SystemLoginLog) {
+function onDetail(row: SystemLoginLogApi.SystemLoginLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -42,8 +42,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemLoginLogApi.SystemLoginLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

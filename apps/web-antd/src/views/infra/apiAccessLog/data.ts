@@ -164,7 +164,7 @@ export function useGridColumns<T = InfraApiAccessLogApi.SystemApiAccessLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '详情',
             show: hasAccessByCodes(['infra:api-access-log:query']),
           },

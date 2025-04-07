@@ -139,7 +139,7 @@ export function useGridColumns<T = SystemMailLogApi.SystemMailLog>(
         name: 'CellOperation',
         options: [
           {
-            code: 'view',
+            code: 'detail',
             text: '查看',
             show: hasAccessByCodes(['system:mail-log:query']),
           }

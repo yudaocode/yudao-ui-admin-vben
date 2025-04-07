@@ -32,7 +32,7 @@ async function onExport() {
 }
 
 /** 查看短信日志详情 */
-function onView(row: SystemSmsLogApi.SystemSmsLog) {
+function onDetail(row: SystemSmsLogApi.SystemSmsLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -42,8 +42,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemSmsLogApi.SystemSmsLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }

@@ -32,7 +32,7 @@ async function onExport() {
 }
 
 /** 查看操作日志详情 */
-function onView(row: SystemOperateLogApi.SystemOperateLog) {
+function onDetail(row: SystemOperateLogApi.SystemOperateLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -42,8 +42,8 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemOperateLogApi.SystemOperateLog>) {
   switch (code) {
-    case 'view': {
-      onView(row);
+    case 'detail': {
+      onDetail(row);
       break;
     }
   }
