@@ -1,9 +1,8 @@
 import type { Router, RouteRecordRaw } from 'vue-router';
 
-import type { ExRouteRecordRaw, MenuRecordRaw, RouteRecordStringComponent } from '@vben-core/typings';
+import type { ExRouteRecordRaw, MenuRecordRaw, RouteRecordStringComponent, AppRouteRecordRaw } from '@vben-core/typings';
 
 import { filterTree, mapTree, isHttpUrl } from '@vben-core/shared/utils';
-import type { AppRouteRecordRaw } from '@vben/types'; // TODO @芋艿：这里的报错，解决
 
 /**
  * 根据 routes 生成菜单列表

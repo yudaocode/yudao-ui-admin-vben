@@ -1,5 +1,4 @@
-import type { BasicUserInfo } from '@vben-core/typings';
-import type { RouteMeta, RouteRecordRaw } from 'vue-router';
+import type { AppRouteRecordRaw, BasicUserInfo } from '@vben-core/typings';
 
 /** 用户信息 */
 interface UserInfo extends BasicUserInfo {
@@ -21,23 +20,4 @@ interface AuthPermissionInfo {
 
 }
 
-/** 路由元信息 */
-interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
-
-  children?: AppRouteRecordRaw[];
-  component?: any;
-  componentName?: string;
-  components?: any;
-  fullPath?: string;
-  icon?: string;
-  keepAlive?: boolean;
-  meta: RouteMeta;
-  name: string;
-  parentId?: number;
-  props?: any;
-  sort?: number;
-  visible?: boolean;
-
-}
-
-export type { UserInfo, AuthPermissionInfo, AppRouteRecordRaw };
+export type { UserInfo, AuthPermissionInfo };
