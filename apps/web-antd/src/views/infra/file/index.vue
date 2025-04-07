@@ -4,7 +4,7 @@ import type { InfraFileApi } from '#/api/infra/file';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message, Image } from 'ant-design-vue';
-import { Plus } from '@vben/icons';
+import { Upload } from '@vben/icons';
 import Form from './modules/form.vue';
 
 import { $t } from '#/locales';
@@ -123,8 +123,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid table-title="文件列表">
       <template #toolbar-tools>
         <Button type="primary" @click="onUpload">
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.upload', ['文件']) }}
+          <Upload class="size-5" />
+          上传图片
         </Button>
       </template>
       <template #file-content="{ row }">

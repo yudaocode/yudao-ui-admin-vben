@@ -1,4 +1,4 @@
-import { type VbenFormSchema, z } from '#/adapter/form';
+import { type VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
@@ -6,6 +6,21 @@ import { useAccess } from '@vben/access';
 import { getRangePickerDefaultProps } from '#/utils/date';
 
 const { hasAccessByCodes } = useAccess();
+
+/** 表单的字段 */
+export function useFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'file',
+      label: '文件上传',
+      component: 'Upload',
+      rules: 'required',
+      componentProps: {
+        placeholder: '请选择要上传的文件',
+      },
+    }
+  ];
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

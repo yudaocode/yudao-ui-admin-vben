@@ -1,4 +1,4 @@
-import { type VbenFormSchema, z } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
