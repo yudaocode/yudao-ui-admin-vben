@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Page } from '@vben/common-ui'
-import { DocAlert } from '#/components/doc-alert'
 import { IFrame } from '#/components/iframe'
+import { DocAlert } from '#/components/doc-alert'
 
 import { ref, onMounted } from 'vue'
 import { getConfigKey } from '#/api/infra/config'

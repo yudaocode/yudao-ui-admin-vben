@@ -12,12 +12,11 @@ import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { useRouter } from 'vue-router';
-import {InfraApiErrorLogProcessStatusEnum, InfraJobStatusEnum} from '#/utils/constants';
+import { InfraJobStatusEnum} from '#/utils/constants';
 import { deleteJob, exportJob, getJobPage, runJob, updateJobStatus } from '#/api/infra/job';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import {updateApiErrorLogStatus} from '#/api/infra/api-error-log';
 
 const { push } = useRouter();
 
