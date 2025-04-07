@@ -67,4 +67,5 @@ export {
   X,
   Download,
   Upload,
+  History,
 } from 'lucide-vue-next';

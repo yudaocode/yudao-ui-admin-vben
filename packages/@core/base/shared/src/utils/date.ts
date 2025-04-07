@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export function formatDate(time: number | string, format = 'YYYY-MM-DD') {
+export function formatDate(time: number | string | Date, format = 'YYYY-MM-DD') {
   try {
     const date = dayjs(time);
     if (!date.isValid()) {
@@ -13,7 +13,7 @@ export function formatDate(time: number | string, format = 'YYYY-MM-DD') {
   }
 }
 
-export function formatDateTime(time: number | string) {
+export function formatDateTime(time: number | string | Date) {
   return formatDate(time, 'YYYY-MM-DD HH:mm:ss');
 }
 
