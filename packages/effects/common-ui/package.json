@@ -32,16 +32,16 @@
     "@vben/types": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
+    "crypto-js": "catalog:",
     "qrcode": "catalog:",
     "tippy.js": "catalog:",
     "vue": "catalog:",
     "vue-json-viewer": "catalog:",
     "vue-router": "catalog:",
-    "vue-tippy": "catalog:",
-    "crypto-js": "catalog:"
+    "vue-tippy": "catalog:"
   },
   "devDependencies": {
-    "@types/qrcode": "catalog:",
-    "@types/crypto-js": "catalog:"
+    "@types/crypto-js": "catalog:",
+    "@types/qrcode": "catalog:"
   }
 }
