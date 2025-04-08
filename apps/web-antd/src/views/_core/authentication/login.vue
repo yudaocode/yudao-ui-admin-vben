@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import {type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
+import { type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
 
-import { computed, markRaw, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -23,9 +23,9 @@ const loginRef = ref();
 const verifyRef = ref();
 
 const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWord'
-const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
 
 /** 获取租户列表，并默认选中 */
+const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
 const fetchTenantList = async () => {
   if (!tenantEnable) {
     return;
@@ -67,13 +67,13 @@ const handleLogin = async (values: any) => {
   }
 
   // 无验证码，直接登录
-  await authStore.authLogin(values);
+  await authStore.authLogin('username', values);
 }
 
 /** 验证码通过，执行登录 */
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
   try {
-    await authStore.authLogin({
+    await authStore.authLogin('username', {
       ...(await loginRef.value.getFormApi().getValues()),
       captchaVerification,
     });

@@ -24,13 +24,13 @@ export namespace AuthApi {
   }
 
   /** 手机验证码获取接口参数 */
-  export interface SmsCodeVO {
+  export interface SmsCodeParams {
     mobile: string;
     scene: number;
   }
 
   /** 手机验证码登录接口参数 */
-  export interface SmsLoginVO {
+  export interface SmsLoginParams {
     mobile: string;
     code: string;
   }
@@ -83,4 +83,14 @@ export async function getCaptcha(data: any) {
 /** 校验验证码 */
 export async function checkCaptcha(data: any) {
   return baseRequestClient.post('/system/captcha/check', data);
+}
+
+/** 获取登录验证码 */
+export const sendSmsCode = (data: AuthApi.SmsCodeParams) => {
+  return requestClient.post('/system/auth/send-sms-code', data )
+}
+
+/** 短信验证码登录 */
+export const smsLogin = (data: AuthApi.SmsLoginParams) => {
+  return requestClient.post('/system/auth/sms-login', data)
 }
