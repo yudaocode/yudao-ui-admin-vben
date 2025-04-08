@@ -9,7 +9,7 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { type AuthApi, getAuthPermissionInfoApi, loginApi, logoutApi, smsLogin } from '#/api';
+import { type AuthApi, getAuthPermissionInfoApi, loginApi, logoutApi, smsLogin, register } from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
    * @param onSuccess 登录成功后的回调函数
    */
   async function authLogin(
-    type: 'mobile' | 'username',
+    type: 'mobile' | 'username' | 'register',
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
@@ -36,6 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       loginLoading.value = true;
       const { accessToken, refreshToken } = type === 'mobile' ? await smsLogin(params as AuthApi.SmsLoginParams)
+        : type === 'register' ? await register(params as AuthApi.RegisterParams)
         : await loginApi(params);
 
       // 如果成功获取到 accessToken

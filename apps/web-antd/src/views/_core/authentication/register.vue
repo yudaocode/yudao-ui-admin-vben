@@ -1,18 +1,120 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { Recordable } from '@vben/types';
+import { type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
 
-import { computed, h, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 
-import { AuthenticationRegister, z } from '@vben/common-ui';
+import { AuthenticationRegister, Verification, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { useAppConfig } from '@vben/hooks';
+
+import { useAccessStore } from '@vben/stores';
+import { useAuthStore } from '#/store';
+import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
+
+const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 defineOptions({ name: 'Register' });
 
 const loading = ref(false);
+const registerRef = ref();
+const verifyRef = ref();
+const accessStore = useAccessStore();
+const authStore = useAuthStore();
+
+const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWord'
+
+/** 获取租户列表，并默认选中 */
+const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
+const fetchTenantList = async () => {
+  if (!tenantEnable) {
+    return;
+  }
+  try {
+    // 获取租户列表、域名对应租户
+    const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
+    tenantList.value = await getTenantSimpleList();
+
+    // 选中租户：域名 > store 中的租户 > 首个租户
+    let tenantId: number | null = null;
+    const websiteTenant = await websiteTenantPromise;
+    if (websiteTenant?.id) {
+      tenantId = websiteTenant.id;
+    }
+    // 如果没有从域名获取到租户，尝试从 store 中获取
+    if (!tenantId && accessStore.tenantId) {
+      tenantId = accessStore.tenantId;
+    }
+    // 如果还是没有租户，使用列表中的第一个
+    if (!tenantId && tenantList.value?.[0]?.id) {
+      tenantId = tenantList.value[0].id;
+    }
+
+    // 设置选中的租户编号
+    accessStore.setTenantId(tenantId);
+    registerRef.value.getFormApi().setFieldValue('tenantId', tenantId);
+  } catch (error) {
+    console.error('获取租户列表失败:', error);
+  }
+};
+
+/** 执行注册 */
+const handleRegister = async (values: any) => {
+  // 如果开启验证码，则先验证验证码
+  if (captchaEnable) {
+    verifyRef.value.show();
+    return;
+  }
+
+  // 无验证码，直接登录
+  await authStore.authLogin('register', values);
+};
+
+/** 验证码通过，执行注册 */
+const handleVerifySuccess = async ({ captchaVerification }: any) => {
+  try {
+    await authStore.authLogin('register', {
+      ...(await registerRef.value.getFormApi().getValues()),
+      captchaVerification,
+    });
+  } catch (error) {
+    console.error('Error in handleRegister:', error);
+  }
+};
+
+/** 组件挂载时获取租户信息 */
+onMounted(() => {
+  fetchTenantList();
+});
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
+    {
+      component: 'VbenSelect',
+      componentProps: {
+        options: tenantList.value.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+        placeholder: $t('authentication.tenantTip'),
+      },
+      fieldName: 'tenantId',
+      label: $t('authentication.tenant'),
+      rules: z
+        .number()
+        .nullable()
+        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
+        .default(null),
+      dependencies: {
+        triggerFields: ['tenantId'],
+        if: tenantEnable,
+        trigger(values) {
+          if (values.tenantId) {
+            accessStore.setTenantId(values.tenantId);
+          }
+        },
+      },
+    },
     {
       component: 'VbenInput',
       componentProps: {
@@ -21,6 +123,15 @@ const formSchema = computed((): VbenFormSchema[] => {
       fieldName: 'username',
       label: $t('authentication.username'),
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
+    },
+    {
+      component: 'VbenInput',
+      componentProps: {
+        placeholder: $t('authentication.nicknameTip'),
+      },
+      fieldName: 'nickname',
+      label: $t('authentication.nickname'),
+      rules: z.string().min(1, { message: $t('authentication.nicknameTip') }),
     },
     {
       component: 'VbenInputPassword',
@@ -80,17 +191,25 @@ const formSchema = computed((): VbenFormSchema[] => {
     },
   ];
 });
-
-function handleSubmit(value: Recordable<any>) {
-  // eslint-disable-next-line no-console
-  console.log('register submit:', value);
-}
 </script>
 
 <template>
-  <AuthenticationRegister
-    :form-schema="formSchema"
-    :loading="loading"
-    @submit="handleSubmit"
-  />
+  <div>
+    <AuthenticationRegister
+      ref="registerRef"
+      :form-schema="formSchema"
+      :loading="loading"
+      @submit="handleRegister"
+    />
+    <Verification
+      ref="verifyRef"
+      v-if="captchaEnable"
+      :captcha-type="captchaType"
+      :check-captcha-api="checkCaptcha"
+      :get-captcha-api="getCaptcha"
+      :img-size="{ width: '400px', height: '200px' }"
+      mode="pop"
+      @on-success="handleVerifySuccess"
+    />
+  </div>
 </template>

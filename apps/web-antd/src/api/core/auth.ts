@@ -35,6 +35,13 @@ export namespace AuthApi {
     code: string;
   }
 
+  /** 注册接口参数 */
+  export interface RegisterParams {
+    tenantName: string
+    username: string
+    password: string
+    captchaVerification: string
+  }
 }
 
 /** 登录 */
@@ -93,4 +100,9 @@ export const sendSmsCode = (data: AuthApi.SmsCodeParams) => {
 /** 短信验证码登录 */
 export const smsLogin = (data: AuthApi.SmsLoginParams) => {
   return requestClient.post('/system/auth/sms-login', data)
+}
+
+/** 注册 */
+export const register = (data: AuthApi.RegisterParams) => {
+  return requestClient.post('/system/auth/register', data)
 }
