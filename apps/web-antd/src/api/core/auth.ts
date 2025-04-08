@@ -37,11 +37,18 @@ export namespace AuthApi {
 
   /** 注册接口参数 */
   export interface RegisterParams {
-    tenantName: string
     username: string
     password: string
     captchaVerification: string
   }
+
+  /** 重置密码接口参数 */
+  export interface ResetPasswordParams {
+    password: string;
+    mobile: string;
+    code: string;
+  }
+
 }
 
 /** 登录 */
@@ -105,4 +112,9 @@ export const smsLogin = (data: AuthApi.SmsLoginParams) => {
 /** 注册 */
 export const register = (data: AuthApi.RegisterParams) => {
   return requestClient.post('/system/auth/register', data)
+}
+
+/** 通过短信重置密码 */
+export const smsResetPassword = (data: AuthApi.ResetPasswordParams) => {
+  return requestClient.post('/system/auth/reset-password', data)
 }

@@ -105,7 +105,7 @@ defineExpose({
         @click="handleSubmit"
       >
         <slot name="submitButtonText">
-          {{ submitButtonText || $t('authentication.sendResetLink') }}
+          {{ submitButtonText || $t('authentication.resetPassword') }}
         </slot>
       </VbenButton>
       <VbenButton class="mt-4 w-full" variant="outline" @click="goToLogin()">
