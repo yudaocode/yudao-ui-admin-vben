@@ -11,8 +11,30 @@ const routes: RouteRecordRaw[] = [
       activePath: '/infra/job',
       keepAlive: false,
       hideInMenu: true,
-    }
-  }
+    },
+  },
+  {
+    path: '/codegen',
+    name: 'CodegenEdit',
+    meta: {
+      icon: 'ic:baseline-view-in-ar',
+      keepAlive: true,
+      order: 1000,
+      title: '代码生成',
+      hideInMenu: true,
+    },
+    children: [
+      {
+        path: '/codegen/edit',
+        name: 'InfraCodegenEdit',
+        component: () => import('#/views/infra/codegen/edit.vue'),
+        meta: {
+          title: '修改生成配置',
+          activeMenu: '/infra/codegen',
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;
