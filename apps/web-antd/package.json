@@ -43,6 +43,7 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "highlight.js": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
