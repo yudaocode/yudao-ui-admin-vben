@@ -44,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   submit: [Recordable<any>];
+  thirdLogin: [type: number];
 }>();
 
 const [Form, formApi] = useVbenForm(
@@ -78,6 +79,15 @@ async function handleSubmit() {
 
 function handleGo(path: string) {
   router.push(path);
+}
+
+/**
+ * 处理第三方登录
+ *
+ * @param type 第三方平台类型
+ */
+function handleThirdLogin(type: number) {
+  emit('thirdLogin', type);
 }
 
 onMounted(() => {
@@ -168,7 +178,7 @@ defineExpose({
 
     <!-- 第三方登录 -->
     <slot name="third-party-login">
-      <ThirdPartyLogin v-if="showThirdPartyLogin" />
+      <ThirdPartyLogin v-if="showThirdPartyLogin" @third-login="handleThirdLogin" />
     </slot>
 
     <slot name="to-register">
