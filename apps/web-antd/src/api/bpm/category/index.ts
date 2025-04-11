@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace CategoryApi {
+export namespace BpmCategoryApi {
   /** BPM 流程分类 VO */
   export interface CategoryVO {
     id: number;
@@ -15,26 +15,21 @@ export namespace CategoryApi {
 
 /** 查询流程分类分页 */
 export async function getCategoryPage(params: PageParam) {
-  return requestClient.get<PageResult<CategoryApi.CategoryVO>>(
-    '/bpm/category/page',
-    { params },
-  );
+  return requestClient.get<PageResult<BpmCategoryApi.CategoryVO>>('/bpm/category/page', { params });
 }
 
 /** 查询流程分类详情 */
 export async function getCategory(id: number) {
-  return requestClient.get<CategoryApi.CategoryVO>(
-    `/bpm/category/get?id=${id}`,
-  );
+  return requestClient.get<BpmCategoryApi.CategoryVO>(`/bpm/category/get?id=${id}`);
 }
 
 /** 新增流程分类 */
-export async function createCategory(data: CategoryApi.CategoryVO) {
+export async function createCategory(data: BpmCategoryApi.CategoryVO) {
   return requestClient.post('/bpm/category/create', data);
 }
 
 /** 修改流程分类 */
-export async function updateCategory(data: CategoryApi.CategoryVO) {
+export async function updateCategory(data: BpmCategoryApi.CategoryVO) {
   return requestClient.put('/bpm/category/update', data);
 }
 

@@ -1,24 +1,18 @@
 <script lang="ts" setup>
-import type { CategoryApi } from '#/api/bpm/category/index';
-
-import { computed, ref } from 'vue';
+import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
+import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import {
-  createCategory,
-  getCategory,
-  updateCategory,
-} from '#/api/bpm/category/index';
+import {createCategory, getCategory, updateCategory } from '#/api/bpm/category';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<CategoryApi.CategoryVO>();
+const formData = ref<BpmCategoryApi.CategoryVO>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['流程分类'])
@@ -39,7 +33,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as CategoryApi.CategoryVO;
+    const data = (await formApi.getValues()) as BpmCategoryApi.CategoryVO;
     try {
       await (formData.value?.id ? updateCategory(data) : createCategory(data));
       // 关闭并提示
@@ -58,7 +52,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CategoryApi.CategoryVO>();
+    const data = modalApi.getData<BpmCategoryApi.CategoryVO>();
     if (!data || !data.id) {
       return;
     }

@@ -1,20 +1,16 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
-import type { CategoryApi } from '#/api/bpm/category/index';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-
 import { Button, message } from 'ant-design-vue';
+import Form from './modules/form.vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteCategory, getCategoryPage } from '#/api/bpm/category/index';
+import { deleteCategory, getCategoryPage } from '#/api/bpm/category';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -46,14 +42,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<CategoryApi.CategoryVO>,
+  } as VxeTableGridOptions<BpmCategoryApi.CategoryVO>,
 });
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<CategoryApi.CategoryVO>) {
+}: OnActionClickParams<BpmCategoryApi.CategoryVO>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -77,12 +73,12 @@ function onCreate() {
 }
 
 /** 编辑流程分类 */
-function onEdit(row: CategoryApi.CategoryVO) {
+function onEdit(row: BpmCategoryApi.CategoryVO) {
   formModalApi.setData(row).open();
 }
 
 /** 删除流程分类 */
-async function onDelete(row: CategoryApi.CategoryVO) {
+async function onDelete(row: BpmCategoryApi.CategoryVO) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.code]),
     duration: 0,

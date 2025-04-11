@@ -1,9 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CategoryApi } from '#/api/bpm/category/index';
+import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { useAccess } from '@vben/access';
-
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
@@ -107,7 +106,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = CategoryApi.CategoryVO>(
+export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
