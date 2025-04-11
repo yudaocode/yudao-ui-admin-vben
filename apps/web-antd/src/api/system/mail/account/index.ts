@@ -18,36 +18,36 @@ export namespace SystemMailAccountApi {
     remark: string;
   }
 }
-// TODO @puhui999：改成 function 风格；不用 await
+
 /** 查询邮箱账号列表 */
-export const getMailAccountPage = async (params: PageParam) => {
-  return await requestClient.get<PageResult<SystemMailAccountApi.SystemMailAccount>>(
+export function getMailAccountPage(params: PageParam) {
+  return requestClient.get<PageResult<SystemMailAccountApi.SystemMailAccount>>(
     '/system/mail-account/page',
-    { params },
+    { params }
   );
-};
+}
 
 /** 查询邮箱账号详情 */
-export const getMailAccount = async (id: number) => {
-  return await requestClient.get<SystemMailAccountApi.SystemMailAccount>(`/system/mail-account/get?id=${id}`);
-};
+export function getMailAccount(id: number) {
+  return requestClient.get<SystemMailAccountApi.SystemMailAccount>(`/system/mail-account/get?id=${id}`);
+}
 
 /** 新增邮箱账号 */
-export const createMailAccount = async (data: SystemMailAccountApi.SystemMailAccount) => {
-  return await requestClient.post<SystemMailAccountApi.SystemMailAccount>('/system/mail-account/create', data);
-};
+export function createMailAccount(data: SystemMailAccountApi.SystemMailAccount) {
+  return requestClient.post('/system/mail-account/create', data);
+}
 
 /** 修改邮箱账号 */
-export const updateMailAccount = async (data: SystemMailAccountApi.SystemMailAccount) => {
-  return await requestClient.put<SystemMailAccountApi.SystemMailAccount>('/system/mail-account/update', data);
-};
+export function updateMailAccount(data: SystemMailAccountApi.SystemMailAccount) {
+  return requestClient.put('/system/mail-account/update', data);
+}
 
 /** 删除邮箱账号 */
-export const deleteMailAccount = async (id: number) => {
-  return await requestClient.delete<boolean>(`/system/mail-account/delete?id=${id}`);
-};
+export function deleteMailAccount(id: number) {
+  return requestClient.delete(`/system/mail-account/delete?id=${id}`);
+}
 
 /** 获得邮箱账号精简列表 */
-export const getSimpleMailAccountList = async () => {
-  return await requestClient.get<SystemMailAccountApi.SystemMailAccount[]>('/system/mail-account/simple-list');
-};
+export function getSimpleMailAccountList() {
+  return requestClient.get<SystemMailAccountApi.SystemMailAccount[]>('/system/mail-account/simple-list');
+}

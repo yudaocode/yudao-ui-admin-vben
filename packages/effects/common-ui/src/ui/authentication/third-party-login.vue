@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MdiGithub, MdiGoogle, MdiQqchat, MdiWechat } from '@vben/icons';
+import { MdiGithub, MdiQqchat, MdiWechat, AntdDingTalk } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { VbenIconButton } from '@vben-core/shadcn-ui';
@@ -7,6 +7,19 @@ import { VbenIconButton } from '@vben-core/shadcn-ui';
 defineOptions({
   name: 'ThirdPartyLogin',
 });
+
+const emit = defineEmits<{
+  thirdLogin: [type: number];
+}>();
+
+/**
+ * 处理第三方登录点击
+ *
+ * @param type 第三方平台类型
+ */
+function handleThirdLogin(type: number) {
+  emit('thirdLogin', type);
+}
 </script>
 
 <template>
@@ -20,17 +33,17 @@ defineOptions({
     </div>
 
     <div class="mt-4 flex flex-wrap justify-center">
-      <VbenIconButton class="mb-3">
+      <VbenIconButton class="mb-3" @click="handleThirdLogin(30)">
         <MdiWechat />
       </VbenIconButton>
-      <VbenIconButton class="mb-3">
+      <VbenIconButton class="mb-3" @click="handleThirdLogin(20)">
+        <AntdDingTalk />
+      </VbenIconButton>
+      <VbenIconButton class="mb-3" @click="handleThirdLogin(0)">
         <MdiQqchat />
       </VbenIconButton>
-      <VbenIconButton class="mb-3">
+      <VbenIconButton class="mb-3" @click="handleThirdLogin(0)">
         <MdiGithub />
-      </VbenIconButton>
-      <VbenIconButton class="mb-3">
-        <MdiGoogle />
       </VbenIconButton>
     </div>
   </div>

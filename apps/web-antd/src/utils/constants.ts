@@ -72,7 +72,7 @@ export const SystemUserSocialTypeEnum = {
 export const InfraCodegenTemplateTypeEnum = {
   CRUD: 1, // 基础 CRUD
   TREE: 2, // 树形 CRUD
-  SUB: 3 // 主子表 CRUD
+  SUB: 15 // 主子表 CRUD
 }
 
 /**
