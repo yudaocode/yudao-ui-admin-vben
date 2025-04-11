@@ -2,10 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CategoryApi } from '#/api/bpm/category/index';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
+const { hasAccessByCodes } = useAccess();
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -80,7 +83,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // TODO 分类标志
+    {
+      fieldName: 'code',
+      label: '分类标志',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入分类标志',
+        allowClear: true,
+      },
+    },
     {
       fieldName: 'status',
       label: '分类状态',
@@ -91,6 +102,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
+    // TODO 创建时间 等通用方法完善后加
   ];
 }
 
@@ -150,11 +162,11 @@ export function useGridColumns<T = CategoryApi.CategoryVO>(
         options: [
           {
             code: 'edit',
-            // show: hasAccessByCodes(['bpm:category:update']), TODO 权限
+            show: hasAccessByCodes(['bpm:category:update']),
           },
           {
             code: 'delete',
-            // show: hasAccessByCodes(['bpm:category:delete']),
+            show: hasAccessByCodes(['bpm:category:delete']),
           },
         ],
       },

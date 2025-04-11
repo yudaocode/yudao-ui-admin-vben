@@ -6,7 +6,6 @@ import type {
 import type { CategoryApi } from '#/api/bpm/category/index';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -107,7 +106,11 @@ async function onDelete(row: CategoryApi.CategoryVO) {
     <FormModal @success="onRefresh" />
     <Grid table-title="流程分类">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['bpm:category:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['流程分类']) }}
         </Button>
