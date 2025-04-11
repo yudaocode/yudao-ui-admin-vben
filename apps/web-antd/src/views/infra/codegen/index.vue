@@ -50,6 +50,7 @@ function onPreview(row: InfraCodegenApi.CodegenTable) {
 
 /** 编辑表格 */
 function onEdit(row: InfraCodegenApi.CodegenTable) {
+  // TODO @puhui999：使用 name。这样后续换路径，不会有问题哈；
   router.push(`/codegen/edit?id=${row.id}`);
 }
 
@@ -119,12 +120,12 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
     case 'generate': {
@@ -171,6 +172,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<InfraCodegenApi.CodegenTable>,
 });
 
+// TODO @puhui999：这个，是不是可以使用 apiselect
 /** 获取数据源配置列表 */
 async function initDataSourceConfig() {
   try {
@@ -199,7 +201,7 @@ initDataSourceConfig();
       <template #toolbar-tools>
         <Button type="primary" @click="onImport" v-access:code="['infra:codegen:create']">
           <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['导入']) }}
+          导入
         </Button>
       </template>
     </Grid>

@@ -65,13 +65,13 @@ export namespace InfraCodegenApi {
   }
 
   /** 更新代码生成请求 */
-  export interface CodegenUpdateReq {
+  export interface CodegenUpdateReqVO {
     table: any | CodegenTable;
     columns: CodegenColumn[];
   }
 
   /** 创建代码生成请求 */
-  export interface CodegenCreateListReq {
+  export interface CodegenCreateListReqVO {
     dataSourceConfigId?: number;
     tableNames: string[];
   }
@@ -79,7 +79,7 @@ export namespace InfraCodegenApi {
 
 /** 查询列表代码生成表定义 */
 export function getCodegenTableList(dataSourceConfigId: number) {
-  return requestClient.get<InfraCodegenApi.CodegenTable[]>('/infra/codegen/table/list', {
+  return requestClient.get<InfraCodegenApi.CodegenTable[]>('/infra/codegen/table/list?', {
     params: { dataSourceConfigId },
   });
 }
@@ -90,40 +90,35 @@ export function getCodegenTablePage(params: PageParam) {
 }
 
 /** 查询详情代码生成表定义 */
-export function getCodegenTable(id: number) {
+export function getCodegenTable(tableId: number) {
   return requestClient.get<InfraCodegenApi.CodegenDetail>('/infra/codegen/detail', {
-    params: { tableId: id },
+    params: { tableId },
   });
 }
 
-/** 新增代码生成表定义 */
-export function createCodegenTable(data: InfraCodegenApi.CodegenCreateListReq) {
-  return requestClient.post('/infra/codegen/create', data);
-}
-
 /** 修改代码生成表定义 */
-export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReq) {
+export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReqVO) {
   return requestClient.put('/infra/codegen/update', data);
 }
 
 /** 基于数据库的表结构，同步数据库的表和字段定义 */
-export function syncCodegenFromDB(id: number) {
+export function syncCodegenFromDB(tableId: number) {
   return requestClient.put('/infra/codegen/sync-from-db', {
-    params: { tableId: id },
+    params: { tableId },
   });
 }
 
 /** 预览生成代码 */
-export function previewCodegen(id: number) {
+export function previewCodegen(tableId: number) {
   return requestClient.get<InfraCodegenApi.CodegenPreview[]>('/infra/codegen/preview', {
-    params: { tableId: id },
+    params: { tableId },
   });
 }
 
 /** 下载生成代码 */
-export function downloadCodegen(id: number) {
+export function downloadCodegen(tableId: number) {
   return requestClient.download('/infra/codegen/download', {
-    params: { tableId: id },
+    params: { tableId },
   });
 }
 
@@ -133,13 +128,13 @@ export function getSchemaTableList(params: any) {
 }
 
 /** 基于数据库的表结构，创建代码生成器的表定义 */
-export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReq) {
+export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReqVO) {
   return requestClient.post('/infra/codegen/create-list', data);
 }
 
 /** 删除代码生成表定义 */
-export function deleteCodegenTable(id: number) {
+export function deleteCodegenTable(tableId: number) {
   return requestClient.delete('/infra/codegen/delete', {
-    params: { tableId: id },
+    params: { tableId },
   });
 }

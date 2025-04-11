@@ -12,8 +12,7 @@ const props = defineProps<{
 
 /** 表单实例 */
 const [Form, formApi] = useVbenForm({
-  // 配置表单布局为两列
-  wrapperClass: 'grid grid-cols-1 md:grid-cols-2 gap-4',
+  wrapperClass: 'grid grid-cols-1 md:grid-cols-2 gap-4', // 配置表单布局为两列
   schema: useBasicInfoFormSchema(),
   layout: 'horizontal',
   showDefaultActions: false,

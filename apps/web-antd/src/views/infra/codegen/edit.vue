@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @puhui999：要不新建一个 edit 目录，把它挪进去？
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
 import BasicInfo from './modules/basic-info.vue';
@@ -31,8 +32,9 @@ const generateInfoRef = ref<InstanceType<typeof GenerationInfo>>();
 /** 获取详情数据 */
 const getDetail = async () => {
   const id = route.query.id as any;
-  if (!id) return;
-
+  if (!id) {
+    return;
+  }
   loading.value = true;
   try {
     formData.value = await getCodegenTable(id);
@@ -55,18 +57,19 @@ const submitForm = async () => {
     return;
   }
 
-  // 提交
+  // 提交表单
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating'),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    // 获取相关信息
+    // 拼接相关信息
     const basicInfo = await basicInfoRef.value?.getValues();
     const columns = columnInfoRef.value?.getData() || unref(formData).columns;
     const generateInfo = await generateInfoRef.value?.getValues();
     await updateCodegenTable({ table: { ...unref(formData).table, ...basicInfo, ...generateInfo }, columns });
+    // 关闭并提示
     message.success({
       content: $t('ui.actionMessage.operationSuccess'),
       key: 'action_process_msg',
@@ -79,6 +82,7 @@ const submitForm = async () => {
   }
 };
 
+// TODO @puhui999：可能要关闭下当前的编辑页面
 /** 返回列表 */
 const close = () => {
   router.push('/infra/codegen');
@@ -138,6 +142,7 @@ getDetail();
         <Button v-show="currentStep === steps.length - 1" type="primary" :loading="loading" @click="submitForm">
           保存
         </Button>
+        <!-- TODO @puhui999：返回要不去掉，感觉一般自己点击关闭就好啦！ -->
         <Button @click="close">
           <ChevronsLeft class="mr-1" />
           返回

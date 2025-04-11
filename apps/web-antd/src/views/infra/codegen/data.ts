@@ -27,6 +27,7 @@ export function useImportTableFormSchema(
     {
       fieldName: 'dataSourceConfigId',
       label: '数据源',
+      // TODO @puhui999：不确定使用 ApiSelect 的话，使用 afterEach，可以设置默认 defaultValue 不
       component: 'Select',
       componentProps: {
         options: dataSourceConfigList.map((item) => ({
@@ -76,7 +77,7 @@ export function useBasicInfoFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入',
+        placeholder: '请输入表描述',
       },
       rules: 'required',
     },
@@ -85,7 +86,7 @@ export function useBasicInfoFormSchema(): VbenFormSchema[] {
       label: '实体类名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入',
+        placeholder: '请输入实体类名称',
       },
       rules: 'required',
       help: '默认去除表名的前缀。如果存在重复，则需要手动添加前缀，避免 MyBatis 报 Alias 重复的问题。',
@@ -95,7 +96,7 @@ export function useBasicInfoFormSchema(): VbenFormSchema[] {
       label: '作者',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入',
+        placeholder: '请输入作者',
       },
       rules: 'required',
     },
@@ -105,8 +106,8 @@ export function useBasicInfoFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         rows: 3,
+        placeholder: '请输入备注',
       },
-      // 使用 Tailwind 的 col-span-2 让元素跨越两列
       formItemClass: 'md:col-span-2',
     },
   ];
@@ -120,8 +121,8 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'templateType',
       label: '生成模板',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE, 'number'),
+        class: 'w-full',
       },
       rules: z.number().min(1, { message: '生成模板不能为空' }),
     },
@@ -130,9 +131,10 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'frontType',
       label: '前端类型',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE, 'number'),
+        class: 'w-full',
       },
+      // todo @puhui999：1 可以是枚举么
       rules: z.number().min(1, { message: '前端类型不能为空' }),
     },
     {
@@ -140,9 +142,10 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'scene',
       label: '生成场景',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE, 'number'),
+        class: 'w-full',
       },
+      // todo @puhui999：1 可以是枚举么
       rules: z.number().min(1, { message: '生成场景不能为空' }),
     },
     {
@@ -196,6 +199,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'moduleName',
       label: '模块名',
       help: '模块名，即一级目录，例如 system、infra、tool 等等',
+      // TODO @puhui999：这种 rules，可以使用 required
       rules: z.string().min(1, { message: '模块名不能为空' }),
     },
     {
@@ -222,6 +226,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
   ];
 }
 
+// TODO @puhui999：是不是使用 useGenerationInfoTreeFormSchema，主要考虑对称
 /** 树表信息 schema */
 export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] = []): VbenFormSchema[] {
   return [
@@ -240,7 +245,7 @@ export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] 
       component: 'Select',
       fieldName: 'treeParentColumnId',
       label: '父编号字段',
-      help: '树显示的父编码字段名， 如：parent_Id',
+      help: '树显示的父编码字段名，例如 parent_Id',
       componentProps: {
         class: 'w-full',
         allowClear: true,
@@ -256,11 +261,11 @@ export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] 
       component: 'Select',
       fieldName: 'treeNameColumnId',
       label: '名称字段',
-      help: '树节点显示的名称字段，一般是name',
+      help: '树节点显示的名称字段，一般是 name',
       componentProps: {
         class: 'w-full',
         allowClear: true,
-        placeholder: '请选择',
+        placeholder: '请选择名称字段',
         options: columns.map((column) => ({
           label: column.columnName,
           value: column.id,
@@ -271,6 +276,7 @@ export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] 
   ];
 }
 
+// TODO @puhui999：【类似】是不是使用 useGenerationInfoTreeFormSchema，主要考虑对称
 /** 主子表信息 schema */
 export function useSubTableFormSchema(
   columns: InfraCodegenApi.CodegenColumn[] = [],
@@ -476,8 +482,8 @@ export function useCodegenColumnTableColumns(): VxeTableGridOptions['columns'] {
     { field: 'dataType', title: '物理类型', minWidth: 100 },
     {
       field: 'javaType',
-      title: 'Java类型',
-      minWidth: 100,
+      title: 'Java 类型',
+      minWidth: 130,
       slots: { default: 'javaType' },
       params: {
         options: [
@@ -493,7 +499,7 @@ export function useCodegenColumnTableColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'javaField',
-      title: 'java属性',
+      title: 'Java 属性',
       minWidth: 100,
       slots: { default: 'javaField' },
     },
@@ -542,13 +548,13 @@ export function useCodegenColumnTableColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'nullable',
       title: '允许空',
-      width: 50,
+      width: 60,
       slots: { default: 'nullable' },
     },
     {
       field: 'htmlType',
       title: '显示类型',
-      width: 120,
+      width: 130,
       slots: { default: 'htmlType' },
       params: {
         options: [

@@ -21,26 +21,29 @@ const emit = defineEmits<{
 }>();
 
 const dataSourceConfigList = ref<InfraDataSourceConfigApi.InfraDataSourceConfig[]>([]);
-const formData = reactive<InfraCodegenApi.CodegenCreateListReq>({
+const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
   dataSourceConfigId: undefined,
   tableNames: [], // 已选择的表列表
 });
+
 /** 表格实例 */
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useImportTableFormSchema([]),
   },
   gridOptions: {
+    // TODO @puhui999：这个要不也挪出去，保持统一？
     columns: [
       { type: 'checkbox', width: 40 },
       { field: 'name', title: '表名称', minWidth: 200 },
       { field: 'comment', title: '表描述', minWidth: 200 },
     ],
-    height: '600px',
+    height: 600,
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          // TODO @puhui999：貌似可以直接使用 formValues.dataSourceConfigId。肯定可以读到值。
           if (formValues.dataSourceConfigId === undefined) {
             if (unref(dataSourceConfigList).length > 0) {
               formValues.dataSourceConfigId = unref(dataSourceConfigList)[0]?.id;
@@ -81,20 +84,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({
   title: '导入表',
-  class: 'w-2/3',
+  class: 'w-1/2',
   async onConfirm() {
     modalApi.lock();
-    // 1. 获取表单值
+    // 1.1 获取表单值
     if (formData?.dataSourceConfigId === undefined) {
       message.error('请选择数据源');
       return;
     }
-    // 2. 校验是否选择了表
+    // 1.2 校验是否选择了表
     if (formData.tableNames.length === 0) {
       message.error('请选择需要导入的表');
       return;
     }
-    // 3. 提交请求
+
+    // 2. 提交请求
     const hideLoading = message.loading({
       content: '导入中...',
       duration: 0,

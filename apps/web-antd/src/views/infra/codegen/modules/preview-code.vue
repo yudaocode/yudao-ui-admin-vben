@@ -61,6 +61,7 @@ const copyCode = async () => {
 
 /** 文件节点点击事件 */
 const handleNodeClick = (_: any[], e: any) => {
+  // TODO @puhui999：可以简化，if return；减少括号
   if (e.node.isLeaf) {
     activeKey.value = e.node.key;
     const file = previewFiles.value.find(
@@ -80,6 +81,7 @@ const handleNodeClick = (_: any[], e: any) => {
 };
 
 /** 处理文件树 */
+// TODO @puhui999：看看能不能用 cursor 优化下这个方法；= = 比较冗余
 const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   const exists: Record<string, boolean> = {};
   const files: FileNode[] = [];
@@ -161,6 +163,7 @@ const [Modal, modalApi] = useVbenModal({
   class: 'w-3/5',
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      // TODO @puhui999：貌似下面不要，也没关系？
       previewFiles.value = [];
       fileTree.value = [];
       activeKey.value = '';
@@ -176,9 +179,9 @@ const [Modal, modalApi] = useVbenModal({
     try {
       const data = await previewCodegen(row.id);
       previewFiles.value = data;
-      fileTree.value = handleFiles(data);
 
-      // 默认选中第一个文件
+      // 构建代码树，并默认选中第一个文件
+      fileTree.value = handleFiles(data);
       if (data.length > 0) {
         activeKey.value = data[0]?.filePath || '';
         const lang = activeKey.value.split('.').pop() || '';
@@ -200,9 +203,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="代码预览">
-    <div class="h-1/1 flex" v-loading="loading">
+    <div class="h-full flex" v-loading="loading">
       <!-- 文件树 -->
       <div class="w-1/3 border-r border-gray-200 pr-4 dark:border-gray-700">
+        <!-- TODO @puhui999：树默认展示； -->
+        <!-- TODO @puhui999：默认节点点击，可以展开 -->
         <Tree
           :selected-keys="[activeKey]"
           :tree-data="fileTree"
@@ -210,14 +215,18 @@ const [Modal, modalApi] = useVbenModal({
         />
       </div>
       <!-- 代码预览 -->
+      <!-- TODO @puhui999：可以顶部有个 tab 么？ -->
+      <!-- TODO @puhui999：貌似 java 的缩进，不太对，首行空了很长； -->
       <div class="w-2/3 pl-4">
         <div class="mb-2 flex justify-between">
           <div class="text-lg font-medium dark:text-gray-200">
             {{ activeKey.split('/').pop() }}
+            <!-- TODO @puhui999：貌似不用 activeLanguage 哇？ -->
             <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">
               ({{ activeLanguage }})
             </span>
           </div>
+          <!-- TODO @芋艿：貌似别的模块，也可以通过 :icon="h(Copy)"？？？ -->
           <Button type="primary" ghost @click="copyCode" :icon="h(Copy)">
             复制代码
           </Button>

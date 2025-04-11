@@ -9,7 +9,7 @@ import Form from './modules/form.vue';
 
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getConfigPage, deleteConfig, exportConfig, getConfigKey } from '#/api/infra/config';
+import { getConfigPage, deleteConfig, exportConfig } from '#/api/infra/config';
 import { useGridColumns, useGridFormSchema } from './data';
 import { downloadByData } from '#/utils/download';
 
@@ -121,4 +121,4 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
     </Grid>
   </Page>
-</template> 
+</template>
