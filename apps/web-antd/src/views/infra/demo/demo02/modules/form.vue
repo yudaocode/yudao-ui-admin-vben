@@ -13,8 +13,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<Demo02CategoryApi.Demo02Category>();
-// 新增下级时的父级ID
-const parentId = ref<number>();
+const parentId = ref<number>(); // 新增下级时的父级 ID
 
 const getTitle = computed(() => {
   if (formData.value?.id) {
@@ -26,10 +25,7 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false,
-  commonConfig: {
-    labelWidth: 120,
-  },
+  showDefaultActions: false
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -65,6 +61,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 处理新增下级的情况
+    // TODO @puhui999：按照 dept 或者 menu 的 form 处理风格，可以更简洁一点；可能 parentId 也不用啦
     if (!data.id && data.parentId) {
       parentId.value = data.parentId;
       formData.value = { parentId: parentId.value } as Demo02CategoryApi.Demo02Category;

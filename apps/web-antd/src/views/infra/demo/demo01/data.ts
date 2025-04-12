@@ -51,12 +51,14 @@ export function useFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
       },
     },
+    // TODO 【富文本】@puhui999：@芋艿：后续要封装下；单独 pr
     {
       fieldName: 'description',
       label: '简介',
       rules: 'required',
       component: 'Editor',
     },
+    // TODO 【文件上传】@puhui999：@芋艿：后续要封装下；单独 pr
     {
       fieldName: 'avatar',
       label: '头像',

@@ -20,10 +20,7 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false,
-  commonConfig: {
-    labelWidth: 120,
-  },
+  showDefaultActions: false
 });
 
 const [Modal, modalApi] = useVbenModal({

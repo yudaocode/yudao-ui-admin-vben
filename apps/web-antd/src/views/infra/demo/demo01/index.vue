@@ -2,7 +2,6 @@
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { DocAlert } from '#/components/doc-alert';
 import Form from './modules/form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -63,12 +62,12 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo01ContactApi.Demo01Contact>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -106,8 +105,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="示例联系人" url="https://doc.iocoder.cn/infra/" />
-
     <FormModal @success="onRefresh" />
     <Grid table-title="示例联系人列表">
       <template #toolbar-tools>
