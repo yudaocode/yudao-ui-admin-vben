@@ -11,15 +11,12 @@ interface Props {
   class?: any;
   options?: Array<{ label: string; value: string }>;
   placeholder?: string;
-  enable?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  enable: true,
-});
+const props = defineProps<Props>();
 </script>
 <template>
-  <Select v-if="enable">
+  <Select>
     <SelectTrigger :class="props.class">
       <SelectValue :placeholder="placeholder" />
     </SelectTrigger>

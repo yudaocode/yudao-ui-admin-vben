@@ -33,7 +33,7 @@ function isBoolean(value: unknown): value is boolean {
  * @param {T} value 要检查的值。
  * @returns {boolean} 如果值为空，返回true，否则返回false。
  */
-function isEmpty<T = unknown>(value?: T): boolean {
+function isEmpty<T = unknown>(value?: T): value is T {
   if (value === null || value === undefined) {
     return true;
   }
