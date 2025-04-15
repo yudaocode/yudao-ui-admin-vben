@@ -203,7 +203,7 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="代码预览">
-    <div class="h-full flex" v-loading="loading">
+    <div class="flex h-full" v-loading="loading">
       <!-- 文件树 -->
       <div class="w-1/3 border-r border-gray-200 pr-4 dark:border-gray-700">
         <!-- TODO @puhui999：树默认展示； -->

@@ -14,7 +14,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '#/api/infra/codegen';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -22,6 +22,9 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const dataSourceConfigList = ref<InfraDataSourceConfigApi.InfraDataSourceConfig[]>([]);
+const getDataSourceConfigName = computed(
+  () => (cellValue: number) => dataSourceConfigList.value.find((item) => item.id === cellValue)?.name || '',
+);
 
 const [ImportModal, importModalApi] = useVbenModal({
   connectedComponent: ImportTable,
@@ -50,8 +53,7 @@ function onPreview(row: InfraCodegenApi.CodegenTable) {
 
 /** 编辑表格 */
 function onEdit(row: InfraCodegenApi.CodegenTable) {
-  // TODO @puhui999：使用 name。这样后续换路径，不会有问题哈；
-  router.push(`/codegen/edit?id=${row.id}`);
+  router.push({ name: 'InfraCodegenEdit', query: { id: row.id } });
 }
 
 /** 删除代码生成配置 */
@@ -120,12 +122,12 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'generate': {
@@ -148,7 +150,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, dataSourceConfigList.value),
+    columns: useGridColumns(onActionClick, getDataSourceConfigName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -172,14 +174,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<InfraCodegenApi.CodegenTable>,
 });
 
-// TODO @puhui999：这个，是不是可以使用 apiselect
 /** 获取数据源配置列表 */
 async function initDataSourceConfig() {
   try {
     dataSourceConfigList.value = await getDataSourceConfigList();
-    gridApi.setState({
-      gridOptions: { columns: useGridColumns(onActionClick, dataSourceConfigList.value) },
-    });
   } catch (error) {
     console.error('获取数据源配置失败', error);
   }

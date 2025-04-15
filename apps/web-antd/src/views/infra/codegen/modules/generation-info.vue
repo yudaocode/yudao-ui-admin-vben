@@ -8,7 +8,11 @@ import { computed, ref, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
-import { useGenerationInfoBaseFormSchema, useSubTableFormSchema, useTreeTableFormSchema } from '../data';
+import {
+  useGenerationInfoBaseFormSchema,
+  useGenerationInfoSubTableFormSchema,
+  useGenerationInfoTreeFormSchema
+} from '../data';
 
 const props = defineProps<{
   columns?: InfraCodegenApi.CodegenColumn[];
@@ -55,14 +59,14 @@ const [SubForm, subFormApi] = useVbenForm({
 /** 更新树表信息表单 schema */
 function updateTreeSchema(): void {
   treeFormApi.setState({
-    schema: useTreeTableFormSchema(props.columns)
+    schema: useGenerationInfoTreeFormSchema(props.columns)
   });
 }
 
 /** 更新主子表信息表单 schema */
 function updateSubSchema(): void {
   subFormApi.setState({
-    schema: useSubTableFormSchema(props.columns, tables.value)
+    schema: useGenerationInfoSubTableFormSchema(props.columns, tables.value)
   });
 }
 
