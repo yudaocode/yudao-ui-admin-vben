@@ -15,6 +15,7 @@ import { VbenButton, VbenCheckbox } from '@vben-core/shadcn-ui';
 
 import Title from './auth-title.vue';
 import ThirdPartyLogin from './third-party-login.vue';
+import DocLink from './doc-link.vue';
 
 interface Props extends AuthenticationProps {
   formSchema: VbenFormSchema[];
@@ -192,5 +193,8 @@ defineExpose({
         </span>
       </div>
     </slot>
+
+    <!-- 萌新必读 -->
+    <DocLink />
   </div>
 </template>
