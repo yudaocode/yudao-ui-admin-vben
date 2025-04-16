@@ -81,9 +81,11 @@ const handleNodeClick = (_: any[], e: any) => {
 
   activeKey.value = e.node.key;
   const file = previewFiles.value.find((item) => {
-    // 特殊处理
-    if (activeKey.value.includes('手动操作')) {
-      return item.filePath.includes('手动操作');
+    const list = activeKey.value.split('.');
+    // 特殊处理-包合并
+    if (list.length > 2) {
+      const lang = list.pop();
+      return item.filePath === `${list.join('/')}.${lang}`;
     }
     return item.filePath === activeKey.value;
   });
