@@ -11,7 +11,7 @@ import { reactive } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { useImportTableFormSchema } from '#/views/infra/codegen/data';
+import { useImportTableColumns, useImportTableFormSchema } from '#/views/infra/codegen/data';
 
 /** 定义组件事件 */
 const emit = defineEmits<{
@@ -27,14 +27,10 @@ const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
 const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useImportTableFormSchema(),
+    submitOnChange: true,
   },
   gridOptions: {
-    // TODO @puhui999：这个要不也挪出去，保持统一？
-    columns: [
-      { type: 'checkbox', width: 40 },
-      { field: 'name', title: '表名称', minWidth: 200 },
-      { field: 'comment', title: '表描述', minWidth: 200 },
-    ],
+    columns: useImportTableColumns(),
     height: 600,
     keepSource: true,
     proxyConfig: {

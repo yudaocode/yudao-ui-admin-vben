@@ -37,15 +37,6 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
         autoSelect: 'first',
         placeholder: '请选择数据源',
       },
-      dependencies: {
-        triggerFields: ['dataSourceConfigId'],
-        trigger(values, formApi) {
-          if (values.dataSourceConfigId === undefined) {
-            return;
-          }
-          formApi.submitForm(values);
-        },
-      },
       rules: 'selectRequired',
     },
     {
@@ -66,6 +57,15 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
         placeholder: '请输入表描述',
       },
     },
+  ];
+}
+
+/** 导入数据库表表格列定义 */
+export function useImportTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'checkbox', width: 40 },
+    { field: 'name', title: '表名称', minWidth: 200 },
+    { field: 'comment', title: '表描述', minWidth: 200 },
   ];
 }
 
