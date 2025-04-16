@@ -80,7 +80,13 @@ const handleNodeClick = (_: any[], e: any) => {
   if (!e.node.isLeaf) return;
 
   activeKey.value = e.node.key;
-  const file = previewFiles.value.find((item) => item.filePath === activeKey.value);
+  const file = previewFiles.value.find((item) => {
+    // 特殊处理
+    if (activeKey.value.includes('手动操作')) {
+      return item.filePath.includes('手动操作');
+    }
+    return item.filePath === activeKey.value;
+  });
   if (!file) return;
 
   const lang = file.filePath.split('.').pop() || '';
