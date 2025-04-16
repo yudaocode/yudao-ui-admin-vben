@@ -2,7 +2,6 @@
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import { DocAlert } from '#/components/doc-alert';
 import Form from './modules/form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -12,7 +11,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDemo02Category, exportDemo02Category, getDemo02CategoryList } from '#/api/infra/demo/demo02';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -50,7 +49,7 @@ function onEdit(row: Demo02CategoryApi.Demo02Category) {
 }
 
 /** 新增下级示例分类 */
-function onAddChild(row: Demo02CategoryApi.Demo02Category) {
+function onAppend(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
@@ -76,8 +75,8 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo02CategoryApi.Demo02Category>) {
   switch (code) {
-    case 'add_child': {
-      onAddChild(row);
+    case 'append': {
+      onAppend(row);
       break;
     }
     case 'delete': {
@@ -129,8 +128,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="示例分类" url="https://doc.iocoder.cn/infra/" />
-
     <FormModal @success="onRefresh" />
 
     <Grid table-title="示例分类列表">
@@ -138,12 +135,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Button @click="toggleExpand" class="mr-2">
           {{ isExpanded ? '收缩' : '展开' }}
         </Button>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:demo02-category:create']">
-          <Plus class="size-5" />
+        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo02-category:create']">
           {{ $t('ui.actionTitle.create', ['示例分类']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:demo02-category:export']">
-          <Download class="size-5" />
+        <Button
+          :icon="h(Download)"
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:demo02-category:export']"
+        >
           {{ $t('ui.actionTitle.export') }}
         </Button>
       </template>

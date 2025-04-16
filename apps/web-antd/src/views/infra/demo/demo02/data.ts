@@ -4,6 +4,7 @@ import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import { getDemo02CategoryList } from '#/api/infra/demo/demo02';
+import { getRangePickerDefaultProps } from '#/utils/date';
 import { handleTree } from '#/utils/tree';
 
 import { useAccess } from '@vben/access';
@@ -82,8 +83,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
-        // TODO @puhui999：缺了你写的哪个时间选择哈
       },
     },
   ];
@@ -120,7 +121,7 @@ export function useGridColumns(
       field: 'operation',
       title: '操作',
       minWidth: 200,
-      align: 'right',
+      align: 'center',
       fixed: 'right',
       headerAlign: 'center',
       showOverflow: false,
@@ -133,7 +134,7 @@ export function useGridColumns(
         name: 'CellOperation',
         options: [
           {
-            code: 'add_child', // TODO @puhui999：append 使用这个单词哈，和之前 vben 官方示例一致
+            code: 'append',
             text: '新增下级',
             show: hasAccessByCodes(['infra:demo02-category:create']),
           },

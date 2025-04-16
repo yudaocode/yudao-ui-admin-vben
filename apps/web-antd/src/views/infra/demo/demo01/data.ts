@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
@@ -105,9 +106,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = Demo01ContactApi.Demo01Contact>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  onActionClick?: OnActionClickFn<Demo01ContactApi.Demo01Contact>,
+): VxeTableGridOptions<Demo01ContactApi.Demo01Contact>['columns'] {
   return [
     {
       field: 'id',
@@ -153,9 +154,11 @@ export function useGridColumns<T = Demo01ContactApi.Demo01Contact>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 180,
+      minWidth: 200,
       align: 'center',
       fixed: 'right',
+      headerAlign: 'center',
+      showOverflow: false,
       cellRender: {
         attrs: {
           nameField: 'id',
