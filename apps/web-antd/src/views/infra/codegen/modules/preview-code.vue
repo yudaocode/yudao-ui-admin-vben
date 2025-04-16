@@ -174,6 +174,8 @@ const [Modal, modalApi] = useVbenModal({
   class: 'w-3/5',
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      // 关闭时清除代码视图缓存
+      codeMap.clear();
       return;
     }
 
