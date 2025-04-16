@@ -1,21 +1,20 @@
 <script lang="ts" setup>
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { computed, h, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 import { Copy } from '@vben/icons';
+import { Button, DirectoryTree, message, Tabs } from 'ant-design-vue';
+
+import { previewCodegen } from '#/api/infra/codegen';
+import { h, ref } from 'vue';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, message, Tree } from 'ant-design-vue';
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
 import javascript from 'highlight.js/lib/languages/javascript';
 import sql from 'highlight.js/lib/languages/sql';
 import typescript from 'highlight.js/lib/languages/typescript';
 import xml from 'highlight.js/lib/languages/xml';
-
-import { previewCodegen } from '#/api/infra/codegen';
 
 /** 注册代码高亮语言 */
 hljs.registerLanguage('java', java);
@@ -40,19 +39,36 @@ const loading = ref(false);
 const fileTree = ref<FileNode[]>([]);
 const previewFiles = ref<InfraCodegenApi.CodegenPreview[]>([]);
 const activeKey = ref<string>('');
-const highlightedCode = ref<string>('');
 
-/** 当前活动文件的语言 */
-const activeLanguage = computed(() => {
-  return activeKey.value.split('.').pop() || '';
-});
+/** 代码地图 */
+const codeMap = new Map<string, string>();
+const setCodeMode = (key: string, lang: string, code: string) => {
+  // 处理可能的缩进问题，特别是对Java文件
+  const trimmedCode = code.trimStart();
+
+  try {
+    const highlightedCode = hljs.highlight(trimmedCode, {
+      language: lang,
+    }).value;
+    codeMap.set(key, highlightedCode);
+  } catch {
+    codeMap.set(key, trimmedCode);
+  }
+};
+const removeCodeMapKey = (targetKey: any) => {
+  // 只有一个代码视图时不允许删除
+  if (codeMap.size === 1) {
+    return;
+  }
+  if (codeMap.has(targetKey)) {
+    codeMap.delete(targetKey);
+  }
+};
 
 /** 复制代码 */
 const copyCode = async () => {
   const { copy } = useClipboard();
-  const file = previewFiles.value.find(
-    (item) => item.filePath === activeKey.value,
-  );
+  const file = previewFiles.value.find((item) => item.filePath === activeKey.value);
   if (file) {
     await copy(file.code);
     message.success('复制成功');
@@ -61,27 +77,17 @@ const copyCode = async () => {
 
 /** 文件节点点击事件 */
 const handleNodeClick = (_: any[], e: any) => {
-  // TODO @puhui999：可以简化，if return；减少括号
-  if (e.node.isLeaf) {
-    activeKey.value = e.node.key;
-    const file = previewFiles.value.find(
-      (item) => item.filePath === activeKey.value,
-    );
-    if (file) {
-      const lang = file.filePath.split('.').pop() || '';
-      try {
-        highlightedCode.value = hljs.highlight(file.code, {
-          language: lang,
-        }).value;
-      } catch {
-        highlightedCode.value = file.code;
-      }
-    }
-  }
+  if (!e.node.isLeaf) return;
+
+  activeKey.value = e.node.key;
+  const file = previewFiles.value.find((item) => item.filePath === activeKey.value);
+  if (!file) return;
+
+  const lang = file.filePath.split('.').pop() || '';
+  setCodeMode(activeKey.value, lang, file.code);
 };
 
 /** 处理文件树 */
-// TODO @puhui999：看看能不能用 cursor 优化下这个方法；= = 比较冗余
 const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   const exists: Record<string, boolean> = {};
   const files: FileNode[] = [];
@@ -89,58 +95,57 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   // 处理文件路径
   for (const item of data) {
     const paths = item.filePath.split('/');
+    let cursor = 0;
     let fullPath = '';
 
-    // 处理Java文件路径
-    const newPaths = [];
-    let i = 0;
-    while (i < paths.length) {
-      const path = paths[i];
+    while (cursor < paths.length) {
+      const path = paths[cursor] || '';
+      const oldFullPath = fullPath;
 
-      if (path === 'java' && i + 1 < paths.length) {
-        newPaths.push(path);
+      // 处理Java包路径特殊情况
+      if (path === 'java' && cursor + 1 < paths.length) {
+        fullPath = fullPath ? `${fullPath}/${path}` : path;
+        cursor++;
 
         // 合并包路径
         let packagePath = '';
-        i++;
-        while (i < paths.length) {
-          const nextPath = paths[i] || '';
-          if (['controller','convert','dal','dataobject','enums','mysql','service','vo'].includes(nextPath)) {
+        while (cursor < paths.length) {
+          const nextPath = paths[cursor] || '';
+          if (['controller', 'convert', 'dal', 'dataobject', 'enums', 'mysql', 'service', 'vo'].includes(nextPath)) {
             break;
           }
           packagePath = packagePath ? `${packagePath}.${nextPath}` : nextPath;
-          i++;
+          cursor++;
         }
 
         if (packagePath) {
-          newPaths.push(packagePath);
+          const newFullPath = `${fullPath}/${packagePath}`;
+          if (!exists[newFullPath]) {
+            exists[newFullPath] = true;
+            files.push({
+              key: newFullPath,
+              title: packagePath,
+              parentKey: oldFullPath || '/',
+              isLeaf: cursor === paths.length,
+            });
+          }
+          fullPath = newFullPath;
         }
         continue;
       }
 
-      newPaths.push(path);
-      i++;
-    }
-
-    // 构建文件树
-    for (let i = 0; i < newPaths.length; i++) {
-      const oldFullPath = fullPath;
-      fullPath =
-        fullPath.length === 0
-          ? newPaths[i] || ''
-          : `${fullPath.replaceAll('.', '/')}/${newPaths[i]}`;
-
-      if (exists[fullPath]) {
-        continue;
+      // 处理普通路径
+      fullPath = fullPath ? `${fullPath}/${path}` : path;
+      if (!exists[fullPath]) {
+        exists[fullPath] = true;
+        files.push({
+          key: fullPath,
+          title: path,
+          parentKey: oldFullPath || '/',
+          isLeaf: cursor === paths.length - 1,
+        });
       }
-
-      exists[fullPath] = true;
-      files.push({
-        key: fullPath,
-        title: newPaths[i] || '',
-        parentKey: oldFullPath || '/',
-        isLeaf: i === newPaths.length - 1,
-      });
+      cursor++;
     }
   }
 
@@ -163,11 +168,6 @@ const [Modal, modalApi] = useVbenModal({
   class: 'w-3/5',
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // TODO @puhui999：貌似下面不要，也没关系？
-      previewFiles.value = [];
-      fileTree.value = [];
-      activeKey.value = '';
-      highlightedCode.value = '';
       return;
     }
 
@@ -186,13 +186,7 @@ const [Modal, modalApi] = useVbenModal({
         activeKey.value = data[0]?.filePath || '';
         const lang = activeKey.value.split('.').pop() || '';
         const code = data[0]?.code || '';
-        try {
-          highlightedCode.value = hljs.highlight(code, {
-            language: lang,
-          }).value;
-        } catch {
-          highlightedCode.value = code;
-        }
+        setCodeMode(activeKey.value, lang, code);
       }
     } finally {
       loading.value = false;
@@ -206,39 +200,24 @@ const [Modal, modalApi] = useVbenModal({
     <div class="flex h-full" v-loading="loading">
       <!-- 文件树 -->
       <div class="w-1/3 border-r border-gray-200 pr-4 dark:border-gray-700">
-        <!-- TODO @puhui999：树默认展示； -->
-        <!-- TODO @puhui999：默认节点点击，可以展开 -->
-        <Tree
-          :selected-keys="[activeKey]"
-          :tree-data="fileTree"
-          @select="handleNodeClick"
-        />
+        <DirectoryTree v-model:active-key="activeKey" @select="handleNodeClick" :tree-data="fileTree" />
       </div>
       <!-- 代码预览 -->
-      <!-- TODO @puhui999：可以顶部有个 tab 么？ -->
-      <!-- TODO @puhui999：貌似 java 的缩进，不太对，首行空了很长； -->
       <div class="w-2/3 pl-4">
-        <div class="mb-2 flex justify-between">
-          <div class="text-lg font-medium dark:text-gray-200">
-            {{ activeKey.split('/').pop() }}
-            <!-- TODO @puhui999：貌似不用 activeLanguage 哇？ -->
-            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">
-              ({{ activeLanguage }})
-            </span>
-          </div>
-          <!-- TODO @芋艿：貌似别的模块，也可以通过 :icon="h(Copy)"？？？ -->
-          <Button type="primary" ghost @click="copyCode" :icon="h(Copy)">
-            复制代码
-          </Button>
-        </div>
-        <div class="h-[calc(100%-40px)] overflow-auto">
-          <pre
-            class="overflow-auto rounded-md bg-gray-50 p-4 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-          >
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <code v-html="highlightedCode" class="code-highlight"></code>
-          </pre>
-        </div>
+        <Tabs v-model:active-key="activeKey" hide-add type="editable-card" @edit="removeCodeMapKey">
+          <Tabs.TabPane v-for="key in codeMap.keys()" :key="key" :tab="key.split('/').pop()">
+            <div class="h-[calc(100%-40px)] overflow-auto">
+              <pre class="overflow-auto rounded-md bg-gray-50 p-4 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                <code v-html="codeMap.get(activeKey)" class="code-highlight"></code>
+              </pre>
+            </div>
+          </Tabs.TabPane>
+          <template #rightExtra>
+            <!-- TODO @芋艿：貌似别的模块，也可以通过 :icon="h(Copy)"？？？ -->
+            <Button type="primary" ghost @click="copyCode" :icon="h(Copy)"> 复制代码 </Button>
+          </template>
+        </Tabs>
       </div>
     </div>
   </Modal>
@@ -249,7 +228,16 @@ const [Modal, modalApi] = useVbenModal({
 
 /* 代码高亮样式 - 支持暗黑模式 */
 :deep(.code-highlight) {
+  display: block;
+  white-space: pre;
   background: transparent;
+}
+
+/* 代码块内容无缩进 */
+:deep(pre) {
+  padding: 1rem;
+  margin: 0;
+  white-space: pre;
 }
 
 /* 关键字 */
