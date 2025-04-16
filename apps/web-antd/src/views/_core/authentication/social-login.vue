@@ -16,7 +16,7 @@ import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
 
 const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
-defineOptions({ name: 'Login' });
+defineOptions({ name: 'SocialLogin' });
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
@@ -34,6 +34,7 @@ const fetchTenantList = async () => {
   if (!tenantEnable) {
     return;
   }
+
   try {
     // 获取租户列表、域名对应租户
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);

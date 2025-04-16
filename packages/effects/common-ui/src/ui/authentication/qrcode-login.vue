@@ -52,7 +52,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const router = useRouter();
 
-const text = ref('https://vben.vvbin.cn');
+// const text = ref('https://vben.vvbin.cn');
+const text = ref('https://t.zsxq.com/FUtQd');
 
 const qrcode = useQRCode(text, {
   errorCorrectionLevel: 'H',

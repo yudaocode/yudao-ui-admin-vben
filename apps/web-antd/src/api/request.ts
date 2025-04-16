@@ -51,6 +51,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   async function doRefreshToken() {
     const accessStore = useAccessStore();
     const refreshToken = accessStore.refreshToken as string;
+    if (!refreshToken) {
+      throw new Error('Refresh token is null!');
+    }
     const resp = await refreshTokenApi(refreshToken);
     const newToken = resp?.data?.data?.accessToken;
     // add by 芋艿：这里一定要抛出 resp.data，从而触发 authenticateResponseInterceptor 中，刷新令牌失败！！！
