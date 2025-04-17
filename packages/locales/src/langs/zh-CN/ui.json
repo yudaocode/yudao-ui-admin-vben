@@ -106,5 +106,14 @@
       "backToLogin": "返回登录",
       "entry": "进入系统"
     }
+  },
+  "upload": {
+    "upload": "上传",
+    "accept": "支持{0}格式",
+    "acceptUpload": "只能上传{0}格式文件",
+    "maxSize": "单个文件不超过{0}MB",
+    "maxSizeMultiple": "只能上传不超过{0}MB的文件!",
+    "maxNumber": "最多只能上传{0}个文件",
+    "uploadSuccess": "上传成功"
   }
 }

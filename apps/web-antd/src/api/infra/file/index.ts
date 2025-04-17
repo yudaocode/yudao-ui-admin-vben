@@ -1,5 +1,9 @@
 import { requestClient } from '#/api/request';
 import type { PageParam, PageResult } from '@vben/request';
+import type { AxiosRequestConfig } from '@vben/request';
+
+/** Axios 上传进度事件 */
+export type AxiosProgressEvent = AxiosRequestConfig['onUploadProgress'];
 
 export namespace InfraFileApi {
   /** 文件信息 */
@@ -46,7 +50,8 @@ export function createFile(data: InfraFileApi.InfraFile) {
   return requestClient.post('/infra/file/create', data);
 }
 
+// TODO @芋艿：需要 data 自定义个类型；
 /** 上传文件 */
-export function uploadFile(data: any) {
-  return requestClient.upload('/infra/file/upload', data);
+export function uploadFile(data: any, onUploadProgress?: AxiosProgressEvent) {
+  return requestClient.upload('/infra/file/upload', data, { onUploadProgress });
 }

@@ -67,5 +67,6 @@ export {
   X,
   Download,
   Upload,
+  CloudUpload,
   History,
 } from 'lucide-vue-next';
