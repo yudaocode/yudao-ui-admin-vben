@@ -10,7 +10,7 @@ import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/normal';
 import { $t } from '#/locales';
 import { h, nextTick, watch } from 'vue';
 
-import { useDemo03CourseGridColumns } from '../data';
+import { useDemo03CourseGridEditColumns } from '../data';
 
 const props = defineProps<{
   studentId?: any; // 学生编号（主表的关联字段）
@@ -28,7 +28,7 @@ function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo0
 
 const [Demo03CourseGrid, demo03CourseGridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useDemo03CourseGridColumns(onActionClick),
+    columns: useDemo03CourseGridEditColumns(onActionClick),
     border: true,
     showOverflow: true,
     autoResize: true,
@@ -58,13 +58,21 @@ const handleAdd = async () => {
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
   getData: (): Demo03StudentApi.Demo03Course[] => {
-    return [
-      ...demo03CourseGridApi.grid.getData(),
-      ...demo03CourseGridApi.grid.getInsertRecords().map((row) => {
-        delete row.id;
-        return row;
-      }),
-    ];
+    // 获取当前数据，但排除已删除的记录
+    const allData = demo03CourseGridApi.grid.getData();
+    const removedData = demo03CourseGridApi.grid.getRemoveRecords();
+    const removedIds = new Set(removedData.map((row) => row.id));
+
+    // 过滤掉已删除的记录
+    const currentData = allData.filter((row) => !removedIds.has(row.id));
+
+    // 获取新插入的记录并移除id
+    const insertedData = demo03CourseGridApi.grid.getInsertRecords().map((row) => {
+      delete row.id;
+      return row;
+    });
+
+    return [...currentData, ...insertedData];
   },
 });
 

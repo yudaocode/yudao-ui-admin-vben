@@ -176,8 +176,8 @@ export function useGridColumns(
 }
 
 // ==================== 子表（学生课程） ====================
-/** 列表的字段 */
-export function useDemo03CourseGridColumns(
+/** 新增/修改的列表的字段 */
+export function useDemo03CourseGridEditColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Course>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Course>['columns'] {
   return [
