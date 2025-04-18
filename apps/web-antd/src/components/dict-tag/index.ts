@@ -1,3 +1,3 @@
-import DictTag from './src/DictTag.vue'
+import DictTag from './dict-tag.vue'
 
 export { DictTag }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @芋艿：貌似不用 src 目录
 import { computed, defineProps } from 'vue'
 import { Tag } from 'ant-design-vue'
 // import { isHexColor } from '@/utils/color' // TODO @芋艿：【可优化】增加 cssClass 的处理 https://gitee.com/yudaocode/yudao-ui-admin-vben/blob/v2.4.1/src/components/DictTag/src/DictTag.vue#L60
@@ -27,7 +28,7 @@ const dictTag = computed(() => {
   if (!props.type || props.value === undefined || props.value === null) {
     return null
   }
-  
+
   // 获取字典对象
   const dict = getDictObj(props.type, String(props.value))
   if (!dict) {
@@ -45,7 +46,7 @@ const dictTag = computed(() => {
   } else if (!colorType) {
     colorType = 'default'
   }
-  
+
   return {
     label: dict.label || '',
     colorType

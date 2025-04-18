@@ -1,3 +1,3 @@
-import DocAlert from './src/DocAlert.vue'
+import DocAlert from './doc-alert.vue'
 
 export { DocAlert }
