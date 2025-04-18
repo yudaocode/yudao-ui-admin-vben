@@ -75,9 +75,15 @@ catalogs:
     '@tanstack/vue-store':
       specifier: ^0.7.0
       version: 0.7.0
+    '@tinymce/tinymce-vue':
+      specifier: ^6.1.0
+      version: 6.1.0
     '@types/archiver':
       specifier: ^6.0.3
       version: 6.0.3
+    '@types/crypto-js':
+      specifier: ^4.2.2
+      version: 4.2.2
     '@types/eslint':
       specifier: ^9.6.1
       version: 9.6.1
@@ -189,6 +195,9 @@ catalogs:
     cross-env:
       specifier: ^7.0.3
       version: 7.0.3
+    crypto-js:
+      specifier: ^4.2.0
+      version: 4.2.0
     cspell:
       specifier: ^8.18.1
       version: 8.18.1
@@ -285,6 +294,9 @@ catalogs:
     happy-dom:
       specifier: ^16.8.1
       version: 16.8.1
+    highlight.js:
+      specifier: ^11.11.1
+      version: 11.11.1
     html-minifier-terser:
       specifier: ^7.2.0
       version: 7.2.0
@@ -650,6 +662,9 @@ importers:
 
   apps/web-antd:
     dependencies:
+      '@tinymce/tinymce-vue':
+        specifier: 'catalog:'
+        version: 6.1.0(tinymce@7.8.0)(vue@3.5.13(typescript@5.8.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -698,9 +713,15 @@ importers:
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.13(typescript@5.8.3))
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
+      highlight.js:
+        specifier: 'catalog:'
+        version: 11.11.1
       pinia:
         specifier: ^2.3.1
         version: 2.3.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
@@ -1548,6 +1569,9 @@ importers:
       '@vueuse/integrations':
         specifier: 'catalog:'
         version: 12.8.2(async-validator@4.2.5)(axios@1.8.4)(change-case@5.4.4)(focus-trap@7.6.4)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(typescript@5.8.3)
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       qrcode:
         specifier: 'catalog:'
         version: 1.5.4
@@ -1567,6 +1591,9 @@ importers:
         specifier: 'catalog:'
         version: 6.7.0(vue@3.5.13(typescript@5.8.3))
     devDependencies:
+      '@types/crypto-js':
+        specifier: 'catalog:'
+        version: 4.2.2
       '@types/qrcode':
         specifier: 'catalog:'
         version: 1.5.5
@@ -4364,6 +4391,15 @@ packages:
     peerDependencies:
       vue: ^3.5.13
 
+  '@tinymce/tinymce-vue@6.1.0':
+    resolution: {integrity: sha512-7JdaKMOaohuFWpjKwRmaZJbT/eNVUUYHG93R7+lUf7SUN+hSqd2spbuqZcki+tG9kaSAGd2ZmvJIsmzWDNAzpw==}
+    peerDependencies:
+      tinymce: ^7.0.0 || ^6.0.0 || ^5.5.1
+      vue: ^3.5.13
+    peerDependenciesMeta:
+      tinymce:
+        optional: true
+
   '@tootallnate/once@1.1.2':
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
@@ -4386,6 +4422,9 @@ packages:
 
   '@types/conventional-commits-parser@5.0.1':
     resolution: {integrity: sha512-7uz5EHdzz2TqoMfV7ee61Egf5y6NkcO4FB/1iCCQnbeiI1F3xzv3vK5dBCXUCLQgGYS+mUeigK1iKQzvED+QnQ==}
+
+  '@types/crypto-js@4.2.2':
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
 
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
@@ -5665,6 +5704,9 @@ packages:
 
   crossws@0.3.4:
     resolution: {integrity: sha512-uj0O1ETYX1Bh6uSgktfPvwDiPYGQ3aI4qVsaC/LWpkIzGj1nUYm5FK3K+t11oOlpN01lGbprFCH4wBlKdJjVgw==}
+
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -9783,6 +9825,9 @@ packages:
     resolution: {integrity: sha512-qkf4trmKSIiMTs/E63cxH+ojC2unam7rJ0WrauAzpT3ECNTxGRMlaXxVbfxMUC/w0LaYk6jQ4y/nGR9uBO3tww==}
     engines: {node: '>=12.0.0'}
 
+  tinymce@7.8.0:
+    resolution: {integrity: sha512-MUER5MWV9mkOB4expgbWknh/C5ZJvOXQlMVSx4tJxTuYtcUCDB6bMZ34fWNOIc8LvrnXmGHGj0eGQuxjQyRgrA==}
+
   tinypool@1.0.2:
     resolution: {integrity: sha512-al6n+QEANGFOMf/dmUMsuS5/r9B06uwlyNjZZql/zv8J7ybHCgoihBNORZCY2mzUuAnomQa2JdhyHKzZxPCrFA==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -13439,6 +13484,12 @@ snapshots:
       '@tanstack/virtual-core': 3.13.2
       vue: 3.5.13(typescript@5.8.3)
 
+  '@tinymce/tinymce-vue@6.1.0(tinymce@7.8.0)(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      vue: 3.5.13(typescript@5.8.3)
+    optionalDependencies:
+      tinymce: 7.8.0
+
   '@tootallnate/once@1.1.2': {}
 
   '@trysound/sax@0.2.0': {}
@@ -13459,6 +13510,8 @@ snapshots:
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
       '@types/node': 22.13.17
+
+  '@types/crypto-js@4.2.2': {}
 
   '@types/doctrine@0.0.9': {}
 
@@ -14937,6 +14990,8 @@ snapshots:
   crossws@0.3.4:
     dependencies:
       uncrypto: 0.1.3
+
+  crypto-js@4.2.0: {}
 
   crypto-random-string@2.0.0: {}
 
@@ -19481,6 +19536,9 @@ snapshots:
     dependencies:
       fdir: 6.4.3(picomatch@4.0.2)
       picomatch: 4.0.2
+
+  tinymce@7.8.0:
+    optional: true
 
   tinypool@1.0.2: {}
 

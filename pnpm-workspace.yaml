@@ -38,6 +38,7 @@ catalog:
   '@tailwindcss/typography': ^0.5.16
   '@tanstack/vue-query': ^5.72.0
   '@tanstack/vue-store': ^0.7.0
+  '@tinymce/tinymce-vue': ^6.1.0
   '@types/archiver': ^6.0.3
   '@types/eslint': ^9.6.1
   '@types/html-minifier-terser': ^7.0.2
