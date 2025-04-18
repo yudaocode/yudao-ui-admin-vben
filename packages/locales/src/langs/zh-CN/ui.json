@@ -109,6 +109,7 @@
   },
   "upload": {
     "upload": "上传",
+    "imgUpload": "图片上传",
     "accept": "支持{0}格式",
     "acceptUpload": "只能上传{0}格式文件",
     "maxSize": "单个文件不超过{0}MB",

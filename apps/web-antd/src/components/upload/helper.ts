@@ -1,18 +1,17 @@
 export function checkFileType(file: File, accepts: string[]) {
-  let reg;
   if (!accepts || accepts.length === 0) {
-    reg = /.(jpg|jpeg|png|gif|webp)$/i;
-  } else {
-    const newTypes = accepts.join('|');
-    reg = new RegExp('\\.(' + newTypes + ')$', 'i');
+    return true;
   }
+  const newTypes = accepts.join('|');
+  const reg = new RegExp('\\.(' + newTypes + ')$', 'i');
   return reg.test(file.name);
 }
 
-export function checkImgType(file: File) {
-  return isImgTypeByName(file.name);
-}
+/**
+ * 默认图片类型
+ */
+export const defaultImageAccepts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-export function isImgTypeByName(name: string) {
-  return /\.(jpg|jpeg|png|gif|webp)$/i.test(name);
+export function checkImgType(file: File, accepts: string[] = defaultImageAccepts) {
+  return checkFileType(file, accepts);
 }
