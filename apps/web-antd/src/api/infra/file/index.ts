@@ -24,6 +24,12 @@ export namespace InfraFileApi {
     uploadUrl: string; // 文件上传 URL
     url: string; // 文件 URL
   }
+
+  /** 上传文件 */
+  export interface FileUploadReqVO {
+    file: File;
+    path?: string;
+  }
 }
 
 /** 查询文件列表 */
@@ -50,8 +56,7 @@ export function createFile(data: InfraFileApi.InfraFile) {
   return requestClient.post('/infra/file/create', data);
 }
 
-// TODO @芋艿：需要 data 自定义个类型；
 /** 上传文件 */
-export function uploadFile(data: any, onUploadProgress?: AxiosProgressEvent) {
+export function uploadFile(data: InfraFileApi.FileUploadReqVO, onUploadProgress?: AxiosProgressEvent) {
   return requestClient.upload('/infra/file/upload', data, { onUploadProgress });
 }

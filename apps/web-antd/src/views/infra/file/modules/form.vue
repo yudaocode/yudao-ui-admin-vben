@@ -7,7 +7,7 @@ import { Upload } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
-import { uploadFile } from '#/api/infra/file';
+import { useUpload } from '#/components/upload/use-upload';
 
 import { useFormSchema } from '../data';
 
@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = await formApi.getValues();
     try {
-      await uploadFile(data);
+      await useUpload().httpRequest(data.file);
       // 关闭并提示
       await modalApi.close();
       emit('success');

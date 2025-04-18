@@ -12,8 +12,7 @@ import { ref, toRefs, watch } from 'vue';
 import { isFunction, isObject, isString } from '@vben/utils';
 import { checkImgType, defaultImageAccepts } from './helper';
 import { UploadResultStatus } from './typing';
-import { useUploadType } from './use-upload';
-import { uploadFile } from '#/api/infra/file';
+import { useUpload, useUploadType } from './use-upload';
 
 defineOptions({ name: 'ImageUpload', inheritAttrs: false });
 
@@ -22,7 +21,7 @@ const props = withDefaults(
     // 根据后缀，或者其他
     accept?: string[];
     api?: (
-      file: Blob | File,
+      file: File,
       onUploadProgress?: AxiosProgressEvent,
     ) => Promise<AxiosResponse<any>>;
     disabled?: boolean;
@@ -49,11 +48,7 @@ const props = withDefaults(
     maxNumber: 1,
     accept: () => defaultImageAccepts,
     multiple: false,
-    api: (file: Blob | File, onUploadProgress?: AxiosProgressEvent) => {
-      // TODO @芋艿：处理上传；前端上传
-      debugger
-      return uploadFile({ file }, onUploadProgress);
-    },
+    api: useUpload().httpRequest,
     resultField: '',
     showDescription: true,
   },
@@ -207,7 +202,6 @@ function getValue() {
   const list = (fileList.value || [])
     .filter((item) => item?.status === UploadResultStatus.DONE)
     .map((item: any) => {
-      debugger
       if (item?.response && props?.resultField) {
         return item?.response;
       }
