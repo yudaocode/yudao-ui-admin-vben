@@ -1,7 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
-import type { ComputedRef } from 'vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
@@ -192,9 +191,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
+const accountList = await getSimpleMailAccountList();
 export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
-  onActionClick: OnActionClickFn<T>,
-  getAccountName: ComputedRef<(cellValue: number) => string>,
+  onActionClick: OnActionClickFn<T>
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -221,7 +220,7 @@ export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,
-      formatter: ({ cellValue }) => getAccountName.value(cellValue),
+      formatter: ({ cellValue }) => accountList.find((account) => account.id === cellValue)?.mail || '-',
     },
     {
       field: 'nickname',
