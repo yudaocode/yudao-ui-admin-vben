@@ -39,14 +39,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '公告内容',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入公告内容',
-      },
-      // component: 'Editor', // TODO @芋艿：富文本编辑器
-      // componentProps: {
-      //   height: '200px',
-      // },
+      component: 'RichTextarea',
       rules: 'required',
     },
     {
