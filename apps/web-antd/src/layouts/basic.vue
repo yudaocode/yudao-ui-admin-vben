@@ -125,13 +125,12 @@ watch(
 <template>
   <BasicLayout @clear-preferences-and-logout="handleLogout">
     <template #user-dropdown>
-      <!-- TODO @芋艿：去掉 ann.vben@gmail.com -->
       <UserDropdown
         :avatar
         :menus
         :text="userStore.userInfo?.nickname"
-        description="ann.vben@gmail.com"
-        tag-text="Pro"
+        :description="userStore.userInfo?.email"
+        :tag-text="userStore.userInfo?.username"
         @logout="handleLogout"
       />
     </template>

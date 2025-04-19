@@ -11,13 +11,17 @@ interface BasicUserInfo {
    */
   nickname: string;
   /**
-   * 用户id
+   * 用户 id
    */
   userId: string;
   /**
    * 用户名
    */
   username: string;
+  /**
+   * 用户邮箱
+   */
+  email?: string;
 }
 
 interface AccessState {
