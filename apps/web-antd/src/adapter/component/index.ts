@@ -21,6 +21,7 @@ import { $t } from '@vben/locales';
 
 import { notification } from 'ant-design-vue';
 
+import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
 const AutoComplete = defineAsyncComponent(
@@ -128,6 +129,7 @@ export type ComponentType =
   | 'Space'
   | 'Switch'
   | 'Textarea'
+  | 'RichTextarea'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
@@ -184,6 +186,7 @@ async function initComponentAdapter() {
     Space,
     Switch,
     Textarea: withDefaultPlaceholder(Textarea, 'input'),
+    RichTextarea,
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload,
