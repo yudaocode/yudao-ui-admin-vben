@@ -5,7 +5,6 @@ import BasicInfo from '../modules/basic-info.vue';
 import ColumnInfo from '../modules/column-info.vue';
 import GenerationInfo from '../modules/generation-info.vue';
 import { Page } from '@vben/common-ui';
-import { ChevronsLeft } from '@vben/icons';
 import { Button, message, Steps } from 'ant-design-vue';
 
 import { getCodegenTable, updateCodegenTable } from '#/api/infra/codegen';
@@ -73,6 +72,7 @@ const submitForm = async () => {
       content: $t('ui.actionMessage.operationSuccess'),
       key: 'action_process_msg',
     });
+    // TODO @puhui999：保存的时候，修改的 tab 没关闭哈
     close();
   } catch (error) {
     console.error('保存失败', error);
@@ -118,7 +118,7 @@ getDetail();
 <template>
   <Page auto-content-height v-loading="loading">
     <div class="flex h-[95%] flex-col rounded-md bg-white p-4 dark:bg-[#1f1f1f] dark:text-gray-300">
-      <Steps type="navigation" :current="currentStep" class="mb-8 rounded shadow-sm dark:bg-[#141414]">
+      <Steps type="navigation" v-model:current="currentStep" class="mb-8 rounded shadow-sm dark:bg-[#141414]">
         <Steps.Step v-for="(step, index) in steps" :key="index" :title="step.title" />
       </Steps>
 
@@ -136,8 +136,8 @@ getDetail();
 
       <div class="mt-4 flex justify-end space-x-2">
         <Button v-show="currentStep > 0" @click="prevStep">上一步</Button>
-        <Button v-show="currentStep < steps.length - 1" type="primary" @click="nextStep">下一步</Button>
-        <Button v-show="currentStep === steps.length - 1" type="primary" :loading="loading" @click="submitForm">
+        <Button v-show="currentStep < steps.length - 1" @click="nextStep">下一步</Button>
+        <Button type="primary" :loading="loading" @click="submitForm">
           保存
         </Button>
       </div>

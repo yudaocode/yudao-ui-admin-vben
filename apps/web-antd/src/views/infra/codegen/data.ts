@@ -389,6 +389,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
+// TODO @puhui999：getDataSourceConfigName，要不改成 data.ts 加载 list，然后使用。
 export function useGridColumns<T = InfraCodegenApi.CodegenTable>(
   onActionClick: OnActionClickFn<T>,
   getDataSourceConfigName: ComputedRef<(cellValue: number) => string>,

@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+// TODO @puhui999：bug 同一个预览，点击多次，第二次不展示；
+// TODO @puhui999：体验优化：左边的树，默认展开所有节点；这样体验好点哈
+// TODO @puhui999：展示代码时，前两行是空的，可能要看下
+// TODO @puhui999：要不预览代码，默认全屏？
+
+// TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -224,7 +230,6 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </Tabs.TabPane>
           <template #rightExtra>
-            <!-- TODO @芋艿：貌似别的模块，也可以通过 :icon="h(Copy)"？？？ -->
             <Button type="primary" ghost @click="copyCode" :icon="h(Copy)"> 复制代码 </Button>
           </template>
         </Tabs>

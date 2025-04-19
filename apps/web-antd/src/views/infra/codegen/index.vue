@@ -122,12 +122,12 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
     case 'generate': {
