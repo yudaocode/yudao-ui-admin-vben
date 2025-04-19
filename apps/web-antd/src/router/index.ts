@@ -7,6 +7,7 @@ import {
 import { resetStaticRoutes } from '@vben/utils';
 
 import { createRouterGuard } from './guard';
+import { setupBaiduTongJi } from './tongji';
 import { routes } from './routes';
 
 /**
@@ -33,5 +34,7 @@ const resetRoutes = () => resetStaticRoutes(router, routes);
 
 // 创建路由守卫
 createRouterGuard(router);
+// 设置百度统计
+setupBaiduTongJi(router);
 
 export { resetRoutes, router };

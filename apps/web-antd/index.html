@@ -15,13 +15,13 @@
     <title><%= VITE_APP_TITLE %></title>
     <link rel="icon" href="/favicon.ico" />
     <script>
-      // 生产环境下注入百度统计
-      if (window._VBEN_ADMIN_PRO_APP_CONF_) {
+      var HM_ID = '<%= VITE_APP_BAIDU_CODE %>'
+      if (HM_ID) {
         var _hmt = _hmt || [];
         (function () {
           var hm = document.createElement('script');
           hm.src =
-            'https://hm.baidu.com/hm.js?b38e689f40558f20a9a686d7f6f33edf';
+            'https://hm.baidu.com/hm.js?' + HM_ID;
           var s = document.getElementsByTagName('script')[0];
           s.parentNode.insertBefore(hm, s);
         })();
