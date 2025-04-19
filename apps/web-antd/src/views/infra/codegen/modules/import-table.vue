@@ -1,55 +1,43 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
-import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
 import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createCodegenList, getSchemaTableList } from '#/api/infra/codegen';
-import { getDataSourceConfigList } from '#/api/infra/data-source-config';
-import { reactive, ref, unref } from 'vue';
+import { reactive } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { useImportTableFormSchema } from '#/views/infra/codegen/data';
+import { useImportTableColumns, useImportTableFormSchema } from '#/views/infra/codegen/data';
 
 /** 定义组件事件 */
 const emit = defineEmits<{
   (e: 'success'): void;
 }>();
 
-const dataSourceConfigList = ref<InfraDataSourceConfigApi.InfraDataSourceConfig[]>([]);
 const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
-  dataSourceConfigId: undefined,
+  dataSourceConfigId: 0,
   tableNames: [], // 已选择的表列表
 });
 
 /** 表格实例 */
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useImportTableFormSchema([]),
+    schema: useImportTableFormSchema(),
+    submitOnChange: true,
   },
   gridOptions: {
-    // TODO @puhui999：这个要不也挪出去，保持统一？
-    columns: [
-      { type: 'checkbox', width: 40 },
-      { field: 'name', title: '表名称', minWidth: 200 },
-      { field: 'comment', title: '表描述', minWidth: 200 },
-    ],
+    columns: useImportTableColumns(),
     height: 600,
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // TODO @puhui999：貌似可以直接使用 formValues.dataSourceConfigId。肯定可以读到值。
           if (formValues.dataSourceConfigId === undefined) {
-            if (unref(dataSourceConfigList).length > 0) {
-              formValues.dataSourceConfigId = unref(dataSourceConfigList)[0]?.id;
-            } else {
-              return [];
-            }
+            return [];
           }
           formData.dataSourceConfigId = formValues.dataSourceConfigId;
           return await getSchemaTableList({
@@ -119,23 +107,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-/** 获取数据源配置列表 */
-async function initDataSourceConfig() {
-  try {
-    dataSourceConfigList.value = await getDataSourceConfigList();
-    gridApi.setState({
-      formOptions: {
-        schema: useImportTableFormSchema(dataSourceConfigList.value),
-      },
-    });
-  } catch (error) {
-    console.error('获取数据源配置失败', error);
-  }
-}
-
-/** 初始化 */
-initDataSourceConfig();
 </script>
 
 <template>

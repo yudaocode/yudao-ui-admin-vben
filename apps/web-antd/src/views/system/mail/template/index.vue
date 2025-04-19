@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMailAccountApi } from '#/api/system/mail/account';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
+import { DocAlert } from '#/components/doc-alert';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { deleteMailTemplate, getMailTemplatePage } from '#/api/system/mail/template';
+import { $t } from '#/locales';
+import { computed, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -65,17 +68,14 @@ async function onDelete(row: SystemMailTemplateApi.SystemMailTemplate) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'send': {
@@ -84,13 +84,16 @@ function onActionClick({
     }
   }
 }
-
+const mailAccountList = ref<SystemMailAccountApi.SystemMailAccount[]>([]);
+const getAccountName = computed(
+  () => (cellValue: number) => mailAccountList.value.find((item) => item.id === cellValue)?.mail || '',
+);
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(onActionClick, getAccountName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -113,6 +116,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<SystemMailTemplateApi.SystemMailTemplate>,
 });
+
+/** 获取邮箱账号精简列表 */
+async function initMailAccountList() {
+  try {
+    mailAccountList.value = await getSimpleMailAccountList();
+  } catch (error) {
+    console.error('获取邮箱账号精简列表失败', error);
+  }
+}
+
+/** 初始化 */
+initMailAccountList();
 </script>
 <template>
   <Page auto-content-height>

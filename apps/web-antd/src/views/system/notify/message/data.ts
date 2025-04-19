@@ -2,8 +2,9 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+
 import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
@@ -44,10 +45,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模版类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
-          'number',
-        ),
+        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
         allowClear: true,
         placeholder: '请选择模版类型',
       },
@@ -103,11 +101,17 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
       title: '模版内容',
       minWidth: 200,
     },
-    // TODO @puhui999：这个参数展示不对
     {
       field: 'templateParams',
       title: '模版参数',
       minWidth: 180,
+      formatter: ({ cellValue }) => {
+        try {
+          return JSON.stringify(cellValue);
+        } catch {
+          return '';
+        }
+      },
     },
     {
       field: 'templateType',

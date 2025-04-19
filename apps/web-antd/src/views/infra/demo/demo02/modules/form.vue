@@ -25,7 +25,7 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false
+  showDefaultActions: false,
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -54,18 +54,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+
     // 加载数据
     let data = modalApi.getData<Demo02CategoryApi.Demo02Category>();
     if (!data) {
-      return;
-    }
-
-    // 处理新增下级的情况
-    // TODO @puhui999：按照 dept 或者 menu 的 form 处理风格，可以更简洁一点；可能 parentId 也不用啦
-    if (!data.id && data.parentId) {
-      parentId.value = data.parentId;
-      formData.value = { parentId: parentId.value } as Demo02CategoryApi.Demo02Category;
-      await formApi.setValues(formData.value);
       return;
     }
 
@@ -74,16 +66,13 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       try {
         data = await getDemo02Category(data.id);
-        formData.value = data;
-        await formApi.setValues(formData.value);
       } finally {
         modalApi.lock(false);
       }
-    } else {
-      // 新增
-      formData.value = { parentId: 0 } as Demo02CategoryApi.Demo02Category;
-      await formApi.setValues(formData.value || {});
     }
+    // 设置到 values
+    formData.value = data;
+    await formApi.setValues(formData.value);
   },
 });
 </script>

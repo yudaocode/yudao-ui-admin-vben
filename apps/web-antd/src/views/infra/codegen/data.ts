@@ -1,13 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
-import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { Recordable } from '@vben/types';
+import type { ComputedRef } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { z } from '#/adapter/form';
+import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { getMenuList } from '#/api/system/menu';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
@@ -20,24 +20,24 @@ import { $t } from '@vben/locales';
 const { hasAccessByCodes } = useAccess();
 
 /** 导入数据库表的表单 */
-export function useImportTableFormSchema(
-  dataSourceConfigList: InfraDataSourceConfigApi.InfraDataSourceConfig[],
-): VbenFormSchema[] {
+export function useImportTableFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'dataSourceConfigId',
       label: '数据源',
-      // TODO @puhui999：不确定使用 ApiSelect 的话，使用 afterEach，可以设置默认 defaultValue 不
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        options: dataSourceConfigList.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
+        api: async () => {
+          const data = await getDataSourceConfigList();
+          return data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        },
+        autoSelect: 'first',
         placeholder: '请选择数据源',
       },
-      defaultValue: dataSourceConfigList[0]?.id,
-      rules: 'required',
+      rules: 'selectRequired',
     },
     {
       fieldName: 'name',
@@ -57,6 +57,15 @@ export function useImportTableFormSchema(
         placeholder: '请输入表描述',
       },
     },
+  ];
+}
+
+/** 导入数据库表表格列定义 */
+export function useImportTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'checkbox', width: 40 },
+    { field: 'name', title: '表名称', minWidth: 200 },
+    { field: 'comment', title: '表描述', minWidth: 200 },
   ];
 }
 
@@ -124,7 +133,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE, 'number'),
         class: 'w-full',
       },
-      rules: z.number().min(1, { message: '生成模板不能为空' }),
+      rules: 'selectRequired',
     },
     {
       component: 'Select',
@@ -134,8 +143,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_FRONT_TYPE, 'number'),
         class: 'w-full',
       },
-      // todo @puhui999：1 可以是枚举么
-      rules: z.number().min(1, { message: '前端类型不能为空' }),
+      rules: 'selectRequired',
     },
     {
       component: 'Select',
@@ -145,8 +153,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_SCENE, 'number'),
         class: 'w-full',
       },
-      // todo @puhui999：1 可以是枚举么
-      rules: z.number().min(1, { message: '生成场景不能为空' }),
+      rules: 'selectRequired',
     },
     {
       fieldName: 'parentMenuId',
@@ -199,36 +206,34 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'moduleName',
       label: '模块名',
       help: '模块名，即一级目录，例如 system、infra、tool 等等',
-      // TODO @puhui999：这种 rules，可以使用 required
-      rules: z.string().min(1, { message: '模块名不能为空' }),
+      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'businessName',
       label: '业务名',
       help: '业务名，即二级目录，例如 user、permission、dict 等等',
-      rules: z.string().min(1, { message: '业务名不能为空' }),
+      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'className',
       label: '类名称',
       help: '类名称（首字母大写），例如SysUser、SysMenu、SysDictData 等等',
-      rules: z.string().min(1, { message: '类名称不能为空' }),
+      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'classComment',
       label: '类描述',
       help: '用作类描述，例如 用户',
-      rules: z.string().min(1, { message: '类描述不能为空' }),
+      rules: 'required',
     },
   ];
 }
 
-// TODO @puhui999：是不是使用 useGenerationInfoTreeFormSchema，主要考虑对称
 /** 树表信息 schema */
-export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] = []): VbenFormSchema[] {
+export function useGenerationInfoTreeFormSchema(columns: InfraCodegenApi.CodegenColumn[] = []): VbenFormSchema[] {
   return [
     {
       component: 'Divider',
@@ -276,9 +281,8 @@ export function useTreeTableFormSchema(columns: InfraCodegenApi.CodegenColumn[] 
   ];
 }
 
-// TODO @puhui999：【类似】是不是使用 useGenerationInfoTreeFormSchema，主要考虑对称
 /** 主子表信息 schema */
-export function useSubTableFormSchema(
+export function useGenerationInfoSubTableFormSchema(
   columns: InfraCodegenApi.CodegenColumn[] = [],
   tables: InfraCodegenApi.CodegenTable[] = [],
 ): VbenFormSchema[] {
@@ -387,17 +391,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns<T = InfraCodegenApi.CodegenTable>(
   onActionClick: OnActionClickFn<T>,
-  dataSourceConfigList: InfraDataSourceConfigApi.InfraDataSourceConfig[],
+  getDataSourceConfigName: ComputedRef<(cellValue: number) => string>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'dataSourceConfigId',
       title: '数据源',
       minWidth: 120,
-      formatter: ({ cellValue }) => {
-        const config = dataSourceConfigList.find((item) => item.id === cellValue);
-        return config ? config.name : '';
-      },
+      formatter: ({ cellValue }) => getDataSourceConfigName.value(cellValue),
     },
     {
       field: 'tableName',

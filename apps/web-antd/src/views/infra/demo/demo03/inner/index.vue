@@ -1,67 +1,60 @@
 <script lang="ts" setup>
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
+import Demo03CourseList from './modules/Demo03CourseList.vue';
+import Demo03GradeList from './modules/Demo03GradeList.vue';
 import Form from './modules/form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { Button, message } from 'ant-design-vue';
+import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo02Category, exportDemo02Category, getDemo02CategoryList } from '#/api/infra/demo/demo02';
+import { deleteDemo03Student, exportDemo03Student, getDemo03StudentPage } from '#/api/infra/demo/demo03/inner';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 import { h, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
+/** 子表的列表 */
+const subTabsName = ref('demo03Course');
+
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-/** 切换树形展开/收缩状态 */
-const isExpanded = ref(true);
-function toggleExpand() {
-  isExpanded.value = !isExpanded.value;
-  gridApi.grid.setAllTreeExpand(isExpanded.value);
-}
-
 /** 刷新表格 */
 function onRefresh() {
-  gridApi.query();
+  gridApi.reload();
 }
 
 /** 导出表格 */
 async function onExport() {
-  const data = await exportDemo02Category(await gridApi.formApi.getValues());
-  downloadByData(data, '示例分类.xls');
+  const data = await exportDemo03Student(await gridApi.formApi.getValues());
+  downloadByData(data, '学生.xls');
 }
 
-/** 创建示例分类 */
+/** 创建学生 */
 function onCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({}).open();
 }
 
-/** 编辑示例分类 */
-function onEdit(row: Demo02CategoryApi.Demo02Category) {
+/** 编辑学生 */
+function onEdit(row: Demo03StudentApi.Demo03Student) {
   formModalApi.setData(row).open();
 }
 
-/** 新增下级示例分类 */
-function onAppend(row: Demo02CategoryApi.Demo02Category) {
-  formModalApi.setData({ parentId: row.id }).open();
-}
-
-/** 删除示例分类 */
-async function onDelete(row: Demo02CategoryApi.Demo02Category) {
+/** 删除学生 */
+async function onDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo03Student(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
       key: 'action_process_msg',
@@ -73,12 +66,8 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo02CategoryApi.Demo02Category>) {
+function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
   switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
       break;
@@ -97,20 +86,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(onActionClick),
     height: 'auto',
-    treeConfig: {
-      parentField: 'parentId',
-      rowField: 'id',
-      transform: true,
-      expandAll: true,
-      reserve: true,
-    },
     pagerConfig: {
-      enabled: false,
+      enabled: true,
     },
     proxyConfig: {
       ajax: {
-        query: async (_, formValues) => {
-          return await getDemo02CategoryList(formValues);
+        query: async ({ page }, formValues) => {
+          return await getDemo03StudentPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
         },
       },
     },
@@ -122,7 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<Demo02CategoryApi.Demo02Category>,
+  } as VxeTableGridOptions<Demo03StudentApi.Demo03Student>,
 });
 </script>
 
@@ -130,20 +116,28 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
 
-    <Grid table-title="示例分类列表">
+    <Grid table-title="学生列表">
+      <template #expand_content="{ row }">
+        <!-- 子表的表单 -->
+        <Tabs v-model:active-key="subTabsName">
+          <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+            <Demo03CourseList :student-id="row?.id" />
+          </Tabs.TabPane>
+          <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+            <Demo03GradeList :student-id="row?.id" />
+          </Tabs.TabPane>
+        </Tabs>
+      </template>
       <template #toolbar-tools>
-        <Button @click="toggleExpand" class="mr-2">
-          {{ isExpanded ? '收缩' : '展开' }}
-        </Button>
-        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo02-category:create']">
-          {{ $t('ui.actionTitle.create', ['示例分类']) }}
+        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
+          {{ $t('ui.actionTitle.create', ['学生']) }}
         </Button>
         <Button
           :icon="h(Download)"
           type="primary"
           class="ml-2"
           @click="onExport"
-          v-access:code="['infra:demo02-category:export']"
+          v-access:code="['infra:demo03-student:export']"
         >
           {{ $t('ui.actionTitle.export') }}
         </Button>

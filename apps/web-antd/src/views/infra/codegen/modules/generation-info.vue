@@ -8,7 +8,11 @@ import { computed, ref, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
-import { useGenerationInfoBaseFormSchema, useSubTableFormSchema, useTreeTableFormSchema } from '../data';
+import {
+  useGenerationInfoBaseFormSchema,
+  useGenerationInfoSubTableFormSchema,
+  useGenerationInfoTreeFormSchema,
+} from '../data';
 
 const props = defineProps<{
   columns?: InfraCodegenApi.CodegenColumn[];
@@ -55,14 +59,14 @@ const [SubForm, subFormApi] = useVbenForm({
 /** 更新树表信息表单 schema */
 function updateTreeSchema(): void {
   treeFormApi.setState({
-    schema: useTreeTableFormSchema(props.columns)
+    schema: useGenerationInfoTreeFormSchema(props.columns),
   });
 }
 
 /** 更新主子表信息表单 schema */
 function updateSubSchema(): void {
   subFormApi.setState({
-    schema: useSubTableFormSchema(props.columns, tables.value)
+    schema: useGenerationInfoSubTableFormSchema(props.columns, tables.value),
   });
 }
 
@@ -71,7 +75,6 @@ async function getAllFormValues(): Promise<Record<string, any>> {
   // 基础表单值
   const baseValues = await baseFormApi.getValues();
   // 根据模板类型获取对应的额外表单值
-  // TODO @puhui999：使用二元表达式
   let extraValues = {};
   if (isTreeTable.value) {
     extraValues = await treeFormApi.getValues();
@@ -84,20 +87,18 @@ async function getAllFormValues(): Promise<Record<string, any>> {
 
 /** 验证所有表单 */
 async function validateAllForms() {
-  let validateResult: boolean;
   // 验证基础表单
   const { valid: baseFormValid } = await baseFormApi.validate();
-  validateResult = baseFormValid;
   // 根据模板类型验证对应的额外表单
-  // TODO @puhui999：可以类似上面，抽个类似 extraValid，然后最后 validateResult && extraValid 类似这种哇？
+  let extraValid = true;
   if (isTreeTable.value) {
     const { valid: treeFormValid } = await treeFormApi.validate();
-    validateResult = baseFormValid && treeFormValid;
+    extraValid = treeFormValid;
   } else if (isSubTable.value) {
     const { valid: subFormValid } = await subFormApi.validate();
-    validateResult = baseFormValid && subFormValid;
+    extraValid = subFormValid;
   }
-  return validateResult;
+  return baseFormValid && extraValid;
 }
 
 /** 设置表单值 */
@@ -126,15 +127,18 @@ watch(
     if (!val || isEmpty(val)) {
       return;
     }
+
+    const table = val as InfraCodegenApi.CodegenTable;
     // 初始化树表的 schema
     updateTreeSchema();
     // 设置表单值
-    setAllFormValues(val);
+    setAllFormValues(table);
     // 获取表数据，用于主子表选择
-    if (typeof val.dataSourceConfigId === undefined) {
+    const dataSourceConfigId = table.dataSourceConfigId;
+    if (dataSourceConfigId === undefined) {
       return;
     }
-    tables.value = await getCodegenTableList(val.dataSourceConfigId);
+    tables.value = await getCodegenTableList(dataSourceConfigId);
     // 初始化子表 schema
     updateSubSchema();
   },

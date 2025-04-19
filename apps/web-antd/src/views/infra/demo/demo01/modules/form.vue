@@ -20,7 +20,7 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false
+  showDefaultActions: false,
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -49,19 +49,25 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+
     // 加载数据
-    const data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
-    if (!data || !data.id) {
+    let data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
+    if (!data) {
       return;
     }
-    modalApi.lock();
-    try {
-      formData.value = await getDemo01Contact(data.id as number);
-      // 设置到 values
-      await formApi.setValues(formData.value);
-    } finally {
-      modalApi.lock(false);
+
+    if (data.id) {
+      // 编辑
+      modalApi.lock();
+      try {
+        data = await getDemo01Contact(data.id);
+      } finally {
+        modalApi.lock(false);
+      }
     }
+    // 设置到 values
+    formData.value = data;
+    await formApi.setValues(formData.value);
   },
 });
 </script>

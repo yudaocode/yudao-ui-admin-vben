@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/codegen/edit',
         name: 'InfraCodegenEdit',
-        component: () => import('#/views/infra/codegen/edit.vue'),
+        component: () => import('#/views/infra/codegen/edit/index.vue'),
         meta: {
           title: '修改生成配置',
           activeMenu: '/infra/codegen',

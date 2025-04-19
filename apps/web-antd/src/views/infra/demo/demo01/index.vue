@@ -11,6 +11,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDemo01Contact, exportDemo01Contact, getDemo01ContactPage } from '#/api/infra/demo/demo01';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
+import { h } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -62,12 +63,12 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo01ContactApi.Demo01Contact>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -80,7 +81,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(onActionClick),
     height: 'auto',
-    keepSource: true,
+    pagerConfig: {
+      enabled: true,
+    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -94,6 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
@@ -106,14 +110,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
+
     <Grid table-title="示例联系人列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:demo01-contact:create']">
-          <Plus class="size-5" />
+        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo01-contact:create']">
           {{ $t('ui.actionTitle.create', ['示例联系人']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:demo01-contact:export']">
-          <Download class="size-5" />
+        <Button
+          :icon="h(Download)"
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:demo01-contact:export']"
+        >
           {{ $t('ui.actionTitle.export') }}
         </Button>
       </template>

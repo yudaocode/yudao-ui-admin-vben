@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-// TODO @puhui999：要不新建一个 edit 目录，把它挪进去？
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import BasicInfo from './modules/basic-info.vue';
-import ColumnInfo from './modules/column-info.vue';
-import GenerationInfo from './modules/generation-info.vue';
+import BasicInfo from '../modules/basic-info.vue';
+import ColumnInfo from '../modules/column-info.vue';
+import GenerationInfo from '../modules/generation-info.vue';
 import { Page } from '@vben/common-ui';
 import { ChevronsLeft } from '@vben/icons';
 import { Button, message, Steps } from 'ant-design-vue';
@@ -82,7 +81,6 @@ const submitForm = async () => {
   }
 };
 
-// TODO @puhui999：可能要关闭下当前的编辑页面
 /** 返回列表 */
 const close = () => {
   router.push('/infra/codegen');
@@ -141,11 +139,6 @@ getDetail();
         <Button v-show="currentStep < steps.length - 1" type="primary" @click="nextStep">下一步</Button>
         <Button v-show="currentStep === steps.length - 1" type="primary" :loading="loading" @click="submitForm">
           保存
-        </Button>
-        <!-- TODO @puhui999：返回要不去掉，感觉一般自己点击关闭就好啦！ -->
-        <Button @click="close">
-          <ChevronsLeft class="mr-1" />
-          返回
         </Button>
       </div>
     </div>

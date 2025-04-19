@@ -1,12 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
+import type { ComputedRef } from 'vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+
 import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
@@ -59,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入发送人名称',
-      }
+      },
     },
     {
       fieldName: 'title',
@@ -97,7 +99,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -130,7 +132,7 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
         placeholder: '请输入收件邮箱',
       },
       rules: z.string().email('请输入正确的邮箱地址'),
-    }
+    },
   ];
 }
 
@@ -154,7 +156,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板编码',
-      }
+      },
     },
     {
       fieldName: 'name',
@@ -163,7 +165,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板名称',
-      }
+      },
     },
     {
       fieldName: 'accountId',
@@ -192,6 +194,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
   onActionClick: OnActionClickFn<T>,
+  getAccountName: ComputedRef<(cellValue: number) => string>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -214,11 +217,11 @@ export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
       title: '模板标题',
       minWidth: 120,
     },
-    // TODO @puhui999：这里差一个翻译
     {
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,
+      formatter: ({ cellValue }) => getAccountName.value(cellValue),
     },
     {
       field: 'nickname',
