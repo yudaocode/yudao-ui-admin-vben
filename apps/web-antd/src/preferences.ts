@@ -14,8 +14,9 @@ export const overridesPreferences = defineOverridesPreferences({
     enableRefreshToken: true,
   },
   footer: {
-    enable: true,
-    fixed: true,
+    /** 默认关闭 footer 页脚，因为有一定遮挡 */
+    enable: false,
+    fixed: false,
   },
   copyright: {
     companyName: import.meta.env.VITE_APP_TITLE,
