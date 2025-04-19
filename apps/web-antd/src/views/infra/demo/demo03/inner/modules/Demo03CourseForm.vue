@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @puhui999：命名使用小写 + 中划线
 import type { OnActionClickParams } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
@@ -13,7 +14,7 @@ import { h, nextTick, watch } from 'vue';
 import { useDemo03CourseGridEditColumns } from '../data';
 
 const props = defineProps<{
-  studentId?: any; // 学生编号（主表的关联字段）
+  studentId?: any; // 学生编号（主表的关联字段） TODO @puhui999：类型定义，应该是 number？
 }>();
 
 /** 表格操作按钮的回调函数 */
@@ -26,6 +27,7 @@ function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo0
   }
 }
 
+// TODO @puhui999：对于当前来说，就 Grid，gridApi，更简洁一点？
 const [Demo03CourseGrid, demo03CourseGridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDemo03CourseGridEditColumns(onActionClick),
@@ -51,6 +53,7 @@ const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
 };
 
 /** 添加学生课程 */
+// TODO @puhui999：要不改成 onAdd？风格一致？；然后 add 放 delete 前面；
 const handleAdd = async () => {
   await demo03CourseGridApi.grid.insertAt({} as Demo03StudentApi.Demo03Course, -1);
 };
@@ -58,21 +61,13 @@ const handleAdd = async () => {
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
   getData: (): Demo03StudentApi.Demo03Course[] => {
-    // 获取当前数据，但排除已删除的记录
-    const allData = demo03CourseGridApi.grid.getData();
-    const removedData = demo03CourseGridApi.grid.getRemoveRecords();
-    const removedIds = new Set(removedData.map((row) => row.id));
-
-    // 过滤掉已删除的记录
-    const currentData = allData.filter((row) => !removedIds.has(row.id));
-
-    // 获取新插入的记录并移除id
-    const insertedData = demo03CourseGridApi.grid.getInsertRecords().map((row) => {
-      delete row.id;
-      return row;
-    });
-
-    return [...currentData, ...insertedData];
+    // TODO @puhui999 ： 要不简化成这样哈？
+    const data = demo03CourseGridApi.grid.getData() as Demo03StudentApi.Demo03Course[];
+    const removeRecords = demo03CourseGridApi.grid.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
+    const insertRecords = demo03CourseGridApi.grid.getInsertRecords() as Demo03StudentApi.Demo03Course[];
+    return data
+      .filter(row => !removeRecords.some(removed => removed.id === row.id))
+      .concat(insertRecords.map(row => ({ ...row, id: undefined })));
   },
 });
 
@@ -84,7 +79,7 @@ watch(
       return;
     }
 
-    await nextTick();
+    await nextTick(); // TODO @puhui999：上面的空行去掉
     await demo03CourseGridApi.grid.loadData(await getDemo03CourseListByStudentId(props.studentId!));
   },
 );
@@ -99,7 +94,8 @@ watch(
       <Input v-model:value="row.score" />
     </template>
   </Demo03CourseGrid>
-  <div class="flex justify-center">
+  <!-- TODO @puhui999：-mt-4 把距离控制下哈； -->
+  <div class="flex justify-center -mt-4">
     <Button :icon="h(Plus)" type="primary" ghost @click="handleAdd" v-access:code="['infra:demo03-student:create']">
       {{ $t('ui.actionTitle.create', ['学生课程']) }}
     </Button>

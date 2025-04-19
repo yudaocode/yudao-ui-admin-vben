@@ -67,6 +67,7 @@ function onActionClick({ code, row }: OnActionClickParams<Demo01ContactApi.Demo0
       onDelete(row);
       break;
     }
+    // TODO @puhui999：edit 放在 delete 前面哈。好理解一点，修改 => 删除
     case 'edit': {
       onEdit(row);
       break;

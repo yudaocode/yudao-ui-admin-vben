@@ -6,7 +6,7 @@ import { nextTick, watch } from 'vue';
 import { useDemo03GradeFormSchema } from '../data';
 
 const props = defineProps<{
-  studentId?: any; // 学生编号（主表的关联字段）
+  studentId?: any; // 学生编号（主表的关联字段） TODO @puhui999：类型定义，应该是 number？
 }>();
 
 const [Demo03GradeForm, demo03GradeFormApi] = useVbenForm({
@@ -32,7 +32,7 @@ watch(
       return;
     }
 
-    await nextTick();
+    await nextTick(); // TODO @puhui999：上面的空行去掉
     await demo03GradeFormApi.setValues(await getDemo03GradeByStudentId(props.studentId!));
   },
 );

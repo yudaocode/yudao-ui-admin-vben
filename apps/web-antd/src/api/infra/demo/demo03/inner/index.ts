@@ -10,6 +10,7 @@ export namespace Demo03StudentApi {
     name?: string; // 名字
     score?: number; // 分数
   }
+  // TODO @puhui999：要不要每个 interface 之间，有个空行
   /** 学生班级信息 */
   export interface Demo03Grade {
     id: number; // 编号
@@ -60,6 +61,7 @@ export function exportDemo03Student(params: any) {
 }
 
 // ==================== 子表（学生课程） ====================
+// TODO @puhui999：==================== 后面，加个空行，会更清晰一点
 /** 获得学生课程列表 */
 export function getDemo03CourseListByStudentId(studentId: number) {
   return requestClient.get<Demo03StudentApi.Demo03Course[]>(

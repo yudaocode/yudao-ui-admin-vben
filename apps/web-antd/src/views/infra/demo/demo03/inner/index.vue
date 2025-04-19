@@ -119,6 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid table-title="学生列表">
       <template #expand_content="{ row }">
         <!-- 子表的表单 -->
+        <!-- TODO @puhui999：【样式优化】1）Tabs 和箭头对齐；2）子 Table 也和箭头对齐  -->
         <Tabs v-model:active-key="subTabsName">
           <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
             <Demo03CourseList :student-id="row?.id" />
