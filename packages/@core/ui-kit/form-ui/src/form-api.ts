@@ -245,6 +245,18 @@ export class FormApi {
     this.latestSubmissionValues = { ...toRaw(values) };
   }
 
+  /**
+   * 设置表单提交按钮的加载状态：用于非 Modal 中使用 Form 时，需要 Form 自己控制 loading 状态
+   * @author 芋道源码
+   * @param loading 是否加载中
+   */
+  setLoading(loading: boolean) {
+    this.setState((prev) => ({
+      ...prev,
+      submitButtonOptions: { ...prev.submitButtonOptions, loading },
+    }));
+  }
+
   setState(
     stateOrFn:
       | ((prev: VbenFormProps) => Partial<VbenFormProps>)
