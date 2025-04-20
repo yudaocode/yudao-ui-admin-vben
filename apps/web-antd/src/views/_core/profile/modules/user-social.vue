@@ -1,0 +1,153 @@
+<script setup lang="tsx">
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemSocialUserApi } from '#/api/system/social/user';
+
+import { Button, Card, Image, message, Modal } from 'ant-design-vue';
+
+import { computed, ref } from 'vue';
+import { $t } from '#/locales';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getBindSocialUserList, socialUnbind } from '#/api/system/social/user';
+import { DICT_TYPE, getDictLabel } from '#/utils/dict';
+import { SystemUserSocialTypeEnum } from '#/utils/constants';
+
+/** 已经绑定的平台 */
+const bindList = ref<SystemSocialUserApi.SystemSocialUser[]>([]);
+const allBindList = computed<any[]>(() => {
+  return Object.values(SystemUserSocialTypeEnum).map((social) => {
+    const socialUser = bindList.value.find(item => item.type === social.type);
+    return {
+      ...social,
+      socialUser,
+    };
+  });
+});
+
+function useGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'type',
+      title: '绑定平台',
+      minWidth: 100,
+      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE } },
+    },
+    {
+      field: 'openid',
+      title: '标识',
+      minWidth: 180,
+    },
+    {
+      field: 'nickname',
+      title: '昵称',
+      minWidth: 180,
+    },
+    {
+      field: 'operation',
+      title: '操作',
+      minWidth: 80,
+      align: 'center',
+      fixed: 'right',
+      slots: {
+        default: ({ row }: { row: SystemSocialUserApi.SystemSocialUser }) => {
+          return (
+            <Button onClick={() => onUnbind(row)} type="link">解绑</Button>
+          );
+        },
+      },
+    },
+  ];
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(),
+    minHeight: 0,
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async () => {
+          bindList.value = await getBindSocialUserList();
+          return bindList.value;
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      enabled: false,
+    },
+  } as VxeTableGridOptions<SystemSocialUserApi.SystemSocialUser>,
+});
+
+/** 解绑账号 */
+function onUnbind(row: SystemSocialUserApi.SystemSocialUser) {
+  Modal.confirm({
+    type: 'warning',
+    title: '提示',
+    content: `确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`,
+    async onOk() {
+      await socialUnbind({ type: row.type, openid: row.openid });
+      // 提示成功
+      message.success({
+        content: $t('ui.actionMessage.operationSuccess'),
+        key: 'action_process_msg',
+      });
+      await gridApi.reload();
+    },
+  });
+}
+
+/** 绑定账号 */
+function onBind(bind: any) {
+  alert('待实现！');
+}
+</script>
+
+<template>
+  <div class="flex flex-col">
+    <Grid />
+
+    <div class="pb-3">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-2 px-2">
+        <Card v-for="item in allBindList" :key="item.type" class="!mb-2">
+          <div class="flex w-full items-center gap-4">
+            <Image
+              :src="item.img"
+              :width="40"
+              :height="40"
+              :alt="item.title"
+              :preview="false"
+            />
+            <div class="flex flex-1 items-center justify-between">
+              <div class="flex flex-col">
+                <h4 class="mb-[4px] text-[14px] text-black/85 dark:text-white/85">
+                  {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
+                </h4>
+                <span class="text-black/45 dark:text-white/45">
+                  <template v-if="item.socialUser">
+                    {{ item.socialUser?.nickname || item.socialUser?.openid }}
+                  </template>
+                  <template v-else>
+                    绑定{{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}账号
+                  </template>
+                </span>
+              </div>
+              <Button
+                :disabled="item.socialUser"
+                size="small"
+                type="link"
+                @click="onBind(item)"
+              >
+                {{ item.socialUser ? '已绑定' : '绑定' }}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  </div>
+</template>

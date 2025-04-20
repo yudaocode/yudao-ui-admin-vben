@@ -1,12 +1,6 @@
 import { requestClient } from '#/api/request';
 
 export namespace SystemUserProfileApi {
-  /** 社交用户信息 */
-  export interface SocialUser {
-    type: number;
-    openid: string;
-  }
-
   /** 用户个人中心信息 */
   export interface UserProfileRespVO {
     id: number;
@@ -22,7 +16,6 @@ export namespace SystemUserProfileApi {
     roles: any[];
     dept: any;
     posts: any[];
-    socialUsers: SocialUser[];
   }
 
   /** 更新密码请求 */

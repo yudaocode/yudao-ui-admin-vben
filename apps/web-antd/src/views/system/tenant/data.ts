@@ -182,7 +182,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 const tenantPackageList = await getTenantPackageList();
-export function useGridColumns<T = SystemTenantApi.SystemTenant>(onActionClick: OnActionClickFn<T>): VxeTableGridOptions['columns'] {
+export function useGridColumns<T = SystemTenantApi.SystemTenant>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
