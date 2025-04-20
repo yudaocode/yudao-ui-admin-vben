@@ -130,7 +130,7 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入收件邮箱',
       },
-      rules: z.string().email('请输入正确的邮箱地址'),
+      rules: z.string().email('请输入正确的邮箱'),
     },
   ];
 }
