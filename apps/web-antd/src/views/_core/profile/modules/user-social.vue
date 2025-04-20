@@ -4,12 +4,19 @@ import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { Button, Card, Image, message, Modal } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBindSocialUserList, socialUnbind } from '#/api/system/social/user';
+import { getBindSocialUserList, socialUnbind, socialBind } from '#/api/system/social/user';
+import { socialAuthRedirect } from '#/api/core/auth';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 import { SystemUserSocialTypeEnum } from '#/utils/constants';
+
+const route = useRoute()
+const emit = defineEmits<{
+  (e: 'update:activeName', v: string): void
+}>()
 
 /** 已经绑定的平台 */
 const bindList = ref<SystemSocialUserApi.SystemSocialUser[]>([]);
@@ -101,10 +108,53 @@ function onUnbind(row: SystemSocialUserApi.SystemSocialUser) {
   });
 }
 
-/** 绑定账号 */
-function onBind(bind: any) {
-  alert('待实现！');
+/** 绑定账号（跳转授权页面） */
+async function onBind(bind: any) {
+  const type = bind.type;
+  if (type <= 0) {
+    return;
+  }
+  try {
+    // 计算 redirectUri
+    // tricky: type 需要先 encode 一次，否则钉钉回调会丢失。配合 getUrlValue() 使用
+    const redirectUri = location.origin + '/profile?' + encodeURIComponent(`type=${type}`)
+
+    // 进行跳转
+    window.location.href = await socialAuthRedirect(type, redirectUri)
+  } catch (error) {
+    console.error('社交绑定处理失败:', error);
+  }
 }
+
+/** 监听路由变化，处理社交绑定回调 */
+async function bindSocial() {
+  // 社交绑定
+  const type = Number(getUrlValue('type'))
+  const code = route.query.code as string
+  const state = route.query.state as string
+  if (!code) {
+    return
+  }
+  await socialBind({ type, code, state })
+  // 提示成功
+  message.success('绑定成功')
+  emit('update:activeName', 'userSocial')
+  await gridApi.reload();
+  // 清理 URL 参数，避免刷新重复触发
+  window.history.replaceState({}, '', location.pathname)
+}
+
+// TODO @芋艿：后续搞到 util 里；
+// 双层 encode 需要在回调后进行 decode
+function getUrlValue(key: string): string {
+  const url = new URL(decodeURIComponent(location.href))
+  return url.searchParams.get(key) ?? ''
+}
+
+/** 初始化 */
+onMounted(() => {
+  bindSocial()
+})
 </script>
 
 <template>

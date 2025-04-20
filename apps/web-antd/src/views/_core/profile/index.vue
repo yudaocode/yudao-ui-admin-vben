@@ -13,8 +13,7 @@ import { getUserProfile } from '#/api/system/user/profile';
 import { useAuthStore } from '#/store';
 
 const authStore = useAuthStore();
-// const activeName = ref('basicInfo');
-const activeName = ref('userSocial');
+const activeName = ref('basicInfo');
 
 /** 加载个人信息 */
 const profile = ref<SystemUserProfileApi.UserProfileRespVO>();
@@ -52,9 +51,10 @@ onMounted(loadProfile);
           <Tabs.TabPane key="resetPwd" tab="密码设置">
              <ResetPwd />
           </Tabs.TabPane>
-          <Tabs.TabPane key="userSocial" tab="社交绑定">
-             <UserSocial />
+          <Tabs.TabPane key="userSocial" tab="社交绑定" force-render>
+             <UserSocial @update:active-name="activeName = $event" />
           </Tabs.TabPane>
+          <!-- TODO @芋艿：在线设备 -->
         </Tabs>
       </Card>
     </div>
