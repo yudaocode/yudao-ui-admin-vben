@@ -34,6 +34,7 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   clear: [];
   makeAll: [];
+  open: [boolean];
   read: [NotificationItem];
   viewAll: [];
 }>();
@@ -60,6 +61,11 @@ function handleClear() {
 function handleClick(item: NotificationItem) {
   emit('read', item);
 }
+
+function handleOpen() {
+  toggle();
+  emit('open', open.value);
+}
 </script>
 <template>
   <VbenPopover
@@ -67,7 +73,7 @@ function handleClick(item: NotificationItem) {
     content-class="relative right-2 w-[360px] p-0"
   >
     <template #trigger>
-      <div class="flex-center mr-2 h-full" @click.stop="toggle()">
+      <div class="flex-center mr-2 h-full" @click.stop="handleOpen">
         <VbenIconButton class="bell-button text-foreground relative">
           <span
             v-if="dot"
