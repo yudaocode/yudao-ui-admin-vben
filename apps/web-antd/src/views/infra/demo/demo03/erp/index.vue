@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import Demo03CourseList from './modules/demo03-course-list.vue';
 import Demo03GradeList from './modules/demo03-grade-list.vue';
@@ -10,7 +10,7 @@ import { Download, Plus } from '@vben/icons';
 import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo03Student, exportDemo03Student, getDemo03StudentPage } from '#/api/infra/demo/demo03/inner';
+import { deleteDemo03Student, exportDemo03Student, getDemo03StudentPage } from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 import { h, ref } from 'vue';
@@ -19,6 +19,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 /** 子表的列表 */
 const subTabsName = ref('demo03Course');
+const selectDemo03Student = ref<Demo03StudentApi.Demo03Student>();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -27,7 +28,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 刷新表格 */
 function onRefresh() {
-  gridApi.reload();
+  gridApi.query();
 }
 
 /** 创建学生 */
@@ -85,7 +86,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
-    height: 'auto',
+    height: '600px',
     pagerConfig: {
       enabled: true,
     },
@@ -103,12 +104,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+      isCurrent: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<Demo03StudentApi.Demo03Student>,
+  gridEvents: {
+    cellClick: ({ row }: { row: Demo03StudentApi.Demo03Student }) => {
+      selectDemo03Student.value = row;
+    },
+  },
 });
 </script>
 
@@ -116,32 +123,33 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <FormModal @success="onRefresh" />
 
-    <Grid table-title="学生列表">
-      <template #expand_content="{ row }">
-        <!-- 子表的表单 -->
-        <Tabs v-model:active-key="subTabsName" class="mx-8">
-          <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
-            <Demo03CourseList :student-id="row?.id" />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
-            <Demo03GradeList :student-id="row?.id" />
-          </Tabs.TabPane>
-        </Tabs>
-      </template>
-      <template #toolbar-tools>
-        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
-          {{ $t('ui.actionTitle.create', ['学生']) }}
-        </Button>
-        <Button
-          :icon="h(Download)"
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:demo03-student:export']"
-        >
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
-      </template>
-    </Grid>
+    <div>
+      <Grid table-title="学生列表">
+        <template #toolbar-tools>
+          <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
+            {{ $t('ui.actionTitle.create', ['学生']) }}
+          </Button>
+          <Button
+            :icon="h(Download)"
+            type="primary"
+            class="ml-2"
+            @click="onExport"
+            v-access:code="['infra:demo03-student:export']"
+          >
+            {{ $t('ui.actionTitle.export') }}
+          </Button>
+        </template>
+      </Grid>
+
+      <!-- 子表的表单 -->
+      <Tabs v-model:active-key="subTabsName" class="mt-2">
+        <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+          <Demo03CourseList :student-id="selectDemo03Student?.id" />
+        </Tabs.TabPane>
+        <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+          <Demo03GradeList :student-id="selectDemo03Student?.id" />
+        </Tabs.TabPane>
+      </Tabs>
+    </div>
   </Page>
 </template>

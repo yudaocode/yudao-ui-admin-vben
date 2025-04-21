@@ -1,6 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import { getRangePickerDefaultProps } from '#/utils/date';
@@ -177,27 +177,115 @@ export function useGridColumns(
 
 // ==================== 子表（学生课程） ====================
 
-/** 新增/修改列表的字段 */
-export function useDemo03CourseGridEditColumns(
+/** 新增/修改的表单 */
+export function useDemo03CourseFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '名字',
+      rules: 'required',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入名字',
+      },
+    },
+    {
+      fieldName: 'score',
+      label: '分数',
+      rules: 'required',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入分数',
+      },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useDemo03CourseGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'studentId',
+      label: '学生编号',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入学生编号',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '名字',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入名字',
+      },
+    },
+    {
+      fieldName: 'score',
+      label: '分数',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入分数',
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+/** 列表的字段 */
+export function useDemo03CourseGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Course>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Course>['columns'] {
   return [
     {
+      field: 'id',
+      title: '编号',
+      minWidth: 120,
+    },
+    {
+      field: 'studentId',
+      title: '学生编号',
+      minWidth: 120,
+    },
+    {
       field: 'name',
       title: '名字',
       minWidth: 120,
-      slots: { default: 'name' },
     },
     {
       field: 'score',
       title: '分数',
       minWidth: 120,
-      slots: { default: 'score' },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      minWidth: 120,
+      formatter: 'formatDateTime',
     },
     {
       field: 'operation',
       title: '操作',
-      minWidth: 60,
+      minWidth: 200,
       align: 'center',
       fixed: 'right',
       headerAlign: 'center',
@@ -205,11 +293,15 @@ export function useDemo03CourseGridEditColumns(
       cellRender: {
         attrs: {
           nameField: 'id',
-          nameTitle: '学生',
+          nameTitle: '学生课程',
           onClick: onActionClick,
         },
         name: 'CellOperation',
         options: [
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['infra:demo03-student:update']),
+          },
           {
             code: 'delete',
             show: hasAccessByCodes(['infra:demo03-student:delete']),
@@ -249,6 +341,109 @@ export function useDemo03GradeFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入班主任',
+      },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useDemo03GradeGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'studentId',
+      label: '学生编号',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入学生编号',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '名字',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入名字',
+      },
+    },
+    {
+      fieldName: 'teacher',
+      label: '班主任',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入班主任',
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+/** 列表的字段 */
+export function useDemo03GradeGridColumns(
+  onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Grade>,
+): VxeTableGridOptions<Demo03StudentApi.Demo03Grade>['columns'] {
+  return [
+    {
+      field: 'id',
+      title: '编号',
+      minWidth: 120,
+    },
+    {
+      field: 'studentId',
+      title: '学生编号',
+      minWidth: 120,
+    },
+    {
+      field: 'name',
+      title: '名字',
+      minWidth: 120,
+    },
+    {
+      field: 'teacher',
+      title: '班主任',
+      minWidth: 120,
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      minWidth: 120,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'operation',
+      title: '操作',
+      minWidth: 200,
+      align: 'center',
+      fixed: 'right',
+      headerAlign: 'center',
+      showOverflow: false,
+      cellRender: {
+        attrs: {
+          nameField: 'id',
+          nameTitle: '学生班级',
+          onClick: onActionClick,
+        },
+        name: 'CellOperation',
+        options: [
+          {
+            code: 'edit',
+            show: hasAccessByCodes(['infra:demo03-student:update']),
+          },
+          {
+            code: 'delete',
+            show: hasAccessByCodes(['infra:demo03-student:delete']),
+          },
+        ],
       },
     },
   ];
