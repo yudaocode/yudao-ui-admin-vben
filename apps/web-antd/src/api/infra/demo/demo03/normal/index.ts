@@ -62,6 +62,7 @@ export function exportDemo03Student(params: any) {
 }
 
 // ==================== 子表（学生课程） ====================
+
 /** 获得学生课程列表 */
 export function getDemo03CourseListByStudentId(studentId: number) {
   return requestClient.get<Demo03StudentApi.Demo03Course[]>(
@@ -70,6 +71,7 @@ export function getDemo03CourseListByStudentId(studentId: number) {
 }
 
 // ==================== 子表（学生班级） ====================
+
 /** 获得学生班级 */
 export function getDemo03GradeByStudentId(studentId: number) {
   return requestClient.get<Demo03StudentApi.Demo03Grade>(

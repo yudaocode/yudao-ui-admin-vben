@@ -9,7 +9,7 @@ import { nextTick, watch } from 'vue';
 import { useDemo03GradeGridColumns } from '../data';
 
 const props = defineProps<{
-  studentId?: any; // 学生编号（主表的关联字段） // TODO @puhui999：上面的空行去掉
+  studentId?: number; // 学生编号（主表的关联字段）
 }>();
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -41,8 +41,7 @@ watch(
     if (!val) {
       return;
     }
-
-    await nextTick(); // TODO @puhui999：上面的空行去掉
+    await nextTick();
     await onRefresh();
   },
   { immediate: true },
@@ -50,7 +49,5 @@ watch(
 </script>
 
 <template>
-  <div class="mx-4">
-    <Grid table-title="学生班级列表" />
-  </div>
+  <Grid table-title="学生班级列表" />
 </template>

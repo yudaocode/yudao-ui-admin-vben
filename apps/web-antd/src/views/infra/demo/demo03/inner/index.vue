@@ -2,8 +2,8 @@
 import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
-import Demo03CourseList from './modules/Demo03CourseList.vue';
-import Demo03GradeList from './modules/Demo03GradeList.vue';
+import Demo03CourseList from './modules/demo03-course-list.vue';
+import Demo03GradeList from './modules/demo03-grade-list.vue';
 import Form from './modules/form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -28,12 +28,6 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 刷新表格 */
 function onRefresh() {
   gridApi.reload();
-}
-
-/** 导出表格 */
-async function onExport() {
-  const data = await exportDemo03Student(await gridApi.formApi.getValues());
-  downloadByData(data, '学生.xls');
 }
 
 /** 创建学生 */
@@ -65,15 +59,21 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   }
 }
 
+/** 导出表格 */
+async function onExport() {
+  const data = await exportDemo03Student(await gridApi.formApi.getValues());
+  downloadByData(data, '学生.xls');
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -119,8 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid table-title="学生列表">
       <template #expand_content="{ row }">
         <!-- 子表的表单 -->
-        <!-- TODO @puhui999：【样式优化】1）Tabs 和箭头对齐；2）子 Table 也和箭头对齐  -->
-        <Tabs v-model:active-key="subTabsName">
+        <Tabs v-model:active-key="subTabsName" class="mx-8">
           <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
             <Demo03CourseList :student-id="row?.id" />
           </Tabs.TabPane>
