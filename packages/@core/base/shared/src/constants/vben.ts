@@ -1,12 +1,14 @@
 /**
  * @zh_CN GITHUB 仓库地址
  */
-export const VBEN_GITHUB_URL = 'https://github.com/vbenjs/vue-vben-admin';
+// export const VBEN_GITHUB_URL = 'https://github.com/vbenjs/vue-vben-admin';
+export const VBEN_GITHUB_URL = 'https://github.com/yudaocode/yudao-ui-admin-vben';
 
 /**
  * @zh_CN 文档地址
  */
-export const VBEN_DOC_URL = 'https://doc.vben.pro';
+// export const VBEN_DOC_URL = 'https://doc.vben.pro';
+export const VBEN_DOC_URL = 'https://doc.iocoder.cn/';
 
 /**
  * @zh_CN Vben Logo
