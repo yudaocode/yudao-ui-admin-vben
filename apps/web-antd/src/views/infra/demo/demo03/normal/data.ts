@@ -56,7 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'description',
       label: '简介',
       rules: 'required',
-      component: 'Textarea',
+      component: 'RichTextarea',
     },
   ];
 }
@@ -176,7 +176,8 @@ export function useGridColumns(
 }
 
 // ==================== 子表（学生课程） ====================
-/** 新增/修改的列表的字段 */
+
+/** 新增/修改列表的字段 */
 export function useDemo03CourseGridEditColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Course>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Course>['columns'] {
@@ -218,7 +219,9 @@ export function useDemo03CourseGridEditColumns(
     },
   ];
 }
+
 // ==================== 子表（学生班级） ====================
+
 /** 新增/修改的表单 */
 export function useDemo03GradeFormSchema(): VbenFormSchema[] {
   return [

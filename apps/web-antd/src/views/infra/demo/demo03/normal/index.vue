@@ -25,12 +25,6 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function onExport() {
-  const data = await exportDemo03Student(await gridApi.formApi.getValues());
-  downloadByData(data, '学生.xls');
-}
-
 /** 创建学生 */
 function onCreate() {
   formModalApi.setData({}).open();
@@ -60,15 +54,21 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   }
 }
 
+/** 导出表格 */
+async function onExport() {
+  const data = await exportDemo03Student(await gridApi.formApi.getValues());
+  downloadByData(data, '学生.xls');
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }

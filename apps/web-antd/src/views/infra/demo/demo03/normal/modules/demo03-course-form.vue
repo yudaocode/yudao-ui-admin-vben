@@ -13,7 +13,7 @@ import { h, nextTick, watch } from 'vue';
 import { useDemo03CourseGridEditColumns } from '../data';
 
 const props = defineProps<{
-  studentId?: any; // 学生编号（主表的关联字段）
+  studentId?: number; // 学生编号（主表的关联字段）
 }>();
 
 /** 表格操作按钮的回调函数 */
@@ -26,7 +26,7 @@ function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo0
   }
 }
 
-const [Demo03CourseGrid, demo03CourseGridApi] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDemo03CourseGridEditColumns(onActionClick),
     border: true,
@@ -45,34 +45,25 @@ const [Demo03CourseGrid, demo03CourseGridApi] = useVbenVxeGrid({
   },
 });
 
-/** 删除学生课程 */
-const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
-  await demo03CourseGridApi.grid.remove(row);
+/** 添加学生课程 */
+const onAdd = async () => {
+  await gridApi.grid.insertAt({} as Demo03StudentApi.Demo03Course, -1);
 };
 
-/** 添加学生课程 */
-const handleAdd = async () => {
-  await demo03CourseGridApi.grid.insertAt({} as Demo03StudentApi.Demo03Course, -1);
+/** 删除学生课程 */
+const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
+  await gridApi.grid.remove(row);
 };
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
   getData: (): Demo03StudentApi.Demo03Course[] => {
-    // 获取当前数据，但排除已删除的记录
-    const allData = demo03CourseGridApi.grid.getData();
-    const removedData = demo03CourseGridApi.grid.getRemoveRecords();
-    const removedIds = new Set(removedData.map((row) => row.id));
-
-    // 过滤掉已删除的记录
-    const currentData = allData.filter((row) => !removedIds.has(row.id));
-
-    // 获取新插入的记录并移除id
-    const insertedData = demo03CourseGridApi.grid.getInsertRecords().map((row) => {
-      delete row.id;
-      return row;
-    });
-
-    return [...currentData, ...insertedData];
+    const data = gridApi.grid.getData() as Demo03StudentApi.Demo03Course[];
+    const removeRecords = gridApi.grid.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
+    const insertRecords = gridApi.grid.getInsertRecords() as Demo03StudentApi.Demo03Course[];
+    return data
+      .filter((row) => !removeRecords.some((removed) => removed.id === row.id))
+      .concat(insertRecords.map((row: any) => ({ ...row, id: undefined })));
   },
 });
 
@@ -83,25 +74,24 @@ watch(
     if (!val) {
       return;
     }
-
     await nextTick();
-    await demo03CourseGridApi.grid.loadData(await getDemo03CourseListByStudentId(props.studentId!));
+    await gridApi.grid.loadData(await getDemo03CourseListByStudentId(props.studentId!));
   },
   { immediate: true },
 );
 </script>
 
 <template>
-  <Demo03CourseGrid class="mx-4">
+  <Grid class="mx-4">
     <template #name="{ row }">
       <Input v-model:value="row.name" />
     </template>
     <template #score="{ row }">
       <Input v-model:value="row.score" />
     </template>
-  </Demo03CourseGrid>
-  <div class="flex justify-center">
-    <Button :icon="h(Plus)" type="primary" ghost @click="handleAdd" v-access:code="['infra:demo03-student:create']">
+  </Grid>
+  <div class="-mt-4 flex justify-center">
+    <Button :icon="h(Plus)" type="primary" ghost @click="onAdd" v-access:code="['infra:demo03-student:create']">
       {{ $t('ui.actionTitle.create', ['学生课程']) }}
     </Button>
   </div>

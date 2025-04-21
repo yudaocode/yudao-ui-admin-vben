@@ -10,8 +10,8 @@ import { $t } from '#/locales';
 import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
-import Demo03CourseForm from './Demo03CourseForm.vue';
-import Demo03GradeForm from './Demo03GradeForm.vue';
+import Demo03CourseForm from './demo03-course-form.vue';
+import Demo03GradeForm from './demo03-grade-form.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<Demo03StudentApi.Demo03Student>();
@@ -72,9 +72,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!data) {
       return;
     }
-
     if (data.id) {
-      // 编辑
       modalApi.lock();
       try {
         data = await getDemo03Student(data.id);

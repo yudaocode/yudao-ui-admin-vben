@@ -10,6 +10,7 @@ export namespace Demo03StudentApi {
     name?: string; // 名字
     score?: number; // 分数
   }
+
   /** 学生班级信息 */
   export interface Demo03Grade {
     id: number; // 编号
@@ -17,6 +18,7 @@ export namespace Demo03StudentApi {
     name?: string; // 名字
     teacher?: string; // 班主任
   }
+
   /** 学生信息 */
   export interface Demo03Student {
     id: number; // 编号
