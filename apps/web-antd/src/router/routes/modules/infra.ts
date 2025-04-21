@@ -17,10 +17,9 @@ const routes: RouteRecordRaw[] = [
     path: '/codegen',
     name: 'CodegenEdit',
     meta: {
+      title: '代码生成',
       icon: 'ic:baseline-view-in-ar',
       keepAlive: true,
-      order: 1000,
-      title: '代码生成',
       hideInMenu: true,
     },
     children: [

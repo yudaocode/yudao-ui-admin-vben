@@ -15,8 +15,8 @@ export namespace SystemNotifyMessageApi {
     templateType: number;
     templateParams: string;
     readStatus: boolean;
-    readTime: string;
-    createTime: string;
+    readTime: Date;
+    createTime: Date;
   }
 }
 
@@ -38,7 +38,9 @@ export function getMyNotifyMessagePage(params: PageParam) {
 
 /** 批量标记已读 */
 export function updateNotifyMessageRead(ids: number[]) {
-  return requestClient.put('/system/notify-message/update-read', { ids });
+  return requestClient.put('/system/notify-message/update-read', {}, {
+    params: { ids },
+  });
 }
 
 /** 标记所有站内信为已读 */

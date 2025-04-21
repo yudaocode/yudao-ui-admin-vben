@@ -4,9 +4,6 @@ import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { useAccess } from '@vben/access';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -16,8 +13,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '是否已读',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+        allowClear: true,
         placeholder: '请选择是否已读',
       },
     },
@@ -38,6 +35,11 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
+    {
+      title: '',
+      width: 40,
+      type: 'checkbox',
+    },
     {
       field: 'templateNickname',
       title: '发送人',
@@ -94,8 +96,13 @@ export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
         options: [
           {
             code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:notify-message:query']),
+            text: '查看',
+            show: (row: any) => row.readStatus,
+          },
+          {
+            code: 'read',
+            text: '已读',
+            show: (row: any) => !row.readStatus,
           },
         ],
       },

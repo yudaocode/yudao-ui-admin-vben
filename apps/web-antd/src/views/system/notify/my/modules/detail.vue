@@ -32,31 +32,15 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="我的站内信">
+  <Modal title="消息详情" :show-cancel-button="false" :show-confirm-button="false">
     <Descriptions bordered :column="1" size="middle" class="mx-4">
-      <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
-      <Descriptions.Item label="用户类型">
-        <DictTag :type="DICT_TYPE.USER_TYPE" :value="formData?.userType" />
-      </Descriptions.Item>
-      <Descriptions.Item label="用户编号">
-        {{ formData?.userId }}
-      </Descriptions.Item>
-      <Descriptions.Item label="模版编号">
-        {{ formData?.templateId }}
-      </Descriptions.Item>
-      <Descriptions.Item label="模板编码">
-        {{ formData?.templateCode }}
-      </Descriptions.Item>
-      <Descriptions.Item label="发送人名称">
+      <Descriptions.Item label="发送人">
         {{ formData?.templateNickname }}
       </Descriptions.Item>
-      <Descriptions.Item label="模版内容">
-        {{ formData?.templateContent }}
+      <Descriptions.Item label="发送时间">
+        {{ formatDateTime(formData?.createTime) }}
       </Descriptions.Item>
-      <Descriptions.Item label="模版参数">
-        {{ formData?.templateParams }}
-      </Descriptions.Item>
-      <Descriptions.Item label="模版类型">
+      <Descriptions.Item label="消息类型">
         <DictTag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="formData?.templateType" />
       </Descriptions.Item>
       <Descriptions.Item label="是否已读">
@@ -65,8 +49,8 @@ const [Modal, modalApi] = useVbenModal({
       <Descriptions.Item label="阅读时间">
         {{ formatDateTime(formData?.readTime || '') }}
       </Descriptions.Item>
-      <Descriptions.Item label="创建时间">
-        {{ formatDateTime(formData?.createTime || '') }}
+      <Descriptions.Item label="消息内容">
+        {{ formData?.templateContent }}
       </Descriptions.Item>
     </Descriptions>
   </Modal>

@@ -33,17 +33,27 @@ function onRefresh() {
 
 /** 查看站内信详情 */
 function onDetail(row: SystemNotifyMessageApi.SystemNotifyMessage) {
-  // 标记已读
-  if (!row.readStatus) {
-    handleReadOne(row.id);
-  }
   detailModalApi.setData(row).open();
 }
 
 /** 标记一条站内信已读 */
-async function handleReadOne(id: number) {
-  await updateNotifyMessageRead([id]);
+async function onRead(row: SystemNotifyMessageApi.SystemNotifyMessage) {
+  message.loading({
+    content: '正在标记已读...',
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  // 执行标记已读操作
+  await updateNotifyMessageRead([row.id]);
+  // 提示成功
+  message.success({
+    content: '标记已读成功',
+    key: 'action_process_msg',
+  });
   onRefresh();
+
+  // 打开详情
+  onDetail(row);
 }
 
 /** 标记选中的站内信为已读 */
@@ -58,42 +68,38 @@ async function onMarkRead() {
   }
 
   const ids = rows.map((row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id);
-  const hideLoading = message.loading({
+  message.loading({
     content: '正在标记已读...',
     duration: 0,
     key: 'action_process_msg',
   });
-
-  try {
-    await updateNotifyMessageRead(ids);
-    message.success({
-      content: '标记已读成功',
-      key: 'action_process_msg',
-    });
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  // 执行标记已读操作
+  await updateNotifyMessageRead(ids);
+  // 提示成功
+  message.success({
+    content: '标记已读成功',
+    key: 'action_process_msg',
+  });
+  await gridApi.grid.setAllCheckboxRow(false);
+  onRefresh();
 }
 
 /** 标记所有站内信为已读 */
 async function onMarkAllRead() {
-  const hideLoading = message.loading({
+  message.loading({
     content: '正在标记全部已读...',
     duration: 0,
     key: 'action_process_msg',
   });
-
-  try {
-    await updateAllNotifyMessageRead();
-    message.success({
-      content: '全部标记已读成功',
-      key: 'action_process_msg',
-    });
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  // 执行标记已读操作
+  await updateAllNotifyMessageRead();
+  // 提示成功
+  message.success({
+    content: '全部标记已读成功',
+    key: 'action_process_msg',
+  });
+  await gridApi.grid.setAllCheckboxRow(false);
+  onRefresh();
 }
 
 /** 表格操作按钮的回调函数 */
@@ -106,12 +112,11 @@ function onActionClick({
       onDetail(row);
       break;
     }
+    case 'read': {
+      onRead(row);
+      break;
+    }
   }
-}
-
-// 是否允许勾选的过滤函数（只允许未读的消息被选择）
-function checkboxConfig(params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) {
-  return !params.row.readStatus;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -141,23 +146,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     checkboxConfig: {
-      checkMethod: checkboxConfig,
+      checkMethod: (params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) => !params.row.readStatus,
+      highlight: true,
     },
   } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,
 });
 </script>
 <template>
   <Page auto-content-height>
-    <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+    <DocAlert title="站内信配置" url="https://doc.iocoder.cn/notify/" />
 
     <DetailModal @success="onRefresh" />
     <Grid table-title="我的站内信">
       <template #toolbar-tools>
-        <Button type="primary" @click="onMarkRead" v-access:code="['system:notify-message:update-read']">
+        <Button type="primary" @click="onMarkRead">
           <MdiCheckboxMarkedCircleOutline />
           标记已读
         </Button>
-        <Button type="primary" class="ml-2" @click="onMarkAllRead" v-access:code="['system:notify-message:update-all-read']">
+        <Button type="primary" class="ml-2" @click="onMarkAllRead">
           <MdiCheckboxMarkedCircleOutline />
           全部已读
         </Button>
