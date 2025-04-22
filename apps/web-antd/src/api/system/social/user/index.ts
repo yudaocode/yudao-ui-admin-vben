@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemSocialUserApi {
   /** 社交用户信息 */
-  export interface SystemSocialUser {
+  export interface SocialUser {
     id?: number;
     type: number;
     openid: string;
@@ -35,14 +35,17 @@ export namespace SystemSocialUserApi {
 
 /** 查询社交用户列表 */
 export function getSocialUserPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemSocialUserApi.SystemSocialUser>>('/system/social-user/page',
-    { params }
+  return requestClient.get<PageResult<SystemSocialUserApi.SocialUser>>(
+    '/system/social-user/page',
+    { params },
   );
 }
 
 /** 查询社交用户详情 */
 export function getSocialUser(id: number) {
-  return requestClient.get<SystemSocialUserApi.SystemSocialUser>(`/system/social-user/get?id=${id}`);
+  return requestClient.get<SystemSocialUserApi.SocialUser>(
+    `/system/social-user/get?id=${id}`,
+  );
 }
 
 /** 社交绑定，使用 code 授权码 */
@@ -57,5 +60,7 @@ export function socialUnbind(data: SystemSocialUserApi.SocialUserUnbindReqVO) {
 
 /** 获得绑定社交用户列表 */
 export function getBindSocialUserList() {
-  return requestClient.get<SystemSocialUserApi.SystemSocialUser[]>('/system/social-user/get-bind-list');
+  return requestClient.get<SystemSocialUserApi.SocialUser[]>(
+    '/system/social-user/get-bind-list',
+  );
 }

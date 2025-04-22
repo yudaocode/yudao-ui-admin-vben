@@ -37,17 +37,17 @@ function onCreate() {
 }
 
 /** 添加下级菜单 */
-function onAppend(row: SystemMenuApi.SystemMenu) {
+function onAppend(row: SystemMenuApi.Menu) {
   formModalApi.setData({ pid: row.id }).open();
 }
 
 /** 编辑菜单 */
-function onEdit(row: SystemMenuApi.SystemMenu) {
+function onEdit(row: SystemMenuApi.Menu) {
   formModalApi.setData(row).open();
 }
 
 /** 删除菜单 */
-async function onDelete(row: SystemMenuApi.SystemMenu) {
+async function onDelete(row: SystemMenuApi.Menu) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -66,10 +66,7 @@ async function onDelete(row: SystemMenuApi.SystemMenu) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemMenuApi.SystemMenu>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemMenuApi.Menu>) {
   switch (code) {
     case 'append': {
       onAppend(row);

@@ -1,20 +1,28 @@
 <script lang="ts" setup>
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDemo01Contact, getDemo01Contact, updateDemo01Contact } from '#/api/infra/demo/demo01';
+import {
+  createDemo01Contact,
+  getDemo01Contact,
+  updateDemo01Contact,
+} from '#/api/infra/demo/demo01';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<Demo01ContactApi.Demo01Contact>();
 const getTitle = computed(() => {
-  return formData.value?.id ? $t('ui.actionTitle.edit', ['示例联系人']) : $t('ui.actionTitle.create', ['示例联系人']);
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['示例联系人'])
+    : $t('ui.actionTitle.create', ['示例联系人']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -33,7 +41,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as Demo01ContactApi.Demo01Contact;
     try {
-      await (formData.value?.id ? updateDemo01Contact(data) : createDemo01Contact(data));
+      await (formData.value?.id
+        ? updateDemo01Contact(data)
+        : createDemo01Contact(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

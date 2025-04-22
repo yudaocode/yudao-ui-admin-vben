@@ -1,20 +1,28 @@
 <script lang="ts" setup>
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDemo03Grade, getDemo03Grade, updateDemo03Grade } from '#/api/infra/demo/demo03/erp';
+import {
+  createDemo03Grade,
+  getDemo03Grade,
+  updateDemo03Grade,
+} from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 
 import { useDemo03GradeFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<Demo03StudentApi.Demo03Grade>();
 const getTitle = computed(() => {
-  return formData.value?.id ? $t('ui.actionTitle.edit', ['学生班级']) : $t('ui.actionTitle.create', ['学生班级']);
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['学生班级'])
+    : $t('ui.actionTitle.create', ['学生班级']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -35,7 +43,9 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as Demo03StudentApi.Demo03Grade;
     data.studentId = formData.value?.studentId;
     try {
-      await (formData.value?.id ? updateDemo03Grade(data) : createDemo03Grade(data));
+      await (formData.value?.id
+        ? updateDemo03Grade(data)
+        : createDemo03Grade(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

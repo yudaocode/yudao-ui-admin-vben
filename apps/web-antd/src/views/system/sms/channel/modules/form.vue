@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemSmsChannelApi.SystemSmsChannel>();
+const formData = ref<SystemSmsChannelApi.SmsChannel>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['短信渠道'])
@@ -42,8 +42,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemSmsChannelApi.SystemSmsChannel;
+    const data = (await formApi.getValues()) as SystemSmsChannelApi.SmsChannel;
     try {
       await (formData.value?.id
         ? updateSmsChannel(data)
@@ -64,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSmsChannelApi.SystemSmsChannel>();
+    const data = modalApi.getData<SystemSmsChannelApi.SmsChannel>();
     if (!data || !data.id) {
       return;
     }

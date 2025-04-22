@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import type { Editor as EditorType } from 'tinymce/tinymce';
 import type { IPropTypes } from '@tinymce/tinymce-vue/lib/cjs/main/ts/components/EditorPropTypes';
-type InitOptions = IPropTypes['init'];
-import type { PropType } from 'vue';
+import type { Editor as EditorType } from 'tinymce/tinymce';
 
-import Editor from '@tinymce/tinymce-vue';
-import ImgUpload from './img-upload.vue';
+import type { PropType } from 'vue';
 
 import {
   computed,
@@ -21,11 +18,20 @@ import {
 } from 'vue';
 
 import { preferences, usePreferences } from '@vben/preferences';
+import { buildShortUUID, isNumber } from '@vben/utils';
 
-import { isNumber, buildShortUUID } from '@vben/utils';
-import { bindHandlers } from './helper';
-import { plugins as defaultPlugins, toolbar as defaultToolbar } from './tinymce';
+import Editor from '@tinymce/tinymce-vue';
+
 import { useUpload } from '#/components/upload/use-upload';
+
+import { bindHandlers } from './helper';
+import ImgUpload from './img-upload.vue';
+import {
+  plugins as defaultPlugins,
+  toolbar as defaultToolbar,
+} from './tinymce';
+
+type InitOptions = IPropTypes['init'];
 
 defineOptions({ inheritAttrs: false });
 
@@ -300,8 +306,8 @@ function handleError(name: string) {
   if (!editor) {
     return;
   }
-  const content = editor?.getContent()?? '';
-  const val = content?.replace(getUploadingImgName(name), '')?? '';
+  const content = editor?.getContent() ?? '';
+  const val = content?.replace(getUploadingImgName(name), '') ?? '';
   setValue(editor, val);
 }
 </script>

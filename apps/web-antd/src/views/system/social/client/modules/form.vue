@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemSocialClientApi.SystemSocialClient>();
+const formData = ref<SystemSocialClientApi.SocialClient>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['社交客户端'])
@@ -40,7 +40,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as SystemSocialClientApi.SystemSocialClient;
+      (await formApi.getValues()) as SystemSocialClientApi.SocialClient;
     try {
       await (formData.value?.id
         ? updateSocialClient(data)
@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSocialClientApi.SystemSocialClient>();
+    const data = modalApi.getData<SystemSocialClientApi.SocialClient>();
     if (!data || !data.id) {
       return;
     }

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { nextTick, watch } from 'vue';
+
 import { useVbenForm } from '#/adapter/form';
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
-import { nextTick, watch } from 'vue';
 
 import { useDemo03GradeFormSchema } from '../data';
 

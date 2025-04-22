@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
-import {DICT_TYPE, getDictOptions} from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
 
@@ -70,7 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraApiAccessLogApi.SystemApiAccessLog>(
+export function useGridColumns<T = InfraApiAccessLogApi.ApiAccessLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -125,9 +125,7 @@ export function useGridColumns<T = InfraApiAccessLogApi.SystemApiAccessLog>(
       title: '操作结果',
       minWidth: 150,
       formatter: ({ row }) => {
-        return row.resultCode === 0
-          ? '成功'
-          : `失败(${row.resultMsg})`;
+        return row.resultCode === 0 ? '成功' : `失败(${row.resultMsg})`;
       },
     },
     {

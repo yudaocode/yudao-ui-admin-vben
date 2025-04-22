@@ -11,7 +11,7 @@ import { Descriptions } from 'ant-design-vue';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
-const formData = ref<SystemNotifyMessageApi.SystemNotifyMessage>();
+const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -19,7 +19,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNotifyMessageApi.SystemNotifyMessage>();
+    const data = modalApi.getData<SystemNotifyMessageApi.NotifyMessage>();
     if (!data || !data.id) {
       return;
     }
@@ -43,6 +43,7 @@ const [Modal, modalApi] = useVbenModal({
       <Descriptions.Item label="发送人">
         {{ formData?.templateNickname }}
       </Descriptions.Item>
+      <!-- TODO @芋艿：报错 -->
       <Descriptions.Item label="发送时间">
         {{ formatDateTime(formData?.createTime) }}
       </Descriptions.Item>

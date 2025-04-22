@@ -3,7 +3,7 @@ export function checkFileType(file: File, accepts: string[]) {
     return true;
   }
   const newTypes = accepts.join('|');
-  const reg = new RegExp('\\.(' + newTypes + ')$', 'i');
+  const reg = new RegExp(`${String.raw`\.(` + newTypes})$`, 'i');
   return reg.test(file.name);
 }
 
@@ -12,6 +12,9 @@ export function checkFileType(file: File, accepts: string[]) {
  */
 export const defaultImageAccepts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-export function checkImgType(file: File, accepts: string[] = defaultImageAccepts) {
+export function checkImgType(
+  file: File,
+  accepts: string[] = defaultImageAccepts,
+) {
   return checkFileType(file, accepts);
 }

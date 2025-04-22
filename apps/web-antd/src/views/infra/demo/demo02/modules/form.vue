@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDemo02Category, getDemo02Category, updateDemo02Category } from '#/api/infra/demo/demo02';
+import {
+  createDemo02Category,
+  getDemo02Category,
+  updateDemo02Category,
+} from '#/api/infra/demo/demo02';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
 
@@ -19,7 +25,9 @@ const getTitle = computed(() => {
   if (formData.value?.id) {
     return $t('ui.actionTitle.edit', ['示例分类']);
   }
-  return parentId.value ? $t('ui.actionTitle.create', ['下级示例分类']) : $t('ui.actionTitle.create', ['示例分类']);
+  return parentId.value
+    ? $t('ui.actionTitle.create', ['下级示例分类'])
+    : $t('ui.actionTitle.create', ['示例分类']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -36,9 +44,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as Demo02CategoryApi.Demo02Category;
+    const data =
+      (await formApi.getValues()) as Demo02CategoryApi.Demo02Category;
     try {
-      await (formData.value?.id ? updateDemo02Category(data) : createDemo02Category(data));
+      await (formData.value?.id
+        ? updateDemo02Category(data)
+        : createDemo02Category(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

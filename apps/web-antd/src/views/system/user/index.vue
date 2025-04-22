@@ -65,7 +65,7 @@ async function onExport() {
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function onDeptSelect(dept: SystemDeptApi.SystemDept) {
+async function onDeptSelect(dept: SystemDeptApi.Dept) {
   searchDeptId.value = dept.id;
   onRefresh();
 }
@@ -81,12 +81,12 @@ function onImport() {
 }
 
 /** 编辑用户 */
-function onEdit(row: SystemUserApi.SystemUser) {
+function onEdit(row: SystemUserApi.User) {
   formModalApi.setData(row).open();
 }
 
 /** 删除用户 */
-async function onDelete(row: SystemUserApi.SystemUser) {
+async function onDelete(row: SystemUserApi.User) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.username]),
     duration: 0,
@@ -105,12 +105,12 @@ async function onDelete(row: SystemUserApi.SystemUser) {
 }
 
 /** 重置密码 */
-function onResetPassword(row: SystemUserApi.SystemUser) {
+function onResetPassword(row: SystemUserApi.User) {
   resetPasswordModalApi.setData(row).open();
 }
 
 /** 分配角色 */
-function onAssignRole(row: SystemUserApi.SystemUser) {
+function onAssignRole(row: SystemUserApi.User) {
   assignRoleModalApi.setData(row).open();
 }
 
@@ -118,7 +118,7 @@ function onAssignRole(row: SystemUserApi.SystemUser) {
 /** 更新用户状态 */
 async function onStatusChange(
   newStatus: number,
-  row: SystemUserApi.SystemUser,
+  row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
   return new Promise((resolve, reject) => {
     Modal.confirm({
@@ -147,10 +147,7 @@ async function onStatusChange(
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemUserApi.SystemUser>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.User>) {
   switch (code) {
     case 'assign-role': {
       onAssignRole(row);
@@ -198,7 +195,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemUserApi.SystemUser>,
+  } as VxeTableGridOptions<SystemUserApi.User>,
 });
 </script>
 

@@ -36,7 +36,7 @@ async function onExport() {
 }
 
 /** 查看登录日志详情 */
-function onDetail(row: SystemLoginLogApi.SystemLoginLog) {
+function onDetail(row: SystemLoginLogApi.LoginLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -44,7 +44,7 @@ function onDetail(row: SystemLoginLogApi.SystemLoginLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemLoginLogApi.SystemLoginLog>) {
+}: OnActionClickParams<SystemLoginLogApi.LoginLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -79,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemLoginLogApi.SystemLoginLog>,
+  } as VxeTableGridOptions<SystemLoginLogApi.LoginLog>,
 });
 </script>
 

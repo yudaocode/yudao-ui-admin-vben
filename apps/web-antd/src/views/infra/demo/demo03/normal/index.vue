@@ -1,19 +1,28 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
-import Form from './modules/form.vue';
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo03Student, exportDemo03Student, getDemo03StudentPage } from '#/api/infra/demo/demo03/normal';
+import {
+  deleteDemo03Student,
+  exportDemo03Student,
+  getDemo03StudentPage,
+} from '#/api/infra/demo/demo03/normal';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
-import { h } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -61,14 +70,17 @@ async function onExport() {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -113,7 +125,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="学生列表">
       <template #toolbar-tools>
-        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
+        <Button
+          :icon="h(Plus)"
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:demo03-student:create']"
+        >
           {{ $t('ui.actionTitle.create', ['学生']) }}
         </Button>
         <Button

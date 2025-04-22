@@ -203,7 +203,7 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsTemplateApi.SystemSmsTemplate>(
+export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

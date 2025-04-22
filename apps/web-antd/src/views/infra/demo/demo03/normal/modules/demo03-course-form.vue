@@ -2,13 +2,15 @@
 import type { OnActionClickParams } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
+import { h, nextTick, watch } from 'vue';
+
 import { Plus } from '@vben/icons';
+
 import { Button, Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/normal';
 import { $t } from '#/locales';
-import { h, nextTick, watch } from 'vue';
 
 import { useDemo03CourseGridEditColumns } from '../data';
 
@@ -17,7 +19,10 @@ const props = defineProps<{
 }>();
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Course>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo03StudentApi.Demo03Course>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -59,8 +64,10 @@ const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
 defineExpose({
   getData: (): Demo03StudentApi.Demo03Course[] => {
     const data = gridApi.grid.getData() as Demo03StudentApi.Demo03Course[];
-    const removeRecords = gridApi.grid.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
-    const insertRecords = gridApi.grid.getInsertRecords() as Demo03StudentApi.Demo03Course[];
+    const removeRecords =
+      gridApi.grid.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
+    const insertRecords =
+      gridApi.grid.getInsertRecords() as Demo03StudentApi.Demo03Course[];
     return data
       .filter((row) => !removeRecords.some((removed) => removed.id === row.id))
       .concat(insertRecords.map((row: any) => ({ ...row, id: undefined })));
@@ -75,7 +82,9 @@ watch(
       return;
     }
     await nextTick();
-    await gridApi.grid.loadData(await getDemo03CourseListByStudentId(props.studentId!));
+    await gridApi.grid.loadData(
+      await getDemo03CourseListByStudentId(props.studentId!),
+    );
   },
   { immediate: true },
 );
@@ -91,7 +100,13 @@ watch(
     </template>
   </Grid>
   <div class="-mt-4 flex justify-center">
-    <Button :icon="h(Plus)" type="primary" ghost @click="onAdd" v-access:code="['infra:demo03-student:create']">
+    <Button
+      :icon="h(Plus)"
+      type="primary"
+      ghost
+      @click="onAdd"
+      v-access:code="['infra:demo03-student:create']"
+    >
       {{ $t('ui.actionTitle.create', ['学生课程']) }}
     </Button>
   </div>

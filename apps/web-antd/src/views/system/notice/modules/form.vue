@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemNoticeApi.SystemNotice>();
+const formData = ref<SystemNoticeApi.Notice>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['公告'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemNoticeApi.SystemNotice;
+    const data = (await formApi.getValues()) as SystemNoticeApi.Notice;
     try {
       await (formData.value?.id ? updateNotice(data) : createNotice(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNoticeApi.SystemNotice>();
+    const data = modalApi.getData<SystemNoticeApi.Notice>();
     if (!data || !data.id) {
       return;
     }

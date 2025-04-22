@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemMenuApi.SystemMenu>();
+const formData = ref<SystemMenuApi.Menu>();
 const getTitle = computed(() =>
   formData.value?.id
     ? $t('ui.actionTitle.edit', ['菜单'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemMenuApi.SystemMenu;
+    const data = (await formApi.getValues()) as SystemMenuApi.Menu;
     try {
       await (formData.value?.id ? updateMenu(data) : createMenu(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    let data = modalApi.getData<SystemMenuApi.SystemMenu>();
+    let data = modalApi.getData<SystemMenuApi.Menu>();
     if (!data) {
       return;
     }

@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemSmsChannelApi {
   /** 短信渠道信息 */
-  export interface SystemSmsChannel {
+  export interface SmsChannel {
     id?: number;
     code: string;
     status: number;
@@ -19,7 +19,7 @@ export namespace SystemSmsChannelApi {
 
 /** 查询短信渠道列表 */
 export function getSmsChannelPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemSmsChannelApi.SystemSmsChannel>>(
+  return requestClient.get<PageResult<SystemSmsChannelApi.SmsChannel>>(
     '/system/sms-channel/page',
     { params },
   );
@@ -27,21 +27,25 @@ export function getSmsChannelPage(params: PageParam) {
 
 /** 获得短信渠道精简列表 */
 export function getSimpleSmsChannelList() {
-  return requestClient.get<SystemSmsChannelApi.SystemSmsChannel[]>('/system/sms-channel/simple-list');
+  return requestClient.get<SystemSmsChannelApi.SmsChannel[]>(
+    '/system/sms-channel/simple-list',
+  );
 }
 
 /** 查询短信渠道详情 */
 export function getSmsChannel(id: number) {
-  return requestClient.get<SystemSmsChannelApi.SystemSmsChannel>(`/system/sms-channel/get?id=${id}`);
+  return requestClient.get<SystemSmsChannelApi.SmsChannel>(
+    `/system/sms-channel/get?id=${id}`,
+  );
 }
 
 /** 新增短信渠道 */
-export function createSmsChannel(data: SystemSmsChannelApi.SystemSmsChannel) {
+export function createSmsChannel(data: SystemSmsChannelApi.SmsChannel) {
   return requestClient.post('/system/sms-channel/create', data);
 }
 
 /** 修改短信渠道 */
-export function updateSmsChannel(data: SystemSmsChannelApi.SystemSmsChannel) {
+export function updateSmsChannel(data: SystemSmsChannelApi.SmsChannel) {
   return requestClient.put('/system/sms-channel/update', data);
 }
 

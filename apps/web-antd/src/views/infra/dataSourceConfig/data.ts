@@ -58,7 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraDataSourceConfigApi.InfraDataSourceConfig>(
+export function useGridColumns<T = InfraDataSourceConfigApi.DataSourceConfig>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

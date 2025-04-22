@@ -187,7 +187,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemRoleApi.SystemRole>(
+export function useGridColumns<T = SystemRoleApi.Role>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemOperateLogApi {
   /** 操作日志信息 */
-  export interface SystemOperateLog {
+  export interface OperateLog {
     id: number;
     traceId: string;
     userType: number;
@@ -27,8 +27,9 @@ export namespace SystemOperateLogApi {
 
 /** 查询操作日志列表 */
 export function getOperateLogPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemOperateLogApi.SystemOperateLog>>('/system/operate-log/page',
-    { params }
+  return requestClient.get<PageResult<SystemOperateLogApi.OperateLog>>(
+    '/system/operate-log/page',
+    { params },
   );
 }
 

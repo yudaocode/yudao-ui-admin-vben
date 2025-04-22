@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
-import {DICT_TYPE, getDictOptions} from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
 import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
@@ -54,7 +54,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '处理状态',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS,
+          'number',
+        ),
         allowClear: true,
         placeholder: '请选择处理状态',
       },
@@ -64,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraApiErrorLogApi.SystemApiErrorLog>(
+export function useGridColumns<T = InfraApiErrorLogApi.ApiErrorLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -144,17 +147,21 @@ export function useGridColumns<T = InfraApiErrorLogApi.SystemApiErrorLog>(
           {
             code: 'done',
             text: '已处理',
-            show: (row: InfraApiErrorLogApi.SystemApiErrorLog) => {
-              return row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
-                hasAccessByCodes(['infra:api-error-log:update-status']);
+            show: (row: InfraApiErrorLogApi.ApiErrorLog) => {
+              return (
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
+                hasAccessByCodes(['infra:api-error-log:update-status'])
+              );
             },
           },
           {
             code: 'ignore',
             text: '已忽略',
-            show: (row: InfraApiErrorLogApi.SystemApiErrorLog) => {
-              return row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
-                hasAccessByCodes(['infra:api-error-log:update-status']);
+            show: (row: InfraApiErrorLogApi.ApiErrorLog) => {
+              return (
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
+                hasAccessByCodes(['infra:api-error-log:update-status'])
+              );
             },
           },
         ],

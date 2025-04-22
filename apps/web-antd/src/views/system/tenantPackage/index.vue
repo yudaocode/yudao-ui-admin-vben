@@ -36,12 +36,12 @@ function onCreate() {
 }
 
 /** 编辑租户套餐 */
-function onEdit(row: SystemTenantPackageApi.SystemTenantPackage) {
+function onEdit(row: SystemTenantPackageApi.TenantPackage) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户套餐 */
-async function onDelete(row: SystemTenantPackageApi.SystemTenantPackage) {
+async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -63,7 +63,7 @@ async function onDelete(row: SystemTenantPackageApi.SystemTenantPackage) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemTenantPackageApi.SystemTenantPackage>) {
+}: OnActionClickParams<SystemTenantPackageApi.TenantPackage>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemTenantPackageApi.SystemTenantPackage>,
+  } as VxeTableGridOptions<SystemTenantPackageApi.TenantPackage>,
 });
 </script>
 

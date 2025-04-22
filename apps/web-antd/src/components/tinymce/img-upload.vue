@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
 
-import { Upload, Button } from 'ant-design-vue';
+import { computed, ref } from 'vue';
 
 import { $t } from '@vben/locales';
-import { computed, ref } from 'vue';
+
+import { Button, Upload } from 'ant-design-vue';
+
 import { useUpload } from '#/components/upload/use-upload';
 
 defineOptions({ name: 'TinymceImageUpload' });
@@ -14,7 +16,8 @@ const props = defineProps({
     default: false,
     type: Boolean,
   },
-  fullscreen: { // 图片上传，是否放到全屏的位置
+  fullscreen: {
+    // 图片上传，是否放到全屏的位置
     default: false,
     type: Boolean,
   },
@@ -45,7 +48,7 @@ async function customRequest(info: UploadRequestOption<any>) {
   try {
     const url = await httpRequest(file);
     emit('done', name, url);
-  } catch (e) {
+  } catch {
     emit('error', name);
   } finally {
     uploading.value = false;

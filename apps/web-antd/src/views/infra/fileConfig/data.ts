@@ -2,9 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
+
+import { getRangePickerDefaultProps } from '#/utils/date';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -39,7 +40,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (formValues) => !formValues.id
+        show: (formValues) => !formValues.id,
       },
     },
     {
@@ -61,7 +62,8 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['storage'],
-        show: (formValues) => formValues.storage >= 10 && formValues.storage <= 12,
+        show: (formValues) =>
+          formValues.storage >= 10 && formValues.storage <= 12,
       },
     },
     {
@@ -74,7 +76,8 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['storage'],
-        show: (formValues) => formValues.storage >= 11 && formValues.storage <= 12,
+        show: (formValues) =>
+          formValues.storage >= 11 && formValues.storage <= 12,
       },
     },
     {
@@ -90,7 +93,8 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['storage'],
-        show: (formValues) => formValues.storage >= 11 && formValues.storage <= 12,
+        show: (formValues) =>
+          formValues.storage >= 11 && formValues.storage <= 12,
       },
     },
     {
@@ -103,7 +107,8 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['storage'],
-        show: (formValues) => formValues.storage >= 11 && formValues.storage <= 12,
+        show: (formValues) =>
+          formValues.storage >= 11 && formValues.storage <= 12,
       },
     },
     {
@@ -116,7 +121,8 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['storage'],
-        show: (formValues) => formValues.storage >= 11 && formValues.storage <= 12,
+        show: (formValues) =>
+          formValues.storage >= 11 && formValues.storage <= 12,
       },
     },
     {
@@ -240,7 +246,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraFileConfigApi.InfraFileConfig>(
+export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

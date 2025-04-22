@@ -21,13 +21,13 @@ import { handleTree } from '#/utils/tree';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemTenantPackageApi.SystemTenantPackage>();
+const formData = ref<SystemTenantPackageApi.TenantPackage>();
 const getTitle = computed(() => {
   return formData.value
     ? $t('ui.actionTitle.edit', ['套餐'])
     : $t('ui.actionTitle.create', ['套餐']);
 });
-const menuTree = ref<SystemDeptApi.SystemDept[]>([]); // 菜单树
+const menuTree = ref<SystemDeptApi.Dept[]>([]); // 菜单树
 const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
@@ -48,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as SystemTenantPackageApi.SystemTenantPackage;
+      (await formApi.getValues()) as SystemTenantPackageApi.TenantPackage;
     try {
       await (formData.value
         ? updateTenantPackage(data)
@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<SystemTenantPackageApi.SystemTenantPackage>();
+    const data = modalApi.getData<SystemTenantPackageApi.TenantPackage>();
     if (!data || !data.id) {
       return;
     }
@@ -89,7 +89,7 @@ async function loadMenuTree() {
   menuLoading.value = true;
   try {
     const data = await getMenuList();
-    menuTree.value = handleTree(data) as SystemDeptApi.SystemDept[];
+    menuTree.value = handleTree(data) as SystemDeptApi.Dept[];
   } finally {
     menuLoading.value = false;
   }

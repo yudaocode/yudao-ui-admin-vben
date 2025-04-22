@@ -1,9 +1,10 @@
-import { requestClient } from '#/api/request';
 import type { PageParam, PageResult } from '@vben/request';
+
+import { requestClient } from '#/api/request';
 
 export namespace SystemRoleApi {
   /** 角色信息 */
-  export interface SystemRole {
+  export interface Role {
     id?: number;
     name: string;
     code: string;
@@ -18,26 +19,29 @@ export namespace SystemRoleApi {
 
 /** 查询角色列表 */
 export function getRolePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemRoleApi.SystemRole>>('/system/role/page', { params });
+  return requestClient.get<PageResult<SystemRoleApi.Role>>(
+    '/system/role/page',
+    { params },
+  );
 }
 
 /** 查询角色（精简)列表 */
 export function getSimpleRoleList() {
-  return requestClient.get<SystemRoleApi.SystemRole[]>('/system/role/simple-list');
+  return requestClient.get<SystemRoleApi.Role[]>('/system/role/simple-list');
 }
 
 /** 查询角色详情 */
 export function getRole(id: number) {
-  return requestClient.get<SystemRoleApi.SystemRole>(`/system/role/get?id=${id}`);
+  return requestClient.get<SystemRoleApi.Role>(`/system/role/get?id=${id}`);
 }
 
 /** 新增角色 */
-export function createRole(data: SystemRoleApi.SystemRole) {
+export function createRole(data: SystemRoleApi.Role) {
   return requestClient.post('/system/role/create', data);
 }
 
 /** 修改角色 */
-export function updateRole(data: SystemRoleApi.SystemRole) {
+export function updateRole(data: SystemRoleApi.Role) {
   return requestClient.put('/system/role/update', data);
 }
 

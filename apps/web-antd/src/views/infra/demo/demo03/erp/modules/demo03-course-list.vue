@@ -1,17 +1,28 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
+
+import { h, nextTick, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo03Course, getDemo03CoursePage } from '#/api/infra/demo/demo03/erp';
+import {
+  deleteDemo03Course,
+  getDemo03CoursePage,
+} from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
-import { h, nextTick, watch } from 'vue';
 
-import { useDemo03CourseGridColumns, useDemo03CourseGridFormSchema } from '../data';
+import {
+  useDemo03CourseGridColumns,
+  useDemo03CourseGridFormSchema,
+} from '../data';
 import Demo03CourseForm from './demo03-course-form.vue';
 
 const props = defineProps<{
@@ -57,14 +68,17 @@ async function onDelete(row: Demo03StudentApi.Demo03Course) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Course>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo03StudentApi.Demo03Course>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -129,7 +143,12 @@ watch(
   <FormModal @success="onRefresh" />
   <Grid table-title="学生课程列表">
     <template #toolbar-tools>
-      <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
+      <Button
+        :icon="h(Plus)"
+        type="primary"
+        @click="onCreate"
+        v-access:code="['infra:demo03-student:create']"
+      >
         {{ $t('ui.actionTitle.create', ['学生课程']) }}
       </Button>
     </template>

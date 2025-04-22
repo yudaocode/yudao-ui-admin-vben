@@ -279,7 +279,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemUserApi.SystemUser>(
+export function useGridColumns<T = SystemUserApi.User>(
   onActionClick: OnActionClickFn<T>,
   onStatusChange?: (
     newStatus: number,

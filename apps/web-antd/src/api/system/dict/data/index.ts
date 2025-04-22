@@ -2,17 +2,17 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemDictDataApi {
   /** 字典数据 */
-  export type SystemDictData = {
-    id?: number;
+  export type DictData = {
     colorType: string;
+    createTime: Date;
     cssClass: string;
     dictType: string;
+    id?: number;
     label: string;
     remark: string;
     sort?: number;
     status: number;
     value: string;
-    createTime: Date;
   };
 }
 
@@ -32,12 +32,12 @@ export function getDictData(id: number) {
 }
 
 // 新增字典数据
-export function createDictData(data: SystemDictDataApi.SystemDictData) {
+export function createDictData(data: SystemDictDataApi.DictData) {
   return requestClient.post('/system/dict-data/create', data);
 }
 
 // 修改字典数据
-export function updateDictData(data: SystemDictDataApi.SystemDictData) {
+export function updateDictData(data: SystemDictDataApi.DictData) {
   return requestClient.put('/system/dict-data/update', data);
 }
 

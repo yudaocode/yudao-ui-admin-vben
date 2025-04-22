@@ -129,7 +129,10 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'templateType',
       label: '生成模板',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.INFRA_CODEGEN_TEMPLATE_TYPE,
+          'number',
+        ),
         class: 'w-full',
       },
       rules: 'selectRequired',
@@ -166,7 +169,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
           data.unshift({
             id: 0,
             name: '顶级菜单',
-          } as SystemMenuApi.SystemMenu);
+          } as SystemMenuApi.Menu);
           return handleTree(data);
         },
         class: 'w-full',
@@ -232,7 +235,9 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
 }
 
 /** 树表信息 schema */
-export function useGenerationInfoTreeFormSchema(columns: InfraCodegenApi.CodegenColumn[] = []): VbenFormSchema[] {
+export function useGenerationInfoTreeFormSchema(
+  columns: InfraCodegenApi.CodegenColumn[] = [],
+): VbenFormSchema[] {
   return [
     {
       component: 'Divider',

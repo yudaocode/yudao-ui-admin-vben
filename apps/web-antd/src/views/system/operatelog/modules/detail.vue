@@ -8,7 +8,7 @@ import { formatDateTime } from '@vben/utils';
 
 import { Descriptions } from 'ant-design-vue';
 
-const formData = ref<SystemOperateLogApi.SystemOperateLog>();
+const formData = ref<SystemOperateLogApi.OperateLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -16,7 +16,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemOperateLogApi.SystemOperateLog>();
+    const data = modalApi.getData<SystemOperateLogApi.OperateLog>();
     if (!data || !data.id) {
       return;
     }

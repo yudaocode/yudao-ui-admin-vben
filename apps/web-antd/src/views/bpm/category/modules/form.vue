@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import type { BpmCategoryApi } from '#/api/bpm/category';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import {createCategory, getCategory, updateCategory } from '#/api/bpm/category';
+import {
+  createCategory,
+  getCategory,
+  updateCategory,
+} from '#/api/bpm/category';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

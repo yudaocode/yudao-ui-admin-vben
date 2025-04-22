@@ -2,7 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace InfraDataSourceConfigApi {
   /** 数据源配置信息 */
-  export interface InfraDataSourceConfig {
+  export interface DataSourceConfig {
     id?: number;
     name: string;
     url: string;
@@ -14,21 +14,29 @@ export namespace InfraDataSourceConfigApi {
 
 /** 查询数据源配置列表 */
 export function getDataSourceConfigList() {
-  return requestClient.get<InfraDataSourceConfigApi.InfraDataSourceConfig[]>('/infra/data-source-config/list');
+  return requestClient.get<InfraDataSourceConfigApi.DataSourceConfig[]>(
+    '/infra/data-source-config/list',
+  );
 }
 
 /** 查询数据源配置详情 */
 export function getDataSourceConfig(id: number) {
-  return requestClient.get<InfraDataSourceConfigApi.InfraDataSourceConfig>(`/infra/data-source-config/get?id=${id}`);
+  return requestClient.get<InfraDataSourceConfigApi.DataSourceConfig>(
+    `/infra/data-source-config/get?id=${id}`,
+  );
 }
 
 /** 新增数据源配置 */
-export function createDataSourceConfig(data: InfraDataSourceConfigApi.InfraDataSourceConfig) {
+export function createDataSourceConfig(
+  data: InfraDataSourceConfigApi.DataSourceConfig,
+) {
   return requestClient.post('/infra/data-source-config/create', data);
 }
 
 /** 修改数据源配置 */
-export function updateDataSourceConfig(data: InfraDataSourceConfigApi.InfraDataSourceConfig) {
+export function updateDataSourceConfig(
+  data: InfraDataSourceConfigApi.DataSourceConfig,
+) {
   return requestClient.put('/infra/data-source-config/update', data);
 }
 

@@ -20,7 +20,7 @@ import { useDataFormSchema } from '../data';
 defineOptions({ name: 'SystemDictDataForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemDictDataApi.SystemDictData>();
+const formData = ref<SystemDictDataApi.DictData>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['字典数据'])
@@ -41,8 +41,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemDictDataApi.SystemDictData;
+    const data = (await formApi.getValues()) as SystemDictDataApi.DictData;
     try {
       await (formData.value?.id ? updateDictData(data) : createDictData(data));
       // 关闭并提示
@@ -62,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<
-      SystemDictDataApi.SystemDictData | { dictType?: string }
+      SystemDictDataApi.DictData | { dictType?: string }
     >();
 
     // 如果有ID，表示是编辑

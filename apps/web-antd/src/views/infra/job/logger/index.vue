@@ -1,20 +1,25 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraJobLogApi } from '#/api/infra/job-log';
+
+import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
-import { Button } from 'ant-design-vue';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { useRoute } from 'vue-router';
 import { exportJobLog, getJobLogPage } from '#/api/infra/job-log';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const { query } = useRoute();
 
@@ -30,7 +35,7 @@ async function onExport() {
 }
 
 /** 查看日志详情 */
-function onDetail(row: InfraJobLogApi.InfraJobLog) {
+function onDetail(row: InfraJobLogApi.JobLog) {
   detailModalApi.setData({ id: row.id }).open();
 }
 
@@ -38,7 +43,7 @@ function onDetail(row: InfraJobLogApi.InfraJobLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraJobLogApi.InfraJobLog>) {
+}: OnActionClickParams<InfraJobLogApi.JobLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -77,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraJobLogApi.InfraJobLog>,
+  } as VxeTableGridOptions<InfraJobLogApi.JobLog>,
 });
 </script>
 
@@ -90,7 +95,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal />
     <Grid table-title="任务日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:job:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:job:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -1,9 +1,10 @@
-import { requestClient } from '#/api/request';
 import type { PageParam, PageResult } from '@vben/request';
+
+import { requestClient } from '#/api/request';
 
 export namespace SystemNoticeApi {
   /** 公告信息 */
-  export interface SystemNotice {
+  export interface Notice {
     id?: number;
     title: string;
     type: number;
@@ -17,21 +18,26 @@ export namespace SystemNoticeApi {
 
 /** 查询公告列表 */
 export function getNoticePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemNoticeApi.SystemNotice>>('/system/notice/page', { params });
+  return requestClient.get<PageResult<SystemNoticeApi.Notice>>(
+    '/system/notice/page',
+    { params },
+  );
 }
 
 /** 查询公告详情 */
 export function getNotice(id: number) {
-  return requestClient.get<SystemNoticeApi.SystemNotice>(`/system/notice/get?id=${id}`);
+  return requestClient.get<SystemNoticeApi.Notice>(
+    `/system/notice/get?id=${id}`,
+  );
 }
 
 /** 新增公告 */
-export function createNotice(data: SystemNoticeApi.SystemNotice) {
+export function createNotice(data: SystemNoticeApi.Notice) {
   return requestClient.post('/system/notice/create', data);
 }
 
 /** 修改公告 */
-export function updateNotice(data: SystemNoticeApi.SystemNotice) {
+export function updateNotice(data: SystemNoticeApi.Notice) {
   return requestClient.put('/system/notice/update', data);
 }
 

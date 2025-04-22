@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemPostApi.SystemPost>();
+const formData = ref<SystemPostApi.Post>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['岗位'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemPostApi.SystemPost;
+    const data = (await formApi.getValues()) as SystemPostApi.Post;
     try {
       await (formData.value?.id ? updatePost(data) : createPost(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemPostApi.SystemPost>();
+    const data = modalApi.getData<SystemPostApi.Post>();
     if (!data || !data.id) {
       return;
     }

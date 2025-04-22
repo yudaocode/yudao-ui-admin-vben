@@ -48,14 +48,14 @@ function onEdit(row: any) {
 }
 
 /** 删除字典类型 */
-async function onDelete(row: SystemDictTypeApi.SystemDictType) {
+async function onDelete(row: SystemDictTypeApi.DictType) {
   const hideLoading = message.loading({
     content: $t('common.processing'),
     duration: 0,
     key: 'process_message',
   });
   try {
-    await deleteDictType(row.id);
+    await deleteDictType(row.id as number);
     message.success({
       content: $t('common.operationSuccess'),
       key: 'process_message',
@@ -81,6 +81,7 @@ function onActionClick({ code, row }: OnActionClickParams) {
 }
 
 /** 表格事件 */
+// TODO @芋艿：这里有爆红
 const gridEvents: VxeGridListeners<RowType> = {
   cellClick: ({ row }) => {
     emit('select', row.type);

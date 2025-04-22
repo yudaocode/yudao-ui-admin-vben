@@ -12,12 +12,17 @@ export namespace Demo02CategoryApi {
 
 /** 查询示例分类列表 */
 export function getDemo02CategoryList(params: any) {
-  return requestClient.get<Demo02CategoryApi.Demo02Category[]>('/infra/demo02-category/list', { params });
+  return requestClient.get<Demo02CategoryApi.Demo02Category[]>(
+    '/infra/demo02-category/list',
+    { params },
+  );
 }
 
 /** 查询示例分类详情 */
 export function getDemo02Category(id: number) {
-  return requestClient.get<Demo02CategoryApi.Demo02Category>(`/infra/demo02-category/get?id=${id}`);
+  return requestClient.get<Demo02CategoryApi.Demo02Category>(
+    `/infra/demo02-category/get?id=${id}`,
+  );
 }
 
 /** 新增示例分类 */

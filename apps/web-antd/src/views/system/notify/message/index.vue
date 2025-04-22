@@ -25,7 +25,7 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onDetail(row: SystemNotifyMessageApi.SystemNotifyMessage) {
+function onDetail(row: SystemNotifyMessageApi.NotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
@@ -33,7 +33,7 @@ function onDetail(row: SystemNotifyMessageApi.SystemNotifyMessage) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
+}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -68,7 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,
+  } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
 });
 </script>
 

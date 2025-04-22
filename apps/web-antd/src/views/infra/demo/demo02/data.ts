@@ -1,13 +1,14 @@
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+
+import { useAccess } from '@vben/access';
 
 import { getDemo02CategoryList } from '#/api/infra/demo/demo02';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { handleTree } from '#/utils/tree';
-
-import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 

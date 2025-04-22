@@ -1,13 +1,13 @@
+import type { AxiosRequestConfig, PageParam, PageResult } from '@vben/request';
+
 import { requestClient } from '#/api/request';
-import type { PageParam, PageResult } from '@vben/request';
-import type { AxiosRequestConfig } from '@vben/request';
 
 /** Axios 上传进度事件 */
 export type AxiosProgressEvent = AxiosRequestConfig['onUploadProgress'];
 
 export namespace InfraFileApi {
   /** 文件信息 */
-  export interface InfraFile {
+  export interface File {
     id?: number;
     configId?: number;
     path: string;
@@ -34,8 +34,8 @@ export namespace InfraFileApi {
 
 /** 查询文件列表 */
 export function getFilePage(params: PageParam) {
-  return requestClient.get<PageResult<InfraFileApi.InfraFile>>('/infra/file/page', {
-    params
+  return requestClient.get<PageResult<InfraFileApi.File>>('/infra/file/page', {
+    params,
   });
 }
 
@@ -46,17 +46,24 @@ export function deleteFile(id: number) {
 
 /** 获取文件预签名地址 */
 export function getFilePresignedUrl(path: string) {
-  return requestClient.get<InfraFileApi.FilePresignedUrlRespVO>('/infra/file/presigned-url', {
-    params: { path }
-  });
+  return requestClient.get<InfraFileApi.FilePresignedUrlRespVO>(
+    '/infra/file/presigned-url',
+    {
+      params: { path },
+    },
+  );
 }
 
 /** 创建文件 */
-export function createFile(data: InfraFileApi.InfraFile) {
+export function createFile(data: InfraFileApi.File) {
   return requestClient.post('/infra/file/create', data);
 }
 
 /** 上传文件 */
-export function uploadFile(data: InfraFileApi.FileUploadReqVO, onUploadProgress?: AxiosProgressEvent) {
+// TODO @芋艿：这里有爆红
+export function uploadFile(
+  data: InfraFileApi.FileUploadReqVO,
+  onUploadProgress?: AxiosProgressEvent,
+) {
   return requestClient.upload('/infra/file/upload', data, { onUploadProgress });
 }

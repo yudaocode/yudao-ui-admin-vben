@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
@@ -11,7 +14,12 @@ import { Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '#/api/infra/codegen';
+import {
+  deleteCodegenTable,
+  downloadCodegen,
+  getCodegenTablePage,
+  syncCodegenFromDB,
+} from '#/api/infra/codegen';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
 import { ref } from 'vue';
@@ -21,11 +29,15 @@ import { useGridColumns, useGridFormSchema } from './data';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const dataSourceConfigList = ref<InfraDataSourceConfigApi.InfraDataSourceConfig[]>([]);
+const dataSourceConfigList = ref<InfraDataSourceConfigApi.DataSourceConfig[]>(
+  [],
+);
 
 /** 获取数据源名称 */
 const getDataSourceConfigName = (dataSourceConfigId: number) => {
-  return dataSourceConfigList.value.find((item) => item.id === dataSourceConfigId)?.name;
+  return dataSourceConfigList.value.find(
+    (item) => item.id === dataSourceConfigId,
+  )?.name;
 };
 
 const [ImportModal, importModalApi] = useVbenModal({
@@ -122,7 +134,10 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
   switch (code) {
     case 'edit': {
       onEdit(row);
@@ -190,16 +205,29 @@ initDataSourceConfig();
 </script>
 <template>
   <Page auto-content-height>
-    <DocAlert title="代码生成（单表）" url="https://doc.iocoder.cn/new-feature/" />
-    <DocAlert title="代码生成（树表）" url="https://doc.iocoder.cn/new-feature/tree/" />
-    <DocAlert title="代码生成（主子表）" url="https://doc.iocoder.cn/new-feature/master-sub/" />
+    <DocAlert
+      title="代码生成（单表）"
+      url="https://doc.iocoder.cn/new-feature/"
+    />
+    <DocAlert
+      title="代码生成（树表）"
+      url="https://doc.iocoder.cn/new-feature/tree/"
+    />
+    <DocAlert
+      title="代码生成（主子表）"
+      url="https://doc.iocoder.cn/new-feature/master-sub/"
+    />
     <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
 
     <ImportModal @success="onRefresh" />
     <PreviewModal />
     <Grid table-title="代码生成列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onImport" v-access:code="['infra:codegen:create']">
+        <Button
+          type="primary"
+          @click="onImport"
+          v-access:code="['infra:codegen:create']"
+        >
           <Plus class="size-5" />
           导入
         </Button>

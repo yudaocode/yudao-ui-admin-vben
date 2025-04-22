@@ -18,7 +18,7 @@ import { useAssignMenuFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-const menuTree = ref<SystemDeptApi.SystemDept[]>([]); // 菜单树
+const menuTree = ref<SystemDeptApi.Dept[]>([]); // 菜单树
 const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<SystemRoleApi.SystemRole>();
+    const data = modalApi.getData<SystemRoleApi.Role>();
     if (!data || !data.id) {
       return;
     }
@@ -83,7 +83,7 @@ async function loadMenuTree() {
   menuLoading.value = true;
   try {
     const data = await getMenuList();
-    menuTree.value = handleTree(data) as SystemDeptApi.SystemDept[];
+    menuTree.value = handleTree(data) as SystemDeptApi.Dept[];
   } finally {
     menuLoading.value = false;
   }

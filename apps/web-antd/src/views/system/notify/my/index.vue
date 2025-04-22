@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { DocAlert } from '#/components/doc-alert';
-import Detail from './modules/detail.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { MdiCheckboxMarkedCircleOutline } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -14,8 +16,10 @@ import {
   updateAllNotifyMessageRead,
   updateNotifyMessageRead,
 } from '#/api/system/notify/message';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -28,12 +32,12 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onDetail(row: SystemNotifyMessageApi.SystemNotifyMessage) {
+function onDetail(row: SystemNotifyMessageApi.NotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
 /** 标记一条站内信已读 */
-async function onRead(row: SystemNotifyMessageApi.SystemNotifyMessage) {
+async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
   message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -63,7 +67,7 @@ async function onMarkRead() {
     return;
   }
 
-  const ids = rows.map((row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id);
+  const ids = rows.map((row: SystemNotifyMessageApi.NotifyMessage) => row.id);
   message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -99,7 +103,10 @@ async function onMarkAllRead() {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -139,10 +146,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     checkboxConfig: {
-      checkMethod: (params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) => !params.row.readStatus,
+      checkMethod: (params: { row: SystemNotifyMessageApi.NotifyMessage }) =>
+        !params.row.readStatus,
       highlight: true,
     },
-  } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,
+  } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
 });
 </script>
 <template>

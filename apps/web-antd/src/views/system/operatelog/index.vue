@@ -36,7 +36,7 @@ async function onExport() {
 }
 
 /** 查看操作日志详情 */
-function onDetail(row: SystemOperateLogApi.SystemOperateLog) {
+function onDetail(row: SystemOperateLogApi.OperateLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -44,7 +44,7 @@ function onDetail(row: SystemOperateLogApi.SystemOperateLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemOperateLogApi.SystemOperateLog>) {
+}: OnActionClickParams<SystemOperateLogApi.OperateLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -79,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemOperateLogApi.SystemOperateLog>,
+  } as VxeTableGridOptions<SystemOperateLogApi.OperateLog>,
 });
 </script>
 

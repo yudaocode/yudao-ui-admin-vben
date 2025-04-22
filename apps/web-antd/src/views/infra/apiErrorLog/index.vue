@@ -1,20 +1,28 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal } from 'ant-design-vue';
 import { Download } from '@vben/icons';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message, Modal } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { exportApiErrorLog, getApiErrorLogPage, updateApiErrorLogStatus } from '#/api/infra/api-error-log';
-import { downloadByData } from '#/utils/download';
+import {
+  exportApiErrorLog,
+  getApiErrorLogPage,
+  updateApiErrorLogStatus,
+} from '#/api/infra/api-error-log';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
+import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -33,7 +41,7 @@ async function onExport() {
 }
 
 /** 查看 API 错误日志详情 */
-function onDetail(row: InfraApiErrorLogApi.SystemApiErrorLog) {
+function onDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -50,7 +58,7 @@ async function onProcess(id: number, processStatus: number) {
         key: 'action_process_msg',
       });
       onRefresh();
-    }
+    },
   });
 }
 
@@ -58,7 +66,7 @@ async function onProcess(id: number, processStatus: number) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraApiErrorLogApi.SystemApiErrorLog>) {
+}: OnActionClickParams<InfraApiErrorLogApi.ApiErrorLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -101,7 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraApiErrorLogApi.SystemApiErrorLog>,
+  } as VxeTableGridOptions<InfraApiErrorLogApi.ApiErrorLog>,
 });
 </script>
 
@@ -112,7 +120,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="API 错误日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:api-error-log:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:api-error-log:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -37,12 +37,12 @@ function onCreate() {
 }
 
 /** 编辑邮箱账号 */
-function onEdit(row: SystemMailAccountApi.SystemMailAccount) {
+function onEdit(row: SystemMailAccountApi.MailAccount) {
   formModalApi.setData(row).open();
 }
 
 /** 删除邮箱账号 */
-async function onDelete(row: SystemMailAccountApi.SystemMailAccount) {
+async function onDelete(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
     duration: 0,
@@ -64,7 +64,7 @@ async function onDelete(row: SystemMailAccountApi.SystemMailAccount) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailAccountApi.SystemMailAccount>) {
+}: OnActionClickParams<SystemMailAccountApi.MailAccount>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailAccountApi.SystemMailAccount>,
+  } as VxeTableGridOptions<SystemMailAccountApi.MailAccount>,
 });
 </script>
 <template>

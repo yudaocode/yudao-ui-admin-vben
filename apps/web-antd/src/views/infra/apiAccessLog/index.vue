@@ -1,19 +1,26 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button } from 'ant-design-vue';
 import { Download } from '@vben/icons';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { exportApiAccessLog, getApiAccessLogPage } from '#/api/infra/api-access-log';
+import {
+  exportApiAccessLog,
+  getApiAccessLogPage,
+} from '#/api/infra/api-access-log';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -32,7 +39,7 @@ async function onExport() {
 }
 
 /** 查看 API 访问日志详情 */
-function onDetail(row: InfraApiAccessLogApi.SystemApiAccessLog) {
+function onDetail(row: InfraApiAccessLogApi.ApiAccessLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -40,7 +47,7 @@ function onDetail(row: InfraApiAccessLogApi.SystemApiAccessLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraApiAccessLogApi.SystemApiAccessLog>) {
+}: OnActionClickParams<InfraApiAccessLogApi.ApiAccessLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -75,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraApiAccessLogApi.SystemApiAccessLog>,
+  } as VxeTableGridOptions<InfraApiAccessLogApi.ApiAccessLog>,
 });
 </script>
 
@@ -86,7 +93,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="API 访问日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:api-access-log:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:api-access-log:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

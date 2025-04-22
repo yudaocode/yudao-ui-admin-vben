@@ -40,12 +40,12 @@ function onCreate() {
 }
 
 /** 编辑岗位 */
-function onEdit(row: SystemPostApi.SystemPost) {
+function onEdit(row: SystemPostApi.Post) {
   formModalApi.setData(row).open();
 }
 
 /** 删除岗位 */
-async function onDelete(row: SystemPostApi.SystemPost) {
+async function onDelete(row: SystemPostApi.Post) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -64,10 +64,7 @@ async function onDelete(row: SystemPostApi.SystemPost) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemPostApi.SystemPost>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemPostApi.Post>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -106,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemPostApi.SystemPost>,
+  } as VxeTableGridOptions<SystemPostApi.Post>,
 });
 </script>
 

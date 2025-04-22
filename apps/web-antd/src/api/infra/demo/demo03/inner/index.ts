@@ -33,12 +33,17 @@ export namespace Demo03StudentApi {
 
 /** 查询学生分页 */
 export function getDemo03StudentPage(params: PageParam) {
-  return requestClient.get<PageResult<Demo03StudentApi.Demo03Student>>('/infra/demo03-student/page', { params });
+  return requestClient.get<PageResult<Demo03StudentApi.Demo03Student>>(
+    '/infra/demo03-student/page',
+    { params },
+  );
 }
 
 /** 查询学生详情 */
 export function getDemo03Student(id: number) {
-  return requestClient.get<Demo03StudentApi.Demo03Student>(`/infra/demo03-student/get?id=${id}`);
+  return requestClient.get<Demo03StudentApi.Demo03Student>(
+    `/infra/demo03-student/get?id=${id}`,
+  );
 }
 
 /** 新增学生 */

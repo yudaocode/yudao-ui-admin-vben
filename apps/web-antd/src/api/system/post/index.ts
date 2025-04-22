@@ -1,9 +1,10 @@
+import type { PageParam, PageResult } from '@vben/request';
+
 import { requestClient } from '#/api/request';
-import type {PageParam, PageResult} from '@vben/request';
 
 export namespace SystemPostApi {
   /** 岗位信息 */
-  export interface SystemPost {
+  export interface Post {
     id?: number;
     name: string;
     code: string;
@@ -16,28 +17,31 @@ export namespace SystemPostApi {
 
 /** 查询岗位列表 */
 export function getPostPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemPostApi.SystemPost>>('/system/post/page', {
-    params
-  });
+  return requestClient.get<PageResult<SystemPostApi.Post>>(
+    '/system/post/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 获取岗位精简信息列表 */
 export function getSimplePostList() {
-  return requestClient.get<SystemPostApi.SystemPost[]>('/system/post/simple-list');
+  return requestClient.get<SystemPostApi.Post[]>('/system/post/simple-list');
 }
 
- /** 查询岗位详情 */
+/** 查询岗位详情 */
 export function getPost(id: number) {
-  return requestClient.get<SystemPostApi.SystemPost>(`/system/post/get?id=${id}`);
+  return requestClient.get<SystemPostApi.Post>(`/system/post/get?id=${id}`);
 }
 
 /** 新增岗位 */
-export function createPost(data: SystemPostApi.SystemPost) {
+export function createPost(data: SystemPostApi.Post) {
   return requestClient.post('/system/post/create', data);
 }
 
 /** 修改岗位 */
-export function updatePost(data: SystemPostApi.SystemPost) {
+export function updatePost(data: SystemPostApi.Post) {
   return requestClient.put('/system/post/update', data);
 }
 
@@ -49,6 +53,6 @@ export function deletePost(id: number) {
 /** 导出岗位 */
 export function exportPost(params: any) {
   return requestClient.download('/system/post/export', {
-    params
+    params,
   });
 }

@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemDeptApi.SystemDept>();
+const formData = ref<SystemDeptApi.Dept>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['部门'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemDeptApi.SystemDept;
+    const data = (await formApi.getValues()) as SystemDeptApi.Dept;
     try {
       await (formData.value?.id ? updateDept(data) : createDept(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    let data = modalApi.getData<SystemDeptApi.SystemDept>();
+    let data = modalApi.getData<SystemDeptApi.Dept>();
     if (!data) {
       return;
     }

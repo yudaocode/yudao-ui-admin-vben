@@ -64,7 +64,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '模板类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          'number',
+        ),
         class: 'w-full',
         placeholder: '请选择模板类型',
       },
@@ -128,7 +131,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          'number',
+        ),
         allowClear: true,
         placeholder: '请选择模板类型',
       },
@@ -221,7 +227,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>(
+export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

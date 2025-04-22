@@ -2,9 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraConfigApi } from '#/api/infra/config';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
+
+import { getRangePickerDefaultProps } from '#/utils/date';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -73,7 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -88,7 +89,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入参数名称',
         clearable: true,
-      }
+      },
     },
     {
       fieldName: 'key',
@@ -97,7 +98,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入参数键名',
         clearable: true,
-      }
+      },
     },
     {
       fieldName: 'type',
@@ -122,7 +123,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraConfigApi.InfraConfig>(
+export function useGridColumns<T = InfraConfigApi.Config>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

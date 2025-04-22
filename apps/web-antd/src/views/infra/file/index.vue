@@ -1,17 +1,22 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Image } from 'ant-design-vue';
 import { Upload } from '@vben/icons';
-import Form from './modules/form.vue';
 
-import { $t } from '#/locales';
 import { useClipboard } from '@vueuse/core';
+import { Button, Image, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getFilePage, deleteFile } from '#/api/infra/file';
+import { deleteFile, getFilePage } from '#/api/infra/file';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -30,7 +35,7 @@ function onUpload() {
 
 /** 复制链接到剪贴板 */
 const { copy } = useClipboard({ legacy: true });
-async function onCopyUrl(row: InfraFileApi.InfraFile) {
+async function onCopyUrl(row: InfraFileApi.File) {
   if (!row.url) {
     message.error('文件 URL 为空');
     return;
@@ -39,7 +44,7 @@ async function onCopyUrl(row: InfraFileApi.InfraFile) {
   try {
     await copy(row.url);
     message.success('复制成功');
-  } catch (error) {
+  } catch {
     message.error('复制失败');
   }
 }
@@ -52,7 +57,7 @@ function openUrl(url?: string) {
 }
 
 /** 删除文件 */
-async function onDelete(row: InfraFileApi.InfraFile) {
+async function onDelete(row: InfraFileApi.File) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name || row.path]),
     duration: 0,
@@ -65,23 +70,20 @@ async function onDelete(row: InfraFileApi.InfraFile) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraFileApi.InfraFile>) {
+function onActionClick({ code, row }: OnActionClickParams<InfraFileApi.File>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
     case 'copyUrl': {
       onCopyUrl(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
@@ -89,7 +91,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -113,7 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraFileApi.InfraFile>,
+  } as VxeTableGridOptions<InfraFileApi.File>,
 });
 </script>
 
@@ -129,8 +131,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #file-content="{ row }">
         <Image v-if="row.type && row.type.includes('image')" :src="row.url" />
-        <Button v-else-if="row.type && row.type.includes('pdf')" type="link" @click="() => openUrl(row.url)"> 预览 </Button>
-        <Button v-else type="link" @click="() => openUrl(row.url)"> 下载 </Button>
+        <Button
+          v-else-if="row.type && row.type.includes('pdf')"
+          type="link"
+          @click="() => openUrl(row.url)"
+        >
+          预览
+        </Button>
+        <Button v-else type="link" @click="() => openUrl(row.url)">
+          下载
+        </Button>
       </template>
     </Grid>
   </Page>

@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createDemo03Student, getDemo03Student, updateDemo03Student } from '#/api/infra/demo/demo03/inner';
+import {
+  createDemo03Student,
+  getDemo03Student,
+  updateDemo03Student,
+} from '#/api/infra/demo/demo03/inner';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
 import Demo03CourseForm from './demo03-course-form.vue';
@@ -16,7 +22,9 @@ import Demo03GradeForm from './demo03-grade-form.vue';
 const emit = defineEmits(['success']);
 const formData = ref<Demo03StudentApi.Demo03Student>();
 const getTitle = computed(() => {
-  return formData.value?.id ? $t('ui.actionTitle.edit', ['学生']) : $t('ui.actionTitle.create', ['学生']);
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['学生'])
+    : $t('ui.actionTitle.create', ['学生']);
 });
 
 /** 子表的表单 */
@@ -49,7 +57,9 @@ const [Modal, modalApi] = useVbenModal({
     data.demo03Courses = demo03CourseFormRef.value?.getData();
     data.demo03Grade = await demo03GradeFormRef.value?.getValues();
     try {
-      await (formData.value?.id ? updateDemo03Student(data) : createDemo03Student(data));
+      await (formData.value?.id
+        ? updateDemo03Student(data)
+        : createDemo03Student(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -93,7 +103,10 @@ const [Modal, modalApi] = useVbenModal({
     <!-- 子表的表单 -->
     <Tabs v-model:active-key="subTabsName">
       <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
-        <Demo03CourseForm ref="demo03CourseFormRef" :student-id="formData?.id" />
+        <Demo03CourseForm
+          ref="demo03CourseFormRef"
+          :student-id="formData?.id"
+        />
       </Tabs.TabPane>
       <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
         <Demo03GradeForm ref="demo03GradeFormRef" :student-id="formData?.id" />

@@ -1,17 +1,26 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus, } from '@vben/icons';
-import Form from './modules/form.vue';
-
-import { $t } from '#/locales';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getDataSourceConfigList, deleteDataSourceConfig } from '#/api/infra/data-source-config';
-import { useGridColumns } from './data';
 import { onMounted } from 'vue';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
+
+import { Button, message } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteDataSourceConfig,
+  getDataSourceConfigList,
+} from '#/api/infra/data-source-config';
+import { $t } from '#/locales';
+
+import { useGridColumns } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -24,12 +33,12 @@ function onCreate() {
 }
 
 /** 编辑数据源 */
-function onEdit(row: InfraDataSourceConfigApi.InfraDataSourceConfig) {
+function onEdit(row: InfraDataSourceConfigApi.DataSourceConfig) {
   formModalApi.setData(row).open();
 }
 
 /** 删除数据源 */
-async function onDelete(row: InfraDataSourceConfigApi.InfraDataSourceConfig) {
+async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -42,7 +51,7 @@ async function onDelete(row: InfraDataSourceConfigApi.InfraDataSourceConfig) {
       key: 'action_process_msg',
     });
     await handleLoadData();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -51,14 +60,14 @@ async function onDelete(row: InfraDataSourceConfigApi.InfraDataSourceConfig) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraDataSourceConfigApi.InfraDataSourceConfig>) {
+}: OnActionClickParams<InfraDataSourceConfigApi.DataSourceConfig>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -77,10 +86,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: getDataSourceConfigList
-      }
+        query: getDataSourceConfigList,
+      },
     },
-  } as VxeTableGridOptions<InfraDataSourceConfigApi.InfraDataSourceConfig>,
+  } as VxeTableGridOptions<InfraDataSourceConfigApi.DataSourceConfig>,
 });
 
 /** 加载数据 */
@@ -104,7 +113,11 @@ onMounted(() => {
     <FormModal @success="onRefresh" />
     <Grid table-title="数据源列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:data-source-config:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:data-source-config:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['数据源']) }}
         </Button>

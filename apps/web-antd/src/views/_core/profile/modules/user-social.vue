@@ -8,21 +8,25 @@ import { computed, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBindSocialUserList, socialUnbind, socialBind } from '#/api/system/social/user';
+import {
+  getBindSocialUserList,
+  socialUnbind,
+  socialBind,
+} from '#/api/system/social/user';
 import { socialAuthRedirect } from '#/api/core/auth';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
 import { SystemUserSocialTypeEnum } from '#/utils/constants';
 
-const route = useRoute()
+const route = useRoute();
 const emit = defineEmits<{
-  (e: 'update:activeName', v: string): void
-}>()
+  (e: 'update:activeName', v: string): void;
+}>();
 
 /** 已经绑定的平台 */
-const bindList = ref<SystemSocialUserApi.SystemSocialUser[]>([]);
+const bindList = ref<SystemSocialUserApi.SocialUser[]>([]);
 const allBindList = computed<any[]>(() => {
   return Object.values(SystemUserSocialTypeEnum).map((social) => {
-    const socialUser = bindList.value.find(item => item.type === social.type);
+    const socialUser = bindList.value.find((item) => item.type === social.type);
     return {
       ...social,
       socialUser,
@@ -36,7 +40,10 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'type',
       title: '绑定平台',
       minWidth: 100,
-      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE } },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
+      },
     },
     {
       field: 'openid',
@@ -55,9 +62,11 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
       align: 'center',
       fixed: 'right',
       slots: {
-        default: ({ row }: { row: SystemSocialUserApi.SystemSocialUser }) => {
+        default: ({ row }: { row: SystemSocialUserApi.SocialUser }) => {
           return (
-            <Button onClick={() => onUnbind(row)} type="link">解绑</Button>
+            <Button onClick={() => onUnbind(row)} type="link">
+              解绑
+            </Button>
           );
         },
       },
@@ -87,11 +96,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<SystemSocialUserApi.SystemSocialUser>,
+  } as VxeTableGridOptions<SystemSocialUserApi.SocialUser>,
 });
 
 /** 解绑账号 */
-function onUnbind(row: SystemSocialUserApi.SystemSocialUser) {
+function onUnbind(row: SystemSocialUserApi.SocialUser) {
   Modal.confirm({
     type: 'warning',
     title: '提示',
@@ -117,10 +126,11 @@ async function onBind(bind: any) {
   try {
     // 计算 redirectUri
     // tricky: type 需要先 encode 一次，否则钉钉回调会丢失。配合 getUrlValue() 使用
-    const redirectUri = location.origin + '/profile?' + encodeURIComponent(`type=${type}`)
+    const redirectUri =
+      location.origin + '/profile?' + encodeURIComponent(`type=${type}`);
 
     // 进行跳转
-    window.location.href = await socialAuthRedirect(type, redirectUri)
+    window.location.href = await socialAuthRedirect(type, redirectUri);
   } catch (error) {
     console.error('社交绑定处理失败:', error);
   }
@@ -129,32 +139,32 @@ async function onBind(bind: any) {
 /** 监听路由变化，处理社交绑定回调 */
 async function bindSocial() {
   // 社交绑定
-  const type = Number(getUrlValue('type'))
-  const code = route.query.code as string
-  const state = route.query.state as string
+  const type = Number(getUrlValue('type'));
+  const code = route.query.code as string;
+  const state = route.query.state as string;
   if (!code) {
-    return
+    return;
   }
-  await socialBind({ type, code, state })
+  await socialBind({ type, code, state });
   // 提示成功
-  message.success('绑定成功')
-  emit('update:activeName', 'userSocial')
+  message.success('绑定成功');
+  emit('update:activeName', 'userSocial');
   await gridApi.reload();
   // 清理 URL 参数，避免刷新重复触发
-  window.history.replaceState({}, '', location.pathname)
+  window.history.replaceState({}, '', location.pathname);
 }
 
 // TODO @芋艿：后续搞到 util 里；
 // 双层 encode 需要在回调后进行 decode
 function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href))
-  return url.searchParams.get(key) ?? ''
+  const url = new URL(decodeURIComponent(location.href));
+  return url.searchParams.get(key) ?? '';
 }
 
 /** 初始化 */
 onMounted(() => {
-  bindSocial()
-})
+  bindSocial();
+});
 </script>
 
 <template>
@@ -162,7 +172,9 @@ onMounted(() => {
     <Grid />
 
     <div class="pb-3">
-      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-2 px-2">
+      <div
+        class="grid grid-cols-1 gap-2 px-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3"
+      >
         <Card v-for="item in allBindList" :key="item.type" class="!mb-2">
           <div class="flex w-full items-center gap-4">
             <Image
@@ -174,7 +186,9 @@ onMounted(() => {
             />
             <div class="flex flex-1 items-center justify-between">
               <div class="flex flex-col">
-                <h4 class="mb-[4px] text-[14px] text-black/85 dark:text-white/85">
+                <h4
+                  class="mb-[4px] text-[14px] text-black/85 dark:text-white/85"
+                >
                   {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
                 </h4>
                 <span class="text-black/45 dark:text-white/45">
@@ -182,7 +196,9 @@ onMounted(() => {
                     {{ item.socialUser?.nickname || item.socialUser?.openid }}
                   </template>
                   <template v-else>
-                    绑定{{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}账号
+                    绑定{{
+                      getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type)
+                    }}账号
                   </template>
                 </span>
               </div>

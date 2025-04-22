@@ -37,12 +37,12 @@ function onCreate() {
 }
 
 /** 编辑 OAuth2 客户端 */
-function onEdit(row: SystemOAuth2ClientApi.SystemOAuth2Client) {
+function onEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 OAuth2 客户端 */
-async function onDelete(row: SystemOAuth2ClientApi.SystemOAuth2Client) {
+async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -64,7 +64,7 @@ async function onDelete(row: SystemOAuth2ClientApi.SystemOAuth2Client) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemOAuth2ClientApi.SystemOAuth2Client>) {
+}: OnActionClickParams<SystemOAuth2ClientApi.OAuth2Client>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemOAuth2ClientApi.SystemOAuth2Client>,
+  } as VxeTableGridOptions<SystemOAuth2ClientApi.OAuth2Client>,
 });
 </script>
 

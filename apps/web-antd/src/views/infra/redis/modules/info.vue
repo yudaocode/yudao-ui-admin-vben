@@ -1,15 +1,20 @@
 <script lang="ts" setup>
-import { type InfraRedisApi } from '#/api/infra/redis';
+import type { InfraRedisApi } from '#/api/infra/redis';
 
 import { Descriptions } from 'ant-design-vue';
 
 defineProps<{
-  redisData?: InfraRedisApi.InfraRedisMonitorInfo;
+  redisData?: InfraRedisApi.RedisMonitorInfo;
 }>();
 </script>
 
 <template>
-  <Descriptions :column="6" bordered size="middle" :label-style="{ width: '138px' }">
+  <Descriptions
+    :column="6"
+    bordered
+    size="middle"
+    :label-style="{ width: '138px' }"
+  >
     <Descriptions.Item label="Redis 版本">
       {{ redisData?.info?.redis_version }}
     </Descriptions.Item>
@@ -29,7 +34,11 @@ defineProps<{
       {{ redisData?.info?.used_memory_human }}
     </Descriptions.Item>
     <Descriptions.Item label="使用 CPU">
-      {{ redisData?.info ? parseFloat(redisData?.info?.used_cpu_user_children).toFixed(2) : '' }}
+      {{
+        redisData?.info
+          ? parseFloat(redisData?.info?.used_cpu_user_children).toFixed(2)
+          : ''
+      }}
     </Descriptions.Item>
     <Descriptions.Item label="内存配置">
       {{ redisData?.info?.maxmemory_human }}

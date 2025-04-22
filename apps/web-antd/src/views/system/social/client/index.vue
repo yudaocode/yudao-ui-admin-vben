@@ -37,12 +37,12 @@ function onCreate() {
 }
 
 /** 编辑社交客户端 */
-function onEdit(row: SystemSocialClientApi.SystemSocialClient) {
+function onEdit(row: SystemSocialClientApi.SocialClient) {
   formModalApi.setData(row).open();
 }
 
 /** 删除社交客户端 */
-async function onDelete(row: SystemSocialClientApi.SystemSocialClient) {
+async function onDelete(row: SystemSocialClientApi.SocialClient) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -64,7 +64,7 @@ async function onDelete(row: SystemSocialClientApi.SystemSocialClient) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSocialClientApi.SystemSocialClient>) {
+}: OnActionClickParams<SystemSocialClientApi.SocialClient>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSocialClientApi.SystemSocialClient>,
+  } as VxeTableGridOptions<SystemSocialClientApi.SocialClient>,
 });
 </script>
 

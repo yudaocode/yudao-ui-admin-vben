@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'ant-design-vue';
 import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
-import type { AxiosProgressEvent } from '#/api/infra/file';
+
 import type { AxiosResponse } from '@vben/request';
 
-import { CloudUpload } from '@vben/icons';
-import { message, Upload, Button } from 'ant-design-vue';
+import type { AxiosProgressEvent } from '#/api/infra/file';
 
-import { $t } from '@vben/locales';
 import { ref, toRefs, watch } from 'vue';
+
+import { CloudUpload } from '@vben/icons';
+import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
+
+import { Button, message, Upload } from 'ant-design-vue';
+
 import { checkFileType } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
@@ -36,7 +40,7 @@ const props = withDefaults(
     resultField?: string;
     // 是否显示下面的描述
     showDescription?: boolean;
-    value?: string[] | string;
+    value?: string | string[];
   }>(),
   {
     value: () => [],

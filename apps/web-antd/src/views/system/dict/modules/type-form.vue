@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useTypeFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemDictTypeApi.SystemDictType>();
+const formData = ref<SystemDictTypeApi.DictType>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['字典类型'])
@@ -39,8 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemDictTypeApi.SystemDictType;
+    const data = (await formApi.getValues()) as SystemDictTypeApi.DictType;
     try {
       await (formData.value?.id ? updateDictType(data) : createDictType(data));
       // 关闭并提示
@@ -59,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemDictTypeApi.SystemDictType>();
+    const data = modalApi.getData<SystemDictTypeApi.DictType>();
     if (!data || !data.id) {
       return;
     }

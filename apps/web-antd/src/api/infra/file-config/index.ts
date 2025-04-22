@@ -1,5 +1,6 @@
-import { requestClient } from '#/api/request';
 import type { PageParam, PageResult } from '@vben/request';
+
+import { requestClient } from '#/api/request';
 
 export namespace InfraFileConfigApi {
   /** 文件客户端配置 */
@@ -18,7 +19,7 @@ export namespace InfraFileConfigApi {
   }
 
   /** 文件配置信息 */
-  export interface InfraFileConfig {
+  export interface FileConfig {
     id?: number;
     name: string;
     storage?: number;
@@ -32,14 +33,19 @@ export namespace InfraFileConfigApi {
 
 /** 查询文件配置列表 */
 export function getFileConfigPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraFileConfigApi.InfraFileConfig>>('/infra/file-config/page', {
-    params
-  });
+  return requestClient.get<PageResult<InfraFileConfigApi.FileConfig>>(
+    '/infra/file-config/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 查询文件配置详情 */
 export function getFileConfig(id: number) {
-  return requestClient.get<InfraFileConfigApi.InfraFileConfig>(`/infra/file-config/get?id=${id}`);
+  return requestClient.get<InfraFileConfigApi.FileConfig>(
+    `/infra/file-config/get?id=${id}`,
+  );
 }
 
 /** 更新文件配置为主配置 */
@@ -48,12 +54,12 @@ export function updateFileConfigMaster(id: number) {
 }
 
 /** 新增文件配置 */
-export function createFileConfig(data: InfraFileConfigApi.InfraFileConfig) {
+export function createFileConfig(data: InfraFileConfigApi.FileConfig) {
   return requestClient.post('/infra/file-config/create', data);
 }
 
 /** 修改文件配置 */
-export function updateFileConfig(data: InfraFileConfigApi.InfraFileConfig) {
+export function updateFileConfig(data: InfraFileConfigApi.FileConfig) {
   return requestClient.put('/infra/file-config/update', data);
 }
 

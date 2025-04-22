@@ -2,9 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { useAccess } from '@vben/access';
+
 import { InfraJobStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -75,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入重试间隔，单位：毫秒。设置为 0 时，无需间隔',
         min: 0,
-        class: 'w-full'
+        class: 'w-full',
       },
       rules: 'required',
     },
@@ -127,7 +128,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = InfraJobApi.InfraJob>(
+export function useGridColumns<T = InfraJobApi.Job>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -147,7 +148,7 @@ export function useGridColumns<T = InfraJobApi.InfraJob>(
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.INFRA_JOB_STATUS, },
+        props: { type: DICT_TYPE.INFRA_JOB_STATUS },
       },
     },
     {
@@ -186,14 +187,16 @@ export function useGridColumns<T = InfraJobApi.InfraJob>(
           {
             code: 'update-status',
             text: '开启',
-            show: (row: any) => hasAccessByCodes(['infra:job:update'])
-              && row.status === InfraJobStatusEnum.STOP,
+            show: (row: any) =>
+              hasAccessByCodes(['infra:job:update']) &&
+              row.status === InfraJobStatusEnum.STOP,
           },
           {
             code: 'update-status',
             text: '暂停',
-            show: (row: any) => hasAccessByCodes(['infra:job:update'])
-              && row.status == InfraJobStatusEnum.NORMAL,
+            show: (row: any) =>
+              hasAccessByCodes(['infra:job:update']) &&
+              row.status == InfraJobStatusEnum.NORMAL,
           },
           {
             code: 'trigger',

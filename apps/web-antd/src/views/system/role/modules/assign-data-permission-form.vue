@@ -20,7 +20,7 @@ import { useAssignDataPermissionFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-const deptTree = ref<SystemDeptApi.SystemDept[]>([]); // 部门树
+const deptTree = ref<SystemDeptApi.Dept[]>([]); // 部门树
 const deptLoading = ref(false); // 加载部门列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<SystemRoleApi.SystemRole>();
+    const data = modalApi.getData<SystemRoleApi.Role>();
     if (!data || !data.id) {
       return;
     }
@@ -86,7 +86,7 @@ async function loadDeptTree() {
   deptLoading.value = true;
   try {
     const data = await getDeptList();
-    deptTree.value = handleTree(data) as SystemDeptApi.SystemDept[];
+    deptTree.value = handleTree(data) as SystemDeptApi.Dept[];
   } finally {
     deptLoading.value = false;
   }

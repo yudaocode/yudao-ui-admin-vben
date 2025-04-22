@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace InfraApiAccessLogApi {
   /** API 访问日志信息 */
-  export interface SystemApiAccessLog {
+  export interface ApiAccessLog {
     id: number;
     traceId: string;
     userId: number;
@@ -30,13 +30,15 @@ export namespace InfraApiAccessLogApi {
 
 /** 查询 API 访问日志列表 */
 export function getApiAccessLogPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraApiAccessLogApi.SystemApiAccessLog>>(
+  return requestClient.get<PageResult<InfraApiAccessLogApi.ApiAccessLog>>(
     '/infra/api-access-log/page',
-    { params }
+    { params },
   );
 }
 
 /** 导出 API 访问日志 */
 export function exportApiAccessLog(params: any) {
-  return requestClient.download('/infra/api-access-log/export-excel', { params });
+  return requestClient.download('/infra/api-access-log/export-excel', {
+    params,
+  });
 }

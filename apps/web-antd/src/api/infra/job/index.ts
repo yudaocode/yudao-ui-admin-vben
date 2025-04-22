@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace InfraJobApi {
   /** 任务信息 */
-  export interface InfraJob {
+  export interface Job {
     id?: number;
     name: string;
     status: number;
@@ -20,21 +20,23 @@ export namespace InfraJobApi {
 
 /** 查询任务列表 */
 export function getJobPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraJobApi.InfraJob>>('/infra/job/page', { params });
+  return requestClient.get<PageResult<InfraJobApi.Job>>('/infra/job/page', {
+    params,
+  });
 }
 
 /** 查询任务详情 */
 export function getJob(id: number) {
-  return requestClient.get<InfraJobApi.InfraJob>(`/infra/job/get?id=${id}`);
+  return requestClient.get<InfraJobApi.Job>(`/infra/job/get?id=${id}`);
 }
 
 /** 新增任务 */
-export function createJob(data: InfraJobApi.InfraJob) {
+export function createJob(data: InfraJobApi.Job) {
   return requestClient.post('/infra/job/create', data);
 }
 
 /** 修改定时任务调度 */
-export function updateJob(data: InfraJobApi.InfraJob) {
+export function updateJob(data: InfraJobApi.Job) {
   return requestClient.put('/infra/job/update', data);
 }
 
@@ -52,7 +54,7 @@ export function exportJob(params: any) {
 export function updateJobStatus(id: number, status: number) {
   const params = {
     id,
-    status
+    status,
   };
   return requestClient.put('/infra/job/update-status', { params });
 }

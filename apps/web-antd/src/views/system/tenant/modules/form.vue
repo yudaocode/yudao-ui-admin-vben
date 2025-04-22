@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemTenantApi.SystemTenant>();
+const formData = ref<SystemTenantApi.Tenant>();
 const getTitle = computed(() => {
   return formData.value
     ? $t('ui.actionTitle.edit', ['租户'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemTenantApi.SystemTenant;
+    const data = (await formApi.getValues()) as SystemTenantApi.Tenant;
     try {
       await (formData.value ? updateTenant(data) : createTenant(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemTenantApi.SystemTenant>();
+    const data = modalApi.getData<SystemTenantApi.Tenant>();
     if (!data || !data.id) {
       return;
     }

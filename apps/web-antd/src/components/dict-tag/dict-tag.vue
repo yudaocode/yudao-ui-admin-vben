@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @芋艿：貌似不用 src 目录
 import { computed } from 'vue';
 
 import { Tag } from 'ant-design-vue';

@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import type { InfraConfigApi } from '#/api/infra/config';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createConfig, updateConfig, getConfig } from '#/api/infra/config';
+import { createConfig, getConfig, updateConfig } from '#/api/infra/config';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<InfraConfigApi.InfraConfig>();
+const formData = ref<InfraConfigApi.Config>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['参数'])
@@ -33,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as InfraConfigApi.InfraConfig;
+    const data = (await formApi.getValues()) as InfraConfigApi.Config;
     try {
       await (formData.value?.id ? updateConfig(data) : createConfig(data));
       // 关闭并提示
@@ -52,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraConfigApi.InfraConfig>();
+    const data = modalApi.getData<InfraConfigApi.Config>();
     if (!data || !data.id) {
       return;
     }

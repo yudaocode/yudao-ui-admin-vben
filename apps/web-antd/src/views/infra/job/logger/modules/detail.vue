@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
-import { Descriptions } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
-import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '#/utils/dict';
-import { formatDateTime } from '@vben/utils';
-import { getJobLog } from '#/api/infra/job-log';
 import { ref } from 'vue';
 
-const formData = ref<InfraJobLogApi.InfraJobLog>();
+import { useVbenModal } from '@vben/common-ui';
+import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
+
+import { getJobLog } from '#/api/infra/job-log';
+import { DictTag } from '#/components/dict-tag';
+import { DICT_TYPE } from '#/utils/dict';
+
+const formData = ref<InfraJobLogApi.JobLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -33,8 +35,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions :column="1" bordered size="middle" class="mx-4" :label-style="{ width: '140px' }">
+  <Modal
+    title="日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      :column="1"
+      bordered
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '140px' }"
+    >
       <Descriptions.Item label="日志编号">
         {{ formData?.id }}
       </Descriptions.Item>
@@ -55,10 +68,13 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.endTime ? formatDateTime(formData.endTime) : '' }}
       </Descriptions.Item>
       <Descriptions.Item label="执行时长">
-        {{ formData?.duration ? formData.duration + ' 毫秒' : '' }}
+        {{ formData?.duration ? `${formData.duration} 毫秒` : '' }}
       </Descriptions.Item>
       <Descriptions.Item label="任务状态">
-        <DictTag :type="DICT_TYPE.INFRA_JOB_LOG_STATUS" :value="formData?.status" />
+        <DictTag
+          :type="DICT_TYPE.INFRA_JOB_LOG_STATUS"
+          :value="formData?.status"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="执行结果">
         {{ formData?.result }}

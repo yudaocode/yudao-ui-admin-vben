@@ -1,22 +1,33 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, History } from '@vben/icons';
-import { Button, message, Modal } from 'ant-design-vue';
-import Form from './modules/form.vue';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
-
-import { $t } from '#/locales';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { useRouter } from 'vue-router';
-import { InfraJobStatusEnum} from '#/utils/constants';
-import { deleteJob, exportJob, getJobPage, runJob, updateJobStatus } from '#/api/infra/job';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Download, History, Plus } from '@vben/icons';
+
+import { Button, message, Modal } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteJob,
+  exportJob,
+  getJobPage,
+  runJob,
+  updateJobStatus,
+} from '#/api/infra/job';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+import { InfraJobStatusEnum } from '#/utils/constants';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
+import Form from './modules/form.vue';
 
 const { push } = useRouter();
 
@@ -47,18 +58,21 @@ function onCreate() {
 }
 
 /** 编辑任务 */
-function onEdit(row: InfraJobApi.InfraJob) {
+function onEdit(row: InfraJobApi.Job) {
   formModalApi.setData(row).open();
 }
 
 /** 查看任务详情 */
-function onDetail(row: InfraJobApi.InfraJob) {
+function onDetail(row: InfraJobApi.Job) {
   detailModalApi.setData({ id: row.id }).open();
 }
 
 /** 更新任务状态 */
-async function onUpdateStatus(row: InfraJobApi.InfraJob) {
-  const status = row.status === InfraJobStatusEnum.STOP ? InfraJobStatusEnum.NORMAL : InfraJobStatusEnum.STOP;
+async function onUpdateStatus(row: InfraJobApi.Job) {
+  const status =
+    row.status === InfraJobStatusEnum.STOP
+      ? InfraJobStatusEnum.NORMAL
+      : InfraJobStatusEnum.STOP;
   const statusText = status === InfraJobStatusEnum.NORMAL ? '启用' : '停用';
   Modal.confirm({
     title: '确认操作',
@@ -70,12 +84,12 @@ async function onUpdateStatus(row: InfraJobApi.InfraJob) {
         key: 'action_process_msg',
       });
       onRefresh();
-    }
+    },
   });
 }
 
 /** 执行一次任务 */
-async function onTrigger(row: InfraJobApi.InfraJob) {
+async function onTrigger(row: InfraJobApi.Job) {
   Modal.confirm({
     title: '确认操作',
     content: `确定执行一次 ${row.name} 吗？`,
@@ -85,12 +99,12 @@ async function onTrigger(row: InfraJobApi.InfraJob) {
         content: $t('ui.actionMessage.operationSuccess'),
         key: 'action_process_msg',
       });
-    }
+    },
   });
 }
 
 /** 跳转到任务日志 */
-function onLog(row?: InfraJobApi.InfraJob) {
+function onLog(row?: InfraJobApi.Job) {
   push({
     name: 'InfraJobLog',
     query: row?.id ? { id: row.id } : {},
@@ -98,7 +112,7 @@ function onLog(row?: InfraJobApi.InfraJob) {
 }
 
 /** 删除任务 */
-async function onDelete(row: InfraJobApi.InfraJob) {
+async function onDelete(row: InfraJobApi.Job) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -117,33 +131,30 @@ async function onDelete(row: InfraJobApi.InfraJob) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraJobApi.InfraJob>) {
+function onActionClick({ code, row }: OnActionClickParams<InfraJobApi.Job>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'update-status': {
-      onUpdateStatus(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
-      break;
-    }
-    case 'trigger': {
-      onTrigger(row);
       break;
     }
     case 'detail': {
       onDetail(row);
       break;
     }
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
     case 'log': {
       onLog(row);
+      break;
+    }
+    case 'trigger': {
+      onTrigger(row);
+      break;
+    }
+    case 'update-status': {
+      onUpdateStatus(row);
       break;
     }
   }
@@ -175,7 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraJobApi.InfraJob>,
+  } as VxeTableGridOptions<InfraJobApi.Job>,
 });
 </script>
 
@@ -189,15 +200,29 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal />
     <Grid table-title="定时任务列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:job:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:job:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['任务']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:job:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:job:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onLog(undefined)" v-access:code="['infra:job:query']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onLog(undefined)"
+          v-access:code="['infra:job:query']"
+        >
           <History class="size-5" />
           执行日志
         </Button>

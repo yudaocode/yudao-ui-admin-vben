@@ -16,12 +16,17 @@ export namespace Demo01ContactApi {
 
 /** 查询示例联系人分页 */
 export function getDemo01ContactPage(params: PageParam) {
-  return requestClient.get<PageResult<Demo01ContactApi.Demo01Contact>>('/infra/demo01-contact/page', { params });
+  return requestClient.get<PageResult<Demo01ContactApi.Demo01Contact>>(
+    '/infra/demo01-contact/page',
+    { params },
+  );
 }
 
 /** 查询示例联系人详情 */
 export function getDemo01Contact(id: number) {
-  return requestClient.get<Demo01ContactApi.Demo01Contact>(`/infra/demo01-contact/get?id=${id}`);
+  return requestClient.get<Demo01ContactApi.Demo01Contact>(
+    `/infra/demo01-contact/get?id=${id}`,
+  );
 }
 
 /** 新增示例联系人 */

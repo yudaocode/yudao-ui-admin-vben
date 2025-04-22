@@ -23,12 +23,7 @@ const goToUrl = () => {
 </script>
 
 <template>
-  <Alert
-    v-if="isDocAlertEnable()"
-    type="info"
-    show-icon
-    class="mb-2 rounded"
-  >
+  <Alert v-if="isDocAlertEnable()" type="info" show-icon class="mb-2 rounded">
     <template #message>
       <Typography.Link @click="goToUrl">
         【{{ title }}】文档地址：{{ url }}

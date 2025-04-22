@@ -2,12 +2,12 @@
 import type { FileType } from 'ant-design-vue/es/upload/interface';
 
 import { useVbenModal } from '@vben/common-ui';
-import { message } from 'ant-design-vue';
-import { Upload } from 'ant-design-vue';
 
-import { $t } from '#/locales';
+import { message, Upload } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
 import { useUpload } from '#/components/upload/use-upload';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -15,11 +15,11 @@ const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
-  schema: useFormSchema().map(item => ({ ...item, label: '' })), // 去除label
+  schema: useFormSchema().map((item) => ({ ...item, label: '' })), // 去除label
   showDefaultActions: false,
   commonConfig: {
     hideLabel: true,
-  }
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
     } finally {
       modalApi.lock(false);
     }
-  }
+  },
 });
 
 /** 上传前 */
@@ -63,7 +63,7 @@ function beforeUpload(file: FileType) {
             name="file"
             :max-count="1"
             accept=".jpg,.png,.gif,.webp"
-            :beforeUpload="beforeUpload"
+            :before-upload="beforeUpload"
             list-type="picture-card"
           >
             <p class="ant-upload-drag-icon">

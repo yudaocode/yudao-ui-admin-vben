@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemOAuth2TokenApi.SystemOAuth2Token>(
+export function useGridColumns<T = SystemOAuth2TokenApi.OAuth2Token>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

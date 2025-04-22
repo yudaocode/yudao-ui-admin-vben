@@ -49,7 +49,7 @@ async function onExport() {
 }
 
 /** 编辑角色 */
-function onEdit(row: SystemRoleApi.SystemRole) {
+function onEdit(row: SystemRoleApi.Role) {
   formModalApi.setData(row).open();
 }
 
@@ -59,7 +59,7 @@ function onCreate() {
 }
 
 /** 删除角色 */
-async function onDelete(row: SystemRoleApi.SystemRole) {
+async function onDelete(row: SystemRoleApi.Role) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -78,20 +78,17 @@ async function onDelete(row: SystemRoleApi.SystemRole) {
 }
 
 /** 分配角色的数据权限 */
-function onAssignDataPermission(row: SystemRoleApi.SystemRole) {
+function onAssignDataPermission(row: SystemRoleApi.Role) {
   assignDataPermissionFormApi.setData(row).open();
 }
 
 /** 分配角色的菜单权限 */
-function onAssignMenu(row: SystemRoleApi.SystemRole) {
+function onAssignMenu(row: SystemRoleApi.Role) {
   assignMenuFormApi.setData(row).open();
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemRoleApi.SystemRole>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemRoleApi.Role>) {
   switch (code) {
     case 'assign-data-permission': {
       onAssignDataPermission(row);
@@ -138,7 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
+  } as VxeTableGridOptions<SystemRoleApi.Role>,
 });
 </script>
 

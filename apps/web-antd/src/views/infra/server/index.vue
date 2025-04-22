@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { Page } from '@vben/common-ui'
-import { IFrame } from '#/components/iframe'
-import { DocAlert } from '#/components/doc-alert'
+import { onMounted, ref } from 'vue';
 
-import { ref, onMounted } from 'vue'
-import { getConfigKey } from '#/api/infra/config'
+import { Page } from '@vben/common-ui';
 
-const loading = ref(true) // 是否加载中
-const src = ref(import.meta.env.VITE_BASE_URL + '/admin/applications')
+import { getConfigKey } from '#/api/infra/config';
+import { DocAlert } from '#/components/doc-alert';
+import { IFrame } from '#/components/iframe';
+
+const loading = ref(true); // 是否加载中
+const src = ref(`${import.meta.env.VITE_BASE_URL}/admin/applications`);
 
 /** 初始化 */
 onMounted(async () => {
@@ -15,14 +16,14 @@ onMounted(async () => {
     // 友情提示：如果访问出现 404 问题：
     // 1）boot 参考 https://doc.iocoder.cn/server-monitor/ 解决；
     // 2）cloud 参考 https://cloud.iocoder.cn/server-monitor/ 解决
-    const data = await getConfigKey('url.spring-boot-admin')
+    const data = await getConfigKey('url.spring-boot-admin');
     if (data && data.length > 0) {
-      src.value = data
+      src.value = data;
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 </script>
 
 <template>

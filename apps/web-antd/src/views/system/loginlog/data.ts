@@ -43,7 +43,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemLoginLogApi.SystemLoginLog>(
+export function useGridColumns<T = SystemLoginLogApi.LoginLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

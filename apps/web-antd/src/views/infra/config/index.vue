@@ -1,17 +1,22 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraConfigApi } from '#/api/infra/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus, Download } from '@vben/icons';
-import Form from './modules/form.vue';
+import { Download, Plus } from '@vben/icons';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getConfigPage, deleteConfig, exportConfig } from '#/api/infra/config';
-import { useGridColumns, useGridFormSchema } from './data';
+import { deleteConfig, exportConfig, getConfigPage } from '#/api/infra/config';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -35,12 +40,12 @@ function onCreate() {
 }
 
 /** 编辑参数 */
-function onEdit(row: InfraConfigApi.InfraConfig) {
+function onEdit(row: InfraConfigApi.Config) {
   formModalApi.setData(row).open();
 }
 
 /** 删除参数 */
-async function onDelete(row: InfraConfigApi.InfraConfig) {
+async function onDelete(row: InfraConfigApi.Config) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -53,7 +58,7 @@ async function onDelete(row: InfraConfigApi.InfraConfig) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -62,14 +67,14 @@ async function onDelete(row: InfraConfigApi.InfraConfig) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraConfigApi.InfraConfig>) {
+}: OnActionClickParams<InfraConfigApi.Config>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -77,7 +82,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -101,7 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraConfigApi.InfraConfig>,
+  } as VxeTableGridOptions<InfraConfigApi.Config>,
 });
 </script>
 
@@ -110,11 +115,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="参数列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:config:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:config:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['参数']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['infra:config:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:config:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

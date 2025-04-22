@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemTenantPackageApi {
   /** 租户套餐信息 */
-  export interface SystemTenantPackage {
+  export interface TenantPackage {
     id: number;
     name: string;
     status: number;
@@ -19,9 +19,9 @@ export namespace SystemTenantPackageApi {
 
 /** 租户套餐列表 */
 export function getTenantPackagePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemTenantPackageApi.SystemTenantPackage>>(
+  return requestClient.get<PageResult<SystemTenantPackageApi.TenantPackage>>(
     '/system/tenant-package/page',
-    { params }
+    { params },
   );
 }
 
@@ -31,12 +31,16 @@ export function getTenantPackage(id: number) {
 }
 
 /** 新增租户套餐 */
-export function createTenantPackage(data: SystemTenantPackageApi.SystemTenantPackage) {
+export function createTenantPackage(
+  data: SystemTenantPackageApi.TenantPackage,
+) {
   return requestClient.post('/system/tenant-package/create', data);
 }
 
 /** 修改租户套餐 */
-export function updateTenantPackage(data: SystemTenantPackageApi.SystemTenantPackage) {
+export function updateTenantPackage(
+  data: SystemTenantPackageApi.TenantPackage,
+) {
   return requestClient.put('/system/tenant-package/update', data);
 }
 
@@ -47,5 +51,7 @@ export function deleteTenantPackage(id: number) {
 
 /** 获取租户套餐精简信息列表 */
 export function getTenantPackageList() {
-  return requestClient.get<SystemTenantPackageApi.SystemTenantPackage[]>('/system/tenant-package/get-simple-list');
+  return requestClient.get<SystemTenantPackageApi.TenantPackage[]>(
+    '/system/tenant-package/get-simple-list',
+  );
 }

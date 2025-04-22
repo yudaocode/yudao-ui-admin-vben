@@ -25,7 +25,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 // }
 
 /** 查看详情 */
-function onDetail(row: SystemSocialUserApi.SystemSocialUser) {
+function onDetail(row: SystemSocialUserApi.SocialUser) {
   detailModalApi.setData(row).open();
 }
 
@@ -33,7 +33,7 @@ function onDetail(row: SystemSocialUserApi.SystemSocialUser) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSocialUserApi.SystemSocialUser>) {
+}: OnActionClickParams<SystemSocialUserApi.SocialUser>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -68,7 +68,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSocialUserApi.SystemSocialUser>,
+  } as VxeTableGridOptions<SystemSocialUserApi.SocialUser>,
 });
 </script>
 

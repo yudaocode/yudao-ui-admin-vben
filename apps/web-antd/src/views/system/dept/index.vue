@@ -26,7 +26,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const userList = ref<SystemUserApi.SystemUser[]>([]);
+const userList = ref<SystemUserApi.User[]>([]);
 
 /** 获取负责人名称 */
 const getLeaderName = (userId: number) => {
@@ -51,17 +51,17 @@ function onCreate() {
 }
 
 /** 添加下级部门 */
-function onAppend(row: SystemDeptApi.SystemDept) {
+function onAppend(row: SystemDeptApi.Dept) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 编辑部门 */
-function onEdit(row: SystemDeptApi.SystemDept) {
+function onEdit(row: SystemDeptApi.Dept) {
   formModalApi.setData(row).open();
 }
 
 /** 删除部门 */
-async function onDelete(row: SystemDeptApi.SystemDept) {
+async function onDelete(row: SystemDeptApi.Dept) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -80,10 +80,7 @@ async function onDelete(row: SystemDeptApi.SystemDept) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemDeptApi.SystemDept>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemDeptApi.Dept>) {
   switch (code) {
     case 'append': {
       onAppend(row);

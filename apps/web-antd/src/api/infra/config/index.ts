@@ -1,9 +1,10 @@
-import { requestClient } from '#/api/request';
 import type { PageParam, PageResult } from '@vben/request';
+
+import { requestClient } from '#/api/request';
 
 export namespace InfraConfigApi {
   /** 参数配置信息 */
-  export interface InfraConfig {
+  export interface Config {
     id?: number;
     category: string;
     name: string;
@@ -18,28 +19,33 @@ export namespace InfraConfigApi {
 
 /** 查询参数列表 */
 export function getConfigPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraConfigApi.InfraConfig>>('/infra/config/page', {
-    params
-  });
+  return requestClient.get<PageResult<InfraConfigApi.Config>>(
+    '/infra/config/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 查询参数详情 */
 export function getConfig(id: number) {
-  return requestClient.get<InfraConfigApi.InfraConfig>(`/infra/config/get?id=${id}`);
+  return requestClient.get<InfraConfigApi.Config>(`/infra/config/get?id=${id}`);
 }
 
 /** 根据参数键名查询参数值 */
 export function getConfigKey(configKey: string) {
-  return requestClient.get<string>(`/infra/config/get-value-by-key?key=${configKey}`);
+  return requestClient.get<string>(
+    `/infra/config/get-value-by-key?key=${configKey}`,
+  );
 }
 
 /** 新增参数 */
-export function createConfig(data: InfraConfigApi.InfraConfig) {
+export function createConfig(data: InfraConfigApi.Config) {
   return requestClient.post('/infra/config/create', data);
 }
 
 /** 修改参数 */
-export function updateConfig(data: InfraConfigApi.InfraConfig) {
+export function updateConfig(data: InfraConfigApi.Config) {
   return requestClient.put('/infra/config/update', data);
 }
 
@@ -51,6 +57,6 @@ export function deleteConfig(id: number) {
 /** 导出参数 */
 export function exportConfig(params: any) {
   return requestClient.download('/infra/config/export', {
-    params
+    params,
   });
 }

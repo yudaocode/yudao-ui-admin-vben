@@ -36,7 +36,7 @@ async function onExport() {
 }
 
 /** 查看短信日志详情 */
-function onDetail(row: SystemSmsLogApi.SystemSmsLog) {
+function onDetail(row: SystemSmsLogApi.SmsLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -44,7 +44,7 @@ function onDetail(row: SystemSmsLogApi.SystemSmsLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemSmsLogApi.SystemSmsLog>) {
+}: OnActionClickParams<SystemSmsLogApi.SmsLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -79,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemSmsLogApi.SystemSmsLog>,
+  } as VxeTableGridOptions<SystemSmsLogApi.SmsLog>,
 });
 </script>
 

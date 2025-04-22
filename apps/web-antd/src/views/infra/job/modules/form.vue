@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import type { InfraJobApi } from '#/api/infra/job';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { createJob, getJob, updateJob } from '#/api/infra/job';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<InfraJobApi.InfraJob>();
+const formData = ref<InfraJobApi.Job>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['任务'])
@@ -24,8 +26,8 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
   commonConfig: {
-    labelWidth: 140
-  }
+    labelWidth: 140,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -36,11 +38,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as InfraJobApi.InfraJob;
+    const data = (await formApi.getValues()) as InfraJobApi.Job;
     try {
-      await (formData.value?.id
-        ? updateJob(data)
-        : createJob(data));
+      await (formData.value?.id ? updateJob(data) : createJob(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -57,7 +57,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraJobApi.InfraJob>();
+    const data = modalApi.getData<InfraJobApi.Job>();
     if (!data || !data.id) {
       return;
     }
@@ -77,4 +77,4 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
-</template> 
+</template>

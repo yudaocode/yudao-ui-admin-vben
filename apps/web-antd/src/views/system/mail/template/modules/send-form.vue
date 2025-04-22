@@ -13,7 +13,7 @@ import { sendMail } from '#/api/system/mail/template';
 import { useSendMailFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemMailTemplateApi.SystemMailTemplate>();
+const formData = ref<SystemMailTemplateApi.MailTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemMailTemplateApi.SystemMailTemplate>();
+    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
     if (!data) {
       return;
     }

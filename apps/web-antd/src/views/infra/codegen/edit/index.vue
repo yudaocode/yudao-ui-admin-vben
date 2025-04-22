@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import BasicInfo from '../modules/basic-info.vue';
-import ColumnInfo from '../modules/column-info.vue';
-import GenerationInfo from '../modules/generation-info.vue';
+import { ref, unref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { Page } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
+
 import { Button, message, Steps } from 'ant-design-vue';
 
 import { getCodegenTable, updateCodegenTable } from '#/api/infra/codegen';
 import { $t } from '#/locales';
-import { ref, unref } from 'vue';
 
-import { useTabs } from '@vben/hooks';
-import { useRoute, useRouter } from 'vue-router';
+import BasicInfo from '../modules/basic-info.vue';
+import ColumnInfo from '../modules/column-info.vue';
+import GenerationInfo from '../modules/generation-info.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -67,7 +69,10 @@ const submitForm = async () => {
     const basicInfo = await basicInfoRef.value?.getValues();
     const columns = columnInfoRef.value?.getData() || unref(formData).columns;
     const generateInfo = await generateInfoRef.value?.getValues();
-    await updateCodegenTable({ table: { ...unref(formData).table, ...basicInfo, ...generateInfo }, columns });
+    await updateCodegenTable({
+      table: { ...unref(formData).table, ...basicInfo, ...generateInfo },
+      columns,
+    });
     // 关闭并提示
     message.success({
       content: $t('ui.actionMessage.operationSuccess'),
@@ -118,15 +123,33 @@ getDetail();
 
 <template>
   <Page auto-content-height v-loading="loading">
-    <div class="flex h-[95%] flex-col rounded-md bg-white p-4 dark:bg-[#1f1f1f] dark:text-gray-300">
-      <Steps type="navigation" v-model:current="currentStep" class="mb-8 rounded shadow-sm dark:bg-[#141414]">
-        <Steps.Step v-for="(step, index) in steps" :key="index" :title="step.title" />
+    <div
+      class="flex h-[95%] flex-col rounded-md bg-white p-4 dark:bg-[#1f1f1f] dark:text-gray-300"
+    >
+      <Steps
+        type="navigation"
+        v-model:current="currentStep"
+        class="mb-8 rounded shadow-sm dark:bg-[#141414]"
+      >
+        <Steps.Step
+          v-for="(step, index) in steps"
+          :key="index"
+          :title="step.title"
+        />
       </Steps>
 
       <div class="flex-1 overflow-auto py-4">
         <!-- 根据当前步骤显示对应的组件 -->
-        <BasicInfo v-show="currentStep === 0" ref="basicInfoRef" :table="formData.table" />
-        <ColumnInfo v-show="currentStep === 1" ref="columnInfoRef" :columns="formData.columns" />
+        <BasicInfo
+          v-show="currentStep === 0"
+          ref="basicInfoRef"
+          :table="formData.table"
+        />
+        <ColumnInfo
+          v-show="currentStep === 1"
+          ref="columnInfoRef"
+          :columns="formData.columns"
+        />
         <GenerationInfo
           v-show="currentStep === 2"
           ref="generateInfoRef"
@@ -137,8 +160,12 @@ getDetail();
 
       <div class="mt-4 flex justify-end space-x-2">
         <Button v-show="currentStep > 0" @click="prevStep">上一步</Button>
-        <Button v-show="currentStep < steps.length - 1" @click="nextStep">下一步</Button>
-        <Button type="primary" :loading="loading" @click="submitForm"> 保存 </Button>
+        <Button v-show="currentStep < steps.length - 1" @click="nextStep">
+          下一步
+        </Button>
+        <Button type="primary" :loading="loading" @click="submitForm">
+          保存
+        </Button>
       </div>
     </div>
   </Page>

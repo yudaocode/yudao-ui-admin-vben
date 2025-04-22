@@ -2,9 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
+import { nextTick, watch } from 'vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/inner';
-import { nextTick, watch } from 'vue';
 
 import { useDemo03GradeGridColumns } from '../data';
 
@@ -31,7 +32,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 刷新表格 */
 const onRefresh = async () => {
-  await gridApi.grid.loadData([await getDemo03GradeByStudentId(props.studentId!)]);
+  await gridApi.grid.loadData([
+    await getDemo03GradeByStudentId(props.studentId!),
+  ]);
 };
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */

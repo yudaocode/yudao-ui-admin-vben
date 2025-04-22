@@ -1,3 +1,1 @@
-import DocAlert from './doc-alert.vue'
-
-export { DocAlert }
+export { default as DocAlert } from './doc-alert.vue';

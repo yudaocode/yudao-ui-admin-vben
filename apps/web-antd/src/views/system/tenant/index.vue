@@ -23,7 +23,7 @@ import { downloadByData } from '#/utils/download';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-const tenantPackageList = ref<SystemTenantPackageApi.SystemTenantPackage[]>([]);
+const tenantPackageList = ref<SystemTenantPackageApi.TenantPackage[]>([]);
 
 /** 获取套餐名称 */
 const getPackageName = (packageId: number) => {
@@ -55,12 +55,12 @@ function onCreate() {
 }
 
 /** 编辑租户 */
-function onEdit(row: SystemTenantApi.SystemTenant) {
+function onEdit(row: SystemTenantApi.Tenant) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户 */
-async function onDelete(row: SystemTenantApi.SystemTenant) {
+async function onDelete(row: SystemTenantApi.Tenant) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -82,7 +82,7 @@ async function onDelete(row: SystemTenantApi.SystemTenant) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemTenantApi.SystemTenant>) {
+}: OnActionClickParams<SystemTenantApi.Tenant>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -121,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemTenantApi.SystemTenant>,
+  } as VxeTableGridOptions<SystemTenantApi.Tenant>,
 });
 
 /** 初始化 */

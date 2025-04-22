@@ -2,20 +2,21 @@
 // TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
-import { Button, DirectoryTree, message, Tabs } from 'ant-design-vue';
-
-import { previewCodegen } from '#/api/infra/codegen';
 import { h, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
+import { Copy } from '@vben/icons';
+
 import { useClipboard } from '@vueuse/core';
+import { Button, DirectoryTree, message, Tabs } from 'ant-design-vue';
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
 import javascript from 'highlight.js/lib/languages/javascript';
 import sql from 'highlight.js/lib/languages/sql';
 import typescript from 'highlight.js/lib/languages/typescript';
 import xml from 'highlight.js/lib/languages/xml';
+
+import { previewCodegen } from '#/api/infra/codegen';
 
 /** 注册代码高亮语言 */
 hljs.registerLanguage('java', java);
@@ -72,7 +73,9 @@ const removeCodeMapKey = (targetKey: any) => {
 /** 复制代码 */
 const copyCode = async () => {
   const { copy } = useClipboard();
-  const file = previewFiles.value.find((item) => item.filePath === activeKey.value);
+  const file = previewFiles.value.find(
+    (item) => item.filePath === activeKey.value,
+  );
   if (file) {
     await copy(file.code);
     message.success('复制成功');
@@ -123,7 +126,18 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
         let packagePath = '';
         while (cursor < paths.length) {
           const nextPath = paths[cursor] || '';
-          if (['controller', 'convert', 'dal', 'dataobject', 'enums', 'mysql', 'service', 'vo'].includes(nextPath)) {
+          if (
+            [
+              'controller',
+              'convert',
+              'dal',
+              'dataobject',
+              'enums',
+              'mysql',
+              'service',
+              'vo',
+            ].includes(nextPath)
+          ) {
             break;
           }
           packagePath = packagePath ? `${packagePath}.${nextPath}` : nextPath;
@@ -213,7 +227,9 @@ const [Modal, modalApi] = useVbenModal({
   <Modal title="代码预览">
     <div class="flex h-full" v-loading="loading">
       <!-- 文件树 -->
-      <div class="h-full w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700">
+      <div
+        class="h-full w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700"
+      >
         <DirectoryTree
           v-if="fileTree.length > 0"
           default-expand-all
@@ -224,15 +240,31 @@ const [Modal, modalApi] = useVbenModal({
       </div>
       <!-- 代码预览 -->
       <div class="h-full w-2/3 overflow-auto pl-4">
-        <Tabs v-model:active-key="activeKey" hide-add type="editable-card" @edit="removeCodeMapKey">
-          <Tabs.TabPane v-for="key in codeMap.keys()" :key="key" :tab="key.split('/').pop()">
-            <div class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+        <Tabs
+          v-model:active-key="activeKey"
+          hide-add
+          type="editable-card"
+          @edit="removeCodeMapKey"
+        >
+          <Tabs.TabPane
+            v-for="key in codeMap.keys()"
+            :key="key"
+            :tab="key.split('/').pop()"
+          >
+            <div
+              class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+            >
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <code v-html="codeMap.get(activeKey)" class="code-highlight"></code>
+              <code
+                v-html="codeMap.get(activeKey)"
+                class="code-highlight"
+              ></code>
             </div>
           </Tabs.TabPane>
           <template #rightExtra>
-            <Button type="primary" ghost @click="copyCode" :icon="h(Copy)"> 复制代码 </Button>
+            <Button type="primary" ghost @click="copyCode" :icon="h(Copy)">
+              复制代码
+            </Button>
           </template>
         </Tabs>
       </div>

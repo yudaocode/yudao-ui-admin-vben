@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
-import type { InfraRedisApi } from '#/api/infra/redis';
 
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+import type { InfraRedisApi } from '#/api/infra/redis';
 
 import { onMounted, ref, watch } from 'vue';
 
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+
 const props = defineProps<{
-  redisData?: InfraRedisApi.InfraRedisMonitorInfo;
+  redisData?: InfraRedisApi.RedisMonitorInfo;
 }>();
 
 const chartRef = ref<EchartsUIType>();
@@ -25,7 +26,7 @@ const renderCommandStats = () => {
   props.redisData.commandStats.forEach((row) => {
     commandStats.push({
       name: row.command,
-      value: row.calls
+      value: row.calls,
     });
     nameList.push(row.command);
   });
@@ -34,11 +35,11 @@ const renderCommandStats = () => {
   renderEcharts({
     title: {
       text: '命令统计',
-      left: 'center'
+      left: 'center',
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{a} <br/>{b} : {c} ({d}%)'
+      formatter: '{a} <br/>{b} : {c} ({d}%)',
     },
     legend: {
       type: 'scroll',
@@ -48,8 +49,8 @@ const renderCommandStats = () => {
       bottom: 20,
       data: nameList,
       textStyle: {
-        color: '#a1a1a1'
-      }
+        color: '#a1a1a1',
+      },
     },
     series: [
       {
@@ -60,29 +61,33 @@ const renderCommandStats = () => {
         data: commandStats,
         roseType: 'radius',
         label: {
-          show: true
+          show: true,
         },
         emphasis: {
           label: {
-            show: true
+            show: true,
           },
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+    ],
   });
 };
 
 /** 监听数据变化，重新渲染图表 */
-watch(() => props.redisData, (newVal) => {
-  if (newVal) {
-    renderCommandStats();
-  }
-}, { deep: true });
+watch(
+  () => props.redisData,
+  (newVal) => {
+    if (newVal) {
+      renderCommandStats();
+    }
+  },
+  { deep: true },
+);
 
 onMounted(() => {
   if (props.redisData) {

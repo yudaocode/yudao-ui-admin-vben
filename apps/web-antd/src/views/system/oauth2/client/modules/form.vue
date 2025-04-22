@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemOAuth2ClientApi.SystemOAuth2Client>();
+const formData = ref<SystemOAuth2ClientApi.OAuth2Client>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', [' OAuth2.0 客户端'])
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as SystemOAuth2ClientApi.SystemOAuth2Client;
+      (await formApi.getValues()) as SystemOAuth2ClientApi.OAuth2Client;
     try {
       await (formData.value?.id
         ? updateOAuth2Client(data)
@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemOAuth2ClientApi.SystemOAuth2Client>();
+    const data = modalApi.getData<SystemOAuth2ClientApi.OAuth2Client>();
     if (!data || !data.id) {
       return;
     }

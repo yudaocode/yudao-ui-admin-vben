@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemLoginLogApi {
   /** 登录日志信息 */
-  export interface SystemLoginLog {
+  export interface LoginLog {
     id: number;
     logType: number;
     traceId: number;
@@ -21,8 +21,9 @@ export namespace SystemLoginLogApi {
 
 /** 查询登录日志列表 */
 export function getLoginLogPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemLoginLogApi.SystemLoginLog>>('/system/login-log/page',
-    { params }
+  return requestClient.get<PageResult<SystemLoginLogApi.LoginLog>>(
+    '/system/login-log/page',
+    { params },
   );
 }
 

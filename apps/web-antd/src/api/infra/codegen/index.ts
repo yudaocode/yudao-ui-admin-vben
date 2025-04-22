@@ -79,21 +79,30 @@ export namespace InfraCodegenApi {
 
 /** 查询列表代码生成表定义 */
 export function getCodegenTableList(dataSourceConfigId: number) {
-  return requestClient.get<InfraCodegenApi.CodegenTable[]>('/infra/codegen/table/list?', {
-    params: { dataSourceConfigId },
-  });
+  return requestClient.get<InfraCodegenApi.CodegenTable[]>(
+    '/infra/codegen/table/list?',
+    {
+      params: { dataSourceConfigId },
+    },
+  );
 }
 
 /** 查询列表代码生成表定义 */
 export function getCodegenTablePage(params: PageParam) {
-  return requestClient.get<PageResult<InfraCodegenApi.CodegenTable>>('/infra/codegen/table/page', { params });
+  return requestClient.get<PageResult<InfraCodegenApi.CodegenTable>>(
+    '/infra/codegen/table/page',
+    { params },
+  );
 }
 
 /** 查询详情代码生成表定义 */
 export function getCodegenTable(tableId: number) {
-  return requestClient.get<InfraCodegenApi.CodegenDetail>('/infra/codegen/detail', {
-    params: { tableId },
-  });
+  return requestClient.get<InfraCodegenApi.CodegenDetail>(
+    '/infra/codegen/detail',
+    {
+      params: { tableId },
+    },
+  );
 }
 
 /** 修改代码生成表定义 */
@@ -110,9 +119,12 @@ export function syncCodegenFromDB(tableId: number) {
 
 /** 预览生成代码 */
 export function previewCodegen(tableId: number) {
-  return requestClient.get<InfraCodegenApi.CodegenPreview[]>('/infra/codegen/preview', {
-    params: { tableId },
-  });
+  return requestClient.get<InfraCodegenApi.CodegenPreview[]>(
+    '/infra/codegen/preview',
+    {
+      params: { tableId },
+    },
+  );
 }
 
 /** 下载生成代码 */
@@ -124,11 +136,16 @@ export function downloadCodegen(tableId: number) {
 
 /** 获得表定义 */
 export function getSchemaTableList(params: any) {
-  return requestClient.get<InfraCodegenApi.DatabaseTable[]>('/infra/codegen/db/table/list', { params });
+  return requestClient.get<InfraCodegenApi.DatabaseTable[]>(
+    '/infra/codegen/db/table/list',
+    { params },
+  );
 }
 
 /** 基于数据库的表结构，创建代码生成器的表定义 */
-export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReqVO) {
+export function createCodegenList(
+  data: InfraCodegenApi.CodegenCreateListReqVO,
+) {
   return requestClient.post('/infra/codegen/create-list', data);
 }
 

@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
-const formData = ref<InfraApiAccessLogApi.SystemApiAccessLog>();
+const formData = ref<InfraApiAccessLogApi.ApiAccessLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -17,7 +19,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraApiAccessLogApi.SystemApiAccessLog>();
+    const data = modalApi.getData<InfraApiAccessLogApi.ApiAccessLog>();
     if (!data || !data.id) {
       return;
     }
@@ -32,8 +34,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="API 访问日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions bordered :column="1" size="middle" class="mx-4" :label-style="{ width: '110px' }">
+  <Modal
+    title="API 访问日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      bordered
+      :column="1"
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '110px' }"
+    >
       <Descriptions.Item label="日志编号">
         {{ formData?.id }}
       </Descriptions.Item>
@@ -63,11 +76,15 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.responseBody }}
       </Descriptions.Item>
       <Descriptions.Item label="请求时间">
-        {{ formatDateTime(formData?.beginTime || '') }} ~ {{ formatDateTime(formData?.endTime || '') }}
+        {{ formatDateTime(formData?.beginTime || '') }} ~
+        {{ formatDateTime(formData?.endTime || '') }}
       </Descriptions.Item>
-      <Descriptions.Item label="请求耗时">{{ formData?.duration }} ms</Descriptions.Item>
+      <Descriptions.Item label="请求耗时">
+        {{ formData?.duration }} ms
+      </Descriptions.Item>
       <Descriptions.Item label="操作结果">
         <div v-if="formData?.resultCode === 0">正常</div>
+        <!-- TODO @芋艿：处理爆红 -->
         <div v-else-if="formData?.resultCode > 0">
           失败 | {{ formData?.resultCode }} | {{ formData?.resultMsg }}
         </div>
@@ -79,7 +96,10 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.operateName }}
       </Descriptions.Item>
       <Descriptions.Item label="操作类型">
-        <DictTag :type="DICT_TYPE.INFRA_OPERATE_TYPE" :value="formData?.operateType" />
+        <DictTag
+          :type="DICT_TYPE.INFRA_OPERATE_TYPE"
+          :value="formData?.operateType"
+        />
       </Descriptions.Item>
     </Descriptions>
   </Modal>

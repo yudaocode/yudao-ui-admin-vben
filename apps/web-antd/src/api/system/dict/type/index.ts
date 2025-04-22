@@ -2,13 +2,13 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemDictTypeApi {
   /** 字典类型 */
-  export type SystemDictType = {
+  export type DictType = {
+    createTime: Date;
     id?: number;
     name: string;
     remark: string;
     status: number;
     type: string;
-    createTime: Date;
   };
 }
 
@@ -28,12 +28,12 @@ export function getDictType(id: number) {
 }
 
 // 新增字典
-export function createDictType(data: SystemDictTypeApi.SystemDictType) {
+export function createDictType(data: SystemDictTypeApi.DictType) {
   return requestClient.post('/system/dict-type/create', data);
 }
 
 // 修改字典
-export function updateDictType(data: SystemDictTypeApi.SystemDictType) {
+export function updateDictType(data: SystemDictTypeApi.DictType) {
   return requestClient.put('/system/dict-type/update', data);
 }
 

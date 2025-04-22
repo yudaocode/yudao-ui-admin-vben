@@ -1,18 +1,24 @@
 <script lang="ts" setup>
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createDataSourceConfig, updateDataSourceConfig, getDataSourceConfig } from '#/api/infra/data-source-config';
+import {
+  createDataSourceConfig,
+  getDataSourceConfig,
+  updateDataSourceConfig,
+} from '#/api/infra/data-source-config';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<InfraDataSourceConfigApi.InfraDataSourceConfig>();
+const formData = ref<InfraDataSourceConfigApi.DataSourceConfig>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['数据源'])
@@ -33,9 +39,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as InfraDataSourceConfigApi.InfraDataSourceConfig;
+    const data =
+      (await formApi.getValues()) as InfraDataSourceConfigApi.DataSourceConfig;
     try {
-      await (formData.value?.id ? updateDataSourceConfig(data) : createDataSourceConfig(data));
+      await (formData.value?.id
+        ? updateDataSourceConfig(data)
+        : createDataSourceConfig(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -52,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraDataSourceConfigApi.InfraDataSourceConfig>();
+    const data = modalApi.getData<InfraDataSourceConfigApi.DataSourceConfig>();
     if (!data || !data.id) {
       return;
     }

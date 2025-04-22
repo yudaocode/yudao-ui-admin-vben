@@ -1,3 +1,1 @@
-import IFrame from './iframe.vue'
-
-export { IFrame }
+export { default as IFrame } from './iframe.vue';

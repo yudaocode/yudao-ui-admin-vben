@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
-import type { SystemUserApi } from '#/api/system/user';
 
 import { useAccess } from '@vben/access';
 
@@ -124,9 +123,9 @@ export function useFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 export function useGridColumns(
-  onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
+  onActionClick?: OnActionClickFn<SystemDeptApi.Dept>,
   getLeaderName?: (userId: number) => string | undefined,
-): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
+): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
     {
       field: 'name',
@@ -192,7 +191,7 @@ export function useGridColumns(
           {
             code: 'delete',
             show: hasAccessByCodes(['system:dept:delete']),
-            disabled: (row: SystemDeptApi.SystemDept) => {
+            disabled: (row: SystemDeptApi.Dept) => {
               return !!(row.children && row.children.length > 0);
             },
           },

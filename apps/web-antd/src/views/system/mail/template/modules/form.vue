@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemMailTemplateApi.SystemMailTemplate>();
+const formData = ref<SystemMailTemplateApi.MailTemplate>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['邮件模板'])
@@ -40,7 +40,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as SystemMailTemplateApi.SystemMailTemplate;
+      (await formApi.getValues()) as SystemMailTemplateApi.MailTemplate;
     try {
       await (formData.value?.id
         ? updateMailTemplate(data)
@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailTemplateApi.SystemMailTemplate>();
+    const data = modalApi.getData<SystemMailTemplateApi.MailTemplate>();
     if (!data || !data.id) {
       return;
     }

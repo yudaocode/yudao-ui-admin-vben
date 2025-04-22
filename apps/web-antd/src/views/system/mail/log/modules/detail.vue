@@ -11,7 +11,7 @@ import { Descriptions } from 'ant-design-vue';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
-const formData = ref<SystemMailLogApi.SystemMailLog>();
+const formData = ref<SystemMailLogApi.MailLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -19,7 +19,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailLogApi.SystemMailLog>();
+    const data = modalApi.getData<SystemMailLogApi.MailLog>();
     if (!data || !data.id) {
       return;
     }

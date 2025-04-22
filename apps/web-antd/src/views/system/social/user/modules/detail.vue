@@ -12,7 +12,7 @@ import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { DICT_TYPE } from '#/utils/dict';
 
-const formData = ref<SystemSocialUserApi.SystemSocialUser>();
+const formData = ref<SystemSocialUserApi.SocialUser>();
 
 const [Modal, modalApi] = useVbenModal({
   title: $t('ui.actionTitle.detail'),

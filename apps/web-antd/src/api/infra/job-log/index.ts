@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace InfraJobLogApi {
   /** 任务日志信息 */
-  export interface InfraJobLog {
+  export interface JobLog {
     id?: number;
     jobId: number;
     handlerName: string;
@@ -22,12 +22,17 @@ export namespace InfraJobLogApi {
 
 /** 查询任务日志列表 */
 export function getJobLogPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraJobLogApi.InfraJobLog>>('/infra/job-log/page', { params });
+  return requestClient.get<PageResult<InfraJobLogApi.JobLog>>(
+    '/infra/job-log/page',
+    { params },
+  );
 }
 
 /** 查询任务日志详情 */
 export function getJobLog(id: number) {
-  return requestClient.get<InfraJobLogApi.InfraJobLog>(`/infra/job-log/get?id=${id}`);
+  return requestClient.get<InfraJobLogApi.JobLog>(
+    `/infra/job-log/get?id=${id}`,
+  );
 }
 
 /** 导出定时任务日志 */

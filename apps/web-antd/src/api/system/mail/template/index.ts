@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemMailTemplateApi {
   /** 邮件模版信息 */
-  export interface SystemMailTemplate {
+  export interface MailTemplate {
     id: number;
     name: string;
     code: string;
@@ -28,24 +28,26 @@ export namespace SystemMailTemplateApi {
 
 /** 查询邮件模版列表 */
 export function getMailTemplatePage(params: PageParam) {
-  return requestClient.get<PageResult<SystemMailTemplateApi.SystemMailTemplate>>(
+  return requestClient.get<PageResult<SystemMailTemplateApi.MailTemplate>>(
     '/system/mail-template/page',
-    { params }
+    { params },
   );
 }
 
 /** 查询邮件模版详情 */
 export function getMailTemplate(id: number) {
-  return requestClient.get<SystemMailTemplateApi.SystemMailTemplate>(`/system/mail-template/get?id=${id}`);
+  return requestClient.get<SystemMailTemplateApi.MailTemplate>(
+    `/system/mail-template/get?id=${id}`,
+  );
 }
 
 /** 新增邮件模版 */
-export function createMailTemplate(data: SystemMailTemplateApi.SystemMailTemplate) {
+export function createMailTemplate(data: SystemMailTemplateApi.MailTemplate) {
   return requestClient.post('/system/mail-template/create', data);
 }
 
 /** 修改邮件模版 */
-export function updateMailTemplate(data: SystemMailTemplateApi.SystemMailTemplate) {
+export function updateMailTemplate(data: SystemMailTemplateApi.MailTemplate) {
   return requestClient.put('/system/mail-template/update', data);
 }
 

@@ -12,7 +12,7 @@ import { ref } from 'vue';
 import { useSendNotifyFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemNotifyTemplateApi.SystemNotifyTemplate>();
+const formData = ref<SystemNotifyTemplateApi.NotifyTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -37,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemNotifyTemplateApi.SystemNotifySendReqVO = {
+    const data: SystemNotifyTemplateApi.NotifySendReqVO = {
       userId: values.userId,
       userType: values.userType,
       templateCode: formData.value?.code || '',
@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
+    const data = modalApi.getData<SystemNotifyTemplateApi.NotifyTemplate>();
     if (!data || !data.id) {
       return;
     }

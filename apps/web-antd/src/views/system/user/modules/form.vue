@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemUserApi.SystemUser>();
+const formData = ref<SystemUserApi.User>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['用户'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemUserApi.SystemUser;
+    const data = (await formApi.getValues()) as SystemUserApi.User;
     try {
       await (formData.value?.id ? updateUser(data) : createUser(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemUserApi.SystemUser>();
+    const data = modalApi.getData<SystemUserApi.User>();
     if (!data || !data.id) {
       return;
     }

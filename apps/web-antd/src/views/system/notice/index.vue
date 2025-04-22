@@ -33,12 +33,12 @@ function onCreate() {
 }
 
 /** 编辑公告 */
-function onEdit(row: SystemNoticeApi.SystemNotice) {
+function onEdit(row: SystemNoticeApi.Notice) {
   formModalApi.setData(row).open();
 }
 
 /** 删除公告 */
-async function onDelete(row: SystemNoticeApi.SystemNotice) {
+async function onDelete(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
     duration: 0,
@@ -57,7 +57,7 @@ async function onDelete(row: SystemNoticeApi.SystemNotice) {
 }
 
 /** 推送公告 */
-async function onPush(row: SystemNoticeApi.SystemNotice) {
+async function onPush(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.processing', ['推送']),
     duration: 0,
@@ -78,7 +78,7 @@ async function onPush(row: SystemNoticeApi.SystemNotice) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemNoticeApi.SystemNotice>) {
+}: OnActionClickParams<SystemNoticeApi.Notice>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -121,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemNoticeApi.SystemNotice>,
+  } as VxeTableGridOptions<SystemNoticeApi.Notice>,
 });
 </script>
 

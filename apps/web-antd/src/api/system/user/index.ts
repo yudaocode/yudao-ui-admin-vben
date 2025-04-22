@@ -1,10 +1,10 @@
-import type {PageParam, PageResult} from '@vben/request';
+import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
 export namespace SystemUserApi {
   /** 用户信息 */
-  export interface SystemUser {
+  export interface User {
     id?: number;
     username: string;
     nickname: string;
@@ -23,21 +23,24 @@ export namespace SystemUserApi {
 
 /** 查询用户管理列表 */
 export function getUserPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemUserApi.SystemUser>>('/system/user/page', { params });
+  return requestClient.get<PageResult<SystemUserApi.User>>(
+    '/system/user/page',
+    { params },
+  );
 }
 
 /** 查询用户详情 */
 export function getUser(id: number) {
-  return requestClient.get<SystemUserApi.SystemUser>(`/system/user/get?id=${id}`);
+  return requestClient.get<SystemUserApi.User>(`/system/user/get?id=${id}`);
 }
 
 /** 新增用户 */
-export function createUser(data: SystemUserApi.SystemUser) {
+export function createUser(data: SystemUserApi.User) {
   return requestClient.post('/system/user/create', data);
 }
 
 /** 修改用户 */
-export function updateUser(data: SystemUserApi.SystemUser) {
+export function updateUser(data: SystemUserApi.User) {
   return requestClient.put('/system/user/update', data);
 }
 
@@ -60,7 +63,7 @@ export function importUserTemplate() {
 export function importUser(file: File, updateSupport: boolean) {
   return requestClient.upload('/system/user/import', {
     file,
-    updateSupport
+    updateSupport,
   });
 }
 
@@ -76,5 +79,5 @@ export function updateUserStatus(id: number, status: number) {
 
 /** 获取用户精简信息列表 */
 export function getSimpleUserList() {
-  return requestClient.get<SystemUserApi.SystemUser[]>('/system/user/simple-list');
+  return requestClient.get<SystemUserApi.User[]>('/system/user/simple-list');
 }

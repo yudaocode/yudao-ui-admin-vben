@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { DocAlert } from '#/components/doc-alert';
@@ -10,7 +13,11 @@ import { Download, Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteNotifyTemplate, exportNotifyTemplate, getNotifyTemplatePage } from '#/api/system/notify/template';
+import {
+  deleteNotifyTemplate,
+  exportNotifyTemplate,
+  getNotifyTemplatePage,
+} from '#/api/system/notify/template';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
@@ -43,17 +50,17 @@ function onCreate() {
 }
 
 /** 编辑站内信模板 */
-function onEdit(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
+function onEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试站内信 */
-function onSend(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
+function onSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除站内信模板 */
-async function onDelete(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
+async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -72,7 +79,10 @@ async function onDelete(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemNotifyTemplateApi.SystemNotifyTemplate>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemNotifyTemplateApi.NotifyTemplate>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -115,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemNotifyTemplateApi.SystemNotifyTemplate>,
+  } as VxeTableGridOptions<SystemNotifyTemplateApi.NotifyTemplate>,
 });
 </script>
 
@@ -127,11 +137,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:notify-template:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:notify-template:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['站内信模板']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:notify-template:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:notify-template:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -201,7 +201,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemOAuth2ClientApi.SystemOAuth2Client>(
+export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

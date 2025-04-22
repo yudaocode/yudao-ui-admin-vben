@@ -1,18 +1,24 @@
 <script lang="ts" setup>
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createFileConfig, updateFileConfig, getFileConfig } from '#/api/infra/file-config';
+import {
+  createFileConfig,
+  getFileConfig,
+  updateFileConfig,
+} from '#/api/infra/file-config';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<InfraFileConfigApi.InfraFileConfig>();
+const formData = ref<InfraFileConfigApi.FileConfig>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['文件配置'])
@@ -33,9 +39,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as InfraFileConfigApi.InfraFileConfig;
+    const data = (await formApi.getValues()) as InfraFileConfigApi.FileConfig;
     try {
-      await (formData.value?.id ? updateFileConfig(data) : createFileConfig(data));
+      await (formData.value?.id
+        ? updateFileConfig(data)
+        : createFileConfig(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -52,7 +60,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraFileConfigApi.InfraFileConfig>();
+    const data = modalApi.getData<InfraFileConfigApi.FileConfig>();
     if (!data || !data.id) {
       return;
     }
@@ -72,4 +80,4 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
-</template> 
+</template>

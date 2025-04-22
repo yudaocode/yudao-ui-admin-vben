@@ -1,15 +1,8 @@
 import { requestClient } from '#/api/request';
 
 export namespace InfraRedisApi {
-  /** Redis 监控信息 */
-  export interface InfraRedisMonitorInfo {
-    info: InfraRedisInfo;
-    dbSize: number;
-    commandStats: InfraRedisCommandStats[];
-  }
-
   /** Redis 信息 */
-  export interface InfraRedisInfo {
+  export interface RedisInfo {
     io_threaded_reads_processed: string;
     tracking_clients: string;
     uptime_in_seconds: string;
@@ -175,14 +168,23 @@ export namespace InfraRedisApi {
   }
 
   /** Redis 命令统计 */
-  export interface InfraRedisCommandStats {
+  export interface RedisCommandStats {
     command: string;
     calls: number;
     usec: number;
+  }
+
+  /** Redis 监控信息 */
+  export interface RedisMonitorInfo {
+    info: RedisInfo;
+    dbSize: number;
+    commandStats: RedisCommandStats[];
   }
 }
 
 /** 获取 Redis 监控信息 */
 export function getRedisMonitorInfo() {
-  return requestClient.get<InfraRedisApi.InfraRedisMonitorInfo>('/infra/redis/get-monitor-info');
+  return requestClient.get<InfraRedisApi.RedisMonitorInfo>(
+    '/infra/redis/get-monitor-info',
+  );
 }

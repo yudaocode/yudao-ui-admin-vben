@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'ant-design-vue';
 import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
-import type { AxiosProgressEvent } from '#/api/infra/file';
+
 import type { AxiosResponse } from '@vben/request';
 
-import { CloudUpload } from '@vben/icons';
-import { message, Upload, Modal } from 'ant-design-vue';
+import type { AxiosProgressEvent } from '#/api/infra/file';
 
-import { $t } from '@vben/locales';
 import { ref, toRefs, watch } from 'vue';
+
+import { CloudUpload } from '@vben/icons';
+import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
+
+import { message, Modal, Upload } from 'ant-design-vue';
+
 import { checkImgType, defaultImageAccepts } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
@@ -37,7 +41,7 @@ const props = withDefaults(
     resultField?: string;
     // 是否显示下面的描述
     showDescription?: boolean;
-    value?: string[] | string;
+    value?: string | string[];
   }>(),
   {
     value: () => [],
@@ -231,7 +235,10 @@ function getValue() {
       @preview="handlePreview"
       @remove="handleRemove"
     >
-      <div v-if="fileList && fileList.length < maxNumber" class="flex flex-col items-center justify-center">
+      <div
+        v-if="fileList && fileList.length < maxNumber"
+        class="flex flex-col items-center justify-center"
+      >
         <CloudUpload />
         <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
       </div>
@@ -241,7 +248,7 @@ function getValue() {
       class="mt-2 flex flex-wrap items-center text-[14px]"
     >
       请上传不超过
-      <div class="mx-1 font-bold text-primary">{{ maxSize }}MB</div>
+      <div class="text-primary mx-1 font-bold">{{ maxSize }}MB</div>
       的
       <div class="text-primary mx-1 font-bold">{{ accept.join('/') }}</div>
       格式文件

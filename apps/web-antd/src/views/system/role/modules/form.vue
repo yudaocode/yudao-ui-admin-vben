@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemRoleApi.SystemRole>();
+const formData = ref<SystemRoleApi.Role>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['角色'])
@@ -35,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemRoleApi.SystemRole;
+    const data = (await formApi.getValues()) as SystemRoleApi.Role;
     try {
       await (formData.value?.id ? updateRole(data) : createRole(data));
       // 关闭并提示
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemRoleApi.SystemRole>();
+    const data = modalApi.getData<SystemRoleApi.Role>();
     if (!data || !data.id) {
       return;
     }

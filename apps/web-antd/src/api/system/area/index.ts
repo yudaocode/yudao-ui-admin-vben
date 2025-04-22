@@ -2,7 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemAreaApi {
   /** 地区信息 */
-  export interface SystemArea {
+  export interface Area {
     id?: number;
     name: string;
     code: string;
@@ -15,7 +15,7 @@ export namespace SystemAreaApi {
 
 /** 获得地区树 */
 export function getAreaTree() {
-  return requestClient.get<SystemAreaApi.SystemArea[]>('/system/area/tree');
+  return requestClient.get<SystemAreaApi.Area[]>('/system/area/tree');
 }
 
 /** 获得 IP 对应的地区名 */

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { useVbenForm } from '#/adapter/form';
-import { getCodegenTableList } from '#/api/infra/codegen';
-import { InfraCodegenTemplateTypeEnum } from '#/utils/constants';
 import { computed, ref, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
+
+import { useVbenForm } from '#/adapter/form';
+import { getCodegenTableList } from '#/api/infra/codegen';
+import { InfraCodegenTemplateTypeEnum } from '#/utils/constants';
 
 import {
   useGenerationInfoBaseFormSchema,
@@ -23,8 +24,12 @@ const tables = ref<InfraCodegenApi.CodegenTable[]>([]);
 
 /** 计算当前模板类型 */
 const currentTemplateType = ref<number>();
-const isTreeTable = computed(() => currentTemplateType.value === InfraCodegenTemplateTypeEnum.TREE);
-const isSubTable = computed(() => currentTemplateType.value === InfraCodegenTemplateTypeEnum.SUB);
+const isTreeTable = computed(
+  () => currentTemplateType.value === InfraCodegenTemplateTypeEnum.TREE,
+);
+const isSubTable = computed(
+  () => currentTemplateType.value === InfraCodegenTemplateTypeEnum.SUB,
+);
 
 /** 基础表单实例 */
 const [BaseForm, baseFormApi] = useVbenForm({
@@ -34,7 +39,10 @@ const [BaseForm, baseFormApi] = useVbenForm({
   schema: useGenerationInfoBaseFormSchema(),
   handleValuesChange: (values) => {
     // 监听模板类型变化
-    if (values.templateType !== undefined && values.templateType !== currentTemplateType.value) {
+    if (
+      values.templateType !== undefined &&
+      values.templateType !== currentTemplateType.value
+    ) {
       currentTemplateType.value = values.templateType;
     }
   },

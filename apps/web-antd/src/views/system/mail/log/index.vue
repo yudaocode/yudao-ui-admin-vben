@@ -25,7 +25,7 @@ function onRefresh() {
 }
 
 /** 查看邮件日志 */
-function onDetail(row: SystemMailLogApi.SystemMailLog) {
+function onDetail(row: SystemMailLogApi.MailLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -33,7 +33,7 @@ function onDetail(row: SystemMailLogApi.SystemMailLog) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailLogApi.SystemMailLog>) {
+}: OnActionClickParams<SystemMailLogApi.MailLog>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -68,7 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailLogApi.SystemMailLog>,
+  } as VxeTableGridOptions<SystemMailLogApi.MailLog>,
 });
 </script>
 <template>

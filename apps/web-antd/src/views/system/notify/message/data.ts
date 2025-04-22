@@ -66,7 +66,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyMessageApi.SystemNotifyMessage>(
+export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

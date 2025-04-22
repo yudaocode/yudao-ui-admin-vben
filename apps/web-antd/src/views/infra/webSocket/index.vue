@@ -1,41 +1,56 @@
 <script lang="ts" setup>
-import type { SystemUserApi } from '#/api/system/user'
+import type { SystemUserApi } from '#/api/system/user';
 
-import { message } from 'ant-design-vue'
-import { Card, Tag, Divider, Input, Button, Select, Avatar, Empty, Badge } from 'ant-design-vue'
-import { Page } from '@vben/common-ui'
-import { DocAlert } from '#/components/doc-alert'
+import { computed, onMounted, ref, watchEffect } from 'vue';
 
-import { formatDate } from '@vben/utils'
-import { useWebSocket } from '@vueuse/core'
-import { getSimpleUserList } from '#/api/system/user'
-import { ref, computed, watchEffect, onMounted } from 'vue'
-import { useAccessStore } from '@vben/stores'
+import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
+import { formatDate } from '@vben/utils';
 
-const accessStore = useAccessStore()
-const refreshToken = accessStore.refreshToken as string
+import { useWebSocket } from '@vueuse/core';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Divider,
+  Empty,
+  Input,
+  message,
+  Select,
+  Tag,
+} from 'ant-design-vue';
+
+import { getSimpleUserList } from '#/api/system/user';
+import { DocAlert } from '#/components/doc-alert';
+
+const accessStore = useAccessStore();
+const refreshToken = accessStore.refreshToken as string;
 
 const server = ref(
-  (import.meta.env.VITE_BASE_URL + '/infra/ws').replace('http', 'ws') +
-    '?token=' +
-    refreshToken // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
-) // WebSocket 服务地址
-const getIsOpen = computed(() => status.value === 'OPEN') // WebSocket 连接是否打开
-const getTagColor = computed(() => (getIsOpen.value ? 'success' : 'red')) // WebSocket 连接的展示颜色
-const getStatusText = computed(() => (getIsOpen.value ? '已连接' : '未连接')) // 连接状态文本
+  `${`${import.meta.env.VITE_BASE_URL}/infra/ws`.replace(
+    'http',
+    'ws',
+  )}?token=${refreshToken}`, // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
+); // WebSocket 服务地址
+const getIsOpen = computed(() => status.value === 'OPEN'); // WebSocket 连接是否打开
+const getTagColor = computed(() => (getIsOpen.value ? 'success' : 'red')); // WebSocket 连接的展示颜色
+const getStatusText = computed(() => (getIsOpen.value ? '已连接' : '未连接')); // 连接状态文本
 
 /** 发起 WebSocket 连接 */
 const { status, data, send, close, open } = useWebSocket(server.value, {
   autoReconnect: true,
-  heartbeat: true
-})
+  heartbeat: true,
+});
 
 /** 监听接收到的数据 */
-const messageList = ref([] as { time: number; text: string; type?: string; userId?: string }[]) // 消息列表
-const messageReverseList = computed(() => messageList.value.slice().reverse())
+const messageList = ref(
+  [] as { text: string; time: number; type?: string; userId?: string }[],
+); // 消息列表
+const messageReverseList = computed(() => [...messageList.value].reverse());
 watchEffect(() => {
   if (!data.value) {
-    return
+    return;
   }
   try {
     // 1. 收到心跳
@@ -44,109 +59,128 @@ watchEffect(() => {
       //   text: '【心跳】',
       //   time: new Date().getTime()
       // })
-      return
+      return;
     }
 
     // 2.1 解析 type 消息类型
-    const jsonMessage = JSON.parse(data.value)
-    const type = jsonMessage.type
-    const content = JSON.parse(jsonMessage.content)
+    const jsonMessage = JSON.parse(data.value);
+    const type = jsonMessage.type;
+    const content = JSON.parse(jsonMessage.content);
     if (!type) {
-      message.error('未知的消息类型：' + data.value)
-      return
+      message.error(`未知的消息类型：${data.value}`);
+      return;
     }
     // 2.2 消息类型：demo-message-receive
     if (type === 'demo-message-receive') {
-      const single = content.single
+      const single = content.single;
       messageList.value.push({
         text: content.text,
-        time: new Date().getTime(),
+        time: Date.now(),
         type: single ? 'single' : 'group',
-        userId: content.fromUserId
-      })
-      return
+        userId: content.fromUserId,
+      });
+      return;
     }
     // 2.3 消息类型：notice-push
     if (type === 'notice-push') {
       messageList.value.push({
         text: content.title,
-        time: new Date().getTime(),
-        type: 'system'
-      })
-      return
+        time: Date.now(),
+        type: 'system',
+      });
+      return;
     }
-    message.error('未处理消息：' + data.value)
+    message.error(`未处理消息：${data.value}`);
   } catch (error) {
-    message.error('处理消息发生异常：' + data.value)
-    console.error(error)
+    message.error(`处理消息发生异常：${data.value}`);
+    console.error(error);
   }
-})
+});
 
 /** 发送消息 */
-const sendText = ref('') // 发送内容
-const sendUserId = ref('') // 发送人
+const sendText = ref(''); // 发送内容
+const sendUserId = ref(''); // 发送人
 const handlerSend = () => {
   if (!sendText.value.trim()) {
-    message.warning('消息内容不能为空')
-    return
+    message.warning('消息内容不能为空');
+    return;
   }
-  
+
   // 1.1 先 JSON 化 message 消息内容
   const messageContent = JSON.stringify({
     text: sendText.value,
-    toUserId: sendUserId.value
-  })
+    toUserId: sendUserId.value,
+  });
   // 1.2 再 JSON 化整个消息
   const jsonMessage = JSON.stringify({
     type: 'demo-message-send',
-    content: messageContent
-  })
+    content: messageContent,
+  });
   // 2. 最后发送消息
-  send(jsonMessage)
-  sendText.value = ''
-}
+  send(jsonMessage);
+  sendText.value = '';
+};
 
 /** 切换 websocket 连接状态 */
 const toggleConnectStatus = () => {
   if (getIsOpen.value) {
-    close()
+    close();
   } else {
-    open()
+    open();
   }
-}
+};
 
 /** 获取消息类型的徽标颜色 */
 const getMessageBadgeColor = (type?: string) => {
   switch (type) {
-    case 'single': return 'blue'
-    case 'group': return 'green'
-    case 'system': return 'red'
-    default: return 'default'
+    case 'group': {
+      return 'green';
+    }
+    case 'single': {
+      return 'blue';
+    }
+    case 'system': {
+      return 'red';
+    }
+    default: {
+      return 'default';
+    }
   }
-}
+};
 
 /** 获取消息类型的文本 */
 const getMessageTypeText = (type?: string) => {
   switch (type) {
-    case 'single': return '单发'
-    case 'group': return '群发'
-    case 'system': return '系统'
-    default: return '未知'
+    case 'group': {
+      return '群发';
+    }
+    case 'single': {
+      return '单发';
+    }
+    case 'system': {
+      return '系统';
+    }
+    default: {
+      return '未知';
+    }
   }
-}
+};
 
-/** 初始化 **/
-const userList = ref<SystemUserApi.SystemUser[]>([]) // 用户列表
+/** 初始化 */
+const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 onMounted(async () => {
-  userList.value = await getSimpleUserList()
-})
+  userList.value = await getSimpleUserList();
+});
 </script>
 
 <template>
   <Page>
-    <DocAlert title="WebSocket 实时通信" url="https://doc.iocoder.cn/websocket/" />
+    <DocAlert
+      title="WebSocket 实时通信"
+      url="https://doc.iocoder.cn/websocket/"
+    />
 
-    <div class="flex flex-col md:flex-row gap-4 mt-4">
+    <div class="mt-4 flex flex-col gap-4 md:flex-row">
       <!-- 左侧：建立连接、发送消息 -->
       <Card :bordered="false" class="w-full md:w-1/2">
         <template #title>
@@ -155,16 +189,17 @@ onMounted(async () => {
             <span class="ml-2 text-lg font-medium">连接管理</span>
           </div>
         </template>
-        <div class="flex items-center mb-4 bg-gray-50 p-3 rounded-lg">
+        <div class="mb-4 flex items-center rounded-lg bg-gray-50 p-3">
           <span class="mr-4 font-medium">连接状态:</span>
           <Tag :color="getTagColor" class="px-3 py-1">{{ getStatusText }}</Tag>
         </div>
-        <div class="flex space-x-2 mb-6">
-          <Input 
-            v-model:value="server" 
+        <div class="mb-6 flex space-x-2">
+          <Input
+            v-model:value="server"
             disabled
             class="rounded-md"
-            size="large">
+            size="large"
+          >
             <template #addonBefore>
               <span class="text-gray-600">服务地址</span>
             </template>
@@ -179,17 +214,18 @@ onMounted(async () => {
             {{ getIsOpen ? '关闭连接' : '开启连接' }}
           </Button>
         </div>
-        
+
         <Divider>
           <span class="text-gray-500">消息发送</span>
         </Divider>
 
-        <Select 
-          v-model:value="sendUserId" 
-          class="w-full mb-3" 
+        <Select
+          v-model:value="sendUserId"
+          class="mb-3 w-full"
           size="large"
           placeholder="请选择接收人"
-          :disabled="!getIsOpen">
+          :disabled="!getIsOpen"
+        >
           <Select.Option key="" value="" label="所有人">
             <div class="flex items-center">
               <Avatar size="small" class="mr-2">全</Avatar>
@@ -203,61 +239,72 @@ onMounted(async () => {
             :label="user.nickname"
           >
             <div class="flex items-center">
-              <Avatar size="small" class="mr-2">{{ user.nickname.slice(0, 1) }}</Avatar>
+              <Avatar size="small" class="mr-2">
+                {{ user.nickname.slice(0, 1) }}
+              </Avatar>
               <span>{{ user.nickname }}</span>
             </div>
           </Select.Option>
         </Select>
-        
+
         <Input.TextArea
           v-model:value="sendText"
           :auto-size="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"
-          class="rounded-lg border-1 border-gray-300"
-          allowClear
+          class="border-1 rounded-lg border-gray-300"
+          allow-clear
           placeholder="请输入你要发送的消息..."
         />
-        
-        <Button 
-          :disabled="!getIsOpen" 
-          block 
-          class="mt-4" 
-          type="primary" 
+
+        <Button
+          :disabled="!getIsOpen"
+          block
+          class="mt-4"
+          type="primary"
           size="large"
-          @click="handlerSend">
+          @click="handlerSend"
+        >
           <template #icon>
-            <span class="i-ant-design:send-outlined mr-1" />
+            <span class="i-ant-design:send-outlined mr-1"></span>
           </template>
           发送消息
         </Button>
       </Card>
-      
+
       <!-- 右侧：消息记录 -->
       <Card :bordered="false" class="w-full md:w-1/2">
         <template #title>
           <div class="flex items-center">
-            <span class="i-ant-design:message-outlined mr-2 text-lg" />
+            <span class="i-ant-design:message-outlined mr-2 text-lg"></span>
             <span class="text-lg font-medium">消息记录</span>
-            <Tag v-if="messageList.length > 0" class="ml-2">{{ messageList.length }} 条</Tag>
+            <Tag v-if="messageList.length > 0" class="ml-2">
+              {{ messageList.length }} 条
+            </Tag>
           </div>
         </template>
-        <div class="h-96 overflow-auto p-2 bg-gray-50 rounded-lg">
+        <div class="h-96 overflow-auto rounded-lg bg-gray-50 p-2">
           <Empty v-if="messageList.length === 0" description="暂无消息记录" />
           <div v-else class="space-y-3">
-            <div 
-              v-for="msg in messageReverseList" 
-              :key="msg.time" 
-              class="p-3 bg-white rounded-lg shadow-sm"
+            <div
+              v-for="msg in messageReverseList"
+              :key="msg.time"
+              class="rounded-lg bg-white p-3 shadow-sm"
             >
-              <div class="flex items-center justify-between mb-1">
+              <div class="mb-1 flex items-center justify-between">
                 <div class="flex items-center">
                   <Badge :color="getMessageBadgeColor(msg.type)" />
-                  <span class="ml-1 text-gray-600 font-medium">{{ getMessageTypeText(msg.type) }}</span>
-                  <span v-if="msg.userId" class="ml-2 text-gray-500">用户 ID: {{ msg.userId }}</span>
+                  <span class="ml-1 font-medium text-gray-600">{{
+                    getMessageTypeText(msg.type)
+                  }}</span>
+                  <span v-if="msg.userId" class="ml-2 text-gray-500"
+                    >用户 ID: {{ msg.userId }}</span
+                  >
                 </div>
-                <span class="text-xs text-gray-400">{{ formatDate(msg.time) }}</span>
+                <span class="text-xs text-gray-400">{{
+                  formatDate(msg.time)
+                }}</span>
               </div>
-              <div class="mt-2 text-gray-800 break-words">
+              <div class="mt-2 break-words text-gray-800">
                 {{ msg.text }}
               </div>
             </div>

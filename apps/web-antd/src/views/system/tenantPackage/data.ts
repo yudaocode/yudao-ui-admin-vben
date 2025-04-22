@@ -94,7 +94,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemTenantPackageApi.SystemTenantPackage>(
+export function useGridColumns<T = SystemTenantPackageApi.TenantPackage>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

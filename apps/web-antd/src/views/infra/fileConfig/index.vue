@@ -1,16 +1,26 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal } from 'ant-design-vue';
 import { Plus } from '@vben/icons';
-import Form from './modules/form.vue';
 
-import { $t } from '#/locales';
+import { Button, message, Modal } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getFileConfigPage, deleteFileConfig, updateFileConfigMaster, testFileConfig } from '#/api/infra/file-config';
+import {
+  deleteFileConfig,
+  getFileConfigPage,
+  testFileConfig,
+  updateFileConfigMaster,
+} from '#/api/infra/file-config';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -28,12 +38,12 @@ function onCreate() {
 }
 
 /** 编辑文件配置 */
-function onEdit(row: InfraFileConfigApi.InfraFileConfig) {
+function onEdit(row: InfraFileConfigApi.FileConfig) {
   formModalApi.setData(row).open();
 }
 
 /** 设为主配置 */
-async function onMaster(row: InfraFileConfigApi.InfraFileConfig) {
+async function onMaster(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating', [row.name]),
     duration: 0,
@@ -46,13 +56,13 @@ async function onMaster(row: InfraFileConfigApi.InfraFileConfig) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
 
 /** 测试文件配置 */
-async function onTest(row: InfraFileConfigApi.InfraFileConfig) {
+async function onTest(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: '测试上传中...',
     duration: 0,
@@ -71,13 +81,13 @@ async function onTest(row: InfraFileConfigApi.InfraFileConfig) {
         window.open(response, '_blank');
       },
     });
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
 
 /** 删除文件配置 */
-async function onDelete(row: InfraFileConfigApi.InfraFileConfig) {
+async function onDelete(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -90,7 +100,7 @@ async function onDelete(row: InfraFileConfigApi.InfraFileConfig) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -99,8 +109,12 @@ async function onDelete(row: InfraFileConfigApi.InfraFileConfig) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<InfraFileConfigApi.InfraFileConfig>) {
+}: OnActionClickParams<InfraFileConfigApi.FileConfig>) {
   switch (code) {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
     case 'edit': {
       onEdit(row);
       break;
@@ -113,16 +127,12 @@ function onActionClick({
       onTest(row);
       break;
     }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
   }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -146,7 +156,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<InfraFileConfigApi.InfraFileConfig>,
+  } as VxeTableGridOptions<InfraFileConfigApi.FileConfig>,
 });
 </script>
 
@@ -155,7 +165,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="文件配置列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['infra:file-config:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:file-config:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['文件配置']) }}
         </Button>

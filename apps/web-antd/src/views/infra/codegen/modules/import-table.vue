@@ -2,16 +2,19 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
+import { reactive } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createCodegenList, getSchemaTableList } from '#/api/infra/codegen';
-import { reactive } from 'vue';
-
-import { $t } from '@vben/locales';
-
-import { useImportTableColumns, useImportTableFormSchema } from '#/views/infra/codegen/data';
+import {
+  useImportTableColumns,
+  useImportTableFormSchema,
+} from '#/views/infra/codegen/data';
 
 /** 定义组件事件 */
 const emit = defineEmits<{
@@ -63,7 +66,11 @@ const [Grid] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<InfraCodegenApi.DatabaseTable>,
   gridEvents: {
-    checkboxChange: ({ records }: { records: InfraCodegenApi.DatabaseTable[] }) => {
+    checkboxChange: ({
+      records,
+    }: {
+      records: InfraCodegenApi.DatabaseTable[];
+    }) => {
       formData.tableNames = records.map((item) => item.name);
     },
   },

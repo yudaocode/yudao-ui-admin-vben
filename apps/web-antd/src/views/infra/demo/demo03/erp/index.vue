@@ -1,21 +1,30 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import Demo03CourseList from './modules/demo03-course-list.vue';
-import Demo03GradeList from './modules/demo03-grade-list.vue';
-import Form from './modules/form.vue';
+import { h, ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+
 import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo03Student, exportDemo03Student, getDemo03StudentPage } from '#/api/infra/demo/demo03/erp';
+import {
+  deleteDemo03Student,
+  exportDemo03Student,
+  getDemo03StudentPage,
+} from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
-import { h, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Demo03CourseList from './modules/demo03-course-list.vue';
+import Demo03GradeList from './modules/demo03-grade-list.vue';
+import Form from './modules/form.vue';
 
 /** 子表的列表 */
 const subTabsName = ref('demo03Course');
@@ -67,14 +76,17 @@ async function onExport() {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo03StudentApi.Demo03Student>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -126,7 +138,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <div>
       <Grid table-title="学生列表">
         <template #toolbar-tools>
-          <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo03-student:create']">
+          <Button
+            :icon="h(Plus)"
+            type="primary"
+            @click="onCreate"
+            v-access:code="['infra:demo03-student:create']"
+          >
             {{ $t('ui.actionTitle.create', ['学生']) }}
           </Button>
           <Button

@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace InfraApiErrorLogApi {
   /** API 错误日志信息 */
-  export interface SystemApiErrorLog {
+  export interface ApiErrorLog {
     id: number;
     traceId: string;
     userId: number;
@@ -34,18 +34,22 @@ export namespace InfraApiErrorLogApi {
 
 /** 查询 API 错误日志列表 */
 export function getApiErrorLogPage(params: PageParam) {
-  return requestClient.get<PageResult<InfraApiErrorLogApi.SystemApiErrorLog>>(
+  return requestClient.get<PageResult<InfraApiErrorLogApi.ApiErrorLog>>(
     '/infra/api-error-log/page',
-    { params }
+    { params },
   );
 }
 
 /** 更新 API 错误日志的处理状态 */
 export function updateApiErrorLogStatus(id: number, processStatus: number) {
-  return requestClient.put(`/infra/api-error-log/update-status?id=${id}&processStatus=${processStatus}`);
+  return requestClient.put(
+    `/infra/api-error-log/update-status?id=${id}&processStatus=${processStatus}`,
+  );
 }
 
 /** 导出 API 错误日志 */
 export function exportApiErrorLog(params: any) {
-  return requestClient.download('/infra/api-error-log/export-excel', { params });
+  return requestClient.download('/infra/api-error-log/export-excel', {
+    params,
+  });
 }

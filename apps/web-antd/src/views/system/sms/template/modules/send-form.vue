@@ -13,7 +13,7 @@ import { sendSms } from '#/api/system/sms/template';
 import { useSendSmsFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemSmsTemplateApi.SystemSmsTemplate>();
+const formData = ref<SystemSmsTemplateApi.SmsTemplate>();
 
 const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
@@ -38,7 +38,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemSmsTemplateApi.SystemSmsSendReqVO = {
+    const data: SystemSmsTemplateApi.SmsSendReqVO = {
       mobile: values.mobile,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SystemSmsTemplate>();
+    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
     if (!data) {
       return;
     }

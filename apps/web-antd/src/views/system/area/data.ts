@@ -28,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions<SystemAreaApi.SystemArea>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemAreaApi.Area>['columns'] {
   return [
     {
       field: 'id',

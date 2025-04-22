@@ -11,7 +11,7 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import { handleTree } from '#/utils/tree';
 
 const emit = defineEmits(['select']);
-const deptList = ref<SystemDeptApi.SystemDept[]>([]); // 部门列表
+const deptList = ref<SystemDeptApi.Dept[]>([]); // 部门列表
 const deptTree = ref<any[]>([]); // 部门树
 const expandedKeys = ref<number[]>([]); // 展开的节点
 const loading = ref(false); // 加载状态

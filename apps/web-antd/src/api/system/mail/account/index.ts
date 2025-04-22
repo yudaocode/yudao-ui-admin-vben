@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemMailAccountApi {
   /** 邮箱账号 */
-  export interface SystemMailAccount {
+  export interface MailAccount {
     id: number;
     mail: string;
     username: string;
@@ -21,24 +21,26 @@ export namespace SystemMailAccountApi {
 
 /** 查询邮箱账号列表 */
 export function getMailAccountPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemMailAccountApi.SystemMailAccount>>(
+  return requestClient.get<PageResult<SystemMailAccountApi.MailAccount>>(
     '/system/mail-account/page',
-    { params }
+    { params },
   );
 }
 
 /** 查询邮箱账号详情 */
 export function getMailAccount(id: number) {
-  return requestClient.get<SystemMailAccountApi.SystemMailAccount>(`/system/mail-account/get?id=${id}`);
+  return requestClient.get<SystemMailAccountApi.MailAccount>(
+    `/system/mail-account/get?id=${id}`,
+  );
 }
 
 /** 新增邮箱账号 */
-export function createMailAccount(data: SystemMailAccountApi.SystemMailAccount) {
+export function createMailAccount(data: SystemMailAccountApi.MailAccount) {
   return requestClient.post('/system/mail-account/create', data);
 }
 
 /** 修改邮箱账号 */
-export function updateMailAccount(data: SystemMailAccountApi.SystemMailAccount) {
+export function updateMailAccount(data: SystemMailAccountApi.MailAccount) {
   return requestClient.put('/system/mail-account/update', data);
 }
 
@@ -49,5 +51,7 @@ export function deleteMailAccount(id: number) {
 
 /** 获得邮箱账号精简列表 */
 export function getSimpleMailAccountList() {
-  return requestClient.get<SystemMailAccountApi.SystemMailAccount[]>('/system/mail-account/simple-list');
+  return requestClient.get<SystemMailAccountApi.MailAccount[]>(
+    '/system/mail-account/simple-list',
+  );
 }

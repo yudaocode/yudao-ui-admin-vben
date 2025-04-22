@@ -1,8 +1,9 @@
-import { type VbenFormSchema } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
 import { useAccess } from '@vben/access';
+
 import { getRangePickerDefaultProps } from '#/utils/date';
 
 const { hasAccessByCodes } = useAccess();
@@ -18,7 +19,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择要上传的文件',
       },
       rules: 'required',
-    }
+    },
   ];
 }
 
@@ -56,7 +57,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraFileApi.InfraFile>(
+export function useGridColumns<T = InfraFileApi.File>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -86,9 +87,9 @@ export function useGridColumns<T = InfraFileApi.InfraFile>(
         if (!cellValue) return '0 B';
         const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         const index = Math.floor(Math.log(cellValue) / Math.log(1024));
-        const size = cellValue / Math.pow(1024, index);
+        const size = cellValue / 1024 ** index;
         const formattedSize = size.toFixed(2);
-        return formattedSize + ' ' + unitArr[index];
+        return `${formattedSize} ${unitArr[index]}`;
       },
     },
     {

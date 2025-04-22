@@ -2,10 +2,12 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { useAccess } from '@vben/access';
-import dayjs from 'dayjs';
 import { formatDateTime } from '@vben/utils';
+
+import dayjs from 'dayjs';
+
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -63,7 +65,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = InfraJobLogApi.InfraJobLog>(
+export function useGridColumns<T = InfraJobLogApi.JobLog>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

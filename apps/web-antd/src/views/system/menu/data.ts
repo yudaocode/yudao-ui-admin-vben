@@ -42,7 +42,7 @@ export function useFormSchema(): VbenFormSchema[] {
           data.unshift({
             id: 0,
             name: '顶级部门',
-          } as SystemMenuApi.SystemMenu);
+          } as SystemMenuApi.Menu);
           return handleTree(data);
         },
         class: 'w-full',
@@ -270,8 +270,8 @@ export function useFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 export function useGridColumns(
-  onActionClick: OnActionClickFn<SystemMenuApi.SystemMenu>,
-): VxeTableGridOptions<SystemMenuApi.SystemMenu>['columns'] {
+  onActionClick: OnActionClickFn<SystemMenuApi.Menu>,
+): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
   return [
     {
       field: 'name',

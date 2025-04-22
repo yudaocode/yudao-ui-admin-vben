@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import type { InfraRedisApi } from '#/api/infra/redis';
 
-import { Card } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+
 import { Page } from '@vben/common-ui';
-import Memory from './modules/memory.vue';
-import Commands from './modules/commands.vue';
-import Info from './modules/info.vue';
+
+import { Card } from 'ant-design-vue';
+
+import { getRedisMonitorInfo } from '#/api/infra/redis';
 import { DocAlert } from '#/components/doc-alert';
 
-import { onMounted, ref } from 'vue';
-import { getRedisMonitorInfo } from '#/api/infra/redis';
+import Commands from './modules/commands.vue';
+import Info from './modules/info.vue';
+import Memory from './modules/memory.vue';
 
-const redisData = ref<InfraRedisApi.InfraRedisMonitorInfo>();
+const redisData = ref<InfraRedisApi.RedisMonitorInfo>();
 
 /** 统一加载 Redis 数据 */
 const loadRedisData = async () => {
@@ -36,7 +39,7 @@ onMounted(() => {
       <Info :redis-data="redisData" />
     </Card>
 
-    <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
       <Card title="内存使用">
         <Memory :redis-data="redisData" />
       </Card>

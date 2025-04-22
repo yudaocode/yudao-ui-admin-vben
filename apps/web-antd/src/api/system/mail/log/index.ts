@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemMailLogApi {
   /** 邮件日志 */
-  export interface SystemMailLog {
+  export interface MailLog {
     id: number;
     userId: number;
     userType: number;
@@ -27,15 +27,17 @@ export namespace SystemMailLogApi {
 
 /** 查询邮件日志列表 */
 export function getMailLogPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemMailLogApi.SystemMailLog>>(
+  return requestClient.get<PageResult<SystemMailLogApi.MailLog>>(
     '/system/mail-log/page',
-    { params }
+    { params },
   );
 }
 
 /** 查询邮件日志详情 */
 export function getMailLog(id: number) {
-  return requestClient.get<SystemMailLogApi.SystemMailLog>(`/system/mail-log/get?id=${id}`);
+  return requestClient.get<SystemMailLogApi.MailLog>(
+    `/system/mail-log/get?id=${id}`,
+  );
 }
 
 /** 重新发送邮件 */

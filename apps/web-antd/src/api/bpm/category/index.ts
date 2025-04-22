@@ -15,12 +15,17 @@ export namespace BpmCategoryApi {
 
 /** 查询流程分类分页 */
 export async function getCategoryPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmCategoryApi.CategoryVO>>('/bpm/category/page', { params });
+  return requestClient.get<PageResult<BpmCategoryApi.CategoryVO>>(
+    '/bpm/category/page',
+    { params },
+  );
 }
 
 /** 查询流程分类详情 */
 export async function getCategory(id: number) {
-  return requestClient.get<BpmCategoryApi.CategoryVO>(`/bpm/category/get?id=${id}`);
+  return requestClient.get<BpmCategoryApi.CategoryVO>(
+    `/bpm/category/get?id=${id}`,
+  );
 }
 
 /** 新增流程分类 */

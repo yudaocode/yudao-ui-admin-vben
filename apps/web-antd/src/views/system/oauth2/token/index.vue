@@ -25,7 +25,7 @@ function onRefresh() {
 }
 
 /** 删除 OAuth2 令牌 */
-async function onDelete(row: SystemOAuth2TokenApi.SystemOAuth2Token) {
+async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', ['令牌']),
     duration: 0,
@@ -47,7 +47,7 @@ async function onDelete(row: SystemOAuth2TokenApi.SystemOAuth2Token) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemOAuth2TokenApi.SystemOAuth2Token>) {
+}: OnActionClickParams<SystemOAuth2TokenApi.OAuth2Token>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -82,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemOAuth2TokenApi.SystemOAuth2Token>,
+  } as VxeTableGridOptions<SystemOAuth2TokenApi.OAuth2Token>,
 });
 </script>
 

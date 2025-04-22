@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions, Input } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions, Input } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
-const formData = ref<InfraApiErrorLogApi.SystemApiErrorLog>();
+const formData = ref<InfraApiErrorLogApi.ApiErrorLog>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -17,7 +19,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraApiErrorLogApi.SystemApiErrorLog>();
+    const data = modalApi.getData<InfraApiErrorLogApi.ApiErrorLog>();
     if (!data || !data.id) {
       return;
     }
@@ -32,8 +34,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="API错误日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions bordered :column="1" size="middle" class="mx-4" :label-style="{ width: '110px' }">
+  <Modal
+    title="API错误日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      bordered
+      :column="1"
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '110px' }"
+    >
       <Descriptions.Item label="日志编号">
         {{ formData?.id }}
       </Descriptions.Item>
@@ -68,7 +81,7 @@ const [Modal, modalApi] = useVbenModal({
       <Descriptions.Item v-if="formData?.exceptionStackTrace" label="异常堆栈">
         <Input.TextArea
           :value="formData?.exceptionStackTrace"
-          :autoSize="{ maxRows: 20 }"
+          :auto-size="{ maxRows: 20 }"
           readonly
         />
       </Descriptions.Item>

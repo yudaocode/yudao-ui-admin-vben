@@ -26,7 +26,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
 
-const accountList = ref<SystemMailAccountApi.SystemMailAccount[]>([]);
+const accountList = ref<SystemMailAccountApi.MailAccount[]>([]);
 
 /** 获取邮箱账号 */
 const getAccountMail = (accountId: number) => {
@@ -54,17 +54,17 @@ function onCreate() {
 }
 
 /** 编辑邮件模板 */
-function onEdit(row: SystemMailTemplateApi.SystemMailTemplate) {
+function onEdit(row: SystemMailTemplateApi.MailTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试邮件 */
-function onSend(row: SystemMailTemplateApi.SystemMailTemplate) {
+function onSend(row: SystemMailTemplateApi.MailTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除邮件模板 */
-async function onDelete(row: SystemMailTemplateApi.SystemMailTemplate) {
+async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -86,7 +86,7 @@ async function onDelete(row: SystemMailTemplateApi.SystemMailTemplate) {
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
+}: OnActionClickParams<SystemMailTemplateApi.MailTemplate>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -129,7 +129,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<SystemMailTemplateApi.SystemMailTemplate>,
+  } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplate>,
 });
 
 /** 初始化 */

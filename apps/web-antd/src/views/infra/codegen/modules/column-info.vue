@@ -55,7 +55,7 @@ defineExpose({
 });
 
 /** 初始化 */
-const dictTypeOptions = ref<SystemDictTypeApi.SystemDictType[]>([]); // 字典类型选项
+const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
 });
@@ -71,7 +71,11 @@ onMounted(async () => {
     <!-- Java 类型 -->
     <template #javaType="{ row, column }">
       <Select v-model:value="row.javaType" style="width: 100%">
-        <Select.Option v-for="option in column.params.options" :key="option.value" :value="option.value">
+        <Select.Option
+          v-for="option in column.params.options"
+          :key="option.value"
+          :value="option.value"
+        >
           {{ option.label }}
         </Select.Option>
       </Select>
@@ -101,7 +105,11 @@ onMounted(async () => {
     <!-- 查询方式 -->
     <template #listOperationCondition="{ row, column }">
       <Select v-model:value="row.listOperationCondition" class="w-full">
-        <Select.Option v-for="option in column.params.options" :key="option.value" :value="option.value">
+        <Select.Option
+          v-for="option in column.params.options"
+          :key="option.value"
+          :value="option.value"
+        >
           {{ option.label }}
         </Select.Option>
       </Select>
@@ -115,7 +123,11 @@ onMounted(async () => {
     <!-- 显示类型 -->
     <template #htmlType="{ row, column }">
       <Select v-model:value="row.htmlType" class="w-full">
-        <Select.Option v-for="option in column.params.options" :key="option.value" :value="option.value">
+        <Select.Option
+          v-for="option in column.params.options"
+          :key="option.value"
+          :value="option.value"
+        >
           {{ option.label }}
         </Select.Option>
       </Select>
@@ -123,8 +135,17 @@ onMounted(async () => {
 
     <!-- 字典类型 -->
     <template #dictType="{ row }">
-      <Select v-model:value="row.dictType" class="w-full" allow-clear show-search>
-        <Select.Option v-for="option in dictTypeOptions" :key="option.type" :value="option.type">
+      <Select
+        v-model:value="row.dictType"
+        class="w-full"
+        allow-clear
+        show-search
+      >
+        <Select.Option
+          v-for="option in dictTypeOptions"
+          :key="option.type"
+          :value="option.type"
+        >
           {{ option.name }}
         </Select.Option>
       </Select>

@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemTenantApi {
   /** 租户信息 */
-  export interface SystemTenant {
+  export interface Tenant {
     id?: number;
     name: string;
     packageId: number;
@@ -19,26 +19,33 @@ export namespace SystemTenantApi {
 
 /** 租户列表 */
 export function getTenantPage(params: PageParam) {
-  return requestClient.get<PageResult<SystemTenantApi.SystemTenant>>('/system/tenant/page', { params });
+  return requestClient.get<PageResult<SystemTenantApi.Tenant>>(
+    '/system/tenant/page',
+    { params },
+  );
 }
 
 /** 获取租户精简信息列表 */
 export function getSimpleTenantList() {
-  return requestClient.get<SystemTenantApi.SystemTenant[]>('/system/tenant/simple-list');
+  return requestClient.get<SystemTenantApi.Tenant[]>(
+    '/system/tenant/simple-list',
+  );
 }
 
 /** 查询租户详情 */
 export function getTenant(id: number) {
-  return requestClient.get<SystemTenantApi.SystemTenant>(`/system/tenant/get?id=${id}`,);
+  return requestClient.get<SystemTenantApi.Tenant>(
+    `/system/tenant/get?id=${id}`,
+  );
 }
 
 /** 新增租户 */
-export function createTenant(data: SystemTenantApi.SystemTenant) {
+export function createTenant(data: SystemTenantApi.Tenant) {
   return requestClient.post('/system/tenant/create', data);
 }
 
 /** 修改租户 */
-export function updateTenant(data: SystemTenantApi.SystemTenant) {
+export function updateTenant(data: SystemTenantApi.Tenant) {
   return requestClient.put('/system/tenant/update', data);
 }
 

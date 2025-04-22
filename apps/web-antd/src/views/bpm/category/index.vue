@@ -1,16 +1,20 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+
 import { Button, message } from 'ant-design-vue';
-import Form from './modules/form.vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryPage } from '#/api/bpm/category';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,

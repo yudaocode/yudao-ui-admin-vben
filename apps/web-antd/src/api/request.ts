@@ -77,7 +77,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
       // 添加租户编号
-      config.headers['tenant-id'] = tenantEnable ? accessStore.tenantId : undefined;
+      config.headers['tenant-id'] = tenantEnable
+        ? accessStore.tenantId
+        : undefined;
       return config;
     },
   });
@@ -131,7 +133,9 @@ baseRequestClient.addRequestInterceptor({
   fulfilled: (config) => {
     const accessStore = useAccessStore();
     // 添加租户编号
-    config.headers['tenant-id'] = tenantEnable? accessStore.tenantId : undefined;
+    config.headers['tenant-id'] = tenantEnable
+      ? accessStore.tenantId
+      : undefined;
     return config;
   },
 });

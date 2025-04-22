@@ -1,19 +1,28 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import Form from './modules/form.vue';
+import { h, ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDemo02Category, exportDemo02Category, getDemo02CategoryList } from '#/api/infra/demo/demo02';
+import {
+  deleteDemo02Category,
+  exportDemo02Category,
+  getDemo02CategoryList,
+} from '#/api/infra/demo/demo02';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
-import { h, ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -73,7 +82,10 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<Demo02CategoryApi.Demo02Category>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo02CategoryApi.Demo02Category>) {
   switch (code) {
     case 'append': {
       onAppend(row);
@@ -135,7 +147,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Button @click="toggleExpand" class="mr-2">
           {{ isExpanded ? '收缩' : '展开' }}
         </Button>
-        <Button :icon="h(Plus)" type="primary" @click="onCreate" v-access:code="['infra:demo02-category:create']">
+        <Button
+          :icon="h(Plus)"
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:demo02-category:create']"
+        >
           {{ $t('ui.actionTitle.create', ['示例分类']) }}
         </Button>
         <Button
