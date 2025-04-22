@@ -11,6 +11,7 @@ import { getCodegenTable, updateCodegenTable } from '#/api/infra/codegen';
 import { $t } from '#/locales';
 import { ref, unref } from 'vue';
 
+import { useTabs } from '@vben/hooks';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -72,7 +73,6 @@ const submitForm = async () => {
       content: $t('ui.actionMessage.operationSuccess'),
       key: 'action_process_msg',
     });
-    // TODO @puhui999：保存的时候，修改的 tab 没关闭哈
     close();
   } catch (error) {
     console.error('保存失败', error);
@@ -80,9 +80,10 @@ const submitForm = async () => {
     hideLoading();
   }
 };
-
+const tabs = useTabs();
 /** 返回列表 */
 const close = () => {
+  tabs.closeCurrentTab();
   router.push('/infra/codegen');
 };
 
@@ -137,9 +138,7 @@ getDetail();
       <div class="mt-4 flex justify-end space-x-2">
         <Button v-show="currentStep > 0" @click="prevStep">上一步</Button>
         <Button v-show="currentStep < steps.length - 1" @click="nextStep">下一步</Button>
-        <Button type="primary" :loading="loading" @click="submitForm">
-          保存
-        </Button>
+        <Button type="primary" :loading="loading" @click="submitForm"> 保存 </Button>
       </div>
     </div>
   </Page>

@@ -1,9 +1,4 @@
 <script lang="ts" setup>
-// TODO @puhui999：bug 同一个预览，点击多次，第二次不展示；
-// TODO @puhui999：体验优化：左边的树，默认展开所有节点；这样体验好点哈
-// TODO @puhui999：展示代码时，前两行是空的，可能要看下
-// TODO @puhui999：要不预览代码，默认全屏？
-
 // TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
@@ -47,27 +42,30 @@ const previewFiles = ref<InfraCodegenApi.CodegenPreview[]>([]);
 const activeKey = ref<string>('');
 
 /** 代码地图 */
-const codeMap = new Map<string, string>();
-const setCodeMode = (key: string, lang: string, code: string) => {
+const codeMap = ref<Map<string, string>>(new Map<string, string>());
+const setCodeMap = (key: string, lang: string, code: string) => {
   // 处理可能的缩进问题，特别是对Java文件
   const trimmedCode = code.trimStart();
-
+  // 如果已有缓存则不重新构建
+  if (codeMap.value.has(key)) {
+    return;
+  }
   try {
     const highlightedCode = hljs.highlight(trimmedCode, {
       language: lang,
     }).value;
-    codeMap.set(key, highlightedCode);
+    codeMap.value.set(key, highlightedCode);
   } catch {
-    codeMap.set(key, trimmedCode);
+    codeMap.value.set(key, trimmedCode);
   }
 };
 const removeCodeMapKey = (targetKey: any) => {
   // 只有一个代码视图时不允许删除
-  if (codeMap.size === 1) {
+  if (codeMap.value.size === 1) {
     return;
   }
-  if (codeMap.has(targetKey)) {
-    codeMap.delete(targetKey);
+  if (codeMap.value.has(targetKey)) {
+    codeMap.value.delete(targetKey);
   }
 };
 
@@ -98,7 +96,7 @@ const handleNodeClick = (_: any[], e: any) => {
   if (!file) return;
 
   const lang = file.filePath.split('.').pop() || '';
-  setCodeMode(activeKey.value, lang, file.code);
+  setCodeMap(activeKey.value, lang, file.code);
 };
 
 /** 处理文件树 */
@@ -179,11 +177,11 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({
   footer: false,
-  class: 'w-3/5',
+  fullscreen: true,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       // 关闭时清除代码视图缓存
-      codeMap.clear();
+      codeMap.value.clear();
       return;
     }
 
@@ -202,7 +200,7 @@ const [Modal, modalApi] = useVbenModal({
         activeKey.value = data[0]?.filePath || '';
         const lang = activeKey.value.split('.').pop() || '';
         const code = data[0]?.code || '';
-        setCodeMode(activeKey.value, lang, code);
+        setCodeMap(activeKey.value, lang, code);
       }
     } finally {
       loading.value = false;
@@ -215,18 +213,22 @@ const [Modal, modalApi] = useVbenModal({
   <Modal title="代码预览">
     <div class="flex h-full" v-loading="loading">
       <!-- 文件树 -->
-      <div class="w-1/3 border-r border-gray-200 pr-4 dark:border-gray-700">
-        <DirectoryTree v-model:active-key="activeKey" @select="handleNodeClick" :tree-data="fileTree" />
+      <div class="h-full w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700">
+        <DirectoryTree
+          v-if="fileTree.length > 0"
+          default-expand-all
+          v-model:active-key="activeKey"
+          @select="handleNodeClick"
+          :tree-data="fileTree"
+        />
       </div>
       <!-- 代码预览 -->
-      <div class="w-2/3 pl-4">
+      <div class="h-full w-2/3 overflow-auto pl-4">
         <Tabs v-model:active-key="activeKey" hide-add type="editable-card" @edit="removeCodeMapKey">
           <Tabs.TabPane v-for="key in codeMap.keys()" :key="key" :tab="key.split('/').pop()">
-            <div class="h-[calc(100%-40px)] overflow-auto">
-              <pre class="overflow-auto rounded-md bg-gray-50 p-4 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
-                  <!-- eslint-disable-next-line vue/no-v-html -->
-                <code v-html="codeMap.get(activeKey)" class="code-highlight"></code>
-              </pre>
+            <div class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <code v-html="codeMap.get(activeKey)" class="code-highlight"></code>
             </div>
           </Tabs.TabPane>
           <template #rightExtra>
@@ -246,13 +248,6 @@ const [Modal, modalApi] = useVbenModal({
   display: block;
   white-space: pre;
   background: transparent;
-}
-
-/* 代码块内容无缩进 */
-:deep(pre) {
-  padding: 1rem;
-  margin: 0;
-  white-space: pre;
 }
 
 /* 关键字 */
