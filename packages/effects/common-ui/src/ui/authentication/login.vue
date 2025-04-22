@@ -14,8 +14,8 @@ import { useVbenForm } from '@vben-core/form-ui';
 import { VbenButton, VbenCheckbox } from '@vben-core/shadcn-ui';
 
 import Title from './auth-title.vue';
-import ThirdPartyLogin from './third-party-login.vue';
 import DocLink from './doc-link.vue';
+import ThirdPartyLogin from './third-party-login.vue';
 
 interface Props extends AuthenticationProps {
   formSchema: VbenFormSchema[];
@@ -179,7 +179,10 @@ defineExpose({
 
     <!-- 第三方登录 -->
     <slot name="third-party-login">
-      <ThirdPartyLogin v-if="showThirdPartyLogin" @third-login="handleThirdLogin" />
+      <ThirdPartyLogin
+        v-if="showThirdPartyLogin"
+        @third-login="handleThirdLogin"
+      />
     </slot>
 
     <slot name="to-register">

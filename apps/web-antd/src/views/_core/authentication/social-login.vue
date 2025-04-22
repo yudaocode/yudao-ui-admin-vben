@@ -1,22 +1,30 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import { type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
+
+import type { AuthApi } from '#/api/core/auth';
 
 import { computed, onMounted, ref } from 'vue';
-
-import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
-import { useAppConfig } from '@vben/hooks';
-
-import { useAuthStore } from '#/store';
-import { useAccessStore } from '@vben/stores';
 import { useRoute, useRouter } from 'vue-router';
 
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
+import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
+import { useAppConfig } from '@vben/hooks';
+import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
 
-const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+import {
+  checkCaptcha,
+  getCaptcha,
+  getTenantByWebsite,
+  getTenantSimpleList,
+} from '#/api/core/auth';
+import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'SocialLogin' });
+
+const { tenantEnable, captchaEnable } = useAppConfig(
+  import.meta.env,
+  import.meta.env.PROD,
+);
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
@@ -41,7 +49,7 @@ const fetchTenantList = async () => {
     tenantList.value = await getTenantSimpleList();
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -74,8 +82,8 @@ const tryLogin = async () => {
     await router.replace({
       query: {
         ...query,
-        redirect: encodeURIComponent(redirect)
-      }
+        redirect: encodeURIComponent(redirect),
+      },
     });
   }
 
@@ -85,7 +93,7 @@ const tryLogin = async () => {
     code: socialCode,
     state: socialState,
   });
-}
+};
 
 /** 处理登录 */
 const handleLogin = async (values: any) => {
@@ -102,7 +110,7 @@ const handleLogin = async (values: any) => {
     socialCode,
     socialState,
   });
-}
+};
 
 /** 验证码通过，执行登录 */
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
@@ -121,8 +129,8 @@ const handleVerifySuccess = async ({ captchaVerification }: any) => {
 
 /** tricky: 配合 login.vue 中，redirectUri 需要对参数进行 encode，需要在回调后进行decode */
 function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href))
-  return url.searchParams.get(key) ?? ''
+  const url = new URL(decodeURIComponent(location.href));
+  return url.searchParams.get(key) ?? '';
 }
 
 /** 组件挂载时获取租户信息 */
@@ -145,11 +153,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
-        .default(null),
+      rules: z.number().positive(),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,

@@ -1,23 +1,31 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import { type AuthApi, checkCaptcha, getCaptcha, socialAuthRedirect } from '#/api/core/auth';
+
+import type { AuthApi } from '#/api/core/auth';
 
 import { computed, onMounted, ref } from 'vue';
-
-import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
-import { useAppConfig } from '@vben/hooks';
-
-import { useAuthStore } from '#/store';
-import { useAccessStore } from '@vben/stores';
 import { useRoute } from 'vue-router';
 
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
-import {message} from 'ant-design-vue';
+import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
+import { useAppConfig } from '@vben/hooks';
+import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
 
-const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+import {
+  checkCaptcha,
+  getCaptcha,
+  getTenantByWebsite,
+  getTenantSimpleList,
+  socialAuthRedirect,
+} from '#/api/core/auth';
+import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
+
+const { tenantEnable, captchaEnable } = useAppConfig(
+  import.meta.env,
+  import.meta.env.PROD,
+);
 
 const { query } = useRoute();
 const authStore = useAuthStore();
@@ -38,9 +46,10 @@ const fetchTenantList = async () => {
     // 获取租户列表、域名对应租户
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
     tenantList.value = await getTenantSimpleList();
+    console.error('tenantList', tenantList.value);
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -72,7 +81,7 @@ const handleLogin = async (values: any) => {
 
   // 无验证码，直接登录
   await authStore.authLogin('username', values);
-}
+};
 
 /** 验证码通过，执行登录 */
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
@@ -95,13 +104,14 @@ const handleThirdLogin = async (type: number) => {
   try {
     // 计算 redirectUri
     // tricky: type、redirect 需要先 encode 一次，否则钉钉回调会丢失。配合 social-login.vue#getUrlValue() 使用
-    const redirectUri =
-      location.origin +
-      '/auth/social-login?' +
-      encodeURIComponent(`type=${type}&redirect=${redirect || '/'}`)
+    const redirectUri = `${
+      location.origin
+    }/auth/social-login?${encodeURIComponent(
+      `type=${type}&redirect=${redirect || '/'}`,
+    )}`;
 
     // 进行跳转
-    window.location.href = await socialAuthRedirect(type, redirectUri)
+    window.location.href = await socialAuthRedirect(type, redirectUri);
   } catch (error) {
     console.error('第三方登录处理失败:', error);
   }
@@ -125,11 +135,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
-        .default(null),
+      rules: z.number().positive(),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,

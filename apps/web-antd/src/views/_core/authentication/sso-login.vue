@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
 import { AuthenticationAuthTitle, VbenButton } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { computed, reactive, ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
 import { authorize, getAuthorize } from '#/api/system/oauth2/open';
 
 defineOptions({ name: 'SSOLogin' });
@@ -14,7 +15,7 @@ const { query } = useRoute(); // 路由参数
 
 const client = ref({
   name: '',
-  logo: ''
+  logo: '',
 }); // 客户端信息
 
 const queryParams = reactive({
@@ -22,7 +23,7 @@ const queryParams = reactive({
   clientId: '',
   redirectUri: '',
   state: '',
-  scopes: [] as string[] // 优先从 query 参数获取；如果未传递，从后端获取
+  scopes: [] as string[], // 优先从 query 参数获取；如果未传递，从后端获取
 }); // URL 上的 client_id、scope 等参数
 
 const loading = ref(false); // 表单是否提交中
@@ -30,7 +31,7 @@ const loading = ref(false); // 表单是否提交中
 /** 初始化授权信息 */
 const init = async () => {
   // 防止在没有登录的情况下循环弹窗
-  if (typeof query.client_id === 'undefined') {
+  if (query.client_id === undefined) {
     return;
   }
   // 解析参数
@@ -60,15 +61,20 @@ const init = async () => {
   let scopes;
   // 如果 params.scope 非空，则过滤下返回的 scopes
   if (queryParams.scopes.length > 0) {
-    scopes = data.scopes.filter(scope => queryParams.scopes.includes(scope.key));
+    scopes = data.scopes.filter((scope) =>
+      queryParams.scopes.includes(scope.key),
+    );
     // 如果 params.scope 为空，则使用返回的 scopes 设置它
   } else {
     scopes = data.scopes;
-    queryParams.scopes = scopes.map(scope => scope.key);
+    queryParams.scopes = scopes.map((scope) => scope.key);
   }
 
   // 2.设置表单的初始值
-  formApi.setFieldValue('scopes', scopes.filter(scope => scope.value).map(scope => scope.key));
+  formApi.setFieldValue(
+    'scopes',
+    scopes.filter((scope) => scope.value).map((scope) => scope.key),
+  );
 };
 
 /** 处理授权的提交 */
@@ -78,8 +84,11 @@ const handleSubmit = async (approved: boolean) => {
   let uncheckedScopes: string[];
   if (approved) {
     // 同意授权，按照用户的选择
-    checkedScopes = (await formApi.getValues()).scopes;
-    uncheckedScopes = queryParams.scopes.filter((item) => checkedScopes.indexOf(item) === -1);
+    const res = await formApi.getValues();
+    checkedScopes = res.scopes;
+    uncheckedScopes = queryParams.scopes.filter(
+      (item) => !checkedScopes.includes(item),
+    );
   } else {
     // 拒绝，则都是取消
     checkedScopes = [];
@@ -101,7 +110,11 @@ const handleSubmit = async (approved: boolean) => {
 };
 
 /** 调用授权 API 接口 */
-const doAuthorize = (autoApprove: boolean, checkedScopes: string[], uncheckedScopes: string[]) => {
+const doAuthorize = (
+  autoApprove: boolean,
+  checkedScopes: string[],
+  uncheckedScopes: string[],
+) => {
   return authorize(
     queryParams.responseType,
     queryParams.clientId,
@@ -109,7 +122,7 @@ const doAuthorize = (autoApprove: boolean, checkedScopes: string[], uncheckedSco
     queryParams.state,
     autoApprove,
     checkedScopes,
-    uncheckedScopes
+    uncheckedScopes,
   );
 };
 
@@ -118,12 +131,15 @@ const formatScope = (scope: string) => {
   // 格式化 scope 授权范围，方便用户理解。
   // 这里仅仅是一个 demo，可以考虑录入到字典数据中，例如说字典类型 "system_oauth2_scope"，它的每个 scope 都是一条字典数据。
   switch (scope) {
-    case 'user.read':
+    case 'user.read': {
       return '访问你的个人信息';
-    case 'user.write':
+    }
+    case 'user.write': {
       return '修改你的个人信息';
-    default:
+    }
+    default: {
       return scope;
+    }
   }
 };
 
@@ -134,11 +150,11 @@ const formSchema = computed((): VbenFormSchema[] => {
       label: '授权范围',
       component: 'CheckboxGroup',
       componentProps: {
-        options: queryParams.scopes.map(scope => ({
+        options: queryParams.scopes.map((scope) => ({
           label: formatScope(scope),
-          value: scope
+          value: scope,
         })),
-        class: 'flex flex-col gap-2'
+        class: 'flex flex-col gap-2',
       },
     },
   ];
@@ -158,7 +174,7 @@ const [Form, formApi] = useVbenForm(
 /** 初始化 */
 onMounted(() => {
   init();
-})
+});
 </script>
 
 <template>

@@ -2,20 +2,24 @@
 import type { VbenFormSchema } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
-import { computed, ref, onMounted } from 'vue';
+import type { AuthApi } from '#/api';
+
+import { computed, onMounted, ref } from 'vue';
 
 import { AuthenticationCodeLogin, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
-import { type AuthApi, sendSmsCode } from '#/api';
 import { useAppConfig } from '@vben/hooks';
+import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
+
 import { message } from 'ant-design-vue';
 
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
-import { useAccessStore } from '@vben/stores';
+import { sendSmsCode } from '#/api';
+import { getTenantByWebsite, getTenantSimpleList } from '#/api/core/auth';
 import { useAuthStore } from '#/store';
-const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 defineOptions({ name: 'CodeLogin' });
+
+const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
@@ -37,7 +41,7 @@ const fetchTenantList = async () => {
     tenantList.value = await getTenantSimpleList();
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -77,11 +81,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
-        .default(null),
+      rules: z.number().positive(),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
@@ -140,7 +140,7 @@ const formSchema = computed((): VbenFormSchema[] => {
           } finally {
             loading.value = false;
           }
-        }
+        },
       },
       fieldName: 'code',
       label: $t('authentication.code'),

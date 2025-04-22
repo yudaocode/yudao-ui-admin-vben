@@ -115,7 +115,9 @@ export type ComponentType =
   | 'DatePicker'
   | 'DefaultButton'
   | 'Divider'
+  | 'FileUpload'
   | 'IconPicker'
+  | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
   | 'InputPassword'
@@ -125,16 +127,14 @@ export type ComponentType =
   | 'RadioGroup'
   | 'RangePicker'
   | 'Rate'
+  | 'RichTextarea'
   | 'Select'
   | 'Space'
   | 'Switch'
   | 'Textarea'
-  | 'RichTextarea'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
-  | 'FileUpload'
-  | 'ImageUpload'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {

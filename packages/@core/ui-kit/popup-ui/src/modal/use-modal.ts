@@ -70,6 +70,13 @@ export function useVbenModal<TParentModalProps extends ModalProps = ModalProps>(
     injectData.options?.onOpenChange?.(isOpen);
   };
 
+  mergedOptions.onClosed = () => {
+    options.onClosed?.();
+    if (options.destroyOnClose) {
+      injectData.reCreateModal?.();
+    }
+  };
+
   const api = new ModalApi(mergedOptions);
 
   const extendedApi: ExtendedModalApi = api as never;
