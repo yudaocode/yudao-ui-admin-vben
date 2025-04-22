@@ -7,8 +7,9 @@ import Antd from 'ant-design-vue';
 // ======================= 自定义组件 =======================
 import { useApiSelect } from '#/components/FormCreate';
 import DictSelect from '#/components/FormCreate/src/components/DictSelect.vue';
+import { useImagesUpload } from '#/components/FormCreate/src/components/useImagesUpload';
 import { Tinymce } from '#/components/tinymce';
-import { FileUpload, ImagesUpload, ImageUpload } from '#/components/upload';
+import { FileUpload, ImageUpload } from '#/components/upload';
 
 const UserSelect = useApiSelect({
   name: 'UserSelect',
@@ -25,6 +26,7 @@ const DeptSelect = useApiSelect({
 const ApiSelect = useApiSelect({
   name: 'ApiSelect',
 });
+const ImagesUpload = useImagesUpload();
 
 const components = [
   ImageUpload,
