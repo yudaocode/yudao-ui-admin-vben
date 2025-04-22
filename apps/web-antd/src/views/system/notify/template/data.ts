@@ -2,12 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
-import { useAccess } from '@vben/access';
-
 import { z } from '#/adapter/form';
-import { CommonStatusEnum } from '#/utils/constants';
+import { getSimpleUserList } from '#/api/system/user';
+import { CommonStatusEnum, UserTypeEnum } from '#/utils/constants';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+
+import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -63,10 +64,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '模板类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
-          'number',
-        ),
+        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
         class: 'w-full',
         placeholder: '请选择模板类型',
       },
@@ -130,10 +128,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
-          'number',
-        ),
+        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
         allowClear: true,
         placeholder: '请选择模板类型',
       },
@@ -171,11 +166,45 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'userType',
+      label: '用户类型',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
+      },
+      rules: z.number().default(UserTypeEnum.MEMBER),
+    },
+    {
       fieldName: 'userId',
-      label: '用户编号',
+      label: '接收人ID',
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
+      },
+      dependencies: {
+        show(values) {
+          return values.userType === UserTypeEnum.MEMBER;
+        },
+        triggerFields: ['userType'],
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'userId',
+      label: '接收人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleUserList,
+        class: 'w-full',
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择接收人',
+      },
+      dependencies: {
+        show(values) {
+          return values.userType === UserTypeEnum.ADMIN;
+        },
+        triggerFields: ['userType'],
       },
       rules: 'required',
     },
@@ -192,9 +221,9 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<
-  T = SystemNotifyTemplateApi.SystemNotifyTemplate,
->(onActionClick: OnActionClickFn<T>): VxeTableGridOptions['columns'] {
+export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',

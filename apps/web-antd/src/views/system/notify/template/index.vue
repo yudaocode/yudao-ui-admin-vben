@@ -1,28 +1,20 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { DocAlert } from '#/components/doc-alert';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteNotifyTemplate,
-  exportNotifyTemplate,
-  getNotifyTemplatePage,
-} from '#/api/system/notify/template';
-import { DocAlert } from '#/components/doc-alert';
+import { deleteNotifyTemplate, exportNotifyTemplate, getNotifyTemplatePage } from '#/api/system/notify/template';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -80,10 +72,7 @@ async function onDelete(row: SystemNotifyTemplateApi.SystemNotifyTemplate) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyTemplateApi.SystemNotifyTemplate>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemNotifyTemplateApi.SystemNotifyTemplate>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -138,20 +127,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:notify-template:create']"
-        >
+        <Button type="primary" @click="onCreate" v-access:code="['system:notify-template:create']">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['站内信模板']) }}
         </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:notify-template:export']"
-        >
+        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:notify-template:export']">
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>
