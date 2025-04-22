@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         感谢对项目的支持与关注。在提出问题之前，请确保你已查看相关开发或使用文档：
-        - http://vben-doc.x-surge.com/
+        - https://doc.iocoder.cn/
   - type: checkboxes
     attributes:
       label: 这个问题是否已经存在？

@@ -1,4 +1,6 @@
-import type { AuthPermissionInfo, Recordable, UserInfo} from '@vben/types';
+import type { AuthPermissionInfo, Recordable, UserInfo } from '@vben/types';
+
+import type { AuthApi } from '#/api';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -9,7 +11,14 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { type AuthApi, getAuthPermissionInfoApi, loginApi, logoutApi, smsLogin, register, socialLogin } from '#/api';
+import {
+  getAuthPermissionInfoApi,
+  loginApi,
+  logoutApi,
+  register,
+  smsLogin,
+  socialLogin,
+} from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -27,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
    * @param onSuccess 登录成功后的回调函数
    */
   async function authLogin(
-    type: 'mobile' | 'username' | 'register' | 'social',
+    type: 'mobile' | 'register' | 'social' | 'username',
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
@@ -35,10 +44,15 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken, refreshToken } = type === 'mobile' ? await smsLogin(params as AuthApi.SmsLoginParams)
-        : type === 'register' ? await register(params as AuthApi.RegisterParams)
-        : type === 'social' ? await socialLogin(params as AuthApi.SocialLoginParams)
-        : await loginApi(params);
+      const { accessToken, refreshToken } =
+        type === 'mobile'
+          ? await smsLogin(params as AuthApi.SmsLoginParams)
+          : type === 'register'
+            ? await register(params as AuthApi.RegisterParams)
+            : // eslint-disable-next-line unicorn/no-nested-ternary
+              type === 'social'
+              ? await socialLogin(params as AuthApi.SocialLoginParams)
+              : await loginApi(params);
 
       // 如果成功获取到 accessToken
       if (accessToken) {

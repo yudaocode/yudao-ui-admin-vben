@@ -1,3 +1,5 @@
+import type { Recordable } from '@vben/types';
+
 import { h } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
@@ -6,12 +8,11 @@ import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import { isFunction, isString } from '@vben/utils';
 
 import { Button, Image, Popconfirm, Switch } from 'ant-design-vue';
+
 import { DictTag } from '#/components/dict-tag';
+import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
-import type { Recordable } from '@vben/types';
-
-import { $t } from '#/locales';
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -162,10 +163,10 @@ setupVbenVxeTable({
               return presets[opt]
                 ? { code: opt, ...presets[opt], ...defaultProps }
                 : {
-                  code: opt,
-                  text: $te(`common.${opt}`) ? $t(`common.${opt}`) : opt,
-                  ...defaultProps,
-                };
+                    code: opt,
+                    text: $te(`common.${opt}`) ? $t(`common.${opt}`) : opt,
+                    ...defaultProps,
+                  };
             } else {
               return { ...defaultProps, ...presets[opt.code], ...opt };
             }
@@ -188,10 +189,10 @@ setupVbenVxeTable({
               icon: undefined,
               onClick: listen
                 ? () =>
-                  attrs?.onClick?.({
-                    code: opt.code,
-                    row,
-                  })
+                    attrs?.onClick?.({
+                      code: opt.code,
+                      row,
+                    })
                 : undefined,
             },
             {
