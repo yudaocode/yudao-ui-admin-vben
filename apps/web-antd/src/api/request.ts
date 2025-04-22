@@ -3,7 +3,7 @@
  */
 import type { RequestClientOptions } from '@vben/request';
 
-import { useAppConfig } from '@vben/hooks';
+import { isTenantEnable, useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import {
   authenticateResponseInterceptor,
@@ -19,7 +19,8 @@ import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
 
-const { apiURL, tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const tenantEnable = isTenantEnable();
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({

@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
-import { useAppConfig } from '@vben/hooks';
+import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -21,15 +21,12 @@ import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'SocialLogin' });
 
-const { tenantEnable, captchaEnable } = useAppConfig(
-  import.meta.env,
-  import.meta.env.PROD,
-);
-
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { query } = useRoute();
 const router = useRouter();
+const tenantEnable = isTenantEnable();
+const captchaEnable = isCaptchaEnable();
 
 const loginRef = ref();
 const verifyRef = ref();

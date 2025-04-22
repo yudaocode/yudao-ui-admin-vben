@@ -6,7 +6,7 @@ import type { AuthApi } from '#/api/core/auth';
 import { computed, h, onMounted, ref } from 'vue';
 
 import { AuthenticationRegister, Verification, z } from '@vben/common-ui';
-import { useAppConfig } from '@vben/hooks';
+import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -20,16 +20,15 @@ import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Register' });
 
-const { tenantEnable, captchaEnable } = useAppConfig(
-  import.meta.env,
-  import.meta.env.PROD,
-);
-
 const loading = ref(false);
-const registerRef = ref();
-const verifyRef = ref();
+
 const accessStore = useAccessStore();
 const authStore = useAuthStore();
+const tenantEnable = isTenantEnable();
+const captchaEnable = isCaptchaEnable();
+
+const registerRef = ref();
+const verifyRef = ref();
 
 const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWord'
 

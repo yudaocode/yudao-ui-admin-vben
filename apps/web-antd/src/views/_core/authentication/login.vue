@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
-import { useAppConfig } from '@vben/hooks';
+import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -22,14 +22,11 @@ import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
 
-const { tenantEnable, captchaEnable } = useAppConfig(
-  import.meta.env,
-  import.meta.env.PROD,
-);
-
 const { query } = useRoute();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
+const tenantEnable = isTenantEnable();
+const captchaEnable = isCaptchaEnable();
 
 const loginRef = ref();
 const verifyRef = ref();
@@ -46,7 +43,6 @@ const fetchTenantList = async () => {
     // 获取租户列表、域名对应租户
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
     tenantList.value = await getTenantSimpleList();
-    console.error('tenantList', tenantList.value);
 
     // 选中租户：域名 > store 中的租户 > 首个租户
     let tenantId: null | number = null;

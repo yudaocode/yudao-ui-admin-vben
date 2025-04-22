@@ -7,7 +7,6 @@ import { ref, onMounted } from 'vue'
 import { getConfigKey } from '#/api/infra/config'
 
 const loading = ref(true) // 是否加载中
-// TODO @芋艿：VITE_BASE_URL
 const src = ref(import.meta.env.VITE_BASE_URL + '/druid/index.html')
 
 /** 初始化 */

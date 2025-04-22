@@ -8,7 +8,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AuthenticationForgetPassword, z } from '@vben/common-ui';
-import { useAppConfig } from '@vben/hooks';
+import { isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -19,9 +19,9 @@ import { getTenantByWebsite, getTenantSimpleList } from '#/api/core/auth';
 
 defineOptions({ name: 'ForgetPassword' });
 
-const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 const router = useRouter();
+const tenantEnable = isTenantEnable();
 
 const loading = ref(false);
 const CODE_LENGTH = 4;

@@ -7,7 +7,7 @@ import type { AuthApi } from '#/api';
 import { computed, onMounted, ref } from 'vue';
 
 import { AuthenticationCodeLogin, z } from '@vben/common-ui';
-import { useAppConfig } from '@vben/hooks';
+import { isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -19,10 +19,9 @@ import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'CodeLogin' });
 
-const { tenantEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
-
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
+const tenantEnable = isTenantEnable();
 
 const loading = ref(false);
 const CODE_LENGTH = 4;

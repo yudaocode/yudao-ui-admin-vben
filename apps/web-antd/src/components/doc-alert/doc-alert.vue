@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-// TODO @芋艿：貌似不用 src 目录
-import { computed } from 'vue';
+import { isDocAlertEnable } from '@vben/hooks';
+
 import { Alert, Typography } from 'ant-design-vue';
 
 export interface DocAlertProps {
@@ -20,16 +20,11 @@ const props = defineProps<DocAlertProps>();
 const goToUrl = () => {
   window.open(props.url);
 };
-
-/** 是否开启 */
-const isEnabled = computed(() => {
-  return import.meta.env.VITE_APP_DOCALERT_ENABLE !== 'false';
-});
 </script>
 
 <template>
   <Alert
-    v-if="isEnabled"
+    v-if="isDocAlertEnable()"
     type="info"
     show-icon
     class="mb-2 rounded"
