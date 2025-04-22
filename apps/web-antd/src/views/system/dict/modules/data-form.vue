@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import type { SystemDictDataApi } from '#/api/system/dict/data';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createDictData, getDictData, updateDictData } from '#/api/system/dict/data';
+import {
+  createDictData,
+  getDictData,
+  updateDictData,
+} from '#/api/system/dict/data';
 import { $t } from '#/locales';
 
 import { useDataFormSchema } from '../data';
@@ -35,7 +41,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemDictDataApi.SystemDictData;
+    const data =
+      (await formApi.getValues()) as SystemDictDataApi.SystemDictData;
     try {
       await (formData.value?.id ? updateDictData(data) : createDictData(data));
       // 关闭并提示
@@ -54,8 +61,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemDictDataApi.SystemDictData | { dictType?: string }>();
-    
+    const data = modalApi.getData<
+      SystemDictDataApi.SystemDictData | { dictType?: string }
+    >();
+
     // 如果有ID，表示是编辑
     if (data && 'id' in data && data.id) {
       modalApi.lock();
@@ -82,4 +91,4 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
-</template> 
+</template>

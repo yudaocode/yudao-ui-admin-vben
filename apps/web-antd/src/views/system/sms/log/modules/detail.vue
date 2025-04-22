@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
 const formData = ref<SystemSmsLogApi.SystemSmsLog>();
@@ -32,8 +34,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="短信日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions bordered :column="2" size="middle" class="mx-4" :label-style="{ width: '140px' }">
+  <Modal
+    title="短信日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      bordered
+      :column="2"
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '140px' }"
+    >
       <Descriptions.Item label="创建时间">
         {{ formatDateTime(formData?.createTime || '') }}
       </Descriptions.Item>
@@ -47,13 +60,19 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.templateId }}
       </Descriptions.Item>
       <Descriptions.Item label="模板类型">
-        <DictTag :type="DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE" :value="formData?.templateType" />
+        <DictTag
+          :type="DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE"
+          :value="formData?.templateType"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="短信内容">
         {{ formData?.templateContent }}
       </Descriptions.Item>
       <Descriptions.Item label="发送状态">
-        <DictTag :type="DICT_TYPE.SYSTEM_SMS_SEND_STATUS" :value="formData?.sendStatus" />
+        <DictTag
+          :type="DICT_TYPE.SYSTEM_SMS_SEND_STATUS"
+          :value="formData?.sendStatus"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="发送时间">
         {{ formatDateTime(formData?.sendTime || '') }}
@@ -65,7 +84,10 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.apiSendMsg }}
       </Descriptions.Item>
       <Descriptions.Item label="接收状态">
-        <DictTag :type="DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS" :value="formData?.receiveStatus" />
+        <DictTag
+          :type="DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS"
+          :value="formData?.receiveStatus"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="接收时间">
         {{ formatDateTime(formData?.receiveTime || '') }}

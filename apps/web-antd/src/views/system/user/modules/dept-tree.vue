@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { type SystemDeptApi} from '#/api/system/dept';
+import type { SystemDeptApi } from '#/api/system/dept';
 
-import { Tree, Input, Spin } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
 
-import { ref, onMounted } from 'vue';
 import { Search } from '@vben/icons';
+
+import { Input, Spin, Tree } from 'ant-design-vue';
+
 import { getSimpleDeptList } from '#/api/system/dept';
 import { handleTree } from '#/utils/tree';
 
@@ -19,12 +21,14 @@ const searchValue = ref(''); // 搜索值
 function handleSearch(e: any) {
   const value = e.target.value;
   searchValue.value = value;
-  const filteredList = value ? deptList.value.filter(item =>
-    item.name.toLowerCase().includes(value.toLowerCase())
-  ) : deptList.value;
+  const filteredList = value
+    ? deptList.value.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase()),
+      )
+    : deptList.value;
   deptTree.value = handleTree(filteredList);
   // 展开所有节点
-  expandedKeys.value = deptTree.value.map(node => node.id as number);
+  expandedKeys.value = deptTree.value.map((node) => node.id as number);
 }
 
 /** 选中部门 */
@@ -52,7 +56,7 @@ onMounted(async () => {
     <div class="mb-2">
       <Input
         placeholder="搜索部门"
-        allowClear
+        allow-clear
         v-model:value="searchValue"
         @change="handleSearch"
         class="w-full"
@@ -67,11 +71,11 @@ onMounted(async () => {
         class="pt-2"
         v-if="deptTree.length > 0"
         :tree-data="deptTree"
-        :fieldNames="{ title: 'name', key: 'id', children: 'children' }"
+        :field-names="{ title: 'name', key: 'id', children: 'children' }"
         @select="handleSelect"
-        :defaultExpandAll="true"
+        :default-expand-all="true"
       />
-      <div v-else-if="!loading" class="text-center text-gray-500 py-4">
+      <div v-else-if="!loading" class="py-4 text-center text-gray-500">
         暂无数据
       </div>
     </Spin>

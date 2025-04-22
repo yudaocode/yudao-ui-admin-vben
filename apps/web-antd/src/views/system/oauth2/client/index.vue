@@ -1,17 +1,25 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
 import { Plus } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getOAuth2ClientPage, deleteOAuth2Client } from '#/api/system/oauth2/client';
+import {
+  deleteOAuth2Client,
+  getOAuth2ClientPage,
+} from '#/api/system/oauth2/client';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -47,7 +55,7 @@ async function onDelete(row: SystemOAuth2ClientApi.SystemOAuth2Client) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -58,12 +66,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemOAuth2ClientApi.SystemOAuth2Client>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -71,7 +79,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -101,12 +109,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="OAuth 2.0（SSO 单点登录)" url="https://doc.iocoder.cn/oauth2/" />
+    <DocAlert
+      title="OAuth 2.0（SSO 单点登录)"
+      url="https://doc.iocoder.cn/oauth2/"
+    />
 
     <FormModal @success="onRefresh" />
     <Grid table-title="OAuth2 客户端列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:oauth2-client:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:oauth2-client:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', [' OAuth2.0 客户端']) }}
         </Button>

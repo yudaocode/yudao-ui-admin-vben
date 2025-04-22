@@ -1,17 +1,24 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteTenantPackage, getTenantPackagePage } from '#/api/system/tenant-package';
+import {
+  deleteTenantPackage,
+  getTenantPackagePage,
+} from '#/api/system/tenant-package';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -53,14 +60,17 @@ async function onDelete(row: SystemTenantPackageApi.SystemTenantPackage) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemTenantPackageApi.SystemTenantPackage>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemTenantPackageApi.SystemTenantPackage>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -104,7 +114,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:tenant-package:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:tenant-package:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['套餐']) }}
         </Button>

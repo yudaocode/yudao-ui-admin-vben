@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus, Download } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
+import { Download, Plus } from '@vben/icons';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getTenantPage, deleteTenant, exportTenant } from '#/api/system/tenant';
+import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -66,12 +70,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemTenantApi.SystemTenant>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -113,11 +117,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:tenant:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:tenant:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['租户']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:tenant:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:tenant:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

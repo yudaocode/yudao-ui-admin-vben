@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import type { SystemRoleApi } from '#/api/system/role';
 import type { SystemDeptApi } from '#/api/system/dept';
-
-import { VbenTree } from '@vben/common-ui';
-import { useVbenModal } from '@vben/common-ui';
-import { message, Checkbox } from 'ant-design-vue';
+import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
-import { $t } from '#/locales';
+
+import { useVbenModal, VbenTree } from '@vben/common-ui';
+
+import { Checkbox, message } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
-import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { getMenuList } from '#/api/system/menu';
+import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
+import { $t } from '#/locales';
 import { handleTree } from '#/utils/tree';
 
 import { useAssignMenuFormSchema } from '../data';
@@ -41,7 +42,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await assignRoleMenu({
         roleId: data.id,
-        menuIds: data.menuIds
+        menuIds: data.menuIds,
       });
       // 关闭并提示
       await modalApi.close();
@@ -82,7 +83,7 @@ async function loadMenuTree() {
   menuLoading.value = true;
   try {
     const data = await getMenuList();
-    menuTree.value = handleTree(data);
+    menuTree.value = handleTree(data) as SystemDeptApi.SystemDept[];
   } finally {
     menuLoading.value = false;
   }
@@ -102,12 +103,8 @@ function toggleSelectAll() {
 /** 展开/折叠所有节点 */
 function toggleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  if (isExpanded.value) {
-    // 获取所有节点的 ID
-    expandedKeys.value = getAllNodeIds(menuTree.value);
-  } else {
-    expandedKeys.value = [];
-  }
+  // 获取所有节点的 ID
+  expandedKeys.value = isExpanded.value ? getAllNodeIds(menuTree.value) : [];
 }
 
 /** 递归获取所有节点 ID */

@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { sendSms } from '#/api/system/sms/template';
 

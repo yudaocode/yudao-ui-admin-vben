@@ -1,15 +1,17 @@
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { CommonStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { handleTree } from '#/utils/tree';
-import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -93,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: z
         .string()
         // TODO @芋艿：未来怎么拓展一个手机的
-        .regex(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/, '请输入正确的手机号码')
+        .regex(/^1[3-9|]\d{9}$/, '请输入正确的手机号码')
         .optional(),
     },
     {
@@ -103,10 +105,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入邮箱',
       },
-      rules: z
-        .string()
-        .email('请输入正确的邮箱地址')
-        .optional(),
+      rules: z.string().email('请输入正确的邮箱地址').optional(),
     },
     {
       fieldName: 'status',
@@ -141,7 +140,9 @@ export function useGridColumns(
       title: '负责人',
       minWidth: 150,
       formatter: (row) => {
-        return userList.find((user) => user.id === row.cellValue)?.nickname || '-';
+        return (
+          userList.find((user) => user.id === row.cellValue)?.nickname || '-'
+        );
       },
     },
     {

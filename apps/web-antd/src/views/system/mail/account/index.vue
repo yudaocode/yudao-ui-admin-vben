@@ -1,18 +1,25 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-import { Button, message } from 'ant-design-vue';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMailAccount, getMailAccountPage } from '#/api/system/mail/account';
+import {
+  deleteMailAccount,
+  getMailAccountPage,
+} from '#/api/system/mail/account';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -106,7 +113,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="邮箱账号列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:mail-account:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:mail-account:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['邮箱账号']) }}
         </Button>

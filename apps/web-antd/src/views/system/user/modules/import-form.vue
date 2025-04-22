@@ -2,12 +2,12 @@
 import type { FileType } from 'ant-design-vue/es/upload/interface';
 
 import { useVbenModal } from '@vben/common-ui';
-import { message} from 'ant-design-vue';
-import { Button, Upload } from 'ant-design-vue';
 
-import { $t } from '#/locales';
+import { Button, message, Upload } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
 import { importUser, importUserTemplate } from '#/api/system/user';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useImportFormSchema } from '../data';
@@ -41,7 +41,7 @@ const [Modal, modalApi] = useVbenModal({
     } finally {
       modalApi.lock(false);
     }
-  }
+  },
 });
 
 /** 上传前 */
@@ -62,7 +62,11 @@ async function onDownload() {
     <Form class="mx-4">
       <template #file>
         <div class="w-full">
-          <Upload :max-count="1" accept=".xls,.xlsx" :beforeUpload="beforeUpload">
+          <Upload
+            :max-count="1"
+            accept=".xls,.xlsx"
+            :before-upload="beforeUpload"
+          >
             <Button type="primary"> 选择 Excel 文件 </Button>
           </Upload>
         </div>

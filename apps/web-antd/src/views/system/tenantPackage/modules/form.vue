@@ -2,14 +2,20 @@
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal, VbenTree } from '@vben/common-ui';
+
 import { Checkbox, message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
-import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
-import { createTenantPackage, getTenantPackage, updateTenantPackage } from '#/api/system/tenant-package';
+import {
+  createTenantPackage,
+  getTenantPackage,
+  updateTenantPackage,
+} from '#/api/system/tenant-package';
+import { $t } from '#/locales';
 import { handleTree } from '#/utils/tree';
 
 import { useFormSchema } from '../data';
@@ -17,7 +23,9 @@ import { useFormSchema } from '../data';
 const emit = defineEmits(['success']);
 const formData = ref<SystemTenantPackageApi.SystemTenantPackage>();
 const getTitle = computed(() => {
-  return formData.value ? $t('ui.actionTitle.edit', ['套餐']) : $t('ui.actionTitle.create', ['套餐']);
+  return formData.value
+    ? $t('ui.actionTitle.edit', ['套餐'])
+    : $t('ui.actionTitle.create', ['套餐']);
 });
 const menuTree = ref<SystemDeptApi.SystemDept[]>([]); // 菜单树
 const menuLoading = ref(false); // 加载菜单列表
@@ -39,9 +47,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemTenantPackageApi.SystemTenantPackage;
+    const data =
+      (await formApi.getValues()) as SystemTenantPackageApi.SystemTenantPackage;
     try {
-      await (formData.value ? updateTenantPackage(data) : createTenantPackage(data));
+      await (formData.value
+        ? updateTenantPackage(data)
+        : createTenantPackage(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -78,7 +89,7 @@ async function loadMenuTree() {
   menuLoading.value = true;
   try {
     const data = await getMenuList();
-    menuTree.value = handleTree(data);
+    menuTree.value = handleTree(data) as SystemDeptApi.SystemDept[];
   } finally {
     menuLoading.value = false;
   }
@@ -119,14 +130,26 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
       <template #menuIds="slotProps">
         <Spin :spinning="menuLoading" class="w-full">
           <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
-          <VbenTree :tree-data="menuTree" multiple bordered :expanded="expandedKeys" v-bind="slotProps" value-field="id" label-field="name" />
+          <VbenTree
+            :tree-data="menuTree"
+            multiple
+            bordered
+            :expanded="expandedKeys"
+            v-bind="slotProps"
+            value-field="id"
+            label-field="name"
+          />
         </Spin>
       </template>
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Checkbox :checked="isAllSelected" @change="toggleSelectAll"> 全选 </Checkbox>
-        <Checkbox :checked="isExpanded" @change="toggleExpandAll"> 全部展开 </Checkbox>
+        <Checkbox :checked="isAllSelected" @change="toggleSelectAll">
+          全选
+        </Checkbox>
+        <Checkbox :checked="isExpanded" @change="toggleExpandAll">
+          全部展开
+        </Checkbox>
       </div>
     </template>
   </Modal>

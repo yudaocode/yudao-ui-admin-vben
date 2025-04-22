@@ -1,17 +1,24 @@
 <script lang="ts" setup>
 import type { OnActionClickParams } from '#/adapter/vxe-table';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Download, Plus } from '@vben/icons';
-import DataForm from './data-form.vue';
-
-import { $t } from '#/locales';
 import { watch } from 'vue';
-import { useDataGridColumns, useDataGridFormSchema } from '../data';
-import { deleteDictData, getDictDataPage, exportDictData } from '#/api/system/dict/data';
+
+import { useVbenModal } from '@vben/common-ui';
+import { Download, Plus } from '@vben/icons';
+
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteDictData,
+  exportDictData,
+  getDictDataPage,
+} from '#/api/system/dict/data';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
+
+import { useDataGridColumns, useDataGridFormSchema } from '../data';
+import DataForm from './data-form.vue';
 
 const props = defineProps({
   dictType: {
@@ -66,17 +73,14 @@ async function onDelete(row: any) {
 }
 
 /** 表格操作按钮回调 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams) {
+function onActionClick({ code, row }: OnActionClickParams) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
+    case 'delete': {
+      onDelete(row);
       break;
     }
-    case 'delete': {
-      onDelete(row)
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -108,7 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
-    }
+    },
   },
 });
 
@@ -124,16 +128,25 @@ watch(
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
+  <div class="flex h-full flex-col">
     <DataFormModal @success="onRefresh" />
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:dict:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:dict:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['字典数据']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:dict:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:dict:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

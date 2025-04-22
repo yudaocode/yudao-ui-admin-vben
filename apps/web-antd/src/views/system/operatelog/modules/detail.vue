@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions } from 'ant-design-vue';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
 
 const formData = ref<SystemOperateLogApi.SystemOperateLog>();
 
@@ -30,8 +31,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="操作日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions bordered :column="1" size="middle" class="mx-4" :label-style="{ width: '110px' }">
+  <Modal
+    title="操作日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      bordered
+      :column="1"
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '110px' }"
+    >
       <Descriptions.Item label="日志编号">
         {{ formData?.id }}
       </Descriptions.Item>
@@ -73,4 +85,4 @@ const [Modal, modalApi] = useVbenModal({
       </Descriptions.Item>
     </Descriptions>
   </Modal>
-</template> 
+</template>

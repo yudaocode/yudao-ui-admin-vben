@@ -2,11 +2,12 @@
 import type { SystemUserApi } from '#/api/system/user';
 
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
 import { resetUserPassword } from '#/api/system/user';
+import { $t } from '#/locales';
 
 import { useResetPasswordFormSchema } from '../data';
 

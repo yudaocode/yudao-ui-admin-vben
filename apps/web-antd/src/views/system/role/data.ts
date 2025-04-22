@@ -2,11 +2,12 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, SystemDataScopeEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { useAccess } from '@vben/access';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -264,7 +265,9 @@ export function useGridColumns<T = SystemRoleApi.SystemRole>(
           {
             code: 'assign-data-permission',
             text: '数据权限',
-            show: hasAccessByCodes(['system:permission:assign-role-data-scope']),
+            show: hasAccessByCodes([
+              'system:permission:assign-role-data-scope',
+            ]),
           },
           {
             code: 'assign-menu',

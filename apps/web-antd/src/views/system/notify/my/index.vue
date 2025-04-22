@@ -8,9 +8,8 @@ import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { MdiCheckboxMarkedCircleOutline } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -18,8 +17,10 @@ import {
   updateAllNotifyMessageRead,
   updateNotifyMessageRead,
 } from '#/api/system/notify/message';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -67,7 +68,9 @@ async function onMarkRead() {
     return;
   }
 
-  const ids = rows.map((row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id);
+  const ids = rows.map(
+    (row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id,
+  );
   message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -146,7 +149,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     checkboxConfig: {
-      checkMethod: (params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) => !params.row.readStatus,
+      checkMethod: (params: {
+        row: SystemNotifyMessageApi.SystemNotifyMessage;
+      }) => !params.row.readStatus,
       highlight: true,
     },
   } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,

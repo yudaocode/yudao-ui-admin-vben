@@ -1,36 +1,41 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus, Download } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
+import { Download, Plus } from '@vben/icons';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getRolePage, deleteRole, exportRole } from '#/api/system/role';
-import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
-import AssignMenuForm from './modules/assign-menu-form.vue';
+import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
+import AssignMenuForm from './modules/assign-menu-form.vue';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-const [AssignDataPermissionFormModel, assignDataPermissionFormApi] = useVbenModal({
-  connectedComponent: AssignDataPermissionForm,
-  destroyOnClose: true,
-});
+const [AssignDataPermissionFormModel, assignDataPermissionFormApi] =
+  useVbenModal({
+    connectedComponent: AssignDataPermissionForm,
+    destroyOnClose: true,
+  });
 
 const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
   connectedComponent: AssignMenuForm,
   destroyOnClose: true,
-})
+});
 
 /** 刷新表格 */
 function onRefresh() {
@@ -67,7 +72,7 @@ async function onDelete(row: SystemRoleApi.SystemRole) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -84,24 +89,24 @@ function onAssignMenu(row: SystemRoleApi.SystemRole) {
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
-   code,
-   row
+  code,
+  row,
 }: OnActionClickParams<SystemRoleApi.SystemRole>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'assign-data-permission': {
       onAssignDataPermission(row);
       break;
     }
     case 'assign-menu': {
       onAssignMenu(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -139,7 +144,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
+    <DocAlert
+      title="功能权限"
+      url="https://doc.iocoder.cn/resource-permission"
+    />
     <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
 
     <FormModal @success="onRefresh" />
@@ -147,11 +155,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <AssignMenuFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:role:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:role:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['角色']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:role:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:role:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

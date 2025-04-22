@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createDictType, getDictType, updateDictType } from '#/api/system/dict/type';
+import {
+  createDictType,
+  getDictType,
+  updateDictType,
+} from '#/api/system/dict/type';
 import { $t } from '#/locales';
 
 import { useTypeFormSchema } from '../data';
@@ -33,7 +39,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemDictTypeApi.SystemDictType;
+    const data =
+      (await formApi.getValues()) as SystemDictTypeApi.SystemDictType;
     try {
       await (formData.value?.id ? updateDictType(data) : createDictType(data));
       // 关闭并提示

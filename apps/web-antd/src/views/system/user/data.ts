@@ -1,16 +1,17 @@
-import type {  VbenFormSchema } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { CommonStatusEnum } from '#/utils/constants';
 import { getDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
-import { handleTree } from '#/utils/tree';
+import { CommonStatusEnum } from '#/utils/constants';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { useAccess } from '@vben/access';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { handleTree } from '#/utils/tree';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -101,7 +102,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号码',
-      }
+      },
     },
     {
       fieldName: 'sex',
@@ -131,7 +132,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -174,7 +175,7 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
         triggerFields: ['newPassword'],
       },
     },
-  ]
+  ];
 }
 
 /** 分配角色的表单 */
@@ -217,7 +218,7 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
         placeholder: '请选择角色',
       },
     },
-  ]
+  ];
 }
 
 /** 用户导入的表单 */
@@ -243,7 +244,6 @@ export function useImportFormSchema(): VbenFormSchema[] {
     },
   ];
 }
-
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -281,7 +281,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
-  onStatusChange?: (newStatus: number, row: T) => PromiseLike<boolean | undefined>,
+  onStatusChange?: (
+    newStatus: number,
+    row: T,
+  ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {

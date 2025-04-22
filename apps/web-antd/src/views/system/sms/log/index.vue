@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
+
 import { Button } from 'ant-design-vue';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportSmsLog, getSmsLogPage } from '#/api/system/sms/log';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
@@ -86,7 +90,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="短信日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:sms-log:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:sms-log:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

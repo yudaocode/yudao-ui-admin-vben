@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus } from '@vben/icons';
-import Form from './modules/form.vue';
-
 import { ref } from 'vue';
-import { $t } from '#/locales';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
+
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getDeptList, deleteDept } from '#/api/system/dept';
+import { deleteDept, getDeptList } from '#/api/system/dept';
+import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -60,7 +65,7 @@ async function onDelete(row: SystemDeptApi.SystemDept) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -75,12 +80,12 @@ function onActionClick({
       onAppend(row);
       break;
     }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -123,7 +128,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:dept:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:dept:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['部门']) }}
         </Button>

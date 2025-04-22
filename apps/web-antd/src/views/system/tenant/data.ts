@@ -2,12 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { useAccess } from '@vben/access';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -202,7 +203,11 @@ export function useGridColumns<T = SystemTenantApi.SystemTenant>(
       minWidth: 180,
       formatter: (row) => {
         const packageId = row.cellValue;
-        return packageId === 0 ? '系统租户' : tenantPackageList.find((tenantPackage) => tenantPackage.id === packageId)?.name || '-';
+        return packageId === 0
+          ? '系统租户'
+          : tenantPackageList.find(
+              (tenantPackage) => tenantPackage.id === packageId,
+            )?.name || '-';
       },
     },
     {

@@ -2,9 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -94,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -109,7 +110,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入邮箱',
         clearable: true,
-      }
+      },
     },
     {
       fieldName: 'username',
@@ -118,8 +119,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入用户名',
         clearable: true,
-      }
-    }
+      },
+    },
   ];
 }
 
@@ -198,7 +199,7 @@ export function useGridColumns<T = SystemMailAccountApi.SystemMailAccount>(
           {
             code: 'delete',
             show: hasAccessByCodes(['system:mail-account:delete']),
-          }
+          },
         ],
       },
     },

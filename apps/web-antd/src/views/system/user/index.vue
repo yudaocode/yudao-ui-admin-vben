@@ -1,26 +1,36 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemUserApi } from '#/api/system/user';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
+
+import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal } from 'ant-design-vue';
-import { Plus, Download, Upload } from '@vben/icons';
-import Form from './modules/form.vue';
-import ResetPasswordForm from './modules/reset-password-form.vue';
-import AssignRoleForm from './modules/assign-role-form.vue';
-import ImportForm from './modules/import-form.vue';
-import DeptTree from './modules/dept-tree.vue';
-import { DocAlert } from '#/components/doc-alert';
+import { Download, Plus, Upload } from '@vben/icons';
 
-import { $t } from '#/locales';
-import { ref } from 'vue';
+import { Button, message, Modal } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getUserPage, deleteUser, exportUser, updateUserStatus } from '#/api/system/user';
-import { downloadByData } from '#/utils/download';
+import {
+  deleteUser,
+  exportUser,
+  getUserPage,
+  updateUserStatus,
+} from '#/api/system/user';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
+import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import AssignRoleForm from './modules/assign-role-form.vue';
+import DeptTree from './modules/dept-tree.vue';
+import Form from './modules/form.vue';
+import ImportForm from './modules/import-form.vue';
+import ResetPasswordForm from './modules/reset-password-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -55,7 +65,7 @@ async function onExport() {
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function onDeptSelect (dept: SystemDeptApi.SystemDept) {
+async function onDeptSelect(dept: SystemDeptApi.SystemDept) {
   searchDeptId.value = dept.id;
   onRefresh();
 }
@@ -89,7 +99,7 @@ async function onDelete(row: SystemUserApi.SystemUser) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -106,7 +116,10 @@ function onAssignRole(row: SystemUserApi.SystemUser) {
 
 // TODO @芋艿：后续怎么简化一下 confirm 的实现。
 /** 更新用户状态 */
-async function onStatusChange(newStatus: number, row: SystemUserApi.SystemUser): Promise<boolean | undefined> {
+async function onStatusChange(
+  newStatus: number,
+  row: SystemUserApi.SystemUser,
+): Promise<boolean | undefined> {
   return new Promise((resolve, reject) => {
     Modal.confirm({
       title: '切换状态',
@@ -116,16 +129,18 @@ async function onStatusChange(newStatus: number, row: SystemUserApi.SystemUser):
       },
       onOk() {
         // 更新用户状态
-        updateUserStatus(row.id as number, newStatus).then(() => {
-          // 提示并返回成功
-          message.success({
-            content: $t('ui.actionMessage.operationSuccess'),
-            key: 'action_process_msg',
+        updateUserStatus(row.id as number, newStatus)
+          .then(() => {
+            // 提示并返回成功
+            message.success({
+              content: $t('ui.actionMessage.operationSuccess'),
+              key: 'action_process_msg',
+            });
+            resolve(true);
+          })
+          .catch((error) => {
+            reject(error);
           });
-          resolve(true);
-        }).catch((error) => {
-          reject(error);
-        });
       },
     });
   });
@@ -137,20 +152,20 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemUserApi.SystemUser>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
+    case 'assign-role': {
+      onAssignRole(row);
       break;
     }
     case 'delete': {
       onDelete(row);
       break;
     }
-    case 'reset-password': {
-      onResetPassword(row);
+    case 'edit': {
+      onEdit(row);
       break;
     }
-    case 'assign-role': {
-      onAssignRole(row);
+    case 'reset-password': {
+      onResetPassword(row);
       break;
     }
   }
@@ -191,7 +206,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <DocAlert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
     <DocAlert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
-    <DocAlert title="Excel 导入导出" url="https://doc.iocoder.cn/excel-import-and-export/" />
+    <DocAlert
+      title="Excel 导入导出"
+      url="https://doc.iocoder.cn/excel-import-and-export/"
+    />
 
     <FormModal @success="onRefresh" />
     <ResetPasswordModal @success="onRefresh" />
@@ -207,15 +225,29 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <div class="w-18/24">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
-            <Button type="primary" @click="onCreate" v-access:code="['system:user:create']">
+            <Button
+              type="primary"
+              @click="onCreate"
+              v-access:code="['system:user:create']"
+            >
               <Plus class="size-5" />
               {{ $t('ui.actionTitle.create', ['用户']) }}
             </Button>
-            <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:user:export']">
+            <Button
+              type="primary"
+              class="ml-2"
+              @click="onExport"
+              v-access:code="['system:user:export']"
+            >
               <Download class="size-5" />
               {{ $t('ui.actionTitle.export') }}
             </Button>
-            <Button type="primary" class="ml-2" @click="onImport" v-access:code="['system:user:import']">
+            <Button
+              type="primary"
+              class="ml-2"
+              @click="onImport"
+              v-access:code="['system:user:import']"
+            >
               <Upload class="size-5" />
               {{ $t('ui.actionTitle.import', ['用户']) }}
             </Button>

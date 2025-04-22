@@ -1,19 +1,26 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMailTemplate, getMailTemplatePage } from '#/api/system/mail/template';
+import {
+  deleteMailTemplate,
+  getMailTemplatePage,
+} from '#/api/system/mail/template';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -65,14 +72,17 @@ async function onDelete(row: SystemMailTemplateApi.SystemMailTemplate) {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemMailTemplateApi.SystemMailTemplate>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'send': {
@@ -119,7 +129,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="邮件模板列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:mail-template:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:mail-template:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['邮件模板']) }}
         </Button>

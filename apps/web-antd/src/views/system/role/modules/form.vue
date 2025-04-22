@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemRoleApi } from '#/api/system/role';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createRole, updateRole, getRole } from '#/api/system/role';
+import { createRole, getRole, updateRole } from '#/api/system/role';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 

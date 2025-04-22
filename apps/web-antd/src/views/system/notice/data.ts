@@ -1,10 +1,12 @@
-import {type VbenFormSchema, z} from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { CommonStatusEnum } from '#/utils/constants';
 import { useAccess } from '@vben/access';
+
+import { z } from '#/adapter/form';
+import { CommonStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -59,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-      }
+      },
     },
   ];
 }
@@ -74,7 +76,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入公告标题',
         allowClear: true,
-      }
+      },
     },
     {
       fieldName: 'status',
@@ -85,7 +87,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择公告状态',
         allowClear: true,
       },
-    }
+    },
   ];
 }
 

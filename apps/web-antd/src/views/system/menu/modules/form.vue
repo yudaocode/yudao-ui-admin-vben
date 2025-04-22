@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemMenuApi } from '#/api/system/menu';
 
-import { $t } from '#/locales';
 import { computed, ref } from 'vue';
-import { useVbenForm } from '#/adapter/form';
-import { createMenu, getMenu, updateMenu } from '#/api/system/menu';
 
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
+
+import { useVbenForm } from '#/adapter/form';
+import { createMenu, getMenu, updateMenu } from '#/api/system/menu';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 

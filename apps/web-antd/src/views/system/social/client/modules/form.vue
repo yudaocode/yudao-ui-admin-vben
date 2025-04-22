@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createSocialClient, updateSocialClient, getSocialClient } from '#/api/system/social/client';
+import {
+  createSocialClient,
+  getSocialClient,
+  updateSocialClient,
+} from '#/api/system/social/client';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -33,9 +39,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemSocialClientApi.SystemSocialClient;
+    const data =
+      (await formApi.getValues()) as SystemSocialClientApi.SystemSocialClient;
     try {
-      await (formData.value?.id ? updateSocialClient(data) : createSocialClient(data));
+      await (formData.value?.id
+        ? updateSocialClient(data)
+        : createSocialClient(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

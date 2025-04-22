@@ -1,14 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { Page } from '@vben/common-ui'
-import { DocAlert } from '#/components/doc-alert'
-import TypeGrid from './modules/type-grid.vue'
-import DataGrid from './modules/data-grid.vue'
+import { ref } from 'vue';
 
-const searchDictType = ref<string>() // 搜索的字典类型
+import { Page } from '@vben/common-ui';
+
+import { DocAlert } from '#/components/doc-alert';
+
+import DataGrid from './modules/data-grid.vue';
+import TypeGrid from './modules/type-grid.vue';
+
+const searchDictType = ref<string>(); // 搜索的字典类型
 
 function onDictTypeSelect(dictType: string) {
-  searchDictType.value = dictType
+  searchDictType.value = dictType;
 }
 </script>
 

@@ -1,10 +1,12 @@
-import { type VbenFormSchema, z } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { CommonStatusEnum } from '#/utils/constants';
 import { useAccess } from '@vben/access';
+
+import { z } from '#/adapter/form';
+import { CommonStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -62,7 +64,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入应用描述',
-      }
+      },
     },
     {
       fieldName: 'status',
@@ -130,7 +132,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         class: 'w-full',
         // TODO @芋艿：根据权限，自动授权范围
-      }
+      },
     },
     {
       fieldName: 'redirectUris',
@@ -160,7 +162,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         mode: 'tags',
         placeholder: '请输入资源',
-        mode: 'tags',
         class: 'w-full',
       },
     },
@@ -184,7 +185,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
-      }
+      },
     },
     {
       fieldName: 'status',

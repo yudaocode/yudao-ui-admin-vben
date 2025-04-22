@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,

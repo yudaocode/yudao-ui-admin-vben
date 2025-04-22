@@ -1,10 +1,12 @@
-import { type VbenFormSchema, z } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { CommonStatusEnum, SystemUserSocialTypeEnum } from '#/utils/constants';
 import { useAccess } from '@vben/access';
+
+import { z } from '#/adapter/form';
+import { CommonStatusEnum, SystemUserSocialTypeEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -76,7 +78,8 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['socialType'],
-        show: (values) => values.socialType === SystemUserSocialTypeEnum.WECHAT_ENTERPRISE.type,
+        show: (values) =>
+          values.socialType === SystemUserSocialTypeEnum.WECHAT_ENTERPRISE.type,
       },
     },
     {

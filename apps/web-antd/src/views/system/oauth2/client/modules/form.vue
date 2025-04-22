@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createOAuth2Client, updateOAuth2Client, getOAuth2Client } from '#/api/system/oauth2/client';
+import {
+  createOAuth2Client,
+  getOAuth2Client,
+  updateOAuth2Client,
+} from '#/api/system/oauth2/client';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -25,7 +31,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   commonConfig: {
     labelWidth: 140,
-  }
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -36,9 +42,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemOAuth2ClientApi.SystemOAuth2Client;
+    const data =
+      (await formApi.getValues()) as SystemOAuth2ClientApi.SystemOAuth2Client;
     try {
-      await (formData.value?.id ? updateOAuth2Client(data) : createOAuth2Client(data));
+      await (formData.value?.id
+        ? updateOAuth2Client(data)
+        : createOAuth2Client(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

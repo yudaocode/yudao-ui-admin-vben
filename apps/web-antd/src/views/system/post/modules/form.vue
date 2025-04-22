@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { SystemPostApi } from '#/api/system/post';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createPost, updatePost, getPost } from '#/api/system/post';
+import { createPost, getPost, updatePost } from '#/api/system/post';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

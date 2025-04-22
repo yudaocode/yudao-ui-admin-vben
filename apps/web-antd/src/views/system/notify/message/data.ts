@@ -2,10 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
+import { useAccess } from '@vben/access';
+
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-
-import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -45,7 +45,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模版类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          'number',
+        ),
         allowClear: true,
         placeholder: '请选择模版类型',
       },

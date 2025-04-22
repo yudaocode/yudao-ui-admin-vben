@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
-import { ref } from 'vue';
 import { message } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
 import { sendMail } from '#/api/system/mail/template';
 

@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSocialUserPage } from '#/api/system/social/user';
+import { DocAlert } from '#/components/doc-alert';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -16,9 +20,9 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
+// function onRefresh() {
+//   gridApi.query();
+// }
 
 /** 查看详情 */
 function onDetail(row: SystemSocialUserApi.SystemSocialUser) {
@@ -38,9 +42,9 @@ function onActionClick({
   }
 }
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),

@@ -1,17 +1,22 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemPostApi } from '#/api/system/post';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { Plus, Download } from '@vben/icons';
-import Form from './modules/form.vue';
+import { Download, Plus } from '@vben/icons';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getPostPage, deletePost, exportPost } from '#/api/system/post';
-import { useGridColumns, useGridFormSchema } from './data';
+import { deletePost, exportPost, getPostPage } from '#/api/system/post';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -53,7 +58,7 @@ async function onDelete(row: SystemPostApi.SystemPost) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -64,12 +69,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemPostApi.SystemPost>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -77,7 +82,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -110,11 +115,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="岗位列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:post:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:post:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['岗位']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:post:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:post:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
 const formData = ref<SystemMailLogApi.SystemMailLog>();
@@ -32,7 +34,12 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="邮件日志详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
+  <Modal
+    title="邮件日志详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
     <div class="p-4">
       <Descriptions :column="2" bordered :label-style="{ width: '140px' }">
         <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
@@ -64,7 +71,10 @@ const [Modal, modalApi] = useVbenModal({
           <div v-html="formData?.templateContent"></div>
         </Descriptions.Item>
         <Descriptions.Item label="发送状态">
-          <DictTag :type="DICT_TYPE.SYSTEM_MAIL_SEND_STATUS" :value="formData?.sendStatus" />
+          <DictTag
+            :type="DICT_TYPE.SYSTEM_MAIL_SEND_STATUS"
+            :value="formData?.sendStatus"
+          />
         </Descriptions.Item>
         <Descriptions.Item label="发送时间">
           {{ formatDateTime(formData?.sendTime || '') }}

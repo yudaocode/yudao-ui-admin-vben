@@ -1,20 +1,25 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
-import { IconifyIcon, Plus } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
-
 import { ref } from 'vue';
-import { $t } from '#/locales';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon, Plus } from '@vben/icons';
+
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getMenuList, deleteMenu } from '#/api/system/menu';
+import { deleteMenu, getMenuList } from '#/api/system/menu';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { SystemMenuTypeEnum } from '#/utils/constants';
 
 import { useGridColumns } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -55,27 +60,27 @@ async function onDelete(row: SystemMenuApi.SystemMenu) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
-   code,
-   row,
+  code,
+  row,
 }: OnActionClickParams<SystemMenuApi.SystemMenu>) {
   switch (code) {
     case 'append': {
       onAppend(row);
       break;
     }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -121,13 +126,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
+    <DocAlert
+      title="功能权限"
+      url="https://doc.iocoder.cn/resource-permission"
+    />
     <DocAlert title="菜单路由" url="https://doc.iocoder.cn/vue3/route/" />
 
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:menu:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:menu:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['菜单']) }}
         </Button>

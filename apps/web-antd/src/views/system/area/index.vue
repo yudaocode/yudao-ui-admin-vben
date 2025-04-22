@@ -2,15 +2,16 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button } from 'ant-design-vue';
 import { Search } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
+
+import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAreaTree } from '#/api/system/area';
+import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,

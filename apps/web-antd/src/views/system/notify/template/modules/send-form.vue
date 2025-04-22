@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { sendNotify } from '#/api/system/notify/template';
 import { $t } from '#/locales';
@@ -65,7 +67,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
+    const data =
+      modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
     if (!data || !data.id) {
       return;
     }
@@ -93,7 +96,7 @@ const buildFormSchema = () => {
         rules: 'required',
         componentProps: {
           placeholder: `请输入参数 ${param}`,
-        }
+        },
       });
     });
   }

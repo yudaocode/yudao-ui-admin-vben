@@ -2,12 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { useAccess } from '@vben/access';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 

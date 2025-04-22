@@ -3,15 +3,21 @@ import type { OnActionClickParams } from '#/adapter/vxe-table';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
 import { Download, Plus } from '@vben/icons';
-import TypeForm from './type-form.vue';
+
+import { Button, message } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteDictType,
+  exportDictType,
+  getDictTypePage,
+} from '#/api/system/dict/type';
+import { $t } from '#/locales';
+import { downloadByData } from '#/utils/download';
 
 import { useTypeGridColumns, useTypeGridFormSchema } from '../data';
-import { $t } from '#/locales';
-import { deleteDictType, getDictTypePage, exportDictType } from '#/api/system/dict/type';
-import { downloadByData } from '#/utils/download';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import TypeForm from './type-form.vue';
 
 const emit = defineEmits(['select']);
 
@@ -61,17 +67,14 @@ async function onDelete(row: SystemDictTypeApi.SystemDictType) {
 }
 
 /** 表格操作按钮回调 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams) {
+function onActionClick({ code, row }: OnActionClickParams) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -122,11 +125,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:dict:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:dict:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['字典类型']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:dict:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:dict:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

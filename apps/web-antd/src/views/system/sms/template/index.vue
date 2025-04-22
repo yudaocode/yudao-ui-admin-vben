@@ -1,20 +1,28 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { Button, message } from 'ant-design-vue';
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteSmsTemplate, exportSmsTemplate, getSmsTemplatePage } from '#/api/system/sms/template';
+import {
+  deleteSmsTemplate,
+  exportSmsTemplate,
+  getSmsTemplatePage,
+} from '#/api/system/sms/template';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -77,12 +85,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemSmsTemplateApi.SystemSmsTemplate>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'sms-send': {
@@ -130,11 +138,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="短信模板列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:sms-template:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:sms-template:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['短信模板']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:sms-template:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:sms-template:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

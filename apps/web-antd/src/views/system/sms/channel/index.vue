@@ -1,19 +1,27 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
 import { Download, Plus } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getSmsChannelPage, deleteSmsChannel, exportSmsChannel } from '#/api/system/sms/channel';
+import {
+  deleteSmsChannel,
+  exportSmsChannel,
+  getSmsChannelPage,
+} from '#/api/system/sms/channel';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -66,12 +74,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemSmsChannelApi.SystemSmsChannel>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -114,11 +122,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="短信渠道列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:sms-channel:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:sms-channel:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['短信渠道']) }}
         </Button>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:sms-channel:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:sms-channel:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -1,14 +1,22 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
 import { Page } from '@vben/common-ui';
-import { message } from 'ant-design-vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getOAuth2TokenPage, deleteOAuth2Token } from '#/api/system/oauth2/token';
+import {
+  deleteOAuth2Token,
+  getOAuth2TokenPage,
+} from '#/api/system/oauth2/token';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
 
 /** 刷新表格 */
@@ -30,7 +38,7 @@ async function onDelete(row: SystemOAuth2TokenApi.SystemOAuth2Token) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -50,7 +58,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -80,7 +88,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="OAuth 2.0（SSO 单点登录)" url="https://doc.iocoder.cn/oauth2/" />
+    <DocAlert
+      title="OAuth 2.0（SSO 单点登录)"
+      url="https://doc.iocoder.cn/oauth2/"
+    />
 
     <Grid table-title="令牌列表" />
   </Page>

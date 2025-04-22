@@ -2,8 +2,9 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { useAccess } from '@vben/access';
+
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -16,7 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-      }
+      },
     },
     {
       fieldName: 'userType',
@@ -33,7 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户端编号',
-      }
+      },
     },
   ];
 }

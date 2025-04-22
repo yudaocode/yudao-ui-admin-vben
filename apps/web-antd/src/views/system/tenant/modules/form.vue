@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemTenantApi } from '#/api/system/tenant';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
 import { createTenant, getTenant, updateTenant } from '#/api/system/tenant';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 

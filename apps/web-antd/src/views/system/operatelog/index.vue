@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button } from 'ant-design-vue';
 import { Download } from '@vben/icons';
-import Detail from './modules/detail.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportOperateLog, getOperateLogPage } from '#/api/system/operate-log';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -86,7 +90,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="操作日志列表">
       <template #toolbar-tools>
-        <Button type="primary" class="ml-2" @click="onExport" v-access:code="['system:operate-log:export']">
+        <Button
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['system:operate-log:export']"
+        >
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>

@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
 import { getAreaByIp } from '#/api/system/area';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-const emit = defineEmits(['success']);
-
-const [Form, { setFieldValue, setValues, validate, getValues }] = useVbenForm({
+const [Form, { setFieldValue, validate, getValues }] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -36,7 +35,7 @@ const [Modal, modalApi] = useVbenModal({
     } finally {
       modalApi.lock(false);
     }
-  }
+  },
 });
 </script>
 

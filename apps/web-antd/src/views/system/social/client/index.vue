@@ -1,17 +1,25 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
 import { Plus } from '@vben/icons';
-import Form from './modules/form.vue';
-import { DocAlert } from '#/components/doc-alert';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getSocialClientPage, deleteSocialClient } from '#/api/system/social/client';
+import {
+  deleteSocialClient,
+  getSocialClientPage,
+} from '#/api/system/social/client';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -47,7 +55,7 @@ async function onDelete(row: SystemSocialClientApi.SystemSocialClient) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -58,12 +66,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemSocialClientApi.SystemSocialClient>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
   }
@@ -71,7 +79,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -106,11 +114,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="社交客户端列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:social-client:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:social-client:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['社交客户端']) }}
         </Button>
       </template>
     </Grid>
   </Page>
-</template> 
+</template>

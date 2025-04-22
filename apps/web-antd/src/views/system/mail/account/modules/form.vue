@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { message } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
-import { createMailAccount, getMailAccount, updateMailAccount,} from '#/api/system/mail/account';
+import {
+  createMailAccount,
+  getMailAccount,
+  updateMailAccount,
+} from '#/api/system/mail/account';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -24,8 +30,8 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
   commonConfig: {
-    labelWidth: 140
-  }
+    labelWidth: 140,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -36,9 +42,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemMailAccountApi.SystemMailAccount;
+    const data =
+      (await formApi.getValues()) as SystemMailAccountApi.SystemMailAccount;
     try {
-      await (formData.value?.id ? updateMailAccount(data) : createMailAccount(data));
+      await (formData.value?.id
+        ? updateMailAccount(data)
+        : createMailAccount(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

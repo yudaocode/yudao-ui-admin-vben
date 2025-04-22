@@ -2,11 +2,12 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
 import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { useAccess } from '@vben/access';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -191,9 +192,9 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns<
+  T = SystemNotifyTemplateApi.SystemNotifyTemplate,
+>(onActionClick: OnActionClickFn<T>): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -267,8 +268,8 @@ export function useGridColumns<T = SystemNotifyTemplateApi.SystemNotifyTemplate>
             code: 'edit',
             show: hasAccessByCodes(['system:notify-template:update']),
           },
-          { 
-            code: 'send', 
+          {
+            code: 'send',
             text: '测试',
             show: hasAccessByCodes(['system:notify-template:send-notify']),
           },

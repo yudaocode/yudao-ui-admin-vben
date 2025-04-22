@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions, DescriptionsItem, Image } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
-import { $t } from '#/locales';
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { Descriptions, DescriptionsItem, Image } from 'ant-design-vue';
+
 import { getSocialUser } from '#/api/system/social/user';
+import { DictTag } from '#/components/dict-tag';
+import { $t } from '#/locales';
 import { DICT_TYPE } from '#/utils/dict';
 
 const formData = ref<SystemSocialUserApi.SystemSocialUser>();
@@ -34,8 +36,19 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="社交用户详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
-    <Descriptions bordered :column="1" size="middle" class="mx-4" :label-style="{ width: '185px' }">
+  <Modal
+    title="社交用户详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
+    <Descriptions
+      bordered
+      :column="1"
+      size="middle"
+      class="mx-4"
+      :label-style="{ width: '185px' }"
+    >
       <DescriptionsItem label="社交平台">
         <DictTag :type="DICT_TYPE.SYSTEM_SOCIAL_TYPE" :value="formData?.type" />
       </DescriptionsItem>

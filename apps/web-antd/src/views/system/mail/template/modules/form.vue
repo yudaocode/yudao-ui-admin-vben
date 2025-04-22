@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
-import { $t } from '#/locales';
 import { message } from 'ant-design-vue';
-import { computed, ref } from 'vue';
+
 import { useVbenForm } from '#/adapter/form';
-import { createMailTemplate, getMailTemplate, updateMailTemplate} from '#/api/system/mail/template';
+import {
+  createMailTemplate,
+  getMailTemplate,
+  updateMailTemplate,
+} from '#/api/system/mail/template';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -33,9 +39,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemMailTemplateApi.SystemMailTemplate;
+    const data =
+      (await formApi.getValues()) as SystemMailTemplateApi.SystemMailTemplate;
     try {
-      await (formData.value?.id ? updateMailTemplate(data) : createMailTemplate(data));
+      await (formData.value?.id
+        ? updateMailTemplate(data)
+        : createMailTemplate(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

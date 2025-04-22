@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { getSmsChannel, createSmsChannel, updateSmsChannel } from '#/api/system/sms/channel';
+import {
+  createSmsChannel,
+  getSmsChannel,
+  updateSmsChannel,
+} from '#/api/system/sms/channel';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -24,8 +30,8 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
   commonConfig: {
-    labelWidth: 120
-  }
+    labelWidth: 120,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -36,9 +42,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemSmsChannelApi.SystemSmsChannel;
+    const data =
+      (await formApi.getValues()) as SystemSmsChannelApi.SystemSmsChannel;
     try {
-      await (formData.value?.id ? updateSmsChannel(data) : createSmsChannel(data));
+      await (formData.value?.id
+        ? updateSmsChannel(data)
+        : createSmsChannel(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

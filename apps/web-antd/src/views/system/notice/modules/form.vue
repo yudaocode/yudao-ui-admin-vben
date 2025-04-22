@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { SystemNoticeApi } from '#/api/system/notice';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createNotice, updateNotice, getNotice } from '#/api/system/notice';
+import { createNotice, getNotice, updateNotice } from '#/api/system/notice';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message } from 'ant-design-vue';
 import { Plus } from '@vben/icons';
-import Form from './modules/form.vue';
 
-import { $t } from '#/locales';
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getNoticePage, deleteNotice, pushNotice } from '#/api/system/notice';
+import { deleteNotice, getNoticePage, pushNotice } from '#/api/system/notice';
+import { $t } from '#/locales';
+
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -46,7 +51,7 @@ async function onDelete(row: SystemNoticeApi.SystemNotice) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -64,7 +69,7 @@ async function onPush(row: SystemNoticeApi.SystemNotice) {
       content: $t('ui.actionMessage.operationSuccess'),
       key: 'action_process_msg',
     });
-  } catch (error) {
+  } catch {
     hideLoading();
   }
 }
@@ -75,12 +80,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<SystemNoticeApi.SystemNotice>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'push': {
@@ -92,7 +97,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(onActionClick),
@@ -125,7 +130,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="公告列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate" v-access:code="['system:notice:create']">
+        <Button
+          type="primary"
+          @click="onCreate"
+          v-access:code="['system:notice:create']"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['公告']) }}
         </Button>

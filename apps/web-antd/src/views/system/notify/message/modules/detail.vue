@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Descriptions } from 'ant-design-vue';
-import { DictTag } from '#/components/dict-tag';
-
 import { ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
 const formData = ref<SystemNotifyMessageApi.SystemNotifyMessage>();
@@ -32,7 +34,12 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="站内信详情" class="w-1/2" :show-cancel-button="false" :show-confirm-button="false">
+  <Modal
+    title="站内信详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
     <Descriptions bordered :column="1" size="middle" class="mx-4">
       <Descriptions.Item label="编号">{{ formData?.id }}</Descriptions.Item>
       <Descriptions.Item label="用户类型">
@@ -57,10 +64,16 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.templateParams }}
       </Descriptions.Item>
       <Descriptions.Item label="模版类型">
-        <DictTag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="formData?.templateType" />
+        <DictTag
+          :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE"
+          :value="formData?.templateType"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="是否已读">
-        <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="formData?.readStatus" />
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="formData?.readStatus"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="阅读时间">
         {{ formatDateTime(formData?.readTime || '') }}

@@ -1,20 +1,22 @@
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMenuApi } from '#/api/system/menu';
-import type { VbenFormSchema } from '#/adapter/form';
 import type { Recordable } from '@vben/types';
 
-import { IconifyIcon } from '@vben/icons';
+import type { VbenFormSchema } from '#/adapter/form';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMenuApi } from '#/api/system/menu';
 
-import { $t } from '#/locales';
 import { h } from 'vue';
+
+import { useAccess } from '@vben/access';
+import { IconifyIcon } from '@vben/icons';
+import { isHttpUrl } from '@vben/utils';
+
 import { z } from '#/adapter/form';
-import { componentKeys } from '#/router/routes';
 import { getMenuList } from '#/api/system/menu';
+import { $t } from '#/locales';
+import { componentKeys } from '#/router/routes';
+import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { handleTree } from '#/utils/tree';
-import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
-import { isHttpUrl } from '@vben/utils';
-import { useAccess } from '@vben/access';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -62,7 +64,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'selectRequired',
       renderComponentContent() {
         return {
-          title({ label, icon }: { label: string; icon: string }) {
+          title({ label, icon }: { icon: string; label: string }) {
             const components = [];
             if (!label) return '';
             if (icon) {
@@ -106,7 +108,9 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['type'],
         show: (values) => {
-          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(values.type);
+          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+            values.type,
+          );
         },
       },
     },
@@ -122,7 +126,9 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['type', 'parentId'],
         show: (values) => {
-          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(values.type);
+          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+            values.type,
+          );
         },
         rules: (values) => {
           const schema = z.string().min(1, '路由地址不能为空');
@@ -130,11 +136,17 @@ export function useFormSchema(): VbenFormSchema[] {
             return schema;
           }
           if (values.parentId === 0) {
-            return schema.refine((path) => path.charAt(0) === '/', '路径必须以 / 开头');
+            return schema.refine(
+              (path) => path.charAt(0) === '/',
+              '路径必须以 / 开头',
+            );
           }
-          return schema.refine((path) => path.charAt(0) !== '/', '路径不能以 / 开头');
+          return schema.refine(
+            (path) => path.charAt(0) !== '/',
+            '路径不能以 / 开头',
+          );
         },
-      }
+      },
     },
     {
       fieldName: 'component',
@@ -147,7 +159,7 @@ export function useFormSchema(): VbenFormSchema[] {
         triggerFields: ['type'],
         show: (values) => {
           return [SystemMenuTypeEnum.MENU].includes(values.type);
-        }
+        },
       },
     },
     {
@@ -167,7 +179,7 @@ export function useFormSchema(): VbenFormSchema[] {
         triggerFields: ['type'],
         show: (values) => {
           return [SystemMenuTypeEnum.MENU].includes(values.type);
-        }
+        },
       },
     },
     {
@@ -179,7 +191,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         show: (values) => {
-          return [SystemMenuTypeEnum.MENU, SystemMenuTypeEnum.BUTTON].includes(
+          return [SystemMenuTypeEnum.BUTTON, SystemMenuTypeEnum.MENU].includes(
             values.type,
           );
         },
@@ -253,7 +265,7 @@ export function useFormSchema(): VbenFormSchema[] {
         },
       },
     },
-  ]
+  ];
 }
 
 /** 列表的字段 */

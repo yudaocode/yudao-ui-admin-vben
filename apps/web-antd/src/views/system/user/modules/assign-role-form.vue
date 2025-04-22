@@ -2,11 +2,12 @@
 import type { SystemUserApi } from '#/api/system/user';
 
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
 import { useVbenForm } from '#/adapter/form';
-import { getUserRoleList, assignUserRole } from '#/api/system/permission';
+import { assignUserRole, getUserRoleList } from '#/api/system/permission';
+import { $t } from '#/locales';
 
 import { useAssignRoleFormSchema } from '../data';
 

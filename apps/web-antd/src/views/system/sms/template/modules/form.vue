@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 import { useVbenForm } from '#/adapter/form';
-import { createSmsTemplate, getSmsTemplate, updateSmsTemplate } from '#/api/system/sms/template';
+import {
+  createSmsTemplate,
+  getSmsTemplate,
+  updateSmsTemplate,
+} from '#/api/system/sms/template';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -24,8 +30,8 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
   commonConfig: {
-    labelWidth: 140
-  }
+    labelWidth: 140,
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({

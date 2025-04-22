@@ -2,10 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
-import { getSimpleMailAccountList } from '#/api/system/mail/account';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
+
+import { getSimpleMailAccountList } from '#/api/system/mail/account';
+import { getRangePickerDefaultProps } from '#/utils/date';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -28,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入用户编号',
-      }
+      },
     },
     {
       fieldName: 'userType',
@@ -69,7 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: '请输入模板编号',
-      }
+      },
     },
   ];
 }
@@ -142,7 +143,7 @@ export function useGridColumns<T = SystemMailLogApi.SystemMailLog>(
             code: 'detail',
             text: '查看',
             show: hasAccessByCodes(['system:mail-log:query']),
-          }
+          },
         ],
       },
     },
