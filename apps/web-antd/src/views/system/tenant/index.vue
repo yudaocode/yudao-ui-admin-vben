@@ -4,6 +4,9 @@ import type {
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
+import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
+
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -12,12 +15,23 @@ import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
+import { getTenantPackageList } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+
+const tenantPackageList = ref<SystemTenantPackageApi.SystemTenantPackage[]>([]);
+
+/** 获取套餐名称 */
+const getPackageName = (packageId: number) => {
+  if (packageId === 0) {
+    return '系统租户';
+  }
+  return tenantPackageList.value.find((pkg) => pkg.id === packageId)?.name;
+};
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -86,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(onActionClick, getPackageName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -108,6 +122,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantApi.SystemTenant>,
+});
+
+/** 初始化 */
+onMounted(async () => {
+  tenantPackageList.value = await getTenantPackageList();
 });
 </script>
 <template>

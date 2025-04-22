@@ -4,7 +4,7 @@ import type { AxiosProgressEvent, InfraFileApi } from '#/api/infra/file';
 import { computed, unref } from 'vue';
 import { $t } from '@vben/locales';
 import CryptoJS from 'crypto-js'
-import axios from 'axios'
+import { baseRequestClient } from '#/api/request';
 import { uploadFile, getFilePresignedUrl, createFile } from '#/api/infra/file';
 
 export function useUploadType({
@@ -78,7 +78,7 @@ export const useUpload = () => {
       // 1.2 获取文件预签名地址
       const presignedInfo = await getFilePresignedUrl(fileName)
       // 1.3 上传文件
-      return axios
+      return baseRequestClient
         .put(presignedInfo.uploadUrl, file, {
           headers: {
             'Content-Type': file.type

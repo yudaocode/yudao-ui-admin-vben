@@ -4,8 +4,9 @@ import type {
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
@@ -14,6 +15,7 @@ import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptList } from '#/api/system/dept';
+import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -23,6 +25,13 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+const userList = ref<SystemUserApi.SystemUser[]>([]);
+
+/** 获取负责人名称 */
+const getLeaderName = (userId: number) => {
+  return userList.value.find((user) => user.id === userId)?.nickname;
+};
 
 /** 刷新表格 */
 function onRefresh() {
@@ -93,7 +102,7 @@ function onActionClick({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(onActionClick, getLeaderName),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -120,6 +129,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
   } as VxeTableGridOptions,
+});
+
+/** 初始化 */
+onMounted(async () => {
+  userList.value = await getSimpleUserList();
 });
 </script>
 

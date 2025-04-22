@@ -182,9 +182,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-const tenantPackageList = await getTenantPackageList();
 export function useGridColumns<T = SystemTenantApi.SystemTenant>(
   onActionClick: OnActionClickFn<T>,
+  getPackageName?: (packageId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -201,13 +201,8 @@ export function useGridColumns<T = SystemTenantApi.SystemTenant>(
       field: 'packageId',
       title: '租户套餐',
       minWidth: 180,
-      formatter: (row) => {
-        const packageId = row.cellValue;
-        return packageId === 0
-          ? '系统租户'
-          : tenantPackageList.find(
-              (tenantPackage) => tenantPackage.id === packageId,
-            )?.name || '-';
+      formatter: (row: { cellValue: number }) => {
+        return getPackageName?.(row.cellValue) || '-';
       },
     },
     {

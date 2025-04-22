@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMailAccountApi } from '#/api/system/mail/account';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { useAccess } from '@vben/access';
@@ -191,9 +192,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-const accountList = await getSimpleMailAccountList();
 export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
   onActionClick: OnActionClickFn<T>,
+  getAccountMail?: (accountId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -220,8 +221,7 @@ export function useGridColumns<T = SystemMailTemplateApi.SystemMailTemplate>(
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,
-      formatter: ({ cellValue }) =>
-        accountList.find((account) => account.id === cellValue)?.mail || '-',
+      formatter: (row) => getAccountMail?.(row.cellValue) || '-',
     },
     {
       field: 'nickname',

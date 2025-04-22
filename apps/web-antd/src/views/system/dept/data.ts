@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { useAccess } from '@vben/access';
 
@@ -122,9 +123,9 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-const userList = await getSimpleUserList();
 export function useGridColumns(
   onActionClick?: OnActionClickFn<SystemDeptApi.SystemDept>,
+  getLeaderName?: (userId: number) => string | undefined,
 ): VxeTableGridOptions<SystemDeptApi.SystemDept>['columns'] {
   return [
     {
@@ -140,9 +141,7 @@ export function useGridColumns(
       title: '负责人',
       minWidth: 150,
       formatter: (row) => {
-        return (
-          userList.find((user) => user.id === row.cellValue)?.nickname || '-'
-        );
+        return getLeaderName?.(row.cellValue) || '-';
       },
     },
     {

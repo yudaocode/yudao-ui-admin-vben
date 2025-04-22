@@ -3,7 +3,10 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { SystemMailAccountApi } from '#/api/system/mail/account';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
+
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
@@ -11,6 +14,7 @@ import { Plus } from '@vben/icons';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import {
   deleteMailTemplate,
   getMailTemplatePage,
@@ -21,6 +25,13 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
+
+const accountList = ref<SystemMailAccountApi.SystemMailAccount[]>([]);
+
+/** 获取邮箱账号 */
+const getAccountMail = (accountId: number) => {
+  return accountList.value.find((account) => account.id === accountId)?.mail;
+};
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -97,7 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(onActionClick, getAccountMail),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -119,6 +130,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemMailTemplateApi.SystemMailTemplate>,
+});
+
+/** 初始化 */
+onMounted(async () => {
+  accountList.value = await getSimpleMailAccountList();
 });
 </script>
 <template>
