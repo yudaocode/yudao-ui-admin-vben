@@ -25,15 +25,9 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function onExport() {
-  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
-  downloadByData(data, '示例联系人.xls');
-}
-
 /** 创建示例联系人 */
 function onCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({}).open();
 }
 
 /** 编辑示例联系人 */
@@ -60,16 +54,21 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   }
 }
 
+/** 导出表格 */
+async function onExport() {
+  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
+  downloadByData(data, '示例联系人.xls');
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<Demo01ContactApi.Demo01Contact>) {
   switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    // TODO @puhui999：edit 放在 delete 前面哈。好理解一点，修改 => 删除
     case 'edit': {
       onEdit(row);
+      break;
+    }
+    case 'delete': {
+      onDelete(row);
       break;
     }
   }
