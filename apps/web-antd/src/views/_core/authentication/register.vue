@@ -1,20 +1,29 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import { type AuthApi, checkCaptcha, getCaptcha } from '#/api/core/auth';
+
+import type { AuthApi } from '#/api/core/auth';
 
 import { computed, h, onMounted, ref } from 'vue';
 
 import { AuthenticationRegister, Verification, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
 import { useAppConfig } from '@vben/hooks';
-
+import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
-import { useAuthStore } from '#/store';
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
 
-const { tenantEnable, captchaEnable } = useAppConfig(import.meta.env, import.meta.env.PROD);
+import {
+  checkCaptcha,
+  getCaptcha,
+  getTenantByWebsite,
+  getTenantSimpleList,
+} from '#/api/core/auth';
+import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Register' });
+
+const { tenantEnable, captchaEnable } = useAppConfig(
+  import.meta.env,
+  import.meta.env.PROD,
+);
 
 const loading = ref(false);
 const registerRef = ref();
@@ -36,7 +45,7 @@ const fetchTenantList = async () => {
     tenantList.value = await getTenantSimpleList();
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -94,17 +103,13 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         options: tenantList.value.map((item) => ({
           label: item.name,
-          value: item.id,
+          value: item.id.toString(),
         })),
         placeholder: $t('authentication.tenantTip'),
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
-        .default(null),
+      rules: z.number().positive(),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,

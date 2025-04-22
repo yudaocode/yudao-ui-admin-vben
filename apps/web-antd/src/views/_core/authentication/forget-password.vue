@@ -2,17 +2,20 @@
 import type { VbenFormSchema } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
-import { computed, ref, onMounted, h } from 'vue';
+import type { AuthApi } from '#/api';
 
-import { AuthenticationForgetPassword, z } from '@vben/common-ui';
-import { $t } from '@vben/locales';
-import { type AuthApi, sendSmsCode, smsResetPassword } from '#/api';
-import { useAppConfig } from '@vben/hooks';
-import { message } from 'ant-design-vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { getTenantSimpleList, getTenantByWebsite } from '#/api/core/auth';
+import { AuthenticationForgetPassword, z } from '@vben/common-ui';
+import { useAppConfig } from '@vben/hooks';
+import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
+
+import { message } from 'ant-design-vue';
+
+import { sendSmsCode, smsResetPassword } from '#/api';
+import { getTenantByWebsite, getTenantSimpleList } from '#/api/core/auth';
 
 defineOptions({ name: 'ForgetPassword' });
 
@@ -36,7 +39,7 @@ const fetchTenantList = async () => {
     tenantList.value = await getTenantSimpleList();
 
     // 选中租户：域名 > store 中的租户 > 首个租户
-    let tenantId: number | null = null;
+    let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
     if (websiteTenant?.id) {
       tenantId = websiteTenant.id;
@@ -76,11 +79,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z
-        .number()
-        .nullable()
-        .refine((val) => val != null && val > 0, $t('authentication.tenantTip'))
-        .default(null),
+      rules: z.number().positive(),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
@@ -139,7 +138,7 @@ const formSchema = computed((): VbenFormSchema[] => {
           } finally {
             loading.value = false;
           }
-        }
+        },
       },
       fieldName: 'code',
       label: $t('authentication.code'),

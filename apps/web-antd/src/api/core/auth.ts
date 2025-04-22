@@ -1,5 +1,6 @@
-import { baseRequestClient, requestClient } from '#/api/request';
 import type { AuthPermissionInfo } from '@vben/types';
+
+import { baseRequestClient, requestClient } from '#/api/request';
 
 export namespace AuthApi {
   /** 登录接口参数 */
@@ -41,9 +42,9 @@ export namespace AuthApi {
 
   /** 注册接口参数 */
   export interface RegisterParams {
-    username: string
-    password: string
-    captchaVerification: string
+    username: string;
+    password: string;
+    captchaVerification: string;
   }
 
   /** 重置密码接口参数 */
@@ -68,16 +69,22 @@ export async function loginApi(data: AuthApi.LoginParams) {
 
 /** 刷新 accessToken */
 export async function refreshTokenApi(refreshToken: string) {
-  return baseRequestClient.post(`/system/auth/refresh-token?refreshToken=${refreshToken}`);
+  return baseRequestClient.post(
+    `/system/auth/refresh-token?refreshToken=${refreshToken}`,
+  );
 }
 
 /** 退出登录 */
 export async function logoutApi(accessToken: string) {
-  return baseRequestClient.post('/system/auth/logout', {}, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    }
-  });
+  return baseRequestClient.post(
+    '/system/auth/logout',
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
 }
 
 /** 获取权限信息 */
@@ -96,7 +103,9 @@ export async function getTenantSimpleList() {
 
 /** 使用租户域名，获得租户信息 */
 export async function getTenantByWebsite(website: string) {
-  return requestClient.get<AuthApi.TenantResult>(`/system/tenant/get-by-website?website=${website}`);
+  return requestClient.get<AuthApi.TenantResult>(
+    `/system/tenant/get-by-website?website=${website}`,
+  );
 }
 
 /** 获取验证码 */
@@ -111,23 +120,23 @@ export async function checkCaptcha(data: any) {
 
 /** 获取登录验证码 */
 export const sendSmsCode = (data: AuthApi.SmsCodeParams) => {
-  return requestClient.post('/system/auth/send-sms-code', data )
-}
+  return requestClient.post('/system/auth/send-sms-code', data);
+};
 
 /** 短信验证码登录 */
 export const smsLogin = (data: AuthApi.SmsLoginParams) => {
-  return requestClient.post('/system/auth/sms-login', data)
-}
+  return requestClient.post('/system/auth/sms-login', data);
+};
 
 /** 注册 */
 export const register = (data: AuthApi.RegisterParams) => {
-  return requestClient.post('/system/auth/register', data)
-}
+  return requestClient.post('/system/auth/register', data);
+};
 
 /** 通过短信重置密码 */
 export const smsResetPassword = (data: AuthApi.ResetPasswordParams) => {
-  return requestClient.post('/system/auth/reset-password', data)
-}
+  return requestClient.post('/system/auth/reset-password', data);
+};
 
 /** 社交授权的跳转 */
 export const socialAuthRedirect = (type: number, redirectUri: string) => {
@@ -137,9 +146,12 @@ export const socialAuthRedirect = (type: number, redirectUri: string) => {
       redirectUri,
     },
   });
-}
+};
 
 /** 社交快捷登录 */
 export const socialLogin = (data: AuthApi.SocialLoginParams) => {
-  return requestClient.post<AuthApi.LoginResult>('/system/auth/social-login', data);
-}
+  return requestClient.post<AuthApi.LoginResult>(
+    '/system/auth/social-login',
+    data,
+  );
+};
