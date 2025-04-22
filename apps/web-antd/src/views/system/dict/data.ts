@@ -1,13 +1,12 @@
-import type { OnActionClickFn } from '#/adapter/vxe-table';
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { VbenFormSchema } from '#/adapter/form';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { getDictOptions } from '#/utils/dict';
-import { DICT_TYPE } from '#/utils/dict';
 import { useAccess } from '@vben/access';
+
 import { z } from '#/adapter/form';
-import { CommonStatusEnum } from '#/utils/constants';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
+import { CommonStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 
@@ -44,10 +43,8 @@ export function useTypeFormSchema(): VbenFormSchema[] {
       // TODO @芋艿：disable 不生效
       dependencies: {
         triggerFields: [''],
-        componentProps: {
-          disabled: ({ values }) => values.id,
-        },
-      }
+        disabled: ({ values }) => values.id,
+      },
     },
     {
       fieldName: 'status',
@@ -81,7 +78,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入字典名称',
         clearable: true,
-      }
+      },
     },
     {
       fieldName: 'status',
@@ -104,18 +101,18 @@ export function useTypeGridColumns<T = any>(
     {
       field: 'id',
       title: '字典编号',
-      minWidth: 100
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '字典名称',
-      minWidth: 180
+      minWidth: 180,
     },
-          // TODO @芋艿：disable的；
+    // TODO @芋艿：disable的；
     {
       field: 'type',
       title: '字典类型',
-      minWidth: 220
+      minWidth: 220,
     },
     {
       field: 'status',
@@ -124,12 +121,12 @@ export function useTypeGridColumns<T = any>(
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
-      }
+      },
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 180
+      minWidth: 180,
     },
     {
       field: 'createTime',
@@ -202,21 +199,20 @@ export function useDataFormSchema(): VbenFormSchema[] {
       fieldName: 'dictType',
       label: '字典类型',
       component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleDictTypeList,
-        placeholder: '请输入字典类型',
-        class: 'w-full',
-        labelField: 'name',
-        valueField: 'type',
+      componentProps: (values) => {
+        return {
+          api: getSimpleDictTypeList,
+          placeholder: '请输入字典类型',
+          class: 'w-full',
+          labelField: 'name',
+          valueField: 'type',
+          disabled: !!values.id,
+        };
       },
       rules: 'required',
-      // TODO @芋艿：disable 不生效
       dependencies: {
         triggerFields: [''],
-        componentProps: {
-          disabled: ({ values }) => values.id,
-        },
-      }
+      },
     },
     {
       fieldName: 'label',
@@ -242,7 +238,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入显示排序',
-        class: 'w-full'
+        class: 'w-full',
       },
       rules: 'required',
     },
@@ -253,7 +249,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        buttonStyle:'solid',
+        buttonStyle: 'solid',
         optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
@@ -298,7 +294,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入字典标签',
         clearable: true,
-      }
+      },
     },
     {
       fieldName: 'status',
@@ -323,22 +319,22 @@ export function useDataGridColumns<T = any>(
     {
       field: 'id',
       title: '字典编码',
-      minWidth: 100
+      minWidth: 100,
     },
     {
       field: 'label',
       title: '字典标签',
-      minWidth: 180
+      minWidth: 180,
     },
     {
       field: 'value',
       title: '字典键值',
-      minWidth: 100
+      minWidth: 100,
     },
     {
       field: 'sort',
       title: '字典排序',
-      minWidth: 100
+      minWidth: 100,
     },
     {
       field: 'status',
@@ -347,17 +343,17 @@ export function useDataGridColumns<T = any>(
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
-      }
+      },
     },
     {
       field: 'colorType',
       title: '颜色类型',
-      minWidth: 120
+      minWidth: 120,
     },
     {
       field: 'cssClass',
       title: 'CSS Class',
-      minWidth: 120
+      minWidth: 120,
     },
     {
       title: '创建时间',
