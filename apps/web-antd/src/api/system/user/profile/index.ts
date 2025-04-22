@@ -26,10 +26,11 @@ export namespace SystemUserProfileApi {
 
   /** 更新个人信息请求 */
   export interface UpdateProfileReqVO {
-    nickname: string;
+    nickname?: string;
     email?: string;
     mobile?: string;
     sex?: number;
+    avatar?: string;
   }
 }
 
@@ -46,11 +47,4 @@ export function updateUserProfile(data: SystemUserProfileApi.UpdateProfileReqVO)
 /** 修改用户个人密码 */
 export function updateUserPassword(data: SystemUserProfileApi.UpdatePasswordReqVO) {
   return requestClient.put('/system/user/profile/update-password', data);
-}
-
-/** 上传用户个人头像 */
-export function updateUserAvatar(file: File) {
-  const formData = new FormData();
-  formData.append('avatarFile', file);
-  return requestClient.put('/system/user/profile/update-avatar', formData);
 }

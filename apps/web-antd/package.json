@@ -43,6 +43,7 @@
     "@tinymce/tinymce-vue": "catalog:",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
+    "cropperjs": "catalog:",
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "highlight.js": "catalog:",

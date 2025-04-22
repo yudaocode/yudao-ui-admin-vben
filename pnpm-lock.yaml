@@ -192,6 +192,9 @@ catalogs:
     consola:
       specifier: ^3.4.2
       version: 3.4.2
+    cropperjs:
+      specifier: ^1.6.2
+      version: 1.6.2
     cross-env:
       specifier: ^7.0.3
       version: 7.0.3
@@ -713,6 +716,9 @@ importers:
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.13(typescript@5.8.3))
+      cropperjs:
+        specifier: 'catalog:'
+        version: 1.6.2
       crypto-js:
         specifier: 'catalog:'
         version: 4.2.0
@@ -5653,6 +5659,9 @@ packages:
   croner@9.0.0:
     resolution: {integrity: sha512-onMB0OkDjkXunhdW9htFjEhqrD54+M94i6ackoUkjHKbRnXdyEyKRelp4nJ1kAz32+s27jP1FsebpJCVl0BsvA==}
     engines: {node: '>=18.0'}
+
+  cropperjs@1.6.2:
+    resolution: {integrity: sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==}
 
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -15323,6 +15332,8 @@ snapshots:
       luxon: 3.6.1
 
   croner@9.0.0: {}
+
+  cropperjs@1.6.2: {}
 
   cross-env@7.0.3:
     dependencies:

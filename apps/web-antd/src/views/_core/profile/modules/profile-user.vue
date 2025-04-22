@@ -1,42 +1,51 @@
 <script setup lang="ts">
-import type { SystemUserProfileApi } from '#/api/system/user/profile';
+import {type SystemUserProfileApi, updateUserPassword} from '#/api/system/user/profile';
 
-import { Descriptions, DescriptionsItem, Tooltip } from 'ant-design-vue';
+import {Descriptions, DescriptionsItem, message, Tooltip} from 'ant-design-vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { computed } from 'vue';
 import { preferences } from '@vben/preferences';
-import { updateUserAvatar } from '#/api/system/user/profile';
+import { updateUserProfile } from '#/api/system/user/profile';
 import { formatDateTime } from '@vben/utils';
-// import { CropperAvatar } from '#/components/cropper';
+import { CropperAvatar } from '#/components/cropper';
+import { useUpload } from '#/components/upload/use-upload';
 
 const props = defineProps<{ profile?: SystemUserProfileApi.UserProfileRespVO }>();
 
-defineEmits<{
-  // 头像上传完毕
-  success: [];
+const emit = defineEmits<{
+  (e: 'success'): void;
 }>();
 
 const avatar = computed(
   () => props.profile?.avatar || preferences.app.defaultAvatar,
 );
+
+async function handelUpload({ file, filename }: { file: Blob; filename: string; }) {
+  // 1. 上传头像，获取 URL
+  const { httpRequest } = useUpload();
+  // 将 Blob 转换为 File
+  const fileObj = new File([file], filename, { type: file.type });
+  const avatar = await httpRequest(fileObj);
+  // 2. 更新用户头像
+  await updateUserProfile({ avatar });
+}
 </script>
 
 <template>
   <div v-if="profile">
-    <div class="flex flex-col items-center gap-[20px]">
+    <div class="flex flex-col items-center">
       <Tooltip title="点击上传头像">
-        <!-- TODO 芋艿：待实现 -->
         <CropperAvatar
           :show-btn="false"
-          :upload-api="updateUserAvatar"
+          :upload-api="handelUpload"
           :value="avatar"
           width="120"
-          @change=""
+          @change="emit('success')"
         />
       </Tooltip>
     </div>
-    <div>
+    <div class="mt-8">
       <Descriptions :column="2">
         <DescriptionsItem>
           <template #label>

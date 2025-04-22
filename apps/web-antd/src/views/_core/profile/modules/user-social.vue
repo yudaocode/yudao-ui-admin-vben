@@ -187,7 +187,7 @@ onMounted(() => {
                 </span>
               </div>
               <Button
-                :disabled="item.socialUser"
+                :disabled="!!item.socialUser"
                 size="small"
                 type="link"
                 @click="onBind(item)"
