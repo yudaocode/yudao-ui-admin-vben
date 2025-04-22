@@ -387,17 +387,17 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-const dataSourceConfigList = await getDataSourceConfigList();
 /** 列表的字段 */
 export function useGridColumns<T = InfraCodegenApi.CodegenTable>(
   onActionClick: OnActionClickFn<T>,
+  getDataSourceConfigName?: (dataSourceConfigId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'dataSourceConfigId',
       title: '数据源',
       minWidth: 120,
-      formatter: ({ cellValue }) => dataSourceConfigList.find((item) => item.id === cellValue)?.name || '',
+      formatter: (row) => getDataSourceConfigName?.(row.cellValue) || '-',
     },
     {
       field: 'tableName',

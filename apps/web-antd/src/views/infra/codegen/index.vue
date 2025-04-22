@@ -14,7 +14,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCodegenTable, downloadCodegen, getCodegenTablePage, syncCodegenFromDB } from '#/api/infra/codegen';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -22,9 +22,11 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const dataSourceConfigList = ref<InfraDataSourceConfigApi.InfraDataSourceConfig[]>([]);
-const getDataSourceConfigName = computed(
-  () => (cellValue: number) => dataSourceConfigList.value.find((item) => item.id === cellValue)?.name || '',
-);
+
+/** 获取数据源名称 */
+const getDataSourceConfigName = (dataSourceConfigId: number) => {
+  return dataSourceConfigList.value.find((item) => item.id === dataSourceConfigId)?.name;
+};
 
 const [ImportModal, importModalApi] = useVbenModal({
   connectedComponent: ImportTable,
