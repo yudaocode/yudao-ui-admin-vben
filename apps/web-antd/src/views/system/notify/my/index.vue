@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-// TODO @puhui999：需要看看，vben 哪里改下哈。一个是 vben 右上角的站内信、一个是点击查看所有消息，应该跳转到这里。
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
+import { DocAlert } from '#/components/doc-alert';
+import Detail from './modules/detail.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { MdiCheckboxMarkedCircleOutline } from '@vben/icons';
-
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -17,10 +14,8 @@ import {
   updateAllNotifyMessageRead,
   updateNotifyMessageRead,
 } from '#/api/system/notify/message';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Detail from './modules/detail.vue';
 
 const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
@@ -68,9 +63,7 @@ async function onMarkRead() {
     return;
   }
 
-  const ids = rows.map(
-    (row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id,
-  );
+  const ids = rows.map((row: SystemNotifyMessageApi.SystemNotifyMessage) => row.id);
   message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -106,10 +99,7 @@ async function onMarkAllRead() {
 }
 
 /** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
+function onActionClick({ code, row }: OnActionClickParams<SystemNotifyMessageApi.SystemNotifyMessage>) {
   switch (code) {
     case 'detail': {
       onDetail(row);
@@ -149,9 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     checkboxConfig: {
-      checkMethod: (params: {
-        row: SystemNotifyMessageApi.SystemNotifyMessage;
-      }) => !params.row.readStatus,
+      checkMethod: (params: { row: SystemNotifyMessageApi.SystemNotifyMessage }) => !params.row.readStatus,
       highlight: true,
     },
   } as VxeTableGridOptions<SystemNotifyMessageApi.SystemNotifyMessage>,

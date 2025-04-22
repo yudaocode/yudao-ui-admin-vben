@@ -3,7 +3,6 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { Recordable } from '@vben/types';
-import type { ComputedRef } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -388,18 +387,17 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+const dataSourceConfigList = await getDataSourceConfigList();
 /** 列表的字段 */
-// TODO @puhui999：getDataSourceConfigName，要不改成 data.ts 加载 list，然后使用。
 export function useGridColumns<T = InfraCodegenApi.CodegenTable>(
   onActionClick: OnActionClickFn<T>,
-  getDataSourceConfigName: ComputedRef<(cellValue: number) => string>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'dataSourceConfigId',
       title: '数据源',
       minWidth: 120,
-      formatter: ({ cellValue }) => getDataSourceConfigName.value(cellValue),
+      formatter: ({ cellValue }) => dataSourceConfigList.find((item) => item.id === cellValue)?.name || '',
     },
     {
       field: 'tableName',

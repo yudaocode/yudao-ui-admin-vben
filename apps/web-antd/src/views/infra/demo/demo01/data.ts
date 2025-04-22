@@ -52,22 +52,16 @@ export function useFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
       },
     },
-    // TODO 【富文本】@puhui999：@芋艿：后续要封装下；单独 pr
     {
       fieldName: 'description',
       label: '简介',
       rules: 'required',
-      component: 'Editor',
+      component: 'RichTextarea',
     },
-    // TODO 【文件上传】@puhui999：@芋艿：后续要封装下；单独 pr
     {
       fieldName: 'avatar',
       label: '头像',
-      component: 'FileUpload',
-      componentProps: {
-        fileType: 'image',
-        maxCount: 1,
-      },
+      component: 'ImageUpload',
     },
   ];
 }
@@ -91,6 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
+        placeholder: '请选择性别',
       },
     },
     {

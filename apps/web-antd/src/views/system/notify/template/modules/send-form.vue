@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { sendNotify } from '#/api/system/notify/template';
 import { $t } from '#/locales';
+import { ref } from 'vue';
 
 import { useSendNotifyFormSchema } from '../data';
 
@@ -24,7 +22,6 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-// TODO @puhui999：有个用户类型的选项。不同的用户类型，对应的接收人处理不同。
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -42,6 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     const data: SystemNotifyTemplateApi.SystemNotifySendReqVO = {
       userId: values.userId,
+      userType: values.userType,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
@@ -67,8 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data =
-      modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
+    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
     if (!data || !data.id) {
       return;
     }

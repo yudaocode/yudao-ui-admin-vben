@@ -1,28 +1,20 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createNotifyTemplate,
-  getNotifyTemplate,
-  updateNotifyTemplate,
-} from '#/api/system/notify/template';
+import { createNotifyTemplate, getNotifyTemplate, updateNotifyTemplate } from '#/api/system/notify/template';
 import { $t } from '#/locales';
+import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemNotifyTemplateApi.SystemNotifyTemplate>();
 const getTitle = computed(() => {
-  return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['站内信模板'])
-    : $t('ui.actionTitle.create', ['站内信模板']);
+  return formData.value?.id ? $t('ui.actionTitle.edit', ['站内信模板']) : $t('ui.actionTitle.create', ['站内信模板']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -39,12 +31,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as SystemNotifyTemplateApi.SystemNotifyTemplate;
+    const data = (await formApi.getValues()) as SystemNotifyTemplateApi.SystemNotifyTemplate;
     try {
-      await (formData.value?.id
-        ? updateNotifyTemplate(data)
-        : createNotifyTemplate(data));
+      await (formData.value?.id ? updateNotifyTemplate(data) : createNotifyTemplate(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -60,9 +49,9 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+
     // 加载数据
-    const data =
-      modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
+    const data = modalApi.getData<SystemNotifyTemplateApi.SystemNotifyTemplate>();
     if (!data || !data.id) {
       return;
     }
