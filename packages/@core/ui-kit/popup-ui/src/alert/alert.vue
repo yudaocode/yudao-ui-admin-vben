@@ -28,6 +28,8 @@ import {
 import { globalShareState } from '@vben-core/shared/global-state';
 import { cn } from '@vben-core/shared/utils';
 
+import { provideAlertContext } from './alert';
+
 const props = withDefaults(defineProps<AlertProps>(), {
   bordered: true,
   buttonAlign: 'end',
@@ -87,6 +89,22 @@ const getIconRender = computed(() => {
   }
   return iconRender;
 });
+
+function doCancel() {
+  handleCancel();
+  handleOpenChange(false);
+}
+
+function doConfirm() {
+  handleConfirm();
+  handleOpenChange(false);
+}
+
+provideAlertContext({
+  doCancel,
+  doConfirm,
+});
+
 function handleConfirm() {
   isConfirm.value = true;
   emits('confirm');
@@ -98,11 +116,13 @@ function handleCancel() {
 
 const loading = ref(false);
 async function handleOpenChange(val: boolean) {
+  const confirmState = isConfirm.value;
+  isConfirm.value = false;
   await nextTick();
   if (!val && props.beforeClose) {
     loading.value = true;
     try {
-      const res = await props.beforeClose({ isConfirm: isConfirm.value });
+      const res = await props.beforeClose({ isConfirm: confirmState });
       if (res !== false) {
         open.value = false;
       }
@@ -152,7 +172,7 @@ async function handleOpenChange(val: boolean) {
           </div>
         </AlertDialogTitle>
         <AlertDialogDescription>
-          <div class="m-4 mb-6 min-h-[30px]">
+          <div class="m-4 min-h-[30px]">
             <VbenRenderContent :content="content" render-br />
           </div>
           <VbenLoading v-if="loading && contentMasking" :spinning="loading" />
