@@ -1,8 +1,13 @@
 import type { Router, RouteRecordRaw } from 'vue-router';
 
-import type { ExRouteRecordRaw, MenuRecordRaw, RouteRecordStringComponent, AppRouteRecordRaw } from '@vben-core/typings';
+import type {
+  AppRouteRecordRaw,
+  ExRouteRecordRaw,
+  MenuRecordRaw,
+  RouteRecordStringComponent,
+} from '@vben-core/typings';
 
-import { filterTree, mapTree, isHttpUrl } from '@vben-core/shared/utils';
+import { filterTree, isHttpUrl, mapTree } from '@vben-core/shared/utils';
 
 /**
  * 根据 routes 生成菜单列表
@@ -142,7 +147,10 @@ function convertServerMenuToRouteRecordStringComponent(
     };
 
     if (menu.children && menu.children.length > 0) {
-      buildMenu.children = convertServerMenuToRouteRecordStringComponent(menu.children, menu.path);
+      buildMenu.children = convertServerMenuToRouteRecordStringComponent(
+        menu.children,
+        menu.path,
+      );
     }
 
     menus.push(buildMenu);
@@ -150,4 +158,4 @@ function convertServerMenuToRouteRecordStringComponent(
   return menus;
 }
 
-export { generateMenus, convertServerMenuToRouteRecordStringComponent };
+export { convertServerMenuToRouteRecordStringComponent, generateMenus };

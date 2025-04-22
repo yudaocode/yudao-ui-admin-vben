@@ -5,10 +5,10 @@ import type {
 
 import { generateAccessible } from '@vben/access';
 import { preferences } from '@vben/preferences';
-
-import { BasicLayout, IFrameView } from '#/layouts';
 import { useAccessStore } from '@vben/stores';
 import { convertServerMenuToRouteRecordStringComponent } from '@vben/utils';
+
+import { BasicLayout, IFrameView } from '#/layouts';
 
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
 
@@ -26,6 +26,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
     fetchMenuListAsync: async () => {
       // 由于 yudao 通过 accessStore 读取，所以不在进行 message.loading 提示
       const accessMenus = accessStore.accessMenus;
+      // TODO @芋艿：爆红！！！
       return convertServerMenuToRouteRecordStringComponent(accessMenus);
     },
     // 可以指定没有权限跳转403页面

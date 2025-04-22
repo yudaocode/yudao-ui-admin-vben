@@ -7,6 +7,10 @@ interface BasicUserInfo {
    */
   avatar: string;
   /**
+   * 用户邮箱
+   */
+  email?: string;
+  /**
    * 用户昵称
    */
   nickname: string;
@@ -18,10 +22,6 @@ interface BasicUserInfo {
    * 用户名
    */
   username: string;
-  /**
-   * 用户邮箱
-   */
-  email?: string;
 }
 
 interface AccessState {
@@ -50,7 +50,7 @@ export const useUserStore = defineStore('core-user', {
   state: (): AccessState => ({
     userInfo: null,
     userRoles: [],
-  })
+  }),
 });
 
 // 解决热更新问题
