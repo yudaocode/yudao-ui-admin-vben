@@ -189,7 +189,7 @@ onMounted(async () => {
             <span class="ml-2 text-lg font-medium">连接管理</span>
           </div>
         </template>
-        <div class="mb-4 flex items-center rounded-lg bg-gray-50 p-3">
+        <div class="mb-4 flex items-center rounded-lg p-3">
           <span class="mr-4 font-medium">连接状态:</span>
           <Tag :color="getTagColor" class="px-3 py-1">{{ getStatusText }}</Tag>
         </div>
@@ -251,7 +251,7 @@ onMounted(async () => {
           v-model:value="sendText"
           :auto-size="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"
-          class="border-1 rounded-lg border-gray-300"
+          class="border-1 rounded-lg"
           allow-clear
           placeholder="请输入你要发送的消息..."
         />
@@ -282,13 +282,13 @@ onMounted(async () => {
             </Tag>
           </div>
         </template>
-        <div class="h-96 overflow-auto rounded-lg bg-gray-50 p-2">
+        <div class="h-96 overflow-auto rounded-lg p-2">
           <Empty v-if="messageList.length === 0" description="暂无消息记录" />
           <div v-else class="space-y-3">
             <div
               v-for="msg in messageReverseList"
               :key="msg.time"
-              class="rounded-lg bg-white p-3 shadow-sm"
+              class="rounded-lg p-3 shadow-sm"
             >
               <div class="mb-1 flex items-center justify-between">
                 <div class="flex items-center">
@@ -296,9 +296,9 @@ onMounted(async () => {
                   <span class="ml-1 font-medium text-gray-600">{{
                     getMessageTypeText(msg.type)
                   }}</span>
-                  <span v-if="msg.userId" class="ml-2 text-gray-500"
-                    >用户 ID: {{ msg.userId }}</span
-                  >
+                  <span v-if="msg.userId" class="ml-2 text-gray-500">
+                    用户 ID: {{ msg.userId }}
+                  </span>
                 </div>
                 <span class="text-xs text-gray-400">{{
                   formatDate(msg.time)
