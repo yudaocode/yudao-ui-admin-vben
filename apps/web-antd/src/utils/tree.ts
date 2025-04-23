@@ -16,7 +16,7 @@ export const handleTree = (
   data: TreeNode[],
   id: string = 'id',
   parentId: string = 'parentId',
-  children: string = 'children'
+  children: string = 'children',
 ): TreeNode[] => {
   if (!Array.isArray(data)) {
     console.warn('data must be an array');
@@ -25,10 +25,10 @@ export const handleTree = (
   const config = {
     id,
     parentId,
-    childrenList: children
+    childrenList: children,
   };
-  const childrenListMap: Record<string | number, TreeNode[]> = {};
-  const nodeIds: Record<string | number, TreeNode> = {};
+  const childrenListMap: Record<number | string, TreeNode[]> = {};
+  const nodeIds: Record<number | string, TreeNode> = {};
   const tree: TreeNode[] = [];
 
   // 1. 数据预处理
@@ -67,4 +67,4 @@ export const handleTree = (
   }
 
   return tree;
-}
+};

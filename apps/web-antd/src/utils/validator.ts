@@ -9,10 +9,9 @@ const MOBILE_REGEX = /(?:0|86|\+86)?1[3-9]\d{9}/;
  * @param value 值
  * @returns 是否为手机号码（中国）
  */
-export function isMobile(value?: string | null): boolean {
+export function isMobile(value?: null | string): boolean {
   if (!value) {
     return false;
   }
   return MOBILE_REGEX.test(value);
 }
-

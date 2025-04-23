@@ -17,7 +17,7 @@ const dictStore = useDictStore();
  */
 function getDictLabel(dictType: string, value: any) {
   const dictObj = dictStore.getDictData(dictType, value);
-  return isObject(dictObj)? dictObj.label : '';
+  return isObject(dictObj) ? dictObj.label : '';
 }
 
 /**
@@ -205,4 +205,4 @@ enum DICT_TYPE {
   TRADE_ORDER_TYPE = 'trade_order_type', // 订单 - 类型
   USER_TYPE = 'user_type',
 }
-export { DICT_TYPE, getDictObj, getDictLabel, getDictOptions };
+export { DICT_TYPE, getDictLabel, getDictObj, getDictOptions };
