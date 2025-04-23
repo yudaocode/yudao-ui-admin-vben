@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
 
-import { Checkbox, message } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
