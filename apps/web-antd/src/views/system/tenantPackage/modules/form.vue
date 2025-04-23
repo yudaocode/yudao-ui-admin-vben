@@ -65,11 +65,13 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
   async onOpenChange(isOpen: boolean) {
-    // 加载菜单列表
-    await loadMenuTree();
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
+    // 加载菜单列表
+    await loadMenuTree();
+    // 加载数据
     const data = modalApi.getData<SystemTenantPackageApi.TenantPackage>();
     if (!data || !data.id) {
       return;

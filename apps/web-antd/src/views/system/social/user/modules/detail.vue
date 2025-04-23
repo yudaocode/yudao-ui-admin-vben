@@ -18,6 +18,7 @@ const [Modal, modalApi] = useVbenModal({
   title: $t('ui.actionTitle.detail'),
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据

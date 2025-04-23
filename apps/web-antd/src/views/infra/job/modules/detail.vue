@@ -18,6 +18,7 @@ const nextTimes = ref<Date[]>([]); // 下一次执行时间
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
