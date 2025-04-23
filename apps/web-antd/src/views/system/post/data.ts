@@ -39,9 +39,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        class: 'w-full',
-        controlsPosition: 'right',
-        placeholder: '请输入显示顺序',
       },
       rules: 'required',
     },

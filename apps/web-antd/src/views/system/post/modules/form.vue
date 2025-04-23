@@ -22,6 +22,13 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -71,7 +78,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal class="w-[600px]" :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>
