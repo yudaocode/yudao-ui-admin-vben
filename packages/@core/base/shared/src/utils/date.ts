@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 
-export function formatDate(time: number | string | Date, format = 'YYYY-MM-DD') {
+export function formatDate(
+  time: Date | number | string | undefined,
+  format = 'YYYY-MM-DD',
+) {
+  if (!time) {
+    return time;
+  }
   try {
     const date = dayjs(time);
     if (!date.isValid()) {
@@ -13,7 +19,10 @@ export function formatDate(time: number | string | Date, format = 'YYYY-MM-DD') 
   }
 }
 
-export function formatDateTime(time: number | string | Date) {
+export function formatDateTime(time: Date | number | string | undefined) {
+  if (!time) {
+    return time;
+  }
   return formatDate(time, 'YYYY-MM-DD HH:mm:ss');
 }
 

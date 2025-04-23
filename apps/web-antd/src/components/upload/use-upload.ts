@@ -113,7 +113,6 @@ export const useUpload = () => {
         });
     } else {
       // 模式二：后端上传
-      // TODO @芋艿：这里有爆红
       return uploadFile({ file }, onUploadProgress);
     }
   };

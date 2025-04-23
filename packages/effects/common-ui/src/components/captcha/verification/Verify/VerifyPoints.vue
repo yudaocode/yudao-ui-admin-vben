@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import type { ComponentInternalInstance } from 'vue';
+
 import type { VerificationProps } from '../types';
 
 import {
-  type ComponentInternalInstance,
   getCurrentInstance,
   nextTick,
   onMounted,
@@ -127,7 +128,7 @@ onMounted(() => {
 const canvas = ref(null);
 
 // 获取坐标
-const getMousePos = function (obj: any, e: any) {
+const getMousePos = function (_obj: any, e: any) {
   const x = e.offsetX;
   const y = e.offsetY;
   return { x, y };
