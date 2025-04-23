@@ -2,7 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { getRangePickerDefaultProps } from '#/utils/date';
+import { getRangePickerDefaultProps } from '@vben/utils';
+
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 列表的搜索表单 */

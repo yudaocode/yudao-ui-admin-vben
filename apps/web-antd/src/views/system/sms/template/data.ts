@@ -3,11 +3,11 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
 import { useAccess } from '@vben/access';
+import { getRangePickerDefaultProps } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { CommonStatusEnum } from '#/utils/constants';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();

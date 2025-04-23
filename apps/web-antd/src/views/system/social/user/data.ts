@@ -3,8 +3,8 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { useAccess } from '@vben/access';
+import { getRangePickerDefaultProps } from '@vben/utils';
 
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-// TODO @芋艿：后续整理下
+// TODO @芋艿：后续整理下 迁移至 packages/core/base/shared/src/utils/date.ts,后续删除 使用 @vben/utils 的 getRangePickerDefaultProps
 
 /** 时间段选择器拓展  */
 export function getRangePickerDefaultProps() {

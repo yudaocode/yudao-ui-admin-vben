@@ -5,8 +5,8 @@ import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
 import { useAccess } from '@vben/access';
+import { getRangePickerDefaultProps } from '@vben/utils';
 
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();

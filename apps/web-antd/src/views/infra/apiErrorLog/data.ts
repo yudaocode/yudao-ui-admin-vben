@@ -2,10 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { useAccess } from '@vben/access';
+import { getRangePickerDefaultProps } from '@vben/utils';
+
 import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 const { hasAccessByCodes } = useAccess();
 

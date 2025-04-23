@@ -42,7 +42,6 @@ export function useTypeFormSchema(): VbenFormSchema[] {
         placeholder: '请输入字典类型',
       },
       rules: 'required',
-      // TODO @芋艿：disable 不生效
       dependencies: {
         triggerFields: [''],
         disabled: ({ values }) => values.id,

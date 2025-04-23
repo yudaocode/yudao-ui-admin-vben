@@ -5,9 +5,9 @@ import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { useAccess } from '@vben/access';
+import { getRangePickerDefaultProps } from '@vben/utils';
 
 import { getDemo02CategoryList } from '#/api/infra/demo/demo02';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { handleTree } from '#/utils/tree';
 
 const { hasAccessByCodes } = useAccess();
