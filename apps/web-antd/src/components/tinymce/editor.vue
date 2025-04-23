@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { IPropTypes } from '@tinymce/tinymce-vue/lib/cjs/main/ts/components/EditorPropTypes';
-import type { Editor as EditorType } from '@tinymce/tinymce-vue';
+import type { Editor as EditorType } from 'tinymce/tinymce';
 
 import type { PropType } from 'vue';
 
