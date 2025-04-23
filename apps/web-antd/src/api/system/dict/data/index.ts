@@ -1,3 +1,5 @@
+import type { PageParam } from '@vben/request';
+
 import { requestClient } from '#/api/request';
 
 export namespace SystemDictDataApi {
@@ -22,7 +24,7 @@ export function getSimpleDictDataList() {
 }
 
 // 查询字典数据列表
-export function getDictDataPage(params: any) {
+export function getDictDataPage(params: PageParam) {
   return requestClient.get('/system/dict-data/page', { params });
 }
 

@@ -54,6 +54,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as Demo03StudentApi.Demo03Student;
     // 拼接子表的数据
+    // TODO @puhui999：字段对不上
     data.demo03Courses = demo03CourseFormRef.value?.getData();
     data.demo03Grade = await demo03GradeFormRef.value?.getValues();
     try {

@@ -27,7 +27,7 @@ export namespace InfraFileApi {
 
   /** 上传文件 */
   export interface FileUploadReqVO {
-    file: File;
+    file: globalThis.File;
     path?: string;
   }
 }
@@ -60,7 +60,6 @@ export function createFile(data: InfraFileApi.File) {
 }
 
 /** 上传文件 */
-// TODO @芋艿：这里有爆红
 export function uploadFile(
   data: InfraFileApi.FileUploadReqVO,
   onUploadProgress?: AxiosProgressEvent,

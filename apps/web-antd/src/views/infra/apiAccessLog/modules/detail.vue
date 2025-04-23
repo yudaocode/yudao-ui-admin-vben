@@ -84,8 +84,7 @@ const [Modal, modalApi] = useVbenModal({
       </Descriptions.Item>
       <Descriptions.Item label="操作结果">
         <div v-if="formData?.resultCode === 0">正常</div>
-        <!-- TODO @芋艿：处理爆红 -->
-        <div v-else-if="formData?.resultCode > 0">
+        <div v-else-if="formData && formData?.resultCode > 0">
           失败 | {{ formData?.resultCode }} | {{ formData?.resultMsg }}
         </div>
       </Descriptions.Item>

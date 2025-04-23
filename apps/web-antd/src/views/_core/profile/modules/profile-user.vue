@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import {type SystemUserProfileApi, updateUserPassword} from '#/api/system/user/profile';
-
-import {Descriptions, DescriptionsItem, message, Tooltip} from 'ant-design-vue';
-import { IconifyIcon } from '@vben/icons';
+import type { SystemUserProfileApi } from '#/api/system/user/profile';
 
 import { computed } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
 import { preferences } from '@vben/preferences';
-import { updateUserProfile } from '#/api/system/user/profile';
 import { formatDateTime } from '@vben/utils';
+
+import { Descriptions, DescriptionsItem, Tooltip } from 'ant-design-vue';
+
+import { updateUserProfile } from '#/api/system/user/profile';
 import { CropperAvatar } from '#/components/cropper';
 import { useUpload } from '#/components/upload/use-upload';
 
-const props = defineProps<{ profile?: SystemUserProfileApi.UserProfileRespVO }>();
+const props = defineProps<{
+  profile?: SystemUserProfileApi.UserProfileRespVO;
+}>();
 
 const emit = defineEmits<{
   (e: 'success'): void;
@@ -21,7 +25,13 @@ const avatar = computed(
   () => props.profile?.avatar || preferences.app.defaultAvatar,
 );
 
-async function handelUpload({ file, filename }: { file: Blob; filename: string; }) {
+async function handelUpload({
+  file,
+  filename,
+}: {
+  file: Blob;
+  filename: string;
+}) {
   // 1. 上传头像，获取 URL
   const { httpRequest } = useUpload();
   // 将 Blob 转换为 File
@@ -59,11 +69,14 @@ async function handelUpload({ file, filename }: { file: Blob; filename: string; 
         <DescriptionsItem>
           <template #label>
             <div class="flex items-center">
-              <IconifyIcon icon="ant-design:user-switch-outlined" class="mr-1" />
+              <IconifyIcon
+                icon="ant-design:user-switch-outlined"
+                class="mr-1"
+              />
               所属角色
             </div>
           </template>
-          {{ profile.roles.map(role => role.name).join(',') }}
+          {{ profile.roles.map((role) => role.name).join(',') }}
         </DescriptionsItem>
         <DescriptionsItem>
           <template #label>
@@ -95,16 +108,22 @@ async function handelUpload({ file, filename }: { file: Blob; filename: string; 
         <DescriptionsItem>
           <template #label>
             <div class="flex items-center">
-              <IconifyIcon icon="ant-design:usergroup-add-outlined" class="mr-1" />
+              <IconifyIcon
+                icon="ant-design:usergroup-add-outlined"
+                class="mr-1"
+              />
               所属岗位
             </div>
           </template>
-          {{ profile.posts.map(post => post.name).join(',') }}
+          {{ profile.posts.map((post) => post.name).join(',') }}
         </DescriptionsItem>
         <DescriptionsItem>
           <template #label>
             <div class="flex items-center">
-              <IconifyIcon icon="ant-design:clock-circle-outlined" class="mr-1" />
+              <IconifyIcon
+                icon="ant-design:clock-circle-outlined"
+                class="mr-1"
+              />
               创建时间
             </div>
           </template>

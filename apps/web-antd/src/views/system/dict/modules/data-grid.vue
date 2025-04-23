@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import type { OnActionClickParams } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
+import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { watch } from 'vue';
 
@@ -100,8 +104,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getDictDataPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
             dictType: props.dictType,
+            ...formValues,
           });
         },
       },
@@ -113,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<SystemDictDataApi.DictData>,
 });
 
 /** 监听 dictType 变化，重新查询 */

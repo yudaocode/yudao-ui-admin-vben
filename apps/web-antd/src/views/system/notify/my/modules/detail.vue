@@ -43,7 +43,6 @@ const [Modal, modalApi] = useVbenModal({
       <Descriptions.Item label="发送人">
         {{ formData?.templateNickname }}
       </Descriptions.Item>
-      <!-- TODO @芋艿：报错 -->
       <Descriptions.Item label="发送时间">
         {{ formatDateTime(formData?.createTime) }}
       </Descriptions.Item>

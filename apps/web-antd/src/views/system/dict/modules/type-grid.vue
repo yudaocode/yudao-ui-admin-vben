@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import type { OnActionClickParams } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeGridListeners,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -67,7 +71,10 @@ async function onDelete(row: SystemDictTypeApi.DictType) {
 }
 
 /** 表格操作按钮回调 */
-function onActionClick({ code, row }: OnActionClickParams) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemDictTypeApi.DictType>) {
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -81,8 +88,7 @@ function onActionClick({ code, row }: OnActionClickParams) {
 }
 
 /** 表格事件 */
-// TODO @芋艿：这里有爆红
-const gridEvents: VxeGridListeners<RowType> = {
+const gridEvents: VxeGridListeners<SystemDictTypeApi.DictType> = {
   cellClick: ({ row }) => {
     emit('select', row.type);
   },
@@ -115,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<SystemDictTypeApi.DictType>,
   gridEvents,
 });
 </script>
