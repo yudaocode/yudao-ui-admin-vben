@@ -5,13 +5,13 @@ import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { useAccess } from '@vben/access';
+import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { handleTree } from '#/utils/tree';
 
 const { hasAccessByCodes } = useAccess();
 

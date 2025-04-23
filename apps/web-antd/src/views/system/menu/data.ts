@@ -8,7 +8,7 @@ import { h } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
-import { isHttpUrl } from '@vben/utils';
+import { handleTree, isHttpUrl } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
@@ -16,7 +16,6 @@ import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
 import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { handleTree } from '#/utils/tree';
 
 const { hasAccessByCodes } = useAccess();
 

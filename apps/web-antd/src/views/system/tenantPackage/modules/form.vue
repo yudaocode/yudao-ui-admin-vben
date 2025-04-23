@@ -5,6 +5,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { computed, ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { handleTree } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
 
@@ -16,7 +17,6 @@ import {
   updateTenantPackage,
 } from '#/api/system/tenant-package';
 import { $t } from '#/locales';
-import { handleTree } from '#/utils/tree';
 
 import { useFormSchema } from '../data';
 

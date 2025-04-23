@@ -5,6 +5,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { handleTree } from '@vben/utils';
 
 import { Checkbox, message, Spin } from 'ant-design-vue';
 
@@ -14,7 +15,6 @@ import { assignRoleDataScope } from '#/api/system/permission';
 import { getRole } from '#/api/system/role';
 import { $t } from '#/locales';
 import { SystemDataScopeEnum } from '#/utils/constants';
-import { handleTree } from '#/utils/tree';
 
 import { useAssignDataPermissionFormSchema } from '../data';
 

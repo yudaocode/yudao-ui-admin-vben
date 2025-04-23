@@ -1,4 +1,5 @@
 // todo @芋艿：公用逻辑
+// 已迁移，后续使用 packages/core/base/shared/src/utils/tree.ts 下的方法
 interface TreeNode {
   [key: string]: any;
   children?: TreeNode[];

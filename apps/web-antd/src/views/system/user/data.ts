@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { useAccess } from '@vben/access';
-import { getRangePickerDefaultProps } from '@vben/utils';
+import { getRangePickerDefaultProps, handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
@@ -11,7 +11,6 @@ import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { CommonStatusEnum } from '#/utils/constants';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { handleTree } from '#/utils/tree';
 
 const { hasAccessByCodes } = useAccess();
 

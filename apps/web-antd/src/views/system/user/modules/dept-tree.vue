@@ -4,11 +4,11 @@ import type { SystemDeptApi } from '#/api/system/dept';
 import { onMounted, ref } from 'vue';
 
 import { Search } from '@vben/icons';
+import { handleTree } from '@vben/utils';
 
 import { Input, Spin, Tree } from 'ant-design-vue';
 
 import { getSimpleDeptList } from '#/api/system/dept';
-import { handleTree } from '#/utils/tree';
 
 const emit = defineEmits(['select']);
 const deptList = ref<SystemDeptApi.Dept[]>([]); // 部门列表
