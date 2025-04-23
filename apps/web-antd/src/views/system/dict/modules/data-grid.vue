@@ -9,6 +9,7 @@ import { watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
   getDictDataPage,
 } from '#/api/system/dict/data';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useDataGridColumns, useDataGridFormSchema } from '../data';
 import DataForm from './data-form.vue';
@@ -44,7 +44,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportDictData(await gridApi.formApi.getValues());
-  downloadByData(data, '字典数据.xls');
+  downloadFileFromBlobPart({ fileName: '字典数据.xls', source: data });
 }
 
 /** 创建字典数据 */

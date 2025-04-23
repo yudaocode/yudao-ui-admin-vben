@@ -9,6 +9,7 @@ import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 
@@ -16,7 +17,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportJobLog, getJobLogPage } from '#/api/infra/job-log';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -31,7 +31,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 /** 导出表格 */
 async function onExport() {
   const data = await exportJobLog(await gridApi.formApi.getValues());
-  downloadByData(data, '任务日志.xls');
+  downloadFileFromBlobPart({ fileName: '任务日志.xls', source: data });
 }
 
 /** 查看日志详情 */

@@ -7,13 +7,13 @@ import type { InfraConfigApi } from '#/api/infra/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteConfig, exportConfig, getConfigPage } from '#/api/infra/config';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -31,7 +31,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportConfig(await gridApi.formApi.getValues());
-  downloadByData(data, '参数配置.xls');
+  downloadFileFromBlobPart({ fileName: '参数配置.xls', source: data });
 }
 
 /** 创建参数 */

@@ -10,6 +10,7 @@ import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -18,7 +19,6 @@ import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -46,7 +46,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportTenant(await gridApi.formApi.getValues());
-  downloadByData(data, '租户.xls');
+  downloadFileFromBlobPart({ fileName: '租户.xls', source: data });
 }
 
 /** 创建租户 */

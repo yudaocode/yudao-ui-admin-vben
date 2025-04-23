@@ -7,6 +7,7 @@ import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Modal } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -37,7 +37,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportApiErrorLog(await gridApi.formApi.getValues());
-  downloadByData(data, 'API 错误日志.xls');
+  downloadFileFromBlobPart({ fileName: 'API 错误日志.xls', source: data });
 }
 
 /** 查看 API 错误日志详情 */

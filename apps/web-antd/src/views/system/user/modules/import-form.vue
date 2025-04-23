@@ -2,13 +2,13 @@
 import type { FileType } from 'ant-design-vue/es/upload/interface';
 
 import { useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { importUser, importUserTemplate } from '#/api/system/user';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useImportFormSchema } from '../data';
 
@@ -53,7 +53,7 @@ function beforeUpload(file: FileType) {
 /** 下载模版 */
 async function onDownload() {
   const data = await importUserTemplate();
-  downloadByData(data, '用户导入模板.xlsx');
+  downloadFileFromBlobPart({ fileName: '用户导入模板.xls', source: data });
 }
 </script>
 

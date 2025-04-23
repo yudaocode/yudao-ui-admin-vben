@@ -9,6 +9,7 @@ import { h } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -66,7 +66,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
 /** 导出表格 */
 async function onExport() {
   const data = await exportDemo03Student(await gridApi.formApi.getValues());
-  downloadByData(data, '学生.xls');
+  downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
 }
 
 /** 表格操作按钮的回调函数 */

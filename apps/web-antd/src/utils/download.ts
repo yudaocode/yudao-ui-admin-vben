@@ -1,5 +1,6 @@
 // TODO @芋艿：需要优化下每个方法
 // TODO @芋艿：是不是可以共用么？
+// 后续使用 packages/core/base/shared/src/utils/download.ts 下的方法
 import { dataURLtoBlob, urlToBase64 } from './base64Conver';
 
 /**

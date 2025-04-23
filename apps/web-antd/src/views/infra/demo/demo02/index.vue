@@ -9,6 +9,7 @@ import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -44,7 +44,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportDemo02Category(await gridApi.formApi.getValues());
-  downloadByData(data, '示例分类.xls');
+  downloadFileFromBlobPart({ fileName: '示例分类.xls', source: data });
 }
 
 /** 创建示例分类 */

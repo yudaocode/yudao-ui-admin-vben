@@ -5,11 +5,10 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
-import { DocAlert } from '#/components/doc-alert';
-import Form from './modules/form.vue';
-import SendForm from './modules/send-form.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -18,10 +17,12 @@ import {
   exportNotifyTemplate,
   getNotifyTemplatePage,
 } from '#/api/system/notify/template';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+import SendForm from './modules/send-form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -41,7 +42,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportNotifyTemplate(await gridApi.formApi.getValues());
-  downloadByData(data, '站内信模板.xls');
+  downloadFileFromBlobPart({ fileName: '站内信模板.xls', source: data });
 }
 
 /** 创建站内信模板 */

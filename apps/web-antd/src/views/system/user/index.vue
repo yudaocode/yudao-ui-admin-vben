@@ -10,6 +10,7 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Upload } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Modal } from 'ant-design-vue';
 
@@ -23,7 +24,6 @@ import {
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils/dict';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';
@@ -60,7 +60,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportUser(await gridApi.formApi.getValues());
-  downloadByData(data, '用户.xls');
+  downloadFileFromBlobPart({ fileName: '用户.xls', source: data });
 }
 
 /** 选择部门 */

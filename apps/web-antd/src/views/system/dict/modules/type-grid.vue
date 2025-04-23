@@ -8,6 +8,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -18,7 +19,6 @@ import {
   getDictTypePage,
 } from '#/api/system/dict/type';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useTypeGridColumns, useTypeGridFormSchema } from '../data';
 import TypeForm from './type-form.vue';
@@ -38,7 +38,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportDictType(await gridApi.formApi.getValues());
-  downloadByData(data, '字典类型.xls');
+  downloadFileFromBlobPart({ fileName: '字典类型.xls', source: data });
 }
 
 /** 创建字典类型 */

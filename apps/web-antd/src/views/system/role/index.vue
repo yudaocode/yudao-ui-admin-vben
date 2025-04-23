@@ -7,6 +7,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -14,7 +15,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignDataPermissionForm from './modules/assign-data-permission-form.vue';
@@ -45,7 +45,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportRole(await gridApi.formApi.getValues());
-  downloadByData(data, '角色.xls');
+  downloadFileFromBlobPart({ fileName: '角色.xls', source: data });
 }
 
 /** 编辑角色 */

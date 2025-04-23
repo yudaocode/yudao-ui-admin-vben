@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, History, Plus } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Modal } from 'ant-design-vue';
 
@@ -23,7 +24,6 @@ import {
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { InfraJobStatusEnum } from '#/utils/constants';
-import { downloadByData } from '#/utils/download';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -49,7 +49,7 @@ function onRefresh() {
 /** 导出表格 */
 async function onExport() {
   const data = await exportJob(await gridApi.formApi.getValues());
-  downloadByData(data, '定时任务.xls');
+  downloadFileFromBlobPart({ fileName: '定时任务.xls', source: data });
 }
 
 /** 创建任务 */
