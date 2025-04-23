@@ -1,5 +1,7 @@
 <!-- 数据字典 Select 选择器 -->
 <script lang="ts" setup>
+import type { DictSelectProps } from '../typing';
+
 import { computed, useAttrs } from 'vue';
 
 import {
@@ -17,18 +19,9 @@ import {
   getStrDictOptions,
 } from '#/utils/dict';
 
-// 接受父组件参数
-interface Props {
-  dictType: string; // 字典类型
-  valueType?: 'bool' | 'int' | 'str'; // 字典值类型
-  selectType?: 'checkbox' | 'radio' | 'select'; // 选择器类型，下拉框 select、多选框 checkbox、单选框 radio
-  // eslint-disable-next-line vue/require-default-prop
-  formCreateInject?: any;
-}
-
 defineOptions({ name: 'DictSelect' });
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<DictSelectProps>(), {
   valueType: 'str',
   selectType: 'select',
 });

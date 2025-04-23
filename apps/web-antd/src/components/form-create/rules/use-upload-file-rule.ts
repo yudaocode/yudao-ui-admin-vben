@@ -3,7 +3,7 @@ import { buildUUID } from '@vben/utils';
 import {
   localeProps,
   makeRequiredRule,
-} from '#/components/FormCreate/src/utils';
+} from '#/components/form-create/helpers';
 
 export const useUploadFileRule = () => {
   const label = '文件上传';

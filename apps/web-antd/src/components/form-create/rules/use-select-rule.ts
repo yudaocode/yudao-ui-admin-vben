@@ -1,14 +1,14 @@
-import type { SelectRuleOption } from '#/components/FormCreate/src/type';
+import type { SelectRuleOption } from '#/components/form-create/typing';
 
 import { buildUUID } from '@vben/utils';
 
 import cloneDeep from 'lodash.clonedeep';
 
-import { selectRule } from '#/components/FormCreate/src/config/selectRule';
 import {
   localeProps,
   makeRequiredRule,
-} from '#/components/FormCreate/src/utils';
+} from '#/components/form-create/helpers';
+import { selectRule } from '#/components/form-create/rules/data';
 
 /**
  * 通用选择器规则 hook

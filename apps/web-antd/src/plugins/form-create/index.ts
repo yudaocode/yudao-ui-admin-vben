@@ -5,9 +5,9 @@ import FcDesigner from '@form-create/antd-designer';
 import Antd from 'ant-design-vue';
 
 // ======================= 自定义组件 =======================
-import { useApiSelect } from '#/components/FormCreate';
-import DictSelect from '#/components/FormCreate/src/components/DictSelect.vue';
-import { useImagesUpload } from '#/components/FormCreate/src/components/useImagesUpload';
+import { useApiSelect } from '#/components/form-create';
+import DictSelect from '#/components/form-create/components/dict-select.vue';
+import { useImagesUpload } from '#/components/form-create/components/use-images-upload';
 import { Tinymce } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 

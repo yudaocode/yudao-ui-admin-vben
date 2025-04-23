@@ -11,7 +11,7 @@ import '@vben/styles/antd';
 import { useTitle } from '@vueuse/core';
 
 import { $t, setupI18n } from '#/locales';
-import { setupFormCreate } from '#/plugins/formCreate';
+import { setupFormCreate } from '#/plugins/form-create';
 
 import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';

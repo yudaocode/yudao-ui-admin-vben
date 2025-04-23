@@ -1,4 +1,4 @@
-import type { ApiSelectProps } from '#/components/FormCreate/src/type';
+import type { ApiSelectProps } from '#/components/form-create/typing';
 
 import { defineComponent, onMounted, ref, useAttrs } from 'vue';
 

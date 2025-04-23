@@ -3,7 +3,7 @@ import { buildUUID } from '@vben/utils';
 import {
   localeProps,
   makeRequiredRule,
-} from '#/components/FormCreate/src/utils';
+} from '#/components/form-create/helpers';
 
 export const useEditorRule = () => {
   const label = '富文本';

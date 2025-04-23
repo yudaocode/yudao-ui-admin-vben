@@ -13,7 +13,7 @@ import hljs from 'highlight.js';
 import xml from 'highlight.js/lib/languages/java';
 import json from 'highlight.js/lib/languages/json';
 
-import { useFormCreateDesigner } from '#/components/FormCreate';
+import { useFormCreateDesigner } from '#/components/form-create';
 import { $t } from '#/locales';
 
 import 'highlight.js/styles/github.css';

@@ -29,7 +29,6 @@
     "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
-    "@types/crypto-js": "catalog:",
     "@types/lodash.clonedeep": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",

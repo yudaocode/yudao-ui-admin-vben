@@ -3,9 +3,9 @@ import { buildUUID } from '@vben/utils';
 import {
   localeProps,
   makeRequiredRule,
-} from '#/components/FormCreate/src/utils';
+} from '#/components/form-create/helpers';
 
-export const useUploadImgRule = () => {
+export const useUploadImageRule = () => {
   const label = '单图上传';
   const name = 'ImageUpload';
   return {

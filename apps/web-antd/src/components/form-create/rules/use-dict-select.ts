@@ -5,11 +5,11 @@ import { buildUUID } from '@vben/utils';
 import cloneDeep from 'lodash.clonedeep';
 
 import * as DictDataApi from '#/api/system/dict/type';
-import { selectRule } from '#/components/FormCreate/src/config/selectRule';
 import {
   localeProps,
   makeRequiredRule,
-} from '#/components/FormCreate/src/utils';
+} from '#/components/form-create/helpers';
+import { selectRule } from '#/components/form-create/rules/data';
 
 /**
  * 字典选择器规则，如果规则使用到动态数据则需要单独配置不能使用 useSelectRule
@@ -25,7 +25,7 @@ export const useDictSelectRule = () => {
       return;
     }
     dictOptions.value =
-      data?.map((item: DictDataApi.SystemDictTypeApi.SystemDictType) => ({
+      data?.map((item: DictDataApi.SystemDictTypeApi.DictType) => ({
         label: item.name,
         value: item.type,
       })) ?? [];
