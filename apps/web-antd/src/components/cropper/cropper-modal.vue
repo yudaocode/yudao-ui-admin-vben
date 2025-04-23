@@ -1,15 +1,22 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
+
 import type { CropendResult, Cropper } from './typing';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t as t } from '@vben/locales';
-
-import { Avatar, message, Space, Tooltip, Upload, Button } from 'ant-design-vue';
-
 import { dataURLtoBlob, isFunction } from '@vben/utils';
+
+import {
+  Avatar,
+  Button,
+  message,
+  Space,
+  Tooltip,
+  Upload,
+} from 'ant-design-vue';
 
 import CropperImage from './cropper.vue';
 
@@ -139,10 +146,7 @@ async function handleOk() {
             :file-list="[]"
             accept="image/*"
           >
-            <Tooltip
-              :title="t('ui.cropper.selectImage')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.selectImage')" placement="bottom">
               <Button size="small" type="primary">
                 <template #icon>
                   <div class="flex items-center justify-center">
@@ -153,10 +157,7 @@ async function handleOk() {
             </Tooltip>
           </Upload>
           <Space>
-            <Tooltip
-              :title="t('ui.cropper.btn_reset')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.btn_reset')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -209,10 +210,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip
-              :title="t('ui.cropper.btn_scale_x')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.btn_scale_x')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -226,10 +224,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip
-              :title="t('ui.cropper.btn_scale_y')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.btn_scale_y')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -243,10 +238,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip
-              :title="t('ui.cropper.btn_zoom_in')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.btn_zoom_in')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -260,10 +252,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip
-              :title="t('ui.cropper.btn_zoom_out')"
-              placement="bottom"
-            >
+            <Tooltip :title="t('ui.cropper.btn_zoom_out')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -321,7 +310,8 @@ async function handleOk() {
   &-cropper {
     height: 300px;
     background: #eee;
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         45deg,
         rgb(0 0 0 / 25%) 25%,
         transparent 0,
