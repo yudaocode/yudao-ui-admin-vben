@@ -92,11 +92,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxLength: 11,
         placeholder: '请输入联系电话',
       },
-      rules: z
-        .string()
-        // TODO @芋艿：未来怎么拓展一个手机的
-        .regex(/^1[3-9|]\d{9}$/, '请输入正确的手机号码')
-        .optional(),
+      rules: 'mobileRequired',
     },
     {
       fieldName: 'email',

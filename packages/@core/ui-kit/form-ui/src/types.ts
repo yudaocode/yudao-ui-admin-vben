@@ -68,6 +68,8 @@ export type FormActions = FormContext<GenericObject>;
 export type CustomRenderType = (() => Component | string) | string;
 
 export type FormSchemaRuleType =
+  | 'mobile'
+  | 'mobileRequired'
   | 'required'
   | 'selectRequired'
   | null
@@ -428,6 +430,16 @@ export interface VbenFormAdapterOptions<
     modelPropNameMap?: Partial<Record<T, string>>;
   };
   defineRules?: {
+    mobile?: (
+      value: any,
+      params: any,
+      ctx: Record<string, any>,
+    ) => boolean | string;
+    mobileRequired?: (
+      value: any,
+      params: any,
+      ctx: Record<string, any>,
+    ) => boolean | string;
     required?: (
       value: any,
       params: any,

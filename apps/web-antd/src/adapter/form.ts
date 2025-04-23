@@ -8,6 +8,9 @@ import type { ComponentType } from './component';
 import { setupVbenForm, useVbenForm as useForm, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+/** 手机号正则表达式（中国） */
+const MOBILE_REGEX = /(?:0|86|\+86)?1[3-9]\d{9}/;
+
 setupVbenForm<ComponentType>({
   config: {
     // ant design vue组件库默认都是 v-model:value
@@ -34,6 +37,25 @@ setupVbenForm<ComponentType>({
     selectRequired: (value, _params, ctx) => {
       if (value === undefined || value === null) {
         return $t('ui.formRules.selectRequired', [ctx.label]);
+      }
+      return true;
+    },
+    // 手机号非必填
+    mobile: (value, _params, ctx) => {
+      if (value === undefined || value === null || value.length === 0) {
+        return true;
+      } else if (!MOBILE_REGEX.test(value)) {
+        return $t('ui.formRules.phone', [ctx.label]);
+      }
+      return true;
+    },
+    // 手机号必填
+    mobileRequired: (value, _params, ctx) => {
+      if (value === undefined || value === null || value.length === 0) {
+        return $t('ui.formRules.required', [ctx.label]);
+      }
+      if (!MOBILE_REGEX.test(value)) {
+        return $t('ui.formRules.phone', [ctx.label]);
       }
       return true;
     },
