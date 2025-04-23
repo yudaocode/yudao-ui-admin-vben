@@ -8,6 +8,7 @@ export * from './letter';
 export * from './merge';
 export * from './nprogress';
 export * from './state-handler';
+export * from './time';
 export * from './to';
 export * from './tree';
 export * from './unique';
