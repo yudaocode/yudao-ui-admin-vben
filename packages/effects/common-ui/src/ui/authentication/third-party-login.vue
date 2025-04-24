@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MdiGithub, MdiQqchat, MdiWechat, AntdDingTalk } from '@vben/icons';
+import { AntdDingTalk, MdiGithub, MdiQqchat, MdiWechat } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { VbenIconButton } from '@vben-core/shadcn-ui';

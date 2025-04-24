@@ -6,23 +6,34 @@ for (let i = 0; i <= 15; i++) {
 export function buildUUID(): string {
   let uuid = '';
   for (let i = 1; i <= 36; i++) {
-    if (i === 9 || i === 14 || i === 19 || i === 24) {
-      uuid += '-';
-    } else if (i === 15) {
-      uuid += 4;
-    } else if (i === 20) {
-      uuid += hexList[(Math.random() * 4) | 8];
-    } else {
-      uuid += hexList[(Math.random() * 16) | 0];
+    switch (i) {
+      case 9:
+      case 14:
+      case 19:
+      case 24: {
+        uuid += '-';
+        break;
+      }
+      case 15: {
+        uuid += 4;
+        break;
+      }
+      case 20: {
+        uuid += hexList[(Math.random() * 4) | 8];
+        break;
+      }
+      default: {
+        uuid += hexList[Math.trunc(Math.random() * 16)];
+      }
     }
   }
-  return uuid.replace(/-/g, '');
+  return uuid.replaceAll('-', '');
 }
 
 let unique = 0;
 export function buildShortUUID(prefix = ''): string {
   const time = Date.now();
-  const random = Math.floor(Math.random() * 1000000000);
+  const random = Math.floor(Math.random() * 1_000_000_000);
   unique++;
-  return prefix + '_' + random + unique + String(time);
+  return `${prefix}_${random}${unique}${String(time)}`;
 }

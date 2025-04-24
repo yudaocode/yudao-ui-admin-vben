@@ -91,4 +91,9 @@ interface MenuRecordRaw extends MenuRecordBadgeRaw {
   show?: boolean;
 }
 
-export type { ExRouteRecordRaw, MenuRecordBadgeRaw, MenuRecordRaw, AppRouteRecordRaw };
+export type {
+  AppRouteRecordRaw,
+  ExRouteRecordRaw,
+  MenuRecordBadgeRaw,
+  MenuRecordRaw,
+};
