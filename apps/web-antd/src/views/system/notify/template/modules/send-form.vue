@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { sendNotify } from '#/api/system/notify/template';
 import { $t } from '#/locales';
-import { ref } from 'vue';
 
 import { useSendNotifyFormSchema } from '../data';
 

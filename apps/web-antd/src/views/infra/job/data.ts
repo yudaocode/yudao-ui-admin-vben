@@ -196,7 +196,7 @@ export function useGridColumns<T = InfraJobApi.Job>(
             text: '暂停',
             show: (row: any) =>
               hasAccessByCodes(['infra:job:update']) &&
-              row.status == InfraJobStatusEnum.NORMAL,
+              row.status === InfraJobStatusEnum.NORMAL,
           },
           {
             code: 'trigger',

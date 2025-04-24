@@ -7,8 +7,8 @@ import {
 import { resetStaticRoutes } from '@vben/utils';
 
 import { createRouterGuard } from './guard';
-import { setupBaiduTongJi } from './tongji';
 import { routes } from './routes';
+import { setupBaiduTongJi } from './tongji';
 
 /**
  *  @zh_CN 创建vue-router实例
