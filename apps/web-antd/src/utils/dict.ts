@@ -64,7 +64,7 @@ function getDictObj(dictType: string, value: any) {
 function getDictOptions(
   dictType: string,
   valueType: 'boolean' | 'number' | 'string' = 'string',
-) {
+): any[] {
   const dictStore = useDictStore();
   const dictOpts = dictStore.getDictOptions(dictType);
   const dictOptions: DefaultOptionType = [];

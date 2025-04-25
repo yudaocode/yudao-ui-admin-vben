@@ -69,4 +69,5 @@ export {
   Upload,
   UserRoundPen,
   X,
+  RefreshCw,
 } from 'lucide-vue-next';
