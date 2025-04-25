@@ -16,15 +16,17 @@ const { autoContentHeight = false } = defineProps<PageProps>();
 
 const headerHeight = ref(0);
 const footerHeight = ref(0);
+const docHeight = ref(0);
 const shouldAutoHeight = ref(false);
 
 const headerRef = useTemplateRef<HTMLDivElement>('headerRef');
 const footerRef = useTemplateRef<HTMLDivElement>('footerRef');
+const docRef = useTemplateRef<HTMLDivElement>('docRef');
 
 const contentStyle = computed<StyleValue>(() => {
   if (autoContentHeight) {
     return {
-      height: `calc(var(${CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT}) - ${headerHeight.value}px)`,
+      height: `calc(var(${CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT}) - ${headerHeight.value}px - ${docHeight.value}px)`,
       overflowY: shouldAutoHeight.value ? 'auto' : 'unset',
     };
   }
@@ -38,9 +40,14 @@ async function calcContentHeight() {
   await nextTick();
   headerHeight.value = headerRef.value?.offsetHeight || 0;
   footerHeight.value = footerRef.value?.offsetHeight || 0;
+  docHeight.value = docRef.value?.offsetHeight || 0;
   setTimeout(() => {
     shouldAutoHeight.value = true;
   }, 30);
+}
+
+function isDocAlertEnable(): boolean {
+  return import.meta.env.VITE_APP_DOCALERT_ENABLE !== 'false';
 }
 
 onMounted(() => {
@@ -50,6 +57,18 @@ onMounted(() => {
 
 <template>
   <div class="relative">
+    <div
+      v-if="$slots.doc && isDocAlertEnable()"
+      ref="docRef"
+      :class="
+        cn('bg-card border-border relative flex items-end border-b px-6 py-4')
+      "
+    >
+      <div class="flex-auto">
+        <slot name="doc"></slot>
+      </div>
+    </div>
+
     <div
       v-if="
         description ||
