@@ -26,7 +26,10 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@form-create/ant-design-vue": "catalog:",
+    "@form-create/antd-designer": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
+    "@types/lodash.clonedeep": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -47,8 +50,10 @@
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
+    "lodash.clonedeep": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
+    "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {

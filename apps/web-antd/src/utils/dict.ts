@@ -6,7 +6,28 @@ import { isObject } from '@vben/utils';
 
 import { useDictStore } from '#/store';
 
-const dictStore = useDictStore();
+// TODO @dhb52：top-level 调用 导致："getActivePinia()" was called but there was no active Pinia
+// 先临时移入到方法中
+// const dictStore = useDictStore();
+
+// TODO @dhb: antd 组件的 color 类型
+type ColorType = 'error' | 'info' | 'success' | 'warning';
+
+export interface DictDataType {
+  dictType: string;
+  label: string;
+  value: boolean | number | string;
+  colorType: ColorType;
+  cssClass: string;
+}
+
+export interface NumberDictDataType extends DictDataType {
+  value: number;
+}
+
+export interface StringDictDataType extends DictDataType {
+  value: string;
+}
 
 /**
  * 获取字典标签
@@ -16,6 +37,7 @@ const dictStore = useDictStore();
  * @returns 字典标签
  */
 function getDictLabel(dictType: string, value: any) {
+  const dictStore = useDictStore();
   const dictObj = dictStore.getDictData(dictType, value);
   return isObject(dictObj) ? dictObj.label : '';
 }
@@ -28,6 +50,7 @@ function getDictLabel(dictType: string, value: any) {
  * @returns 字典对象
  */
 function getDictObj(dictType: string, value: any) {
+  const dictStore = useDictStore();
   const dictObj = dictStore.getDictData(dictType, value);
   return isObject(dictObj) ? dictObj : null;
 }
@@ -42,6 +65,7 @@ function getDictOptions(
   dictType: string,
   valueType: 'boolean' | 'number' | 'string' = 'string',
 ) {
+  const dictStore = useDictStore();
   const dictOpts = dictStore.getDictOptions(dictType);
   const dictOptions: DefaultOptionType = [];
   if (dictOpts.length > 0) {
@@ -70,6 +94,48 @@ function getDictOptions(
   }
   return dictOptions.length > 0 ? dictOptions : [];
 }
+
+export const getIntDictOptions = (dictType: string): NumberDictDataType[] => {
+  // 获得通用的 DictDataType 列表
+  const dictOptions = getDictOptions(dictType) as DictDataType[];
+  // 转换成 number 类型的 NumberDictDataType 类型
+  // why 需要特殊转换：避免 IDEA 在 v-for="dict in getIntDictOptions(...)" 时，el-option 的 key 会告警
+  const dictOption: NumberDictDataType[] = [];
+  dictOptions.forEach((dict: DictDataType) => {
+    dictOption.push({
+      ...dict,
+      value: Number.parseInt(`${dict.value}`),
+    });
+  });
+  return dictOption;
+};
+
+export const getStrDictOptions = (dictType: string) => {
+  // 获得通用的 DictDataType 列表
+  const dictOptions = getDictOptions(dictType) as DictDataType[];
+  // 转换成 string 类型的 StringDictDataType 类型
+  // why 需要特殊转换：避免 IDEA 在 v-for="dict in getStrDictOptions(...)" 时，el-option 的 key 会告警
+  const dictOption: StringDictDataType[] = [];
+  dictOptions.forEach((dict: DictDataType) => {
+    dictOption.push({
+      ...dict,
+      value: `${dict.value}`,
+    });
+  });
+  return dictOption;
+};
+
+export const getBoolDictOptions = (dictType: string) => {
+  const dictOption: DictDataType[] = [];
+  const dictOptions = getDictOptions(dictType) as DictDataType[];
+  dictOptions.forEach((dict: DictDataType) => {
+    dictOption.push({
+      ...dict,
+      value: `${dict.value}` === 'true',
+    });
+  });
+  return dictOption;
+};
 
 enum DICT_TYPE {
   AI_GENERATE_MODE = 'ai_generate_mode', // AI 生成模式

@@ -30,6 +30,12 @@ catalogs:
     '@faker-js/faker':
       specifier: ^9.6.0
       version: 9.7.0
+    '@form-create/ant-design-vue':
+      specifier: ^3.2.22
+      version: 3.2.22
+    '@form-create/antd-designer':
+      specifier: ^3.2.11
+      version: 3.2.11
     '@iconify/json':
       specifier: ^2.2.324
       version: 2.2.330
@@ -498,6 +504,9 @@ catalogs:
     vitest:
       specifier: ^2.1.9
       version: 2.1.9
+    vue-dompurify-html:
+      specifier: ^5.2.0
+      version: 5.2.0
     vue-eslint-parser:
       specifier: ^9.4.3
       version: 9.4.3
@@ -665,9 +674,18 @@ importers:
 
   apps/web-antd:
     dependencies:
+      '@form-create/ant-design-vue':
+        specifier: 'catalog:'
+        version: 3.2.22(vue@3.5.13(typescript@5.8.3))
+      '@form-create/antd-designer':
+        specifier: 'catalog:'
+        version: 3.2.11(vue@3.5.13(typescript@5.8.3))
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.1.0(vue@3.5.13(typescript@5.8.3))
+      '@types/lodash.clonedeep':
+        specifier: 'catalog:'
+        version: 4.5.9
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -728,12 +746,18 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
+      lodash.clonedeep:
+        specifier: 'catalog:'
+        version: 4.5.0
       pinia:
         specifier: ^2.3.1
         version: 2.3.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
+      vue-dompurify-html:
+        specifier: 'catalog:'
+        version: 5.2.0(vue@3.5.13(typescript@5.8.3))
       vue-router:
         specifier: 'catalog:'
         version: 4.5.0(vue@3.5.13(typescript@5.8.3))
@@ -2631,6 +2655,10 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
+  '@babel/runtime-corejs3@7.27.0':
+    resolution: {integrity: sha512-UWjX6t+v+0ckwZ50Y5ShZLnlk95pP5MyW/pon9tiYzl3+18pkTHTFNTKr7rQbfRXPkowt2QAn30o1b6oswszew==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/runtime@7.27.0':
     resolution: {integrity: sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==}
     engines: {node: '>=6.9.0'}
@@ -3547,6 +3575,39 @@ packages:
 
   '@floating-ui/vue@1.1.6':
     resolution: {integrity: sha512-XFlUzGHGv12zbgHNk5FN2mUB7ROul3oG2ENdTpWdE+qMFxyNxWSRmsoyhiEnpmabNm6WnUvR1OvJfUfN4ojC1A==}
+
+  '@form-create/ant-design-vue@3.2.22':
+    resolution: {integrity: sha512-A848lhCnNnQCPq/aGLxxJTIhy+vL9h7+YCU2tx1rvqyxmGAYQlJgMy0ET3MpL88eK5DkuB2eyZE5Pt4i4vybeg==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/antd-designer@3.2.11':
+    resolution: {integrity: sha512-i2MijDIAJeMWfcikqX1LVonWs85K6q5ZoQdOSXAD4MhiFGovQXBTXIenSEzRUlBlGgkwr8u1PeblMO8jCt4sXg==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/component-antdv-frame@3.2.18':
+    resolution: {integrity: sha512-b6qGkqJnA9JlSnOvEMnkyfcPLg31oSl79i7yytJ3BLCUR8igyNO4O81dhFt4lWoaDe69LQWAtyDLEiF2Ls4OoA==}
+
+  '@form-create/component-antdv-group@3.2.22':
+    resolution: {integrity: sha512-HfQw5cf7+ikcAXW++T3bLs4yocM9BJH10OgcEy5R0mo2fZfTQ49MCeUhhAUlpoHtJz/4nRijfyhQ6j+D6oAK4g==}
+
+  '@form-create/component-antdv-upload@3.2.18':
+    resolution: {integrity: sha512-cobjChcblnfO0ph4MunJDUiBLyRwpzekXo6MFRsB5iq9ln73UjLnyLps4YuM2KRZ/Cn9FEoWN1kYvTFf1zKdjg==}
+
+  '@form-create/component-subform@3.1.34':
+    resolution: {integrity: sha512-OJcFH/7MTHx7JLEjDK/weS27qfuFWAI+OK+gXTJ2jIt9aZkGWF/EWkjetiJLt5a0KMw4Z15wOS2XCY9pVK9vlA==}
+
+  '@form-create/component-wangeditor@3.2.14':
+    resolution: {integrity: sha512-N/U/hFBdBu2OIguxoKe1Kslq5fW6XmtyhKDImLfKLn1xI6X5WUtt3r7QTaUPcVUl2vntpM9wJ/FBdG17RzF/Dg==}
+
+  '@form-create/core@3.2.22':
+    resolution: {integrity: sha512-GC3b4Yrpy9TiPLqJFL9fiUFPjEv6ZBcHnOMB+GeF6iLsMV4TpZc0o/oFBPlhZqIYeljaNuxJyO2ABCStceOrZQ==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/utils@3.2.18':
+    resolution: {integrity: sha512-C98bFPdFVMltiHQvEZqv4rVdhcqthJgvxMbWDlniL03HS5oyusnUvxUE8jf0I9zk5dZRDGmxKOUtzE3JDWP9nQ==}
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -5444,6 +5505,10 @@ packages:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
+  codemirror@6.65.7:
+    resolution: {integrity: sha512-HcfnUFJwI2FvH73YWVbbMh7ObWxZiHIycEhv9ZEXy6e8ZKDjtZKbbYFUtsLN46HFXPvU5V2Uvc2d55Z//oFW5A==}
+    deprecated: This is an accidentally mis-tagged instance of 5.65.7
+
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
 
@@ -5615,6 +5680,9 @@ packages:
 
   core-js-compat@3.41.0:
     resolution: {integrity: sha512-RFsU9LySVue9RTwdDVX/T0e2Y6jRYWXERKElIjpuEOEnxaXffI0X7RUwVzfYLfzuLXSNJDYoRYUAmRUcyln20A==}
+
+  core-js-pure@3.41.0:
+    resolution: {integrity: sha512-71Gzp96T9YPk63aUvE5Q5qP+DryB4ZloUZPSOebGM88VNw8VNfvdA7z6kGA8iGOTEzAomsRidp4jXSmUIJsL+Q==}
 
   core-js@3.41.0:
     resolution: {integrity: sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA==}
@@ -6083,6 +6151,9 @@ packages:
   domhandler@5.0.3:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
+
+  dompurify@3.2.5:
+    resolution: {integrity: sha512-mLPd29uoRe9HpvwP2TxClGQBzGXeEC/we/q+bFlmPPmj2p2Ugl3r6ATu/UU1v77DXNcehiBg9zsr1dREyA/dJQ==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -9671,6 +9742,9 @@ packages:
     resolution: {integrity: sha512-D3YaD0aRxR3mEcqnidIs7ReYJFVzWdd6fXJYUM8ixcQcJRGTka/b3saV0KflYhyVJXKhb947GndU35SxYNResQ==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
+  sortablejs@1.14.0:
+    resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
+
   sortablejs@1.15.6:
     resolution: {integrity: sha512-aNfiuwMEpfBM/CN6LY0ibyhxPfPbyFeBTYJKCvzkJ2GkUpazIt3H+QIPAMHwqQ7tMKaHz1Qj+rJJCqljnf4p3A==}
 
@@ -10704,6 +10778,11 @@ packages:
       '@vue/composition-api':
         optional: true
 
+  vue-dompurify-html@5.2.0:
+    resolution: {integrity: sha512-GX+BStkKEJ8wu/+hU1EK2nu/gzXWhb4XzBu6aowpsuU/3nkvXvZ2jx4nZ9M3jtS/Vu7J7MtFXjc7x3cWQ+zbVQ==}
+    peerDependencies:
+      vue: ^3.5.13
+
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
     engines: {node: ^14.17.0 || >=16.0.0}
@@ -10751,6 +10830,11 @@ packages:
       typescript:
         optional: true
 
+  vuedraggable@4.1.0:
+    resolution: {integrity: sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==}
+    peerDependencies:
+      vue: ^3.5.13
+
   vueuc@0.4.64:
     resolution: {integrity: sha512-wlJQj7fIwKK2pOEoOq4Aro8JdPOGpX8aWQhV8YkTW9OgWD2uj2O8ANzvSsIGjx7LTOc7QbS7sXdxHi6XvRnHPA==}
     peerDependencies:
@@ -10761,6 +10845,9 @@ packages:
 
   vxe-table@4.13.7:
     resolution: {integrity: sha512-nwybQ0uPgmAQOvw0gs4oiJ7ifUVCsW0grGyfMC+FdNxFxP2WuiziuKDztjAc16EgHgSDg+KpN4oZoHUAwC55tg==}
+
+  wangeditor@4.7.15:
+    resolution: {integrity: sha512-aPTdREd8BxXVyJ5MI+LU83FQ7u1EPd341iXIorRNYSOvoimNoZ4nPg+yn3FGbB93/owEa6buLw8wdhYnMCJQLg==}
 
   warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
@@ -11889,6 +11976,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@babel/runtime-corejs3@7.27.0':
+    dependencies:
+      core-js-pure: 3.41.0
+      regenerator-runtime: 0.14.1
+
   '@babel/runtime@7.27.0':
     dependencies:
       regenerator-runtime: 0.14.1
@@ -12891,6 +12983,55 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@form-create/ant-design-vue@3.2.22(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/component-antdv-frame': 3.2.18
+      '@form-create/component-antdv-group': 3.2.22
+      '@form-create/component-antdv-upload': 3.2.18
+      '@form-create/component-subform': 3.1.34
+      '@form-create/core': 3.2.22(vue@3.5.13(typescript@5.8.3))
+      '@form-create/utils': 3.2.18
+      vue: 3.5.13(typescript@5.8.3)
+
+  '@form-create/antd-designer@3.2.11(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/ant-design-vue': 3.2.22(vue@3.5.13(typescript@5.8.3))
+      '@form-create/component-wangeditor': 3.2.14
+      '@form-create/utils': 3.2.18
+      ant-design-vue: 4.2.6(vue@3.5.13(typescript@5.8.3))
+      codemirror: 6.65.7
+      element-plus: 2.9.8(vue@3.5.13(typescript@5.8.3))
+      js-beautify: 1.15.4
+      vue: 3.5.13(typescript@5.8.3)
+      vuedraggable: 4.1.0(vue@3.5.13(typescript@5.8.3))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+
+  '@form-create/component-antdv-frame@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-antdv-group@3.2.22':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-antdv-upload@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-subform@3.1.34': {}
+
+  '@form-create/component-wangeditor@3.2.14':
+    dependencies:
+      wangeditor: 4.7.15
+
+  '@form-create/core@3.2.22(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/utils': 3.2.18
+      vue: 3.5.13(typescript@5.8.3)
+
+  '@form-create/utils@3.2.18': {}
 
   '@gar/promisify@1.1.3': {}
 
@@ -15137,6 +15278,8 @@ snapshots:
 
   cluster-key-slot@1.1.2: {}
 
+  codemirror@6.65.7: {}
+
   color-convert@1.9.3:
     dependencies:
       color-name: 1.1.3
@@ -15289,6 +15432,8 @@ snapshots:
   core-js-compat@3.41.0:
     dependencies:
       browserslist: 4.24.4
+
+  core-js-pure@3.41.0: {}
 
   core-js@3.41.0: {}
 
@@ -15792,6 +15937,10 @@ snapshots:
   domhandler@5.0.3:
     dependencies:
       domelementtype: 2.3.0
+
+  dompurify@3.2.5:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
 
   domutils@2.8.0:
     dependencies:
@@ -19703,6 +19852,8 @@ snapshots:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
 
+  sortablejs@1.14.0: {}
+
   sortablejs@1.15.6: {}
 
   source-map-js@1.2.1: {}
@@ -20919,6 +21070,11 @@ snapshots:
     dependencies:
       vue: 3.5.13(typescript@5.8.3)
 
+  vue-dompurify-html@5.2.0(vue@3.5.13(typescript@5.8.3)):
+    dependencies:
+      dompurify: 3.2.5
+      vue: 3.5.13(typescript@5.8.3)
+
   vue-eslint-parser@9.4.3(eslint@9.25.1(jiti@2.4.2)):
     dependencies:
       debug: 4.4.0
@@ -20976,6 +21132,11 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.3
 
+  vuedraggable@4.1.0(vue@3.5.13(typescript@5.8.3)):
+    dependencies:
+      sortablejs: 1.14.0
+      vue: 3.5.13(typescript@5.8.3)
+
   vueuc@0.4.64(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       '@css-render/vue3-ssr': 0.15.14(vue@3.5.13(typescript@5.8.3))
@@ -20998,6 +21159,12 @@ snapshots:
       vxe-pc-ui: 4.5.27(vue@3.5.13(typescript@5.8.3))
     transitivePeerDependencies:
       - vue
+
+  wangeditor@4.7.15:
+    dependencies:
+      '@babel/runtime': 7.27.0
+      '@babel/runtime-corejs3': 7.27.0
+      tslib: 2.8.1
 
   warning@4.0.3:
     dependencies:
