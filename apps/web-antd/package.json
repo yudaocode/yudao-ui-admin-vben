@@ -45,6 +45,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
+    "vxe-table": "catalog:",
     "cropperjs": "catalog:",
     "crypto-js": "catalog:",
     "dayjs": "catalog:",

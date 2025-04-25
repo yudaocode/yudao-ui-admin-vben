@@ -7,6 +7,7 @@ import { preferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
 import '@vben/styles';
 import '@vben/styles/antd';
+import 'vxe-table/styles/cssvar.scss';
 
 import { useTitle } from '@vueuse/core';
 
