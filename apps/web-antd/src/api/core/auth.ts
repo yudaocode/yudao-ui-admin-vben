@@ -119,39 +119,39 @@ export async function checkCaptcha(data: any) {
 }
 
 /** 获取登录验证码 */
-export const sendSmsCode = (data: AuthApi.SmsCodeParams) => {
+export async function sendSmsCode(data: AuthApi.SmsCodeParams) {
   return requestClient.post('/system/auth/send-sms-code', data);
-};
+}
 
 /** 短信验证码登录 */
-export const smsLogin = (data: AuthApi.SmsLoginParams) => {
+export async function smsLogin(data: AuthApi.SmsLoginParams) {
   return requestClient.post('/system/auth/sms-login', data);
-};
+}
 
 /** 注册 */
-export const register = (data: AuthApi.RegisterParams) => {
+export async function register(data: AuthApi.RegisterParams) {
   return requestClient.post('/system/auth/register', data);
-};
+}
 
 /** 通过短信重置密码 */
-export const smsResetPassword = (data: AuthApi.ResetPasswordParams) => {
+export async function smsResetPassword(data: AuthApi.ResetPasswordParams) {
   return requestClient.post('/system/auth/reset-password', data);
-};
+}
 
 /** 社交授权的跳转 */
-export const socialAuthRedirect = (type: number, redirectUri: string) => {
+export async function socialAuthRedirect(type: number, redirectUri: string) {
   return requestClient.get('/system/auth/social-auth-redirect', {
     params: {
       type,
       redirectUri,
     },
   });
-};
+}
 
 /** 社交快捷登录 */
-export const socialLogin = (data: AuthApi.SocialLoginParams) => {
+export async function socialLogin(data: AuthApi.SocialLoginParams) {
   return requestClient.post<AuthApi.LoginResult>(
     '/system/auth/social-login',
     data,
   );
-};
+}
