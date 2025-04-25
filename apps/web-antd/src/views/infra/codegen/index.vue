@@ -206,9 +206,10 @@ initDataSourceConfig();
 </script>
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="代码生成（单表）"
-      url="https://doc.iocoder.cn/new-feature/"
+    <template #doc>
+      <DocAlert
+        title="代码生成（单表）"
+        url="https://doc.iocoder.cn/new-feature/"
     />
     <DocAlert
       title="代码生成（树表）"
@@ -217,8 +218,9 @@ initDataSourceConfig();
     <DocAlert
       title="代码生成（主子表）"
       url="https://doc.iocoder.cn/new-feature/master-sub/"
-    />
-    <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
+      />
+      <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
+    </template>
 
     <ImportModal @success="onRefresh" />
     <PreviewModal />
