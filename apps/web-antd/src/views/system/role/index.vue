@@ -6,6 +6,7 @@ import type {
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { isDocAlertEnable } from '@vben/hooks';
 import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -141,11 +142,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="功能权限"
-      url="https://doc.iocoder.cn/resource-permission"
-    />
-    <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
+    <template #description v-if="isDocAlertEnable()">
+      <DocAlert
+        title="功能权限"
+        url="https://doc.iocoder.cn/resource-permission"
+      />
+      <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
+    </template>
 
     <FormModal @success="onRefresh" />
     <AssignDataPermissionFormModel @success="onRefresh" />
