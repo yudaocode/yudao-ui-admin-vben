@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
-import { useDescription } from '#/components/description';
-import { DictTag } from '#/components/dict-tag';
-import { useVbenModal } from '@vben/common-ui';
-
-import { DICT_TYPE } from '#/utils/dict';
 import { h, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { useDescription } from '#/components/description';
+import { DictTag } from '#/components/dict-tag';
+import { DICT_TYPE } from '#/utils/dict';
 
 const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
 
@@ -32,12 +32,20 @@ const [Description, descApi] = useDescription({
     {
       field: 'templateType',
       label: '消息类型',
-      content: (data) => h(DictTag, { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE, value: data?.templateType }),
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          value: data?.templateType,
+        }),
     },
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) => h(DictTag, { type: DICT_TYPE.INFRA_BOOLEAN_STRING, value: data?.readStatus }),
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.INFRA_BOOLEAN_STRING,
+          value: data?.readStatus,
+        }),
     },
     {
       field: 'readTime',
@@ -74,7 +82,11 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="消息详情" :show-cancel-button="false" :show-confirm-button="false">
+  <Modal
+    title="消息详情"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
     <Description />
   </Modal>
 </template>

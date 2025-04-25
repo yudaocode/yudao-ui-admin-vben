@@ -1,21 +1,36 @@
 <script lang="ts" setup>
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { ContentWrap } from '#/components/content-wrap';
-import { DictTag } from '#/components/dict-tag';
-import Demo01ContactForm from './modules/form.vue';
+import { h, onMounted, reactive, ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, RefreshCw, Search } from '@vben/icons';
-import { Button, Form, Input, message, Pagination, RangePicker, Select } from 'ant-design-vue';
+import { cloneDeep, formatDateTime } from '@vben/utils';
+
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Pagination,
+  RangePicker,
+  Select,
+} from 'ant-design-vue';
 import { VxeColumn, VxeTable } from 'vxe-table';
 
-import { deleteDemo01Contact, exportDemo01Contact, getDemo01ContactPage } from '#/api/infra/demo/demo01';
+import {
+  deleteDemo01Contact,
+  exportDemo01Contact,
+  getDemo01ContactPage,
+} from '#/api/infra/demo/demo01';
+import { ContentWrap } from '#/components/content-wrap';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { downloadByData } from '#/utils/download';
-import { h, onMounted, reactive, ref } from 'vue';
-import {cloneDeep, formatDateTime} from '@vben/utils';
+
+import Demo01ContactForm from './modules/form.vue';
 
 const loading = ref(true); // 列表的加载中
 const list = ref<Demo01ContactApi.Demo01Contact[]>([]); // 列表的数据
@@ -34,9 +49,9 @@ const exportLoading = ref(false); // 导出的加载中
 const getList = async () => {
   loading.value = true;
   try {
-    const params = cloneDeep(queryParams) as any
+    const params = cloneDeep(queryParams) as any;
     if (params.createTime && Array.isArray(params.createTime)) {
-      params.createTime = (params.createTime as string[]).join(',')
+      params.createTime = (params.createTime as string[]).join(',');
     }
     const data = await getDemo01ContactPage(params);
     list.value = data.list;
@@ -115,8 +130,15 @@ onMounted(() => {
 
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <Form class="-mb-15px" :model="queryParams" ref="queryFormRef" layout="inline">
+      <!-- TODO @puhui999：貌似 -mb-15px 没效果？可能和 ContentWrap 有关系？ -->
+      <Form
+        class="-mb-15px"
+        :model="queryParams"
+        ref="queryFormRef"
+        layout="inline"
+      >
         <Form.Item label="名字" name="name">
+          <!-- TODO @puhui999：貌似不一定 240？看着和 schema 还是不太一样 -->
           <Input
             v-model:value="queryParams.name"
             placeholder="请输入名字"
@@ -126,9 +148,17 @@ onMounted(() => {
           />
         </Form.Item>
         <Form.Item label="性别" name="sex">
-          <Select v-model:value="queryParams.sex" placeholder="请选择性别" allow-clear class="!w-240px">
+          <Select
+            v-model:value="queryParams.sex"
+            placeholder="请选择性别"
+            allow-clear
+            class="!w-240px"
+          >
             <Select.Option
-              v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
+              v-for="dict in getDictOptions(
+                DICT_TYPE.SYSTEM_USER_SEX,
+                'number',
+              )"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -136,11 +166,23 @@ onMounted(() => {
           </Select>
         </Form.Item>
         <Form.Item label="创建时间" name="createTime">
-          <RangePicker v-model:value="queryParams.createTime" v-bind="getRangePickerDefaultProps()" class="!w-220px" />
+          <!-- TODO @puhui999：这里有个红色的告警，看看有办法处理哇？ -->
+          <RangePicker
+            v-model:value="queryParams.createTime"
+            v-bind="getRangePickerDefaultProps()"
+            class="!w-220px"
+          />
         </Form.Item>
         <Form.Item>
-          <Button class="ml-2" @click="handleQuery" :icon="h(Search)">搜索</Button>
-          <Button class="ml-2" @click="resetQuery" :icon="h(RefreshCw)">重置</Button>
+          <!-- TODO @puhui999：搜索和重置；貌似样子和位置不太一样，有木有办法一致 -->
+          <!-- TODO @puhui999：收齐、展开，好弄哇？ -->
+          <Button class="ml-2" @click="handleQuery" :icon="h(Search)">
+            搜索
+          </Button>
+          <Button class="ml-2" @click="resetQuery" :icon="h(RefreshCw)">
+            重置
+          </Button>
+          <!-- TODO @puhui999：有办法放到 VxeTable 哪里么？ -->
           <Button
             class="ml-2"
             :icon="h(Plus)"
@@ -165,6 +207,7 @@ onMounted(() => {
     </ContentWrap>
 
     <!-- 列表 -->
+    <!-- TODO @puhui999：title 要不还是假起来？ -->
     <ContentWrap>
       <VxeTable :data="list" show-overflow :loading="loading">
         <VxeColumn field="id" title="编号" align="center" />
@@ -210,6 +253,7 @@ onMounted(() => {
       </VxeTable>
       <!-- 分页 -->
       <div class="mt-2 flex justify-end">
+        <!-- TODO @puhui999：这个分页，看着不太一致 -->
         <Pagination
           :total="total"
           v-model:current="queryParams.pageNo"

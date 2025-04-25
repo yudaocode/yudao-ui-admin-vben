@@ -59,8 +59,10 @@ function getDictObj(dictType: string, value: any) {
  * 获取字典数组 用于select radio 等
  *
  * @param dictType 字典类型
+ * @param valueType 字典值类型，默认 string 类型
  * @returns 字典数组
  */
+// TODO @puhui999：貌似可以定义一个类型？不使用 any[]
 function getDictOptions(
   dictType: string,
   valueType: 'boolean' | 'number' | 'string' = 'string',

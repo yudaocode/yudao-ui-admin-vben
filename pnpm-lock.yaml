@@ -755,13 +755,13 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.0(vue@3.5.13(typescript@5.8.3))
+      vxe-table:
+        specifier: 'catalog:'
+        version: 4.13.7(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@types/crypto-js':
         specifier: 'catalog:'
         version: 4.2.2
-      '@types/lodash.clonedeep':
-        specifier: 'catalog:'
-        version: 4.5.9
 
   apps/web-ele:
     dependencies:
