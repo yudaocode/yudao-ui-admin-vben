@@ -1,8 +1,6 @@
 import type { SelectRuleOption } from '#/components/form-create/typing';
 
-import { buildUUID } from '@vben/utils';
-
-import cloneDeep from 'lodash.clonedeep';
+import { buildUUID, cloneDeep } from '@vben/utils';
 
 import {
   localeProps,

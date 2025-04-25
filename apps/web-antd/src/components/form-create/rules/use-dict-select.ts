@@ -1,8 +1,6 @@
 import { onMounted, ref } from 'vue';
 
-import { buildUUID } from '@vben/utils';
-
-import cloneDeep from 'lodash.clonedeep';
+import { buildUUID, cloneDeep } from '@vben/utils';
 
 import * as DictDataApi from '#/api/system/dict/type';
 import {

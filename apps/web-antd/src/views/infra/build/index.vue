@@ -14,7 +14,6 @@ import xml from 'highlight.js/lib/languages/java';
 import json from 'highlight.js/lib/languages/json';
 
 import { useFormCreateDesigner } from '#/components/form-create';
-import { $t } from '#/locales';
 
 import 'highlight.js/styles/github.css';
 
@@ -121,10 +120,10 @@ const copy = async (text: string) => {
   if (isSupported) {
     await copy();
     if (unref(copied)) {
-      message.success($t('common.copySuccess'));
+      message.success('复制成功');
     }
   } else {
-    message.error($t('common.copyError'));
+    message.error('复制失败');
   }
 };
 
@@ -173,9 +172,7 @@ onMounted(async () => {
     <!-- 弹窗：表单预览 -->
     <Modal :title="dialogTitle" :footer="false" :fullscreen-button="false">
       <div>
-        <Button style="float: right" @click="copy(formData)">
-          {{ $t('common.copy') }}
-        </Button>
+        <Button style="float: right" @click="copy(formData)"> 复制 </Button>
         <div>
           <pre><code v-dompurify-html="highlightedCode(formData)" class="hljs"></code></pre>
         </div>

@@ -49,14 +49,12 @@
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
-    "lodash.clonedeep": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@types/crypto-js": "catalog:",
-    "@types/lodash.clonedeep": "catalog:"
+    "@types/crypto-js": "catalog:"
   }
 }

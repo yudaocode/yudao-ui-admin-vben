@@ -743,9 +743,6 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
-      lodash.clonedeep:
-        specifier: 'catalog:'
-        version: 4.5.0
       pinia:
         specifier: ^2.3.1
         version: 2.3.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))

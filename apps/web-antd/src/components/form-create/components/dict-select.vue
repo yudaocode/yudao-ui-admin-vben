@@ -13,11 +13,7 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
-import {
-  getBoolDictOptions,
-  getIntDictOptions,
-  getStrDictOptions,
-} from '#/utils/dict';
+import { getDictObj, getIntDictOptions, getStrDictOptions } from '#/utils/dict';
 
 defineOptions({ name: 'DictSelect' });
 
@@ -29,10 +25,11 @@ const props = withDefaults(defineProps<DictSelectProps>(), {
 const attrs = useAttrs();
 
 // 获得字典配置
+// TODO @dhb：可以使用 getDictOptions 替代么？
 const getDictOptions = computed(() => {
   switch (props.valueType) {
     case 'bool': {
-      return getBoolDictOptions(props.dictType);
+      return getDictObj(props.dictType, 'bool');
     }
     case 'int': {
       return getIntDictOptions(props.dictType);

@@ -95,6 +95,7 @@ function getDictOptions(
   return dictOptions.length > 0 ? dictOptions : [];
 }
 
+// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
 export const getIntDictOptions = (dictType: string): NumberDictDataType[] => {
   // 获得通用的 DictDataType 列表
   const dictOptions = getDictOptions(dictType) as DictDataType[];
@@ -110,6 +111,7 @@ export const getIntDictOptions = (dictType: string): NumberDictDataType[] => {
   return dictOption;
 };
 
+// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
 export const getStrDictOptions = (dictType: string) => {
   // 获得通用的 DictDataType 列表
   const dictOptions = getDictOptions(dictType) as DictDataType[];
@@ -125,6 +127,7 @@ export const getStrDictOptions = (dictType: string) => {
   return dictOption;
 };
 
+// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
 export const getBoolDictOptions = (dictType: string) => {
   const dictOption: DictDataType[] = [];
   const dictOptions = getDictOptions(dictType) as DictDataType[];

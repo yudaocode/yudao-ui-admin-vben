@@ -157,11 +157,10 @@ const initOptions = computed((): InitOptions => {
         const { httpRequest } = useUpload();
         httpRequest(file)
           .then((url) => {
-            // console.log('tinymce 上传图片成功:', url);
             resolve(url);
           })
           .catch((error) => {
-            // console.error('tinymce 上传图片失败:', error);
+            console.error('tinymce 上传图片失败:', error);
             reject(error.message);
           });
       });

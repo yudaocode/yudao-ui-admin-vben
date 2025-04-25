@@ -58,6 +58,7 @@ async function bootstrap(namespace: string) {
   setupFormCreate(app);
 
   // vue-dompurify-html
+  // TODO @dhb52：VueDOMPurifyHTML 是不是不用引入哈？
   app.use(VueDOMPurifyHTML);
 
   // 配置Motion插件
