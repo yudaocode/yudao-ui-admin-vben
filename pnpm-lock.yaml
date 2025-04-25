@@ -683,9 +683,6 @@ importers:
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.1.0(vue@3.5.13(typescript@5.8.3))
-      '@types/lodash.clonedeep':
-        specifier: 'catalog:'
-        version: 4.5.9
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -765,6 +762,9 @@ importers:
       '@types/crypto-js':
         specifier: 'catalog:'
         version: 4.2.2
+      '@types/lodash.clonedeep':
+        specifier: 'catalog:'
+        version: 4.5.9
 
   apps/web-ele:
     dependencies:

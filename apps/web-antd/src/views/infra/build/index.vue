@@ -156,29 +156,22 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <div class="m-4">
-      <FcDesigner ref="designer" height="100vh" :config="designerConfig">
-        <template #handle>
-          <Button size="small" type="primary" ghost @click="showJson">
-            生成JSON
-          </Button>
-          <Button size="small" type="primary" ghost @click="showOption">
-            生成Options
-          </Button>
-          <Button size="small" type="primary" ghost @click="showTemplate">
-            生成组件
-          </Button>
-        </template>
-      </FcDesigner>
-    </div>
+    <FcDesigner ref="designer" height="90vh" :config="designerConfig">
+      <template #handle>
+        <Button size="small" type="primary" ghost @click="showJson">
+          生成JSON
+        </Button>
+        <Button size="small" type="primary" ghost @click="showOption">
+          生成Options
+        </Button>
+        <Button size="small" type="primary" ghost @click="showTemplate">
+          生成组件
+        </Button>
+      </template>
+    </FcDesigner>
 
     <!-- 弹窗：表单预览 -->
-    <Modal
-      :title="dialogTitle"
-      :footer="false"
-      :fullscreen-button="false"
-      max-height="600"
-    >
+    <Modal :title="dialogTitle" :footer="false" :fullscreen-button="false">
       <div>
         <Button style="float: right" @click="copy(formData)">
           {{ $t('common.copy') }}
