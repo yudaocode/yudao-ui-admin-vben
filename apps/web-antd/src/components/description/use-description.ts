@@ -16,6 +16,7 @@ class DescriptionApi {
     return this.state as DescriptionsOptions;
   }
 
+  // TODO @puhui999：【setState】纠结下：1）vben2.0 是 data https://doc.vvbin.cn/components/desc.html#usage；
   setState(newState: Partial<DescriptionsOptions>) {
     this.state = { ...this.state, ...newState };
   }

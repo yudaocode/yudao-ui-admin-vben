@@ -10,8 +10,10 @@ import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
+// TODO @puhui999：formData 貌似不需要了
 const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
 
+// TODO @puhui999：descriptionApi 好点，更清晰哈；
 const [Description, descApi] = useDescription({
   componentProps: {
     bordered: true,
@@ -19,6 +21,7 @@ const [Description, descApi] = useDescription({
     size: 'middle',
     class: 'mx-4',
   },
+  // TODO @puhui999：是不是也放到 data 里；
   schema: [
     {
       field: 'templateNickname',
