@@ -29,7 +29,7 @@ const queryParams = reactive({
 const loading = ref(false); // 表单是否提交中
 
 /** 初始化授权信息 */
-const init = async () => {
+async function init() {
   // 防止在没有登录的情况下循环弹窗
   if (query.client_id === undefined) {
     return;
@@ -75,10 +75,10 @@ const init = async () => {
     'scopes',
     scopes.filter((scope) => scope.value).map((scope) => scope.key),
   );
-};
+}
 
 /** 处理授权的提交 */
-const handleSubmit = async (approved: boolean) => {
+async function handleSubmit(approved: boolean) {
   // 计算 checkedScopes + uncheckedScopes
   let checkedScopes: string[];
   let uncheckedScopes: string[];
@@ -107,7 +107,7 @@ const handleSubmit = async (approved: boolean) => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 调用授权 API 接口 */
 const doAuthorize = (
@@ -127,7 +127,7 @@ const doAuthorize = (
 };
 
 /** 格式化 scope 文本 */
-const formatScope = (scope: string) => {
+function formatScope(scope: string) {
   // 格式化 scope 授权范围，方便用户理解。
   // 这里仅仅是一个 demo，可以考虑录入到字典数据中，例如说字典类型 "system_oauth2_scope"，它的每个 scope 都是一条字典数据。
   switch (scope) {
@@ -141,7 +141,7 @@ const formatScope = (scope: string) => {
       return scope;
     }
   }
-};
+}
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [

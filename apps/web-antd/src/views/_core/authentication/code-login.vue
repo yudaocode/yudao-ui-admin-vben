@@ -30,7 +30,7 @@ const loginRef = ref();
 
 /** 获取租户列表，并默认选中 */
 const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
-const fetchTenantList = async () => {
+async function fetchTenantList() {
   if (!tenantEnable) {
     return;
   }
@@ -56,11 +56,11 @@ const fetchTenantList = async () => {
 
     // 设置选中的租户编号
     accessStore.setTenantId(tenantId);
-    loginRef.value.getFormApi().setFieldValue('tenantId', tenantId);
+    loginRef.value.getFormApi().setFieldValue('tenantId', tenantId?.toString());
   } catch (error) {
     console.error('获取租户列表失败:', error);
   }
-};
+}
 
 /** 组件挂载时获取租户信息 */
 onMounted(() => {
@@ -74,19 +74,19 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         options: tenantList.value.map((item) => ({
           label: item.name,
-          value: item.id,
+          value: item.id.toString(),
         })),
         placeholder: $t('authentication.tenantTip'),
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z.number().positive(),
+      rules: z.string().min(1, { message: $t('authentication.tenantTip') }),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
         trigger(values) {
           if (values.tenantId) {
-            accessStore.setTenantId(values.tenantId);
+            accessStore.setTenantId(Number(values.tenantId));
           }
         },
       },
