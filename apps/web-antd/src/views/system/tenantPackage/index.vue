@@ -6,6 +6,7 @@ import type {
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
 
 import { Button, message } from 'ant-design-vue';
 
