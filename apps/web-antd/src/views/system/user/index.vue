@@ -217,7 +217,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <div class="h-full w-1/6 pr-2">
+      <div class="h-full w-1/6 pr-4">
         <DeptTree @select="onDeptSelect" />
       </div>
       <!-- 右侧用户列表 -->

@@ -62,7 +62,7 @@ onMounted(() => {
       ref="docRef"
       :class="
         cn(
-          'bg-card border-border relative flex items-end rounded-md border-b p-2',
+          'bg-card border-border relative flex items-end rounded-md border-b p-4',
         )
       "
     >
