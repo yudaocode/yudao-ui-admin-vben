@@ -17,8 +17,25 @@ export function useContentMaximize() {
       },
     });
   }
+
+  function toggleMaximizeAndTabbarHidden() {
+    const isMaximize = contentIsMaximize.value;
+    updatePreferences({
+      header: {
+        hidden: !isMaximize,
+      },
+      sidebar: {
+        hidden: !isMaximize,
+      },
+      tabbar: {
+        enable: isMaximize,
+      },
+    });
+  }
+
   return {
     contentIsMaximize,
     toggleMaximize,
+    toggleMaximizeAndTabbarHidden,
   };
 }
