@@ -26,11 +26,9 @@ import { ImageUpload } from '#/components/upload';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
-const emit = defineEmits(['success']); // TODO @puhui999：emit 和下面空一行？
+const emit = defineEmits(['success']);
+
 const formRef = ref();
-// TODO @puhui999：labelCol、wrapperCol 直接写？不用单独定义变量，
-const labelCol = { span: 5 };
-const wrapperCol = { span: 13 };
 const formData = ref<Partial<Demo01ContactApi.Demo01Contact>>({
   id: undefined,
   name: undefined,
@@ -90,8 +88,7 @@ const [Modal, modalApi] = useVbenModal({
       resetForm();
       return;
     }
-
-    // 加载数据 TODO @puhui999：这里不用空行
+    // 加载数据
     let data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
     if (!data) {
       return;
@@ -115,8 +112,8 @@ const [Modal, modalApi] = useVbenModal({
       ref="formRef"
       :model="formData"
       :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
+      :label-col="{ span: 5 }"
+      :wrapper-col="{ span: 18 }"
     >
       <Form.Item label="名字" name="name">
         <Input v-model:value="formData.name" placeholder="请输入名字" />

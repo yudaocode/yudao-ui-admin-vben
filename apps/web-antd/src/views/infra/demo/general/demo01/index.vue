@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import type { VxeTableInstance } from 'vxe-table';
+
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { h, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, RefreshCw, Search } from '@vben/icons';
+import { Download, Plus } from '@vben/icons';
 import { cloneDeep, formatDateTime } from '@vben/utils';
 
 import {
@@ -25,6 +27,7 @@ import {
 } from '#/api/infra/demo/demo01';
 import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
+import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
@@ -118,9 +121,20 @@ async function onExport() {
   }
 }
 
+/** 隐藏搜索栏 */
+const hiddenSearchBar = ref(false);
+const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
+const tableRef = ref<VxeTableInstance>();
 /** 初始化 */
-onMounted(() => {
-  getList();
+onMounted(async () => {
+  await getList();
+  await nextTick();
+  // 挂载 $toolbar 工具栏
+  const $table = tableRef.value;
+  const tableToolbar = tableToolbarRef.value;
+  if ($table && tableToolbar) {
+    await $table.connect(tableToolbar.getToolbarRef()!);
+  }
 });
 </script>
 
@@ -128,15 +142,10 @@ onMounted(() => {
   <Page auto-content-height>
     <FormModal @success="getList" />
 
-    <ContentWrap>
+    <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
       <!-- TODO @puhui999：貌似 -mb-15px 没效果？可能和 ContentWrap 有关系？ -->
-      <Form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        layout="inline"
-      >
+      <Form :model="queryParams" ref="queryFormRef" layout="inline">
         <Form.Item label="名字" name="name">
           <!-- TODO @puhui999：貌似不一定 240？看着和 schema 还是不太一样 -->
           <Input
@@ -144,7 +153,7 @@ onMounted(() => {
             placeholder="请输入名字"
             allow-clear
             @press-enter="handleQuery"
-            class="!w-240px"
+            class="w-full"
           />
         </Form.Item>
         <Form.Item label="性别" name="sex">
@@ -152,7 +161,7 @@ onMounted(() => {
             v-model:value="queryParams.sex"
             placeholder="请选择性别"
             allow-clear
-            class="!w-240px"
+            class="w-full"
           >
             <Select.Option
               v-for="dict in getDictOptions(
@@ -166,23 +175,30 @@ onMounted(() => {
           </Select>
         </Form.Item>
         <Form.Item label="创建时间" name="createTime">
-          <!-- TODO @puhui999：这里有个红色的告警，看看有办法处理哇？ -->
           <RangePicker
             v-model:value="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
-            class="!w-220px"
+            class="w-full"
           />
         </Form.Item>
         <Form.Item>
           <!-- TODO @puhui999：搜索和重置；貌似样子和位置不太一样，有木有办法一致 -->
           <!-- TODO @puhui999：收齐、展开，好弄哇？ -->
-          <Button class="ml-2" @click="handleQuery" :icon="h(Search)">
+          <Button class="ml-2" @click="resetQuery"> 重置 </Button>
+          <Button class="ml-2" @click="handleQuery" type="primary">
             搜索
           </Button>
-          <Button class="ml-2" @click="resetQuery" :icon="h(RefreshCw)">
-            重置
-          </Button>
-          <!-- TODO @puhui999：有办法放到 VxeTable 哪里么？ -->
+        </Form.Item>
+      </Form>
+    </ContentWrap>
+
+    <!-- 列表 -->
+    <ContentWrap title="你好">
+      <template #extra>
+        <TableToolbar
+          ref="tableToolbarRef"
+          v-model:hidden-search="hiddenSearchBar"
+        >
           <Button
             class="ml-2"
             :icon="h(Plus)"
@@ -202,14 +218,9 @@ onMounted(() => {
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
-        </Form.Item>
-      </Form>
-    </ContentWrap>
-
-    <!-- 列表 -->
-    <!-- TODO @puhui999：title 要不还是假起来？ -->
-    <ContentWrap>
-      <VxeTable :data="list" show-overflow :loading="loading">
+        </TableToolbar>
+      </template>
+      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
         <VxeColumn field="id" title="编号" align="center" />
         <VxeColumn field="name" title="名字" align="center" />
         <VxeColumn field="sex" title="性别" align="center">
