@@ -215,13 +215,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <AssignRoleModal @success="onRefresh" />
     <ImportModal @success="onRefresh" />
 
-    <div class="flex h-full">
+    <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <div class="w-4/24 pr-3">
+      <div class="h-full w-1/6 pr-2">
         <DeptTree @select="onDeptSelect" />
       </div>
       <!-- 右侧用户列表 -->
-      <div class="w-18/24">
+      <div class="w-5/6">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
             <Button
