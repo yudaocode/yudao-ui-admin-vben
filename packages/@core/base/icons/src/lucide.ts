@@ -55,6 +55,7 @@ export {
   Pin,
   PinOff,
   Plus,
+  RefreshCw,
   RotateCw,
   Search,
   SearchX,
@@ -69,5 +70,4 @@ export {
   Upload,
   UserRoundPen,
   X,
-  RefreshCw,
 } from 'lucide-vue-next';
