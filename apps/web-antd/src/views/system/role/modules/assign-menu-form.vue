@@ -25,6 +25,13 @@ const isExpanded = ref(false); // 展开状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useAssignMenuFormSchema(),
   showDefaultActions: false,

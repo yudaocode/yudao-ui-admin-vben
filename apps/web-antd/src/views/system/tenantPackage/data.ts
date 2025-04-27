@@ -26,9 +26,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '套餐名称',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入套餐名称',
-      },
       rules: 'required',
     },
     {
@@ -52,9 +49,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
     },
   ];
 }

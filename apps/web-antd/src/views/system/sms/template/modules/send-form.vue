@@ -16,11 +16,15 @@ const emit = defineEmits(['success']);
 const formData = ref<SystemSmsTemplateApi.SmsTemplate>();
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   showDefaultActions: false,
-  commonConfig: {
-    labelWidth: 120,
-  },
 });
 
 const [Modal, modalApi] = useVbenModal({

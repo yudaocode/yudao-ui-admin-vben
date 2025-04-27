@@ -239,7 +239,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入显示排序',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -262,7 +261,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: colorOptions,
         placeholder: '请选择颜色类型',
-        class: 'w-full',
       },
     },
     {

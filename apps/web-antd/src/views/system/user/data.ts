@@ -29,18 +29,12 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'username',
       label: '用户名称',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入用户名称',
-      },
       rules: 'required',
     },
     {
       label: '用户密码',
       fieldName: 'password',
       component: 'InputPassword',
-      componentProps: {
-        placeholder: '请输入用户密码',
-      },
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
@@ -51,9 +45,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'nickname',
       label: '用户昵称',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入用户昵称',
-      },
       rules: 'required',
     },
     {
@@ -65,7 +56,6 @@ export function useFormSchema(): VbenFormSchema[] {
           const data = await getDeptList();
           return handleTree(data);
         },
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -79,7 +69,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimplePostList,
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
@@ -90,18 +79,12 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入邮箱',
-      },
       rules: z.string().email('邮箱格式不正确').optional(),
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入手机号码',
-      },
     },
     {
       fieldName: 'sex',
@@ -129,9 +112,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
     },
   ];
 }
@@ -210,7 +190,6 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleRoleList,
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
