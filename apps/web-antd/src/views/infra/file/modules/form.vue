@@ -14,12 +14,17 @@ import { useFormSchema } from '../data';
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+    hideLabel: true,
+  },
   layout: 'horizontal',
   schema: useFormSchema().map((item) => ({ ...item, label: '' })), // 去除label
   showDefaultActions: false,
-  commonConfig: {
-    hideLabel: true,
-  },
 });
 
 const [Modal, modalApi] = useVbenModal({

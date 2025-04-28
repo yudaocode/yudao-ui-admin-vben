@@ -204,7 +204,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
         return {
           api: getSimpleDictTypeList,
           placeholder: '请输入字典类型',
-          class: 'w-full',
           labelField: 'name',
           valueField: 'type',
           disabled: !!values.id,
@@ -239,7 +238,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入显示排序',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -262,7 +260,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: colorOptions,
         placeholder: '请选择颜色类型',
-        class: 'w-full',
       },
     },
     {

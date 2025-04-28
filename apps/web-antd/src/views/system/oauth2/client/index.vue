@@ -109,10 +109,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="OAuth 2.0（SSO 单点登录)"
-      url="https://doc.iocoder.cn/oauth2/"
-    />
+    <template #doc>
+      <DocAlert
+        title="OAuth 2.0（SSO 单点登录）"
+        url="https://doc.iocoder.cn/oauth2/"
+      />
+    </template>
 
     <FormModal @success="onRefresh" />
     <Grid table-title="OAuth2 客户端列表">

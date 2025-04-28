@@ -37,7 +37,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string'),
-        class: 'w-full',
         placeholder: '请选择短信渠道',
       },
       rules: 'required',

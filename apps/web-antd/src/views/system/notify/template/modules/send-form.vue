@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { sendNotify } from '#/api/system/notify/template';
 import { $t } from '#/locales';
-import { ref } from 'vue';
 
 import { useSendNotifyFormSchema } from '../data';
 
@@ -15,11 +17,15 @@ const emit = defineEmits(['success']);
 const formData = ref<SystemNotifyTemplateApi.NotifyTemplate>();
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   showDefaultActions: false,
-  commonConfig: {
-    labelWidth: 120,
-  },
 });
 
 const [Modal, modalApi] = useVbenModal({

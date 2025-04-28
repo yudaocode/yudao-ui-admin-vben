@@ -1,6 +1,6 @@
 {
   "name": "@vben/web-antd",
-  "version": "5.5.4",
+  "version": "5.5.5",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -26,6 +26,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@form-create/ant-design-vue": "catalog:",
+    "@form-create/antd-designer": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -49,7 +51,9 @@
     "highlight.js": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:"
+    "vue-dompurify-html": "catalog:",
+    "vue-router": "catalog:",
+    "vxe-table": "catalog:"
   },
   "devDependencies": {
     "@types/crypto-js": "catalog:"

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
@@ -11,7 +14,6 @@ import {
   updateNotifyTemplate,
 } from '#/api/system/notify/template';
 import { $t } from '#/locales';
-import { computed, ref } from 'vue';
 
 import { useFormSchema } from '../data';
 
@@ -24,6 +26,13 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,

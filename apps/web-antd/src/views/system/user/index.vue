@@ -201,25 +201,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
-    <DocAlert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
-    <DocAlert
-      title="Excel 导入导出"
-      url="https://doc.iocoder.cn/excel-import-and-export/"
-    />
+    <template #doc>
+      <DocAlert title="用户体系" url="https://doc.iocoder.cn/user-center/" />
+      <DocAlert title="三方登陆" url="https://doc.iocoder.cn/social-user/" />
+      <DocAlert
+        title="Excel 导入导出"
+        url="https://doc.iocoder.cn/excel-import-and-export/"
+      />
+    </template>
 
     <FormModal @success="onRefresh" />
     <ResetPasswordModal @success="onRefresh" />
     <AssignRoleModal @success="onRefresh" />
     <ImportModal @success="onRefresh" />
 
-    <div class="flex h-full">
+    <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <div class="w-4/24 pr-3">
+      <div class="h-full w-1/6 pr-4">
         <DeptTree @select="onDeptSelect" />
       </div>
       <!-- 右侧用户列表 -->
-      <div class="w-18/24">
+      <div class="w-5/6">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
             <Button

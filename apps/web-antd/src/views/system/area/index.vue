@@ -59,7 +59,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="地区 & IP" url="https://doc.iocoder.cn/area-and-ip/" />
+    <template #doc>
+      <DocAlert title="地区 & IP" url="https://doc.iocoder.cn/area-and-ip/" />
+    </template>
 
     <FormModal @success="onRefresh" />
     <Grid table-title="地区列表">

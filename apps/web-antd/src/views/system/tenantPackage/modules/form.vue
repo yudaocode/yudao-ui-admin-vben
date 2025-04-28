@@ -34,6 +34,13 @@ const isExpanded = ref(false); // 展开状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -127,21 +134,21 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <Spin :spinning="menuLoading" class="w-full">
-          <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
-          <VbenTree
-            :tree-data="menuTree"
-            multiple
-            bordered
-            :expanded="expandedKeys"
-            v-bind="slotProps"
-            value-field="id"
-            label-field="name"
-          />
-        </Spin>
+        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
+        <VbenTree
+          class="max-h-[400px] overflow-y-auto"
+          :loading="menuLoading"
+          :tree-data="menuTree"
+          multiple
+          bordered
+          :expanded="expandedKeys"
+          v-bind="slotProps"
+          value-field="id"
+          label-field="name"
+        />
       </template>
     </Form>
     <template #prepend-footer>

@@ -4,3 +4,5 @@ export enum UploadResultStatus {
   SUCCESS = 'success',
   UPLOADING = 'uploading',
 }
+
+export type UploadListType = 'picture' | 'picture-card' | 'text';

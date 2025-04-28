@@ -1,6 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemAreaApi } from '#/api/system/area';
 
 /** 查询 IP 的表单 */

@@ -69,6 +69,7 @@ const [Modal, modalApi] = useVbenModal({
           {{ formData?.templateTitle }}
         </Descriptions.Item>
         <Descriptions.Item label="邮件内容" :span="2">
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <div v-html="formData?.templateContent"></div>
         </Descriptions.Item>
         <Descriptions.Item label="发送状态">

@@ -139,7 +139,9 @@ onMounted(async () => {
 </script>
 <template>
   <Page auto-content-height>
-    <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+    <template #doc>
+      <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
+    </template>
 
     <FormModal @success="onRefresh" />
     <SendModal />

@@ -33,7 +33,7 @@ import {
 
 type InitOptions = IPropTypes['init'];
 
-defineOptions({ inheritAttrs: false });
+defineOptions({ name: 'Tinymce', inheritAttrs: false });
 
 const props = defineProps({
   options: {
@@ -157,7 +157,6 @@ const initOptions = computed((): InitOptions => {
         const { httpRequest } = useUpload();
         httpRequest(file)
           .then((url) => {
-            console.log('tinymce 上传图片成功:', url);
             resolve(url);
           })
           .catch((error) => {

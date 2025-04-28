@@ -1,7 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn } from '#/adapter/vxe-table';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { useAccess } from '@vben/access';
@@ -40,7 +38,6 @@ export function useFormSchema(): VbenFormSchema[] {
           });
           return handleTree(data);
         },
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -64,7 +61,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
@@ -76,7 +72,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        class: 'w-full',
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',

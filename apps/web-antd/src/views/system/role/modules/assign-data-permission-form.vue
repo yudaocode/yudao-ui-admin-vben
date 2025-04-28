@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { useVbenModal, VbenTree } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message, Spin } from 'ant-design-vue';
+import { Checkbox, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
@@ -28,6 +28,13 @@ const isCheckStrictly = ref(true); // 父子联动状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useAssignDataPermissionFormSchema(),
   showDefaultActions: false,
@@ -128,23 +135,23 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
 </script>
 
 <template>
-  <Modal title="数据权限">
+  <Modal title="数据权限" class="w-[40%]">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <Spin :spinning="deptLoading" class="w-full">
-          <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
-          <VbenTree
-            :tree-data="deptTree"
-            multiple
-            bordered
-            :expanded="expandedKeys"
-            v-bind="slotProps"
-            value-field="id"
-            label-field="name"
-            :auto-check-parent="false"
-            :check-strictly="!isCheckStrictly"
-          />
-        </Spin>
+        <!-- <Spin :spinning="deptLoading"> -->
+        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
+        <VbenTree
+          :tree-data="deptTree"
+          multiple
+          bordered
+          :expanded="expandedKeys"
+          v-bind="slotProps"
+          value-field="id"
+          label-field="name"
+          :auto-check-parent="false"
+          :check-strictly="!isCheckStrictly"
+        />
+        <!-- </Spin> -->
       </template>
     </Form>
     <template #prepend-footer>

@@ -6,11 +6,12 @@ import type {
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { DocAlert } from '#/components/doc-alert';
-import ImportTable from './modules/import-table.vue';
-import PreviewCode from './modules/preview-code.vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
+
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -21,12 +22,12 @@ import {
   syncCodegenFromDB,
 } from '#/api/infra/codegen';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { ref } from 'vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
-
-import { useRouter } from 'vue-router';
+import ImportTable from './modules/import-table.vue';
+import PreviewCode from './modules/preview-code.vue';
 
 const router = useRouter();
 const dataSourceConfigList = ref<InfraDataSourceConfigApi.DataSourceConfig[]>(
@@ -139,12 +140,12 @@ function onActionClick({
   row,
 }: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
   switch (code) {
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
     case 'delete': {
       onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
       break;
     }
     case 'generate': {
@@ -205,19 +206,21 @@ initDataSourceConfig();
 </script>
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="代码生成（单表）"
-      url="https://doc.iocoder.cn/new-feature/"
-    />
-    <DocAlert
-      title="代码生成（树表）"
-      url="https://doc.iocoder.cn/new-feature/tree/"
-    />
-    <DocAlert
-      title="代码生成（主子表）"
-      url="https://doc.iocoder.cn/new-feature/master-sub/"
-    />
-    <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
+    <template #doc>
+      <DocAlert
+        title="代码生成（单表）"
+        url="https://doc.iocoder.cn/new-feature/"
+      />
+      <DocAlert
+        title="代码生成（树表）"
+        url="https://doc.iocoder.cn/new-feature/tree/"
+      />
+      <DocAlert
+        title="代码生成（主子表）"
+        url="https://doc.iocoder.cn/new-feature/master-sub/"
+      />
+      <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
+    </template>
 
     <ImportModal @success="onRefresh" />
     <PreviewModal />

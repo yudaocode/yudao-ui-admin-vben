@@ -25,11 +25,13 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="数据库 MyBatis" url="https://doc.iocoder.cn/mybatis/" />
-    <DocAlert
-      title="多数据源（读写分离）"
-      url="https://doc.iocoder.cn/dynamic-datasource/"
-    />
+    <template #doc>
+      <DocAlert title="数据库 MyBatis" url="https://doc.iocoder.cn/mybatis/" />
+      <DocAlert
+        title="多数据源（读写分离）"
+        url="https://doc.iocoder.cn/dynamic-datasource/"
+      />
+    </template>
 
     <IFrame v-if="!loading" v-loading="loading" :src="src" />
   </Page>

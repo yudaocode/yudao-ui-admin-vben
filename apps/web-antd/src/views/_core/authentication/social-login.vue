@@ -35,7 +35,7 @@ const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWo
 
 /** 获取租户列表，并默认选中 */
 const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
-const fetchTenantList = async () => {
+async function fetchTenantList() {
   if (!tenantEnable) {
     return;
   }
@@ -66,14 +66,14 @@ const fetchTenantList = async () => {
   } catch (error) {
     console.error('获取租户列表失败:', error);
   }
-};
+}
 
 /** 尝试登录：当账号已经绑定，socialLogin 会直接获得 token */
 const socialType = Number(getUrlValue('type'));
 const redirect = getUrlValue('redirect');
 const socialCode = query?.code as string;
 const socialState = query?.state as string;
-const tryLogin = async () => {
+async function tryLogin() {
   // 用于登录后，基于 redirect 的重定向
   if (redirect) {
     await router.replace({
@@ -90,10 +90,10 @@ const tryLogin = async () => {
     code: socialCode,
     state: socialState,
   });
-};
+}
 
 /** 处理登录 */
-const handleLogin = async (values: any) => {
+async function handleLogin(values: any) {
   // 如果开启验证码，则先验证验证码
   if (captchaEnable) {
     verifyRef.value.show();
@@ -107,10 +107,10 @@ const handleLogin = async (values: any) => {
     socialCode,
     socialState,
   });
-};
+}
 
 /** 验证码通过，执行登录 */
-const handleVerifySuccess = async ({ captchaVerification }: any) => {
+async function handleVerifySuccess({ captchaVerification }: any) {
   try {
     await authStore.authLogin('username', {
       ...(await loginRef.value.getFormApi().getValues()),
@@ -122,7 +122,7 @@ const handleVerifySuccess = async ({ captchaVerification }: any) => {
   } catch (error) {
     console.error('Error in handleLogin:', error);
   }
-};
+}
 
 /** tricky: 配合 login.vue 中，redirectUri 需要对参数进行 encode，需要在回调后进行decode */
 function getUrlValue(key: string): string {
@@ -144,19 +144,19 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         options: tenantList.value.map((item) => ({
           label: item.name,
-          value: item.id,
+          value: item.id.toString(),
         })),
         placeholder: $t('authentication.tenantTip'),
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z.number().positive(),
+      rules: z.string().min(1, { message: $t('authentication.tenantTip') }),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
         trigger(values) {
           if (values.tenantId) {
-            accessStore.setTenantId(values.tenantId);
+            accessStore.setTenantId(Number(values.tenantId));
           }
         },
       },

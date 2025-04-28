@@ -149,7 +149,7 @@ const todoItems = ref<WorkbenchTodoItem[]>([
     content: `国内使用最广泛的快速开发平台，远超 10w+ 企业使用`,
     date: '2024-07-10 11:15:00',
     title: '广泛企业认可',
-  }
+  },
 ]);
 const trendItems: WorkbenchTrendItem[] = [
   {

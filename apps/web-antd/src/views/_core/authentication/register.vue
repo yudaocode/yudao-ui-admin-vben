@@ -34,7 +34,7 @@ const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWo
 
 /** 获取租户列表，并默认选中 */
 const tenantList = ref<AuthApi.TenantResult[]>([]); // 租户列表
-const fetchTenantList = async () => {
+async function fetchTenantList() {
   if (!tenantEnable) {
     return;
   }
@@ -60,14 +60,16 @@ const fetchTenantList = async () => {
 
     // 设置选中的租户编号
     accessStore.setTenantId(tenantId);
-    registerRef.value.getFormApi().setFieldValue('tenantId', tenantId);
+    registerRef.value
+      .getFormApi()
+      .setFieldValue('tenantId', tenantId?.toString());
   } catch (error) {
     console.error('获取租户列表失败:', error);
   }
-};
+}
 
 /** 执行注册 */
-const handleRegister = async (values: any) => {
+async function handleRegister(values: any) {
   // 如果开启验证码，则先验证验证码
   if (captchaEnable) {
     verifyRef.value.show();
@@ -76,7 +78,7 @@ const handleRegister = async (values: any) => {
 
   // 无验证码，直接登录
   await authStore.authLogin('register', values);
-};
+}
 
 /** 验证码通过，执行注册 */
 const handleVerifySuccess = async ({ captchaVerification }: any) => {
@@ -108,13 +110,13 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z.number().positive(),
+      rules: z.string().min(1, { message: $t('authentication.tenantTip') }),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
         trigger(values) {
           if (values.tenantId) {
-            accessStore.setTenantId(values.tenantId);
+            accessStore.setTenantId(Number(values.tenantId));
           }
         },
       },

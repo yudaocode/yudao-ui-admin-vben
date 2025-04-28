@@ -19,7 +19,7 @@ defineProps<{
       {{ redisData?.info?.redis_version }}
     </Descriptions.Item>
     <Descriptions.Item label="运行模式">
-      {{ redisData?.info?.redis_mode == 'standalone' ? '单机' : '集群' }}
+      {{ redisData?.info?.redis_mode === 'standalone' ? '单机' : '集群' }}
     </Descriptions.Item>
     <Descriptions.Item label="端口">
       {{ redisData?.info?.tcp_port }}
@@ -44,7 +44,7 @@ defineProps<{
       {{ redisData?.info?.maxmemory_human }}
     </Descriptions.Item>
     <Descriptions.Item label="AOF 是否开启">
-      {{ redisData?.info?.aof_enabled == '0' ? '否' : '是' }}
+      {{ redisData?.info?.aof_enabled === '0' ? '否' : '是' }}
     </Descriptions.Item>
     <Descriptions.Item label="RDB 是否成功">
       {{ redisData?.info?.rdb_last_bgsave_status }}

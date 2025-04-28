@@ -41,17 +41,14 @@ const dictTag = computed(() => {
   switch (colorType) {
     case 'danger': {
       colorType = 'error';
-
       break;
     }
     case 'info': {
       colorType = 'default';
-
       break;
     }
     case 'primary': {
       colorType = 'processing';
-
       break;
     }
     default: {

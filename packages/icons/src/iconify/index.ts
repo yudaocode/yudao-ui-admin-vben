@@ -18,4 +18,6 @@ export const MdiCheckboxMarkedCircleOutline = createIconifyIcon(
   'mdi:checkbox-marked-circle-outline',
 );
 
-export const AntdProfileOutlined = createIconifyIcon('ant-design:profile-outlined');
+export const AntdProfileOutlined = createIconifyIcon(
+  'ant-design:profile-outlined',
+);

@@ -74,7 +74,9 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="三方登录" url="https://doc.iocoder.cn/social-user/" />
+    <template #doc>
+      <DocAlert title="三方登录" url="https://doc.iocoder.cn/social-user/" />
+    </template>
 
     <DetailModal />
     <Grid table-title="社交用户列表" />

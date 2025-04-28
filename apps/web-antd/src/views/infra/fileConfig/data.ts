@@ -86,7 +86,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
         placeholder: '请输入主机端口',
       },
@@ -134,6 +133,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '主动模式', value: 'Active' },
           { label: '被动模式', value: 'Passive' },
         ],
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
       rules: 'required',
       dependencies: {
@@ -193,6 +194,25 @@ export function useFormSchema(): VbenFormSchema[] {
         triggerFields: ['storage'],
         show: (formValues) => formValues.storage === 20,
       },
+    },
+    {
+      fieldName: 'config.enablePathStyleAccess',
+      label: '是否 Path Style',
+      component: 'RadioGroup',
+      componentProps: {
+        options: [
+          { label: '启用', value: true },
+          { label: '禁用', value: false },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      rules: 'required',
+      dependencies: {
+        triggerFields: ['storage'],
+        show: (formValues) => formValues.storage === 20,
+      },
+      defaultValue: false,
     },
     // 通用
     {

@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import type { Recordable } from '@vben/types';
+
 import type { SystemUserProfileApi } from '#/api/system/user/profile';
+
+import { watch } from 'vue';
+
+import { $t } from '@vben/locales';
 
 import { message } from 'ant-design-vue';
 
-import { watch } from 'vue';
 import { useVbenForm, z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { updateUserProfile } from '#/api/system/user/profile';
-import { $t } from '@vben/locales';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
-const props = defineProps<{ profile?: SystemUserProfileApi.UserProfileRespVO }>();
+const props = defineProps<{
+  profile?: SystemUserProfileApi.UserProfileRespVO;
+}>();
 const emit = defineEmits<{
   (e: 'success'): void;
 }>();
@@ -87,11 +92,15 @@ async function handleSubmit(values: Recordable<any>) {
 }
 
 /** 监听 profile 变化 */
-watch(() => props.profile, (newProfile) => {
-  if (newProfile) {
-    formApi.setValues(newProfile);
-  }
-}, { immediate: true });
+watch(
+  () => props.profile,
+  (newProfile) => {
+    if (newProfile) {
+      formApi.setValues(newProfile);
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

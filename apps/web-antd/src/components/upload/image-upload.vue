@@ -4,6 +4,8 @@ import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface
 
 import type { AxiosResponse } from '@vben/request';
 
+import type { UploadListType } from './typing';
+
 import type { AxiosProgressEvent } from '#/api/infra/file';
 
 import { ref, toRefs, watch } from 'vue';
@@ -30,7 +32,7 @@ const props = withDefaults(
     ) => Promise<AxiosResponse<any>>;
     disabled?: boolean;
     helpText?: string;
-    listType?: ListType;
+    listType?: UploadListType;
     // 最大数量的文件，Infinity不限制
     maxNumber?: number;
     // 文件最大多少MB
@@ -58,7 +60,6 @@ const props = withDefaults(
   },
 );
 const emit = defineEmits(['change', 'update:value', 'delete']);
-type ListType = 'picture' | 'picture-card' | 'text';
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({

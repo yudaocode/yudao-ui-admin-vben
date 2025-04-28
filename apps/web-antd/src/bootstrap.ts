@@ -1,4 +1,5 @@
 import { createApp, watchEffect } from 'vue';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
 
 import { registerAccessDirective } from '@vben/access';
 import { registerLoadingDirective } from '@vben/common-ui/es/loading';
@@ -10,10 +11,13 @@ import '@vben/styles/antd';
 import { useTitle } from '@vueuse/core';
 
 import { $t, setupI18n } from '#/locales';
+import { setupFormCreate } from '#/plugins/form-create';
 
 import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
+
+import 'vxe-table/styles/cssvar.scss'; // TODO @puhui999：这个必须导入哇？我看 use-vxe-grid.vue 已经导入了
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
@@ -39,7 +43,7 @@ async function bootstrap(namespace: string) {
   // 国际化 i18n 配置
   await setupI18n(app);
 
-  // 配置 pinia-tore
+  // 配置 pinia-store
   await initStores(app, { namespace });
 
   // 安装权限指令
@@ -51,6 +55,13 @@ async function bootstrap(namespace: string) {
 
   // 配置路由及路由守卫
   app.use(router);
+
+  // formCreate
+  setupFormCreate(app);
+
+  // vue-dompurify-html
+  // TODO @dhb52：VueDOMPurifyHTML 是不是不用引入哈？
+  app.use(VueDOMPurifyHTML);
 
   // 配置Motion插件
   const { MotionPlugin } = await import('@vben/plugins/motion');

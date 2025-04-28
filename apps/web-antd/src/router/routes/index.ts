@@ -44,4 +44,4 @@ const componentKeys: string[] = Object.keys(
     const path = v.replace('../../views/', '/');
     return path.endsWith('.vue') ? path.slice(0, -4) : path;
   });
-export { accessRoutes, coreRouteNames, routes, componentKeys };
+export { accessRoutes, componentKeys, coreRouteNames, routes };

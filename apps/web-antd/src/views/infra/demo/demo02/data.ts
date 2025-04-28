@@ -1,7 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn } from '#/adapter/vxe-table';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { useAccess } from '@vben/access';
@@ -36,7 +34,6 @@ export function useFormSchema(): VbenFormSchema[] {
           });
           return handleTree(data);
         },
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
