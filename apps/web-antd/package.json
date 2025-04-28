@@ -45,7 +45,6 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
-    "vxe-table": "catalog:",
     "cropperjs": "catalog:",
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
@@ -53,7 +52,8 @@
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
-    "vue-router": "catalog:"
+    "vue-router": "catalog:",
+    "vxe-table": "catalog:"
   },
   "devDependencies": {
     "@types/crypto-js": "catalog:"
