@@ -166,7 +166,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'AutoComplete',
       componentProps: {
         allowClear: true,
-        class: 'w-full',
         filterOption(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },

@@ -27,7 +27,11 @@ const getTitle = computed(() => {
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    labelWidth: 120,
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: useFormSchema(),

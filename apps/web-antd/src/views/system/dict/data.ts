@@ -204,7 +204,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
         return {
           api: getSimpleDictTypeList,
           placeholder: '请输入字典类型',
-          class: 'w-full',
           labelField: 'name',
           valueField: 'type',
           disabled: !!values.id,
