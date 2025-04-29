@@ -4,6 +4,7 @@ import ImageUpload from '#/components/upload/image-upload.vue';
 
 export const useImagesUpload = () => {
   return defineComponent({
+    name: 'ImagesUpload',
     props: {
       multiple: {
         type: Boolean,
@@ -20,6 +21,5 @@ export const useImagesUpload = () => {
         <ImageUpload maxNumber={props.maxNumber} multiple={props.multiple} />
       );
     },
-    name: 'ImagesUpload',
   });
 };
