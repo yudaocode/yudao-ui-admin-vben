@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         data = await getMenu(data.id as number);
       } finally {
-        modalApi.lock(false);
+        modalApi.unlock();
       }
     }
     // 设置到 values

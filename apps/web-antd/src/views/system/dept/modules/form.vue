@@ -53,12 +53,12 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formApi.resetForm();
       return;
     }
     // 加载数据
@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         data = await getDept(data.id);
       } finally {
-        modalApi.lock(false);
+        modalApi.unlock();
       }
     }
     // 设置到 values

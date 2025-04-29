@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -88,7 +88,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getTenantPackage(data.id as number);
       await formApi.setValues(data);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });
