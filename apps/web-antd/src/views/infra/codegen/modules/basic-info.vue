@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { useVbenForm } from '#/adapter/form';
 import { watch } from 'vue';
+
+import { useVbenForm } from '#/adapter/form';
 
 import { useBasicInfoFormSchema } from '../data';
 

@@ -29,7 +29,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
-        class: 'w-full',
         placeholder: '请选择短信类型',
       },
       rules: 'required',
@@ -58,7 +57,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: async () => await getSimpleSmsChannelList(),
-        class: 'w-full',
         labelField: 'signature',
         valueField: 'id',
         placeholder: '请选择短信渠道',

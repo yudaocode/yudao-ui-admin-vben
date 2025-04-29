@@ -33,6 +33,13 @@ const demo03CourseFormRef = ref<InstanceType<typeof Demo03CourseForm>>();
 const demo03GradeFormRef = ref<InstanceType<typeof Demo03GradeForm>>();
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,

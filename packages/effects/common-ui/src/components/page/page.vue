@@ -61,7 +61,9 @@ onMounted(() => {
       v-if="$slots.doc && isDocAlertEnable()"
       ref="docRef"
       :class="
-        cn('bg-card border-border relative flex items-end border-b px-6 py-4')
+        cn(
+          'bg-card border-border relative flex items-end rounded-md border-b p-4',
+        )
       "
     >
       <div class="flex-auto">

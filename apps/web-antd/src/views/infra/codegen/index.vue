@@ -210,14 +210,14 @@ initDataSourceConfig();
       <DocAlert
         title="代码生成（单表）"
         url="https://doc.iocoder.cn/new-feature/"
-    />
-    <DocAlert
-      title="代码生成（树表）"
-      url="https://doc.iocoder.cn/new-feature/tree/"
-    />
-    <DocAlert
-      title="代码生成（主子表）"
-      url="https://doc.iocoder.cn/new-feature/master-sub/"
+      />
+      <DocAlert
+        title="代码生成（树表）"
+        url="https://doc.iocoder.cn/new-feature/tree/"
+      />
+      <DocAlert
+        title="代码生成（主子表）"
+        url="https://doc.iocoder.cn/new-feature/master-sub/"
       />
       <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
     </template>

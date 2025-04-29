@@ -7,7 +7,6 @@ import { preferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
 import '@vben/styles';
 import '@vben/styles/antd';
-import 'vxe-table/styles/cssvar.scss'; // TODO @puhui999：这个必须导入哇？我看 use-vxe-grid.vue 已经导入了
 
 import { useTitle } from '@vueuse/core';
 
@@ -17,6 +16,8 @@ import { setupFormCreate } from '#/plugins/form-create';
 import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
+
+import 'vxe-table/styles/cssvar.scss'; // TODO @puhui999：这个必须导入哇？我看 use-vxe-grid.vue 已经导入了
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器

@@ -47,7 +47,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: async () => await getSimpleMailAccountList(),
-        class: 'w-full',
         labelField: 'mail',
         valueField: 'id',
         placeholder: '请选择邮箱账号',
