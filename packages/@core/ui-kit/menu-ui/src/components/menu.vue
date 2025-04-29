@@ -374,10 +374,10 @@ $namespace: vben;
     var(--menu-item-margin-x);
   font-size: var(--menu-font-size);
   color: var(--menu-item-color);
-  white-space: nowrap;
   text-decoration: none;
-  cursor: pointer;
+  white-space: nowrap;
   list-style: none;
+  cursor: pointer;
   background: var(--menu-item-background-color);
   border: none;
   border-radius: var(--menu-item-radius);
@@ -701,8 +701,8 @@ $namespace: vben;
     width: var(--menu-item-icon-size);
     height: var(--menu-item-icon-size);
     margin-right: 8px;
-    vertical-align: middle;
     text-align: center;
+    vertical-align: middle;
   }
 }
 
