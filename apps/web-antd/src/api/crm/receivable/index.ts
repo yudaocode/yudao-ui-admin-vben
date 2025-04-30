@@ -16,6 +16,7 @@ export namespace CrmReceivableApi {
     id: number;
     no: string;
     planId?: number;
+    period?: number;
     customerId?: number;
     customerName?: string;
     contractId?: number;
