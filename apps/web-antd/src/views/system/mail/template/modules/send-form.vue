@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
     } catch (error) {
       console.error('发送邮件失败', error);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {

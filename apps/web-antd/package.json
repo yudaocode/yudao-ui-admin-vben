@@ -44,6 +44,7 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",
     "cropperjs": "catalog:",
     "crypto-js": "catalog:",

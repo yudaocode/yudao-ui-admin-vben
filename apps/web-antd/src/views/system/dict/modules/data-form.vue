@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
           await formApi.setValues(formData.value);
         }
       } finally {
-        modalApi.lock(false);
+        modalApi.unlock();
       }
     } else if (data && 'dictType' in data && data.dictType) {
       // 新增时，如果传入了dictType，则需要设置

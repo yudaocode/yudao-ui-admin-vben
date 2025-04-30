@@ -29,7 +29,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getJobLog(data.id);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

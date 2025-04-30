@@ -40,7 +40,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });
