@@ -81,7 +81,7 @@ function openWindow(url: string) {
       </div>
       <p class="mt-2 flex justify-center">
         <span>
-          <Image src="../../../public/wx-xingyu.png" alt="数舵科技" />
+          <Image src="/wx-xingyu.png" alt="数舵科技" />
         </span>
       </p>
       <p class="mt-2 flex justify-center pt-4 text-sm italic">
