@@ -31,6 +31,7 @@ export namespace PayRefundApi {
     successTime: Date;
     notifyTime: Date;
     createTime: Date;
+    updateTime: Date;
   }
 
   /** 退款订单分页请求 */

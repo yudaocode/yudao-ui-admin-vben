@@ -67,7 +67,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>,
 });
 </script>
-
 <template>
   <Page auto-content-height>
     <template #doc>
