@@ -15,6 +15,7 @@ export namespace BpmCategoryApi {
   }
 
   /** 模型分类信息 */
+  // TODO @jason：这个应该非 api 的，可以考虑抽到页面里哈。
   export interface ModelCategoryInfo {
     id: number;
     name: string;

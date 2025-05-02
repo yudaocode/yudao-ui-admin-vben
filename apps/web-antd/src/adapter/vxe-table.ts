@@ -259,6 +259,7 @@ setupVbenVxeTable({
 
     // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
     // vxeUI.formats.add
+    // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatAmount', {
       cellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {

@@ -48,11 +48,10 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @芋艿：图片上传
     {
       fieldName: 'logo',
       label: '应用图标',
-      component: 'UploadImage',
+      component: 'ImageUpload',
       componentProps: {
         limit: 1,
       },

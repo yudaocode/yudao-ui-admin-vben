@@ -2,6 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace BpmModelApi {
   /** 用户信息 TODO 这个是不是可以抽取出来定义在公共模块 */
+  // TODO @芋艿：一起看看。
   export interface UserInfo {
     id: number;
     nickname: string;
@@ -9,6 +10,7 @@ export namespace BpmModelApi {
     deptId?: number;
     deptName?: string;
   }
+
   /** 流程定义 VO */
   export interface ProcessDefinitionVO {
     id: string;
