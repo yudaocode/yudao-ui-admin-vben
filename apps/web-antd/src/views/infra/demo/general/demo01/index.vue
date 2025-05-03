@@ -129,11 +129,11 @@ const tableRef = ref<VxeTableInstance>();
 onMounted(async () => {
   await getList();
   await nextTick();
-  // 挂载 $toolbar 工具栏
-  const $table = tableRef.value;
+  // 挂载 toolbar 工具栏
+  const table = tableRef.value;
   const tableToolbar = tableToolbarRef.value;
-  if ($table && tableToolbar) {
-    await $table.connect(tableToolbar.getToolbarRef()!);
+  if (table && tableToolbar) {
+    await table.connect(tableToolbar.getToolbarRef()!);
   }
 });
 </script>
@@ -144,10 +144,8 @@ onMounted(async () => {
 
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
-      <!-- TODO @puhui999：貌似 -mb-15px 没效果？可能和 ContentWrap 有关系？ -->
       <Form :model="queryParams" ref="queryFormRef" layout="inline">
         <Form.Item label="名字" name="name">
-          <!-- TODO @puhui999：貌似不一定 240？看着和 schema 还是不太一样 -->
           <Input
             v-model:value="queryParams.name"
             placeholder="请输入名字"
@@ -169,9 +167,10 @@ onMounted(async () => {
                 'number',
               )"
               :key="dict.value"
-              :label="dict.label"
               :value="dict.value"
-            />
+            >
+              {{ dict.label }}
+            </Select.Option>
           </Select>
         </Form.Item>
         <Form.Item label="创建时间" name="createTime">
@@ -182,8 +181,6 @@ onMounted(async () => {
           />
         </Form.Item>
         <Form.Item>
-          <!-- TODO @puhui999：搜索和重置；貌似样子和位置不太一样，有木有办法一致 -->
-          <!-- TODO @puhui999：收齐、展开，好弄哇？ -->
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" type="primary">
             搜索
@@ -193,7 +190,7 @@ onMounted(async () => {
     </ContentWrap>
 
     <!-- 列表 -->
-    <ContentWrap title="你好">
+    <ContentWrap title="示例联系人">
       <template #extra>
         <TableToolbar
           ref="tableToolbarRef"
@@ -264,7 +261,6 @@ onMounted(async () => {
       </VxeTable>
       <!-- 分页 -->
       <div class="mt-2 flex justify-end">
-        <!-- TODO @puhui999：这个分页，看着不太一致 -->
         <Pagination
           :total="total"
           v-model:current="queryParams.pageNo"
