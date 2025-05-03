@@ -1,0 +1,265 @@
+<script lang="ts" setup>
+import type { VxeTableInstance } from 'vxe-table';
+
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
+
+import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
+import { cloneDeep, formatDateTime } from '@vben/utils';
+
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Pagination,
+  RangePicker,
+} from 'ant-design-vue';
+import { VxeColumn, VxeTable } from 'vxe-table';
+
+import {
+  deleteDemo03Course,
+  getDemo03CoursePage,
+} from '#/api/infra/demo/demo03/erp';
+import { ContentWrap } from '#/components/content-wrap';
+import { TableToolbar } from '#/components/table-toolbar';
+import { $t } from '#/locales';
+import { getRangePickerDefaultProps } from '#/utils/date';
+
+import Demo03CourseForm from './demo03-course-form.vue';
+
+const props = defineProps<{
+  studentId?: number; // 学生编号（主表的关联字段）
+}>();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Demo03CourseForm,
+  destroyOnClose: true,
+});
+
+/** 创建学生课程 */
+function onCreate() {
+  if (!props.studentId) {
+    message.warning('请先选择一个学生!');
+    return;
+  }
+  formModalApi.setData({ studentId: props.studentId }).open();
+}
+
+/** 编辑学生课程 */
+function onEdit(row: Demo03StudentApi.Demo03Course) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除学生课程 */
+async function onDelete(row: Demo03StudentApi.Demo03Course) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.id]),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03Course(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_process_msg',
+    });
+    getList();
+  } catch {
+    hideLoading();
+  }
+}
+
+const loading = ref(true); // 列表的加载中
+const list = ref<Demo03StudentApi.Demo03Course[]>([]); // 列表的数据
+const total = ref(0); // 列表的总页数
+const queryFormRef = ref(); // 搜索的表单
+const queryParams = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  studentId: undefined,
+  name: undefined,
+  score: undefined,
+  createTime: undefined,
+});
+
+/** 搜索按钮操作 */
+const handleQuery = () => {
+  queryParams.pageNo = 1;
+  getList();
+};
+
+/** 重置按钮操作 */
+const resetQuery = () => {
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
+/** 查询列表 */
+const getList = async () => {
+  loading.value = true;
+  try {
+    if (!props.studentId) {
+      return [];
+    }
+    const params = cloneDeep(queryParams) as any;
+    if (params.birthday && Array.isArray(params.birthday)) {
+      params.birthday = (params.birthday as string[]).join(',');
+    }
+    if (params.createTime && Array.isArray(params.createTime)) {
+      params.createTime = (params.createTime as string[]).join(',');
+    }
+    params.studentId = props.studentId;
+    const data = await getDemo03CoursePage(params);
+    list.value = data.list;
+    total.value = data.total;
+  } finally {
+    loading.value = false;
+  }
+};
+
+/** 监听主表的关联字段的变化，加载对应的子表数据 */
+watch(
+  () => props.studentId,
+  async (val) => {
+    if (!val) {
+      return;
+    }
+    await nextTick();
+    await getList();
+  },
+  { immediate: true },
+);
+
+/** 隐藏搜索栏 */
+const hiddenSearchBar = ref(false);
+const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
+const tableRef = ref<VxeTableInstance>();
+
+/** 初始化 */
+onMounted(async () => {
+  await getList();
+  await nextTick();
+  // 挂载 toolbar 工具栏
+  const table = tableRef.value;
+  const tableToolbar = tableToolbarRef.value;
+  if (table && tableToolbar) {
+    await table.connect(tableToolbar.getToolbarRef()!);
+  }
+});
+</script>
+
+<template>
+  <FormModal @success="getList" />
+  <div class="h-[600px]">
+    <ContentWrap v-if="!hiddenSearchBar">
+      <!-- 搜索工作栏 -->
+      <Form :model="queryParams" ref="queryFormRef" layout="inline">
+        <Form.Item label="学生编号" name="studentId">
+          <Input
+            v-model:value="queryParams.studentId"
+            placeholder="请输入学生编号"
+            allow-clear
+            @press-enter="handleQuery"
+            class="w-full"
+          />
+        </Form.Item>
+        <Form.Item label="名字" name="name">
+          <Input
+            v-model:value="queryParams.name"
+            placeholder="请输入名字"
+            allow-clear
+            @press-enter="handleQuery"
+            class="w-full"
+          />
+        </Form.Item>
+        <Form.Item label="分数" name="score">
+          <Input
+            v-model:value="queryParams.score"
+            placeholder="请输入分数"
+            allow-clear
+            @press-enter="handleQuery"
+            class="w-full"
+          />
+        </Form.Item>
+        <Form.Item label="创建时间" name="createTime">
+          <RangePicker
+            v-model:value="queryParams.createTime"
+            v-bind="getRangePickerDefaultProps()"
+            class="w-full"
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button class="ml-2" @click="resetQuery"> 重置 </Button>
+          <Button class="ml-2" @click="handleQuery" type="primary">
+            搜索
+          </Button>
+        </Form.Item>
+      </Form>
+    </ContentWrap>
+
+    <!-- 列表 -->
+    <ContentWrap title="学生">
+      <template #extra>
+        <TableToolbar
+          ref="tableToolbarRef"
+          v-model:hidden-search="hiddenSearchBar"
+        >
+          <Button
+            class="ml-2"
+            :icon="h(Plus)"
+            type="primary"
+            @click="onCreate"
+            v-access:code="['infra:demo03-student:create']"
+          >
+            {{ $t('ui.actionTitle.create', ['学生']) }}
+          </Button>
+        </TableToolbar>
+      </template>
+      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+        <VxeColumn field="id" title="编号" align="center" />
+        <VxeColumn field="studentId" title="学生编号" align="center" />
+        <VxeColumn field="name" title="名字" align="center" />
+        <VxeColumn field="score" title="分数" align="center" />
+        <VxeColumn field="createTime" title="创建时间" align="center">
+          <template #default="{ row }">
+            {{ formatDateTime(row.createTime) }}
+          </template>
+        </VxeColumn>
+        <VxeColumn field="operation" title="操作" align="center">
+          <template #default="{ row }">
+            <Button
+              size="small"
+              type="link"
+              @click="onEdit(row as any)"
+              v-access:code="['infra:demo03-student:update']"
+            >
+              {{ $t('ui.actionTitle.edit') }}
+            </Button>
+            <Button
+              size="small"
+              type="link"
+              danger
+              class="ml-2"
+              @click="onDelete(row as any)"
+              v-access:code="['infra:demo03-student:delete']"
+            >
+              {{ $t('ui.actionTitle.delete') }}
+            </Button>
+          </template>
+        </VxeColumn>
+      </VxeTable>
+      <!-- 分页 -->
+      <div class="mt-2 flex justify-end">
+        <Pagination
+          :total="total"
+          v-model:current="queryParams.pageNo"
+          v-model:page-size="queryParams.pageSize"
+          show-size-changer
+          @change="getList"
+        />
+      </div>
+    </ContentWrap>
+  </div>
+</template>
