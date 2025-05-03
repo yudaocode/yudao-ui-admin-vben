@@ -52,7 +52,21 @@
     "vitepress",
     "vnode",
     "vueuse",
-    "yxxx"
+    "yxxx",
+    "archiver",
+    "axios",
+    "cropperjs",
+    "dotenv",
+    "gitee",
+    "isequal",
+    "jspm",
+    "napi",
+    "nolebase",
+    "rollup",
+    "Tinymce",
+    "vitest",
+    "xingyu",
+    "yudao"
   ],
   "ignorePaths": [
     "**/node_modules/**",

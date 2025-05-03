@@ -30,7 +30,7 @@ setupVbenVxeTable({
         },
         toolbarConfig: {
           import: false, // 是否导入
-          export: false, // 四否导出
+          export: false, // 是否导出
           refresh: true, // 是否刷新
           print: false, // 是否打印
           zoom: true, // 是否缩放
@@ -259,6 +259,22 @@ setupVbenVxeTable({
 
     // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
     // vxeUI.formats.add
+    // add by 星语：数量格式化，例如说：金额
+    vxeUI.formats.add('formatAmount', {
+      cellFormatMethod({ cellValue }, digits = 2) {
+        if (cellValue === null || cellValue === undefined) {
+          return '';
+        }
+        if (isString(cellValue)) {
+          cellValue = Number.parseFloat(cellValue);
+        }
+        // 如果非 number，则直接返回空串
+        if (Number.isNaN(cellValue)) {
+          return '';
+        }
+        return cellValue.toFixed(digits);
+      },
+    });
   },
   useVbenForm,
 });

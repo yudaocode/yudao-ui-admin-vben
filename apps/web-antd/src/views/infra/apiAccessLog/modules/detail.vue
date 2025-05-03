@@ -28,7 +28,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = data;
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

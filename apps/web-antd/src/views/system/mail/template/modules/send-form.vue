@@ -16,6 +16,13 @@ const emit = defineEmits(['success']);
 const formData = ref<SystemMailTemplateApi.MailTemplate>();
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   showDefaultActions: false,
 });
@@ -54,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
     } catch (error) {
       console.error('发送邮件失败', error);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {

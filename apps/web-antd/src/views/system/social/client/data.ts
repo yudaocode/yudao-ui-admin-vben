@@ -36,7 +36,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SOCIAL_TYPE, 'number'),
-        class: 'w-full',
       },
       rules: 'required',
     },

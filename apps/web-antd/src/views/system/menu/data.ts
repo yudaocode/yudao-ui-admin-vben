@@ -44,7 +44,6 @@ export function useFormSchema(): VbenFormSchema[] {
           } as SystemMenuApi.Menu);
           return handleTree(data);
         },
-        class: 'w-full',
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -167,7 +166,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'AutoComplete',
       componentProps: {
         allowClear: true,
-        class: 'w-full',
         filterOption(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },
@@ -203,7 +201,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },

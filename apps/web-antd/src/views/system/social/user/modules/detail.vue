@@ -30,7 +30,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getSocialUser(data.id);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

@@ -48,11 +48,10 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @芋艿：图片上传
     {
       fieldName: 'logo',
       label: '应用图标',
-      component: 'UploadImage',
+      component: 'ImageUpload',
       componentProps: {
         limit: 1,
       },
@@ -84,7 +83,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入访问令牌的有效期，单位：秒',
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
       },
       rules: 'required',
@@ -96,7 +94,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入刷新令牌的有效期，单位：秒',
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
       },
       rules: 'required',
@@ -109,7 +106,6 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE),
         mode: 'multiple',
         placeholder: '请输入授权类型',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -120,7 +116,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入授权范围',
         mode: 'tags',
-        class: 'w-full',
       },
     },
     {
@@ -130,7 +125,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入自动授权范围',
         mode: 'multiple',
-        class: 'w-full',
         // TODO @芋艿：根据权限，自动授权范围
       },
     },
@@ -141,7 +135,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入可重定向的 URI 地址',
         mode: 'tags',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -152,7 +145,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入权限',
         mode: 'tags',
-        class: 'w-full',
       },
     },
     {
@@ -162,7 +154,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         mode: 'tags',
         placeholder: '请输入资源',
-        class: 'w-full',
       },
     },
     {

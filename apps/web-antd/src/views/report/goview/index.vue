@@ -1,31 +1,30 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { ref } from 'vue';
 
-import { Button } from 'ant-design-vue';
+import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 
 import { DocAlert } from '#/components/doc-alert';
+import { IFrame } from '#/components/iframe';
+
+defineOptions({ name: 'GoView' });
+
+const accessStore = useAccessStore();
+
+const src = ref(
+  `${import.meta.env.VITE_GOVIEW_URL}?accessToken=${accessStore.accessToken}&refreshToken=${accessStore.refreshToken}`,
+);
 </script>
 
 <template>
-  <Page>
-    <DocAlert title="大屏设计器" url="https://doc.iocoder.cn/report/screen/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/report/goview/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/report/goview/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="大屏设计器"
+        url="https://doc.iocoder.cn/report/screen/"
+      />
+    </template>
+
+    <IFrame :src="src" />
   </Page>
 </template>

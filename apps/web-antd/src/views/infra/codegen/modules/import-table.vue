@@ -110,7 +110,7 @@ const [Modal, modalApi] = useVbenModal({
       });
     } finally {
       hideLoading();
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

@@ -25,6 +25,13 @@ const isExpanded = ref(false); // 展开状态
 const expandedKeys = ref<number[]>([]); // 展开的节点
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useAssignMenuFormSchema(),
   showDefaultActions: false,
@@ -52,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -73,7 +80,7 @@ const [Modal, modalApi] = useVbenModal({
       // 加载菜单列表
       await loadMenuTree();
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

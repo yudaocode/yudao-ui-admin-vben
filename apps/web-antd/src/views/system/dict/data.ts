@@ -38,13 +38,15 @@ export function useTypeFormSchema(): VbenFormSchema[] {
       fieldName: 'type',
       label: '字典类型',
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入字典类型',
+      componentProps: (values) => {
+        return {
+          placeholder: '请输入字典类型',
+          disabled: !!values.id,
+        };
       },
       rules: 'required',
       dependencies: {
         triggerFields: [''],
-        disabled: ({ values }) => values.id,
       },
     },
     {
@@ -107,9 +109,8 @@ export function useTypeGridColumns<T = SystemDictTypeApi.DictType>(
     {
       field: 'name',
       title: '字典名称',
-      minWidth: 180,
+      minWidth: 200,
     },
-    // TODO @芋艿：disable的；
     {
       field: 'type',
       title: '字典类型',
@@ -118,7 +119,7 @@ export function useTypeGridColumns<T = SystemDictTypeApi.DictType>(
     {
       field: 'status',
       title: '状态',
-      minWidth: 180,
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -204,7 +205,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
         return {
           api: getSimpleDictTypeList,
           placeholder: '请输入字典类型',
-          class: 'w-full',
           labelField: 'name',
           valueField: 'type',
           disabled: !!values.id,
@@ -239,7 +239,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入显示排序',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -262,7 +261,6 @@ export function useDataFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: colorOptions,
         placeholder: '请选择颜色类型',
-        class: 'w-full',
       },
     },
     {

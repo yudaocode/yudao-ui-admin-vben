@@ -72,7 +72,7 @@ export function useVbenModal<TParentModalProps extends ModalProps = ModalProps>(
 
   mergedOptions.onClosed = () => {
     options.onClosed?.();
-    if (options.destroyOnClose) {
+    if (mergedOptions.destroyOnClose) {
       injectData.reCreateModal?.();
     }
   };

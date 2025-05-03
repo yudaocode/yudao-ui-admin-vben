@@ -27,7 +27,11 @@ const getTitle = computed(() => {
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    labelWidth: 120,
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -55,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -74,7 +78,7 @@ const [Modal, modalApi] = useVbenModal({
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

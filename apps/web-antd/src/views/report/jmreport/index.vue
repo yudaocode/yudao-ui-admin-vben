@@ -1,31 +1,28 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { ref } from 'vue';
 
-import { Button } from 'ant-design-vue';
+import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 
 import { DocAlert } from '#/components/doc-alert';
+import { IFrame } from '#/components/iframe';
+
+defineOptions({ name: 'JimuReport' });
+const accessStore = useAccessStore();
+
+const src = ref(
+  `${import.meta.env.VITE_BASE_URL}/jmreport/list?token=${
+    accessStore.refreshToken
+  }`,
+);
 </script>
 
 <template>
-  <Page>
-    <DocAlert title="报表设计器" url="https://doc.iocoder.cn/report/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/report/jmreport/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/report/jmreport/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="报表设计器" url="https://doc.iocoder.cn/report/" />
+    </template>
+
+    <IFrame :src="src" />
   </Page>
 </template>

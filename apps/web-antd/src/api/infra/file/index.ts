@@ -23,12 +23,13 @@ export namespace InfraFileApi {
     configId: number; // 文件配置编号
     uploadUrl: string; // 文件上传 URL
     url: string; // 文件 URL
+    path: string; // 文件路径
   }
 
   /** 上传文件 */
   export interface FileUploadReqVO {
     file: globalThis.File;
-    path?: string;
+    directory?: string;
   }
 }
 
@@ -45,11 +46,11 @@ export function deleteFile(id: number) {
 }
 
 /** 获取文件预签名地址 */
-export function getFilePresignedUrl(path: string) {
+export function getFilePresignedUrl(name: string, directory?: string) {
   return requestClient.get<InfraFileApi.FilePresignedUrlRespVO>(
     '/infra/file/presigned-url',
     {
-      params: { path },
+      params: { name, directory },
     },
   );
 }
@@ -64,5 +65,9 @@ export function uploadFile(
   data: InfraFileApi.FileUploadReqVO,
   onUploadProgress?: AxiosProgressEvent,
 ) {
+  // 特殊：由于 upload 内部封装，即使 directory 为 undefined，也会传递给后端
+  if (!data.directory) {
+    delete data.directory;
+  }
   return requestClient.upload('/infra/file/upload', data, { onUploadProgress });
 }

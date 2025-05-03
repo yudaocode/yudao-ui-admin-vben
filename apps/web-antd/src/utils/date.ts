@@ -15,14 +15,22 @@ export function getRangePickerDefaultProps(): any {
     valueFormat: 'YYYY-MM-DD HH:mm:ss',
     format: 'YYYY-MM-DD HH:mm:ss',
     placeholder: ['开始时间', '结束时间'],
-    // prettier-ignore
     ranges: {
-      '今天': [dayjs().startOf('day'), dayjs().endOf('day')],
-      '昨天': [dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day')],
-      '本周': [dayjs().startOf('week'), dayjs().endOf('day')],
-      '本月': [dayjs().startOf('month'), dayjs().endOf('day')],
-      '最近 7 天': [dayjs().subtract(7, 'day').startOf('day'), dayjs().endOf('day')],
-      '最近 30 天': [dayjs().subtract(30, 'day').startOf('day'), dayjs().endOf('day')],
+      今天: [dayjs().startOf('day'), dayjs().endOf('day')],
+      昨天: [
+        dayjs().subtract(1, 'day').startOf('day'),
+        dayjs().subtract(1, 'day').endOf('day'),
+      ],
+      本周: [dayjs().startOf('week'), dayjs().endOf('day')],
+      本月: [dayjs().startOf('month'), dayjs().endOf('day')],
+      '最近 7 天': [
+        dayjs().subtract(7, 'day').startOf('day'),
+        dayjs().endOf('day'),
+      ],
+      '最近 30 天': [
+        dayjs().subtract(30, 'day').startOf('day'),
+        dayjs().endOf('day'),
+      ],
     },
     transformDateFunc: (dates: any) => {
       if (dates && dates.length === 2) {

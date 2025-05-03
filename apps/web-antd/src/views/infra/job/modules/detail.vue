@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
       // 获取下一次执行时间
       nextTimes.value = await getJobNextTimes(data.id);
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
 });

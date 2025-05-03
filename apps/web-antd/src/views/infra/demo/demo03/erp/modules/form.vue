@@ -26,6 +26,13 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -52,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
         key: 'action_process_msg',
       });
     } finally {
-      modalApi.lock(false);
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -71,7 +78,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         data = await getDemo03Student(data.id);
       } finally {
-        modalApi.lock(false);
+        modalApi.unlock();
       }
     }
     // 设置到 values

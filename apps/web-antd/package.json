@@ -1,6 +1,6 @@
 {
   "name": "@vben/web-antd",
-  "version": "5.5.4",
+  "version": "5.5.5",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -44,8 +44,8 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",
-    "vxe-table": "catalog:",
     "cropperjs": "catalog:",
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
@@ -53,7 +53,8 @@
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
-    "vue-router": "catalog:"
+    "vue-router": "catalog:",
+    "vxe-table": "catalog:"
   },
   "devDependencies": {
     "@types/crypto-js": "catalog:"

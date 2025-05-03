@@ -40,7 +40,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        class: 'w-full',
         controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
@@ -97,7 +96,6 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
       fieldName: 'dataScope',
       label: '权限范围',
       componentProps: {
-        class: 'w-full',
         options: getDictOptions(DICT_TYPE.SYSTEM_DATA_SCOPE, 'number'),
       },
     },

@@ -30,6 +30,8 @@ const props = withDefaults(
       file: File,
       onUploadProgress?: AxiosProgressEvent,
     ) => Promise<AxiosResponse<any>>;
+    // 上传的目录
+    directory?: string;
     disabled?: boolean;
     helpText?: string;
     listType?: UploadListType;
@@ -47,6 +49,7 @@ const props = withDefaults(
   }>(),
   {
     value: () => [],
+    directory: undefined,
     disabled: false,
     listType: 'picture-card',
     helpText: '',
@@ -54,7 +57,7 @@ const props = withDefaults(
     maxNumber: 1,
     accept: () => defaultImageAccepts,
     multiple: false,
-    api: useUpload().httpRequest,
+    api: undefined,
     resultField: '',
     showDescription: true,
   },
@@ -177,10 +180,9 @@ const beforeUpload = async (file: File) => {
 };
 
 async function customRequest(info: UploadRequestOption<any>) {
-  const { api } = props;
+  let { api } = props;
   if (!api || !isFunction(api)) {
-    console.warn('upload api must exist and be a function');
-    return;
+    api = useUpload(props.directory).httpRequest;
   }
   try {
     // 上传文件

@@ -68,7 +68,6 @@ export function useFormSchema(): VbenFormSchema[] {
           DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           'number',
         ),
-        class: 'w-full',
         placeholder: '请选择模板类型',
       },
       rules: 'required',
@@ -201,7 +200,6 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        class: 'w-full',
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择接收人',

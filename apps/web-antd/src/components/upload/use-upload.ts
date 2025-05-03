@@ -7,8 +7,7 @@ import { computed, unref } from 'vue';
 import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import CryptoJS from 'crypto-js';
-
+// import CryptoJS from 'crypto-js';
 import { createFile, getFilePresignedUrl, uploadFile } from '#/api/infra/file';
 import { baseRequestClient } from '#/api/request';
 
@@ -81,7 +80,7 @@ export function useUploadType({
 }
 
 // TODO @芋艿：目前保持和 admin-vue3 一致，后续可能重构
-export const useUpload = () => {
+export const useUpload = (directory?: string) => {
   // 后端上传地址
   const uploadUrl = getUploadUrl();
   // 是否使用前端直连上传
@@ -97,7 +96,7 @@ export const useUpload = () => {
       // 1.1 生成文件名称
       const fileName = await generateFileName(file);
       // 1.2 获取文件预签名地址
-      const presignedInfo = await getFilePresignedUrl(fileName);
+      const presignedInfo = await getFilePresignedUrl(fileName, directory);
       // 1.3 上传文件
       return baseRequestClient
         .put(presignedInfo.uploadUrl, file, {
@@ -107,13 +106,13 @@ export const useUpload = () => {
         })
         .then(() => {
           // 1.4. 记录文件信息到后端（异步）
-          createFile0(presignedInfo, fileName, file);
+          createFile0(presignedInfo, file);
           // 通知成功，数据格式保持与后端上传的返回结果一致
-          return { data: presignedInfo.url };
+          return { url: presignedInfo.url };
         });
     } else {
       // 模式二：后端上传
-      return uploadFile({ file }, onUploadProgress);
+      return uploadFile({ file, directory }, onUploadProgress);
     }
   };
 
@@ -134,18 +133,13 @@ export const getUploadUrl = (): string => {
  * 创建文件信息
  *
  * @param vo 文件预签名信息
- * @param name 文件名称
  * @param file 文件
  */
-function createFile0(
-  vo: InfraFileApi.FilePresignedUrlRespVO,
-  name: string,
-  file: File,
-) {
+function createFile0(vo: InfraFileApi.FilePresignedUrlRespVO, file: File) {
   const fileVO = {
     configId: vo.configId,
     url: vo.url,
-    path: name,
+    path: vo.path,
     name: file.name,
     type: file.type,
     size: file.size,
@@ -160,12 +154,13 @@ function createFile0(
  * @param file 要上传的文件
  */
 async function generateFileName(file: File) {
-  // 读取文件内容
-  const data = await file.arrayBuffer();
-  const wordArray = CryptoJS.lib.WordArray.create(data);
-  // 计算SHA256
-  const sha256 = CryptoJS.SHA256(wordArray).toString();
-  // 拼接后缀
-  const ext = file.name.slice(Math.max(0, file.name.lastIndexOf('.')));
-  return `${sha256}${ext}`;
+  // // 读取文件内容
+  // const data = await file.arrayBuffer();
+  // const wordArray = CryptoJS.lib.WordArray.create(data);
+  // // 计算SHA256
+  // const sha256 = CryptoJS.SHA256(wordArray).toString();
+  // // 拼接后缀
+  // const ext = file.name.slice(Math.max(0, file.name.lastIndexOf('.')));
+  // return `${sha256}${ext}`;
+  return file.name;
 }

@@ -28,6 +28,8 @@ const props = withDefaults(
       file: File,
       onUploadProgress?: AxiosProgressEvent,
     ) => Promise<AxiosResponse<any>>;
+    // 上传的目录
+    directory?: string;
     disabled?: boolean;
     helpText?: string;
     // 最大数量的文件，Infinity不限制
@@ -44,13 +46,14 @@ const props = withDefaults(
   }>(),
   {
     value: () => [],
+    directory: undefined,
     disabled: false,
     helpText: '',
     maxSize: 2,
     maxNumber: 1,
     accept: () => [],
     multiple: false,
-    api: useUpload().httpRequest,
+    api: undefined,
     resultField: '',
     showDescription: false,
   },
@@ -141,10 +144,9 @@ const beforeUpload = async (file: File) => {
 };
 
 async function customRequest(info: UploadRequestOption<any>) {
-  const { api } = props;
+  let { api } = props;
   if (!api || !isFunction(api)) {
-    console.warn('upload api must exist and be a function');
-    return;
+    api = useUpload(props.directory).httpRequest;
   }
   try {
     // 上传文件
