@@ -12,7 +12,7 @@ import * as OrderApi from '#/api/pay/order';
 import { DocAlert } from '#/components/doc-alert';
 
 import { columns, querySchema } from './data';
-import detailFrom from './modules/OrderDetail.vue';
+import detailFrom from './modules/order-detail.vue';
 
 const formOptions: VbenFormProps = {
   commonConfig: {

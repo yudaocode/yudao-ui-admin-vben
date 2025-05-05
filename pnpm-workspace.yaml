@@ -40,6 +40,7 @@ catalog:
   '@tanstack/vue-store': ^0.7.0
   '@tinymce/tinymce-vue': ^6.1.0
   '@form-create/ant-design-vue': ^3.2.22
+  '@ant-design/icons-vue': ^7.0.1
   '@form-create/antd-designer': ^3.2.11
   '@types/archiver': ^6.0.3
   '@types/eslint': ^9.6.1

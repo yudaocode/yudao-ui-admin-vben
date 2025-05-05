@@ -18,10 +18,10 @@ import { PayChannelEnum } from '#/utils/constants';
 
 import { columns, querySchema } from './data';
 import appFrom from './modules/app-form.vue';
-import aliPayFrom from './modules/channel/AlipayChannelForm.vue';
-import mockFrom from './modules/channel/MockChannelForm.vue';
-import walletFrom from './modules/channel/WalletChannelForm.vue';
-import weixinFrom from './modules/channel/WeixinChannelForm.vue';
+import aliPayFrom from './modules/channel/alipay-channel-form.vue';
+import mockFrom from './modules/channel/mock-channel-form.vue';
+import walletFrom from './modules/channel/wallet-channel-form.vue';
+import weixinFrom from './modules/channel/weixin-channel-form.vue';
 
 const formOptions: VbenFormProps = {
   commonConfig: {
