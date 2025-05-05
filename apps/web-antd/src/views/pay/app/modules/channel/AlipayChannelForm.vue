@@ -49,7 +49,7 @@ const [BasicModal, modalApi] = useVbenModal({
     modalApi.modalLoading(true);
 
     const { id, payCode } = modalApi.getData() as {
-      id?: string;
+      id?: number;
       payCode?: string;
     };
 

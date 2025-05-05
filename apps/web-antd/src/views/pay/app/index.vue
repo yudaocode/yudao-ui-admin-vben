@@ -71,7 +71,7 @@ const gridOptions: VxeGridProps = {
     keyField: 'id',
   },
   // 表格全局唯一表示 保存列配置需要用到
-  id: 'system-notifyMessage-index',
+  id: 'pay-app-index',
 };
 
 const [BasicTable, tableApi] = useVbenVxeGrid({

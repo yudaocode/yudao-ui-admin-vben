@@ -16,7 +16,8 @@
     "delete": "删除{0}",
     "view": "查看{0}",
     "import": "导入",
-    "export": "导出"
+    "export": "导出",
+    "detail": "详情"
   },
   "actionMessage": {
     "deleteConfirm": "确定删除 {0} 吗？",
