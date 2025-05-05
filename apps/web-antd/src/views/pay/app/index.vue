@@ -19,6 +19,9 @@ import { PayChannelEnum } from '#/utils/constants';
 import { columns, querySchema } from './data';
 import appFrom from './modules/app-form.vue';
 import aliPayFrom from './modules/channel/AlipayChannelForm.vue';
+import mockFrom from './modules/channel/MockChannelForm.vue';
+import walletFrom from './modules/channel/WalletChannelForm.vue';
+import weixinFrom from './modules/channel/WeixinChannelForm.vue';
 
 const formOptions: VbenFormProps = {
   commonConfig: {
@@ -84,6 +87,18 @@ const [AliPayModal, modalAliPayApi] = useVbenModal({
   connectedComponent: aliPayFrom,
 });
 
+const [MockModal, modalMockApi] = useVbenModal({
+  connectedComponent: mockFrom,
+});
+
+const [WalletModal, modalWalletApi] = useVbenModal({
+  connectedComponent: walletFrom,
+});
+
+const [WeixinModal, modalWeixinApi] = useVbenModal({
+  connectedComponent: weixinFrom,
+});
+
 const handleAdd = () => {
   modalApi.setData({});
   modalApi.open();
@@ -123,17 +138,22 @@ const openChannelForm = async (row: PayApi.PayAppApi.App, payCode: string) => {
   if (payCode.indexOf('alipay_') === 0) {
     modalAliPayApi.setData({ id: row.id, payCode });
     modalAliPayApi.open();
+    return;
   }
-  // if (payCode.indexOf('wx_') === 0) {
-  //   weixinFormRef.value.open(row.id, payCode);
-  //   return;
-  // }
-  // if (payCode.indexOf('mock') === 0) {
-  //   mockFormRef.value.open(row.id, payCode);
-  // }
-  // if (payCode.indexOf('wallet') === 0) {
-  //   mockFormRef.value.open(row.id, payCode);
-  // }
+  if (payCode.indexOf('wx_') === 0) {
+    modalWeixinApi.setData({ id: row.id, payCode });
+    modalWeixinApi.open();
+    return;
+  }
+  if (payCode.indexOf('mock') === 0) {
+    modalMockApi.setData({ id: row.id, payCode });
+    modalMockApi.open();
+    return;
+  }
+  if (payCode.indexOf('wallet') === 0) {
+    modalWalletApi.setData({ id: row.id, payCode });
+    modalWalletApi.open();
+  }
 };
 </script>
 
@@ -153,24 +173,26 @@ const openChannelForm = async (row: PayApi.PayAppApi.App, payCode: string) => {
         </Space>
       </template>
       <template #action="{ row }">
-        <a-button
-          v-access:code="['pay:app:update']"
-          type="link"
-          @click.stop="handleEdit(row)"
-        >
-          {{ $t('ui.actionTitle.edit') }}
-        </a-button>
-        <Popconfirm
-          :get-popup-container="getVxePopupContainer"
-          placement="left"
-          v-access:code="['pay:app:delete']"
-          title="确认删除？"
-          @confirm="handleDelete(row)"
-        >
-          <a-button type="link" danger>
-            {{ $t('ui.actionTitle.delete') }}
-          </a-button>
-        </Popconfirm>
+        <Space>
+          <Button
+            v-access:code="['pay:app:update']"
+            type="link"
+            @click.stop="handleEdit(row)"
+          >
+            {{ $t('ui.actionTitle.edit') }}
+          </Button>
+          <Popconfirm
+            :get-popup-container="getVxePopupContainer"
+            placement="left"
+            v-access:code="['pay:app:delete']"
+            title="确认删除？"
+            @confirm="handleDelete(row)"
+          >
+            <Button type="link" danger>
+              {{ $t('ui.actionTitle.delete') }}
+            </Button>
+          </Popconfirm>
+        </Space>
       </template>
       <template #status="{ row }">
         <Switch
@@ -180,240 +202,297 @@ const openChannelForm = async (row: PayApi.PayAppApi.App, payCode: string) => {
         />
       </template>
       <template #alipayAppConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_APP.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_APP.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_APP.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_APP.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_APP.code)"
+          />
+          <Button
+            v-else
+            size="small"
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_APP.code)"
+          />
+        </div>
       </template>
       <template #alipayPCConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_PC.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_PC.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_PC.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_PC.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_PC.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_PC.code)"
+          />
+        </div>
       </template>
       <template #alipayWAPConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_WAP.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_WAP.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_WAP.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_WAP.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_WAP.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_WAP.code)"
+          />
+        </div>
       </template>
       <template #alipayQrConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_QR.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_QR.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_QR.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_QR.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_QR.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_QR.code)"
+          />
+        </div>
       </template>
       <template #alipayBarConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_BAR.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_BAR.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.ALIPAY_BAR.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.ALIPAY_BAR.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_BAR.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.ALIPAY_BAR.code)"
+          />
+        </div>
       </template>
       <template #wxLiteConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_LITE.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_LITE.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_LITE.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.WX_LITE.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_LITE.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_LITE.code)"
+          />
+        </div>
       </template>
       <template #wxPubConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_PUB.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_PUB.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_PUB.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_PUB.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_PUB.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_PUB.code)"
+          />
+        </div>
       </template>
       <template #wxAppConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_APP.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_APP.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_APP.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_APP.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_APP.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_APP.code)"
+          />
+        </div>
       </template>
       <template #wxNativeConfig="{ row }">
-        <Button
-          v-if="
-            isChannelExists(row.channelCodes, PayChannelEnum.WX_NATIVE.code)
-          "
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_NATIVE.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_NATIVE.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="
+              isChannelExists(row.channelCodes, PayChannelEnum.WX_NATIVE.code)
+            "
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_NATIVE.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_NATIVE.code)"
+          />
+        </div>
       </template>
       <template #wxWapConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_WAP.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_WAP.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_WAP.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_WAP.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_WAP.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_WAP.code)"
+          />
+        </div>
       </template>
       <template #wxBarConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_BAR.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_BAR.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WX_BAR.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.WX_BAR.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_BAR.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WX_BAR.code)"
+          />
+        </div>
       </template>
       <template #walletConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.WALLET.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WALLET.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.WALLET.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.WALLET.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WALLET.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.WALLET.code)"
+          />
+        </div>
       </template>
       <template #mockConfig="{ row }">
-        <Button
-          v-if="isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)"
-          type="primary"
-          :icon="h(CheckOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.MOCK.code)"
-        />
-        <Button
-          v-else
-          type="primary"
-          danger
-          :icon="h(CloseOutlined)"
-          shape="circle"
-          @click="openChannelForm(row, PayChannelEnum.MOCK.code)"
-        />
+        <div>
+          <Button
+            size="small"
+            v-if="isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)"
+            type="primary"
+            :icon="h(CheckOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.MOCK.code)"
+          />
+          <Button
+            size="small"
+            v-else
+            type="primary"
+            danger
+            :icon="h(CloseOutlined)"
+            shape="circle"
+            @click="openChannelForm(row, PayChannelEnum.MOCK.code)"
+          />
+        </div>
       </template>
     </BasicTable>
     <AppModal @reload="tableApi.query()" />
     <AliPayModal @reload="tableApi.query()" />
+    <MockModal @reload="tableApi.query()" />
+    <WalletModal @reload="tableApi.query()" />
+    <WeixinModal @reload="tableApi.query()" />
   </Page>
 </template>

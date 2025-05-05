@@ -5,13 +5,10 @@ import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
-import { Row, Space, Textarea } from 'ant-design-vue';
-
 import { useVbenForm } from '#/adapter/form';
 import * as ChannelApi from '#/api/pay/channel';
-import { FileUpload } from '#/components/upload';
 
-import { modalAliPaySchema } from './data';
+import { modalMockSchema } from './data';
 
 const emit = defineEmits<{ reload: [] }>();
 
@@ -33,7 +30,7 @@ const [BasicForm, formApi] = useVbenForm({
       class: 'w-full',
     },
   },
-  schema: modalAliPaySchema(),
+  schema: modalMockSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-2',
 });
@@ -49,18 +46,23 @@ const [BasicModal, modalApi] = useVbenModal({
     modalApi.modalLoading(true);
 
     const { id, payCode } = modalApi.getData() as {
-      id?: string;
+      id?: number;
       payCode?: string;
     };
 
     if (id && payCode) {
-      const record = await ChannelApi.getChannel(id, payCode);
+      let record = await ChannelApi.getChannel(id, payCode);
       isUpdate.value = !!record;
-      record.code = payCode;
       if (isUpdate.value) {
         record.config = JSON.parse(record.config);
-        await formApi.setValues(record);
+      } else {
+        record = {
+          feeRate: 0,
+          code: payCode,
+          appId: id,
+        } as ChannelApi.PayChannelApi.Channel;
       }
+      await formApi.setValues(record);
     }
 
     modalApi.modalLoading(false);
@@ -78,7 +80,7 @@ async function handleConfirm() {
     const data = cloneDeep(
       await formApi.getValues(),
     ) as ChannelApi.PayChannelApi.Channel;
-    data.config = JSON.stringify(data.config);
+    data.config = JSON.stringify(data.config || { name: 'mock-conf' });
     await (isUpdate.value
       ? ChannelApi.updateChannel(data)
       : ChannelApi.createChannel(data));
@@ -98,66 +100,6 @@ async function handleCancel() {
 </script>
 <template>
   <BasicModal :close-on-click-modal="false" :title="title" class="w-[40%]">
-    <BasicForm>
-      <template #appCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea
-              v-bind="slotProps"
-              :rows="8"
-              placeholder="请上传商户公钥应用证书"
-            />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-      <template #alipayPublicCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea
-              v-bind="slotProps"
-              :rows="8"
-              placeholder="请上传支付宝公钥证书"
-            />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['.crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-      <template #rootCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea v-bind="slotProps" :rows="8" placeholder="请上传根证书" />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['.crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-    </BasicForm>
+    <BasicForm />
   </BasicModal>
 </template>

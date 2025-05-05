@@ -11,7 +11,7 @@ import { useVbenForm } from '#/adapter/form';
 import * as ChannelApi from '#/api/pay/channel';
 import { FileUpload } from '#/components/upload';
 
-import { modalAliPaySchema } from './data';
+import { modalWeixinSchema } from './data';
 
 const emit = defineEmits<{ reload: [] }>();
 
@@ -33,7 +33,7 @@ const [BasicForm, formApi] = useVbenForm({
       class: 'w-full',
     },
   },
-  schema: modalAliPaySchema(),
+  schema: modalWeixinSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-2',
 });
@@ -49,18 +49,20 @@ const [BasicModal, modalApi] = useVbenModal({
     modalApi.modalLoading(true);
 
     const { id, payCode } = modalApi.getData() as {
-      id?: string;
+      id?: number;
       payCode?: string;
     };
 
     if (id && payCode) {
-      const record = await ChannelApi.getChannel(id, payCode);
+      const record =
+        (await ChannelApi.getChannel(id, payCode)) ||
+        ({} as ChannelApi.PayChannelApi.Channel);
       isUpdate.value = !!record;
       record.code = payCode;
       if (isUpdate.value) {
         record.config = JSON.parse(record.config);
-        await formApi.setValues(record);
       }
+      await formApi.setValues(record);
     }
 
     modalApi.modalLoading(false);
@@ -99,13 +101,13 @@ async function handleCancel() {
 <template>
   <BasicModal :close-on-click-modal="false" :title="title" class="w-[40%]">
     <BasicForm>
-      <template #appCertContent="slotProps">
+      <template #keyContent="slotProps">
         <Space style="width: 100%" direction="vertical">
           <Row>
             <Textarea
               v-bind="slotProps"
               :rows="8"
-              placeholder="请上传商户公钥应用证书"
+              placeholder="请上传 apiclient_cert.p12 证书"
             />
           </Row>
           <Row>
@@ -120,31 +122,14 @@ async function handleCancel() {
           </Row>
         </Space>
       </template>
-      <template #alipayPublicCertContent="slotProps">
+      <template #privateKeyContent="slotProps">
         <Space style="width: 100%" direction="vertical">
           <Row>
             <Textarea
               v-bind="slotProps"
               :rows="8"
-              placeholder="请上传支付宝公钥证书"
+              placeholder="请上传 apiclient_key.pem 证书"
             />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['.crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-      <template #rootCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea v-bind="slotProps" :rows="8" placeholder="请上传根证书" />
           </Row>
           <Row>
             <FileUpload

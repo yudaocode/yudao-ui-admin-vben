@@ -4,8 +4,26 @@ import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 export const modalAliPaySchema: FormSchemaGetter = () => [
   {
-    label: '应用编号',
+    label: '商户编号',
     fieldName: 'id',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '应用编号',
+    fieldName: 'appId',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '渠道编码',
+    fieldName: 'code',
     component: 'Input',
     dependencies: {
       show: () => false,
@@ -38,6 +56,7 @@ export const modalAliPaySchema: FormSchemaGetter = () => [
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
     },
+    defaultValue: 1,
   },
   {
     label: '网关地址',
@@ -191,6 +210,239 @@ export const modalAliPaySchema: FormSchemaGetter = () => [
       ],
     },
     defaultValue: 'NONE',
+  },
+  {
+    label: '备注',
+    fieldName: 'remark',
+    component: 'Textarea',
+    componentProps: {
+      rows: 3,
+      placeholder: '请输入备注',
+    },
+  },
+];
+
+export const modalMockSchema: FormSchemaGetter = () => [
+  {
+    label: '商户编号',
+    fieldName: 'id',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '应用编号',
+    fieldName: 'appId',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '渠道状态',
+    fieldName: 'status',
+    component: 'RadioGroup',
+    rules: 'required',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+    },
+    defaultValue: 1,
+  },
+  {
+    label: '渠道编码',
+    fieldName: 'code',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '渠道费率',
+    fieldName: 'feeRate',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入渠道费率',
+    },
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '备注',
+    fieldName: 'remark',
+    component: 'Textarea',
+    componentProps: {
+      rows: 3,
+      placeholder: '请输入备注',
+    },
+  },
+];
+
+export const modalWeixinSchema: FormSchemaGetter = () => [
+  {
+    label: '商户编号',
+    fieldName: 'id',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '应用编号',
+    fieldName: 'appId',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '渠道编码',
+    fieldName: 'code',
+    component: 'Input',
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+  },
+  {
+    label: '渠道费率',
+    fieldName: 'feeRate',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入渠道费率',
+    },
+  },
+  {
+    label: '微信 APPID',
+    fieldName: 'config.appId',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入微信 APPID',
+    },
+  },
+  {
+    label: '商户号',
+    fieldName: 'config.mchId',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入商户号',
+    },
+  },
+  {
+    label: '渠道状态',
+    fieldName: 'status',
+    component: 'RadioGroup',
+    rules: 'required',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+    },
+    defaultValue: 1,
+  },
+  {
+    label: 'API 版本',
+    fieldName: 'config.apiVersion',
+    component: 'RadioGroup',
+    rules: 'required',
+    componentProps: {
+      options: [
+        {
+          label: 'v2',
+          value: 'v2',
+        },
+        {
+          label: 'v3',
+          value: 'v3',
+        },
+      ],
+    },
+  },
+  {
+    label: '商户密钥',
+    fieldName: 'config.mchKey',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入商户密钥',
+    },
+    dependencies: {
+      show(values) {
+        return values?.config?.apiVersion === 'v2';
+      },
+      triggerFields: ['config.mode', 'mode', 'config'],
+    },
+  },
+  {
+    label: 'apiclient_cert.p12 证书',
+    fieldName: 'config.keyContent',
+    slotName: 'keyContent',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请上传 apiclient_cert.p12 证书',
+    },
+    dependencies: {
+      show(values) {
+        return values?.config?.apiVersion === 'v2';
+      },
+      triggerFields: ['config.mode', 'mode', 'config'],
+    },
+  },
+  {
+    label: 'API V3 密钥',
+    fieldName: 'config.apiV3Key',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入 API V3 密钥',
+    },
+    dependencies: {
+      show(values) {
+        return values?.config?.apiVersion === 'v3';
+      },
+      triggerFields: ['config.mode', 'mode', 'config'],
+    },
+  },
+  {
+    label: 'apiclient_key.pem 证书',
+    fieldName: 'config.privateKeyContent',
+    slotName: 'privateKeyContent',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请上传 apiclient_key.pem 证书',
+    },
+    dependencies: {
+      show(values) {
+        return values?.config?.apiVersion === 'v3';
+      },
+      triggerFields: ['config.mode', 'mode', 'config'],
+    },
+  },
+  {
+    label: '证书序列号',
+    fieldName: 'config.certSerialNo',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入证书序列号',
+    },
+    dependencies: {
+      show(values) {
+        return values?.config?.apiVersion === 'v3';
+      },
+      triggerFields: ['config.mode', 'mode', 'config'],
+    },
   },
   {
     label: '备注',
