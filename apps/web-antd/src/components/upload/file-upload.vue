@@ -55,7 +55,7 @@ const props = withDefaults(
     showDescription: false,
   },
 );
-const emit = defineEmits(['change', 'update:value', 'delete']);
+const emit = defineEmits(['change', 'update:value', 'delete', 'getText']);
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
@@ -122,6 +122,10 @@ const handleRemove = async (file: UploadFile) => {
 };
 
 const beforeUpload = async (file: File) => {
+  // 使用现代的Blob.text()方法替代FileReader
+  const fileContent = await file.text();
+  emit('getText', fileContent);
+
   const { maxSize, accept } = props;
   const isAct = checkFileType(file, accept);
   if (!isAct) {
