@@ -66,7 +66,9 @@ async function onDelete(row: InfraFileApi.File) {
   });
   try {
     await deleteFile(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name || row.path]));
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
+    );
     onRefresh();
   } catch {
     hideLoading();
