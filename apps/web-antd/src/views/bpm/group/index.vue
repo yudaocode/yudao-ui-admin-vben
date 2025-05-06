@@ -95,10 +95,7 @@ async function onDelete(row: BpmUserGroupApi.UserGroupVO) {
   });
   try {
     await deleteUserGroup(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
     hideLoading();
