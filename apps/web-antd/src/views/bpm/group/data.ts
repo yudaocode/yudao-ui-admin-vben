@@ -106,7 +106,7 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
   return [
     {
       field: 'id',
-      title: '分类编号',
+      title: '编号',
       minWidth: 100,
     },
     {
