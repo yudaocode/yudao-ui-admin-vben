@@ -50,10 +50,7 @@ async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
   });
   try {
     await deleteOAuth2Client(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
     hideLoading();

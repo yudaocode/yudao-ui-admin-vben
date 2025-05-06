@@ -7,6 +7,7 @@ import type { InfraFileApi } from '#/api/infra/file';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Upload } from '@vben/icons';
+import { openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
 import { Button, Image, message } from 'ant-design-vue';
@@ -52,7 +53,7 @@ async function onCopyUrl(row: InfraFileApi.File) {
 /** 打开 URL */
 function openUrl(url?: string) {
   if (url) {
-    window.open(url, '_blank');
+    openWindow(url);
   }
 }
 
@@ -65,10 +66,9 @@ async function onDelete(row: InfraFileApi.File) {
   });
   try {
     await deleteFile(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
-      key: 'action_process_msg',
-    });
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
+    );
     onRefresh();
   } catch {
     hideLoading();

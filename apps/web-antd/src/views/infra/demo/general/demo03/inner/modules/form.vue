@@ -82,8 +82,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = formData.value as Demo03StudentApi.Demo03Student;
     // 拼接子表的数据
-    data.demo03Courses = demo03CourseFormRef.value?.getData();
-    data.demo03Grade = demo03GradeFormRef.value?.getValues();
+    data.demo03courses = demo03CourseFormRef.value?.getData();
+    data.demo03grade =
+      demo03GradeFormRef.value?.getValues() as Demo03StudentApi.Demo03Grade;
     try {
       await (formData.value?.id
         ? updateDemo03Student(data)
@@ -91,10 +92,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }

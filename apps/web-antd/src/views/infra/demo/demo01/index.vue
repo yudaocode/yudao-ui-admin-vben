@@ -1,85 +1,38 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from 'vxe-table';
-
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { h, nextTick, onMounted, reactive, ref } from 'vue';
+import { h } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime } from '@vben/utils';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Pagination,
-  RangePicker,
-  Select,
-} from 'ant-design-vue';
-import { VxeColumn, VxeTable } from 'vxe-table';
+import { Button, message } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
-import { ContentWrap } from '#/components/content-wrap';
-import { DictTag } from '#/components/dict-tag';
-import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
-import { getRangePickerDefaultProps } from '#/utils/date';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { downloadByData } from '#/utils/download';
 
-import Demo01ContactForm from './modules/form.vue';
-
-const loading = ref(true); // 列表的加载中
-const list = ref<Demo01ContactApi.Demo01Contact[]>([]); // 列表的数据
-const total = ref(0); // 列表的总页数
-const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 10,
-  name: undefined,
-  sex: undefined,
-  createTime: undefined,
-});
-const queryFormRef = ref(); // 搜索的表单
-const exportLoading = ref(false); // 导出的加载中
-
-/** 查询列表 */
-const getList = async () => {
-  loading.value = true;
-  try {
-    const params = cloneDeep(queryParams) as any;
-    if (params.createTime && Array.isArray(params.createTime)) {
-      params.createTime = (params.createTime as string[]).join(',');
-    }
-    const data = await getDemo01ContactPage(params);
-    list.value = data.list;
-    total.value = data.total;
-  } finally {
-    loading.value = false;
-  }
-};
-
-/** 搜索按钮操作 */
-const handleQuery = () => {
-  queryParams.pageNo = 1;
-  getList();
-};
-
-/** 重置按钮操作 */
-const resetQuery = () => {
-  queryFormRef.value.resetFields();
-  handleQuery();
-};
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Demo01ContactForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
 
 /** 创建示例联系人 */
 function onCreate() {
@@ -100,11 +53,8 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   });
   try {
     await deleteDemo01Contact(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
-    await getList();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    onRefresh();
   } catch {
     hideLoading();
   }
@@ -112,166 +62,84 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 
 /** 导出表格 */
 async function onExport() {
-  try {
-    exportLoading.value = true;
-    const data = await exportDemo01Contact(queryParams);
-    downloadByData(data, '示例联系人.xls');
-  } finally {
-    exportLoading.value = false;
+  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '示例联系人.xls', source: data });
+}
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo01ContactApi.Demo01Contact>) {
+  switch (code) {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
   }
 }
 
-/** 隐藏搜索栏 */
-const hiddenSearchBar = ref(false);
-const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
-const tableRef = ref<VxeTableInstance>();
-/** 初始化 */
-onMounted(async () => {
-  await getList();
-  await nextTick();
-  // 挂载 toolbar 工具栏
-  const table = tableRef.value;
-  const tableToolbar = tableToolbarRef.value;
-  if (table && tableToolbar) {
-    await table.connect(tableToolbar.getToolbarRef()!);
-  }
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(onActionClick),
+    height: 'auto',
+    pagerConfig: {
+      enabled: true,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getDemo01ContactPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="getList" />
+    <FormModal @success="onRefresh" />
 
-    <ContentWrap v-if="!hiddenSearchBar">
-      <!-- 搜索工作栏 -->
-      <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="名字" name="name">
-          <Input
-            v-model:value="queryParams.name"
-            placeholder="请输入名字"
-            allow-clear
-            @press-enter="handleQuery"
-            class="w-full"
-          />
-        </Form.Item>
-        <!-- TODO @puhui999：貌似性别的宽度不对；并且选择后，会变哈； -->
-        <Form.Item label="性别" name="sex">
-          <Select
-            v-model:value="queryParams.sex"
-            placeholder="请选择性别"
-            allow-clear
-            class="w-full"
-          >
-            <!-- TODO @puhui999：要不咱还是把 getIntDictOptions 还是搞出来？总归方便点~ -->
-            <Select.Option
-              v-for="dict in getDictOptions(
-                DICT_TYPE.SYSTEM_USER_SEX,
-                'number',
-              )"
-              :key="dict.value"
-              :value="dict.value"
-            >
-              {{ dict.label }}
-            </Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
-          <RangePicker
-            v-model:value="queryParams.createTime"
-            v-bind="getRangePickerDefaultProps()"
-            class="w-full"
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button class="ml-2" @click="resetQuery"> 重置 </Button>
-          <Button class="ml-2" @click="handleQuery" type="primary">
-            搜索
-          </Button>
-        </Form.Item>
-      </Form>
-    </ContentWrap>
-
-    <!-- 列表 -->
-    <ContentWrap title="示例联系人">
-      <!-- TODO @puhui999：暗黑模式下，会有个黑底 -->
-      <template #extra>
-        <TableToolbar
-          ref="tableToolbarRef"
-          v-model:hidden-search="hiddenSearchBar"
+    <Grid table-title="示例联系人列表">
+      <template #toolbar-tools>
+        <Button
+          :icon="h(Plus)"
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:demo01-contact:create']"
         >
-          <Button
-            class="ml-2"
-            :icon="h(Plus)"
-            type="primary"
-            @click="onCreate"
-            v-access:code="['infra:demo01-contact:create']"
-          >
-            {{ $t('ui.actionTitle.create', ['示例联系人']) }}
-          </Button>
-          <Button
-            :icon="h(Download)"
-            type="primary"
-            class="ml-2"
-            :loading="exportLoading"
-            @click="onExport"
-            v-access:code="['infra:demo01-contact:export']"
-          >
-            {{ $t('ui.actionTitle.export') }}
-          </Button>
-        </TableToolbar>
+          {{ $t('ui.actionTitle.create', ['示例联系人']) }}
+        </Button>
+        <Button
+          :icon="h(Download)"
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:demo01-contact:export']"
+        >
+          {{ $t('ui.actionTitle.export') }}
+        </Button>
       </template>
-      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
-        <VxeColumn field="id" title="编号" align="center" />
-        <VxeColumn field="name" title="名字" align="center" />
-        <VxeColumn field="sex" title="性别" align="center">
-          <template #default="{ row }">
-            <DictTag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="row.sex" />
-          </template>
-        </VxeColumn>
-        <VxeColumn field="birthday" title="出生年" align="center">
-          <template #default="{ row }">
-            {{ formatDateTime(row.birthday) }}
-          </template>
-        </VxeColumn>
-        <VxeColumn field="description" title="简介" align="center" />
-        <VxeColumn field="avatar" title="头像" align="center" />
-        <VxeColumn field="createTime" title="创建时间" align="center">
-          <template #default="{ row }">
-            {{ formatDateTime(row.createTime) }}
-          </template>
-        </VxeColumn>
-        <VxeColumn field="operation" title="操作" align="center">
-          <template #default="{ row }">
-            <Button
-              size="small"
-              type="link"
-              @click="onEdit(row as any)"
-              v-access:code="['infra:demo01-contact:update']"
-            >
-              {{ $t('ui.actionTitle.edit') }}
-            </Button>
-            <Button
-              size="small"
-              type="link"
-              class="ml-2"
-              @click="onDelete(row as any)"
-              v-access:code="['infra:demo01-contact:delete']"
-            >
-              {{ $t('ui.actionTitle.delete') }}
-            </Button>
-          </template>
-        </VxeColumn>
-      </VxeTable>
-      <!-- 分页 -->
-      <div class="mt-2 flex justify-end">
-        <Pagination
-          :total="total"
-          v-model:current="queryParams.pageNo"
-          v-model:page-size="queryParams.pageSize"
-          show-size-changer
-          @change="getList"
-        />
-      </div>
-    </ContentWrap>
+    </Grid>
   </Page>
 </template>

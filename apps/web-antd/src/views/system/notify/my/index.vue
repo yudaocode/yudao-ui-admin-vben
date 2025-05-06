@@ -46,10 +46,7 @@ async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
   // 执行标记已读操作
   await updateNotifyMessageRead([row.id]);
   // 提示成功
-  message.success({
-    content: '标记已读成功',
-    key: 'action_process_msg',
-  });
+  message.success('标记已读成功');
   onRefresh();
 
   // 打开详情
@@ -60,10 +57,7 @@ async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
 async function onMarkRead() {
   const rows = gridApi.grid.getCheckboxRecords();
   if (!rows || rows.length === 0) {
-    message.warning({
-      content: '请选择需要标记的站内信',
-      key: 'action_process_msg',
-    });
+    message.warning('请选择需要标记的站内信');
     return;
   }
 
@@ -76,10 +70,7 @@ async function onMarkRead() {
   // 执行标记已读操作
   await updateNotifyMessageRead(ids);
   // 提示成功
-  message.success({
-    content: '标记已读成功',
-    key: 'action_process_msg',
-  });
+  message.success('标记已读成功');
   await gridApi.grid.setAllCheckboxRow(false);
   onRefresh();
 }
@@ -94,10 +85,7 @@ async function onMarkAllRead() {
   // 执行标记已读操作
   await updateAllNotifyMessageRead();
   // 提示成功
-  message.success({
-    content: '全部标记已读成功',
-    key: 'action_process_msg',
-  });
+  message.success('全部标记已读成功');
   await gridApi.grid.setAllCheckboxRow(false);
   onRefresh();
 }

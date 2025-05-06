@@ -5,10 +5,11 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
+import { openWindow } from '@vben/utils';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -51,10 +52,7 @@ async function onMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
     onRefresh();
   } catch {
     hideLoading();
@@ -72,14 +70,13 @@ async function onTest(row: InfraFileConfigApi.FileConfig) {
     const response = await testFileConfig(row.id as number);
     hideLoading();
     // 确认是否访问该文件
-    Modal.confirm({
+    confirm({
       title: '测试上传成功',
       content: '是否要访问该文件？',
-      okText: '访问',
+      confirmText: '访问',
       cancelText: '取消',
-      onOk: () => {
-        window.open(response, '_blank');
-      },
+    }).then(() => {
+      openWindow(response);
     });
   } catch {
     hideLoading();
@@ -95,10 +92,7 @@ async function onDelete(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await deleteFileConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
     hideLoading();

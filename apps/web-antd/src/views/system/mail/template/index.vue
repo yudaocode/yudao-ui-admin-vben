@@ -72,10 +72,7 @@ async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
   });
   try {
     await deleteMailTemplate(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
     hideLoading();

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SystemDictTypeApi } from '#/api/system/dict/type';
+import type { BpmUserGroupApi } from '#/api/bpm/userGroup';
 
 import { computed, ref } from 'vue';
 
@@ -9,20 +9,20 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createDictType,
-  getDictType,
-  updateDictType,
-} from '#/api/system/dict/type';
+  createUserGroup,
+  getUserGroup,
+  updateUserGroup,
+} from '#/api/bpm/userGroup';
 import { $t } from '#/locales';
 
-import { useTypeFormSchema } from '../data';
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemDictTypeApi.DictType>();
+const formData = ref<BpmUserGroupApi.UserGroupVO>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['字典类型'])
-    : $t('ui.actionTitle.create', ['字典类型']);
+    ? $t('ui.actionTitle.edit', ['用户分组'])
+    : $t('ui.actionTitle.create', ['用户分组']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -31,10 +31,10 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 100,
   },
   layout: 'horizontal',
-  schema: useTypeFormSchema(),
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
@@ -46,13 +46,18 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as SystemDictTypeApi.DictType;
+    const data = (await formApi.getValues()) as BpmUserGroupApi.UserGroupVO;
     try {
-      await (formData.value?.id ? updateDictType(data) : createDictType(data));
+      await (formData.value?.id
+        ? updateUserGroup(data)
+        : createUserGroup(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      message.success({
+        content: $t('ui.actionMessage.operationSuccess'),
+        key: 'action_process_msg',
+      });
     } finally {
       modalApi.unlock();
     }
@@ -63,17 +68,15 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemDictTypeApi.DictType>();
+    const data = modalApi.getData<BpmUserGroupApi.UserGroupVO>();
     if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getDictType(data.id as number);
+      formData.value = await getUserGroup(data.id as number);
       // 设置到 values
-      if (formData.value) {
-        await formApi.setValues(formData.value);
-      }
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }

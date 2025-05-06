@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useVbenModal, VbenButton, VbenButtonGroup } from '@vben/common-ui';
+import { openWindow } from '@vben/utils';
 
 import { Image, Tag } from 'ant-design-vue';
 
@@ -13,10 +14,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
 });
-
-function openWindow(url: string) {
-  window.open(url, '_blank');
-}
 </script>
 <template>
   <Modal class="w-[40%]" :title="$t('ui.widgets.qa')">

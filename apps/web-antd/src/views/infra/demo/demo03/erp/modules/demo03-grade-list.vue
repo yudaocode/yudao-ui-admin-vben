@@ -57,10 +57,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
   });
   try {
     await deleteDemo03Grade(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } catch {
     hideLoading();

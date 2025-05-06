@@ -74,10 +74,7 @@ const submitForm = async () => {
       columns,
     });
     // 关闭并提示
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
     close();
   } catch (error) {
     console.error('保存失败', error);

@@ -7,7 +7,11 @@ import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime } from '@vben/utils';
+import {
+  cloneDeep,
+  formatDateTime,
+  getRangePickerDefaultProps,
+} from '@vben/utils';
 
 import {
   Button,
@@ -26,7 +30,6 @@ import {
 import { ContentWrap } from '#/components/content-wrap';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
-import { getRangePickerDefaultProps } from '#/utils/date';
 
 import Demo03GradeForm from './demo03-grade-form.vue';
 
@@ -62,10 +65,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
   });
   try {
     await deleteDemo03Grade(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     getList();
   } catch {
     hideLoading();

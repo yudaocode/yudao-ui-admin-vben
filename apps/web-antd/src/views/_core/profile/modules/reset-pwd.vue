@@ -78,10 +78,7 @@ async function handleSubmit(values: Recordable<any>) {
       oldPassword: values.oldPassword,
       newPassword: values.newPassword,
     });
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
   } catch (error) {
     console.error(error);
   } finally {

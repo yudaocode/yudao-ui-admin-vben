@@ -46,10 +46,7 @@ async function onDelete(row: SystemNoticeApi.Notice) {
   });
   try {
     await deleteNotice(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     onRefresh();
   } catch {
     hideLoading();
@@ -65,10 +62,7 @@ async function onPush(row: SystemNoticeApi.Notice) {
   });
   try {
     await pushNotice(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
   } catch {
     hideLoading();
   }
