@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue';
-
-import type { CropendResult, Cropper } from './typing';
+import type { CropendResult, CropperModalProps, CropperType } from './typing';
 
 import { ref } from 'vue';
 
@@ -20,18 +18,13 @@ import {
 
 import CropperImage from './cropper.vue';
 
-type apiFunParams = { file: Blob; filename: string; name: string };
-
 defineOptions({ name: 'CropperModal' });
 
-const props = defineProps({
-  circled: { default: true, type: Boolean },
-  uploadApi: {
-    required: true,
-    type: Function as PropType<(params: apiFunParams) => Promise<any>>,
-  },
-  src: { default: '', type: String },
-  size: { default: 0, type: Number },
+const props = withDefaults(defineProps<CropperModalProps>(), {
+  circled: true,
+  size: 0,
+  src: '',
+  uploadApi: () => Promise.resolve(),
 });
 
 const emit = defineEmits(['uploadSuccess', 'uploadError', 'register']);
@@ -39,7 +32,7 @@ const emit = defineEmits(['uploadSuccess', 'uploadError', 'register']);
 let filename = '';
 const src = ref(props.src || '');
 const previewSource = ref('');
-const cropper = ref<Cropper>();
+const cropper = ref<CropperType>();
 let scaleX = 1;
 let scaleY = 1;
 
@@ -83,7 +76,7 @@ function handleCropend({ imgBase64 }: CropendResult) {
   previewSource.value = imgBase64;
 }
 
-function handleReady(cropperInstance: Cropper) {
+function handleReady(cropperInstance: CropperType) {
   cropper.value = cropperInstance;
   // 画布加载完毕 关闭 loading
   modalLoading(false);

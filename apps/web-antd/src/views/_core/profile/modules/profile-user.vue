@@ -50,7 +50,7 @@ async function handelUpload({
           :show-btn="false"
           :upload-api="handelUpload"
           :value="avatar"
-          width="120"
+          :width="120"
           @change="emit('success')"
         />
       </Tooltip>

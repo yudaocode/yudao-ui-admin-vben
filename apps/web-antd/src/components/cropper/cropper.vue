@@ -1,56 +1,32 @@
 <script lang="ts" setup>
-import type { CSSProperties, PropType } from 'vue';
+import type { CSSProperties } from 'vue';
+
+import type { CropperProps } from './typing';
 
 import { computed, onMounted, onUnmounted, ref, unref, useAttrs } from 'vue';
 
 import { useDebounceFn } from '@vueuse/core';
 import Cropper from 'cropperjs';
 
-import 'cropperjs/dist/cropper.css';
+import { defaultOptions } from './typing';
 
-type Options = Cropper.Options;
+import 'cropperjs/dist/cropper.css';
 
 defineOptions({ name: 'CropperImage' });
 
-const props = defineProps({
-  src: { required: true, type: String },
-  alt: { default: '', type: String },
-  circled: { default: false, type: Boolean },
-  realTimePreview: { default: true, type: Boolean },
-  height: { default: '360px', type: [String, Number] },
-  crossorigin: {
-    type: String as PropType<'' | 'anonymous' | 'use-credentials' | undefined>,
-    default: undefined,
-  },
-  imageStyle: { default: () => ({}), type: Object as PropType<CSSProperties> },
-  options: { default: () => ({}), type: Object as PropType<Options> },
+const props = withDefaults(defineProps<CropperProps>(), {
+  src: '',
+  alt: '',
+  circled: false,
+  realTimePreview: true,
+  height: '360px',
+  crossorigin: undefined,
+  imageStyle: () => ({}),
+  options: () => ({}),
 });
 
 const emit = defineEmits(['cropend', 'ready', 'cropendError']);
 const attrs = useAttrs();
-
-const defaultOptions: Options = {
-  aspectRatio: 1,
-  zoomable: true,
-  zoomOnTouch: true,
-  zoomOnWheel: true,
-  cropBoxMovable: true,
-  cropBoxResizable: true,
-  toggleDragModeOnDblclick: true,
-  autoCrop: true,
-  background: true,
-  highlight: true,
-  center: true,
-  responsive: true,
-  restore: true,
-  checkCrossOrigin: true,
-  checkOrientation: true,
-  scalable: true,
-  modal: true,
-  guides: true,
-  movable: true,
-  rotatable: true,
-};
 
 type ElRef<T extends HTMLElement = HTMLDivElement> = null | T;
 const imgElRef = ref<ElRef<HTMLImageElement>>();
@@ -58,7 +34,7 @@ const cropper = ref<Cropper | null>();
 const isReady = ref(false);
 
 const prefixCls = 'cropper-image';
-const debounceRealTimeCroppered = useDebounceFn(realTimeCroppered, 80);
+const debounceRealTimeCropped = useDebounceFn(realTimeCropped, 80);
 
 const getImageStyle = computed((): CSSProperties => {
   return {
@@ -97,29 +73,29 @@ async function init() {
     ...defaultOptions,
     ready: () => {
       isReady.value = true;
-      realTimeCroppered();
+      realTimeCropped();
       emit('ready', cropper.value);
     },
     crop() {
-      debounceRealTimeCroppered();
+      debounceRealTimeCropped();
     },
     zoom() {
-      debounceRealTimeCroppered();
+      debounceRealTimeCropped();
     },
     cropmove() {
-      debounceRealTimeCroppered();
+      debounceRealTimeCropped();
     },
     ...props.options,
   });
 }
 
 // Real-time display preview
-function realTimeCroppered() {
-  props.realTimePreview && croppered();
+function realTimeCropped() {
+  props.realTimePreview && cropped();
 }
 
 // event: return base64 and width and height information after cropping
-function croppered() {
+function cropped() {
   if (!cropper.value) {
     return;
   }
