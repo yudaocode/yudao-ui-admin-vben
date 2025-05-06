@@ -4,8 +4,7 @@ import type { InfraJobApi } from '#/api/infra/job';
 
 import { useAccess } from '@vben/access';
 
-import { InfraJobStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions, InfraJobStatusEnum } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

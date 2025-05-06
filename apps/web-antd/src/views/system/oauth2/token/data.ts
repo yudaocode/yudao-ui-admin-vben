@@ -4,7 +4,7 @@ import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
 import { useAccess } from '@vben/access';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

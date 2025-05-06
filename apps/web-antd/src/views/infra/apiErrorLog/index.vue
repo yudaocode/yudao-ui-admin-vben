@@ -19,7 +19,7 @@ import {
 } from '#/api/infra/api-error-log';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
+import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

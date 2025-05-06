@@ -7,7 +7,7 @@ import { formatDateTime } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

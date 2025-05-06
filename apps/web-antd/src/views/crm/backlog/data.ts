@@ -7,7 +7,7 @@ import type { CrmReceivableApi } from '#/api/crm/receivable';
 
 import { useAccess } from '@vben/access';
 
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

@@ -23,7 +23,7 @@ import {
 } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel } from '#/utils/dict';
+import { DICT_TYPE, getDictLabel } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';

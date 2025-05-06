@@ -10,7 +10,7 @@ import { Descriptions, Divider, Tag } from 'ant-design-vue';
 
 import { getRefund } from '#/api/pay/refund';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 const formData = ref<PayRefundApi.Refund>();
 

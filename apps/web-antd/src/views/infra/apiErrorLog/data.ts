@@ -3,10 +3,13 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { useAccess } from '@vben/access';
-import { getRangePickerDefaultProps } from '@vben/utils';
 
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import {
+  DICT_TYPE,
+  getDictOptions,
+  getRangePickerDefaultProps,
+  InfraApiErrorLogProcessStatusEnum,
+} from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

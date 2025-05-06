@@ -10,7 +10,7 @@ import { Descriptions, Timeline } from 'ant-design-vue';
 
 import { getJob, getJobNextTimes } from '#/api/infra/job';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 const formData = ref<InfraJobApi.Job>(); // 任务详情
 const nextTimes = ref<Date[]>([]); // 下一次执行时间

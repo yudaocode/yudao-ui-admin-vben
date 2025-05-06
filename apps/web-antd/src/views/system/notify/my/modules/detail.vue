@@ -8,7 +8,7 @@ import { formatDateTime } from '@vben/utils';
 
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 // TODO @puhui999：formData 貌似不需要了
 const formData = ref<SystemNotifyMessageApi.NotifyMessage>();

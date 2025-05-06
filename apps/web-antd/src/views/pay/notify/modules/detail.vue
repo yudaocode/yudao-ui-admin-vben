@@ -8,7 +8,7 @@ import { Descriptions, Divider, Table, Tag } from 'ant-design-vue';
 
 import { getNotifyTaskDetail } from '#/api/pay/notify';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 import { detailColumns } from '../data';
 

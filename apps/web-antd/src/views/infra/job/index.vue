@@ -23,7 +23,7 @@ import {
 } from '#/api/infra/job';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { InfraJobStatusEnum } from '#/utils/constants';
+import { InfraJobStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

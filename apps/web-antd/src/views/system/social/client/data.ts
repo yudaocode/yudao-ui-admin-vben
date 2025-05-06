@@ -5,8 +5,12 @@ import type { SystemSocialClientApi } from '#/api/system/social/client';
 import { useAccess } from '@vben/access';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, SystemUserSocialTypeEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getDictOptions,
+  SystemUserSocialTypeEnum,
+} from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

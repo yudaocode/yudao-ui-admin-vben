@@ -16,7 +16,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { SystemMenuTypeEnum } from '#/utils/constants';
+import { SystemMenuTypeEnum } from '#/utils';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';

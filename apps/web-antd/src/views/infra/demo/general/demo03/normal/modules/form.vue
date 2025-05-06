@@ -24,7 +24,7 @@ import {
 } from '#/api/infra/demo/demo03/normal';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Demo03CourseForm from './demo03-course-form.vue';
 import Demo03GradeForm from './demo03-grade-form.vue';
@@ -82,8 +82,8 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = formData.value as Demo03StudentApi.Demo03Student;
     // 拼接子表的数据
-    data.demo03Courses = demo03CourseFormRef.value?.getData();
-    data.demo03Grade = demo03GradeFormRef.value?.getValues();
+    data.demo03courses = demo03CourseFormRef.value?.getData();
+    data.demo03grade = demo03GradeFormRef.value?.getValues();
     try {
       await (formData.value?.id
         ? updateDemo03Student(data)

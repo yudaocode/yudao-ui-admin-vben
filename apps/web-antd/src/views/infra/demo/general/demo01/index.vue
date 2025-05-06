@@ -11,7 +11,6 @@ import {
   cloneDeep,
   downloadFileFromBlobPart,
   formatDateTime,
-  getRangePickerDefaultProps,
 } from '@vben/utils';
 
 import {
@@ -34,7 +33,7 @@ import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 import Demo01ContactForm from './modules/form.vue';
 

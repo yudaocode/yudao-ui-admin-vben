@@ -11,7 +11,6 @@ import {
   cloneDeep,
   downloadFileFromBlobPart,
   formatDateTime,
-  getRangePickerDefaultProps,
   isEmpty,
 } from '@vben/utils';
 
@@ -26,6 +25,7 @@ import {
 import { ContentWrap } from '#/components/content-wrap';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
+import { getRangePickerDefaultProps } from '#/utils';
 
 import Demo02CategoryForm from './modules/form.vue';
 

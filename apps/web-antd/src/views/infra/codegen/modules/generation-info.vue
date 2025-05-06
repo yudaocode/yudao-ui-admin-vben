@@ -7,7 +7,7 @@ import { isEmpty } from '@vben/utils';
 
 import { useVbenForm } from '#/adapter/form';
 import { getCodegenTableList } from '#/api/infra/codegen';
-import { InfraCodegenTemplateTypeEnum } from '#/utils/constants';
+import { InfraCodegenTemplateTypeEnum } from '#/utils';
 
 import {
   useGenerationInfoBaseFormSchema,

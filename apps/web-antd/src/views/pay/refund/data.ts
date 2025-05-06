@@ -5,7 +5,7 @@ import type { PayRefundApi } from '#/api/pay/refund';
 import { useAccess } from '@vben/access';
 
 import { getAppList } from '#/api/pay/app';
-import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

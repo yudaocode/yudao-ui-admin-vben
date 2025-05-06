@@ -24,7 +24,7 @@ import {
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { ImageUpload } from '#/components/upload';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 

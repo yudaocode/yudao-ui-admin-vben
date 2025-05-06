@@ -13,7 +13,7 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
-import { getDictObj, getIntDictOptions, getStrDictOptions } from '#/utils/dict';
+import { getDictObj, getIntDictOptions, getStrDictOptions } from '#/utils';
 
 defineOptions({ name: 'DictSelect' });
 

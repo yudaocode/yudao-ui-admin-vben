@@ -11,7 +11,7 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { updateUserProfile } from '#/api/system/user/profile';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const props = defineProps<{
   profile?: SystemUserProfileApi.UserProfileRespVO;

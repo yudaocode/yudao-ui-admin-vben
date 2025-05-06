@@ -20,7 +20,7 @@ import {
 
 import { updateModelSortBatch } from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 const props = defineProps<{
   categoryInfo: BpmCategoryApi.ModelCategoryInfo;

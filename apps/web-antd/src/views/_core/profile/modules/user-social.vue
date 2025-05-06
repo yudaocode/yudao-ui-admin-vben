@@ -17,8 +17,7 @@ import {
   socialUnbind,
 } from '#/api/system/social/user';
 import { $t } from '#/locales';
-import { SystemUserSocialTypeEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictLabel } from '#/utils/dict';
+import { DICT_TYPE, getDictLabel, SystemUserSocialTypeEnum } from '#/utils';
 
 const emit = defineEmits<{
   (e: 'update:activeName', v: string): void;

@@ -5,8 +5,7 @@ import type { SystemNoticeApi } from '#/api/system/notice';
 import { useAccess } from '@vben/access';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

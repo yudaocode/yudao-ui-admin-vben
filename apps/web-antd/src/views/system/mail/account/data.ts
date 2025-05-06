@@ -5,7 +5,7 @@ import type { SystemMailAccountApi } from '#/api/system/mail/account';
 import { useAccess } from '@vben/access';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

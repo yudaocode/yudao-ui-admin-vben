@@ -14,7 +14,7 @@ import { getDeptList } from '#/api/system/dept';
 import { assignRoleDataScope } from '#/api/system/permission';
 import { getRole } from '#/api/system/role';
 import { $t } from '#/locales';
-import { SystemDataScopeEnum } from '#/utils/constants';
+import { SystemDataScopeEnum } from '#/utils';
 
 import { useAssignDataPermissionFormSchema } from '../data';
 

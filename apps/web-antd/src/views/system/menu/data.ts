@@ -14,8 +14,12 @@ import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
-import { CommonStatusEnum, SystemMenuTypeEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getDictOptions,
+  SystemMenuTypeEnum,
+} from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

@@ -23,7 +23,7 @@ import {
 } from '#/api/infra/demo/demo03/erp';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 
