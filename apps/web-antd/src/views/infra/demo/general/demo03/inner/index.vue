@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableInstance } from 'vxe-table';
 
-import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { h, nextTick, onMounted, reactive, ref } from 'vue';
 
@@ -11,20 +11,22 @@ import { cloneDeep, formatDateTime } from '@vben/utils';
 
 import {
   Button,
+  DatePicker,
   Form,
   Input,
   message,
   Pagination,
   RangePicker,
   Select,
+  Tabs,
 } from 'ant-design-vue';
 import { VxeColumn, VxeTable } from 'vxe-table';
 
 import {
-  deleteDemo01Contact,
-  exportDemo01Contact,
-  getDemo01ContactPage,
-} from '#/api/infra/demo/demo01';
+  deleteDemo03Student,
+  exportDemo03Student,
+  getDemo03StudentPage,
+} from '#/api/infra/demo/demo03/normal';
 import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
@@ -33,16 +35,24 @@ import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { downloadByData } from '#/utils/download';
 
-import Demo01ContactForm from './modules/form.vue';
+import Demo03CourseList from './modules/demo03-course-list.vue';
+import Demo03GradeList from './modules/demo03-grade-list.vue';
+import Demo03StudentForm from './modules/form.vue';
+
+/** 子表的列表 */
+const subTabsName = ref('demo03Course');
 
 const loading = ref(true); // 列表的加载中
-const list = ref<Demo01ContactApi.Demo01Contact[]>([]); // 列表的数据
+const list = ref<Demo03StudentApi.Demo03Student[]>([]); // 列表的数据
+
 const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: undefined,
   sex: undefined,
+  birthday: undefined,
+  description: undefined,
   createTime: undefined,
 });
 const queryFormRef = ref(); // 搜索的表单
@@ -53,10 +63,13 @@ const getList = async () => {
   loading.value = true;
   try {
     const params = cloneDeep(queryParams) as any;
+    if (params.birthday && Array.isArray(params.birthday)) {
+      params.birthday = (params.birthday as string[]).join(',');
+    }
     if (params.createTime && Array.isArray(params.createTime)) {
       params.createTime = (params.createTime as string[]).join(',');
     }
-    const data = await getDemo01ContactPage(params);
+    const data = await getDemo03StudentPage(params);
     list.value = data.list;
     total.value = data.total;
   } finally {
@@ -77,29 +90,29 @@ const resetQuery = () => {
 };
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Demo01ContactForm,
+  connectedComponent: Demo03StudentForm,
   destroyOnClose: true,
 });
 
-/** 创建示例联系人 */
+/** 创建学生 */
 function onCreate() {
   formModalApi.setData({}).open();
 }
 
-/** 编辑示例联系人 */
-function onEdit(row: Demo01ContactApi.Demo01Contact) {
+/** 编辑学生 */
+function onEdit(row: Demo03StudentApi.Demo03Student) {
   formModalApi.setData(row).open();
 }
 
-/** 删除示例联系人 */
-async function onDelete(row: Demo01ContactApi.Demo01Contact) {
+/** 删除学生 */
+async function onDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo03Student(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
       key: 'action_process_msg',
@@ -114,8 +127,8 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 async function onExport() {
   try {
     exportLoading.value = true;
-    const data = await exportDemo01Contact(queryParams);
-    downloadByData(data, '示例联系人.xls');
+    const data = await exportDemo03Student(queryParams);
+    downloadByData(data, '学生.xls');
   } finally {
     exportLoading.value = false;
   }
@@ -125,6 +138,7 @@ async function onExport() {
 const hiddenSearchBar = ref(false);
 const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
 const tableRef = ref<VxeTableInstance>();
+
 /** 初始化 */
 onMounted(async () => {
   await getList();
@@ -173,6 +187,15 @@ onMounted(async () => {
             </Select.Option>
           </Select>
         </Form.Item>
+        <Form.Item label="出生日期" name="birthday">
+          <DatePicker
+            v-model:value="queryParams.birthday"
+            value-format="YYYY-MM-DD"
+            placeholder="选择出生日期"
+            allow-clear
+            class="w-full"
+          />
+        </Form.Item>
         <Form.Item label="创建时间" name="createTime">
           <RangePicker
             v-model:value="queryParams.createTime"
@@ -190,7 +213,7 @@ onMounted(async () => {
     </ContentWrap>
 
     <!-- 列表 -->
-    <ContentWrap title="示例联系人">
+    <ContentWrap title="学生">
       <template #extra>
         <TableToolbar
           ref="tableToolbarRef"
@@ -201,9 +224,9 @@ onMounted(async () => {
             :icon="h(Plus)"
             type="primary"
             @click="onCreate"
-            v-access:code="['infra:demo01-contact:create']"
+            v-access:code="['infra:demo03-student:create']"
           >
-            {{ $t('ui.actionTitle.create', ['示例联系人']) }}
+            {{ $t('ui.actionTitle.create', ['学生']) }}
           </Button>
           <Button
             :icon="h(Download)"
@@ -211,13 +234,27 @@ onMounted(async () => {
             class="ml-2"
             :loading="exportLoading"
             @click="onExport"
-            v-access:code="['infra:demo01-contact:export']"
+            v-access:code="['infra:demo03-student:export']"
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
         </TableToolbar>
       </template>
       <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+        <!-- 子表的列表 -->
+        <VxeColumn type="expand" width="60">
+          <template #content="{ row }">
+            <!-- 子表的表单 -->
+            <Tabs v-model:active-key="subTabsName" class="mx-8">
+              <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+                <Demo03CourseList :student-id="row?.id" />
+              </Tabs.TabPane>
+              <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+                <Demo03GradeList :student-id="row?.id" />
+              </Tabs.TabPane>
+            </Tabs>
+          </template>
+        </VxeColumn>
         <VxeColumn field="id" title="编号" align="center" />
         <VxeColumn field="name" title="名字" align="center" />
         <VxeColumn field="sex" title="性别" align="center">
@@ -225,13 +262,12 @@ onMounted(async () => {
             <DictTag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="row.sex" />
           </template>
         </VxeColumn>
-        <VxeColumn field="birthday" title="出生年" align="center">
+        <VxeColumn field="birthday" title="出生日期" align="center">
           <template #default="{ row }">
             {{ formatDateTime(row.birthday) }}
           </template>
         </VxeColumn>
         <VxeColumn field="description" title="简介" align="center" />
-        <VxeColumn field="avatar" title="头像" align="center" />
         <VxeColumn field="createTime" title="创建时间" align="center">
           <template #default="{ row }">
             {{ formatDateTime(row.createTime) }}
@@ -243,16 +279,17 @@ onMounted(async () => {
               size="small"
               type="link"
               @click="onEdit(row as any)"
-              v-access:code="['infra:demo01-contact:update']"
+              v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
             </Button>
             <Button
               size="small"
               type="link"
+              danger
               class="ml-2"
               @click="onDelete(row as any)"
-              v-access:code="['infra:demo01-contact:delete']"
+              v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}
             </Button>

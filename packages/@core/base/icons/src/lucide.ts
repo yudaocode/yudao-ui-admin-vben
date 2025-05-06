@@ -60,6 +60,7 @@ export {
   Search,
   SearchX,
   Settings,
+  ShieldQuestion,
   Shrink,
   Square,
   SquareCheckBig,

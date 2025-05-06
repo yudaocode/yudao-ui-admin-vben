@@ -1,3 +1,5 @@
+import type { Dayjs } from 'dayjs';
+
 import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
@@ -7,8 +9,8 @@ export namespace Demo01ContactApi {
   export interface Demo01Contact {
     id: number; // 编号
     name?: string; // 名字
-    sex?: number; // 性别
-    birthday?: Date; // 出生年
+    sex?: boolean; // 性别
+    birthday?: Dayjs | string; // 出生年
     description?: string; // 简介
     avatar: string; // 头像
   }

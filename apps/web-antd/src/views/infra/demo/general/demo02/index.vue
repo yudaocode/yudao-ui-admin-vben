@@ -1,48 +1,36 @@
 <script lang="ts" setup>
 import type { VxeTableInstance } from 'vxe-table';
 
-import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
+import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { h, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime } from '@vben/utils';
+import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
 
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Pagination,
-  RangePicker,
-  Select,
-} from 'ant-design-vue';
+import { Button, Form, Input, message, RangePicker } from 'ant-design-vue';
 import { VxeColumn, VxeTable } from 'vxe-table';
 
 import {
-  deleteDemo01Contact,
-  exportDemo01Contact,
-  getDemo01ContactPage,
-} from '#/api/infra/demo/demo01';
+  deleteDemo02Category,
+  exportDemo02Category,
+  getDemo02CategoryList,
+} from '#/api/infra/demo/demo02';
 import { ContentWrap } from '#/components/content-wrap';
-import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils/date';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 import { downloadByData } from '#/utils/download';
 
-import Demo01ContactForm from './modules/form.vue';
+import Demo02CategoryForm from './modules/form.vue';
 
 const loading = ref(true); // 列表的加载中
-const list = ref<Demo01ContactApi.Demo01Contact[]>([]); // 列表的数据
-const total = ref(0); // 列表的总页数
+const list = ref<any[]>([]); // 树列表的数据
+
 const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 10,
   name: undefined,
-  sex: undefined,
+  parentId: undefined,
   createTime: undefined,
 });
 const queryFormRef = ref(); // 搜索的表单
@@ -56,9 +44,7 @@ const getList = async () => {
     if (params.createTime && Array.isArray(params.createTime)) {
       params.createTime = (params.createTime as string[]).join(',');
     }
-    const data = await getDemo01ContactPage(params);
-    list.value = data.list;
-    total.value = data.total;
+    list.value = await getDemo02CategoryList(params);
   } finally {
     loading.value = false;
   }
@@ -66,7 +52,6 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
-  queryParams.pageNo = 1;
   getList();
 };
 
@@ -77,29 +62,34 @@ const resetQuery = () => {
 };
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Demo01ContactForm,
+  connectedComponent: Demo02CategoryForm,
   destroyOnClose: true,
 });
 
-/** 创建示例联系人 */
+/** 创建示例分类 */
 function onCreate() {
   formModalApi.setData({}).open();
 }
 
-/** 编辑示例联系人 */
-function onEdit(row: Demo01ContactApi.Demo01Contact) {
+/** 编辑示例分类 */
+function onEdit(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData(row).open();
 }
 
-/** 删除示例联系人 */
-async function onDelete(row: Demo01ContactApi.Demo01Contact) {
+/** 新增下级示例分类 */
+function onAppend(row: Demo02CategoryApi.Demo02Category) {
+  formModalApi.setData({ parentId: row.id }).open();
+}
+
+/** 删除示例分类 */
+async function onDelete(row: Demo02CategoryApi.Demo02Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo02Category(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
       key: 'action_process_msg',
@@ -114,8 +104,8 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 async function onExport() {
   try {
     exportLoading.value = true;
-    const data = await exportDemo01Contact(queryParams);
-    downloadByData(data, '示例联系人.xls');
+    const data = await exportDemo02Category(queryParams);
+    downloadByData(data, '示例分类.xls');
   } finally {
     exportLoading.value = false;
   }
@@ -125,6 +115,14 @@ async function onExport() {
 const hiddenSearchBar = ref(false);
 const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
 const tableRef = ref<VxeTableInstance>();
+
+/** 切换树形展开/收缩状态 */
+const isExpanded = ref(true);
+function toggleExpand() {
+  isExpanded.value = !isExpanded.value;
+  tableRef.value?.setAllTreeExpand(isExpanded.value);
+}
+
 /** 初始化 */
 onMounted(async () => {
   await getList();
@@ -154,24 +152,14 @@ onMounted(async () => {
             class="w-full"
           />
         </Form.Item>
-        <Form.Item label="性别" name="sex">
-          <Select
-            v-model:value="queryParams.sex"
-            placeholder="请选择性别"
+        <Form.Item label="父级编号" name="parentId">
+          <Input
+            v-model:value="queryParams.parentId"
+            placeholder="请输入父级编号"
             allow-clear
+            @press-enter="handleQuery"
             class="w-full"
-          >
-            <Select.Option
-              v-for="dict in getDictOptions(
-                DICT_TYPE.SYSTEM_USER_SEX,
-                'number',
-              )"
-              :key="dict.value"
-              :value="dict.value"
-            >
-              {{ dict.label }}
-            </Select.Option>
-          </Select>
+          />
         </Form.Item>
         <Form.Item label="创建时间" name="createTime">
           <RangePicker
@@ -190,20 +178,23 @@ onMounted(async () => {
     </ContentWrap>
 
     <!-- 列表 -->
-    <ContentWrap title="示例联系人">
+    <ContentWrap title="示例分类">
       <template #extra>
         <TableToolbar
           ref="tableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
+          <Button @click="toggleExpand" class="mr-2">
+            {{ isExpanded ? '收缩' : '展开' }}
+          </Button>
           <Button
             class="ml-2"
             :icon="h(Plus)"
             type="primary"
             @click="onCreate"
-            v-access:code="['infra:demo01-contact:create']"
+            v-access:code="['infra:demo02-category:create']"
           >
-            {{ $t('ui.actionTitle.create', ['示例联系人']) }}
+            {{ $t('ui.actionTitle.create', ['示例分类']) }}
           </Button>
           <Button
             :icon="h(Download)"
@@ -211,27 +202,28 @@ onMounted(async () => {
             class="ml-2"
             :loading="exportLoading"
             @click="onExport"
-            v-access:code="['infra:demo01-contact:export']"
+            v-access:code="['infra:demo02-category:export']"
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
         </TableToolbar>
       </template>
-      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+      <VxeTable
+        ref="tableRef"
+        :data="list"
+        :tree-config="{
+          parentField: 'parentId',
+          rowField: 'id',
+          transform: true,
+          expandAll: true,
+          reserve: true,
+        }"
+        show-overflow
+        :loading="loading"
+      >
         <VxeColumn field="id" title="编号" align="center" />
-        <VxeColumn field="name" title="名字" align="center" />
-        <VxeColumn field="sex" title="性别" align="center">
-          <template #default="{ row }">
-            <DictTag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="row.sex" />
-          </template>
-        </VxeColumn>
-        <VxeColumn field="birthday" title="出生年" align="center">
-          <template #default="{ row }">
-            {{ formatDateTime(row.birthday) }}
-          </template>
-        </VxeColumn>
-        <VxeColumn field="description" title="简介" align="center" />
-        <VxeColumn field="avatar" title="头像" align="center" />
+        <VxeColumn field="name" title="名字" align="center" tree-node />
+        <VxeColumn field="parentId" title="父级编号" align="center" />
         <VxeColumn field="createTime" title="创建时间" align="center">
           <template #default="{ row }">
             {{ formatDateTime(row.createTime) }}
@@ -242,33 +234,33 @@ onMounted(async () => {
             <Button
               size="small"
               type="link"
+              @click="onAppend(row as any)"
+              v-access:code="['infra:demo02-category:create']"
+            >
+              新增下级
+            </Button>
+            <Button
+              size="small"
+              type="link"
               @click="onEdit(row as any)"
-              v-access:code="['infra:demo01-contact:update']"
+              v-access:code="['infra:demo02-category:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
             </Button>
             <Button
               size="small"
               type="link"
+              danger
               class="ml-2"
+              :disabled="!isEmpty(row?.children)"
               @click="onDelete(row as any)"
-              v-access:code="['infra:demo01-contact:delete']"
+              v-access:code="['infra:demo02-category:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}
             </Button>
           </template>
         </VxeColumn>
       </VxeTable>
-      <!-- 分页 -->
-      <div class="mt-2 flex justify-end">
-        <Pagination
-          :total="total"
-          v-model:current="queryParams.pageNo"
-          v-model:page-size="queryParams.pageSize"
-          show-size-changer
-          @change="getList"
-        />
-      </div>
     </ContentWrap>
   </Page>
 </template>

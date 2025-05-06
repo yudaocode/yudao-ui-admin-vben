@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
 
-import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { computed, ref } from 'vue';
 
@@ -14,40 +14,47 @@ import {
   message,
   Radio,
   RadioGroup,
+  Tabs,
 } from 'ant-design-vue';
 
 import {
-  createDemo01Contact,
-  getDemo01Contact,
-  updateDemo01Contact,
-} from '#/api/infra/demo/demo01';
+  createDemo03Student,
+  getDemo03Student,
+  updateDemo03Student,
+} from '#/api/infra/demo/demo03/normal';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
-import { ImageUpload } from '#/components/upload';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+
+import Demo03CourseForm from './demo03-course-form.vue';
+import Demo03GradeForm from './demo03-grade-form.vue';
 
 const emit = defineEmits(['success']);
 
 const formRef = ref();
-const formData = ref<Partial<Demo01ContactApi.Demo01Contact>>({
+const formData = ref<Partial<Demo03StudentApi.Demo03Student>>({
   id: undefined,
   name: undefined,
   sex: undefined,
   birthday: undefined,
   description: undefined,
-  avatar: undefined,
 });
 const rules: Record<string, Rule[]> = {
   name: [{ required: true, message: '名字不能为空', trigger: 'blur' }],
   sex: [{ required: true, message: '性别不能为空', trigger: 'blur' }],
-  birthday: [{ required: true, message: '出生年不能为空', trigger: 'blur' }],
+  birthday: [{ required: true, message: '出生日期不能为空', trigger: 'blur' }],
   description: [{ required: true, message: '简介不能为空', trigger: 'blur' }],
 };
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['示例联系人'])
-    : $t('ui.actionTitle.create', ['示例联系人']);
+    ? $t('ui.actionTitle.edit', ['学生'])
+    : $t('ui.actionTitle.create', ['学生']);
 });
+
+/** 子表的表单 */
+const subTabsName = ref('demo03Course');
+const demo03CourseFormRef = ref<InstanceType<typeof Demo03CourseForm>>();
+const demo03GradeFormRef = ref<InstanceType<typeof Demo03GradeForm>>();
 
 /** 重置表单 */
 const resetForm = () => {
@@ -57,7 +64,6 @@ const resetForm = () => {
     sex: undefined,
     birthday: undefined,
     description: undefined,
-    avatar: undefined,
   };
   formRef.value?.resetFields();
 };
@@ -65,13 +71,23 @@ const resetForm = () => {
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     await formRef.value?.validate();
+    // 校验子表单
+    try {
+      await demo03GradeFormRef.value?.validate();
+    } catch {
+      subTabsName.value = 'demo03Grade';
+      return;
+    }
     modalApi.lock();
     // 提交表单
-    const data = formData.value as Demo01ContactApi.Demo01Contact;
+    const data = formData.value as Demo03StudentApi.Demo03Student;
+    // 拼接子表的数据
+    data.demo03Courses = demo03CourseFormRef.value?.getData();
+    data.demo03Grade = demo03GradeFormRef.value?.getValues();
     try {
       await (formData.value?.id
-        ? updateDemo01Contact(data)
-        : createDemo01Contact(data));
+        ? updateDemo03Student(data)
+        : createDemo03Student(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -89,14 +105,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    let data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
+    let data = modalApi.getData<Demo03StudentApi.Demo03Student>();
     if (!data) {
       return;
     }
     if (data.id) {
       modalApi.lock();
       try {
-        data = await getDemo01Contact(data.id);
+        data = await getDemo03Student(data.id);
       } finally {
         modalApi.unlock();
       }
@@ -129,19 +145,28 @@ const [Modal, modalApi] = useVbenModal({
           </Radio>
         </RadioGroup>
       </Form.Item>
-      <Form.Item label="出生年" name="birthday">
+      <Form.Item label="出生日期" name="birthday">
         <DatePicker
           v-model:value="formData.birthday"
           value-format="x"
-          placeholder="选择出生年"
+          placeholder="选择出生日期"
         />
       </Form.Item>
       <Form.Item label="简介" name="description">
         <RichTextarea v-model="formData.description" height="500px" />
       </Form.Item>
-      <Form.Item label="头像" name="avatar">
-        <ImageUpload v-model:value="formData.avatar" />
-      </Form.Item>
     </Form>
+    <!-- 子表的表单 -->
+    <Tabs v-model:active-key="subTabsName">
+      <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+        <Demo03CourseForm
+          ref="demo03CourseFormRef"
+          :student-id="formData?.id"
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+        <Demo03GradeForm ref="demo03GradeFormRef" :student-id="formData?.id" />
+      </Tabs.TabPane>
+    </Tabs>
   </Modal>
 </template>
