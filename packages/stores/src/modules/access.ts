@@ -6,11 +6,6 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 
 type AccessToken = null | string;
 
-type VisitTenantId = {
-  id: number;
-  name: string;
-};
-
 interface AccessState {
   /**
    * 权限码
@@ -55,7 +50,7 @@ interface AccessState {
   /**
    * 访问租户编号
    */
-  visitTenantId: VisitTenantId[];
+  visitTenantId: null | number;
 }
 
 /**
@@ -110,7 +105,7 @@ export const useAccessStore = defineStore('core-access', {
     setTenantId(tenantId: null | number) {
       this.tenantId = tenantId;
     },
-    setVisitTenantId(visitTenantId: VisitTenantId[]) {
+    setVisitTenantId(visitTenantId: number) {
       this.visitTenantId = visitTenantId;
     },
     unlockScreen() {
@@ -141,7 +136,7 @@ export const useAccessStore = defineStore('core-access', {
     loginExpired: false,
     refreshToken: null,
     tenantId: null,
-    visitTenantId: [],
+    visitTenantId: null,
   }),
 });
 
