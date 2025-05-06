@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { SelectValue } from 'ant-design-vue/es/select';
 
+import type { SystemTenantApi } from '#/api/system/tenant';
+
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
@@ -9,56 +11,51 @@ import { useAccessStore } from '@vben/stores';
 
 import { message, Select } from 'ant-design-vue';
 
-import { getTenantList } from '#/api/system/tenant';
+import { getSimpleTenantList } from '#/api/system/tenant';
 import { $t } from '#/locales';
-import { resetRoutes } from '#/router';
-import { useAuthStore } from '#/store';
 
-const { closeOtherTabs, refreshTab, closeAllTabs } = useTabs();
+const { closeOtherTabs, refreshTab } = useTabs();
 
 const { hasAccessByCodes } = useAccess();
 const accessStore = useAccessStore();
 
-const authStore = useAuthStore();
-
 const tenantEnable = isTenantEnable();
 
-const visitTenantList = accessStore.visitTenantId;
+const value = ref<number>(accessStore.visitTenantId ?? undefined); // 当前访问的租户 ID
+const tenants = ref<SystemTenantApi.Tenant[]>([]); // 租户列表
 
-const tenant = ref<SelectValue>(accessStore.tenantId ?? 0);
-
-async function handleClick(id: SelectValue) {
-  accessStore.setTenantId(Number(id));
-  await authStore.fetchUserInfo();
-  await resetRoutes();
+async function handleChange(id: SelectValue) {
+  // 设置访问租户 ID
+  accessStore.setVisitTenantId(id as number);
+  // 关闭其他标签页，只保留当前页
   await closeOtherTabs();
-  await closeAllTabs();
+  // 刷新当前页面
   await refreshTab();
-  message.success($t('page.tenant.success'));
+  // 提示切换成功
+  const tenant = tenants.value.find((item) => item.id === id);
+  if (tenant) {
+    message.success(`切换当前租户为: ${tenant.name}`);
+  }
 }
 
 onMounted(async () => {
-  if (tenantEnable) {
-    const resp = await getTenantList();
-    accessStore.setVisitTenantId(
-      resp
-        .map((item) => ({ id: item.id, name: item.name }))
-        .filter((item): item is { id: number; name: string } => !!item.id),
-    );
+  if (!tenantEnable) {
+    return;
   }
+  tenants.value = await getSimpleTenantList();
 });
 </script>
 <template>
   <div v-if="tenantEnable && hasAccessByCodes(['system:tenant:visit'])">
     <Select
-      v-model:value="tenant"
+      v-model:value="value"
       :field-names="{ label: 'name', value: 'id' }"
-      :options="visitTenantList"
+      :options="tenants"
       :placeholder="$t('page.tenant.placeholder')"
       :dropdown-style="{ position: 'fixed', zIndex: 1666 }"
       allow-clear
       class="w-40"
-      @change="handleClick"
+      @change="handleChange"
     />
   </div>
 </template>
