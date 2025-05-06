@@ -94,10 +94,7 @@ async function onDelete(row: SystemUserApi.User) {
   });
   try {
     await deleteUser(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.username]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.username]));
     onRefresh();
   } catch {
     hideLoading();

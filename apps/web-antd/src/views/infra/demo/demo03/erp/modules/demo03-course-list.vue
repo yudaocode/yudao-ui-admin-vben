@@ -57,10 +57,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Course) {
   });
   try {
     await deleteDemo03Course(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } catch {
     hideLoading();

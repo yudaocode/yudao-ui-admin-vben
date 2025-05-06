@@ -50,10 +50,7 @@ async function onDelete(row: SystemMailAccountApi.MailAccount) {
   });
   try {
     await deleteMailAccount(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.mail]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
     onRefresh();
   } finally {
     hideLoading();

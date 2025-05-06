@@ -7,7 +7,12 @@ import { h, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime } from '@vben/utils';
+import {
+  cloneDeep,
+  downloadFileFromBlobPart,
+  formatDateTime,
+  getRangePickerDefaultProps,
+} from '@vben/utils';
 
 import {
   Button,
@@ -30,9 +35,7 @@ import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
-import { getRangePickerDefaultProps } from '#/utils/date';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
-import { downloadByData } from '#/utils/download';
 
 import Demo03StudentForm from './modules/form.vue';
 
@@ -107,10 +110,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   });
   try {
     await deleteDemo03Student(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     await getList();
   } catch {
     hideLoading();
@@ -122,7 +122,7 @@ async function onExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo03Student(queryParams);
-    downloadByData(data, '学生.xls');
+    downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
   } finally {
     exportLoading.value = false;
   }

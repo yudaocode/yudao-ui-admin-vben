@@ -112,10 +112,7 @@ async function onDelete(row: InfraJobApi.Job) {
   });
   try {
     await deleteJob(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
     hideLoading();

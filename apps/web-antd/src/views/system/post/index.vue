@@ -53,10 +53,7 @@ async function onDelete(row: SystemPostApi.Post) {
   });
   try {
     await deletePost(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
     hideLoading();

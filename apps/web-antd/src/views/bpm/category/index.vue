@@ -90,10 +90,7 @@ async function onDelete(row: BpmCategoryApi.CategoryVO) {
   });
   try {
     await deleteCategory(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.code]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.code]));
     onRefresh();
   } catch {
     hideLoading();

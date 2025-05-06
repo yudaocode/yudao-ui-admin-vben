@@ -59,10 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       });
       await modalApi.close();
       emit('success');
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }

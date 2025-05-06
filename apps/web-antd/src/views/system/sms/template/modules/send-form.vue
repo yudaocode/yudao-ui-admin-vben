@@ -54,10 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success({
-        content: '短信发送成功',
-        key: 'action_process_msg',
-      });
+      message.success('短信发送成功');
     } catch (error) {
       console.error('发送短信失败', error);
     } finally {

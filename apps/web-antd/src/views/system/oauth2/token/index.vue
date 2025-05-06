@@ -33,10 +33,7 @@ async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   });
   try {
     await deleteOAuth2Token(row.accessToken);
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
     onRefresh();
   } catch {
     hideLoading();

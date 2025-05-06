@@ -7,7 +7,13 @@ import { h, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
+import {
+  cloneDeep,
+  downloadFileFromBlobPart,
+  formatDateTime,
+  getRangePickerDefaultProps,
+  isEmpty,
+} from '@vben/utils';
 
 import { Button, Form, Input, message, RangePicker } from 'ant-design-vue';
 import { VxeColumn, VxeTable } from 'vxe-table';
@@ -20,8 +26,6 @@ import {
 import { ContentWrap } from '#/components/content-wrap';
 import { TableToolbar } from '#/components/table-toolbar';
 import { $t } from '#/locales';
-import { getRangePickerDefaultProps } from '#/utils/date';
-import { downloadByData } from '#/utils/download';
 
 import Demo02CategoryForm from './modules/form.vue';
 
@@ -90,10 +94,7 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
   });
   try {
     await deleteDemo02Category(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     await getList();
   } catch {
     hideLoading();
@@ -105,7 +106,7 @@ async function onExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo02Category(queryParams);
-    downloadByData(data, '示例分类.xls');
+    downloadFileFromBlobPart({ fileName: '示例分类.xls', source: data });
   } finally {
     exportLoading.value = false;
   }

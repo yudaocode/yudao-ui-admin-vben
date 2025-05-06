@@ -58,10 +58,7 @@ async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
   });
   try {
     await deleteSmsChannel(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.signature]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
     onRefresh();
   } catch {
     hideLoading();

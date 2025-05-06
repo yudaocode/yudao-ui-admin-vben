@@ -52,10 +52,7 @@ async function onMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
     onRefresh();
   } catch {
     hideLoading();
@@ -95,10 +92,7 @@ async function onDelete(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await deleteFileConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
     hideLoading();

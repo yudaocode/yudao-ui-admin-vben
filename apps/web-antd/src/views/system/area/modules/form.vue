@@ -35,10 +35,7 @@ const [Modal, modalApi] = useVbenModal({
       const result = await getAreaByIp(data.ip);
       // 设置结果
       await setFieldValue('result', result);
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }

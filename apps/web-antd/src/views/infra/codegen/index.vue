@@ -80,10 +80,7 @@ async function onDelete(row: InfraCodegenApi.CodegenTable) {
   });
   try {
     await deleteCodegenTable(row.id);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.tableName]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
     onRefresh();
   } finally {
     hideLoading();
@@ -99,10 +96,7 @@ async function onSync(row: InfraCodegenApi.CodegenTable) {
   });
   try {
     await syncCodegenFromDB(row.id);
-    message.success({
-      content: $t('ui.actionMessage.updateSuccess', [row.tableName]),
-      key: 'action_process_msg',
-    });
+    message.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
     onRefresh();
   } finally {
     hideLoading();
@@ -125,10 +119,7 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
     link.download = `codegen-${row.className}.zip`;
     link.click();
     window.URL.revokeObjectURL(url);
-    message.success({
-      content: '代码生成成功',
-      key: 'action_process_msg',
-    });
+    message.success('代码生成成功');
   } finally {
     hideLoading();
   }
