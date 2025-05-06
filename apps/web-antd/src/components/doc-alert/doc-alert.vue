@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { isDocAlertEnable } from '@vben/hooks';
+import { openWindow } from '@vben/utils';
 
 import { Alert, Typography } from 'ant-design-vue';
 
@@ -18,7 +19,7 @@ const props = defineProps<DocAlertProps>();
 
 /** 跳转 URL 链接 */
 const goToUrl = () => {
-  window.open(props.url);
+  openWindow(props.url);
 };
 </script>
 
