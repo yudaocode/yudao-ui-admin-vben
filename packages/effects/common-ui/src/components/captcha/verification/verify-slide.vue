@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VerificationProps } from '../types';
+import type { VerificationProps } from './typing';
 
 /**
  * VerifySlide
@@ -17,8 +17,8 @@ import {
 
 import { $t } from '@vben/locales';
 
-import { aesEncrypt } from './../utils/ase';
-import { resetSize } from './../utils/util';
+import { aesEncrypt } from './utils/ase';
+import { resetSize } from './utils/util';
 
 const props = withDefaults(defineProps<VerificationProps>(), {
   barSize: () => ({

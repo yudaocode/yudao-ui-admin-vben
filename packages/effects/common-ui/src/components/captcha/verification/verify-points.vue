@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentInternalInstance } from 'vue';
 
-import type { VerificationProps } from '../types';
+import type { VerificationProps } from './typing';
 
 import {
   getCurrentInstance,
@@ -14,50 +14,13 @@ import {
 
 import { $t } from '@vben/locales';
 
-import { aesEncrypt } from '../utils/ase';
-import { resetSize } from '../utils/util';
+import { aesEncrypt } from './utils/ase';
+import { resetSize } from './utils/util';
 
 /**
  * VerifyPoints
  * @description 点选
  */
-
-// const props = defineProps({
-//   barSize: {
-//     default() {
-//       return {
-//         height: '40px',
-//         width: '310px',
-//       };
-//     },
-//     type: Object,
-//   },
-//   captchaType: {
-//     default() {
-//       return 'VerifyPoints';
-//     },
-//     type: String,
-//   },
-//   imgSize: {
-//     default() {
-//       return {
-//         height: '155px',
-//         width: '310px',
-//       };
-//     },
-//     type: Object,
-//   },
-//   // 弹出式pop，固定fixed
-//   mode: {
-//     default: 'fixed',
-//     type: String,
-//   },
-//   // 间隔
-//   vSpace: {
-//     default: 5,
-//     type: Number,
-//   },
-// });
 
 defineOptions({
   name: 'VerifyPoints',
@@ -104,8 +67,8 @@ const bindingClick = ref(true);
 
 function init() {
   // 加载页面
-  fontPos.splice(0, fontPos.length);
-  checkPosArr.splice(0, checkPosArr.length);
+  fontPos.splice(0);
+  checkPosArr.splice(0);
   num.value = 1;
   getPictrue();
   nextTick(() => {
@@ -150,12 +113,12 @@ const pointTransfrom = function (pointArr: any, imgSize: any) {
 };
 
 const refresh = async function () {
-  tempPoints.splice(0, tempPoints.length);
+  tempPoints.splice(0);
   barAreaColor.value = '#000';
   barAreaBorderColor.value = '#ddd';
   bindingClick.value = true;
-  fontPos.splice(0, fontPos.length);
-  checkPosArr.splice(0, checkPosArr.length);
+  fontPos.splice(0);
+  checkPosArr.splice(0);
   num.value = 1;
   await getPictrue();
   showRefresh.value = true;
@@ -191,7 +154,7 @@ function canvasClick(e: any) {
         if (res.repCode === '0000') {
           barAreaColor.value = '#4cae4c';
           barAreaBorderColor.value = '#5cb85c';
-          text.value = $t('ui.captcha.success');
+          text.value = $t('ui.captcha.sliderSuccessText');
           bindingClick.value = false;
           if (mode.value === 'pop') {
             setTimeout(() => {
@@ -228,7 +191,7 @@ async function getPictrue() {
     backToken.value = res.data.repData.token;
     secretKey.value = res.data.repData.secretKey;
     poinTextList.value = res.data.repData.wordList;
-    text.value = `${$t('ui.captcha.point')}【${poinTextList.value.join(',')}】`;
+    text.value = `${$t('ui.captcha.clickInOrder')}【${poinTextList.value.join(',')}】`;
   } else {
     text.value = res?.data?.repMsg;
   }

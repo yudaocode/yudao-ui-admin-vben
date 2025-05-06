@@ -3,11 +3,11 @@
  * Verify 验证码组件
  * @description 分发验证码使用
  */
-import type { VerificationProps } from './types';
+import type { VerificationProps } from './typing';
 
 import { defineAsyncComponent, markRaw, ref, toRefs, watchEffect } from 'vue';
 
-import './style/verify.css';
+import './verify.css';
 
 defineOptions({
   name: 'Verification',
@@ -36,12 +36,8 @@ const props = withDefaults(defineProps<VerificationProps>(), {
 
 const emit = defineEmits(['onSuccess', 'onError', 'onClose', 'onReady']);
 
-const VerifyPoints = defineAsyncComponent(
-  () => import('./Verify/VerifyPoints.vue'),
-);
-const VerifySlide = defineAsyncComponent(
-  () => import('./Verify/VerifySlide.vue'),
-);
+const VerifyPoints = defineAsyncComponent(() => import('./verify-points.vue'));
+const VerifySlide = defineAsyncComponent(() => import('./verify-slide.vue'));
 
 const { captchaType, mode, checkCaptchaApi, getCaptchaApi } = toRefs(props);
 const verifyType = ref();
