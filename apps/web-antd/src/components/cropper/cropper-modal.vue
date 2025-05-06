@@ -6,7 +6,7 @@ import type { CropendResult, Cropper } from './typing';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { $t as t } from '@vben/locales';
+import { $t } from '@vben/locales';
 import { dataURLtoBlob, isFunction } from '@vben/utils';
 
 import {
@@ -65,7 +65,7 @@ function modalLoading(loading: boolean) {
 // Block upload
 function handleBeforeUpload(file: File) {
   if (props.size > 0 && file.size > 1024 * 1024 * props.size) {
-    emit('uploadError', { msg: t('ui.cropper.imageTooBig') });
+    emit('uploadError', { msg: $t('ui.cropper.imageTooBig') });
     return false;
   }
   const reader = new FileReader();
@@ -122,9 +122,9 @@ async function handleOk() {
 <template>
   <Modal
     v-bind="$attrs"
-    :confirm-text="t('ui.cropper.okText')"
+    :confirm-text="$t('ui.cropper.okText')"
     :fullscreen-button="false"
-    :title="t('ui.cropper.modalTitle')"
+    :title="$t('ui.cropper.modalTitle')"
     class="w-[800px]"
   >
     <div :class="prefixCls">
@@ -146,7 +146,7 @@ async function handleOk() {
             :file-list="[]"
             accept="image/*"
           >
-            <Tooltip :title="t('ui.cropper.selectImage')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.selectImage')" placement="bottom">
               <Button size="small" type="primary">
                 <template #icon>
                   <div class="flex items-center justify-center">
@@ -157,7 +157,7 @@ async function handleOk() {
             </Tooltip>
           </Upload>
           <Space>
-            <Tooltip :title="t('ui.cropper.btn_reset')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.btn_reset')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -172,7 +172,7 @@ async function handleOk() {
               </Button>
             </Tooltip>
             <Tooltip
-              :title="t('ui.cropper.btn_rotate_left')"
+              :title="$t('ui.cropper.btn_rotate_left')"
               placement="bottom"
             >
               <Button
@@ -191,7 +191,7 @@ async function handleOk() {
               </Button>
             </Tooltip>
             <Tooltip
-              :title="t('ui.cropper.btn_rotate_right')"
+              :title="$t('ui.cropper.btn_rotate_right')"
               placement="bottom"
             >
               <Button
@@ -210,7 +210,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="t('ui.cropper.btn_scale_x')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.btn_scale_x')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -224,7 +224,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="t('ui.cropper.btn_scale_y')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.btn_scale_y')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -238,7 +238,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="t('ui.cropper.btn_zoom_in')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.btn_zoom_in')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -252,7 +252,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="t('ui.cropper.btn_zoom_out')" placement="bottom">
+            <Tooltip :title="$t('ui.cropper.btn_zoom_out')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -273,7 +273,7 @@ async function handleOk() {
         <div :class="`${prefixCls}-preview`">
           <img
             v-if="previewSource"
-            :alt="t('ui.cropper.preview')"
+            :alt="$t('ui.cropper.preview')"
             :src="previewSource"
           />
         </div>

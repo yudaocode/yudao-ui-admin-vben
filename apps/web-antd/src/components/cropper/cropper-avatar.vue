@@ -6,7 +6,7 @@ import type { CSSProperties, PropType } from 'vue';
 import { computed, ref, unref, watch, watchEffect } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { $t as t } from '@vben/locales';
+import { $t } from '@vben/locales';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -73,7 +73,7 @@ watch(
 function handleUploadSuccess({ data, source }: any) {
   sourceValue.value = source;
   emit('change', { data, source });
-  message.success(t('ui.cropper.uploadSuccess'));
+  message.success($t('ui.cropper.uploadSuccess'));
 }
 
 const closeModal = () => modalApi.close();
@@ -111,7 +111,7 @@ defineExpose({
       @click="openModal"
       v-bind="btnProps"
     >
-      {{ btnText ? btnText : t('ui.cropper.selectImage') }}
+      {{ btnText ? btnText : $t('ui.cropper.selectImage') }}
     </Button>
 
     <CropperModal
