@@ -34,6 +34,7 @@ import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 import Help from './components/help.vue';
+import TenantDropdown from './components/tenant-dropdown.vue';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -201,6 +202,9 @@ watch(
         @open="handleNotificationOpen"
         @read="handleNotificationRead"
       />
+    </template>
+    <template #header-right-1>
+      <TenantDropdown class="w-30 mr-2" />
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

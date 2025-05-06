@@ -39,6 +39,13 @@ export function getTenant(id: number) {
   );
 }
 
+/** 获取租户精简信息列表 */
+export function getTenantList() {
+  return requestClient.get<SystemTenantApi.Tenant[]>(
+    '/system/tenant/simple-list',
+  );
+}
+
 /** 新增租户 */
 export function createTenant(data: SystemTenantApi.Tenant) {
   return requestClient.post('/system/tenant/create', data);

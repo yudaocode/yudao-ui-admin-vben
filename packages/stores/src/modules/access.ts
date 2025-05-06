@@ -6,6 +6,18 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 
 type AccessToken = null | string;
 
+type VisitTenantId = {
+  accountCount: number;
+  contactMobile: string;
+  contactName: string;
+  expireTime: Date;
+  id?: number;
+  name: string;
+  packageId: number;
+  status: number;
+  website: string;
+};
+
 interface AccessState {
   /**
    * 权限码
@@ -47,6 +59,10 @@ interface AccessState {
    * 登录租户编号
    */
   tenantId: null | number;
+  /**
+   * 访问租户编号
+   */
+  visitTenantId: VisitTenantId[];
 }
 
 /**
@@ -101,6 +117,9 @@ export const useAccessStore = defineStore('core-access', {
     setTenantId(tenantId: null | number) {
       this.tenantId = tenantId;
     },
+    setVisitTenantId(visitTenantId: VisitTenantId[]) {
+      this.visitTenantId = visitTenantId;
+    },
     unlockScreen() {
       this.isLockScreen = false;
       this.lockScreenPassword = undefined;
@@ -113,6 +132,7 @@ export const useAccessStore = defineStore('core-access', {
       'refreshToken',
       'accessCodes',
       'tenantId',
+      'visitTenantId',
       'isLockScreen',
       'lockScreenPassword',
     ],
@@ -128,6 +148,7 @@ export const useAccessStore = defineStore('core-access', {
     loginExpired: false,
     refreshToken: null,
     tenantId: null,
+    visitTenantId: [],
   }),
 });
 
