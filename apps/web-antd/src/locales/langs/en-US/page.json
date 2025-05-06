@@ -24,5 +24,9 @@
     "confirm": "Confirm",
     "reset": "Reset",
     "search": "Search"
+  },
+  "tenant": {
+    "placeholder": "Please select tenant",
+    "success": "Switch tenant success"
   }
 }

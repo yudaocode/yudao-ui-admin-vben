@@ -7,15 +7,8 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 type AccessToken = null | string;
 
 type VisitTenantId = {
-  accountCount: number;
-  contactMobile: string;
-  contactName: string;
-  expireTime: Date;
-  id?: number;
+  id: number;
   name: string;
-  packageId: number;
-  status: number;
-  website: string;
 };
 
 interface AccessState {
