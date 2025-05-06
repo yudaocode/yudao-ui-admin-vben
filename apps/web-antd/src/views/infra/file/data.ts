@@ -97,7 +97,7 @@ export function useGridColumns<T = InfraFileApi.File>(
       minWidth: 120,
     },
     {
-      field: 'url',
+      field: 'file-content',
       title: '文件内容',
       minWidth: 120,
       slots: {
