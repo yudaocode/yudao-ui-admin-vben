@@ -152,10 +152,10 @@ const handleCategorySortSubmit = async () => {
   <Page auto-content-height>
     <Card
       :body-style="{ padding: '10px' }"
-      class="mb-4"
+      class="mb-4 h-[89vh]"
       v-spinning="modelListSpinning"
     >
-      <div class="flex items-center justify-between pl-5">
+      <div class="flex h-full items-center justify-between pl-5">
         <span class="-mb-4 text-lg font-extrabold">流程模型</span>
         <!-- 搜索工作栏 -->
         <Form
