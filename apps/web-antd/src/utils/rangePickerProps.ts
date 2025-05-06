@@ -2,33 +2,43 @@ import type { Dayjs } from 'dayjs';
 
 import dayjs from 'dayjs';
 
+import { $t } from '#/locales';
+
 /** 时间段选择器拓展  */
 export function getRangePickerDefaultProps() {
   return {
     format: 'YYYY-MM-DD HH:mm:ss',
-    placeholder: ['开始时间', '结束时间'],
+    placeholder: [
+      $t('utils.rangePicker.beginTime'),
+      $t('utils.rangePicker.endTime'),
+    ],
     ranges: {
-      今天: () =>
+      [$t('utils.rangePicker.today')]: () =>
         [dayjs().startOf('day'), dayjs().endOf('day')] as [Dayjs, Dayjs],
-      '最近 7 天': () =>
+      [$t('utils.rangePicker.last7Days')]: () =>
         [dayjs().subtract(7, 'day').startOf('day'), dayjs().endOf('day')] as [
           Dayjs,
           Dayjs,
         ],
-      '最近 30 天': () =>
+      [$t('utils.rangePicker.last30Days')]: () =>
         [dayjs().subtract(30, 'day').startOf('day'), dayjs().endOf('day')] as [
           Dayjs,
           Dayjs,
         ],
-      昨天: () =>
+      [$t('utils.rangePicker.yesterday')]: () =>
         [
           dayjs().subtract(1, 'day').startOf('day'),
           dayjs().subtract(1, 'day').endOf('day'),
         ] as [Dayjs, Dayjs],
-      本周: () =>
+      [$t('utils.rangePicker.thisWeek')]: () =>
         [dayjs().startOf('week'), dayjs().endOf('day')] as [Dayjs, Dayjs],
-      本月: () =>
+      [$t('utils.rangePicker.thisMonth')]: () =>
         [dayjs().startOf('month'), dayjs().endOf('day')] as [Dayjs, Dayjs],
+      [$t('utils.rangePicker.lastWeek')]: () =>
+        [dayjs().subtract(1, 'week').startOf('day'), dayjs().endOf('day')] as [
+          Dayjs,
+          Dayjs,
+        ],
     },
     showTime: {
       defaultValue: [

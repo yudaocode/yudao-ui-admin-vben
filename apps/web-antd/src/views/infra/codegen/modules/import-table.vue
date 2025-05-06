@@ -5,12 +5,12 @@ import type { InfraCodegenApi } from '#/api/infra/codegen';
 import { reactive } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { $t } from '@vben/locales';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createCodegenList, getSchemaTableList } from '#/api/infra/codegen';
+import { $t } from '#/locales';
 import {
   useImportTableColumns,
   useImportTableFormSchema,
