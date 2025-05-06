@@ -8,11 +8,11 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Upload } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -114,35 +114,29 @@ function onAssignRole(row: SystemUserApi.User) {
   assignRoleModalApi.setData(row).open();
 }
 
-// TODO @芋艿：后续怎么简化一下 confirm 的实现。
 /** 更新用户状态 */
 async function onStatusChange(
   newStatus: number,
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
   return new Promise((resolve, reject) => {
-    Modal.confirm({
-      title: '切换状态',
+    confirm({
       content: `你要将${row.username}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-      onCancel() {
-        reject(new Error('已取消'));
-      },
-      onOk() {
+    })
+      .then(async () => {
         // 更新用户状态
-        updateUserStatus(row.id as number, newStatus)
-          .then(() => {
-            // 提示并返回成功
-            message.success({
-              content: $t('ui.actionMessage.operationSuccess'),
-              key: 'action_process_msg',
-            });
-            resolve(true);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      },
-    });
+        const res = await updateUserStatus(row.id as number, newStatus);
+        if (res) {
+          // 提示并返回成功
+          message.success($t('ui.actionMessage.operationSuccess'));
+          resolve(true);
+        } else {
+          reject(new Error('更新失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
   });
 }
 

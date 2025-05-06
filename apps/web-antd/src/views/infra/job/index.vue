@@ -7,11 +7,11 @@ import type { InfraJobApi } from '#/api/infra/job';
 
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { Download, History, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -74,32 +74,24 @@ async function onUpdateStatus(row: InfraJobApi.Job) {
       ? InfraJobStatusEnum.NORMAL
       : InfraJobStatusEnum.STOP;
   const statusText = status === InfraJobStatusEnum.NORMAL ? '启用' : '停用';
-  Modal.confirm({
-    title: '确认操作',
+
+  confirm({
     content: `确定${statusText} ${row.name} 吗？`,
-    onOk: async () => {
-      await updateJobStatus(row.id as number, status);
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
-      onRefresh();
-    },
+  }).then(async () => {
+    await updateJobStatus(row.id as number, status);
+    // 提示成功
+    message.success($t('ui.actionMessage.operationSuccess'));
+    onRefresh();
   });
 }
 
 /** 执行一次任务 */
 async function onTrigger(row: InfraJobApi.Job) {
-  Modal.confirm({
-    title: '确认操作',
+  confirm({
     content: `确定执行一次 ${row.name} 吗？`,
-    onOk: async () => {
-      await runJob(row.id as number);
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
-    },
+  }).then(async () => {
+    await runJob(row.id as number);
+    message.success($t('ui.actionMessage.operationSuccess'));
   });
 }
 

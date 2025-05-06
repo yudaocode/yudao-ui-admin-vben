@@ -5,7 +5,9 @@ import type { SystemSocialUserApi } from '#/api/system/social/user';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { Button, Card, Image, message, Modal } from 'ant-design-vue';
+import { confirm } from '@vben/common-ui';
+
+import { Button, Card, Image, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { socialAuthRedirect } from '#/api/core/auth';
@@ -102,19 +104,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 解绑账号 */
 function onUnbind(row: SystemSocialUserApi.SocialUser) {
-  Modal.confirm({
-    type: 'warning',
-    title: '提示',
+  confirm({
     content: `确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`,
-    async onOk() {
-      await socialUnbind({ type: row.type, openid: row.openid });
-      // 提示成功
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_process_msg',
-      });
-      await gridApi.reload();
-    },
+  }).then(async () => {
+    await socialUnbind({ type: row.type, openid: row.openid });
+    // 提示成功
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await gridApi.reload();
   });
 }
 
