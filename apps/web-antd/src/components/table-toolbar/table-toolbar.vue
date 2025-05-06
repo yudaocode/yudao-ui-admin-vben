@@ -1,3 +1,4 @@
+<!-- add by puhui999：vxe table 工具栏二次封装，提供给 vxe 原生列表使用 -->
 <script setup lang="ts">
 import type { VxeToolbarInstance } from 'vxe-table';
 
@@ -36,6 +37,7 @@ defineExpose({
   <VxeToolbar ref="toolbarRef" custom>
     <template #toolPrefix>
       <slot></slot>
+      <!-- TODO @puhui999：貌似 icon 没和 vxe 对上。可以考虑用 /Users/yunai/Java/yudao-ui-admin-vben-v5/packages/icons/src/iconify  -->
       <Button class="ml-2 font-[8px]" shape="circle" @click="onHiddenSearchBar">
         <Search :size="15" />
       </Button>

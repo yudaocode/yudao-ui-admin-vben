@@ -154,6 +154,7 @@ onMounted(async () => {
             class="w-full"
           />
         </Form.Item>
+        <!-- TODO @puhui999：貌似性别的宽度不对；并且选择后，会变哈； -->
         <Form.Item label="性别" name="sex">
           <Select
             v-model:value="queryParams.sex"
@@ -161,6 +162,7 @@ onMounted(async () => {
             allow-clear
             class="w-full"
           >
+            <!-- TODO @puhui999：要不咱还是把 getIntDictOptions 还是搞出来？总归方便点~ -->
             <Select.Option
               v-for="dict in getDictOptions(
                 DICT_TYPE.SYSTEM_USER_SEX,
@@ -191,6 +193,7 @@ onMounted(async () => {
 
     <!-- 列表 -->
     <ContentWrap title="示例联系人">
+      <!-- TODO @puhui999：暗黑模式下，会有个黑底 -->
       <template #extra>
         <TableToolbar
           ref="tableToolbarRef"
