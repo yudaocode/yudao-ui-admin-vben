@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { BpmCategoryApi } from '#/api/bpm/category';
-import type { BpmModelApi } from '#/api/bpm/model';
+import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 
 import { computed, ref, watchEffect } from 'vue';
 
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
@@ -12,18 +12,25 @@ import {
   Button,
   Card,
   Collapse,
+  Dropdown,
+  Menu,
   message,
   Table,
   Tag,
   Tooltip,
 } from 'ant-design-vue';
 
+import { deleteCategory } from '#/api/bpm/category';
 import { updateModelSortBatch } from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
+import { $t } from '#/locales';
 import { DICT_TYPE } from '#/utils';
 
+// 导入重命名表单
+import CategoryRenameForm from '../../category/modules/rename-form.vue';
+
 const props = defineProps<{
-  categoryInfo: BpmCategoryApi.ModelCategoryInfo;
+  categoryInfo: ModelCategoryInfo;
   isCategorySorting: boolean;
 }>();
 
@@ -131,6 +138,36 @@ const handleModelSortCancel = () => {
   }
 };
 
+/** 处理下拉菜单命令 */
+const handleCommand = (command: string) => {
+  if (command === 'renameCategory') {
+    // 打开重命名分类对话框
+    categoryRenameModalApi.setData(props.categoryInfo).open();
+  } else if (command === 'deleteCategory') {
+    handleDeleteCategory();
+  }
+};
+
+/** 删除流程分类 */
+const handleDeleteCategory = async () => {
+  if (props.categoryInfo.modelList.length > 0) {
+    message.warning('该分类下仍有流程定义,不允许删除');
+    return;
+  }
+
+  confirm({
+    content: `确定要删除[${props.categoryInfo.name}]吗？`,
+  }).then(async () => {
+    // 发起删除
+    await deleteCategory(props.categoryInfo.id);
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [props.categoryInfo.name]),
+    );
+    // 刷新列表
+    emit('success');
+  });
+};
+
 /** 处理表单详情点击 */
 const handleFormDetail = (row: any) => {
   // TODO 待实现
@@ -169,6 +206,17 @@ const customRow = (_record: any) => {
     class: isModelSorting.value ? 'cursor-move' : '',
   };
 };
+
+// 重命名分类对话框
+const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
+  connectedComponent: CategoryRenameForm,
+  destroyOnClose: true,
+});
+
+// 处理重命名成功
+const handleRenameSuccess = () => {
+  emit('success');
+};
 </script>
 
 <template>
@@ -205,20 +253,39 @@ const customRow = (_record: any) => {
 
         <div
           class="ml-auto flex items-center"
-          :class="isModelSorting ? 'mr-4' : 'mr-12'"
+          :class="isModelSorting ? 'mr-4' : 'mr-8'"
         >
           <template v-if="!isModelSorting">
             <Button
               v-if="categoryInfo.modelList.length > 0"
               type="link"
-              class="mr-5 flex items-center text-[14px]"
+              size="small"
+              class="flex items-center text-[14px]"
               @click.stop="handleModelSort"
             >
               <template #icon>
-                <span class="icon-[fa--sort-amount-desc] mr-1"></span>
+                <span class="icon-[fa--sort-amount-desc]"></span>
               </template>
               排序
             </Button>
+            <Dropdown placement="bottom" arrow>
+              <Button
+                type="link"
+                size="small"
+                class="flex items-center text-[14px]"
+              >
+                <template #icon>
+                  <span class="icon-[ant-design--setting-outlined]"></span>
+                </template>
+                分类
+              </Button>
+              <template #overlay>
+                <Menu @click="(e) => handleCommand(e.key as string)">
+                  <Menu.Item key="renameCategory"> 重命名 </Menu.Item>
+                  <Menu.Item key="deleteCategory"> 删除分类 </Menu.Item>
+                </Menu>
+              </template>
+            </Dropdown>
           </template>
 
           <template v-else>
@@ -370,6 +437,9 @@ const customRow = (_record: any) => {
       </Collapse.Panel>
     </Collapse>
   </Card>
+
+  <!-- 重命名分类弹窗 -->
+  <CategoryRenameModal @success="handleRenameSuccess" />
 </template>
 
 <style lang="scss" scoped>

@@ -1,7 +1,5 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { BpmModelApi } from '#/api/bpm/model';
-
 import { requestClient } from '#/api/request';
 
 export namespace BpmCategoryApi {
@@ -11,15 +9,8 @@ export namespace BpmCategoryApi {
     name: string;
     code: string;
     status: number;
+    description?: string;
     sort: number; // 分类排序
-  }
-
-  /** 模型分类信息 */
-  // TODO @jason：这个应该非 api 的，可以考虑抽到页面里哈。
-  export interface ModelCategoryInfo {
-    id: number;
-    name: string;
-    modelList: BpmModelApi.ModelVO[];
   }
 }
 
