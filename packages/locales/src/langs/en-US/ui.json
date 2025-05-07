@@ -1,131 +1,40 @@
 {
-  "formRules": {
-    "required": "Please enter {0}",
-    "selectRequired": "Please select {0}",
-    "minLength": "{0} must be at least {1} characters",
-    "maxLength": "{0} can be at most {1} characters",
-    "length": "{0} must be {1} characters long",
-    "alreadyExists": "{0} `{1}` already exists",
-    "startWith": "{0} must start with `{1}`",
-    "invalidURL": "Please input a valid URL",
-    "mobile": "Please input a valid {0}"
+  "actionMessage": {
+    "deleteConfirm": "Are you sure to delete {0}?",
+    "deleteSuccess": "{0} deleted successfully",
+    "deleting": "Deleting {0} ...",
+    "downloadTemplateFail": "Download template failed",
+    "importFail": "Import failed",
+    "importSuccess": "Import succeeded",
+    "operationFailed": "Operation failed",
+    "operationSuccess": "Operation succeeded",
+    "updating": "Updating {0}..."
   },
   "actionTitle": {
-    "edit": "Modify {0}",
+    "cancel": "Cancel {0}",
     "create": "Create {0}",
     "delete": "Delete {0}",
     "detail": "Detail {0}",
-    "view": "View {0}",
+    "edit": "Modify {0}",
+    "export": "Export",
     "import": "Import",
-    "export": "Export"
-  },
-  "actionMessage": {
-    "deleteConfirm": "Are you sure to delete {0}?",
-    "deleting": "Deleting {0} ...",
-    "deleteSuccess": "{0} deleted successfully",
-    "operationSuccess": "Operation succeeded",
-    "operationFailed": "Operation failed",
-    "importSuccess": "Import succeeded",
-    "importFail": "Import failed",
-    "downloadTemplateFail": "Download template failed",
-    "updating": "Updating {0}..."
-  },
-  "placeholder": {
-    "input": "Please enter",
-    "select": "Please select"
+    "view": "View {0}"
   },
   "captcha": {
-    "title": "Please complete the security verification",
-    "sliderSuccessText": "Passed",
-    "sliderDefaultText": "Slider and drag",
     "alt": "Supports img tag src attribute value",
+    "clickInOrder": "Please click in order",
+    "confirm": "Confirm",
+    "confirmAriaLabel": "Confirm selection",
+    "pointAriaLabel": "Click point",
+    "refreshAriaLabel": "Refresh captcha",
+    "sliderDefaultText": "Slider and drag",
     "sliderRotateDefaultTip": "Click picture to refresh",
     "sliderRotateFailTip": "Validation failed",
     "sliderRotateSuccessTip": "Validation successful, time {0} seconds",
-    "refreshAriaLabel": "Refresh captcha",
-    "confirmAriaLabel": "Confirm selection",
-    "confirm": "Confirm",
-    "pointAriaLabel": "Click point",
-    "clickInOrder": "Please click in order"
-  },
-  "iconPicker": {
-    "placeholder": "Select an icon",
-    "search": "Search icon..."
-  },
-  "jsonViewer": {
-    "copy": "Copy",
-    "copied": "Copied"
-  },
-  "fallback": {
-    "pageNotFound": "Oops! Page Not Found",
-    "pageNotFoundDesc": "Sorry, we couldn't find the page you were looking for.",
-    "forbidden": "Oops! Access Denied",
-    "forbiddenDesc": "Sorry, but you don't have permission to access this page.",
-    "internalError": "Oops! Something Went Wrong",
-    "internalErrorDesc": "Sorry, but the server encountered an error.",
-    "offline": "Offline Page",
-    "offlineError": "Oops! Network Error",
-    "offlineErrorDesc": "Sorry, can't connect to the internet. Check your connection.",
-    "comingSoon": "Coming Soon",
-    "http": {
-      "requestTimeout": "The request timed out. Please try again later.",
-      "networkError": "A network error occurred. Please check your internet connection and try again.",
-      "badRequest": "Bad Request. Please check your input and try again.",
-      "unauthorized": "Unauthorized. Please log in to continue.",
-      "forbidden": "Forbidden. You do not have permission to access this resource.",
-      "notFound": "Not Found. The requested resource could not be found.",
-      "internalServerError": "Internal Server Error. Something went wrong on our end. Please try again later."
-    }
-  },
-  "widgets": {
-    "document": "Document",
-    "profile": "Profile",
-    "qa": "Q&A",
-    "setting": "Settings",
-    "logoutTip": "Do you want to logout?",
-    "viewAll": "View All Messages",
-    "notifications": "Notifications",
-    "markAllAsRead": "Make All as Read",
-    "clearNotifications": "Clear",
-    "checkUpdatesTitle": "New Version Available",
-    "checkUpdatesDescription": "Click to refresh and get the latest version",
-    "search": {
-      "title": "Search",
-      "searchNavigate": "Search Navigation",
-      "select": "Select",
-      "navigate": "Navigate",
-      "close": "Close",
-      "noResults": "No Search Results Found",
-      "noRecent": "No Search History",
-      "recent": "Search History"
-    },
-    "lockScreen": {
-      "title": "Lock Screen",
-      "screenButton": "Locking",
-      "password": "Password",
-      "placeholder": "Please enter password",
-      "unlock": "Click to unlock",
-      "errorPasswordTip": "Password error, please re-enter",
-      "backToLogin": "Back to login",
-      "entry": "Enter the system"
-    }
-  },
-  "upload": {
-    "upload": "Upload",
-    "imgUpload": "ImageUpload",
-    "accept": "Support {0} format",
-    "acceptUpload": "Only upload files in {0} format",
-    "maxSize": "A single file does not exceed {0}MB",
-    "maxSizeMultiple": "Only upload files up to {0}MB!",
-    "maxNumber": "Only upload up to {0} files",
-    "uploadSuccess": "Upload successfully"
+    "sliderSuccessText": "Passed",
+    "title": "Please complete the security verification"
   },
   "cropper": {
-    "selectImage": "Select Image",
-    "uploadSuccess": "Uploaded success!",
-    "imageTooBig": "Image too big",
-    "modalTitle": "Avatar upload",
-    "okText": "Confirm and upload",
     "btn_reset": "Reset",
     "btn_rotate_left": "Counterclockwise rotation",
     "btn_rotate_right": "Clockwise rotation",
@@ -133,6 +42,98 @@
     "btn_scale_y": "Flip vertical",
     "btn_zoom_in": "Zoom in",
     "btn_zoom_out": "Zoom out",
-    "preview": "Preview"
+    "imageTooBig": "Image too big",
+    "modalTitle": "Avatar upload",
+    "okText": "Confirm and upload",
+    "preview": "Preview",
+    "selectImage": "Select Image",
+    "uploadSuccess": "Uploaded success!"
+  },
+  "fallback": {
+    "comingSoon": "Coming Soon",
+    "forbidden": "Oops! Access Denied",
+    "forbiddenDesc": "Sorry, but you don't have permission to access this page.",
+    "http": {
+      "badRequest": "Bad Request. Please check your input and try again.",
+      "forbidden": "Forbidden. You do not have permission to access this resource.",
+      "internalServerError": "Internal Server Error. Something went wrong on our end. Please try again later.",
+      "networkError": "A network error occurred. Please check your internet connection and try again.",
+      "notFound": "Not Found. The requested resource could not be found.",
+      "requestTimeout": "The request timed out. Please try again later.",
+      "unauthorized": "Unauthorized. Please log in to continue."
+    },
+    "internalError": "Oops! Something Went Wrong",
+    "internalErrorDesc": "Sorry, but the server encountered an error.",
+    "offline": "Offline Page",
+    "offlineError": "Oops! Network Error",
+    "offlineErrorDesc": "Sorry, can't connect to the internet. Check your connection.",
+    "pageNotFound": "Oops! Page Not Found",
+    "pageNotFoundDesc": "Sorry, we couldn't find the page you were looking for."
+  },
+  "formRules": {
+    "alreadyExists": "{0} `{1}` already exists",
+    "invalidURL": "Please input a valid URL",
+    "length": "{0} must be {1} characters long",
+    "maxLength": "{0} can be at most {1} characters",
+    "minLength": "{0} must be at least {1} characters",
+    "mobile": "Please input a valid {0}",
+    "required": "Please enter {0}",
+    "selectRequired": "Please select {0}",
+    "startWith": "{0} must start with `{1}`"
+  },
+  "iconPicker": {
+    "placeholder": "Select an icon",
+    "search": "Search icon..."
+  },
+  "jsonViewer": {
+    "copied": "Copied",
+    "copy": "Copy"
+  },
+  "placeholder": {
+    "input": "Please enter",
+    "select": "Please select"
+  },
+  "upload": {
+    "accept": "Support {0} format",
+    "acceptUpload": "Only upload files in {0} format",
+    "imgUpload": "ImageUpload",
+    "maxNumber": "Only upload up to {0} files",
+    "maxSize": "A single file does not exceed {0}MB",
+    "maxSizeMultiple": "Only upload files up to {0}MB!",
+    "upload": "Upload",
+    "uploadSuccess": "Upload successfully"
+  },
+  "widgets": {
+    "checkUpdatesDescription": "Click to refresh and get the latest version",
+    "checkUpdatesTitle": "New Version Available",
+    "clearNotifications": "Clear",
+    "document": "Document",
+    "lockScreen": {
+      "backToLogin": "Back to login",
+      "entry": "Enter the system",
+      "errorPasswordTip": "Password error, please re-enter",
+      "password": "Password",
+      "placeholder": "Please enter password",
+      "screenButton": "Locking",
+      "title": "Lock Screen",
+      "unlock": "Click to unlock"
+    },
+    "logoutTip": "Do you want to logout?",
+    "markAllAsRead": "Make All as Read",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "qa": "Q&A",
+    "search": {
+      "close": "Close",
+      "navigate": "Navigate",
+      "noRecent": "No Search History",
+      "noResults": "No Search Results Found",
+      "recent": "Search History",
+      "searchNavigate": "Search Navigation",
+      "select": "Select",
+      "title": "Search"
+    },
+    "setting": "Settings",
+    "viewAll": "View All Messages"
   }
 }
