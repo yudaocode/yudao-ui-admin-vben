@@ -1,7 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
+import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
+import { formatDateTime } from '@vben/utils';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -105,6 +111,47 @@ export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
           },
         ],
       },
+    },
+  ];
+}
+
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'templateNickname',
+      label: '发送人',
+    },
+    {
+      field: 'createTime',
+      label: '发送时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+    {
+      field: 'templateType',
+      label: '消息类型',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          value: data?.templateType,
+        }),
+    },
+    {
+      field: 'readStatus',
+      label: '是否已读',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.INFRA_BOOLEAN_STRING,
+          value: data?.readStatus,
+        }),
+    },
+    {
+      field: 'readTime',
+      label: '阅读时间',
+      content: (data) => formatDateTime(data?.readTime) as string,
+    },
+    {
+      field: 'templateContent',
+      label: '消息内容',
     },
   ];
 }
