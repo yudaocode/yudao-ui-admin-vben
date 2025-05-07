@@ -40,13 +40,13 @@ export namespace BpmModelApi {
     bpmnXml: string;
     startUsers?: UserInfo[];
   }
+}
 
-  /** 模型分类信息 */
-  export interface ModelCategoryInfo {
-    id: number;
-    name: string;
-    modelList: ModelVO[];
-  }
+/** 模型分类信息 */
+export interface ModelCategoryInfo {
+  id: number;
+  name: string;
+  modelList: BpmModelApi.ModelVO[];
 }
 
 /** 获取流程模型列表 */
