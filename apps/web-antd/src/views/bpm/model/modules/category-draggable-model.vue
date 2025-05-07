@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { BpmCategoryApi } from '#/api/bpm/category';
-import type { BpmModelApi } from '#/api/bpm/model';
+import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 
 import { computed, ref, watchEffect } from 'vue';
 
@@ -31,7 +30,7 @@ import { DICT_TYPE } from '#/utils';
 import CategoryRenameForm from '../../category/modules/rename-form.vue';
 
 const props = defineProps<{
-  categoryInfo: BpmCategoryApi.ModelCategoryInfo;
+  categoryInfo: ModelCategoryInfo;
   isCategorySorting: boolean;
 }>();
 

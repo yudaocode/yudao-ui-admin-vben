@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BpmModelApi } from '#/api/bpm/model';
+import type { ModelCategoryInfo } from '#/api/bpm/model';
 
 import { onActivated, reactive, ref, useTemplateRef, watch } from 'vue';
 
@@ -41,9 +41,9 @@ const modelListSpinning = refAutoReset(false, 3000);
 // 保存排序状态
 const saveSortLoading = ref(false);
 // 按照 category 分组的数据
-const categoryGroup = ref<BpmModelApi.ModelCategoryInfo[]>([]);
+const categoryGroup = ref<ModelCategoryInfo[]>([]);
 // 未排序前的原始数据
-const originalData = ref<BpmModelApi.ModelCategoryInfo[]>([]);
+const originalData = ref<ModelCategoryInfo[]>([]);
 // 可以排序元素的容器
 const sortable = useTemplateRef<HTMLElement>('categoryGroupRef');
 // 排序引用，以便后续启用或禁用排序
