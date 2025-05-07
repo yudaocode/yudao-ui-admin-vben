@@ -3,7 +3,7 @@ import type { BpmModelApi } from '#/api/bpm/model';
 
 import { onActivated, reactive, ref, useTemplateRef, watch } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus, Search, Settings } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
@@ -26,7 +26,16 @@ import {
 } from '#/api/bpm/category';
 import { getModelList } from '#/api/bpm/model';
 
+// 流程分类对话框
+import CategoryForm from '../category/modules/form.vue';
 import CategoryDraggableModel from './modules/category-draggable-model.vue';
+
+// 新建流程分类对话框
+const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
+  connectedComponent: CategoryForm,
+  destroyOnClose: true,
+});
+
 // 模型列表加载状态
 const modelListSpinning = refAutoReset(false, 3000);
 // 保存排序状态
@@ -100,7 +109,8 @@ const createModel = () => {
 /** 处理下拉菜单命令 */
 const handleCommand = (command: string) => {
   if (command === 'handleCategoryAdd') {
-    //  TODO 新建分类逻辑
+    // 打开新建流程分类弹窗
+    categoryFormModalApi.open();
   } else if (command === 'handleCategorySort') {
     originalData.value = cloneDeep(categoryGroup.value);
     isCategorySorting.value = true;
@@ -152,7 +162,7 @@ const handleCategorySortSubmit = async () => {
   <Page auto-content-height>
     <Card
       :body-style="{ padding: '10px' }"
-      class="mb-4 h-[89vh]"
+      class="mb-4"
       v-spinning="modelListSpinning"
     >
       <div class="flex h-full items-center justify-between pl-5">
@@ -184,7 +194,7 @@ const handleCategorySortSubmit = async () => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Dropdown placement="bottomRight">
+            <Dropdown placement="bottomRight" arrow>
               <Button>
                 <template #icon>
                   <Settings class="size-4" />
@@ -239,4 +249,7 @@ const handleCategorySortSubmit = async () => {
       </div>
     </Card>
   </Page>
+
+  <!-- 流程分类表单弹窗 -->
+  <CategoryFormModal @success="getList" />
 </template>

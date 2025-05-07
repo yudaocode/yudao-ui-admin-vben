@@ -11,6 +11,7 @@ export namespace BpmCategoryApi {
     name: string;
     code: string;
     status: number;
+    description?: string;
     sort: number; // 分类排序
   }
 
