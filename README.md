@@ -9,9 +9,9 @@
 
 ## 🐶 新手必读
 
-- nodejs > 20.10.0 && pnpm > 9.12.0 (强制使用pnpm)
+- nodejs > 20.10.0 && pnpm > 10.10.0 (强制使用pnpm)
 - 演示地址【Vue3 + element-plus】：<http://dashboard-vue3.yudao.iocoder.cn>
-- 演示地址【Vue3 + vben5.0(ant-design-vue)】：<http://dashboard-vben.yudao.iocoder.cn>
+- 演示地址【Vue3 + vben5(ant-design-vue)】：<http://dashboard-vben.yudao.iocoder.cn>
 - 演示地址【Vue2 + element-ui】：<http://dashboard.yudao.iocoder.cn>
 - 启动文档：<https://doc.iocoder.cn/quick-start/>
 - 视频教程：<https://doc.iocoder.cn/video/>
@@ -20,12 +20,12 @@
 
 **芋道**，以开发者为中心，打造中国第一流的快速开发平台，全部开源，个人与企业可 100% 免费使用。
 
-- 采用最新 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin) v5.0 实现
-- 支持 Ant Design 或 Element Plus 或 Naive UI 多种免费开源的中后台模版，具备如下特性：
+- 采用最新 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin) v5 实现
+- 支持 [Ant Design Vue](https://www.antdv.com/) | [Element Plus](https://element-plus.org/zh-CN/) | [Naive UI](https://www.naiveui.com/) 多种免费开源的中后台模版，具备如下特性：
 
 ![首页](.image/demo/vben.png)
 
-- **最新技术栈**：使用 Vue3、Vite5 等前端前沿技术开发
+- **最新技术栈**：使用 Vue3、Vite6 等前端前沿技术开发
 - **TypeScript**: 应用程序级 JavaScript 的语言
 - **主题**: 提供多套主题色彩，可配置自定义主题
 - **国际化**：内置完善的国际化方案
