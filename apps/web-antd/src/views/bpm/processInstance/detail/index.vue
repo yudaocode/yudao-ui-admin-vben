@@ -147,9 +147,6 @@ async function getApprovalDetail() {
           processDefinition.value.formFields,
           processInstance.value.formVariables,
         );
-
-        detailForm.value.value.Fx21maervo4ratc = undefined;
-        detailForm.value.value.F3yvmaervlwuanc = undefined;
       }
       nextTick().then(() => {
         fApi.value?.btn.show(false);
@@ -171,8 +168,8 @@ async function getApprovalDetail() {
 
     // 获取审批节点，显示 Timeline 的数据
     activityNodes.value = data.activityNodes;
-  } catch (error) {
-    console.error('🚀 ~ getApprovalDetail ~ error:', error);
+  } catch {
+    message.error('获取审批详情失败！');
   } finally {
     processInstanceLoading.value = false;
   }
