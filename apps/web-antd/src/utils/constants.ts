@@ -464,3 +464,132 @@ export const BpmAutoApproveType = {
   APPROVE_ALL: 1, // 仅审批一次，后续重复的审批节点均自动通过
   APPROVE_SEQUENT: 2, // 仅针对连续审批的节点自动通过
 };
+
+// 候选人策略枚举 （ 用于审批节点。抄送节点 )
+export enum CandidateStrategy {
+  /**
+   * 审批人自选
+   */
+  APPROVE_USER_SELECT = 34,
+  /**
+   * 部门的负责人
+   */
+  DEPT_LEADER = 21,
+  /**
+   * 部门成员
+   */
+  DEPT_MEMBER = 20,
+  /**
+   * 流程表达式
+   */
+  EXPRESSION = 60,
+  /**
+   * 表单内部门负责人
+   */
+  FORM_DEPT_LEADER = 51,
+  /**
+   * 表单内用户字段
+   */
+  FORM_USER = 50,
+  /**
+   * 连续多级部门的负责人
+   */
+  MULTI_LEVEL_DEPT_LEADER = 23,
+  /**
+   * 指定岗位
+   */
+  POST = 22,
+  /**
+   * 指定角色
+   */
+  ROLE = 10,
+  /**
+   * 发起人自己
+   */
+  START_USER = 36,
+  /**
+   * 发起人部门负责人
+   */
+  START_USER_DEPT_LEADER = 37,
+  /**
+   * 发起人连续多级部门的负责人
+   */
+  START_USER_MULTI_LEVEL_DEPT_LEADER = 38,
+  /**
+   * 发起人自选
+   */
+  START_USER_SELECT = 35,
+  /**
+   * 指定用户
+   */
+  USER = 30,
+  /**
+   * 指定用户组
+   */
+  USER_GROUP = 40,
+}
+
+/**
+ * 节点类型
+ */
+export enum NodeType {
+  /**
+   * 子流程节点
+   */
+  CHILD_PROCESS_NODE = 20,
+  /**
+   * 条件分支节点 (对应排他网关)
+   */
+  CONDITION_BRANCH_NODE = 51,
+  /**
+   * 条件节点
+   */
+  CONDITION_NODE = 50,
+
+  /**
+   * 抄送人节点
+   */
+  COPY_TASK_NODE = 12,
+
+  /**
+   * 延迟器节点
+   */
+  DELAY_TIMER_NODE = 14,
+
+  /**
+   * 结束节点
+   */
+  END_EVENT_NODE = 1,
+
+  /**
+   * 包容分支节点 (对应包容网关)
+   */
+  INCLUSIVE_BRANCH_NODE = 53,
+
+  /**
+   * 并行分支节点 (对应并行网关)
+   */
+  PARALLEL_BRANCH_NODE = 52,
+
+  /**
+   * 路由分支节点
+   */
+  ROUTER_BRANCH_NODE = 54,
+  /**
+   * 发起人节点
+   */
+  START_USER_NODE = 10,
+  /**
+   * 办理人节点
+   */
+  TRANSACTOR_NODE = 13,
+
+  /**
+   * 触发器节点
+   */
+  TRIGGER_NODE = 15,
+  /**
+   * 审批人节点
+   */
+  USER_TASK_NODE = 11,
+}
