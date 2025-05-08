@@ -10,6 +10,7 @@ import { formatDateTime, isEmpty } from '@vben/utils';
 
 import { Avatar, Button, Image, Tooltip } from 'ant-design-vue';
 
+import { UserSelectModal } from '#/components/user-select-modal';
 import { CandidateStrategyEnum, NodeTypeEnum, TaskStatusEnum } from '#/utils';
 
 defineOptions({ name: 'BpmProcessInstanceTimeline' });
@@ -150,10 +151,12 @@ const customApproveUsers = ref<Record<string, any[]>>({}); // key：activityId�
 
 // 打开选择用户弹窗
 const handleSelectUser = (activityId: string, selectedList: any[]) => {
+  console.log(userSelectFormRef.value);
   userSelectFormRef.value.open(activityId, selectedList);
 };
 
 // 选择用户完成
+const selectedUsers = ref<number[]>([]);
 const handleUserSelectConfirm = (activityId: string, userList: any[]) => {
   customApproveUsers.value[activityId] = userList || [];
   emit('selectUserConfirm', activityId, userList);
@@ -280,7 +283,7 @@ const shouldShowApprovalReason = (task: any, nodeType: NodeTypeEnum) => {
 
         <!-- 需要自定义选择审批人 -->
         <div
-          v-if="shouldShowCustomUserSelect(activity)"
+          v-if="true || shouldShowCustomUserSelect(activity)"
           class="flex flex-wrap items-center gap-2"
         >
           <Tooltip title="添加用户" placement="left">
@@ -438,5 +441,11 @@ const shouldShowApprovalReason = (task: any, nodeType: NodeTypeEnum) => {
   </a-timeline>
 
   <!-- 用户选择弹窗 -->
-  <UserSelectForm ref="userSelectFormRef" @confirm="handleUserSelectConfirm" />
+  <UserSelectModal
+    ref="userSelectFormRef"
+    v-model:value="selectedUsers"
+    :multiple="true"
+    title="选择用户"
+    @confirm="handleUserSelectConfirm"
+  />
 </template>

@@ -238,7 +238,11 @@ onMounted(async () => {
   <Page auto-content-height>
     <Card
       class="h-full"
-      :body-style="{ height: 'calc(100% - 140px)', overflowY: 'auto' }"
+      :body-style="{
+        height: 'calc(100% - 140px)',
+        overflowY: 'auto',
+        paddingTop: '12px',
+      }"
     >
       <template #title>
         <span class="text-[#878c93]">编号：{{ id || '-' }}</span>
