@@ -13,7 +13,6 @@ import {
 } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import formCreate from '@form-create/ant-design-vue';
 import {
   Avatar,
   Button,
@@ -39,6 +38,8 @@ import {
   setConfAndFields2,
   TaskStatusEnum,
 } from '#/utils';
+
+import TimeLine from './modules/time-line.vue';
 
 defineOptions({ name: 'BpmProcessInstanceDetail' });
 
@@ -146,6 +147,9 @@ async function getApprovalDetail() {
           processDefinition.value.formFields,
           processInstance.value.formVariables,
         );
+
+        detailForm.value.value.Fx21maervo4ratc = undefined;
+        detailForm.value.value.F3yvmaervlwuanc = undefined;
       }
       nextTick().then(() => {
         fApi.value?.btn.show(false);
@@ -232,17 +236,20 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <Card class="h-full" :body-style="{ height: 'calc(100% - 140px)' }">
+    <Card
+      class="h-full"
+      :body-style="{ height: 'calc(100% - 140px)', overflowY: 'auto' }"
+    >
       <template #title>
-        <span class="text-[#878c93]">编号：{{ id }}</span>
+        <span class="text-[#878c93]">编号：{{ id || '-' }}</span>
       </template>
 
       <div class="flex h-[100%] flex-col">
         <!-- 流程基本信息 -->
         <div class="flex flex-col gap-2">
           <div class="mb-10px h-40px flex items-center gap-5">
-            <div class="mb-5px text-[28px] font-bold">
-              {{ processInstance?.name || '-' }}
+            <div class="mb-5px text-[26px] font-bold">
+              {{ processInstance?.name }}
             </div>
             <DictTag
               v-if="processInstance?.status"
@@ -284,9 +291,9 @@ onMounted(async () => {
 
         <!-- 流程操作 -->
         <div class="flex-1">
-          <Tabs v-model:active-key="activeTab" class="mt-4">
+          <Tabs v-model:active-key="activeTab" class="mt-0">
             <TabPane tab="审批详情" key="form">
-              <Row :gutter="[24, 24]">
+              <Row :gutter="[48, 24]">
                 <Col :xs="24" :sm="24" :md="18" :lg="18" :xl="16">
                   <!-- 流程表单 -->
                   <div
@@ -294,6 +301,7 @@ onMounted(async () => {
                       processDefinition?.formType === BpmModelFormType.NORMAL
                     "
                   >
+                    <!-- v-model="detailForm.value" -->
                     <form-create
                       v-model="detailForm.value"
                       v-model:api="fApi"
@@ -311,8 +319,8 @@ onMounted(async () => {
                   </div>
                 </Col>
                 <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8">
-                  <div>
-                    <div>审批流程线条</div>
+                  <div class="mt-2">
+                    <TimeLine :activity-nodes="activityNodes" />
                   </div>
                 </Col>
               </Row>
