@@ -7,7 +7,6 @@ import { reactive } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from '#/adapter/naive';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createCodegenList, getSchemaTableList } from '#/api/infra/codegen';
 import { $t } from '#/locales';
