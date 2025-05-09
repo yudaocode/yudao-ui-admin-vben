@@ -151,7 +151,6 @@ const customApproveUsers = ref<Record<string, any[]>>({}); // key：activityId�
 
 // 打开选择用户弹窗
 const handleSelectUser = (activityId: string, selectedList: any[]) => {
-  console.log(userSelectFormRef.value);
   userSelectFormRef.value.open(activityId, selectedList);
 };
 
@@ -218,6 +217,16 @@ const shouldShowApprovalReason = (task: any, nodeType: NodeTypeEnum) => {
     )
   );
 };
+
+// 用户选择弹窗关闭
+const handleUserSelectClosed = () => {
+  selectedUsers.value = [];
+};
+
+// 用户选择弹窗取消
+const handleUserSelectCancel = () => {
+  selectedUsers.value = [];
+};
 </script>
 
 <template>
@@ -283,7 +292,7 @@ const shouldShowApprovalReason = (task: any, nodeType: NodeTypeEnum) => {
 
         <!-- 需要自定义选择审批人 -->
         <div
-          v-if="true || shouldShowCustomUserSelect(activity)"
+          v-if="shouldShowCustomUserSelect(activity)"
           class="flex flex-wrap items-center gap-2"
         >
           <Tooltip title="添加用户" placement="left">
@@ -447,5 +456,7 @@ const shouldShowApprovalReason = (task: any, nodeType: NodeTypeEnum) => {
     :multiple="true"
     title="选择用户"
     @confirm="handleUserSelectConfirm"
+    @closed="handleUserSelectClosed"
+    @cancel="handleUserSelectCancel"
   />
 </template>

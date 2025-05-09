@@ -52,6 +52,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   cancel: [];
+  closed: [];
   confirm: [value: number[]];
   'update:value': [value: number[]];
 }>();
@@ -167,9 +168,12 @@ const loadUserData = async (pageNo: number, pageSize: number) => {
 
 // 更新右侧列表数据
 const updateRightListData = () => {
-  // 获取选中的用户
+  // 使用 Set 来去重选中的用户ID
+  const uniqueSelectedIds = new Set(selectedUserIds.value);
+
+  // 获取选中的用户，确保不重复
   const selectedUsers = userList.value.filter((user) =>
-    selectedUserIds.value.includes(String(user.id)),
+    uniqueSelectedIds.has(String(user.id)),
   );
 
   // 应用搜索过滤
@@ -181,8 +185,10 @@ const updateRightListData = () => {
       )
     : selectedUsers;
 
-  // 更新总数
-  rightListState.value.pagination.total = filteredUsers.length;
+  // 更新总数（使用 Set 确保唯一性）
+  rightListState.value.pagination.total = new Set(
+    filteredUsers.map((user) => user.id),
+  ).size;
 
   // 应用分页
   const { current, pageSize } = rightListState.value.pagination;
@@ -219,8 +225,9 @@ const handleUserSearch = async (direction: string, value: string) => {
 
 // 处理用户选择变化
 const handleUserChange = (targetKeys: string[]) => {
-  selectedUserIds.value = targetKeys;
-  emit('update:value', targetKeys.map(Number));
+  // 使用 Set 来去重选中的用户ID
+  selectedUserIds.value = [...new Set(targetKeys)];
+  emit('update:value', selectedUserIds.value.map(Number));
   updateRightListData();
 };
 
@@ -281,7 +288,14 @@ const open = async () => {
         pageSize: props.value.length,
         userIds: props.value,
       });
-      userList.value.push(...list);
+      // 使用 Map 来去重，以用户 ID 为 key
+      const userMap = new Map(userList.value.map((user) => [user.id, user]));
+      list.forEach((user) => {
+        if (!userMap.has(user.id)) {
+          userMap.set(user.id, user);
+        }
+      });
+      userList.value = [...userMap.values()];
       updateRightListData();
     }
 
@@ -360,6 +374,7 @@ const handleCancel = () => {
 
 // 关闭弹窗
 const handleClosed = () => {
+  emit('closed');
   resetData();
 };
 
@@ -421,7 +436,7 @@ defineExpose({
             @search="handleUserSearch"
           >
             <template #render="item">
-              {{ item.nickname }} ({{ item.id }})
+              {{ item?.nickname }} ({{ item?.username }})
             </template>
 
             <template #footer="{ direction }">
