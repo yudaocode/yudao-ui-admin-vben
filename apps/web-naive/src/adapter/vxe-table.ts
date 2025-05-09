@@ -130,7 +130,11 @@ setupVbenVxeTable({
     // add by 芋艿：from https://github.com/vbenjs/vue-vben-admin/blob/main/playground/src/adapter/vxe-table.ts#L125-L255
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
-        const defaultProps = { size: 'small', type: 'text', ...props };
+        const defaultProps = {
+          text: true,
+          type: 'primary',
+          ...props,
+        };
         let align = 'end';
         switch (column.align) {
           case 'center': {
@@ -148,11 +152,11 @@ setupVbenVxeTable({
         }
         const presets: Recordable<Recordable<any>> = {
           delete: {
-            danger: true,
-            text: $t('common.delete'),
+            type: 'error',
+            concent: $t('common.delete'),
           },
           edit: {
-            text: $t('common.edit'),
+            concent: $t('common.edit'),
           },
         };
         const operations: Array<Recordable<any>> = (
@@ -164,7 +168,7 @@ setupVbenVxeTable({
                 ? { code: opt, ...presets[opt], ...defaultProps }
                 : {
                     code: opt,
-                    text: $te(`common.${opt}`) ? $t(`common.${opt}`) : opt,
+                    concent: $te(`common.${opt}`) ? $t(`common.${opt}`) : opt,
                     ...defaultProps,
                   };
             } else {
@@ -203,7 +207,7 @@ setupVbenVxeTable({
                     h(IconifyIcon, { class: 'size-5', icon: opt.icon }),
                   );
                 }
-                content.push(opt.text);
+                content.push(opt.concent);
                 return content;
               },
             },
@@ -214,7 +218,6 @@ setupVbenVxeTable({
           return h(
             NPopconfirm,
             {
-              title: $t('ui.actionTitle.delete', [attrs?.nameTitle || '']),
               ...props,
               ...opt,
               icon: undefined,
@@ -226,8 +229,8 @@ setupVbenVxeTable({
               },
             },
             {
-              default: () => renderBtn({ ...opt }, false),
-              description: () =>
+              trigger: () => renderBtn({ ...opt }, false),
+              default: () =>
                 h(
                   'div',
                   { class: 'truncate' },
@@ -245,7 +248,7 @@ setupVbenVxeTable({
         return h(
           'div',
           {
-            class: 'flex table-operations',
+            class: 'flex table-operations ml-2',
             style: { justifyContent: align },
           },
           btns,
