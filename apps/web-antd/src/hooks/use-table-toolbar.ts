@@ -1,4 +1,4 @@
-import type { VxeTableInstance } from '#/adapter/vxe-table';
+import type { VxeTableInstance, VxeToolbarInstance } from '#/adapter/vxe-table';
 import type { TableToolbar } from '#/components/table-toolbar';
 
 import { ref, watch } from 'vue';
@@ -14,8 +14,14 @@ export function useTableToolbar() {
     const table = tableRef.value;
     const tableToolbar = tableToolbarRef.value;
     if (table && tableToolbar) {
-      await table.connect(tableToolbar.getToolbarRef()!);
-      isBound.value = true;
+      setTimeout(async () => {
+        const toolbar = tableToolbar.getToolbarRef();
+        if (!toolbar) {
+          console.error('[toolbar 挂载失败] Table toolbar not found');
+        }
+        await table.connect(toolbar as VxeToolbarInstance);
+        isBound.value = true;
+      }, 1000); // 延迟挂载确保 toolbar 正确挂载
     }
   }
 
