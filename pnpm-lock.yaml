@@ -877,6 +877,12 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
+      cropperjs:
+        specifier: 'catalog:'
+        version: 1.6.2
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -892,6 +898,10 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
+    devDependencies:
+      '@types/crypto-js':
+        specifier: 'catalog:'
+        version: 4.2.2
 
   docs:
     dependencies:
