@@ -45,14 +45,17 @@ async function handelUpload({
 <template>
   <div v-if="profile">
     <div class="flex flex-col items-center">
-      <NTooltip title="点击上传头像">
-        <CropperAvatar
-          :show-btn="false"
-          :upload-api="handelUpload"
-          :value="avatar"
-          :width="120"
-          @change="emit('success')"
-        />
+      <NTooltip>
+        <template #trigger>
+          <CropperAvatar
+            :show-btn="false"
+            :upload-api="handelUpload"
+            :value="avatar"
+            :width="120"
+            @change="emit('success')"
+          />
+        </template>
+        点击上传头像
       </NTooltip>
     </div>
     <div class="mt-8">

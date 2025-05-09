@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { NCard, NTabs } from 'naive-ui';
+import { NCard, NTabPane, NTabs } from 'naive-ui';
 
 import { getUserProfile } from '#/api/system/user/profile';
 import { useAuthStore } from '#/store';
@@ -47,16 +47,16 @@ onMounted(loadProfile);
 
       <!-- 右侧 标签页 -->
       <NCard class="ml-3 w-3/5">
-        <NTabs v-model:active-key="activeName" class="-mt-4">
-          <NTabs.TabPane key="basicInfo" tab="基本设置">
+        <NTabs v-model:value="activeName" class="-mt-4">
+          <NTabPane name="basicInfo" tab="基本设置">
             <BaseInfo :profile="profile" @success="refreshProfile" />
-          </NTabs.TabPane>
-          <NTabs.TabPane key="resetPwd" tab="密码设置">
+          </NTabPane>
+          <NTabPane name="resetPwd" tab="密码设置">
             <ResetPwd />
-          </NTabs.TabPane>
-          <NTabs.TabPane key="userSocial" tab="社交绑定" force-render>
+          </NTabPane>
+          <NTabPane name="userSocial" tab="社交绑定" force-render>
             <UserSocial @update:active-name="activeName = $event" />
-          </NTabs.TabPane>
+          </NTabPane>
           <!-- TODO @芋艿：在线设备 -->
         </NTabs>
       </NCard>

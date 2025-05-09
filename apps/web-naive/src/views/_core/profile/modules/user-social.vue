@@ -192,9 +192,9 @@ onMounted(() => {
                     {{ item.socialUser?.nickname || item.socialUser?.openid }}
                   </template>
                   <template v-else>
-                    绑定{{
-                      getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type)
-                    }}账号
+                    绑定
+                    {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
+                    账号
                   </template>
                 </span>
               </div>

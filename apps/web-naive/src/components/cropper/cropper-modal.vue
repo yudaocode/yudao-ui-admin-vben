@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { UploadFileInfo } from 'naive-ui';
+
 import type { CropendResult, CropperModalProps, CropperType } from './typing';
 
 import { ref } from 'vue';
@@ -49,13 +51,13 @@ function modalLoading(loading: boolean) {
 }
 
 // Block upload
-function handleBeforeUpload(file: File) {
+function handleBeforeUpload(file: UploadFileInfo) {
   if (props.size > 0 && file.size > 1024 * 1024 * props.size) {
     emit('uploadError', { msg: $t('ui.cropper.imageTooBig') });
     return false;
   }
   const reader = new FileReader();
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(file.file);
   src.value = '';
   previewSource.value = '';
   reader.addEventListener('load', (e) => {
@@ -111,7 +113,7 @@ async function handleOk() {
     :confirm-text="$t('ui.cropper.okText')"
     :fullscreen-button="false"
     :title="$t('ui.cropper.modalTitle')"
-    class="w-[800px]"
+    class="w-[50%]"
   >
     <div :class="prefixCls">
       <div :class="`${prefixCls}-left`" class="w-full">
@@ -127,130 +129,148 @@ async function handleOk() {
         </div>
 
         <div :class="`${prefixCls}-toolbar`">
-          <NUpload
-            :before-upload="handleBeforeUpload"
-            :file-list="[]"
-            accept="image/*"
-          >
-            <NTooltip :title="$t('ui.cropper.selectImage')" placement="bottom">
-              <NButton size="small" type="primary">
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--upload-outlined]"></span>
-                  </div>
-                </template>
-              </NButton>
-            </NTooltip>
-          </NUpload>
           <NSpace>
-            <NTooltip :title="$t('ui.cropper.btn_reset')" placement="bottom">
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('reset')"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--reload-outlined]"></span>
-                  </div>
-                </template>
-              </NButton>
-            </NTooltip>
-            <NTooltip
-              :title="$t('ui.cropper.btn_rotate_left')"
-              placement="bottom"
+            <NUpload
+              @before-upload="handleBeforeUpload"
+              :file-list="[]"
+              accept="image/*"
             >
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('rotate', -45)"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span
-                      class="icon-[ant-design--rotate-left-outlined]"
-                    ></span>
-                  </div>
+              <NTooltip placement="bottom">
+                <template #trigger>
+                  <NButton size="small" type="primary">
+                    <template #icon>
+                      <div class="flex items-center justify-center">
+                        <span class="icon-[ant-design--upload-outlined]"></span>
+                      </div>
+                    </template>
+                  </NButton>
                 </template>
-              </NButton>
+                {{ $t('ui.cropper.selectImage') }}
+              </NTooltip>
+            </NUpload>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('reset')"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span class="icon-[ant-design--reload-outlined]"></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_reset') }}
             </NTooltip>
-            <NTooltip
-              :title="$t('ui.cropper.btn_rotate_right')"
-              placement="bottom"
-            >
-              <NButton
-                :disabled="!src"
-                pre-icon="ant-design:rotate-right-outlined"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('rotate', 45)"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span
-                      class="icon-[ant-design--rotate-right-outlined]"
-                    ></span>
-                  </div>
-                </template>
-              </NButton>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('rotate', -45)"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span
+                        class="icon-[ant-design--rotate-left-outlined]"
+                      ></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_rotate_left') }}
             </NTooltip>
-            <NTooltip :title="$t('ui.cropper.btn_scale_x')" placement="bottom">
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('scaleX')"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-h]"></span>
-                  </div>
-                </template>
-              </NButton>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  pre-icon="ant-design:rotate-right-outlined"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('rotate', 45)"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span
+                        class="icon-[ant-design--rotate-right-outlined]"
+                      ></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_rotate_right') }}
             </NTooltip>
-            <NTooltip :title="$t('ui.cropper.btn_scale_y')" placement="bottom">
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('scaleY')"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-v]"></span>
-                  </div>
-                </template>
-              </NButton>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('scaleX')"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span class="icon-[vaadin--arrows-long-h]"></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_scale_x') }}
             </NTooltip>
-            <NTooltip :title="$t('ui.cropper.btn_zoom_in')" placement="bottom">
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('zoom', 0.1)"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-in-outlined]"></span>
-                  </div>
-                </template>
-              </NButton>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('scaleY')"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span class="icon-[vaadin--arrows-long-v]"></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_scale_y') }}
             </NTooltip>
-            <NTooltip :title="$t('ui.cropper.btn_zoom_out')" placement="bottom">
-              <NButton
-                :disabled="!src"
-                size="small"
-                type="primary"
-                @click="handlerToolbar('zoom', -0.1)"
-              >
-                <template #icon>
-                  <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-out-outlined]"></span>
-                  </div>
-                </template>
-              </NButton>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('zoom', 0.1)"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span class="icon-[ant-design--zoom-in-outlined]"></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_zoom_in') }}
+            </NTooltip>
+            <NTooltip placement="bottom">
+              <template #trigger>
+                <NButton
+                  :disabled="!src"
+                  size="small"
+                  type="primary"
+                  @click="handlerToolbar('zoom', -0.1)"
+                >
+                  <template #icon>
+                    <div class="flex items-center justify-center">
+                      <span class="icon-[ant-design--zoom-out-outlined]"></span>
+                    </div>
+                  </template>
+                </NButton>
+              </template>
+              {{ $t('ui.cropper.btn_zoom_out') }}
             </NTooltip>
           </NSpace>
         </div>
