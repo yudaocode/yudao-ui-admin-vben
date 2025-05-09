@@ -1,7 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
 import type { BpmModelApi } from '#/api/bpm/model';
-import type { CandidateStrategy, NodeType } from '#/utils';
+import type { CandidateStrategyEnum, NodeTypeEnum } from '#/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -29,12 +29,12 @@ export namespace BpmProcessInstanceApi {
 
   // 审批节点信息
   export type ApprovalNodeInfo = {
-    candidateStrategy?: CandidateStrategy;
+    candidateStrategy?: CandidateStrategyEnum;
     candidateUsers?: User[];
     endTime?: Date;
     id: number;
     name: string;
-    nodeType: NodeType;
+    nodeType: NodeTypeEnum;
     startTime?: Date;
     status: number;
     tasks: ApprovalTaskInfo[];
@@ -46,14 +46,25 @@ export namespace BpmProcessInstanceApi {
     createTime: string;
     endTime: string;
     fields: string[];
+    formVariables: Record<string, any>;
     id: number;
     name: string;
     processDefinition?: BpmModelApi.ProcessDefinitionVO;
     processDefinitionId: string;
     remark: string;
     result: number;
+    startTime?: Date;
+    startUser?: User;
     status: number;
-    tasks: BpmProcessInstanceApi.Task[];
+    tasks?: BpmProcessInstanceApi.Task[];
+  };
+
+  export type ApprovalDetail = {
+    activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[];
+    formFieldsPermission: any;
+    processDefinition: BpmModelApi.ProcessDefinitionVO;
+    processInstance: BpmProcessInstanceApi.ProcessInstanceVO;
+    status: number;
   };
 }
 
@@ -133,7 +144,7 @@ export async function updateProcessInstance(
 
 /** 获取审批详情 */
 export async function getApprovalDetail(params: any) {
-  return requestClient.get<BpmProcessInstanceApi.ProcessInstanceVO>(
+  return requestClient.get<BpmProcessInstanceApi.ApprovalDetail>(
     `/bpm/process-instance/get-approval-detail`,
     { params },
   );
@@ -156,7 +167,7 @@ export async function getFormFieldsPermission(params: any) {
 }
 
 /** 获取流程实例 BPMN 模型视图 */
-export async function getProcessInstanceBpmnModelView(id: number) {
+export async function getProcessInstanceBpmnModelView(id: string) {
   return requestClient.get<BpmProcessInstanceApi.ProcessInstanceVO>(
     `/bpm/process-instance/get-bpmn-model-view?id=${id}`,
   );

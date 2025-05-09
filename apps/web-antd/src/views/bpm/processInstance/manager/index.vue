@@ -17,6 +17,7 @@ import {
   getProcessInstanceManagerPage,
 } from '#/api/bpm/processInstance';
 import { DocAlert } from '#/components/doc-alert';
+import { router } from '#/router';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -110,6 +111,10 @@ function onCancel(row: BpmProcessInstanceApi.ProcessInstanceVO) {
 /** 查看流程实例 */
 function onDetail(row: BpmProcessInstanceApi.ProcessInstanceVO) {
   console.warn(row);
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: { id: row.id },
+  });
 }
 
 /** 刷新表格 */

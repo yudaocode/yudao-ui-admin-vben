@@ -18,6 +18,7 @@ export namespace BpmModelApi {
     deploymentTime: number;
     suspensionState: number;
     formType?: number;
+    formCustomViewPath?: string;
   }
 
   /** 流程模型 VO */
