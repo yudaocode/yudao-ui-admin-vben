@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { h, nextTick, onMounted, reactive, ref } from 'vue';
+import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -31,6 +30,7 @@ import {
 import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
+import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
@@ -119,20 +119,10 @@ async function onExport() {
   }
 }
 
-/** 隐藏搜索栏 */
-const hiddenSearchBar = ref(false);
-const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
-const tableRef = ref<VxeTableInstance>();
 /** 初始化 */
-onMounted(async () => {
-  await getList();
-  await nextTick();
-  // 挂载 toolbar 工具栏
-  const table = tableRef.value;
-  const tableToolbar = tableToolbarRef.value;
-  if (table && tableToolbar) {
-    await table.connect(tableToolbar.getToolbarRef()!);
-  }
+const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+onMounted(() => {
+  getList();
 });
 </script>
 

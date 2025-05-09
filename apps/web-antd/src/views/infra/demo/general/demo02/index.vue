@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from 'vxe-table';
-
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import { h, nextTick, onMounted, reactive, ref } from 'vue';
+import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
@@ -15,8 +13,8 @@ import {
 } from '@vben/utils';
 
 import { Button, Form, Input, message, RangePicker } from 'ant-design-vue';
-import { VxeColumn, VxeTable } from 'vxe-table';
 
+import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo02Category,
   exportDemo02Category,
@@ -24,6 +22,7 @@ import {
 } from '#/api/infra/demo/demo02';
 import { ContentWrap } from '#/components/content-wrap';
 import { TableToolbar } from '#/components/table-toolbar';
+import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -112,11 +111,6 @@ async function onExport() {
   }
 }
 
-/** 隐藏搜索栏 */
-const hiddenSearchBar = ref(false);
-const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
-const tableRef = ref<VxeTableInstance>();
-
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
 function toggleExpand() {
@@ -125,15 +119,9 @@ function toggleExpand() {
 }
 
 /** 初始化 */
-onMounted(async () => {
-  await getList();
-  await nextTick();
-  // 挂载 toolbar 工具栏
-  const table = tableRef.value;
-  const tableToolbar = tableToolbarRef.value;
-  if (table && tableToolbar) {
-    await table.connect(tableToolbar.getToolbarRef()!);
-  }
+const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+onMounted(() => {
+  getList();
 });
 </script>
 
