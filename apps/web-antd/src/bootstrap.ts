@@ -17,8 +17,6 @@ import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
 
-import 'vxe-table/styles/cssvar.scss'; // TODO @puhui999：这个必须导入哇？我看 use-vxe-grid.vue 已经导入了
-
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
   await initComponentAdapter();

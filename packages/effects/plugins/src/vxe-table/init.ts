@@ -1,6 +1,6 @@
 import type { SetupVxeTable } from './types';
 
-import { defineComponent, watch } from 'vue';
+import { defineAsyncComponent, defineComponent, watch } from 'vue';
 
 import { usePreferences } from '@vben/preferences';
 
@@ -99,6 +99,18 @@ export function initVxeTable() {
 
   isInit = true;
 }
+
+// 异步导出 vxe-table 相关组件提供给需要单独使用 vxe-table 的场景
+const AsyncVxeTable = defineAsyncComponent(() =>
+  import('vxe-table').then((mod) => mod.VxeTable),
+);
+const AsyncVxeColumn = defineAsyncComponent(() =>
+  import('vxe-table').then((mod) => mod.VxeColumn),
+);
+const AsyncVxeToolbar = defineAsyncComponent(() =>
+  import('vxe-table').then((mod) => mod.VxeToolbar),
+);
+export const AsyncComponents = [AsyncVxeTable, AsyncVxeColumn, AsyncVxeToolbar];
 
 export function setupVbenVxeTable(setupOptions: SetupVxeTable) {
   const { configVxeTable, useVbenForm } = setupOptions;

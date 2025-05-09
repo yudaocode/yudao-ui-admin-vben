@@ -1,6 +1,6 @@
 <!-- add by puhui999：vxe table 工具栏二次封装，提供给 vxe 原生列表使用 -->
 <script setup lang="ts">
-import type { VxeToolbarInstance } from 'vxe-table';
+import type { VxeToolbarInstance } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
@@ -8,7 +8,8 @@ import { useContentMaximize, useRefresh } from '@vben/hooks';
 import { Fullscreen, RefreshCw, Search } from '@vben/icons';
 
 import { Button } from 'ant-design-vue';
-import { VxeToolbar } from 'vxe-table';
+
+import { VxeToolbar } from '#/adapter/vxe-table';
 
 /** 列表工具栏封装 */
 defineOptions({ name: 'TableToolbar' });

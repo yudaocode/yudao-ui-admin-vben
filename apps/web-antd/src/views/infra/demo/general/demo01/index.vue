@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from 'vxe-table';
-
+import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
 import { h, nextTick, onMounted, reactive, ref } from 'vue';
@@ -22,8 +21,8 @@ import {
   RangePicker,
   Select,
 } from 'ant-design-vue';
-import { VxeColumn, VxeTable } from 'vxe-table';
 
+import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
   exportDemo01Contact,
@@ -192,7 +191,6 @@ onMounted(async () => {
 
     <!-- 列表 -->
     <ContentWrap title="示例联系人">
-      <!-- TODO @puhui999：暗黑模式下，会有个黑底 -->
       <template #extra>
         <TableToolbar
           ref="tableToolbarRef"
