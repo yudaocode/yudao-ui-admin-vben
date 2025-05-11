@@ -53,7 +53,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   cancel: [];
   closed: [];
-  confirm: [value: number[]];
+  confirm: [value: SystemUserApi.User[]];
   'update:value': [value: number[]];
 }>();
 
@@ -265,7 +265,7 @@ const resetData = () => {
 };
 
 // 打开弹窗
-const open = async () => {
+const open = async (userIds: string[]) => {
   resetData();
   loading.value = true;
   try {
@@ -280,13 +280,13 @@ const open = async () => {
     await loadUserData(1, leftListState.value.pagination.pageSize);
 
     // 设置已选用户
-    if (props.value?.length) {
-      selectedUserIds.value = props.value.map(String);
-      // 加载已选用户的完整信息
+    if (userIds?.length) {
+      selectedUserIds.value = userIds.map(String);
+      // 加载已选用户的完整信息  TODO   目前接口暂不支持 多个用户ID 查询， 需要后端支持
       const { list } = await getUserPage({
         pageNo: 1,
-        pageSize: props.value.length,
-        userIds: props.value,
+        pageSize: 100, // 临时使用固定值确保能加载所有已选用户
+        userIds,
       });
       // 使用 Map 来去重，以用户 ID 为 key
       const userMap = new Map(userList.value.map((user) => [user.id, user]));
@@ -358,7 +358,12 @@ const handleConfirm = () => {
     message.warning('请选择用户');
     return;
   }
-  emit('confirm', selectedUserIds.value.map(Number));
+  emit(
+    'confirm',
+    userList.value.filter((user) =>
+      selectedUserIds.value.includes(String(user.id)),
+    ),
+  );
   modalApi.close();
 };
 
@@ -436,7 +441,7 @@ defineExpose({
             @search="handleUserSearch"
           >
             <template #render="item">
-              {{ item?.nickname }} ({{ item?.username }})
+              <span>{{ item?.nickname }} ({{ item?.username }})</span>
             </template>
 
             <template #footer="{ direction }">

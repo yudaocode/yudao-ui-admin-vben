@@ -1,29 +1,38 @@
 <script lang="ts" setup>
-import type { BpmDefinitionApi } from '@/api/bpm/definition';
+import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 
-import type { BpmCategoryApi } from '#/api/bpm/category';
-
-import { computed, getCurrentInstance, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
-import { Card, Input, message, Space } from 'ant-design-vue';
+import {
+  Card,
+  Col,
+  InputSearch,
+  message,
+  Row,
+  Space,
+  Tabs,
+  Tooltip,
+} from 'ant-design-vue';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getProcessDefinitionList } from '#/api/bpm/definition';
 import { getProcessInstance } from '#/api/bpm/processInstance';
 
+import ProcessDefinitionDetail from './modules/form.vue';
+
 defineOptions({ name: 'BpmProcessInstanceCreate' });
 
-const { proxy } = getCurrentInstance() as any;
 const route = useRoute(); // 路由
 
 const searchName = ref(''); // 当前搜索关键字
+const isSearching = ref(false); // 是否处于搜索状态
 const processInstanceId: any = route.query.processInstanceId; // 流程实例编号。场景：重新发起时
 const loading = ref(true); // 加载中
 const categoryList: any = ref([]); // 分类的列表
-const categoryActive: any = ref({}); // 选中的分类
+const activeCategory = ref(''); // 当前选中的分类
 const processDefinitionList = ref([]); // 流程定义的列表
 
 // 实现 groupBy 功能
@@ -90,8 +99,8 @@ const handleGetProcessDefinitionList = async () => {
     filteredProcessDefinitionList.value = processDefinitionList.value;
 
     // 在获取完所有数据后，设置第一个有效分类为激活状态
-    if (availableCategories.value.length > 0 && !categoryActive.value?.code) {
-      categoryActive.value = availableCategories.value[0];
+    if (availableCategories.value.length > 0 && !activeCategory.value) {
+      activeCategory.value = availableCategories.value[0].code;
     }
   } catch {
     // 错误处理
@@ -101,16 +110,36 @@ const handleGetProcessDefinitionList = async () => {
 /** 搜索流程 */
 const filteredProcessDefinitionList = ref([]); // 用于存储搜索过滤后的流程定义
 const handleQuery = () => {
-  searchName.value.trim()
-    ? // 如果有搜索关键字，进行过滤
-      (filteredProcessDefinitionList.value = processDefinitionList.value.filter(
-        (definition: any) =>
-          definition.name
-            .toLowerCase()
-            .includes(searchName.value.toLowerCase()),
-      ))
-    : // 如果没有搜索关键字，恢复所有数据
-      (filteredProcessDefinitionList.value = processDefinitionList.value);
+  if (searchName.value.trim()) {
+    // 如果有搜索关键字，进行过滤
+    isSearching.value = true;
+    filteredProcessDefinitionList.value = processDefinitionList.value.filter(
+      (definition: any) =>
+        definition.name.toLowerCase().includes(searchName.value.toLowerCase()),
+    );
+
+    // 获取搜索结果中的分类
+    const searchResultGroups = groupBy(
+      filteredProcessDefinitionList.value,
+      'category',
+    );
+    const availableCategoryCodes = Object.keys(searchResultGroups);
+
+    // 如果有匹配的分类，切换到第一个包含匹配结果的分类
+    if (availableCategoryCodes.length > 0 && availableCategoryCodes[0]) {
+      activeCategory.value = availableCategoryCodes[0];
+    }
+  } else {
+    // 如果没有搜索关键字，恢复所有数据
+    isSearching.value = false;
+    filteredProcessDefinitionList.value = processDefinitionList.value;
+  }
+};
+
+/** 判断流程定义是否匹配搜索 */
+const isDefinitionMatchSearch = (definition: any) => {
+  if (!isSearching.value) return false;
+  return definition.name.toLowerCase().includes(searchName.value.toLowerCase());
 };
 
 /** 流程定义的分组 */
@@ -130,19 +159,6 @@ const processDefinitionGroup: any = computed(() => {
   return orderedGroup;
 });
 
-/** 左侧分类切换 */
-const handleCategoryClick = (category: any) => {
-  categoryActive.value = category;
-  const categoryRef = proxy.$refs[`category-${category.code}`]; // 获取点击分类对应的 DOM 元素
-  if (categoryRef?.length) {
-    const scrollWrapper = proxy.$refs.scrollWrapper; // 获取右侧滚动容器
-    const categoryOffsetTop = categoryRef[0].offsetTop;
-
-    // 滚动到对应位置
-    scrollWrapper.scrollTo({ top: categoryOffsetTop, behavior: 'smooth' });
-  }
-};
-
 /** 通过分类 code 获取对应的名称 */
 const getCategoryName = (categoryCode: string) => {
   return categoryList.value?.find((ctg: any) => ctg.code === categoryCode)
@@ -155,7 +171,7 @@ const processDefinitionDetailRef = ref();
 
 /** 处理选择流程的按钮操作 */
 const handleSelect = async (
-  row: BpmDefinitionApi.ProcessDefinitionVO,
+  row: BpmProcessDefinitionApi.ProcessDefinitionVO,
   formVariables?: any,
 ) => {
   // 设置选择的流程
@@ -163,45 +179,6 @@ const handleSelect = async (
   // 初始化流程定义详情
   await nextTick();
   processDefinitionDetailRef.value?.initProcessInfo(row, formVariables);
-};
-
-/** 处理滚动事件，和左侧分类联动 */
-const handleScroll = (e: any) => {
-  // 直接使用事件对象获取滚动位置
-  const scrollTop = e.scrollTop;
-
-  // 获取所有分类区域的位置信息
-  const categoryPositions = categoryList.value
-    .map((category: BpmCategoryApi.CategoryVO) => {
-      const categoryRef = proxy.$refs[`category-${category.code}`];
-      if (categoryRef?.[0]) {
-        return {
-          code: category.code,
-          offsetTop: categoryRef[0].offsetTop,
-          height: categoryRef[0].offsetHeight,
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
-
-  // 查找当前滚动位置对应的分类
-  let currentCategory = categoryPositions[0];
-  for (const position of categoryPositions) {
-    // 为了更好的用户体验，可以添加一个缓冲区域（比如 50px）
-    if (scrollTop >= position.offsetTop - 50) {
-      currentCategory = position;
-    } else {
-      break;
-    }
-  }
-
-  // 更新当前 active 的分类
-  if (currentCategory && categoryActive.value.code !== currentCategory.code) {
-    categoryActive.value = categoryList.value.find(
-      (c: CategoryVO) => c.code === currentCategory.code,
-    );
-  }
 };
 
 /** 过滤出有流程的分类列表。目的：只展示有流程的分类 */
@@ -219,6 +196,12 @@ const availableCategories = computed(() => {
   );
 });
 
+/** 获取 tab 的位置 */
+
+const tabPosition = computed(() => {
+  return window.innerWidth < 768 ? 'top' : 'left';
+});
+
 /** 初始化 */
 onMounted(() => {
   getList();
@@ -229,94 +212,96 @@ onMounted(() => {
   <Page auto-content-height>
     <!-- 第一步，通过流程定义的列表，选择对应的流程 -->
     <template v-if="!selectProcessDefinition">
-      <Input
-        v-model:value="searchName"
-        class="!w-50% mb-15px"
-        placeholder="请输入流程名称"
-        allow-clear
-        @input="handleQuery"
-        @clear="handleQuery"
-      >
-        <template #prefix>
-          <IconifyIcon icon="mdi:search-web" />
-        </template>
-      </Input>
       <Card
+        class="h-full"
+        title="全部流程"
         :class="{
           'process-definition-container': filteredProcessDefinitionList?.length,
         }"
-        :body-style="{
-          height: '100%',
-        }"
-        class="position-relative pb-20px h-700px"
         :loading="loading"
       >
-        <div
-          v-if="filteredProcessDefinitionList?.length"
-          class="flex flex-nowrap"
-        >
-          <div class="w-1/5">
-            <div class="flex flex-col">
-              <div
-                v-for="category in availableCategories"
-                :key="category.code"
-                class="p-10px text-14px flex cursor-pointer items-center rounded-md"
-                :class="
-                  categoryActive.code === category.code
-                    ? 'text-#3e7bff bg-#e8eeff'
-                    : ''
-                "
-                @click="handleCategoryClick(category)"
-              >
-                {{ category.name }}
-              </div>
-            </div>
-          </div>
-          <div class="w-4/5">
-            <div
-              ref="scrollWrapper"
-              class="h-700px overflow-y-auto"
-              @scroll="handleScroll"
+        <template #extra>
+          <div class="flex items-end">
+            <InputSearch
+              v-model:value="searchName"
+              class="!w-50% mb-15px"
+              placeholder="请输入流程名称检索"
+              allow-clear
+              @input="handleQuery"
+              @clear="handleQuery"
             >
-              <div
-                class="mb-20px pl-10px"
-                v-for="(definitions, categoryCode) in processDefinitionGroup"
-                :key="categoryCode"
-                :ref="`category-${categoryCode}`"
-              >
-                <h3 class="text-18px mb-10px mt-5px font-bold">
-                  {{ getCategoryName(categoryCode as any) }}
-                </h3>
-                <div class="gap3 grid grid-cols-3">
+              <template #prefix>
+                <IconifyIcon icon="mdi:search-web" />
+              </template>
+            </InputSearch>
+          </div>
+        </template>
+
+        <div v-if="filteredProcessDefinitionList?.length">
+          <Tabs v-model:active-key="activeCategory" :tab-position="tabPosition">
+            <Tabs.TabPane
+              v-for="category in availableCategories"
+              :key="category.code"
+              :tab="category.name"
+            >
+              <Row :gutter="[16, 16]">
+                <Col
+                  v-for="definition in processDefinitionGroup[category.code]"
+                  :key="definition.id"
+                  :xs="24"
+                  :sm="12"
+                  :md="8"
+                  :lg="6"
+                  :xl="4"
+                  @click="handleSelect(definition)"
+                >
                   <Card
-                    v-for="definition in definitions"
-                    :key="definition.id"
                     hoverable
-                    class="definition-item-card cursor-pointer"
-                    @click="handleSelect(definition)"
+                    class="definition-item-card w-full cursor-pointer"
+                    :class="{
+                      'search-match': isDefinitionMatchSearch(definition),
+                    }"
+                    :body-style="{
+                      width: '100%',
+                    }"
                   >
-                    <div class="flex">
+                    <div class="flex items-center">
                       <img
                         v-if="definition.icon"
                         :src="definition.icon"
-                        class="w-32px h-32px"
+                        class="h-12 w-12 object-contain"
+                        alt="流程图标"
                       />
-                      <div v-else class="flow-icon">
-                        <span style="font-size: 12px; color: #fff">
-                          <!-- {{ subString(definition.name, 0, 2) }} -->
-
-                          {{ definition.name }}
-                        </span>
+                      <div v-else class="flow-icon flex-shrink-0">
+                        <Tooltip :title="definition.name">
+                          <span class="text-xs text-white">
+                            {{ definition.name }}
+                          </span>
+                        </Tooltip>
                       </div>
-                      <span class="!ml-10px text-base">
-                        {{ definition.name }}
+                      <span class="ml-3 flex-1 truncate text-base">
+                        <Tooltip
+                          placement="topLeft"
+                          :title="`${definition.name}`"
+                        >
+                          {{ definition.name }}
+                        </Tooltip>
                       </span>
                     </div>
+
+                    <!-- TODO: 发起流程按钮 -->
+                    <!-- <template #actions>
+                      <div class="flex justify-end px-4">
+                        <Button type="link" @click="handleSelect(definition)">
+                          发起流程
+                        </Button>
+                      </div>
+                    </template> -->
                   </Card>
-                </div>
-              </div>
-            </div>
-          </div>
+                </Col>
+              </Row>
+            </Tabs.TabPane>
+          </Tabs>
         </div>
         <div v-else class="!py-200px text-center">
           <Space direction="vertical" size="large">
@@ -327,40 +312,44 @@ onMounted(() => {
     </template>
 
     <!-- 第二步，填写表单，进行流程的提交 -->
-    <!-- <ProcessDefinitionDetail
-    v-else
-    ref="processDefinitionDetailRef"
-    :select-process-definition="selectProcessDefinition"
-    @cancel="selectProcessDefinition = undefined"
-  /> -->
+    <ProcessDefinitionDetail
+      v-else
+      ref="processDefinitionDetailRef"
+      :select-process-definition="selectProcessDefinition"
+      @cancel="selectProcessDefinition = undefined"
+    />
   </Page>
 </template>
 
 <style lang="scss" scoped>
-.flow-icon {
-  display: flex;
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-  background-color: var(--ant-primary-color);
-  border-radius: 0.25rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.process-definition-container::before {
-  position: absolute;
-  left: 20.8%;
-  height: 100%;
-  border-left: 1px solid #e6e6e6;
-  content: '';
-}
-
-:deep() {
+.process-definition-container {
   .definition-item-card {
-    .ant-card-body {
-      padding: 14px;
+    .flow-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background-color: #3f73f7;
+      border-radius: 50%;
     }
+
+    &.search-match {
+      background-color: rgb(63 115 247 / 10%);
+      border: 1px solid #3f73f7;
+      animation: bounce 0.5s ease;
+    }
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
   }
 }
 </style>

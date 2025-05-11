@@ -1,7 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
 import type { BpmModelApi } from '#/api/bpm/model';
-import type { CandidateStrategyEnum, NodeTypeEnum } from '#/utils';
+import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '#/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -29,12 +29,12 @@ export namespace BpmProcessInstanceApi {
 
   // 审批节点信息
   export type ApprovalNodeInfo = {
-    candidateStrategy?: CandidateStrategyEnum;
+    candidateStrategy?: BpmCandidateStrategyEnum;
     candidateUsers?: User[];
     endTime?: Date;
     id: number;
     name: string;
-    nodeType: NodeTypeEnum;
+    nodeType: BpmNodeTypeEnum;
     startTime?: Date;
     status: number;
     tasks: ApprovalTaskInfo[];
