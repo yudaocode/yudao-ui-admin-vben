@@ -21,6 +21,8 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
+import { FileUpload, ImageUpload } from '#/components/upload';
+
 const ElButton = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/button/index'),
@@ -167,7 +169,9 @@ export type ComponentType =
   | 'CheckboxGroup'
   | 'DatePicker'
   | 'Divider'
+  | 'FileUpload'
   | 'IconPicker'
+  | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
@@ -315,6 +319,8 @@ async function initComponentAdapter() {
     },
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
     Upload: ElUpload,
+    FileUpload,
+    ImageUpload,
   };
 
   // 将组件注册到全局共享状态中
