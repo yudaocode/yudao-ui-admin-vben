@@ -23,6 +23,7 @@ const goToUrl = () => {
 };
 </script>
 
+<!-- TODO @puhui999：样式有点问题，间隔没了。可以看下 antd 版本的例子哈 -->
 <template>
   <ElAlert
     v-if="isDocAlertEnable()"

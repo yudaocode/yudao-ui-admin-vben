@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @xingyu：这个有可能 3 端复用么？想着是把 layouts 下的 components 没有这个目录哈；
 import { useVbenModal, VbenButton, VbenButtonGroup } from '@vben/common-ui';
 import { openWindow } from '@vben/utils';
 
