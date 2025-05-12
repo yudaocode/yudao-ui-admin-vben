@@ -180,6 +180,7 @@ export type ComponentType =
   | 'Select'
   | 'Space'
   | 'Switch'
+  | 'Textarea'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
@@ -323,6 +324,10 @@ async function initComponentAdapter() {
     Upload: ElUpload,
     FileUpload,
     ImageUpload,
+    Textarea: withDefaultPlaceholder(ElInput, 'input', {
+      rows: 3,
+      type: 'textarea',
+    }),
     RichTextarea,
   };
 
