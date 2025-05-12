@@ -196,6 +196,7 @@ setupVbenVxeTable({
             {
               ...props,
               ...opt,
+              text: true,
               icon: undefined,
               onClick: listen
                 ? () =>
