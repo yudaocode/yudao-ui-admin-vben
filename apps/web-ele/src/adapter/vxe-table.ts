@@ -135,7 +135,12 @@ setupVbenVxeTable({
     // 注册表格的操作按钮渲染器 cellRender: { name: 'CellOperation', options: ['edit', 'delete'] }
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
-        const defaultProps = { size: 'small', type: 'primary', ...props };
+        const defaultProps = {
+          size: 'small',
+          type: 'primary',
+          class: '!p-0',
+          ...props,
+        };
         let align = 'end';
         switch (column.align) {
           case 'center': {
