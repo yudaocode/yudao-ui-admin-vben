@@ -21,6 +21,7 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
+import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
 const ElButton = defineAsyncComponent(() =>
@@ -175,6 +176,7 @@ export type ComponentType =
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
+  | 'RichTextarea'
   | 'Select'
   | 'Space'
   | 'Switch'
@@ -321,6 +323,7 @@ async function initComponentAdapter() {
     Upload: ElUpload,
     FileUpload,
     ImageUpload,
+    RichTextarea,
   };
 
   // 将组件注册到全局共享状态中
