@@ -13,6 +13,15 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     children: [
       {
+        name: 'Workspace',
+        path: '/workspace',
+        component: () => import('#/views/dashboard/workspace/index.vue'),
+        meta: {
+          icon: 'carbon:workspace',
+          title: $t('page.dashboard.workspace'),
+        },
+      },
+      {
         name: 'Analytics',
         path: '/analytics',
         component: () => import('#/views/dashboard/analytics/index.vue'),
@@ -22,16 +31,17 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.dashboard.analytics'),
         },
       },
-      {
-        name: 'Workspace',
-        path: '/workspace',
-        component: () => import('#/views/dashboard/workspace/index.vue'),
-        meta: {
-          icon: 'carbon:workspace',
-          title: $t('page.dashboard.workspace'),
-        },
-      },
     ],
+  },
+  {
+    name: 'Profile',
+    path: '/profile',
+    component: () => import('#/views/_core/profile/index.vue'),
+    meta: {
+      icon: 'ant-design:profile-outlined',
+      title: $t('ui.widgets.profile'),
+      hideInMenu: true,
+    },
   },
 ];
 

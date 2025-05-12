@@ -5,8 +5,7 @@ import { nextTick, ref, watch } from 'vue';
 
 import { formatDateTime } from '@vben/utils';
 
-import { VxeColumn, VxeTable } from 'vxe-table';
-
+import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
 
 const props = defineProps<{

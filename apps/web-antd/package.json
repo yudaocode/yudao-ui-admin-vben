@@ -53,8 +53,7 @@
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
-    "vue-router": "catalog:",
-    "vxe-table": "catalog:"
+    "vue-router": "catalog:"
   },
   "devDependencies": {
     "@types/crypto-js": "catalog:"

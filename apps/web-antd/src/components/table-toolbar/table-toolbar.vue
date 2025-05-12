@@ -1,14 +1,15 @@
 <!-- add by puhui999：vxe table 工具栏二次封装，提供给 vxe 原生列表使用 -->
 <script setup lang="ts">
-import type { VxeToolbarInstance } from 'vxe-table';
+import type { VxeToolbarInstance } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
 import { useContentMaximize, useRefresh } from '@vben/hooks';
-import { Fullscreen, RefreshCw, Search } from '@vben/icons';
+import { Expand, MsRefresh, Search, TMinimize } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
-import { VxeToolbar } from 'vxe-table';
+import { Button, Tooltip } from 'ant-design-vue';
+
+import { VxeToolbar } from '#/adapter/vxe-table';
 
 /** 列表工具栏封装 */
 defineOptions({ name: 'TableToolbar' });
@@ -20,7 +21,8 @@ const props = defineProps<{
 const emits = defineEmits(['update:hiddenSearch']);
 
 const toolbarRef = ref<VxeToolbarInstance>();
-const { toggleMaximizeAndTabbarHidden } = useContentMaximize();
+const { toggleMaximizeAndTabbarHidden, contentIsMaximize } =
+  useContentMaximize();
 const { refresh } = useRefresh();
 
 /** 隐藏搜索栏 */
@@ -37,20 +39,41 @@ defineExpose({
   <VxeToolbar ref="toolbarRef" custom>
     <template #toolPrefix>
       <slot></slot>
-      <!-- TODO @puhui999：貌似 icon 没和 vxe 对上。可以考虑用 /Users/yunai/Java/yudao-ui-admin-vben-v5/packages/icons/src/iconify  -->
-      <Button class="ml-2 font-[8px]" shape="circle" @click="onHiddenSearchBar">
-        <Search :size="15" />
-      </Button>
-      <Button class="ml-2 font-[8px]" shape="circle" @click="refresh">
-        <RefreshCw :size="15" />
-      </Button>
-      <Button
-        class="ml-2 font-[8px]"
-        shape="circle"
-        @click="toggleMaximizeAndTabbarHidden"
-      >
-        <Fullscreen :size="15" />
-      </Button>
+      <Tooltip placement="bottom">
+        <template #title>
+          <div class="max-w-[200px]">搜索</div>
+        </template>
+        <Button
+          class="ml-2 font-[8px]"
+          shape="circle"
+          @click="onHiddenSearchBar"
+        >
+          <Search :size="15" />
+        </Button>
+      </Tooltip>
+      <Tooltip placement="bottom">
+        <template #title>
+          <div class="max-w-[200px]">刷新</div>
+        </template>
+        <Button class="ml-2 font-[8px]" shape="circle" @click="refresh">
+          <MsRefresh :size="15" />
+        </Button>
+      </Tooltip>
+      <Tooltip placement="bottom">
+        <template #title>
+          <div class="max-w-[200px]">
+            {{ contentIsMaximize ? '还原' : '全屏' }}
+          </div>
+        </template>
+        <Button
+          class="ml-2 font-[8px]"
+          shape="circle"
+          @click="toggleMaximizeAndTabbarHidden"
+        >
+          <Expand v-if="!contentIsMaximize" :size="15" />
+          <TMinimize v-else :size="15" />
+        </Button>
+      </Tooltip>
     </template>
   </VxeToolbar>
 </template>

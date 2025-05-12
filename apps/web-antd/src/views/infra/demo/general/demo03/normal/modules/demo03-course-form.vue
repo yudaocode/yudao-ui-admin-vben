@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from 'vxe-table';
-
+import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { h, ref, watch } from 'vue';
@@ -8,8 +7,8 @@ import { h, ref, watch } from 'vue';
 import { Plus } from '@vben/icons';
 
 import { Button, Input } from 'ant-design-vue';
-import { VxeColumn, VxeTable } from 'vxe-table';
 
+import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/normal';
 import { $t } from '#/locales';
 

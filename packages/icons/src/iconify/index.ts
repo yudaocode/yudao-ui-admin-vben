@@ -12,11 +12,15 @@ export const MdiGoogle = createIconifyIcon('mdi:google');
 
 export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 
-export const AntdDingTalk = createIconifyIcon('ant-design:dingtalk');
-
 export const MdiCheckboxMarkedCircleOutline = createIconifyIcon(
   'mdi:checkbox-marked-circle-outline',
 );
+
+export const MsRefresh = createIconifyIcon('material-symbols:refresh-rounded');
+
+export const TMinimize = createIconifyIcon('tabler:arrows-minimize');
+
+export const AntdDingTalk = createIconifyIcon('ant-design:dingtalk');
 
 export const AntdProfileOutlined = createIconifyIcon(
   'ant-design:profile-outlined',
