@@ -95,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入邮箱',
       },
-      rules: z.string().email('请输入正确的邮箱地址').optional(),
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
     },
     {
       fieldName: 'status',

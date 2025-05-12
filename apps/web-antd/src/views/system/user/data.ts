@@ -83,7 +83,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
-      rules: z.string().email('邮箱格式不正确').optional(),
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
     },
     {
       fieldName: 'mobile',
