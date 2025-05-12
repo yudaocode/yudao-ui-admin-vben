@@ -45,7 +45,7 @@ setupVbenForm<ComponentType>({
       if (value === undefined || value === null || value.length === 0) {
         return true;
       } else if (!MOBILE_REGEX.test(value)) {
-        return $t('ui.formRules.phone', [ctx.label]);
+        return $t('ui.formRules.mobile', [ctx.label]);
       }
       return true;
     },
@@ -55,7 +55,7 @@ setupVbenForm<ComponentType>({
         return $t('ui.formRules.required', [ctx.label]);
       }
       if (!MOBILE_REGEX.test(value)) {
-        return $t('ui.formRules.phone', [ctx.label]);
+        return $t('ui.formRules.mobile', [ctx.label]);
       }
       return true;
     },
