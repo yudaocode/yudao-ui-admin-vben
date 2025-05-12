@@ -33,13 +33,13 @@ import DictTag from '#/components/dict-tag/dict-tag.vue';
 import {
   BpmModelFormType,
   BpmModelType,
+  BpmTaskStatusEnum,
   DICT_TYPE,
   registerComponent,
   setConfAndFields2,
-  TaskStatusEnum,
 } from '#/utils';
 
-import TimeLine from './modules/time-line.vue';
+import ProcessInstanceTimeline from './modules/time-line.vue';
 
 defineOptions({ name: 'BpmProcessInstanceDetail' });
 
@@ -79,13 +79,13 @@ const auditIconsMap: {
     | typeof SvgBpmRejectIcon
     | typeof SvgBpmRunningIcon;
 } = {
-  [TaskStatusEnum.RUNNING]: SvgBpmRunningIcon,
-  [TaskStatusEnum.APPROVE]: SvgBpmApproveIcon,
-  [TaskStatusEnum.REJECT]: SvgBpmRejectIcon,
-  [TaskStatusEnum.CANCEL]: SvgBpmCancelIcon,
-  [TaskStatusEnum.APPROVING]: SvgBpmApproveIcon,
-  [TaskStatusEnum.RETURN]: SvgBpmRejectIcon,
-  [TaskStatusEnum.WAIT]: SvgBpmRunningIcon,
+  [BpmTaskStatusEnum.RUNNING]: SvgBpmRunningIcon,
+  [BpmTaskStatusEnum.APPROVE]: SvgBpmApproveIcon,
+  [BpmTaskStatusEnum.REJECT]: SvgBpmRejectIcon,
+  [BpmTaskStatusEnum.CANCEL]: SvgBpmCancelIcon,
+  [BpmTaskStatusEnum.APPROVING]: SvgBpmApproveIcon,
+  [BpmTaskStatusEnum.RETURN]: SvgBpmRejectIcon,
+  [BpmTaskStatusEnum.WAIT]: SvgBpmRunningIcon,
 };
 
 // ========== 申请信息 ==========
@@ -321,23 +321,23 @@ onMounted(async () => {
                 </Col>
                 <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8">
                   <div class="mt-2">
-                    <TimeLine :activity-nodes="activityNodes" />
+                    <ProcessInstanceTimeline :activity-nodes="activityNodes" />
                   </div>
                 </Col>
               </Row>
             </TabPane>
 
             <TabPane tab="流程图" key="diagram">
-              <div>流程图</div>
+              <div>待开发</div>
             </TabPane>
 
             <TabPane tab="流转记录" key="record">
-              <div>流转记录</div>
+              <div>待开发</div>
             </TabPane>
 
             <!-- TODO 待开发 -->
             <TabPane tab="流转评论" key="comment" v-if="false">
-              <div>流转评论</div>
+              <div>待开发</div>
             </TabPane>
           </Tabs>
         </div>

@@ -466,7 +466,7 @@ export const BpmAutoApproveType = {
 };
 
 // 候选人策略枚举 （ 用于审批节点。抄送节点 )
-export enum CandidateStrategyEnum {
+export enum BpmCandidateStrategyEnum {
   /**
    * 审批人自选
    */
@@ -532,7 +532,7 @@ export enum CandidateStrategyEnum {
 /**
  * 节点类型
  */
-export enum NodeTypeEnum {
+export enum BpmNodeTypeEnum {
   /**
    * 子流程节点
    */
@@ -597,7 +597,7 @@ export enum NodeTypeEnum {
 /**
  * 任务状态枚举
  */
-export enum TaskStatusEnum {
+export enum BpmTaskStatusEnum {
   /**
    * 审批通过
    */
@@ -633,4 +633,37 @@ export enum TaskStatusEnum {
    * 待审批
    */
   WAIT = 0,
+}
+
+/**
+ * 节点 Id 枚举
+ */
+export enum BpmNodeIdEnum {
+  /**
+   * 发起人节点 Id
+   */
+  END_EVENT_NODE_ID = 'EndEvent',
+
+  /**
+   * 发起人节点 Id
+   */
+  START_USER_NODE_ID = 'StartUserNode',
+}
+
+/**
+ * 表单权限的枚举
+ */
+export enum BpmFieldPermissionType {
+  /**
+   * 隐藏
+   */
+  NONE = '3',
+  /**
+   * 只读
+   */
+  READ = '1',
+  /**
+   * 编辑
+   */
+  WRITE = '2',
 }

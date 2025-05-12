@@ -52,7 +52,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   cancel: [];
-  confirm: [value: number[]];
+  closed: [];
+  confirm: [value: SystemUserApi.User[]];
   'update:value': [value: number[]];
 }>();
 
@@ -167,9 +168,12 @@ const loadUserData = async (pageNo: number, pageSize: number) => {
 
 // 更新右侧列表数据
 const updateRightListData = () => {
-  // 获取选中的用户
+  // 使用 Set 来去重选中的用户ID
+  const uniqueSelectedIds = new Set(selectedUserIds.value);
+
+  // 获取选中的用户，确保不重复
   const selectedUsers = userList.value.filter((user) =>
-    selectedUserIds.value.includes(String(user.id)),
+    uniqueSelectedIds.has(String(user.id)),
   );
 
   // 应用搜索过滤
@@ -181,8 +185,10 @@ const updateRightListData = () => {
       )
     : selectedUsers;
 
-  // 更新总数
-  rightListState.value.pagination.total = filteredUsers.length;
+  // 更新总数（使用 Set 确保唯一性）
+  rightListState.value.pagination.total = new Set(
+    filteredUsers.map((user) => user.id),
+  ).size;
 
   // 应用分页
   const { current, pageSize } = rightListState.value.pagination;
@@ -219,8 +225,9 @@ const handleUserSearch = async (direction: string, value: string) => {
 
 // 处理用户选择变化
 const handleUserChange = (targetKeys: string[]) => {
-  selectedUserIds.value = targetKeys;
-  emit('update:value', targetKeys.map(Number));
+  // 使用 Set 来去重选中的用户ID
+  selectedUserIds.value = [...new Set(targetKeys)];
+  emit('update:value', selectedUserIds.value.map(Number));
   updateRightListData();
 };
 
@@ -258,7 +265,7 @@ const resetData = () => {
 };
 
 // 打开弹窗
-const open = async () => {
+const open = async (userIds: string[]) => {
   resetData();
   loading.value = true;
   try {
@@ -273,15 +280,22 @@ const open = async () => {
     await loadUserData(1, leftListState.value.pagination.pageSize);
 
     // 设置已选用户
-    if (props.value?.length) {
-      selectedUserIds.value = props.value.map(String);
-      // 加载已选用户的完整信息
+    if (userIds?.length) {
+      selectedUserIds.value = userIds.map(String);
+      // 加载已选用户的完整信息  TODO   目前接口暂不支持 多个用户ID 查询， 需要后端支持
       const { list } = await getUserPage({
         pageNo: 1,
-        pageSize: props.value.length,
-        userIds: props.value,
+        pageSize: 100, // 临时使用固定值确保能加载所有已选用户
+        userIds,
       });
-      userList.value.push(...list);
+      // 使用 Map 来去重，以用户 ID 为 key
+      const userMap = new Map(userList.value.map((user) => [user.id, user]));
+      list.forEach((user) => {
+        if (!userMap.has(user.id)) {
+          userMap.set(user.id, user);
+        }
+      });
+      userList.value = [...userMap.values()];
       updateRightListData();
     }
 
@@ -344,7 +358,12 @@ const handleConfirm = () => {
     message.warning('请选择用户');
     return;
   }
-  emit('confirm', selectedUserIds.value.map(Number));
+  emit(
+    'confirm',
+    userList.value.filter((user) =>
+      selectedUserIds.value.includes(String(user.id)),
+    ),
+  );
   modalApi.close();
 };
 
@@ -360,6 +379,7 @@ const handleCancel = () => {
 
 // 关闭弹窗
 const handleClosed = () => {
+  emit('closed');
   resetData();
 };
 
@@ -421,7 +441,7 @@ defineExpose({
             @search="handleUserSearch"
           >
             <template #render="item">
-              {{ item.nickname }} ({{ item.id }})
+              <span>{{ item?.nickname }} ({{ item?.username }})</span>
             </template>
 
             <template #footer="{ direction }">
