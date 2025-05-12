@@ -4,6 +4,7 @@
  * @param ms 毫秒
  * @returns {string} 字符串
  */
+// TODO @xingyu：这个要融合到哪里去 date 么？
 export function formatPast2(ms: number): string {
   // 定义时间单位常量，便于维护
   const SECOND = 1000;

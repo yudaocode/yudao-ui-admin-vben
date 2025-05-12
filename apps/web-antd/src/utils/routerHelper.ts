@@ -1,6 +1,7 @@
 import { defineAsyncComponent } from 'vue';
 
 const modules = import.meta.glob('../views/**/*.{vue,tsx}');
+// TODO @xingyu：这个要不要融合到哪个 router util 里？
 /**
  * 注册一个异步组件
  * @param componentPath 例:/bpm/oa/leave/detail
