@@ -265,6 +265,7 @@ onMounted(() => {
                       width: '100%',
                     }"
                   >
+                    <!-- TODO @ziye：使用名字作为图标，缺少了 -->
                     <div class="flex items-center">
                       <img
                         v-if="definition.icon"
