@@ -10,6 +10,7 @@ import { formatDateTime, isEmpty } from '@vben/utils';
 
 import { Avatar, Button, Image, Tooltip } from 'ant-design-vue';
 
+import { TimeLine } from '#/components/time-line';
 import { UserSelectModal } from '#/components/user-select-modal';
 import {
   BpmCandidateStrategyEnum,
@@ -215,12 +216,11 @@ const handleUserSelectCancel = () => {
 };
 </script>
 
-<!-- TODO @ziye：antd 组件，使用大写哈；目前项目风格是这样的 -->
 <template>
   <div>
-    <a-timeline class="pt-20px">
+    <TimeLine class="pt-20px">
       <!-- 遍历每个审批节点 -->
-      <a-timeline-item
+      <TimeLine.Item
         v-for="(activity, index) in activityNodes"
         :key="index"
         :color="getApprovalNodeColor(activity.status)"
@@ -449,8 +449,8 @@ const handleUserSelectCancel = () => {
             </div>
           </div>
         </div>
-      </a-timeline-item>
-    </a-timeline>
+      </TimeLine.Item>
+    </TimeLine>
 
     <!-- 用户选择弹窗 -->
     <UserSelectModal
