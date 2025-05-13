@@ -333,10 +333,12 @@ export function useGridColumns<T = SystemUserApi.User>(
             code: 'edit',
             show: hasAccessByCodes(['system:user:update']),
           },
+          // TODO @xingyu：删除一直弹出来
           {
             code: 'delete',
             show: hasAccessByCodes(['system:user:delete']),
           },
+          // TODO @xingyu：后面的按钮，无法展示
           {
             code: 'assign-role',
             text: '分配角色',

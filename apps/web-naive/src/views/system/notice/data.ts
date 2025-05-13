@@ -37,6 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @xingyu：测试有问题
     {
       fieldName: 'content',
       label: '公告内容',
@@ -54,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
+    // TODO @xingyu：测试有问题
     {
       fieldName: 'remark',
       label: '备注',
