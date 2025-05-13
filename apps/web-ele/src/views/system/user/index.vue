@@ -221,7 +221,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               @click="onCreate"
               v-access:code="['system:user:create']"
             >
-              <Plus class="size-5" />
+              <Plus class="mr-2 size-5" />
               {{ $t('ui.actionTitle.create', ['用户']) }}
             </ElButton>
             <ElButton
@@ -230,7 +230,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               @click="onExport"
               v-access:code="['system:user:export']"
             >
-              <Download class="size-5" />
+              <Download class="mr-2 size-5" />
               {{ $t('ui.actionTitle.export') }}
             </ElButton>
             <ElButton
@@ -239,7 +239,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               @click="onImport"
               v-access:code="['system:user:import']"
             >
-              <Upload class="size-5" />
+              <Upload class="mr-2 size-5" />
               {{ $t('ui.actionTitle.import', ['用户']) }}
             </ElButton>
           </template>

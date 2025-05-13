@@ -122,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           @click="onCreate"
           v-access:code="['system:oauth2-client:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', [' OAuth2.0 客户端']) }}
         </ElButton>
       </template>

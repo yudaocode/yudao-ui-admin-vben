@@ -140,7 +140,7 @@ watch(
           @click="onCreate"
           v-access:code="['system:dict:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', ['字典数据']) }}
         </ElButton>
         <ElButton
@@ -149,7 +149,7 @@ watch(
           @click="onExport"
           v-access:code="['system:dict:export']"
         >
-          <Download class="size-5" />
+          <Download class="mr-2 size-5" />
           {{ $t('ui.actionTitle.export') }}
         </ElButton>
       </template>
