@@ -149,7 +149,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
-    // TODO @puhui999：貌似创建时间，出不来；
     {
       fieldName: 'createTime',
       label: '创建时间',

@@ -142,7 +142,7 @@ onMounted(async () => {
           @click="onCreate"
           v-access:code="['system:dept:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', ['部门']) }}
         </ElButton>
         <ElButton class="ml-2" @click="toggleExpand">

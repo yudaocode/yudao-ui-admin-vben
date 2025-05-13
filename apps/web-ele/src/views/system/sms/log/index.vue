@@ -98,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           @click="onExport"
           v-access:code="['system:sms-log:export']"
         >
-          <Download class="size-5" />
+          <Download class="mr-2 size-5" />
           {{ $t('ui.actionTitle.export') }}
         </ElButton>
       </template>

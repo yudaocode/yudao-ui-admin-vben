@@ -2,7 +2,6 @@ import type { Recordable } from '@vben/types';
 
 import { h } from 'vue';
 
-// TODO @puhui999：搜索的重置按钮，颜色不对；antd 是白色的
 import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
@@ -19,7 +18,6 @@ import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
 
-// TODO @puhui999：貌似新增、和导出按钮，和 antd 有点点差别，这个是要写样式哇？
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
@@ -137,7 +135,11 @@ setupVbenVxeTable({
     // 注册表格的操作按钮渲染器 cellRender: { name: 'CellOperation', options: ['edit', 'delete'] }
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
-        const defaultProps = { size: 'small', type: 'primary', ...props };
+        const defaultProps = {
+          type: 'primary',
+          class: '!p-0',
+          ...props,
+        };
         let align = 'end';
         switch (column.align) {
           case 'center': {
@@ -162,8 +164,6 @@ setupVbenVxeTable({
             text: $t('common.edit'),
           },
         };
-        // TODO @puhui999：貌似按钮相比 antd 版本，小一点？
-        // TODO @puhui999：貌似按钮之间的间距，大了一点？
         const operations: Array<Recordable<any>> = (
           options || ['edit', 'delete']
         )
@@ -195,6 +195,7 @@ setupVbenVxeTable({
             {
               ...props,
               ...opt,
+              text: true,
               icon: undefined,
               onClick: listen
                 ? () =>
