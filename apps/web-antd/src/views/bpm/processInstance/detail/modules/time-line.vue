@@ -8,9 +8,8 @@ import { useRouter } from 'vue-router';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime, isEmpty } from '@vben/utils';
 
-import { Avatar, Button, Image, Tooltip } from 'ant-design-vue';
+import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
 
-import { TimeLine } from '#/components/time-line';
 import { UserSelectModal } from '#/components/user-select-modal';
 import {
   BpmCandidateStrategyEnum,
@@ -218,9 +217,9 @@ const handleUserSelectCancel = () => {
 
 <template>
   <div>
-    <TimeLine class="pt-20px">
+    <Timeline class="pt-20px">
       <!-- 遍历每个审批节点 -->
-      <TimeLine.Item
+      <Timeline.Item
         v-for="(activity, index) in activityNodes"
         :key="index"
         :color="getApprovalNodeColor(activity.status)"
@@ -449,8 +448,8 @@ const handleUserSelectCancel = () => {
             </div>
           </div>
         </div>
-      </TimeLine.Item>
-    </TimeLine>
+      </Timeline.Item>
+    </Timeline>
 
     <!-- 用户选择弹窗 -->
     <UserSelectModal
