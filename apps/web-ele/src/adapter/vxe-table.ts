@@ -138,7 +138,6 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
         const defaultProps = {
-          size: 'small',
           type: 'primary',
           class: '!p-0',
           ...props,
@@ -167,8 +166,6 @@ setupVbenVxeTable({
             text: $t('common.edit'),
           },
         };
-        // TODO @puhui999：貌似按钮相比 antd 版本，小一点？
-        // TODO @puhui999：貌似按钮之间的间距，大了一点？
         const operations: Array<Recordable<any>> = (
           options || ['edit', 'delete']
         )
