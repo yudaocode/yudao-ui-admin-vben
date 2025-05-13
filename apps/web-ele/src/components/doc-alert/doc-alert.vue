@@ -23,16 +23,12 @@ const goToUrl = () => {
 };
 </script>
 
-<!-- TODO @puhui999：样式有点问题，间隔没了。可以看下 antd 版本的例子哈 -->
 <template>
-  <ElAlert
-    v-if="isDocAlertEnable()"
-    type="info"
-    :closable="false"
-    class="mb-2 rounded"
-  >
-    <ElLink type="primary" @click="goToUrl">
-      【{{ title }}】文档地址：{{ url }}
-    </ElLink>
-  </ElAlert>
+  <div class="mb-2 rounded">
+    <ElAlert v-if="isDocAlertEnable()" type="info" :closable="false" show-icon>
+      <ElLink type="primary" @click="goToUrl">
+        【{{ title }}】文档地址：{{ url }}
+      </ElLink>
+    </ElAlert>
+  </div>
 </template>
