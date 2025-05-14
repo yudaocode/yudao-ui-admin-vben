@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import type { NotificationItem } from '@vben/layouts';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
-import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
+import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, MdiGithub } from '@vben/icons';
+import {
+  AntdProfileOutlined,
+  BookOpenText,
+  CircleHelp,
+  MdiGithub,
+} from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -15,52 +20,43 @@ import {
 } from '@vben/layouts';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
-import { openWindow } from '@vben/utils';
+import { formatDateTime, openWindow } from '@vben/utils';
 
+import {
+  getUnreadNotifyMessageCount,
+  getUnreadNotifyMessageList,
+  updateAllNotifyMessageRead,
+  updateNotifyMessageRead,
+} from '#/api/system/notify/message';
 import { $t } from '#/locales';
+import { router } from '#/router';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([
-  {
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-]);
+import Help from './components/help.vue';
+import TenantDropdown from './components/tenant-dropdown.vue';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
-const showDot = computed(() =>
-  notifications.value.some((item) => !item.isRead),
-);
+
+const notifications = ref<NotificationItem[]>([]);
+const unreadCount = ref(0);
+const showDot = computed(() => unreadCount.value > 0);
+
+const [HelpModal, helpModalApi] = useVbenModal({
+  connectedComponent: Help,
+});
 
 const menus = computed(() => [
+  {
+    handler: () => {
+      router.push({ name: 'Profile' });
+    },
+    icon: AntdProfileOutlined,
+    text: $t('ui.widgets.profile'),
+  },
   {
     handler: () => {
       openWindow(VBEN_DOC_URL, {
@@ -81,9 +77,7 @@ const menus = computed(() => [
   },
   {
     handler: () => {
-      openWindow(`${VBEN_GITHUB_URL}/issues`, {
-        target: '_blank',
-      });
+      helpModalApi.open();
     },
     icon: CircleHelp,
     text: $t('ui.widgets.qa'),
@@ -98,19 +92,83 @@ async function handleLogout() {
   await authStore.logout(false);
 }
 
-function handleNoticeClear() {
+/** 获得未读消息数 */
+async function handleNotificationGetUnreadCount() {
+  unreadCount.value = await getUnreadNotifyMessageCount();
+}
+
+/** 获得消息列表 */
+async function handleNotificationGetList() {
+  const list = await getUnreadNotifyMessageList();
+  notifications.value = list.map((item) => ({
+    avatar: preferences.app.defaultAvatar,
+    date: formatDateTime(item.createTime) as string,
+    isRead: false,
+    id: item.id,
+    message: item.templateContent,
+    title: item.templateNickname,
+  }));
+}
+
+/** 跳转我的站内信 */
+function handleNotificationViewAll() {
+  router.push({
+    name: 'MyNotifyMessage',
+  });
+}
+
+/** 标记所有已读 */
+async function handleNotificationMakeAll() {
+  await updateAllNotifyMessageRead();
+  unreadCount.value = 0;
   notifications.value = [];
 }
 
-function handleMakeAll() {
-  notifications.value.forEach((item) => (item.isRead = true));
+/** 清空通知 */
+async function handleNotificationClear() {
+  handleNotificationMakeAll();
 }
+
+/** 标记单个已读 */
+async function handleNotificationRead(item: NotificationItem) {
+  if (!item.id) {
+    return;
+  }
+  await updateNotifyMessageRead([item.id]);
+  await handleNotificationGetUnreadCount();
+  notifications.value = notifications.value.filter((n) => n.id !== item.id);
+}
+
+/** 处理通知打开 */
+function handleNotificationOpen(open: boolean) {
+  if (!open) {
+    return;
+  }
+  handleNotificationGetList();
+  handleNotificationGetUnreadCount();
+}
+
+// ========== 初始化 ==========
+onMounted(() => {
+  // 首次加载未读数量
+  handleNotificationGetUnreadCount();
+  // 轮询刷新未读数量
+  setInterval(
+    () => {
+      if (userStore.userInfo) {
+        handleNotificationGetUnreadCount();
+      }
+    },
+    1000 * 60 * 2,
+  );
+});
+
 watch(
   () => preferences.app.watermark,
   async (enable) => {
     if (enable) {
       await updateWatermark({
-        content: `${userStore.userInfo?.username} - ${userStore.userInfo?.realName}`,
+        content: `${userStore.userInfo?.id} - ${userStore.userInfo?.nickname}`,
       });
     } else {
       destroyWatermark();
@@ -128,9 +186,9 @@ watch(
       <UserDropdown
         :avatar
         :menus
-        :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
-        tag-text="Pro"
+        :text="userStore.userInfo?.nickname"
+        :description="userStore.userInfo?.email"
+        :tag-text="userStore.userInfo?.username"
         @logout="handleLogout"
       />
     </template>
@@ -138,9 +196,15 @@ watch(
       <Notification
         :dot="showDot"
         :notifications="notifications"
-        @clear="handleNoticeClear"
-        @make-all="handleMakeAll"
+        @clear="handleNotificationClear"
+        @make-all="handleNotificationMakeAll"
+        @view-all="handleNotificationViewAll"
+        @open="handleNotificationOpen"
+        @read="handleNotificationRead"
       />
+    </template>
+    <template #header-right-1>
+      <TenantDropdown class="w-30 mr-2" />
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal
@@ -154,4 +218,5 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <HelpModal />
 </template>
