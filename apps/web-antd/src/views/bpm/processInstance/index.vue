@@ -23,7 +23,7 @@ import { BpmProcessInstanceStatus, DICT_TYPE } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-defineOptions({ name: 'BpmProcessInstanceManager' });
+defineOptions({ name: 'BpmProcessInstanceMy' });
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
