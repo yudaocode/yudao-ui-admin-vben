@@ -6,7 +6,12 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { ElDescriptions, ElDescriptionsItem, ElTimeline, ElTimelineItem } from 'element-plus';
+import {
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElTimeline,
+  ElTimelineItem,
+} from 'element-plus';
 
 import { getJob, getJobNextTimes } from '#/api/infra/job';
 import { DictTag } from '#/components/dict-tag';
