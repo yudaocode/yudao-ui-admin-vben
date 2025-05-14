@@ -37,7 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：测试有问题
+    // TODO @xingyu：富文本待优化
     {
       fieldName: 'content',
       label: '公告内容',
@@ -55,12 +55,12 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
-    // TODO @xingyu：测试有问题
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         placeholder: '请输入备注',
       },
     },
