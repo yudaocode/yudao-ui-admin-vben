@@ -57,7 +57,6 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.setValues(data);
   },
 });
-// TODO @puhui999：重置密码展示不对；
 </script>
 
 <template>

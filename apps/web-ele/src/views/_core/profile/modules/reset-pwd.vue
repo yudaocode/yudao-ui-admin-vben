@@ -14,7 +14,11 @@ const [Form, formApi] = useVbenForm({
   },
   schema: [
     {
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
+      componentProps: {
+        passwordStrength: true,
+        placeholder: $t('authentication.password'),
+      },
       fieldName: 'oldPassword',
       label: '旧密码',
       rules: z
@@ -23,7 +27,11 @@ const [Form, formApi] = useVbenForm({
         .max(20, '密码长度不能超过 20 个字符'),
     },
     {
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
+      componentProps: {
+        passwordStrength: true,
+        placeholder: '请输入新密码',
+      },
       dependencies: {
         rules(values) {
           return z
@@ -42,7 +50,11 @@ const [Form, formApi] = useVbenForm({
       rules: 'required',
     },
     {
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
+      componentProps: {
+        passwordStrength: true,
+        placeholder: $t('authentication.confirmPassword'),
+      },
       dependencies: {
         rules(values) {
           return z

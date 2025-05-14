@@ -3,6 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { useAccess } from '@vben/access';
+import { $t } from '@vben/locales';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -132,31 +133,50 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'newPassword',
-      label: '新密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
+        passwordStrength: true,
         placeholder: '请输入新密码',
       },
+      dependencies: {
+        rules(values) {
+          return z
+            .string({ message: '请输入新密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value !== values.oldPassword,
+              '新旧密码不能相同',
+            );
+        },
+        triggerFields: ['newPassword', 'oldPassword'],
+      },
+      fieldName: 'newPassword',
+      label: '新密码',
       rules: 'required',
     },
     {
-      fieldName: 'confirmPassword',
-      label: '确认密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
-        placeholder: '请再次输入新密码',
+        passwordStrength: true,
+        placeholder: $t('authentication.confirmPassword'),
       },
       dependencies: {
-        rules(values: Record<string, any>) {
-          const { newPassword } = values;
+        rules(values) {
           return z
-            .string()
-            .nonempty('确认密码不能为空')
-            .refine((value) => value === newPassword, '两次输入的密码不一致');
+            .string({ message: '请输入确认密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value === values.newPassword,
+              '新密码和确认密码不一致',
+            );
         },
-        triggerFields: ['newPassword'],
+        triggerFields: ['newPassword', 'confirmPassword'],
       },
+      fieldName: 'confirmPassword',
+      label: '确认密码',
+      rules: 'required',
     },
   ];
 }
