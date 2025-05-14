@@ -150,6 +150,7 @@ export function useGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
+      // TODO @puhui999：headerAlign 要使用 headerAlign: 'center' 么？看着现在分成了 align 和 headerAlign 两种
       headerAlign: 'center',
       showOverflow: false,
       cellRender: {

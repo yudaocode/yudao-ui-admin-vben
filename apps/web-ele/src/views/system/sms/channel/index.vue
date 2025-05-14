@@ -127,7 +127,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           @click="onCreate"
           v-access:code="['system:sms-channel:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', ['短信渠道']) }}
         </ElButton>
         <ElButton
@@ -136,7 +136,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           @click="onExport"
           v-access:code="['system:sms-channel:export']"
         >
-          <Download class="size-5" />
+          <Download class="mr-2 size-5" />
           {{ $t('ui.actionTitle.export') }}
         </ElButton>
       </template>

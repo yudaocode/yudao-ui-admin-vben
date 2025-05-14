@@ -47,6 +47,24 @@ const routes: RouteRecordRaw[] = [
           };
         },
       },
+
+      /** 编辑流程表单 */
+      {
+        path: '/bpm/manager/form/edit',
+        name: 'BpmFormEditor',
+        component: () => import('#/views/bpm/form/editor.vue'),
+        meta: {
+          title: '编辑流程表单',
+          activePath: '/bpm/manager/form',
+        },
+        props: (route) => {
+          return {
+            id: route.query.id,
+            type: route.query.type,
+            copyId: route.query.copyId,
+          };
+        },
+      },
     ],
   },
 ];

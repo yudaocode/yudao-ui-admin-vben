@@ -67,7 +67,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid table-title="地区列表">
       <template #toolbar-tools>
         <ElButton type="primary" @click="onQueryIp">
-          <Search class="size-5" />
+          <Search class="mr-2 size-5" />
           IP 查询
         </ElButton>
       </template>

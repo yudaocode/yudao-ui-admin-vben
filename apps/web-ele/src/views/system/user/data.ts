@@ -317,7 +317,7 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 250,
+      minWidth: 130,
       fixed: 'right',
       align: 'center',
       cellRender: {

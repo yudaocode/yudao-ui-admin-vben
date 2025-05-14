@@ -755,9 +755,6 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
-      vxe-table:
-        specifier: 'catalog:'
-        version: 4.13.17(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@types/crypto-js':
         specifier: 'catalog:'
@@ -765,6 +762,9 @@ importers:
 
   apps/web-ele:
     dependencies:
+      '@tinymce/tinymce-vue':
+        specifier: 'catalog:'
+        version: 6.1.0(vue@3.5.13(typescript@5.8.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -810,12 +810,21 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
+      cropperjs:
+        specifier: 'catalog:'
+        version: 1.6.2
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
       element-plus:
         specifier: 'catalog:'
         version: 2.9.9(vue@3.5.13(typescript@5.8.3))
+      highlight.js:
+        specifier: 'catalog:'
+        version: 11.11.1
       pinia:
         specifier: ^3.0.2
         version: 3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))

@@ -5,12 +5,6 @@ import type { SystemUserApi } from '#/api/system/user';
 import { nextTick, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import {
-  SvgBpmApproveIcon,
-  SvgBpmCancelIcon,
-  SvgBpmRejectIcon,
-  SvgBpmRunningIcon,
-} from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
 import {
@@ -38,6 +32,12 @@ import {
   registerComponent,
   setConfAndFields2,
 } from '#/utils';
+import {
+  SvgBpmApproveIcon,
+  SvgBpmCancelIcon,
+  SvgBpmRejectIcon,
+  SvgBpmRunningIcon,
+} from '#/views/bpm/processInstance/detail/modules/icons';
 
 import ProcessInstanceTimeline from './modules/time-line.vue';
 

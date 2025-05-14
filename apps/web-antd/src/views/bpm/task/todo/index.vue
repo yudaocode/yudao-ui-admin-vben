@@ -1,13 +1,83 @@
 <script lang="ts" setup>
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
+import type { BpmTaskApi } from '#/api/bpm/task';
+
 import { Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
-
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getTaskTodoPage } from '#/api/bpm/task';
 import { DocAlert } from '#/components/doc-alert';
+import { router } from '#/router';
+
+import { useGridColumns, useGridFormSchema } from './data';
+
+defineOptions({ name: 'BpmTodoTask' });
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(onActionClick),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getTaskTodoPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+    cellConfig: {
+      height: 64,
+    },
+  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+});
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({ code, row }: OnActionClickParams<BpmTaskApi.TaskVO>) {
+  switch (code) {
+    case 'audit': {
+      onAudit(row);
+      break;
+    }
+  }
+}
+
+/** 办理任务 */
+function onAudit(row: BpmTaskApi.TaskVO) {
+  console.warn(row);
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: {
+      id: row.processInstance.id,
+      taskId: row.id,
+    },
+  });
+}
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <DocAlert
       title="审批通过、不通过、驳回"
       url="https://doc.iocoder.cn/bpm/task-todo-done/"
@@ -18,23 +88,29 @@ import { DocAlert } from '#/components/doc-alert';
       url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
     />
     <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/bpm/task/todo/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/bpm/task/todo/index
-      代码，pull request 贡献给我们！
-    </Button>
+
+    <FormModal @success="onRefresh" />
+    <Grid table-title="待办任务">
+      <!-- 摘要 -->
+      <template #slot-summary="{ row }">
+        <div
+          class="flex flex-col py-2"
+          v-if="
+            row.processInstance.summary &&
+            row.processInstance.summary.length > 0
+          "
+        >
+          <div
+            v-for="(item, index) in row.processInstance.summary"
+            :key="index"
+          >
+            <span class="text-gray-500">
+              {{ item.key }} : {{ item.value }}
+            </span>
+          </div>
+        </div>
+        <div v-else>-</div>
+      </template>
+    </Grid>
   </Page>
 </template>

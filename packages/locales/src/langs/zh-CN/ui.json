@@ -11,6 +11,7 @@
     "mobile": "请输入正确的{0}"
   },
   "actionTitle": {
+    "copy": "复制{0}",
     "cancel": "取消{0}",
     "edit": "修改{0}",
     "create": "新增{0}",
