@@ -1,14 +1,16 @@
 <script lang="ts" setup>
+import type { TabPaneName } from 'element-plus';
+
 // TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Copy } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
-import { ElButton, ElMessage, ElTabPane, ElTabs, ElTree } from 'element-plus';
+import { ElMessage, ElTabPane, ElTabs, ElTree } from 'element-plus';
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -67,6 +69,22 @@ const removeCodeMapKey = (targetKey: any) => {
   }
   if (codeMap.value.has(targetKey)) {
     codeMap.value.delete(targetKey);
+  }
+};
+const handleTabsEdit = (
+  targetName: TabPaneName | undefined,
+  action: 'add' | 'remove',
+) => {
+  switch (action) {
+    case 'add': {
+      // el-tab 原生添加的位置用来放复制图标了，所以添加就是复制
+      copyCode();
+      break;
+    }
+    case 'remove': {
+      removeCodeMapKey(targetName);
+      break;
+    }
   }
 };
 
@@ -245,16 +263,12 @@ const [Modal, modalApi] = useVbenModal({
       </div>
       <!-- 代码预览 -->
       <div class="h-full w-2/3 overflow-auto pl-4">
-        <ElTabs
-          v-model="activeKey"
-          type="card"
-          closable
-          @tab-remove="removeCodeMapKey"
-        >
+        <ElTabs v-model="activeKey" type="card" editable @edit="handleTabsEdit">
           <ElTabPane
             v-for="key in codeMap.keys()"
             :key="key"
             :label="key.split('/').pop()"
+            :name="key"
           >
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
@@ -266,10 +280,8 @@ const [Modal, modalApi] = useVbenModal({
               ></code>
             </div>
           </ElTabPane>
-          <template #extra>
-            <ElButton type="primary" @click="copyCode" :icon="h(Copy)">
-              复制代码
-            </ElButton>
+          <template #add-icon>
+            <Copy />
           </template>
         </ElTabs>
       </div>
