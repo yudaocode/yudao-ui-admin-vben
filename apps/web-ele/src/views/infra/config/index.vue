@@ -9,7 +9,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteConfig, exportConfig, getConfigPage } from '#/api/infra/config';
@@ -46,9 +46,9 @@ function onEdit(row: InfraConfigApi.Config) {
 
 /** 删除参数 */
 async function onDelete(row: InfraConfigApi.Config) {
-  const loadingInstance = ElMessage.loading({
-    message: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
   try {
     await deleteConfig(row.id as number);
