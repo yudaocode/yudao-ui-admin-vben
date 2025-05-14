@@ -43,6 +43,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'beginTime',
       label: '请求时间',
       component: 'RangePicker',
+      // TODO @puhui999：时间范围不太对。结束时间不是 23:59:59 这种哈
       componentProps: {
         ...getRangePickerDefaultProps(),
         allowClear: true,

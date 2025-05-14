@@ -25,6 +25,7 @@ const avatar = computed(
   () => props.profile?.avatar || preferences.app.defaultAvatar,
 );
 
+// TODO @puhui999：头像上传没跑通
 async function handelUpload({
   file,
   filename,

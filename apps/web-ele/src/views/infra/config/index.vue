@@ -52,6 +52,7 @@ async function onDelete(row: InfraConfigApi.Config) {
   });
   try {
     await deleteConfig(row.id as number);
+    // TODO @puhui999：close 是不是放在 finally 里面更好？
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();

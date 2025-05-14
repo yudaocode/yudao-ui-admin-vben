@@ -37,11 +37,11 @@ onMounted(() => {
       <DocAlert title="本地缓存" url="https://doc.iocoder.cn/local-cache/" />
     </template>
 
-    <ElCard class="mt-5" header="Redis 概览">
+    <ElCard header="Redis 概览">
       <Info :redis-data="redisData" />
     </ElCard>
 
-    <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
       <ElCard header="内存使用">
         <Memory :redis-data="redisData" />
       </ElCard>

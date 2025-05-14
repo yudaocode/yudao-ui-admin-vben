@@ -135,6 +135,7 @@ getDetail();
       </ElSteps>
 
       <div class="flex-1 overflow-auto py-4">
+        <!-- TODO @puhui999：顶部的导航，应该可以点击哈； -->
         <!-- 根据当前步骤显示对应的组件 -->
         <BasicInfo
           v-show="currentStep === 0"

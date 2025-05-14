@@ -228,6 +228,7 @@ onMounted(async () => {
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
         >
+          <!-- TODO @puhui999：所有人，选择不上 -->
           <ElOption key="" value="" label="所有人">
             <div class="flex items-center">
               <ElAvatar size="small">全</ElAvatar>

@@ -24,6 +24,7 @@ const [Modal, modalApi] = useVbenModal();
 const designer = ref(); // 表单设计器
 
 // 表单设计器配置
+// TODO @puhui999：表单选择器，版本号从 package.json 拿到全局哈
 const designerConfig = ref({
   switchType: [], // 是否可以切换组件类型,或者可以相互切换的字段
   autoActive: true, // 是否自动选中拖入的组件

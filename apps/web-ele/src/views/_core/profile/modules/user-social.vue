@@ -172,6 +172,7 @@ onMounted(() => {
       >
         <ElCard v-for="item in allBindList" :key="item.type" class="!mb-2">
           <div class="flex w-full items-center gap-4">
+            <!-- TODO @puhui999：图片大小不太对 -->
             <ElImage
               :src="item.img"
               :width="40"

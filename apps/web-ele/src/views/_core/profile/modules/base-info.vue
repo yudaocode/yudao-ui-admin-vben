@@ -20,6 +20,7 @@ const emit = defineEmits<{
   (e: 'success'): void;
 }>();
 
+// TODO @puhui999：展示貌似不太对；应该是左右，不是上下哈
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     labelWidth: 70,
