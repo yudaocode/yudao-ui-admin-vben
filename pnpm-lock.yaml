@@ -36,6 +36,9 @@ catalogs:
     '@form-create/antd-designer':
       specifier: ^3.2.11
       version: 3.2.11
+    '@form-create/naive-ui':
+      specifier: ^3.2.22
+      version: 3.2.22
     '@iconify/json':
       specifier: ^2.2.334
       version: 2.2.335
@@ -841,6 +844,12 @@ importers:
 
   apps/web-naive:
     dependencies:
+      '@form-create/antd-designer':
+        specifier: 'catalog:'
+        version: 3.2.11(vue@3.5.13(typescript@5.8.3))
+      '@form-create/naive-ui':
+        specifier: 'catalog:'
+        version: 3.2.22(vue@3.5.13(typescript@5.8.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -895,6 +904,9 @@ importers:
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
+      highlight.js:
+        specifier: 'catalog:'
+        version: 11.11.1
       naive-ui:
         specifier: 'catalog:'
         version: 2.41.0(vue@3.5.13(typescript@5.8.3))
@@ -3630,6 +3642,21 @@ packages:
   '@form-create/component-antdv-upload@3.2.18':
     resolution: {integrity: sha512-cobjChcblnfO0ph4MunJDUiBLyRwpzekXo6MFRsB5iq9ln73UjLnyLps4YuM2KRZ/Cn9FEoWN1kYvTFf1zKdjg==}
 
+  '@form-create/component-naive-checkbox@3.2.18':
+    resolution: {integrity: sha512-sTjuTQ0l2xdxxx9o6rlUQYIZYfEVTKYmMet3+7cAPy1S6y1ECUsTCJkwBjLwv93hudeyvBu7DDEBTv7YuYCRiA==}
+
+  '@form-create/component-naive-frame@3.2.18':
+    resolution: {integrity: sha512-R4091a/e5sLldcXvhIWT8T1f40VdWX55GypZbH7zUntCKdHABzqzXdrSQvSQ2agXIxMX5x0zMDwZMBOXCNBtTg==}
+
+  '@form-create/component-naive-group@3.2.22':
+    resolution: {integrity: sha512-HiNbcH50GPh2/GNLiivC8SdTObnRa+XL7qu1QaQpjqqrGaq7EHWEB/47vQwJAtzOVYFQv5Zgapz9+69OJ1qVAA==}
+
+  '@form-create/component-naive-radio@3.2.18':
+    resolution: {integrity: sha512-OqhRL5kEDEE5iVX6h14UOID/B25FWb7r3zKXByTwjNfqwLvcbHLbUnTig8YxzlWJLOOHl70fJq8MxMcDU6BQvg==}
+
+  '@form-create/component-naive-upload@3.2.18':
+    resolution: {integrity: sha512-RN/pHTOtrtya27rQhyaoiin/aDNgNzypcakDzER6JpMqFOiObT95AkuvDAuf4R3TXzS7J7qoJNP3H3K3na1zKQ==}
+
   '@form-create/component-subform@3.1.34':
     resolution: {integrity: sha512-OJcFH/7MTHx7JLEjDK/weS27qfuFWAI+OK+gXTJ2jIt9aZkGWF/EWkjetiJLt5a0KMw4Z15wOS2XCY9pVK9vlA==}
 
@@ -3638,6 +3665,11 @@ packages:
 
   '@form-create/core@3.2.22':
     resolution: {integrity: sha512-GC3b4Yrpy9TiPLqJFL9fiUFPjEv6ZBcHnOMB+GeF6iLsMV4TpZc0o/oFBPlhZqIYeljaNuxJyO2ABCStceOrZQ==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/naive-ui@3.2.22':
+    resolution: {integrity: sha512-/PQ3sKGoKBtMFjx68O+FWQHLxE2FF1eXmDOJYCOzbLdb2DYggEJTOBdNJn8b2X8aOXC0yDOex+xdXxiw/g7c7A==}
     peerDependencies:
       vue: ^3.5.13
 
@@ -13298,6 +13330,26 @@ snapshots:
     dependencies:
       '@form-create/utils': 3.2.18
 
+  '@form-create/component-naive-checkbox@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-naive-frame@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-naive-group@3.2.22':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-naive-radio@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-naive-upload@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
   '@form-create/component-subform@3.1.34': {}
 
   '@form-create/component-wangeditor@3.2.14':
@@ -13306,6 +13358,18 @@ snapshots:
 
   '@form-create/core@3.2.22(vue@3.5.13(typescript@5.8.3))':
     dependencies:
+      '@form-create/utils': 3.2.18
+      vue: 3.5.13(typescript@5.8.3)
+
+  '@form-create/naive-ui@3.2.22(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/component-naive-checkbox': 3.2.18
+      '@form-create/component-naive-frame': 3.2.18
+      '@form-create/component-naive-group': 3.2.22
+      '@form-create/component-naive-radio': 3.2.18
+      '@form-create/component-naive-upload': 3.2.18
+      '@form-create/component-subform': 3.1.34
+      '@form-create/core': 3.2.22(vue@3.5.13(typescript@5.8.3))
       '@form-create/utils': 3.2.18
       vue: 3.5.13(typescript@5.8.3)
 
