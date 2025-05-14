@@ -12,6 +12,7 @@ import {
   getRangePickerDefaultProps,
 } from '#/utils';
 
+// TODO @siye：这个要去掉么？没用到
 const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
@@ -35,7 +36,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 流程分类
     {
       fieldName: 'category',
       label: '流程分类',
@@ -48,7 +48,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'code',
       },
     },
-    // 流程状态
     {
       fieldName: 'status',
       label: '流程状态',
@@ -93,7 +92,6 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
         default: 'slot-summary',
       },
     },
-
     {
       field: 'processInstance.startUser.nickname',
       title: '发起人',
@@ -110,21 +108,18 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       title: '当前任务',
       minWidth: 180,
     },
-
     {
       field: 'createTime',
       title: '任务开始时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'endTime',
       title: '任务结束时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'status',
       title: '审批状态',
@@ -134,14 +129,11 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
         props: { type: DICT_TYPE.BPM_TASK_STATUS },
       },
     },
-
     {
       field: 'reason',
       title: '审批建议',
       minWidth: 180,
     },
-
-    // 耗时
     {
       field: 'durationInMillis',
       title: '耗时',
@@ -150,19 +142,16 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
         return `${formatPast2(row.durationInMillis)}`;
       },
     },
-
     {
       field: 'processInstanceId',
       title: '流程编号',
       minWidth: 280,
     },
-
     {
       field: 'id',
       title: '任务编号',
       minWidth: 280,
     },
-
     {
       field: 'operation',
       title: '操作',

@@ -27,7 +27,6 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
-
       {
         path: 'process-instance/detail',
         component: () => import('#/views/bpm/processInstance/detail/index.vue'),
@@ -47,8 +46,6 @@ const routes: RouteRecordRaw[] = [
           };
         },
       },
-
-      /** 编辑流程表单 */
       {
         path: '/bpm/manager/form/edit',
         name: 'BpmFormEditor',

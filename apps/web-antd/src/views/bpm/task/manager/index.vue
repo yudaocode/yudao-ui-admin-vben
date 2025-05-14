@@ -64,6 +64,7 @@ function onHistory(row: BpmTaskApi.TaskVO) {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: {
+      // TODO @siye：数据类型，会爆红哈；
       id: row.processInstance.id,
     },
   });
@@ -78,9 +79,11 @@ function onRefresh() {
 <template>
   <Page auto-content-height>
     <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
+
     <FormModal @success="onRefresh" />
     <Grid table-title="流程任务">
       <!-- 摘要 -->
+      <!-- TODO siye：这个要不要，也放到 data.ts 处理掉？ -->
       <template #slot-summary="{ row }">
         <div
           class="flex flex-col py-2"
