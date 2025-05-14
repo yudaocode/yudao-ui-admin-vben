@@ -1,17 +1,30 @@
 <script lang="ts" setup>
-import type { SystemUserApi } from '#/api/system/user';
+import type { InfraFileConfigApi } from '#/api/infra/file-config';
+
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { resetUserPassword } from '#/api/system/user';
+import {
+  createFileConfig,
+  getFileConfig,
+  updateFileConfig,
+} from '#/api/infra/file-config';
 import { $t } from '#/locales';
 
-import { useResetPasswordFormSchema } from '../data';
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+const formData = ref<InfraFileConfigApi.FileConfig>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['文件配置'])
+    : $t('ui.actionTitle.create', ['文件配置']);
+});
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -21,7 +34,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 80,
   },
   layout: 'horizontal',
-  schema: useResetPasswordFormSchema(),
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
@@ -33,9 +46,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = await formApi.getValues();
+    const data = (await formApi.getValues()) as InfraFileConfigApi.FileConfig;
     try {
-      await resetUserPassword(data.id, data.newPassword);
+      await (formData.value?.id
+        ? updateFileConfig(data)
+        : createFileConfig(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -46,21 +61,28 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemUserApi.User>();
+    const data = modalApi.getData<InfraFileConfigApi.FileConfig>();
     if (!data || !data.id) {
       return;
     }
-    // 设置到 values
-    await formApi.setValues(data);
+    modalApi.lock();
+    try {
+      formData.value = await getFileConfig(data.id as number);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>
 
 <template>
-  <Modal title="重置密码">
+  <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>

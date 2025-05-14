@@ -762,6 +762,12 @@ importers:
 
   apps/web-ele:
     dependencies:
+      '@form-create/designer':
+        specifier: ^3.2.6
+        version: 3.2.11(vue@3.5.13(typescript@5.8.3))
+      '@form-create/element-ui':
+        specifier: ^3.2.11
+        version: 3.2.22(vue@3.5.13(typescript@5.8.3))
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.1.0(vue@3.5.13(typescript@5.8.3))
@@ -3630,6 +3636,27 @@ packages:
   '@form-create/component-antdv-upload@3.2.18':
     resolution: {integrity: sha512-cobjChcblnfO0ph4MunJDUiBLyRwpzekXo6MFRsB5iq9ln73UjLnyLps4YuM2KRZ/Cn9FEoWN1kYvTFf1zKdjg==}
 
+  '@form-create/component-elm-checkbox@3.2.18':
+    resolution: {integrity: sha512-W8v4o+MZWPEJmIIWojKmnn87tFWpxyTbaIhWJU4Ca0S99YoXR7RdHKLt06HYwJixVLZqytNRj9BMxR4UZQ6JNg==}
+
+  '@form-create/component-elm-frame@3.2.18':
+    resolution: {integrity: sha512-yob3jmO1xBbKfVfFNeO/xh80o1E2IbVx8NsnpTaaK9X0ARJFvhPvW53qX6TgJxdvzCGTsm/W6P6a4SaebQJtVQ==}
+
+  '@form-create/component-elm-group@3.2.22':
+    resolution: {integrity: sha512-hy6ZqLpDITqDoTMc4Es2twVNffjXuX0HW7aY36+iyicnJj1Y9hMRj2HPbT4DNlQWZ3ybOb/AlcYN0BwIpW40qw==}
+
+  '@form-create/component-elm-radio@3.2.18':
+    resolution: {integrity: sha512-kkb6xFOviqgoBRRLzsoZTnqKX9GSw2jaLCWWRPkwqEwA/aLNHRX0MuBdGNvpaaLaD1ph5g+N86GekHvvanbJlQ==}
+
+  '@form-create/component-elm-select@3.2.18':
+    resolution: {integrity: sha512-gqBzPgNGJ6GwQ/pK/qCuoxQeM/fflNv7IqibETt2IFgutsGVM1lXYic8QJ/51YkuI0afkDKF+wAEbfB6zqaKIA==}
+
+  '@form-create/component-elm-tree@3.2.18':
+    resolution: {integrity: sha512-s+0+NPh2t500pv4CA51dtwuWWlY2wW0qbL7ZE3steTBh8Z++7s+n/6y6joGPxTeP+7FkpfruA1TfJ7+5Ntpe1Q==}
+
+  '@form-create/component-elm-upload@3.2.18':
+    resolution: {integrity: sha512-FVFJYarlk5+/Kjg9kJ9ElwyP8bt+DR0m/pPUMqmkEoUtv0Sr6nkk596THLjfyXV1WRFeoZMjzIS6qCyTnqWksQ==}
+
   '@form-create/component-subform@3.1.34':
     resolution: {integrity: sha512-OJcFH/7MTHx7JLEjDK/weS27qfuFWAI+OK+gXTJ2jIt9aZkGWF/EWkjetiJLt5a0KMw4Z15wOS2XCY9pVK9vlA==}
 
@@ -3638,6 +3665,16 @@ packages:
 
   '@form-create/core@3.2.22':
     resolution: {integrity: sha512-GC3b4Yrpy9TiPLqJFL9fiUFPjEv6ZBcHnOMB+GeF6iLsMV4TpZc0o/oFBPlhZqIYeljaNuxJyO2ABCStceOrZQ==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/designer@3.2.11':
+    resolution: {integrity: sha512-5mPyeHFOj8n01LOVhibjX8OujD6RYBH8TF2Ol7n8QxaSqIcAFTz9PADIiX982REPxiZ6I8BqZa2t0OtYQtETpA==}
+    peerDependencies:
+      vue: ^3.5.13
+
+  '@form-create/element-ui@3.2.22':
+    resolution: {integrity: sha512-6UfJloHWwCDkei4dQjigk5JzaFQiwEISpY0Tc5plSyJg8bt7JdqCp6C9+OQYmjTYaurwzdTvgD9NfbKDFC8xEQ==}
     peerDependencies:
       vue: ^3.5.13
 
@@ -13298,6 +13335,34 @@ snapshots:
     dependencies:
       '@form-create/utils': 3.2.18
 
+  '@form-create/component-elm-checkbox@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-frame@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-group@3.2.22':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-radio@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-select@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-tree@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
+  '@form-create/component-elm-upload@3.2.18':
+    dependencies:
+      '@form-create/utils': 3.2.18
+
   '@form-create/component-subform@3.1.34': {}
 
   '@form-create/component-wangeditor@3.2.14':
@@ -13306,6 +13371,33 @@ snapshots:
 
   '@form-create/core@3.2.22(vue@3.5.13(typescript@5.8.3))':
     dependencies:
+      '@form-create/utils': 3.2.18
+      vue: 3.5.13(typescript@5.8.3)
+
+  '@form-create/designer@3.2.11(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/component-wangeditor': 3.2.14
+      '@form-create/element-ui': 3.2.22(vue@3.5.13(typescript@5.8.3))
+      '@form-create/utils': 3.2.18
+      codemirror: 6.65.7
+      element-plus: 2.9.9(vue@3.5.13(typescript@5.8.3))
+      js-beautify: 1.15.4
+      vue: 3.5.13(typescript@5.8.3)
+      vuedraggable: 4.1.0(vue@3.5.13(typescript@5.8.3))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+
+  '@form-create/element-ui@3.2.22(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@form-create/component-elm-checkbox': 3.2.18
+      '@form-create/component-elm-frame': 3.2.18
+      '@form-create/component-elm-group': 3.2.22
+      '@form-create/component-elm-radio': 3.2.18
+      '@form-create/component-elm-select': 3.2.18
+      '@form-create/component-elm-tree': 3.2.18
+      '@form-create/component-elm-upload': 3.2.18
+      '@form-create/component-subform': 3.1.34
+      '@form-create/core': 3.2.22(vue@3.5.13(typescript@5.8.3))
       '@form-create/utils': 3.2.18
       vue: 3.5.13(typescript@5.8.3)
 

@@ -1,27 +1,36 @@
 <script lang="ts" setup>
-import type { SystemUserApi } from '#/api/system/user';
+import type { InfraJobApi } from '#/api/infra/job';
+
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { resetUserPassword } from '#/api/system/user';
+import { createJob, getJob, updateJob } from '#/api/infra/job';
 import { $t } from '#/locales';
 
-import { useResetPasswordFormSchema } from '../data';
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+const formData = ref<InfraJobApi.Job>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['任务'])
+    : $t('ui.actionTitle.create', ['任务']);
+});
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: useResetPasswordFormSchema(),
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
@@ -33,9 +42,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = await formApi.getValues();
+    const data = (await formApi.getValues()) as InfraJobApi.Job;
     try {
-      await resetUserPassword(data.id, data.newPassword);
+      await (formData.value?.id ? updateJob(data) : createJob(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -46,21 +55,28 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemUserApi.User>();
+    const data = modalApi.getData<InfraJobApi.Job>();
     if (!data || !data.id) {
       return;
     }
-    // 设置到 values
-    await formApi.setValues(data);
+    modalApi.lock();
+    try {
+      formData.value = await getJob(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>
 
 <template>
-  <Modal title="重置密码">
+  <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-4" />
   </Modal>
 </template>
