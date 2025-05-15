@@ -65,6 +65,7 @@ async function onDelete(row: SystemRoleApi.Role) {
   });
   try {
     await deleteRole(row.id as number);
+    // TODO @xingyu：是不是统一 finally hideLoading 比较好？
     hideLoading();
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
