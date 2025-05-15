@@ -57,7 +57,6 @@ function onCreate() {
 }
 
 /** 删除角色 */
-// TODO @xingyu：删除这个二次确认，有啥好的办法么？
 async function onDelete(row: SystemRoleApi.Role) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
@@ -66,6 +65,7 @@ async function onDelete(row: SystemRoleApi.Role) {
   });
   try {
     await deleteRole(row.id as number);
+    hideLoading();
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
@@ -162,20 +162,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: 'ant-design:delete-outlined',
               auth: ['system:role:delete'],
-              onClick: onDelete.bind(null, row),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
             },
           ]"
           :drop-down-actions="[
             {
               label: '数据权限',
               type: 'link',
-              auth: ['system:role:update'],
+              auth: ['system:permission:assign-role-data-scope'],
               onClick: onAssignDataPermission.bind(null, row),
             },
             {
               label: '菜单权限',
               type: 'link',
-              auth: ['system:role:update'],
+              auth: ['system:permission:assign-role-menu'],
               onClick: onAssignMenu.bind(null, row),
             },
           ]"
