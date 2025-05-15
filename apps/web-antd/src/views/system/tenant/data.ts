@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemTenantApi } from '#/api/system/tenant';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
@@ -12,8 +9,6 @@ import {
   getDictOptions,
   getRangePickerDefaultProps,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -162,8 +157,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemTenantApi.Tenant>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   getPackageName?: (packageId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -227,29 +221,10 @@ export function useGridColumns<T = SystemTenantApi.Tenant>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '租户',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:tenant:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:tenant:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

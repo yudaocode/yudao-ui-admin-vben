@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
@@ -22,6 +19,7 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 
@@ -137,34 +135,12 @@ async function onStatusChange(
   });
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.User>) {
-  switch (code) {
-    case 'assign-role': {
-      onAssignRole(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'reset-password': {
-      onResetPassword(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, onStatusChange),
+    columns: useGridColumns(onStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -241,6 +217,44 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <Upload class="size-5" />
               {{ $t('ui.actionTitle.import', ['用户']) }}
             </Button>
+          </template>
+          <template #actions="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  type: 'link',
+                  icon: 'ant-design:edit-outlined',
+                  auth: ['system:user:update'],
+                  onClick: onEdit.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  type: 'link',
+                  danger: true,
+                  icon: 'ant-design:delete-outlined',
+                  auth: ['system:user:delete'],
+                  popConfirm: {
+                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    confirm: onDelete.bind(null, row),
+                  },
+                },
+              ]"
+              :drop-down-actions="[
+                {
+                  label: '数据权限',
+                  type: 'link',
+                  auth: ['system:permission:assign-user-role'],
+                  onClick: onAssignRole.bind(null, row),
+                },
+                {
+                  label: '菜单权限',
+                  type: 'link',
+                  auth: ['system:user:update-password'],
+                  onClick: onResetPassword.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </Grid>
       </div>

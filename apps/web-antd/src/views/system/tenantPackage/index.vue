@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -57,30 +54,13 @@ async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemTenantPackageApi.TenantPackage>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
     // TODO @芋艿：时间筛选，后续处理；
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -122,6 +102,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['套餐']) }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: 'ant-design:edit-outlined',
+              auth: ['system:role:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              auth: ['system:role:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
