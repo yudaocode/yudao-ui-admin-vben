@@ -57,6 +57,7 @@ function onCreate() {
 }
 
 /** 删除角色 */
+// TODO @xingyu：删除这个二次确认，有啥好的办法么？
 async function onDelete(row: SystemRoleApi.Role) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
