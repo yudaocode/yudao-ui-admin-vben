@@ -229,15 +229,33 @@ setupVbenVxeTable({
               },
             },
             {
-              trigger: () => renderBtn({ ...opt }, false),
-              default: () =>
-                h(
-                  'div',
-                  { class: 'truncate' },
-                  $t('ui.actionMessage.deleteConfirm', [
-                    row[attrs?.nameField || 'name'],
-                  ]),
-                ),
+              trigger: () => {
+                return h(
+                  NButton,
+                  {
+                    ...props,
+                    ...opt,
+                    icon: undefined,
+                  },
+                  {
+                    default: () => {
+                      const content = [];
+                      if (opt.icon) {
+                        content.push(
+                          h(IconifyIcon, { class: 'size-5', icon: opt.icon }),
+                        );
+                      }
+                      content.push(opt.concent);
+                      return content;
+                    },
+                  },
+                );
+              },
+              default: () => {
+                return $t('ui.actionMessage.deleteConfirm', [
+                  row[attrs?.nameField || 'name'],
+                ]);
+              },
             },
           );
         }
