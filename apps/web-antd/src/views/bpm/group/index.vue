@@ -43,11 +43,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
         querySuccess: (params) => {
+          // TODO @siye：getLeaderName?: (userId: number) => string | undefined, 参考这个哈。
           const { list } = params.response;
           const userMap = new Map(
             userList.value.map((user) => [user.id, user.nickname]),
           );
-
           list.forEach(
             (item: BpmUserGroupApi.UserGroupVO & { nicknames?: string }) => {
               item.nicknames = item.userIds

@@ -63,11 +63,11 @@ function onActionClick({
 
 /** 办理任务 */
 function onDetail(row: BpmProcessInstanceApi.ProcessInstanceVO) {
+  // TODO @siye：row 的类型是不是不对哈？需要改成 copyvo 么？
   const query = {
     id: row.processInstanceId,
     ...(row.activityId && { activityId: row.activityId }),
   };
-
   router.push({
     name: 'BpmProcessInstanceDetail',
     query,
@@ -82,10 +82,12 @@ function onRefresh() {
 
 <template>
   <Page auto-content-height>
+    <!-- TODO @siye：应该用 <template #doc>，这样高度可以被用进去哈 -->
     <DocAlert
       title="审批转办、委派、抄送"
       url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
     />
+
     <FormModal @success="onRefresh" />
     <Grid table-title="抄送任务">
       <!-- 摘要 -->
@@ -102,7 +104,6 @@ function onRefresh() {
         </div>
         <div v-else>-</div>
       </template>
-
       <!-- 抄送人 -->
       <template #slot-createUser="{ row }">
         <span class="text-gray-500">

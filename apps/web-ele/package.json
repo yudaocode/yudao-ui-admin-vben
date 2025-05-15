@@ -26,6 +26,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@form-create/designer": "^3.2.6",
+    "@form-create/element-ui": "^3.2.11",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @siye：editor 要不要放到独立的目录？form/designer ？
 import { computed, onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -16,6 +17,7 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'BpmFormEditor' });
 
+// TODO @siye：这里有 lint 告警
 const props = defineProps<Props>();
 
 interface Props {
@@ -119,6 +121,7 @@ function handleSave() {
     .open();
 }
 
+// TODO @siye：一些必要的注释，稍微写写哈。保持风格的一致性；
 function onBack() {
   router.push({
     path: '/bpm/manager/form',

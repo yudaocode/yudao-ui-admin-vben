@@ -20,7 +20,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-
     {
       fieldName: 'createTime',
       label: '抄送时间',
@@ -51,26 +50,22 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
         default: 'slot-summary',
       },
     },
-
     {
       field: 'startUser.nickname',
       title: '流程发起人',
       minWidth: 120,
     },
-
     {
       field: 'processInstanceStartTime',
       title: '流程发起时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'activityName',
       title: '抄送节点',
       minWidth: 180,
     },
-
     {
       field: 'createUser.nickname',
       title: '抄送人',
@@ -84,14 +79,12 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       title: '抄送意见',
       minWidth: 180,
     },
-
     {
       field: 'createTime',
       title: '抄送时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'operation',
       title: '操作',

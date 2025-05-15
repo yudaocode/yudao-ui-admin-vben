@@ -30,7 +30,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 流程分类
     {
       fieldName: 'category',
       label: '流程分类',
@@ -43,7 +42,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'code',
       },
     },
-    // 流程状态
     {
       fieldName: 'status',
       label: '流程状态',
@@ -57,7 +55,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 发起时间
     {
       fieldName: 'createTime',
       label: '发起时间',
@@ -88,45 +85,38 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
         default: 'slot-summary',
       },
     },
-
     {
       field: 'processInstance.startUser.nickname',
       title: '发起人',
       minWidth: 120,
     },
-
     {
       field: 'createTime',
       title: '发起时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'name',
       title: '当前任务',
       minWidth: 180,
     },
-
     {
       field: 'createTime',
       title: '任务时间',
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
       field: 'processInstanceId',
       title: '流程编号',
       minWidth: 280,
     },
-
     {
       field: 'id',
       title: '任务编号',
       minWidth: 280,
     },
-
     {
       field: 'operation',
       title: '操作',

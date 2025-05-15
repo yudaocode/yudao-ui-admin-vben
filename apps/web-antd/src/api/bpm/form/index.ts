@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmFormApi {
+  // TODO @siye：注释加一个。。嘿嘿
   export interface FormVO {
     id?: number | undefined;
     name: string;
@@ -11,7 +12,6 @@ export namespace BpmFormApi {
     status: number;
     remark: string;
     createTime: string;
-
   }
 }
 
