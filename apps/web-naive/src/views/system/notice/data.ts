@@ -37,6 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @xingyu：富文本待优化
     {
       fieldName: 'content',
       label: '公告内容',
@@ -57,8 +58,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         placeholder: '请输入备注',
       },
     },

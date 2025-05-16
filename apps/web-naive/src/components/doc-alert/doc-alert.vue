@@ -25,8 +25,6 @@ const goToUrl = () => {
 
 <template>
   <NAlert v-if="isDocAlertEnable()" type="info" show-icon class="mb-2 rounded">
-    <template #message>
-      <NText @click="goToUrl"> 【{{ title }}】文档地址：{{ url }} </NText>
-    </template>
+    <NText @click="goToUrl"> 【{{ title }}】文档地址：{{ url }} </NText>
   </NAlert>
 </template>

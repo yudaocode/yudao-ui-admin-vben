@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @xingyu：文件上传，貌似没通
 import type { UploadFile, UploadProps } from 'naive-ui';
 import type { UploadRequestOption } from 'naive-ui/lib/vc-upload/interface';
 

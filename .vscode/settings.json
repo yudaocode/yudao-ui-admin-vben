@@ -101,7 +101,6 @@
     "**/.DS_Store": true,
     "**/vite.config.mts.*": true,
     "**/tea.yaml": true,
-    "**/public/**": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -112,7 +111,6 @@
     "**/bower_components/**": true,
     "**/dist/**": true,
     "**/yarn.lock": true,
-    "**/public/**": true
   },
 
   "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/.turbo"],

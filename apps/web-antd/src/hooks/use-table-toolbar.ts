@@ -3,6 +3,7 @@ import type { TableToolbar } from '#/components/table-toolbar';
 
 import { ref, watch } from 'vue';
 
+// TODO @puhui999：这里的注释、目的写下；
 export function useTableToolbar() {
   const hiddenSearchBar = ref(false); // 隐藏搜索栏
   const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
@@ -14,6 +15,7 @@ export function useTableToolbar() {
     const table = tableRef.value;
     const tableToolbar = tableToolbarRef.value;
     if (table && tableToolbar) {
+      // TODO @puhui999：通过 nexttick 可以解决么？
       setTimeout(async () => {
         const toolbar = tableToolbar.getToolbarRef();
         if (!toolbar) {
@@ -29,6 +31,7 @@ export function useTableToolbar() {
     () => tableRef.value,
     (val) => {
       if (!val || isBound.value) return;
+      // TODO @puhui999：这里要处理下 promise 的告警么？
       bindTableToolbar();
     },
     { immediate: true },

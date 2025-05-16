@@ -50,13 +50,13 @@ onMounted(async () => {
   <div v-if="tenantEnable && hasAccessByCodes(['system:tenant:visit'])">
     <NSelect
       v-model:value="value"
-      :field-names="{ label: 'name', value: 'id' }"
+      value-field="id"
+      label-field="name"
       :options="tenants"
       :placeholder="$t('page.tenant.placeholder')"
-      :dropdown-style="{ position: 'fixed', zIndex: 1666 }"
       allow-clear
       class="w-40"
-      @change="handleChange"
+      @update:value="handleChange"
     />
   </div>
 </template>

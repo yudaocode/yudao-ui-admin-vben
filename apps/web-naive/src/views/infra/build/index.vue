@@ -1,12 +1,13 @@
 <!-- eslint-disable no-useless-escape -->
 <script setup lang="ts">
+// TODO @xingyu：跑不通 form-designer 暂时不支持naive-ui
 import { onMounted, ref, unref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isString } from '@vben/utils';
 
-import formCreate from '@form-create/ant-design-vue';
 import FcDesigner from '@form-create/antd-designer';
+import formCreate from '@form-create/naive-ui';
 import { useClipboard } from '@vueuse/core';
 import hljs from 'highlight.js';
 import xml from 'highlight.js/lib/languages/java';

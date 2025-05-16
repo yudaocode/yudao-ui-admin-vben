@@ -42,6 +42,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
             ...formValues,
           });
         },
+        querySuccess: (params) => {
+          // TODO @siye：getLeaderName?: (userId: number) => string | undefined, 参考这个哈。
+          const { list } = params.response;
+          const userMap = new Map(
+            userList.value.map((user) => [user.id, user.nickname]),
+          );
+          list.forEach(
+            (item: BpmUserGroupApi.UserGroupVO & { nicknames?: string }) => {
+              item.nicknames = item.userIds
+                .map((userId) => userMap.get(userId))
+                .filter(Boolean)
+                .join('、');
+            },
+          );
+        },
       },
     },
     rowConfig: {
@@ -127,14 +142,7 @@ onMounted(async () => {
       </template>
 
       <template #userIds-cell="{ row }">
-        <span
-          v-for="(userId, index) in row.userIds"
-          :key="userId"
-          class="pr-5px"
-        >
-          {{ userList.find((user) => user.id === userId)?.nickname }}
-          <span v-if="index < row.userIds.length - 1">、</span>
-        </span>
+        <span>{{ row.nicknames }}</span>
       </template>
     </Grid>
   </Page>

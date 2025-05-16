@@ -11,6 +11,7 @@
     "mobile": "Please input a valid {0}"
   },
   "actionTitle": {
+    "copy": "Copy {0}",
     "cancel": "Cancel {0}",
     "edit": "Modify {0}",
     "create": "Create {0}",

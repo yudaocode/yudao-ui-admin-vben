@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemRoleApi } from '#/api/system/role';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import {
@@ -12,8 +9,6 @@ import {
   getRangePickerDefaultProps,
   SystemDataScopeEnum,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -189,9 +184,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemRoleApi.Role>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -243,41 +236,10 @@ export function useGridColumns<T = SystemRoleApi.Role>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
       width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '角色',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:role:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:role:delete']),
-          },
-          {
-            code: 'assign-data-permission',
-            text: '数据权限',
-            show: hasAccessByCodes([
-              'system:permission:assign-role-data-scope',
-            ]),
-          },
-          {
-            code: 'assign-menu',
-            text: '菜单权限',
-            show: hasAccessByCodes(['system:permission:assign-role-menu']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

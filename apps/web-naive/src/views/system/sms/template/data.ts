@@ -80,8 +80,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         placeholder: '请输入模板内容',
       },
       rules: 'required',
@@ -98,8 +99,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         placeholder: '请输入备注',
       },
     },
@@ -177,8 +179,9 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         disabled: true,
       },
     },

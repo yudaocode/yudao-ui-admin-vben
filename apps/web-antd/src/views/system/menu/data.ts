@@ -323,10 +323,9 @@ export function useGridColumns(
     {
       field: 'operation',
       title: '操作',
-      align: 'right',
       minWidth: 200,
       fixed: 'right',
-      headerAlign: 'center',
+      align: 'center',
       showOverflow: false,
       cellRender: {
         attrs: {

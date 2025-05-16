@@ -1,8 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { useAccess } from '@vben/access';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -15,8 +14,6 @@ import {
   getDictOptions,
   getRangePickerDefaultProps,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -83,7 +80,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
-      rules: z.string().email('邮箱格式不正确').optional(),
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
     },
     {
       fieldName: 'mobile',
@@ -262,7 +259,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 export function useGridColumns<T = SystemUserApi.User>(
-  onActionClick: OnActionClickFn<T>,
   onStatusChange?: (
     newStatus: number,
     row: T,
@@ -315,41 +311,10 @@ export function useGridColumns<T = SystemUserApi.User>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 160,
+      width: 160,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'username',
-          nameTitle: '用户',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成"更多"
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:user:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:user:delete']),
-          },
-          {
-            code: 'assign-role',
-            text: '分配角色',
-            show: hasAccessByCodes(['system:permission:assign-user-role']),
-            'v-access:code': 'system:user:assign-role1',
-          },
-          {
-            code: 'reset-password',
-            text: '重置密码',
-            show: hasAccessByCodes(['system:user:update-password']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

@@ -24,14 +24,11 @@ const goToUrl = () => {
 </script>
 
 <template>
-  <ElAlert
-    v-if="isDocAlertEnable()"
-    type="info"
-    :closable="false"
-    class="mb-2 rounded"
-  >
-    <ElLink type="primary" @click="goToUrl">
-      【{{ title }}】文档地址：{{ url }}
-    </ElLink>
-  </ElAlert>
+  <div class="mb-2 rounded">
+    <ElAlert v-if="isDocAlertEnable()" type="info" :closable="false" show-icon>
+      <ElLink type="primary" @click="goToUrl">
+        【{{ title }}】文档地址：{{ url }}
+      </ElLink>
+    </ElAlert>
+  </div>
 </template>

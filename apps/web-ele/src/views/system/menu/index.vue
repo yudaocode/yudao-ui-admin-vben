@@ -137,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           @click="onCreate"
           v-access:code="['system:menu:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', ['菜单']) }}
         </ElButton>
         <ElButton class="ml-2" @click="toggleExpand">

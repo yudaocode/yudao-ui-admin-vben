@@ -21,6 +21,7 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
+import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
 const ElButton = defineAsyncComponent(() =>
@@ -175,9 +176,12 @@ export type ComponentType =
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
+  | 'RangePicker'
+  | 'RichTextarea'
   | 'Select'
   | 'Space'
   | 'Switch'
+  | 'Textarea'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
@@ -237,7 +241,7 @@ async function initComponentAdapter() {
     },
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
-      return h(ElButton, { ...props, attrs, type: 'info' }, slots);
+      return h(ElButton, { ...props, attrs }, slots);
     },
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
@@ -296,6 +300,26 @@ async function initComponentAdapter() {
         slots,
       );
     },
+    RangePicker: (props, { attrs, slots }) => {
+      const { name, id } = props;
+      const extraProps: Recordable<any> = {};
+      if (name && !Array.isArray(name)) {
+        extraProps.name = [name, `${name}_end`];
+      }
+      if (id && !Array.isArray(id)) {
+        extraProps.id = [id, `${id}_end`];
+      }
+      return h(
+        ElDatePicker,
+        {
+          ...props,
+          type: 'datetimerange',
+          ...attrs,
+          ...extraProps,
+        },
+        slots,
+      );
+    },
     DatePicker: (props, { attrs, slots }) => {
       const { name, id, type } = props;
       const extraProps: Recordable<any> = {};
@@ -321,6 +345,11 @@ async function initComponentAdapter() {
     Upload: ElUpload,
     FileUpload,
     ImageUpload,
+    Textarea: withDefaultPlaceholder(ElInput, 'input', {
+      rows: 3,
+      type: 'textarea',
+    }),
+    RichTextarea,
   };
 
   // 将组件注册到全局共享状态中

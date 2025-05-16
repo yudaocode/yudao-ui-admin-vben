@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -14,6 +11,7 @@ import { Button, message } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
 import { DocAlert } from '#/components/doc-alert';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -67,6 +65,7 @@ async function onDelete(row: SystemRoleApi.Role) {
   });
   try {
     await deleteRole(row.id as number);
+    hideLoading();
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } catch {
@@ -84,34 +83,12 @@ function onAssignMenu(row: SystemRoleApi.Role) {
   assignMenuFormApi.setData(row).open();
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemRoleApi.Role>) {
-  switch (code) {
-    case 'assign-data-permission': {
-      onAssignDataPermission(row);
-      break;
-    }
-    case 'assign-menu': {
-      onAssignMenu(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -168,6 +145,44 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: 'ant-design:edit-outlined',
+              auth: ['system:role:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              auth: ['system:role:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: '数据权限',
+              type: 'link',
+              auth: ['system:permission:assign-role-data-scope'],
+              onClick: onAssignDataPermission.bind(null, row),
+            },
+            {
+              label: '菜单权限',
+              type: 'link',
+              auth: ['system:permission:assign-role-menu'],
+              onClick: onAssignMenu.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

@@ -269,13 +269,14 @@ onMounted(() => {
                       <img
                         v-if="definition.icon"
                         :src="definition.icon"
-                        class="h-12 w-12 object-contain"
+                        class="flow-icon-img object-contain"
                         alt="流程图标"
                       />
+
                       <div v-else class="flow-icon flex-shrink-0">
                         <Tooltip :title="definition.name">
                           <span class="text-xs text-white">
-                            {{ definition.name }}
+                            {{ definition.name?.slice(0, 2) }}
                           </span>
                         </Tooltip>
                       </div>
@@ -324,19 +325,26 @@ onMounted(() => {
 <style lang="scss" scoped>
 .process-definition-container {
   .definition-item-card {
+    .flow-icon-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 0.25rem;
+    }
+
     .flow-icon {
+      @apply bg-primary;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      background-color: #3f73f7;
-      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      border-radius: 0.25rem;
     }
 
     &.search-match {
       background-color: rgb(63 115 247 / 10%);
-      border: 1px solid #3f73f7;
+      border: 1px solid var(--primary);
       animation: bounce 0.5s ease;
     }
   }

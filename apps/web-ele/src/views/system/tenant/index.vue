@@ -142,7 +142,7 @@ onMounted(async () => {
           @click="onCreate"
           v-access:code="['system:tenant:create']"
         >
-          <Plus class="size-5" />
+          <Plus class="mr-2 size-5" />
           {{ $t('ui.actionTitle.create', ['租户']) }}
         </ElButton>
         <ElButton
@@ -151,7 +151,7 @@ onMounted(async () => {
           @click="onExport"
           v-access:code="['system:tenant:export']"
         >
-          <Download class="size-5" />
+          <Download class="mr-2 size-5" />
           {{ $t('ui.actionTitle.export') }}
         </ElButton>
       </template>

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @xingyu：这个展示不出来；从右上角的站内信点进来的
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { ref } from 'vue';
