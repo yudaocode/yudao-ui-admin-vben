@@ -25,6 +25,7 @@ import {
   updateCategorySortBatch,
 } from '#/api/bpm/category';
 import { getModelList } from '#/api/bpm/model';
+import { router } from '#/router';
 
 // 流程分类对话框
 import CategoryForm from '../category/modules/form.vue';
@@ -35,7 +36,6 @@ const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
   connectedComponent: CategoryForm,
   destroyOnClose: true,
 });
-
 // 模型列表加载状态
 const modelListSpinning = refAutoReset(false, 3000);
 // 保存排序状态
@@ -103,7 +103,9 @@ const handleQuery = () => {
 
 /** 新增模型 */
 const createModel = () => {
-  // TODO 新增模型
+  router.push({
+    name: 'BpmModelCreate',
+  });
 };
 
 /** 处理下拉菜单命令 */
@@ -160,6 +162,8 @@ const handleCategorySortSubmit = async () => {
 
 <template>
   <Page auto-content-height>
+    <!-- 流程分类表单弹窗 -->
+    <CategoryFormModal @success="getList" />
     <Card
       :body-style="{ padding: '10px' }"
       class="mb-4"
@@ -249,7 +253,4 @@ const handleCategorySortSubmit = async () => {
       </div>
     </Card>
   </Page>
-
-  <!-- 流程分类表单弹窗 -->
-  <CategoryFormModal @success="getList" />
 </template>
