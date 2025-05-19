@@ -3,9 +3,8 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -13,7 +12,7 @@ import {
   getTenantPackagePage,
 } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -43,12 +42,12 @@ function onEdit(row: SystemTenantPackageApi.TenantPackage) {
 async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteTenantPackage(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -93,14 +92,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:tenant-package:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['套餐']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['套餐']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:tenant-package:create'],
+              onClick: onCreate,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -108,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
               onClick: onEdit.bind(null, row),
             },
@@ -116,7 +118,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
