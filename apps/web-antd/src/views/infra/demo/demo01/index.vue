@@ -5,17 +5,18 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { h } from 'vue';
+import { computed, h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { Download, Plus, Trash2 } from '@vben/icons';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
+  deleteDemo01ContactByIds,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -55,7 +56,25 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
     await deleteDemo01Contact(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
-  } catch {
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
+const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
+/** 批量删除示例联系人 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo01ContactByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -113,6 +132,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
+  gridEvents: {
+    checkboxAll: ({
+      records,
+    }: {
+      records: Demo01ContactApi.Demo01Contact[];
+    }) => {
+      deleteIds.value = records.map((item) => item.id);
+    },
+    checkboxChange: ({
+      records,
+    }: {
+      records: Demo01ContactApi.Demo01Contact[];
+    }) => {
+      deleteIds.value = records.map((item) => item.id);
+    },
+  },
 });
 </script>
 
@@ -138,6 +173,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-access:code="['infra:demo01-contact:export']"
         >
           {{ $t('ui.actionTitle.export') }}
+        </Button>
+        <Button
+          :icon="h(Trash2)"
+          type="primary"
+          danger
+          class="ml-2"
+          :disabled="showDeleteBatchBtn"
+          @click="onDeleteBatch"
+          v-access:code="['infra:demo01-contact:delete']"
+        >
+          批量删除
         </Button>
       </template>
     </Grid>

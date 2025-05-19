@@ -11,6 +11,7 @@ import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
+import { z } from '#/adapter/form';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
@@ -156,6 +157,17 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         class: 'w-full',
       },
       rules: 'selectRequired',
+    },
+    {
+      component: 'RadioGroup',
+      fieldName: 'deleteBatch',
+      label: '批量删除?',
+      help: '是否生成批量删除接口',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+        class: 'w-full',
+      },
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'parentMenuId',
@@ -350,7 +362,7 @@ export function useGenerationInfoSubTableFormSchema(
           },
           {
             label: '一对一',
-            value: 'false',
+            value: false,
           },
         ],
       },
