@@ -159,6 +159,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       rules: 'selectRequired',
     },
     {
+      // TODO @puhui999：使用后端统一配置。因为一般需要批量的团队，会一直需要。不需要的，一般一直不需要哈。
       component: 'RadioGroup',
       fieldName: 'deleteBatch',
       label: '批量删除?',

@@ -33,6 +33,7 @@ import FormDesign from './modules/form-design.vue';
 defineOptions({ name: 'BpmModelCreate' });
 
 // TODO 这个常量是不是所有 apps 都可以使用， 放 @utils/constant.ts 不能共享， @芋艿 这些常量放哪里合适！
+// TODO @jason：/Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/utils/constants.ts；先不多个 apps 共享哈；
 const BpmModelType = {
   BPMN: 10, // BPMN 设计器
   SIMPLE: 20, // 简易设计器

@@ -21,6 +21,7 @@ export namespace InfraCodegenApi {
     createTime: Date;
     updateTime: Date;
     templateType: number;
+    // TODO @puhui999：使用后端统一配置。因为一般需要批量的团队，会一直需要。不需要的，一般一直不需要哈。
     deleteBatch: boolean;
     parentMenuId: number;
   }

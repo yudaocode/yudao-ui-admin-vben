@@ -55,6 +55,7 @@ function onCreate() {
 }
 
 /** 删除角色 */
+// TODO @星语：要不要改成 handleXXX 风格？貌似看着更多项目是这么写的，不去改变大家的习惯。
 async function onDelete(row: SystemRoleApi.Role) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),

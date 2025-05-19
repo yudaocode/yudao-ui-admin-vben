@@ -57,16 +57,21 @@ function onEdit(row: SystemTenantApi.Tenant) {
 
 /** 删除租户 */
 async function onDelete(row: SystemTenantApi.Tenant) {
-  message.loading({
+  const loading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteTenant(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteTenant(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    // TODO @星语：测试了下，这样可以取消 loading；测试方式：1）先把数据库的数据，标记删除；2）点击界面，进行删除，loading 可以正确消失；
+    loading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
