@@ -61,6 +61,13 @@ export function deleteDemo03Student(id: number) {
   return requestClient.delete(`/infra/demo03-student/delete?id=${id}`);
 }
 
+// 批量删除学生
+export function deleteDemo03StudentByIds(ids: number[]) {
+  return requestClient.delete(
+    `/infra/demo03-student/delete-batch?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出学生 */
 export function exportDemo03Student(params: any) {
   return requestClient.download('/infra/demo03-student/export-excel', params);
@@ -72,9 +79,7 @@ export function exportDemo03Student(params: any) {
 export function getDemo03CoursePage(params: PageParam) {
   return requestClient.get<PageResult<Demo03StudentApi.Demo03Course>>(
     `/infra/demo03-student/demo03-course/page`,
-    {
-      params,
-    },
+    { params },
   );
 }
 /** 新增学生课程 */
@@ -94,6 +99,13 @@ export function deleteDemo03Course(id: number) {
   );
 }
 
+// 批量删除学生课程
+export function deleteDemo03CourseByIds(ids: number[]) {
+  return requestClient.delete(
+    `/infra/demo03-student/demo03-course/delete-batch?ids=${ids.join(',')}`,
+  );
+}
+
 /** 获得学生课程 */
 export function getDemo03Course(id: number) {
   return requestClient.get<Demo03StudentApi.Demo03Course>(
@@ -107,9 +119,7 @@ export function getDemo03Course(id: number) {
 export function getDemo03GradePage(params: PageParam) {
   return requestClient.get<PageResult<Demo03StudentApi.Demo03Grade>>(
     `/infra/demo03-student/demo03-grade/page`,
-    {
-      params,
-    },
+    { params },
   );
 }
 /** 新增学生班级 */
@@ -126,6 +136,13 @@ export function updateDemo03Grade(data: Demo03StudentApi.Demo03Grade) {
 export function deleteDemo03Grade(id: number) {
   return requestClient.delete(
     `/infra/demo03-student/demo03-grade/delete?id=${id}`,
+  );
+}
+
+// 批量删除学生班级
+export function deleteDemo03GradeByIds(ids: number[]) {
+  return requestClient.delete(
+    `/infra/demo03-student/demo03-grade/delete-batch?ids=${ids.join(',')}`,
   );
 }
 
