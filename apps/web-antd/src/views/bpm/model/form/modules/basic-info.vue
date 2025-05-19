@@ -10,7 +10,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { ref, watch } from 'vue';
 
-import { IconifyIcon, Plus, ShieldQuestion, X } from '@vben/icons';
+import { CircleHelp, IconifyIcon, Plus, X } from '@vben/icons';
 
 import {
   Avatar,
@@ -65,6 +65,7 @@ const rules: Record<string, Rule[]> = {
   category: [{ required: true, message: '流程分类不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '流程类型不能为空', trigger: 'blur' }],
   visible: [{ required: true, message: '是否可见不能为空', trigger: 'blur' }],
+  // TODO 这个的校验好像没有起作用
   managerUserIds: [
     { required: true, message: '流程管理员不能为空', trigger: 'blur' },
   ],
@@ -219,9 +220,7 @@ const validate = async () => {
   await formRef.value?.validate();
 };
 
-defineExpose({
-  validate,
-});
+defineExpose({ validate });
 </script>
 
 <template>
@@ -229,8 +228,8 @@ defineExpose({
     ref="formRef"
     :model="modelData"
     :rules="rules"
-    :label-col="{ span: 6 }"
-    :wrapper-col="{ span: 18 }"
+    :label-col="{ span: 4 }"
+    :wrapper-col="{ span: 20 }"
     class="mt-5"
   >
     <Form.Item label="流程标识" name="key" class="mb-5">
@@ -247,7 +246,7 @@ defineExpose({
           "
           placement="top"
         >
-          <ShieldQuestion class="ml-1 text-gray-500" />
+          <CircleHelp class="ml-1 size-5 text-gray-900" />
         </Tooltip>
       </div>
     </Form.Item>
