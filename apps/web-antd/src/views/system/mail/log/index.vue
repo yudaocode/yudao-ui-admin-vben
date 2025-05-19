@@ -4,10 +4,9 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_ICON, TableAction } from '#/components/table-action';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

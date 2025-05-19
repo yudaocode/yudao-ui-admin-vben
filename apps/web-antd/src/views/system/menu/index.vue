@@ -9,10 +9,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { SystemMenuTypeEnum } from '#/utils';
 

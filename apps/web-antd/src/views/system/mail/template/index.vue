@@ -9,14 +9,13 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import {
   deleteMailTemplate,
   getMailTemplatePage,
 } from '#/api/system/mail/template';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
