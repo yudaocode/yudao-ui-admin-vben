@@ -69,7 +69,6 @@ const getActions = computed(() => {
     .map((action) => {
       const { popConfirm } = action;
       return {
-        // getPopupContainer: document.body,
         type: 'link' as ButtonType,
         ...action,
         ...popConfirm,
@@ -135,7 +134,7 @@ function handleMenuClick(e: any) {
 </script>
 
 <template>
-  <div class="m-table-action">
+  <div class="table-actions">
     <Space
       :size="
         getActions?.some((item: ActionItem) => item.type === 'link') ? 0 : 8
@@ -230,7 +229,7 @@ function handleMenuClick(e: any) {
   </div>
 </template>
 <style lang="scss">
-.m-table-action {
+.table-actions {
   .ant-btn {
     padding: 4px;
     margin-left: 0;

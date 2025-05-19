@@ -25,6 +25,7 @@
     "deleteConfirm": "确定删除 {0} 吗？",
     "deleting": "正在删除 {0} ...",
     "deleteSuccess": "{0} 删除成功",
+    "deleteFailed": "{0} 删除失败",
     "operationSuccess": "操作成功",
     "operationFailed": "操作失败",
     "importSuccess": "导入成功",

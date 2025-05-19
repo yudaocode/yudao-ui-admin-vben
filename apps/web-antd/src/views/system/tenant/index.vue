@@ -58,17 +58,15 @@ function onEdit(row: SystemTenantApi.Tenant) {
 
 /** 删除租户 */
 async function onDelete(row: SystemTenantApi.Tenant) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
   try {
+    message.loading({
+      content: $t('ui.actionMessage.deleting', [row.name]),
+      duration: 2.5,
+    });
     await deleteTenant(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
-    hideLoading();
+  } finally {
+    message.error($t('ui.actionMessage.deleteFailed', [row.name]));
   }
 }
 
@@ -78,8 +76,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(getPackageName),
-    height: 'auto',
-    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
