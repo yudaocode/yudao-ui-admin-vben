@@ -1,7 +1,5 @@
 <!-- add by 星语：参考 vben2 的方式，增加 TableAction 组件 -->
 <script setup lang="ts">
-import type { ButtonType } from 'ant-design-vue/es/button';
-
 import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
@@ -69,7 +67,7 @@ const getActions = computed(() => {
     .map((action) => {
       const { popConfirm } = action;
       return {
-        type: 'link' as ButtonType,
+        type: action.type || 'link',
         ...action,
         ...popConfirm,
         onConfirm: popConfirm?.confirm,
