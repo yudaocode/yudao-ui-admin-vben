@@ -5,16 +5,18 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { h, nextTick, watch } from 'vue';
+import { computed, h, nextTick, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { Plus, Trash2 } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Grade,
+  deleteDemo03GradeByIds,
   getDemo03GradePage,
 } from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
@@ -59,7 +61,32 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
     await deleteDemo03Grade(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
-  } catch {
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生班级 ID
+const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Grade[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
+}
+/** 批量删除学生班级 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03GradeByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -115,6 +142,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
   } as VxeTableGridOptions<Demo03StudentApi.Demo03Grade>,
+  gridEvents: {
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
+  },
 });
 
 /** 刷新表格 */
@@ -147,6 +178,17 @@ watch(
         v-access:code="['infra:demo03-student:create']"
       >
         {{ $t('ui.actionTitle.create', ['学生班级']) }}
+      </Button>
+      <Button
+        :icon="h(Trash2)"
+        type="primary"
+        danger
+        class="ml-2"
+        :disabled="showDeleteBatchBtn"
+        @click="onDeleteBatch"
+        v-access:code="['infra:demo03-student:delete']"
+      >
+        批量删除
       </Button>
     </template>
   </Grid>
