@@ -15,6 +15,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -58,16 +59,16 @@ function onEdit(row: SystemTenantApi.Tenant) {
 
 /** 删除租户 */
 async function onDelete(row: SystemTenantApi.Tenant) {
-  try {
-    message.loading({
-      content: $t('ui.actionMessage.deleting', [row.name]),
-      duration: 2.5,
-    });
-    await deleteTenant(row.id as number);
-    onRefresh();
-  } finally {
-    message.error($t('ui.actionMessage.deleteFailed', [row.name]));
-  }
+  message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: ACTION_KEY,
+  });
+  await deleteTenant(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
