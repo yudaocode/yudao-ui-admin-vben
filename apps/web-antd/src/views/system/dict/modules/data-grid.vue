@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { watch } from 'vue';
@@ -19,6 +16,7 @@ import {
   exportDictData,
   getDictDataPage,
 } from '#/api/system/dict/data';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useDataGridColumns, useDataGridFormSchema } from '../data';
@@ -53,41 +51,22 @@ function onCreate() {
 }
 
 /** 编辑字典数据 */
-function onEdit(row: any) {
+function onEdit(row: SystemDictDataApi.DictData) {
   dataFormModalApi.setData(row).open();
 }
 
 /** 删除字典数据 */
-async function onDelete(row: any) {
-  const hideLoading = message.loading({
-    content: $t('common.processing'),
-    duration: 0,
-    key: 'process_message',
+async function onDelete(row: SystemDictDataApi.DictData) {
+  message.loading({
+    content: $t('ui.actionMessage.deleting', [row.label]),
+    key: ACTION_KEY,
   });
-  try {
-    await deleteDictData(row.id);
-    message.success({
-      content: $t('common.operationSuccess'),
-      key: 'process_message',
-    });
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮回调 */
-function onActionClick({ code, row }: OnActionClickParams) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
+  await deleteDictData(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.label]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -95,7 +74,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useDataGridFormSchema(),
   },
   gridOptions: {
-    columns: useDataGridColumns(onActionClick),
+    columns: useDataGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -154,6 +133,30 @@ watch(
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: 'ant-design:edit-outlined',
+              auth: ['system:dict:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              auth: ['system:dict:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.label]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>

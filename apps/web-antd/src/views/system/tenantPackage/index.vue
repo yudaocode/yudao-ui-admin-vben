@@ -13,6 +13,7 @@ import {
   getTenantPackagePage,
 } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -40,18 +41,16 @@ function onEdit(row: SystemTenantPackageApi.TenantPackage) {
 
 /** 删除租户套餐 */
 async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: ACTION_KEY,
   });
-  try {
-    await deleteTenantPackage(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
+  await deleteTenantPackage(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

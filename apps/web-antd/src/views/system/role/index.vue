@@ -11,7 +11,7 @@ import { Button, message } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
 import { DocAlert } from '#/components/doc-alert';
-import { TableAction } from '#/components/table-action';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -58,19 +58,16 @@ function onCreate() {
 
 /** 删除角色 */
 async function onDelete(row: SystemRoleApi.Role) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: ACTION_KEY,
   });
-  try {
-    await deleteRole(row.id as number);
-    hideLoading();
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
+  await deleteRole(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 /** 分配角色的数据权限 */

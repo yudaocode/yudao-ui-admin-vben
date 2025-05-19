@@ -19,7 +19,7 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
-import { TableAction } from '#/components/table-action';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 
@@ -85,18 +85,16 @@ function onEdit(row: SystemUserApi.User) {
 
 /** 删除用户 */
 async function onDelete(row: SystemUserApi.User) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.username]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: ACTION_KEY,
   });
-  try {
-    await deleteUser(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.username]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
+  await deleteUser(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.username]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 /** 重置密码 */
