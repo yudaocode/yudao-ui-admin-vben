@@ -9,6 +9,8 @@ export namespace BpmProcessDefinitionApi {
     version: number;
     deploymentTime: number;
     suspensionState: number;
+    modelType: number;
+    modelId: string;
     formType?: number;
     bpmnXml?: string;
     simpleModel?: string;
