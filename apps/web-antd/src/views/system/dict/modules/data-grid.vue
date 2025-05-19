@@ -5,10 +5,9 @@ import type { SystemDictDataApi } from '#/api/system/dict/data';
 import { watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -16,7 +15,7 @@ import {
   exportDictData,
   getDictDataPage,
 } from '#/api/system/dict/data';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useDataGridColumns, useDataGridFormSchema } from '../data';
@@ -59,12 +58,12 @@ function onEdit(row: SystemDictDataApi.DictData) {
 async function onDelete(row: SystemDictDataApi.DictData) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.label]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteDictData(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.label]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -116,23 +115,24 @@ watch(
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['字典数据']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典数据']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: onExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -140,7 +140,7 @@ watch(
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:dict:update'],
               onClick: onEdit.bind(null, row),
             },
@@ -148,7 +148,7 @@ watch(
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:dict:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.label]),

@@ -6,16 +6,15 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -61,12 +60,12 @@ function onEdit(row: SystemTenantApi.Tenant) {
 async function onDelete(row: SystemTenantApi.Tenant) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteTenant(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -112,23 +111,24 @@ onMounted(async () => {
     <FormModal @success="onRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:tenant:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['租户']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:tenant:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['租户']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:tenant:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:tenant:export'],
+              onClick: onExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -136,7 +136,7 @@ onMounted(async () => {
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
               onClick: onEdit.bind(null, row),
             },
@@ -144,7 +144,7 @@ onMounted(async () => {
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),

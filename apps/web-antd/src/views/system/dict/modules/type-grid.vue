@@ -6,10 +6,9 @@ import type {
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,7 +16,7 @@ import {
   exportDictType,
   getDictTypePage,
 } from '#/api/system/dict/type';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useTypeGridColumns, useTypeGridFormSchema } from '../data';
@@ -55,12 +54,12 @@ function onEdit(row: any) {
 async function onDelete(row: SystemDictTypeApi.DictType) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteDictType(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -110,23 +109,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['字典类型']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典类型']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: onExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -134,7 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:dict:update'],
               onClick: onEdit.bind(null, row),
             },
@@ -142,7 +142,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:dict:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),

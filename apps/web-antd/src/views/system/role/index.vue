@@ -3,15 +3,14 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -60,12 +59,12 @@ function onCreate() {
 async function onDelete(row: SystemRoleApi.Role) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteRole(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -125,23 +124,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <AssignMenuFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:role:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['角色']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:role:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['角色']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:role:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:role:export'],
+              onClick: onExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -149,7 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
               onClick: onEdit.bind(null, row),
             },
@@ -157,7 +157,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
