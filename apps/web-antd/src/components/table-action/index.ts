@@ -1,4 +1,4 @@
-export { default as TableAction } from './table-action.vue';
+export * from './icons';
 
-export const ACTION_KEY = 'action_key_msg';
+export { default as TableAction } from './table-action.vue';
 export * from './typing';
