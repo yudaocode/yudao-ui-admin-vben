@@ -5,17 +5,18 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
-import { h } from 'vue';
+import { computed, h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { Download, Plus, Trash2 } from '@vben/icons';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
+  deleteDemo03StudentByIds,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
@@ -55,7 +56,32 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
     await deleteDemo03Student(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
-  } catch {
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生 ID
+const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Student[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
+}
+/** 批量删除学生 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03StudentByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -113,6 +139,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<Demo03StudentApi.Demo03Student>,
+  gridEvents: {
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
+  },
 });
 </script>
 
@@ -138,6 +168,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-access:code="['infra:demo03-student:export']"
         >
           {{ $t('ui.actionTitle.export') }}
+        </Button>
+        <Button
+          :icon="h(Trash2)"
+          type="primary"
+          danger
+          class="ml-2"
+          :disabled="showDeleteBatchBtn"
+          @click="onDeleteBatch"
+          v-access:code="['infra:demo03-student:delete']"
+        >
+          批量删除
         </Button>
       </template>
     </Grid>

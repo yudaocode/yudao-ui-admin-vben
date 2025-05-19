@@ -68,6 +68,13 @@ async function onDelete(row: Demo03StudentApi.Demo03Course) {
 
 const deleteIds = ref<number[]>([]); // 待删除学生课程 ID
 const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Course[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
+}
 /** 批量删除学生课程 */
 async function onDeleteBatch() {
   const hideLoading = message.loading({
@@ -136,20 +143,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Demo03StudentApi.Demo03Course>,
   gridEvents: {
-    checkboxAll: ({
-      records,
-    }: {
-      records: Demo03StudentApi.Demo03Course[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
-    checkboxChange: ({
-      records,
-    }: {
-      records: Demo03StudentApi.Demo03Course[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
   },
 });
 

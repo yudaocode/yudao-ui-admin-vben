@@ -63,6 +63,13 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 
 const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
 const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
+function setDeleteIds({
+  records,
+}: {
+  records: Demo01ContactApi.Demo01Contact[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
+}
 /** 批量删除示例联系人 */
 async function onDeleteBatch() {
   const hideLoading = message.loading({
@@ -133,20 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
   gridEvents: {
-    checkboxAll: ({
-      records,
-    }: {
-      records: Demo01ContactApi.Demo01Contact[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
-    checkboxChange: ({
-      records,
-    }: {
-      records: Demo01ContactApi.Demo01Contact[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
   },
 });
 </script>
