@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemNoticeApi } from '#/api/system/notice';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -91,9 +86,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNoticeApi.Notice>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -130,34 +123,10 @@ export function useGridColumns<T = SystemNoticeApi.Notice>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'title',
-          nameTitle: '公告',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:notice:update']),
-          },
-          {
-            code: 'push',
-            text: '推送',
-            show: hasAccessByCodes(['system:notice:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:notice:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

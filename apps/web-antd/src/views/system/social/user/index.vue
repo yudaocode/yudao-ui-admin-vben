@@ -19,11 +19,6 @@ const [DetailModal, detailModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 刷新表格 */
-// function onRefresh() {
-//   gridApi.query();
-// }
-
 /** 查看详情 */
 function onDetail(row: SystemSocialUserApi.SocialUser) {
   detailModalApi.setData(row).open();

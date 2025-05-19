@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -16,6 +12,7 @@ import {
   getOAuth2ClientPage,
 } from '#/api/system/oauth2/client';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -43,35 +40,16 @@ function onEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
 
 /** 删除 OAuth2 客户端 */
 async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
-  try {
-    await deleteOAuth2Client(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemOAuth2ClientApi.OAuth2Client>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
+  await deleteOAuth2Client(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: 'action_key_msg',
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -79,7 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -116,14 +94,41 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="OAuth2 客户端列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:oauth2-client:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', [' OAuth2.0 客户端']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', [' OAuth2.0 客户端']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:oauth2-client:create'],
+              onClick: onCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:oauth2-client:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:oauth2-client:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

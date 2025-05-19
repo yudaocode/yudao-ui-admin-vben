@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
@@ -13,8 +10,6 @@ import {
   getRangePickerDefaultProps,
   UserTypeEnum,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -229,9 +224,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -288,34 +281,10 @@ export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '站内信模板',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:notify-template:update']),
-          },
-          {
-            code: 'send',
-            text: '测试',
-            show: hasAccessByCodes(['system:notify-template:send-notify']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:notify-template:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { MdiCheckboxMarkedCircleOutline } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,6 +13,7 @@ import {
   updateNotifyMessageRead,
 } from '#/api/system/notify/message';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -46,7 +43,10 @@ async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
   // 执行标记已读操作
   await updateNotifyMessageRead([row.id]);
   // 提示成功
-  message.success('标记已读成功');
+  message.success({
+    content: '标记已读成功',
+    key: 'action_process_msg',
+  });
   onRefresh();
 
   // 打开详情
@@ -70,7 +70,10 @@ async function onMarkRead() {
   // 执行标记已读操作
   await updateNotifyMessageRead(ids);
   // 提示成功
-  message.success('标记已读成功');
+  message.success({
+    content: '标记已读成功',
+    key: 'action_process_msg',
+  });
   await gridApi.grid.setAllCheckboxRow(false);
   onRefresh();
 }
@@ -85,26 +88,12 @@ async function onMarkAllRead() {
   // 执行标记已读操作
   await updateAllNotifyMessageRead();
   // 提示成功
-  message.success('全部标记已读成功');
+  message.success({
+    content: '全部标记已读成功',
+    key: 'action_process_msg',
+  });
   await gridApi.grid.setAllCheckboxRow(false);
   onRefresh();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'read': {
-      onRead(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -112,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -150,14 +139,42 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="我的站内信">
       <template #toolbar-tools>
-        <Button type="primary" @click="onMarkRead">
-          <MdiCheckboxMarkedCircleOutline />
-          标记已读
-        </Button>
-        <Button type="primary" class="ml-2" @click="onMarkAllRead">
-          <MdiCheckboxMarkedCircleOutline />
-          全部已读
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '标记已读',
+              type: 'primary',
+              icon: 'mdi:checkbox-marked-circle-outline',
+              onClick: onMarkRead,
+            },
+            {
+              label: '全部已读',
+              type: 'primary',
+              icon: 'mdi:checkbox-marked-circle-outline',
+              onClick: onMarkAllRead,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '查看',
+              type: 'link',
+              ifShow: row.readStatus,
+              icon: ACTION_ICON.VIEW,
+              onClick: onDetail.bind(null, row),
+            },
+            {
+              label: '已读',
+              type: 'link',
+              ifShow: !row.readStatus,
+              icon: ACTION_ICON.DELETE,
+              onClick: onRead.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

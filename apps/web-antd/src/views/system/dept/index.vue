@@ -1,21 +1,18 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -62,41 +59,21 @@ function onEdit(row: SystemDeptApi.Dept) {
 
 /** 删除部门 */
 async function onDelete(row: SystemDeptApi.Dept) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
-  try {
-    await deleteDept(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemDeptApi.Dept>) {
-  switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
+  await deleteDept(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: 'action_key_msg',
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(onActionClick, getLeaderName),
+    columns: useGridColumns(getLeaderName),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -136,17 +113,54 @@ onMounted(async () => {
     <FormModal @success="onRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dept:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['部门']) }}
-        </Button>
-        <Button class="ml-2" @click="toggleExpand">
-          {{ isExpanded ? '收缩' : '展开' }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['菜单']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dept:create'],
+              onClick: onCreate,
+            },
+            {
+              label: isExpanded ? '收缩' : '展开',
+              type: 'primary',
+              onClick: toggleExpand,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '新增下级',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:menu:create'],
+              onClick: onAppend.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:menu:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:menu:delete'],
+              disabled: !!(row.children && row.children.length > 0),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

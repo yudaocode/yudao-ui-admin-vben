@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
@@ -12,8 +9,6 @@ import {
   getDictOptions,
   getRangePickerDefaultProps,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -204,9 +199,7 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -272,34 +265,10 @@ export function useGridColumns<T = SystemSmsTemplateApi.SmsTemplate>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '短信模板',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:sms-template:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:sms-template:delete']),
-          },
-          {
-            code: 'sms-send',
-            text: '发送短信',
-            show: hasAccessByCodes(['system:sms-template:send-sms']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

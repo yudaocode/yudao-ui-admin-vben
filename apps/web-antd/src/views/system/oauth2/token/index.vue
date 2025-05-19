@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
 import { Page } from '@vben/common-ui';
@@ -15,6 +12,7 @@ import {
   getOAuth2TokenPage,
 } from '#/api/system/oauth2/token';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -26,31 +24,16 @@ function onRefresh() {
 
 /** 删除 OAuth2 令牌 */
 async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', ['令牌']),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
-  try {
-    await deleteOAuth2Token(row.accessToken);
-    message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemOAuth2TokenApi.OAuth2Token>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-  }
+  await deleteOAuth2Token(row.accessToken);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', ['令牌']),
+    key: 'action_key_msg',
+  });
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -58,7 +41,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -92,6 +75,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <Grid table-title="令牌列表" />
+    <Grid table-title="令牌列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '强退',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:oauth2-token:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

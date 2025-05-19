@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
@@ -20,6 +16,7 @@ import {
   getMailTemplatePage,
 } from '#/api/system/mail/template';
 import { DocAlert } from '#/components/doc-alert';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -27,11 +24,6 @@ import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
 
 const accountList = ref<SystemMailAccountApi.MailAccount[]>([]);
-
-/** 获取邮箱账号 */
-const getAccountMail = (accountId: number) => {
-  return accountList.value.find((account) => account.id === accountId)?.mail;
-};
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -65,39 +57,22 @@ function onSend(row: SystemMailTemplateApi.MailTemplate) {
 
 /** 删除邮件模板 */
 async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  try {
-    await deleteMailTemplate(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  await deleteMailTemplate(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: 'action_key_msg',
+  });
+  onRefresh();
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemMailTemplateApi.MailTemplate>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'send': {
-      onSend(row);
-      break;
-    }
-  }
+/** 获取邮箱账号 */
+function getAccountMail(accountId: number) {
+  return accountList.value.find((account) => account.id === accountId)?.mail;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -105,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, getAccountMail),
+    columns: useGridColumns(getAccountMail),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -144,14 +119,48 @@ onMounted(async () => {
     <SendModal />
     <Grid table-title="邮件模板列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:mail-template:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['邮件模板']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['邮件模板']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:mail-template:create'],
+              onClick: onCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:mail-template:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: '测试',
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:mail-template:send-mail'],
+              onClick: onSend.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:mail-template:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
