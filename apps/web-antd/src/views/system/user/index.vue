@@ -6,10 +6,9 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref } from 'vue';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, Upload } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -19,7 +18,7 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 
@@ -87,12 +86,12 @@ function onEdit(row: SystemUserApi.User) {
 async function onDelete(row: SystemUserApi.User) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.username]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   await deleteUser(row.id as number);
   message.success({
     content: $t('ui.actionMessage.deleteSuccess', [row.username]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
   onRefresh();
 }
@@ -189,32 +188,31 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <div class="w-5/6">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
-            <Button
-              type="primary"
-              @click="onCreate"
-              v-access:code="['system:user:create']"
-            >
-              <Plus class="size-5" />
-              {{ $t('ui.actionTitle.create', ['用户']) }}
-            </Button>
-            <Button
-              type="primary"
-              class="ml-2"
-              @click="onExport"
-              v-access:code="['system:user:export']"
-            >
-              <Download class="size-5" />
-              {{ $t('ui.actionTitle.export') }}
-            </Button>
-            <Button
-              type="primary"
-              class="ml-2"
-              @click="onImport"
-              v-access:code="['system:user:import']"
-            >
-              <Upload class="size-5" />
-              {{ $t('ui.actionTitle.import', ['用户']) }}
-            </Button>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('ui.actionTitle.create', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.ADD,
+                  auth: ['system:user:create'],
+                  onClick: onCreate,
+                },
+                {
+                  label: $t('ui.actionTitle.export'),
+                  type: 'primary',
+                  icon: ACTION_ICON.DOWNLOAD,
+                  auth: ['system:user:export'],
+                  onClick: onExport,
+                },
+                {
+                  label: $t('ui.actionTitle.import', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.UPLOAD,
+                  auth: ['system:user:import'],
+                  onClick: onImport,
+                },
+              ]"
+            />
           </template>
           <template #actions="{ row }">
             <TableAction
@@ -222,7 +220,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 {
                   label: $t('common.edit'),
                   type: 'link',
-                  icon: 'ant-design:edit-outlined',
+                  icon: ACTION_ICON.EDIT,
                   auth: ['system:user:update'],
                   onClick: onEdit.bind(null, row),
                 },
@@ -230,7 +228,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   label: $t('common.delete'),
                   type: 'link',
                   danger: true,
-                  icon: 'ant-design:delete-outlined',
+                  icon: ACTION_ICON.DELETE,
                   auth: ['system:user:delete'],
                   popConfirm: {
                     title: $t('ui.actionMessage.deleteConfirm', [row.name]),
@@ -240,13 +238,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
               ]"
               :drop-down-actions="[
                 {
-                  label: '数据权限',
+                  label: '分配角色',
                   type: 'link',
                   auth: ['system:permission:assign-user-role'],
                   onClick: onAssignRole.bind(null, row),
                 },
                 {
-                  label: '菜单权限',
+                  label: '重置密码',
                   type: 'link',
                   auth: ['system:user:update-password'],
                   onClick: onResetPassword.bind(null, row),
