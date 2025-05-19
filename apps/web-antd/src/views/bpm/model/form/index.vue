@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BpmCategoryApi } from '#/api/bpm/category';
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
+import type { BpmFormApi } from '#/api/bpm/form';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
@@ -16,6 +17,7 @@ import { Button, Card, message } from 'ant-design-vue';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getProcessDefinition } from '#/api/bpm/definition';
+import { getFormSimpleList } from '#/api/bpm/form';
 import {
   createModel,
   deployModel,
@@ -26,6 +28,7 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 
 import BasicInfo from './modules/basic-info.vue';
+import FormDesign from './modules/form-design.vue';
 
 defineOptions({ name: 'BpmModelCreate' });
 
@@ -62,7 +65,9 @@ const route = useRoute();
 const userStore = useUserStore();
 
 // 基础信息组件引用
-const basicInfoRef = ref();
+const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
+// 表单设计组件引用
+const formDesignRef = ref<InstanceType<typeof FormDesign>>();
 
 /** 步骤校验函数 */
 const validateBasic = async () => {
@@ -71,7 +76,7 @@ const validateBasic = async () => {
 
 /** 表单设计校验 */
 const validateForm = async () => {
-  // TODO
+  await formDesignRef.value?.validate();
 };
 
 /** 流程设计校验 */
@@ -132,7 +137,7 @@ provide('processData', processData);
 provide('modelData', formData);
 
 // 数据列表
-// const formList = ref([])
+const formList = ref<BpmFormApi.FormVO[]>([]);
 const categoryList = ref<BpmCategoryApi.CategoryVO[]>([]);
 const userList = ref<SystemUserApi.User[]>([]);
 const deptList = ref<SystemDeptApi.Dept[]>([]);
@@ -187,8 +192,8 @@ const initData = async () => {
     formData.value.managerUserIds.push(userStore.userInfo?.userId);
   }
 
-  // TODO 获取表单列表
-  // formList.value = await getFormSimpleList()
+  // 获取表单列表
+  formList.value = await getFormSimpleList();
   categoryList.value = await getCategorySimpleList();
   // 获取用户列表
   userList.value = await getSimpleUserList();
@@ -393,9 +398,8 @@ onMounted(async () => {
 /** 添加组件卸载前的清理 */
 onBeforeUnmount(() => {
   // 清理所有的引用
-  basicInfoRef.value = null;
-  // TODO 后续加
-  // formDesignRef.value = null;
+  basicInfoRef.value = undefined;
+  formDesignRef.value = undefined;
   // processDesignRef.value = null;
 });
 </script>
@@ -471,7 +475,7 @@ onBeforeUnmount(() => {
       <Card :body-style="{ padding: '10px' }" class="mb-4">
         <div class="mt-[50px]">
           <!-- 第一步：基本信息 -->
-          <div v-if="currentStep === 0" class="mx-auto w-[560px]">
+          <div v-if="currentStep === 0" class="mx-auto w-4/6">
             <BasicInfo
               v-model="formData"
               :category-list="categoryList"
@@ -480,13 +484,19 @@ onBeforeUnmount(() => {
               ref="basicInfoRef"
             />
           </div>
-
-          <!-- 第二步：表单设计 TODO -->
+          <!-- 第二步：表单设计  -->
+          <div v-show="currentStep === 1" class="mx-auto w-4/6">
+            <FormDesign
+              v-model="formData"
+              :form-list="formList"
+              ref="formDesignRef"
+            />
+          </div>
 
           <!-- 第三步：流程设计 TODO -->
 
           <!-- 第四步：更多设置 TODO -->
-          <div v-show="currentStep === 3" class="mx-auto w-[700px]"></div>
+          <div v-show="currentStep === 3" class="mx-auto w-4/6"></div>
         </div>
       </Card>
     </div>
