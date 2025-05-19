@@ -12,7 +12,7 @@ import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, Card, message } from 'ant-design-vue';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getProcessDefinition } from '#/api/bpm/definition';
@@ -467,27 +467,28 @@ onBeforeUnmount(() => {
           </Button>
         </div>
       </div>
-
       <!-- 主体内容 -->
-      <div class="mt-[50px]">
-        <!-- 第一步：基本信息 -->
-        <div v-if="currentStep === 0" class="mx-auto w-[560px]">
-          <BasicInfo
-            v-model="formData"
-            :category-list="categoryList"
-            :user-list="userList"
-            :dept-list="deptList"
-            ref="basicInfoRef"
-          />
+      <Card :body-style="{ padding: '10px' }" class="mb-4">
+        <div class="mt-[50px]">
+          <!-- 第一步：基本信息 -->
+          <div v-if="currentStep === 0" class="mx-auto w-[560px]">
+            <BasicInfo
+              v-model="formData"
+              :category-list="categoryList"
+              :user-list="userList"
+              :dept-list="deptList"
+              ref="basicInfoRef"
+            />
+          </div>
+
+          <!-- 第二步：表单设计 TODO -->
+
+          <!-- 第三步：流程设计 TODO -->
+
+          <!-- 第四步：更多设置 TODO -->
+          <div v-show="currentStep === 3" class="mx-auto w-[700px]"></div>
         </div>
-
-        <!-- 第二步：表单设计 TODO -->
-
-        <!-- 第三步：流程设计 TODO -->
-
-        <!-- 第四步：更多设置 TODO -->
-        <div v-show="currentStep === 3" class="mx-auto w-[700px]"></div>
-      </div>
+      </Card>
     </div>
   </Page>
 </template>
