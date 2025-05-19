@@ -107,6 +107,7 @@ export function useGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Student>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Student>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     { type: 'expand', width: 80, slots: { content: 'expand_content' } },
     {
       field: 'id',

@@ -16,18 +16,18 @@ const props = defineProps<{
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDemo03GradeGridColumns(),
-    height: 'auto',
-    rowConfig: {
-      keyField: 'id',
-      isHover: true,
-    },
     pagerConfig: {
       enabled: false,
     },
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<Demo03StudentApi.Demo03Student>,
+    height: '600px',
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+  } as VxeTableGridOptions<Demo03StudentApi.Demo03Grade>,
 });
 
 /** 刷新表格 */
