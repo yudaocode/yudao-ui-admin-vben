@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type {
-  OnActionClickParams,
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
@@ -18,6 +17,7 @@ import {
   exportDictType,
   getDictTypePage,
 } from '#/api/system/dict/type';
+import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useTypeGridColumns, useTypeGridFormSchema } from '../data';
@@ -53,38 +53,16 @@ function onEdit(row: any) {
 
 /** 删除字典类型 */
 async function onDelete(row: SystemDictTypeApi.DictType) {
-  const hideLoading = message.loading({
-    content: $t('common.processing'),
-    duration: 0,
-    key: 'process_message',
+  message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: ACTION_KEY,
   });
-  try {
-    await deleteDictType(row.id as number);
-    message.success({
-      content: $t('common.operationSuccess'),
-      key: 'process_message',
-    });
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮回调 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemDictTypeApi.DictType>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
+  await deleteDictType(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: ACTION_KEY,
+  });
+  onRefresh();
 }
 
 /** 表格事件 */
@@ -99,7 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useTypeGridFormSchema(),
   },
   gridOptions: {
-    columns: useTypeGridColumns(onActionClick),
+    columns: useTypeGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -149,6 +127,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <Download class="size-5" />
           {{ $t('ui.actionTitle.export') }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: 'ant-design:edit-outlined',
+              auth: ['system:dict:update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: 'ant-design:delete-outlined',
+              auth: ['system:dict:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: onDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>
