@@ -81,9 +81,9 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'processInstance.summary',
       title: '摘要',
       minWidth: 200,
-      // slots: {
-      //   default: 'slot-summary',
-      // },
+      slots: {
+        default: 'slot-summary',
+      },
     },
     {
       field: 'processInstance.startUser.nickname',
