@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { computed, h, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -67,8 +67,6 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除学生 ID
-const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
 /** 批量删除学生 */
 async function onDeleteBatch() {
   const hideLoading = message.loading({
@@ -83,6 +81,15 @@ async function onDeleteBatch() {
   } finally {
     hideLoading();
   }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Grade[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -143,20 +150,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellClick: ({ row }: { row: Demo03StudentApi.Demo03Student }) => {
       selectDemo03Student.value = row;
     },
-    checkboxAll: ({
-      records,
-    }: {
-      records: Demo03StudentApi.Demo03Student[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
-    checkboxChange: ({
-      records,
-    }: {
-      records: Demo03StudentApi.Demo03Student[];
-    }) => {
-      deleteIds.value = records.map((item) => item.id);
-    },
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
   },
 });
 </script>
@@ -190,7 +185,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             type="primary"
             danger
             class="ml-2"
-            :disabled="showDeleteBatchBtn"
+            :disabled="isEmpty(deleteIds)"
             @click="onDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >

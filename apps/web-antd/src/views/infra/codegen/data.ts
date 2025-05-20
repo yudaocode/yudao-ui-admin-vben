@@ -10,7 +10,6 @@ import { h } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
@@ -154,18 +153,6 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         class: 'w-full',
       },
       rules: 'selectRequired',
-    },
-    {
-      // TODO @puhui999：使用后端统一配置。因为一般需要批量的团队，会一直需要。不需要的，一般一直不需要哈。
-      component: 'RadioGroup',
-      fieldName: 'deleteBatch',
-      label: '批量删除?',
-      help: '是否生成批量删除接口',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        class: 'w-full',
-      },
-      rules: z.boolean().default(false),
     },
     {
       fieldName: 'parentMenuId',

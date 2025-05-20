@@ -112,7 +112,7 @@ export function useGridColumns(): VxeTableGridOptions<Demo02CategoryApi.Demo02Ca
     },
     {
       title: '操作',
-      width: 180,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },

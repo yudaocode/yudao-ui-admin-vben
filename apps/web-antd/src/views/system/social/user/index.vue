@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSocialUserPage } from '#/api/system/social/user';
