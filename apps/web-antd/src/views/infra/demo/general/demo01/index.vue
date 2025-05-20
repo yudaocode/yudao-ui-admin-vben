@@ -4,11 +4,12 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
+import { Download, Plus, Trash2 } from '@vben/icons';
 import {
   cloneDeep,
   downloadFileFromBlobPart,
   formatDateTime,
+  isEmpty,
 } from '@vben/utils';
 
 import {
@@ -24,6 +25,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
+  deleteDemo01ContactListByIds,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -38,6 +40,7 @@ import Demo01ContactForm from './modules/form.vue';
 
 const loading = ref(true); // 列表的加载中
 const list = ref<Demo01ContactApi.Demo01Contact[]>([]); // 列表的数据
+
 const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -101,11 +104,39 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   });
   try {
     await deleteDemo01Contact(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_process_msg',
+    });
     await getList();
   } catch {
     hideLoading();
   }
+}
+
+/** 批量删除示例联系人 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo01ContactListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    await getList();
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo01ContactApi.Demo01Contact[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -205,9 +236,28 @@ onMounted(() => {
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
+          <Button
+            :icon="h(Trash2)"
+            type="primary"
+            danger
+            class="ml-2"
+            :disabled="isEmpty(deleteIds)"
+            @click="onDeleteBatch"
+            v-access:code="['infra:demo01-contact:delete']"
+          >
+            批量删除
+          </Button>
         </TableToolbar>
       </template>
-      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+      <VxeTable
+        ref="tableRef"
+        :data="list"
+        show-overflow
+        :loading="loading"
+        @checkbox-all="setDeleteIds"
+        @checkbox-change="setDeleteIds"
+      >
+        <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />
         <VxeColumn field="name" title="名字" align="center" />
         <VxeColumn field="sex" title="性别" align="center">
@@ -240,6 +290,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
+              danger
               class="ml-2"
               @click="onDelete(row as any)"
               v-access:code="['infra:demo01-contact:delete']"

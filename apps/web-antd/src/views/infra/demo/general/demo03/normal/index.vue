@@ -4,16 +4,16 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
+import { Download, Plus, Trash2 } from '@vben/icons';
 import {
   cloneDeep,
   downloadFileFromBlobPart,
   formatDateTime,
+  isEmpty,
 } from '@vben/utils';
 
 import {
   Button,
-  DatePicker,
   Form,
   Input,
   message,
@@ -25,6 +25,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
+  deleteDemo03StudentListByIds,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
@@ -46,7 +47,6 @@ const queryParams = reactive({
   pageSize: 10,
   name: undefined,
   sex: undefined,
-  birthday: undefined,
   description: undefined,
   createTime: undefined,
 });
@@ -58,9 +58,6 @@ const getList = async () => {
   loading.value = true;
   try {
     const params = cloneDeep(queryParams) as any;
-    if (params.birthday && Array.isArray(params.birthday)) {
-      params.birthday = (params.birthday as string[]).join(',');
-    }
     if (params.createTime && Array.isArray(params.createTime)) {
       params.createTime = (params.createTime as string[]).join(',');
     }
@@ -108,11 +105,39 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   });
   try {
     await deleteDemo03Student(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_process_msg',
+    });
     await getList();
   } catch {
     hideLoading();
   }
+}
+
+/** 批量删除学生 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03StudentListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    await getList();
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Student[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -168,15 +193,6 @@ onMounted(() => {
             </Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="出生日期" name="birthday">
-          <DatePicker
-            v-model:value="queryParams.birthday"
-            value-format="YYYY-MM-DD"
-            placeholder="选择出生日期"
-            allow-clear
-            class="w-full"
-          />
-        </Form.Item>
         <Form.Item label="创建时间" name="createTime">
           <RangePicker
             v-model:value="queryParams.createTime"
@@ -219,9 +235,28 @@ onMounted(() => {
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
+          <Button
+            :icon="h(Trash2)"
+            type="primary"
+            danger
+            class="ml-2"
+            :disabled="isEmpty(deleteIds)"
+            @click="onDeleteBatch"
+            v-access:code="['infra:demo03-student:delete']"
+          >
+            批量删除
+          </Button>
         </TableToolbar>
       </template>
-      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+      <VxeTable
+        ref="tableRef"
+        :data="list"
+        show-overflow
+        :loading="loading"
+        @checkbox-all="setDeleteIds"
+        @checkbox-change="setDeleteIds"
+      >
+        <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />
         <VxeColumn field="name" title="名字" align="center" />
         <VxeColumn field="sex" title="性别" align="center">

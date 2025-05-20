@@ -47,7 +47,7 @@ export function deleteDemo01Contact(id: number) {
 }
 
 /** 批量删除示例联系人 */
-export function deleteDemo01ContactByIds(ids: number[]) {
+export function deleteDemo01ContactListByIds(ids: number[]) {
   return requestClient.delete(
     `/infra/demo01-contact/delete-list?ids=${ids.join(',')}`,
   );
