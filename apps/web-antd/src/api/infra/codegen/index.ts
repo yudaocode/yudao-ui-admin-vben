@@ -21,7 +21,6 @@ export namespace InfraCodegenApi {
     createTime: Date;
     updateTime: Date;
     templateType: number;
-    deleteBatch: boolean;
     parentMenuId: number;
   }
 
