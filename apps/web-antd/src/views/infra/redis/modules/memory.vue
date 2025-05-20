@@ -15,7 +15,7 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 解析内存值，移除单位，转为数字 */
-const parseMemoryValue = (memStr: string | undefined): number => {
+function parseMemoryValue(memStr: string | undefined): number {
   if (!memStr) {
     return 0;
   }
@@ -27,10 +27,10 @@ const parseMemoryValue = (memStr: string | undefined): number => {
   } catch {
     return 0;
   }
-};
+}
 
 /** 渲染内存使用图表 */
-const renderMemoryChart = () => {
+function renderMemoryChart() {
   if (!props.redisData?.info) {
     return;
   }
@@ -94,7 +94,7 @@ const renderMemoryChart = () => {
         detail: {
           show: true,
           offsetCenter: [0, '50%'],
-          color: 'auto',
+          color: 'inherit',
           fontSize: 30,
           formatter: usedMemory,
         },
@@ -110,7 +110,7 @@ const renderMemoryChart = () => {
       },
     ],
   });
-};
+}
 
 /** 监听数据变化，重新渲染图表 */
 watch(
@@ -131,7 +131,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <EchartsUI ref="chartRef" height="420px" />
-  </div>
+  <EchartsUI ref="chartRef" height="420px" />
 </template>

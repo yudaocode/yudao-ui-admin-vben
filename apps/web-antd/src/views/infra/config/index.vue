@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraConfigApi } from '#/api/infra/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteConfig, exportConfig, getConfigPage } from '#/api/infra/config';
 import { $t } from '#/locales';
 
@@ -29,51 +25,37 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportConfig(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '参数配置.xls', source: data });
 }
 
 /** 创建参数 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑参数 */
-function onEdit(row: InfraConfigApi.Config) {
+function handleEdit(row: InfraConfigApi.Config) {
   formModalApi.setData(row).open();
 }
 
 /** 删除参数 */
-async function onDelete(row: InfraConfigApi.Config) {
+async function handleDelete(row: InfraConfigApi.Config) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteConfig(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraConfigApi.Config>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
   }
 }
 
@@ -82,7 +64,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -112,23 +94,48 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="参数列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['infra:config:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['参数']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:config:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['短信渠道']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:config:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:config:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:post:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:post:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

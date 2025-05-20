@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
@@ -10,11 +7,10 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteCodegenTable,
   downloadCodegen,
@@ -57,22 +53,22 @@ function onRefresh() {
 }
 
 /** 导入表格 */
-function onImport() {
+function handleImport() {
   importModalApi.open();
 }
 
 /** 预览代码 */
-function onPreview(row: InfraCodegenApi.CodegenTable) {
+function handlePreview(row: InfraCodegenApi.CodegenTable) {
   previewModalApi.setData(row).open();
 }
 
 /** 编辑表格 */
-function onEdit(row: InfraCodegenApi.CodegenTable) {
+function handleEdit(row: InfraCodegenApi.CodegenTable) {
   router.push({ name: 'InfraCodegenEdit', query: { id: row.id } });
 }
 
 /** 删除代码生成配置 */
-async function onDelete(row: InfraCodegenApi.CodegenTable) {
+async function handleDelete(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.tableName]),
     duration: 0,
@@ -88,15 +84,17 @@ async function onDelete(row: InfraCodegenApi.CodegenTable) {
 }
 
 /** 同步数据库 */
-async function onSync(row: InfraCodegenApi.CodegenTable) {
+async function handleSync(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating', [row.tableName]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await syncCodegenFromDB(row.id);
-    message.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
+    message.success({
+      content: $t('ui.actionMessage.updateSuccess', [row.tableName]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();
@@ -104,11 +102,10 @@ async function onSync(row: InfraCodegenApi.CodegenTable) {
 }
 
 /** 生成代码 */
-async function onGenerate(row: InfraCodegenApi.CodegenTable) {
+async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: '正在生成代码...',
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     const res = await downloadCodegen(row.id);
@@ -119,38 +116,12 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
     link.download = `codegen-${row.className}.zip`;
     link.click();
     window.URL.revokeObjectURL(url);
-    message.success('代码生成成功');
+    message.success({
+      content: '代码生成成功',
+      key: 'action_key_msg',
+    });
   } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'generate': {
-      onGenerate(row);
-      break;
-    }
-    case 'preview': {
-      onPreview(row);
-      break;
-    }
-    case 'sync': {
-      onSync(row);
-      break;
-    }
   }
 }
 
@@ -159,7 +130,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, getDataSourceConfigName),
+    columns: useGridColumns(getDataSourceConfigName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -217,14 +188,61 @@ initDataSourceConfig();
     <PreviewModal />
     <Grid table-title="代码生成列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onImport"
-          v-access:code="['infra:codegen:create']"
-        >
-          <Plus class="size-5" />
-          导入
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.import'),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:codegen:create'],
+              onClick: handleImport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '预览',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:codegen:preview'],
+              onClick: handlePreview.bind(null, row),
+            },
+            {
+              label: '生成代码',
+              type: 'link',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:codegen:download'],
+              onClick: handleGenerate.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              auth: ['infra:codegen:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '同步',
+              type: 'link',
+              auth: ['infra:codegen:update'],
+              onClick: handleSync.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              auth: ['infra:codegen:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

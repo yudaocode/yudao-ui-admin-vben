@@ -44,7 +44,7 @@ const activeKey = ref<string>('');
 
 /** 代码地图 */
 const codeMap = ref<Map<string, string>>(new Map<string, string>());
-const setCodeMap = (key: string, lang: string, code: string) => {
+function setCodeMap(key: string, lang: string, code: string) {
   // 处理可能的缩进问题，特别是对Java文件
   const trimmedCode = code.trimStart();
   // 如果已有缓存则不重新构建
@@ -59,8 +59,10 @@ const setCodeMap = (key: string, lang: string, code: string) => {
   } catch {
     codeMap.value.set(key, trimmedCode);
   }
-};
-const removeCodeMapKey = (targetKey: any) => {
+}
+
+/** 删除代码地图 */
+function removeCodeMapKey(targetKey: any) {
   // 只有一个代码视图时不允许删除
   if (codeMap.value.size === 1) {
     return;
@@ -68,10 +70,10 @@ const removeCodeMapKey = (targetKey: any) => {
   if (codeMap.value.has(targetKey)) {
     codeMap.value.delete(targetKey);
   }
-};
+}
 
 /** 复制代码 */
-const copyCode = async () => {
+async function copyCode() {
   const { copy } = useClipboard();
   const file = previewFiles.value.find(
     (item) => item.filePath === activeKey.value,
@@ -80,10 +82,10 @@ const copyCode = async () => {
     await copy(file.code);
     message.success('复制成功');
   }
-};
+}
 
 /** 文件节点点击事件 */
-const handleNodeClick = (_: any[], e: any) => {
+function handleNodeClick(_: any[], e: any) {
   if (!e.node.isLeaf) return;
 
   activeKey.value = e.node.key;
@@ -100,10 +102,10 @@ const handleNodeClick = (_: any[], e: any) => {
 
   const lang = file.filePath.split('.').pop() || '';
   setCodeMap(activeKey.value, lang, file.code);
-};
+}
 
 /** 处理文件树 */
-const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
+function handleFiles(data: InfraCodegenApi.CodegenPreview[]): FileNode[] {
   const exists: Record<string, boolean> = {};
   const files: FileNode[] = [];
 
@@ -176,17 +178,17 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   }
 
   /** 构建树形结构 */
-  const buildTree = (parentKey: string): FileNode[] => {
+  function buildTree(parentKey: string): FileNode[] {
     return files
       .filter((file) => file.parentKey === parentKey)
       .map((file) => ({
         ...file,
         children: buildTree(file.key),
       }));
-  };
+  }
 
   return buildTree('/');
-};
+}
 
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({

@@ -16,6 +16,7 @@
   "disabled": "Disabled",
   "edit": "Edit",
   "delete": "Delete",
+  "deleteBatch": "Delete Batch",
   "create": "Create",
   "detail": "Detail",
   "yes": "Yes",
