@@ -61,6 +61,7 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   }
 }
 
+// TODO @puhui999：:1）/** 批量删除示例联系人 */ 是不是放在 deleteIds 上面；2）showDeleteBatchBtn 是不是直接 disabled 哪里判断哈；
 const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
 const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
 function setDeleteIds({

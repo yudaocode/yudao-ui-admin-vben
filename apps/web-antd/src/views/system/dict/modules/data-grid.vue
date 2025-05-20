@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDictData,
   exportDictData,
@@ -42,51 +38,36 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportDictData(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '字典数据.xls', source: data });
 }
 
 /** 创建字典数据 */
-function onCreate() {
+function handleCreate() {
   dataFormModalApi.setData({ dictType: props.dictType }).open();
 }
 
 /** 编辑字典数据 */
-function onEdit(row: any) {
+function handleEdit(row: SystemDictDataApi.DictData) {
   dataFormModalApi.setData(row).open();
 }
 
 /** 删除字典数据 */
-async function onDelete(row: any) {
+async function handleDelete(row: SystemDictDataApi.DictData) {
   const hideLoading = message.loading({
-    content: $t('common.processing'),
-    duration: 0,
-    key: 'process_message',
+    content: $t('ui.actionMessage.deleting', [row.label]),
+    key: 'action_key_msg',
   });
   try {
-    await deleteDictData(row.id);
+    await deleteDictData(row.id as number);
     message.success({
-      content: $t('common.operationSuccess'),
-      key: 'process_message',
+      content: $t('ui.actionMessage.deleteSuccess', [row.label]),
+      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮回调 */
-function onActionClick({ code, row }: OnActionClickParams) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
   }
 }
 
@@ -95,7 +76,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useDataGridFormSchema(),
   },
   gridOptions: {
-    columns: useDataGridColumns(onActionClick),
+    columns: useDataGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -137,23 +118,48 @@ watch(
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['字典数据']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典数据']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:dict:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:dict:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.label]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>

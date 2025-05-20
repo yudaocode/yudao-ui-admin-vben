@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMailLogApi } from '#/api/system/mail/log';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -75,9 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailLogApi.MailLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -125,26 +118,10 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       minWidth: 120,
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 80,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'toMail',
-          nameTitle: '邮件日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '查看',
-            show: hasAccessByCodes(['system:mail-log:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

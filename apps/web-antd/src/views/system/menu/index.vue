@@ -1,18 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { IconifyIcon, Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
@@ -32,51 +29,35 @@ function onRefresh() {
 }
 
 /** 创建菜单 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData({}).open();
 }
 
 /** 添加下级菜单 */
-function onAppend(row: SystemMenuApi.Menu) {
+function handleAppend(row: SystemMenuApi.Menu) {
   formModalApi.setData({ pid: row.id }).open();
 }
 
 /** 编辑菜单 */
-function onEdit(row: SystemMenuApi.Menu) {
+function handleEdit(row: SystemMenuApi.Menu) {
   formModalApi.setData(row).open();
 }
 
 /** 删除菜单 */
-async function onDelete(row: SystemMenuApi.Menu) {
+async function handleDelete(row: SystemMenuApi.Menu) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteMenu(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemMenuApi.Menu>) {
-  switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
   }
 }
 
@@ -89,7 +70,7 @@ function toggleExpand() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -131,17 +112,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:menu:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['菜单']) }}
-        </Button>
-        <Button class="ml-2" @click="toggleExpand">
-          {{ isExpanded ? '收缩' : '展开' }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['菜单']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:menu:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: isExpanded ? '收缩' : '展开',
+              type: 'primary',
+              onClick: toggleExpand,
+            },
+          ]"
+        />
       </template>
       <template #name="{ row }">
         <div class="flex w-full items-center gap-1">
@@ -160,6 +146,37 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <span class="flex-auto">{{ $t(row.name) }}</span>
           <div class="items-center justify-end"></div>
         </div>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '新增下级',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:menu:create'],
+              onClick: handleAppend.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:menu:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:menu:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

@@ -2,13 +2,15 @@
 import type { Rule } from 'ant-design-vue/es/form';
 import type { SelectValue } from 'ant-design-vue/es/select';
 
+import type { PropType } from 'vue';
+
 import type { BpmCategoryApi } from '#/api/bpm/category';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { ref, watch } from 'vue';
 
-import { IconifyIcon, Plus, ShieldQuestion, X } from '@vben/icons';
+import { CircleHelp, IconifyIcon, Plus, X } from '@vben/icons';
 
 import {
   Avatar,
@@ -20,18 +22,25 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
+import { DeptSelectModal } from '#/components/dept-select-modal';
 import { ImageUpload } from '#/components/upload';
 import { UserSelectModal } from '#/components/user-select-modal';
 import { DICT_TYPE, getBoolDictOptions, getIntDictOptions } from '#/utils';
 
-const props = withDefaults(
-  defineProps<{
-    categoryList: BpmCategoryApi.CategoryVO[];
-    deptList: SystemDeptApi.Dept[];
-    userList: SystemUserApi.User[];
-  }>(),
-  {},
-);
+const props = defineProps({
+  categoryList: {
+    type: Array as PropType<BpmCategoryApi.CategoryVO[]>,
+    required: true,
+  },
+  userList: {
+    type: Array as PropType<SystemUserApi.User[]>,
+    required: true,
+  },
+  deptList: {
+    type: Array as PropType<SystemDeptApi.Dept[]>,
+    required: true,
+  },
+});
 
 // 表单引用
 const formRef = ref();
@@ -45,6 +54,7 @@ const selectedStartDepts = ref<SystemDeptApi.Dept[]>([]);
 // 选中的流程管理员
 const selectedManagerUsers = ref<SystemUserApi.User[]>([]);
 const userSelectFormRef = ref();
+const deptSelectFormRef = ref();
 const currentSelectType = ref<'manager' | 'start'>('start');
 // 选中的用户
 const selectedUsers = ref<number[]>();
@@ -55,6 +65,7 @@ const rules: Record<string, Rule[]> = {
   category: [{ required: true, message: '流程分类不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '流程类型不能为空', trigger: 'blur' }],
   visible: [{ required: true, message: '是否可见不能为空', trigger: 'blur' }],
+  // TODO 这个的校验好像没有起作用
   managerUserIds: [
     { required: true, message: '流程管理员不能为空', trigger: 'blur' },
   ],
@@ -99,8 +110,14 @@ const openStartUserSelect = () => {
 
 /** 打开部门选择 */
 const openStartDeptSelect = () => {
-  // TODO 部门选择组件暂时还没有
-  console.warn('部门选择功能暂未实现');
+  deptSelectFormRef.value.open(selectedStartDepts.value);
+};
+/** 处理部门选择确认 */
+const handleDeptSelectConfirm = (depts: SystemDeptApi.Dept[]) => {
+  modelData.value = {
+    ...modelData.value,
+    startDeptIds: depts.map((d) => d.id),
+  };
 };
 
 /** 打开管理员选择 */
@@ -203,9 +220,7 @@ const validate = async () => {
   await formRef.value?.validate();
 };
 
-defineExpose({
-  validate,
-});
+defineExpose({ validate });
 </script>
 
 <template>
@@ -213,8 +228,8 @@ defineExpose({
     ref="formRef"
     :model="modelData"
     :rules="rules"
-    :label-col="{ span: 6 }"
-    :wrapper-col="{ span: 18 }"
+    :label-col="{ span: 4 }"
+    :wrapper-col="{ span: 20 }"
     class="mt-5"
   >
     <Form.Item label="流程标识" name="key" class="mb-5">
@@ -231,7 +246,7 @@ defineExpose({
           "
           placement="top"
         >
-          <ShieldQuestion class="ml-1 text-gray-500" />
+          <CircleHelp class="ml-1 size-5 text-gray-900" />
         </Tooltip>
       </div>
     </Form.Item>
@@ -343,7 +358,7 @@ defineExpose({
           :key="dept.id"
           class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2"
         >
-          <IconifyIcon icon="mdi:building-outline" class="size-5" />
+          <IconifyIcon icon="ep:office-building" class="size-6 px-1" />
           {{ dept.name }}
           <X
             class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
@@ -407,6 +422,13 @@ defineExpose({
     @confirm="handleUserSelectConfirm"
     @closed="handleUserSelectClosed"
     @cancel="handleUserSelectCancel"
+  />
+  <!-- 部门选择对话框 -->
+  <DeptSelectModal
+    ref="deptSelectFormRef"
+    title="发起人部门选择"
+    :check-strictly="true"
+    @confirm="handleDeptSelectConfirm"
   />
 </template>
 

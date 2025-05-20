@@ -1,4 +1,7 @@
-import type { ButtonProps } from 'ant-design-vue/es/button/buttonTypes';
+import type {
+  ButtonProps,
+  ButtonType,
+} from 'ant-design-vue/es/button/buttonTypes';
 import type { TooltipProps } from 'ant-design-vue/es/tooltip/Tooltip';
 
 export interface PopConfirm {
@@ -13,6 +16,7 @@ export interface PopConfirm {
 
 export interface ActionItem extends ButtonProps {
   onClick?: () => void;
+  type?: ButtonType;
   label?: string;
   color?: 'error' | 'success' | 'warning';
   icon?: string;

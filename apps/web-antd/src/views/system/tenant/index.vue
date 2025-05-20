@@ -6,12 +6,11 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { DocAlert } from '#/components/doc-alert';
@@ -41,33 +40,35 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportTenant(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '租户.xls', source: data });
 }
 
 /** 创建租户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑租户 */
-function onEdit(row: SystemTenantApi.Tenant) {
+function handleEdit(row: SystemTenantApi.Tenant) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户 */
-async function onDelete(row: SystemTenantApi.Tenant) {
+async function handleDelete(row: SystemTenantApi.Tenant) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteTenant(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
   }
 }
@@ -78,8 +79,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(getPackageName),
-    height: 'auto',
-    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -115,23 +114,24 @@ onMounted(async () => {
     <FormModal @success="onRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:tenant:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['租户']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:tenant:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['租户']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:tenant:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:tenant:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -139,19 +139,19 @@ onMounted(async () => {
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

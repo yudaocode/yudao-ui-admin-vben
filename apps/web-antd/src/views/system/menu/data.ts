@@ -1,12 +1,11 @@
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
-import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree, isHttpUrl } from '@vben/utils';
 
@@ -20,8 +19,6 @@ import {
   getDictOptions,
   SystemMenuTypeEnum,
 } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -269,9 +266,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick: OnActionClickFn<SystemMenuApi.Menu>,
-): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
   return [
     {
       field: 'name',
@@ -321,34 +316,10 @@ export function useGridColumns(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
+      width: 220,
       fixed: 'right',
-      align: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['system:menu:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:menu:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:menu:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

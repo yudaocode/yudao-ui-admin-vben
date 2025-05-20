@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -191,9 +186,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'clientId',
@@ -251,29 +244,10 @@ export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: 'OAuth2 客户端',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:oauth2-client:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:oauth2-client:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

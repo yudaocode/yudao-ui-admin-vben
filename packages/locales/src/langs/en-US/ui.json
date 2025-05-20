@@ -25,6 +25,7 @@
     "deleteConfirm": "Are you sure to delete {0}?",
     "deleting": "Deleting {0} ...",
     "deleteSuccess": "{0} deleted successfully",
+    "deleteFailed": "{0} deleted failed",
     "operationSuccess": "Operation succeeded",
     "operationFailed": "Operation failed",
     "importSuccess": "Import succeeded",
