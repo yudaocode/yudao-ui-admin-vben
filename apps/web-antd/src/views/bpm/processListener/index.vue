@@ -108,10 +108,12 @@ async function onDelete(row: BpmProcessListenerApi.ProcessListenerVO) {
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="执行监听器、任务监听器"
-      url="https://doc.iocoder.cn/bpm/listener/"
-    />
+    <template #doc>
+      <DocAlert
+        title="执行监听器、任务监听器"
+        url="https://doc.iocoder.cn/bpm/listener/"
+      />
+    </template>
     <FormModal @success="onRefresh" />
     <Grid table-title="流程监听器">
       <template #toolbar-tools>

@@ -4,6 +4,7 @@ import { requestClient } from '#/api/request';
 
 /** 流程定义 */
 export namespace BpmProcessDefinitionApi {
+  // 流程定义
   export interface ProcessDefinitionVO {
     id: string;
     version: number;

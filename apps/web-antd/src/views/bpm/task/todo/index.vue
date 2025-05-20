@@ -78,18 +78,18 @@ function onRefresh() {
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="审批通过、不通过、驳回"
-      url="https://doc.iocoder.cn/bpm/task-todo-done/"
-    />
-    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
-    <DocAlert
-      title="审批转办、委派、抄送"
-      url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
-    />
-    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
-
-    <FormModal @success="onRefresh" />
+    <template #doc>
+      <DocAlert
+        title="审批通过、不通过、驳回"
+        url="https://doc.iocoder.cn/bpm/task-todo-done/"
+      />
+      <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+      <DocAlert
+        title="审批转办、委派、抄送"
+        url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
+      />
+      <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+    </template>
     <Grid table-title="待办任务">
       <!-- 摘要 -->
       <!-- TODO siye：这个要不要，也放到 data.ts 处理掉？ -->

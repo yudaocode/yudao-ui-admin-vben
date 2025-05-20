@@ -39,28 +39,29 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // TODO @siye：建议和别的模块，也稍微加点类似的注释哈。= = 阅读总是会有点层次感；
+    // 表单验证
     const { valid } = await formApi.validate();
     if (!valid) return;
 
+    // 锁定模态框
     modalApi.lock();
     try {
+      // 获取表单数据
       const data = (await formApi.getValues()) as BpmFormApi.FormVO;
 
+      // 编码表单配置和表单字段
       data.conf = encodeConf(designerComponent);
       data.fields = encodeFields(designerComponent);
 
-      // TODO @siye：这个是不是不用抽方法呀，直接写逻辑就完事啦。
-      const saveForm = async () => {
-        if (!formData.value?.id) {
-          return createForm(data);
-        }
-        return editorAction.value === 'copy'
+      // 保存表单数据
+      if (formData.value?.id) {
+        await (editorAction.value === 'copy'
           ? createForm(data)
-          : updateForm(data);
-      };
+          : updateForm(data));
+      } else {
+        await createForm(data);
+      }
 
-      await saveForm();
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -76,14 +77,15 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
-    // TODO @siye：建议和别的模块，也稍微加点类似的注释哈。= = 阅读总是会有点层次感；
     const data = modalApi.getData<any>();
     if (!data) return;
 
+    // 设置表单设计器组件
     designerComponent.value = data.designer;
     formData.value = data.formConfig;
     editorAction.value = data.action;
 
+    // 如果是复制，表单名称后缀添加 _copy ，id 置空
     if (editorAction.value === 'copy' && formData.value) {
       formData.value = {
         ...formData.value,

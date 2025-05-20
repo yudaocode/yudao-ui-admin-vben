@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @siye：editor 要不要放到独立的目录？form/designer ？
 import { computed, onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -12,19 +11,15 @@ import { getFormDetail } from '#/api/bpm/form';
 import { useFormCreateDesigner } from '#/components/form-create';
 import { router } from '#/router';
 import { setConfAndFields } from '#/utils';
-
-import Form from './modules/form.vue';
+import Form from '#/views/bpm/form/modules/form.vue';
 
 defineOptions({ name: 'BpmFormEditor' });
 
-// TODO @siye：这里有 lint 告警
-const props = defineProps<Props>();
-
-interface Props {
-  copyId?: number;
+const props = defineProps<{
+  copyId?: number | string;
   id?: number;
   type: 'copy' | 'create' | 'edit';
-}
+}>();
 
 // 流程表单详情
 const flowFormConfig = ref();
@@ -85,7 +80,7 @@ const currentFormId = computed(() => {
 });
 
 // 加载表单配置
-async function loadFormConfig(id: number) {
+async function loadFormConfig(id: number | string) {
   try {
     const formDetail = await getFormDetail(id);
     flowFormConfig.value = formDetail;
@@ -107,10 +102,11 @@ async function initializeDesigner() {
   }
 
   if (id) {
-    await loadFormConfig(id);
+    await loadFormConfig(Number(id));
   }
 }
 
+// 保存表单
 function handleSave() {
   formModalApi
     .setData({
@@ -121,7 +117,7 @@ function handleSave() {
     .open();
 }
 
-// TODO @siye：一些必要的注释，稍微写写哈。保持风格的一致性；
+// 返回列表页
 function onBack() {
   router.push({
     path: '/bpm/manager/form',

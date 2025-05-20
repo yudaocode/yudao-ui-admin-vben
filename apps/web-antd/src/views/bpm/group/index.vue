@@ -16,6 +16,7 @@ import { Button, message } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteUserGroup, getUserGroupPage } from '#/api/bpm/userGroup';
 import { getSimpleUserList } from '#/api/system/user';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -30,7 +31,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(onActionClick, getMemberNames),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -41,21 +42,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageSize: page.pageSize,
             ...formValues,
           });
-        },
-        querySuccess: (params) => {
-          // TODO @siye：getLeaderName?: (userId: number) => string | undefined, 参考这个哈。
-          const { list } = params.response;
-          const userMap = new Map(
-            userList.value.map((user) => [user.id, user.nickname]),
-          );
-          list.forEach(
-            (item: BpmUserGroupApi.UserGroupVO & { nicknames?: string }) => {
-              item.nicknames = item.userIds
-                .map((userId) => userMap.get(userId))
-                .filter(Boolean)
-                .join('、');
-            },
-          );
         },
       },
     },
@@ -68,6 +54,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<BpmUserGroupApi.UserGroupVO>,
 });
+
+/** 获取分组成员姓名 */
+function getMemberNames(userIds: number[]) {
+  const userMap = new Map(
+    userList.value.map((user) => [user.id, user.nickname]),
+  );
+  return userIds
+    .map((userId) => userMap.get(userId))
+    .filter(Boolean)
+    .join('、');
+}
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
@@ -128,6 +125,10 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
+    </template>
+
     <FormModal @success="onRefresh" />
     <Grid table-title="用户分组">
       <template #toolbar-tools>

@@ -14,10 +14,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
-      label: '流程名称',
+      label: '任务名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入流程名称',
+        placeholder: '请输入任务名称',
         allowClear: true,
       },
     },
@@ -72,8 +72,8 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'name',
-      title: '流程名称',
+      field: 'processInstance.name',
+      title: '流程',
       minWidth: 200,
       fixed: 'left',
     },
@@ -81,9 +81,9 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'processInstance.summary',
       title: '摘要',
       minWidth: 200,
-      slots: {
-        default: 'slot-summary',
-      },
+      // slots: {
+      //   default: 'slot-summary',
+      // },
     },
     {
       field: 'processInstance.startUser.nickname',

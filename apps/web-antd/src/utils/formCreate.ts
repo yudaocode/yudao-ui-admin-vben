@@ -34,7 +34,7 @@ export const decodeFields = (fields: string[]) => {
 export const setConfAndFields = (
   designerRef: object,
   conf: string,
-  fields: string,
+  fields: string | string[],
 ) => {
   // @ts-ignore designerRef.value is dynamically added by form-create-designer
   designerRef.value.setOption(JSON.parse(conf));

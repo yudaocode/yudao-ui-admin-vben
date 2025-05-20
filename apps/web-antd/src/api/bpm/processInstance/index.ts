@@ -40,6 +40,7 @@ export namespace BpmProcessInstanceApi {
     tasks: ApprovalTaskInfo[];
   };
 
+  // 流程实例
   export type ProcessInstanceVO = {
     businessKey: string;
     category: string;
@@ -59,12 +60,32 @@ export namespace BpmProcessInstanceApi {
     tasks?: BpmProcessInstanceApi.Task[];
   };
 
+  // 审批详情
   export type ApprovalDetail = {
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[];
     formFieldsPermission: any;
     processDefinition: BpmModelApi.ProcessDefinitionVO;
     processInstance: BpmProcessInstanceApi.ProcessInstanceVO;
     status: number;
+  };
+
+  // 抄送流程实例 VO
+  export type CopyVO = {
+    id: number;
+    startUser: User;
+    processInstanceId: string;
+    processInstanceName: string;
+    processInstanceStartTime: number;
+    activityId: string;
+    activityName: string;
+    taskId: string;
+    reason: string;
+    createUser: User;
+    createTime: number;
+    summary: {
+      key: string;
+      value: string;
+    }[];
   };
 }
 

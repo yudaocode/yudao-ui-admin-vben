@@ -125,7 +125,9 @@ function onRefresh() {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm" />
+    <template #doc>
+      <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm" />
+    </template>
 
     <FormModal @success="onRefresh" />
     <Grid table-title="流程实例" />
