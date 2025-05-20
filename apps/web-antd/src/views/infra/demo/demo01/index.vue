@@ -77,6 +77,8 @@ async function onDeleteBatch() {
   }
 }
 
+// TODO @puhui999：方法名，改成 handleRowCheckboxChange；注释：处理选中表格行
+// TODO @puhui999：deleteIds => checkedIds；然后注释去掉？
 const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
 function setDeleteIds({
   records,

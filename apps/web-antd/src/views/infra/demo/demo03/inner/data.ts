@@ -199,7 +199,6 @@ export function useDemo03CourseGridEditColumns(
       minWidth: 60,
       align: 'center',
       fixed: 'right',
-
       showOverflow: false,
       cellRender: {
         attrs: {
