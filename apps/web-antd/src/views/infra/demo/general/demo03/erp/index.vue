@@ -120,7 +120,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
       key: 'action_process_msg',
     });
     await getList();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

@@ -109,7 +109,7 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
       key: 'action_process_msg',
     });
     await getList();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

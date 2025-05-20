@@ -67,7 +67,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
       key: 'action_process_msg',
     });
     await getList();
-  } catch {
+  } finally {
     hideLoading();
   }
 }
