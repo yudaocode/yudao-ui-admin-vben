@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
 import { useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { Download, History, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteJob,
   exportJob,
@@ -47,28 +43,28 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportJob(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '定时任务.xls', source: data });
 }
 
 /** 创建任务 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑任务 */
-function onEdit(row: InfraJobApi.Job) {
+function handleEdit(row: InfraJobApi.Job) {
   formModalApi.setData(row).open();
 }
 
 /** 查看任务详情 */
-function onDetail(row: InfraJobApi.Job) {
+function handleDetail(row: InfraJobApi.Job) {
   detailModalApi.setData({ id: row.id }).open();
 }
 
 /** 更新任务状态 */
-async function onUpdateStatus(row: InfraJobApi.Job) {
+async function handleUpdateStatus(row: InfraJobApi.Job) {
   const status =
     row.status === InfraJobStatusEnum.STOP
       ? InfraJobStatusEnum.NORMAL
@@ -86,7 +82,7 @@ async function onUpdateStatus(row: InfraJobApi.Job) {
 }
 
 /** 执行一次任务 */
-async function onTrigger(row: InfraJobApi.Job) {
+async function handleTrigger(row: InfraJobApi.Job) {
   confirm({
     content: `确定执行一次 ${row.name} 吗？`,
   }).then(async () => {
@@ -96,7 +92,7 @@ async function onTrigger(row: InfraJobApi.Job) {
 }
 
 /** 跳转到任务日志 */
-function onLog(row?: InfraJobApi.Job) {
+function handleLog(row?: InfraJobApi.Job) {
   push({
     name: 'InfraJobLog',
     query: row?.id ? { id: row.id } : {},
@@ -104,7 +100,7 @@ function onLog(row?: InfraJobApi.Job) {
 }
 
 /** 删除任务 */
-async function onDelete(row: InfraJobApi.Job) {
+async function handleDelete(row: InfraJobApi.Job) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -119,42 +115,12 @@ async function onDelete(row: InfraJobApi.Job) {
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<InfraJobApi.Job>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'log': {
-      onLog(row);
-      break;
-    }
-    case 'trigger': {
-      onTrigger(row);
-      break;
-    }
-    case 'update-status': {
-      onUpdateStatus(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -191,32 +157,91 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal />
     <Grid table-title="定时任务列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['infra:job:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['任务']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:job:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onLog(undefined)"
-          v-access:code="['infra:job:query']"
-        >
-          <History class="size-5" />
-          执行日志
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['任务']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:job:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:job:export'],
+              onClick: handleExport,
+            },
+            {
+              label: '执行日志',
+              type: 'primary',
+              icon: 'lucide:history',
+              auth: ['infra:job:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['infra:job:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '开启',
+              type: 'link',
+              icon: 'lucide:circle-play',
+              auth: ['infra:job:update'],
+              ifShow: () => row.status === InfraJobStatusEnum.STOP,
+              onClick: handleUpdateStatus.bind(null, row),
+            },
+            {
+              label: '暂停',
+              type: 'link',
+              icon: 'lucide:circle-pause',
+              auth: ['infra:job:update'],
+              ifShow: () => row.status === InfraJobStatusEnum.NORMAL,
+              onClick: handleUpdateStatus.bind(null, row),
+            },
+            {
+              label: '执行',
+              type: 'link',
+              icon: 'lucide:clock-plus',
+              auth: ['infra:job:trigger'],
+              onClick: handleTrigger.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              auth: ['infra:job:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: '日志',
+              type: 'link',
+              auth: ['infra:job:query'],
+              onClick: handleLog.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              auth: ['infra:job:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

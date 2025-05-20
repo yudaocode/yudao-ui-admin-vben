@@ -9,4 +9,5 @@ export const ACTION_ICON = {
   FILTER: 'lucide:filter',
   MORE: 'lucide:ellipsis-vertical',
   VIEW: 'lucide:eye',
+  COPY: 'lucide:copy',
 };

@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Upload } from '@vben/icons';
 import { openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
 import { Button, Image, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFile, getFilePage } from '#/api/infra/file';
 import { $t } from '#/locales';
 
@@ -30,13 +26,13 @@ function onRefresh() {
 }
 
 /** 上传文件 */
-function onUpload() {
+function handleUpload() {
   formModalApi.setData(null).open();
 }
 
 /** 复制链接到剪贴板 */
 const { copy } = useClipboard({ legacy: true });
-async function onCopyUrl(row: InfraFileApi.File) {
+async function handleCopyUrl(row: InfraFileApi.File) {
   if (!row.url) {
     message.error('文件 URL 为空');
     return;
@@ -50,15 +46,8 @@ async function onCopyUrl(row: InfraFileApi.File) {
   }
 }
 
-/** 打开 URL */
-function openUrl(url?: string) {
-  if (url) {
-    openWindow(url);
-  }
-}
-
 /** 删除文件 */
-async function onDelete(row: InfraFileApi.File) {
+async function handleDelete(row: InfraFileApi.File) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name || row.path]),
     duration: 0,
@@ -70,22 +59,8 @@ async function onDelete(row: InfraFileApi.File) {
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<InfraFileApi.File>) {
-  switch (code) {
-    case 'copyUrl': {
-      onCopyUrl(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
   }
 }
 
@@ -94,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -124,23 +99,46 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="文件列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onUpload">
-          <Upload class="size-5" />
-          上传图片
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '上传图片',
+              type: 'primary',
+              icon: ACTION_ICON.UPLOAD,
+              auth: ['infra:file:create'],
+              onClick: handleUpload,
+            },
+          ]"
+        />
       </template>
       <template #file-content="{ row }">
         <Image v-if="row.type && row.type.includes('image')" :src="row.url" />
-        <Button
-          v-else-if="row.type && row.type.includes('pdf')"
-          type="link"
-          @click="() => openUrl(row.url)"
-        >
-          预览
+        <Button v-else type="link" @click="() => openWindow(row.url)">
+          {{ row.type && row.type.includes('pdf') ? '预览' : '下载' }}
         </Button>
-        <Button v-else type="link" @click="() => openUrl(row.url)">
-          下载
-        </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '复制链接',
+              type: 'link',
+              icon: ACTION_ICON.COPY,
+              onClick: handleCopyUrl.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              auth: ['infra:file:delete'],
+              icon: ACTION_ICON.DELETE,
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

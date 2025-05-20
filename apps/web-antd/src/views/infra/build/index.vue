@@ -60,34 +60,35 @@ const formData = ref(''); // 表单数据
 useFormCreateDesigner(designer); // 表单设计器增强
 
 /** 打开弹窗 */
-const openModel = (title: string) => {
+function openModel(title: string) {
   dialogVisible.value = true;
   dialogTitle.value = title;
   modalApi.open();
-};
+}
 
 /** 生成 JSON */
-const showJson = () => {
+function showJson() {
   openModel('生成 JSON');
   formType.value = 0;
   formData.value = designer.value.getRule();
-};
+}
 
 /** 生成 Options */
-const showOption = () => {
+function showOption() {
   openModel('生成 Options');
   formType.value = 1;
   formData.value = designer.value.getOption();
-};
+}
 
 /** 生成组件 */
-const showTemplate = () => {
+function showTemplate() {
   openModel('生成组件');
   formType.value = 2;
   formData.value = makeTemplate();
-};
+}
 
-const makeTemplate = () => {
+/** 生成组件 */
+function makeTemplate() {
   const rule = designer.value.getRule();
   const opt = designer.value.getOption();
   return `<template>
@@ -111,10 +112,10 @@ const makeTemplate = () => {
     }
     init()
   <\/script>`;
-};
+}
 
 /** 复制 */
-const copy = async (text: string) => {
+async function copy(text: string) {
   const textToCopy = JSON.stringify(text, null, 2);
   const { copy, copied, isSupported } = useClipboard({ source: textToCopy });
   if (isSupported) {
@@ -125,12 +126,10 @@ const copy = async (text: string) => {
   } else {
     message.error('复制失败');
   }
-};
+}
 
-/**
- * 代码高亮
- */
-const highlightedCode = (code: string) => {
+/** 代码高亮 */
+function highlightedCode(code: string) {
   // 处理语言和代码
   let language = 'json';
   if (formType.value === 2) {
@@ -143,7 +142,7 @@ const highlightedCode = (code: string) => {
   // 高亮
   const result = hljs.highlight(code, { language, ignoreIllegals: true });
   return result.value || '&nbsp;';
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

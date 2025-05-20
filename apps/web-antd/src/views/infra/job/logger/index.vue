@@ -1,19 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportJobLog, getJobLogPage } from '#/api/infra/job-log';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
@@ -29,27 +23,14 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportJobLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '任务日志.xls', source: data });
 }
 
 /** 查看日志详情 */
-function onDetail(row: InfraJobLogApi.JobLog) {
+function handleDetail(row: InfraJobLogApi.JobLog) {
   detailModalApi.setData({ id: row.id }).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraJobLogApi.JobLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 // 获取表单schema并设置默认jobId
@@ -60,7 +41,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: formSchema,
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -97,15 +78,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal />
     <Grid table-title="任务日志列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:job:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:job:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:job:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

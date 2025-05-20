@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   exportApiErrorLog,
   getApiErrorLogPage,
@@ -35,18 +31,18 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportApiErrorLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: 'API 错误日志.xls', source: data });
 }
 
 /** 查看 API 错误日志详情 */
-function onDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
+function handleDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
   detailModalApi.setData(row).open();
 }
 
 /** 处理已处理 / 已忽略的操作 */
-async function onProcess(id: number, processStatus: number) {
+async function handleProcess(id: number, processStatus: number) {
   confirm({
     content: `确认标记为${InfraApiErrorLogProcessStatusEnum.DONE ? '已处理' : '已忽略'}?`,
   }).then(async () => {
@@ -57,33 +53,12 @@ async function onProcess(id: number, processStatus: number) {
   });
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraApiErrorLogApi.ApiErrorLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'done': {
-      onProcess(row.id, InfraApiErrorLogProcessStatusEnum.DONE);
-      break;
-    }
-    case 'ignore': {
-      onProcess(row.id, InfraApiErrorLogProcessStatusEnum.IGNORE);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -117,15 +92,54 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="API 错误日志列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:api-error-log:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:api-error-log:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:api-error-log:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: '已处理',
+              type: 'link',
+              auth: ['infra:api-error-log:update-status'],
+              ifShow:
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
+              onClick: handleProcess.bind(
+                null,
+                row.id,
+                InfraApiErrorLogProcessStatusEnum.DONE,
+              ),
+            },
+            {
+              label: '已忽略',
+              type: 'link',
+              auth: ['infra:api-error-log:update-status'],
+              ifShow:
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
+              onClick: handleProcess.bind(
+                null,
+                row.id,
+                InfraApiErrorLogProcessStatusEnum.IGNORE,
+              ),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

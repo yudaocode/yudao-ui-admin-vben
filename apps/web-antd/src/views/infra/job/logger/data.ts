@@ -1,15 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraJobLogApi } from '#/api/infra/job-log';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
+
 import { formatDateTime } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -65,9 +65,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = InfraJobLogApi.JobLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -120,26 +118,61 @@ export function useGridColumns<T = InfraJobLogApi.JobLog>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
       width: 80,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详细',
-            show: hasAccessByCodes(['infra:job:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情的配置 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'jobId',
+      label: '任务编号',
+    },
+    {
+      field: 'handlerName',
+      label: '处理器的名字',
+    },
+    {
+      field: 'handlerParam',
+      label: '处理器的参数',
+    },
+    {
+      field: 'executeIndex',
+      label: '第几次执行',
+    },
+    {
+      field: 'beginTime',
+      label: '执行时间',
+    },
+    {
+      field: 'endTime',
+      label: '结束时间',
+    },
+    {
+      field: 'duration',
+      label: '执行时长',
+    },
+    {
+      field: 'status',
+      label: '任务状态',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.INFRA_JOB_LOG_STATUS,
+          value: data?.status,
+        }),
+    },
+    {
+      field: 'result',
+      label: '执行结果',
     },
   ];
 }
