@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { Download, Plus, Trash2 } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
-import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
-  deleteDemo01ContactByIds,
+  deleteDemo01ContactListByIds,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -31,35 +35,26 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '示例联系人.xls', source: data });
-}
-
 /** 创建示例联系人 */
-function handleCreate() {
+function onCreate() {
   formModalApi.setData({}).open();
 }
 
 /** 编辑示例联系人 */
-function handleEdit(row: Demo01ContactApi.Demo01Contact) {
+function onEdit(row: Demo01ContactApi.Demo01Contact) {
   formModalApi.setData(row).open();
 }
 
 /** 删除示例联系人 */
-async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
+async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
-    key: 'action_key_msg',
+    key: 'action_process_msg',
   });
   try {
     await deleteDemo01Contact(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {
     hideLoading();
@@ -67,17 +62,15 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
 }
 
 /** 批量删除示例联系人 */
-async function handleDeleteBatch() {
+async function onDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
-    key: 'action_key_msg',
+    duration: 0,
+    key: 'action_process_msg',
   });
   try {
-    await deleteDemo01ContactByIds(deleteIds.value);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_key_msg',
-    });
+    await deleteDemo01ContactListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     hideLoading();
@@ -93,12 +86,35 @@ function setDeleteIds({
   deleteIds.value = records.map((item) => item.id);
 }
 
+/** 导出表格 */
+async function onExport() {
+  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '示例联系人.xls', source: data });
+}
+
+/** 表格操作按钮的回调函数 */
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<Demo01ContactApi.Demo01Contact>) {
+  switch (code) {
+    case 'delete': {
+      onDelete(row);
+      break;
+    }
+    case 'edit': {
+      onEdit(row);
+      break;
+    }
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(onActionClick),
     height: 'auto',
     pagerConfig: {
       enabled: true,
@@ -136,56 +152,34 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="示例联系人列表">
       <template #toolbar-tools>
-        <TableAction
-          :actions="[
-            {
-              label: $t('ui.actionTitle.create', ['示例联系人']),
-              type: 'primary',
-              icon: ACTION_ICON.ADD,
-              auth: ['infra:demo01-contact:create'],
-              onClick: handleCreate,
-            },
-            {
-              label: $t('ui.actionTitle.export'),
-              type: 'primary',
-              icon: ACTION_ICON.DOWNLOAD,
-              auth: ['infra:demo01-contact:export'],
-              onClick: handleExport,
-            },
-            {
-              label: $t('common.deleteBatch'),
-              type: 'primary',
-              icon: ACTION_ICON.DELETE,
-              auth: ['infra:demo01-contact:delete'],
-              disabled: isEmpty(deleteIds),
-              onClick: handleDeleteBatch,
-            },
-          ]"
-        />
-      </template>
-      <template #actions="{ row }">
-        <TableAction
-          :actions="[
-            {
-              label: $t('common.edit'),
-              type: 'link',
-              icon: ACTION_ICON.EDIT,
-              auth: ['system:post:update'],
-              onClick: handleEdit.bind(null, row),
-            },
-            {
-              label: $t('common.delete'),
-              type: 'link',
-              danger: true,
-              icon: ACTION_ICON.DELETE,
-              auth: ['system:post:delete'],
-              popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: handleDelete.bind(null, row),
-              },
-            },
-          ]"
-        />
+        <Button
+          :icon="h(Plus)"
+          type="primary"
+          @click="onCreate"
+          v-access:code="['infra:demo01-contact:create']"
+        >
+          {{ $t('ui.actionTitle.create', ['示例联系人']) }}
+        </Button>
+        <Button
+          :icon="h(Download)"
+          type="primary"
+          class="ml-2"
+          @click="onExport"
+          v-access:code="['infra:demo01-contact:export']"
+        >
+          {{ $t('ui.actionTitle.export') }}
+        </Button>
+        <Button
+          :icon="h(Trash2)"
+          type="primary"
+          danger
+          class="ml-2"
+          :disabled="isEmpty(deleteIds)"
+          @click="onDeleteBatch"
+          v-access:code="['infra:demo01-contact:delete']"
+        >
+          批量删除
+        </Button>
       </template>
     </Grid>
   </Page>
