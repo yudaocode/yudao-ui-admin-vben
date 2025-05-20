@@ -1,4 +1,3 @@
-import type { DefaultOptionType } from 'ant-design-vue/es/select';
 // TODO @芋艿：后续再优化
 // TODO @芋艿：可以共享么？
 
@@ -14,11 +13,11 @@ import { useDictStore } from '#/store';
 type ColorType = 'error' | 'info' | 'success' | 'warning';
 
 export interface DictDataType {
-  dictType: string;
+  dictType?: string;
   label: string;
   value: boolean | number | string;
-  colorType: ColorType;
-  cssClass: string;
+  colorType?: ColorType;
+  cssClass?: string;
 }
 
 export interface NumberDictDataType extends DictDataType {
@@ -62,14 +61,13 @@ function getDictObj(dictType: string, value: any) {
  * @param valueType 字典值类型，默认 string 类型
  * @returns 字典数组
  */
-// TODO @puhui999：貌似可以定义一个类型？不使用 any[]
 function getDictOptions(
   dictType: string,
   valueType: 'boolean' | 'number' | 'string' = 'string',
-): any[] {
+): DictDataType[] {
   const dictStore = useDictStore();
   const dictOpts = dictStore.getDictOptions(dictType);
-  const dictOptions: DefaultOptionType = [];
+  const dictOptions: DictDataType[] = [];
   if (dictOpts.length > 0) {
     let dictValue: boolean | number | string = '';
     dictOpts.forEach((d) => {

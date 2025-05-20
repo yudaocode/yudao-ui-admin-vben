@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
-import { computed, h, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -62,7 +62,6 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
 }
 
 const deleteIds = ref<number[]>([]); // 待删除学生 ID
-const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
 function setDeleteIds({
   records,
 }: {
@@ -174,7 +173,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           type="primary"
           danger
           class="ml-2"
-          :disabled="showDeleteBatchBtn"
+          :disabled="isEmpty(deleteIds)"
           @click="onDeleteBatch"
           v-access:code="['infra:demo03-student:delete']"
         >

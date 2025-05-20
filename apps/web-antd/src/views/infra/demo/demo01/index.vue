@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { computed, h, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -61,16 +61,6 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
   }
 }
 
-// TODO @puhui999：:1）/** 批量删除示例联系人 */ 是不是放在 deleteIds 上面；2）showDeleteBatchBtn 是不是直接 disabled 哪里判断哈；
-const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
-const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
-function setDeleteIds({
-  records,
-}: {
-  records: Demo01ContactApi.Demo01Contact[];
-}) {
-  deleteIds.value = records.map((item) => item.id);
-}
 /** 批量删除示例联系人 */
 async function onDeleteBatch() {
   const hideLoading = message.loading({
@@ -85,6 +75,15 @@ async function onDeleteBatch() {
   } finally {
     hideLoading();
   }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo01ContactApi.Demo01Contact[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -175,7 +174,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           type="primary"
           danger
           class="ml-2"
-          :disabled="showDeleteBatchBtn"
+          :disabled="isEmpty(deleteIds)"
           @click="onDeleteBatch"
           v-access:code="['infra:demo01-contact:delete']"
         >

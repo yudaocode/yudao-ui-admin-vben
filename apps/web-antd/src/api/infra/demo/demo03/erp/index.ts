@@ -61,10 +61,10 @@ export function deleteDemo03Student(id: number) {
   return requestClient.delete(`/infra/demo03-student-erp/delete?id=${id}`);
 }
 
-// 批量删除学生
+/** 批量删除学生 */
 export function deleteDemo03StudentByIds(ids: number[]) {
   return requestClient.delete(
-    `/infra/demo03-student-erp/delete-batch?ids=${ids.join(',')}`,
+    `/infra/demo03-student-erp/delete-list?ids=${ids.join(',')}`,
   );
 }
 
@@ -108,10 +108,10 @@ export function deleteDemo03Course(id: number) {
   );
 }
 
-// 批量删除学生课程
+/** 批量删除学生课程 */
 export function deleteDemo03CourseByIds(ids: number[]) {
   return requestClient.delete(
-    `/infra/demo03-student-erp/demo03-course/delete-batch?ids=${ids.join(',')}`,
+    `/infra/demo03-student-erp/demo03-course/delete-list?ids=${ids.join(',')}`,
   );
 }
 
@@ -154,10 +154,10 @@ export function deleteDemo03Grade(id: number) {
   );
 }
 
-// 批量删除学生班级
+/** 批量删除学生班级 */
 export function deleteDemo03GradeByIds(ids: number[]) {
   return requestClient.delete(
-    `/infra/demo03-student-erp/demo03-grade/delete-batch?ids=${ids.join(',')}`,
+    `/infra/demo03-student-erp/demo03-grade/delete-list?ids=${ids.join(',')}`,
   );
 }
 
