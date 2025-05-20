@@ -30,34 +30,37 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportSmsChannel(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '短信渠道.xls', source: data });
 }
 
 /** 创建短信渠道 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑短信渠道 */
-function onEdit(row: SystemSmsChannelApi.SmsChannel) {
+function handleEdit(row: SystemSmsChannelApi.SmsChannel) {
   formModalApi.setData(row).open();
 }
 
 /** 删除短信渠道 */
-async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
-  message.loading({
+async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.signature]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  await deleteSmsChannel(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.signature]),
     key: 'action_key_msg',
   });
-  onRefresh();
+  try {
+    await deleteSmsChannel(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.signature]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -106,14 +109,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:sms-channel:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:sms-channel:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -126,7 +129,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:sms-channel:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -136,7 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:sms-channel:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

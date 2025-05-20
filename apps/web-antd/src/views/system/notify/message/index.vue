@@ -22,7 +22,7 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onDetail(row: SystemNotifyMessageApi.NotifyMessage) {
+function handleDetail(row: SystemNotifyMessageApi.NotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
@@ -72,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['system:notify-message:query'],
-              onClick: onDetail.bind(null, row),
+              onClick: handleDetail.bind(null, row),
             },
           ]"
         />

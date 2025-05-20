@@ -36,39 +36,42 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportSmsTemplate(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '短信模板.xls', source: data });
 }
 
 /** 创建短信模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑短信模板 */
-function onEdit(row: SystemSmsTemplateApi.SmsTemplate) {
+function handleEdit(row: SystemSmsTemplateApi.SmsTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试短信 */
-function onSend(row: SystemSmsTemplateApi.SmsTemplate) {
+function handleSend(row: SystemSmsTemplateApi.SmsTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除短信模板 */
-async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
-  message.loading({
+async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  await deleteSmsTemplate(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     key: 'action_key_msg',
   });
-  onRefresh();
+  try {
+    await deleteSmsTemplate(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -118,14 +121,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:sms-template:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:sms-template:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -138,14 +141,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:sms-template:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: '发送短信',
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['system:sms-template:send-sms'],
-              onClick: onSend.bind(null, row),
+              onClick: handleSend.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -155,7 +158,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:sms-template:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

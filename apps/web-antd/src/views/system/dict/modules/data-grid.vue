@@ -38,33 +38,37 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportDictData(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '字典数据.xls', source: data });
 }
 
 /** 创建字典数据 */
-function onCreate() {
+function handleCreate() {
   dataFormModalApi.setData({ dictType: props.dictType }).open();
 }
 
 /** 编辑字典数据 */
-function onEdit(row: SystemDictDataApi.DictData) {
+function handleEdit(row: SystemDictDataApi.DictData) {
   dataFormModalApi.setData(row).open();
 }
 
 /** 删除字典数据 */
-async function onDelete(row: SystemDictDataApi.DictData) {
-  message.loading({
+async function handleDelete(row: SystemDictDataApi.DictData) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.label]),
     key: 'action_key_msg',
   });
-  await deleteDictData(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.label]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteDictData(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.label]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -121,14 +125,14 @@ watch(
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:dict:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:dict:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -141,7 +145,7 @@ watch(
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:dict:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -151,7 +155,7 @@ watch(
               auth: ['system:dict:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.label]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

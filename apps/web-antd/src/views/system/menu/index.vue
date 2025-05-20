@@ -29,32 +29,36 @@ function onRefresh() {
 }
 
 /** 创建菜单 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData({}).open();
 }
 
 /** 添加下级菜单 */
-function onAppend(row: SystemMenuApi.Menu) {
+function handleAppend(row: SystemMenuApi.Menu) {
   formModalApi.setData({ pid: row.id }).open();
 }
 
 /** 编辑菜单 */
-function onEdit(row: SystemMenuApi.Menu) {
+function handleEdit(row: SystemMenuApi.Menu) {
   formModalApi.setData(row).open();
 }
 
 /** 删除菜单 */
-async function onDelete(row: SystemMenuApi.Menu) {
-  message.loading({
+async function handleDelete(row: SystemMenuApi.Menu) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteMenu(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteMenu(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 切换树形展开/收缩状态 */
@@ -115,7 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:menu:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: isExpanded ? '收缩' : '展开',
@@ -151,14 +155,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['system:menu:create'],
-              onClick: onAppend.bind(null, row),
+              onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:menu:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -168,7 +172,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:menu:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

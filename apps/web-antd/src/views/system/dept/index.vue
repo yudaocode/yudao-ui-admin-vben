@@ -25,9 +25,9 @@ const [FormModal, formModalApi] = useVbenModal({
 const userList = ref<SystemUserApi.User[]>([]);
 
 /** 获取负责人名称 */
-const getLeaderName = (userId: number) => {
+function getLeaderName(userId: number) {
   return userList.value.find((user) => user.id === userId)?.nickname;
-};
+}
 
 /** 刷新表格 */
 function onRefresh() {
@@ -42,32 +42,36 @@ function toggleExpand() {
 }
 
 /** 创建部门 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 添加下级部门 */
-function onAppend(row: SystemDeptApi.Dept) {
+function handleAppend(row: SystemDeptApi.Dept) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 编辑部门 */
-function onEdit(row: SystemDeptApi.Dept) {
+function handleEdit(row: SystemDeptApi.Dept) {
   formModalApi.setData(row).open();
 }
 
 /** 删除部门 */
-async function onDelete(row: SystemDeptApi.Dept) {
-  message.loading({
+async function handleDelete(row: SystemDeptApi.Dept) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteDept(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteDept(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -119,7 +123,7 @@ onMounted(async () => {
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:dept:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: isExpanded ? '收缩' : '展开',
@@ -137,14 +141,14 @@ onMounted(async () => {
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['system:menu:create'],
-              onClick: onAppend.bind(null, row),
+              onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:menu:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -155,7 +159,7 @@ onMounted(async () => {
               disabled: !!(row.children && row.children.length > 0),
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

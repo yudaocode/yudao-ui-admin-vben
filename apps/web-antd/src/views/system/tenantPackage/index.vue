@@ -28,27 +28,31 @@ function onRefresh() {
 }
 
 /** 创建租户套餐 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑租户套餐 */
-function onEdit(row: SystemTenantPackageApi.TenantPackage) {
+function handleEdit(row: SystemTenantPackageApi.TenantPackage) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户套餐 */
-async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
-  message.loading({
+async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteTenantPackage(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteTenantPackage(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -98,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:tenant-package:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
           ]"
         />
@@ -111,7 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -121,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

@@ -40,24 +40,24 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportTenant(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '租户.xls', source: data });
 }
 
 /** 创建租户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑租户 */
-function onEdit(row: SystemTenantApi.Tenant) {
+function handleEdit(row: SystemTenantApi.Tenant) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户 */
-async function onDelete(row: SystemTenantApi.Tenant) {
-  const loading = message.loading({
+async function handleDelete(row: SystemTenantApi.Tenant) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
@@ -69,8 +69,7 @@ async function onDelete(row: SystemTenantApi.Tenant) {
     });
     onRefresh();
   } finally {
-    // TODO @星语：测试了下，这样可以取消 loading；测试方式：1）先把数据库的数据，标记删除；2）点击界面，进行删除，loading 可以正确消失；
-    loading();
+    hideLoading();
   }
 }
 
@@ -122,14 +121,14 @@ onMounted(async () => {
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:tenant:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:tenant:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -142,7 +141,7 @@ onMounted(async () => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -152,7 +151,7 @@ onMounted(async () => {
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

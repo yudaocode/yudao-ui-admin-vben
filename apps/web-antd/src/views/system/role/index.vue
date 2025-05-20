@@ -39,43 +39,46 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportRole(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '角色.xls', source: data });
 }
 
 /** 编辑角色 */
-function onEdit(row: SystemRoleApi.Role) {
+function handleEdit(row: SystemRoleApi.Role) {
   formModalApi.setData(row).open();
 }
 
 /** 创建角色 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 删除角色 */
-// TODO @星语：要不要改成 handleXXX 风格？貌似看着更多项目是这么写的，不去改变大家的习惯。
-async function onDelete(row: SystemRoleApi.Role) {
-  message.loading({
+async function handleDelete(row: SystemRoleApi.Role) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteRole(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteRole(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 分配角色的数据权限 */
-function onAssignDataPermission(row: SystemRoleApi.Role) {
+function handleAssignDataPermission(row: SystemRoleApi.Role) {
   assignDataPermissionFormApi.setData(row).open();
 }
 
 /** 分配角色的菜单权限 */
-function onAssignMenu(row: SystemRoleApi.Role) {
+function handleAssignMenu(row: SystemRoleApi.Role) {
   assignMenuFormApi.setData(row).open();
 }
 
@@ -131,14 +134,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:role:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:role:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -151,7 +154,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:role:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -161,7 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:role:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"
@@ -170,13 +173,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '数据权限',
               type: 'link',
               auth: ['system:permission:assign-role-data-scope'],
-              onClick: onAssignDataPermission.bind(null, row),
+              onClick: handleAssignDataPermission.bind(null, row),
             },
             {
               label: '菜单权限',
               type: 'link',
               auth: ['system:permission:assign-role-menu'],
-              onClick: onAssignMenu.bind(null, row),
+              onClick: handleAssignMenu.bind(null, row),
             },
           ]"
         />

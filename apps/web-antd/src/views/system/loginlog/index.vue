@@ -24,13 +24,13 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportLoginLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '登录日志.xls', source: data });
 }
 
 /** 查看登录日志详情 */
-function onDetail(row: SystemLoginLogApi.LoginLog) {
+function handleDetail(row: SystemLoginLogApi.LoginLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -80,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:login-log:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -93,7 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['system:login-log:query'],
-              onClick: onDetail.bind(null, row),
+              onClick: handleDetail.bind(null, row),
             },
           ]"
         />

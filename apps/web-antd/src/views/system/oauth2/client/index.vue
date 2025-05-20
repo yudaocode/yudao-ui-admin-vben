@@ -28,27 +28,31 @@ function onRefresh() {
 }
 
 /** 创建 OAuth2 客户端 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑 OAuth2 客户端 */
-function onEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
+function handleEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 OAuth2 客户端 */
-async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
-  message.loading({
+async function handleDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteOAuth2Client(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteOAuth2Client(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -100,7 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:oauth2-client:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
           ]"
         />
@@ -113,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:oauth2-client:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -123,7 +127,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:oauth2-client:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

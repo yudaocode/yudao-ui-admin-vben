@@ -40,22 +40,22 @@ function onRefresh() {
 }
 
 /** 创建邮件模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑邮件模板 */
-function onEdit(row: SystemMailTemplateApi.MailTemplate) {
+function handleEdit(row: SystemMailTemplateApi.MailTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试邮件 */
-function onSend(row: SystemMailTemplateApi.MailTemplate) {
+function handleSend(row: SystemMailTemplateApi.MailTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除邮件模板 */
-async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
+async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
   message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -125,7 +125,7 @@ onMounted(async () => {
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:mail-template:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
           ]"
         />
@@ -138,14 +138,14 @@ onMounted(async () => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:mail-template:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: '测试',
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:mail-template:send-mail'],
-              onClick: onSend.bind(null, row),
+              onClick: handleSend.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -155,7 +155,7 @@ onMounted(async () => {
               auth: ['system:mail-template:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

@@ -54,59 +54,64 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportUser(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '用户.xls', source: data });
 }
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function onDeptSelect(dept: SystemDeptApi.Dept) {
+
+async function handleDeptSelect(dept: SystemDeptApi.Dept) {
   searchDeptId.value = dept.id;
   onRefresh();
 }
 
 /** 创建用户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 导入用户 */
-function onImport() {
+function handleImport() {
   importModalApi.open();
 }
 
 /** 编辑用户 */
-function onEdit(row: SystemUserApi.User) {
+function handleEdit(row: SystemUserApi.User) {
   formModalApi.setData(row).open();
 }
 
 /** 删除用户 */
-async function onDelete(row: SystemUserApi.User) {
-  message.loading({
+async function handleDelete(row: SystemUserApi.User) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.username]),
     key: 'action_key_msg',
   });
-  await deleteUser(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.username]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteUser(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.username]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 重置密码 */
-function onResetPassword(row: SystemUserApi.User) {
+function handleResetPassword(row: SystemUserApi.User) {
   resetPasswordModalApi.setData(row).open();
 }
 
 /** 分配角色 */
-function onAssignRole(row: SystemUserApi.User) {
+function handleAssignRole(row: SystemUserApi.User) {
   assignRoleModalApi.setData(row).open();
 }
 
 /** 更新用户状态 */
-async function onStatusChange(
+async function handleStatusChange(
   newStatus: number,
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
@@ -136,7 +141,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onStatusChange),
+    columns: useGridColumns(handleStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -181,7 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
       <div class="h-full w-1/6 pr-4">
-        <DeptTree @select="onDeptSelect" />
+        <DeptTree @select="handleDeptSelect" />
       </div>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">
@@ -194,21 +199,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   type: 'primary',
                   icon: ACTION_ICON.ADD,
                   auth: ['system:user:create'],
-                  onClick: onCreate,
+                  onClick: handleCreate,
                 },
                 {
                   label: $t('ui.actionTitle.export'),
                   type: 'primary',
                   icon: ACTION_ICON.DOWNLOAD,
                   auth: ['system:user:export'],
-                  onClick: onExport,
+                  onClick: handleExport,
                 },
                 {
                   label: $t('ui.actionTitle.import', ['用户']),
                   type: 'primary',
                   icon: ACTION_ICON.UPLOAD,
                   auth: ['system:user:import'],
-                  onClick: onImport,
+                  onClick: handleImport,
                 },
               ]"
             />
@@ -221,7 +226,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   type: 'link',
                   icon: ACTION_ICON.EDIT,
                   auth: ['system:user:update'],
-                  onClick: onEdit.bind(null, row),
+                  onClick: handleEdit.bind(null, row),
                 },
                 {
                   label: $t('common.delete'),
@@ -231,7 +236,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   auth: ['system:user:delete'],
                   popConfirm: {
                     title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                    confirm: onDelete.bind(null, row),
+                    confirm: handleDelete.bind(null, row),
                   },
                 },
               ]"
@@ -240,13 +245,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   label: '分配角色',
                   type: 'link',
                   auth: ['system:permission:assign-user-role'],
-                  onClick: onAssignRole.bind(null, row),
+                  onClick: handleAssignRole.bind(null, row),
                 },
                 {
                   label: '重置密码',
                   type: 'link',
                   auth: ['system:user:update-password'],
-                  onClick: onResetPassword.bind(null, row),
+                  onClick: handleResetPassword.bind(null, row),
                 },
               ]"
             />

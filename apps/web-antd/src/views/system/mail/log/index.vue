@@ -22,7 +22,7 @@ function onRefresh() {
 }
 
 /** 查看邮件日志 */
-function onDetail(row: SystemMailLogApi.MailLog) {
+function handleDetail(row: SystemMailLogApi.MailLog) {
   detailModalApi.setData(row).open();
 }
 
@@ -71,7 +71,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['system:mail-log:query'],
-              onClick: onDetail.bind(null, row),
+              onClick: handleDetail.bind(null, row),
             },
           ]"
         />

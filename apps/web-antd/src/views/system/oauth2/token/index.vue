@@ -22,17 +22,21 @@ function onRefresh() {
 }
 
 /** 删除 OAuth2 令牌 */
-async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
-  message.loading({
+async function handleDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', ['令牌']),
     key: 'action_key_msg',
   });
-  await deleteOAuth2Token(row.accessToken);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', ['令牌']),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteOAuth2Token(row.accessToken);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', ['令牌']),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -86,7 +90,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:oauth2-token:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

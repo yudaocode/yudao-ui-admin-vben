@@ -24,40 +24,46 @@ function onRefresh() {
 }
 
 /** 创建公告 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑公告 */
-function onEdit(row: SystemNoticeApi.Notice) {
+function handleEdit(row: SystemNoticeApi.Notice) {
   formModalApi.setData(row).open();
 }
 
 /** 删除公告 */
-async function onDelete(row: SystemNoticeApi.Notice) {
-  message.loading({
+async function handleDelete(row: SystemNoticeApi.Notice) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
     key: 'action_key_msg',
   });
-  await deleteNotice(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteNotice(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 推送公告 */
-async function onPush(row: SystemNoticeApi.Notice) {
+async function handlePush(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.processing', ['推送']),
-    duration: 0,
     key: 'action_process_msg',
   });
   try {
     await pushNotice(row.id as number);
-    message.success($t('ui.actionMessage.operationSuccess'));
-  } catch {
+    message.success({
+      content: $t('ui.actionMessage.operationSuccess'),
+      key: 'action_key_msg',
+    });
+  } finally {
     hideLoading();
   }
 }
@@ -104,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:notice:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
           ]"
         />
@@ -117,14 +123,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:notice:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: '推送',
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['system:notice:update'],
-              onClick: onPush.bind(null, row),
+              onClick: handlePush.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -134,7 +140,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:notice:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSocialUserPage } from '#/api/system/social/user';
 import { DocAlert } from '#/components/doc-alert';
 
@@ -20,21 +17,8 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 查看详情 */
-function onDetail(row: SystemSocialUserApi.SocialUser) {
+function handleDetail(row: SystemSocialUserApi.SocialUser) {
   detailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemSocialUserApi.SocialUser>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid] = useVbenVxeGrid({
@@ -42,7 +26,7 @@ const [Grid] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -74,6 +58,20 @@ const [Grid] = useVbenVxeGrid({
     </template>
 
     <DetailModal />
-    <Grid table-title="社交用户列表" />
+    <Grid table-title="社交用户列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:social-user:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

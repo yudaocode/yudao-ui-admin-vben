@@ -36,38 +36,42 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportNotifyTemplate(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '站内信模板.xls', source: data });
 }
 
 /** 创建站内信模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑站内信模板 */
-function onEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试站内信 */
-function onSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除站内信模板 */
-async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
-  message.loading({
+async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
   });
-  await deleteNotifyTemplate(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
-  });
-  onRefresh();
+  try {
+    await deleteNotifyTemplate(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -117,14 +121,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:notify-template:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:notify-template:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -137,14 +141,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:notify-template:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: '测试',
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['system:notify-template:send-notify'],
-              onClick: onSend.bind(null, row),
+              onClick: handleSend.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -154,7 +158,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:notify-template:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

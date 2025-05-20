@@ -25,34 +25,37 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportPost(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '岗位.xls', source: data });
 }
 
 /** 创建岗位 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑岗位 */
-function onEdit(row: SystemPostApi.Post) {
+function handleEdit(row: SystemPostApi.Post) {
   formModalApi.setData(row).open();
 }
 
 /** 删除岗位 */
-async function onDelete(row: SystemPostApi.Post) {
-  message.loading({
+async function handleDelete(row: SystemPostApi.Post) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  await deletePost(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     key: 'action_key_msg',
   });
-  onRefresh();
+  try {
+    await deletePost(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -97,14 +100,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:post:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:post:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
           ]"
         />
@@ -117,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['system:post:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -127,7 +130,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:post:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

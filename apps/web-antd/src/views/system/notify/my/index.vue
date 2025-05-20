@@ -28,12 +28,12 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onDetail(row: SystemNotifyMessageApi.NotifyMessage) {
+function handleDetail(row: SystemNotifyMessageApi.NotifyMessage) {
   detailModalApi.setData(row).open();
 }
 
 /** 标记一条站内信已读 */
-async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
+async function handleRead(row: SystemNotifyMessageApi.NotifyMessage) {
   message.loading({
     content: '正在标记已读...',
     duration: 0,
@@ -49,11 +49,11 @@ async function onRead(row: SystemNotifyMessageApi.NotifyMessage) {
   onRefresh();
 
   // 打开详情
-  onDetail(row);
+  handleDetail(row);
 }
 
 /** 标记选中的站内信为已读 */
-async function onMarkRead() {
+async function handleMarkRead() {
   const rows = gridApi.grid.getCheckboxRecords();
   if (!rows || rows.length === 0) {
     message.warning('请选择需要标记的站内信');
@@ -61,38 +61,44 @@ async function onMarkRead() {
   }
 
   const ids = rows.map((row: SystemNotifyMessageApi.NotifyMessage) => row.id);
-  message.loading({
+  const hideLoading = message.loading({
     content: '正在标记已读...',
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
-  // 执行标记已读操作
-  await updateNotifyMessageRead(ids);
-  // 提示成功
-  message.success({
-    content: '标记已读成功',
-    key: 'action_process_msg',
-  });
-  await gridApi.grid.setAllCheckboxRow(false);
-  onRefresh();
+  try {
+    // 执行标记已读操作
+    await updateNotifyMessageRead(ids);
+    // 提示成功
+    message.success({
+      content: '标记已读成功',
+      key: 'action_key_msg',
+    });
+    await gridApi.grid.setAllCheckboxRow(false);
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 标记所有站内信为已读 */
-async function onMarkAllRead() {
-  message.loading({
+async function handleMarkAllRead() {
+  const hideLoading = message.loading({
     content: '正在标记全部已读...',
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
-  // 执行标记已读操作
-  await updateAllNotifyMessageRead();
-  // 提示成功
-  message.success({
-    content: '全部标记已读成功',
-    key: 'action_process_msg',
-  });
-  await gridApi.grid.setAllCheckboxRow(false);
-  onRefresh();
+  try {
+    // 执行标记已读操作
+    await updateAllNotifyMessageRead();
+    // 提示成功
+    message.success({
+      content: '全部标记已读成功',
+      key: 'action_key_msg',
+    });
+    await gridApi.grid.setAllCheckboxRow(false);
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -144,13 +150,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '标记已读',
               type: 'primary',
               icon: 'mdi:checkbox-marked-circle-outline',
-              onClick: onMarkRead,
+              onClick: handleMarkRead,
             },
             {
               label: '全部已读',
               type: 'primary',
               icon: 'mdi:checkbox-marked-circle-outline',
-              onClick: onMarkAllRead,
+              onClick: handleMarkAllRead,
             },
           ]"
         />
@@ -163,14 +169,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               ifShow: row.readStatus,
               icon: ACTION_ICON.VIEW,
-              onClick: onDetail.bind(null, row),
+              onClick: handleDetail.bind(null, row),
             },
             {
               label: '已读',
               type: 'link',
               ifShow: !row.readStatus,
               icon: ACTION_ICON.DELETE,
-              onClick: onRead.bind(null, row),
+              onClick: handleRead.bind(null, row),
             },
           ]"
         />
