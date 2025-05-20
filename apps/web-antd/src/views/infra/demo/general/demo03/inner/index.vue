@@ -109,14 +109,16 @@ function onEdit(row: Demo03StudentApi.Demo03Student) {
 async function onDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteDemo03Student(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_key_msg',
+    });
     await getList();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

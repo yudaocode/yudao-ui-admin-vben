@@ -119,7 +119,7 @@ const [Modal, modalApi] = useVbenModal({
         <RadioGroup v-model:value="formData.sex">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
-            :key="dict.value"
+            :key="dict.value.toString()"
             :value="dict.value"
           >
             {{ dict.label }}
