@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { computed, h, nextTick, ref, watch } from 'vue';
+import { h, nextTick, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Plus, Trash2 } from '@vben/icons';
@@ -66,15 +66,6 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除学生班级 ID
-const showDeleteBatchBtn = computed(() => isEmpty(deleteIds.value));
-function setDeleteIds({
-  records,
-}: {
-  records: Demo03StudentApi.Demo03Grade[];
-}) {
-  deleteIds.value = records.map((item) => item.id);
-}
 /** 批量删除学生班级 */
 async function onDeleteBatch() {
   const hideLoading = message.loading({
@@ -89,6 +80,15 @@ async function onDeleteBatch() {
   } finally {
     hideLoading();
   }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生班级 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Grade[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -184,7 +184,7 @@ watch(
         type="primary"
         danger
         class="ml-2"
-        :disabled="showDeleteBatchBtn"
+        :disabled="isEmpty(deleteIds)"
         @click="onDeleteBatch"
         v-access:code="['infra:demo03-student:delete']"
       >

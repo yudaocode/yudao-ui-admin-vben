@@ -46,8 +46,7 @@ export function deleteDemo01Contact(id: number) {
   return requestClient.delete(`/infra/demo01-contact/delete?id=${id}`);
 }
 
-// 批量删除示例联系人
-// TODO @puhui999：注释风格哈。
+/** 批量删除示例联系人 */
 export function deleteDemo01ContactByIds(ids: number[]) {
   return requestClient.delete(
     `/infra/demo01-contact/delete-batch?ids=${ids.join(',')}`,

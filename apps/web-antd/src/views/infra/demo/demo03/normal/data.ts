@@ -150,7 +150,6 @@ export function useGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
       showOverflow: false,
       cellRender: {
         attrs: {
@@ -199,7 +198,7 @@ export function useDemo03CourseGridEditColumns(
       minWidth: 60,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
+
       showOverflow: false,
       cellRender: {
         attrs: {

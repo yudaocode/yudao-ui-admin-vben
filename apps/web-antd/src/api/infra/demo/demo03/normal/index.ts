@@ -63,7 +63,7 @@ export function deleteDemo03Student(id: number) {
   return requestClient.delete(`/infra/demo03-student-normal/delete?id=${id}`);
 }
 
-// 批量删除学生
+/** 批量删除学生 */
 export function deleteDemo03StudentByIds(ids: number[]) {
   return requestClient.delete(
     `/infra/demo03-student-normal/delete-batch?ids=${ids.join(',')}`,
