@@ -16,6 +16,7 @@
     "edit": "Modify {0}",
     "create": "Create {0}",
     "delete": "Delete {0}",
+    "deleteBatch": "Delete Batch",
     "detail": "Detail {0}",
     "view": "View {0}",
     "import": "Import",
