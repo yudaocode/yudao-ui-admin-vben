@@ -160,7 +160,7 @@ catalogs:
       specifier: ^13.1.0
       version: 13.2.0
     '@vueuse/integrations':
-      specifier: ^13.1.0
+      specifier: ^13.2.0
       version: 13.2.0
     '@vueuse/motion':
       specifier: ^3.0.3
