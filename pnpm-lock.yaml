@@ -298,7 +298,7 @@ catalogs:
       specifier: ^7.1.0
       version: 7.1.0
     globals:
-      specifier: ^16.0.0
+      specifier: ^16.1.0
       version: 16.1.0
     h3:
       specifier: ^1.15.3
