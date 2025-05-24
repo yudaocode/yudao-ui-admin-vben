@@ -47,7 +47,8 @@ export function deleteDemo01Contact(id: number) {
 }
 
 /** 批量删除示例联系人 */
-export function deleteDemo01ContactByIds(ids: number[]) {
+// TODO @puhui999：ByIds，这种按照约定，是不带的，针对 Id 的情况哈。
+export function deleteDemo01ContactListByIds(ids: number[]) {
   return requestClient.delete(
     `/infra/demo01-contact/delete-list?ids=${ids.join(',')}`,
   );

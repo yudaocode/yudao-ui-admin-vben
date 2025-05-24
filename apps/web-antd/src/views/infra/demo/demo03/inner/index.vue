@@ -16,7 +16,7 @@ import { Button, message, Tabs } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
-  deleteDemo03StudentByIds,
+  deleteDemo03StudentListByIds,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/inner';
@@ -74,7 +74,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo03StudentByIds(deleteIds.value);
+    await deleteDemo03StudentListByIds(deleteIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

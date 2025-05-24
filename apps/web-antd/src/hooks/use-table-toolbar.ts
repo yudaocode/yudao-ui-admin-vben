@@ -18,7 +18,7 @@ export function useTableToolbar() {
     const table = tableRef.value;
     const tableToolbar = tableToolbarRef.value;
     if (table && tableToolbar) {
-      // TODO @puhui999：通过 nexttick 可以解决么？试过不得行🤣刚好列表组件出现后延迟一秒挂载很稳
+      // 延迟 1 秒，确保 toolbar 组件已经挂载
       setTimeout(async () => {
         const toolbar = tableToolbar.getToolbarRef();
         if (!toolbar) {

@@ -16,6 +16,7 @@
     "edit": "修改{0}",
     "create": "新增{0}",
     "delete": "删除{0}",
+    "deleteBatch": "批量删除",
     "detail": "详情{0}",
     "view": "查看{0}",
     "import": "导入",
