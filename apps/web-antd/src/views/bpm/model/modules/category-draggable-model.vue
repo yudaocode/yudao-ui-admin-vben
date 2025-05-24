@@ -54,35 +54,39 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     align: 'left' as const,
-    minWidth: 250,
+    ellipsis: true,
+    width: 250,
   },
   {
     title: '可见范围',
     dataIndex: 'startUserIds',
     key: 'startUserIds',
     align: 'center' as const,
-    minWidth: 150,
+    ellipsis: true,
+    width: 150,
   },
   {
     title: '流程类型',
     dataIndex: 'type',
     key: 'type',
     align: 'center' as const,
-    minWidth: 120,
+    ellipsis: true,
+    width: 120,
   },
   {
     title: '表单信息',
     dataIndex: 'formType',
     key: 'formType',
     align: 'center' as const,
-    minWidth: 150,
+    ellipsis: true,
+    width: 150,
   },
   {
     title: '最后发布',
     dataIndex: 'deploymentTime',
     key: 'deploymentTime',
     align: 'center' as const,
-    minWidth: 250,
+    width: 250,
   },
   {
     title: '操作',
@@ -316,6 +320,7 @@ const handleRenameSuccess = () => {
           :columns="columns"
           :pagination="false"
           :custom-row="customRow"
+          :scroll="{ x: '100%' }"
           row-key="id"
         >
           <template #bodyCell="{ column, record }">

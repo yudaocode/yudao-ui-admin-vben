@@ -65,7 +65,6 @@ const rules: Record<string, Rule[]> = {
   category: [{ required: true, message: '流程分类不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '流程类型不能为空', trigger: 'blur' }],
   visible: [{ required: true, message: '是否可见不能为空', trigger: 'blur' }],
-  // TODO 这个的校验好像没有起作用
   managerUserIds: [
     { required: true, message: '流程管理员不能为空', trigger: 'blur' },
   ],
@@ -282,10 +281,12 @@ defineExpose({ validate });
     </Form.Item>
     <Form.Item label="流程类型" name="type" class="mb-5">
       <Radio.Group v-model:value="modelData.type">
+        <!-- TODO BPMN 流程类型需要整合，暂时禁用 -->
         <Radio
           v-for="dict in getIntDictOptions(DICT_TYPE.BPM_MODEL_TYPE)"
           :key="dict.value"
           :value="dict.value"
+          :disabled="dict.value === 10"
         >
           {{ dict.label }}
         </Radio>

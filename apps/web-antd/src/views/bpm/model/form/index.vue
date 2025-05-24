@@ -29,6 +29,7 @@ import { getSimpleUserList } from '#/api/system/user';
 
 import BasicInfo from './modules/basic-info.vue';
 import FormDesign from './modules/form-design.vue';
+import ProcessDesign from './modules/process-design.vue';
 
 defineOptions({ name: 'BpmModelCreate' });
 
@@ -68,6 +69,8 @@ const userStore = useUserStore();
 const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
 // 表单设计组件引用
 const formDesignRef = ref<InstanceType<typeof FormDesign>>();
+// 流程设计组件引用
+const processDesignRef = ref<InstanceType<typeof ProcessDesign>>();
 
 /** 步骤校验函数 */
 const validateBasic = async () => {
@@ -81,7 +84,7 @@ const validateForm = async () => {
 
 /** 流程设计校验 */
 const validateProcess = async () => {
-  // TODO
+  await processDesignRef.value?.validate();
 };
 
 const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
@@ -101,7 +104,7 @@ const formData: any = ref({
   category: undefined,
   icon: undefined,
   description: '',
-  type: BpmModelType.BPMN,
+  type: BpmModelType.SIMPLE,
   formType: BpmModelFormType.NORMAL,
   formId: '',
   formCustomCreatePath: '',
@@ -189,7 +192,7 @@ const initData = async () => {
   } else {
     // 情况三：新增场景
     formData.value.startUserType = 0; // 全体
-    formData.value.managerUserIds.push(userStore.userInfo?.userId);
+    formData.value.managerUserIds.push(userStore.userInfo?.id);
   }
 
   // 获取表单列表
@@ -351,6 +354,7 @@ const handleDeploy = async () => {
 /** 步骤切换处理 */
 const handleStepClick = async (index: number) => {
   try {
+    console.warn('handleStepClick', index);
     if (index !== 0) {
       await validateBasic();
     }
@@ -400,7 +404,7 @@ onBeforeUnmount(() => {
   // 清理所有的引用
   basicInfoRef.value = undefined;
   formDesignRef.value = undefined;
-  // processDesignRef.value = null;
+  processDesignRef.value = undefined;
 });
 </script>
 
@@ -485,7 +489,7 @@ onBeforeUnmount(() => {
             />
           </div>
           <!-- 第二步：表单设计  -->
-          <div v-show="currentStep === 1" class="mx-auto w-4/6">
+          <div v-if="currentStep === 1" class="mx-auto w-4/6">
             <FormDesign
               v-model="formData"
               :form-list="formList"
@@ -493,10 +497,15 @@ onBeforeUnmount(() => {
             />
           </div>
 
-          <!-- 第三步：流程设计 TODO -->
+          <!-- 第三步：流程设计 -->
+          <ProcessDesign
+            v-if="currentStep === 2"
+            v-model="formData"
+            ref="processDesignRef"
+          />
 
           <!-- 第四步：更多设置 TODO -->
-          <div v-show="currentStep === 3" class="mx-auto w-4/6"></div>
+          <div v-if="currentStep === 3" class="mx-auto w-4/6"></div>
         </div>
       </Card>
     </div>
