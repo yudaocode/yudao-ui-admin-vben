@@ -2,7 +2,7 @@
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
@@ -39,6 +39,7 @@ import {
   SvgBpmRunningIcon,
 } from '#/views/bpm/processInstance/detail/modules/icons';
 
+import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';
 
 defineOptions({ name: 'BpmProcessInstanceDetail' });
@@ -99,7 +100,7 @@ const detailForm = ref({
 const writableFields: Array<string> = []; // 表单可以编辑的字段
 
 /** 加载流程实例 */
-const BusinessFormComponent = ref<any>(null); // 异步组件
+const BusinessFormComponent = shallowRef<any>(null); // 异步组件
 
 /** 获取详情 */
 async function getDetail() {
@@ -221,6 +222,20 @@ const setFieldPermission = (field: string, permission: string) => {
 
 /** 当前的Tab */
 const activeTab = ref('form');
+const taskListRef = ref();
+
+// 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表
+watch(
+  () => activeTab.value,
+  (newVal) => {
+    if (newVal === 'record') {
+      // 如果切换到流转记录标签，刷新任务列表
+      nextTick(() => {
+        taskListRef.value?.refresh();
+      });
+    }
+  },
+);
 
 /** 初始化 */
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
@@ -332,7 +347,13 @@ onMounted(async () => {
             </TabPane>
 
             <TabPane tab="流转记录" key="record">
-              <div>待开发</div>
+              <div class="h-full">
+                <BpmProcessInstanceTaskList
+                  ref="taskListRef"
+                  :loading="processInstanceLoading"
+                  :id="id"
+                />
+              </div>
             </TabPane>
 
             <!-- TODO 待开发 -->
