@@ -105,7 +105,7 @@ export function useGridColumns<T = BpmFormApi.FormVO>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 150,
+      minWidth: 200,
       align: 'center',
       fixed: 'right',
       cellRender: {

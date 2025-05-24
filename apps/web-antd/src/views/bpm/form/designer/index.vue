@@ -17,7 +17,7 @@ defineOptions({ name: 'BpmFormEditor' });
 
 const props = defineProps<{
   copyId?: number | string;
-  id?: number;
+  id?: number | string;
   type: 'copy' | 'create' | 'edit';
 }>();
 

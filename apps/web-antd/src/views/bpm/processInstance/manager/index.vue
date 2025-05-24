@@ -105,7 +105,9 @@ function onCancel(row: BpmProcessInstanceApi.ProcessInstanceVO) {
     content: '请输入取消原因',
     title: '取消流程',
     modelPropName: 'value',
-  });
+  })
+    .then(() => {})
+    .catch(() => {});
 }
 
 /** 查看流程实例 */
@@ -129,7 +131,6 @@ function onRefresh() {
       <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm" />
     </template>
 
-    <FormModal @success="onRefresh" />
     <Grid table-title="流程实例" />
   </Page>
 </template>
