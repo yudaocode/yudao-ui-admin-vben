@@ -107,6 +107,7 @@ export function useGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Student>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Student>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     { type: 'expand', width: 80, slots: { content: 'expand_content' } },
     {
       field: 'id',
@@ -150,7 +151,6 @@ export function useGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
       showOverflow: false,
       cellRender: {
         attrs: {
@@ -199,7 +199,6 @@ export function useDemo03CourseGridEditColumns(
       minWidth: 60,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
       showOverflow: false,
       cellRender: {
         attrs: {

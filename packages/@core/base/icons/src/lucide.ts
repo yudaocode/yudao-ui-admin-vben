@@ -68,6 +68,7 @@ export {
   Sun,
   SunMoon,
   SwatchBook,
+  Trash2,
   Upload,
   UserRoundPen,
   X,

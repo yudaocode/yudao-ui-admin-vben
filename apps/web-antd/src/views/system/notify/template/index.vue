@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteNotifyTemplate,
   exportNotifyTemplate,
@@ -40,60 +36,41 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportNotifyTemplate(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '站内信模板.xls', source: data });
 }
 
 /** 创建站内信模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑站内信模板 */
-function onEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试站内信 */
-function onSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除站内信模板 */
-async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
+async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteNotifyTemplate(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyTemplateApi.NotifyTemplate>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'send': {
-      onSend(row);
-      break;
-    }
   }
 }
 
@@ -102,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -137,23 +114,55 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:notify-template:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['站内信模板']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:notify-template:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['短信渠道']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notify-template:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:notify-template:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:notify-template:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '测试',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notify-template:send-notify'],
+              onClick: handleSend.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notify-template:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

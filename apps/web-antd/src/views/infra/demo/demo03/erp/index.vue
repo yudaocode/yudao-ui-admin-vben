@@ -8,14 +8,15 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { Download, Plus, Trash2 } from '@vben/icons';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
+  deleteDemo03StudentListByIds,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/erp';
@@ -61,9 +62,34 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
     await deleteDemo03Student(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
   }
+}
+
+/** 批量删除学生 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03StudentListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Grade[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -124,6 +150,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellClick: ({ row }: { row: Demo03StudentApi.Demo03Student }) => {
       selectDemo03Student.value = row;
     },
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
   },
 });
 </script>
@@ -151,6 +179,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
             v-access:code="['infra:demo03-student:export']"
           >
             {{ $t('ui.actionTitle.export') }}
+          </Button>
+          <Button
+            :icon="h(Trash2)"
+            type="primary"
+            danger
+            class="ml-2"
+            :disabled="isEmpty(deleteIds)"
+            @click="onDeleteBatch"
+            v-access:code="['infra:demo03-student:delete']"
+          >
+            批量删除
           </Button>
         </template>
       </Grid>

@@ -96,15 +96,17 @@ const [Modal, modalApi] = useVbenModal({
     // 2. 提交请求
     const hideLoading = message.loading({
       content: '导入中...',
-      duration: 0,
-      key: 'import_loading',
+      key: 'action_key_msg',
     });
     try {
       await createCodegenList(formData);
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      message.success({
+        content: $t('ui.actionMessage.operationSuccess'),
+        key: 'action_key_msg',
+      });
     } finally {
       hideLoading();
       modalApi.unlock();

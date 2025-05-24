@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = formData.value as Demo03StudentApi.Demo03Student;
     // 拼接子表的数据
     data.demo03courses = demo03CourseFormRef.value?.getData();
-    data.demo03grade = demo03GradeFormRef.value?.getValues();
+    data.demo03grade = demo03GradeFormRef.value?.getValues() as any;
     try {
       await (formData.value?.id
         ? updateDemo03Student(data)
@@ -135,7 +135,7 @@ const [Modal, modalApi] = useVbenModal({
         <RadioGroup v-model:value="formData.sex">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
-            :key="dict.value"
+            :key="dict.value.toString()"
             :value="dict.value"
           >
             {{ dict.label }}

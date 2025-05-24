@@ -55,7 +55,7 @@ function beforeUpload(file: FileType) {
 }
 
 /** 下载模版 */
-async function onDownload() {
+async function handleDownload() {
   const data = await importUserTemplate();
   downloadFileFromBlobPart({ fileName: '用户导入模板.xls', source: data });
 }
@@ -78,7 +78,7 @@ async function onDownload() {
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Button @click="onDownload"> 下载导入模板 </Button>
+        <Button @click="handleDownload"> 下载导入模板 </Button>
       </div>
     </template>
   </Modal>

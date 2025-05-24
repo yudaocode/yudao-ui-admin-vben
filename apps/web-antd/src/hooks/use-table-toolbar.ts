@@ -3,7 +3,10 @@ import type { TableToolbar } from '#/components/table-toolbar';
 
 import { ref, watch } from 'vue';
 
-// TODO @puhui999：这里的注释、目的写下；
+/**
+ * vxe 原生工具栏挂载封装
+ * 解决每个组件使用 vxe-table 组件时都需要写一遍的问题
+ */
 export function useTableToolbar() {
   const hiddenSearchBar = ref(false); // 隐藏搜索栏
   const tableToolbarRef = ref<InstanceType<typeof TableToolbar>>();
@@ -15,7 +18,7 @@ export function useTableToolbar() {
     const table = tableRef.value;
     const tableToolbar = tableToolbarRef.value;
     if (table && tableToolbar) {
-      // TODO @puhui999：通过 nexttick 可以解决么？
+      // 延迟 1 秒，确保 toolbar 组件已经挂载
       setTimeout(async () => {
         const toolbar = tableToolbar.getToolbarRef();
         if (!toolbar) {
@@ -29,10 +32,9 @@ export function useTableToolbar() {
 
   watch(
     () => tableRef.value,
-    (val) => {
+    async (val) => {
       if (!val || isBound.value) return;
-      // TODO @puhui999：这里要处理下 promise 的告警么？
-      bindTableToolbar();
+      await bindTableToolbar();
     },
     { immediate: true },
   );

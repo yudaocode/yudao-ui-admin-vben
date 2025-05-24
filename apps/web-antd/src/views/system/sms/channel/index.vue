@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSmsChannel,
   exportSmsChannel,
@@ -34,51 +30,36 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportSmsChannel(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '短信渠道.xls', source: data });
 }
 
 /** 创建短信渠道 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑短信渠道 */
-function onEdit(row: SystemSmsChannelApi.SmsChannel) {
+function handleEdit(row: SystemSmsChannelApi.SmsChannel) {
   formModalApi.setData(row).open();
 }
 
 /** 删除短信渠道 */
-async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
+async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.signature]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteSmsChannel(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.signature]),
+      key: 'action_key_msg',
+    });
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemSmsChannelApi.SmsChannel>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
   }
 }
 
@@ -87,7 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -121,23 +102,48 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="短信渠道列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:sms-channel:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['短信渠道']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:sms-channel:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['短信渠道']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:sms-channel:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:sms-channel:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:sms-channel:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:sms-channel:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

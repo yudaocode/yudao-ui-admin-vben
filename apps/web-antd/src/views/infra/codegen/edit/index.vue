@@ -31,7 +31,7 @@ const columnInfoRef = ref<InstanceType<typeof ColumnInfo>>();
 const generateInfoRef = ref<InstanceType<typeof GenerationInfo>>();
 
 /** 获取详情数据 */
-const getDetail = async () => {
+async function getDetail() {
   const id = route.query.id as any;
   if (!id) {
     return;
@@ -42,10 +42,10 @@ const getDetail = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 提交表单 */
-const submitForm = async () => {
+async function submitForm() {
   // 表单验证
   const basicInfoValid = await basicInfoRef.value?.validate();
   if (!basicInfoValid) {
@@ -61,7 +61,6 @@ const submitForm = async () => {
   // 提交表单
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating'),
-    duration: 0,
     key: 'action_process_msg',
   });
   try {
@@ -74,32 +73,35 @@ const submitForm = async () => {
       columns,
     });
     // 关闭并提示
-    message.success($t('ui.actionMessage.operationSuccess'));
+    message.success({
+      content: $t('ui.actionMessage.operationSuccess'),
+      key: 'action_key_msg',
+    });
     close();
   } catch (error) {
     console.error('保存失败', error);
   } finally {
     hideLoading();
   }
-};
+}
 const tabs = useTabs();
 /** 返回列表 */
-const close = () => {
+function close() {
   tabs.closeCurrentTab();
   router.push('/infra/codegen');
-};
+}
 
 /** 下一步 */
-const nextStep = async () => {
+function nextStep() {
   currentStep.value += 1;
-};
+}
 
 /** 上一步 */
-const prevStep = () => {
+function prevStep() {
   if (currentStep.value > 0) {
     currentStep.value -= 1;
   }
-};
+}
 
 /** 步骤配置 */
 const steps = [

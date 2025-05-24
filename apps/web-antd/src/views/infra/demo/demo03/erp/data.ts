@@ -107,6 +107,7 @@ export function useGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Student>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Student>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -149,7 +150,6 @@ export function useGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
       showOverflow: false,
       cellRender: {
         attrs: {
@@ -254,6 +254,7 @@ export function useDemo03CourseGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Course>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Course>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -286,7 +287,7 @@ export function useDemo03CourseGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
+
       showOverflow: false,
       cellRender: {
         attrs: {
@@ -391,6 +392,7 @@ export function useDemo03GradeGridColumns(
   onActionClick?: OnActionClickFn<Demo03StudentApi.Demo03Grade>,
 ): VxeTableGridOptions<Demo03StudentApi.Demo03Grade>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -423,7 +425,7 @@ export function useDemo03GradeGridColumns(
       minWidth: 200,
       align: 'center',
       fixed: 'right',
-      headerAlign: 'center',
+
       showOverflow: false,
       cellRender: {
         attrs: {

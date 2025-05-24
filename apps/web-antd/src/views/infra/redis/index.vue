@@ -17,16 +17,16 @@ import Memory from './modules/memory.vue';
 const redisData = ref<InfraRedisApi.RedisMonitorInfo>();
 
 /** 统一加载 Redis 数据 */
-const loadRedisData = async () => {
+async function loadRedisData() {
   try {
     redisData.value = await getRedisMonitorInfo();
   } catch (error) {
     console.error('加载 Redis 数据失败', error);
   }
-};
+}
 
-onMounted(() => {
-  loadRedisData();
+onMounted(async () => {
+  await loadRedisData();
 });
 </script>
 
@@ -37,9 +37,11 @@ onMounted(() => {
       <DocAlert title="本地缓存" url="https://doc.iocoder.cn/local-cache/" />
     </template>
 
-    <Card class="mt-5" title="Redis 概览">
-      <Info :redis-data="redisData" />
-    </Card>
+    <div class="class=" mt-5>
+      <Card title="Redis 概览">
+        <Info :redis-data="redisData" />
+      </Card>
+    </div>
 
     <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
       <Card title="内存使用">

@@ -1,4 +1,4 @@
-/* 来自 @vben/plugins/vxe-table style.css TODO @puhui999：可以写下目的哈； */
+/* 来自 @vben/plugins/vxe-table style.css，覆盖 vxe-table 原有的样式定义，使用 vben 的样式主题 */
 :root {
   --vxe-ui-font-color: hsl(var(--foreground));
   --vxe-ui-font-primary-color: hsl(var(--primary));

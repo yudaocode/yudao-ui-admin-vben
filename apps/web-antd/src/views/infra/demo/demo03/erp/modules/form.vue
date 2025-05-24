@@ -64,7 +64,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-
     // 加载数据
     let data = modalApi.getData<Demo03StudentApi.Demo03Student>();
     if (!data) {

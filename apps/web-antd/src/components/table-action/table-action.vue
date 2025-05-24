@@ -1,7 +1,5 @@
 <!-- add by 星语：参考 vben2 的方式，增加 TableAction 组件 -->
 <script setup lang="ts">
-import type { ButtonType } from 'ant-design-vue/es/button';
-
 import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
@@ -69,7 +67,7 @@ const getActions = computed(() => {
     .map((action) => {
       const { popConfirm } = action;
       return {
-        type: 'link' as ButtonType,
+        type: action.type || 'link',
         ...action,
         ...popConfirm,
         onConfirm: popConfirm?.confirm,
@@ -183,10 +181,10 @@ function handleMenuClick(e: any) {
 
     <Dropdown v-if="getDropdownList.length > 0" :trigger="['hover']">
       <slot name="more">
-        <Button size="small" type="link">
+        <Button :type="getDropdownList[0].type">
           <template #icon>
             {{ $t('page.action.more') }}
-            <IconifyIcon class="icon-more" icon="ant-design:more-outlined" />
+            <IconifyIcon icon="lucide:ellipsis-vertical" />
           </template>
         </Button>
       </slot>
@@ -230,7 +228,7 @@ function handleMenuClick(e: any) {
 </template>
 <style lang="scss">
 .table-actions {
-  .ant-btn {
+  .ant-btn-link {
     padding: 4px;
     margin-left: 0;
   }

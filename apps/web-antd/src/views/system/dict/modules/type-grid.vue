@@ -6,18 +6,16 @@ import type {
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDictType,
   exportDictType,
   getDictTypePage,
 } from '#/api/system/dict/type';
-import { ACTION_KEY, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { useTypeGridColumns, useTypeGridFormSchema } from '../data';
@@ -36,33 +34,37 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportDictType(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '字典类型.xls', source: data });
 }
 
 /** 创建字典类型 */
-function onCreate() {
+function handleCreate() {
   typeFormModalApi.setData(null).open();
 }
 
 /** 编辑字典类型 */
-function onEdit(row: any) {
+function handleEdit(row: any) {
   typeFormModalApi.setData(row).open();
 }
 
 /** 删除字典类型 */
-async function onDelete(row: SystemDictTypeApi.DictType) {
-  message.loading({
+async function handleDelete(row: SystemDictTypeApi.DictType) {
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: ACTION_KEY,
+    key: 'action_key_msg',
   });
-  await deleteDictType(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: ACTION_KEY,
-  });
-  onRefresh();
+  try {
+    await deleteDictType(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 表格事件 */
@@ -110,23 +112,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['字典类型']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典类型']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -134,19 +137,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'link',
-              icon: 'ant-design:edit-outlined',
+              icon: ACTION_ICON.EDIT,
               auth: ['system:dict:update'],
-              onClick: onEdit.bind(null, row),
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              icon: 'ant-design:delete-outlined',
+              icon: ACTION_ICON.DELETE,
               auth: ['system:dict:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: onDelete.bind(null, row),
+                confirm: handleDelete.bind(null, row),
               },
             },
           ]"

@@ -1,12 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraJobApi } from '#/api/infra/job';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
 
-import { DICT_TYPE, getDictOptions, InfraJobStatusEnum } from '#/utils';
+import { formatDateTime } from '@vben/utils';
 
-const { hasAccessByCodes } = useAccess();
+import { Timeline } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -124,9 +127,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = InfraJobApi.Job>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -163,58 +164,77 @@ export function useGridColumns<T = InfraJobApi.Job>(
       minWidth: 120,
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '任务',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:job:update']),
-          },
-          {
-            code: 'update-status',
-            text: '开启',
-            show: (row: any) =>
-              hasAccessByCodes(['infra:job:update']) &&
-              row.status === InfraJobStatusEnum.STOP,
-          },
-          {
-            code: 'update-status',
-            text: '暂停',
-            show: (row: any) =>
-              hasAccessByCodes(['infra:job:update']) &&
-              row.status === InfraJobStatusEnum.NORMAL,
-          },
-          {
-            code: 'trigger',
-            text: '执行',
-            show: hasAccessByCodes(['infra:job:trigger']),
-          },
-          // TODO @芋艿：增加一个“更多”选项
-          {
-            code: 'detail',
-            text: '详细',
-            show: hasAccessByCodes(['infra:job:query']),
-          },
-          {
-            code: 'log',
-            text: '日志',
-            show: hasAccessByCodes(['infra:job:query']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:job:delete']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情的配置 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '任务编号',
+    },
+    {
+      field: 'name',
+      label: '任务名称',
+    },
+    {
+      field: 'status',
+      label: '任务状态',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.INFRA_JOB_STATUS,
+          value: data?.status,
+        }),
+    },
+    {
+      field: 'handlerName',
+      label: '处理器的名字',
+    },
+    {
+      field: 'handlerParam',
+      label: '处理器的参数',
+    },
+    {
+      field: 'cronExpression',
+      label: 'CRON 表达式',
+    },
+    {
+      field: 'retryCount',
+      label: '重试次数',
+    },
+    {
+      field: 'retryInterval',
+      label: '重试间隔',
+    },
+    {
+      field: 'monitorTimeout',
+      label: '监控超时时间',
+      content: (data) =>
+        data?.monitorTimeout && data.monitorTimeout > 0
+          ? `${data.monitorTimeout} 毫秒`
+          : '未开启',
+    },
+    {
+      field: 'nextTimes',
+      label: '后续执行时间',
+      content: (data) => {
+        if (!data?.nextTimes) {
+          return '无后续执行时间';
+        }
+        if (data.nextTimes.length === 0) {
+          return '无后续执行时间';
+        }
+        return h(Timeline, {}, () =>
+          data.nextTimes.map((time: any) =>
+            h(Timeline.Item, {}, () => formatDateTime(time)?.toString()),
+          ),
+        );
       },
     },
   ];

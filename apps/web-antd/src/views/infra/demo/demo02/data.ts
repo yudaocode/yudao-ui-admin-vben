@@ -1,14 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import { useAccess } from '@vben/access';
 import { handleTree } from '@vben/utils';
 
 import { getDemo02CategoryList } from '#/api/infra/demo/demo02';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -89,9 +86,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick?: OnActionClickFn<Demo02CategoryApi.Demo02Category>,
-): VxeTableGridOptions<Demo02CategoryApi.Demo02Category>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<Demo02CategoryApi.Demo02Category>['columns'] {
   return [
     {
       field: 'id',
@@ -116,39 +111,10 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '示例分类',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['infra:demo02-category:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:demo02-category:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:demo02-category:delete']),
-            disabled: (row: Demo02CategoryApi.Demo02Category) => {
-              return !!(row.children && row.children.length > 0);
-            },
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

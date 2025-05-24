@@ -1,12 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { useAccess } from '@vben/access';
-
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -99,10 +95,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick?: OnActionClickFn<Demo01ContactApi.Demo01Contact>,
-): VxeTableGridOptions<Demo01ContactApi.Demo01Contact>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<Demo01ContactApi.Demo01Contact>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -145,32 +140,10 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
-      align: 'center',
+      width: 160,
       fixed: 'right',
-      // TODO @puhui999：headerAlign 要使用 headerAlign: 'center' 么？看着现在分成了 align 和 headerAlign 两种
-      headerAlign: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '示例联系人',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:demo01-contact:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:demo01-contact:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

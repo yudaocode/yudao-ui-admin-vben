@@ -100,7 +100,7 @@ watchEffect(() => {
 /** 发送消息 */
 const sendText = ref(''); // 发送内容
 const sendUserId = ref(''); // 发送人
-const handlerSend = () => {
+function handlerSend() {
   if (!sendText.value.trim()) {
     message.warning('消息内容不能为空');
     return;
@@ -119,19 +119,19 @@ const handlerSend = () => {
   // 2. 最后发送消息
   send(jsonMessage);
   sendText.value = '';
-};
+}
 
 /** 切换 websocket 连接状态 */
-const toggleConnectStatus = () => {
+function toggleConnectStatus() {
   if (getIsOpen.value) {
     close();
   } else {
     open();
   }
-};
+}
 
 /** 获取消息类型的徽标颜色 */
-const getMessageBadgeColor = (type?: string) => {
+function getMessageBadgeColor(type?: string) {
   switch (type) {
     case 'group': {
       return 'green';
@@ -146,10 +146,10 @@ const getMessageBadgeColor = (type?: string) => {
       return 'default';
     }
   }
-};
+}
 
 /** 获取消息类型的文本 */
-const getMessageTypeText = (type?: string) => {
+function getMessageTypeText(type?: string) {
   switch (type) {
     case 'group': {
       return '群发';
@@ -164,7 +164,7 @@ const getMessageTypeText = (type?: string) => {
       return '未知';
     }
   }
-};
+}
 
 /** 初始化 */
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表

@@ -88,14 +88,16 @@ function onAppend(row: Demo02CategoryApi.Demo02Category) {
 async function onDelete(row: Demo02CategoryApi.Demo02Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteDemo02Category(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_key_msg',
+    });
     await getList();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

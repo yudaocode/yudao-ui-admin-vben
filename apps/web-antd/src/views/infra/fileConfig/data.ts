@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraFileConfigApi } from '#/api/infra/file-config';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -265,9 +260,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -309,39 +302,10 @@ export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '文件配置',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:file-config:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:file-config:delete']),
-          },
-          {
-            code: 'master',
-            text: '主配置',
-            disabled: (row: any) => row.master,
-            show: (_row: any) => hasAccessByCodes(['infra:file-config:update']),
-          },
-          {
-            code: 'test',
-            text: '测试',
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

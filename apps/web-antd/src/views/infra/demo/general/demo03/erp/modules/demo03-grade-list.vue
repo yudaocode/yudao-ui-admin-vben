@@ -4,8 +4,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-import { cloneDeep, formatDateTime } from '@vben/utils';
+import { Plus, Trash2 } from '@vben/icons';
+import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
 
 import {
   Button,
@@ -19,6 +19,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo03Grade,
+  deleteDemo03GradeListByIds,
   getDemo03GradePage,
 } from '#/api/infra/demo/demo03/erp';
 import { ContentWrap } from '#/components/content-wrap';
@@ -61,11 +62,39 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
   });
   try {
     await deleteDemo03Grade(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    getList();
-  } catch {
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_process_msg',
+    });
+    await getList();
+  } finally {
     hideLoading();
   }
+}
+
+/** 批量删除学生班级 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo03GradeListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    await getList();
+  } finally {
+    hideLoading();
+  }
+}
+
+const deleteIds = ref<number[]>([]); // 待删除学生班级 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo03StudentApi.Demo03Grade[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 const loading = ref(true); // 列表的加载中
@@ -100,9 +129,6 @@ const getList = async () => {
       return [];
     }
     const params = cloneDeep(queryParams) as any;
-    if (params.birthday && Array.isArray(params.birthday)) {
-      params.birthday = (params.birthday as string[]).join(',');
-    }
     if (params.createTime && Array.isArray(params.createTime)) {
       params.createTime = (params.createTime as string[]).join(',');
     }
@@ -200,9 +226,28 @@ onMounted(() => {
           >
             {{ $t('ui.actionTitle.create', ['学生']) }}
           </Button>
+          <Button
+            :icon="h(Trash2)"
+            type="primary"
+            danger
+            class="ml-2"
+            :disabled="isEmpty(deleteIds)"
+            @click="onDeleteBatch"
+            v-access:code="['infra:demo03-student:delete']"
+          >
+            批量删除
+          </Button>
         </TableToolbar>
       </template>
-      <VxeTable ref="tableRef" :data="list" show-overflow :loading="loading">
+      <VxeTable
+        ref="tableRef"
+        :data="list"
+        show-overflow
+        :loading="loading"
+        @checkbox-all="setDeleteIds"
+        @checkbox-change="setDeleteIds"
+      >
+        <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />
         <VxeColumn field="studentId" title="学生编号" align="center" />
         <VxeColumn field="name" title="名字" align="center" />

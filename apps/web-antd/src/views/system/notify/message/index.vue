@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyMessagePage } from '#/api/system/notify/message';
 import { DocAlert } from '#/components/doc-alert';
 
@@ -25,21 +22,8 @@ function onRefresh() {
 }
 
 /** 查看站内信详情 */
-function onDetail(row: SystemNotifyMessageApi.NotifyMessage) {
+function handleDetail(row: SystemNotifyMessageApi.NotifyMessage) {
   detailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyMessageApi.NotifyMessage>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -47,7 +31,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -79,6 +63,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <DetailModal @success="onRefresh" />
-    <Grid table-title="站内信列表" />
+    <Grid table-title="站内信列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:notify-message:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

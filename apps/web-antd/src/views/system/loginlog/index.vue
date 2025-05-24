@@ -1,17 +1,11 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportLoginLog, getLoginLogPage } from '#/api/system/login-log';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
@@ -30,27 +24,14 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportLoginLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '登录日志.xls', source: data });
 }
 
 /** 查看登录日志详情 */
-function onDetail(row: SystemLoginLogApi.LoginLog) {
+function handleDetail(row: SystemLoginLogApi.LoginLog) {
   detailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemLoginLogApi.LoginLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -58,7 +39,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -92,15 +73,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal @success="onRefresh" />
     <Grid table-title="登录日志列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:login-log:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:login-log:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:login-log:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

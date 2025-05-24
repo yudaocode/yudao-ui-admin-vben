@@ -5,17 +5,18 @@ import type {
 } from '#/adapter/vxe-table';
 import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
-import { h } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { Download, Plus, Trash2 } from '@vben/icons';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
+  deleteDemo01ContactListByIds,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -55,9 +56,36 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
     await deleteDemo01Contact(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
-  } catch {
+  } finally {
     hideLoading();
   }
+}
+
+/** 批量删除示例联系人 */
+async function onDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDemo01ContactListByIds(deleteIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+// TODO @puhui999：方法名，改成 handleRowCheckboxChange；注释：处理选中表格行
+// TODO @puhui999：deleteIds => checkedIds；然后注释去掉？
+const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
+function setDeleteIds({
+  records,
+}: {
+  records: Demo01ContactApi.Demo01Contact[];
+}) {
+  deleteIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -113,6 +141,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
+  gridEvents: {
+    checkboxAll: setDeleteIds,
+    checkboxChange: setDeleteIds,
+  },
 });
 </script>
 
@@ -138,6 +170,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-access:code="['infra:demo01-contact:export']"
         >
           {{ $t('ui.actionTitle.export') }}
+        </Button>
+        <Button
+          :icon="h(Trash2)"
+          type="primary"
+          danger
+          class="ml-2"
+          :disabled="isEmpty(deleteIds)"
+          @click="onDeleteBatch"
+          v-access:code="['infra:demo01-contact:delete']"
+        >
+          批量删除
         </Button>
       </template>
     </Grid>
