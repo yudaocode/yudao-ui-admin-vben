@@ -441,30 +441,6 @@ export const ErpBizType = {
 
 // ========== BPM 模块 ==========
 
-export const BpmModelType = {
-  BPMN: 10, // BPMN 设计器
-  SIMPLE: 20, // 简易设计器
-};
-
-export const BpmModelFormType = {
-  NORMAL: 10, // 流程表单
-  CUSTOM: 20, // 业务表单
-};
-
-export const BpmProcessInstanceStatus = {
-  NOT_START: -1, // 未开始
-  RUNNING: 1, // 审批中
-  APPROVE: 2, // 审批通过
-  REJECT: 3, // 审批不通过
-  CANCEL: 4, // 已取消
-};
-
-export const BpmAutoApproveType = {
-  NONE: 0, // 不自动通过
-  APPROVE_ALL: 1, // 仅审批一次，后续重复的审批节点均自动通过
-  APPROVE_SEQUENT: 2, // 仅针对连续审批的节点自动通过
-};
-
 // 候选人策略枚举 （ 用于审批节点。抄送节点 )
 export enum BpmCandidateStrategyEnum {
   /**
@@ -595,6 +571,40 @@ export enum BpmNodeTypeEnum {
 }
 
 /**
+ *  流程任务操作按钮
+ */
+export enum BpmTaskOperationButtonTypeEnum {
+  /**
+   * 加签
+   */
+  ADD_SIGN = 5,
+  /**
+   * 通过
+   */
+  APPROVE = 1,
+  /**
+   * 抄送
+   */
+  COPY = 7,
+  /**
+   * 委派
+   */
+  DELEGATE = 4,
+  /**
+   * 拒绝
+   */
+  REJECT = 2,
+  /**
+   * 退回
+   */
+  RETURN = 6,
+  /**
+   * 转办
+   */
+  TRANSFER = 3,
+}
+
+/**
  * 任务状态枚举
  */
 export enum BpmTaskStatusEnum {
@@ -667,3 +677,51 @@ export enum BpmFieldPermissionType {
    */
   WRITE = '2',
 }
+
+/**
+ * 流程模型类型
+ */
+export const BpmModelType = {
+  BPMN: 10, // BPMN 设计器
+  SIMPLE: 20, // 简易设计器
+};
+
+/**
+ * 流程模型表单类型
+ */
+export const BpmModelFormType = {
+  NORMAL: 10, // 流程表单
+  CUSTOM: 20, // 业务表单
+};
+
+/**
+ * 流程实例状态
+ */
+export const BpmProcessInstanceStatus = {
+  NOT_START: -1, // 未开始
+  RUNNING: 1, // 审批中
+  APPROVE: 2, // 审批通过
+  REJECT: 3, // 审批不通过
+  CANCEL: 4, // 已取消
+};
+
+/**
+ * 自动审批类型
+ */
+export const BpmAutoApproveType = {
+  NONE: 0, // 不自动通过
+  APPROVE_ALL: 1, // 仅审批一次，后续重复的审批节点均自动通过
+  APPROVE_SEQUENT: 2, // 仅针对连续审批的节点自动通过
+};
+
+/**
+ * 审批操作按钮名称
+ */
+export const OPERATION_BUTTON_NAME = new Map<number, string>();
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.APPROVE, '通过');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.REJECT, '拒绝');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.TRANSFER, '转办');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.DELEGATE, '委派');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.ADD_SIGN, '加签');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.RETURN, '退回');
+OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.COPY, '抄送');

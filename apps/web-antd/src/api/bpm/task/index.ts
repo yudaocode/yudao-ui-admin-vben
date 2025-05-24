@@ -89,8 +89,8 @@ export const getTaskListByProcessInstanceId = async (id: string) => {
 };
 
 /** 获取所有可退回的节点 */
-export const getTaskListByReturn = async (data: any) => {
-  return await requestClient.get('/bpm/task/list-by-return', data);
+export const getTaskListByReturn = async (id: string) => {
+  return await requestClient.get(`/bpm/task/list-by-return?id=${id}`);
 };
 
 /** 退回 */

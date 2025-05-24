@@ -45,14 +45,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 64,
     },
-  } as VxeTableGridOptions<BpmProcessInstanceApi.ProcessInstanceVO>,
+  } as VxeTableGridOptions<BpmProcessInstanceApi.CopyVO>,
 });
 
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
   row,
-}: OnActionClickParams<BpmProcessInstanceApi.ProcessInstanceVO>) {
+}: OnActionClickParams<BpmProcessInstanceApi.CopyVO>) {
   switch (code) {
     case 'detail': {
       onDetail(row);

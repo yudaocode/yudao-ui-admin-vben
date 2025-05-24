@@ -1,5 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import type { BpmTaskApi } from '../task';
+
 import type { BpmModelApi } from '#/api/bpm/model';
 import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '#/utils';
 
@@ -67,25 +69,26 @@ export namespace BpmProcessInstanceApi {
     processDefinition: BpmModelApi.ProcessDefinitionVO;
     processInstance: BpmProcessInstanceApi.ProcessInstanceVO;
     status: number;
+    todoTask: BpmTaskApi.TaskVO;
   };
 
   // 抄送流程实例 VO
   export type CopyVO = {
+    activityId: string;
+    activityName: string;
+    createTime: number;
+    createUser: User;
     id: number;
-    startUser: User;
     processInstanceId: string;
     processInstanceName: string;
     processInstanceStartTime: number;
-    activityId: string;
-    activityName: string;
-    taskId: string;
     reason: string;
-    createUser: User;
-    createTime: number;
+    startUser: User;
     summary: {
       key: string;
       value: string;
     }[];
+    taskId: string;
   };
 }
 
@@ -173,7 +176,7 @@ export async function getApprovalDetail(params: any) {
 
 /** 获取下一个执行的流程节点 */
 export async function getNextApprovalNodes(params: any) {
-  return requestClient.get<BpmProcessInstanceApi.ProcessInstanceVO>(
+  return requestClient.get<BpmProcessInstanceApi.ApprovalNodeInfo[]>(
     `/bpm/process-instance/get-next-approval-nodes`,
     { params },
   );

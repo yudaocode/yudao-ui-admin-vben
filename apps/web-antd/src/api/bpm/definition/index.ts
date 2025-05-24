@@ -37,11 +37,12 @@ export async function getProcessDefinitionPage(params: PageParam) {
 
 /** 查询流程定义列表 */
 export async function getProcessDefinitionList(params: any) {
-  return requestClient.get<
-    PageResult<BpmProcessDefinitionApi.ProcessDefinitionVO>
-  >('/bpm/process-definition/list', {
-    params,
-  });
+  return requestClient.get<BpmProcessDefinitionApi.ProcessDefinitionVO[]>(
+    '/bpm/process-definition/list',
+    {
+      params,
+    },
+  );
 }
 
 /** 查询流程定义列表（简单列表） */
