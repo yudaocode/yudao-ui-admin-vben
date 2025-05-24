@@ -109,9 +109,7 @@ export async function getProcessInstanceManagerPage(params: PageParam) {
 }
 
 /** 新增流程实例 */
-export async function createProcessInstance(
-  data: BpmProcessInstanceApi.ProcessInstanceVO,
-) {
+export async function createProcessInstance(data: any) {
   return requestClient.post<BpmProcessInstanceApi.ProcessInstanceVO>(
     '/bpm/process-instance/create',
     data,

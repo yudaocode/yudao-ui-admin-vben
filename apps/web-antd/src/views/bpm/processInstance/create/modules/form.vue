@@ -20,13 +20,14 @@ import {
   BpmCandidateStrategyEnum,
   BpmFieldPermissionType,
   BpmModelFormType,
+  BpmModelType,
   BpmNodeIdEnum,
   BpmNodeTypeEnum,
   decodeFields,
   setConfAndFields2,
 } from '#/utils';
+import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
-
 // 类型定义
 interface ProcessFormData {
   rule: any[];
@@ -80,8 +81,8 @@ const detailForm = ref<ProcessFormData>({
 
 const fApi = ref<ApiAttrs>();
 const startUserSelectTasks = ref<UserTask[]>([]);
-const startUserSelectAssignees = ref<Record<number, string[]>>({});
-const tempStartUserSelectAssignees = ref<Record<number, string[]>>({});
+const startUserSelectAssignees = ref<Record<string, string[]>>({});
+const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
 const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);
 const timelineRef = ref<any>();
@@ -273,9 +274,7 @@ const handleCancel = () => {
 /** 选择发起人 */
 const selectUserConfirm = (activityId: string, userList: any[]) => {
   if (!activityId || !Array.isArray(userList)) return;
-  startUserSelectAssignees.value[Number(activityId)] = userList.map(
-    (item) => item.id,
-  );
+  startUserSelectAssignees.value[activityId] = userList.map((item) => item.id);
 };
 
 defineExpose({ initProcessInfo });
@@ -284,12 +283,11 @@ defineExpose({ initProcessInfo });
 <template>
   <Card
     :title="getTitle"
+    class="h-full overflow-hidden"
     :body-style="{
-      padding: '12px',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingBottom: '62px', // 预留 actions 区域高度
+      height: 'calc(100% - 112px)',
+      paddingTop: '12px',
+      overflowY: 'auto',
     }"
   >
     <template #extra>
@@ -334,18 +332,25 @@ defineExpose({ initProcessInfo });
       </Tabs.TabPane>
 
       <Tabs.TabPane tab="流程图" key="flow" class="flex flex-1 overflow-hidden">
-        <div>待开发</div>
+        <div class="w-full">
+          <ProcessInstanceSimpleViewer
+            :simple-json="simpleJson"
+            v-if="selectProcessDefinition.modelType === BpmModelType.SIMPLE"
+          />
+        </div>
       </Tabs.TabPane>
     </Tabs>
 
     <template #actions>
       <template v-if="activeTab === 'form'">
-        <Space wrap class="flex h-[50px] w-full justify-center">
+        <Space wrap class="flex w-full justify-center">
           <Button plain type="primary" @click="submitForm">
-            <IconifyIcon icon="mdi:check" />&nbsp; 发起
+            <IconifyIcon icon="icon-park-outline:check" />
+            发起
           </Button>
           <Button plain type="default" @click="handleCancel">
-            <IconifyIcon icon="mdi:close" />&nbsp; 取消
+            <IconifyIcon icon="icon-park-outline:close" />
+            取消
           </Button>
         </Space>
       </template>
