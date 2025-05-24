@@ -90,28 +90,6 @@ function onRefresh() {
       />
       <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
     </template>
-    <Grid table-title="待办任务">
-      <!-- 摘要 -->
-      <!-- TODO siye：这个要不要，也放到 data.ts 处理掉？ -->
-      <template #slot-summary="{ row }">
-        <div
-          class="flex flex-col py-2"
-          v-if="
-            row.processInstance.summary &&
-            row.processInstance.summary.length > 0
-          "
-        >
-          <div
-            v-for="(item, index) in row.processInstance.summary"
-            :key="index"
-          >
-            <span class="text-gray-500">
-              {{ item.key }} : {{ item.value }}
-            </span>
-          </div>
-        </div>
-        <div v-else>-</div>
-      </template>
-    </Grid>
+    <Grid table-title="待办任务" />
   </Page>
 </template>

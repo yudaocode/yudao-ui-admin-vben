@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
+import { h } from 'vue';
+
 import { useAccess } from '@vben/access';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
@@ -82,7 +84,28 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       title: '摘要',
       minWidth: 200,
       slots: {
-        default: 'slot-summary',
+        default: ({ row }) => {
+          const summary = row?.processInstance?.summary;
+
+          if (!summary || summary.length === 0) {
+            return '-';
+          }
+          return summary.map((item: any) => {
+            return h(
+              'div',
+              {
+                key: item.key,
+              },
+              h(
+                'span',
+                {
+                  class: 'text-gray-500',
+                },
+                `${item.key} : ${item.value}`,
+              ),
+            );
+          });
+        },
       },
     },
     {
