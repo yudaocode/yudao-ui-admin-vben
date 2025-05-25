@@ -162,7 +162,7 @@ const handleCategorySortSubmit = async () => {
 
 <template>
   <Page auto-content-height>
-    <!-- TODO @jaosn：没头像的图标，展示文字头像哈 -->
+    <!-- TODO @jaosn：没头像的图标，展示文字头像哈 @芋艿 好像已经展示了文字头像。是模型列表中吗? -->
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
     <Card
