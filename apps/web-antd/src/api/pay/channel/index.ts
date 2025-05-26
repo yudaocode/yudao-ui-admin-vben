@@ -27,7 +27,7 @@ export function getChannelPage(params: PageParam) {
 }
 
 /** 查询支付渠道详情 */
-export function getChannel(appId: string, code: string) {
+export function getChannel(appId: number, code: string) {
   return requestClient.get<PayChannelApi.Channel>('/pay/channel/get', {
     params: { appId, code },
   });
