@@ -1,90 +1,83 @@
 <script lang="ts" setup>
+import type { PayAppApi } from '#/api/pay/app';
+
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import { cloneDeep } from '@vben/utils';
+
+import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import * as PayApi from '#/api/pay/app';
+import { createApp, getApp, updateApp } from '#/api/pay/app';
 
-import { modalSchema } from '../data';
+import { useFormSchema } from '../data';
 
-const emit = defineEmits<{ reload: [] }>();
-
-const isUpdate = ref(false);
+const emit = defineEmits(['success']);
+const formData = ref<PayAppApi.App>();
 const title = computed(() => {
-  return isUpdate.value
+  return formData.value?.id
     ? $t('ui.actionTitle.edit', '应用')
     : $t('ui.actionTitle.create', '应用');
 });
 
-const [BasicForm, formApi] = useVbenForm({
+const [Form, formApi] = useVbenForm({
   commonConfig: {
-    // 默认占满两列
-    formItemClass: 'col-span-2',
-    // 默认label宽度 px
-    labelWidth: 160,
-    // 通用配置项 会影响到所有表单项
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 160,
   },
-  schema: modalSchema(),
+  layout: 'horizontal',
+  schema: useFormSchema(),
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-2',
 });
 
-const [BasicModal, modalApi] = useVbenModal({
-  fullscreenButton: false,
-  onCancel: handleCancel,
-  onConfirm: handleConfirm,
-  onOpenChange: async (isOpen) => {
-    if (!isOpen) {
-      return null;
-    }
-    modalApi.modalLoading(true);
-
-    const { id } = modalApi.getData() as {
-      id?: number;
-    };
-    isUpdate.value = !!id;
-
-    if (isUpdate.value && id) {
-      const record = await PayApi.getApp(id);
-      await formApi.setValues(record);
-    }
-
-    modalApi.modalLoading(false);
-  },
-});
-
-async function handleConfirm() {
-  try {
-    modalApi.modalLoading(true);
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
     }
-    // getValues获取为一个readonly的对象 需要修改必须先深拷贝一次
-    const data = cloneDeep(await formApi.getValues()) as PayApi.PayAppApi.App;
-    await (isUpdate.value ? PayApi.updateApp(data) : PayApi.createApp(data));
-    emit('reload');
-    await handleCancel();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    modalApi.modalLoading(false);
-  }
-}
-
-async function handleCancel() {
-  modalApi.close();
-  await formApi.resetForm();
-}
+    modalApi.lock();
+    // 提交表单
+    const data = (await formApi.getValues()) as PayAppApi.App;
+    try {
+      await (formData.value?.id ? updateApp(data) : createApp(data));
+      // 关闭并提示
+      await modalApi.close();
+      emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  onOpenChange: async (isOpen) => {
+    if (!isOpen) {
+      formData.value = undefined;
+      return;
+    }
+    // 加载数据
+    const { id } = modalApi.getData() as {
+      id?: number;
+    };
+    if (!id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getApp(id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
+  },
+});
 </script>
 <template>
-  <BasicModal :close-on-click-modal="false" :title="title" class="w-[40%]">
-    <BasicForm />
-  </BasicModal>
+  <Modal :close-on-click-modal="false" :title="title" class="w-[40%]">
+    <Form />
+  </Modal>
 </template>
