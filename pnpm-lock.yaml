@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@ant-design/icons-vue':
+      specifier: ^7.0.1
+      version: 7.0.1
     '@changesets/changelog-github':
       specifier: ^0.5.1
       version: 0.5.1
@@ -683,6 +686,9 @@ importers:
 
   apps/web-antd:
     dependencies:
+      '@ant-design/icons-vue':
+        specifier: 'catalog:'
+        version: 7.0.1(vue@3.5.13(typescript@5.8.3))
       '@form-create/ant-design-vue':
         specifier: 'catalog:'
         version: 3.2.22(vue@3.5.13(typescript@5.8.3))
