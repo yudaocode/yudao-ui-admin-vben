@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
+import { h } from 'vue';
+
 import { useAccess } from '@vben/access';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
@@ -14,10 +16,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
-      label: '流程名称',
+      label: '任务名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入流程名称',
+        placeholder: '请输入任务名称',
         allowClear: true,
       },
     },
@@ -72,8 +74,8 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'name',
-      title: '流程名称',
+      field: 'processInstance.name',
+      title: '流程',
       minWidth: 200,
       fixed: 'left',
     },
@@ -82,7 +84,28 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       title: '摘要',
       minWidth: 200,
       slots: {
-        default: 'slot-summary',
+        default: ({ row }) => {
+          const summary = row?.processInstance?.summary;
+
+          if (!summary || summary.length === 0) {
+            return '-';
+          }
+          return summary.map((item: any) => {
+            return h(
+              'div',
+              {
+                key: item.key,
+              },
+              h(
+                'span',
+                {
+                  class: 'text-gray-500',
+                },
+                `${item.key} : ${item.value}`,
+              ),
+            );
+          });
+        },
       },
     },
     {

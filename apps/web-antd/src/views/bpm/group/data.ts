@@ -101,6 +101,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
   onActionClick: OnActionClickFn<T>,
+  getMemberNames: (userIds: number[]) => string,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -122,8 +123,8 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
       field: 'userIds',
       title: '成员',
       minWidth: 200,
-      slots: {
-        default: 'userIds-cell',
+      formatter: (row) => {
+        return getMemberNames(row.cellValue);
       },
     },
     {

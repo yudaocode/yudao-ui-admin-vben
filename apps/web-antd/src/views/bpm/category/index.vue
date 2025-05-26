@@ -6,11 +6,13 @@ import type {
 import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryPage } from '#/api/bpm/category';
+import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -100,6 +102,10 @@ async function onDelete(row: BpmCategoryApi.CategoryVO) {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
+    </template>
+
     <FormModal @success="onRefresh" />
     <Grid table-title="流程分类">
       <template #toolbar-tools>

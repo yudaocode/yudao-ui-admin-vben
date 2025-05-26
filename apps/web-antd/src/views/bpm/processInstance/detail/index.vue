@@ -2,21 +2,12 @@
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  message,
-  Row,
-  TabPane,
-  Tabs,
-} from 'ant-design-vue';
+import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'ant-design-vue';
 
 import {
   getApprovalDetail as getApprovalDetailApi,
@@ -39,6 +30,10 @@ import {
   SvgBpmRunningIcon,
 } from '#/views/bpm/processInstance/detail/modules/icons';
 
+import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
+import ProcessInstanceOperationButton from './modules/operation-button.vue';
+import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
+import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';
 
 defineOptions({ name: 'BpmProcessInstanceDetail' });
@@ -71,7 +66,7 @@ const processInstanceLoading = ref(false); // 流程实例的加载中
 const processInstance = ref<BpmProcessInstanceApi.ProcessInstanceVO>(); // 流程实例
 const processDefinition = ref<any>({}); // 流程定义
 const processModelView = ref<any>({}); // 流程模型视图
-// const operationButtonRef = ref(); // 操作按钮组件 ref
+const operationButtonRef = ref(); // 操作按钮组件 ref
 const auditIconsMap: {
   [key: string]:
     | typeof SvgBpmApproveIcon
@@ -99,7 +94,7 @@ const detailForm = ref({
 const writableFields: Array<string> = []; // 表单可以编辑的字段
 
 /** 加载流程实例 */
-const BusinessFormComponent = ref<any>(null); // 异步组件
+const BusinessFormComponent = shallowRef<any>(null); // 异步组件
 
 /** 获取详情 */
 async function getDetail() {
@@ -161,6 +156,7 @@ async function getApprovalDetail() {
       });
     } else {
       // 注意：data.processDefinition.formCustomViewPath 是组件的全路径，例如说：/crm/contract/detail/index.vue
+
       BusinessFormComponent.value = registerComponent(
         data?.processDefinition?.formCustomViewPath || '',
       );
@@ -168,6 +164,9 @@ async function getApprovalDetail() {
 
     // 获取审批节点，显示 Timeline 的数据
     activityNodes.value = data.activityNodes;
+
+    // 获取待办任务显示操作按钮
+    operationButtonRef.value?.loadTodoTask(data.todoTask);
   } catch {
     message.error('获取审批详情失败！');
   } finally {
@@ -221,6 +220,20 @@ const setFieldPermission = (field: string, permission: string) => {
 
 /** 当前的Tab */
 const activeTab = ref('form');
+const taskListRef = ref();
+
+// 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表
+watch(
+  () => activeTab.value,
+  (newVal) => {
+    if (newVal === 'record') {
+      // 如果切换到流转记录标签，刷新任务列表
+      nextTick(() => {
+        taskListRef.value?.refresh();
+      });
+    }
+  },
+);
 
 /** 初始化 */
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
@@ -234,9 +247,7 @@ onMounted(async () => {
 <template>
   <Page auto-content-height>
     <Card
-      class="h-full"
       :body-style="{
-        height: 'calc(100% - 140px)',
         overflowY: 'auto',
         paddingTop: '12px',
       }"
@@ -291,18 +302,25 @@ onMounted(async () => {
         </div>
 
         <!-- 流程操作 -->
-        <div class="flex-1">
-          <Tabs v-model:active-key="activeTab" class="mt-0">
-            <TabPane tab="审批详情" key="form">
-              <Row :gutter="[48, 24]">
-                <Col :xs="24" :sm="24" :md="18" :lg="18" :xl="16">
+        <div class="process-tabs-container flex flex-1 flex-col">
+          <Tabs v-model:active-key="activeTab" class="mt-0 h-full">
+            <TabPane tab="审批详情" key="form" class="tab-pane-content">
+              <Row :gutter="[48, 24]" class="h-full">
+                <Col
+                  :xs="24"
+                  :sm="24"
+                  :md="18"
+                  :lg="18"
+                  :xl="16"
+                  class="h-full"
+                >
                   <!-- 流程表单 -->
                   <div
                     v-if="
                       processDefinition?.formType === BpmModelFormType.NORMAL
                     "
+                    class="h-full"
                   >
-                    <!-- v-model="detailForm.value" -->
                     <form-create
                       v-model="detailForm.value"
                       v-model:api="fApi"
@@ -315,40 +333,110 @@ onMounted(async () => {
                     v-if="
                       processDefinition?.formType === BpmModelFormType.CUSTOM
                     "
+                    class="h-full"
                   >
                     <BusinessFormComponent :id="processInstance?.businessKey" />
                   </div>
                 </Col>
-                <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8">
-                  <div class="mt-2">
+                <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8" class="h-full">
+                  <div class="mt-4 h-full">
                     <ProcessInstanceTimeline :activity-nodes="activityNodes" />
                   </div>
                 </Col>
               </Row>
             </TabPane>
 
-            <TabPane tab="流程图" key="diagram">
-              <div>待开发</div>
+            <TabPane tab="流程图" key="diagram" class="tab-pane-content">
+              <div class="h-full">
+                <ProcessInstanceSimpleViewer
+                  v-show="
+                    processDefinition.modelType &&
+                    processDefinition.modelType === BpmModelType.SIMPLE
+                  "
+                  :loading="processInstanceLoading"
+                  :model-view="processModelView"
+                />
+                <ProcessInstanceBpmnViewer
+                  v-show="
+                    processDefinition.modelType &&
+                    processDefinition.modelType === BpmModelType.BPMN
+                  "
+                  :loading="processInstanceLoading"
+                  :model-view="processModelView"
+                />
+              </div>
             </TabPane>
 
-            <TabPane tab="流转记录" key="record">
-              <div>待开发</div>
+            <TabPane tab="流转记录" key="record" class="tab-pane-content">
+              <div class="h-full">
+                <BpmProcessInstanceTaskList
+                  ref="taskListRef"
+                  :loading="processInstanceLoading"
+                  :id="id"
+                />
+              </div>
             </TabPane>
 
             <!-- TODO 待开发 -->
-            <TabPane tab="流转评论" key="comment" v-if="false">
-              <div>待开发</div>
+            <TabPane
+              tab="流转评论"
+              key="comment"
+              v-if="false"
+              class="tab-pane-content"
+            >
+              <div class="h-full">待开发</div>
             </TabPane>
           </Tabs>
         </div>
       </div>
 
       <template #actions>
-        <div class="flex justify-start gap-x-2 p-4">
-          <Button type="primary">驳回</Button>
-          <Button type="primary">同意</Button>
+        <div class="px-4">
+          <ProcessInstanceOperationButton
+            ref="operationButtonRef"
+            :process-instance="processInstance"
+            :process-definition="processDefinition"
+            :user-options="userOptions"
+            :normal-form="detailForm"
+            :normal-form-api="fApi"
+            :writable-fields="writableFields"
+            @success="getDetail"
+          />
         </div>
       </template>
     </Card>
   </Page>
 </template>
+
+<style lang="scss" scoped>
+.ant-tabs-content {
+  height: 100%;
+}
+
+.process-tabs-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:deep(.ant-tabs) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:deep(.ant-tabs-content) {
+  flex: 1;
+  overflow-y: auto;
+}
+
+:deep(.ant-tabs-tabpane) {
+  height: 100%;
+}
+
+.tab-pane-content {
+  height: calc(100vh - 420px);
+  padding-right: 12px;
+  overflow: hidden auto;
+}
+</style>

@@ -14,6 +14,7 @@ export namespace BpmModelApi {
   /** 流程定义 VO */
   export interface ProcessDefinitionVO {
     id: string;
+    key?: string;
     version: number;
     deploymentTime: number;
     suspensionState: number;

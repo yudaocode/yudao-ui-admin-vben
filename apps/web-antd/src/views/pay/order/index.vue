@@ -1,110 +1,93 @@
 <script lang="ts" setup>
-import type { VbenFormProps } from '@vben/common-ui';
-
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayOrderApi } from '#/api/pay/order';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Tag } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as OrderApi from '#/api/pay/order';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getOrderPage } from '#/api/pay/order';
 import { DocAlert } from '#/components/doc-alert';
 
-import { columns, querySchema } from './data';
-import detailFrom from './modules/order-detail.vue';
+import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
-const formOptions: VbenFormProps = {
-  commonConfig: {
-    labelWidth: 100,
-    componentProps: {
-      allowClear: true,
-    },
-  },
-  schema: querySchema(),
-  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
-  // 处理区间选择器RangePicker时间格式 将一个字段映射为两个字段 搜索/导出会用到
-  // 不需要直接删除
-  // fieldMappingTime: [
-  //  [
-  //    'createTime',
-  //    ['params[beginTime]', 'params[endTime]'],
-  //    ['YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59'],
-  //  ],
-  // ],
-};
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
 
-const gridOptions: VxeGridProps = {
-  checkboxConfig: {
-    // 高亮
-    highlight: true,
-    // 翻页时保留选中状态
-    reserve: true,
-    // 点击行选中
-    // trigger: 'row',
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 查看详情 */
+function handleDetail(row: PayOrderApi.Order) {
+  detailModalApi.setData(row).open();
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
   },
-  columns,
-  height: 'auto',
-  keepSource: true,
-  pagerConfig: {},
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }, formValues = {}) => {
-        return await OrderApi.getOrderPage({
-          pageNum: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getOrderPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
       },
     },
-  },
-  rowConfig: {
-    keyField: 'id',
-  },
-  // 表格全局唯一表示 保存列配置需要用到
-  id: 'pay-order-index',
-};
-
-const [BasicTable] = useVbenVxeGrid({
-  formOptions,
-  gridOptions,
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<PayOrderApi.Order>,
 });
-
-const [DetailModal, modalDetailApi] = useVbenModal({
-  connectedComponent: detailFrom,
-});
-
-const openDetail = (id: number) => {
-  modalDetailApi.setData({
-    id,
-  });
-  modalDetailApi.open();
-};
 </script>
 
 <template>
   <Page :auto-content-height="true">
-    <DocAlert
-      title="支付宝支付接入"
-      url="https://doc.iocoder.cn/pay/alipay-pay-demo/"
-    />
-    <DocAlert
-      title="微信公众号支付接入"
-      url="https://doc.iocoder.cn/pay/wx-pub-pay-demo/"
-    />
-    <DocAlert
-      title="微信小程序支付接入"
-      url="https://doc.iocoder.cn/pay/wx-lite-pay-demo/"
-    />
-    <BasicTable>
-      <template #action="{ row }">
-        <a-button
-          type="link"
-          v-access:code="['pay:order:query']"
-          @click="openDetail(row.id)"
-        >
-          {{ $t('ui.actionTitle.detail') }}
-        </a-button>
+    <template #doc>
+      <DocAlert
+        title="支付宝支付接入"
+        url="https://doc.iocoder.cn/pay/alipay-pay-demo/"
+      />
+      <DocAlert
+        title="微信公众号支付接入"
+        url="https://doc.iocoder.cn/pay/wx-pub-pay-demo/"
+      />
+      <DocAlert
+        title="微信小程序支付接入"
+        url="https://doc.iocoder.cn/pay/wx-lite-pay-demo/"
+      />
+    </template>
+    <DetailModal @success="onRefresh" />
+    <Grid table-title="支付订单列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['pay:order:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
       </template>
       <template #no="{ row }">
         <p class="order-font">
@@ -118,7 +101,6 @@ const openDetail = (id: number) => {
           {{ row.channelOrderNo }}
         </p>
       </template>
-    </BasicTable>
-    <DetailModal />
+    </Grid>
   </Page>
 </template>

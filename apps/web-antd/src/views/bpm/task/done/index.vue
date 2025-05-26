@@ -78,18 +78,19 @@ function onRefresh() {
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="审批通过、不通过、驳回"
-      url="https://doc.iocoder.cn/bpm/task-todo-done/"
-    />
-    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
-    <DocAlert
-      title="审批转办、委派、抄送"
-      url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
-    />
-    <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+    <template #doc>
+      <DocAlert
+        title="审批通过、不通过、驳回"
+        url="https://doc.iocoder.cn/bpm/task-todo-done/"
+      />
+      <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+      <DocAlert
+        title="审批转办、委派、抄送"
+        url="https://doc.iocoder.cn/bpm/task-delegation-and-cc/"
+      />
+      <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
+    </template>
 
-    <FormModal @success="onRefresh" />
     <Grid table-title="已办任务">
       <!-- 摘要 -->
       <template #slot-summary="{ row }">

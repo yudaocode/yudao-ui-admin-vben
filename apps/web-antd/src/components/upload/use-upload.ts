@@ -80,17 +80,17 @@ export function useUploadType({
 }
 
 // TODO @芋艿：目前保持和 admin-vue3 一致，后续可能重构
-export const useUpload = (directory?: string) => {
+export function useUpload(directory?: string) {
   // 后端上传地址
   const uploadUrl = getUploadUrl();
   // 是否使用前端直连上传
   const isClientUpload =
     UPLOAD_TYPE.CLIENT === import.meta.env.VITE_UPLOAD_TYPE;
   // 重写ElUpload上传方法
-  const httpRequest = async (
+  async function httpRequest(
     file: File,
     onUploadProgress?: AxiosProgressEvent,
-  ) => {
+  ) {
     // 模式一：前端上传
     if (isClientUpload) {
       // 1.1 生成文件名称
@@ -114,20 +114,20 @@ export const useUpload = (directory?: string) => {
       // 模式二：后端上传
       return uploadFile({ file, directory }, onUploadProgress);
     }
-  };
+  }
 
   return {
     uploadUrl,
     httpRequest,
   };
-};
+}
 
 /**
  * 获得上传 URL
  */
-export const getUploadUrl = (): string => {
+export function getUploadUrl(): string {
   return `${apiURL}/infra/file/upload`;
-};
+}
 
 /**
  * 创建文件信息
@@ -135,7 +135,10 @@ export const getUploadUrl = (): string => {
  * @param vo 文件预签名信息
  * @param file 文件
  */
-function createFile0(vo: InfraFileApi.FilePresignedUrlRespVO, file: File) {
+function createFile0(
+  vo: InfraFileApi.FilePresignedUrlRespVO,
+  file: File,
+): InfraFileApi.File {
   const fileVO = {
     configId: vo.configId,
     url: vo.url,

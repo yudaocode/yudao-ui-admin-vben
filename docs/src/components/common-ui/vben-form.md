@@ -557,16 +557,4 @@ import { z } from '#/adapter/form';
 
 除了以上内置插槽之外，`schema`属性中每个字段的`fieldName`都可以作为插槽名称，这些字段插槽的优先级高于`component`定义的组件。也就是说，当提供了与`fieldName`同名的插槽时，这些插槽的内容将会作为这些字段的组件，此时`component`的值将会被忽略。
 
-如果需要使用自定义的插槽名而不是使用`fieldName`，可以在schema中添加`slotName`属性。当提供了`slotName`属性时，将优先使用`slotName`作为插槽名。
-
-```ts
-// 使用自定义插槽名的例子
-{
-  component: 'Textarea',
-  fieldName: 'config.appCertContent',
-  slotName: 'appCertSlot',
-  label: '商户公钥应用证书',
-}
-```
-
 :::

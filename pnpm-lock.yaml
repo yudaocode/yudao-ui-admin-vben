@@ -102,6 +102,9 @@ catalogs:
     '@types/html-minifier-terser':
       specifier: ^7.0.2
       version: 7.0.2
+    '@types/json-bigint':
+      specifier: ^1.0.4
+      version: 1.0.4
     '@types/jsonwebtoken':
       specifier: ^9.0.9
       version: 9.0.9
@@ -318,6 +321,9 @@ catalogs:
     is-ci:
       specifier: ^4.1.0
       version: 4.1.0
+    json-bigint:
+      specifier: ^1.0.0
+      version: 1.0.0
     jsonc-eslint-parser:
       specifier: ^2.4.0
       version: 2.4.0
@@ -531,6 +537,9 @@ catalogs:
     vue-tsc:
       specifier: 2.2.10
       version: 2.2.10
+    vue3-signature:
+      specifier: ^0.2.4
+      version: 0.2.4
     vxe-pc-ui:
       specifier: ^4.5.35
       version: 4.6.8
@@ -764,6 +773,9 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
+      vue3-signature:
+        specifier: 'catalog:'
+        version: 0.2.4(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@types/crypto-js':
         specifier: 'catalog:'
@@ -1984,6 +1996,9 @@ importers:
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
+      json-bigint:
+        specifier: 'catalog:'
+        version: 1.0.0
       pinia:
         specifier: ^3.0.2
         version: 3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
@@ -1993,6 +2008,10 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
+    devDependencies:
+      '@types/json-bigint':
+        specifier: 'catalog:'
+        version: 1.0.4
 
   scripts/turbo-run:
     dependencies:
@@ -4536,6 +4555,9 @@ packages:
   '@types/html-minifier-terser@7.0.2':
     resolution: {integrity: sha512-mm2HqV22l8lFQh4r2oSsOEVea+m0qqxEmwpc9kC1p/XzmjLWrReR9D/GRs8Pex2NX/imyEH9c5IU/7tMBQCHOA==}
 
+  '@types/json-bigint@1.0.4':
+    resolution: {integrity: sha512-ydHooXLbOmxBbubnA7Eh+RpBzuaIiQjh8WGJYQB50JFGFrdxW7JzVlyEV7fAXw0T2sqJ1ysTneJbiyNLqZRAag==}
+
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -5429,6 +5451,9 @@ packages:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
 
+  bignumber.js@9.3.0:
+    resolution: {integrity: sha512-EM7aMFTXbptt/wZdMlBv2t8IViwQL+h6SLHosp8Yf0dqJMTnY6iL32opnAB6kAdL0SZPuvcAzFr31o0c/R3/RA==}
+
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
@@ -6225,6 +6250,9 @@ packages:
   default-browser@5.2.1:
     resolution: {integrity: sha512-WY/3TUME0x3KPYdRRxEJJvXRHV4PyPoUsxtZa78lwItwRQRHhd2U9xOscaT/YTf8uCXIAjeJOFBVEh/7FtD8Xg==}
     engines: {node: '>=18'}
+
+  default-passive-events@2.0.0:
+    resolution: {integrity: sha512-eMtt76GpDVngZQ3ocgvRcNCklUMwID1PaNbCNxfpDXuiOXttSh0HzBbda1HU9SIUsDc02vb7g9+3I5tlqe/qMQ==}
 
   define-data-property@1.1.4:
     resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
@@ -7848,6 +7876,9 @@ packages:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
     hasBin: true
+
+  json-bigint@1.0.0:
+    resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -10024,6 +10055,9 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  signature_pad@3.0.0-beta.4:
+    resolution: {integrity: sha512-cOf2NhVuTiuNqe2X/ycEmizvCDXk0DoemhsEpnkcGnA4kS5iJYTCqZ9As7tFBbsch45Q1EdX61833+6sjJ8rrw==}
+
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
@@ -11166,6 +11200,11 @@ packages:
   vue-types@3.0.2:
     resolution: {integrity: sha512-IwUC0Aq2zwaXqy74h4WCvFCUtoV0iSWr0snWnE9TnU18S66GAQyqQbRf2qfJtUuiFsBf6qp0MEwdonlwznlcrw==}
     engines: {node: '>=10.15.0'}
+    peerDependencies:
+      vue: ^3.5.13
+
+  vue3-signature@0.2.4:
+    resolution: {integrity: sha512-XFwwFVK9OG3F085pKIq2SlNVqx32WdFH+TXbGEWc5FfEKpx8oMmZuAwZZ50K/pH2FgmJSE8IRwU9DDhrLpd6iA==}
     peerDependencies:
       vue: ^3.5.13
 
@@ -14434,6 +14473,8 @@ snapshots:
 
   '@types/html-minifier-terser@7.0.2': {}
 
+  '@types/json-bigint@1.0.4': {}
+
   '@types/json-schema@7.0.15': {}
 
   '@types/jsonwebtoken@9.0.9':
@@ -15489,6 +15530,8 @@ snapshots:
     dependencies:
       is-windows: 1.0.2
 
+  bignumber.js@9.3.0: {}
+
   binary-extensions@2.3.0: {}
 
   bindings@1.5.0:
@@ -16356,6 +16399,8 @@ snapshots:
     dependencies:
       bundle-name: 4.1.0
       default-browser-id: 5.0.0
+
+  default-passive-events@2.0.0: {}
 
   define-data-property@1.1.4:
     dependencies:
@@ -18183,6 +18228,10 @@ snapshots:
   jsesc@3.0.2: {}
 
   jsesc@3.1.0: {}
+
+  json-bigint@1.0.0:
+    dependencies:
+      bignumber.js: 9.3.0
 
   json-buffer@3.0.1: {}
 
@@ -20476,6 +20525,8 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+  signature_pad@3.0.0-beta.4: {}
+
   simple-swizzle@0.2.2:
     dependencies:
       is-arrayish: 0.3.2
@@ -21805,6 +21856,12 @@ snapshots:
   vue-types@3.0.2(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       is-plain-object: 3.0.1
+      vue: 3.5.13(typescript@5.8.3)
+
+  vue3-signature@0.2.4(vue@3.5.13(typescript@5.8.3)):
+    dependencies:
+      default-passive-events: 2.0.0
+      signature_pad: 3.0.0-beta.4
       vue: 3.5.13(typescript@5.8.3)
 
   vue@3.5.13(typescript@5.8.3):

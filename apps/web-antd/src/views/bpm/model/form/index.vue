@@ -26,29 +26,13 @@ import {
 } from '#/api/bpm/model';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
+import { BpmAutoApproveType, BpmModelFormType, BpmModelType } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import FormDesign from './modules/form-design.vue';
+import ProcessDesign from './modules/process-design.vue';
 
 defineOptions({ name: 'BpmModelCreate' });
-
-// TODO 这个常量是不是所有 apps 都可以使用， 放 @utils/constant.ts 不能共享， @芋艿 这些常量放哪里合适！
-// TODO @jason：/Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/utils/constants.ts；先不多个 apps 共享哈；
-const BpmModelType = {
-  BPMN: 10, // BPMN 设计器
-  SIMPLE: 20, // 简易设计器
-};
-
-const BpmModelFormType = {
-  NORMAL: 10, // 流程表单
-  CUSTOM: 20, // 业务表单
-};
-
-const BpmAutoApproveType = {
-  NONE: 0, // 不自动通过
-  APPROVE_ALL: 1, // 仅审批一次，后续重复的审批节点均自动通过
-  APPROVE_SEQUENT: 2, // 仅针对连续审批的节点自动通过
-};
 
 // 流程定义类型
 type BpmProcessDefinitionType = Omit<
@@ -69,6 +53,8 @@ const userStore = useUserStore();
 const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
 // 表单设计组件引用
 const formDesignRef = ref<InstanceType<typeof FormDesign>>();
+// 流程设计组件引用
+const processDesignRef = ref<InstanceType<typeof ProcessDesign>>();
 
 /** 步骤校验函数 */
 const validateBasic = async () => {
@@ -82,7 +68,7 @@ const validateForm = async () => {
 
 /** 流程设计校验 */
 const validateProcess = async () => {
-  // TODO
+  await processDesignRef.value?.validate();
 };
 
 const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
@@ -102,7 +88,7 @@ const formData: any = ref({
   category: undefined,
   icon: undefined,
   description: '',
-  type: BpmModelType.BPMN,
+  type: BpmModelType.SIMPLE,
   formType: BpmModelFormType.NORMAL,
   formId: '',
   formCustomCreatePath: '',
@@ -190,7 +176,7 @@ const initData = async () => {
   } else {
     // 情况三：新增场景
     formData.value.startUserType = 0; // 全体
-    formData.value.managerUserIds.push(userStore.userInfo?.userId);
+    formData.value.managerUserIds.push(userStore.userInfo?.id);
   }
 
   // 获取表单列表
@@ -352,6 +338,7 @@ const handleDeploy = async () => {
 /** 步骤切换处理 */
 const handleStepClick = async (index: number) => {
   try {
+    console.warn('handleStepClick', index);
     if (index !== 0) {
       await validateBasic();
     }
@@ -401,7 +388,7 @@ onBeforeUnmount(() => {
   // 清理所有的引用
   basicInfoRef.value = undefined;
   formDesignRef.value = undefined;
-  // processDesignRef.value = null;
+  processDesignRef.value = undefined;
 });
 </script>
 
@@ -486,7 +473,7 @@ onBeforeUnmount(() => {
             />
           </div>
           <!-- 第二步：表单设计  -->
-          <div v-show="currentStep === 1" class="mx-auto w-4/6">
+          <div v-if="currentStep === 1" class="mx-auto w-4/6">
             <FormDesign
               v-model="formData"
               :form-list="formList"
@@ -494,10 +481,15 @@ onBeforeUnmount(() => {
             />
           </div>
 
-          <!-- 第三步：流程设计 TODO -->
+          <!-- 第三步：流程设计 -->
+          <ProcessDesign
+            v-if="currentStep === 2"
+            v-model="formData"
+            ref="processDesignRef"
+          />
 
           <!-- 第四步：更多设置 TODO -->
-          <div v-show="currentStep === 3" class="mx-auto w-4/6"></div>
+          <div v-if="currentStep === 3" class="mx-auto w-4/6"></div>
         </div>
       </Card>
     </div>

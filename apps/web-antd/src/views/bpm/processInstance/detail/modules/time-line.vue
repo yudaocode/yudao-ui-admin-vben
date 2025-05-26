@@ -43,7 +43,7 @@ const statusIconMap: Record<
   // 审批未开始
   '-1': { color: '#909398', icon: 'mdi:clock-outline' },
   // 待审批
-  '0': { color: '#00b32a', icon: 'mdi:loading' },
+  '0': { color: '#ff943e', icon: 'mdi:loading', animation: 'animate-spin' },
   // 审批中
   '1': { color: '#448ef7', icon: 'mdi:loading', animation: 'animate-spin' },
   // 审批通过

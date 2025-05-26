@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { BpmCategoryApi } from '#/api/bpm/category';
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 
 import { computed, nextTick, onMounted, ref } from 'vue';
@@ -33,7 +34,9 @@ const processInstanceId: any = route.query.processInstanceId; // 流程实例编
 const loading = ref(true); // 加载中
 const categoryList: any = ref([]); // 分类的列表
 const activeCategory = ref(''); // 当前选中的分类
-const processDefinitionList = ref([]); // 流程定义的列表
+const processDefinitionList = ref<
+  BpmProcessDefinitionApi.ProcessDefinitionVO[]
+>([]); // 流程定义的列表
 
 // 实现 groupBy 功能
 const groupBy = (array: any[], key: string) => {
@@ -107,8 +110,12 @@ const handleGetProcessDefinitionList = async () => {
   }
 };
 
+/** 用于存储搜索过滤后的流程定义 */
+const filteredProcessDefinitionList = ref<
+  BpmProcessDefinitionApi.ProcessDefinitionVO[]
+>([]);
+
 /** 搜索流程 */
-const filteredProcessDefinitionList = ref([]); // 用于存储搜索过滤后的流程定义
 const handleQuery = () => {
   if (searchName.value.trim()) {
     // 如果有搜索关键字，进行过滤
@@ -150,10 +157,15 @@ const processDefinitionGroup: any = computed(() => {
 
   const grouped = groupBy(filteredProcessDefinitionList.value, 'category');
   // 按照 categoryList 的顺序重新组织数据
-  const orderedGroup = {};
-  categoryList.value.forEach((category: any) => {
+  const orderedGroup: Record<
+    string,
+    BpmProcessDefinitionApi.ProcessDefinitionVO[]
+  > = {};
+  categoryList.value.forEach((category: BpmCategoryApi.CategoryVO) => {
     if (grouped[category.code]) {
-      orderedGroup[category.code] = grouped[category.code];
+      orderedGroup[category.code] = grouped[
+        category.code
+      ] as BpmProcessDefinitionApi.ProcessDefinitionVO[];
     }
   });
   return orderedGroup;
@@ -191,7 +203,7 @@ const availableCategories = computed(() => {
   const availableCategoryCodes = Object.keys(processDefinitionGroup.value);
 
   // 过滤出有流程的分类
-  return categoryList.value.filter((category: CategoryVO) =>
+  return categoryList.value.filter((category: BpmCategoryApi.CategoryVO) =>
     availableCategoryCodes.includes(category.code),
   );
 });
@@ -229,11 +241,7 @@ onMounted(() => {
               allow-clear
               @input="handleQuery"
               @clear="handleQuery"
-            >
-              <template #prefix>
-                <IconifyIcon icon="mdi:search-web" />
-              </template>
-            </InputSearch>
+            />
           </div>
         </template>
 
@@ -289,15 +297,6 @@ onMounted(() => {
                         </Tooltip>
                       </span>
                     </div>
-
-                    <!-- TODO: 发起流程按钮 -->
-                    <!-- <template #actions>
-                      <div class="flex justify-end px-4">
-                        <Button type="link" @click="handleSelect(definition)">
-                          发起流程
-                        </Button>
-                      </div>
-                    </template> -->
                   </Card>
                 </Col>
               </Row>

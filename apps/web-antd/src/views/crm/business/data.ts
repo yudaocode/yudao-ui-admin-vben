@@ -118,7 +118,7 @@ export function useGridColumns<T = CrmBusinessApi.Business>(
       field: 'totalPrice',
       title: '商机金额（元）',
       minWidth: 140,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'dealTime',

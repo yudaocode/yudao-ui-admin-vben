@@ -1,5 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import type { BpmTaskApi } from '../task';
+
 import type { BpmModelApi } from '#/api/bpm/model';
 import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '#/utils';
 
@@ -40,6 +42,7 @@ export namespace BpmProcessInstanceApi {
     tasks: ApprovalTaskInfo[];
   };
 
+  // 流程实例
   export type ProcessInstanceVO = {
     businessKey: string;
     category: string;
@@ -59,12 +62,33 @@ export namespace BpmProcessInstanceApi {
     tasks?: BpmProcessInstanceApi.Task[];
   };
 
+  // 审批详情
   export type ApprovalDetail = {
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[];
     formFieldsPermission: any;
     processDefinition: BpmModelApi.ProcessDefinitionVO;
     processInstance: BpmProcessInstanceApi.ProcessInstanceVO;
     status: number;
+    todoTask: BpmTaskApi.TaskVO;
+  };
+
+  // 抄送流程实例 VO
+  export type CopyVO = {
+    activityId: string;
+    activityName: string;
+    createTime: number;
+    createUser: User;
+    id: number;
+    processInstanceId: string;
+    processInstanceName: string;
+    processInstanceStartTime: number;
+    reason: string;
+    startUser: User;
+    summary: {
+      key: string;
+      value: string;
+    }[];
+    taskId: string;
   };
 }
 
@@ -85,9 +109,7 @@ export async function getProcessInstanceManagerPage(params: PageParam) {
 }
 
 /** 新增流程实例 */
-export async function createProcessInstance(
-  data: BpmProcessInstanceApi.ProcessInstanceVO,
-) {
+export async function createProcessInstance(data: any) {
   return requestClient.post<BpmProcessInstanceApi.ProcessInstanceVO>(
     '/bpm/process-instance/create',
     data,
@@ -152,7 +174,7 @@ export async function getApprovalDetail(params: any) {
 
 /** 获取下一个执行的流程节点 */
 export async function getNextApprovalNodes(params: any) {
-  return requestClient.get<BpmProcessInstanceApi.ProcessInstanceVO>(
+  return requestClient.get<BpmProcessInstanceApi.ApprovalNodeInfo[]>(
     `/bpm/process-instance/get-next-approval-nodes`,
     { params },
   );

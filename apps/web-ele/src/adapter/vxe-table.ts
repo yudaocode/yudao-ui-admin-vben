@@ -263,7 +263,7 @@ setupVbenVxeTable({
     });
 
     // 添加数量格式化，例如金额
-    vxeUI.formats.add('formatAmount', {
+    vxeUI.formats.add('formatNumber', {
       cellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {
           return '';
