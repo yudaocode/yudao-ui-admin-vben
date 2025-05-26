@@ -33,18 +33,10 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'name',
-      title: '流程名称',
+      field: 'processInstance.name',
+      title: '流程',
       minWidth: 200,
       fixed: 'left',
-    },
-    {
-      field: 'processInstance.summary',
-      title: '摘要',
-      minWidth: 200,
-      slots: {
-        default: 'slot-summary',
-      },
     },
     {
       field: 'processInstance.startUser.nickname',

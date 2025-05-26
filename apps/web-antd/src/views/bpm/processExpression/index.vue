@@ -106,8 +106,12 @@ async function onDelete(row: BpmProcessExpressionApi.ProcessExpressionVO) {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="流程表达式" url="https://doc.iocoder.cn/bpm/expression/" />
-
+    <template #doc>
+      <DocAlert
+        title="流程表达式"
+        url="https://doc.iocoder.cn/bpm/expression/"
+      />
+    </template>
     <FormModal @success="onRefresh" />
     <Grid table-title="流程表达式">
       <template #toolbar-tools>

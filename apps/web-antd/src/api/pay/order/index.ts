@@ -6,8 +6,13 @@ export namespace PayOrderApi {
   /** 支付订单信息 */
   export interface Order {
     id: number;
+    no: string;
+    price: number;
+    channelFeePrice: number;
+    refundPrice: number;
     merchantId: number;
     appId: number;
+    appName: string;
     channelId: number;
     channelCode: string;
     merchantOrderId: string;
@@ -29,7 +34,9 @@ export namespace PayOrderApi {
     refundAmount: number;
     channelUserId: string;
     channelOrderNo: string;
+    channelNotifyData: string;
     createTime: Date;
+    updateTime: Date;
   }
 
   /** 支付订单分页请求 */
