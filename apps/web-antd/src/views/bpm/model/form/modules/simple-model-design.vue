@@ -7,8 +7,8 @@ import { SimpleProcessDesigner } from '#/components/simple-process-design';
 defineOptions({ name: 'SimpleModelDesign' });
 
 defineProps<{
-  modelId?: string;
-  modelKey?: string;
+  modelFormId?: number;
+  modelFormType?: number;
   modelName?: string;
   startDeptIds?: number[];
   startUserIds?: number[];
@@ -27,9 +27,9 @@ const handleSuccess = (data?: any) => {
 <template>
   <ContentWrap :body-style="{ padding: '20px 16px' }">
     <SimpleProcessDesigner
-      :model-id="modelId"
-      :model-key="modelKey"
+      :model-form-id="modelFormId"
       :model-name="modelName"
+      :model-form-type="modelFormType"
       @success="handleSuccess"
       :start-user-ids="startUserIds"
       :start-dept-ids="startDeptIds"
