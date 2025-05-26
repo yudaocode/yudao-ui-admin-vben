@@ -78,17 +78,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '支付金额',
       field: 'price',
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       title: '退款金额',
       field: 'refundPrice',
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       title: '手续金额',
       field: 'channelFeePrice',
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       title: '订单号',

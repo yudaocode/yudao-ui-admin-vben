@@ -307,7 +307,7 @@ export function useContractColumns<T = CrmContractApi.Contract>(
       field: 'price',
       title: '合同金额（元）',
       minWidth: 120,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'orderDate',
@@ -349,13 +349,13 @@ export function useContractColumns<T = CrmContractApi.Contract>(
       field: 'totalReceivablePrice',
       title: '已回款金额（元）',
       minWidth: 140,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'noReceivablePrice',
       title: '未回款金额（元）',
       minWidth: 120,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'contactLastTime',
@@ -670,7 +670,7 @@ export function useReceivableAuditColumns<T = CrmReceivableApi.Receivable>(
       field: 'price',
       title: '回款金额(元)',
       minWidth: 140,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'returnType',
@@ -690,7 +690,7 @@ export function useReceivableAuditColumns<T = CrmReceivableApi.Receivable>(
       field: 'contract.totalPrice',
       title: '合同金额（元）',
       minWidth: 140,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'ownerUserName',
@@ -801,7 +801,7 @@ export function useReceivablePlanRemindColumns<T = CrmReceivableApi.Receivable>(
       field: 'price',
       title: '计划回款金额（元）',
       minWidth: 120,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'returnTime',
@@ -844,7 +844,7 @@ export function useReceivablePlanRemindColumns<T = CrmReceivableApi.Receivable>(
       field: 'receivable.price',
       title: '实际回款金额（元）',
       minWidth: 160,
-      formatter: 'formatAmount',
+      formatter: 'formatNumber',
     },
     {
       field: 'receivable.returnTime',
