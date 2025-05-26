@@ -26,30 +26,13 @@ import {
 } from '#/api/bpm/model';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
+import { BpmAutoApproveType, BpmModelFormType, BpmModelType } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import FormDesign from './modules/form-design.vue';
 import ProcessDesign from './modules/process-design.vue';
 
 defineOptions({ name: 'BpmModelCreate' });
-
-// TODO 这个常量是不是所有 apps 都可以使用， 放 @utils/constant.ts 不能共享， @芋艿 这些常量放哪里合适！
-// TODO @jason：/Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/utils/constants.ts；先不多个 apps 共享哈；
-const BpmModelType = {
-  BPMN: 10, // BPMN 设计器
-  SIMPLE: 20, // 简易设计器
-};
-
-const BpmModelFormType = {
-  NORMAL: 10, // 流程表单
-  CUSTOM: 20, // 业务表单
-};
-
-const BpmAutoApproveType = {
-  NONE: 0, // 不自动通过
-  APPROVE_ALL: 1, // 仅审批一次，后续重复的审批节点均自动通过
-  APPROVE_SEQUENT: 2, // 仅针对连续审批的节点自动通过
-};
 
 // 流程定义类型
 type BpmProcessDefinitionType = Omit<

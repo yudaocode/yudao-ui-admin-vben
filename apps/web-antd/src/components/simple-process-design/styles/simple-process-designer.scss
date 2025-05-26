@@ -209,8 +209,8 @@
 .simple-process-model-container {
   width: 100%;
   height: 100%;
+  padding-top: 32px;
   overflow-x: auto;
-  background: url('./svg/simple-process-bg.svg') 0 0 repeat;
   background-color: #fafafa;
 
   .simple-process-model {
@@ -219,6 +219,7 @@
     align-items: center;
     justify-content: center;
     min-width: fit-content;
+    background: url('./svg/simple-process-bg.svg') 0 0 repeat;
     transform: scale(1);
     transform-origin: 50% 0 0;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);

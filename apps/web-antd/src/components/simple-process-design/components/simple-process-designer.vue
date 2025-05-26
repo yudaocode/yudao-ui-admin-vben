@@ -3,21 +3,19 @@ import type { Ref } from 'vue';
 
 import type { SimpleFlowNode } from '../consts';
 
-import type { BpmFormApi } from '#/api/bpm/form';
 import type { BpmUserGroupApi } from '#/api/bpm/userGroup';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemPostApi } from '#/api/system/post';
 import type { SystemRoleApi } from '#/api/system/role';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { inject, onMounted, provide, ref } from 'vue';
+import { inject, onMounted, provide, ref, watch } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
 import { Button, Modal } from 'ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
-import { getModel } from '#/api/bpm/model';
 import { getUserGroupSimpleList } from '#/api/bpm/userGroup';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
@@ -33,20 +31,22 @@ defineOptions({
 });
 
 const props = defineProps({
-  modelId: {
-    type: String,
-    required: false,
-    default: undefined,
-  },
-  modelKey: {
-    type: String,
-    required: false,
-    default: undefined,
-  },
   modelName: {
     type: String,
     required: false,
     default: undefined,
+  },
+  // 流程表单 ID
+  modelFormId: {
+    type: Number,
+    required: false,
+    default: undefined,
+  },
+  // 表单类型
+  modelFormType: {
+    type: Number,
+    required: false,
+    default: BpmModelFormType.NORMAL,
   },
   // 可发起流程的人员编号
   startUserIds: {
@@ -66,7 +66,31 @@ const emits = defineEmits(['success']);
 const processData = inject('processData') as Ref;
 const loading = ref(false);
 const formFields = ref<string[]>([]);
-const formType = ref(20);
+const formType = ref(props.modelFormType);
+
+// 监听 modelFormType 变化
+watch(
+  () => props.modelFormType,
+  (newVal) => {
+    formType.value = newVal;
+  },
+);
+
+// 监听 modelFormId 变化
+watch(
+  () => props.modelFormId,
+  async (newVal) => {
+    if (newVal) {
+      const form = await getFormDetail(newVal);
+      formFields.value = form?.fields;
+    } else {
+      // 如果 modelFormId 为空，清空表单字段
+      formFields.value = [];
+    }
+  },
+  { immediate: true },
+);
+
 const roleOptions = ref<SystemRoleApi.Role[]>([]); // 角色列表
 const postOptions = ref<SystemPostApi.Post[]>([]); // 岗位列表
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
@@ -172,19 +196,6 @@ const validateNode = (
 onMounted(async () => {
   try {
     loading.value = true;
-    // 获取表单字段
-    if (props.modelId) {
-      const bpmnModel = await getModel(props.modelId);
-      if (bpmnModel) {
-        formType.value = bpmnModel.formType;
-        if (formType.value === BpmModelFormType.NORMAL && bpmnModel.formId) {
-          const bpmnForm = (await getFormDetail(
-            bpmnModel.formId,
-          )) as unknown as BpmFormApi.FormVO;
-          formFields.value = bpmnForm?.fields;
-        }
-      }
-    }
     // 获得角色列表
     roleOptions.value = await getSimpleRoleList();
     // 获得岗位列表

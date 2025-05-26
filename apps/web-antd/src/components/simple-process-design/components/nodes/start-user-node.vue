@@ -11,6 +11,7 @@ import { Input } from 'ant-design-vue';
 
 import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
+import StartUserNodeConfig from '../nodes-config/start-user-node-config.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'StartUserNode' });
@@ -55,8 +56,7 @@ const nodeClick = () => {
       'TODO 编辑模式，打开节点配置、把当前节点传递给配置组件',
       nodeSetting.value,
     );
-    // nodeSetting.value.showStartUserNodeConfig(currentNode.value);
-    // nodeSetting.value.openDrawer();
+    nodeSetting.value.showStartUserNodeConfig(currentNode.value);
   }
 };
 </script>
@@ -108,12 +108,12 @@ const nodeClick = () => {
       />
     </div>
   </div>
-  <!-- TODO 发起人配置节点
-   <StartUserNodeConfig
+
+  <StartUserNodeConfig
     v-if="!readonly && currentNode"
     ref="nodeSetting"
     :flow-node="currentNode"
-  /> -->
+  />
   <!-- 审批记录  TODO -->
 </template>
 <style lang="scss" scoped></style>

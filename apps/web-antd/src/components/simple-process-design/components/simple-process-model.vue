@@ -198,8 +198,8 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="simple-process-model-container position-relative h-full">
-    <div class="z-index-button-group absolute right-[0px] top-[0px] bg-[#fff]">
+  <div class="simple-process-model-container">
+    <div class="absolute right-[0px] top-[0px] bg-[#fff]">
       <Row type="flex" justify="end">
         <ButtonGroup key="scale-control">
           <Button v-if="!readonly" @click="exportJson">
@@ -247,6 +247,7 @@ onMounted(() => {
       />
     </div>
   </div>
+  <!-- TODO 这个好像暂时没有用到。保存失败弹窗 -->
   <Modal
     v-model:open="errorDialogVisible"
     title="保存失败"
@@ -266,21 +267,4 @@ onMounted(() => {
     </template>
   </Modal>
 </template>
-<style lang="scss" scoped>
-.simple-process-model-container {
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  user-select: none; // 禁用文本选择
-}
-
-.simple-process-model {
-  position: relative; // 确保相对定位
-  min-width: 100%; // 确保宽度为100%
-  min-height: 100%; // 确保高度为100%
-}
-
-.z-index-ButtonGroup {
-  z-index: 10;
-}
-</style>
+<style lang="scss" scoped></style>
