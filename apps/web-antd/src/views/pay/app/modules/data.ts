@@ -1,5 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { h } from 'vue';
+
+import { InputUpload } from '#/components/upload';
 import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 export function channelSchema(formType: string): VbenFormSchema[] {
@@ -147,13 +150,14 @@ export function channelSchema(formType: string): VbenFormSchema[] {
         {
           label: '商户公钥应用证书',
           fieldName: 'config.appCertContent',
-          slotName: 'appCertContent',
-          component: 'Textarea',
+          component: h(InputUpload, {
+            inputType: 'textarea',
+            textareaProps: { rows: 8, placeholder: '请上传商户公钥应用证书' },
+            fileUploadProps: {
+              accept: ['crt'],
+            },
+          }),
           rules: 'required',
-          componentProps: {
-            placeholder: '请上传商户公钥应用证书',
-            rows: 8,
-          },
           dependencies: {
             show(values) {
               return values?.config?.mode === 1;
@@ -164,13 +168,14 @@ export function channelSchema(formType: string): VbenFormSchema[] {
         {
           label: '支付宝公钥证书',
           fieldName: 'config.alipayPublicCertContent',
-          slotName: 'alipayPublicCertContent',
-          component: 'Textarea',
+          component: h(InputUpload, {
+            inputType: 'textarea',
+            textareaProps: { rows: 8, placeholder: '请上传支付宝公钥证书' },
+            fileUploadProps: {
+              accept: ['crt'],
+            },
+          }),
           rules: 'required',
-          componentProps: {
-            placeholder: '请上传支付宝公钥证书',
-            rows: 8,
-          },
           dependencies: {
             show(values) {
               return values?.config?.mode === 1;
@@ -181,13 +186,14 @@ export function channelSchema(formType: string): VbenFormSchema[] {
         {
           label: '根证书',
           fieldName: 'config.rootCertContent',
-          slotName: 'rootCertContent',
-          component: 'Textarea',
+          component: h(InputUpload, {
+            inputType: 'textarea',
+            textareaProps: { rows: 8, placeholder: '请上传根证书' },
+            fileUploadProps: {
+              accept: ['crt'],
+            },
+          }),
           rules: 'required',
-          componentProps: {
-            placeholder: '请上传根证书',
-            rows: 8,
-          },
           dependencies: {
             show(values) {
               return values?.config?.mode === 1;
@@ -453,12 +459,17 @@ export function channelSchema(formType: string): VbenFormSchema[] {
         {
           label: 'apiclient_cert.p12 证书',
           fieldName: 'config.keyContent',
-          slotName: 'keyContent',
-          component: 'Input',
+          component: h(InputUpload, {
+            inputType: 'textarea',
+            textareaProps: {
+              rows: 8,
+              placeholder: '请上传 apiclient_cert.p12 证书',
+            },
+            fileUploadProps: {
+              accept: ['p12 '],
+            },
+          }),
           rules: 'required',
-          componentProps: {
-            placeholder: '请上传 apiclient_cert.p12 证书',
-          },
           dependencies: {
             show(values) {
               return values?.config?.apiVersion === 'v2';
@@ -484,12 +495,17 @@ export function channelSchema(formType: string): VbenFormSchema[] {
         {
           label: 'apiclient_key.pem 证书',
           fieldName: 'config.privateKeyContent',
-          slotName: 'privateKeyContent',
-          component: 'Input',
+          component: h(InputUpload, {
+            inputType: 'textarea',
+            textareaProps: {
+              rows: 8,
+              placeholder: '请上传 apiclient_key.pem 证书',
+            },
+            fileUploadProps: {
+              accept: ['pem'],
+            },
+          }),
           rules: 'required',
-          componentProps: {
-            placeholder: '请上传 apiclient_key.pem 证书',
-          },
           dependencies: {
             show(values) {
               return values?.config?.apiVersion === 'v3';
