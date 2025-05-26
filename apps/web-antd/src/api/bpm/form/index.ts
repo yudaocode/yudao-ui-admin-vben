@@ -3,7 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmFormApi {
-  // TODO @siye：注释加一个。。嘿嘿
+  // 流程表单
   export interface FormVO {
     id?: number | undefined;
     name: string;
@@ -11,7 +11,7 @@ export namespace BpmFormApi {
     fields: string[];
     status: number;
     remark: string;
-    createTime: string;
+    createTime: number;
   }
 }
 
@@ -23,7 +23,7 @@ export async function getFormPage(params: PageParam) {
 }
 
 /** 获取表单详情 */
-export async function getFormDetail(id: number) {
+export async function getFormDetail(id: number | string) {
   return requestClient.get<BpmFormApi.FormVO>(`/bpm/form/get?id=${id}`);
 }
 

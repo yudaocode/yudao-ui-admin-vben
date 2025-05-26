@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/bpm/manager/form/edit',
         name: 'BpmFormEditor',
-        component: () => import('#/views/bpm/form/editor.vue'),
+        component: () => import('#/views/bpm/form/designer/index.vue'),
         meta: {
           title: '编辑流程表单',
           activePath: '/bpm/manager/form',

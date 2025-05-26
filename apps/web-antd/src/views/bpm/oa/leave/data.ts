@@ -1,9 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmCategoryApi } from '#/api/bpm/category';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { h } from 'vue';
 
 import { useAccess } from '@vben/access';
 
+import dayjs from 'dayjs';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
@@ -195,6 +201,35 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
           },
         ],
       },
+    },
+  ];
+}
+
+/** 详情 */
+export function useDetailFormSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      label: '请假类型',
+      field: 'type',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.BPM_OA_LEAVE_TYPE,
+          value: data?.type,
+        }),
+    },
+    {
+      label: '开始时间',
+      field: 'startTime',
+      content: (data) => dayjs(data?.startTime).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      label: '结束时间',
+      field: 'endTime',
+      content: (data) => dayjs(data?.endTime).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      label: '原因',
+      field: 'reason',
     },
   ];
 }

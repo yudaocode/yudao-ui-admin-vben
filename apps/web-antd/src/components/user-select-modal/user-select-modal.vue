@@ -30,6 +30,7 @@ interface DeptTreeNode {
   key: string;
   title: string;
   children?: DeptTreeNode[];
+  name: string;
 }
 
 defineOptions({ name: 'UserSelectModal' });
@@ -107,22 +108,26 @@ const transferDataSource = computed(() => {
 const filteredDeptTree = computed(() => {
   if (!deptSearchKeys.value) return deptTree.value;
 
-  const filterNode = (node: any): any => {
-    const title = node?.title?.toLowerCase();
+  const filterNode = (node: any, depth = 0): any => {
+    // 添加深度限制，防止过深的递归导致爆栈
+    if (depth > 100) return null;
+
+    // 按部门名称搜索
+    const name = node?.name?.toLowerCase();
     const search = deptSearchKeys.value.toLowerCase();
 
-    // 如果当前节点匹配
-    if (title.includes(search)) {
+    // 如果当前节点匹配，直接返回节点，不处理子节点
+    if (name?.includes(search)) {
       return {
         ...node,
-        children: node.children?.map((child: any) => filterNode(child)),
+        children: node.children,
       };
     }
 
     // 如果当前节点不匹配，检查子节点
     if (node.children) {
       const filteredChildren = node.children
-        .map((child: any) => filterNode(child))
+        .map((child: any) => filterNode(child, depth + 1))
         .filter(Boolean);
 
       if (filteredChildren.length > 0) {
@@ -397,6 +402,7 @@ const processDeptNode = (node: any): DeptTreeNode => {
   return {
     key: String(node.id),
     title: `${node.name} (${node.id})`,
+    name: node.name,
     children: node.children?.map((child: any) => processDeptNode(child)),
   };
 };

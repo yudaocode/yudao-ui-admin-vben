@@ -12,6 +12,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+import FormCreate from '@form-create/ant-design-vue';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -119,7 +120,6 @@ async function onDetail(row: BpmFormApi.FormVO) {
 
 /** 编辑 */
 function onEdit(row: BpmFormApi.FormVO) {
-  console.warn(row);
   router.push({
     name: 'BpmFormEditor',
     query: {
@@ -165,39 +165,18 @@ watch(
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="审批接入（流程表单）"
-      url="https://doc.iocoder.cn/bpm/use-bpm-form/"
-    />
-    <FormModal @success="onRefresh" />
+    <template #doc>
+      <DocAlert
+        title="审批接入（流程表单）"
+        url="https://doc.iocoder.cn/bpm/use-bpm-form/"
+      />
+    </template>
     <Grid table-title="流程表单">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', ['流程表单']) }}
         </Button>
-      </template>
-
-      <!-- 摘要 -->
-      <!-- TODO @siye：这个是不是不应该有呀？ -->
-      <template #slot-summary="{ row }">
-        <div
-          class="flex flex-col py-2"
-          v-if="
-            row.processInstance.summary &&
-            row.processInstance.summary.length > 0
-          "
-        >
-          <div
-            v-for="(item, index) in row.processInstance.summary"
-            :key="index"
-          >
-            <span class="text-gray-500">
-              {{ item.key }} : {{ item.value }}
-            </span>
-          </div>
-        </div>
-        <div v-else>-</div>
       </template>
     </Grid>
 
@@ -209,7 +188,7 @@ watch(
       }"
     >
       <div class="mx-4">
-        <form-create :option="formConfig.option" :rule="formConfig.rule" />
+        <FormCreate :option="formConfig.option" :rule="formConfig.rule" />
       </div>
     </DetailModal>
   </Page>
