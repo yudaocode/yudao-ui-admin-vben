@@ -4,7 +4,7 @@ import type { DataNode } from 'ant-design-vue/es/tree';
 
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { defineProps, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
