@@ -33,13 +33,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-/** 打开弹窗 */
-const open = (id: number) => {
-  modalApi.setData({ id }).open();
-};
-
-defineExpose({ open });
 </script>
 
 <template>

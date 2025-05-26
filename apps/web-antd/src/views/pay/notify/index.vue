@@ -1,19 +1,16 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as PayNotifyApi from '#/api/pay/notify';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getNotifyTaskPage } from '#/api/pay/notify';
 import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
 
-const [NotifyDetailModal, notifyDetailModalApi] = useVbenModal({
+const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
   destroyOnClose: true,
 });
@@ -24,18 +21,8 @@ function onRefresh() {
 }
 
 /** 查看详情 */
-function onDetail(row: any) {
-  notifyDetailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<any>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
+function handleDetail(row: any) {
+  detailModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -43,13 +30,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await PayNotifyApi.getNotifyTaskPage({
+          return await getNotifyTaskPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -72,7 +59,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <template #doc>
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
-    <NotifyDetailModal @success="onRefresh" />
-    <Grid table-title="支付通知列表" />
+    <DetailModal @success="onRefresh" />
+    <Grid table-title="支付通知列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['pay:notify:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

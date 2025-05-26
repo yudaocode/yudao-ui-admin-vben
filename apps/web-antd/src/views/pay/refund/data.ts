@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { PayRefundApi } from '#/api/pay/refund';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getAppList } from '#/api/pay/app';
 import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -80,9 +75,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = PayRefundApi.Refund>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -155,23 +148,10 @@ export function useGridColumns<T = PayRefundApi.Refund>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 100,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            show: hasAccessByCodes(['pay:refund:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
