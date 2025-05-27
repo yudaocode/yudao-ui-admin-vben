@@ -12,10 +12,11 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  Divider,
+  Col,
   Input,
   Radio,
   RadioGroup,
+  Row,
   TabPane,
   Tabs,
   Tooltip,
@@ -91,8 +92,8 @@ const getDeptNames = (deptIds: number[]): string => {
 
 // 使用 VbenDrawer
 const [Drawer, drawerApi] = useVbenDrawer({
-  header: false,
-  closable: false,
+  header: true,
+  closable: true,
   onCancel() {
     drawerApi.close();
   },
@@ -142,28 +143,28 @@ defineExpose({ showStartUserNodeConfig });
 </script>
 <template>
   <Drawer>
-    <div class="config-header">
-      <!--    TODO v-mountedFocus 自动聚集 需要迁移一下 -->
-      <Input
-        v-if="showInput"
-        type="text"
-        class="config-editable-input"
-        @blur="blurEvent()"
-        v-model:value="nodeName"
-        :placeholder="nodeName"
-      />
-      <div v-else class="node-name">
-        {{ nodeName }}
-        <IconifyIcon
-          class="ml-1"
-          icon="ep:edit-pen"
-          :size="16"
-          @click="clickIcon()"
+    <template #title>
+      <div class="config-header">
+        <!--    TODO v-mountedFocus 自动聚集 需要迁移一下 -->
+        <Input
+          v-if="showInput"
+          type="text"
+          class="config-editable-input"
+          @blur="blurEvent()"
+          v-model:value="nodeName"
+          :placeholder="nodeName"
         />
+        <div v-else class="node-name">
+          {{ nodeName }}
+          <IconifyIcon
+            class="ml-1"
+            icon="ep:edit-pen"
+            :size="16"
+            @click="clickIcon()"
+          />
+        </div>
       </div>
-      <Divider />
-    </div>
-
+    </template>
     <Tabs v-model:active-key="activeTabName" type="card">
       <TabPane tab="权限" key="user">
         <TypographyText
@@ -212,69 +213,76 @@ defineExpose({ showStartUserNodeConfig });
         key="fields"
         v-if="formType === BpmModelFormType.NORMAL"
       >
-        <div class="field-setting-pane">
-          <div class="field-setting-desc">字段权限</div>
-          <div class="field-permit-title">
-            <div class="setting-title-label first-title">字段名称</div>
-            <div class="other-titles">
-              <span
-                class="setting-title-label cursor-pointer"
-                @click="updatePermission('READ')"
-              >
-                只读
-              </span>
-              <span
-                class="setting-title-label cursor-pointer"
-                @click="updatePermission('WRITE')"
-              >
-                可编辑
-              </span>
-              <span
-                class="setting-title-label cursor-pointer"
-                @click="updatePermission('NONE')"
-              >
-                隐藏
-              </span>
-            </div>
-          </div>
-          <div
-            class="field-setting-item"
-            v-for="(item, index) in fieldsPermissionConfig"
-            :key="index"
-          >
-            <div class="field-setting-item-label">{{ item.title }}</div>
-            <RadioGroup
-              class="field-setting-item-group"
-              v-model:value="item.permission"
-            >
-              <div class="item-radio-wrap">
-                <Radio
-                  :value="FieldPermissionType.READ"
-                  size="large"
-                  :label="FieldPermissionType.READ"
-                >
-                  <span></span>
-                </Radio>
-              </div>
-              <div class="item-radio-wrap">
-                <Radio
-                  :value="FieldPermissionType.WRITE"
-                  size="large"
-                  :label="FieldPermissionType.WRITE"
-                >
-                  <span></span>
-                </Radio>
-              </div>
-              <div class="item-radio-wrap">
-                <Radio
-                  :value="FieldPermissionType.NONE"
-                  size="large"
-                  :label="FieldPermissionType.NONE"
-                >
-                  <span></span>
-                </Radio>
-              </div>
-            </RadioGroup>
+        <div class="p-1">
+          <div class="mb-4 text-[16px] font-bold">字段权限</div>
+
+          <!-- 表头 -->
+          <Row class="border border-gray-200 px-4 py-3">
+            <Col :span="8" class="font-bold">字段名称</Col>
+            <Col :span="16">
+              <Row>
+                <Col :span="8" class="flex items-center justify-center">
+                  <span
+                    class="cursor-pointer font-bold"
+                    @click="updatePermission('READ')"
+                  >
+                    只读
+                  </span>
+                </Col>
+                <Col :span="8" class="flex items-center justify-center">
+                  <span
+                    class="cursor-pointer font-bold"
+                    @click="updatePermission('WRITE')"
+                  >
+                    可编辑
+                  </span>
+                </Col>
+                <Col :span="8" class="flex items-center justify-center">
+                  <span
+                    class="cursor-pointer font-bold"
+                    @click="updatePermission('NONE')"
+                  >
+                    隐藏
+                  </span>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          <!-- 表格内容 -->
+          <div v-for="(item, index) in fieldsPermissionConfig" :key="index">
+            <Row class="border border-t-0 border-gray-200 px-4 py-2">
+              <Col :span="8" class="flex items-center truncate">
+                {{ item.title }}
+              </Col>
+              <Col :span="16">
+                <RadioGroup v-model:value="item.permission" class="w-full">
+                  <Row>
+                    <Col :span="8" class="flex items-center justify-center">
+                      <Radio
+                        :value="FieldPermissionType.READ"
+                        size="large"
+                        :label="FieldPermissionType.READ"
+                      />
+                    </Col>
+                    <Col :span="8" class="flex items-center justify-center">
+                      <Radio
+                        :value="FieldPermissionType.WRITE"
+                        size="large"
+                        :label="FieldPermissionType.WRITE"
+                      />
+                    </Col>
+                    <Col :span="8" class="flex items-center justify-center">
+                      <Radio
+                        :value="FieldPermissionType.NONE"
+                        size="large"
+                        :label="FieldPermissionType.NONE"
+                      />
+                    </Col>
+                  </Row>
+                </RadioGroup>
+              </Col>
+            </Row>
           </div>
         </div>
       </TabPane>

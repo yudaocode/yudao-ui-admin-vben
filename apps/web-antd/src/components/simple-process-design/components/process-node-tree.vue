@@ -5,6 +5,7 @@ import { NodeType } from '../consts';
 import { useWatchNode } from '../helpers';
 import EndEventNode from './nodes/end-event-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
+import UserTaskNode from './nodes/user-task-node.vue';
 
 defineOptions({ name: 'ProcessNodeTree' });
 const props = defineProps({
@@ -29,16 +30,12 @@ const emits = defineEmits<{
 const currentNode = useWatchNode(props);
 
 // 用于删除节点
-// eslint-disable-next-line unused-imports/no-unused-vars, no-unused-vars
+
 const handleModelValueUpdate = (updateValue: any) => {
   emits('update:flowNode', updateValue);
 };
 
-// eslint-disable-next-line unused-imports/no-unused-vars, no-unused-vars
-const triggerFromParentNode = (
-  nodeList: SimpleFlowNode[],
-  nodeType: number,
-) => {
+const findParentNode = (nodeList: SimpleFlowNode[], nodeType: number) => {
   emits('recursiveFindParentNode', nodeList, props.parentNode, nodeType);
 };
 
@@ -69,7 +66,7 @@ const recursiveFindParentNode = (
     :flow-node="currentNode"
   />
   <!-- 审批节点 -->
-  <!-- <UserTaskNode
+  <UserTaskNode
     v-if="
       currentNode &&
       (currentNode.type === NodeType.USER_TASK_NODE ||
@@ -77,8 +74,8 @@ const recursiveFindParentNode = (
     "
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-    @find:parent-node="findFromParentNode"
-  /> -->
+    @find-parent-node="findParentNode"
+  />
   <!-- 抄送节点 -->
   <!-- <CopyTaskNode
     v-if="currentNode && currentNode.type === NodeType.COPY_TASK_NODE"
