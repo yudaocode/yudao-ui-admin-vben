@@ -269,7 +269,7 @@ setupVbenVxeTable({
     // vxeUI.formats.add
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
-      cellFormatMethod({ cellValue }, digits = 2) {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {
           return '';
         }
