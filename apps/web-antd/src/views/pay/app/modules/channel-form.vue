@@ -6,11 +6,10 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message, Row, Space, Textarea } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createChannel, getChannel, updateChannel } from '#/api/pay/channel';
-import { FileUpload } from '#/components/upload';
 
 import { channelSchema } from './data';
 
@@ -90,66 +89,6 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 <template>
   <Modal :close-on-click-modal="false" :title="title" class="w-[40%]">
-    <Form :schema="channelSchema(formType)">
-      <template #appCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea
-              v-bind="slotProps"
-              :rows="8"
-              placeholder="请上传商户公钥应用证书"
-            />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-      <template #alipayPublicCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea
-              v-bind="slotProps"
-              :rows="8"
-              placeholder="请上传支付宝公钥证书"
-            />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['.crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-      <template #rootCertContent="slotProps">
-        <Space style="width: 100%" direction="vertical">
-          <Row>
-            <Textarea v-bind="slotProps" :rows="8" placeholder="请上传根证书" />
-          </Row>
-          <Row>
-            <FileUpload
-              :accept="['.crt']"
-              @return-text="
-                (text: string) => {
-                  slotProps.setValue(text);
-                }
-              "
-            />
-          </Row>
-        </Space>
-      </template>
-    </Form>
+    <Form :schema="channelSchema(formType)" />
   </Modal>
 </template>
