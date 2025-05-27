@@ -3,40 +3,51 @@ import type { InputProps, TextAreaProps } from 'ant-design-vue';
 
 import type { FileUploadProps } from './typing';
 
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
+import { useVModel } from '@vueuse/core';
 import { Col, Input, Row, Textarea } from 'ant-design-vue';
 
 import FileUpload from './file-upload.vue';
 
 const props = defineProps<{
+  defaultValue?: number | string;
   fileUploadProps?: FileUploadProps;
   inputProps?: InputProps;
   inputType?: 'input' | 'textarea';
+  modelValue?: number | string;
   textareaProps?: TextAreaProps;
 }>();
 
-const emit = defineEmits(['change', 'update:value']);
+const emits = defineEmits<{
+  (e: 'change', payload: number | string): void;
+  (e: 'update:value', payload: number | string): void;
+  (e: 'update:modelValue', payload: number | string): void;
+}>();
 
-const value = ref('');
+const modelValue = useVModel(props, 'modelValue', emits, {
+  defaultValue: props.defaultValue,
+  passive: true,
+});
 
 function handleReturnText(text: string) {
-  value.value = text;
-  emit('change', value.value);
-  emit('update:value', value.value);
+  modelValue.value = text;
+  emits('change', modelValue.value);
+  emits('update:value', modelValue.value);
+  emits('update:modelValue', modelValue.value);
 }
 
 const inputProps = computed(() => {
   return {
     ...props.inputProps,
-    value: value.value,
+    value: modelValue.value,
   };
 });
 
 const textareaProps = computed(() => {
   return {
     ...props.textareaProps,
-    value: value.value,
+    value: modelValue.value,
   };
 });
 
