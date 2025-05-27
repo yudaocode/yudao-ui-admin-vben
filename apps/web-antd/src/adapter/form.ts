@@ -8,6 +8,7 @@ import type { ComponentType } from './component';
 import { setupVbenForm, useVbenForm as useForm, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+/** 手机号正则表达式（中国） */
 const MOBILE_REGEX = /(?:0|86|\+86)?1[3-9]\d{9}/;
 
 async function initSetupVbenForm() {
@@ -68,4 +69,3 @@ export { initSetupVbenForm, useVbenForm, z };
 
 export type VbenFormSchema = FormSchema<ComponentType>;
 export type { VbenFormProps };
-export type FormSchemaGetter = () => VbenFormSchema[];

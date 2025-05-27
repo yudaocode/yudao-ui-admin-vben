@@ -417,8 +417,8 @@ defineExpose({
     <Spin :spinning="loading">
       <Row :gutter="[16, 16]">
         <Col :span="6">
-          <div class="h-[500px] overflow-auto rounded border border-gray-200">
-            <div class="border-b border-gray-200 p-2">
+          <div class="h-[500px] overflow-auto rounded border">
+            <div class="border-b p-2">
               <Input
                 v-model:value="deptSearchKeys"
                 placeholder="搜索部门"

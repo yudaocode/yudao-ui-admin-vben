@@ -134,7 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page :auto-content-height="true">
+  <Page auto-content-height>
     <template #doc>
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>

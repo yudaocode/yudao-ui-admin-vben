@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { PayOrderApi } from '#/api/pay/order';
+
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -6,34 +8,39 @@ import { formatDateTime } from '@vben/utils';
 
 import { Descriptions, Divider, Tag } from 'ant-design-vue';
 
-import * as OrderApi from '#/api/pay/order';
+import { getOrder } from '#/api/pay/order';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils/dict';
 
-const detailData = ref<OrderApi.PayOrderApi.Order>();
+const detailData = ref<PayOrderApi.Order>();
 
-const [BasicModal, modalApi] = useVbenModal({
-  fullscreenButton: false,
-  showCancelButton: false,
-  showConfirmButton: false,
+const [Modal, modalApi] = useVbenModal({
   onOpenChange: async (isOpen) => {
     if (!isOpen) {
-      return null;
+      detailData.value = undefined;
+      return;
     }
-    modalApi.modalLoading(true);
-
-    const { id } = modalApi.getData() as {
-      id: number;
-    };
-
-    detailData.value = await OrderApi.getOrderDetail(id);
-
-    modalApi.modalLoading(false);
+    // 加载数据
+    const data = modalApi.getData<PayOrderApi.Order>();
+    if (!data || !data.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      detailData.value = await getOrder(data.id);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>
 <template>
-  <BasicModal :close-on-click-modal="false" title="订单详情" class="w-[700px]">
+  <Modal
+    title="订单详情"
+    class="w-1/2"
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+  >
     <Descriptions :column="2">
       <Descriptions.Item label="商户单号">
         {{ detailData?.merchantOrderId }}
@@ -121,5 +128,5 @@ const [BasicModal, modalApi] = useVbenModal({
         {{ detailData?.channelNotifyData }}
       </Descriptions.Item>
     </Descriptions>
-  </BasicModal>
+  </Modal>
 </template>

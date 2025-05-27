@@ -52,7 +52,9 @@ export function getTransfer(id: number) {
   );
 }
 
-/** 创建转账单 */
-export function createTransfer(data: PayTransferApi.Transfer) {
-  return requestClient.post('/pay/transfer/create', data);
+/** 导出转账单 */
+export function exportTransfer(params: any) {
+  return requestClient.download('/pay/transfer/export-excel', {
+    params,
+  });
 }

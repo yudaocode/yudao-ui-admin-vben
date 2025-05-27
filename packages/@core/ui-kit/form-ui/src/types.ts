@@ -263,8 +263,6 @@ export interface FormSchema<
   renderComponentContent?: RenderComponentContentType;
   /** 字段规则 */
   rules?: FormSchemaRuleType;
-  /** 自定义插槽名，如果不指定则使用fieldName */
-  slotName?: string;
   /** 后缀 */
   suffix?: CustomRenderType;
 }
