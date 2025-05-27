@@ -1,28 +1,82 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
-import { Button } from 'ant-design-vue';
+import { Page, useVbenModal } from '@vben/common-ui';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getWalletPage } from '#/api/pay/wallet/balance';
+import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import WalletDetail from './modules/detail.vue';
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+const [WalletModal, walletModalApi] = useVbenModal({
+  connectedComponent: WalletDetail,
+  destroyOnClose: true,
+});
+
+function handleDetail(row: Required<PayWalletApi.WalletVO>) {
+  walletModalApi.setData(row).open();
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getWalletPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<PayWalletApi.WalletVO>,
+});
 </script>
 
 <template>
-  <Page>
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/pay/wallet/balance/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/pay/wallet/balance/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="钱包余额" url="https://doc.iocoder.cn/pay/build/" />
+    </template>
+
+    <WalletModal @reload="onRefresh" />
+
+    <Grid>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

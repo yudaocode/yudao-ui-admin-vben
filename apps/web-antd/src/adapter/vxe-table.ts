@@ -269,7 +269,7 @@ setupVbenVxeTable({
     // vxeUI.formats.add
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
-      cellFormatMethod({ cellValue }, digits = 2) {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {
           return '';
         }
@@ -281,6 +281,22 @@ setupVbenVxeTable({
           return '';
         }
         return cellValue.toFixed(digits);
+      },
+    });
+
+    vxeUI.formats.add('formatFraction', {
+      tableCellFormatMethod({ cellValue }) {
+        if (cellValue === null || cellValue === undefined) {
+          return '0.00';
+        }
+        if (isString(cellValue)) {
+          cellValue = Number.parseFloat(cellValue);
+        }
+        // 如果非 number，则直接返回空串
+        if (Number.isNaN(cellValue)) {
+          return '0.00';
+        }
+        return `${(cellValue / 100).toFixed(2)}元`;
       },
     });
   },

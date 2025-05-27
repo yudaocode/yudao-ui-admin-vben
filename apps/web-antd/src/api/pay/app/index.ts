@@ -23,10 +23,21 @@ export namespace PayAppApi {
     id: number;
     status: number;
   }
+
+  export interface AppPageReqVO extends PageParam {
+    name?: string;
+    status?: number;
+    remark?: string;
+    payNotifyUrl?: string;
+    refundNotifyUrl?: string;
+    transferNotifyUrl?: string;
+    merchantName?: string;
+    createTime?: Date[];
+  }
 }
 
 /** 查询支付应用列表 */
-export function getAppPage(params: PageParam) {
+export function getAppPage(params: PayAppApi.AppPageReqVO) {
   return requestClient.get<PageResult<PayAppApi.App>>('/pay/app/page', {
     params,
   });

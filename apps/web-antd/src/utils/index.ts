@@ -1,6 +1,7 @@
 export * from './constants';
 export * from './dict';
 export * from './download';
+export * from './formatNumber';
 export * from './formatTime';
 export * from './formCreate';
 export * from './rangePickerProps';

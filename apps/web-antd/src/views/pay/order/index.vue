@@ -59,7 +59,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page :auto-content-height="true">
+  <Page auto-content-height>
     <template #doc>
       <DocAlert
         title="支付宝支付接入"
