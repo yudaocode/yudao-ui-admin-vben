@@ -283,6 +283,22 @@ setupVbenVxeTable({
         return cellValue.toFixed(digits);
       },
     });
+
+    vxeUI.formats.add('formatFraction', {
+      tableCellFormatMethod({ cellValue }) {
+        if (cellValue === null || cellValue === undefined) {
+          return '0.00';
+        }
+        if (isString(cellValue)) {
+          cellValue = Number.parseFloat(cellValue);
+        }
+        // 如果非 number，则直接返回空串
+        if (Number.isNaN(cellValue)) {
+          return '0.00';
+        }
+        return `${(cellValue / 100).toFixed(2)}元`;
+      },
+    });
   },
   useVbenForm,
 });
