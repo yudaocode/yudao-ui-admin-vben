@@ -100,7 +100,7 @@
     "**/.stylelintcache": true,
     "**/.DS_Store": true,
     "**/vite.config.mts.*": true,
-    "**/tea.yaml": true,
+    "**/tea.yaml": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -110,7 +110,7 @@
     "**/tmp/**": true,
     "**/bower_components/**": true,
     "**/dist/**": true,
-    "**/yarn.lock": true,
+    "**/yarn.lock": true
   },
 
   "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/.turbo"],
