@@ -9,6 +9,7 @@ import { useAccess } from '@vben/access';
 import { formatDateTime } from '@vben/utils';
 
 import { getAreaTree } from '#/api/system/area';
+import { getSimpleUserList } from '#/api/system/user';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
@@ -48,9 +49,13 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerUserId',
       label: '负责人',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        api: 'getSimpleUserList',
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
       rules: 'required',
     },
