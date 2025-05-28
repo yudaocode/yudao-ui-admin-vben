@@ -34,7 +34,6 @@ import {
   TypographyText,
 } from 'ant-design-vue';
 
-// TODO import { defaultProps4AntTree } from '#/utils/tree';
 import {
   APPROVE_METHODS,
   APPROVE_TYPE,
@@ -65,9 +64,8 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
+import UserTaskListener from './modules/user-task-listener.vue';
 import { convertTimeUnit, getApproveTypeText } from './utils';
-
-// TODO import UserTaskListener from './components/UserTaskListener.vue';
 
 defineOptions({ name: 'UserTaskNodeConfig' });
 const props = defineProps({
@@ -233,8 +231,7 @@ const {
   cTimeoutMaxRemindCount,
 } = useTimeoutHandler();
 
-// TODO 监听器待实现
-// const userTaskListenerRef = ref();
+const userTaskListenerRef = ref();
 
 /** 节点类型名称 */
 const nodeTypeName = computed(() => {
@@ -253,25 +250,20 @@ const saveConfig = async () => {
     drawerApi.close();
     return true;
   }
-  // TODO 监听器待实现
-  // activeTabName.value = 'listener';
-  // await nextTick();
-  activeTabName.value = 'user';
-
   if (!formRef.value) return false;
-  //   TODO 监听器待实现
-  // if (!userTaskListenerRef.value) return false;
-  // const valid =
-  //   (await formRef.value.validate()) &&
-  //   (await userTaskListenerRef.value.validate());
+  if (!userTaskListenerRef.value) return false;
 
-  if (!(await formRef.value.validate())) {
-    activeTabName.value = 'user';
+  //  校验监听器页面, TODO 在别的Tab 好像跳不到这个页面
+  if (!(await userTaskListenerRef.value.validate())) {
+    activeTabName.value = 'listener';
+    return false;
   }
-  //   TODO 监听器待实现
-  // if (!(await userTaskListenerRef.value.validate())) {
-  //   activeTabName.value = 'listener';
-  // }
+  // 校验审批人页面
+  if (!(await formRef.value.validate())) {
+    // TODO 好像走不到这里
+    activeTabName.value = 'user';
+    return false;
+  }
 
   const showText = getShowText();
   if (!showText) return false;
@@ -658,10 +650,14 @@ onMounted(() => {
               label="指定部门"
               name="deptIds"
             >
-              <!-- TODO :replace-fields="defaultProps4AntTree" -->
               <TreeSelect
                 v-model:value="configForm.deptIds"
                 :tree-data="deptTreeOptions"
+                :field-names="{
+                  label: 'name',
+                  value: 'id',
+                  children: 'children',
+                }"
                 empty-text="加载中，请稍后"
                 multiple
                 node-key="id"
@@ -1226,13 +1222,11 @@ onMounted(() => {
         </div>
       </TabPane>
       <TabPane tab="监听器" key="listener">
-        <!-- TODO 待实现 -->
-        <span>待实现</span>
-        <!-- <UserTaskListener
+        <UserTaskListener
           ref="userTaskListenerRef"
-          v-model:value="configForm"
+          v-model="configForm"
           :form-field-options="formFieldOptions"
-        /> -->
+        />
       </TabPane>
     </Tabs>
     <template #footer>
