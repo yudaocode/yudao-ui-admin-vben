@@ -1,6 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
+import { Tag } from 'ant-design-vue';
+
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -47,7 +51,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'point',
       title: '获得积分',
-      slots: { default: 'point' },
+      slots: {
+        default: ({ row }) => {
+          return h(
+            Tag,
+            {
+              class: 'mr-5px',
+              color: row.point > 0 ? 'blue' : 'red',
+            },
+            () => (row.point > 0 ? `+${row.point}` : row.point),
+          );
+        },
+      },
     },
     {
       field: 'createTime',
