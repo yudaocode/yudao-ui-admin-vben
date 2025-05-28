@@ -31,8 +31,12 @@ function handleDetail(row: PayOrderApi.Order) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
+    collapsed: false,
   },
   gridOptions: {
+    cellConfig: {
+      height: 80,
+    },
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
@@ -49,6 +53,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isCurrent: true,
+      isHover: true,
+      resizable: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
@@ -90,16 +97,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #no="{ row }">
-        <p class="order-font">
-          <Tag size="small" color="blue"> 商户</Tag> {{ row.merchantOrderId }}
-        </p>
-        <p class="order-font" v-if="row.no">
-          <Tag size="small" color="orange">支付</Tag> {{ row.no }}
-        </p>
-        <p class="order-font" v-if="row.channelOrderNo">
-          <Tag size="small" color="green">渠道</Tag>
-          {{ row.channelOrderNo }}
-        </p>
+        <div class="flex flex-col gap-1 text-left">
+          <p class="text-sm">
+            <Tag size="small" color="blue"> 商户</Tag> {{ row.merchantOrderId }}
+          </p>
+          <p class="text-sm" v-if="row.no">
+            <Tag size="small" color="orange">支付</Tag> {{ row.no }}
+          </p>
+          <p class="text-sm" v-if="row.channelOrderNo">
+            <Tag size="small" color="green">渠道</Tag>
+            {{ row.channelOrderNo }}
+          </p>
+        </div>
       </template>
     </Grid>
   </Page>

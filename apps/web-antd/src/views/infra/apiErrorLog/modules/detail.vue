@@ -3,10 +3,10 @@ import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { JsonViewer, useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { Descriptions, Input } from 'ant-design-vue';
+import { Descriptions } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils';
@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.requestMethod }} {{ formData?.requestUrl }}
       </Descriptions.Item>
       <Descriptions.Item label="请求参数">
-        {{ formData?.requestParams }}
+        <JsonViewer :value="formData?.requestParams" preview-mode />
       </Descriptions.Item>
       <Descriptions.Item label="异常时间">
         {{ formatDateTime(formData?.exceptionTime || '') }}
@@ -80,11 +80,7 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.exceptionName }}
       </Descriptions.Item>
       <Descriptions.Item v-if="formData?.exceptionStackTrace" label="异常堆栈">
-        <Input.TextArea
-          :value="formData?.exceptionStackTrace"
-          :auto-size="{ maxRows: 20 }"
-          readonly
-        />
+        <JsonViewer :value="formData?.exceptionStackTrace" preview-mode />
       </Descriptions.Item>
       <Descriptions.Item label="处理状态">
         <DictTag

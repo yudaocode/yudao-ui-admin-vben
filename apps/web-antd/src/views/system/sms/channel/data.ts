@@ -51,14 +51,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
-    {
       fieldName: 'apiKey',
       label: '短信 API 的账号',
       component: 'Input',
@@ -81,6 +73,14 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入短信发送回调 URL',
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
       },
     },
   ];
@@ -135,17 +135,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 100,
     },
     {
       field: 'signature',
       title: '短信签名',
-      minWidth: 120,
     },
     {
       field: 'code',
       title: '渠道编码',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
@@ -154,37 +151,31 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '启用状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
-      field: 'remark',
-      title: '备注',
-      minWidth: 120,
-    },
-    {
       field: 'apiKey',
       title: '短信 API 的账号',
-      minWidth: 180,
     },
     {
       field: 'apiSecret',
       title: '短信 API 的密钥',
-      minWidth: 180,
     },
     {
       field: 'callbackUrl',
       title: '短信发送回调 URL',
-      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
+    },
+    {
+      field: 'remark',
+      title: '备注',
     },
     {
       title: '操作',

@@ -96,7 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['短信渠道']),
+              label: $t('ui.actionTitle.create', ['岗位']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:post:create'],

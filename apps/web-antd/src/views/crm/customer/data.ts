@@ -8,6 +8,7 @@ import { h } from 'vue';
 import { useAccess } from '@vben/access';
 import { formatDateTime } from '@vben/utils';
 
+import { getAreaTree } from '#/api/system/area';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
@@ -92,9 +93,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'areaId',
       label: '地址',
-      component: 'Cascader',
+      component: 'ApiTreeSelect',
       componentProps: {
-        api: 'getAreaTree',
+        api: () => getAreaTree(),
+        fieldNames: { label: 'name', value: 'id', children: 'children' },
       },
     },
     {
