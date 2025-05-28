@@ -3,7 +3,7 @@ import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
 import { ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { JsonViewer, useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { Descriptions } from 'ant-design-vue';
@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
         {{ formData?.requestMethod }} {{ formData?.requestUrl }}
       </Descriptions.Item>
       <Descriptions.Item label="请求参数">
-        {{ formData?.requestParams }}
+        <JsonViewer :value="formData?.requestParams" preview-mode />
       </Descriptions.Item>
       <Descriptions.Item label="请求结果">
         {{ formData?.responseBody }}

@@ -116,7 +116,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '支付时间',
       field: 'successTime',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -129,7 +128,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 80,
+      width: 100,
       fixed: 'right',
       slots: { default: 'actions' },
     },

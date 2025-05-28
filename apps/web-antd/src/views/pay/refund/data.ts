@@ -80,76 +80,41 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 100,
-    },
-    {
-      field: 'createTime',
-      title: '创建时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    {
-      field: 'payPrice',
-      title: '支付金额',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'success',
-          content: '￥{payPrice}',
-          formatter: (value: number) => (value / 100).toFixed(2),
-        },
-      },
-    },
-    {
-      field: 'refundPrice',
-      title: '退款金额',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'danger',
-          content: '￥{refundPrice}',
-          formatter: (value: number) => (value / 100).toFixed(2),
-        },
-      },
     },
     {
       field: 'merchantRefundId',
       title: '退款订单号',
-      minWidth: 300,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'info',
-          content: '商户 {merchantRefundId}',
-        },
-      },
     },
     {
       field: 'channelRefundNo',
       title: '渠道退款单号',
-      minWidth: 200,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'success',
-          content: '{channelRefundNo}',
-        },
-      },
+    },
+    {
+      field: 'payPrice',
+      title: '支付金额',
+      formatter: 'formatFraction',
+    },
+    {
+      field: 'refundPrice',
+      title: '退款金额',
+      formatter: 'formatFraction',
     },
     {
       field: 'status',
       title: '退款状态',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_REFUND_STATUS },
       },
     },
     {
+      field: 'createTime',
+      title: '创建时间',
+      formatter: 'formatDateTime',
+    },
+    {
       title: '操作',
-      width: 80,
+      width: 100,
       fixed: 'right',
       slots: { default: 'actions' },
     },
