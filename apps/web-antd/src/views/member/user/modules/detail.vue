@@ -15,6 +15,7 @@ import { getWallet } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
 import UserAccountInfo from '../components/user-account-info.vue';
+import UserBalanceList from '../components/user-balance-list.vue';
 import UserBasicInfo from '../components/user-basic-info.vue';
 import UserExperienceRecordList from '../components/user-experience-record-list.vue';
 import UserPointList from '../components/user-point-list.vue';
@@ -90,7 +91,9 @@ onMounted(async () => {
           <TabPane tab="成长值" key="UserExperienceRecordList">
             <UserExperienceRecordList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="余额" key="UserBalanceList" />
+          <TabPane tab="余额" key="UserBalanceList">
+            <UserBalanceList class="h-full" :wallet-id="wallet?.id" />
+          </TabPane>
           <TabPane tab="收货地址" key="UserAddressList" />
           <TabPane tab="订单管理" key="UserOrderList" />
           <TabPane tab="售后管理" key="UserAfterSaleList" />
