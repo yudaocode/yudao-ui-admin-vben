@@ -12,7 +12,9 @@ import { getSimpleTagList } from '#/api/member/tag';
 import { getAreaTree } from '#/api/system/area';
 import {
   CommonStatusEnum,
+  convertToInteger,
   DICT_TYPE,
+  formatToFraction,
   getDictOptions,
   getRangePickerDefaultProps,
 } from '#/utils';
@@ -262,6 +264,189 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 200,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 修改用户等级 */
+export function useLeavelFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: '用户编号',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'nickname',
+      label: '用户昵称',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'point',
+      label: '用户等级',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleLevelList(),
+        fieldNames: { label: 'name', value: 'id' },
+      },
+    },
+    {
+      component: 'Textarea',
+      fieldName: 'reason',
+      label: '修改原因',
+      rules: 'required',
+    },
+  ];
+}
+
+/** 修改用户余额 */
+export function useBalanceFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: '用户编号',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'nickname',
+      label: '用户昵称',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'balance',
+      label: '变动前余额(元)',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'RadioGroup',
+      fieldName: 'changeType',
+      label: '变动类型',
+      componentProps: {
+        options: [
+          { label: '增加', value: 1 },
+          { label: '减少', value: -1 },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      defaultValue: 1,
+    },
+    {
+      component: 'InputNumber',
+      fieldName: 'changeBalance',
+      label: '变动余额(元)',
+      rules: 'required',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        step: 0.1,
+      },
+      defaultValue: 0,
+    },
+    {
+      component: 'Input',
+      fieldName: 'balanceResult',
+      label: '变动后余额(元)',
+      dependencies: {
+        triggerFields: ['changeBalance', 'changeType'],
+        disabled: true,
+        trigger(values, form) {
+          form.setFieldValue(
+            'balanceResult',
+            formatToFraction(
+              convertToInteger(values.balance) +
+                convertToInteger(values.changeBalance) * values.changeType,
+            ),
+          );
+        },
+      },
+    },
+  ];
+}
+
+/** 修改用户积分 */
+export function usePointFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      label: '用户编号',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'nickname',
+      label: '用户昵称',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'point',
+      label: '变动前积分',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      component: 'RadioGroup',
+      fieldName: 'changeType',
+      label: '变动类型',
+      componentProps: {
+        options: [
+          { label: '增加', value: 1 },
+          { label: '减少', value: -1 },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      defaultValue: 1,
+    },
+    {
+      component: 'InputNumber',
+      fieldName: 'changePoint',
+      label: '变动积分',
+      rules: 'required',
+      componentProps: {
+        min: 0,
+        precision: 0,
+      },
+      defaultValue: 0,
+    },
+    {
+      component: 'Input',
+      fieldName: 'pointResult',
+      label: '变动后积分',
+      dependencies: {
+        triggerFields: ['changePoint', 'changeType'],
+        disabled: true,
+        trigger(values, form) {
+          form.setFieldValue(
+            'pointResult',
+            values.point + values.changePoint * values.changeType ||
+              values.point,
+          );
+        },
+      },
+      rules: z.number().min(0),
     },
   ];
 }

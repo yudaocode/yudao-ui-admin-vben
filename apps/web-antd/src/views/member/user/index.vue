@@ -13,12 +13,30 @@ import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';
+import LeavelForm from './modules/leavel-form.vue';
+import PointForm from './modules/point-form.vue';
 
 const router = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [PointFormModal, pointFormModalApi] = useVbenModal({
+  connectedComponent: PointForm,
+  destroyOnClose: true,
+});
+
+const [BalanceFormModal, balanceFormModalApi] = useVbenModal({
+  connectedComponent: BalanceForm,
+  destroyOnClose: true,
+});
+
+const [LeavelFormModal, leavelFormModalApi] = useVbenModal({
+  connectedComponent: LeavelForm,
   destroyOnClose: true,
 });
 
@@ -45,17 +63,17 @@ function handleEdit(row: MemberUserApi.User) {
 
 /** 修改会员等级 */
 function handleUpdateLevel(row: MemberUserApi.User) {
-  formModalApi.setData(row).open();
+  leavelFormModalApi.setData(row).open();
 }
 
 /** 修改会员积分 */
 function handleUpdatePoint(row: MemberUserApi.User) {
-  formModalApi.setData(row).open();
+  pointFormModalApi.setData(row).open();
 }
 
 /** 修改会员余额 */
 function handleUpdateBalance(row: MemberUserApi.User) {
-  formModalApi.setData(row).open();
+  balanceFormModalApi.setData(row).open();
 }
 
 /** 查看会员详情 */
@@ -112,6 +130,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <FormModal @success="onRefresh" />
+    <PointFormModal @success="onRefresh" />
+    <BalanceFormModal @success="onRefresh" />
+    <LeavelFormModal @success="onRefresh" />
     <Grid table-title="会员列表">
       <template #toolbar-tools>
         <TableAction
