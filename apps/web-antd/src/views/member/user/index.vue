@@ -78,7 +78,12 @@ function handleUpdateBalance(row: MemberUserApi.User) {
 
 /** 查看会员详情 */
 function handleViewDetail(row: MemberUserApi.User) {
-  router.push({ name: 'MemberUserDetail', params: { id: row.id } });
+  router.push({
+    name: 'MemberUserDetail',
+    query: {
+      id: row.id,
+    },
+  });
 }
 
 // 表格实例
