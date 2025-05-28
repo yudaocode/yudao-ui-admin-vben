@@ -1,5 +1,3 @@
-import type { PageParam, PageResult } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace MemberAddressApi {
@@ -15,11 +13,8 @@ export namespace MemberAddressApi {
 }
 
 /** 查询用户收件地址列表 */
-export function getAddressList(params: PageParam) {
-  return requestClient.get<PageResult<MemberAddressApi.Address>>(
-    '/member/address/list',
-    {
-      params,
-    },
-  );
+export function getAddressList(params: any) {
+  return requestClient.get<MemberAddressApi.Address[]>('/member/address/list', {
+    params,
+  });
 }
