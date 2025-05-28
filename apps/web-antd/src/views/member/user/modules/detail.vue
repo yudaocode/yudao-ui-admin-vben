@@ -16,6 +16,7 @@ import { $t } from '#/locales';
 
 import UserAccountInfo from '../components/user-account-info.vue';
 import UserBasicInfo from '../components/user-basic-info.vue';
+import UserExperienceRecordList from '../components/user-experience-record-list.vue';
 import UserPointList from '../components/user-point-list.vue';
 import UserSignList from '../components/user-sign-list.vue';
 import Form from './form.vue';
@@ -86,7 +87,9 @@ onMounted(async () => {
           <TabPane tab="签到" key="UserSignList">
             <UserSignList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="成长值" key="UserExperienceRecordList" />
+          <TabPane tab="成长值" key="UserExperienceRecordList">
+            <UserExperienceRecordList class="h-full" :user-id="userId" />
+          </TabPane>
           <TabPane tab="余额" key="UserBalanceList" />
           <TabPane tab="收货地址" key="UserAddressList" />
           <TabPane tab="订单管理" key="UserOrderList" />

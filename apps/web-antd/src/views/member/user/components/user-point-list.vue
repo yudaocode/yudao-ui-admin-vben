@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MemberPointRecordApi } from '#/api/member/point/record';
 
-import { Tag } from 'ant-design-vue';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRecordPage } from '#/api/member/point/record';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
@@ -71,11 +69,5 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Grid>
-    <template #point="{ row }">
-      <Tag :color="row.point > 0 ? '#108ee9' : '#f50'">
-        {{ row.point > 0 ? `+${row.point}` : row.point }}
-      </Tag>
-    </template>
-  </Grid>
+  <Grid />
 </template>
