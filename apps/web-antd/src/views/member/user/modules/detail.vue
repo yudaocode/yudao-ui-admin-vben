@@ -98,11 +98,36 @@ onMounted(async () => {
           <TabPane tab="收货地址" key="UserAddressList">
             <UserAddressList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="订单管理" key="UserOrderList" />
-          <TabPane tab="售后管理" key="UserAfterSaleList" />
-          <TabPane tab="收藏记录" key="UserFavoriteList" />
-          <TabPane tab="优惠劵" key="UserCouponList" />
-          <TabPane tab="推广用户" key="UserBrokerageList" />
+          <TabPane tab="订单管理" key="UserOrderList">
+            <!-- Todo: 商城模块 -->
+            <div class="h-full">
+              <h1>订单管理</h1>
+            </div>
+          </TabPane>
+          <TabPane tab="售后管理" key="UserAfterSaleList">
+            <!-- Todo: 商城模块 -->
+            <div class="h-full">
+              <h1>售后管理</h1>
+            </div>
+          </TabPane>
+          <TabPane tab="收藏记录" key="UserFavoriteList">
+            <!-- Todo: 商城模块 -->
+            <div class="h-full">
+              <h1>收藏记录</h1>
+            </div>
+          </TabPane>
+          <TabPane tab="优惠劵" key="UserCouponList">
+            <!-- Todo: 商城模块 -->
+            <div class="h-full">
+              <h1>优惠劵</h1>
+            </div>
+          </TabPane>
+          <TabPane tab="推广用户" key="UserBrokerageList">
+            <!-- Todo: 商城模块 -->
+            <div class="h-full">
+              <h1>推广用户</h1>
+            </div>
+          </TabPane>
         </Tabs>
       </Card>
     </div>
