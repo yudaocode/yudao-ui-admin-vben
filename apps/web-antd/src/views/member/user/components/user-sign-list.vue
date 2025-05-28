@@ -56,6 +56,7 @@ const [Grid] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MemberSignInRecordApi.SignInRecord>,
+  separator: false,
 });
 </script>
 

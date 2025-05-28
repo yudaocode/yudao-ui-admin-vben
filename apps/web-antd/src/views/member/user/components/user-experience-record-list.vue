@@ -122,6 +122,7 @@ const [Grid] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MemberExperienceRecordApi.ExperienceRecord>,
+  separator: false,
 });
 </script>
 
