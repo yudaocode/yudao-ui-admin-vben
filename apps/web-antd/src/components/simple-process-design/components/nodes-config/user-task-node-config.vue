@@ -253,14 +253,18 @@ const saveConfig = async () => {
   if (!formRef.value) return false;
   if (!userTaskListenerRef.value) return false;
 
-  //  校验监听器页面, TODO 在别的Tab 好像跳不到这个页面
-  if (!(await userTaskListenerRef.value.validate())) {
+  // 先进行表单验证，记录验证结果
+  const userFormValid = await formRef.value.validate().catch(() => false);
+  const listenerValid = await userTaskListenerRef.value.validate().catch(() => {
+    return false;
+  });
+  // 如果监听器有错误，切换到监听器Tab
+  if (!listenerValid) {
     activeTabName.value = 'listener';
     return false;
   }
-  // 校验审批人页面
-  if (!(await formRef.value.validate())) {
-    // TODO 好像走不到这里
+  // 如果审批人表单有错误，切换到审批人Tab
+  if (!userFormValid) {
     activeTabName.value = 'user';
     return false;
   }
@@ -1221,7 +1225,7 @@ onMounted(() => {
           </div>
         </div>
       </TabPane>
-      <TabPane tab="监听器" key="listener">
+      <TabPane tab="监听器" key="listener" :force-render="true">
         <UserTaskListener
           ref="userTaskListenerRef"
           v-model="configForm"

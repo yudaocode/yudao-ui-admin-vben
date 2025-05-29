@@ -89,7 +89,7 @@ defineExpose({ validate });
           :rules="{
             required: true,
             message: '请求地址不能为空',
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
           }"
         >
           <Input

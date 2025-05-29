@@ -64,11 +64,11 @@ const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
     <Row :gutter="8" v-for="(item, index) in props.header" :key="index">
       <Col :span="7">
         <FormItem
-          :name="`${bind}.header.${index}.key`"
+          :name="[bind, 'header', index, 'key']"
           :rules="{
             required: true,
             message: '参数名不能为空',
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
           }"
         >
           <Input placeholder="参数名不能为空" v-model:value="item.key" />
@@ -88,18 +88,18 @@ const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
       </Col>
       <Col :span="10">
         <FormItem
-          :name="`${bind}.header.${index}.value`"
+          :name="[bind, 'header', index, 'value']"
           :rules="{
             required: true,
             message: '参数值不能为空',
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
           }"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="请求头" v-model:value="item.value" />
         </FormItem>
         <FormItem
-          :name="`${bind}.header.${index}.value`"
+          :name="[bind, 'header', index, 'value']"
           :rules="{
             required: true,
             message: '参数值不能为空',
@@ -148,11 +148,11 @@ const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
     <Row :gutter="8" v-for="(item, index) in props.body" :key="index">
       <Col :span="7">
         <FormItem
-          :name="`${bind}.body.${index}.key`"
+          :name="[bind, 'body', index, 'key']"
           :rules="{
             required: true,
             message: '参数名不能为空',
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
           }"
         >
           <Input placeholder="参数名" v-model:value="item.key" />
@@ -172,18 +172,18 @@ const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
       </Col>
       <Col :span="10">
         <FormItem
-          :name="`${bind}.body.${index}.value`"
+          :name="[bind, 'body', index, 'value']"
           :rules="{
             required: true,
             message: '参数值不能为空',
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
           }"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="参数值" v-model:value="item.value" />
         </FormItem>
         <FormItem
-          :name="`${bind}.body.${index}.value`"
+          :name="[bind, 'body', index, 'value']"
           :rules="{
             required: true,
             message: '参数值不能为空',
