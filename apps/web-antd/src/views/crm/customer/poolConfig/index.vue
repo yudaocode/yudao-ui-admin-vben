@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CrmCustomerPoolConfigApi } from '#/api/crm/customer/poolConfig';
 
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -15,7 +15,6 @@ import {
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
-const formData = ref<CrmCustomerPoolConfigApi.CustomerPoolConfig>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -113,21 +112,29 @@ async function onSubmit() {
   // 提交表单
   const data =
     (await formApi.getValues()) as CrmCustomerPoolConfigApi.CustomerPoolConfig;
-  formApi.setState({ commonConfig: { disabled: true } });
+  if (!data.enabled) {
+    data.contactExpireDays = undefined;
+    data.dealExpireDays = undefined;
+    data.notifyEnabled = false;
+  }
+  if (!data.notifyEnabled) {
+    data.notifyDays = undefined;
+  }
+  formApi.setValues(data);
   try {
     await saveCustomerPoolConfig(data);
     // 关闭并提示
     emit('success');
     message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
-    formApi.setState({ commonConfig: { disabled: false } });
+    formApi.setValues(data);
   }
 }
 
 async function getConfigInfo() {
   try {
     const res = await getCustomerPoolConfig();
-    formData.value = res;
+    formApi.setValues(res);
   } catch (error) {
     console.error(error);
   }

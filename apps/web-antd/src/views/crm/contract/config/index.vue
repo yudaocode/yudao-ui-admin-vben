@@ -1,38 +1,104 @@
 <script lang="ts" setup>
+import type { CrmContractConfigApi } from '#/api/crm/contract/config';
+
+import { onMounted } from 'vue';
+
 import { Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Card, message } from 'ant-design-vue';
 
-import { DocAlert } from '#/components/doc-alert';
+import { useVbenForm } from '#/adapter/form';
+import {
+  getContractConfig,
+  saveContractConfig,
+} from '#/api/crm/contract/config';
+import { $t } from '#/locales';
+
+const emit = defineEmits(['success']);
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    // 所有表单项
+    labelClass: 'w-2/6',
+  },
+  layout: 'horizontal',
+  wrapperClass: 'grid-cols-1',
+  actionWrapperClass: 'text-center',
+  schema: [
+    {
+      component: 'RadioGroup',
+      fieldName: 'notifyEnabled',
+      label: '提前提醒设置',
+      componentProps: {
+        options: [
+          { label: '提醒', value: true },
+          { label: '不提醒', value: false },
+        ],
+      },
+    },
+    {
+      component: 'InputNumber',
+      fieldName: 'notifyDays',
+      componentProps: {
+        min: 0,
+        precision: 0,
+      },
+      renderComponentContent: () => ({
+        addonBefore: () => '提前',
+        addonAfter: () => '天提醒',
+      }),
+      dependencies: {
+        triggerFields: ['notifyEnabled'],
+        trigger(values) {
+          values.notifyDays = undefined;
+        },
+        show: (value) => value.notifyEnabled,
+      },
+    },
+  ],
+  // 提交函数
+  handleSubmit: onSubmit,
+});
+
+async function onSubmit() {
+  const { valid } = await formApi.validate();
+  if (!valid) {
+    return;
+  }
+  // 提交表单
+  const data = (await formApi.getValues()) as CrmContractConfigApi.Config;
+  if (!data.notifyEnabled) {
+    data.notifyDays = undefined;
+  }
+  formApi.setValues(data);
+  try {
+    await saveContractConfig(data);
+    // 关闭并提示
+    emit('success');
+    message.success($t('ui.actionMessage.operationSuccess'));
+  } finally {
+    formApi.setValues(data);
+  }
+}
+
+async function getConfigInfo() {
+  try {
+    const res = await getContractConfig();
+    formApi.setValues(res);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(() => {
+  getConfigInfo();
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【合同】合同管理、合同提醒"
-      url="https://doc.iocoder.cn/crm/contract/"
-    />
-    <DocAlert
-      title="【通用】数据权限"
-      url="https://doc.iocoder.cn/crm/permission/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/crm/contract/config/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/crm/contract/config/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <Card title="合同配置设置">
+      <Form class="w-1/4" />
+    </Card>
   </Page>
 </template>
