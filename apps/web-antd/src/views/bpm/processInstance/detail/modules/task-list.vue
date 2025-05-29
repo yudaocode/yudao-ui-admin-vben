@@ -199,7 +199,7 @@ defineExpose({
           <Button
             v-if="row.formId > 0"
             type="primary"
-            @click="showFormDetail(row)"`
+            @click="showFormDetail(row)"
             size="small"
             ghost
             class="ml-1"

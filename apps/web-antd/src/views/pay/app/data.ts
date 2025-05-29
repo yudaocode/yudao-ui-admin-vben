@@ -54,7 +54,6 @@ export function useGridColumns<T = PayAppApi.App>(
     {
       field: 'status',
       title: '状态',
-      minWidth: 100,
       align: 'center',
       cellRender: {
         attrs: { beforeChange: onStatusChange },

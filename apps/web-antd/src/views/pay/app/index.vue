@@ -100,7 +100,7 @@ function isChannelExists(channels: string[], channelCode: string) {
 }
 
 async function openChannelForm(row: PayAppApi.App, payCode: string) {
-  channelModalApi.setData({ id: row.id || 0, payCode }).open();
+  channelModalApi.setData({ id: row.id, payCode }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -139,8 +139,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <AppModal @reload="onRefresh" />
-    <ChannelModal @reload="onRefresh" />
+    <AppModal @success="onRefresh" />
+    <ChannelModal @success="onRefresh" />
 
     <Grid>
       <template #toolbar-tools>
@@ -185,27 +185,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.ALIPAY_APP.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_APP.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_APP.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -220,27 +210,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.ALIPAY_PC.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_PC.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_PC.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_PC.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -255,27 +235,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.ALIPAY_WAP.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_WAP.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_WAP.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_WAP.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -290,27 +260,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.ALIPAY_QR.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_QR.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_QR.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_QR.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -325,27 +285,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.ALIPAY_BAR.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_BAR.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_BAR.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_BAR.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -360,27 +310,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_LITE.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_LITE.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_LITE.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_LITE.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -395,27 +335,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_PUB.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_PUB.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_PUB.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_PUB.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -430,27 +360,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_APP.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_APP.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_APP.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_APP.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -465,27 +385,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_NATIVE.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_NATIVE.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_NATIVE.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_NATIVE.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -500,27 +410,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_WAP.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_WAP.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_WAP.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_WAP.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -535,27 +435,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WX_BAR.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_BAR.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_BAR.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_BAR.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -570,27 +460,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(
+                row.channelCodes,
+                PayChannelEnum.WALLET.code,
+              )
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WALLET.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WALLET.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WALLET.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,
@@ -605,27 +485,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
-              icon: 'lucide:check',
-              shape: 'circle',
-              ifShow: isChannelExists(
+              icon: isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)
+                ? 'lucide:check'
+                : 'lucide:x',
+              danger: !isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.MOCK.code,
               ),
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.MOCK.code,
-              ),
-            },
-            {
-              type: 'primary',
-              danger: true,
-              icon: 'lucide:x',
               shape: 'circle',
-              ifShow: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.MOCK.code,
-              ),
               onClick: openChannelForm.bind(
                 null,
                 row,

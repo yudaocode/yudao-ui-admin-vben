@@ -12,7 +12,26 @@ const SvgBellIcon = createIconifyIcon('svg:bell');
 const SvgCakeIcon = createIconifyIcon('svg:cake');
 const SvgAntdvLogoIcon = createIconifyIcon('svg:antdv-logo');
 
+/** 支付 */
+const SvgAlipayPcIcon = createIconifyIcon('svg:alipay-pc');
+const SvgAlipayWapIcon = createIconifyIcon('svg:alipay-wap');
+const SvgAlipayAppIcon = createIconifyIcon('svg:alipay-app');
+const SvgAlipayQrIcon = createIconifyIcon('svg:alipay-qr');
+const SvgAlipayBarIcon = createIconifyIcon('svg:alipay-bar');
+const SvgWxPubIcon = createIconifyIcon('svg:wx-pub');
+const SvgWxLiteIcon = createIconifyIcon('svg:wx-lite');
+const SvgWxAppIcon = createIconifyIcon('svg:wx-app');
+const SvgWxNativeIcon = createIconifyIcon('svg:wx-native');
+const SvgWxBarIcon = createIconifyIcon('svg:wx-bar');
+const SvgWalletIcon = createIconifyIcon('svg:wallet');
+const SvgMockIcon = createIconifyIcon('svg:mock');
+
 export {
+  SvgAlipayAppIcon,
+  SvgAlipayBarIcon,
+  SvgAlipayPcIcon,
+  SvgAlipayQrIcon,
+  SvgAlipayWapIcon,
   SvgAntdvLogoIcon,
   SvgAvatar1Icon,
   SvgAvatar2Icon,
@@ -22,4 +41,11 @@ export {
   SvgCakeIcon,
   SvgCardIcon,
   SvgDownloadIcon,
+  SvgMockIcon,
+  SvgWalletIcon,
+  SvgWxAppIcon,
+  SvgWxBarIcon,
+  SvgWxLiteIcon,
+  SvgWxNativeIcon,
+  SvgWxPubIcon,
 };

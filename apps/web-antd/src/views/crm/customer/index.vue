@@ -147,7 +147,7 @@ function onChangeSceneType(key: number | string) {
     <FormModal @success="onRefresh" />
 
     <Grid>
-      <template #toolbar-actions>
+      <template #top>
         <Tabs class="border-none" @change="onChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
