@@ -99,87 +99,69 @@ export function useGridColumns<T = CrmBusinessApi.Business>(
     {
       field: 'name',
       title: '商机名称',
-      minWidth: 160,
       fixed: 'left',
-      slots: {
-        default: 'name',
-      },
+      slots: { default: 'name' },
     },
     {
       field: 'customerName',
       title: '客户名称',
-      minWidth: 120,
       fixed: 'left',
-      slots: {
-        default: 'customerName',
-      },
+      slots: { default: 'customerName' },
     },
     {
       field: 'totalPrice',
       title: '商机金额（元）',
-      minWidth: 140,
       formatter: 'formatNumber',
     },
     {
       field: 'dealTime',
       title: '预计成交日期',
-      minWidth: 180,
       formatter: 'formatDate',
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'contactNextTime',
       title: '下次联系时间',
-      minWidth: 180,
       formatter: 'formatDate',
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 100,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
     {
       field: 'statusTypeName',
       title: '商机状态组',
-      minWidth: 140,
       fixed: 'right',
     },
     {
       field: 'statusName',
       title: '商机阶段',
-      minWidth: 120,
       fixed: 'right',
     },
     {

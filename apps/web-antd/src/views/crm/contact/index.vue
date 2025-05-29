@@ -1,38 +1,207 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { CrmContactApi } from '#/api/crm/contact';
 
-import { Button } from 'ant-design-vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+import { Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
+
+import { Button, message, Tabs } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteContact,
+  exportContact,
+  getContactPage,
+} from '#/api/crm/contact';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const { push } = useRouter();
+const sceneType = ref('1');
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportContact(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '联系人.xls', source: data });
+}
+
+/** 创建联系人 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑联系人 */
+function handleEdit(row: CrmContactApi.Contact) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除联系人 */
+async function handleDelete(row: CrmContactApi.Contact) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteContact(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 查看联系人详情 */
+function handleDetail(row: CrmContactApi.Contact) {
+  push({ name: 'CrmContactDetail', params: { id: row.id } });
+}
+
+/** 查看客户详情 */
+function handleCustomerDetail(row: CrmContactApi.Contact) {
+  push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getContactPage({
+            page: page.currentPage,
+            pageSize: page.pageSize,
+            sceneType: sceneType.value,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<CrmContactApi.Contact>,
+});
+
+function onChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
+  gridApi.query();
+}
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【客户】客户管理、公海客户"
-      url="https://doc.iocoder.cn/crm/customer/"
-    />
-    <DocAlert
-      title="【通用】数据权限"
-      url="https://doc.iocoder.cn/crm/permission/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/crm/contact/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/crm/contact/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【客户】客户管理、公海客户"
+        url="https://doc.iocoder.cn/crm/customer/"
+      />
+      <DocAlert
+        title="【通用】数据权限"
+        url="https://doc.iocoder.cn/crm/permission/"
+      />
+    </template>
+
+    <FormModal @success="onRefresh" />
+    <Grid>
+      <template #top>
+        <Tabs class="border-none" @change="onChangeSceneType">
+          <Tabs.TabPane tab="我负责的" key="1" />
+          <Tabs.TabPane tab="我参与的" key="2" />
+          <Tabs.TabPane tab="下属负责的" key="3" />
+        </Tabs>
+      </template>
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['联系人']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['crm:contact:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['crm:contact:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #name="{ row }">
+        <Button type="link" @click="handleDetail(row)">
+          {{ row.name }}
+        </Button>
+      </template>
+      <template #customerName="{ row }">
+        <Button type="link" @click="handleCustomerDetail(row)">
+          {{ row.customerName }}
+        </Button>
+      </template>
+      <template #parentId="{ row }">
+        <Button type="link" @click="handleDetail(row)">
+          {{ row.parentId }}
+        </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['crm:contact:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['crm:contact:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

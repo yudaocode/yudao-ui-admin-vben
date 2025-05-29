@@ -133,14 +133,12 @@ export function useClueFollowColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '线索名称',
-      minWidth: 160,
       fixed: 'left',
       slots: { default: 'name' },
     },
     {
       field: 'source',
       title: '线索来源',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -149,27 +147,22 @@ export function useClueFollowColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'mobile',
       title: '手机',
-      minWidth: 120,
     },
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 180,
     },
     {
       field: 'detailAddress',
       title: '地址',
-      minWidth: 180,
     },
     {
       field: 'industryId',
       title: '客户行业',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -178,7 +171,6 @@ export function useClueFollowColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'level',
       title: '客户级别',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
@@ -187,51 +179,42 @@ export function useClueFollowColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'contactNextTime',
       title: '下次联系时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'contactLastContent',
       title: '最后跟进记录',
-      minWidth: 200,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 100,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
   ];
 }
@@ -276,124 +259,96 @@ export function useContractColumns<T = CrmContractApi.Contract>(
     {
       field: 'no',
       title: '合同编号',
-      minWidth: 160,
       fixed: 'left',
     },
     {
       field: 'name',
       title: '合同名称',
-      minWidth: 160,
-      slots: {
-        default: 'name',
-      },
+      slots: { default: 'name' },
     },
     {
       field: 'customerName',
       title: '客户名称',
-      minWidth: 160,
-      slots: {
-        default: 'customerName',
-      },
+      slots: { default: 'customerName' },
     },
     {
       field: 'businessName',
       title: '商机名称',
-      minWidth: 160,
-      slots: {
-        default: 'businessName',
-      },
+      slots: { default: 'businessName' },
     },
     {
       field: 'price',
       title: '合同金额（元）',
-      minWidth: 120,
       formatter: 'formatNumber',
     },
     {
       field: 'orderDate',
       title: '下单时间',
-      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
       field: 'startTime',
       title: '合同开始时间',
-      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '合同结束时间',
-      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
       field: 'contactName',
       title: '客户签约人',
-      minWidth: 130,
-      slots: {
-        default: 'contactName',
-      },
+      slots: { default: 'contactName' },
     },
     {
       field: 'signUserName',
       title: '公司签约人',
-      minWidth: 130,
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'totalReceivablePrice',
       title: '已回款金额（元）',
-      minWidth: 140,
       formatter: 'formatNumber',
     },
     {
       field: 'noReceivablePrice',
       title: '未回款金额（元）',
-      minWidth: 120,
       formatter: 'formatNumber',
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 120,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
     {
       field: 'auditStatus',
       title: '合同状态',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_AUDIT_STATUS },
@@ -402,7 +357,7 @@ export function useContractColumns<T = CrmContractApi.Contract>(
     {
       field: 'operation',
       title: '操作',
-      minWidth: 130,
+      width: 130,
       align: 'center',
       fixed: 'right',
       cellRender: {
@@ -487,15 +442,11 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '客户名称',
-      minWidth: 160,
-      slots: {
-        default: 'name',
-      },
+      slots: { default: 'name' },
     },
     {
       field: 'source',
       title: '客户来源',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -504,22 +455,18 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'mobile',
       title: '手机',
-      minWidth: 120,
     },
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 180,
     },
     {
       field: 'level',
       title: '客户级别',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
@@ -528,7 +475,6 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'industryId',
       title: '客户行业',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -537,18 +483,15 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'contactNextTime',
       title: '下次联系时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'lockStatus',
       title: '锁定状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -557,7 +500,6 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'dealStatus',
       title: '成交状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -566,50 +508,41 @@ export function useCustomerColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'contactLastContent',
       title: '最后跟进记录',
-      minWidth: 200,
     },
     {
       field: 'detailAddress',
       title: '地址',
-      minWidth: 200,
     },
     {
       field: 'poolDay',
       title: '距离进入公海天数',
-      minWidth: 180,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 100,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
   ];
 }
@@ -638,44 +571,32 @@ export function useReceivableAuditColumns<T = CrmReceivableApi.Receivable>(
     {
       field: 'no',
       title: '回款编号',
-      minWidth: 180,
       fixed: 'left',
-      slots: {
-        default: 'no',
-      },
+      slots: { default: 'no' },
     },
     {
       field: 'customerName',
       title: '客户名称',
-      minWidth: 120,
-      slots: {
-        default: 'customerName',
-      },
+      slots: { default: 'customerName' },
     },
     {
       field: 'contractNo',
       title: '合同编号',
-      minWidth: 180,
-      slots: {
-        default: 'contractNo',
-      },
+      slots: { default: 'contractNo' },
     },
     {
       field: 'returnTime',
       title: '回款日期',
-      minWidth: 150,
       formatter: 'formatDateTime',
     },
     {
       field: 'price',
       title: '回款金额(元)',
-      minWidth: 140,
       formatter: 'formatNumber',
     },
     {
       field: 'returnType',
       title: '回款方式',
-      minWidth: 130,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE },
@@ -684,45 +605,37 @@ export function useReceivableAuditColumns<T = CrmReceivableApi.Receivable>(
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'contract.totalPrice',
       title: '合同金额（元）',
-      minWidth: 140,
       formatter: 'formatNumber',
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 120,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 120,
     },
     {
       field: 'auditStatus',
       title: '回款状态',
-      minWidth: 120,
       fixed: 'right',
       cellRender: {
         name: 'CellDict',
@@ -778,52 +691,40 @@ export function useReceivablePlanRemindColumns<T = CrmReceivableApi.Receivable>(
     {
       field: 'customerName',
       title: '客户名称',
-      minWidth: 160,
       fixed: 'left',
-      slots: {
-        default: 'customerName',
-      },
+      slots: { default: 'customerName' },
     },
     {
       field: 'contractNo',
       title: '合同编号',
-      minWidth: 200,
     },
     {
       field: 'period',
       title: '期数',
-      minWidth: 160,
-      slots: {
-        default: 'period',
-      },
+      slots: { default: 'period' },
     },
     {
       field: 'price',
       title: '计划回款金额（元）',
-      minWidth: 120,
       formatter: 'formatNumber',
     },
     {
       field: 'returnTime',
       title: '计划回款日期',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'remindDays',
       title: '提前几天提醒',
-      minWidth: 150,
     },
     {
       field: 'remindTime',
       title: '提醒日期',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'returnType',
       title: '回款方式',
-      minWidth: 120,
       fixed: 'right',
       cellRender: {
         name: 'CellDict',
@@ -833,41 +734,34 @@ export function useReceivablePlanRemindColumns<T = CrmReceivableApi.Receivable>(
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 100,
     },
     {
       field: 'receivable.price',
       title: '实际回款金额（元）',
-      minWidth: 160,
       formatter: 'formatNumber',
     },
     {
       field: 'receivable.returnTime',
       title: '实际回款日期',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
     {
       field: 'operation',
