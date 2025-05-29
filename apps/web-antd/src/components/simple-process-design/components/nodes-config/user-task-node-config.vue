@@ -34,6 +34,8 @@ import {
   TypographyText,
 } from 'ant-design-vue';
 
+import { BpmModelFormType } from '#/utils';
+
 import {
   APPROVE_METHODS,
   APPROVE_TYPE,
@@ -626,11 +628,9 @@ onMounted(() => {
               name="roleIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.roleIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in roleOptions"
@@ -664,10 +664,8 @@ onMounted(() => {
                 }"
                 empty-text="加载中，请稍后"
                 multiple
-                node-key="id"
                 :check-strictly="true"
                 allow-clear
-                style="width: 100%"
                 tree-checkable
               />
             </FormItem>
@@ -677,11 +675,9 @@ onMounted(() => {
               name="postIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.postIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in postOptions"
@@ -699,11 +695,9 @@ onMounted(() => {
               name="userIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.userIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userOptions"
@@ -723,11 +717,9 @@ onMounted(() => {
               name="userGroups"
             >
               <Select
-                filterable
                 v-model:value="configForm.userGroups"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userGroupOptions"
@@ -746,12 +738,7 @@ onMounted(() => {
               label="表单内用户字段"
               name="formUser"
             >
-              <Select
-                filterable
-                v-model:value="configForm.formUser"
-                clearable
-                style="width: 100%"
-              >
+              <Select v-model:value="configForm.formUser" clearable>
                 <SelectOption
                   v-for="(item, idx) in userFieldOnFormOptions"
                   :key="idx"
@@ -771,12 +758,7 @@ onMounted(() => {
               label="表单内部门字段"
               name="formDept"
             >
-              <Select
-                filterable
-                v-model:value="configForm.formDept"
-                clearable
-                style="width: 100%"
-              >
+              <Select v-model:value="configForm.formDept" clearable>
                 <SelectOption
                   v-for="(item, idx) in deptFieldOnFormOptions"
                   :key="idx"
@@ -802,7 +784,7 @@ onMounted(() => {
               :label="deptLevelLabel!"
               name="deptLevel"
             >
-              <Select filterable v-model:value="configForm.deptLevel" clearable>
+              <Select v-model:value="configForm.deptLevel" clearable>
                 <SelectOption
                   v-for="(item, index) in MULTI_LEVEL_DEPT"
                   :key="index"
@@ -821,11 +803,7 @@ onMounted(() => {
               label="流程表达式"
               name="expression"
             >
-              <Textarea
-                v-model:value="configForm.expression"
-                clearable
-                style="width: 100%"
-              />
+              <Textarea v-model:value="configForm.expression" clearable />
             </FormItem>
             <!-- 多人审批/办理 方式 -->
             <FormItem :label="`多人${nodeTypeName}方式`" name="approveMethod">
@@ -890,12 +868,7 @@ onMounted(() => {
                 label="驳回节点"
                 name="returnNodeId"
               >
-                <Select
-                  filterable
-                  v-model:value="configForm.returnNodeId"
-                  clearable
-                  style="width: 100%"
-                >
+                <Select v-model:value="configForm.returnNodeId" clearable>
                   <SelectOption
                     v-for="item in returnTaskList"
                     :key="item.id"
@@ -963,8 +936,7 @@ onMounted(() => {
                   <Col>
                     <FormItem name="timeDuration">
                       <InputNumber
-                        class="mr-2"
-                        :style="{ width: '100px' }"
+                        class="mr-2 mt-0.5"
                         v-model:value="configForm.timeDuration"
                         :min="1"
                         controls-position="right"
@@ -973,7 +945,6 @@ onMounted(() => {
                   </Col>
                   <Col>
                     <Select
-                      filterable
                       v-model:value="timeUnit"
                       class="mr-2"
                       :style="{ width: '100px' }"
@@ -1040,11 +1011,9 @@ onMounted(() => {
               name="assignEmptyHandlerUserIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.assignEmptyHandlerUserIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userOptions"
@@ -1151,7 +1120,11 @@ onMounted(() => {
           </div>
         </div>
       </TabPane>
-      <TabPane tab="表单字段权限" key="fields" v-if="formType === 10">
+      <TabPane
+        tab="表单字段权限"
+        key="fields"
+        v-if="formType === BpmModelFormType.NORMAL"
+      >
         <div class="p-1">
           <div class="mb-4 text-[16px] font-bold">字段权限</div>
 
