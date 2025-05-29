@@ -1,21 +1,22 @@
 <!-- 即将到期的合同 -->
 <script lang="ts" setup>
-import type { OnActionClickParams } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmContractApi } from '#/api/crm/contract';
 
 import { useRouter } from 'vue-router';
 
 import { Button } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getContractPage } from '#/api/crm/contract';
+import { useGridColumns } from '#/views/crm/contract/data';
 
-import { useContractColumns, useContractRemindFormSchema } from '../data';
+import { CONTRACT_EXPIRY_TYPE } from '../data';
 
 const { push } = useRouter();
 
 /** 查看审批 */
-function openProcessDetail(row: CrmContractApi.Contract) {
+function handleProcessDetail(row: CrmContractApi.Contract) {
   push({
     name: 'BpmProcessInstanceDetail',
     query: { id: row.processInstanceId },
@@ -23,43 +24,41 @@ function openProcessDetail(row: CrmContractApi.Contract) {
 }
 
 /** 打开合同详情 */
-function openContractDetail(row: CrmContractApi.Contract) {
+function handleContractDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmContractDetail', params: { id: row.id } });
 }
 /** 打开客户详情 */
-function openCustomerDetail(row: CrmContractApi.Contract) {
+function handleCustomerDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmCustomerDetail', params: { id: row.id } });
 }
 
 /** 打开联系人详情 */
-function openContactDetail(row: CrmContractApi.Contract) {
+function handleContactDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmContactDetail', params: { id: row.id } });
 }
 
 /** 打开商机详情 */
-function openBusinessDetail(row: CrmContractApi.Contract) {
+function handleBusinessDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmBusinessDetail', params: { id: row.id } });
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<CrmContractApi.Contract>) {
-  switch (code) {
-    case 'processDetail': {
-      openProcessDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useContractRemindFormSchema(),
+    schema: [
+      {
+        fieldName: 'expiryType',
+        label: '到期状态',
+        component: 'Select',
+        componentProps: {
+          allowClear: true,
+          options: CONTRACT_EXPIRY_TYPE,
+        },
+        defaultValue: 1,
+      },
+    ],
   },
   gridOptions: {
-    columns: useContractColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -81,31 +80,43 @@ const [Grid] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<CrmContractApi.Contract>,
 });
 </script>
 
 <template>
-  <Grid table-title="即将到期的合同">
+  <Grid>
     <template #name="{ row }">
-      <Button type="link" @click="openContractDetail(row)">
+      <Button type="link" @click="handleContractDetail(row)">
         {{ row.name }}
       </Button>
     </template>
     <template #customerName="{ row }">
-      <Button type="link" @click="openCustomerDetail(row)">
+      <Button type="link" @click="handleCustomerDetail(row)">
         {{ row.customerName }}
       </Button>
     </template>
     <template #businessName="{ row }">
-      <Button type="link" @click="openBusinessDetail(row)">
+      <Button type="link" @click="handleBusinessDetail(row)">
         {{ row.businessName }}
       </Button>
     </template>
-    <template #contactName="{ row }">
-      <Button type="link" @click="openContactDetail(row)">
-        {{ row.contactName }}
+    <template #signContactName="{ row }">
+      <Button type="link" @click="handleContactDetail(row)">
+        {{ row.signContactName }}
       </Button>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        :actions="[
+          {
+            label: '查看审批',
+            type: 'link',
+            auth: ['crm:contract:update'],
+            onClick: handleProcessDetail.bind(null, row),
+          },
+        ]"
+      />
     </template>
   </Grid>
 </template>
