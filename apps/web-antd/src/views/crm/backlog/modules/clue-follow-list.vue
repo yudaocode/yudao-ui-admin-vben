@@ -14,7 +14,7 @@ import { useClueFollowColumns, useClueFollowFormSchema } from '../data';
 const { push } = useRouter();
 
 /** 打开线索详情 */
-function onDetail(row: CrmClueApi.Clue) {
+function handleDetail(row: CrmClueApi.Clue) {
   push({ name: 'CrmClueDetail', params: { id: row.id } });
 }
 
@@ -52,7 +52,7 @@ const [Grid] = useVbenVxeGrid({
 <template>
   <Grid table-title="分配给我的线索">
     <template #name="{ row }">
-      <Button type="link" @click="onDetail(row)">{{ row.name }}</Button>
+      <Button type="link" @click="handleDetail(row)">{{ row.name }}</Button>
     </template>
   </Grid>
 </template>

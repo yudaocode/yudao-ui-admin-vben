@@ -1,12 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmBusinessApi } from '#/api/crm/business';
-
-import { useAccess } from '@vben/access';
-
-import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -37,7 +30,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入商机金额',
       },
       rules: 'required',
@@ -79,22 +71,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商机名称',
       component: 'Input',
     },
-    {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
-        allowClear: true,
-      },
-    },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = CrmBusinessApi.Business>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
@@ -165,29 +146,10 @@ export function useGridColumns<T = CrmBusinessApi.Business>(
       fixed: 'right',
     },
     {
-      field: 'operation',
       title: '操作',
       width: 130,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '商机',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['crm:business:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['crm:business:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

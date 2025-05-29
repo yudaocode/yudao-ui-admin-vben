@@ -2,7 +2,6 @@ import type { Ref } from 'vue';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmContractApi } from '#/api/crm/contract';
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 
 import { useAccess } from '@vben/access';
@@ -252,9 +251,7 @@ export function useContractRemindFormSchema(): VbenFormSchema[] {
 }
 
 /** 合同审核列表的字段 */
-export function useContractColumns<T = CrmContractApi.Contract>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useContractColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'no',
@@ -355,25 +352,10 @@ export function useContractColumns<T = CrmContractApi.Contract>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 130,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'no',
-          nameTitle: '合同编号',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'processDetail',
-            show: hasAccessByCodes(['crm:contract:update']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

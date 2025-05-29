@@ -1,7 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { handleTree } from '@vben/utils';
+
 import { z } from '#/adapter/form';
+import { getProductCategoryList } from '#/api/crm/product/category';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -28,17 +31,24 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'Input',
+      component: 'ApiTreeSelect',
       fieldName: 'categoryName',
       label: '产品类型',
       rules: 'required',
+      componentProps: {
+        api: async () => {
+          const data = await getProductCategoryList();
+          return handleTree(data);
+        },
+        fieldNames: { label: 'name', value: 'id', children: 'children' },
+      },
     },
     {
       fieldName: 'unit',
       label: '产品单位',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT),
+        options: getDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT, 'number'),
       },
       rules: 'required',
     },
