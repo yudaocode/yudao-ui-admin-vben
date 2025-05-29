@@ -49,7 +49,7 @@ function handleCreate() {
 
 /** 编辑回款 */
 function handleEdit(row: CrmReceivableApi.Receivable) {
-  formModalApi.setData(row).open();
+  formModalApi.setData({ receivable: row }).open();
 }
 
 /** 删除回款 */

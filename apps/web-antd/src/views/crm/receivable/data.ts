@@ -1,24 +1,48 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
-import { DICT_TYPE } from '#/utils/dict';
+import { getReceivablePlanSimpleList } from '#/api/crm/receivable/plan';
+import { getSimpleUserList } from '#/api/system/user';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
     {
       fieldName: 'no',
       label: '回款编号',
       component: 'Input',
       rules: 'required',
       componentProps: {
-        placeholder: '请输入回款编号',
+        placeholder: '保存时自动生成',
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      rules: 'required',
+      componentProps: {
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择客户',
       },
     },
     {
       fieldName: 'customerId',
-      label: '客户',
+      label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
@@ -30,23 +54,63 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'contractId',
-      label: '合同',
-      component: 'ApiSelect',
+      label: '合同名称',
+      component: 'Select',
       rules: 'required',
-      componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
-        placeholder: '请选择合同',
+      dependencies: {
+        triggerFields: ['customerId'],
+        disabled: (values) => !values.customerId,
+        async componentProps(values) {
+          if (values.customerId) {
+            values.contractId = undefined;
+            const contracts = await getContractSimpleList(values.customerId);
+            return {
+              options: contracts.map((item) => ({
+                label: item.name,
+                value: item.id,
+                disabled: item.auditStatus === 20,
+              })),
+              placeholder: '请选择合同',
+            } as any;
+          }
+        },
+      },
+    },
+    {
+      fieldName: 'planId',
+      label: '回款期数',
+      component: 'Select',
+      rules: 'required',
+      dependencies: {
+        triggerFields: ['contractId'],
+        disabled: (values) => !values.contractId,
+        async componentProps(values) {
+          if (values.contractId) {
+            values.planId = undefined;
+            const plans = await getReceivablePlanSimpleList(
+              values.customerId,
+              values.contractId,
+            );
+            return {
+              options: plans.map((item) => ({
+                label: item.period,
+                value: item.id,
+              })),
+              placeholder: '请选择回款期数',
+            } as any;
+          }
+        },
       },
     },
     {
       fieldName: 'returnTime',
       label: '回款日期',
       component: 'DatePicker',
-      rules: 'required',
       componentProps: {
         placeholder: '请选择回款日期',
+        showTime: false,
+        valueFormat: 'x',
+        format: 'YYYY-MM-DD',
       },
     },
     {
@@ -63,10 +127,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'returnType',
       label: '回款方式',
-      component: 'DictSelect',
+      component: 'Select',
       rules: 'required',
       componentProps: {
-        type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE,
+        options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
         placeholder: '请选择回款方式',
       },
     },

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { CrmReceivableApi } from '#/api/crm/receivable';
+import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 
 import { computed, ref } from 'vue';
 
@@ -8,20 +8,20 @@ import { useVbenForm, useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import {
-  createReceivable,
-  getReceivable,
-  updateReceivable,
-} from '#/api/crm/receivable';
+  createReceivablePlan,
+  getReceivablePlan,
+  updateReceivablePlan,
+} from '#/api/crm/receivable/plan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<CrmReceivableApi.Receivable>();
+const formData = ref<CrmReceivablePlanApi.ReceivablePlan>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['回款'])
-    : $t('ui.actionTitle.create', ['回款']);
+    ? $t('ui.actionTitle.edit', ['回款计划'])
+    : $t('ui.actionTitle.create', ['回款计划']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -45,11 +45,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as CrmReceivableApi.Receivable;
+    const data =
+      (await formApi.getValues()) as CrmReceivablePlanApi.ReceivablePlan;
     try {
       await (formData.value?.id
-        ? updateReceivable(data)
-        : createReceivable(data));
+        ? updateReceivablePlan(data)
+        : createReceivablePlan(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -64,29 +65,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmReceivableApi.Receivable>();
-    if (!data) {
+    const data = modalApi.getData<CrmReceivablePlanApi.ReceivablePlan>();
+    if (!data || !data.id) {
       return;
     }
-    const { receivable, plan } = data;
     modalApi.lock();
     try {
-      if (receivable) {
-        formData.value = await getReceivable(receivable.id as number);
-      } else if (plan) {
-        formData.value = plan.id
-          ? {
-              planId: plan.id,
-              price: plan.price,
-              returnType: plan.returnType,
-              customerId: plan.customerId,
-              contractId: plan.contractId,
-            }
-          : {
-              customerId: plan.customerId,
-              contractId: plan.contractId,
-            };
-      }
+      formData.value = await getReceivablePlan(data.id as number);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
