@@ -116,7 +116,6 @@ export function useGridColumns(
     {
       field: 'name',
       title: '部门名称',
-      minWidth: 150,
       align: 'left',
       fixed: 'left',
       treeNode: true,
@@ -124,20 +123,15 @@ export function useGridColumns(
     {
       field: 'leaderUserId',
       title: '负责人',
-      minWidth: 150,
-      formatter: (row) => {
-        return getLeaderName?.(row.cellValue) || '-';
-      },
+      formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
     },
     {
       field: 'sort',
       title: '显示顺序',
-      minWidth: 100,
     },
     {
       field: 'status',
       title: '部门状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -146,7 +140,6 @@ export function useGridColumns(
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

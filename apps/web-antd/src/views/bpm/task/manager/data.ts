@@ -89,8 +89,8 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'durationInMillis',
       title: '耗时',
       minWidth: 180,
-      formatter: ({ row }) => {
-        return `${formatPast2(row.durationInMillis)}`;
+      formatter: ({ cellValue }) => {
+        return `${formatPast2(cellValue)}`;
       },
     },
     {

@@ -107,29 +107,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 100,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'appName',
       title: '支付应用',
-      minWidth: 100,
     },
     {
       field: 'price',
       title: '转账金额',
-      minWidth: 120,
       formatter: ({ cellValue }) => `￥${(cellValue / 100).toFixed(2)}`,
     },
     {
       field: 'status',
       title: '转账状态',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_TRANSFER_STATUS },
@@ -138,7 +133,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'type',
       title: '类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_TRANSFER_TYPE },
@@ -147,7 +141,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'channelCode',
       title: '支付渠道',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_CHANNEL_CODE },
@@ -156,22 +149,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'merchantTransferId',
       title: '商户单号',
-      minWidth: 180,
     },
     {
       field: 'channelTransferNo',
       title: '渠道单号',
-      minWidth: 180,
     },
     {
       field: 'userName',
       title: '收款人姓名',
-      minWidth: 120,
     },
     {
       field: 'accountNo',
       title: '收款人账号',
-      minWidth: 180,
     },
     {
       title: '操作',

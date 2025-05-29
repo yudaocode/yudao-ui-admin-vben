@@ -91,17 +91,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '套餐编号',
-      minWidth: 100,
     },
     {
       field: 'name',
       title: '套餐名称',
-      minWidth: 180,
     },
     {
       field: 'status',
       title: '状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -110,12 +107,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

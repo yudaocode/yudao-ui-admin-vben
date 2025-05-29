@@ -75,38 +75,31 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 100,
     },
     {
       field: 'sendTime',
       title: '发送时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'toMail',
       title: '收件邮箱',
-      minWidth: 160,
     },
     {
       field: 'templateTitle',
       title: '邮件标题',
-      minWidth: 120,
     },
     {
       field: 'templateContent',
       title: '邮件内容',
-      minWidth: 300,
     },
     {
       field: 'fromMail',
       title: '发送邮箱',
-      minWidth: 120,
     },
     {
       field: 'sendStatus',
       title: '发送状态',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS },
@@ -115,7 +108,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateCode',
       title: '模板编码',
-      minWidth: 120,
     },
     {
       title: '操作',

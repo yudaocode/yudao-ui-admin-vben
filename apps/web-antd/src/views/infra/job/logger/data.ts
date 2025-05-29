@@ -70,32 +70,26 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
-      minWidth: 80,
     },
     {
       field: 'jobId',
       title: '任务编号',
-      minWidth: 80,
     },
     {
       field: 'handlerName',
       title: '处理器的名字',
-      minWidth: 180,
     },
     {
       field: 'handlerParam',
       title: '处理器的参数',
-      minWidth: 140,
     },
     {
       field: 'executeIndex',
       title: '第几次执行',
-      minWidth: 100,
     },
     {
       field: 'beginTime',
       title: '执行时间',
-      minWidth: 280,
       formatter: ({ row }) => {
         return `${formatDateTime(row.beginTime)} ~ ${formatDateTime(row.endTime)}`;
       },
@@ -103,15 +97,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'duration',
       title: '执行时长',
-      minWidth: 120,
-      formatter: ({ row }) => {
-        return `${row.duration} 毫秒`;
-      },
+      formatter: ({ cellValue }) => `${cellValue} 毫秒`,
     },
     {
       field: 'status',
       title: '任务状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_JOB_LOG_STATUS },

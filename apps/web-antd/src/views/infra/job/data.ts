@@ -132,17 +132,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '任务编号',
-      minWidth: 80,
     },
     {
       field: 'name',
       title: '任务名称',
-      minWidth: 120,
     },
     {
       field: 'status',
       title: '任务状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_JOB_STATUS },
@@ -151,17 +148,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'handlerName',
       title: '处理器的名字',
-      minWidth: 180,
     },
     {
       field: 'handlerParam',
       title: '处理器的参数',
-      minWidth: 140,
     },
     {
       field: 'cronExpression',
       title: 'CRON 表达式',
-      minWidth: 120,
     },
     {
       title: '操作',

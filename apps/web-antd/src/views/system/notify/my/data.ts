@@ -45,18 +45,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateNickname',
       title: '发送人',
-      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '发送时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'templateType',
       title: '类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
@@ -65,12 +62,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateContent',
       title: '消息内容',
-      minWidth: 300,
     },
     {
       field: 'readStatus',
       title: '是否已读',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -79,7 +74,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readTime',
       title: '阅读时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

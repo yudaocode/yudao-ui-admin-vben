@@ -38,45 +38,37 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '订单编号',
-      minWidth: 200,
     },
     {
       field: 'userId',
       title: '用户编号',
-      minWidth: 200,
     },
     {
       field: 'spuName',
       title: '商品名字',
-      minWidth: 200,
     },
     {
       field: 'price',
       title: '支付价格',
-      minWidth: 120,
       formatter: 'formatNumber',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
-      minWidth: 120,
       formatter: 'formatNumber',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'payOrderId',
       title: '支付单号',
-      minWidth: 200,
     },
     {
       field: 'payStatus',
       title: '是否支付',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -85,13 +77,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'payTime',
       title: '支付时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'refundTime',
       title: '退款时间',
-      minWidth: 180,
       slots: { default: 'refundTime' },
     },
     {

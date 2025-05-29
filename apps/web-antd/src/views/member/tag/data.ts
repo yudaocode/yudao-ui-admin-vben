@@ -48,17 +48,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 200,
     },
     {
       field: 'name',
       title: '标签名称',
-      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
