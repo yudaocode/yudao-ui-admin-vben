@@ -70,17 +70,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
-      minWidth: 100,
     },
     {
       field: 'userId',
       title: '用户编号',
-      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -89,34 +86,28 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'applicationName',
       title: '应用名',
-      minWidth: 150,
     },
     {
       field: 'requestMethod',
       title: '请求方法',
-      minWidth: 80,
     },
     {
       field: 'requestUrl',
       title: '请求地址',
-      minWidth: 300,
     },
     {
       field: 'beginTime',
       title: '请求时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'duration',
       title: '执行时长',
-      minWidth: 120,
-      formatter: ({ row }) => `${row.duration} ms`,
+      formatter: ({ cellValue }) => `${cellValue} ms`,
     },
     {
       field: 'resultCode',
       title: '操作结果',
-      minWidth: 150,
       formatter: ({ row }) => {
         return row.resultCode === 0 ? '成功' : `失败(${row.resultMsg})`;
       },
@@ -124,17 +115,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'operateModule',
       title: '操作模块',
-      minWidth: 150,
     },
     {
       field: 'operateName',
       title: '操作名',
-      minWidth: 220,
     },
     {
       field: 'operateType',
       title: '操作类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_OPERATE_TYPE },

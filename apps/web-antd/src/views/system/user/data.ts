@@ -268,32 +268,26 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'id',
       title: '用户编号',
-      minWidth: 100,
     },
     {
       field: 'username',
       title: '用户名称',
-      minWidth: 120,
     },
     {
       field: 'nickname',
       title: '用户昵称',
-      minWidth: 120,
     },
     {
       field: 'deptName',
       title: '部门',
-      minWidth: 120,
     },
     {
       field: 'mobile',
       title: '手机号码',
-      minWidth: 120,
     },
     {
       field: 'status',
       title: '状态',
-      minWidth: 100,
       align: 'center',
       cellRender: {
         attrs: { beforeChange: onStatusChange },
@@ -307,7 +301,6 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

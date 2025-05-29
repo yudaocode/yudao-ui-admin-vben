@@ -6,10 +6,12 @@ import { h } from 'vue';
 
 import { formatDateTime } from '@vben/utils';
 
+import { getSimpleContactList } from '#/api/crm/contact';
+import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -24,23 +26,9 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'name',
-      label: '客户名称',
+      label: '联系人姓名',
       component: 'Input',
       rules: 'required',
-    },
-    {
-      fieldName: 'source',
-      label: '客户来源',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE),
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'mobile',
-      label: '手机',
-      component: 'Input',
     },
     {
       fieldName: 'ownerUserId',
@@ -53,7 +41,23 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      rules: 'required',
+    },
+    {
+      fieldName: 'customerId',
+      label: '客户名称',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'mobile',
+      label: '手机',
+      component: 'Input',
     },
     {
       fieldName: 'telephone',
@@ -76,19 +80,36 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
     },
     {
-      fieldName: 'industryId',
-      label: '客户行业',
+      fieldName: 'post',
+      label: '职位',
+      component: 'Input',
+    },
+    {
+      fieldName: 'master',
+      label: '关键决策人',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY),
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
     },
     {
-      fieldName: 'level',
-      label: '客户级别',
+      fieldName: 'sex',
+      label: '性别',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL),
+        options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
+      },
+    },
+    {
+      fieldName: 'parentId',
+      label: '直属上级',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleContactList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
       },
     },
     {
@@ -128,7 +149,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
-      label: '客户名称',
+      label: '客户',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '姓名',
       component: 'Input',
     },
     {
@@ -142,13 +175,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
     },
     {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
-        allowClear: true,
-      },
+      fieldName: 'wechat',
+      label: '微信',
+      component: 'Input',
+    },
+    {
+      fieldName: 'email',
+      label: '电子邮箱',
+      component: 'Input',
     },
   ];
 }
@@ -158,18 +192,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
-      title: '客户名称',
+      title: '联系人姓名',
       fixed: 'left',
-      slots: {
-        default: 'name',
-      },
+      slots: { default: 'name' },
     },
     {
-      field: 'source',
-      title: '客户来源',
+      field: 'customerName',
+      title: '客户名称',
+      fixed: 'left',
+      slots: { default: 'customerName' },
+    },
+    {
+      field: 'sex',
+      title: '性别',
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
+        props: { type: DICT_TYPE.SYSTEM_USER_SEX },
       },
     },
     {
@@ -185,24 +223,25 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '邮箱',
     },
     {
+      field: 'post',
+      title: '职位',
+    },
+    {
       field: 'detailAddress',
       title: '地址',
     },
     {
-      field: 'industryId',
-      title: '客户行业',
+      field: 'master',
+      title: '关键决策人',
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
+        props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
       },
     },
     {
-      field: 'level',
-      title: '客户级别',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
-      },
+      field: 'parentId',
+      title: '直属上级',
+      slots: { default: 'parentId' },
     },
     {
       field: 'ownerUserName',
@@ -218,18 +257,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       formatter: 'formatDateTime',
     },
     {
-      field: 'contactLastTime',
-      title: '最后跟进时间',
+      field: 'remark',
+      title: '备注',
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      formatter: 'formatDateTime',
-    },
-    {
-      field: 'createTime',
-      title: '创建时间',
       formatter: 'formatDateTime',
     },
     {

@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
 
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteBusiness,
   exportBusiness,
@@ -38,23 +34,23 @@ function onRefresh() {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportBusiness(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '商机.xls', source: data });
 }
 
 /** 创建商机 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑商机 */
-function onEdit(row: CrmBusinessApi.Business) {
+function handleEdit(row: CrmBusinessApi.Business) {
   formModalApi.setData(row).open();
 }
 
 /** 删除商机 */
-async function onDelete(row: CrmBusinessApi.Business) {
+async function handleDelete(row: CrmBusinessApi.Business) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -70,30 +66,13 @@ async function onDelete(row: CrmBusinessApi.Business) {
 }
 
 /** 查看商机详情 */
-function onDetail(row: CrmBusinessApi.Business) {
+function handleDetail(row: CrmBusinessApi.Business) {
   push({ name: 'CrmBusinessDetail', params: { id: row.id } });
 }
 
 /** 查看客户详情 */
-function onCustomerDetail(row: CrmBusinessApi.Business) {
+function handleCustomerDetail(row: CrmBusinessApi.Business) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<CrmBusinessApi.Business>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -101,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -142,33 +121,58 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="商机列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['crm:business:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['商机']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['crm:business:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['商机']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['crm:business:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['crm:business:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
       </template>
       <template #name="{ row }">
-        <Button type="link" @click="onDetail(row)">
+        <Button type="link" @click="handleDetail(row)">
           {{ row.name }}
         </Button>
       </template>
       <template #customerName="{ row }">
-        <Button type="link" @click="onCustomerDetail(row)">
+        <Button type="link" @click="handleCustomerDetail(row)">
           {{ row.customerName }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['crm:business:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['crm:business:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

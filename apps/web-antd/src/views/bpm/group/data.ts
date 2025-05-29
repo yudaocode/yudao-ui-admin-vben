@@ -123,8 +123,8 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
       field: 'userIds',
       title: '成员',
       minWidth: 200,
-      formatter: (row) => {
-        return getMemberNames(row.cellValue);
+      formatter: ({ cellValue }) => {
+        return getMemberNames(cellValue);
       },
     },
     {

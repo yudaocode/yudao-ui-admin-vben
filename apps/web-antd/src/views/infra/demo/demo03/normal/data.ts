@@ -111,17 +111,14 @@ export function useGridColumns(
     {
       field: 'id',
       title: '编号',
-      minWidth: 120,
     },
     {
       field: 'name',
       title: '名字',
-      minWidth: 120,
     },
     {
       field: 'sex',
       title: '性别',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_USER_SEX },
@@ -130,18 +127,15 @@ export function useGridColumns(
     {
       field: 'birthday',
       title: '出生日期',
-      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
       field: 'description',
       title: '简介',
-      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
@@ -183,13 +177,11 @@ export function useDemo03CourseGridEditColumns(
     {
       field: 'name',
       title: '名字',
-      minWidth: 120,
       slots: { default: 'name' },
     },
     {
       field: 'score',
       title: '分数',
-      minWidth: 120,
       slots: { default: 'score' },
     },
     {

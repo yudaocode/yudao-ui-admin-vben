@@ -13,8 +13,8 @@ import * as ReceivablePlanApi from '#/api/crm/receivable/plan';
 import { DocAlert } from '#/components/doc-alert';
 
 import { useLeftSides } from './data';
-import ClueFollowList from './modules/ClueFollowList.vue';
-import ContractAuditList from './modules/ContractAuditList.vue';
+import ClueFollowList from './modules/clue-follow-list.vue';
+import ContractAuditList from './modules/contract-audit-list.vue';
 import ContractRemindList from './modules/ContractRemindList.vue';
 import CustomerFollowList from './modules/CustomerFollowList.vue';
 import CustomerPutPoolRemindList from './modules/CustomerPutPoolRemindList.vue';

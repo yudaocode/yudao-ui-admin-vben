@@ -191,22 +191,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'clientId',
       title: '客户端编号',
-      minWidth: 200,
     },
     {
       field: 'secret',
       title: '客户端密钥',
-      minWidth: 120,
     },
     {
       field: 'name',
       title: '应用名',
-      minWidth: 300,
     },
     {
       field: 'logo',
       title: '应用图标',
-      minWidth: 80,
       cellRender: {
         name: 'CellImage',
       },
@@ -214,7 +210,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '状态',
-      minWidth: 80,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -223,24 +218,20 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'accessTokenValiditySeconds',
       title: '访问令牌的有效期',
-      minWidth: 130,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'refreshTokenValiditySeconds',
       title: '刷新令牌的有效期',
-      minWidth: 130,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'authorizedGrantTypes',
       title: '授权类型',
-      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

@@ -75,43 +75,35 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
-      minWidth: 100,
     },
     {
       field: 'userName',
       title: '操作人',
-      minWidth: 120,
     },
     {
       field: 'type',
       title: '操作模块',
-      minWidth: 120,
     },
     {
       field: 'subType',
       title: '操作名',
-      minWidth: 160,
     },
     {
       field: 'action',
       title: '操作内容',
-      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '操作时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'bizId',
       title: '业务编号',
-      minWidth: 120,
     },
     {
       field: 'userIp',
       title: '操作IP',
-      minWidth: 120,
     },
     {
       title: '操作',

@@ -57,22 +57,22 @@ async function loadClueDetail() {
 }
 
 /** 返回列表页 */
-function onBack() {
+function handleBack() {
   router.push('/crm/clue');
 }
 
 /** 编辑线索 */
-function onEdit() {
+function handleEdit() {
   formModalApi.setData({ id: clueId }).open();
 }
 
 /** 转移线索 */
-function onTransfer() {
+function handleTransfer() {
   transferModalApi.setData({ id: clueId }).open();
 }
 
 /** 转化为客户 */
-async function onTransform() {
+async function handleTransform() {
   try {
     await Modal.confirm({
       title: '提示',
@@ -99,14 +99,14 @@ onMounted(async () => {
   <Page auto-content-height :title="clue?.name" :loading="loading">
     <template #extra>
       <div class="flex items-center gap-2">
-        <Button @click="onBack">
+        <Button @click="handleBack">
           <ArrowLeft class="size-5" />
           返回
         </Button>
         <Button
           v-if="permissionListRef?.validateWrite"
           type="primary"
-          @click="onEdit"
+          @click="handleEdit"
           v-access:code="['crm:clue:update']"
         >
           {{ $t('ui.actionTitle.edit') }}
@@ -114,7 +114,7 @@ onMounted(async () => {
         <Button
           v-if="permissionListRef?.validateOwnerUser"
           type="primary"
-          @click="onTransfer"
+          @click="handleTransfer"
           v-access:code="['crm:clue:update']"
         >
           转移
@@ -122,7 +122,7 @@ onMounted(async () => {
         <Button
           v-if="permissionListRef?.validateOwnerUser && !clue?.transformStatus"
           type="primary"
-          @click="onTransform"
+          @click="handleTransform"
           v-access:code="['crm:clue:update']"
         >
           转化为客户

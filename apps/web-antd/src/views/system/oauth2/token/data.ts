@@ -40,22 +40,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'accessToken',
       title: '访问令牌',
-      minWidth: 300,
     },
     {
       field: 'refreshToken',
       title: '刷新令牌',
-      minWidth: 300,
     },
     {
       field: 'userId',
       title: '用户编号',
-      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -64,18 +60,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'clientId',
       title: '客户端编号',
-      minWidth: 120,
     },
     {
       field: 'expiresTime',
       title: '过期时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
