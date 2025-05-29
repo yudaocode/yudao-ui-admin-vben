@@ -3,6 +3,7 @@ import type { SimpleFlowNode } from '../consts';
 
 import { NodeType } from '../consts';
 import { useWatchNode } from '../helpers';
+import CopyTaskNode from './nodes/copy-task-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
 import UserTaskNode from './nodes/user-task-node.vue';
@@ -77,11 +78,11 @@ const recursiveFindParentNode = (
     @find-parent-node="findParentNode"
   />
   <!-- 抄送节点 -->
-  <!-- <CopyTaskNode
+  <CopyTaskNode
     v-if="currentNode && currentNode.type === NodeType.COPY_TASK_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 条件节点 -->
   <!-- <ExclusiveNode
     v-if="currentNode && currentNode.type === NodeType.CONDITION_BRANCH_NODE"
