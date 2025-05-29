@@ -338,7 +338,6 @@ const handleDeploy = async () => {
 /** 步骤切换处理 */
 const handleStepClick = async (index: number) => {
   try {
-    console.warn('handleStepClick', index);
     if (index !== 0) {
       await validateBasic();
     }
