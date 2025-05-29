@@ -59,24 +59,20 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '状态组名',
-      width: 200,
     },
     {
       field: 'deptNames',
       title: '应用部门',
-      width: 200,
       formatter: ({ cellValue }) =>
         cellValue?.length > 0 ? cellValue.join(' ') : '全公司',
     },
     {
       field: 'creator',
       title: '创建人',
-      width: 100,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      width: 150,
       formatter: 'formatDateTime',
     },
     {
