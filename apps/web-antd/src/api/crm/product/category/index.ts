@@ -1,5 +1,3 @@
-import type { PageParam } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace CrmProductCategoryApi {
@@ -38,7 +36,7 @@ export function deleteProductCategory(id: number) {
 }
 
 /** 产品分类列表 */
-export function getProductCategoryList(params?: PageParam) {
+export function getProductCategoryList(params?: any) {
   return requestClient.get<CrmProductCategoryApi.ProductCategory[]>(
     '/crm/product-category/list',
     { params },
