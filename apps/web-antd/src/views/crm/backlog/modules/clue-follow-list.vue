@@ -1,5 +1,6 @@
 <!-- 分配给我的线索 -->
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmClueApi } from '#/api/crm/clue';
 
 import { useRouter } from 'vue-router';
@@ -8,8 +9,9 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCluePage } from '#/api/crm/clue';
+import { useGridColumns } from '#/views/crm/clue/data';
 
-import { useClueFollowColumns, useClueFollowFormSchema } from '../data';
+import { FOLLOWUP_STATUS } from '../data';
 
 const { push } = useRouter();
 
@@ -20,10 +22,21 @@ function handleDetail(row: CrmClueApi.Clue) {
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useClueFollowFormSchema(),
+    schema: [
+      {
+        fieldName: 'followUpStatus',
+        label: '状态',
+        component: 'Select',
+        componentProps: {
+          allowClear: true,
+          options: FOLLOWUP_STATUS,
+        },
+        defaultValue: false,
+      },
+    ],
   },
   gridOptions: {
-    columns: useClueFollowColumns(),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -45,14 +58,17 @@ const [Grid] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<CrmClueApi.Clue>,
 });
 </script>
 
 <template>
-  <Grid table-title="分配给我的线索">
+  <Grid>
     <template #name="{ row }">
       <Button type="link" @click="handleDetail(row)">{{ row.name }}</Button>
+    </template>
+    <template #actions="{ row }">
+      <Button type="link" @click="handleDetail(row)">查看详情</Button>
     </template>
   </Grid>
 </template>

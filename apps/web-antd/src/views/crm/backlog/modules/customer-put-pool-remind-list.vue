@@ -1,5 +1,6 @@
 <!-- 待进入公海的客户 -->
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmCustomerApi } from '#/api/crm/customer';
 
 import { useRouter } from 'vue-router';
@@ -8,22 +9,34 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCustomerPage } from '#/api/crm/customer';
+import { useGridColumns } from '#/views/crm/customer/data';
 
-import { useCustomerColumns, useCustomerPutPoolFormSchema } from '../data';
+import { SCENE_TYPES } from '../data';
 
 const { push } = useRouter();
 
 /** 打开客户详情 */
-function onDetail(row: CrmCustomerApi.Customer) {
+function handleDetail(row: CrmCustomerApi.Customer) {
   push({ name: 'CrmCustomerDetail', params: { id: row.id } });
 }
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useCustomerPutPoolFormSchema(),
+    schema: [
+      {
+        fieldName: 'sceneType',
+        label: '归属',
+        component: 'Select',
+        componentProps: {
+          allowClear: true,
+          options: SCENE_TYPES,
+        },
+        defaultValue: 1,
+      },
+    ],
   },
   gridOptions: {
-    columns: useCustomerColumns(),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -45,14 +58,17 @@ const [Grid] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<CrmCustomerApi.Customer>,
 });
 </script>
 
 <template>
-  <Grid table-title="待进入公海的客户">
+  <Grid>
     <template #name="{ row }">
-      <Button type="link" @click="onDetail(row)">{{ row.name }}</Button>
+      <Button type="link" @click="handleDetail(row)">{{ row.name }}</Button>
+    </template>
+    <template #actions="{ row }">
+      <Button type="link" @click="handleDetail(row)">查看详情</Button>
     </template>
   </Grid>
 </template>

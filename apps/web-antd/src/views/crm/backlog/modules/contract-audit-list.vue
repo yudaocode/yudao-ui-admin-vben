@@ -1,5 +1,6 @@
 <!-- 待审核合同 -->
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmContractApi } from '#/api/crm/contract';
 
 import { useRouter } from 'vue-router';
@@ -8,8 +9,9 @@ import { Button } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getContractPage } from '#/api/crm/contract';
+import { useGridColumns } from '#/views/crm/contract/data';
 
-import { useContractAuditFormSchema, useContractColumns } from '../data';
+import { AUDIT_STATUS } from '../data';
 
 const { push } = useRouter();
 
@@ -42,10 +44,21 @@ function handleBusinessDetail(row: CrmContractApi.Contract) {
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
-    schema: useContractAuditFormSchema(),
+    schema: [
+      {
+        fieldName: 'auditStatus',
+        label: '合同状态',
+        component: 'Select',
+        componentProps: {
+          allowClear: true,
+          options: AUDIT_STATUS,
+        },
+        defaultValue: 10,
+      },
+    ],
   },
   gridOptions: {
-    columns: useContractColumns(),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -67,12 +80,12 @@ const [Grid] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  },
+  } as VxeTableGridOptions<CrmContractApi.Contract>,
 });
 </script>
 
 <template>
-  <Grid table-title="待审核合同">
+  <Grid>
     <template #name="{ row }">
       <Button type="link" @click="handleContractDetail(row)">
         {{ row.name }}
