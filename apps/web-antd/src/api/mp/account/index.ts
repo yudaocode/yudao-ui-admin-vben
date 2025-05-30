@@ -33,6 +33,13 @@ export function getAccount(id: number) {
   return requestClient.get<MpAccountApi.Account>(`/mp/account/get?id=${id}`);
 }
 
+/** 查询公众号账号列表 */
+export function getSimpleAccountList() {
+  return requestClient.get<MpAccountApi.Account[]>(
+    '/mp/account/list-all-simple',
+  );
+}
+
 /** 新增公众号账号 */
 export function createAccount(data: MpAccountApi.Account) {
   return requestClient.post('/mp/account/create', data);

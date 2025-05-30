@@ -6,8 +6,9 @@ export namespace MpTagApi {
   /** 标签信息 */
   export interface Tag {
     id?: number;
-    name: string;
     accountId: number;
+    name: string;
+    count?: number;
     createTime?: Date;
   }
 
