@@ -6,6 +6,7 @@ import { useWatchNode } from '../helpers';
 import CopyTaskNode from './nodes/copy-task-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
+import TriggerNode from './nodes/trigger-node.vue';
 import UserTaskNode from './nodes/user-task-node.vue';
 
 defineOptions({ name: 'ProcessNodeTree' });
@@ -117,11 +118,11 @@ const recursiveFindParentNode = (
     @update:flow-node="handleModelValueUpdate"
   /> -->
   <!-- 触发器节点 -->
-  <!-- <TriggerNode
+  <TriggerNode
     v-if="currentNode && currentNode.type === NodeType.TRIGGER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 子流程节点 -->
   <!-- <ChildProcessNode
     v-if="currentNode && currentNode.type === NodeType.CHILD_PROCESS_NODE"
