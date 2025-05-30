@@ -2,26 +2,64 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpTagApi } from '#/api/mp/tag';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleAccountList } from '#/api/mp/account';
 import { deleteTag, getTagPage, syncTag } from '#/api/mp/tag';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { useGridColumns } from './data';
 import Form from './modules/form.vue';
 
+const { push } = useRouter(); // 路由
+const tabs = useTabs();
+
 const accountId = ref(-1);
+const accountOptions = ref<{ label: string; value: number }[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
+async function getAccountList() {
+  const res = await getSimpleAccountList();
+  if (res.length > 0) {
+    accountId.value = res[0]?.id as number;
+    accountOptions.value = res.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+    gridApi.setState({
+      formOptions: {
+        schema: [
+          {
+            fieldName: 'accountId',
+            label: '公众号',
+            component: 'Select',
+            componentProps: {
+              options: accountOptions,
+            },
+          },
+        ],
+      },
+    });
+    gridApi.formApi.setValues({
+      accountId: accountId.value,
+    });
+  } else {
+    message.error('未配置公众号，请在【公众号管理 -> 账号管理】菜单，进行配置');
+    await push({ name: 'MpAccount' });
+    tabs.closeCurrentTab();
+  }
+}
 /** 刷新表格 */
 function onRefresh() {
   gridApi.query();
@@ -29,12 +67,12 @@ function onRefresh() {
 
 /** 创建标签 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({ accountId: accountId.value }).open();
 }
 
 /** 编辑标签 */
 function handleEdit(row: MpTagApi.Tag) {
-  formModalApi.setData(row).open();
+  formModalApi.setData({ row, accountId: accountId.value }).open();
 }
 
 /** 删除标签 */
@@ -74,7 +112,7 @@ async function handleSync() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema(),
+    schema: [],
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -87,7 +125,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getTagPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            accountId: accountId.value,
             ...formValues,
           });
         },
@@ -102,11 +139,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MpTagApi.Tag>,
 });
+
+onMounted(async () => {
+  await getAccountList();
+});
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" :account-id="accountId" />
+    <FormModal @success="onRefresh" />
     <Grid table-title="公众号账号列表">
       <template #toolbar-tools>
         <TableAction

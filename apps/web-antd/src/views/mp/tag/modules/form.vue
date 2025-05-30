@@ -13,10 +13,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-const props = defineProps<{
-  accountId: number;
-}>();
-
 const emit = defineEmits(['success']);
 
 const formData = ref<MpTagApi.Tag>();
@@ -48,7 +44,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as MpTagApi.Tag;
-    data.accountId = props.accountId;
     try {
       await (formData.value?.id ? updateTag(data) : createTag(data));
       // 关闭并提示
@@ -65,13 +60,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MpTagApi.Tag>();
-    if (!data || !data.id) {
+    const data = modalApi.getData<{ accountId: number; row: MpTagApi.Tag }>();
+    if (!data || !data.row || !data.accountId) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getTag(data.id as number);
+      formData.value = await getTag(data.row.id as number);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
