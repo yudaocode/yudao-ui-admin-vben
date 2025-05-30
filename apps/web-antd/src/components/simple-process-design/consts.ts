@@ -475,9 +475,9 @@ export type ListenerHandler = {
  * 条件规则结构定义
  */
 export type ConditionRule = {
-  leftSide: string;
+  leftSide: string | undefined;
   opCode: string;
-  rightSide: string;
+  rightSide: string | undefined;
 };
 
 /**
@@ -725,7 +725,7 @@ export const DEFAULT_CONDITION_GROUP_VALUE = {
       rules: [
         {
           opCode: '==',
-          leftSide: '',
+          leftSide: undefined,
           rightSide: '',
         },
       ],
