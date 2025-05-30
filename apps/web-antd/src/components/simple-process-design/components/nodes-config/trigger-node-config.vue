@@ -38,10 +38,11 @@ import {
 import {
   getConditionShowText,
   useFormFields,
+  useFormFieldsAndStartUser,
   useNodeName,
   useWatchNode,
 } from '../../helpers';
-// TODO import ConditionDialog from './modules/condition-dialog.vue';
+import ConditionDialog from './modules/condition-dialog.vue';
 import HttpRequestSetting from './modules/http-request-setting.vue';
 
 defineOptions({
@@ -215,8 +216,7 @@ const openFormSettingCondition = (
   conditionDialog.open(formSetting);
 };
 /** 处理条件配置保存 */
-/* 暂时注释掉未使用的函数
-const _handleConditionUpdate = (index: number, condition: any) => {
+const handleConditionUpdate = (index: number, condition: any) => {
   if (configForm.value.formSettings![index]) {
     configForm.value.formSettings![index].conditionType =
       condition.conditionType;
@@ -226,14 +226,15 @@ const _handleConditionUpdate = (index: number, condition: any) => {
       condition.conditionGroups;
   }
 };
-*/
+// 包含发起人字段的表单字段
+const includeStartUserFormFields = useFormFieldsAndStartUser();
 /** 条件配置展示 */
 const showConditionText = (formSetting: FormTriggerSetting) => {
   return getConditionShowText(
     formSetting.conditionType,
     formSetting.conditionExpression,
     formSetting.conditionGroups,
-    formFields,
+    includeStartUserFormFields,
   );
 };
 
@@ -457,17 +458,17 @@ onMounted(() => {
                 </div>
               </template>
 
-              <!-- TODO 条件设置 -->
-              <!-- <ConditionDialog
+              <ConditionDialog
                 :ref="`condition-${index}`"
                 @update-condition="(val) => handleConditionUpdate(index, val)"
-              /> -->
+              />
               <Row>
                 <Col :span="24">
                   <div class="cursor-pointer" v-if="formSetting.conditionType">
                     <Tag
                       color="success"
                       closable
+                      class="text-sm"
                       @close="deleteFormSettingCondition(formSetting)"
                       @click="openFormSettingCondition(index, formSetting)"
                     >
@@ -605,17 +606,18 @@ onMounted(() => {
                 </div>
               </template>
 
-              <!-- TODO 条件设置 -->
-              <!-- <ConditionDialog
+              <!-- 条件设置 -->
+              <ConditionDialog
                 :ref="`condition-${index}`"
                 @update-condition="(val) => handleConditionUpdate(index, val)"
-              /> -->
+              />
               <Row>
                 <Col :span="24">
                   <div class="cursor-pointer" v-if="formSetting.conditionType">
                     <Tag
-                      color="warning"
+                      color="success"
                       closable
+                      class="text-sm"
                       @close="deleteFormSettingCondition(formSetting)"
                       @click="openFormSettingCondition(index, formSetting)"
                     >
