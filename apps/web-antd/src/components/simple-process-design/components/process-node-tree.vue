@@ -5,6 +5,7 @@ import { NodeType } from '../consts';
 import { useWatchNode } from '../helpers';
 import CopyTaskNode from './nodes/copy-task-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
+import ExclusiveNode from './nodes/exclusive-node.vue';
 import InclusiveNode from './nodes/inclusive-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
 import TriggerNode from './nodes/trigger-node.vue';
@@ -86,12 +87,12 @@ const recursiveFindParentNode = (
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 条件节点 -->
-  <!-- <ExclusiveNode
+  <ExclusiveNode
     v-if="currentNode && currentNode.type === NodeType.CONDITION_BRANCH_NODE"
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
-    @find:parent-node="findFromParentNode"
-  /> -->
+    @find-parent-node="findParentNode"
+  />
   <!-- 并行节点 -->
   <!-- <ParallelNode
     v-if="currentNode && currentNode.type === NodeType.PARALLEL_BRANCH_NODE"

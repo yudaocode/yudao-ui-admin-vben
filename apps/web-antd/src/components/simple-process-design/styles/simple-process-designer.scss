@@ -480,6 +480,8 @@
           top: -18px;
           left: 50%;
           z-index: 1;
+          display: flex;
+          align-items: center;
           height: 36px;
           padding: 0 10px;
           font-size: 12px;
@@ -488,8 +490,6 @@
           border-radius: 18px;
           transform: translateX(-50%);
           transform-origin: center center;
-          display: flex;
-          align-items: center;
         }
 
         .branch-node-readonly {
