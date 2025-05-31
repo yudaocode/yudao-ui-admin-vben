@@ -15,7 +15,7 @@ import {
   NodeType,
 } from '../../consts';
 import { getDefaultConditionNodeName, useTaskStatusClass } from '../../helpers';
-// TODO import ConditionNodeConfig from './nodes-config/condition-node-config.vue';
+import ConditionNodeConfig from '../nodes-config/condition-node-config.vue';
 import ProcessNodeTree from '../process-node-tree.vue';
 import NodeHandler from './node-handler.vue';
 
@@ -155,7 +155,7 @@ const recursiveFindParentNode = (
       <Button v-else class="branch-node-add" @click="addCondition">
         添加条件
       </Button>
-
+      <!-- 排他网关节点下面可以多个分支，每个分支第一个节点是条件节点 NodeType.CONDITION_NODE -->
       <div
         class="branch-node-item"
         v-for="(item, index) in currentNode.conditionNodes"
@@ -252,12 +252,12 @@ const recursiveFindParentNode = (
             />
           </div>
         </div>
-        <!-- TODO 条件节点配置-->
-        <!-- <ConditionNodeConfig
+        <!-- 条件节点配置 -->
+        <ConditionNodeConfig
           :node-index="index"
           :condition-node="item"
           :ref="item.id"
-        /> -->
+        />
         <!-- 递归显示子节点  -->
         <ProcessNodeTree
           v-if="item && item.childNode"

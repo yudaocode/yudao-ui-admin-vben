@@ -18,7 +18,7 @@ import {
   getDefaultInclusiveConditionNodeName,
   useTaskStatusClass,
 } from '../../helpers';
-// import ConditionNodeConfig from '../nodes-config/ConditionNodeConfig.vue';
+import ConditionNodeConfig from '../nodes-config/condition-node-config.vue';
 import ProcessNodeTree from '../process-node-tree.vue';
 import NodeHandler from './node-handler.vue';
 
@@ -159,7 +159,7 @@ const recursiveFindParentNode = (
       >
         <span class="iconfont icon-inclusive icon-size inclusive"></span>
       </div>
-      <Button v-else class="branch-node-add" @click="addCondition" plain>
+      <Button v-else class="branch-node-add" @click="addCondition">
         添加条件
       </Button>
       <div
@@ -257,12 +257,12 @@ const recursiveFindParentNode = (
             />
           </div>
         </div>
-        <!-- TODO 条件节点配置 -->
-        <!-- <ConditionNodeConfig
+        <!-- 条件节点配置 -->
+        <ConditionNodeConfig
           :node-index="index"
           :condition-node="item"
           :ref="item.id"
-        /> -->
+        />
         <!-- 递归显示子节点  -->
         <ProcessNodeTree
           v-if="item && item.childNode"
