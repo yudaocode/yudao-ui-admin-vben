@@ -50,16 +50,6 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '备注',
       component: 'Textarea',
     },
-    {
-      fieldName: 'contactNextTime',
-      label: '下次联系时间',
-      component: 'DatePicker',
-      componentProps: {
-        showTime: false,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-      },
-    },
   ];
 }
 
