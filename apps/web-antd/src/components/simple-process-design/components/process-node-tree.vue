@@ -4,6 +4,7 @@ import type { SimpleFlowNode } from '../consts';
 import { NodeType } from '../consts';
 import { useWatchNode } from '../helpers';
 import CopyTaskNode from './nodes/copy-task-node.vue';
+import DelayTimerNode from './nodes/delay-timer-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
 import ExclusiveNode from './nodes/exclusive-node.vue';
 import InclusiveNode from './nodes/inclusive-node.vue';
@@ -109,11 +110,11 @@ const recursiveFindParentNode = (
     @find-parent-node="findParentNode"
   />
   <!-- 延迟器节点 -->
-  <!-- <DelayTimerNode
+  <DelayTimerNode
     v-if="currentNode && currentNode.type === NodeType.DELAY_TIMER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 路由分支节点 -->
   <!-- <RouterNode
     v-if="currentNode && currentNode.type === NodeType.ROUTER_BRANCH_NODE"
