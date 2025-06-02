@@ -564,7 +564,7 @@ export type RouterSetting = {
   conditionExpression: string;
   conditionGroups: ConditionGroup;
   conditionType: ConditionType;
-  nodeId: string;
+  nodeId: string | undefined;
 };
 
 /**

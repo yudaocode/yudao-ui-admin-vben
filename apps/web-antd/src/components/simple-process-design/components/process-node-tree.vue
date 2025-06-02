@@ -9,6 +9,7 @@ import EndEventNode from './nodes/end-event-node.vue';
 import ExclusiveNode from './nodes/exclusive-node.vue';
 import InclusiveNode from './nodes/inclusive-node.vue';
 import ParallelNode from './nodes/parallel-node.vue';
+import RouterNode from './nodes/router-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
 import TriggerNode from './nodes/trigger-node.vue';
 import UserTaskNode from './nodes/user-task-node.vue';
@@ -116,11 +117,11 @@ const recursiveFindParentNode = (
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 路由分支节点 -->
-  <!-- <RouterNode
+  <RouterNode
     v-if="currentNode && currentNode.type === NodeType.ROUTER_BRANCH_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 触发器节点 -->
   <TriggerNode
     v-if="currentNode && currentNode.type === NodeType.TRIGGER_NODE"
