@@ -122,48 +122,48 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '客户名称',
       field: 'customerName',
-      width: 150,
+      minWidth: 150,
       fixed: 'left',
       slots: { default: 'customerName' },
     },
     {
       title: '合同编号',
       field: 'contractNo',
-      width: 200,
+      minWidth: 200,
     },
     {
       title: '期数',
       field: 'period',
-      width: 150,
+      minWidth: 150,
       slots: { default: 'period' },
     },
     {
       title: '计划回款金额（元）',
       field: 'price',
-      width: 160,
+      minWidth: 160,
       formatter: 'formatNumber',
     },
     {
       title: '计划回款日期',
       field: 'returnTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '提前几天提醒',
       field: 'remindDays',
-      width: 150,
+      minWidth: 150,
     },
     {
       title: '提醒日期',
       field: 'remindTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '回款方式',
       field: 'returnType',
-      width: 130,
+      minWidth: 130,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE },
@@ -172,28 +172,29 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '备注',
       field: 'remark',
+      minWidth: 120,
     },
     {
       title: '负责人',
       field: 'ownerUserName',
-      width: 120,
+      minWidth: 120,
     },
     {
       title: '实际回款金额（元）',
       field: 'receivable.price',
-      width: 160,
+      minWidth: 160,
       formatter: 'formatNumber',
     },
     {
       title: '实际回款日期',
       field: 'receivable.returnTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '未回款金额（元）',
       field: 'unpaidPrice',
-      width: 160,
+      minWidth: 160,
       formatter: ({ row }) => {
         if (row.receivable) {
           return row.price - row.receivable.price;
@@ -204,19 +205,19 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '更新时间',
       field: 'updateTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '创建时间',
       field: 'createTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '创建人',
       field: 'creatorName',
-      width: 100,
+      minWidth: 100,
     },
     {
       title: '操作',
