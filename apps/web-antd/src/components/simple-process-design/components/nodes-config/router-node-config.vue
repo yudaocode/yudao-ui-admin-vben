@@ -25,9 +25,7 @@ import { ConditionType, NodeType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';
 import Condition from './modules/condition.vue';
 
-defineOptions({
-  name: 'RouterNodeConfig',
-});
+defineOptions({ name: 'RouterNodeConfig' });
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
@@ -36,9 +34,9 @@ const props = defineProps({
 });
 const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 
-// 当前节点
+/** 当前节点 */
 const currentNode = useWatchNode(props);
-// 节点名称
+/** 节点名称 */
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
   NodeType.ROUTER_BRANCH_NODE,
 );
@@ -47,8 +45,8 @@ const nodeOptions = ref<any[]>([]);
 const conditionRef = ref<any[]>([]);
 const formRef = ref();
 
-/** 保存配置 */
-const saveConfig = async () => {
+/** 校验节点配置 */
+const validateConfig = async () => {
   // 校验路由分支选择
   const routeIdValid = await formRef.value.validate().catch(() => false);
   if (!routeIdValid) {
@@ -64,26 +62,34 @@ const saveConfig = async () => {
     }
   }
   if (!valid) return false;
+
+  // 获取节点显示文本，如果为空，校验不通过
   const showText = getShowText();
   if (!showText) return false;
+
+  return true;
+};
+
+/** 保存配置 */
+const saveConfig = async () => {
+  // 校验配置
+  if (!(await validateConfig())) {
+    return false;
+  }
+  // 保存配置
   currentNode.value.name = nodeName.value!;
-  currentNode.value.showText = showText;
+  currentNode.value.showText = getShowText();
   currentNode.value.routerGroups = routerGroups.value;
   drawerApi.close();
   return true;
 };
 
-// 使用 useVbenDrawer
 const [Drawer, drawerApi] = useVbenDrawer({
   title: nodeName.value,
-  class: 'w-[630px]',
-  onCancel: () => {
-    drawerApi.close();
-  },
   onConfirm: saveConfig,
 });
 
-// 显示路由分支节点配置， 由父组件调用
+/** 打开路由节点配置抽屉，由父组件调用 */
 const openDrawer = (node: SimpleFlowNode) => {
   nodeOptions.value = [];
   getRouterNode(processNodeTree?.value);
@@ -95,6 +101,7 @@ const openDrawer = (node: SimpleFlowNode) => {
   drawerApi.open();
 };
 
+/** 获取显示文本 */
 const getShowText = () => {
   if (
     !routerGroups.value ||
@@ -130,6 +137,7 @@ const getShowText = () => {
   return `${routerGroups.value.length}条路由分支`;
 };
 
+/** 添加路由分支 */
 const addRouterGroup = () => {
   routerGroups.value.push({
     nodeId: undefined,
@@ -153,11 +161,12 @@ const addRouterGroup = () => {
   });
 };
 
+/** 删除路由分支 */
 const deleteRouterGroup = (index: number) => {
   routerGroups.value.splice(index, 1);
 };
 
-// 递归获取所有节点
+/** 递归获取所有节点 */
 const getRouterNode = (node: any) => {
   // TODO 最好还需要满足以下要求
   // 并行分支、包容分支内部节点不能跳转到外部节点
@@ -188,7 +197,7 @@ const getRouterNode = (node: any) => {
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer>
+  <Drawer class="w-[630px]">
     <template #title>
       <div class="flex items-center">
         <Input
@@ -279,12 +288,5 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
         </Button>
       </Col>
     </Row>
-
-    <template #footer>
-      <div class="flex justify-end space-x-2">
-        <Button type="primary" @click="saveConfig">确 定</Button>
-        <Button @click="drawerApi.close">取 消</Button>
-      </div>
-    </template>
   </Drawer>
 </template>

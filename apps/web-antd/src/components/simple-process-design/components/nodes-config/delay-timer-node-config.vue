@@ -9,7 +9,6 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  Button,
   Col,
   DatePicker,
   Form,
@@ -123,9 +122,6 @@ const saveConfig = async () => {
 
 const [Drawer, drawerApi] = useVbenDrawer({
   title: nodeName.value,
-  onCancel: () => {
-    drawerApi.close();
-  },
   onConfirm: saveConfig,
 });
 
@@ -244,13 +240,6 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
         </FormItem>
       </Form>
     </div>
-
-    <template #footer>
-      <div class="flex justify-end space-x-2">
-        <Button type="primary" @click="saveConfig">确 定</Button>
-        <Button @click="drawerApi.close">取 消</Button>
-      </div>
-    </template>
   </Drawer>
 </template>
 <style lang="scss" scoped></style>

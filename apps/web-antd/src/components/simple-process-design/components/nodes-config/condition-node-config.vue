@@ -7,7 +7,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Button, Input } from 'ant-design-vue';
+import { Input } from 'ant-design-vue';
 
 import { ConditionType } from '../../consts';
 import {
@@ -91,13 +91,8 @@ const saveConfig = async () => {
   return true;
 };
 
-// 使用 useVbenDrawer 替代传统 Drawer
 const [Drawer, drawerApi] = useVbenDrawer({
   title: currentNode.value.name,
-  class: 'w-[588px]',
-  onCancel: () => {
-    drawerApi.close();
-  },
   onConfirm: saveConfig,
 });
 
@@ -152,7 +147,7 @@ const blurEvent = () => {
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>
 <template>
-  <Drawer>
+  <Drawer class="w-[580px]">
     <template #title>
       <div class="flex items-center">
         <Input
@@ -185,12 +180,5 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
         <Condition ref="conditionRef" v-model:model-value="condition" />
       </div>
     </div>
-
-    <template #footer>
-      <div class="flex justify-end space-x-2">
-        <Button type="primary" @click="saveConfig">确 定</Button>
-        <Button @click="drawerApi.close">取 消</Button>
-      </div>
-    </template>
   </Drawer>
 </template>

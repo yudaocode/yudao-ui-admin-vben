@@ -63,9 +63,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
   closable: true,
   title: '',
-  onCancel() {
-    drawerApi.close();
-  },
   onConfirm() {
     saveConfig();
   },
@@ -678,12 +675,6 @@ onMounted(() => {
         </div>
       </Form>
     </div>
-    <template #footer>
-      <div class="flex justify-end">
-        <Button type="primary" @click="saveConfig">确 定</Button>
-        <Button class="ml-2" @click="drawerApi.close()">取 消</Button>
-      </div>
-    </template>
   </Drawer>
 </template>
 <style lang="scss" scoped>
