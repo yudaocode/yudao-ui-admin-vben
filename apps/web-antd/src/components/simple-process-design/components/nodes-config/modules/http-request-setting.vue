@@ -33,8 +33,11 @@ const props = defineProps({
     required: true,
   },
 });
+
 const emits = defineEmits(['update:setting']);
+
 const { setting } = toRefs(props);
+
 watch(
   () => setting,
   (val) => {
@@ -46,20 +49,20 @@ watch(
 const formFields = useFormFields();
 
 /** 添加 HTTP 请求返回值设置项 */
-const addHttpResponseSetting = (responseSetting: Record<string, string>[]) => {
+function addHttpResponseSetting(responseSetting: Record<string, string>[]) {
   responseSetting.push({
     key: '',
     value: '',
   });
-};
+}
 
 /** 删除 HTTP 请求返回值设置项 */
-const deleteHttpResponseSetting = (
+function deleteHttpResponseSetting(
   responseSetting: Record<string, string>[],
   index: number,
-) => {
+) {
   responseSetting.splice(index, 1);
-};
+}
 </script>
 <template>
   <FormItem>
@@ -171,4 +174,3 @@ const deleteHttpResponseSetting = (
     </FormItem>
   </div>
 </template>
-<style lang="scss" scoped></style>

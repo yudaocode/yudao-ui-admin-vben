@@ -33,6 +33,7 @@ import { useNodeName, useWatchNode } from '../../helpers';
 import { convertTimeUnit } from './utils';
 
 defineOptions({ name: 'DelayTimerNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
@@ -48,6 +49,7 @@ const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
 );
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref
+
 // 表单校验规则
 const formRules: Record<string, Rule[]> = reactive({
   delayType: [
@@ -60,6 +62,7 @@ const formRules: Record<string, Rule[]> = reactive({
     { required: true, message: '延迟时间不能为空', trigger: 'change' },
   ],
 });
+
 // 配置表单数据
 const configForm = ref({
   delayType: DelayTypeEnum.FIXED_TIME_DURATION,
@@ -69,7 +72,7 @@ const configForm = ref({
 });
 
 // 获取显示文本
-const getShowText = (): string => {
+function getShowText(): string {
   let showText = '';
   if (configForm.value.delayType === DelayTypeEnum.FIXED_TIME_DURATION) {
     showText = `延迟${configForm.value.timeDuration}${TIME_UNIT_TYPES?.find((item) => item.value === configForm.value.timeUnit)?.label}`;
@@ -78,10 +81,10 @@ const getShowText = (): string => {
     showText = `延迟至${configForm.value.dateTime.replace('T', ' ')}`;
   }
   return showText;
-};
+}
 
 // 获取ISO时间格式
-const getIsoTimeDuration = () => {
+function getIsoTimeDuration() {
   let strTimeDuration = 'PT';
   if (configForm.value.timeUnit === TimeUnitType.MINUTE) {
     strTimeDuration += `${configForm.value.timeDuration}M`;
@@ -93,10 +96,10 @@ const getIsoTimeDuration = () => {
     strTimeDuration += `${configForm.value.timeDuration}D`;
   }
   return strTimeDuration;
-};
+}
 
 // 保存配置
-const saveConfig = async () => {
+async function saveConfig() {
   if (!formRef.value) return false;
   const valid = await formRef.value.validate();
   if (!valid) return false;
@@ -118,7 +121,7 @@ const saveConfig = async () => {
   }
   drawerApi.close();
   return true;
-};
+}
 
 const [Drawer, drawerApi] = useVbenDrawer({
   title: nodeName.value,
@@ -126,7 +129,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 // 显示延迟器节点配置，由父组件调用
-const openDrawer = (node: SimpleFlowNode) => {
+function openDrawer(node: SimpleFlowNode) {
   nodeName.value = node.name;
   if (node.delaySetting) {
     configForm.value.delayType = node.delaySetting.delayType;
@@ -144,7 +147,7 @@ const openDrawer = (node: SimpleFlowNode) => {
     }
   }
   drawerApi.open();
-};
+}
 
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
@@ -242,4 +245,3 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
     </div>
   </Drawer>
 </template>
-<style lang="scss" scoped></style>

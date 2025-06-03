@@ -37,4 +37,3 @@ const handleSuccess = (data?: any) => {
     />
   </ContentWrap>
 </template>
-<style lang="scss" scoped></style>

@@ -15,6 +15,7 @@ import TriggerNode from './nodes/trigger-node.vue';
 import UserTaskNode from './nodes/user-task-node.vue';
 
 defineOptions({ name: 'ProcessNodeTree' });
+
 const props = defineProps({
   parentNode: {
     type: Object as () => SimpleFlowNode,
@@ -25,6 +26,7 @@ const props = defineProps({
     default: () => null,
   },
 });
+
 const emits = defineEmits<{
   recursiveFindParentNode: [
     nodeList: SimpleFlowNode[],
@@ -47,11 +49,11 @@ const findParentNode = (nodeList: SimpleFlowNode[], nodeType: number) => {
 };
 
 // 递归从父节点中查询匹配的节点
-const recursiveFindParentNode = (
+function recursiveFindParentNode(
   nodeList: SimpleFlowNode[],
   findNode: SimpleFlowNode,
   nodeType: number,
-) => {
+) {
   if (!findNode) {
     return;
   }
@@ -64,7 +66,7 @@ const recursiveFindParentNode = (
     nodeList.push(findNode);
   }
   emits('recursiveFindParentNode', nodeList, props.parentNode, nodeType);
-};
+}
 </script>
 <template>
   <!-- 发起人节点 -->
@@ -148,4 +150,3 @@ const recursiveFindParentNode = (
     :flow-node="currentNode"
   />
 </template>
-<style lang="scss" scoped></style>

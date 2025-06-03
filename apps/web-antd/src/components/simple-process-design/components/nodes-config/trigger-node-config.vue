@@ -76,6 +76,7 @@ const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
 );
 // 触发器表单配置
 const formRef = ref(); // 表单 Ref
+
 // 表单校验规则
 const formRules: Record<string, Rule[]> = reactive({
   type: [{ required: true, message: '触发器类型不能为空', trigger: 'change' }],
@@ -83,6 +84,7 @@ const formRules: Record<string, Rule[]> = reactive({
     { required: true, message: '请求地址不能为空', trigger: 'blur' },
   ],
 });
+
 // 触发器配置表单数据
 const configForm = ref<TriggerSetting>({
   type: TriggerTypeEnum.HTTP_REQUEST,
@@ -115,7 +117,7 @@ const optionalUpdateFormFields = computed(() => {
 let originalSetting: TriggerSetting | undefined;
 
 /** 触发器类型改变了 */
-const changeTriggerType = () => {
+function changeTriggerType() {
   if (configForm.value.type === TriggerTypeEnum.HTTP_REQUEST) {
     configForm.value.httpRequestSetting =
       originalSetting?.type === TriggerTypeEnum.HTTP_REQUEST &&
@@ -176,44 +178,48 @@ const changeTriggerType = () => {
           ];
     configForm.value.httpRequestSetting = undefined;
   }
-};
+}
 
 /** 添加新的修改表单设置 */
-const addFormSetting = () => {
+function addFormSetting() {
   configForm.value.formSettings!.push({
     conditionGroups: cloneDeep(DEFAULT_CONDITION_GROUP_VALUE),
     updateFormFields: {},
     deleteFields: [],
   });
-};
+}
 
 /** 删除修改表单设置 */
-const deleteFormSetting = (index: number) => {
+function deleteFormSetting(index: number) {
   configForm.value.formSettings!.splice(index, 1);
-};
+}
 
 /** 添加条件配置 */
-const addFormSettingCondition = (
+function addFormSettingCondition(
   index: number,
   formSetting: FormTriggerSetting,
-) => {
+) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
+  // TODO: jason Modal 使用 useVbenModal 初始化，弹出使用modalApi.setData(formSetting).open()
   conditionDialog.open(formSetting);
-};
+}
+
 /** 删除条件配置 */
-const deleteFormSettingCondition = (formSetting: FormTriggerSetting) => {
+function deleteFormSettingCondition(formSetting: FormTriggerSetting) {
   formSetting.conditionType = undefined;
-};
+}
+
 /** 打开条件配置弹窗 */
-const openFormSettingCondition = (
+function openFormSettingCondition(
   index: number,
   formSetting: FormTriggerSetting,
-) => {
+) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
   conditionDialog.open(formSetting);
-};
+}
+
 /** 处理条件配置保存 */
-const handleConditionUpdate = (index: number, condition: any) => {
+function handleConditionUpdate(index: number, condition: any) {
   if (configForm.value.formSettings![index]) {
     configForm.value.formSettings![index].conditionType =
       condition.conditionType;
@@ -222,50 +228,48 @@ const handleConditionUpdate = (index: number, condition: any) => {
     configForm.value.formSettings![index].conditionGroups =
       condition.conditionGroups;
   }
-};
+}
 // 包含发起人字段的表单字段
 const includeStartUserFormFields = useFormFieldsAndStartUser();
 /** 条件配置展示 */
-const showConditionText = (formSetting: FormTriggerSetting) => {
+function showConditionText(formSetting: FormTriggerSetting) {
   return getConditionShowText(
     formSetting.conditionType,
     formSetting.conditionExpression,
     formSetting.conditionGroups,
     includeStartUserFormFields,
   );
-};
+}
 
 /** 添加修改字段设置项 */
-const addFormFieldSetting = (formSetting: FormTriggerSetting) => {
+function addFormFieldSetting(formSetting: FormTriggerSetting) {
   if (!formSetting) return;
   if (!formSetting.updateFormFields) {
     formSetting.updateFormFields = {};
   }
   formSetting.updateFormFields[''] = undefined;
-};
+}
+
 /** 更新字段 KEY */
-const updateFormFieldKey = (
+function updateFormFieldKey(
   formSetting: FormTriggerSetting,
   oldKey: string,
   newKey: SelectValue,
-) => {
+) {
   if (!formSetting?.updateFormFields || !newKey) return;
   const value = formSetting.updateFormFields[oldKey];
   delete formSetting.updateFormFields[oldKey];
   formSetting.updateFormFields[String(newKey)] = value;
-};
+}
 
 /** 删除修改字段设置项 */
-const deleteFormFieldSetting = (
-  formSetting: FormTriggerSetting,
-  key: string,
-) => {
+function deleteFormFieldSetting(formSetting: FormTriggerSetting, key: string) {
   if (!formSetting?.updateFormFields) return;
   delete formSetting.updateFormFields[key];
-};
+}
 
 /** 保存配置 */
-const saveConfig = async () => {
+async function saveConfig() {
   if (!formRef.value) return false;
   const valid = await formRef.value.validate();
   if (!valid) return false;
@@ -302,10 +306,10 @@ const saveConfig = async () => {
   currentNode.value.triggerSetting = configForm.value;
   drawerApi.close();
   return true;
-};
+}
 
 /** 获取节点展示内容 */
-const getShowText = (): string => {
+function getShowText(): string {
   let showText = '';
   switch (configForm.value.type) {
     case TriggerTypeEnum.FORM_DELETE: {
@@ -342,10 +346,10 @@ const getShowText = (): string => {
     // No default
   }
   return showText;
-};
+}
 
 /** 显示触发器节点配置， 由父组件传过来 */
-const showTriggerNodeConfig = (node: SimpleFlowNode) => {
+function showTriggerNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   originalSetting = node.triggerSetting
     ? cloneDeep(node.triggerSetting)
@@ -369,7 +373,7 @@ const showTriggerNodeConfig = (node: SimpleFlowNode) => {
     };
   }
   drawerApi.open();
-};
+}
 
 // 暴露方法给父组件
 defineExpose({ showTriggerNodeConfig });

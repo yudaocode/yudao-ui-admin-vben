@@ -37,12 +37,14 @@ import {
 } from '../../helpers';
 
 defineOptions({ name: 'StartUserNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 // 可发起流程的用户编号
 const startUserIds = inject<Ref<any[]>>('startUserIds');
 // 可发起流程的部门编号
@@ -59,10 +61,12 @@ const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
 );
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
+
 // 表单字段权限配置
 const { formType, fieldsPermissionConfig, getNodeConfigFormFields } =
   useFormFieldsPermission(FieldPermissionType.WRITE);
-const getUserNicknames = (userIds: number[]): string => {
+
+function getUserNicknames(userIds: number[]): string {
   if (!userIds || userIds.length === 0) {
     return '';
   }
@@ -74,9 +78,9 @@ const getUserNicknames = (userIds: number[]): string => {
     }
   });
   return nicknames.join(',');
-};
+}
 
-const getDeptNames = (deptIds: number[]): string => {
+function getDeptNames(deptIds: number[]): string {
   if (!deptIds || deptIds.length === 0) {
     return '';
   }
@@ -88,7 +92,7 @@ const getDeptNames = (deptIds: number[]): string => {
     }
   });
   return deptNames.join(',');
-};
+}
 
 // 使用 VbenDrawer
 const [Drawer, drawerApi] = useVbenDrawer({
@@ -103,7 +107,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 // 保存配置
-const saveConfig = async () => {
+async function saveConfig() {
   activeTabName.value = 'user';
   currentNode.value.name = nodeName.value!;
   currentNode.value.showText = '已设置';
@@ -113,18 +117,18 @@ const saveConfig = async () => {
   currentNode.value.buttonsSetting = START_USER_BUTTON_SETTING;
   drawerApi.setState({ isOpen: false });
   return true;
-};
+}
 
 // 显示发起人节点配置，由父组件传过来
-const showStartUserNodeConfig = (node: SimpleFlowNode) => {
+function showStartUserNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   // 表单字段权限
   getNodeConfigFormFields(node.fieldsPermission);
   drawerApi.open();
-};
+}
 
 /** 批量更新权限 */
-const updatePermission = (type: string) => {
+function updatePermission(type: string) {
   fieldsPermissionConfig.value.forEach((field) => {
     if (type === 'READ') {
       field.permission = FieldPermissionType.READ;
@@ -134,7 +138,7 @@ const updatePermission = (type: string) => {
       field.permission = FieldPermissionType.NONE;
     }
   });
-};
+}
 
 /**
  * 暴露方法给父组件
@@ -289,4 +293,3 @@ defineExpose({ showStartUserNodeConfig });
     </Tabs>
   </Drawer>
 </template>
-<style lang="scss" scoped></style>

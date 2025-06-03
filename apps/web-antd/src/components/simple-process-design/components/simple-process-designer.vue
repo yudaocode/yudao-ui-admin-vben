@@ -116,7 +116,7 @@ const errorDialogVisible = ref(false);
 const errorNodes: SimpleFlowNode[] = [];
 
 // 添加更新模型的方法
-const updateModel = () => {
+function updateModel() {
   if (!processNodeTree.value) {
     processNodeTree.value = {
       name: '发起人',
@@ -131,11 +131,11 @@ const updateModel = () => {
     // 初始化时也触发一次保存
     saveSimpleFlowModel(processNodeTree.value);
   }
-};
+}
 
-const saveSimpleFlowModel = async (
+async function saveSimpleFlowModel(
   simpleModelNode: SimpleFlowNode | undefined,
-) => {
+) {
   if (!simpleModelNode) {
     return;
   }
@@ -146,16 +146,15 @@ const saveSimpleFlowModel = async (
   } catch (error) {
     console.error('保存失败:', error);
   }
-};
+}
 
 /**
  * 校验节点设置。 暂时以 showText 为空 未节点错误配置
  */
-// eslint-disable-next-line unused-imports/no-unused-vars, no-unused-vars
-const validateNode = (
+function validateNode(
   node: SimpleFlowNode | undefined,
   errorNodes: SimpleFlowNode[],
-) => {
+) {
   if (node) {
     const { type, showText, conditionNodes } = node;
     if (type === NodeType.END_EVENT_NODE) {
@@ -163,7 +162,7 @@ const validateNode = (
     }
     if (type === NodeType.START_USER_NODE) {
       // 发起人节点暂时不用校验，直接校验孩子节点
-      validateNode(node.childNode, errorNodes);
+      useValidateNode(node.childNode, errorNodes);
     }
 
     if (
@@ -174,7 +173,7 @@ const validateNode = (
       if (!showText) {
         errorNodes.push(node);
       }
-      validateNode(node.childNode, errorNodes);
+      useValidateNode(node.childNode, errorNodes);
     }
 
     if (
@@ -185,13 +184,20 @@ const validateNode = (
       // 分支节点
       // 1. 先校验各个分支
       conditionNodes?.forEach((item) => {
-        validateNode(item, errorNodes);
+        useValidateNode(item, errorNodes);
       });
       // 2. 校验孩子节点
-      validateNode(node.childNode, errorNodes);
+      useValidateNode(node.childNode, errorNodes);
     }
   }
-};
+}
+
+function useValidateNode(
+  node: SimpleFlowNode | undefined,
+  errorNodes: SimpleFlowNode[],
+) {
+  validateNode(node, errorNodes);
+}
 
 onMounted(async () => {
   try {

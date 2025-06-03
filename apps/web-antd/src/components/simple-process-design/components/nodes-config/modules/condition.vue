@@ -38,13 +38,16 @@ import { useFormFieldsAndStartUser } from '../../../helpers';
 defineOptions({
   name: 'Condition',
 });
+
 const props = defineProps({
   modelValue: {
     type: Object,
     required: true,
   },
 });
+
 const emit = defineEmits(['update:modelValue']);
+
 const condition = computed({
   get() {
     return props.modelValue;
@@ -81,35 +84,37 @@ const formRules: Record<string, Rule[]> = reactive({
     },
   ],
 });
+
 const formRef = ref(); // 表单 Ref
 
 /** 切换条件配置方式 */
-const changeConditionType = () => {
+function changeConditionType() {
   if (
     condition.value.conditionType === ConditionType.RULE &&
     !condition.value.conditionGroups
   ) {
     condition.value.conditionGroups = cloneDeep(DEFAULT_CONDITION_GROUP_VALUE);
   }
-};
-const deleteConditionGroup = (conditions: any, index: number) => {
+}
+
+function deleteConditionGroup(conditions: any, index: number) {
   conditions.splice(index, 1);
-};
+}
 
-const deleteConditionRule = (condition: any, index: number) => {
+function deleteConditionRule(condition: any, index: number) {
   condition.rules.splice(index, 1);
-};
+}
 
-const addConditionRule = (condition: any, index: number) => {
+function addConditionRule(condition: any, index: number) {
   const rule = {
     opCode: '==',
     leftSide: undefined,
     rightSide: '',
   };
   condition.rules.splice(index + 1, 0, rule);
-};
+}
 
-const addConditionGroup = (conditions: any) => {
+function addConditionGroup(conditions: any) {
   const condition = {
     and: true,
     rules: [
@@ -121,12 +126,12 @@ const addConditionGroup = (conditions: any) => {
     ],
   };
   conditions.push(condition);
-};
+}
 
-const validate = async () => {
+async function validate() {
   if (!formRef.value) return false;
   return await formRef.value.validate();
-};
+}
 
 defineExpose({ validate });
 </script>

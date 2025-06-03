@@ -23,8 +23,11 @@ const props = defineProps({
     required: true,
   },
 });
+
 const emit = defineEmits(['update:modelValue']);
+
 const listenerFormRef = ref();
+
 const configForm = computed({
   get() {
     return props.modelValue;
@@ -33,6 +36,7 @@ const configForm = computed({
     emit('update:modelValue', newValue);
   },
 });
+
 const taskListener = ref([
   {
     name: '创建任务',
@@ -48,10 +52,10 @@ const taskListener = ref([
   },
 ]);
 
-const validate = async () => {
+async function validate() {
   if (!listenerFormRef.value) return false;
   return await listenerFormRef.value.validate();
-};
+}
 
 defineExpose({ validate });
 </script>
