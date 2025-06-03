@@ -12,7 +12,6 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  Button,
   Col,
   Form,
   FormItem,
@@ -44,9 +43,7 @@ import {
   useWatchNode,
 } from '../../helpers';
 
-defineOptions({
-  name: 'CopyTaskNodeConfig',
-});
+defineOptions({ name: 'CopyTaskNodeConfig' });
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
@@ -67,10 +64,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
   closable: true,
   title: '',
-  placement: 'right',
-  onCancel() {
-    drawerApi.close();
-  },
   onConfirm() {
     saveConfig();
   },
@@ -512,10 +505,6 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
         </div>
       </TabPane>
     </Tabs>
-    <template #footer>
-      <Button type="primary" @click="saveConfig">确 定</Button>
-      <Button @click="drawerApi.close()">取 消</Button>
-    </template>
   </Drawer>
 </template>
 <style lang="scss" scoped>

@@ -102,9 +102,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
   closable: true,
   title: '',
-  onCancel() {
-    drawerApi.close();
-  },
   onConfirm() {
     saveConfig();
   },
@@ -212,7 +209,7 @@ const changeCandidateStrategy = () => {
   configForm.value.approveMethod = ApproveMethodType.SEQUENTIAL_APPROVE;
 };
 
-// 审批方式改变
+/** 审批方式改变 */
 const approveMethodChanged = () => {
   configForm.value.rejectHandlerType = RejectHandlerType.FINISH_PROCESS;
   if (configForm.value.approveMethod === ApproveMethodType.APPROVE_BY_RATIO) {
@@ -240,18 +237,8 @@ const nodeTypeName = computed(() => {
   return currentNode.value.type === NodeType.TRANSACTOR_NODE ? '办理' : '审批';
 });
 
-/** 保存配置 */
-const saveConfig = async () => {
-  // 设置审批节点名称
-  currentNode.value.name = nodeName.value!;
-  // 设置审批类型
-  currentNode.value.approveType = approveType.value;
-  // 如果不是人工审批。返回
-  if (approveType.value !== ApproveType.USER) {
-    currentNode.value.showText = getApproveTypeText(approveType.value);
-    drawerApi.close();
-    return true;
-  }
+/** 校验节点配置 */
+const validateConfig = async () => {
   if (!formRef.value) return false;
   if (!userTaskListenerRef.value) return false;
 
@@ -274,6 +261,27 @@ const saveConfig = async () => {
   const showText = getShowText();
   if (!showText) return false;
 
+  return true;
+};
+/** 保存配置 */
+const saveConfig = async () => {
+  // 如果不是人工审批，不执行校验，直接返回
+  if (approveType.value !== ApproveType.USER) {
+    currentNode.value.name = nodeName.value!;
+    currentNode.value.approveType = approveType.value;
+    currentNode.value.showText = getApproveTypeText(approveType.value);
+    drawerApi.close();
+    return true;
+  }
+  // 执行校验
+  if (!(await validateConfig())) {
+    return false;
+  }
+  // 设置审批节点名称
+  currentNode.value.name = nodeName.value!;
+  // 设置审批类型
+  currentNode.value.approveType = approveType.value;
+  // 设置审批人设置策略
   currentNode.value.candidateStrategy = configForm.value.candidateStrategy;
   // 处理 candidateParam 参数
   currentNode.value.candidateParam = handleCandidateParam();
@@ -336,7 +344,7 @@ const saveConfig = async () => {
   // 审批意见
   currentNode.value.reasonRequire = configForm.value.reasonRequire;
 
-  currentNode.value.showText = showText;
+  currentNode.value.showText = getShowText();
   drawerApi.close();
   return true;
 };
@@ -1206,10 +1214,6 @@ onMounted(() => {
         />
       </TabPane>
     </Tabs>
-    <template #footer>
-      <Button type="primary" @click="saveConfig">确 定</Button>
-      <Button @click="drawerApi.close()">取 消</Button>
-    </template>
   </Drawer>
 </template>
 <style lang="scss" scoped>
