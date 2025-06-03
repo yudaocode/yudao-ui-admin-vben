@@ -33,6 +33,8 @@ const emits = defineEmits<{
   (e: 'quitTeam'): void;
 }>();
 
+const gridData = ref<CrmPermissionApi.Permission[]>([]);
+
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -67,6 +69,14 @@ function handleCreate() {
 }
 
 function handleEdit() {
+  if (checkedIds.value.length === 0) {
+    message.error('请先选择团队成员后操作！');
+    return;
+  }
+  if (checkedIds.value.length > 1) {
+    message.error('只能选择一个团队成员进行编辑！');
+    return;
+  }
   formModalApi
     .setData({
       bizType: props.bizType,
@@ -112,7 +122,7 @@ async function handleQuit() {
     .getData()
     .find(
       (item) =>
-        item.id === userStore.userInfo?.userId &&
+        item.id === userStore.userInfo?.id &&
         item.level === PermissionLevelEnum.OWNER,
     );
   if (permission) {
@@ -122,7 +132,7 @@ async function handleQuit() {
 
   const userPermission = gridApi.grid
     .getData()
-    .find((item) => item.id === userStore.userInfo?.userId);
+    .find((item) => item.id === userStore.userInfo?.id);
   if (!userPermission) {
     message.warning('你不是团队成员！');
     return;
@@ -176,6 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             bizId: props.bizId,
             bizType: props.bizType,
           });
+          gridData.value = res;
           return res;
         },
       },
@@ -201,19 +212,19 @@ defineExpose({
   validateWrite,
   isPool,
 });
+
 watch(
-  () => gridApi.grid.getData(),
+  () => gridData.value,
   (data) => {
     isPool.value = false;
     if (data.length > 0) {
-      isPool.value = gridApi.grid
-        .getData()
-        .some((item) => item.level === PermissionLevelEnum.OWNER);
+      isPool.value = data.some(
+        (item) => item.level === PermissionLevelEnum.OWNER,
+      );
       validateOwnerUser.value = false;
       validateWrite.value = false;
-      const userId = userStore.userInfo?.userId;
-      gridApi.grid
-        .getData()
+      const userId = userStore.userInfo?.id;
+      gridData.value
         .filter((item) => item.userId === userId)
         .forEach((item) => {
           if (item.level === PermissionLevelEnum.OWNER) {

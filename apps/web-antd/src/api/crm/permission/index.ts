@@ -1,5 +1,3 @@
-import type { PageResult } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace CrmPermissionApi {
@@ -57,7 +55,7 @@ export enum PermissionLevelEnum {
 
 /** 获得数据权限列表（查询团队成员列表） */
 export function getPermissionList(params: CrmPermissionApi.PermissionListReq) {
-  return requestClient.get<PageResult<CrmPermissionApi.Permission>>(
+  return requestClient.get<CrmPermissionApi.Permission[]>(
     '/crm/permission/list',
     { params },
   );

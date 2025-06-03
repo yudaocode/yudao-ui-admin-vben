@@ -114,7 +114,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as CrmPermissionApi.Permission;
+    let data = (await formApi.getValues()) as CrmPermissionApi.Permission;
+    data = Object.assign(data, formData.value);
     try {
       await (formData.value?.ids
         ? updatePermission(data)
