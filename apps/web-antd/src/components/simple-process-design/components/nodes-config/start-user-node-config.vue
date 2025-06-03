@@ -95,7 +95,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
   closable: true,
   onCancel() {
-    drawerApi.close();
+    drawerApi.setState({ isOpen: false });
   },
   onConfirm() {
     saveConfig();
@@ -111,7 +111,7 @@ const saveConfig = async () => {
   currentNode.value.fieldsPermission = fieldsPermissionConfig.value;
   // 设置发起人的按钮权限
   currentNode.value.buttonsSetting = START_USER_BUTTON_SETTING;
-  drawerApi.close();
+  drawerApi.setState({ isOpen: false });
   return true;
 };
 
