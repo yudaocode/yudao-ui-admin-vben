@@ -20,6 +20,7 @@ import Condition from './modules/condition.vue';
 defineOptions({
   name: 'ConditionNodeConfig',
 });
+
 const props = defineProps({
   conditionNode: {
     type: Object as () => SimpleFlowNode,
@@ -58,7 +59,7 @@ const conditionRef = ref();
 const fieldOptions = useFormFieldsAndStartUser(); // 流程表单字段和发起人字段
 
 /** 保存配置 */
-const saveConfig = async () => {
+async function saveConfig() {
   if (!currentNode.value.conditionSetting?.defaultFlow) {
     // 校验表单
     const valid = await conditionRef.value.validate();
@@ -89,14 +90,14 @@ const saveConfig = async () => {
   }
   drawerApi.close();
   return true;
-};
+}
 
 const [Drawer, drawerApi] = useVbenDrawer({
   title: currentNode.value.name,
   onConfirm: saveConfig,
 });
 
-const open = () => {
+function open() {
   // 使用三元表达式代替 if-else，解决 linter 警告
   condition.value = currentNode.value.conditionSetting
     ? cloneDeep(currentNode.value.conditionSetting)
@@ -121,7 +122,7 @@ const open = () => {
       };
 
   drawerApi.open();
-};
+}
 
 watch(
   () => props.conditionNode,
@@ -130,11 +131,12 @@ watch(
   },
 );
 
-const clickIcon = () => {
+function clickIcon() {
   showInput.value = true;
-};
+}
+
 // 输入框失去焦点
-const blurEvent = () => {
+function blurEvent() {
   showInput.value = false;
   currentNode.value.name =
     currentNode.value.name ||
@@ -142,7 +144,7 @@ const blurEvent = () => {
       props.nodeIndex,
       currentNode.value?.conditionSetting?.defaultFlow,
     );
-};
+}
 
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>

@@ -33,11 +33,12 @@ const props = defineProps({
     required: true,
   },
 });
+
 const emits = defineEmits(['update:childNode']);
 const popoverShow = ref(false);
 const readonly = inject<Boolean>('readonly'); // 是否只读
 
-const addNode = (type: number) => {
+function addNode(type: number) {
   // 校验：条件分支、包容分支后面，不允许直接添加并行分支
   if (
     type === NodeType.PARALLEL_BRANCH_NODE &&
@@ -238,7 +239,7 @@ const addNode = (type: number) => {
     };
     emits('update:childNode', data);
   }
-};
+}
 </script>
 <template>
   <div class="node-handler-wrapper">
@@ -334,5 +335,3 @@ const addNode = (type: number) => {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

@@ -57,14 +57,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '客户名称',
       field: 'name',
-      width: 160,
+      minWidth: 160,
       fixed: 'left',
       slots: { default: 'name' },
     },
     {
       title: '客户来源',
       field: 'source',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -73,22 +73,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '手机',
       field: 'mobile',
-      width: 120,
+      minWidth: 120,
     },
     {
       title: '电话',
       field: 'telephone',
-      width: 120,
+      minWidth: 120,
     },
     {
       title: '邮箱',
       field: 'email',
-      width: 140,
+      minWidth: 140,
     },
     {
       title: '客户级别',
       field: 'level',
-      width: 135,
+      minWidth: 135,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
@@ -97,7 +97,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '客户行业',
       field: 'industryId',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -106,18 +106,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '下次联系时间',
       field: 'contactNextTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '备注',
       field: 'remark',
-      width: 200,
+      minWidth: 200,
     },
     {
       title: '成交状态',
       field: 'dealStatus',
-      width: 80,
+      minWidth: 80,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -126,30 +126,30 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '最后跟进时间',
       field: 'contactLastTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '最后跟进记录',
       field: 'contactLastContent',
-      width: 200,
+      minWidth: 200,
     },
     {
       title: '更新时间',
       field: 'updateTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '创建时间',
       field: 'createTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '创建人',
       field: 'creatorName',
-      width: 100,
+      minWidth: 100,
     },
   ];
 }

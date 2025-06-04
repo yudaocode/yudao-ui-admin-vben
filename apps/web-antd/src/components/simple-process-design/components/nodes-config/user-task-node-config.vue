@@ -70,15 +70,18 @@ import UserTaskListener from './modules/user-task-listener.vue';
 import { convertTimeUnit, getApproveTypeText } from './utils';
 
 defineOptions({ name: 'UserTaskNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 const emits = defineEmits<{
   findReturnTaskNodes: [nodeList: SimpleFlowNode[]];
 }>();
+
 const deptLevelLabel = computed(() => {
   let label = '部门负责人来源';
   if (
@@ -95,6 +98,7 @@ const deptLevelLabel = computed(() => {
   }
   return label;
 });
+
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 抽屉配置
@@ -106,12 +110,15 @@ const [Drawer, drawerApi] = useVbenDrawer({
     saveConfig();
   },
 });
+
 // 节点名称配置
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
   NodeType.USER_TASK_NODE,
 );
+
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
+
 // 表单字段权限设置
 const {
   formType,
@@ -119,10 +126,12 @@ const {
   formFieldOptions,
   getNodeConfigFormFields,
 } = useFormFieldsPermission(FieldPermissionType.READ);
+
 // 表单内用户字段选项, 必须是必填和用户选择器
 const userFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'UserSelect');
 });
+
 // 表单内部门字段选项, 必须是必填和部门选择器
 const deptFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'DeptSelect');
@@ -135,7 +144,9 @@ const {
   changeBtnDisplayName,
   btnDisplayNameBlurEvent,
 } = useButtonsSetting();
+
 const approveType = ref(ApproveType.USER);
+
 // 审批人表单设置
 const formRef = ref(); // 表单 Ref
 // 表单校验规则
@@ -197,7 +208,7 @@ const {
 const configForm = tempConfigForm as Ref<UserTaskFormType>;
 
 // 改变审批人设置策略
-const changeCandidateStrategy = () => {
+function changeCandidateStrategy() {
   configForm.value.userIds = [];
   configForm.value.deptIds = [];
   configForm.value.roleIds = [];
@@ -207,16 +218,16 @@ const changeCandidateStrategy = () => {
   configForm.value.formUser = '';
   configForm.value.formDept = '';
   configForm.value.approveMethod = ApproveMethodType.SEQUENTIAL_APPROVE;
-};
+}
 
 /** 审批方式改变 */
-const approveMethodChanged = () => {
+function approveMethodChanged() {
   configForm.value.rejectHandlerType = RejectHandlerType.FINISH_PROCESS;
   if (configForm.value.approveMethod === ApproveMethodType.APPROVE_BY_RATIO) {
     configForm.value.approveRatio = 100;
   }
   formRef.value.clearValidate('approveRatio');
-};
+}
 // 审批拒绝 可退回的节点
 const returnTaskList = ref<SimpleFlowNode[]>([]);
 // 审批人超时未处理设置
@@ -238,7 +249,7 @@ const nodeTypeName = computed(() => {
 });
 
 /** 校验节点配置 */
-const validateConfig = async () => {
+async function validateConfig() {
   if (!formRef.value) return false;
   if (!userTaskListenerRef.value) return false;
 
@@ -262,9 +273,10 @@ const validateConfig = async () => {
   if (!showText) return false;
 
   return true;
-};
+}
+
 /** 保存配置 */
-const saveConfig = async () => {
+async function saveConfig() {
   // 如果不是人工审批，不执行校验，直接返回
   if (approveType.value !== ApproveType.USER) {
     currentNode.value.name = nodeName.value!;
@@ -347,10 +359,10 @@ const saveConfig = async () => {
   currentNode.value.showText = getShowText();
   drawerApi.close();
   return true;
-};
+}
 
 /** 显示审批节点配置， 由父组件传过来 */
-const showUserTaskNodeConfig = (node: SimpleFlowNode) => {
+function showUserTaskNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   // 1 审批类型
   approveType.value =
@@ -429,7 +441,7 @@ const showUserTaskNodeConfig = (node: SimpleFlowNode) => {
   configForm.value.reasonRequire = node?.reasonRequire ?? false;
 
   drawerApi.open();
-};
+}
 
 defineExpose({ showUserTaskNodeConfig }); // 暴露方法给父组件
 
@@ -541,7 +553,7 @@ function useTimeoutHandler() {
 }
 
 /** 批量更新权限 */
-const updatePermission = (type: string) => {
+function updatePermission(type: string) {
   fieldsPermissionConfig.value.forEach((field) => {
     if (type === 'READ') {
       field.permission = FieldPermissionType.READ;
@@ -551,7 +563,8 @@ const updatePermission = (type: string) => {
       field.permission = FieldPermissionType.NONE;
     }
   });
-};
+}
+
 // 在组件初始化时记录初始位置
 onMounted(() => {
   // 固定添加发起人ID字段

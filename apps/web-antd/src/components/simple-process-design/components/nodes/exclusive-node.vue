@@ -20,12 +20,14 @@ import ProcessNodeTree from '../process-node-tree.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'ExclusiveNode' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 // 定义事件，更新父组件
 const emits = defineEmits<{
   findParentNode: [nodeList: SimpleFlowNode[], nodeType: number];
@@ -36,10 +38,12 @@ const emits = defineEmits<{
   ];
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();
+
 const { proxy } = getCurrentInstance() as any;
 // 是否只读
 const readonly = inject<Boolean>('readonly');
 const currentNode = ref<SimpleFlowNode>(props.flowNode);
+
 watch(
   () => props.flowNode,
   (newValue) => {
@@ -48,8 +52,9 @@ watch(
 );
 
 const showInputs = ref<boolean[]>([]);
+
 // 失去焦点
-const blurEvent = (index: number) => {
+function blurEvent(index: number) {
   showInputs.value[index] = false;
   const conditionNode = currentNode.value.conditionNodes?.at(
     index,
@@ -60,23 +65,23 @@ const blurEvent = (index: number) => {
       index,
       conditionNode.conditionSetting?.defaultFlow,
     );
-};
+}
 
 // 点击条件名称
-const clickEvent = (index: number) => {
+function clickEvent(index: number) {
   showInputs.value[index] = true;
-};
+}
 
-const conditionNodeConfig = (nodeId: string) => {
+function conditionNodeConfig(nodeId: string) {
   if (readonly) {
     return;
   }
   const conditionNode = proxy.$refs[nodeId][0];
   conditionNode.open();
-};
+}
 
 // 新增条件
-const addCondition = () => {
+function addCondition() {
   const conditionNodes = currentNode.value.conditionNodes;
   if (conditionNodes) {
     const len = conditionNodes.length;
@@ -96,10 +101,10 @@ const addCondition = () => {
     };
     conditionNodes.splice(lastIndex, 0, conditionData);
   }
-};
+}
 
 // 删除条件
-const deleteCondition = (index: number) => {
+function deleteCondition(index: number) {
   const conditionNodes = currentNode.value.conditionNodes;
   if (conditionNodes) {
     conditionNodes.splice(index, 1);
@@ -109,10 +114,10 @@ const deleteCondition = (index: number) => {
       emits('update:modelValue', childNode);
     }
   }
-};
+}
 
 // 移动节点
-const moveNode = (index: number, to: number) => {
+function moveNode(index: number, to: number) {
   // -1 ：向左  1： 向右
   if (
     currentNode.value.conditionNodes &&
@@ -125,13 +130,14 @@ const moveNode = (index: number, to: number) => {
         currentNode.value.conditionNodes[index],
       )[0] as SimpleFlowNode;
   }
-};
+}
+
 // 递归从父节点中查询匹配的节点
-const recursiveFindParentNode = (
+function recursiveFindParentNode(
   nodeList: SimpleFlowNode[],
   node: SimpleFlowNode,
   nodeType: number,
-) => {
+) {
   if (!node || node.type === NodeType.START_USER_NODE) {
     return;
   }
@@ -140,7 +146,7 @@ const recursiveFindParentNode = (
   }
   // 条件节点 (NodeType.CONDITION_NODE) 比较特殊。需要调用其父节点条件分支节点（NodeType.EXCLUSIVE_NODE) 继续查找
   emits('findParentNode', nodeList, nodeType);
-};
+}
 </script>
 <template>
   <div class="branch-node-wrapper">
@@ -274,4 +280,3 @@ const recursiveFindParentNode = (
     />
   </div>
 </template>
-<style lang="scss" scoped></style>

@@ -120,7 +120,7 @@ const [ErrorModal, errorModalApi] = useVbenModal({
 });
 
 // 添加更新模型的方法
-const updateModel = () => {
+function updateModel() {
   if (!processNodeTree.value) {
     processNodeTree.value = {
       name: '发起人',
@@ -136,11 +136,11 @@ const updateModel = () => {
     // 初始化时也触发一次保存
     saveSimpleFlowModel(processNodeTree.value);
   }
-};
+}
 
-const saveSimpleFlowModel = async (
+async function saveSimpleFlowModel(
   simpleModelNode: SimpleFlowNode | undefined,
-) => {
+) {
   if (!simpleModelNode) {
     return;
   }
@@ -151,16 +151,15 @@ const saveSimpleFlowModel = async (
   } catch (error) {
     console.error('保存失败:', error);
   }
-};
+}
 
 /**
- * 校验节点设置。 暂时以 showText 为空 未节点错误配置
+ * 校验节点设置。 暂时以 showText 为空作为节点错误配置的判断条件
  */
-
-const validateNode = (
+function validateNode(
   node: SimpleFlowNode | undefined,
   errorNodes: SimpleFlowNode[],
-) => {
+) {
   if (node) {
     const { type, showText, conditionNodes } = node;
     if (type === NodeType.END_EVENT_NODE) {
@@ -185,7 +184,7 @@ const validateNode = (
       validateNode(node.childNode, errorNodes);
     }
   }
-};
+}
 
 onMounted(async () => {
   try {

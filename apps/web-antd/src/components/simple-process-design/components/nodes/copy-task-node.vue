@@ -37,18 +37,18 @@ const { showInput, blurEvent, clickTitle } = useNodeName2(
 
 const nodeSetting = ref();
 // 打开节点配置
-const openNodeConfig = () => {
+function openNodeConfig() {
   if (readonly) {
     return;
   }
   nodeSetting.value.showCopyTaskNodeConfig(currentNode.value);
   nodeSetting.value.openDrawer();
-};
+}
 
 // 删除节点。更新当前节点为孩子节点
-const deleteNode = () => {
+function deleteNode() {
   emits('update:flowNode', currentNode.value.childNode);
-};
+}
 </script>
 <template>
   <div class="node-wrapper">
@@ -115,4 +115,3 @@ const deleteNode = () => {
     />
   </div>
 </template>
-<style lang="scss" scoped></style>

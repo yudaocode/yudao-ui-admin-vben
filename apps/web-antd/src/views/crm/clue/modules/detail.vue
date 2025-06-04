@@ -5,16 +5,18 @@ import { defineAsyncComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 
 import { Button, Card, Modal, Tabs } from 'ant-design-vue';
 
 import { getClue, transformClue } from '#/api/crm/clue';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
 
 import { useDetailSchema } from '../data';
 import ClueForm from './form.vue';
-import TransferForm from './transfer.vue';
 
 const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
 
@@ -22,6 +24,7 @@ const loading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+const tabs = useTabs();
 
 const clueId = ref(0);
 
@@ -58,6 +61,7 @@ async function loadClueDetail() {
 
 /** 返回列表页 */
 function handleBack() {
+  tabs.closeCurrentTab();
   router.push('/crm/clue');
 }
 
@@ -68,7 +72,7 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ id: clueId }).open();
+  transferModalApi.setData({ bizType: BizTypeEnum.CRM_CLUE }).open();
 }
 
 /** 转化为客户 */
@@ -141,7 +145,13 @@ onMounted(async () => {
           <ClueDetailsInfo :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3">
-          <div>团队成员</div>
+          <PermissionList
+            ref="permissionListRef"
+            :biz-id="clue.id!"
+            :biz-type="BizTypeEnum.CRM_CLUE"
+            :show-action="true"
+            @quit-team="handleBack"
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="4">
           <div>操作日志</div>

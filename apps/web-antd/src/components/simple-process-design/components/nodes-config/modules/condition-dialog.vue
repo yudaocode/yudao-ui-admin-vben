@@ -50,15 +50,16 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-const open = (conditionObj: any | undefined) => {
+// TODO: jason  open 在 useVbenModal 中 onOpenChange 方法
+function open(conditionObj: any | undefined) {
   if (conditionObj) {
     conditionData.value.conditionType = conditionObj.conditionType;
     conditionData.value.conditionExpression = conditionObj.conditionExpression;
     conditionData.value.conditionGroups = conditionObj.conditionGroups;
   }
   modalApi.open();
-};
-
+}
+// TODO: jason  不需要暴露expose，直接使用modalApi.setData(formSetting).open()
 defineExpose({ open });
 </script>
 <template>
@@ -66,5 +67,3 @@ defineExpose({ open });
     <Condition ref="conditionRef" v-model="conditionData" />
   </Modal>
 </template>
-
-<style lang="scss" scoped></style>

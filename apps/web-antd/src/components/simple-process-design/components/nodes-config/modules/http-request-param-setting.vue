@@ -42,18 +42,18 @@ const props = defineProps({
 const formFieldOptions = useFormFieldsAndStartUser();
 
 /** 添加请求配置项 */
-const addHttpRequestParam = (arr: HttpRequestParam[]) => {
+function addHttpRequestParam(arr: HttpRequestParam[]) {
   arr.push({
     key: '',
     type: BpmHttpRequestParamTypeEnum.FIXED_VALUE,
     value: '',
   });
-};
+}
 
 /** 删除请求配置项 */
-const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
+function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
   arr.splice(index, 1);
-};
+}
 </script>
 <template>
   <FormItem
@@ -225,4 +225,3 @@ const deleteHttpRequestParam = (arr: HttpRequestParam[], index: number) => {
     </Button>
   </FormItem>
 </template>
-<style lang="scss" scoped></style>

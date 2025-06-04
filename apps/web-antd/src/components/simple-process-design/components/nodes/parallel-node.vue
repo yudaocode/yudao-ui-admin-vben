@@ -14,12 +14,14 @@ import ProcessNodeTree from '../process-node-tree.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'ParallelNode' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 // 定义事件，更新父组件
 const emits = defineEmits<{
   findParnetNode: [nodeList: SimpleFlowNode[], nodeType: number];
@@ -30,6 +32,7 @@ const emits = defineEmits<{
   ];
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();
+
 const currentNode = ref<SimpleFlowNode>(props.flowNode);
 // 是否只读
 const readonly = inject<Boolean>('readonly');
@@ -42,22 +45,23 @@ watch(
 );
 
 const showInputs = ref<boolean[]>([]);
+
 // 失去焦点
-const blurEvent = (index: number) => {
+function blurEvent(index: number) {
   showInputs.value[index] = false;
   const conditionNode = currentNode.value.conditionNodes?.at(
     index,
   ) as SimpleFlowNode;
   conditionNode.name = conditionNode.name || `并行${index + 1}`;
-};
+}
 
 // 点击条件名称
-const clickEvent = (index: number) => {
+function clickEvent(index: number) {
   showInputs.value[index] = true;
-};
+}
 
 // 新增条件
-const addCondition = () => {
+function addCondition() {
   const conditionNodes = currentNode.value.conditionNodes;
   if (conditionNodes) {
     const len = conditionNodes.length;
@@ -72,10 +76,10 @@ const addCondition = () => {
     };
     conditionNodes.splice(lastIndex, 0, conditionData);
   }
-};
+}
 
 // 删除条件
-const deleteCondition = (index: number) => {
+function deleteCondition(index: number) {
   const conditionNodes = currentNode.value.conditionNodes;
   if (conditionNodes) {
     conditionNodes.splice(index, 1);
@@ -85,14 +89,14 @@ const deleteCondition = (index: number) => {
       emits('update:modelValue', childNode);
     }
   }
-};
+}
 
 // 递归从父节点中查询匹配的节点
-const recursiveFindParentNode = (
+function recursiveFindParentNode(
   nodeList: SimpleFlowNode[],
   node: SimpleFlowNode,
   nodeType: number,
-) => {
+) {
   if (!node || node.type === NodeType.START_USER_NODE) {
     return;
   }
@@ -101,7 +105,7 @@ const recursiveFindParentNode = (
   }
   // 条件节点 (NodeType.CONDITION_NODE) 比较特殊。需要调用其父节点并行节点（NodeType.PARALLEL_NODE) 继续查找
   emits('findParnetNode', nodeList, nodeType);
-};
+}
 </script>
 <template>
   <div class="branch-node-wrapper">

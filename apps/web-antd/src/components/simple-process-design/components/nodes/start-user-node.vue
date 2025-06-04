@@ -15,17 +15,20 @@ import StartUserNodeConfig from '../nodes-config/start-user-node-config.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'StartUserNode' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     default: () => null,
   },
 });
+
 // 定义事件，更新父组件。
-// eslint-disable-next-line unused-imports/no-unused-vars, no-unused-vars
-const emits = defineEmits<{
+// const emits = defineEmits<{
+defineEmits<{
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();
+
 const readonly = inject<Boolean>('readonly'); // 是否只读
 const tasks = inject<Ref<any[]>>('tasks', ref([]));
 // 监控节点变化
@@ -41,7 +44,7 @@ const nodeSetting = ref();
 // 任务的弹窗显示，用于只读模式
 const selectTasks = ref<any[] | undefined>([]); // 选中的任务数组
 
-const nodeClick = () => {
+function nodeClick() {
   if (readonly) {
     // 只读模式，弹窗显示任务信息
     if (tasks && tasks.value) {
@@ -58,7 +61,7 @@ const nodeClick = () => {
     );
     nodeSetting.value.showStartUserNodeConfig(currentNode.value);
   }
-};
+}
 </script>
 <template>
   <div class="node-wrapper">
@@ -116,4 +119,3 @@ const nodeClick = () => {
   />
   <!-- 审批记录  TODO -->
 </template>
-<style lang="scss" scoped></style>

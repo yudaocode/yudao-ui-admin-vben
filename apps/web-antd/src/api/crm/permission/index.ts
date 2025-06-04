@@ -1,12 +1,11 @@
-import type { PageParam, PageResult } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace CrmPermissionApi {
   /** 数据权限信息 */
   export interface Permission {
     id?: number; // 数据权限编号
-    userId: number; // 用户编号
+    ids?: number[];
+    userId?: number; // 用户编号
     bizType: number; // Crm 类型
     bizId: number; // Crm 类型数据编号
     level: number; // 权限级别
@@ -15,7 +14,6 @@ export namespace CrmPermissionApi {
     nickname?: string; // 用户昵称
     postNames?: string[]; // 岗位名称数组
     createTime?: Date;
-    ids?: number[];
   }
 
   /** 数据权限转移请求 */
@@ -26,33 +24,38 @@ export namespace CrmPermissionApi {
     toBizTypes?: number[]; // 转移客户时，需要额外有【联系人】【商机】【合同】的 checkbox 选择
   }
 
-  /**
-   * CRM 业务类型枚举
-   */
-  export enum BizType {
-    CRM_BUSINESS = 4, // 商机
-    CRM_CLUE = 1, // 线索
-    CRM_CONTACT = 3, // 联系人
-    CRM_CONTRACT = 5, // 合同
-    CRM_CUSTOMER = 2, // 客户
-    CRM_PRODUCT = 6, // 产品
-    CRM_RECEIVABLE = 7, // 回款
-    CRM_RECEIVABLE_PLAN = 8, // 回款计划
-  }
-
-  /**
-   * CRM 数据权限级别枚举
-   */
-  export enum PermissionLevel {
-    OWNER = 1, // 负责人
-    READ = 2, // 只读
-    WRITE = 3, // 读写
+  export interface PermissionListReq {
+    bizId: number; // 模块数据编号
+    bizType: number; // 模块类型
   }
 }
 
+/**
+ * CRM 业务类型枚举
+ */
+export enum BizTypeEnum {
+  CRM_BUSINESS = 4, // 商机
+  CRM_CLUE = 1, // 线索
+  CRM_CONTACT = 3, // 联系人
+  CRM_CONTRACT = 5, // 合同
+  CRM_CUSTOMER = 2, // 客户
+  CRM_PRODUCT = 6, // 产品
+  CRM_RECEIVABLE = 7, // 回款
+  CRM_RECEIVABLE_PLAN = 8, // 回款计划
+}
+
+/**
+ * CRM 数据权限级别枚举
+ */
+export enum PermissionLevelEnum {
+  OWNER = 1, // 负责人
+  READ = 2, // 只读
+  WRITE = 3, // 读写
+}
+
 /** 获得数据权限列表（查询团队成员列表） */
-export function getPermissionList(params: PageParam) {
-  return requestClient.get<PageResult<CrmPermissionApi.Permission>>(
+export function getPermissionList(params: CrmPermissionApi.PermissionListReq) {
+  return requestClient.get<CrmPermissionApi.Permission[]>(
     '/crm/permission/list',
     { params },
   );

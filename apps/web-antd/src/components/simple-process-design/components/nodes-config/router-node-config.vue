@@ -26,12 +26,14 @@ import { useNodeName, useWatchNode } from '../../helpers';
 import Condition from './modules/condition.vue';
 
 defineOptions({ name: 'RouterNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 
 /** 当前节点 */
@@ -46,7 +48,7 @@ const conditionRef = ref<any[]>([]);
 const formRef = ref();
 
 /** 校验节点配置 */
-const validateConfig = async () => {
+async function validateConfig() {
   // 校验路由分支选择
   const routeIdValid = await formRef.value.validate().catch(() => false);
   if (!routeIdValid) {
@@ -68,10 +70,10 @@ const validateConfig = async () => {
   if (!showText) return false;
 
   return true;
-};
+}
 
 /** 保存配置 */
-const saveConfig = async () => {
+async function saveConfig() {
   // 校验配置
   if (!(await validateConfig())) {
     return false;
@@ -82,7 +84,7 @@ const saveConfig = async () => {
   currentNode.value.routerGroups = routerGroups.value;
   drawerApi.close();
   return true;
-};
+}
 
 const [Drawer, drawerApi] = useVbenDrawer({
   title: nodeName.value,
@@ -90,7 +92,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 /** 打开路由节点配置抽屉，由父组件调用 */
-const openDrawer = (node: SimpleFlowNode) => {
+function openDrawer(node: SimpleFlowNode) {
   nodeOptions.value = [];
   getRouterNode(processNodeTree?.value);
   routerGroups.value = [];
@@ -99,10 +101,10 @@ const openDrawer = (node: SimpleFlowNode) => {
     routerGroups.value = node.routerGroups;
   }
   drawerApi.open();
-};
+}
 
 /** 获取显示文本 */
-const getShowText = () => {
+function getShowText() {
   if (
     !routerGroups.value ||
     !Array.isArray(routerGroups.value) ||
@@ -135,10 +137,10 @@ const getShowText = () => {
     }
   }
   return `${routerGroups.value.length}条路由分支`;
-};
+}
 
 /** 添加路由分支 */
-const addRouterGroup = () => {
+function addRouterGroup() {
   routerGroups.value.push({
     nodeId: undefined,
     conditionType: ConditionType.RULE,
@@ -159,15 +161,15 @@ const addRouterGroup = () => {
       ],
     },
   });
-};
+}
 
 /** 删除路由分支 */
-const deleteRouterGroup = (index: number) => {
+function deleteRouterGroup(index: number) {
   routerGroups.value.splice(index, 1);
-};
+}
 
 /** 递归获取所有节点 */
-const getRouterNode = (node: any) => {
+function getRouterNode(node: any) {
   // TODO 最好还需要满足以下要求
   // 并行分支、包容分支内部节点不能跳转到外部节点
   // 条件分支节点可以向上跳转到外部节点
@@ -192,7 +194,7 @@ const getRouterNode = (node: any) => {
     }
     node = node.childNode;
   }
-};
+}
 
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>

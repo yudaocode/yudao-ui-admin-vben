@@ -44,12 +44,14 @@ import {
 } from '../../helpers';
 
 defineOptions({ name: 'CopyTaskNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 const deptLevelLabel = computed(() => {
   let label = '部门负责人来源';
   label =
@@ -59,6 +61,7 @@ const deptLevelLabel = computed(() => {
       : `${label}(发起人部门向上)`;
   return label;
 });
+
 // 抽屉配置
 const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
@@ -68,14 +71,18 @@ const [Drawer, drawerApi] = useVbenDrawer({
     saveConfig();
   },
 });
+
 // 当前节点
 const currentNode = useWatchNode(props);
+
 // 节点名称
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
   NodeType.COPY_TASK_NODE,
 );
+
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
+
 // 表单字段权限配置
 const {
   formType,
@@ -83,16 +90,20 @@ const {
   formFieldOptions,
   getNodeConfigFormFields,
 } = useFormFieldsPermission(FieldPermissionType.READ);
+
 // 表单内用户字段选项, 必须是必填和用户选择器
 const userFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'UserSelect');
 });
+
 // 表单内部门字段选项, 必须是必填和部门选择器
 const deptFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'DeptSelect');
 });
+
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref
+
 // 表单校验规则
 const formRules: Record<string, Rule[]> = reactive({
   candidateStrategy: [
@@ -127,6 +138,7 @@ const {
   handleCandidateParam,
   parseCandidateParam,
 } = useNodeForm(NodeType.COPY_TASK_NODE);
+
 const configForm = tempConfigForm as Ref<CopyTaskFormType>;
 // 抄送人策略， 去掉发起人自选 和 发起人自己
 const copyUserStrategies = computed(() => {
@@ -134,8 +146,9 @@ const copyUserStrategies = computed(() => {
     (item) => item.value !== CandidateStrategy.START_USER,
   );
 });
+
 // 改变抄送人设置策略
-const changeCandidateStrategy = () => {
+function changeCandidateStrategy() {
   configForm.value.userIds = [];
   configForm.value.deptIds = [];
   configForm.value.roleIds = [];
@@ -144,9 +157,10 @@ const changeCandidateStrategy = () => {
   configForm.value.deptLevel = 1;
   configForm.value.formUser = '';
   configForm.value.formDept = '';
-};
+}
+
 // 保存配置
-const saveConfig = async () => {
+async function saveConfig() {
   activeTabName.value = 'user';
   if (!formRef.value) return false;
   const valid = await formRef.value.validate();
@@ -160,9 +174,10 @@ const saveConfig = async () => {
   currentNode.value.fieldsPermission = fieldsPermissionConfig.value;
   drawerApi.close();
   return true;
-};
+}
+
 // 显示抄送节点配置， 由父组件传过来
-const showCopyTaskNodeConfig = (node: SimpleFlowNode) => {
+function showCopyTaskNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   // 抄送人设置
   configForm.value.candidateStrategy = node.candidateStrategy!;
@@ -171,10 +186,10 @@ const showCopyTaskNodeConfig = (node: SimpleFlowNode) => {
   getNodeConfigFormFields(node.fieldsPermission);
 
   drawerApi.open();
-};
+}
 
 /** 批量更新权限 */
-const updatePermission = (type: string) => {
+function updatePermission(type: string) {
   fieldsPermissionConfig.value.forEach((field) => {
     if (type === 'READ') {
       field.permission = FieldPermissionType.READ;
@@ -184,7 +199,7 @@ const updatePermission = (type: string) => {
       field.permission = FieldPermissionType.NONE;
     }
   });
-};
+}
 
 // 在组件初始化时对表单字段进行处理
 onMounted(() => {

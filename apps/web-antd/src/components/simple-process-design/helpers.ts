@@ -43,7 +43,7 @@ export function useWatchNode(props: {
 }
 
 // 解析 formCreate 所有表单字段, 并返回
-const parseFormCreateFields = (formFields?: string[]) => {
+function parseFormCreateFields(formFields?: string[]) {
   const result: Array<Record<string, any>> = [];
   if (formFields) {
     formFields.forEach((fieldStr: string) => {
@@ -51,7 +51,7 @@ const parseFormCreateFields = (formFields?: string[]) => {
     });
   }
   return result;
-};
+}
 
 /**
  * 解析表单组件的  field, title 等字段（递归，如果组件包含子组件）
@@ -109,20 +109,20 @@ export function useFormFieldsPermission(
 
   const formFields = inject<Ref<string[]>>('formFields', ref([])); // 流程表单字段
 
-  const getNodeConfigFormFields = (
+  function getNodeConfigFormFields(
     nodeFormFields?: Array<Record<string, string>>,
-  ) => {
+  ) {
     nodeFormFields = toRaw(nodeFormFields);
     fieldsPermissionConfig.value =
       !nodeFormFields || nodeFormFields.length === 0
         ? getDefaultFieldsPermission(unref(formFields))
         : mergeFieldsPermission(nodeFormFields, unref(formFields));
-  };
+  }
   // 合并已经设置的表单字段权限，当前流程表单字段 (可能新增，或删除了字段)
-  const mergeFieldsPermission = (
+  function mergeFieldsPermission(
     formFieldsPermisson: Array<Record<string, string>>,
     formFields?: string[],
-  ) => {
+  ) {
     let mergedFieldsPermission: Array<Record<string, any>> = [];
     if (formFields) {
       mergedFieldsPermission = parseFormCreateFields(formFields).map((item) => {
@@ -137,10 +137,10 @@ export function useFormFieldsPermission(
       });
     }
     return mergedFieldsPermission;
-  };
+  }
 
   // 默认的表单权限： 获取表单的所有字段，设置字段默认权限为只读
-  const getDefaultFieldsPermission = (formFields?: string[]) => {
+  function getDefaultFieldsPermission(formFields?: string[]) {
     let defaultFieldsPermission: Array<Record<string, any>> = [];
     if (formFields) {
       defaultFieldsPermission = parseFormCreateFields(formFields).map(
@@ -154,7 +154,7 @@ export function useFormFieldsPermission(
       );
     }
     return defaultFieldsPermission;
-  };
+  }
 
   // 获取表单的所有字段，作为下拉框选项
   const formFieldOptions = parseFormCreateFields(unref(formFields));
@@ -268,7 +268,6 @@ export function useNodeForm(nodeType: NodeType) {
   const formFields = inject<Ref<string[]>>('formFields', ref([])); // 流程表单字段
   const configForm = ref<any | CopyTaskFormType | UserTaskFormType>();
 
-  // eslint-disable-next-line unicorn/prefer-ternary
   if (
     nodeType === NodeType.USER_TASK_NODE ||
     nodeType === NodeType.TRANSACTOR_NODE
@@ -286,13 +285,12 @@ export function useNodeForm(nodeType: NodeType) {
       maxRemindCount: 1, // 默认 提醒 1次
       buttonsSetting: [],
     };
-  } else {
-    configForm.value = {
-      candidateStrategy: CandidateStrategy.USER,
-    };
   }
+  configForm.value = {
+    candidateStrategy: CandidateStrategy.USER,
+  };
 
-  const getShowText = (): string => {
+  function getShowText(): string {
     let showText = '';
     // 指定成员
     if (
@@ -428,12 +426,12 @@ export function useNodeForm(nodeType: NodeType) {
       showText = `流程表达式：${configForm.value.expression}`;
     }
     return showText;
-  };
+  }
 
   /**
    *  处理候选人参数的赋值
    */
-  const handleCandidateParam = () => {
+  function handleCandidateParam() {
     let candidateParam: string | undefined;
     if (!configForm.value) {
       return candidateParam;
@@ -495,14 +493,14 @@ export function useNodeForm(nodeType: NodeType) {
       }
     }
     return candidateParam;
-  };
+  }
   /**
    *  解析候选人参数
    */
-  const parseCandidateParam = (
+  function parseCandidateParam(
     candidateStrategy: CandidateStrategy,
     candidateParam: string | undefined,
-  ) => {
+  ) {
     if (!configForm.value || !candidateParam) {
       return;
     }
@@ -578,7 +576,7 @@ export function useNodeForm(nodeType: NodeType) {
         break;
       }
     }
-  };
+  }
   return {
     configForm,
     roleOptions,
@@ -599,13 +597,13 @@ export function useDrawer() {
   // 抽屉配置是否可见
   const settingVisible = ref(false);
   // 关闭配置抽屉
-  const closeDrawer = () => {
+  function closeDrawer() {
     settingVisible.value = false;
-  };
+  }
   // 打开配置抽屉
-  const openDrawer = () => {
+  function openDrawer() {
     settingVisible.value = true;
-  };
+  }
   return {
     settingVisible,
     closeDrawer,
@@ -622,15 +620,15 @@ export function useNodeName(nodeType: NodeType) {
   // 节点名称输入框
   const showInput = ref(false);
   // 点击节点名称编辑图标
-  const clickIcon = () => {
+  function clickIcon() {
     showInput.value = true;
-  };
+  }
   // 节点名称输入框失去焦点
-  const blurEvent = () => {
+  function blurEvent() {
     showInput.value = false;
     nodeName.value =
       nodeName.value || (NODE_DEFAULT_NAME.get(nodeType) as string);
-  };
+  }
   return {
     nodeName,
     showInput,
@@ -643,15 +641,15 @@ export function useNodeName2(node: Ref<SimpleFlowNode>, nodeType: NodeType) {
   // 显示节点名称输入框
   const showInput = ref(false);
   // 节点名称输入框失去焦点
-  const blurEvent = () => {
+  function blurEvent() {
     showInput.value = false;
     node.value.name =
       node.value.name || (NODE_DEFAULT_NAME.get(nodeType) as string);
-  };
+  }
   // 点击节点标题进行输入
-  const clickTitle = () => {
+  function clickTitle() {
     showInput.value = true;
-  };
+  }
   return {
     showInput,
     clickTitle,
@@ -722,40 +720,40 @@ export function getConditionShowText(
 }
 
 /** 获取表单字段名称*/
-const getFormFieldTitle = (
+function getFormFieldTitle(
   fieldOptions: Array<Record<string, any>>,
   field: string,
-) => {
+) {
   const item = fieldOptions.find((item) => item.field === field);
   return item?.title;
-};
+}
 
 /** 获取操作符名称 */
-const getOpName = (opCode: string): string | undefined => {
+function getOpName(opCode: string): string | undefined {
   const opName = COMPARISON_OPERATORS.find(
     (item: any) => item.value === opCode,
   );
   return opName?.label;
-};
+}
 
 /** 获取条件节点默认的名称 */
-export const getDefaultConditionNodeName = (
+export function getDefaultConditionNodeName(
   index: number,
   defaultFlow: boolean | undefined,
-): string => {
+): string {
   if (defaultFlow) {
     return '其它情况';
   }
   return `条件${index + 1}`;
-};
+}
 
 /** 获取包容分支条件节点默认的名称 */
-export const getDefaultInclusiveConditionNodeName = (
+export function getDefaultInclusiveConditionNodeName(
   index: number,
   defaultFlow: boolean | undefined,
-): string => {
+): string {
   if (defaultFlow) {
     return '其它情况';
   }
   return `包容条件${index + 1}`;
-};
+}

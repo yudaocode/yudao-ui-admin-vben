@@ -42,4 +42,3 @@ defineExpose({ validateConfig });
     />
   </ContentWrap>
 </template>
-<style lang="scss" scoped></style>

@@ -22,6 +22,7 @@ const props = defineProps({
     required: true,
   },
 });
+
 const emits = defineEmits<{
   findParentNode: [nodeList: SimpleFlowNode[], nodeType: NodeType];
   'update:flowNode': [node: SimpleFlowNode | undefined];
@@ -39,7 +40,7 @@ const { showInput, blurEvent, clickTitle } = useNodeName2(
 );
 const nodeSetting = ref();
 
-const nodeClick = () => {
+function nodeClick() {
   if (readonly) {
     if (tasks && tasks.value) {
       // 只读模式，弹窗显示任务信息 TODO 待实现
@@ -49,18 +50,18 @@ const nodeClick = () => {
     // 编辑模式，打开节点配置、把当前节点传递给配置组件
     nodeSetting.value.showUserTaskNodeConfig(currentNode.value);
   }
-};
+}
 
-const deleteNode = () => {
+function deleteNode() {
   emits('update:flowNode', currentNode.value.childNode);
-};
+}
 // 查找可以驳回用户节点
-const findReturnTaskNodes = (
+function findReturnTaskNodes(
   matchNodeList: SimpleFlowNode[], // 匹配的节点
-) => {
+) {
   // 从父节点查找
   emits('findParentNode', matchNodeList, NodeType.USER_TASK_NODE);
-};
+}
 
 // const selectTasks = ref<any[] | undefined>([]); // 选中的任务数组
 </script>
@@ -135,4 +136,3 @@ const findReturnTaskNodes = (
   />
   <!--  TODO 审批记录 -->
 </template>
-<style lang="scss" scoped></style>
