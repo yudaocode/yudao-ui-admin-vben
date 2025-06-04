@@ -25,6 +25,10 @@ const ContactDetailsList = defineAsyncComponent(
   () => import('#/views/crm/contact/modules/detail-list.vue'),
 );
 
+const ContractDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/contract/modules/detail-list.vue'),
+);
+
 const FollowUp = defineAsyncComponent(
   () => import('#/views/crm/followup/index.vue'),
 );
@@ -177,7 +181,10 @@ onMounted(async () => {
           <div>产品</div>
         </Tabs.TabPane>
         <Tabs.TabPane tab="合同" key="5" :force-render="true">
-          <div>合同</div>
+          <ContractDetailsList
+            :biz-id="businessId"
+            :biz-type="BizTypeEnum.CRM_BUSINESS"
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="6" :force-render="true">
           <PermissionList
