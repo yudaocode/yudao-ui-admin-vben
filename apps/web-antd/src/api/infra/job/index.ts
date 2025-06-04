@@ -57,7 +57,7 @@ export function updateJobStatus(id: number, status: number) {
     id,
     status,
   };
-  return requestClient.put('/infra/job/update-status', { params });
+  return requestClient.put('/infra/job/update-status', {}, { params });
 }
 
 /** 定时任务立即执行一次 */
