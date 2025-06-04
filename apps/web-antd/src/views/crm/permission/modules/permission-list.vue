@@ -102,7 +102,6 @@ function handleDelete() {
       content: `你要将${checkedRows.value.map((item) => item.nickname).join(',')}移出团队吗？`,
     })
       .then(async () => {
-        // 更新用户状态
         const res = await deletePermissionBatch(
           checkedRows.value.map((item) => item.id as number),
         );

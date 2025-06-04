@@ -64,12 +64,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<CrmBusinessApi.Business>();
-    if (!data || !data.id) {
+    if (!data) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getBusiness(data.id as number);
+      formData.value = data.id ? await getBusiness(data.id as number) : data;
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

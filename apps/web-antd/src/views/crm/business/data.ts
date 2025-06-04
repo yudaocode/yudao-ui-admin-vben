@@ -57,6 +57,15 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      fieldName: 'contactId',
+      label: '合同名称',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'statusTypeId',
       label: '商机状态组',
       component: 'ApiSelect',
@@ -69,7 +78,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['id'],
-        disabled: (values) => !values.id,
+        disabled: (values) => values.id,
       },
       rules: 'required',
     },
@@ -282,6 +291,57 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'remark',
       label: '备注',
+    },
+  ];
+}
+
+/** 详情列表的字段 */
+export function useDetailListColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      type: 'checkbox',
+      width: 50,
+      fixed: 'left',
+    },
+    {
+      field: 'name',
+      title: '商机名称',
+      fixed: 'left',
+      slots: { default: 'name' },
+    },
+    {
+      field: 'customerName',
+      title: '客户名称',
+      fixed: 'left',
+      slots: { default: 'customerName' },
+    },
+    {
+      field: 'totalPrice',
+      title: '商机金额（元）',
+      formatter: 'formatNumber',
+    },
+    {
+      field: 'dealTime',
+      title: '预计成交日期',
+      formatter: 'formatDate',
+    },
+    {
+      field: 'ownerUserName',
+      title: '负责人',
+    },
+    {
+      field: 'ownerUserDeptName',
+      title: '所属部门',
+    },
+    {
+      field: 'statusTypeName',
+      title: '商机状态组',
+      fixed: 'right',
+    },
+    {
+      field: 'statusName',
+      title: '商机阶段',
+      fixed: 'right',
     },
   ];
 }

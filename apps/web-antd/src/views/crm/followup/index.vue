@@ -5,7 +5,7 @@ import type { CrmFollowUpApi } from '#/api/crm/followup';
 import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -79,7 +79,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       {
         field: 'createTime',
         title: '创建时间',
-        width: 180,
         formatter: 'formatDateTime',
       },
       { field: 'creatorName', title: '跟进人' },
@@ -95,7 +94,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       {
         field: 'nextTime',
         title: '下次联系时间',
-        width: 180,
         formatter: 'formatDateTime',
       },
       {
@@ -113,11 +111,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       {
         field: 'actions',
         title: '操作',
-        width: 100,
         slots: { default: 'actions' },
       },
     ],
-    height: 'auto',
+    height: 600,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -149,7 +146,7 @@ watch(
 </script>
 
 <template>
-  <Page auto-content-height>
+  <div>
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
@@ -191,5 +188,5 @@ watch(
         />
       </template>
     </Grid>
-  </Page>
+  </div>
 </template>
