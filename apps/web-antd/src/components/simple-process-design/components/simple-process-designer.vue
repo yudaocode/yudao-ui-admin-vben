@@ -11,9 +11,10 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { inject, onMounted, provide, ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Button, Modal } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
 import { getUserGroupSimpleList } from '#/api/bpm/userGroup';
@@ -112,8 +113,11 @@ provide('tasks', []);
 provide('processInstance', {});
 const processNodeTree = ref<SimpleFlowNode | undefined>();
 provide('processNodeTree', processNodeTree);
-const errorDialogVisible = ref(false);
-const errorNodes: SimpleFlowNode[] = [];
+
+// 创建错误提示弹窗
+const [ErrorModal, errorModalApi] = useVbenModal({
+  fullscreenButton: false,
+});
 
 // 添加更新模型的方法
 const updateModel = () => {
@@ -122,6 +126,7 @@ const updateModel = () => {
       name: '发起人',
       type: NodeType.START_USER_NODE,
       id: NodeId.START_USER_NODE_ID,
+      showText: '默认配置',
       childNode: {
         id: NodeId.END_EVENT_NODE_ID,
         name: '结束',
@@ -151,7 +156,7 @@ const saveSimpleFlowModel = async (
 /**
  * 校验节点设置。 暂时以 showText 为空 未节点错误配置
  */
-// eslint-disable-next-line unused-imports/no-unused-vars, no-unused-vars
+
 const validateNode = (
   node: SimpleFlowNode | undefined,
   errorNodes: SimpleFlowNode[],
@@ -161,33 +166,22 @@ const validateNode = (
     if (type === NodeType.END_EVENT_NODE) {
       return;
     }
-    if (type === NodeType.START_USER_NODE) {
-      // 发起人节点暂时不用校验，直接校验孩子节点
-      validateNode(node.childNode, errorNodes);
-    }
-
-    if (
-      type === NodeType.USER_TASK_NODE ||
-      type === NodeType.COPY_TASK_NODE ||
-      type === NodeType.CONDITION_NODE
-    ) {
-      if (!showText) {
-        errorNodes.push(node);
-      }
-      validateNode(node.childNode, errorNodes);
-    }
 
     if (
       type === NodeType.CONDITION_BRANCH_NODE ||
       type === NodeType.PARALLEL_BRANCH_NODE ||
       type === NodeType.INCLUSIVE_BRANCH_NODE
     ) {
-      // 分支节点
-      // 1. 先校验各个分支
+      // 1. 分支节点, 先校验各个分支
       conditionNodes?.forEach((item) => {
         validateNode(item, errorNodes);
       });
       // 2. 校验孩子节点
+      validateNode(node.childNode, errorNodes);
+    } else {
+      if (!showText) {
+        errorNodes.push(node);
+      }
       validateNode(node.childNode, errorNodes);
     }
   }
@@ -220,38 +214,40 @@ onMounted(async () => {
   }
 });
 
-const simpleProcessModelRef = ref();
-
-defineExpose({});
+const validate = async () => {
+  const errorNodes: SimpleFlowNode[] = [];
+  validateNode(processNodeTree.value, errorNodes);
+  if (errorNodes.length === 0) {
+    return true;
+  } else {
+    // 设置错误节点数据并打开弹窗
+    errorModalApi.setData(errorNodes);
+    errorModalApi.open();
+    return false;
+  }
+};
+defineExpose({ validate });
 </script>
 <template>
   <div v-loading="loading">
     <SimpleProcessModel
-      ref="simpleProcessModelRef"
       v-if="processNodeTree"
       :flow-node="processNodeTree"
       :readonly="false"
       @save="saveSimpleFlowModel"
     />
-    <Modal
-      v-model="errorDialogVisible"
-      title="保存失败"
-      width="400"
-      :fullscreen="false"
-    >
-      <div class="mb-2">以下节点内容不完善，请修改后保存</div>
+    <ErrorModal title="流程设计校验不通过" class="w-[600px]">
+      <div class="mb-2 text-base">以下节点配置不完善，请修改相关配置</div>
       <div
-        class="b-rounded-1 line-height-normal mb-3 bg-gray-100 p-2"
-        v-for="(item, index) in errorNodes"
+        class="mb-3 rounded-md bg-gray-100 p-2 text-sm"
+        v-for="(item, index) in errorModalApi.getData()"
         :key="index"
       >
         {{ item.name }} : {{ NODE_DEFAULT_TEXT.get(item.type) }}
       </div>
       <template #footer>
-        <Button type="primary" @click="errorDialogVisible = false">
-          知道了
-        </Button>
+        <Button type="primary" @click="errorModalApi.close()">知道了</Button>
       </template>
-    </Modal>
+    </ErrorModal>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import { computed, inject, nextTick } from 'vue';
+import { computed, inject, nextTick, ref } from 'vue';
 
 import { BpmModelType } from '#/utils';
 
@@ -13,11 +13,20 @@ const modelData = defineModel<any>();
 
 const processData = inject('processData') as Ref;
 
+const simpleDesign = ref();
+
 /** 表单校验 */
 const validate = async () => {
   // 获取最新的流程数据
   if (!processData.value) {
     throw new Error('请设计流程');
+  }
+  if (modelData.value.type === BpmModelType.SIMPLE) {
+    // 简易设计器校验
+    const validateResult = await simpleDesign.value?.validateConfig();
+    if (!validateResult) {
+      throw new Error('请完善设计配置');
+    }
   }
   return true;
 };
@@ -41,9 +50,7 @@ const handleDesignSuccess = async (data?: any) => {
 const showDesigner = computed(() => {
   return Boolean(modelData.value?.key && modelData.value?.name);
 });
-defineExpose({
-  validate,
-});
+defineExpose({ validate });
 </script>
 <template>
   <div class="h-full">
@@ -61,6 +68,7 @@ defineExpose({
         :start-user-ids="modelData.startUserIds"
         :start-dept-ids="modelData.startDeptIds"
         @success="handleDesignSuccess"
+        ref="simpleDesign"
       />
     </template>
   </div>
