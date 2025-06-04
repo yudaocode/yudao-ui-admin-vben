@@ -168,7 +168,7 @@ onMounted(async () => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="基本信息" key="1" :force-render="true">
+        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
           <ClueDetailsInfo :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="线索跟进" key="2" :force-render="true">

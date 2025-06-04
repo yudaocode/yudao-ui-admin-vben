@@ -21,6 +21,10 @@ const BusinessDetailsInfo = defineAsyncComponent(
   () => import('./detail-info.vue'),
 );
 
+const ContactDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/contact/modules/detail-list.vue'),
+);
+
 const FollowUp = defineAsyncComponent(
   () => import('#/views/crm/followup/index.vue'),
 );
@@ -162,7 +166,12 @@ onMounted(async () => {
           <FollowUp :biz-id="businessId" :biz-type="BizTypeEnum.CRM_BUSINESS" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="联系人" key="3" :force-render="true">
-          <div>联系人</div>
+          <ContactDetailsList
+            :biz-id="businessId"
+            :biz-type="BizTypeEnum.CRM_BUSINESS"
+            :business-id="business.id"
+            :customer-id="business.customerId"
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="产品" key="4" :force-render="true">
           <div>产品</div>

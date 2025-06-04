@@ -279,9 +279,27 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 详情页的字段 */
+/** 详情页的基础字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
-  return [...useDetailBaseSchema(), ...useDetailSystemSchema()];
+  return [
+    {
+      field: 'name',
+      label: '客户名称',
+    },
+    {
+      field: 'post',
+      label: '职务',
+    },
+    {
+      field: 'mobile',
+      label: '手机',
+    },
+    {
+      field: 'createTime',
+      label: '下次联系时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+  ];
 }
 
 /** 详情页的基础字段 */
@@ -289,16 +307,11 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
   return [
     {
       field: 'name',
-      label: '客户名称',
+      label: '姓名',
     },
     {
-      field: 'source',
-      label: '客户来源',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_SOURCE,
-          value: data?.source,
-        }),
+      field: 'customerName',
+      label: '客户名称',
     },
     {
       field: 'mobile',
@@ -313,27 +326,12 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
       label: '邮箱',
     },
     {
-      field: 'wechat',
-      label: '微信',
-    },
-    {
       field: 'qq',
       label: 'QQ',
     },
     {
-      field: 'industryId',
-      label: '客户行业',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY,
-          value: data?.industryId,
-        }),
-    },
-    {
-      field: 'level',
-      label: '客户级别',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_CUSTOMER_LEVEL, value: data?.level }),
+      field: 'wechat',
+      label: '微信',
     },
     {
       field: 'areaName',
@@ -342,6 +340,29 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'detailAddress',
       label: '详细地址',
+    },
+    {
+      field: 'post',
+      label: '职务',
+    },
+    {
+      field: 'parentName',
+      label: '直属上级',
+    },
+    {
+      field: 'master',
+      label: '关键决策人',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.INFRA_BOOLEAN_STRING,
+          value: data?.master,
+        }),
+    },
+    {
+      field: 'sex',
+      label: '性别',
+      content: (data) =>
+        h(DictTag, { type: DICT_TYPE.SYSTEM_USER_SEX, value: data?.sex }),
     },
     {
       field: 'contactNextTime',
@@ -355,31 +376,61 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
   ];
 }
 
-/** 详情页的系统字段 */
-export function useDetailSystemSchema(): DescriptionItemSchema[] {
+/** 详情列表的字段 */
+export function useDetailListColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'ownerUserName',
-      label: '负责人',
+      type: 'checkbox',
+      width: 50,
+      fixed: 'left',
     },
     {
-      field: 'ownerUserDeptName',
-      label: '所属部门',
+      field: 'name',
+      title: '姓名',
+      fixed: 'left',
+      slots: { default: 'name' },
     },
     {
-      field: 'contactLastTime',
-      label: '最后跟进时间',
-      content: (data) => formatDateTime(data?.contactLastTime) as string,
+      field: 'customerName',
+      title: '客户名称',
+      fixed: 'left',
+      slots: { default: 'customerName' },
     },
     {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      field: 'sex',
+      title: '性别',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_USER_SEX },
+      },
     },
     {
-      field: 'updateTime',
-      label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
+      field: 'mobile',
+      title: '手机',
+    },
+    {
+      field: 'telephone',
+      title: '电话',
+    },
+    {
+      field: 'email',
+      title: '邮箱',
+    },
+    {
+      field: 'post',
+      title: '职位',
+    },
+    {
+      field: 'detailAddress',
+      title: '地址',
+    },
+    {
+      field: 'master',
+      title: '关键决策人',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
+      },
     },
   ];
 }

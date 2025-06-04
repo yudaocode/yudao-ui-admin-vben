@@ -2,11 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBusinessPageByCustomer } from '#/api/crm/business';
@@ -27,6 +28,11 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+const checkedRows = ref<CrmBusinessApi.Business[]>([]);
+function setCheckedRows({ records }: { records: CrmBusinessApi.Business[] }) {
+  checkedRows.value = records;
+}
 
 /** 刷新表格 */
 function onRefresh() {
@@ -50,22 +56,20 @@ function handleCustomerDetail(row: CrmBusinessApi.Business) {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // const { valid } = await formApi.validate();
-    // if (!valid) {
-    //   return;
-    // }
-    // modalApi.lock();
-    // // 提交表单
-    // const data = (await formApi.getValues()) as CrmBusinessApi.Business;
-    // try {
-    //   await (formData.value?.id ? updateBusiness(data) : createBusiness(data));
-    //   // 关闭并提示
-    //   await modalApi.close();
-    emit('success');
-    //   message.success($t('ui.actionMessage.operationSuccess'));
-    // } finally {
-    //   modalApi.unlock();
-    // }
+    if (checkedRows.value.length === 0) {
+      message.error('请先选择商机后操作！');
+      return;
+    }
+    modalApi.lock();
+    // 提交表单
+    try {
+      const businessIds = checkedRows.value.map((item) => item.id);
+      // 关闭并提示
+      await modalApi.close();
+      emit('success', businessIds, checkedRows.value);
+    } finally {
+      modalApi.unlock();
+    }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
@@ -120,6 +124,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<CrmBusinessApi.Business>,
+  gridEvents: {
+    checkboxAll: setCheckedRows,
+    checkboxChange: setCheckedRows,
+  },
 });
 </script>
 

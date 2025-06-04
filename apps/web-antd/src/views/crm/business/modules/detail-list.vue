@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
+import type { CrmContactApi } from '#/api/crm/contact';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -10,13 +11,16 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBusinessPage } from '#/api/crm/business';
+import {
+  getBusinessPageByContact,
+  getBusinessPageByCustomer,
+} from '#/api/crm/business';
 import { createContactBusinessList } from '#/api/crm/contact';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
 import { useDetailListColumns } from '../data';
-import DetailForm from './detail-form.vue';
+import ListModal from './detail-list-modal.vue';
 import Form from './form.vue';
 
 const props = defineProps<{
@@ -33,8 +37,8 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [DetailFormModal, detailFormModalApi] = useVbenModal({
-  connectedComponent: DetailForm,
+const [DetailListModal, detailListModalApi] = useVbenModal({
+  connectedComponent: ListModal,
   destroyOnClose: true,
 });
 
@@ -56,7 +60,7 @@ function handleCreate() {
 }
 
 function handleCreateBusiness() {
-  detailFormModalApi.setData({ customerId: props.customerId }).open();
+  detailListModalApi.setData({ customerId: props.customerId }).open();
 }
 
 async function handleDeleteContactBusinessList() {
@@ -98,6 +102,15 @@ function handleCustomerDetail(row: CrmBusinessApi.Business) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
 }
 
+async function handleCreateContactBusinessList(businessIds: number[]) {
+  const data = {
+    contactId: props.bizId,
+    businessIds,
+  } as CrmContactApi.ContactBusinessReq;
+  await createContactBusinessList(data);
+  onRefresh();
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDetailListColumns(),
@@ -107,14 +120,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           if (props.bizType === BizTypeEnum.CRM_CUSTOMER) {
-            return await getBusinessPage({
+            return await getBusinessPageByCustomer({
               page: page.currentPage,
               pageSize: page.pageSize,
               customerId: props.customerId,
               ...formValues,
             });
           } else if (props.bizType === BizTypeEnum.CRM_CONTACT) {
-            return await getBusinessPage({
+            return await getBusinessPageByContact({
               page: page.currentPage,
               pageSize: page.pageSize,
               contactId: props.contactId,
@@ -144,7 +157,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <div>
     <FormModal @success="onRefresh" />
-    <DetailFormModal :customer-id="customerId" @success="onRefresh" />
+    <DetailListModal
+      :customer-id="customerId"
+      @success="handleCreateContactBusinessList"
+    />
     <Grid>
       <template #toolbar-tools>
         <TableAction
