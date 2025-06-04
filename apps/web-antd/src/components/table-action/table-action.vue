@@ -204,9 +204,9 @@ function handleMenuClick(e: any) {
                   "
                 >
                   <IconifyIcon v-if="action.icon" :icon="action.icon" />
-                  <span :class="action.icon ? 'ml-1' : ''">{{
-                    action.text
-                  }}</span>
+                  <span :class="action.icon ? 'ml-1' : ''">
+                    {{ action.text }}
+                  </span>
                 </div>
               </Popconfirm>
             </template>
