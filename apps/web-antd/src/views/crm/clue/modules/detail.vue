@@ -15,12 +15,25 @@ import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
-import { OperateLog } from '#/components/operate-log';
-import FollowUp from '#/views/crm/followup/index.vue';
-import { PermissionList, TransferForm } from '#/views/crm/permission';
 
 import { useDetailSchema } from '../data';
 import ClueForm from './form.vue';
+
+const FollowUp = defineAsyncComponent(
+  () => import('#/views/crm/followup/index.vue'),
+);
+
+const PermissionList = defineAsyncComponent(
+  () => import('#/views/crm/permission/modules/permission-list.vue'),
+);
+
+const TransferForm = defineAsyncComponent(
+  () => import('#/views/crm/permission/modules/transfer-form.vue'),
+);
+
+const OperateLog = defineAsyncComponent(
+  () => import('#/components/operate-log'),
+);
 
 const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
 
