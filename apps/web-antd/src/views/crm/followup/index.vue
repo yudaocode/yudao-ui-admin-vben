@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-import type { FollowUpRecordApi, FollowUpRecordVO } from '@/api/crm/followup';
-
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { CrmFollowUpApi } from '#/api/crm/followup';
 
+import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { BizTypeEnum } from '@/api/crm/permission';
-import { DICT_TYPE } from '@/utils/dict';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteFollowUpRecord,
+  getFollowUpRecordPage,
+} from '#/api/crm/followup';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
+import { DICT_TYPE } from '#/utils';
 
 import FollowUpRecordForm from './modules/form.vue';
 
@@ -33,17 +37,17 @@ function onRefresh() {
 
 /** 添加跟进记录 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({ bizId: props.bizId, bizType: props.bizType }).open();
 }
 
 /** 删除跟进记录 */
-async function handleDelete(row: FollowUpRecordVO) {
+async function handleDelete(row: CrmFollowUpApi.FollowUpRecord) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
   });
   try {
-    await FollowUpRecordApi.deleteFollowUpRecord(row.id);
+    await deleteFollowUpRecord(row.id);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
       key: 'action_key_msg',
@@ -98,37 +102,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
         field: 'contacts',
         title: '关联联系人',
         visible: props.bizType === BizTypeEnum.CRM_CUSTOMER,
-        slots: {
-          default: ({ row }) =>
-            row.contacts?.map((contact) =>
-              h(
-                Button,
-                {
-                  type: 'link',
-                  onClick: () => openContactDetail(contact.id),
-                },
-                () => contact.name,
-              ),
-            ),
-        },
+        slots: { default: 'contacts' },
       },
       {
         field: 'businesses',
         title: '关联商机',
         visible: props.bizType === BizTypeEnum.CRM_CUSTOMER,
-        slots: {
-          default: ({ row }) =>
-            row.businesses?.map((business) =>
-              h(
-                Button,
-                {
-                  type: 'link',
-                  onClick: () => openBusinessDetail(business.id),
-                },
-                () => business.name,
-              ),
-            ),
-        },
+        slots: { default: 'businesses' },
       },
       {
         field: 'actions',
@@ -142,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          return await FollowUpRecordApi.getFollowUpRecordPage({
+          return await getFollowUpRecordPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             bizType: props.bizType,
@@ -157,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: { code: 'query' },
     },
-  } as VxeTableGridOptions<FollowUpRecordVO>,
+  } as VxeTableGridOptions<CrmFollowUpApi.FollowUpRecord>,
 });
 
 watch(
@@ -170,7 +150,8 @@ watch(
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="跟进记录列表">
+    <FormModal @success="onRefresh" />
+    <Grid>
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -182,6 +163,16 @@ watch(
             },
           ]"
         />
+      </template>
+      <template #contacts="{ row }">
+        <Button type="link" @click="openContactDetail(row.id)">
+          {{ row.name }}
+        </Button>
+      </template>
+      <template #businesses="{ row }">
+        <Button type="link" @click="openBusinessDetail(row.id)">
+          {{ row.name }}
+        </Button>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -200,6 +191,5 @@ watch(
         />
       </template>
     </Grid>
-    <FormModal @success="onRefresh" />
   </Page>
 </template>

@@ -77,7 +77,7 @@ export function transferClue(data: CrmPermissionApi.TransferReq) {
 
 /** 线索转化为客户 */
 export function transformClue(id: number) {
-  return requestClient.put('/crm/clue/transform', { id });
+  return requestClient.put(`/crm/clue/transform?id=${id}`);
 }
 
 /** 获得分配给我的、待跟进的线索数量 */

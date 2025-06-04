@@ -109,6 +109,7 @@ function handleDelete() {
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));
+          onRefresh();
           resolve(true);
         } else {
           reject(new Error('移出失败'));

@@ -17,7 +17,7 @@ export function useTransferFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'ownerUserId',
+      fieldName: 'newOwnerUserId',
       label: '选择新负责人',
       component: 'ApiSelect',
       componentProps: {
