@@ -40,12 +40,19 @@ export namespace CrmBusinessApi {
     totalProductPrice: number;
     totalPrice: number;
     discountPercent: number;
+    status?: number;
     remark: string;
     creator: string; // 创建人
     creatorName?: string; // 创建人名称
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
     products?: BusinessProduct[];
+  }
+
+  export interface BusinessStatus {
+    id: number;
+    statusId: number | undefined;
+    endStatus: number | undefined;
   }
 }
 
@@ -90,7 +97,7 @@ export function updateBusiness(data: CrmBusinessApi.Business) {
 }
 
 /** 修改商机状态 */
-export function updateBusinessStatus(data: CrmBusinessApi.Business) {
+export function updateBusinessStatus(data: CrmBusinessApi.BusinessStatus) {
   return requestClient.put('/crm/business/update-status', data);
 }
 

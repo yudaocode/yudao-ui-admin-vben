@@ -1,5 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { formatDateTime } from '@vben/utils';
+
+import { getBusinessStatusTypeSimpleList } from '#/api/crm/business/status';
+import { getCustomerSimpleList } from '#/api/crm/customer';
+import { getSimpleUserList } from '#/api/system/user';
+import { erpPriceInputFormatter, erpPriceMultiply } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -19,18 +27,49 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'customerId',
-      label: '客户',
-      component: 'Input',
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
       rules: 'required',
     },
     {
-      fieldName: 'totalPrice',
-      label: '商机金额',
-      component: 'InputNumber',
+      fieldName: 'customerId',
+      label: '客户名称',
+      component: 'ApiSelect',
       componentProps: {
-        min: 0,
-        placeholder: '请输入商机金额',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !values.customerId,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'statusTypeId',
+      label: '商机状态组',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getBusinessStatusTypeSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !values.id,
       },
       rules: 'required',
     },
@@ -46,9 +85,43 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
+      fieldName: 'totalProductPrice',
+      label: '产品总金额',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'discountPercent',
+      label: '整单折扣（%）',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'totalPrice',
+      label: '折扣后金额',
+      component: 'InputNumber',
+      dependencies: {
+        triggerFields: ['totalProductPrice', 'discountPercent'],
+        disabled: () => true,
+        trigger(values, form) {
+          const discountPrice =
+            erpPriceMultiply(
+              values.totalProductPrice,
+              values.discountPercent / 100,
+            ) ?? 0;
+          form.setFieldValue(
+            'totalPrice',
+            values.totalProductPrice - discountPrice,
+          );
+        },
+      },
     },
   ];
 }
@@ -140,6 +213,75 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 130,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'customerName',
+      label: '客户名称',
+    },
+    {
+      field: 'totalPrice',
+      label: '商机金额（元）',
+      content: (data) => erpPriceInputFormatter(data.totalPrice),
+    },
+    {
+      field: 'statusTypeName',
+      label: '商机组',
+    },
+    {
+      field: 'ownerUserName',
+      label: '负责人',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+  ];
+}
+
+/** 详情页的基础字段 */
+export function useDetailBaseSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'name',
+      label: '商机名称',
+    },
+    {
+      field: 'customerName',
+      label: '客户名称',
+    },
+    {
+      field: 'totalPrice',
+      label: '商机金额（元）',
+      content: (data) => erpPriceInputFormatter(data.totalPrice),
+    },
+    {
+      field: 'dealTime',
+      label: '预计成交日期',
+      content: (data) => formatDateTime(data?.dealTime) as string,
+    },
+    {
+      field: 'contactNextTime',
+      label: '下次联系时间',
+      content: (data) => formatDateTime(data?.contactNextTime) as string,
+    },
+    {
+      field: 'statusTypeName',
+      label: '商机状态组',
+    },
+    {
+      field: 'statusName',
+      label: '商机阶段',
+    },
+    {
+      field: 'remark',
+      label: '备注',
     },
   ];
 }

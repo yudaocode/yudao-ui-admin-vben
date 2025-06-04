@@ -80,3 +80,107 @@ export function calculateRelativeRate(
     ((100 * ((value || 0) - reference)) / reference).toFixed(0),
   );
 }
+
+// ========== ERP 专属方法 ==========
+
+const ERP_COUNT_DIGIT = 3;
+const ERP_PRICE_DIGIT = 2;
+
+/**
+ * 【ERP】格式化 Input 数字
+ *
+ * 例如说：库存数量
+ *
+ * @param num 数量
+ * @package
+ * @return 格式化后的数量
+ */
+export function erpNumberFormatter(
+  num: number | string | undefined,
+  digit: number,
+) {
+  if (num === null || num === undefined) {
+    return '';
+  }
+  if (typeof num === 'string') {
+    num = Number.parseFloat(num);
+  }
+  // 如果非 number，则直接返回空串
+  if (Number.isNaN(num)) {
+    return '';
+  }
+  return num.toFixed(digit);
+}
+
+/**
+ * 【ERP】格式化数量，保留三位小数
+ *
+ * 例如说：库存数量
+ *
+ * @param num 数量
+ * @return 格式化后的数量
+ */
+export function erpCountInputFormatter(num: number | string | undefined) {
+  return erpNumberFormatter(num, ERP_COUNT_DIGIT);
+}
+
+// noinspection JSCommentMatchesSignature
+/**
+ * 【ERP】格式化数量，保留三位小数
+ *
+ * @param cellValue 数量
+ * @return 格式化后的数量
+ */
+export function erpCountTableColumnFormatter(cellValue: any) {
+  return erpNumberFormatter(cellValue, ERP_COUNT_DIGIT);
+}
+
+/**
+ * 【ERP】格式化金额，保留二位小数
+ *
+ * 例如说：库存数量
+ *
+ * @param num 数量
+ * @return 格式化后的数量
+ */
+export function erpPriceInputFormatter(num: number | string | undefined) {
+  return erpNumberFormatter(num, ERP_PRICE_DIGIT);
+}
+
+// noinspection JSCommentMatchesSignature
+/**
+ * 【ERP】格式化金额，保留二位小数
+ *
+ * @param cellValue 数量
+ * @return 格式化后的数量
+ */
+export function erpPriceTableColumnFormatter(cellValue: any) {
+  return erpNumberFormatter(cellValue, ERP_PRICE_DIGIT);
+}
+
+/**
+ * 【ERP】价格计算，四舍五入保留两位小数
+ *
+ * @param price 价格
+ * @param count 数量
+ * @return 总价格。如果有任一为空，则返回 undefined
+ */
+export function erpPriceMultiply(price: number, count: number) {
+  if (price === null || count === null) {
+    return undefined;
+  }
+  return Number.parseFloat((price * count).toFixed(ERP_PRICE_DIGIT));
+}
+
+/**
+ * 【ERP】百分比计算，四舍五入保留两位小数
+ *
+ * 如果 total 为 0，则返回 0
+ *
+ * @param value 当前值
+ * @param total 总值
+ */
+export function erpCalculatePercentage(value: number, total: number) {
+  if (total === 0) return 0;
+  return ((value / total) * 100).toFixed(2);
+}

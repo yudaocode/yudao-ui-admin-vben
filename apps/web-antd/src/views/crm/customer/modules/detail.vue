@@ -212,21 +212,21 @@ onMounted(async () => {
         </Button>
       </div>
     </template>
-    <Card>
+    <Card class="min-h-[10%]">
       <Description :data="customer" />
     </Card>
-    <Card class="mt-4">
+    <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="基本信息" key="1">
+        <Tabs.TabPane tab="基本信息" key="1" :force-render="true">
           <CustomerDetailsInfo :customer="customer" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="跟进记录" key="2">
+        <Tabs.TabPane tab="跟进记录" key="2" :force-render="true">
           <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="联系人" key="3">
+        <Tabs.TabPane tab="联系人" key="3" :force-render="true">
           <div>联系人</div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="4">
+        <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="customerId"
@@ -235,16 +235,16 @@ onMounted(async () => {
             @quit-team="handleBack"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="商机" key="5">
+        <Tabs.TabPane tab="商机" key="5" :force-render="true">
           <div>商机</div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="合同" key="6">
+        <Tabs.TabPane tab="合同" key="6" :force-render="true">
           <div>合同</div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="回款" key="7">
+        <Tabs.TabPane tab="回款" key="7" :force-render="true">
           <div>回款</div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="8">
+        <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
           <OperateLog :log-list="customerLogList" />
         </Tabs.TabPane>
       </Tabs>
