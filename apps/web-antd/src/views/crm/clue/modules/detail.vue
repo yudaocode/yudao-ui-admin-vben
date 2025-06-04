@@ -5,16 +5,18 @@ import { defineAsyncComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 
 import { Button, Card, Modal, Tabs } from 'ant-design-vue';
 
 import { getClue, transformClue } from '#/api/crm/clue';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
 
 import { useDetailSchema } from '../data';
 import ClueForm from './form.vue';
-import TransferForm from './transfer.vue';
 
 const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
 
@@ -22,6 +24,7 @@ const loading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+const tabs = useTabs();
 
 const clueId = ref(0);
 
@@ -57,22 +60,23 @@ async function loadClueDetail() {
 }
 
 /** 返回列表页 */
-function onBack() {
+function handleBack() {
+  tabs.closeCurrentTab();
   router.push('/crm/clue');
 }
 
 /** 编辑线索 */
-function onEdit() {
+function handleEdit() {
   formModalApi.setData({ id: clueId }).open();
 }
 
 /** 转移线索 */
-function onTransfer() {
-  transferModalApi.setData({ id: clueId }).open();
+function handleTransfer() {
+  transferModalApi.setData({ bizType: BizTypeEnum.CRM_CLUE }).open();
 }
 
 /** 转化为客户 */
-async function onTransform() {
+async function handleTransform() {
   try {
     await Modal.confirm({
       title: '提示',
@@ -99,14 +103,14 @@ onMounted(async () => {
   <Page auto-content-height :title="clue?.name" :loading="loading">
     <template #extra>
       <div class="flex items-center gap-2">
-        <Button @click="onBack">
+        <Button @click="handleBack">
           <ArrowLeft class="size-5" />
           返回
         </Button>
         <Button
           v-if="permissionListRef?.validateWrite"
           type="primary"
-          @click="onEdit"
+          @click="handleEdit"
           v-access:code="['crm:clue:update']"
         >
           {{ $t('ui.actionTitle.edit') }}
@@ -114,7 +118,7 @@ onMounted(async () => {
         <Button
           v-if="permissionListRef?.validateOwnerUser"
           type="primary"
-          @click="onTransfer"
+          @click="handleTransfer"
           v-access:code="['crm:clue:update']"
         >
           转移
@@ -122,7 +126,7 @@ onMounted(async () => {
         <Button
           v-if="permissionListRef?.validateOwnerUser && !clue?.transformStatus"
           type="primary"
-          @click="onTransform"
+          @click="handleTransform"
           v-access:code="['crm:clue:update']"
         >
           转化为客户
@@ -141,7 +145,13 @@ onMounted(async () => {
           <ClueDetailsInfo :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3">
-          <div>团队成员</div>
+          <PermissionList
+            ref="permissionListRef"
+            :biz-id="clue.id!"
+            :biz-type="BizTypeEnum.CRM_CLUE"
+            :show-action="true"
+            @quit-team="handleBack"
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="4">
           <div>操作日志</div>

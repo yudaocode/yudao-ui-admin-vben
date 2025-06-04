@@ -334,12 +334,14 @@
         margin-top: 4px;
         line-height: 32px;
         color: #111f2c;
+        background: rgb(0 0 0 / 3%);
         border-radius: 4px;
 
         .branch-node-text {
+          display: -webkit-box;
           overflow: hidden;
           text-overflow: ellipsis;
-          -webkit-line-clamp: 2; /* 这将限制文本显示为两行 */
+          -webkit-line-clamp: 1; /* 这将限制文本显示为一行 */
           font-size: 12px;
           line-height: 24px;
           word-break: break-all;
@@ -478,6 +480,8 @@
           top: -18px;
           left: 50%;
           z-index: 1;
+          display: flex;
+          align-items: center;
           height: 36px;
           padding: 0 10px;
           font-size: 12px;
@@ -644,7 +648,8 @@
         width: 80px;
         height: 36px;
         color: #212121;
-        border: 2px solid #fafafa;
+        background-color: #fff;
+        border: 2px solid transparent;
         border-radius: 30px;
         box-shadow: 0 1px 5px 0 rgb(10 30 65 / 8%);
 

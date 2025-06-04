@@ -3,11 +3,19 @@ import type { SimpleFlowNode } from '../consts';
 
 import { NodeType } from '../consts';
 import { useWatchNode } from '../helpers';
+import CopyTaskNode from './nodes/copy-task-node.vue';
+import DelayTimerNode from './nodes/delay-timer-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
+import ExclusiveNode from './nodes/exclusive-node.vue';
+import InclusiveNode from './nodes/inclusive-node.vue';
+import ParallelNode from './nodes/parallel-node.vue';
+import RouterNode from './nodes/router-node.vue';
 import StartUserNode from './nodes/start-user-node.vue';
+import TriggerNode from './nodes/trigger-node.vue';
 import UserTaskNode from './nodes/user-task-node.vue';
 
 defineOptions({ name: 'ProcessNodeTree' });
+
 const props = defineProps({
   parentNode: {
     type: Object as () => SimpleFlowNode,
@@ -18,6 +26,7 @@ const props = defineProps({
     default: () => null,
   },
 });
+
 const emits = defineEmits<{
   recursiveFindParentNode: [
     nodeList: SimpleFlowNode[],
@@ -40,11 +49,11 @@ const findParentNode = (nodeList: SimpleFlowNode[], nodeType: number) => {
 };
 
 // 递归从父节点中查询匹配的节点
-const recursiveFindParentNode = (
+function recursiveFindParentNode(
   nodeList: SimpleFlowNode[],
   findNode: SimpleFlowNode,
   nodeType: number,
-) => {
+) {
   if (!findNode) {
     return;
   }
@@ -57,7 +66,7 @@ const recursiveFindParentNode = (
     nodeList.push(findNode);
   }
   emits('recursiveFindParentNode', nodeList, props.parentNode, nodeType);
-};
+}
 </script>
 <template>
   <!-- 发起人节点 -->
@@ -77,50 +86,50 @@ const recursiveFindParentNode = (
     @find-parent-node="findParentNode"
   />
   <!-- 抄送节点 -->
-  <!-- <CopyTaskNode
+  <CopyTaskNode
     v-if="currentNode && currentNode.type === NodeType.COPY_TASK_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 条件节点 -->
-  <!-- <ExclusiveNode
+  <ExclusiveNode
     v-if="currentNode && currentNode.type === NodeType.CONDITION_BRANCH_NODE"
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
-    @find:parent-node="findFromParentNode"
-  /> -->
+    @find-parent-node="findParentNode"
+  />
   <!-- 并行节点 -->
-  <!-- <ParallelNode
+  <ParallelNode
     v-if="currentNode && currentNode.type === NodeType.PARALLEL_BRANCH_NODE"
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
-    @find:parent-node="findFromParentNode"
-  /> -->
+    @find-parent-node="findParentNode"
+  />
   <!-- 包容分支节点 -->
-  <!-- <InclusiveNode
+  <InclusiveNode
     v-if="currentNode && currentNode.type === NodeType.INCLUSIVE_BRANCH_NODE"
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
-    @find:parent-node="findFromParentNode"
-  /> -->
+    @find-parent-node="findParentNode"
+  />
   <!-- 延迟器节点 -->
-  <!-- <DelayTimerNode
+  <DelayTimerNode
     v-if="currentNode && currentNode.type === NodeType.DELAY_TIMER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 路由分支节点 -->
-  <!-- <RouterNode
+  <RouterNode
     v-if="currentNode && currentNode.type === NodeType.ROUTER_BRANCH_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 触发器节点 -->
-  <!-- <TriggerNode
+  <TriggerNode
     v-if="currentNode && currentNode.type === NodeType.TRIGGER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 子流程节点 -->
   <!-- <ChildProcessNode
     v-if="currentNode && currentNode.type === NodeType.CHILD_PROCESS_NODE"
@@ -141,4 +150,3 @@ const recursiveFindParentNode = (
     :flow-node="currentNode"
   />
 </template>
-<style lang="scss" scoped></style>

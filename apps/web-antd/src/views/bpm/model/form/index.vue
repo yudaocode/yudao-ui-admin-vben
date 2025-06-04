@@ -216,7 +216,8 @@ const validateAllSteps = async () => {
     await validateBasic();
   } catch {
     currentStep.value = 0;
-    throw new Error('请完善基本信息');
+    message.warning('请完善基本信息');
+    return false;
   }
 
   // 表单设计校验
@@ -224,25 +225,19 @@ const validateAllSteps = async () => {
     await validateForm();
   } catch {
     currentStep.value = 1;
-    throw new Error('请完善自定义表单信息');
+    message.warning('请完善自定义表单信息');
+    return false;
   }
 
-  // 流程设计校验 TODO
-
+  // 流程设计校验
   try {
     await validateProcess();
   } catch {
     currentStep.value = 2;
-    throw new Error('请设计流程');
+    return false;
   }
 
-  // 表单设计校验
-  try {
-    await validateProcess();
-  } catch {
-    currentStep.value = 2;
-    throw new Error('请设计流程');
-  }
+  // TODO 更多设置校验
 
   return true;
 };
@@ -251,7 +246,10 @@ const validateAllSteps = async () => {
 const handleSave = async () => {
   try {
     // 保存前校验所有步骤的数据
-    await validateAllSteps();
+    const result = await validateAllSteps();
+    if (!result) {
+      return;
+    }
 
     // 更新表单数据
     const modelData = {
@@ -297,7 +295,7 @@ const handleSave = async () => {
     }
   } catch (error: any) {
     console.error('保存失败:', error);
-    message.warning(error.message || '请完善所有步骤的必填信息');
+    // message.warning(error.msg || '请完善所有步骤的必填信息');
   }
 };
 
@@ -338,7 +336,6 @@ const handleDeploy = async () => {
 /** 步骤切换处理 */
 const handleStepClick = async (index: number) => {
   try {
-    console.warn('handleStepClick', index);
     if (index !== 0) {
       await validateBasic();
     }
@@ -348,23 +345,13 @@ const handleStepClick = async (index: number) => {
     if (index !== 2) {
       await validateProcess();
     }
-
     // 切换步骤
     currentStep.value = index;
-
-    // 如果切换到流程设计步骤，等待组件渲染完成后刷新设计器
-    if (index === 2) {
-      // TODO 后续加
-      // await nextTick();
-      // // 等待更长时间确保组件完全初始化
-      // await new Promise((resolve) => setTimeout(resolve, 200));
-      // if (processDesignRef.value?.refresh) {
-      //   await processDesignRef.value.refresh();
-      // }
-    }
   } catch (error) {
     console.error('步骤切换失败:', error);
-    message.warning('请先完善当前步骤必填信息');
+    if (currentStep.value !== 2) {
+      message.warning('请先完善当前步骤必填信息');
+    }
   }
 };
 

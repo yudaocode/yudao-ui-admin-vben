@@ -22,9 +22,8 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { DeptSelectModal } from '#/components/dept-select-modal';
+import { DeptSelectModal, UserSelectModal } from '#/components/select-modal';
 import { ImageUpload } from '#/components/upload';
-import { UserSelectModal } from '#/components/user-select-modal';
 import { DICT_TYPE, getBoolDictOptions, getIntDictOptions } from '#/utils';
 
 const props = defineProps({

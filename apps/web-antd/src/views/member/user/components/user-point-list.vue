@@ -65,6 +65,7 @@ const [Grid] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MemberPointRecordApi.Record>,
+  separator: false,
 });
 </script>
 

@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmClueApi } from '#/api/crm/clue';
 
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteClue, exportClue, getCluePage } from '#/api/crm/clue';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
@@ -33,55 +29,43 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function onExport() {
-  const data = await exportClue(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '线索.xls', source: data });
-}
-
 /** 创建线索 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑线索 */
-function onEdit(row: CrmClueApi.Clue) {
+function handleEdit(row: CrmClueApi.Clue) {
   formModalApi.setData(row).open();
 }
 
 /** 删除线索 */
-async function onDelete(row: CrmClueApi.Clue) {
+async function handleDelete(row: CrmClueApi.Clue) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteClue(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } catch {
     hideLoading();
   }
 }
 
-/** 查看线索详情 */
-function onDetail(row: CrmClueApi.Clue) {
-  push({ name: 'CrmClueDetail', params: { id: row.id } });
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportClue(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '线索.xls', source: data });
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<CrmClueApi.Clue>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
+/** 查看线索详情 */
+function handleDetail(row: CrmClueApi.Clue) {
+  push({ name: 'CrmClueDetail', params: { id: row.id } });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -89,7 +73,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -130,28 +114,53 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="线索列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['crm:clue:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['线索']) }}
-        </Button>
-        <Button
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['crm:clue:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['线索']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['crm:clue:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['crm:clue:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
       </template>
       <template #name="{ row }">
-        <Button type="link" @click="onDetail(row)">
+        <Button type="link" @click="handleDetail(row)">
           {{ row.name }}
         </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['crm:clue:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['crm:clue:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

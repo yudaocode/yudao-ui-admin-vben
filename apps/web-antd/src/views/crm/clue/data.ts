@@ -1,18 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmClueApi } from '#/api/crm/clue';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { useAccess } from '@vben/access';
 import { formatDateTime } from '@vben/utils';
 
 import { getAreaTree } from '#/api/system/area';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -164,14 +160,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = CrmClueApi.Clue>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
       title: '线索名称',
-      minWidth: 160,
       fixed: 'left',
       slots: {
         default: 'name',
@@ -180,7 +173,6 @@ export function useGridColumns<T = CrmClueApi.Clue>(
     {
       field: 'source',
       title: '线索来源',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -189,27 +181,22 @@ export function useGridColumns<T = CrmClueApi.Clue>(
     {
       field: 'mobile',
       title: '手机',
-      minWidth: 120,
     },
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 180,
     },
     {
       field: 'detailAddress',
       title: '地址',
-      minWidth: 180,
     },
     {
       field: 'industryId',
       title: '客户行业',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -218,7 +205,6 @@ export function useGridColumns<T = CrmClueApi.Clue>(
     {
       field: 'level',
       title: '客户级别',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
@@ -227,66 +213,40 @@ export function useGridColumns<T = CrmClueApi.Clue>(
     {
       field: 'ownerUserName',
       title: '负责人',
-      minWidth: 100,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
-      minWidth: 100,
     },
     {
       field: 'contactNextTime',
       title: '下次联系时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 130,
+      width: 140,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '线索',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['crm:clue:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['crm:clue:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

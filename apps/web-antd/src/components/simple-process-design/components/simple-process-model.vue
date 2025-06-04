@@ -49,22 +49,22 @@ const currentY = ref(0);
 const initialX = ref(0);
 const initialY = ref(0);
 
-const setGrabCursor = () => {
+function setGrabCursor() {
   document.body.style.cursor = 'grab';
-};
+}
 
-const resetCursor = () => {
+function resetCursor() {
   document.body.style.cursor = 'default';
-};
+}
 
-const startDrag = (e: MouseEvent) => {
+function startDrag(e: MouseEvent) {
   isDragging.value = true;
   startX.value = e.clientX - currentX.value;
   startY.value = e.clientY - currentY.value;
   setGrabCursor(); // 设置小手光标
-};
+}
 
-const onDrag = (e: MouseEvent) => {
+function onDrag(e: MouseEvent) {
   if (!isDragging.value) return;
   e.preventDefault(); // 禁用文本选择
 
@@ -73,44 +73,44 @@ const onDrag = (e: MouseEvent) => {
     currentX.value = e.clientX - startX.value;
     currentY.value = e.clientY - startY.value;
   });
-};
+}
 
-const stopDrag = () => {
+function stopDrag() {
   isDragging.value = false;
   resetCursor(); // 重置光标
-};
+}
 
-const zoomIn = () => {
+function zoomIn() {
   if (scaleValue.value === MAX_SCALE_VALUE) {
     return;
   }
   scaleValue.value += 10;
-};
+}
 
-const zoomOut = () => {
+function zoomOut() {
   if (scaleValue.value === MIN_SCALE_VALUE) {
     return;
   }
   scaleValue.value -= 10;
-};
+}
 
-const processReZoom = () => {
+function processReZoom() {
   scaleValue.value = 100;
-};
+}
 
-const resetPosition = () => {
+function resetPosition() {
   currentX.value = initialX.value;
   currentY.value = initialY.value;
-};
+}
 
 /** 校验节点设置 */
 const errorDialogVisible = ref(false);
 let errorNodes: SimpleFlowNode[] = [];
 
-const validateNode = (
+function validateNode(
   node: SimpleFlowNode | undefined,
   errorNodes: SimpleFlowNode[],
-) => {
+) {
   if (node) {
     const { type, showText, conditionNodes } = node;
     if (type === NodeType.END_EVENT_NODE) {
@@ -146,10 +146,10 @@ const validateNode = (
       validateNode(node.childNode, errorNodes);
     }
   }
-};
+}
 
 /** 获取当前流程数据 */
-const getCurrentFlowData = async () => {
+async function getCurrentFlowData() {
   try {
     errorNodes = [];
     validateNode(processNodeTree.value, errorNodes);
@@ -162,26 +162,26 @@ const getCurrentFlowData = async () => {
     console.error('获取流程数据失败:', error);
     return undefined;
   }
-};
+}
 
 defineExpose({
   getCurrentFlowData,
 });
 
 /** 导出 JSON */
-const exportJson = () => {
+function exportJson() {
   downloadFileFromBlob({
     fileName: 'model.json',
     source: new Blob([JSON.stringify(processNodeTree.value)]),
   });
-};
+}
 
 /** 导入 JSON */
 const refFile = ref();
-const importJson = () => {
+function importJson() {
   refFile.value.click();
-};
-const importLocalFile = () => {
+}
+function importLocalFile() {
   const file = refFile.value.files[0];
   file.text().then((result: any) => {
     if (isString(result)) {
@@ -189,7 +189,7 @@ const importLocalFile = () => {
       emits('save', processNodeTree.value);
     }
   });
-};
+}
 
 // 在组件初始化时记录初始位置
 onMounted(() => {
@@ -267,4 +267,3 @@ onMounted(() => {
     </template>
   </Modal>
 </template>
-<style lang="scss" scoped></style>

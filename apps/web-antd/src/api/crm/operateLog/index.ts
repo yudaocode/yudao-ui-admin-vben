@@ -1,10 +1,12 @@
-import type { PageParam, PageResult } from '@vben/request';
+import type { PageResult } from '@vben/request';
+
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
 import { requestClient } from '#/api/request';
 
 export namespace CrmOperateLogApi {
   /** 操作日志查询参数 */
-  export interface OperateLogQuery extends PageParam {
+  export interface OperateLogQuery {
     bizType: number;
     bizId: number;
   }
@@ -24,7 +26,7 @@ export namespace CrmOperateLogApi {
 
 /** 获得操作日志 */
 export function getOperateLogPage(params: CrmOperateLogApi.OperateLogQuery) {
-  return requestClient.get<PageResult<CrmOperateLogApi.OperateLog>>(
+  return requestClient.get<PageResult<SystemOperateLogApi.OperateLog>>(
     '/crm/operate-log/page',
     { params },
   );

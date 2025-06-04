@@ -22,7 +22,7 @@ const processInstance = inject<Ref<any>>('processInstance', ref({}));
 
 const processInstanceInfos = ref<any[]>([]); // 流程的审批信息
 
-const nodeClick = () => {
+function nodeClick() {
   if (readonly && processInstance && processInstance.value) {
     console.warn(
       'TODO 只读模式，弹窗显示审批信息',
@@ -30,7 +30,7 @@ const nodeClick = () => {
       processInstanceInfos.value,
     );
   }
-};
+}
 </script>
 <template>
   <div class="end-node-wrapper">
@@ -44,4 +44,3 @@ const nodeClick = () => {
   </div>
   <!-- TODO 审批信息 -->
 </template>
-<style lang="scss" scoped></style>

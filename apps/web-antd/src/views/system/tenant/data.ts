@@ -164,17 +164,14 @@ export function useGridColumns(
     {
       field: 'id',
       title: '租户编号',
-      minWidth: 100,
     },
     {
       field: 'name',
       title: '租户名',
-      minWidth: 180,
     },
     {
       field: 'packageId',
       title: '租户套餐',
-      minWidth: 180,
       formatter: (row: { cellValue: number }) => {
         return getPackageName?.(row.cellValue) || '-';
       },
@@ -182,33 +179,27 @@ export function useGridColumns(
     {
       field: 'contactName',
       title: '联系人',
-      minWidth: 100,
     },
     {
       field: 'contactMobile',
       title: '联系手机',
-      minWidth: 180,
     },
     {
       field: 'accountCount',
       title: '账号额度',
-      minWidth: 100,
     },
     {
       field: 'expireTime',
       title: '过期时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'website',
       title: '绑定域名',
-      minWidth: 180,
     },
     {
       field: 'status',
       title: '租户状态',
-      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -217,7 +208,6 @@ export function useGridColumns(
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

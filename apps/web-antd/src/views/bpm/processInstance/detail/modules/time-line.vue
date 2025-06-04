@@ -10,7 +10,7 @@ import { formatDateTime, isEmpty } from '@vben/utils';
 
 import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
 
-import { UserSelectModal } from '#/components/user-select-modal';
+import { UserSelectModal } from '#/components/select-modal';
 import {
   BpmCandidateStrategyEnum,
   BpmNodeTypeEnum,

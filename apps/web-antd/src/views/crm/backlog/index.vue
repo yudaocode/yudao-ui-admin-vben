@@ -10,17 +10,16 @@ import * as ContractApi from '#/api/crm/contract';
 import * as CustomerApi from '#/api/crm/customer';
 import * as ReceivableApi from '#/api/crm/receivable';
 import * as ReceivablePlanApi from '#/api/crm/receivable/plan';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useLeftSides } from './data';
-import ClueFollowList from './modules/ClueFollowList.vue';
-import ContractAuditList from './modules/ContractAuditList.vue';
-import ContractRemindList from './modules/ContractRemindList.vue';
-import CustomerFollowList from './modules/CustomerFollowList.vue';
-import CustomerPutPoolRemindList from './modules/CustomerPutPoolRemindList.vue';
-import CustomerTodayContactList from './modules/CustomerTodayContactList.vue';
-import ReceivableAuditList from './modules/ReceivableAuditList.vue';
-import ReceivablePlanRemindList from './modules/ReceivablePlanRemindList.vue';
+import ClueFollowList from './modules/clue-follow-list.vue';
+import ContractAuditList from './modules/contract-audit-list.vue';
+import ContractRemindList from './modules/contract-remind-list.vue';
+import CustomerFollowList from './modules/customer-follow-list.vue';
+import CustomerPutPoolRemindList from './modules/customer-put-pool-remind-list.vue';
+import CustomerTodayContactList from './modules/customer-today-contact-list.vue';
+import ReceivableAuditList from './modules/receivable-audit-list.vue';
+import ReceivablePlanRemindList from './modules/receivable-plan-remind-list.vue';
 
 defineOptions({ name: 'CrmBacklog' });
 
@@ -92,12 +91,6 @@ onMounted(async () => {
 </script>
 <template>
   <Page auto-content-height>
-    <template #doc>
-      <DocAlert
-        title="【通用】跟进记录、待办事项"
-        url="https://doc.iocoder.cn/crm/follow-up/"
-      />
-    </template>
     <div class="flex h-full w-full">
       <Card class="w-1/5">
         <List item-layout="horizontal" :data-source="leftSides">
@@ -105,11 +98,17 @@ onMounted(async () => {
             <List.Item>
               <List.Item.Meta>
                 <template #title>
-                  <a @click="sideClick(item)"> {{ item.name }} </a>
+                  <a @click="sideClick(item)">
+                    {{ item.name }}
+                  </a>
                 </template>
               </List.Item.Meta>
-              <template #extra v-if="item.count.value && item.count.value > 0">
-                <Badge :count="item.count.value" />
+              <template #extra>
+                <Badge
+                  :color="item.menu === leftMenu ? 'blue' : 'red'"
+                  :count="item.count.value"
+                  :show-zero="true"
+                />
               </template>
             </List.Item>
           </template>

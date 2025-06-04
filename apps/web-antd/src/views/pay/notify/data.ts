@@ -69,22 +69,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '任务编号',
-      minWidth: 100,
     },
     {
       field: 'appName',
       title: '应用编号',
-      minWidth: 120,
     },
     {
       field: 'merchantOrderId',
       title: '商户订单编号',
-      minWidth: 180,
     },
     {
       field: 'type',
       title: '通知类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_NOTIFY_TYPE },
@@ -93,12 +89,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'dataId',
       title: '关联编号',
-      minWidth: 120,
     },
     {
       field: 'status',
       title: '通知状态',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_NOTIFY_STATUS },
@@ -107,19 +101,16 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'lastExecuteTime',
       title: '最后通知时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'nextNotifyTime',
       title: '下次通知时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'notifyTimes',
       title: '通知次数',
-      minWidth: 120,
       cellRender: {
         name: 'CellTag',
         props: {

@@ -17,12 +17,17 @@ defineProps<{
 const emit = defineEmits(['success']);
 const designerRef = ref();
 
-// 修改成功回调
+/** 保存成功回调 */
 const handleSuccess = (data?: any) => {
   if (data) {
     emit('success', data);
   }
 };
+/** 设计器配置校验 */
+const validateConfig = async () => {
+  return await designerRef.value.validate();
+};
+defineExpose({ validateConfig });
 </script>
 <template>
   <ContentWrap :body-style="{ padding: '20px 16px' }">
@@ -37,4 +42,3 @@ const handleSuccess = (data?: any) => {
     />
   </ContentWrap>
 </template>
-<style lang="scss" scoped></style>

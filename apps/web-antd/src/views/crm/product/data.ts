@@ -1,0 +1,176 @@
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+
+import { handleTree } from '@vben/utils';
+
+import { z } from '#/adapter/form';
+import { getProductCategoryList } from '#/api/crm/product/category';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
+
+/** 新增/修改的表单 */
+export function useFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'name',
+      label: '产品名称',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'no',
+      label: '产品编码',
+      rules: 'required',
+    },
+    {
+      component: 'ApiTreeSelect',
+      fieldName: 'categoryName',
+      label: '产品类型',
+      rules: 'required',
+      componentProps: {
+        api: async () => {
+          const data = await getProductCategoryList();
+          return handleTree(data);
+        },
+        fieldNames: { label: 'name', value: 'id', children: 'children' },
+      },
+    },
+    {
+      fieldName: 'unit',
+      label: '产品单位',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT, 'number'),
+      },
+      rules: 'required',
+    },
+    {
+      component: 'InputNumber',
+      fieldName: 'price',
+      label: '价格（元）',
+      rules: 'required',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        step: 0.1,
+      },
+    },
+    {
+      component: 'Textarea',
+      fieldName: 'description',
+      label: '产品描述',
+    },
+    {
+      fieldName: 'status',
+      label: '上架状态',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_PRODUCT_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      rules: z.number().default(CommonStatusEnum.ENABLE),
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '产品名称',
+      component: 'Input',
+    },
+    {
+      fieldName: 'status',
+      label: '上架状态',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.CRM_PRODUCT_STATUS, 'number'),
+      },
+    },
+  ];
+}
+
+/** 列表的字段 */
+export function useGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'id',
+      title: '产品编号',
+      visible: false,
+    },
+    {
+      field: 'name',
+      title: '产品名称',
+      slots: { default: 'name' },
+    },
+    {
+      field: 'categoryName',
+      title: '产品类型',
+    },
+    {
+      field: 'unit',
+      title: '产品单位',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
+      },
+    },
+    {
+      field: 'no',
+      title: '产品编码',
+    },
+    {
+      field: 'price',
+      title: '价格（元）',
+      formatter: 'formatNumber',
+    },
+    {
+      field: 'description',
+      title: '产品描述',
+    },
+    {
+      field: 'status',
+      title: '上架状态',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_PRODUCT_STATUS },
+      },
+    },
+    {
+      field: 'ownerUserName',
+      title: '负责人',
+    },
+    {
+      field: 'updateTime',
+      title: '更新时间',
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'creatorName',
+      title: '创建人',
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 160,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}

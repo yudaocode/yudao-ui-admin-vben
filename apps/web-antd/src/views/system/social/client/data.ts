@@ -152,17 +152,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-      minWidth: 80,
     },
     {
       field: 'name',
       title: '应用名',
-      minWidth: 120,
     },
     {
       field: 'socialType',
       title: '社交平台',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
@@ -171,7 +168,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userType',
       title: '用户类型',
-      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -180,12 +176,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'clientId',
       title: '客户端编号',
-      minWidth: 180,
     },
     {
       field: 'status',
       title: '状态',
-      minWidth: 80,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -194,7 +188,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

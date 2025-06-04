@@ -1,31 +1,198 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpTagApi } from '#/api/mp/tag';
 
-import { Button } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { DocAlert } from '#/components/doc-alert';
+import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleAccountList } from '#/api/mp/account';
+import { deleteTag, getTagPage, syncTag } from '#/api/mp/tag';
+import { $t } from '#/locales';
+
+import { useGridColumns } from './data';
+import Form from './modules/form.vue';
+
+const { push } = useRouter(); // 路由
+const tabs = useTabs();
+
+const accountId = ref(-1);
+const accountOptions = ref<{ label: string; value: number }[]>([]);
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+async function getAccountList() {
+  const res = await getSimpleAccountList();
+  if (res.length > 0) {
+    accountId.value = res[0]?.id as number;
+    accountOptions.value = res.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+    gridApi.setState({
+      formOptions: {
+        schema: [
+          {
+            fieldName: 'accountId',
+            label: '公众号',
+            component: 'Select',
+            componentProps: {
+              options: accountOptions,
+            },
+          },
+        ],
+      },
+    });
+    gridApi.formApi.setValues({
+      accountId: accountId.value,
+    });
+  } else {
+    message.error('未配置公众号，请在【公众号管理 -> 账号管理】菜单，进行配置');
+    await push({ name: 'MpAccount' });
+    tabs.closeCurrentTab();
+  }
+}
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建标签 */
+function handleCreate() {
+  formModalApi.setData({ accountId: accountId.value }).open();
+}
+
+/** 编辑标签 */
+function handleEdit(row: MpTagApi.Tag) {
+  formModalApi.setData({ row, accountId: accountId.value }).open();
+}
+
+/** 删除标签 */
+async function handleDelete(row: MpTagApi.Tag) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteTag(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+/** 同步标签 */
+async function handleSync() {
+  const hideLoading = message.loading({
+    content: '是否确认同步标签？',
+    key: 'action_key_msg',
+  });
+  try {
+    await syncTag(accountId.value);
+    message.success({
+      content: '同步标签成功',
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: [],
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          accountId.value = formValues.accountId;
+          return await getTagPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MpTagApi.Tag>,
+});
+
+onMounted(async () => {
+  await getAccountList();
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert title="公众号标签" url="https://doc.iocoder.cn/mp/tag/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/tag/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mp/tag/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="公众号账号列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['公众号账号']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['mp:tag:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: '同步',
+              type: 'primary',
+              icon: 'lucide:refresh-ccw',
+              auth: ['mp:tag:sync'],
+              onClick: handleSync,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['mp:tag:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['mp:tag:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

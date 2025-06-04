@@ -34,7 +34,8 @@ import {
   TypographyText,
 } from 'ant-design-vue';
 
-// TODO import { defaultProps4AntTree } from '#/utils/tree';
+import { BpmModelFormType } from '#/utils';
+
 import {
   APPROVE_METHODS,
   APPROVE_TYPE,
@@ -65,20 +66,22 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
+import UserTaskListener from './modules/user-task-listener.vue';
 import { convertTimeUnit, getApproveTypeText } from './utils';
 
-// TODO import UserTaskListener from './components/UserTaskListener.vue';
-
 defineOptions({ name: 'UserTaskNodeConfig' });
+
 const props = defineProps({
   flowNode: {
     type: Object as () => SimpleFlowNode,
     required: true,
   },
 });
+
 const emits = defineEmits<{
   findReturnTaskNodes: [nodeList: SimpleFlowNode[]];
 }>();
+
 const deptLevelLabel = computed(() => {
   let label = '部门负责人来源';
   if (
@@ -95,6 +98,7 @@ const deptLevelLabel = computed(() => {
   }
   return label;
 });
+
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 抽屉配置
@@ -102,19 +106,19 @@ const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
   closable: true,
   title: '',
-  onCancel() {
-    drawerApi.close();
-  },
   onConfirm() {
     saveConfig();
   },
 });
+
 // 节点名称配置
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
   NodeType.USER_TASK_NODE,
 );
+
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
+
 // 表单字段权限设置
 const {
   formType,
@@ -122,10 +126,12 @@ const {
   formFieldOptions,
   getNodeConfigFormFields,
 } = useFormFieldsPermission(FieldPermissionType.READ);
+
 // 表单内用户字段选项, 必须是必填和用户选择器
 const userFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'UserSelect');
 });
+
 // 表单内部门字段选项, 必须是必填和部门选择器
 const deptFieldOnFormOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'DeptSelect');
@@ -138,7 +144,9 @@ const {
   changeBtnDisplayName,
   btnDisplayNameBlurEvent,
 } = useButtonsSetting();
+
 const approveType = ref(ApproveType.USER);
+
 // 审批人表单设置
 const formRef = ref(); // 表单 Ref
 // 表单校验规则
@@ -200,7 +208,7 @@ const {
 const configForm = tempConfigForm as Ref<UserTaskFormType>;
 
 // 改变审批人设置策略
-const changeCandidateStrategy = () => {
+function changeCandidateStrategy() {
   configForm.value.userIds = [];
   configForm.value.deptIds = [];
   configForm.value.roleIds = [];
@@ -210,16 +218,16 @@ const changeCandidateStrategy = () => {
   configForm.value.formUser = '';
   configForm.value.formDept = '';
   configForm.value.approveMethod = ApproveMethodType.SEQUENTIAL_APPROVE;
-};
+}
 
-// 审批方式改变
-const approveMethodChanged = () => {
+/** 审批方式改变 */
+function approveMethodChanged() {
   configForm.value.rejectHandlerType = RejectHandlerType.FINISH_PROCESS;
   if (configForm.value.approveMethod === ApproveMethodType.APPROVE_BY_RATIO) {
     configForm.value.approveRatio = 100;
   }
   formRef.value.clearValidate('approveRatio');
-};
+}
 // 审批拒绝 可退回的节点
 const returnTaskList = ref<SimpleFlowNode[]>([]);
 // 审批人超时未处理设置
@@ -233,49 +241,59 @@ const {
   cTimeoutMaxRemindCount,
 } = useTimeoutHandler();
 
-// TODO 监听器待实现
-// const userTaskListenerRef = ref();
+const userTaskListenerRef = ref();
 
 /** 节点类型名称 */
 const nodeTypeName = computed(() => {
   return currentNode.value.type === NodeType.TRANSACTOR_NODE ? '办理' : '审批';
 });
 
-/** 保存配置 */
-const saveConfig = async () => {
-  // 设置审批节点名称
-  currentNode.value.name = nodeName.value!;
-  // 设置审批类型
-  currentNode.value.approveType = approveType.value;
-  // 如果不是人工审批。返回
-  if (approveType.value !== ApproveType.USER) {
-    currentNode.value.showText = getApproveTypeText(approveType.value);
-    drawerApi.close();
-    return true;
-  }
-  // TODO 监听器待实现
-  // activeTabName.value = 'listener';
-  // await nextTick();
-  activeTabName.value = 'user';
-
+/** 校验节点配置 */
+async function validateConfig() {
   if (!formRef.value) return false;
-  //   TODO 监听器待实现
-  // if (!userTaskListenerRef.value) return false;
-  // const valid =
-  //   (await formRef.value.validate()) &&
-  //   (await userTaskListenerRef.value.validate());
+  if (!userTaskListenerRef.value) return false;
 
-  if (!(await formRef.value.validate())) {
-    activeTabName.value = 'user';
+  // 先进行表单验证，记录验证结果
+  const userFormValid = await formRef.value.validate().catch(() => false);
+  const listenerValid = await userTaskListenerRef.value.validate().catch(() => {
+    return false;
+  });
+  // 如果监听器有错误，切换到监听器Tab
+  if (!listenerValid) {
+    activeTabName.value = 'listener';
+    return false;
   }
-  //   TODO 监听器待实现
-  // if (!(await userTaskListenerRef.value.validate())) {
-  //   activeTabName.value = 'listener';
-  // }
+  // 如果审批人表单有错误，切换到审批人Tab
+  if (!userFormValid) {
+    activeTabName.value = 'user';
+    return false;
+  }
 
   const showText = getShowText();
   if (!showText) return false;
 
+  return true;
+}
+
+/** 保存配置 */
+async function saveConfig() {
+  // 如果不是人工审批，不执行校验，直接返回
+  if (approveType.value !== ApproveType.USER) {
+    currentNode.value.name = nodeName.value!;
+    currentNode.value.approveType = approveType.value;
+    currentNode.value.showText = getApproveTypeText(approveType.value);
+    drawerApi.close();
+    return true;
+  }
+  // 执行校验
+  if (!(await validateConfig())) {
+    return false;
+  }
+  // 设置审批节点名称
+  currentNode.value.name = nodeName.value!;
+  // 设置审批类型
+  currentNode.value.approveType = approveType.value;
+  // 设置审批人设置策略
   currentNode.value.candidateStrategy = configForm.value.candidateStrategy;
   // 处理 candidateParam 参数
   currentNode.value.candidateParam = handleCandidateParam();
@@ -338,13 +356,13 @@ const saveConfig = async () => {
   // 审批意见
   currentNode.value.reasonRequire = configForm.value.reasonRequire;
 
-  currentNode.value.showText = showText;
+  currentNode.value.showText = getShowText();
   drawerApi.close();
   return true;
-};
+}
 
 /** 显示审批节点配置， 由父组件传过来 */
-const showUserTaskNodeConfig = (node: SimpleFlowNode) => {
+function showUserTaskNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   // 1 审批类型
   approveType.value =
@@ -423,7 +441,7 @@ const showUserTaskNodeConfig = (node: SimpleFlowNode) => {
   configForm.value.reasonRequire = node?.reasonRequire ?? false;
 
   drawerApi.open();
-};
+}
 
 defineExpose({ showUserTaskNodeConfig }); // 暴露方法给父组件
 
@@ -535,7 +553,7 @@ function useTimeoutHandler() {
 }
 
 /** 批量更新权限 */
-const updatePermission = (type: string) => {
+function updatePermission(type: string) {
   fieldsPermissionConfig.value.forEach((field) => {
     if (type === 'READ') {
       field.permission = FieldPermissionType.READ;
@@ -545,7 +563,8 @@ const updatePermission = (type: string) => {
       field.permission = FieldPermissionType.NONE;
     }
   });
-};
+}
+
 // 在组件初始化时记录初始位置
 onMounted(() => {
   // 固定添加发起人ID字段
@@ -630,11 +649,9 @@ onMounted(() => {
               name="roleIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.roleIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in roleOptions"
@@ -658,16 +675,18 @@ onMounted(() => {
               label="指定部门"
               name="deptIds"
             >
-              <!-- TODO :replace-fields="defaultProps4AntTree" -->
               <TreeSelect
                 v-model:value="configForm.deptIds"
                 :tree-data="deptTreeOptions"
+                :field-names="{
+                  label: 'name',
+                  value: 'id',
+                  children: 'children',
+                }"
                 empty-text="加载中，请稍后"
                 multiple
-                node-key="id"
                 :check-strictly="true"
                 allow-clear
-                style="width: 100%"
                 tree-checkable
               />
             </FormItem>
@@ -677,11 +696,9 @@ onMounted(() => {
               name="postIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.postIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in postOptions"
@@ -699,11 +716,9 @@ onMounted(() => {
               name="userIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.userIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userOptions"
@@ -723,11 +738,9 @@ onMounted(() => {
               name="userGroups"
             >
               <Select
-                filterable
                 v-model:value="configForm.userGroups"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userGroupOptions"
@@ -746,12 +759,7 @@ onMounted(() => {
               label="表单内用户字段"
               name="formUser"
             >
-              <Select
-                filterable
-                v-model:value="configForm.formUser"
-                clearable
-                style="width: 100%"
-              >
+              <Select v-model:value="configForm.formUser" clearable>
                 <SelectOption
                   v-for="(item, idx) in userFieldOnFormOptions"
                   :key="idx"
@@ -771,12 +779,7 @@ onMounted(() => {
               label="表单内部门字段"
               name="formDept"
             >
-              <Select
-                filterable
-                v-model:value="configForm.formDept"
-                clearable
-                style="width: 100%"
-              >
+              <Select v-model:value="configForm.formDept" clearable>
                 <SelectOption
                   v-for="(item, idx) in deptFieldOnFormOptions"
                   :key="idx"
@@ -802,7 +805,7 @@ onMounted(() => {
               :label="deptLevelLabel!"
               name="deptLevel"
             >
-              <Select filterable v-model:value="configForm.deptLevel" clearable>
+              <Select v-model:value="configForm.deptLevel" clearable>
                 <SelectOption
                   v-for="(item, index) in MULTI_LEVEL_DEPT"
                   :key="index"
@@ -821,11 +824,7 @@ onMounted(() => {
               label="流程表达式"
               name="expression"
             >
-              <Textarea
-                v-model:value="configForm.expression"
-                clearable
-                style="width: 100%"
-              />
+              <Textarea v-model:value="configForm.expression" clearable />
             </FormItem>
             <!-- 多人审批/办理 方式 -->
             <FormItem :label="`多人${nodeTypeName}方式`" name="approveMethod">
@@ -890,12 +889,7 @@ onMounted(() => {
                 label="驳回节点"
                 name="returnNodeId"
               >
-                <Select
-                  filterable
-                  v-model:value="configForm.returnNodeId"
-                  clearable
-                  style="width: 100%"
-                >
+                <Select v-model:value="configForm.returnNodeId" clearable>
                   <SelectOption
                     v-for="item in returnTaskList"
                     :key="item.id"
@@ -963,8 +957,7 @@ onMounted(() => {
                   <Col>
                     <FormItem name="timeDuration">
                       <InputNumber
-                        class="mr-2"
-                        :style="{ width: '100px' }"
+                        class="mr-2 mt-0.5"
                         v-model:value="configForm.timeDuration"
                         :min="1"
                         controls-position="right"
@@ -973,7 +966,6 @@ onMounted(() => {
                   </Col>
                   <Col>
                     <Select
-                      filterable
                       v-model:value="timeUnit"
                       class="mr-2"
                       :style="{ width: '100px' }"
@@ -1040,11 +1032,9 @@ onMounted(() => {
               name="assignEmptyHandlerUserIds"
             >
               <Select
-                filterable
                 v-model:value="configForm.assignEmptyHandlerUserIds"
                 clearable
                 mode="multiple"
-                style="width: 100%"
               >
                 <SelectOption
                   v-for="item in userOptions"
@@ -1151,7 +1141,11 @@ onMounted(() => {
           </div>
         </div>
       </TabPane>
-      <TabPane tab="表单字段权限" key="fields" v-if="formType === 10">
+      <TabPane
+        tab="表单字段权限"
+        key="fields"
+        v-if="formType === BpmModelFormType.NORMAL"
+      >
         <div class="p-1">
           <div class="mb-4 text-[16px] font-bold">字段权限</div>
 
@@ -1225,20 +1219,14 @@ onMounted(() => {
           </div>
         </div>
       </TabPane>
-      <TabPane tab="监听器" key="listener">
-        <!-- TODO 待实现 -->
-        <span>待实现</span>
-        <!-- <UserTaskListener
+      <TabPane tab="监听器" key="listener" :force-render="true">
+        <UserTaskListener
           ref="userTaskListenerRef"
-          v-model:value="configForm"
+          v-model="configForm"
           :form-field-options="formFieldOptions"
-        /> -->
+        />
       </TabPane>
     </Tabs>
-    <template #footer>
-      <Button type="primary" @click="saveConfig">确 定</Button>
-      <Button @click="drawerApi.close()">取 消</Button>
-    </template>
   </Drawer>
 </template>
 <style lang="scss" scoped>
