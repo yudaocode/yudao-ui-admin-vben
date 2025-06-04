@@ -56,6 +56,11 @@ function setCheckedRows({
 }: {
   records: CrmPermissionApi.Permission[];
 }) {
+  if (records.some((item) => item.level === PermissionLevelEnum.OWNER)) {
+    message.warning('不能选择负责人！');
+    gridApi.grid.setAllCheckboxRow(false);
+    return;
+  }
   checkedRows.value = records;
 }
 
