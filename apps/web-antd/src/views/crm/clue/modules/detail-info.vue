@@ -4,8 +4,9 @@ import type { CrmClueApi } from '#/api/crm/clue';
 import { Divider } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
+import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
-import { useDetailBaseSchema, useDetailSystemSchema } from '../data';
+import { useDetailBaseSchema } from '../data';
 
 defineOptions({ name: 'CrmClueDetailsInfo' });
 
@@ -30,7 +31,7 @@ const [SystemDescription] = useDescription({
     column: 3,
     class: 'mx-4',
   },
-  schema: useDetailSystemSchema(),
+  schema: useFollowUpDetailSchema(),
 });
 </script>
 

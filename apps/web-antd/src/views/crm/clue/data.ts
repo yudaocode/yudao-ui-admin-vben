@@ -353,36 +353,3 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     },
   ];
 }
-
-/** 详情系统信息的配置 */
-export function useDetailSystemSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'contactLastContent',
-      label: '最后跟进记录',
-    },
-    {
-      field: 'contactLastTime',
-      label: '最后跟进时间',
-      content: (data) => formatDateTime(data?.contactLastTime) as string,
-    },
-    {
-      field: 'creatorName',
-      label: '创建人',
-    },
-    {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
-    },
-    {
-      field: 'updateTime',
-      label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
-    },
-  ];
-}
