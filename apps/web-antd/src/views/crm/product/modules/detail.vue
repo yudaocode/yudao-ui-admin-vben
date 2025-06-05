@@ -63,10 +63,11 @@ function handleBack() {
   tabs.closeCurrentTab();
   router.push('/crm/product');
 }
+
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   productId.value = Number(route.params.id);
-  await loadProductDetail();
+  loadProductDetail();
 });
 </script>
 

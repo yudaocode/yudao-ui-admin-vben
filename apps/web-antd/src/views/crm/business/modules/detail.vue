@@ -33,6 +33,10 @@ const FollowUp = defineAsyncComponent(
   () => import('#/views/crm/followup/index.vue'),
 );
 
+const ProductDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/product/modules/detail-list.vue'),
+);
+
 const PermissionList = defineAsyncComponent(
   () => import('#/views/crm/permission/modules/permission-list.vue'),
 );
@@ -124,9 +128,9 @@ async function handleUpdateStatus() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   businessId.value = Number(route.params.id);
-  await loadBusinessDetail();
+  loadBusinessDetail();
 });
 </script>
 
@@ -173,12 +177,15 @@ onMounted(async () => {
           <ContactDetailsList
             :biz-id="businessId"
             :biz-type="BizTypeEnum.CRM_BUSINESS"
-            :business-id="business.id"
+            :business-id="businessId"
             :customer-id="business.customerId"
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="产品" key="4" :force-render="true">
-          <div>产品</div>
+          <ProductDetailsList
+            :biz-type="BizTypeEnum.CRM_BUSINESS"
+            :business="business"
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="合同" key="5" :force-render="true">
           <ContractDetailsList

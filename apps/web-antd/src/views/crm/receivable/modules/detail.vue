@@ -88,9 +88,9 @@ function handleEdit() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   receivableId.value = Number(route.params.id);
-  await loadReceivableDetail();
+  loadReceivableDetail();
 });
 </script>
 

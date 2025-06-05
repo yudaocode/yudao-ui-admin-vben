@@ -23,6 +23,10 @@ const FollowUp = defineAsyncComponent(
   () => import('#/views/crm/followup/index.vue'),
 );
 
+const ProductDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/product/modules/detail-list.vue'),
+);
+
 const PermissionList = defineAsyncComponent(
   () => import('#/views/crm/permission/modules/permission-list.vue'),
 );
@@ -37,6 +41,14 @@ const OperateLog = defineAsyncComponent(
 
 const ContractDetailsInfo = defineAsyncComponent(
   () => import('./detail-info.vue'),
+);
+
+const ReceivableDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/receivable/modules/detail-list.vue'),
+);
+
+const ReceivablePlanDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/receivable/plan/modules/detail-list.vue'),
 );
 
 const loading = ref(false);
@@ -107,9 +119,9 @@ function handleTransfer() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   contractId.value = Number(route.params.id);
-  await loadContractDetail();
+  loadContractDetail();
 });
 </script>
 
@@ -147,8 +159,22 @@ onMounted(async () => {
         <Tabs.TabPane tab="合同跟进" key="2" :force-render="true">
           <FollowUp :biz-id="contractId" :biz-type="BizTypeEnum.CRM_CONTRACT" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="产品" key="3" :force-render="true" />
-        <Tabs.TabPane tab="回款" key="4" :force-render="true" />
+        <Tabs.TabPane tab="产品" key="3" :force-render="true">
+          <ProductDetailsList
+            :biz-type="BizTypeEnum.CRM_CONTRACT"
+            :contract="contract"
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="回款" key="4" :force-render="true">
+          <ReceivablePlanDetailsList
+            :contract-id="contractId"
+            :customer-id="contract.customerId"
+          />
+          <ReceivableDetailsList
+            :contract-id="contractId"
+            :customer-id="contract.customerId"
+          />
+        </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="5" :force-render="true">
           <PermissionList
             ref="permissionListRef"

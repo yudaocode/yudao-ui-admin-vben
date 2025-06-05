@@ -57,6 +57,14 @@ const OperateLog = defineAsyncComponent(
   () => import('#/components/operate-log'),
 );
 
+const ReceivableDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/receivable/modules/detail-list.vue'),
+);
+
+const ReceivablePlanDetailsList = defineAsyncComponent(
+  () => import('#/views/crm/receivable/plan/modules/detail-list.vue'),
+);
+
 const loading = ref(false);
 
 const route = useRoute();
@@ -174,9 +182,9 @@ async function handleUpdateDealStatus(): Promise<boolean | undefined> {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   customerId.value = Number(route.params.id);
-  await loadCustomerDetail();
+  loadCustomerDetail();
 });
 </script>
 
@@ -283,7 +291,8 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="回款" key="7" :force-render="true">
-          <div>回款</div>
+          <ReceivablePlanDetailsList :customer-id="customerId" />
+          <ReceivableDetailsList :customer-id="customerId" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
           <OperateLog :log-list="customerLogList" />

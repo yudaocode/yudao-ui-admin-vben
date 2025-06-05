@@ -247,3 +247,48 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     },
   ];
 }
+
+/** 详情列表的字段 */
+export function useDetailListColumns(
+  showBussinePrice: boolean,
+): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'productName',
+      title: '产品名称',
+    },
+    {
+      field: 'productNo',
+      title: '产品条码',
+    },
+    {
+      field: 'productUnit',
+      title: '产品单位',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
+      },
+    },
+    {
+      field: 'productPrice',
+      title: '产品价格（元）',
+      formatter: 'formatNumber',
+    },
+    {
+      field: 'businessPrice',
+      title: '商机价格（元）',
+      formatter: 'formatNumber',
+      visible: showBussinePrice,
+    },
+    {
+      field: 'count',
+      title: '数量',
+      formatter: 'formatNumber',
+    },
+    {
+      field: 'totalPrice',
+      title: '合计金额（元）',
+      formatter: 'formatNumber',
+    },
+  ];
+}

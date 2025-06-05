@@ -107,9 +107,9 @@ function handleTransfer() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   contactId.value = Number(route.params.id);
-  await loadContactDetail();
+  loadContactDetail();
 });
 </script>
 
