@@ -17,6 +17,10 @@ import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../data';
 
+const BusinessList = defineAsyncComponent(
+  () => import('#/views/crm/business/modules/detail-list.vue'),
+);
+
 const CustomerDetailsInfo = defineAsyncComponent(
   () => import('./detail-info.vue'),
 );
@@ -33,8 +37,8 @@ const CustomerForm = defineAsyncComponent(
   () => import('#/views/crm/customer/modules/form.vue'),
 );
 
-const BusinessList = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/detail-list.vue'),
+const DistributeForm = defineAsyncComponent(
+  () => import('#/views/crm/customer/poolConfig/distribute-form.vue'),
 );
 
 const FollowUp = defineAsyncComponent(
@@ -81,6 +85,11 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const [TransferModal, transferModalApi] = useVbenModal({
   connectedComponent: TransferForm,
+  destroyOnClose: true,
+});
+
+const [DistributeModal, distributeModalApi] = useVbenModal({
+  connectedComponent: DistributeForm,
   destroyOnClose: true,
 });
 
@@ -131,7 +140,7 @@ function handleReceive() {
 
 /** 分配客户 */
 function handleDistributeForm() {
-  transferModalApi.setData({ id: customerId.value }).open();
+  distributeModalApi.setData({ id: customerId.value }).open();
 }
 
 /** 客户放入公海 */
@@ -175,6 +184,7 @@ onMounted(async () => {
   <Page auto-content-height :title="customer?.name" :loading="loading">
     <FormModal @success="loadCustomerDetail" />
     <TransferModal @success="loadCustomerDetail" />
+    <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
       <div class="flex items-center gap-2">
         <Button
@@ -210,10 +220,18 @@ onMounted(async () => {
         >
           锁定
         </Button>
-        <Button v-if="!customer.ownerUserId" @click="handleReceive">
+        <Button
+          v-if="!customer.ownerUserId"
+          type="primary"
+          @click="handleReceive"
+        >
           领取
         </Button>
-        <Button v-if="!customer.ownerUserId" @click="handleDistributeForm">
+        <Button
+          v-if="!customer.ownerUserId"
+          type="primary"
+          @click="handleDistributeForm"
+        >
           分配
         </Button>
         <Button
