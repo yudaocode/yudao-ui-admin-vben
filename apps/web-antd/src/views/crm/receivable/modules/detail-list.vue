@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmBusinessApi } from '#/api/crm/business';
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 
 import { ref } from 'vue';
@@ -102,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<CrmBusinessApi.Business>,
+  } as VxeTableGridOptions<CrmReceivableApi.Receivable>,
   gridEvents: {
     checkboxAll: setCheckedRows,
     checkboxChange: setCheckedRows,
@@ -121,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['回款']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
-              auth: ['crm:business:create'],
+              auth: ['crm:receivable:create'],
               onClick: handleCreate,
             },
           ]"

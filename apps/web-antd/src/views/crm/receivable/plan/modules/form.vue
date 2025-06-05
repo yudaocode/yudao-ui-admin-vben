@@ -17,7 +17,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<CrmReceivablePlanApi.ReceivablePlan>();
+const formData = ref<CrmReceivablePlanApi.Plan>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['回款计划'])
@@ -45,8 +45,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as CrmReceivablePlanApi.ReceivablePlan;
+    const data = (await formApi.getValues()) as CrmReceivablePlanApi.Plan;
     try {
       await (formData.value?.id
         ? updateReceivablePlan(data)
@@ -65,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmReceivablePlanApi.ReceivablePlan>();
+    const data = modalApi.getData<CrmReceivablePlanApi.Plan>();
     if (!data || !data.id) {
       return;
     }
