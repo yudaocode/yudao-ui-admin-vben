@@ -9,7 +9,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import StartUserNodeConfig from '../nodes-config/start-user-node-config.vue';
 import NodeHandler from './node-handler.vue';
@@ -36,7 +38,7 @@ const currentNode = useWatchNode(props);
 // 节点名称编辑
 const { showInput, blurEvent, clickTitle } = useNodeName2(
   currentNode,
-  NodeType.START_USER_NODE,
+  BpmNodeTypeEnum.START_USER_NODE,
 );
 
 const nodeSetting = ref();
@@ -98,7 +100,7 @@ function nodeClick() {
             {{ currentNode.showText }}
           </div>
           <div class="node-text" v-else>
-            {{ NODE_DEFAULT_TEXT.get(NodeType.START_USER_NODE) }}
+            {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.START_USER_NODE) }}
           </div>
           <IconifyIcon icon="ep:arrow-right-bold" v-if="!readonly" />
         </div>
