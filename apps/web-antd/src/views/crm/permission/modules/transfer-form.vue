@@ -18,8 +18,6 @@ import { $t } from '#/locales';
 
 import { useTransferFormSchema } from './data';
 
-defineOptions({ name: 'CrmTransferForm' });
-
 const emit = defineEmits(['success']);
 
 const bizType = defineModel<number>('bizType');

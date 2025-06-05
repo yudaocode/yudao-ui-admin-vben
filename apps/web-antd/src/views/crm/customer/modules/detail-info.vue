@@ -8,8 +8,6 @@ import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
 import { useDetailBaseSchema } from '../data';
 
-defineOptions({ name: 'CrmCustomerDetailsInfo' });
-
 defineProps<{
   customer: CrmCustomerApi.Customer; // 客户信息
 }>();

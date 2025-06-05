@@ -5,8 +5,6 @@ import { useDescription } from '#/components/description';
 
 import { useDetailBaseSchema } from '../data';
 
-defineOptions({ name: 'CrmProductDetailsInfo' });
-
 defineProps<{
   product: CrmProductApi.Product; // 产品信息
 }>();

@@ -8,8 +8,6 @@ import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
 import { useDetailBaseSchema } from '../data';
 
-defineOptions({ name: 'CrmClueDetailsInfo' });
-
 defineProps<{
   clue: CrmClueApi.Clue; // 线索信息
 }>();

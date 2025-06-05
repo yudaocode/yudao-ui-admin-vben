@@ -21,8 +21,6 @@ import { $t } from '#/locales';
 import { useGridColumns } from './data';
 import Form from './permission-form.vue';
 
-defineOptions({ name: 'CrmPermissionList' });
-
 const props = defineProps<{
   bizId: number; // 模块数据编号
   bizType: number; // 模块类型
