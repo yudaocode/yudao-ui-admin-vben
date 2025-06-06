@@ -2,7 +2,7 @@
 import type { CrmCustomerApi } from '#/api/crm/customer';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
@@ -14,56 +14,23 @@ import { getCustomer, updateCustomerDealStatus } from '#/api/crm/customer';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { BusinessDetailsList } from '#/views/crm/business';
+import { ContactDetailsList } from '#/views/crm/contact';
+import { ContractDetailsList } from '#/views/crm/contract';
+import {
+  CustomerDetailsInfo,
+  CustomerForm,
+  DistributeForm,
+} from '#/views/crm/customer';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
+import {
+  ReceivableDetailsList,
+  ReceivablePlanDetailsList,
+} from '#/views/crm/receivable';
 
-import { useDetailSchema } from '../data';
-
-const BusinessList = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/detail-list.vue'),
-);
-
-const CustomerDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const ContactDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contact/modules/detail-list.vue'),
-);
-
-const ContractDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contract/modules/detail-list.vue'),
-);
-
-const CustomerForm = defineAsyncComponent(
-  () => import('#/views/crm/customer/modules/form.vue'),
-);
-
-const DistributeForm = defineAsyncComponent(
-  () => import('#/views/crm/customer/poolConfig/distribute-form.vue'),
-);
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
-
-const ReceivableDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/receivable/modules/detail-list.vue'),
-);
-
-const ReceivablePlanDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/receivable/plan/modules/detail-list.vue'),
-);
+import { useDetailSchema } from './detail-data';
 
 const loading = ref(false);
 
@@ -278,7 +245,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="商机" key="5" :force-render="true">
-          <BusinessList
+          <BusinessDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
@@ -295,7 +262,7 @@ onMounted(() => {
           <ReceivableDetailsList :customer-id="customerId" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
-          <OperateLog :log-list="customerLogList" />
+          <AsyncOperateLog :log-list="customerLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

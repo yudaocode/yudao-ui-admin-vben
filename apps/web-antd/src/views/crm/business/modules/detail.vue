@@ -2,7 +2,7 @@
 import type { CrmBusinessApi } from '#/api/crm/business';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -14,48 +14,19 @@ import { getBusiness } from '#/api/crm/business';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import {
+  BusinessDetailsInfo,
+  BusinessForm,
+  UpStatusForm,
+} from '#/views/crm/business';
+import { ContactDetailsList } from '#/views/crm/contact';
+import { ContractDetailsList } from '#/views/crm/contract';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
+import { ProductDetailsList } from '#/views/crm/product';
 
 import { useDetailSchema } from './detail-data';
-
-const BusinessDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const ContactDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contact/modules/detail-list.vue'),
-);
-
-const ContractDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contract/modules/detail-list.vue'),
-);
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const ProductDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/product/modules/detail-list.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
-
-const BusinessForm = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/form.vue'),
-);
-
-const UpStatusForm = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/up-status-form.vue'),
-);
 
 const loading = ref(false);
 
@@ -204,7 +175,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="7" :force-render="true">
-          <OperateLog :log-list="businessLogList" />
+          <AsyncOperateLog :log-list="businessLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

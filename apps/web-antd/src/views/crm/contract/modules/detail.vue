@@ -2,7 +2,7 @@
 import type { CrmContractApi } from '#/api/crm/contract';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -15,41 +15,17 @@ import { getContract } from '#/api/crm/contract';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { ContractDetailsInfo, ContractForm } from '#/views/crm/contract';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
+import { ProductDetailsList } from '#/views/crm/product';
+import {
+  ReceivableDetailsList,
+  ReceivablePlanDetailsList,
+} from '#/views/crm/receivable';
 
 import { useDetailSchema } from './detail-data';
-import ClueForm from './form.vue';
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const ProductDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/product/modules/detail-list.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
-
-const ContractDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const ReceivableDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/receivable/modules/detail-list.vue'),
-);
-
-const ReceivablePlanDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/receivable/plan/modules/detail-list.vue'),
-);
 
 const loading = ref(false);
 
@@ -79,7 +55,7 @@ const [Description] = useDescription({
 });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: ClueForm,
+  connectedComponent: ContractForm,
   destroyOnClose: true,
 });
 
@@ -185,7 +161,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="6" :force-render="true">
-          <OperateLog :log-list="contractLogList" />
+          <AsyncOperateLog :log-list="contractLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
