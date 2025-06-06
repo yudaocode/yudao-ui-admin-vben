@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type { CrmPermissionApi } from '#/api/crm/permission';
-
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { transferClue } from '#/api/crm/clue';
+import { distributeCustomer } from '#/api/crm/customer';
+import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
-const formData = ref<{ id: number }>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -25,11 +21,23 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: [
     {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'ownerUserId',
       label: '负责人',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        api: 'getSimpleUserList',
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
       rules: 'required',
     },
@@ -45,9 +53,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as CrmPermissionApi.TransferReq;
+    const data = await formApi.getValues();
     try {
-      await transferClue(data);
+      await distributeCustomer([data.id], data.ownerUserId);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -58,21 +66,25 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id: number }>();
+    const data = modalApi.getData();
     if (!data || !data.id) {
       return;
     }
-    formData.value = data;
+    modalApi.lock();
+    try {
+      await formApi.setValues(data);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>
 
 <template>
-  <Modal :title="$t('ui.actionTitle.transfer')" class="w-[40%]">
+  <Modal title="分配客户" class="w-[40%]">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -112,26 +112,19 @@ export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReqVO) {
 
 /** 基于数据库的表结构，同步数据库的表和字段定义 */
 export function syncCodegenFromDB(tableId: number) {
-  return requestClient.put('/infra/codegen/sync-from-db', {
-    params: { tableId },
-  });
+  return requestClient.put(`/infra/codegen/sync-from-db?tableId=${tableId}`);
 }
 
 /** 预览生成代码 */
 export function previewCodegen(tableId: number) {
   return requestClient.get<InfraCodegenApi.CodegenPreview[]>(
-    '/infra/codegen/preview',
-    {
-      params: { tableId },
-    },
+    `/infra/codegen/preview?tableId=${tableId}`,
   );
 }
 
 /** 下载生成代码 */
 export function downloadCodegen(tableId: number) {
-  return requestClient.download('/infra/codegen/download', {
-    params: { tableId },
-  });
+  return requestClient.download(`/infra/codegen/download?tableId=${tableId}`);
 }
 
 /** 获得表定义 */

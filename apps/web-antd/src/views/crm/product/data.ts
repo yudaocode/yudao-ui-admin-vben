@@ -174,3 +174,60 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
+
+/** 代码生成表格列定义 */
+export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'seq', title: '序号', minWidth: 50 },
+    {
+      field: 'productId',
+      title: '产品名称',
+      minWidth: 100,
+      slots: { default: 'productId' },
+    },
+    {
+      field: 'productNo',
+      title: '条码',
+      minWidth: 150,
+    },
+    {
+      field: 'productUnit',
+      title: '单位',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
+      },
+    },
+    {
+      field: 'productPrice',
+      title: '价格（元）',
+      minWidth: 100,
+      formatter: 'formatNumber',
+    },
+    {
+      field: 'sellingPrice',
+      title: '售价（元）',
+      minWidth: 100,
+      slots: { default: 'sellingPrice' },
+    },
+    {
+      field: 'count',
+      title: '数量',
+      minWidth: 100,
+      slots: { default: 'count' },
+    },
+    {
+      field: 'totalPrice',
+      title: '合计',
+      minWidth: 100,
+      formatter: 'formatNumber',
+    },
+    {
+      title: '操作',
+      width: 80,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}

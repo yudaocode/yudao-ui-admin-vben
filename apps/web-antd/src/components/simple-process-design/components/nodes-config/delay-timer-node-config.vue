@@ -22,10 +22,11 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
+import { BpmNodeTypeEnum } from '#/utils';
+
 import {
   DELAY_TYPE,
   DelayTypeEnum,
-  NodeType,
   TIME_UNIT_TYPES,
   TimeUnitType,
 } from '../../consts';
@@ -45,7 +46,7 @@ const props = defineProps({
 const currentNode = useWatchNode(props);
 // 节点名称
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.DELAY_TIMER_NODE,
+  BpmNodeTypeEnum.DELAY_TIMER_NODE,
 );
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref

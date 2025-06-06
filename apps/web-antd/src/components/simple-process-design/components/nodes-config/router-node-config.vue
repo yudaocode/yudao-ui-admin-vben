@@ -21,7 +21,9 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
-import { ConditionType, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { ConditionType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';
 import Condition from './modules/condition.vue';
 
@@ -40,7 +42,7 @@ const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 const currentNode = useWatchNode(props);
 /** 节点名称 */
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.ROUTER_BRANCH_NODE,
+  BpmNodeTypeEnum.ROUTER_BRANCH_NODE,
 );
 const routerGroups = ref<RouterSetting[]>([]);
 const nodeOptions = ref<any[]>([]);
@@ -176,15 +178,15 @@ function getRouterNode(node: any) {
   while (true) {
     if (!node) break;
     if (
-      node.type !== NodeType.ROUTER_BRANCH_NODE &&
-      node.type !== NodeType.CONDITION_NODE
+      node.type !== BpmNodeTypeEnum.ROUTER_BRANCH_NODE &&
+      node.type !== BpmNodeTypeEnum.CONDITION_NODE
     ) {
       nodeOptions.value.push({
         label: node.name,
         value: node.id,
       });
     }
-    if (!node.childNode || node.type === NodeType.END_EVENT_NODE) {
+    if (!node.childNode || node.type === BpmNodeTypeEnum.END_EVENT_NODE) {
       break;
     }
     if (node.conditionNodes && node.conditionNodes.length > 0) {

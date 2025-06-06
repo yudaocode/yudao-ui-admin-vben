@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import type { CrmClueApi } from '#/api/crm/clue';
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 
-import { Button, Card, Modal, Tabs } from 'ant-design-vue';
+import { Button, Card, message, Tabs } from 'ant-design-vue';
 
 import { getClue, transformClue } from '#/api/crm/clue';
+import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 import ClueForm from './form.vue';
 
 const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
@@ -29,7 +33,14 @@ const tabs = useTabs();
 const clueId = ref(0);
 
 const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue);
-const permissionListRef = ref(); // 团队成员列表 Ref
+const clueLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
+const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+
+// 校验负责人权限和编辑权限
+const validateOwnerUser = computed(
+  () => permissionListRef.value?.validateOwnerUser,
+);
+const validateWrite = computed(() => permissionListRef.value?.validateWrite);
 
 const [Description] = useDescription({
   componentProps: {
@@ -53,9 +64,14 @@ const [TransferModal, transferModalApi] = useVbenModal({
 /** 加载线索详情 */
 async function loadClueDetail() {
   loading.value = true;
-  clueId.value = Number(route.params.id);
   const data = await getClue(clueId.value);
   clue.value = data;
+  // 操作日志
+  const logList = await getOperateLogPage({
+    bizType: BizTypeEnum.CRM_CLUE,
+    bizId: clueId.value,
+  });
+  clueLogList.value = logList.list;
   loading.value = false;
 }
 
@@ -67,7 +83,7 @@ function handleBack() {
 
 /** 编辑线索 */
 function handleEdit() {
-  formModalApi.setData({ id: clueId }).open();
+  formModalApi.setData({ id: clueId.value }).open();
 }
 
 /** 转移线索 */
@@ -76,31 +92,38 @@ function handleTransfer() {
 }
 
 /** 转化为客户 */
-async function handleTransform() {
-  try {
-    await Modal.confirm({
-      title: '提示',
+async function handleTransform(): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
       content: '确定将该线索转化为客户吗？',
-    });
-    await transformClue(clueId.value);
-    Modal.success({
-      title: '成功',
-      content: '转化客户成功',
-    });
-    await loadClueDetail();
-  } catch {
-    // 用户取消操作
-  }
+    })
+      .then(async () => {
+        const res = await transformClue(clueId.value);
+        if (res) {
+          // 提示并返回成功
+          message.success('转化客户成功');
+          resolve(true);
+        } else {
+          reject(new Error('转化失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 // 加载数据
-onMounted(async () => {
-  await loadClueDetail();
+onMounted(() => {
+  clueId.value = Number(route.params.id);
+  loadClueDetail();
 });
 </script>
 
 <template>
   <Page auto-content-height :title="clue?.name" :loading="loading">
+    <FormModal @success="loadClueDetail" />
+    <TransferModal @success="loadClueDetail" />
     <template #extra>
       <div class="flex items-center gap-2">
         <Button @click="handleBack">
@@ -108,58 +131,49 @@ onMounted(async () => {
           返回
         </Button>
         <Button
-          v-if="permissionListRef?.validateWrite"
+          v-if="validateWrite"
           type="primary"
           @click="handleEdit"
           v-access:code="['crm:clue:update']"
         >
           {{ $t('ui.actionTitle.edit') }}
         </Button>
-        <Button
-          v-if="permissionListRef?.validateOwnerUser"
-          type="primary"
-          @click="handleTransfer"
-          v-access:code="['crm:clue:update']"
-        >
+        <Button v-if="validateOwnerUser" type="primary" @click="handleTransfer">
           转移
         </Button>
         <Button
-          v-if="permissionListRef?.validateOwnerUser && !clue?.transformStatus"
+          v-if="validateOwnerUser && !clue?.transformStatus"
           type="primary"
           @click="handleTransform"
-          v-access:code="['crm:clue:update']"
         >
           转化为客户
         </Button>
       </div>
     </template>
-    <Card>
+    <Card class="min-h-[10%]">
       <Description :data="clue" />
     </Card>
-    <Card class="mt-4">
+    <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="线索跟进" key="1">
-          <div>线索跟进</div>
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="基本信息" key="2">
+        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
           <ClueDetailsInfo :clue="clue" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="3">
+        <Tabs.TabPane tab="线索跟进" key="2" :force-render="true">
+          <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
-            :biz-id="clue.id!"
+            :biz-id="clueId"
             :biz-type="BizTypeEnum.CRM_CLUE"
             :show-action="true"
             @quit-team="handleBack"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="4">
-          <div>操作日志</div>
+        <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
+          <AsyncOperateLog :log-list="clueLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
-
-    <FormModal @success="loadClueDetail" />
-    <TransferModal @success="loadClueDetail" />
   </Page>
 </template>

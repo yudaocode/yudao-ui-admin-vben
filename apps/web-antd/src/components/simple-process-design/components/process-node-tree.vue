@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../consts';
 
-import { NodeType } from '../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
 import { useWatchNode } from '../helpers';
 import CopyTaskNode from './nodes/copy-task-node.vue';
 import DelayTimerNode from './nodes/delay-timer-node.vue';
@@ -57,7 +58,7 @@ function recursiveFindParentNode(
   if (!findNode) {
     return;
   }
-  if (findNode.type === NodeType.START_USER_NODE) {
+  if (findNode.type === BpmNodeTypeEnum.START_USER_NODE) {
     nodeList.push(findNode);
     return;
   }
@@ -71,15 +72,15 @@ function recursiveFindParentNode(
 <template>
   <!-- 发起人节点 -->
   <StartUserNode
-    v-if="currentNode && currentNode.type === NodeType.START_USER_NODE"
+    v-if="currentNode && currentNode.type === BpmNodeTypeEnum.START_USER_NODE"
     :flow-node="currentNode"
   />
   <!-- 审批节点 -->
   <UserTaskNode
     v-if="
       currentNode &&
-      (currentNode.type === NodeType.USER_TASK_NODE ||
-        currentNode.type === NodeType.TRANSACTOR_NODE)
+      (currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE ||
+        currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE)
     "
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
@@ -87,46 +88,54 @@ function recursiveFindParentNode(
   />
   <!-- 抄送节点 -->
   <CopyTaskNode
-    v-if="currentNode && currentNode.type === NodeType.COPY_TASK_NODE"
+    v-if="currentNode && currentNode.type === BpmNodeTypeEnum.COPY_TASK_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 条件节点 -->
   <ExclusiveNode
-    v-if="currentNode && currentNode.type === NodeType.CONDITION_BRANCH_NODE"
+    v-if="
+      currentNode && currentNode.type === BpmNodeTypeEnum.CONDITION_BRANCH_NODE
+    "
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
     @find-parent-node="findParentNode"
   />
   <!-- 并行节点 -->
   <ParallelNode
-    v-if="currentNode && currentNode.type === NodeType.PARALLEL_BRANCH_NODE"
+    v-if="
+      currentNode && currentNode.type === BpmNodeTypeEnum.PARALLEL_BRANCH_NODE
+    "
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
     @find-parent-node="findParentNode"
   />
   <!-- 包容分支节点 -->
   <InclusiveNode
-    v-if="currentNode && currentNode.type === NodeType.INCLUSIVE_BRANCH_NODE"
+    v-if="
+      currentNode && currentNode.type === BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE
+    "
     :flow-node="currentNode"
     @update:model-value="handleModelValueUpdate"
     @find-parent-node="findParentNode"
   />
   <!-- 延迟器节点 -->
   <DelayTimerNode
-    v-if="currentNode && currentNode.type === NodeType.DELAY_TIMER_NODE"
+    v-if="currentNode && currentNode.type === BpmNodeTypeEnum.DELAY_TIMER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 路由分支节点 -->
   <RouterNode
-    v-if="currentNode && currentNode.type === NodeType.ROUTER_BRANCH_NODE"
+    v-if="
+      currentNode && currentNode.type === BpmNodeTypeEnum.ROUTER_BRANCH_NODE
+    "
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 触发器节点 -->
   <TriggerNode
-    v-if="currentNode && currentNode.type === NodeType.TRIGGER_NODE"
+    v-if="currentNode && currentNode.type === BpmNodeTypeEnum.TRIGGER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
@@ -146,7 +155,7 @@ function recursiveFindParentNode(
 
   <!-- 结束节点 -->
   <EndEventNode
-    v-if="currentNode && currentNode.type === NodeType.END_EVENT_NODE"
+    v-if="currentNode && currentNode.type === BpmNodeTypeEnum.END_EVENT_NODE"
     :flow-node="currentNode"
   />
 </template>

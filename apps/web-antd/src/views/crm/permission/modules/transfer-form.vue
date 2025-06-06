@@ -13,12 +13,10 @@ import { transferClue } from '#/api/crm/clue';
 import { transferContact } from '#/api/crm/contact';
 import { transferContract } from '#/api/crm/contract';
 import { transferCustomer } from '#/api/crm/customer';
-import { BizTypeEnum, PermissionLevelEnum } from '#/api/crm/permission';
-import { getSimpleUserList } from '#/api/system/user';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
-defineOptions({ name: 'CrmTransferForm' });
+import { useTransferFormSchema } from './data';
 
 const emit = defineEmits(['success']);
 
@@ -56,87 +54,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      fieldName: 'id',
-      component: 'Input',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      fieldName: 'ownerUserId',
-      label: '选择新负责人',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleUserList,
-        labelField: 'nickname',
-        valueField: 'id',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'oldOwnerHandler',
-      label: '老负责人',
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          {
-            label: '加入团队',
-            value: true,
-          },
-          {
-            label: '移除',
-            value: false,
-          },
-        ],
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'oldOwnerPermissionLevel',
-      label: '老负责人权限级别',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.CRM_PERMISSION_LEVEL,
-          'number',
-        ).filter((dict) => dict.value !== PermissionLevelEnum.OWNER),
-      },
-      dependencies: {
-        triggerFields: ['oldOwnerHandler'],
-        show: (values) => values.oldOwnerHandler,
-        trigger(values) {
-          if (!values.oldOwnerHandler) {
-            formApi.setFieldValue('oldOwnerPermissionLevel', undefined);
-          }
-        },
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'toBizTypes',
-      label: '同时转移',
-      component: 'CheckboxGroup',
-      componentProps: {
-        options: [
-          {
-            label: '联系人',
-            value: BizTypeEnum.CRM_CONTACT,
-          },
-          {
-            label: '商机',
-            value: BizTypeEnum.CRM_BUSINESS,
-          },
-          {
-            label: '合同',
-            value: BizTypeEnum.CRM_CONTRACT,
-          },
-        ],
-      },
-    },
-  ],
+  schema: useTransferFormSchema(),
   showDefaultActions: false,
 });
 

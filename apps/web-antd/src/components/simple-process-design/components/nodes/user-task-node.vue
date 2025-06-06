@@ -9,7 +9,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import UserTaskNodeConfig from '../nodes-config/user-task-node-config.vue';
 import NodeHandler from './node-handler.vue';
@@ -24,7 +26,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits<{
-  findParentNode: [nodeList: SimpleFlowNode[], nodeType: NodeType];
+  findParentNode: [nodeList: SimpleFlowNode[], nodeType: BpmNodeTypeEnum];
   'update:flowNode': [node: SimpleFlowNode | undefined];
 }>();
 
@@ -36,7 +38,7 @@ const currentNode = useWatchNode(props);
 // 节点名称编辑
 const { showInput, blurEvent, clickTitle } = useNodeName2(
   currentNode,
-  NodeType.START_USER_NODE,
+  BpmNodeTypeEnum.USER_TASK_NODE,
 );
 const nodeSetting = ref();
 
@@ -60,7 +62,7 @@ function findReturnTaskNodes(
   matchNodeList: SimpleFlowNode[], // 匹配的节点
 ) {
   // 从父节点查找
-  emits('findParentNode', matchNodeList, NodeType.USER_TASK_NODE);
+  emits('findParentNode', matchNodeList, BpmNodeTypeEnum.USER_TASK_NODE);
 }
 
 // const selectTasks = ref<any[] | undefined>([]); // 选中的任务数组
@@ -77,10 +79,10 @@ function findReturnTaskNodes(
       >
         <div class="node-title-container">
           <div
-            :class="`node-title-icon ${currentNode.type === NodeType.TRANSACTOR_NODE ? 'transactor-task' : 'user-task'}`"
+            :class="`node-title-icon ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'transactor-task' : 'user-task'}`"
           >
             <span
-              :class="`iconfont ${currentNode.type === NodeType.TRANSACTOR_NODE ? 'icon-transactor' : 'icon-approve'}`"
+              :class="`iconfont ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'icon-transactor' : 'icon-approve'}`"
             >
             </span>
           </div>

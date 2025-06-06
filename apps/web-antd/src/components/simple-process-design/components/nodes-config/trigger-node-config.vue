@@ -29,9 +29,10 @@ import {
   Tag,
 } from 'ant-design-vue';
 
+import { BpmNodeTypeEnum } from '#/utils';
+
 import {
   DEFAULT_CONDITION_GROUP_VALUE,
-  NodeType,
   TRIGGER_TYPES,
   TriggerTypeEnum,
 } from '../../consts';
@@ -72,7 +73,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const currentNode = useWatchNode(props);
 // 节点名称
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.TRIGGER_NODE,
+  BpmNodeTypeEnum.TRIGGER_NODE,
 );
 // 触发器表单配置
 const formRef = ref(); // 表单 Ref

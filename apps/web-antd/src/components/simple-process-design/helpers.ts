@@ -15,6 +15,12 @@ import type { SystemUserApi } from '#/api/system/user';
 import { inject, ref, toRaw, unref, watch } from 'vue';
 
 import {
+  BpmNodeTypeEnum,
+  BpmTaskStatusEnum,
+  ProcessVariableEnum,
+} from '#/utils';
+
+import {
   ApproveMethodType,
   AssignEmptyHandlerType,
   AssignStartUserHandlerType,
@@ -23,10 +29,7 @@ import {
   ConditionType,
   FieldPermissionType,
   NODE_DEFAULT_NAME,
-  NodeType,
-  ProcessVariableEnum,
   RejectHandlerType,
-  TaskStatusEnum,
 } from './consts';
 
 export function useWatchNode(props: {
@@ -252,7 +255,7 @@ export type CopyTaskFormType = {
 /**
  * @description 节点表单数据。 用于审批节点、抄送节点
  */
-export function useNodeForm(nodeType: NodeType) {
+export function useNodeForm(nodeType: BpmNodeTypeEnum) {
   const roleOptions = inject<Ref<SystemRoleApi.Role[]>>('roleList', ref([])); // 角色列表
   const postOptions = inject<Ref<SystemPostApi.Post[]>>('postList', ref([])); // 岗位列表
   const userOptions = inject<Ref<SystemUserApi.User[]>>('userList', ref([])); // 用户列表
@@ -269,8 +272,8 @@ export function useNodeForm(nodeType: NodeType) {
   const configForm = ref<any | CopyTaskFormType | UserTaskFormType>();
 
   if (
-    nodeType === NodeType.USER_TASK_NODE ||
-    nodeType === NodeType.TRANSACTOR_NODE
+    nodeType === BpmNodeTypeEnum.USER_TASK_NODE ||
+    nodeType === BpmNodeTypeEnum.TRANSACTOR_NODE
   ) {
     configForm.value = {
       candidateStrategy: CandidateStrategy.USER,
@@ -614,7 +617,7 @@ export function useDrawer() {
 /**
  * @description 节点名称配置
  */
-export function useNodeName(nodeType: NodeType) {
+export function useNodeName(nodeType: BpmNodeTypeEnum) {
   // 节点名称
   const nodeName = ref<string>();
   // 节点名称输入框
@@ -637,7 +640,10 @@ export function useNodeName(nodeType: NodeType) {
   };
 }
 
-export function useNodeName2(node: Ref<SimpleFlowNode>, nodeType: NodeType) {
+export function useNodeName2(
+  node: Ref<SimpleFlowNode>,
+  nodeType: BpmNodeTypeEnum,
+) {
   // 显示节点名称输入框
   const showInput = ref(false);
   // 节点名称输入框失去焦点
@@ -661,21 +667,21 @@ export function useNodeName2(node: Ref<SimpleFlowNode>, nodeType: NodeType) {
  * @description 根据节点任务状态，获取节点任务状态样式
  */
 export function useTaskStatusClass(
-  taskStatus: TaskStatusEnum | undefined,
+  taskStatus: BpmTaskStatusEnum | undefined,
 ): string {
   if (!taskStatus) {
     return '';
   }
-  if (taskStatus === TaskStatusEnum.APPROVE) {
+  if (taskStatus === BpmTaskStatusEnum.APPROVE) {
     return 'status-pass';
   }
-  if (taskStatus === TaskStatusEnum.RUNNING) {
+  if (taskStatus === BpmTaskStatusEnum.RUNNING) {
     return 'status-running';
   }
-  if (taskStatus === TaskStatusEnum.REJECT) {
+  if (taskStatus === BpmTaskStatusEnum.REJECT) {
     return 'status-reject';
   }
-  if (taskStatus === TaskStatusEnum.CANCEL) {
+  if (taskStatus === BpmTaskStatusEnum.CANCEL) {
     return 'status-cancel';
   }
   return '';

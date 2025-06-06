@@ -23,13 +23,9 @@ import {
   TypographyText,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils';
+import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
-import {
-  FieldPermissionType,
-  NodeType,
-  START_USER_BUTTON_SETTING,
-} from '../../consts';
+import { FieldPermissionType, START_USER_BUTTON_SETTING } from '../../consts';
 import {
   useFormFieldsPermission,
   useNodeName,
@@ -57,7 +53,7 @@ const deptOptions = inject<Ref<SystemDeptApi.Dept[]>>('deptList');
 const currentNode = useWatchNode(props);
 // 节点名称
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.COPY_TASK_NODE,
+  BpmNodeTypeEnum.START_USER_NODE,
 );
 // 激活的 Tab 标签页
 const activeTabName = ref('user');

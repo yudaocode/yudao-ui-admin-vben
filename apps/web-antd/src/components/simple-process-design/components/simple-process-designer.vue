@@ -22,9 +22,9 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { getSimpleUserList } from '#/api/system/user';
-import { BpmModelFormType } from '#/utils/constants';
+import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
-import { NODE_DEFAULT_TEXT, NodeId, NodeType } from '../consts';
+import { NODE_DEFAULT_TEXT, NodeId } from '../consts';
 import SimpleProcessModel from './simple-process-model.vue';
 
 defineOptions({
@@ -124,13 +124,13 @@ function updateModel() {
   if (!processNodeTree.value) {
     processNodeTree.value = {
       name: '发起人',
-      type: NodeType.START_USER_NODE,
+      type: BpmNodeTypeEnum.START_USER_NODE,
       id: NodeId.START_USER_NODE_ID,
       showText: '默认配置',
       childNode: {
         id: NodeId.END_EVENT_NODE_ID,
         name: '结束',
-        type: NodeType.END_EVENT_NODE,
+        type: BpmNodeTypeEnum.END_EVENT_NODE,
       },
     };
     // 初始化时也触发一次保存
@@ -162,14 +162,14 @@ function validateNode(
 ) {
   if (node) {
     const { type, showText, conditionNodes } = node;
-    if (type === NodeType.END_EVENT_NODE) {
+    if (type === BpmNodeTypeEnum.END_EVENT_NODE) {
       return;
     }
 
     if (
-      type === NodeType.CONDITION_BRANCH_NODE ||
-      type === NodeType.PARALLEL_BRANCH_NODE ||
-      type === NodeType.INCLUSIVE_BRANCH_NODE
+      type === BpmNodeTypeEnum.CONDITION_BRANCH_NODE ||
+      type === BpmNodeTypeEnum.PARALLEL_BRANCH_NODE ||
+      type === BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE
     ) {
       // 1. 分支节点, 先校验各个分支
       conditionNodes?.forEach((item) => {

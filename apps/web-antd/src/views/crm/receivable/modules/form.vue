@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmReceivableApi.Receivable>();
+    const data = modalApi.getData();
     if (!data) {
       return;
     }

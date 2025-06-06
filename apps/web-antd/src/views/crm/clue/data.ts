@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { DescriptionItemSchema } from '#/components/description';
-
-import { h } from 'vue';
-
-import { formatDateTime } from '@vben/utils';
 
 import { getAreaTree } from '#/api/system/area';
-import { DictTag } from '#/components/dict-tag';
+import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -32,7 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户来源',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
       },
       rules: 'required',
     },
@@ -44,9 +39,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerUserId',
       label: '负责人',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        api: 'getSimpleUserList',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        allowClear: true,
       },
       rules: 'required',
     },
@@ -75,7 +73,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户行业',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
       },
     },
     {
@@ -83,7 +81,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户级别',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
       },
     },
     {
@@ -247,145 +245,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 140,
       fixed: 'right',
       slots: { default: 'actions' },
-    },
-  ];
-}
-
-/** 详情头部的配置 */
-export function useDetailSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'source',
-      label: '线索来源',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_SOURCE,
-          value: data?.source,
-        }),
-    },
-    {
-      field: 'mobile',
-      label: '手机',
-    },
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
-    },
-  ];
-}
-
-/** 详情基本信息的配置 */
-export function useDetailBaseSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'name',
-      label: '线索名称',
-    },
-    {
-      field: 'source',
-      label: '客户来源',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_SOURCE,
-          value: data?.source,
-        }),
-    },
-    {
-      field: 'mobile',
-      label: '手机',
-    },
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'telephone',
-      label: '电话',
-    },
-    {
-      field: 'email',
-      label: '邮箱',
-    },
-    {
-      field: 'wechat',
-      label: '微信',
-    },
-    {
-      field: 'qq',
-      label: 'QQ',
-    },
-    {
-      field: 'industryId',
-      label: '客户行业',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY,
-          value: data?.industryId,
-        }),
-    },
-    {
-      field: 'level',
-      label: '客户级别',
-      content: (data) =>
-        h(DictTag, {
-          type: DICT_TYPE.CRM_CUSTOMER_LEVEL,
-          value: data?.level,
-        }),
-    },
-    {
-      field: 'areaId',
-      label: '地址',
-    },
-    {
-      field: 'detailAddress',
-      label: '详细地址',
-    },
-    {
-      field: 'contactNextTime',
-      label: '下次联系时间',
-      content: (data) => formatDateTime(data?.contactNextTime) as string,
-    },
-    {
-      field: 'remark',
-      label: '备注',
-    },
-  ];
-}
-
-/** 详情系统信息的配置 */
-export function useDetailSystemSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'contactLastContent',
-      label: '最后跟进记录',
-    },
-    {
-      field: 'contactLastContent',
-      label: '最后跟进时间',
-      content: (data) => formatDateTime(data?.contactLastContent) as string,
-    },
-    {
-      field: 'creatorName',
-      label: '创建人',
-    },
-    {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
-    },
-    {
-      field: 'updateTime',
-      label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
     },
   ];
 }

@@ -27,14 +27,13 @@ import {
   TreeSelect,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils';
+import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
 import {
   CANDIDATE_STRATEGY,
   CandidateStrategy,
   FieldPermissionType,
   MULTI_LEVEL_DEPT,
-  NodeType,
 } from '../../consts';
 import {
   useFormFieldsPermission,
@@ -77,7 +76,7 @@ const currentNode = useWatchNode(props);
 
 // 节点名称
 const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.COPY_TASK_NODE,
+  BpmNodeTypeEnum.COPY_TASK_NODE,
 );
 
 // 激活的 Tab 标签页
@@ -137,7 +136,7 @@ const {
   getShowText,
   handleCandidateParam,
   parseCandidateParam,
-} = useNodeForm(NodeType.COPY_TASK_NODE);
+} = useNodeForm(BpmNodeTypeEnum.COPY_TASK_NODE);
 
 const configForm = tempConfigForm as Ref<CopyTaskFormType>;
 // 抄送人策略， 去掉发起人自选 和 发起人自己
