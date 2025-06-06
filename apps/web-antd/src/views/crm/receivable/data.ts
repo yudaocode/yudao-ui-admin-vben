@@ -362,7 +362,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '合同编号',
-      field: 'contract',
+      field: 'contract.no',
       minWidth: 150,
     },
     {
@@ -395,12 +395,6 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '备注',
       field: 'remark',
       minWidth: 150,
-    },
-    {
-      title: '合同金额（元）',
-      field: 'contract.totalPrice',
-      minWidth: 150,
-      formatter: 'formatNumber',
     },
     {
       title: '回款状态',

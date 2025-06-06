@@ -161,8 +161,8 @@ onMounted(() => {
         </Tabs.TabPane>
         <Tabs.TabPane tab="产品" key="3" :force-render="true">
           <ProductDetailsList
+            :biz-id="contractId"
             :biz-type="BizTypeEnum.CRM_CONTRACT"
-            :contract="contract"
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="回款" key="4" :force-render="true">

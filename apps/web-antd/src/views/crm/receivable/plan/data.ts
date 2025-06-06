@@ -311,41 +311,42 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
 export function useDetailListColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      title: '回款编号',
-      field: 'no',
-      minWidth: 150,
-      fixed: 'left',
-    },
-    {
       title: '客户名称',
       field: 'customerName',
       minWidth: 150,
     },
     {
       title: '合同编号',
-      field: 'contract',
+      field: 'contractNo',
       minWidth: 150,
     },
     {
-      title: '回款日期',
-      field: 'returnTime',
+      title: '期数',
+      field: 'period',
       minWidth: 150,
-      formatter: 'formatDateTime',
     },
     {
-      title: '回款金额（元）',
+      title: '计划回款(元)',
       field: 'price',
       minWidth: 150,
       formatter: 'formatNumber',
     },
     {
-      title: '回款方式',
-      field: 'returnType',
+      title: '计划回款日期',
+      field: 'returnTime',
       minWidth: 150,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE },
-      },
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '提前几天提醒',
+      field: 'remindDays',
+      minWidth: 150,
+    },
+    {
+      title: '提醒日期',
+      field: 'remindTime',
+      minWidth: 150,
+      formatter: 'formatDateTime',
     },
     {
       title: '负责人',
@@ -358,25 +359,9 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       minWidth: 150,
     },
     {
-      title: '合同金额（元）',
-      field: 'contract.totalPrice',
-      minWidth: 150,
-      formatter: 'formatNumber',
-    },
-    {
-      title: '回款状态',
-      field: 'auditStatus',
-      minWidth: 100,
-      fixed: 'right',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_AUDIT_STATUS },
-      },
-    },
-    {
       title: '操作',
       field: 'actions',
-      width: 130,
+      width: 240,
       fixed: 'right',
       slots: { default: 'actions' },
     },

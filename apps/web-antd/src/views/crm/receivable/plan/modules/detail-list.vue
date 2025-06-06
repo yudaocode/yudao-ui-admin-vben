@@ -3,8 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -34,11 +32,6 @@ const [ReceivableFormModal, receivableFormModalApi] = useVbenModal({
   connectedComponent: ReceivableForm,
   destroyOnClose: true,
 });
-
-const checkedRows = ref<CrmReceivablePlanApi.Plan[]>([]);
-function setCheckedRows({ records }: { records: CrmReceivablePlanApi.Plan[] }) {
-  checkedRows.value = records;
-}
 
 /** 刷新表格 */
 function onRefresh() {
@@ -81,7 +74,7 @@ async function handleDelete(row: CrmReceivablePlanApi.Plan) {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDetailListColumns(),
-    height: 600,
+    height: 400,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -110,10 +103,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<CrmReceivablePlanApi.Plan>,
-  gridEvents: {
-    checkboxAll: setCheckedRows,
-    checkboxChange: setCheckedRows,
-  },
 });
 </script>
 
@@ -143,6 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.ADD,
               auth: ['crm:receivable-plan:create'],
+              disabled: !!row.receivableId,
               onClick: handleCreateReceivable.bind(null, row),
             },
             {

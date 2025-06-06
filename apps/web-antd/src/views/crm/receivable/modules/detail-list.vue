@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -27,15 +25,6 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
-
-const checkedRows = ref<CrmReceivableApi.Receivable[]>([]);
-function setCheckedRows({
-  records,
-}: {
-  records: CrmReceivableApi.Receivable[];
-}) {
-  checkedRows.value = records;
-}
 
 /** 刷新表格 */
 function onRefresh() {
@@ -73,15 +62,14 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDetailListColumns(),
-    height: 600,
+    height: 500,
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page }, formValues) => {
+        query: async ({ page }) => {
           const queryParams: CrmReceivableApi.ReceivablePageParam = {
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
           };
           if (props.customerId && !props.contractId) {
             queryParams.customerId = props.customerId;
@@ -102,10 +90,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<CrmReceivableApi.Receivable>,
-  gridEvents: {
-    checkboxAll: setCheckedRows,
-    checkboxChange: setCheckedRows,
-  },
 });
 </script>
 

@@ -183,6 +183,7 @@ onMounted(() => {
         </Tabs.TabPane>
         <Tabs.TabPane tab="产品" key="4" :force-render="true">
           <ProductDetailsList
+            :biz-id="businessId"
             :biz-type="BizTypeEnum.CRM_BUSINESS"
             :business="business"
           />
