@@ -73,10 +73,8 @@ async function handleDeleteBatch() {
   }
 }
 
-// TODO @puhui999：方法名，改成 handleRowCheckboxChange；注释：处理选中表格行
-// TODO @puhui999：deleteIds => checkedIds；然后注释去掉？
-const checkedIds = ref<number[]>([]); // 待删除示例联系人 ID
-function setCheckedIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo01ContactApi.Demo01Contact[];
@@ -121,8 +119,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
   gridEvents: {
-    checkboxAll: setCheckedIds,
-    checkboxChange: setCheckedIds,
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
   },
 });
 </script>
