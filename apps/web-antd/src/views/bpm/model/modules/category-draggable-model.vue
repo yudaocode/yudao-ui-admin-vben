@@ -225,227 +225,242 @@ const handleRenameSuccess = () => {
 </script>
 
 <template>
-  <Card
-    :body-style="{ padding: 0 }"
-    class="category-draggable-model mb-5 rounded-lg transition-all duration-300 ease-in-out hover:shadow-xl"
-  >
-    <div class="flex h-12 items-center">
-      <!-- 头部：分类名 -->
-      <div class="flex items-center">
-        <Tooltip v-if="isCategorySorting" title="拖动排序">
-          <span
-            class="icon-[ic--round-drag-indicator] ml-2.5 cursor-move text-2xl text-gray-500"
-          ></span>
-        </Tooltip>
-        <div class="ml-4 mr-2 text-lg font-medium">{{ categoryInfo.name }}</div>
-        <div class="text-gray-500">
-          ({{ categoryInfo.modelList?.length || 0 }})
-        </div>
-      </div>
-
-      <!-- 头部：操作 -->
-      <div class="flex flex-1 items-center" v-show="!isCategorySorting">
-        <div
-          v-if="categoryInfo.modelList.length > 0"
-          class="ml-3 flex cursor-pointer items-center transition-transform duration-300"
-          :class="isExpand ? 'rotate-180' : 'rotate-0'"
-          @click="isExpand = !isExpand"
-        >
-          <span
-            class="icon-[ic--round-expand-more] text-3xl text-gray-400"
-          ></span>
+  <div>
+    <Card
+      :body-style="{ padding: 0 }"
+      class="category-draggable-model mb-5 rounded-lg transition-all duration-300 ease-in-out hover:shadow-xl"
+    >
+      <div class="flex h-12 items-center">
+        <!-- 头部：分类名 -->
+        <div class="flex items-center">
+          <Tooltip v-if="isCategorySorting" title="拖动排序">
+            <span
+              class="icon-[ic--round-drag-indicator] ml-2.5 cursor-move text-2xl text-gray-500"
+            ></span>
+          </Tooltip>
+          <div class="ml-4 mr-2 text-lg font-medium">
+            {{ categoryInfo.name }}
+          </div>
+          <div class="text-gray-500">
+            ({{ categoryInfo.modelList?.length || 0 }})
+          </div>
         </div>
 
-        <div
-          class="ml-auto flex items-center"
-          :class="isModelSorting ? 'mr-4' : 'mr-8'"
-        >
-          <template v-if="!isModelSorting">
-            <Button
-              v-if="categoryInfo.modelList.length > 0"
-              type="link"
-              size="small"
-              class="flex items-center text-[14px]"
-              @click.stop="handleModelSort"
-            >
-              <template #icon>
-                <IconifyIcon icon="lucide:align-start-vertical" />
-              </template>
-              排序
-            </Button>
-            <Dropdown placement="bottom" arrow>
+        <!-- 头部：操作 -->
+        <div class="flex flex-1 items-center" v-show="!isCategorySorting">
+          <div
+            v-if="categoryInfo.modelList.length > 0"
+            class="ml-3 flex cursor-pointer items-center transition-transform duration-300"
+            :class="isExpand ? 'rotate-180' : 'rotate-0'"
+            @click="isExpand = !isExpand"
+          >
+            <span
+              class="icon-[ic--round-expand-more] text-3xl text-gray-400"
+            ></span>
+          </div>
+
+          <div
+            class="ml-auto flex items-center"
+            :class="isModelSorting ? 'mr-4' : 'mr-8'"
+          >
+            <template v-if="!isModelSorting">
               <Button
+                v-if="categoryInfo.modelList.length > 0"
                 type="link"
                 size="small"
                 class="flex items-center text-[14px]"
+                @click.stop="handleModelSort"
               >
                 <template #icon>
-                  <IconifyIcon icon="lucide:settings" />
+                  <IconifyIcon icon="lucide:align-start-vertical" />
                 </template>
-                分类
+                排序
               </Button>
-              <template #overlay>
-                <Menu @click="(e) => handleCommand(e.key as string)">
-                  <Menu.Item key="renameCategory"> 重命名 </Menu.Item>
-                  <Menu.Item key="deleteCategory"> 删除分类 </Menu.Item>
-                </Menu>
-              </template>
-            </Dropdown>
-          </template>
+              <Dropdown placement="bottom" arrow>
+                <Button
+                  type="link"
+                  size="small"
+                  class="flex items-center text-[14px]"
+                >
+                  <template #icon>
+                    <IconifyIcon icon="lucide:settings" />
+                  </template>
+                  分类
+                </Button>
+                <template #overlay>
+                  <Menu @click="(e) => handleCommand(e.key as string)">
+                    <Menu.Item key="renameCategory"> 重命名 </Menu.Item>
+                    <Menu.Item key="deleteCategory"> 删除分类 </Menu.Item>
+                  </Menu>
+                </template>
+              </Dropdown>
+            </template>
 
-          <template v-else>
-            <Button @click.stop="handleModelSortCancel" class="mr-2">
-              取 消
-            </Button>
-            <Button type="primary" @click.stop="handleModelSortSubmit">
-              保存排序
-            </Button>
-          </template>
+            <template v-else>
+              <Button @click.stop="handleModelSortCancel" class="mr-2">
+                取 消
+              </Button>
+              <Button type="primary" @click.stop="handleModelSortSubmit">
+                保存排序
+              </Button>
+            </template>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 模型列表 -->
-    <Collapse :active-key="expandKeys" :bordered="false" class="bg-transparent">
-      <Collapse.Panel
-        key="1"
-        :show-arrow="false"
-        class="border-0 bg-transparent p-0"
-        v-show="isExpand"
+      <!-- 模型列表 -->
+      <Collapse
+        :active-key="expandKeys"
+        :bordered="false"
+        class="bg-transparent"
       >
-        <Table
-          v-if="modelList && modelList.length > 0"
-          :class="`category-${categoryInfo.id}`"
-          ref="tableRef"
-          :data-source="modelList"
-          :columns="columns"
-          :pagination="false"
-          :custom-row="customRow"
-          :scroll="{ x: '100%' }"
-          row-key="id"
+        <Collapse.Panel
+          key="1"
+          :show-arrow="false"
+          class="border-0 bg-transparent p-0"
+          v-show="isExpand"
         >
-          <template #bodyCell="{ column, record }">
-            <!-- 流程名 -->
-            <template v-if="column.key === 'name'">
-              <div class="flex items-center">
-                <Tooltip v-if="isModelSorting" title="拖动排序">
-                  <span
-                    class="icon-[ic--round-drag-indicator] mr-2.5 cursor-move text-2xl text-gray-500"
-                  ></span>
-                </Tooltip>
-                <div
-                  v-if="!record.icon"
-                  class="mr-2.5 flex h-9 w-9 items-center justify-center rounded bg-blue-500 text-white"
-                >
-                  <span style="font-size: 12px">{{
-                    record.name.substring(0, 2)
-                  }}</span>
+          <Table
+            v-if="modelList && modelList.length > 0"
+            :class="`category-${categoryInfo.id}`"
+            ref="tableRef"
+            :data-source="modelList"
+            :columns="columns"
+            :pagination="false"
+            :custom-row="customRow"
+            :scroll="{ x: '100%' }"
+            row-key="id"
+          >
+            <template #bodyCell="{ column, record }">
+              <!-- 流程名 -->
+              <template v-if="column.key === 'name'">
+                <div class="flex items-center">
+                  <Tooltip v-if="isModelSorting" title="拖动排序">
+                    <span
+                      class="icon-[ic--round-drag-indicator] mr-2.5 cursor-move text-2xl text-gray-500"
+                    ></span>
+                  </Tooltip>
+                  <div
+                    v-if="!record.icon"
+                    class="mr-2.5 flex h-9 w-9 items-center justify-center rounded bg-blue-500 text-white"
+                  >
+                    <span style="font-size: 12px">{{
+                      record.name.substring(0, 2)
+                    }}</span>
+                  </div>
+                  <img
+                    v-else
+                    :src="record.icon"
+                    class="mr-2.5 h-9 w-9 rounded"
+                    alt="图标"
+                  />
+                  {{ record.name }}
                 </div>
-                <img
-                  v-else
-                  :src="record.icon"
-                  class="mr-2.5 h-9 w-9 rounded"
-                  alt="图标"
-                />
-                {{ record.name }}
-              </div>
-            </template>
+              </template>
 
-            <!-- 可见范围列-->
-            <template v-else-if="column.key === 'startUserIds'">
-              <span
-                v-if="!record.startUsers?.length && !record.startDepts?.length"
-              >
-                全部可见
-              </span>
-              <span v-else-if="record.startUsers?.length === 1">
-                {{ record.startUsers[0].nickname }}
-              </span>
-              <span v-else-if="record.startDepts?.length === 1">
-                {{ record.startDepts[0].name }}
-              </span>
-              <span v-else-if="record.startDepts?.length > 1">
-                <Tooltip
-                  placement="top"
-                  :title="
-                    record.startDepts.map((dept: any) => dept.name).join('、')
+              <!-- 可见范围列-->
+              <template v-else-if="column.key === 'startUserIds'">
+                <span
+                  v-if="
+                    !record.startUsers?.length && !record.startDepts?.length
                   "
                 >
-                  {{ record.startDepts[0].name }}等
-                  {{ record.startDepts.length }} 个部门可见
-                </Tooltip>
-              </span>
-              <span v-else-if="record.startUsers?.length > 1">
-                <Tooltip
-                  placement="top"
-                  :title="
-                    record.startUsers
-                      .map((user: any) => user.nickname)
-                      .join('、')
-                  "
-                >
-                  {{ record.startUsers[0].nickname }}等
-                  {{ record.startUsers.length }} 人可见
-                </Tooltip>
-              </span>
-            </template>
-            <!-- 流程类型列 -->
-            <template v-else-if="column.key === 'type'">
-              <!-- <DictTag :value="record.type" :type="DICT_TYPE.BPM_MODEL_TYPE" /> -->
-              <!-- <Tag>{{ record.type }}</Tag> -->
-              <DictTag :type="DICT_TYPE.BPM_MODEL_TYPE" :value="record.type" />
-            </template>
-            <!-- 表单信息列 -->
-            <template v-else-if="column.key === 'formType'">
-              <!-- TODO BpmModelFormType.NORMAL -->
-              <Button
-                v-if="record.formType === 10"
-                type="link"
-                @click="handleFormDetail(record)"
-              >
-                {{ record.formName }}
-              </Button>
-              <!-- TODO BpmModelFormType.CUSTOM -->
-              <Button
-                v-else-if="record.formType === 20"
-                type="link"
-                @click="handleFormDetail(record)"
-              >
-                {{ record.formCustomCreatePath }}
-              </Button>
-              <span v-else>暂无表单</span>
-            </template>
-            <!-- 最后发布列 -->
-            <template v-else-if="column.key === 'deploymentTime'">
-              <div class="flex items-center justify-center">
-                <span v-if="record.processDefinition" class="w-[150px]">
-                  {{ formatDateTime(record.processDefinition.deploymentTime) }}
+                  全部可见
                 </span>
-                <Tag v-if="record.processDefinition">
-                  v{{ record.processDefinition.version }}
-                </Tag>
-                <Tag v-else color="warning">未部署</Tag>
-                <Tag
-                  v-if="record.processDefinition?.suspensionState === 2"
-                  color="warning"
-                  class="ml-[10px]"
+                <span v-else-if="record.startUsers?.length === 1">
+                  {{ record.startUsers[0].nickname }}
+                </span>
+                <span v-else-if="record.startDepts?.length === 1">
+                  {{ record.startDepts[0].name }}
+                </span>
+                <span v-else-if="record.startDepts?.length > 1">
+                  <Tooltip
+                    placement="top"
+                    :title="
+                      record.startDepts.map((dept: any) => dept.name).join('、')
+                    "
+                  >
+                    {{ record.startDepts[0].name }}等
+                    {{ record.startDepts.length }} 个部门可见
+                  </Tooltip>
+                </span>
+                <span v-else-if="record.startUsers?.length > 1">
+                  <Tooltip
+                    placement="top"
+                    :title="
+                      record.startUsers
+                        .map((user: any) => user.nickname)
+                        .join('、')
+                    "
+                  >
+                    {{ record.startUsers[0].nickname }}等
+                    {{ record.startUsers.length }} 人可见
+                  </Tooltip>
+                </span>
+              </template>
+              <!-- 流程类型列 -->
+              <template v-else-if="column.key === 'type'">
+                <!-- <DictTag :value="record.type" :type="DICT_TYPE.BPM_MODEL_TYPE" /> -->
+                <!-- <Tag>{{ record.type }}</Tag> -->
+                <DictTag
+                  :type="DICT_TYPE.BPM_MODEL_TYPE"
+                  :value="record.type"
+                />
+              </template>
+              <!-- 表单信息列 -->
+              <template v-else-if="column.key === 'formType'">
+                <!-- TODO BpmModelFormType.NORMAL -->
+                <Button
+                  v-if="record.formType === 10"
+                  type="link"
+                  @click="handleFormDetail(record)"
                 >
-                  已停用
-                </Tag>
-              </div>
+                  {{ record.formName }}
+                </Button>
+                <!-- TODO BpmModelFormType.CUSTOM -->
+                <Button
+                  v-else-if="record.formType === 20"
+                  type="link"
+                  @click="handleFormDetail(record)"
+                >
+                  {{ record.formCustomCreatePath }}
+                </Button>
+                <span v-else>暂无表单</span>
+              </template>
+              <!-- 最后发布列 -->
+              <template v-else-if="column.key === 'deploymentTime'">
+                <div class="flex items-center justify-center">
+                  <span v-if="record.processDefinition" class="w-[150px]">
+                    {{
+                      formatDateTime(record.processDefinition.deploymentTime)
+                    }}
+                  </span>
+                  <Tag v-if="record.processDefinition">
+                    v{{ record.processDefinition.version }}
+                  </Tag>
+                  <Tag v-else color="warning">未部署</Tag>
+                  <Tag
+                    v-if="record.processDefinition?.suspensionState === 2"
+                    color="warning"
+                    class="ml-[10px]"
+                  >
+                    已停用
+                  </Tag>
+                </div>
+              </template>
+              <!-- 操作列 -->
+              <template v-else-if="column.key === 'operation'">
+                <div class="flex items-center justify-center">待实现</div>
+              </template>
             </template>
-            <!-- 操作列 -->
-            <template v-else-if="column.key === 'operation'">
-              <div class="flex items-center justify-center">待实现</div>
-            </template>
-          </template>
-        </Table>
-      </Collapse.Panel>
-    </Collapse>
-  </Card>
+          </Table>
+        </Collapse.Panel>
+      </Collapse>
+    </Card>
 
-  <!-- 重命名分类弹窗 -->
-  <CategoryRenameModal @success="handleRenameSuccess" />
+    <!-- 重命名分类弹窗 -->
+    <CategoryRenameModal @success="handleRenameSuccess" />
+  </div>
 </template>
 
 <style lang="scss" scoped>
