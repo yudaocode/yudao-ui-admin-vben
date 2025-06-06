@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { SpuApi } from '#/api/mall/product/spu';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { requestClient } from '#/api/request';
 
-export namespace SeckillActivityApi {
+export namespace MallSeckillActivityApi {
   /** 秒杀商品 */
   export interface SeckillProduct {
     /** 商品 SKU 编号 */
@@ -61,10 +61,10 @@ export namespace SeckillActivityApi {
   export type SkuExtension = {
     /** 秒杀商品配置 */
     productConfig: SeckillProduct;
-  } & SpuApi.Sku;
+  } & MallSpuApi.Sku;
 
   /** 扩展 SPU 配置 */
-  export interface SpuExtension extends SpuApi.Spu {
+  export interface SpuExtension extends MallSpuApi.Spu {
     /** SKU 列表 */
     skus: SkuExtension[];
   }
@@ -72,7 +72,7 @@ export namespace SeckillActivityApi {
 
 /** 查询秒杀活动列表 */
 export function getSeckillActivityPage(params: PageParam) {
-  return requestClient.get<PageResult<SeckillActivityApi.SeckillActivity>>(
+  return requestClient.get<PageResult<MallSeckillActivityApi.SeckillActivity>>(
     '/promotion/seckill-activity/page',
     { params },
   );
@@ -80,28 +80,28 @@ export function getSeckillActivityPage(params: PageParam) {
 
 /** 查询秒杀活动列表，基于活动编号数组 */
 export function getSeckillActivityListByIds(ids: number[]) {
-  return requestClient.get<SeckillActivityApi.SeckillActivity[]>(
+  return requestClient.get<MallSeckillActivityApi.SeckillActivity[]>(
     `/promotion/seckill-activity/list-by-ids?ids=${ids}`,
   );
 }
 
 /** 查询秒杀活动详情 */
 export function getSeckillActivity(id: number) {
-  return requestClient.get<SeckillActivityApi.SeckillActivity>(
+  return requestClient.get<MallSeckillActivityApi.SeckillActivity>(
     `/promotion/seckill-activity/get?id=${id}`,
   );
 }
 
 /** 新增秒杀活动 */
 export function createSeckillActivity(
-  data: SeckillActivityApi.SeckillActivity,
+  data: MallSeckillActivityApi.SeckillActivity,
 ) {
   return requestClient.post('/promotion/seckill-activity/create', data);
 }
 
 /** 修改秒杀活动 */
 export function updateSeckillActivity(
-  data: SeckillActivityApi.SeckillActivity,
+  data: MallSeckillActivityApi.SeckillActivity,
 ) {
   return requestClient.put('/promotion/seckill-activity/update', data);
 }

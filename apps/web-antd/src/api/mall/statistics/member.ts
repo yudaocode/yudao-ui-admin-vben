@@ -1,10 +1,10 @@
-import type { DataComparisonRespVO } from './common';
+import type { MallDataComparisonRespVO } from './common';
 
 import { formatDate } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
-export namespace MemberStatisticsApi {
+export namespace MallMemberStatisticsApi {
   /** 会员分析 Request VO */
   export interface AnalyseReq {
     times: Date[];
@@ -23,7 +23,7 @@ export namespace MemberStatisticsApi {
     orderUserCount: number;
     payUserCount: number;
     atv: number;
-    comparison: DataComparisonRespVO<AnalyseComparison>;
+    comparison: MallDataComparisonRespVO<AnalyseComparison>;
   }
 
   /** 会员地区统计 Response VO */
@@ -73,14 +73,14 @@ export namespace MemberStatisticsApi {
 
 /** 查询会员统计 */
 export function getMemberSummary() {
-  return requestClient.get<MemberStatisticsApi.Summary>(
+  return requestClient.get<MallMemberStatisticsApi.Summary>(
     '/statistics/member/summary',
   );
 }
 
 /** 查询会员分析数据 */
-export function getMemberAnalyse(params: MemberStatisticsApi.AnalyseReq) {
-  return requestClient.get<MemberStatisticsApi.Analyse>(
+export function getMemberAnalyse(params: MallMemberStatisticsApi.AnalyseReq) {
+  return requestClient.get<MallMemberStatisticsApi.Analyse>(
     '/statistics/member/analyse',
     {
       params: {
@@ -92,35 +92,35 @@ export function getMemberAnalyse(params: MemberStatisticsApi.AnalyseReq) {
 
 /** 按照省份，查询会员统计列表 */
 export function getMemberAreaStatisticsList() {
-  return requestClient.get<MemberStatisticsApi.AreaStatistics[]>(
+  return requestClient.get<MallMemberStatisticsApi.AreaStatistics[]>(
     '/statistics/member/area-statistics-list',
   );
 }
 
 /** 按照性别，查询会员统计列表 */
 export function getMemberSexStatisticsList() {
-  return requestClient.get<MemberStatisticsApi.SexStatistics[]>(
+  return requestClient.get<MallMemberStatisticsApi.SexStatistics[]>(
     '/statistics/member/sex-statistics-list',
   );
 }
 
 /** 按照终端，查询会员统计列表 */
 export function getMemberTerminalStatisticsList() {
-  return requestClient.get<MemberStatisticsApi.TerminalStatistics[]>(
+  return requestClient.get<MallMemberStatisticsApi.TerminalStatistics[]>(
     '/statistics/member/terminal-statistics-list',
   );
 }
 
 /** 获得用户数量量对照 */
 export function getUserCountComparison() {
-  return requestClient.get<DataComparisonRespVO<MemberStatisticsApi.Count>>(
-    '/statistics/member/user-count-comparison',
-  );
+  return requestClient.get<
+    MallDataComparisonRespVO<MallMemberStatisticsApi.Count>
+  >('/statistics/member/user-count-comparison');
 }
 
 /** 获得会员注册数量列表 */
 export function getMemberRegisterCountList(beginTime: Date, endTime: Date) {
-  return requestClient.get<MemberStatisticsApi.RegisterCount[]>(
+  return requestClient.get<MallMemberStatisticsApi.RegisterCount[]>(
     '/statistics/member/register-count-list',
     {
       params: {

@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace DeliveryPickUpStoreApi {
+export namespace MallDeliveryPickUpStoreApi {
   /** 自提门店 */
   export interface PickUpStore {
     /** 编号 */
@@ -44,7 +44,7 @@ export namespace DeliveryPickUpStoreApi {
 
 /** 查询自提门店列表 */
 export function getDeliveryPickUpStorePage(params: PageParam) {
-  return requestClient.get<PageResult<DeliveryPickUpStoreApi.PickUpStore>>(
+  return requestClient.get<PageResult<MallDeliveryPickUpStoreApi.PickUpStore>>(
     '/trade/delivery/pick-up-store/page',
     { params },
   );
@@ -52,28 +52,28 @@ export function getDeliveryPickUpStorePage(params: PageParam) {
 
 /** 查询自提门店详情 */
 export function getDeliveryPickUpStore(id: number) {
-  return requestClient.get<DeliveryPickUpStoreApi.PickUpStore>(
+  return requestClient.get<MallDeliveryPickUpStoreApi.PickUpStore>(
     `/trade/delivery/pick-up-store/get?id=${id}`,
   );
 }
 
 /** 查询自提门店精简列表 */
 export function getSimpleDeliveryPickUpStoreList() {
-  return requestClient.get<DeliveryPickUpStoreApi.PickUpStore[]>(
+  return requestClient.get<MallDeliveryPickUpStoreApi.PickUpStore[]>(
     '/trade/delivery/pick-up-store/simple-list',
   );
 }
 
 /** 新增自提门店 */
 export function createDeliveryPickUpStore(
-  data: DeliveryPickUpStoreApi.PickUpStore,
+  data: MallDeliveryPickUpStoreApi.PickUpStore,
 ) {
   return requestClient.post('/trade/delivery/pick-up-store/create', data);
 }
 
 /** 修改自提门店 */
 export function updateDeliveryPickUpStore(
-  data: DeliveryPickUpStoreApi.PickUpStore,
+  data: MallDeliveryPickUpStoreApi.PickUpStore,
 ) {
   return requestClient.put('/trade/delivery/pick-up-store/update', data);
 }
@@ -85,7 +85,7 @@ export function deleteDeliveryPickUpStore(id: number) {
 
 /** 绑定自提店员 */
 export function bindStoreStaffId(
-  data: DeliveryPickUpStoreApi.BindStaffRequest,
+  data: MallDeliveryPickUpStoreApi.BindStaffRequest,
 ) {
   return requestClient.post('/trade/delivery/pick-up-store/bind', data);
 }

@@ -1,6 +1,6 @@
 import { requestClient } from '#/api/request';
 
-export namespace TradeConfigApi {
+export namespace MallTradeConfigApi {
   /** 交易中心配置 */
   export interface Config {
     /** 是否启用分销 */
@@ -26,10 +26,10 @@ export namespace TradeConfigApi {
 
 /** 查询交易中心配置详情 */
 export function getTradeConfig() {
-  return requestClient.get<TradeConfigApi.Config>('/trade/config/get');
+  return requestClient.get<MallTradeConfigApi.Config>('/trade/config/get');
 }
 
 /** 保存交易中心配置 */
-export function saveTradeConfig(data: TradeConfigApi.Config) {
+export function saveTradeConfig(data: MallTradeConfigApi.Config) {
   return requestClient.put('/trade/config/save', data);
 }

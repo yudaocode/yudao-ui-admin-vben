@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace DeliveryExpressTemplateApi {
+export namespace MallDeliveryExpressTemplateApi {
   /** 运费模板计费 */
   export interface TemplateCharge {
     /** 区域编号列表 */
@@ -55,34 +55,34 @@ export namespace DeliveryExpressTemplateApi {
 /** 查询快递运费模板列表 */
 export function getDeliveryExpressTemplatePage(params: PageParam) {
   return requestClient.get<
-    PageResult<DeliveryExpressTemplateApi.ExpressTemplate>
+    PageResult<MallDeliveryExpressTemplateApi.ExpressTemplate>
   >('/trade/delivery/express-template/page', { params });
 }
 
 /** 查询快递运费模板详情 */
 export function getDeliveryExpressTemplate(id: number) {
-  return requestClient.get<DeliveryExpressTemplateApi.ExpressTemplate>(
+  return requestClient.get<MallDeliveryExpressTemplateApi.ExpressTemplate>(
     `/trade/delivery/express-template/get?id=${id}`,
   );
 }
 
 /** 查询快递运费模板详情 */
 export function getSimpleTemplateList() {
-  return requestClient.get<DeliveryExpressTemplateApi.SimpleTemplate[]>(
+  return requestClient.get<MallDeliveryExpressTemplateApi.SimpleTemplate[]>(
     '/trade/delivery/express-template/list-all-simple',
   );
 }
 
 /** 新增快递运费模板 */
 export function createDeliveryExpressTemplate(
-  data: DeliveryExpressTemplateApi.ExpressTemplate,
+  data: MallDeliveryExpressTemplateApi.ExpressTemplate,
 ) {
   return requestClient.post('/trade/delivery/express-template/create', data);
 }
 
 /** 修改快递运费模板 */
 export function updateDeliveryExpressTemplate(
-  data: DeliveryExpressTemplateApi.ExpressTemplate,
+  data: MallDeliveryExpressTemplateApi.ExpressTemplate,
 ) {
   return requestClient.put('/trade/delivery/express-template/update', data);
 }

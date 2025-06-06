@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { DiyPageApi } from './page';
+import type { MallDiyPageApi } from './page';
 
 import { requestClient } from '#/api/request';
 
-export namespace DiyTemplateApi {
+export namespace MallDiyTemplateApi {
   /** 装修模板 */
   export interface DiyTemplate {
     /** 模板编号 */
@@ -26,13 +26,13 @@ export namespace DiyTemplateApi {
   /** 装修模板属性（包含页面列表） */
   export interface DiyTemplateProperty extends DiyTemplate {
     /** 页面列表 */
-    pages: DiyPageApi.DiyPage[];
+    pages: MallDiyPageApi.DiyPage[];
   }
 }
 
 /** 查询装修模板列表 */
 export function getDiyTemplatePage(params: PageParam) {
-  return requestClient.get<PageResult<DiyTemplateApi.DiyTemplate>>(
+  return requestClient.get<PageResult<MallDiyTemplateApi.DiyTemplate>>(
     '/promotion/diy-template/page',
     { params },
   );
@@ -40,18 +40,18 @@ export function getDiyTemplatePage(params: PageParam) {
 
 /** 查询装修模板详情 */
 export function getDiyTemplate(id: number) {
-  return requestClient.get<DiyTemplateApi.DiyTemplate>(
+  return requestClient.get<MallDiyTemplateApi.DiyTemplate>(
     `/promotion/diy-template/get?id=${id}`,
   );
 }
 
 /** 新增装修模板 */
-export function createDiyTemplate(data: DiyTemplateApi.DiyTemplate) {
+export function createDiyTemplate(data: MallDiyTemplateApi.DiyTemplate) {
   return requestClient.post('/promotion/diy-template/create', data);
 }
 
 /** 修改装修模板 */
-export function updateDiyTemplate(data: DiyTemplateApi.DiyTemplate) {
+export function updateDiyTemplate(data: MallDiyTemplateApi.DiyTemplate) {
   return requestClient.put('/promotion/diy-template/update', data);
 }
 
@@ -67,12 +67,14 @@ export function useDiyTemplate(id: number) {
 
 /** 获得装修模板属性 */
 export function getDiyTemplateProperty(id: number) {
-  return requestClient.get<DiyTemplateApi.DiyTemplateProperty>(
+  return requestClient.get<MallDiyTemplateApi.DiyTemplateProperty>(
     `/promotion/diy-template/get-property?id=${id}`,
   );
 }
 
 /** 更新装修模板属性 */
-export function updateDiyTemplateProperty(data: DiyTemplateApi.DiyTemplate) {
+export function updateDiyTemplateProperty(
+  data: MallDiyTemplateApi.DiyTemplate,
+) {
   return requestClient.put('/promotion/diy-template/update-property', data);
 }

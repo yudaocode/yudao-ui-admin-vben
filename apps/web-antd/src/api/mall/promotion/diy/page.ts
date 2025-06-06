@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace DiyPageApi {
+export namespace MallDiyPageApi {
   /** 装修页面 */
   export interface DiyPage {
     /** 页面编号 */
@@ -22,7 +22,7 @@ export namespace DiyPageApi {
 
 /** 查询装修页面列表 */
 export function getDiyPagePage(params: PageParam) {
-  return requestClient.get<PageResult<DiyPageApi.DiyPage>>(
+  return requestClient.get<PageResult<MallDiyPageApi.DiyPage>>(
     '/promotion/diy-page/page',
     { params },
   );
@@ -30,18 +30,18 @@ export function getDiyPagePage(params: PageParam) {
 
 /** 查询装修页面详情 */
 export function getDiyPage(id: number) {
-  return requestClient.get<DiyPageApi.DiyPage>(
+  return requestClient.get<MallDiyPageApi.DiyPage>(
     `/promotion/diy-page/get?id=${id}`,
   );
 }
 
 /** 新增装修页面 */
-export function createDiyPage(data: DiyPageApi.DiyPage) {
+export function createDiyPage(data: MallDiyPageApi.DiyPage) {
   return requestClient.post('/promotion/diy-page/create', data);
 }
 
 /** 修改装修页面 */
-export function updateDiyPage(data: DiyPageApi.DiyPage) {
+export function updateDiyPage(data: MallDiyPageApi.DiyPage) {
   return requestClient.put('/promotion/diy-page/update', data);
 }
 
@@ -56,6 +56,6 @@ export function getDiyPageProperty(id: number) {
 }
 
 /** 更新装修页面属性 */
-export function updateDiyPageProperty(data: DiyPageApi.DiyPage) {
+export function updateDiyPageProperty(data: MallDiyPageApi.DiyPage) {
   return requestClient.put('/promotion/diy-page/update-property', data);
 }

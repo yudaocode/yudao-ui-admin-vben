@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BrokerageRecordApi {
+export namespace MallBrokerageRecordApi {
   /** 佣金记录 */
   export interface BrokerageRecord {
     /** 编号 */
@@ -32,7 +32,7 @@ export namespace BrokerageRecordApi {
 
 /** 查询佣金记录列表 */
 export function getBrokerageRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<BrokerageRecordApi.BrokerageRecord>>(
+  return requestClient.get<PageResult<MallBrokerageRecordApi.BrokerageRecord>>(
     '/trade/brokerage-record/page',
     { params },
   );
@@ -40,7 +40,7 @@ export function getBrokerageRecordPage(params: PageParam) {
 
 /** 查询佣金记录详情 */
 export function getBrokerageRecord(id: number) {
-  return requestClient.get<BrokerageRecordApi.BrokerageRecord>(
+  return requestClient.get<MallBrokerageRecordApi.BrokerageRecord>(
     `/trade/brokerage-record/get?id=${id}`,
   );
 }

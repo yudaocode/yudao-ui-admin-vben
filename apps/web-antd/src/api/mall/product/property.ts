@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace PropertyApi {
+export namespace MallPropertyApi {
   /** 商品属性 */
   export interface Property {
     /** 属性编号 */
@@ -32,12 +32,12 @@ export namespace PropertyApi {
 }
 
 /** 创建属性项 */
-export function createProperty(data: PropertyApi.Property) {
+export function createProperty(data: MallPropertyApi.Property) {
   return requestClient.post('/product/property/create', data);
 }
 
 /** 更新属性项 */
-export function updateProperty(data: PropertyApi.Property) {
+export function updateProperty(data: MallPropertyApi.Property) {
   return requestClient.put('/product/property/update', data);
 }
 
@@ -48,14 +48,14 @@ export function deleteProperty(id: number) {
 
 /** 获得属性项 */
 export function getProperty(id: number) {
-  return requestClient.get<PropertyApi.Property>(
+  return requestClient.get<MallPropertyApi.Property>(
     `/product/property/get?id=${id}`,
   );
 }
 
 /** 获得属性项分页 */
 export function getPropertyPage(params: PageParam) {
-  return requestClient.get<PageResult<PropertyApi.Property>>(
+  return requestClient.get<PageResult<MallPropertyApi.Property>>(
     '/product/property/page',
     { params },
   );
@@ -63,14 +63,16 @@ export function getPropertyPage(params: PageParam) {
 
 /** 获得属性项精简列表 */
 export function getPropertySimpleList() {
-  return requestClient.get<PropertyApi.Property[]>(
+  return requestClient.get<MallPropertyApi.Property[]>(
     '/product/property/simple-list',
   );
 }
 
 /** 获得属性值分页 */
-export function getPropertyValuePage(params: PropertyApi.PropertyValueQuery) {
-  return requestClient.get<PageResult<PropertyApi.PropertyValue>>(
+export function getPropertyValuePage(
+  params: MallPropertyApi.PropertyValueQuery,
+) {
+  return requestClient.get<PageResult<MallPropertyApi.PropertyValue>>(
     '/product/property/value/page',
     { params },
   );
@@ -78,18 +80,18 @@ export function getPropertyValuePage(params: PropertyApi.PropertyValueQuery) {
 
 /** 获得属性值 */
 export function getPropertyValue(id: number) {
-  return requestClient.get<PropertyApi.PropertyValue>(
+  return requestClient.get<MallPropertyApi.PropertyValue>(
     `/product/property/value/get?id=${id}`,
   );
 }
 
 /** 创建属性值 */
-export function createPropertyValue(data: PropertyApi.PropertyValue) {
+export function createPropertyValue(data: MallPropertyApi.PropertyValue) {
   return requestClient.post('/product/property/value/create', data);
 }
 
 /** 更新属性值 */
-export function updatePropertyValue(data: PropertyApi.PropertyValue) {
+export function updatePropertyValue(data: MallPropertyApi.PropertyValue) {
   return requestClient.put('/product/property/value/update', data);
 }
 
@@ -100,7 +102,7 @@ export function deletePropertyValue(id: number) {
 
 /** 获得属性值精简列表 */
 export function getPropertyValueSimpleList(propertyId: number) {
-  return requestClient.get<PropertyApi.PropertyValue[]>(
+  return requestClient.get<MallPropertyApi.PropertyValue[]>(
     '/product/property/value/simple-list',
     {
       params: { propertyId },

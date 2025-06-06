@@ -1,8 +1,6 @@
-import type { PageParam, PageResult } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
-export namespace CategoryApi {
+export namespace MallCategoryApi {
   /** 产品分类 */
   export interface Category {
     /** 分类编号 */
@@ -21,12 +19,12 @@ export namespace CategoryApi {
 }
 
 /** 创建商品分类 */
-export function createCategory(data: CategoryApi.Category) {
+export function createCategory(data: MallCategoryApi.Category) {
   return requestClient.post('/product/category/create', data);
 }
 
 /** 更新商品分类 */
-export function updateCategory(data: CategoryApi.Category) {
+export function updateCategory(data: MallCategoryApi.Category) {
   return requestClient.put('/product/category/update', data);
 }
 
@@ -37,15 +35,17 @@ export function deleteCategory(id: number) {
 
 /** 获得商品分类 */
 export function getCategory(id: number) {
-  return requestClient.get<CategoryApi.Category>(
+  return requestClient.get<MallCategoryApi.Category>(
     `/product/category/get?id=${id}`,
   );
 }
 
 /** 获得商品分类列表 */
-export function getCategoryList(params: PageParam) {
-  return requestClient.get<PageResult<CategoryApi.Category>>(
+export function getCategoryList(params: any) {
+  return requestClient.get<MallCategoryApi.Category[]>(
     '/product/category/list',
-    { params },
+    {
+      params,
+    },
   );
 }

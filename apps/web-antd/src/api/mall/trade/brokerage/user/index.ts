@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BrokerageUserApi {
+export namespace MallBrokerageUserApi {
   /** 分销用户 */
   export interface BrokerageUser {
     /** 编号 */
@@ -55,13 +55,13 @@ export namespace BrokerageUserApi {
 }
 
 /** 创建分销用户 */
-export function createBrokerageUser(data: BrokerageUserApi.CreateRequest) {
+export function createBrokerageUser(data: MallBrokerageUserApi.CreateRequest) {
   return requestClient.post('/trade/brokerage-user/create', data);
 }
 
 /** 查询分销用户列表 */
 export function getBrokerageUserPage(params: PageParam) {
-  return requestClient.get<PageResult<BrokerageUserApi.BrokerageUser>>(
+  return requestClient.get<PageResult<MallBrokerageUserApi.BrokerageUser>>(
     '/trade/brokerage-user/page',
     { params },
   );
@@ -69,24 +69,26 @@ export function getBrokerageUserPage(params: PageParam) {
 
 /** 查询分销用户详情 */
 export function getBrokerageUser(id: number) {
-  return requestClient.get<BrokerageUserApi.BrokerageUser>(
+  return requestClient.get<MallBrokerageUserApi.BrokerageUser>(
     `/trade/brokerage-user/get?id=${id}`,
   );
 }
 
 /** 修改推广员 */
-export function updateBindUser(data: BrokerageUserApi.UpdateBindUserRequest) {
+export function updateBindUser(
+  data: MallBrokerageUserApi.UpdateBindUserRequest,
+) {
   return requestClient.put('/trade/brokerage-user/update-bind-user', data);
 }
 
 /** 清除推广员 */
-export function clearBindUser(data: BrokerageUserApi.ClearBindUserRequest) {
+export function clearBindUser(data: MallBrokerageUserApi.ClearBindUserRequest) {
   return requestClient.put('/trade/brokerage-user/clear-bind-user', data);
 }
 
 /** 修改推广资格 */
 export function updateBrokerageEnabled(
-  data: BrokerageUserApi.UpdateBrokerageEnabledRequest,
+  data: MallBrokerageUserApi.UpdateBrokerageEnabledRequest,
 ) {
   return requestClient.put(
     '/trade/brokerage-user/update-brokerage-enable',

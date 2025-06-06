@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace CouponTemplateApi {
+export namespace MallCouponTemplateApi {
   /** 优惠券模板 */
   export interface CouponTemplate {
     /** 模板编号 */
@@ -57,18 +57,22 @@ export namespace CouponTemplateApi {
 }
 
 /** 创建优惠劵模板 */
-export function createCouponTemplate(data: CouponTemplateApi.CouponTemplate) {
+export function createCouponTemplate(
+  data: MallCouponTemplateApi.CouponTemplate,
+) {
   return requestClient.post('/promotion/coupon-template/create', data);
 }
 
 /** 更新优惠劵模板 */
-export function updateCouponTemplate(data: CouponTemplateApi.CouponTemplate) {
+export function updateCouponTemplate(
+  data: MallCouponTemplateApi.CouponTemplate,
+) {
   return requestClient.put('/promotion/coupon-template/update', data);
 }
 
 /** 更新优惠劵模板的状态 */
 export function updateCouponTemplateStatus(id: number, status: 0 | 1) {
-  const data: CouponTemplateApi.StatusUpdate = { id, status };
+  const data: MallCouponTemplateApi.StatusUpdate = { id, status };
   return requestClient.put('/promotion/coupon-template/update-status', data);
 }
 
@@ -79,14 +83,14 @@ export function deleteCouponTemplate(id: number) {
 
 /** 获得优惠劵模板 */
 export function getCouponTemplate(id: number) {
-  return requestClient.get<CouponTemplateApi.CouponTemplate>(
+  return requestClient.get<MallCouponTemplateApi.CouponTemplate>(
     `/promotion/coupon-template/get?id=${id}`,
   );
 }
 
 /** 获得优惠劵模板分页 */
 export function getCouponTemplatePage(params: PageParam) {
-  return requestClient.get<PageResult<CouponTemplateApi.CouponTemplate>>(
+  return requestClient.get<PageResult<MallCouponTemplateApi.CouponTemplate>>(
     '/promotion/coupon-template/page',
     { params },
   );
@@ -94,7 +98,7 @@ export function getCouponTemplatePage(params: PageParam) {
 
 /** 获得优惠劵模板列表 */
 export function getCouponTemplateList(ids: number[]) {
-  return requestClient.get<CouponTemplateApi.CouponTemplate[]>(
+  return requestClient.get<MallCouponTemplateApi.CouponTemplate[]>(
     `/promotion/coupon-template/list?ids=${ids}`,
   );
 }

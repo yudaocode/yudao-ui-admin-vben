@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace ArticleApi {
+export namespace MallArticleApi {
   /** 文章管理 */
   export interface Article {
     /** 文章编号 */
@@ -36,7 +36,7 @@ export namespace ArticleApi {
 
 /** 查询文章管理列表 */
 export function getArticlePage(params: PageParam) {
-  return requestClient.get<PageResult<ArticleApi.Article>>(
+  return requestClient.get<PageResult<MallArticleApi.Article>>(
     '/promotion/article/page',
     { params },
   );
@@ -44,18 +44,18 @@ export function getArticlePage(params: PageParam) {
 
 /** 查询文章管理详情 */
 export function getArticle(id: number) {
-  return requestClient.get<ArticleApi.Article>(
+  return requestClient.get<MallArticleApi.Article>(
     `/promotion/article/get?id=${id}`,
   );
 }
 
 /** 新增文章管理 */
-export function createArticle(data: ArticleApi.Article) {
+export function createArticle(data: MallArticleApi.Article) {
   return requestClient.post('/promotion/article/create', data);
 }
 
 /** 修改文章管理 */
-export function updateArticle(data: ArticleApi.Article) {
+export function updateArticle(data: MallArticleApi.Article) {
   return requestClient.put('/promotion/article/update', data);
 }
 

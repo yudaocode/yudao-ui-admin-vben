@@ -1,6 +1,6 @@
 import { requestClient } from '#/api/request';
 
-export namespace PayStatisticsApi {
+export namespace MallPayStatisticsApi {
   /** 支付统计 */
   export interface PaySummaryRespVO {
     /** 充值金额，单位分 */
@@ -10,7 +10,7 @@ export namespace PayStatisticsApi {
 
 /** 获取钱包充值金额 */
 export function getWalletRechargePrice() {
-  return requestClient.get<PayStatisticsApi.PaySummaryRespVO>(
+  return requestClient.get<MallPayStatisticsApi.PaySummaryRespVO>(
     '/statistics/pay/summary',
   );
 }

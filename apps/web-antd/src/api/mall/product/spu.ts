@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace SpuApi {
+export namespace MallSpuApi {
   /** 商品属性 */
   export interface Property {
     /** 属性编号 */
@@ -126,7 +126,7 @@ export namespace SpuApi {
 
 /** 获得商品 SPU 列表 */
 export function getSpuPage(params: PageParam) {
-  return requestClient.get<PageResult<SpuApi.Spu>>('/product/spu/page', {
+  return requestClient.get<PageResult<MallSpuApi.Spu>>('/product/spu/page', {
     params,
   });
 }
@@ -137,28 +137,28 @@ export function getTabsCount() {
 }
 
 /** 创建商品 SPU */
-export function createSpu(data: SpuApi.Spu) {
+export function createSpu(data: MallSpuApi.Spu) {
   return requestClient.post('/product/spu/create', data);
 }
 
 /** 更新商品 SPU */
-export function updateSpu(data: SpuApi.Spu) {
+export function updateSpu(data: MallSpuApi.Spu) {
   return requestClient.put('/product/spu/update', data);
 }
 
 /** 更新商品 SPU 状态 */
-export function updateStatus(data: SpuApi.StatusUpdate) {
+export function updateStatus(data: MallSpuApi.StatusUpdate) {
   return requestClient.put('/product/spu/update-status', data);
 }
 
 /** 获得商品 SPU */
 export function getSpu(id: number) {
-  return requestClient.get<SpuApi.Spu>(`/product/spu/get-detail?id=${id}`);
+  return requestClient.get<MallSpuApi.Spu>(`/product/spu/get-detail?id=${id}`);
 }
 
 /** 获得商品 SPU 详情列表 */
 export function getSpuDetailList(ids: number[]) {
-  return requestClient.get<SpuApi.Spu[]>(`/product/spu/list?spuIds=${ids}`);
+  return requestClient.get<MallSpuApi.Spu[]>(`/product/spu/list?spuIds=${ids}`);
 }
 
 /** 删除商品 SPU */
@@ -173,5 +173,5 @@ export function exportSpu(params: PageParam) {
 
 /** 获得商品 SPU 精简列表 */
 export function getSpuSimpleList() {
-  return requestClient.get<SpuApi.Spu[]>('/product/spu/list-all-simple');
+  return requestClient.get<MallSpuApi.Spu[]>('/product/spu/list-all-simple');
 }

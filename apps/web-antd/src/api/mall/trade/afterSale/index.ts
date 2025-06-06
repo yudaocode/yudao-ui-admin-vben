@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace AfterSaleApi {
+export namespace MallAfterSaleApi {
   /** 商品属性 */
   export interface ProductProperty {
     /** 属性的编号 */
@@ -88,7 +88,7 @@ export namespace AfterSaleApi {
 
 /** 获得交易售后分页 */
 export function getAfterSalePage(params: PageParam) {
-  return requestClient.get<PageResult<AfterSaleApi.AfterSale>>(
+  return requestClient.get<PageResult<MallAfterSaleApi.AfterSale>>(
     '/trade/after-sale/page',
     { params },
   );
@@ -96,7 +96,7 @@ export function getAfterSalePage(params: PageParam) {
 
 /** 获得交易售后详情 */
 export function getAfterSale(id: number) {
-  return requestClient.get<AfterSaleApi.AfterSale>(
+  return requestClient.get<MallAfterSaleApi.AfterSale>(
     `/trade/after-sale/get-detail?id=${id}`,
   );
 }
@@ -107,7 +107,7 @@ export function agree(id: number) {
 }
 
 /** 拒绝售后 */
-export function disagree(data: AfterSaleApi.DisagreeRequest) {
+export function disagree(data: MallAfterSaleApi.DisagreeRequest) {
   return requestClient.put('/trade/after-sale/disagree', data);
 }
 

@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { SpuApi } from '#/api/mall/product/spu';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { requestClient } from '#/api/request';
 
-export namespace CombinationActivityApi {
+export namespace MallCombinationActivityApi {
   /** 拼团活动所需属性 */
   export interface CombinationProduct {
     /** 商品 SPU 编号 */
@@ -54,10 +54,10 @@ export namespace CombinationActivityApi {
   export type SkuExtension = {
     /** 拼团活动配置 */
     productConfig: CombinationProduct;
-  } & SpuApi.Sku;
+  } & MallSpuApi.Sku;
 
   /** 扩展 SPU 配置 */
-  export interface SpuExtension extends SpuApi.Spu {
+  export interface SpuExtension extends MallSpuApi.Spu {
     /** SKU 列表 */
     skus: SkuExtension[];
   }
@@ -66,34 +66,34 @@ export namespace CombinationActivityApi {
 /** 查询拼团活动列表 */
 export function getCombinationActivityPage(params: PageParam) {
   return requestClient.get<
-    PageResult<CombinationActivityApi.CombinationActivity>
+    PageResult<MallCombinationActivityApi.CombinationActivity>
   >('/promotion/combination-activity/page', { params });
 }
 
 /** 查询拼团活动详情 */
 export function getCombinationActivity(id: number) {
-  return requestClient.get<CombinationActivityApi.CombinationActivity>(
+  return requestClient.get<MallCombinationActivityApi.CombinationActivity>(
     `/promotion/combination-activity/get?id=${id}`,
   );
 }
 
 /** 获得拼团活动列表，基于活动编号数组 */
 export function getCombinationActivityListByIds(ids: number[]) {
-  return requestClient.get<CombinationActivityApi.CombinationActivity[]>(
+  return requestClient.get<MallCombinationActivityApi.CombinationActivity[]>(
     `/promotion/combination-activity/list-by-ids?ids=${ids}`,
   );
 }
 
 /** 新增拼团活动 */
 export function createCombinationActivity(
-  data: CombinationActivityApi.CombinationActivity,
+  data: MallCombinationActivityApi.CombinationActivity,
 ) {
   return requestClient.post('/promotion/combination-activity/create', data);
 }
 
 /** 修改拼团活动 */
 export function updateCombinationActivity(
-  data: CombinationActivityApi.CombinationActivity,
+  data: MallCombinationActivityApi.CombinationActivity,
 ) {
   return requestClient.put('/promotion/combination-activity/update', data);
 }

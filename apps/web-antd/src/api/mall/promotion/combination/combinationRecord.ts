@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace CombinationRecordApi {
+export namespace MallCombinationRecordApi {
   /** 拼团记录 */
   export interface CombinationRecord {
     /** 拼团记录编号 */
@@ -48,15 +48,14 @@ export namespace CombinationRecordApi {
 
 /** 查询拼团记录列表 */
 export function getCombinationRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<CombinationRecordApi.CombinationRecord>>(
-    '/promotion/combination-record/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MallCombinationRecordApi.CombinationRecord>
+  >('/promotion/combination-record/page', { params });
 }
 
 /** 获得拼团记录的概要信息 */
 export function getCombinationRecordSummary() {
-  return requestClient.get<CombinationRecordApi.RecordSummary>(
+  return requestClient.get<MallCombinationRecordApi.RecordSummary>(
     '/promotion/combination-record/get-summary',
   );
 }

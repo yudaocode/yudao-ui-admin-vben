@@ -1,5 +1,5 @@
 /** 数据对照 Response VO */
-export interface DataComparisonRespVO<T> {
+export interface MallDataComparisonRespVO<T> {
   value: T;
   reference: T;
 }

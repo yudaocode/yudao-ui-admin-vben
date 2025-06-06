@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BannerApi {
+export namespace MallBannerApi {
   /** Banner 信息 */
   export interface Banner {
     id: number;
@@ -18,7 +18,7 @@ export namespace BannerApi {
 
 /** 查询Banner管理列表 */
 export function getBannerPage(params: PageParam) {
-  return requestClient.get<PageResult<BannerApi.Banner>>(
+  return requestClient.get<PageResult<MallBannerApi.Banner>>(
     '/promotion/banner/page',
     { params },
   );
@@ -26,16 +26,18 @@ export function getBannerPage(params: PageParam) {
 
 /** 查询Banner管理详情 */
 export function getBanner(id: number) {
-  return requestClient.get<BannerApi.Banner>(`/promotion/banner/get?id=${id}`);
+  return requestClient.get<MallBannerApi.Banner>(
+    `/promotion/banner/get?id=${id}`,
+  );
 }
 
 /** 新增Banner管理 */
-export function createBanner(data: BannerApi.Banner) {
+export function createBanner(data: MallBannerApi.Banner) {
   return requestClient.post('/promotion/banner/create', data);
 }
 
 /** 修改Banner管理 */
-export function updateBanner(data: BannerApi.Banner) {
+export function updateBanner(data: MallBannerApi.Banner) {
   return requestClient.put('/promotion/banner/update', data);
 }
 

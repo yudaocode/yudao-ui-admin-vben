@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BargainRecordApi {
+export namespace MallBargainRecordApi {
   /** 砍价记录 */
   export interface BargainRecord {
     /** 记录编号 */
@@ -30,7 +30,7 @@ export namespace BargainRecordApi {
 
 /** 查询砍价记录列表 */
 export function getBargainRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<BargainRecordApi.BargainRecord>>(
+  return requestClient.get<PageResult<MallBargainRecordApi.BargainRecord>>(
     '/promotion/bargain-record/page',
     { params },
   );

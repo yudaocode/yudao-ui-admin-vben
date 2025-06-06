@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BrokerageWithdrawApi {
+export namespace MallBrokerageWithdrawApi {
   /** 佣金提现 */
   export interface BrokerageWithdraw {
     /** 编号 */
@@ -56,15 +56,14 @@ export namespace BrokerageWithdrawApi {
 
 /** 查询佣金提现列表 */
 export function getBrokerageWithdrawPage(params: PageParam) {
-  return requestClient.get<PageResult<BrokerageWithdrawApi.BrokerageWithdraw>>(
-    '/trade/brokerage-withdraw/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MallBrokerageWithdrawApi.BrokerageWithdraw>
+  >('/trade/brokerage-withdraw/page', { params });
 }
 
 /** 查询佣金提现详情 */
 export function getBrokerageWithdraw(id: number) {
-  return requestClient.get<BrokerageWithdrawApi.BrokerageWithdraw>(
+  return requestClient.get<MallBrokerageWithdrawApi.BrokerageWithdraw>(
     `/trade/brokerage-withdraw/get?id=${id}`,
   );
 }
@@ -76,7 +75,7 @@ export function approveBrokerageWithdraw(id: number) {
 
 /** 审核佣金提现 - 驳回申请 */
 export function rejectBrokerageWithdraw(
-  data: BrokerageWithdrawApi.RejectRequest,
+  data: MallBrokerageWithdrawApi.RejectRequest,
 ) {
   return requestClient.put('/trade/brokerage-withdraw/reject', data);
 }

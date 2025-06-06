@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { SpuApi } from '#/api/mall/product/spu';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { requestClient } from '#/api/request';
 
-export namespace PointActivityApi {
+export namespace MallPointActivityApi {
   /** 积分商城商品 */
   export interface PointProduct {
     /** 积分商城商品编号 */
@@ -63,16 +63,16 @@ export namespace PointActivityApi {
   export type SkuExtension = {
     /** 积分商城商品配置 */
     productConfig: PointProduct;
-  } & SpuApi.Sku;
+  } & MallSpuApi.Sku;
 
   /** 扩展 SPU 配置 */
-  export interface SpuExtension extends SpuApi.Spu {
+  export interface SpuExtension extends MallSpuApi.Spu {
     /** SKU 列表 */
     skus: SkuExtension[];
   }
 
   /** 扩展 SPU 配置（带积分信息） */
-  export interface SpuExtensionWithPoint extends SpuApi.Spu {
+  export interface SpuExtensionWithPoint extends MallSpuApi.Spu {
     /** 积分商城活动库存 */
     pointStock: number;
     /** 积分商城活动总库存 */
@@ -86,7 +86,7 @@ export namespace PointActivityApi {
 
 /** 查询积分商城活动分页 */
 export function getPointActivityPage(params: PageParam) {
-  return requestClient.get<PageResult<PointActivityApi.PointActivity>>(
+  return requestClient.get<PageResult<MallPointActivityApi.PointActivity>>(
     '/promotion/point-activity/page',
     { params },
   );
@@ -94,25 +94,25 @@ export function getPointActivityPage(params: PageParam) {
 
 /** 查询积分商城活动详情 */
 export function getPointActivity(id: number) {
-  return requestClient.get<PointActivityApi.PointActivity>(
+  return requestClient.get<MallPointActivityApi.PointActivity>(
     `/promotion/point-activity/get?id=${id}`,
   );
 }
 
 /** 查询积分商城活动列表，基于活动编号数组 */
 export function getPointActivityListByIds(ids: number[]) {
-  return requestClient.get<PointActivityApi.PointActivity[]>(
+  return requestClient.get<MallPointActivityApi.PointActivity[]>(
     `/promotion/point-activity/list-by-ids?ids=${ids}`,
   );
 }
 
 /** 新增积分商城活动 */
-export function createPointActivity(data: PointActivityApi.PointActivity) {
+export function createPointActivity(data: MallPointActivityApi.PointActivity) {
   return requestClient.post('/promotion/point-activity/create', data);
 }
 
 /** 修改积分商城活动 */
-export function updatePointActivity(data: PointActivityApi.PointActivity) {
+export function updatePointActivity(data: MallPointActivityApi.PointActivity) {
   return requestClient.put('/promotion/point-activity/update', data);
 }
 

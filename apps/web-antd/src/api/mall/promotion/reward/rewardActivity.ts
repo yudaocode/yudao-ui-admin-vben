@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace RewardActivityApi {
+export namespace MallRewardActivityApi {
   /** 优惠规则 */
   export interface RewardRule {
     /** 满足金额 */
@@ -49,18 +49,22 @@ export namespace RewardActivityApi {
 }
 
 /** 新增满减送活动 */
-export function createRewardActivity(data: RewardActivityApi.RewardActivity) {
+export function createRewardActivity(
+  data: MallRewardActivityApi.RewardActivity,
+) {
   return requestClient.post('/promotion/reward-activity/create', data);
 }
 
 /** 更新满减送活动 */
-export function updateRewardActivity(data: RewardActivityApi.RewardActivity) {
+export function updateRewardActivity(
+  data: MallRewardActivityApi.RewardActivity,
+) {
   return requestClient.put('/promotion/reward-activity/update', data);
 }
 
 /** 查询满减送活动列表 */
 export function getRewardActivityPage(params: PageParam) {
-  return requestClient.get<PageResult<RewardActivityApi.RewardActivity>>(
+  return requestClient.get<PageResult<MallRewardActivityApi.RewardActivity>>(
     '/promotion/reward-activity/page',
     { params },
   );
@@ -68,7 +72,7 @@ export function getRewardActivityPage(params: PageParam) {
 
 /** 查询满减送活动详情 */
 export function getReward(id: number) {
-  return requestClient.get<RewardActivityApi.RewardActivity>(
+  return requestClient.get<MallRewardActivityApi.RewardActivity>(
     `/promotion/reward-activity/get?id=${id}`,
   );
 }

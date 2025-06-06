@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { SpuApi } from '#/api/mall/product/spu';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { requestClient } from '#/api/request';
 
-export namespace BargainActivityApi {
+export namespace MallBargainActivityApi {
   /** 砍价活动 */
   export interface BargainActivity {
     /** 活动编号 */
@@ -57,10 +57,10 @@ export namespace BargainActivityApi {
   export type SkuExtension = {
     /** 砍价活动配置 */
     productConfig: BargainProduct;
-  } & SpuApi.Sku;
+  } & MallSpuApi.Sku;
 
   /** 扩展 SPU 配置 */
-  export interface SpuExtension extends SpuApi.Spu {
+  export interface SpuExtension extends MallSpuApi.Spu {
     /** SKU 列表 */
     skus: SkuExtension[];
   }
@@ -68,7 +68,7 @@ export namespace BargainActivityApi {
 
 /** 查询砍价活动列表 */
 export function getBargainActivityPage(params: PageParam) {
-  return requestClient.get<PageResult<BargainActivityApi.BargainActivity>>(
+  return requestClient.get<PageResult<MallBargainActivityApi.BargainActivity>>(
     '/promotion/bargain-activity/page',
     { params },
   );
@@ -76,21 +76,21 @@ export function getBargainActivityPage(params: PageParam) {
 
 /** 查询砍价活动详情 */
 export function getBargainActivity(id: number) {
-  return requestClient.get<BargainActivityApi.BargainActivity>(
+  return requestClient.get<MallBargainActivityApi.BargainActivity>(
     `/promotion/bargain-activity/get?id=${id}`,
   );
 }
 
 /** 新增砍价活动 */
 export function createBargainActivity(
-  data: BargainActivityApi.BargainActivity,
+  data: MallBargainActivityApi.BargainActivity,
 ) {
   return requestClient.post('/promotion/bargain-activity/create', data);
 }
 
 /** 修改砍价活动 */
 export function updateBargainActivity(
-  data: BargainActivityApi.BargainActivity,
+  data: MallBargainActivityApi.BargainActivity,
 ) {
   return requestClient.put('/promotion/bargain-activity/update', data);
 }

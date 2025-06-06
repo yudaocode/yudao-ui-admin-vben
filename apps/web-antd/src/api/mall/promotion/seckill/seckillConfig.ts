@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace SeckillConfigApi {
+export namespace MallSeckillConfigApi {
   /** 秒杀时段 */
   export interface SeckillConfig {
     /** 编号 */
@@ -30,7 +30,7 @@ export namespace SeckillConfigApi {
 
 /** 查询秒杀时段分页 */
 export function getSeckillConfigPage(params: PageParam) {
-  return requestClient.get<PageResult<SeckillConfigApi.SeckillConfig>>(
+  return requestClient.get<PageResult<MallSeckillConfigApi.SeckillConfig>>(
     '/promotion/seckill-config/page',
     { params },
   );
@@ -38,25 +38,25 @@ export function getSeckillConfigPage(params: PageParam) {
 
 /** 查询秒杀时段列表 */
 export function getSimpleSeckillConfigList() {
-  return requestClient.get<SeckillConfigApi.SeckillConfig[]>(
+  return requestClient.get<MallSeckillConfigApi.SeckillConfig[]>(
     '/promotion/seckill-config/list',
   );
 }
 
 /** 查询秒杀时段详情 */
 export function getSeckillConfig(id: number) {
-  return requestClient.get<SeckillConfigApi.SeckillConfig>(
+  return requestClient.get<MallSeckillConfigApi.SeckillConfig>(
     `/promotion/seckill-config/get?id=${id}`,
   );
 }
 
 /** 新增秒杀时段 */
-export function createSeckillConfig(data: SeckillConfigApi.SeckillConfig) {
+export function createSeckillConfig(data: MallSeckillConfigApi.SeckillConfig) {
   return requestClient.post('/promotion/seckill-config/create', data);
 }
 
 /** 修改秒杀时段 */
-export function updateSeckillConfig(data: SeckillConfigApi.SeckillConfig) {
+export function updateSeckillConfig(data: MallSeckillConfigApi.SeckillConfig) {
   return requestClient.put('/promotion/seckill-config/update', data);
 }
 

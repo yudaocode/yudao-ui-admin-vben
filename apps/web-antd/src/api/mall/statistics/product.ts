@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { DataComparisonRespVO } from './common';
+import type { MallDataComparisonRespVO } from './common';
 
 import { requestClient } from '#/api/request';
 
-export namespace ProductStatisticsApi {
+export namespace MallProductStatisticsApi {
   /** 商品统计数据 */
   export interface ProductStatistics {
     /** 编号 */
@@ -43,13 +43,13 @@ export namespace ProductStatisticsApi {
 /** 获得商品统计分析 */
 export function getProductStatisticsAnalyse(params: PageParam) {
   return requestClient.get<
-    DataComparisonRespVO<ProductStatisticsApi.ProductStatistics>
+    MallDataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>
   >('/statistics/product/analyse', { params });
 }
 
 /** 获得商品状况明细 */
 export function getProductStatisticsList(params: PageParam) {
-  return requestClient.get<ProductStatisticsApi.ProductStatistics[]>(
+  return requestClient.get<MallProductStatisticsApi.ProductStatistics[]>(
     '/statistics/product/list',
     { params },
   );
@@ -62,8 +62,7 @@ export function exportProductStatisticsExcel(params: PageParam) {
 
 /** 获得商品排行榜分页 */
 export function getProductStatisticsRankPage(params: PageParam) {
-  return requestClient.get<PageResult<ProductStatisticsApi.ProductStatistics>>(
-    '/statistics/product/rank-page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MallProductStatisticsApi.ProductStatistics>
+  >('/statistics/product/rank-page', { params });
 }

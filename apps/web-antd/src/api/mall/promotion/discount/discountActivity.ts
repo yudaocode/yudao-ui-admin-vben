@@ -1,10 +1,10 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { SpuApi } from '#/api/mall/product/spu';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { requestClient } from '#/api/request';
 
-export namespace DiscountActivityApi {
+export namespace MallDiscountActivityApi {
   /** 限时折扣相关属性 */
   export interface DiscountProduct {
     /** 商品 SPU 编号 */
@@ -43,10 +43,10 @@ export namespace DiscountActivityApi {
   export type SkuExtension = {
     /** 限时折扣配置 */
     productConfig: DiscountProduct;
-  } & SpuApi.Sku;
+  } & MallSpuApi.Sku;
 
   /** 扩展 SPU 配置 */
-  export interface SpuExtension extends SpuApi.Spu {
+  export interface SpuExtension extends MallSpuApi.Spu {
     /** SKU 列表 */
     skus: SkuExtension[];
   }
@@ -54,29 +54,28 @@ export namespace DiscountActivityApi {
 
 /** 查询限时折扣活动列表 */
 export function getDiscountActivityPage(params: PageParam) {
-  return requestClient.get<PageResult<DiscountActivityApi.DiscountActivity>>(
-    '/promotion/discount-activity/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MallDiscountActivityApi.DiscountActivity>
+  >('/promotion/discount-activity/page', { params });
 }
 
 /** 查询限时折扣活动详情 */
 export function getDiscountActivity(id: number) {
-  return requestClient.get<DiscountActivityApi.DiscountActivity>(
+  return requestClient.get<MallDiscountActivityApi.DiscountActivity>(
     `/promotion/discount-activity/get?id=${id}`,
   );
 }
 
 /** 新增限时折扣活动 */
 export function createDiscountActivity(
-  data: DiscountActivityApi.DiscountActivity,
+  data: MallDiscountActivityApi.DiscountActivity,
 ) {
   return requestClient.post('/promotion/discount-activity/create', data);
 }
 
 /** 修改限时折扣活动 */
 export function updateDiscountActivity(
-  data: DiscountActivityApi.DiscountActivity,
+  data: MallDiscountActivityApi.DiscountActivity,
 ) {
   return requestClient.put('/promotion/discount-activity/update', data);
 }

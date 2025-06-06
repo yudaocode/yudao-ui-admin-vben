@@ -2,7 +2,7 @@ import type { PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace KeFuConversationApi {
+export namespace MallKefuConversationApi {
   /** 客服会话 */
   export interface Conversation {
     /** 编号 */
@@ -42,21 +42,21 @@ export namespace KeFuConversationApi {
 
 /** 获得客服会话列表 */
 export function getConversationList() {
-  return requestClient.get<PageResult<KeFuConversationApi.Conversation>>(
+  return requestClient.get<PageResult<MallKefuConversationApi.Conversation>>(
     '/promotion/kefu-conversation/list',
   );
 }
 
 /** 获得客服会话 */
 export function getConversation(id: number) {
-  return requestClient.get<KeFuConversationApi.Conversation>(
+  return requestClient.get<MallKefuConversationApi.Conversation>(
     `/promotion/kefu-conversation/get?id=${id}`,
   );
 }
 
 /** 客服会话置顶 */
 export function updateConversationPinned(
-  data: KeFuConversationApi.ConversationPinnedUpdate,
+  data: MallKefuConversationApi.ConversationPinnedUpdate,
 ) {
   return requestClient.put(
     '/promotion/kefu-conversation/update-conversation-pinned',

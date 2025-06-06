@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace BrandApi {
+export namespace MallBrandApi {
   /** 商品品牌 */
   export interface Brand {
     /** 品牌编号 */
@@ -21,12 +21,12 @@ export namespace BrandApi {
 }
 
 /** 创建商品品牌 */
-export function createBrand(data: BrandApi.Brand) {
+export function createBrand(data: MallBrandApi.Brand) {
   return requestClient.post('/product/brand/create', data);
 }
 
 /** 更新商品品牌 */
-export function updateBrand(data: BrandApi.Brand) {
+export function updateBrand(data: MallBrandApi.Brand) {
   return requestClient.put('/product/brand/update', data);
 }
 
@@ -37,17 +37,22 @@ export function deleteBrand(id: number) {
 
 /** 获得商品品牌 */
 export function getBrand(id: number) {
-  return requestClient.get<BrandApi.Brand>(`/product/brand/get?id=${id}`);
+  return requestClient.get<MallBrandApi.Brand>(`/product/brand/get?id=${id}`);
 }
 
 /** 获得商品品牌列表 */
 export function getBrandPage(params: PageParam) {
-  return requestClient.get<PageResult<BrandApi.Brand>>('/product/brand/page', {
-    params,
-  });
+  return requestClient.get<PageResult<MallBrandApi.Brand>>(
+    '/product/brand/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 获得商品品牌精简信息列表 */
 export function getSimpleBrandList() {
-  return requestClient.get<BrandApi.Brand[]>('/product/brand/list-all-simple');
+  return requestClient.get<MallBrandApi.Brand[]>(
+    '/product/brand/list-all-simple',
+  );
 }

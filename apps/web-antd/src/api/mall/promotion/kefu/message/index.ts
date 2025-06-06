@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace KeFuMessageApi {
+export namespace MallKefuMessageApi {
   /** 客服消息 */
   export interface Message {
     /** 编号 */
@@ -47,7 +47,7 @@ export namespace KeFuMessageApi {
 }
 
 /** 发送客服消息 */
-export function sendKeFuMessage(data: KeFuMessageApi.MessageSend) {
+export function sendKeFuMessage(data: MallKefuMessageApi.MessageSend) {
   return requestClient.post('/promotion/kefu-message/send', data);
 }
 
@@ -59,8 +59,8 @@ export function updateKeFuMessageReadStatus(conversationId: number) {
 }
 
 /** 获得消息列表（流式加载） */
-export function getKeFuMessageList(params: KeFuMessageApi.MessageQuery) {
-  return requestClient.get<PageResult<KeFuMessageApi.Message>>(
+export function getKeFuMessageList(params: MallKefuMessageApi.MessageQuery) {
+  return requestClient.get<PageResult<MallKefuMessageApi.Message>>(
     '/promotion/kefu-message/list',
     { params },
   );

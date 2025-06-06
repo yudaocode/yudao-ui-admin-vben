@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace DeliveryExpressApi {
+export namespace MallDeliveryExpressApi {
   /** 快递公司 */
   export interface DeliveryExpress {
     /** 编号 */
@@ -32,7 +32,7 @@ export namespace DeliveryExpressApi {
 
 /** 查询快递公司列表 */
 export function getDeliveryExpressPage(params: PageParam) {
-  return requestClient.get<PageResult<DeliveryExpressApi.DeliveryExpress>>(
+  return requestClient.get<PageResult<MallDeliveryExpressApi.DeliveryExpress>>(
     '/trade/delivery/express/page',
     { params },
   );
@@ -40,28 +40,28 @@ export function getDeliveryExpressPage(params: PageParam) {
 
 /** 查询快递公司详情 */
 export function getDeliveryExpress(id: number) {
-  return requestClient.get<DeliveryExpressApi.DeliveryExpress>(
+  return requestClient.get<MallDeliveryExpressApi.DeliveryExpress>(
     `/trade/delivery/express/get?id=${id}`,
   );
 }
 
 /** 获得快递公司精简信息列表 */
 export function getSimpleDeliveryExpressList() {
-  return requestClient.get<DeliveryExpressApi.SimpleDeliveryExpress[]>(
+  return requestClient.get<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
     '/trade/delivery/express/list-all-simple',
   );
 }
 
 /** 新增快递公司 */
 export function createDeliveryExpress(
-  data: DeliveryExpressApi.DeliveryExpress,
+  data: MallDeliveryExpressApi.DeliveryExpress,
 ) {
   return requestClient.post('/trade/delivery/express/create', data);
 }
 
 /** 修改快递公司 */
 export function updateDeliveryExpress(
-  data: DeliveryExpressApi.DeliveryExpress,
+  data: MallDeliveryExpressApi.DeliveryExpress,
 ) {
   return requestClient.put('/trade/delivery/express/update', data);
 }

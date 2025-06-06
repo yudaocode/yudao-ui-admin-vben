@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace CouponApi {
+export namespace MallCouponApi {
   /** 优惠券 */
   export interface Coupon {
     /** 优惠券编号 */
@@ -55,13 +55,13 @@ export function deleteCoupon(id: number) {
 
 /** 获得优惠劵分页 */
 export function getCouponPage(params: PageParam) {
-  return requestClient.get<PageResult<CouponApi.Coupon>>(
+  return requestClient.get<PageResult<MallCouponApi.Coupon>>(
     '/promotion/coupon/page',
     { params },
   );
 }
 
 /** 发送优惠券 */
-export function sendCoupon(data: CouponApi.SendCoupon) {
+export function sendCoupon(data: MallCouponApi.SendCoupon) {
   return requestClient.post('/promotion/coupon/send', data);
 }

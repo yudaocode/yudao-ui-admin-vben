@@ -1,10 +1,10 @@
-import type { DataComparisonRespVO } from './common';
+import type { MallDataComparisonRespVO } from './common';
 
 import { formatDate } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
-export namespace TradeStatisticsApi {
+export namespace MallTradeStatisticsApi {
   /** 交易统计 Response VO */
   export interface TradeSummary {
     yesterdayOrderCount: number;
@@ -62,33 +62,33 @@ export namespace TradeStatisticsApi {
 }
 
 /** 时间参数需要格式化, 确保接口能识别 */
-const formatDateParam = (params: TradeStatisticsApi.TradeTrendReq) => {
+const formatDateParam = (params: MallTradeStatisticsApi.TradeTrendReq) => {
   return {
     times: [formatDate(params.times[0]), formatDate(params.times[1])],
-  } as TradeStatisticsApi.TradeTrendReq;
+  } as MallTradeStatisticsApi.TradeTrendReq;
 };
 
 /** 查询交易统计 */
 export function getTradeStatisticsSummary() {
   return requestClient.get<
-    DataComparisonRespVO<TradeStatisticsApi.TradeSummary>
+    MallDataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>
   >('/statistics/trade/summary');
 }
 
 /** 获得交易状况统计 */
 export function getTradeStatisticsAnalyse(
-  params: TradeStatisticsApi.TradeTrendReq,
+  params: MallTradeStatisticsApi.TradeTrendReq,
 ) {
   return requestClient.get<
-    DataComparisonRespVO<TradeStatisticsApi.TradeTrendSummary>
+    MallDataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>
   >('/statistics/trade/analyse', { params: formatDateParam(params) });
 }
 
 /** 获得交易状况明细 */
 export function getTradeStatisticsList(
-  params: TradeStatisticsApi.TradeTrendReq,
+  params: MallTradeStatisticsApi.TradeTrendReq,
 ) {
-  return requestClient.get<TradeStatisticsApi.TradeTrendSummary[]>(
+  return requestClient.get<MallTradeStatisticsApi.TradeTrendSummary[]>(
     '/statistics/trade/list',
     { params: formatDateParam(params) },
   );
@@ -96,7 +96,7 @@ export function getTradeStatisticsList(
 
 /** 导出交易状况明细 */
 export function exportTradeStatisticsExcel(
-  params: TradeStatisticsApi.TradeTrendReq,
+  params: MallTradeStatisticsApi.TradeTrendReq,
 ) {
   return requestClient.download('/statistics/trade/export-excel', {
     params: formatDateParam(params),
@@ -105,7 +105,7 @@ export function exportTradeStatisticsExcel(
 
 /** 获得交易订单数量 */
 export function getOrderCount() {
-  return requestClient.get<TradeStatisticsApi.TradeOrderCount>(
+  return requestClient.get<MallTradeStatisticsApi.TradeOrderCount>(
     '/statistics/trade/order-count',
   );
 }
@@ -113,7 +113,7 @@ export function getOrderCount() {
 /** 获得交易订单数量对照 */
 export function getOrderComparison() {
   return requestClient.get<
-    DataComparisonRespVO<TradeStatisticsApi.TradeOrderSummary>
+    MallDataComparisonRespVO<MallTradeStatisticsApi.TradeOrderSummary>
   >('/statistics/trade/order-comparison');
 }
 
@@ -124,7 +124,7 @@ export function getOrderCountTrendComparison(
   endTime: Date,
 ) {
   return requestClient.get<
-    DataComparisonRespVO<TradeStatisticsApi.TradeOrderTrend>[]
+    MallDataComparisonRespVO<MallTradeStatisticsApi.TradeOrderTrend>[]
   >('/statistics/trade/order-count-trend', {
     params: {
       type,

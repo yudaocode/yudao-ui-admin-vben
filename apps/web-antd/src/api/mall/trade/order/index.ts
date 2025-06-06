@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-export namespace OrderApi {
+export namespace MallOrderApi {
   /** 商品属性 */
   export interface ProductProperty {
     /** 属性的编号 */
@@ -228,21 +228,26 @@ export namespace OrderApi {
 
 /** 查询交易订单列表 */
 export function getOrderPage(params: PageParam) {
-  return requestClient.get<PageResult<OrderApi.Order>>('/trade/order/page', {
-    params,
-  });
+  return requestClient.get<PageResult<MallOrderApi.Order>>(
+    '/trade/order/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 查询交易订单统计 */
 export function getOrderSummary(params: PageParam) {
-  return requestClient.get<OrderApi.OrderSummary>('/trade/order/summary', {
+  return requestClient.get<MallOrderApi.OrderSummary>('/trade/order/summary', {
     params,
   });
 }
 
 /** 查询交易订单详情 */
 export function getOrder(id: number) {
-  return requestClient.get<OrderApi.Order>(`/trade/order/get-detail?id=${id}`);
+  return requestClient.get<MallOrderApi.Order>(
+    `/trade/order/get-detail?id=${id}`,
+  );
 }
 
 /** 查询交易订单物流详情 */
@@ -251,22 +256,22 @@ export function getExpressTrackList(id: number) {
 }
 
 /** 订单发货 */
-export function deliveryOrder(data: OrderApi.DeliveryRequest) {
+export function deliveryOrder(data: MallOrderApi.DeliveryRequest) {
   return requestClient.put('/trade/order/delivery', data);
 }
 
 /** 订单备注 */
-export function updateOrderRemark(data: OrderApi.RemarkRequest) {
+export function updateOrderRemark(data: MallOrderApi.RemarkRequest) {
   return requestClient.put('/trade/order/update-remark', data);
 }
 
 /** 订单调价 */
-export function updateOrderPrice(data: OrderApi.PriceRequest) {
+export function updateOrderPrice(data: MallOrderApi.PriceRequest) {
   return requestClient.put('/trade/order/update-price', data);
 }
 
 /** 修改订单地址 */
-export function updateOrderAddress(data: OrderApi.AddressRequest) {
+export function updateOrderAddress(data: MallOrderApi.AddressRequest) {
   return requestClient.put('/trade/order/update-address', data);
 }
 
@@ -284,7 +289,7 @@ export function pickUpOrderByVerifyCode(pickUpVerifyCode: string) {
 
 /** 查询核销码对应的订单 */
 export function getOrderByPickUpVerifyCode(pickUpVerifyCode: string) {
-  return requestClient.get<OrderApi.Order>(
+  return requestClient.get<MallOrderApi.Order>(
     '/trade/order/get-by-pick-up-verify-code',
     { params: { pickUpVerifyCode } },
   );
