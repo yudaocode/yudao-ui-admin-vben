@@ -91,6 +91,12 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'product',
+      label: '产品清单',
+      component: 'Input',
+      formItemClass: 'col-span-3',
+    },
+    {
       fieldName: 'totalProductPrice',
       label: '产品总金额',
       component: 'InputNumber',

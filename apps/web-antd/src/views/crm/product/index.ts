@@ -15,3 +15,7 @@ export const ProductDetails = defineAsyncComponent(
 export const ProductDetailsList = defineAsyncComponent(
   () => import('./modules/detail-list.vue'),
 );
+
+export const ProductEditTable = defineAsyncComponent(
+  () => import('./modules/product-table.vue'),
+);

@@ -1,22 +1,32 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { z } from '#/adapter/form';
 import { getSimpleBusinessList } from '#/api/crm/business';
 import { getSimpleContactList } from '#/api/crm/contact';
 import { getCustomerSimpleList } from '#/api/crm/customer';
-import { floatToFixed2 } from '#/utils';
+import { getSimpleUserList } from '#/api/system/user';
+import { erpPriceMultiply, floatToFixed2 } from '#/utils';
 import { DICT_TYPE } from '#/utils/dict';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'no',
       label: '合同编号',
       component: 'Input',
-      rules: 'required',
       componentProps: {
-        placeholder: '请输入合同编号',
+        placeholder: '保存时自动生成',
+        disabled: () => true,
       },
     },
     {
@@ -29,8 +39,21 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+      rules: 'required',
+    },
+    {
       fieldName: 'customerId',
-      label: '客户',
+      label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
@@ -42,9 +65,8 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'businessId',
-      label: '商机',
+      label: '商机名称',
       component: 'ApiSelect',
-      rules: 'required',
       componentProps: {
         api: getSimpleBusinessList,
         labelField: 'name',
@@ -53,48 +75,52 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'totalPrice',
-      label: '合同金额',
-      component: 'InputNumber',
-      rules: 'required',
-      componentProps: {
-        placeholder: '请输入合同金额',
-        min: 0,
-        precision: 2,
-      },
-    },
-    {
       fieldName: 'orderDate',
-      label: '下单时间',
+      label: '下单日期',
       component: 'DatePicker',
       rules: 'required',
       componentProps: {
-        placeholder: '请选择下单时间',
+        showTime: false,
+        format: 'YYYY-MM-DD',
+        valueFormat: 'x',
       },
     },
     {
       fieldName: 'startTime',
       label: '合同开始时间',
       component: 'DatePicker',
-      rules: 'required',
       componentProps: {
-        placeholder: '请选择合同开始时间',
+        showTime: false,
+        format: 'YYYY-MM-DD',
+        valueFormat: 'x',
       },
     },
     {
       fieldName: 'endTime',
       label: '合同结束时间',
       component: 'DatePicker',
-      rules: 'required',
       componentProps: {
-        placeholder: '请选择合同结束时间',
+        showTime: false,
+        format: 'YYYY-MM-DD',
+        valueFormat: 'x',
+      },
+    },
+    {
+      fieldName: 'signUserId',
+      label: '公司签约人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
     },
     {
       fieldName: 'signContactId',
       label: '客户签约人',
       component: 'ApiSelect',
-      rules: 'required',
       componentProps: {
         api: getSimpleContactList,
         labelField: 'name',
@@ -109,6 +135,50 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入备注',
         rows: 4,
+      },
+    },
+    {
+      fieldName: 'product',
+      label: '产品清单',
+      component: 'Input',
+      formItemClass: 'col-span-3',
+    },
+    {
+      fieldName: 'totalProductPrice',
+      label: '产品总金额',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+      },
+    },
+    {
+      fieldName: 'discountPercent',
+      label: '整单折扣（%）',
+      component: 'InputNumber',
+      rules: z.number().min(0).max(100).default(0),
+      componentProps: {
+        min: 0,
+        precision: 2,
+      },
+    },
+    {
+      fieldName: 'totalPrice',
+      label: '折扣后金额',
+      component: 'InputNumber',
+      dependencies: {
+        triggerFields: ['totalProductPrice', 'discountPercent'],
+        disabled: () => true,
+        trigger(values, form) {
+          const discountPrice =
+            erpPriceMultiply(
+              values.totalProductPrice,
+              values.discountPercent / 100,
+            ) ?? 0;
+          form.setFieldValue(
+            'totalPrice',
+            values.totalProductPrice - discountPrice,
+          );
+        },
       },
     },
   ];
