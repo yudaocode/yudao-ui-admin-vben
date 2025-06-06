@@ -1,31 +1,143 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiModelApiKeyApi } from '#/api/ai/model/apiKey';
+import type { AiModelModelApi } from '#/api/ai/model/model';
 
-import { Button } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
 
+import { Page, useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
+import { deleteModel, getModelPage } from '#/api/ai/model/model';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const apiKeyList = ref([] as AiModelApiKeyApi.ApiKeyVO[]);
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑 */
+function handleEdit(row: AiModelModelApi.ModelVO) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除 */
+async function handleDelete(row: AiModelModelApi.ModelVO) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteModel(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getModelPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<AiModelModelApi.ModelVO>,
+});
+onMounted(async () => {
+  // 获得下拉数据
+  apiKeyList.value = await getApiKeySimpleList();
+});
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <DocAlert title="AI 手册" url="https://doc.iocoder.cn/ai/build/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/model/model/index.vue"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/model/model/index.vue
-      代码，pull request 贡献给我们！
-    </Button>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="模型配置列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['模型配置']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['ai:model:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #keyId="{ row }">
+        <span>{{
+          apiKeyList.find((item) => item.id === row.keyId)?.name
+        }}</span>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['ai:model:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['ai:model:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

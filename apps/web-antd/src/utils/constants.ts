@@ -5,6 +5,14 @@
  * 枚举类
  */
 
+export const AiModelTypeEnum = {
+  CHAT: 1, // 聊天
+  IMAGE: 2, // 图像
+  VOICE: 3, // 音频
+  VIDEO: 4, // 视频
+  EMBEDDING: 5, // 向量
+  RERANK: 6, // 重排
+};
 // ========== COMMON 模块 ==========
 // 全局通用状态枚举
 export const CommonStatusEnum = {
