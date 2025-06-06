@@ -243,7 +243,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
-  return [...useDetailBaseSchema(), ...useDetailSystemSchema()];
+  return [
+    {
+      field: 'level',
+      label: '客户级别',
+      content: (data) =>
+        h(DictTag, { type: DICT_TYPE.CRM_CUSTOMER_LEVEL, value: data?.level }),
+    },
+    {
+      field: 'dealStatus',
+      label: '成交状态',
+      content: (data) => (data.dealStatus ? '已成交' : '未成交'),
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+  ];
 }
 
 /** 详情页的基础字段 */
@@ -275,12 +292,20 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
       label: '邮箱',
     },
     {
-      field: 'wechat',
-      label: '微信',
+      field: 'areaName',
+      label: '地址',
+    },
+    {
+      field: 'detailAddress',
+      label: '详细地址',
     },
     {
       field: 'qq',
       label: 'QQ',
+    },
+    {
+      field: 'wechat',
+      label: '微信',
     },
     {
       field: 'industryId',
@@ -298,14 +323,6 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
         h(DictTag, { type: DICT_TYPE.CRM_CUSTOMER_LEVEL, value: data?.level }),
     },
     {
-      field: 'areaName',
-      label: '地址',
-    },
-    {
-      field: 'detailAddress',
-      label: '详细地址',
-    },
-    {
       field: 'contactNextTime',
       label: '下次联系时间',
       content: (data) => formatDateTime(data?.contactNextTime) as string,
@@ -313,35 +330,6 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'remark',
       label: '备注',
-    },
-  ];
-}
-
-/** 详情页的系统字段 */
-export function useDetailSystemSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'ownerUserDeptName',
-      label: '所属部门',
-    },
-    {
-      field: 'contactLastTime',
-      label: '最后跟进时间',
-      content: (data) => formatDateTime(data?.contactLastTime) as string,
-    },
-    {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
-    },
-    {
-      field: 'updateTime',
-      label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
     },
   ];
 }

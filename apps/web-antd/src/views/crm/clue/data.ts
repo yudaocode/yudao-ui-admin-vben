@@ -7,6 +7,7 @@ import { h } from 'vue';
 import { formatDateTime } from '@vben/utils';
 
 import { getAreaTree } from '#/api/system/area';
+import { getSimpleUserList } from '#/api/system/user';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
@@ -32,7 +33,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户来源',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
       },
       rules: 'required',
     },
@@ -44,9 +45,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerUserId',
       label: '负责人',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        api: 'getSimpleUserList',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        allowClear: true,
       },
       rules: 'required',
     },
@@ -75,7 +79,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户行业',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
       },
     },
     {
@@ -83,7 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户级别',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
       },
     },
     {
@@ -300,10 +304,6 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
       label: '手机',
     },
     {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
       field: 'telephone',
       label: '电话',
     },
@@ -312,12 +312,17 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
       label: '邮箱',
     },
     {
-      field: 'wechat',
-      label: '微信',
+      field: 'areaName',
+      label: '地址',
+      content: (data) => data?.areaName + data?.detailAddress,
     },
     {
       field: 'qq',
       label: 'QQ',
+    },
+    {
+      field: 'wechat',
+      label: '微信',
     },
     {
       field: 'industryId',
@@ -338,14 +343,6 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
         }),
     },
     {
-      field: 'areaId',
-      label: '地址',
-    },
-    {
-      field: 'detailAddress',
-      label: '详细地址',
-    },
-    {
       field: 'contactNextTime',
       label: '下次联系时间',
       content: (data) => formatDateTime(data?.contactNextTime) as string,
@@ -353,39 +350,6 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'remark',
       label: '备注',
-    },
-  ];
-}
-
-/** 详情系统信息的配置 */
-export function useDetailSystemSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'ownerUserName',
-      label: '负责人',
-    },
-    {
-      field: 'contactLastContent',
-      label: '最后跟进记录',
-    },
-    {
-      field: 'contactLastContent',
-      label: '最后跟进时间',
-      content: (data) => formatDateTime(data?.contactLastContent) as string,
-    },
-    {
-      field: 'creatorName',
-      label: '创建人',
-    },
-    {
-      field: 'createTime',
-      label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
-    },
-    {
-      field: 'updateTime',
-      label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
     },
   ];
 }

@@ -131,28 +131,38 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 /** 详情列表的字段 */
 export const detailColumns = [
   {
-    label: '日志编号',
-    prop: 'id',
+    title: '日志编号',
+    dataIndex: 'id',
     key: 'id',
+    width: 120,
+    ellipsis: false,
   },
   {
-    label: '通知状态',
-    prop: 'status',
+    title: '通知状态',
+    dataIndex: 'status',
     key: 'status',
+    width: 120,
+    ellipsis: false,
   },
   {
-    label: '通知次数',
-    prop: 'notifyTimes',
+    title: '通知次数',
+    dataIndex: 'notifyTimes',
     key: 'notifyTimes',
+    width: 120,
+    ellipsis: false,
   },
   {
-    label: '通知时间',
-    prop: 'lastExecuteTime',
+    title: '通知时间',
+    dataIndex: 'lastExecuteTime',
     key: 'lastExecuteTime',
+    width: 120,
+    ellipsis: false,
   },
   {
-    label: '响应结果',
-    prop: 'response',
+    title: '响应结果',
+    dataIndex: 'response',
     key: 'response',
+    width: 120,
+    ellipsis: false,
   },
 ];

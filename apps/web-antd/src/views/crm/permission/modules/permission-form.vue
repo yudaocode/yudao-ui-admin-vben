@@ -8,15 +8,10 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  BizTypeEnum,
-  createPermission,
-  PermissionLevelEnum,
-  updatePermission,
-} from '#/api/crm/permission';
-import { getSimpleUserList } from '#/api/system/user';
+import { createPermission, updatePermission } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
+
+import { useFormSchema } from './data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmPermissionApi.Permission>();
@@ -35,74 +30,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 80,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      fieldName: 'ids',
-      component: 'Input',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      fieldName: 'userId',
-      label: '选择人员',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleUserList,
-        labelField: 'nickname',
-        valueField: 'id',
-      },
-      dependencies: {
-        triggerFields: ['ids'],
-        show: (values) => {
-          return values.ids === undefined;
-        },
-      },
-    },
-    {
-      fieldName: 'level',
-      label: '权限级别',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.CRM_PERMISSION_LEVEL,
-          'number',
-        ).filter((dict) => dict.value !== PermissionLevelEnum.OWNER),
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'toBizTypes',
-      label: '同时添加至',
-      component: 'CheckboxGroup',
-      componentProps: {
-        options: [
-          {
-            label: '联系人',
-            value: BizTypeEnum.CRM_CONTACT,
-          },
-          {
-            label: '商机',
-            value: BizTypeEnum.CRM_BUSINESS,
-          },
-          {
-            label: '合同',
-            value: BizTypeEnum.CRM_CONTRACT,
-          },
-        ],
-      },
-      dependencies: {
-        triggerFields: ['ids', 'bizType'],
-        show: (values) => {
-          return (
-            values.ids === undefined &&
-            formData.value?.bizType === BizTypeEnum.CRM_CUSTOMER
-          );
-        },
-      },
-    },
-  ],
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
@@ -114,8 +42,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    let data = (await formApi.getValues()) as CrmPermissionApi.Permission;
-    data = Object.assign(data, formData.value);
+    const data = (await formApi.getValues()) as CrmPermissionApi.Permission;
     try {
       await (formData.value?.ids
         ? updatePermission(data)
@@ -141,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = {
-        ids: data.ids || [data.id] || undefined,
+        ids: data.ids ?? (data.id ? [data.id] : undefined),
         userId: undefined,
         bizType: data.bizType,
         bizId: data.bizId,

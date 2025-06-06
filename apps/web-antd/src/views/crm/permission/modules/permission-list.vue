@@ -17,11 +17,9 @@ import {
   PermissionLevelEnum,
 } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils';
 
+import { useGridColumns } from './data';
 import Form from './permission-form.vue';
-
-defineOptions({ name: 'CrmPermissionList' });
 
 const props = defineProps<{
   bizId: number; // 模块数据编号
@@ -50,13 +48,18 @@ function onRefresh() {
   gridApi.query();
 }
 
-const checkedIds = ref<CrmPermissionApi.Permission[]>([]);
-function setCheckedIds({
+const checkedRows = ref<CrmPermissionApi.Permission[]>([]);
+function setCheckedRows({
   records,
 }: {
   records: CrmPermissionApi.Permission[];
 }) {
-  checkedIds.value = records;
+  if (records.some((item) => item.level === PermissionLevelEnum.OWNER)) {
+    message.warning('不能选择负责人！');
+    gridApi.grid.setAllCheckboxRow(false);
+    return;
+  }
+  checkedRows.value = records;
 }
 
 function handleCreate() {
@@ -69,11 +72,11 @@ function handleCreate() {
 }
 
 function handleEdit() {
-  if (checkedIds.value.length === 0) {
+  if (checkedRows.value.length === 0) {
     message.error('请先选择团队成员后操作！');
     return;
   }
-  if (checkedIds.value.length > 1) {
+  if (checkedRows.value.length > 1) {
     message.error('只能选择一个团队成员进行编辑！');
     return;
   }
@@ -81,29 +84,29 @@ function handleEdit() {
     .setData({
       bizType: props.bizType,
       bizId: props.bizId,
-      id: checkedIds.value[0]?.id,
-      level: checkedIds.value[0]?.level,
+      id: checkedRows.value[0]?.id,
+      level: checkedRows.value[0]?.level,
     })
     .open();
 }
 
 function handleDelete() {
-  if (checkedIds.value.length === 0) {
+  if (checkedRows.value.length === 0) {
     message.error('请先选择团队成员后操作！');
     return;
   }
   return new Promise((resolve, reject) => {
     confirm({
-      content: `你要将${checkedIds.value.map((item) => item.nickname).join(',')}移出团队吗？`,
+      content: `你要将${checkedRows.value.map((item) => item.nickname).join(',')}移出团队吗？`,
     })
       .then(async () => {
-        // 更新用户状态
         const res = await deletePermissionBatch(
-          checkedIds.value.map((item) => item.id as number),
+          checkedRows.value.map((item) => item.id as number),
         );
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));
+          onRefresh();
           resolve(true);
         } else {
           reject(new Error('移出失败'));
@@ -144,37 +147,7 @@ async function handleQuit() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: [
-      {
-        type: 'checkbox',
-        width: 50,
-      },
-      {
-        field: 'nickname',
-        title: '姓名',
-      },
-      {
-        field: 'deptName',
-        title: '部门',
-      },
-      {
-        field: 'postNames',
-        title: '岗位',
-      },
-      {
-        field: 'level',
-        title: '权限级别',
-        cellRender: {
-          name: 'CellDict',
-          props: { type: DICT_TYPE.CRM_PERMISSION_LEVEL },
-        },
-      },
-      {
-        field: 'createTime',
-        title: '加入时间',
-        formatter: 'formatDateTime',
-      },
-    ],
+    columns: useGridColumns(),
     height: 'auto',
     pagerConfig: {
       enabled: false,
@@ -201,8 +174,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<CrmPermissionApi.Permission>,
   gridEvents: {
-    checkboxAll: setCheckedIds,
-    checkboxChange: setCheckedIds,
+    checkboxAll: setCheckedRows,
+    checkboxChange: setCheckedRows,
   },
 });
 

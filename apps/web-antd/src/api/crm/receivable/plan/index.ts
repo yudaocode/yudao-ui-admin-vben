@@ -29,10 +29,20 @@ export namespace CrmReceivablePlanApi {
       returnTime: Date;
     };
   }
+
+  export interface PlanPageParam extends PageParam {
+    customerId?: number;
+    contractId?: number;
+    contractNo?: string;
+    sceneType?: number;
+    remindType?: number;
+  }
 }
 
 /** 查询回款计划列表 */
-export function getReceivablePlanPage(params: PageParam) {
+export function getReceivablePlanPage(
+  params: CrmReceivablePlanApi.PlanPageParam,
+) {
   return requestClient.get<PageResult<CrmReceivablePlanApi.Plan>>(
     '/crm/receivable-plan/page',
     { params },
@@ -40,7 +50,9 @@ export function getReceivablePlanPage(params: PageParam) {
 }
 
 /** 查询回款计划列表(按客户) */
-export function getReceivablePlanPageByCustomer(params: PageParam) {
+export function getReceivablePlanPageByCustomer(
+  params: CrmReceivablePlanApi.PlanPageParam,
+) {
   return requestClient.get<PageResult<CrmReceivablePlanApi.Plan>>(
     '/crm/receivable-plan/page-by-customer',
     { params },
