@@ -5,7 +5,7 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import {downloadFileFromBlobPart, isEmpty} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -151,6 +151,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '批量删除',
               type: 'primary',
               danger: true,
+              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo01-contact:delete'],
               onClick: handleDeleteBatch,
