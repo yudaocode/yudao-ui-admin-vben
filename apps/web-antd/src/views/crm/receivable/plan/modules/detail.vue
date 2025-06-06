@@ -16,7 +16,7 @@ import { BizTypeEnum } from '#/api/crm/permission';
 import { getReceivablePlan } from '#/api/crm/receivable/plan';
 import { useDescription } from '#/components/description';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 import ReceivablePlanForm from './form.vue';
 
 const PermissionList = defineAsyncComponent(

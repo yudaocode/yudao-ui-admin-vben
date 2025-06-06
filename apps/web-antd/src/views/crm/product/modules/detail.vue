@@ -15,7 +15,7 @@ import { BizTypeEnum } from '#/api/crm/permission';
 import { getProduct } from '#/api/crm/product';
 import { useDescription } from '#/components/description';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 
 const ProductDetailsInfo = defineAsyncComponent(
   () => import('./detail-info.vue'),

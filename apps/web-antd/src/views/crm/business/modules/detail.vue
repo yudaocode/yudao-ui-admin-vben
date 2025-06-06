@@ -15,7 +15,7 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 
 const BusinessDetailsInfo = defineAsyncComponent(
   () => import('./detail-info.vue'),

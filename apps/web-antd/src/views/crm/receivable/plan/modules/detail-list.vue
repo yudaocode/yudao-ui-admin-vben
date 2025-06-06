@@ -15,7 +15,7 @@ import {
 import { $t } from '#/locales';
 
 import ReceivableForm from '../../modules/form.vue';
-import { useDetailListColumns } from '../data';
+import { useDetailListColumns } from './detail-data';
 import Form from './form.vue';
 
 const props = defineProps<{

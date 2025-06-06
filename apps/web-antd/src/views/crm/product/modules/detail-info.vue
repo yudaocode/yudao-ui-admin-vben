@@ -3,7 +3,7 @@ import type { CrmProductApi } from '#/api/crm/product';
 
 import { useDescription } from '#/components/description';
 
-import { useDetailBaseSchema } from '../data';
+import { useDetailBaseSchema } from './detail-data';
 
 defineProps<{
   product: CrmProductApi.Product; // 产品信息

@@ -10,7 +10,7 @@ import { getContract } from '#/api/crm/contract';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { erpPriceInputFormatter } from '#/utils';
 
-import { useDetailListColumns } from '../data';
+import { useDetailListColumns } from './detail-data';
 
 const props = defineProps<{
   bizId: number;
