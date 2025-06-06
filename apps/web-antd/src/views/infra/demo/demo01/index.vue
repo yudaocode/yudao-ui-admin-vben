@@ -5,7 +5,7 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import {downloadFileFromBlobPart, isEmpty} from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
