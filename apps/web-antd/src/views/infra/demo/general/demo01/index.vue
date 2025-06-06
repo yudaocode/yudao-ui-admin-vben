@@ -25,7 +25,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
-  deleteDemo01ContactListByIds,
+  deleteDemo01ContactList,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -122,7 +122,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01ContactListByIds(deleteIds.value);
+    await deleteDemo01ContactList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {
@@ -130,13 +130,13 @@ async function onDeleteBatch() {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
-function setDeleteIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo01ContactApi.Demo01Contact[];
 }) {
-  deleteIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -241,7 +241,7 @@ onMounted(() => {
             type="primary"
             danger
             class="ml-2"
-            :disabled="isEmpty(deleteIds)"
+            :disabled="isEmpty(checkedIds)"
             @click="onDeleteBatch"
             v-access:code="['infra:demo01-contact:delete']"
           >
@@ -254,8 +254,8 @@ onMounted(() => {
         :data="list"
         show-overflow
         :loading="loading"
-        @checkbox-all="setDeleteIds"
-        @checkbox-change="setDeleteIds"
+        @checkbox-all="handleRowCheckboxChange"
+        @checkbox-change="handleRowCheckboxChange"
       >
         <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />

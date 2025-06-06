@@ -19,7 +19,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo03Course,
-  deleteDemo03CourseListByIds,
+  deleteDemo03CourseList,
   getDemo03CoursePage,
 } from '#/api/infra/demo/demo03/erp';
 import { ContentWrap } from '#/components/content-wrap';
@@ -80,7 +80,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo03CourseListByIds(deleteIds.value);
+    await deleteDemo03CourseList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {
@@ -88,13 +88,13 @@ async function onDeleteBatch() {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除学生课程 ID
-function setDeleteIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo03StudentApi.Demo03Course[];
 }) {
-  deleteIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id);
 }
 
 const loading = ref(true); // 列表的加载中
@@ -231,7 +231,7 @@ onMounted(() => {
             type="primary"
             danger
             class="ml-2"
-            :disabled="isEmpty(deleteIds)"
+            :disabled="isEmpty(checkedIds)"
             @click="onDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >
@@ -244,8 +244,8 @@ onMounted(() => {
         :data="list"
         show-overflow
         :loading="loading"
-        @checkbox-all="setDeleteIds"
-        @checkbox-change="setDeleteIds"
+        @checkbox-all="handleRowCheckboxChange"
+        @checkbox-change="handleRowCheckboxChange"
       >
         <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />
