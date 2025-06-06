@@ -1,4 +1,4 @@
-// TODO 芋艿 这些 常量是不是可以共享
+import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '#/utils';
 
 interface DictDataType {
   label: string;
@@ -41,112 +41,6 @@ export enum ApproveMethodType {
    * 多人依次审批
    */
   SEQUENTIAL_APPROVE = 4,
-}
-
-/**
- * 任务状态枚举
- */
-export enum TaskStatusEnum {
-  /**
-   * 审批通过
-   */
-  APPROVE = 2,
-
-  /**
-   * 审批通过中
-   */
-  APPROVING = 7,
-  /**
-   * 已取消
-   */
-  CANCEL = 4,
-  /**
-   * 未开始
-   */
-  NOT_START = -1,
-
-  /**
-   * 审批不通过
-   */
-  REJECT = 3,
-
-  /**
-   * 已退回
-   */
-  RETURN = 5,
-  /**
-   * 审批中
-   */
-  RUNNING = 1,
-  /**
-   * 待审批
-   */
-  WAIT = 0,
-}
-
-/**
- * 节点类型
- */
-export enum NodeType {
-  /**
-   * 子流程节点
-   */
-  CHILD_PROCESS_NODE = 20,
-  /**
-   * 条件分支节点 (对应排他网关)
-   */
-  CONDITION_BRANCH_NODE = 51,
-  /**
-   * 条件节点
-   */
-  CONDITION_NODE = 50,
-
-  /**
-   * 抄送人节点
-   */
-  COPY_TASK_NODE = 12,
-
-  /**
-   * 延迟器节点
-   */
-  DELAY_TIMER_NODE = 14,
-
-  /**
-   * 结束节点
-   */
-  END_EVENT_NODE = 1,
-
-  /**
-   * 包容分支节点 (对应包容网关)
-   */
-  INCLUSIVE_BRANCH_NODE = 53,
-
-  /**
-   * 并行分支节点 (对应并行网关)
-   */
-  PARALLEL_BRANCH_NODE = 52,
-
-  /**
-   * 路由分支节点
-   */
-  ROUTER_BRANCH_NODE = 54,
-  /**
-   * 发起人节点
-   */
-  START_USER_NODE = 10,
-  /**
-   * 办理人节点
-   */
-  TRANSACTOR_NODE = 13,
-
-  /**
-   * 触发器节点
-   */
-  TRIGGER_NODE = 15,
-  /**
-   * 审批人节点
-   */
-  USER_TASK_NODE = 11,
 }
 
 export enum NodeId {
@@ -660,7 +554,7 @@ export type ChildProcessSetting = {
  */
 export interface SimpleFlowNode {
   id: string;
-  type: NodeType;
+  type: BpmNodeTypeEnum;
   name: string;
   showText?: string;
   // 孩子节点
@@ -698,7 +592,7 @@ export interface SimpleFlowNode {
   // 条件设置
   conditionSetting?: ConditionSetting;
   // 活动的状态，用于前端节点状态展示
-  activityStatus?: TaskStatusEnum;
+  activityStatus?: BpmTaskStatusEnum;
   // 延迟设置
   delaySetting?: DelaySetting;
   // 路由分支
@@ -734,26 +628,26 @@ export const DEFAULT_CONDITION_GROUP_VALUE = {
 };
 
 export const NODE_DEFAULT_TEXT = new Map<number, string>();
-NODE_DEFAULT_TEXT.set(NodeType.USER_TASK_NODE, '请配置审批人');
-NODE_DEFAULT_TEXT.set(NodeType.COPY_TASK_NODE, '请配置抄送人');
-NODE_DEFAULT_TEXT.set(NodeType.CONDITION_NODE, '请设置条件');
-NODE_DEFAULT_TEXT.set(NodeType.START_USER_NODE, '请设置发起人');
-NODE_DEFAULT_TEXT.set(NodeType.DELAY_TIMER_NODE, '请设置延迟器');
-NODE_DEFAULT_TEXT.set(NodeType.ROUTER_BRANCH_NODE, '请设置路由节点');
-NODE_DEFAULT_TEXT.set(NodeType.TRIGGER_NODE, '请设置触发器');
-NODE_DEFAULT_TEXT.set(NodeType.TRANSACTOR_NODE, '请设置办理人');
-NODE_DEFAULT_TEXT.set(NodeType.CHILD_PROCESS_NODE, '请设置子流程');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.USER_TASK_NODE, '请配置审批人');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.COPY_TASK_NODE, '请配置抄送人');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.CONDITION_NODE, '请设置条件');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.START_USER_NODE, '请设置发起人');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.DELAY_TIMER_NODE, '请设置延迟器');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.ROUTER_BRANCH_NODE, '请设置路由节点');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.TRIGGER_NODE, '请设置触发器');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.TRANSACTOR_NODE, '请设置办理人');
+NODE_DEFAULT_TEXT.set(BpmNodeTypeEnum.CHILD_PROCESS_NODE, '请设置子流程');
 
 export const NODE_DEFAULT_NAME = new Map<number, string>();
-NODE_DEFAULT_NAME.set(NodeType.USER_TASK_NODE, '审批人');
-NODE_DEFAULT_NAME.set(NodeType.COPY_TASK_NODE, '抄送人');
-NODE_DEFAULT_NAME.set(NodeType.CONDITION_NODE, '条件');
-NODE_DEFAULT_NAME.set(NodeType.START_USER_NODE, '发起人');
-NODE_DEFAULT_NAME.set(NodeType.DELAY_TIMER_NODE, '延迟器');
-NODE_DEFAULT_NAME.set(NodeType.ROUTER_BRANCH_NODE, '路由分支');
-NODE_DEFAULT_NAME.set(NodeType.TRIGGER_NODE, '触发器');
-NODE_DEFAULT_NAME.set(NodeType.TRANSACTOR_NODE, '办理人');
-NODE_DEFAULT_NAME.set(NodeType.CHILD_PROCESS_NODE, '子流程');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.USER_TASK_NODE, '审批人');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.COPY_TASK_NODE, '抄送人');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.CONDITION_NODE, '条件');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.START_USER_NODE, '发起人');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.DELAY_TIMER_NODE, '延迟器');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.ROUTER_BRANCH_NODE, '路由分支');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.TRIGGER_NODE, '触发器');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.TRANSACTOR_NODE, '办理人');
+NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.CHILD_PROCESS_NODE, '子流程');
 
 // 候选人策略。暂时不从字典中取。 后续可能调整。控制显示顺序
 export const CANDIDATE_STRATEGY: DictDataType[] = [
@@ -929,24 +823,6 @@ export const MULTI_LEVEL_DEPT: DictDataType[] = [
   { label: '第 14 级部门', value: 14 },
   { label: '第 15 级部门', value: 15 },
 ];
-
-/**
- * 流程实例的变量枚举
- */
-export enum ProcessVariableEnum {
-  /**
-   * 流程定义名称
-   */
-  PROCESS_DEFINITION_NAME = 'PROCESS_DEFINITION_NAME',
-  /**
-   * 发起时间
-   */
-  START_TIME = 'PROCESS_START_TIME',
-  /**
-   * 发起用户 ID
-   */
-  START_USER_ID = 'PROCESS_START_USER_ID',
-}
 
 export const DELAY_TYPE = [
   { label: '固定时长', value: DelayTypeEnum.FIXED_TIME_DURATION },

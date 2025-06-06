@@ -29,6 +29,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import { BpmAutoApproveType, BpmModelFormType, BpmModelType } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
+import ExtraSetting from './modules/extra-setting.vue';
 import FormDesign from './modules/form-design.vue';
 import ProcessDesign from './modules/process-design.vue';
 
@@ -55,6 +56,8 @@ const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
 const formDesignRef = ref<InstanceType<typeof FormDesign>>();
 // 流程设计组件引用
 const processDesignRef = ref<InstanceType<typeof ProcessDesign>>();
+// 更多设置组件引用
+const extraSettingRef = ref<InstanceType<typeof ExtraSetting>>();
 
 /** 步骤校验函数 */
 const validateBasic = async () => {
@@ -71,13 +74,18 @@ const validateProcess = async () => {
   await processDesignRef.value?.validate();
 };
 
+/** 更多设置校验 */
+const validateExtra = async () => {
+  await extraSettingRef.value?.validate();
+};
+
 const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
 
 const steps = [
   { title: '基本信息', validator: validateBasic },
   { title: '表单设计', validator: validateForm },
   { title: '流程设计', validator: validateProcess },
-  { title: '更多设置', validator: null },
+  { title: '更多设置', validator: validateExtra },
 ];
 
 // 表单数据
@@ -190,8 +198,8 @@ const initData = async () => {
   // 最终，设置 currentStep 切换到第一步
   currentStep.value = 0;
 
-  // TODO 兼容，以前未配置更多设置的流程
-  // extraSettingsRef.value.initData()
+  // 以前未配置更多设置的流程
+  extraSettingRef.value?.initData();
 };
 
 /** 根据类型切换流程数据 */
@@ -237,7 +245,13 @@ const validateAllSteps = async () => {
     return false;
   }
 
-  // TODO 更多设置校验
+  // 更多设置校验
+  try {
+    await validateExtra();
+  } catch {
+    currentStep.value = 3;
+    return false;
+  }
 
   return true;
 };
@@ -344,6 +358,9 @@ const handleStepClick = async (index: number) => {
     }
     if (index !== 2) {
       await validateProcess();
+    }
+    if (index !== 3) {
+      await validateExtra();
     }
     // 切换步骤
     currentStep.value = index;
@@ -475,8 +492,10 @@ onBeforeUnmount(() => {
             ref="processDesignRef"
           />
 
-          <!-- 第四步：更多设置 TODO -->
-          <div v-if="currentStep === 3" class="mx-auto w-4/6"></div>
+          <!-- 第四步：更多设置 -->
+          <div v-if="currentStep === 3" class="mx-auto w-4/6">
+            <ExtraSetting v-model="formData" ref="extraSettingRef" />
+          </div>
         </div>
       </Card>
     </div>

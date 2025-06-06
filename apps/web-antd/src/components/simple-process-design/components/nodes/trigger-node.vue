@@ -7,7 +7,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import TriggerNodeConfig from '../nodes-config/trigger-node-config.vue';
 import NodeHandler from './node-handler.vue';
@@ -35,7 +37,7 @@ const currentNode = useWatchNode(props);
 // 节点名称编辑
 const { showInput, blurEvent, clickTitle } = useNodeName2(
   currentNode,
-  NodeType.TRIGGER_NODE,
+  BpmNodeTypeEnum.TRIGGER_NODE,
 );
 
 const nodeSetting = ref();
@@ -87,7 +89,7 @@ function deleteNode() {
             {{ currentNode.showText }}
           </div>
           <div class="node-text" v-else>
-            {{ NODE_DEFAULT_TEXT.get(NodeType.TRIGGER_NODE) }}
+            {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.TRIGGER_NODE) }}
           </div>
           <IconifyIcon v-if="!readonly" icon="ep:arrow-right-bold" />
         </div>

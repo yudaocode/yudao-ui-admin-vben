@@ -8,7 +8,9 @@ import { buildShortUUID as generateUUID } from '@vben/utils';
 
 import { Button, Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useTaskStatusClass } from '../../helpers';
 import ProcessNodeTree from '../process-node-tree.vue';
 import NodeHandler from './node-handler.vue';
@@ -70,7 +72,7 @@ function addCondition() {
       id: `Flow_${generateUUID()}`,
       name: `并行${len}`,
       showText: '无需配置条件同时执行',
-      type: NodeType.CONDITION_NODE,
+      type: BpmNodeTypeEnum.CONDITION_NODE,
       childNode: undefined,
       conditionNodes: [],
     };
@@ -97,7 +99,7 @@ function recursiveFindParentNode(
   node: SimpleFlowNode,
   nodeType: number,
 ) {
-  if (!node || node.type === NodeType.START_USER_NODE) {
+  if (!node || node.type === BpmNodeTypeEnum.START_USER_NODE) {
     return;
   }
   if (node.type === nodeType) {
@@ -168,7 +170,7 @@ function recursiveFindParentNode(
                   {{ item.showText }}
                 </div>
                 <div class="branch-node-text" v-else>
-                  {{ NODE_DEFAULT_TEXT.get(NodeType.CONDITION_NODE) }}
+                  {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.CONDITION_NODE) }}
                 </div>
               </div>
               <div v-if="!readonly" class="node-toolbar">
