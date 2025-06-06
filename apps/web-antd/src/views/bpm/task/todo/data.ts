@@ -1,15 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmTaskApi } from '#/api/bpm/task';
-
-import { h } from 'vue';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -69,9 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmTaskApi.TaskVO>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'processInstance.name',
@@ -83,41 +74,18 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'processInstance.summary',
       title: '摘要',
       minWidth: 200,
-      slots: {
-        default: ({ row }) => {
-          const summary = row?.processInstance?.summary;
-
-          if (!summary || summary.length === 0) {
-            return '-';
-          }
-          return summary.map((item: any) => {
-            return h(
-              'div',
-              {
-                key: item.key,
-              },
-              h(
-                'span',
-                {
-                  class: 'text-gray-500',
-                },
-                `${item.key} : ${item.value}`,
-              ),
-            );
-          });
-        },
+      formatter: ({ cellValue }) => {
+        return cellValue && cellValue.length > 0
+          ? cellValue
+              .map((item: any) => `${item.key} : ${item.value}`)
+              .join('\n')
+          : '-';
       },
     },
     {
       field: 'processInstance.startUser.nickname',
       title: '发起人',
       minWidth: 120,
-    },
-    {
-      field: 'createTime',
-      title: '发起时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
     },
     {
       field: 'name',
@@ -141,26 +109,10 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       minWidth: 280,
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 120,
-      align: 'center',
+      width: 120,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '流程名称',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'audit',
-            text: '办理',
-            show: hasAccessByCodes(['bpm:task:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

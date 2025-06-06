@@ -108,12 +108,12 @@ const nodeTypeSvgMap = {
 const onlyStatusIconShow = [-1, 0, 1];
 
 // 获取审批节点类型图标
-const getApprovalNodeTypeIcon = (nodeType: BpmNodeTypeEnum) => {
+function getApprovalNodeTypeIcon(nodeType: BpmNodeTypeEnum) {
   return nodeTypeSvgMap[nodeType]?.icon;
-};
+}
 
 // 获取审批节点图标
-const getApprovalNodeIcon = (taskStatus: number, nodeType: BpmNodeTypeEnum) => {
+function getApprovalNodeIcon(taskStatus: number, nodeType: BpmNodeTypeEnum) {
   if (taskStatus === BpmTaskStatusEnum.NOT_START) {
     return statusIconMap[taskStatus]?.icon || 'mdi:clock-outline';
   }
@@ -128,15 +128,15 @@ const getApprovalNodeIcon = (taskStatus: number, nodeType: BpmNodeTypeEnum) => {
     return statusIconMap[taskStatus]?.icon || 'mdi:clock-outline';
   }
   return 'mdi:clock-outline';
-};
+}
 
 // 获取审批节点颜色
-const getApprovalNodeColor = (taskStatus: number) => {
+function getApprovalNodeColor(taskStatus: number) {
   return statusIconMap[taskStatus]?.color;
-};
+}
 
 // 获取审批节点时间
-const getApprovalNodeTime = (node: BpmProcessInstanceApi.ApprovalNodeInfo) => {
+function getApprovalNodeTime(node: BpmProcessInstanceApi.ApprovalNodeInfo) {
   if (node.nodeType === BpmNodeTypeEnum.START_USER_NODE && node.startTime) {
     return formatDateTime(node.startTime);
   }
@@ -147,7 +147,7 @@ const getApprovalNodeTime = (node: BpmProcessInstanceApi.ApprovalNodeInfo) => {
     return formatDateTime(node.startTime);
   }
   return '';
-};
+}
 
 // 选择自定义审批人
 const userSelectFormRef = ref();
@@ -164,26 +164,26 @@ const handleSelectUser = (activityId: string, selectedList: any[]) => {
 
 // 选择用户完成
 const selectedUsers = ref<number[]>([]);
-const handleUserSelectConfirm = (userList: any[]) => {
+function handleUserSelectConfirm(userList: any[]) {
   customApproveUsers.value[selectedActivityNodeId.value] = userList || [];
 
   emit('selectUserConfirm', selectedActivityNodeId.value, userList);
-};
+}
 
 /** 跳转子流程 */
-const handleChildProcess = (activity: any) => {
+function handleChildProcess(activity: any) {
   push({
     name: 'BpmProcessInstanceDetail',
     query: {
       id: activity.processInstanceId,
     },
   });
-};
+}
 
 // 判断是否需要显示自定义选择审批人
-const shouldShowCustomUserSelect = (
+function shouldShowCustomUserSelect(
   activity: BpmProcessInstanceApi.ApprovalNodeInfo,
-) => {
+) {
   return (
     isEmpty(activity.tasks) &&
     isEmpty(activity.candidateUsers) &&
@@ -192,27 +192,27 @@ const shouldShowCustomUserSelect = (
       BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
         activity.candidateStrategy)
   );
-};
+}
 
 // 判断是否需要显示审批意见
-const shouldShowApprovalReason = (task: any, nodeType: BpmNodeTypeEnum) => {
+function shouldShowApprovalReason(task: any, nodeType: BpmNodeTypeEnum) {
   return (
     task.reason &&
     [BpmNodeTypeEnum.END_EVENT_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
       nodeType,
     )
   );
-};
+}
 
 // 用户选择弹窗关闭
-const handleUserSelectClosed = () => {
+function handleUserSelectClosed() {
   selectedUsers.value = [];
-};
+}
 
 // 用户选择弹窗取消
-const handleUserSelectCancel = () => {
+function handleUserSelectCancel() {
   selectedUsers.value = [];
-};
+}
 </script>
 
 <template>

@@ -4,21 +4,12 @@ import type { ModelCategoryInfo } from '#/api/bpm/model';
 import { onActivated, reactive, ref, useTemplateRef, watch } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus, Search, Settings } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { refAutoReset } from '@vueuse/core';
 import { useSortable } from '@vueuse/integrations/useSortable';
-import {
-  Button,
-  Card,
-  Divider,
-  Dropdown,
-  Form,
-  Input,
-  Menu,
-  message,
-} from 'ant-design-vue';
+import { Button, Card, Dropdown, Input, Menu, message } from 'ant-design-vue';
 
 import {
   getCategorySimpleList,
@@ -72,7 +63,7 @@ watch(
 );
 
 /** 加载数据 */
-const getList = async () => {
+async function getList() {
   modelListSpinning.value = true;
   try {
     const modelList = await getModelList(queryParams.name);
@@ -89,27 +80,22 @@ const getList = async () => {
   } finally {
     modelListSpinning.value = false;
   }
-};
+}
 
 /** 初始化 */
 onActivated(() => {
   getList();
 });
 
-/** 查询方法 */
-const handleQuery = () => {
-  getList();
-};
-
 /** 新增模型 */
-const createModel = () => {
+function createModel() {
   router.push({
     name: 'BpmModelCreate',
   });
-};
+}
 
 /** 处理下拉菜单命令 */
-const handleCommand = (command: string) => {
+function handleCommand(command: string) {
   if (command === 'handleCategoryAdd') {
     // 打开新建流程分类弹窗
     categoryFormModalApi.open();
@@ -126,10 +112,10 @@ const handleCommand = (command: string) => {
       });
     }
   }
-};
+}
 
 /** 取消分类排序 */
-const handleCategorySortCancel = () => {
+function handleCategorySortCancel() {
   // 恢复初始数据
   categoryGroup.value = cloneDeep(originalData.value);
   isCategorySorting.value = false;
@@ -137,10 +123,10 @@ const handleCategorySortCancel = () => {
   if (sortableInstance.value) {
     sortableInstance.value.option('disabled', true);
   }
-};
+}
 
 /** 提交分类排序 */
-const handleCategorySortSubmit = async () => {
+async function handleCategorySortSubmit() {
   saveSortLoading.value = true;
   try {
     // 保存排序逻辑
@@ -157,76 +143,56 @@ const handleCategorySortSubmit = async () => {
   if (sortableInstance.value) {
     sortableInstance.value.option('disabled', true);
   }
-};
+}
 </script>
 
 <template>
   <Page auto-content-height>
-    <!-- TODO @jaosn：没头像的图标，展示文字头像哈 @芋艿 好像已经展示了文字头像。是模型列表中吗? -->
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
     <Card
       :body-style="{ padding: '10px' }"
       class="mb-4 h-[98%]"
+      title="流程模型"
       v-spinning="modelListSpinning"
     >
+      <template #extra>
+        <Input
+          v-model:value="queryParams.name"
+          placeholder="搜索流程"
+          allow-clear
+          @press-enter="getList"
+          class="!w-60"
+        />
+        <Button type="primary" @click="createModel">
+          <IconifyIcon icon="lucide:plus" /> 新建模型
+        </Button>
+        <Dropdown placement="bottomRight" arrow>
+          <Button>
+            <template #icon>
+              <IconifyIcon icon="lucide:settings" />
+            </template>
+          </Button>
+          <template #overlay>
+            <Menu @click="(e) => handleCommand(e.key as string)">
+              <Menu.Item key="handleCategoryAdd">
+                <div class="flex items-center">
+                  <IconifyIcon icon="lucide:plus" />
+                  新建分类
+                </div>
+              </Menu.Item>
+              <Menu.Item key="handleCategorySort">
+                <div class="flex items-center">
+                  <IconifyIcon icon="lucide:align-start-vertical" />
+                  分类排序
+                </div>
+              </Menu.Item>
+            </Menu>
+          </template>
+        </Dropdown>
+      </template>
       <div class="flex h-full items-center justify-between pl-5">
-        <span class="-mb-4 text-lg font-extrabold">流程模型</span>
-        <!-- 搜索工作栏 -->
-        <Form
-          v-if="!isCategorySorting"
-          class="-mb-4 mr-2.5 flex"
-          :model="queryParams"
-          layout="inline"
-        >
-          <Form.Item name="name" class="ml-auto">
-            <Input
-              v-model:value="queryParams.name"
-              placeholder="搜索流程"
-              allow-clear
-              @press-enter="handleQuery"
-              class="!w-60"
-            >
-              <template #prefix>
-                <Search class="mx-2.5" />
-              </template>
-            </Input>
-          </Form.Item>
-          <!-- 右上角：新建模型、更多操作 -->
-          <Form.Item>
-            <Button type="primary" @click="createModel">
-              <Plus class="size-5" /> 新建模型
-            </Button>
-          </Form.Item>
-          <Form.Item>
-            <Dropdown placement="bottomRight" arrow>
-              <Button>
-                <template #icon>
-                  <Settings class="size-4" />
-                </template>
-              </Button>
-              <template #overlay>
-                <Menu @click="(e) => handleCommand(e.key as string)">
-                  <Menu.Item key="handleCategoryAdd">
-                    <div class="flex items-center">
-                      <span
-                        class="icon-[ant-design--plus-outlined] mr-1.5 text-[18px]"
-                      ></span>
-                      新建分类
-                    </div>
-                  </Menu.Item>
-                  <Menu.Item key="handleCategorySort">
-                    <div class="flex items-center">
-                      <span class="icon-[fa--sort-amount-desc] mr-1.5"></span>
-                      分类排序
-                    </div>
-                  </Menu.Item>
-                </Menu>
-              </template>
-            </Dropdown>
-          </Form.Item>
-        </Form>
-        <div class="-mb-4 mr-6" v-else>
+        <div class="mb-4 mr-6" v-if="isCategorySorting">
           <Button @click="handleCategorySortCancel" class="mr-3">
             取 消
           </Button>
@@ -240,7 +206,6 @@ const handleCategorySortSubmit = async () => {
         </div>
       </div>
 
-      <Divider />
       <!-- 按照分类，展示其所属的模型列表 -->
       <div class="px-5" ref="categoryGroupRef">
         <CategoryDraggableModel

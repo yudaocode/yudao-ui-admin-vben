@@ -175,7 +175,7 @@ async function getApprovalDetail() {
 }
 
 /** 获取流程模型视图*/
-const getProcessModelView = async () => {
+async function getProcessModelView() {
   if (BpmModelType.BPMN === processDefinition.value?.modelType) {
     // 重置，解决 BPMN 流程图刷新不会重新渲染问题
     processModelView.value = {
@@ -186,14 +186,14 @@ const getProcessModelView = async () => {
   if (data) {
     processModelView.value = data;
   }
-};
+}
 
 // 审批节点信息
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 /**
  * 设置表单权限
  */
-const setFieldPermission = (field: string, permission: string) => {
+function setFieldPermission(field: string, permission: string) {
   if (permission === FieldPermissionType.READ) {
     // @ts-ignore
     fApi.value?.disabled(true, field);
@@ -208,7 +208,7 @@ const setFieldPermission = (field: string, permission: string) => {
     // @ts-ignore
     fApi.value?.hidden(true, field);
   }
-};
+}
 
 /**
  * 操作成功后刷新

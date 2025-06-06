@@ -1,19 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
-import { $t } from '#/locales';
-import {
-  BpmProcessInstanceStatus,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -88,9 +77,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmProcessInstanceApi.ProcessInstanceVO>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
@@ -136,38 +123,11 @@ export function useGridColumns<T = BpmProcessInstanceApi.ProcessInstanceVO>(
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 180,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '流程名称',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: $t('ui.actionTitle.detail'),
-            show: hasAccessByCodes(['bpm:process-instance:query']),
-          },
-          {
-            code: 'cancel',
-            text: $t('ui.actionTitle.cancel'),
-            show: (row: BpmProcessInstanceApi.ProcessInstanceVO) => {
-              return (
-                row.status === BpmProcessInstanceStatus.RUNNING &&
-                hasAccessByCodes(['bpm:process-instance:cancel'])
-              );
-            },
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

@@ -16,6 +16,8 @@ defineOptions({
 
 const emits = defineEmits(['success']);
 
+const signature = ref<InstanceType<typeof Vue3Signature>>();
+
 const [Modal, modalApi] = useVbenModal({
   title: '流程签名',
   onOpenChange(visible) {
@@ -23,42 +25,30 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.close();
     }
   },
-  onConfirm: () => {
-    submit();
+  async onConfirm() {
+    message.success({
+      content: '签名上传中请稍等。。。',
+    });
+    const signFileUrl = await uploadFile({
+      file: download.base64ToFile(
+        signature?.value?.save('image/jpeg') || '',
+        '签名',
+      ),
+    });
+    emits('success', signFileUrl);
+    modalApi.close();
   },
 });
-
-const signature = ref<InstanceType<typeof Vue3Signature>>();
-
-const open = async () => {
-  modalApi.open();
-};
-
-defineExpose({ open });
-
-const submit = async () => {
-  message.success({
-    content: '签名上传中请稍等。。。',
-  });
-  const signFileUrl = await uploadFile({
-    file: download.base64ToFile(
-      signature?.value?.save('image/jpeg') || '',
-      '签名',
-    ),
-  });
-  emits('success', signFileUrl);
-  modalApi.close();
-};
 </script>
 
 <template>
-  <Modal class="h-[500px] w-[900px]">
+  <Modal class="h-[40%] w-[60%]">
     <div class="mb-2 flex justify-end">
       <Space>
         <Tooltip title="撤销上一步操作">
           <Button @click="signature?.undo()">
             <template #icon>
-              <IconifyIcon icon="mi:undo" class="mb-[4px] size-[16px]" />
+              <IconifyIcon icon="lucide:undo" class="mb-[4px] size-[16px]" />
             </template>
             撤销
           </Button>
@@ -67,10 +57,7 @@ const submit = async () => {
         <Tooltip title="清空画布">
           <Button @click="signature?.clear()">
             <template #icon>
-              <IconifyIcon
-                icon="mdi:delete-outline"
-                class="mb-[4px] size-[16px]"
-              />
+              <IconifyIcon icon="lucide:trash" class="mb-[4px] size-[16px]" />
             </template>
             <span>清除</span>
           </Button>

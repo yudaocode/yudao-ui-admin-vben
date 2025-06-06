@@ -15,7 +15,7 @@ import {
 } from '#/api/bpm/processListener';
 import { $t } from '#/locales';
 
-import { EVENT_EXECUTION_OPTIONS, EVENT_OPTIONS, useFormSchema } from '../data';
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<BpmProcessListenerApi.ProcessListenerVO>();
@@ -31,7 +31,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 110,
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -67,55 +67,11 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-
-    // 设置事件
-    formApi.updateSchema([
-      {
-        fieldName: 'type',
-        componentProps: {
-          onChange: (value: string) => {
-            formApi.setFieldValue('event', undefined);
-            formApi.updateSchema([
-              {
-                fieldName: 'event',
-                componentProps: {
-                  options:
-                    value === 'execution'
-                      ? EVENT_EXECUTION_OPTIONS
-                      : EVENT_OPTIONS,
-                },
-              },
-            ]);
-          },
-        },
-      },
-
-      {
-        fieldName: 'valueType',
-        componentProps: {
-          onChange: (value: string) => {
-            formApi.setFieldValue('value', undefined);
-            formApi.updateSchema([
-              {
-                fieldName: 'value',
-                label: value === 'class' ? '类路径' : '表达式',
-                componentProps: {
-                  placeholder:
-                    value === 'class' ? '请输入类路径' : '请输入表达式',
-                },
-              },
-            ]);
-          },
-        },
-      },
-    ]);
-
     // 加载数据
     const data = modalApi.getData<BpmProcessListenerApi.ProcessListenerVO>();
     if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getProcessListener(data.id as number);
@@ -129,7 +85,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[600px]">
+  <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-4" />
   </Modal>
 </template>

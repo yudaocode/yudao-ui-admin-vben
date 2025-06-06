@@ -4,6 +4,7 @@ import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 import { computed, ref, watchEffect } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
@@ -35,6 +36,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['success']);
+
+// 重命名分类对话框
+const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
+  connectedComponent: CategoryRenameForm,
+  destroyOnClose: true,
+});
 
 const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.ModelVO[]>([]);
@@ -98,7 +105,7 @@ const columns = [
 ];
 
 /** 处理模型的排序 */
-const handleModelSort = () => {
+function handleModelSort() {
   // 保存初始数据
   originalData.value = cloneDeep(props.categoryInfo.modelList);
   // 展开数据
@@ -114,10 +121,10 @@ const handleModelSort = () => {
       disabled: false, // 启用排序
     });
   }
-};
+}
 
 /** 处理模型的排序提交 */
-const handleModelSortSubmit = async () => {
+async function handleModelSortSubmit() {
   try {
     // 保存排序
     const ids = modelList.value.map((item) => item.id);
@@ -129,10 +136,10 @@ const handleModelSortSubmit = async () => {
   } catch (error) {
     console.error('排序保存失败', error);
   }
-};
+}
 
 /** 处理模型的排序取消 */
-const handleModelSortCancel = () => {
+function handleModelSortCancel() {
   // 恢复初始数据
   modelList.value = cloneDeep(originalData.value);
   isModelSorting.value = false;
@@ -140,20 +147,20 @@ const handleModelSortCancel = () => {
   if (sortableInstance.value) {
     sortableInstance.value.option('disabled', true);
   }
-};
+}
 
 /** 处理下拉菜单命令 */
-const handleCommand = (command: string) => {
+function handleCommand(command: string) {
   if (command === 'renameCategory') {
     // 打开重命名分类对话框
     categoryRenameModalApi.setData(props.categoryInfo).open();
   } else if (command === 'deleteCategory') {
     handleDeleteCategory();
   }
-};
+}
 
 /** 删除流程分类 */
-const handleDeleteCategory = async () => {
+async function handleDeleteCategory() {
   if (props.categoryInfo.modelList.length > 0) {
     message.warning('该分类下仍有流程定义,不允许删除');
     return;
@@ -170,13 +177,13 @@ const handleDeleteCategory = async () => {
     // 刷新列表
     emit('success');
   });
-};
+}
 
 /** 处理表单详情点击 */
-const handleFormDetail = (row: any) => {
+function handleFormDetail(row: any) {
   // TODO 待实现
   console.warn('待实现', row);
-};
+}
 
 /** 更新 modelList 模型列表 */
 const updateModelList = useDebounceFn(() => {
@@ -205,17 +212,11 @@ watchEffect(() => {
 });
 
 /** 自定义表格行渲染 */
-const customRow = (_record: any) => {
+function customRow(_record: any) {
   return {
     class: isModelSorting.value ? 'cursor-move' : '',
   };
-};
-
-// 重命名分类对话框
-const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
-  connectedComponent: CategoryRenameForm,
-  destroyOnClose: true,
-});
+}
 
 // 处理重命名成功
 const handleRenameSuccess = () => {
@@ -268,7 +269,7 @@ const handleRenameSuccess = () => {
               @click.stop="handleModelSort"
             >
               <template #icon>
-                <span class="icon-[fa--sort-amount-desc]"></span>
+                <IconifyIcon icon="lucide:align-start-vertical" />
               </template>
               排序
             </Button>
@@ -279,7 +280,7 @@ const handleRenameSuccess = () => {
                 class="flex items-center text-[14px]"
               >
                 <template #icon>
-                  <span class="icon-[ant-design--setting-outlined]"></span>
+                  <IconifyIcon icon="lucide:settings" />
                 </template>
                 分类
               </Button>

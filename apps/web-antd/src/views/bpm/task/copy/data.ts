@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmTaskApi } from '#/api/bpm/task';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -32,9 +27,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmTaskApi.TaskVO>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'processInstanceName',
@@ -46,8 +39,12 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'summary',
       title: '摘要',
       minWidth: 200,
-      slots: {
-        default: 'slot-summary',
+      formatter: ({ cellValue }) => {
+        return cellValue && cellValue.length > 0
+          ? cellValue
+              .map((item: any) => `${item.key} : ${item.value}`)
+              .join('\n')
+          : '-';
       },
     },
     {
@@ -70,8 +67,8 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       field: 'createUser.nickname',
       title: '抄送人',
       minWidth: 180,
-      slots: {
-        default: 'slot-createUser',
+      formatter: ({ cellValue }) => {
+        return cellValue || '-';
       },
     },
     {
@@ -86,26 +83,10 @@ export function useGridColumns<T = BpmTaskApi.TaskVO>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 120,
-      align: 'center',
+      width: 120,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '流程名称',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['bpm:task:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

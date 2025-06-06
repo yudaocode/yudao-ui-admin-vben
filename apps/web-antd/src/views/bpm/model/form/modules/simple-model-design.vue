@@ -18,15 +18,15 @@ const emit = defineEmits(['success']);
 const designerRef = ref();
 
 /** 保存成功回调 */
-const handleSuccess = (data?: any) => {
+function handleSuccess(data?: any) {
   if (data) {
     emit('success', data);
   }
-};
+}
 /** 设计器配置校验 */
-const validateConfig = async () => {
+async function validateConfig() {
   return await designerRef.value.validate();
-};
+}
 defineExpose({ validateConfig });
 </script>
 <template>
