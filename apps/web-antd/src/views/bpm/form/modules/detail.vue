@@ -39,7 +39,7 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal
-    class="w-[600px]"
+    class="w-[40%]"
     title="流程表单详情"
     :body-style="{
       maxHeight: '100px',

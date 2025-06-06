@@ -235,7 +235,7 @@ defineExpose({ validate });
       :readonly="false"
       @save="saveSimpleFlowModel"
     />
-    <ErrorModal title="流程设计校验不通过" class="w-[600px]">
+    <ErrorModal title="流程设计校验不通过" class="w-[40%]">
       <div class="mb-2 text-base">以下节点配置不完善，请修改相关配置</div>
       <div
         class="mb-3 rounded-md bg-gray-100 p-2 text-sm"
