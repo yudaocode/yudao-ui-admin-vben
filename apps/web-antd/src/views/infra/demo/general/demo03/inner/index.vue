@@ -26,7 +26,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
-  deleteDemo03StudentListByIds,
+  deleteDemo03StudentList,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
@@ -129,7 +129,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo03StudentListByIds(deleteIds.value);
+    await deleteDemo03StudentList(deleteIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {

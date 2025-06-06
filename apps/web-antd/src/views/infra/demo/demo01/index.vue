@@ -12,7 +12,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
-  deleteDemo01ContactListByIds,
+  deleteDemo01ContactList,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -65,7 +65,7 @@ async function handleDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01ContactListByIds(checkedIds.value);
+    await deleteDemo01ContactList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

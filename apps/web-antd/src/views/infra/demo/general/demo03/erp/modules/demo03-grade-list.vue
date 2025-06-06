@@ -19,7 +19,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo03Grade,
-  deleteDemo03GradeListByIds,
+  deleteDemo03GradeList,
   getDemo03GradePage,
 } from '#/api/infra/demo/demo03/erp';
 import { ContentWrap } from '#/components/content-wrap';
@@ -80,7 +80,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo03GradeListByIds(deleteIds.value);
+    await deleteDemo03GradeList(deleteIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {
