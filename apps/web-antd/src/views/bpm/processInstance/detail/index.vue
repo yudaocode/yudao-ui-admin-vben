@@ -222,7 +222,7 @@ function setFieldPermission(field: string, permission: string) {
 const activeTab = ref('form');
 const taskListRef = ref();
 
-// 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表
+/** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */
 watch(
   () => activeTab.value,
   (newVal) => {
@@ -238,7 +238,7 @@ watch(
 /** 初始化 */
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 onMounted(async () => {
-  getDetail();
+  await getDetail();
   // 获得用户列表
   userOptions.value = await getSimpleUserList();
 });

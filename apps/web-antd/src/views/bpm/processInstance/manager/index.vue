@@ -14,6 +14,7 @@ import {
   getProcessInstanceManagerPage,
 } from '#/api/bpm/processInstance';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { router } from '#/router';
 import { BpmProcessInstanceStatus } from '#/utils';
 

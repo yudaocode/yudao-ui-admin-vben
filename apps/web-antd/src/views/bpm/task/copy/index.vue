@@ -7,6 +7,7 @@ import { Page } from '@vben/common-ui';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessInstanceCopyPage } from '#/api/bpm/processInstance';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
 import { router } from '#/router';
 
 import { useGridColumns, useGridFormSchema } from './data';

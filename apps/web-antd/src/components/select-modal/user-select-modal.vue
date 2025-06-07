@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 // TODO @芋艿：是否有更好的组织形式？！
+// TODO @xingyu：你感觉，这个放到每个 system、infra 模块下，然后新建一个 components，表示每个模块，有一些共享的组件？然后，全局只放通用的（无业务含义的），可以哇？
 import type { Key } from 'ant-design-vue/es/table/interface';
 
 import type { SystemDeptApi } from '#/api/system/dept';

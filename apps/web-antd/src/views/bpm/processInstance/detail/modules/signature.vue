@@ -5,6 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, message, Space, Tooltip } from 'ant-design-vue';
+// TODO @ziye：这个可能，适合放到全局？！因为 element-plus 也用这个；
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';
@@ -36,6 +37,7 @@ const [Modal, modalApi] = useVbenModal({
       ),
     });
     emits('success', signFileUrl);
+    // TODO @ziye：下面有个告警哈；ps：所有告警，皆是错误，可以关注 ide 给的提示哈；
     modalApi.close();
   },
 });

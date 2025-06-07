@@ -25,7 +25,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-// 使用shallowRef减少不必要的深度响应
+// 使用 shallowRef 减少不必要的深度响应
 const columns = shallowRef([
   {
     field: 'name',
