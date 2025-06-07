@@ -100,7 +100,6 @@ async function handleRemove(file: UploadFile) {
 }
 
 async function beforeUpload(file: File) {
-  // 使用现代的Blob.text()方法替代FileReader
   const fileContent = await file.text();
   emit('returnText', fileContent);
 

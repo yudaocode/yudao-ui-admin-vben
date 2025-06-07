@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @xingyu：是不是不引入 @form-create/ant-design-vue 组件哈；保持和 vben 一致~；
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
@@ -139,6 +140,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
+    <!-- TODO @xingyu：建议和别的一致，Modal => FormModal -->
     <AppModal @success="onRefresh" />
     <ChannelModal @success="onRefresh" />
 
@@ -281,6 +283,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #alipayBarConfig="{ row }">
+        <!-- TODO @xingyu：建议用小图标 -->
         <TableAction
           :actions="[
             {
