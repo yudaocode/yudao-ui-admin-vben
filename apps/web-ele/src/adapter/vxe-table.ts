@@ -18,6 +18,8 @@ import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
 
+import '#/adapter/style.css';
+
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
@@ -295,4 +297,5 @@ export type OnActionClickParams<T = Recordable<any>> = {
 export type OnActionClickFn<T = Recordable<any>> = (
   params: OnActionClickParams<T>,
 ) => void;
+export * from '#/components/table-action';
 export type * from '@vben/plugins/vxe-table';
