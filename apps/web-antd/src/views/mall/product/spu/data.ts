@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
+import { handleTree } from '@vben/utils';
+
 import { getCategoryList } from '#/api/mall/product/category';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -18,7 +20,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商品分类',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: () => getCategoryList({}),
+        api: async () => {
+          const res = await getCategoryList({});
+          return handleTree(res, 'id', 'parentId', 'children');
+        },
         fieldNames: { label: 'name', value: 'id', children: 'children' },
       },
     },
@@ -69,16 +74,6 @@ export function useGridColumns<T = MallSpuApi.Spu>(
     {
       field: 'price',
       title: '价格',
-      formatter: 'formatFraction',
-    },
-    {
-      field: 'marketPrice',
-      title: '市场价',
-      formatter: 'formatFraction',
-    },
-    {
-      field: 'costPrice',
-      title: '成本价',
       formatter: 'formatFraction',
     },
     {

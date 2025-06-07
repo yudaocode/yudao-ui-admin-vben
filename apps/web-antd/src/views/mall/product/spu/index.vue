@@ -6,11 +6,16 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  handleTree,
+  treeToString,
+} from '@vben/utils';
 
-import { message, Tabs } from 'ant-design-vue';
+import { Descriptions, message, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getCategoryList } from '#/api/mall/product/category';
 import {
   deleteSpu,
   exportSpu,
@@ -20,12 +25,14 @@ import {
 } from '#/api/mall/product/spu';
 import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
-import { ProductSpuStatusEnum } from '#/utils';
+import { fenToYuan, ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const tabType = ref(0);
+
+const categoryList = ref();
 
 // tabs 数据
 const tabsData = ref([
@@ -171,7 +178,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       height: 80,
     },
     expandConfig: {
-      height: 150,
+      height: 100,
     },
     keepSource: true,
     proxyConfig: {
@@ -204,6 +211,9 @@ function onChangeTab(key: any) {
 
 onMounted(() => {
   getTabCount();
+  getCategoryList({}).then((res) => {
+    categoryList.value = handleTree(res, 'id', 'parentId', 'children');
+  });
 });
 </script>
 
@@ -247,10 +257,36 @@ onMounted(() => {
         />
       </template>
       <template #expand_content="{ row }">
-        <div>
-          <p>商品名称：{{ row.name }}</p>
-          <p>商品价格：{{ row.price }}</p>
-        </div>
+        <Descriptions
+          :column="4"
+          class="mt-4"
+          :label-style="{
+            width: '100px',
+            fontWeight: 'bold',
+            fontSize: '14px',
+          }"
+          :content-style="{ width: '100px', fontSize: '14px' }"
+        >
+          <Descriptions.Item label="商品分类">
+            {{ treeToString(categoryList, row.categoryId) }}
+          </Descriptions.Item>
+          <Descriptions.Item label="商品名称">
+            {{ row.name }}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="市场价">
+            {{ fenToYuan(row.marketPrice) }} 元
+          </Descriptions.Item>
+          <Descriptions.Item label="成本价">
+            {{ fenToYuan(row.costPrice) }} 元
+          </Descriptions.Item>
+          <Descriptions.Item label="浏览量">
+            {{ row.browseCount }}
+          </Descriptions.Item>
+          <Descriptions.Item label="虚拟销量">
+            {{ row.virtualSalesCount }}
+          </Descriptions.Item>
+        </Descriptions>
       </template>
       <template #actions="{ row }">
         <TableAction
