@@ -164,4 +164,48 @@ function handleTree(
   return tree;
 }
 
-export { filterTree, handleTree, mapTree, traverseTreeValues };
+/**
+ * 获取节点的完整结构
+ * @param tree 树数据
+ * @param nodeId 节点 id
+ */
+function treeToString(tree: any[], nodeId: number | string) {
+  if (tree === undefined || !Array.isArray(tree) || tree.length === 0) {
+    console.warn('tree must be an array');
+    return '';
+  }
+  // 校验是否是一级节点
+  const node = tree.find((item) => item.id === nodeId);
+  if (node !== undefined) {
+    return node.name;
+  }
+  let str = '';
+
+  function performAThoroughValidation(arr: any[]) {
+    if (arr === undefined || !Array.isArray(arr) || arr.length === 0) {
+      return false;
+    }
+    for (const item of arr) {
+      if (item.id === nodeId) {
+        str += ` / ${item.name}`;
+        return true;
+      } else if (item.children !== undefined && item.children.length > 0) {
+        str += ` / ${item.name}`;
+        if (performAThoroughValidation(item.children)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  for (const item of tree) {
+    str = `${item.name}`;
+    if (performAThoroughValidation(item.children)) {
+      break;
+    }
+  }
+  return str;
+}
+
+export { filterTree, handleTree, mapTree, traverseTreeValues, treeToString };
