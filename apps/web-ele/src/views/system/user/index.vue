@@ -10,7 +10,7 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteUser,
   exportUser,
@@ -18,7 +18,6 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
-import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 
