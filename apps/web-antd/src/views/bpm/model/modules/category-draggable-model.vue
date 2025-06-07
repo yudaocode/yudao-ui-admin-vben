@@ -344,9 +344,9 @@ const handleRenameSuccess = () => {
                     v-if="!record.icon"
                     class="mr-2.5 flex h-9 w-9 items-center justify-center rounded bg-blue-500 text-white"
                   >
-                    <span style="font-size: 12px">{{
-                      record.name.substring(0, 2)
-                    }}</span>
+                    <span style="font-size: 12px">
+                      {{ record.name.substring(0, 2) }}
+                    </span>
                   </div>
                   <img
                     v-else
