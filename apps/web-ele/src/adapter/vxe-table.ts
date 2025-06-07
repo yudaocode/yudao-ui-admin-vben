@@ -18,6 +18,8 @@ import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
 
+import '#/adapter/style.css';
+
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
