@@ -274,7 +274,7 @@ const [Modal, modalApi] = useVbenModal({
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
               <code
-                v-dompurify-html="codeMap.get(activeKey)"
+                v-html="codeMap.get(activeKey)"
                 class="code-highlight"
               ></code>
             </div>
