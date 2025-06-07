@@ -135,10 +135,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['角色']),
+              label: $t('ui.actionTitle.create', ['文件配置']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
-              auth: ['system:role:create'],
+              auth: ['infra:file-config:create'],
               onClick: handleCreate,
             },
           ]"
