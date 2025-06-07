@@ -43,11 +43,7 @@ defineExpose({
         <template #content>
           <div class="max-w-[200px]">搜索</div>
         </template>
-        <ElButton
-          class="ml-2 font-[8px]"
-          circle
-          @click="onHiddenSearchBar"
-        >
+        <ElButton class="ml-2 font-[8px]" circle @click="onHiddenSearchBar">
           <Search :size="15" />
         </ElButton>
       </ElTooltip>
