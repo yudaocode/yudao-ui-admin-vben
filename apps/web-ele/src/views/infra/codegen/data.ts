@@ -350,7 +350,7 @@ export function useGenerationInfoSubTableFormSchema(
           },
           {
             label: '一对一',
-            value: 'false',
+            value: false,
           },
         ],
       },
