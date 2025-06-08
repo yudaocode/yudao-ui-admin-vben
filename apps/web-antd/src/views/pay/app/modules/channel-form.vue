@@ -159,7 +159,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 </script>
-<!-- TODO @xingyu：支付宝的证书，也是支持上传的哈 -->
+
 <template>
   <Modal :close-on-click-modal="false" :title="title" class="w-[40%]">
     <Form :schema="channelSchema(formType)" />
