@@ -170,7 +170,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'payPrice',
       title: '实际支付',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
       minWidth: 180,
     },
     {

@@ -99,7 +99,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'refundPrice',
       title: '订单金额',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       field: 'user.nickname',

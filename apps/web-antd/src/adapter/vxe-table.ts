@@ -326,8 +326,7 @@ setupVbenVxeTable({
       },
     });
 
-    // TODO @xingyu：这个要不叫 formatAmount2 这种？虽然不直观，但是容易看出来是金额；
-    vxeUI.formats.add('formatFraction', {
+    vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }) {
         if (cellValue === null || cellValue === undefined) {
           return '0.00';

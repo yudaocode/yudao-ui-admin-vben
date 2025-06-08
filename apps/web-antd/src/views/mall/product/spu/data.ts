@@ -74,7 +74,7 @@ export function useGridColumns<T = MallSpuApi.Spu>(
     {
       field: 'price',
       title: '价格',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       field: 'salesCount',
