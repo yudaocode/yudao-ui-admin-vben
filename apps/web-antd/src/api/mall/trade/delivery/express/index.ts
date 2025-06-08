@@ -70,10 +70,3 @@ export function updateDeliveryExpress(
 export function deleteDeliveryExpress(id: number) {
   return requestClient.delete(`/trade/delivery/express/delete?id=${id}`);
 }
-
-/** 导出快递公司 Excel */
-export function exportDeliveryExpress(params: PageParam) {
-  return requestClient.download('/trade/delivery/express/export-excel', {
-    params,
-  });
-}
