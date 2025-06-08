@@ -189,6 +189,8 @@ export namespace MallOrderApi {
   export interface DeliveryRequest {
     /** 订单编号 */
     id?: number;
+    /** 发货方式 */
+    expressType: string;
     /** 物流公司编号 */
     logisticsId: null | number;
     /** 物流编号 */
