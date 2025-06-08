@@ -305,7 +305,7 @@ const handleSave = async () => {
 
     // 返回列表页（排除更新的情况）
     if (actionType !== 'update') {
-      await router.push({ name: 'BpmModel' });
+      router.push({ path: '/bpm/manager/model' });
     }
   } catch (error: any) {
     console.error('保存失败:', error);
@@ -419,11 +419,11 @@ onBeforeUnmount(() => {
 
         <!-- 步骤条 -->
         <div class="flex h-full flex-1 items-center justify-center">
-          <div class="flex h-full w-[400px] items-center justify-between">
+          <div class="flex h-full w-auto items-center justify-center">
             <div
               v-for="(step, index) in steps"
               :key="index"
-              class="relative mx-[15px] flex h-full cursor-pointer items-center"
+              class="relative mx-6 flex h-full cursor-pointer items-center"
               :class="[
                 currentStep === index
                   ? 'border-b-2 border-solid border-blue-500 text-blue-500'
