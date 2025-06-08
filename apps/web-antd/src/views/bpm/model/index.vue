@@ -164,10 +164,10 @@ async function handleCategorySortSubmit() {
           @press-enter="getList"
           class="!w-60"
         />
-        <Button type="primary" @click="createModel">
+        <Button class="ml-2" type="primary" @click="createModel">
           <IconifyIcon icon="lucide:plus" /> 新建模型
         </Button>
-        <Dropdown placement="bottomRight" arrow>
+        <Dropdown class="ml-2" placement="bottomRight" arrow>
           <Button>
             <template #icon>
               <IconifyIcon icon="lucide:settings" />
@@ -207,7 +207,7 @@ async function handleCategorySortSubmit() {
       </div>
 
       <!-- 按照分类，展示其所属的模型列表 -->
-      <div class="px-5" ref="categoryGroupRef">
+      <div class="px-3" ref="categoryGroupRef">
         <CategoryDraggableModel
           v-for="element in categoryGroup"
           :class="isCategorySorting ? 'cursor-move' : ''"

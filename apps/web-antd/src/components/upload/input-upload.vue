@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @xingyu：这个组件，只有 pay 在用，和现有的 file-upload 和 image-upload 有点不一致。是不是可以考虑移除，只在 pay 那搞个复用的组件；
 import type { InputProps, TextAreaProps } from 'ant-design-vue';
 
 import type { FileUploadProps } from './typing';

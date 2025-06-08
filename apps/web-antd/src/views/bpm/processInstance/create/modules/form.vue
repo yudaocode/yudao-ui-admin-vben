@@ -28,7 +28,8 @@ import {
 } from '#/utils';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
-// 类型定义
+
+/** 类型定义 */
 interface ProcessFormData {
   rule: any[];
   option: Record<string, any>;
@@ -121,6 +122,7 @@ async function submitForm() {
 
     message.success('发起流程成功');
 
+    // TODO @ziye：有告警哈；
     closeCurrentTab();
 
     await router.push({ path: '/bpm/task/my' });
