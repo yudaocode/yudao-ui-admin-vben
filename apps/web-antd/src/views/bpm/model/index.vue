@@ -167,7 +167,7 @@ const handleCategorySortSubmit = async () => {
     <CategoryFormModal @success="getList" />
     <Card
       :body-style="{ padding: '10px' }"
-      class="mb-4 h-[98%]"
+      class="mb-4"
       v-spinning="modelListSpinning"
     >
       <div class="flex h-full items-center justify-between pl-5">

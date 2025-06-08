@@ -339,8 +339,7 @@ const handleDeploy = async () => {
     // 发布
     await deployModel(formData.value.id);
     message.success('发布成功');
-    // TODO 返回列表页
-    await router.push({ name: 'BpmModel' });
+    await router.push({ path: '/bpm/manager/model' });
   } catch (error: any) {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
