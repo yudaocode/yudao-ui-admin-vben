@@ -22,22 +22,22 @@ function onRefresh() {
   gridApi.query();
 }
 
-const [AppModal, appModalApi] = useVbenModal({
+const [AppFormModal, appFormModalApi] = useVbenModal({
   connectedComponent: appFrom,
   destroyOnClose: true,
 });
 
-const [ChannelModal, channelModalApi] = useVbenModal({
+const [ChannelFormModal, channelFormModalApi] = useVbenModal({
   connectedComponent: channelFrom,
   destroyOnClose: true,
 });
 
 function handleCreate() {
-  appModalApi.setData(null).open();
+  appFormModalApi.setData(null).open();
 }
 
 function handleEdit(row: Required<PayAppApi.App>) {
-  appModalApi.setData({ id: row.id }).open();
+  appFormModalApi.setData({ id: row.id }).open();
 }
 
 async function handleDelete(row: Required<PayAppApi.App>) {
@@ -101,7 +101,7 @@ function isChannelExists(channels: string[], channelCode: string) {
 }
 
 async function openChannelForm(row: PayAppApi.App, payCode: string) {
-  channelModalApi.setData({ id: row.id, payCode }).open();
+  channelFormModalApi.setData({ id: row.id, payCode }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -140,9 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <!-- TODO @xingyu：建议和别的一致，Modal => FormModal -->
-    <AppModal @success="onRefresh" />
-    <ChannelModal @success="onRefresh" />
+    <AppFormModal @success="onRefresh" />
+    <ChannelFormModal @success="onRefresh" />
 
     <Grid>
       <template #toolbar-tools>
