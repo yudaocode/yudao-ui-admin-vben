@@ -5,6 +5,7 @@ import type { BpmProcessInstanceApi } from '../processInstance';
 import { requestClient } from '#/api/request';
 
 export namespace BpmTaskApi {
+  // TODO @ziye：不用 VO 后缀；注释使用 /** */ 风格；
   /** BPM 流程监听器 VO */
   export interface TaskVO {
     id: number; // 编号

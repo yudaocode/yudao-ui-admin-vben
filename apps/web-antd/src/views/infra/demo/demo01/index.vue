@@ -5,14 +5,14 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
-  deleteDemo01ContactListByIds,
+  deleteDemo01ContactList,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -65,7 +65,7 @@ async function handleDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01ContactListByIds(checkedIds.value);
+    await deleteDemo01ContactList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
@@ -73,10 +73,8 @@ async function handleDeleteBatch() {
   }
 }
 
-// TODO @puhui999：方法名，改成 handleRowCheckboxChange；注释：处理选中表格行
-// TODO @puhui999：deleteIds => checkedIds；然后注释去掉？
-const checkedIds = ref<number[]>([]); // 待删除示例联系人 ID
-function setCheckedIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo01ContactApi.Demo01Contact[];
@@ -121,8 +119,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Demo01ContactApi.Demo01Contact>,
   gridEvents: {
-    checkboxAll: setCheckedIds,
-    checkboxChange: setCheckedIds,
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
   },
 });
 </script>
@@ -153,6 +151,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '批量删除',
               type: 'primary',
               danger: true,
+              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo01-contact:delete'],
               onClick: handleDeleteBatch,

@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
 import { Page } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskDonePage } from '#/api/bpm/task';
 import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
@@ -16,12 +13,23 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'BpmDoneTask' });
 
-const [Grid, gridApi] = useVbenVxeGrid({
+/** 查看历史 */
+function handleHistory(row: BpmTaskApi.TaskManagerVO) {
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: {
+      id: row.processInstance.id,
+      taskId: row.id,
+    },
+  });
+}
+
+const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -47,33 +55,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<BpmTaskApi.TaskVO>) {
-  switch (code) {
-    case 'history': {
-      onHistory(row);
-      break;
-    }
-  }
-}
-
-/** 查看历史 */
-function onHistory(row: BpmTaskApi.TaskVO) {
-  console.warn(row);
-  router.push({
-    name: 'BpmProcessInstanceDetail',
-    query: {
-      id: row.processInstance.id,
-      taskId: row.id,
-    },
-  });
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -92,25 +73,17 @@ function onRefresh() {
     </template>
 
     <Grid table-title="已办任务">
-      <!-- 摘要 -->
-      <template #slot-summary="{ row }">
-        <div
-          class="flex flex-col py-2"
-          v-if="
-            row.processInstance.summary &&
-            row.processInstance.summary.length > 0
-          "
-        >
-          <div
-            v-for="(item, index) in row.processInstance.summary"
-            :key="index"
-          >
-            <span class="text-gray-500">
-              {{ item.key }} : {{ item.value }}
-            </span>
-          </div>
-        </div>
-        <div v-else>-</div>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '历史',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              onClick: handleHistory.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

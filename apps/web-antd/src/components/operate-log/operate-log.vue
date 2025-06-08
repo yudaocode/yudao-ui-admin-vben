@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { OperateLogProps } from './typing';
 
-import { Timeline } from 'ant-design-vue';
+import { formatDateTime } from '@vben/utils';
+
+import { Tag, Timeline } from 'ant-design-vue';
 
 import { DICT_TYPE, getDictLabel, getDictObj } from '#/utils';
 
@@ -38,8 +40,21 @@ function getUserTypeColor(userType: number) {
         :key="log.id"
         :color="getUserTypeColor(log.userType)"
       >
-        <p>{{ log.createTime }}</p>
-        <p>{{ getDictLabel(DICT_TYPE.USER_TYPE, log.userType)[0] }}</p>
+        <template #dot>
+          <p
+            :style="{ backgroundColor: getUserTypeColor(log.userType) }"
+            class="absolute left-[-5px] flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
+          >
+            {{ getDictLabel(DICT_TYPE.USER_TYPE, log.userType)[0] }}
+          </p>
+        </template>
+        <p>{{ formatDateTime(log.createTime) }}</p>
+        <p>
+          <Tag :color="getUserTypeColor(log.userType)">
+            {{ log.userName }}
+          </Tag>
+          {{ log.action }}
+        </p>
       </Timeline.Item>
     </Timeline>
   </div>

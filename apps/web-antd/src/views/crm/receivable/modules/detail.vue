@@ -2,7 +2,7 @@
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -15,21 +15,12 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getReceivable } from '#/api/crm/receivable';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { PermissionList } from '#/views/crm/permission';
+import { ReceivableDetailsInfo } from '#/views/crm/receivable';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 import ReceivableForm from './form.vue';
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
-
-const ReceivableDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
 
 const loading = ref(false);
 
@@ -131,7 +122,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
-          <OperateLog :log-list="receivableLogList" />
+          <AsyncOperateLog :log-list="receivableLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

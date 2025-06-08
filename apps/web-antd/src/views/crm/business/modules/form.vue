@@ -13,7 +13,10 @@ import {
   getBusiness,
   updateBusiness,
 } from '#/api/crm/business';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
+import { erpPriceMultiply } from '#/utils';
+import { ProductEditTable } from '#/views/crm/product';
 
 import { useFormSchema } from '../data';
 
@@ -25,15 +28,37 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['商机']);
 });
 
+function handleUpdateProducts(products: any) {
+  formData.value = modalApi.getData<CrmBusinessApi.Business>();
+  formData.value!.products = products;
+  if (formData.value) {
+    const totalProductPrice =
+      formData.value.products?.reduce(
+        (prev, curr) => prev + curr.totalPrice,
+        0,
+      ) ?? 0;
+    const discountPercent = formData.value.discountPercent;
+    const discountPrice =
+      discountPercent === null
+        ? 0
+        : erpPriceMultiply(totalProductPrice, discountPercent / 100);
+    const totalPrice = totalProductPrice - (discountPrice ?? 0);
+    formData.value!.totalProductPrice = totalProductPrice;
+    formData.value!.totalPrice = totalPrice;
+    formApi.setValues(formData.value!);
+  }
+}
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
-    formItemClass: 'col-span-2',
     labelWidth: 120,
   },
-  layout: 'horizontal',
+  // 一共3列
+  wrapperClass: 'grid-cols-3',
+  layout: 'vertical',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
@@ -47,6 +72,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as CrmBusinessApi.Business;
+    data.products = formData.value?.products;
     try {
       await (formData.value?.id ? updateBusiness(data) : createBusiness(data));
       // 关闭并提示
@@ -80,7 +106,17 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[40%]">
-    <Form class="mx-4" />
+  <Modal :title="getTitle" class="w-[50%]">
+    <Form class="mx-4">
+      <template #product="slotProps">
+        <ProductEditTable
+          v-bind="slotProps"
+          class="w-full"
+          :products="formData?.products ?? []"
+          :biz-type="BizTypeEnum.CRM_BUSINESS"
+          @update:products="handleUpdateProducts"
+        />
+      </template>
+    </Form>
   </Modal>
 </template>

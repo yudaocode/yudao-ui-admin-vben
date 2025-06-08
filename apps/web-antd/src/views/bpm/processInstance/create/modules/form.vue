@@ -28,7 +28,8 @@ import {
 } from '#/utils';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
-// 类型定义
+
+/** 类型定义 */
 interface ProcessFormData {
   rule: any[];
   option: Record<string, any>;
@@ -91,7 +92,7 @@ const activityNodes = ref<ApprovalNodeInfo[]>([]);
 const processInstanceStartLoading = ref(false);
 
 /** 提交按钮 */
-const submitForm = async () => {
+async function submitForm() {
   if (!fApi.value || !props.selectProcessDefinition) {
     return;
   }
@@ -121,6 +122,7 @@ const submitForm = async () => {
 
     message.success('发起流程成功');
 
+    // TODO @ziye：有告警哈；
     closeCurrentTab();
 
     await router.push({ path: '/bpm/task/my' });
@@ -130,10 +132,10 @@ const submitForm = async () => {
   } finally {
     processInstanceStartLoading.value = false;
   }
-};
+}
 
 /** 设置表单信息、获取流程图数据 */
-const initProcessInfo = async (row: any, formVariables?: any) => {
+async function initProcessInfo(row: any, formVariables?: any) {
   // 重置指定审批人
   startUserSelectTasks.value = [];
   startUserSelectAssignees.value = {};
@@ -177,7 +179,7 @@ const initProcessInfo = async (row: any, formVariables?: any) => {
     });
     // 这里暂时无需加载流程图，因为跳出到另外个 Tab；
   }
-};
+}
 
 /** 预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次 */
 watch(
@@ -200,10 +202,10 @@ watch(
 );
 
 /** 获取审批详情 */
-const getApprovalDetail = async (row: {
+async function getApprovalDetail(row: {
   id: string;
   processVariablesStr: string;
-}) => {
+}) {
   try {
     const data = await getApprovalDetailApi({
       processDefinitionId: row.id,
@@ -246,12 +248,12 @@ const getApprovalDetail = async (row: {
     message.error('获取审批详情失败');
     console.error('获取审批详情失败:', error);
   }
-};
+}
 
 /**
  * 设置表单权限
  */
-const setFieldPermission = (field: string, permission: string) => {
+function setFieldPermission(field: string, permission: string) {
   if (permission === BpmFieldPermissionType.READ) {
     // @ts-ignore
     fApi.value?.disabled(true, field);
@@ -264,18 +266,18 @@ const setFieldPermission = (field: string, permission: string) => {
     // @ts-ignore
     fApi.value?.hidden(true, field);
   }
-};
+}
 
 /** 取消发起审批 */
-const handleCancel = () => {
+function handleCancel() {
   emit('cancel');
-};
+}
 
 /** 选择发起人 */
-const selectUserConfirm = (activityId: string, userList: any[]) => {
+function selectUserConfirm(activityId: string, userList: any[]) {
   if (!activityId || !Array.isArray(userList)) return;
   startUserSelectAssignees.value[activityId] = userList.map((item) => item.id);
-};
+}
 
 defineExpose({ initProcessInfo });
 </script>
@@ -293,7 +295,7 @@ defineExpose({ initProcessInfo });
     <template #extra>
       <Space wrap>
         <Button plain type="default" @click="handleCancel">
-          <IconifyIcon icon="mdi:arrow-left" />&nbsp; 返回
+          <IconifyIcon icon="lucide:arrow-left" />&nbsp; 返回
         </Button>
       </Space>
     </template>
@@ -345,11 +347,11 @@ defineExpose({ initProcessInfo });
       <template v-if="activeTab === 'form'">
         <Space wrap class="flex w-full justify-center">
           <Button plain type="primary" @click="submitForm">
-            <IconifyIcon icon="icon-park-outline:check" />
+            <IconifyIcon icon="lucide:check" />
             发起
           </Button>
           <Button plain type="default" @click="handleCancel">
-            <IconifyIcon icon="icon-park-outline:close" />
+            <IconifyIcon icon="lucide:x" />
             取消
           </Button>
         </Space>

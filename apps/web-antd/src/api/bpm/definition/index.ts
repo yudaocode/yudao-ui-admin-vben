@@ -2,9 +2,9 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-/** 流程定义 */
 export namespace BpmProcessDefinitionApi {
-  // 流程定义
+  /** 流程定义 */
+  // TODO @ziye：不用 VO 后缀哈
   export interface ProcessDefinitionVO {
     id: string;
     version: number;

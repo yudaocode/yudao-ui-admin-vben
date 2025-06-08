@@ -18,6 +18,8 @@ import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
 
+import '#/adapter/style.css';
+
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
@@ -263,6 +265,7 @@ setupVbenVxeTable({
     });
 
     // 添加数量格式化，例如金额
+    // TODO @xingyu：建议金额，和数量分开哈；原因是，有些团队希望金额，单独控制；
     vxeUI.formats.add('formatNumber', {
       cellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {
@@ -295,4 +298,5 @@ export type OnActionClickParams<T = Recordable<any>> = {
 export type OnActionClickFn<T = Recordable<any>> = (
   params: OnActionClickParams<T>,
 ) => void;
+export * from '#/components/table-action';
 export type * from '@vben/plugins/vxe-table';

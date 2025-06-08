@@ -14,7 +14,7 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
-import { DICT_TYPE, formatPast2, setConfAndFields2 } from '#/utils';
+import { DICT_TYPE, setConfAndFields2 } from '#/utils';
 
 defineOptions({
   name: 'BpmProcessInstanceTaskList',
@@ -25,7 +25,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-// 使用shallowRef减少不必要的深度响应
+// 使用 shallowRef 减少不必要的深度响应
 const columns = shallowRef([
   {
     field: 'name',
@@ -75,11 +75,7 @@ const columns = shallowRef([
     field: 'durationInMillis',
     title: '耗时',
     minWidth: 180,
-    slots: {
-      default: ({ row }: { row: BpmTaskApi.TaskManagerVO }) => {
-        return formatPast2(row.durationInMillis);
-      },
-    },
+    formatter: 'formatPast2',
   },
 ]);
 
@@ -116,9 +112,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /**
  * 刷新表格数据
  */
-const refresh = (): void => {
+function refresh() {
   gridApi.query();
-};
+}
 
 // 表单相关
 interface TaskForm {

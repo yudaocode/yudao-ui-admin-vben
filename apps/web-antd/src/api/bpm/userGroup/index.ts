@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmUserGroupApi {
+  // TODO @ziye：不用 VO 后缀
   /** BPM 用户组 VO */
   export interface UserGroupVO {
     id: number;

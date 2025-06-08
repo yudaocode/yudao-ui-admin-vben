@@ -80,9 +80,9 @@ const rules: Record<string, Rule[]> = {
 };
 
 /** 表单校验 */
-const validate = async () => {
+async function validate() {
   await formRef.value?.validate();
-};
+}
 
 defineExpose({ validate });
 </script>

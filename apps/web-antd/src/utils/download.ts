@@ -2,7 +2,7 @@
  * 下载工具模块
  * 提供多种文件格式的下载功能
  */
-// 请使用 @vben/utils/download 代替 packages/@core/base/shared/src/utils/download.ts
+// TODO @ziye：请使用 @vben/utils/download 代替 packages/@core/base/shared/src/utils/download.ts
 
 /**
  * 图片下载配置接口

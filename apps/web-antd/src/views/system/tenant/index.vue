@@ -140,7 +140,7 @@ onMounted(async () => {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['system:role:update'],
+              auth: ['system:tenant:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -148,7 +148,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['system:role:delete'],
+              auth: ['system:tenant:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

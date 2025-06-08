@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @xingyu：是不是不引入 @form-create/ant-design-vue 组件哈；保持和 vben 一致~；
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
@@ -21,22 +22,22 @@ function onRefresh() {
   gridApi.query();
 }
 
-const [AppModal, appModalApi] = useVbenModal({
+const [AppFormModal, appFormModalApi] = useVbenModal({
   connectedComponent: appFrom,
   destroyOnClose: true,
 });
 
-const [ChannelModal, channelModalApi] = useVbenModal({
+const [ChannelFormModal, channelFormModalApi] = useVbenModal({
   connectedComponent: channelFrom,
   destroyOnClose: true,
 });
 
 function handleCreate() {
-  appModalApi.setData(null).open();
+  appFormModalApi.setData(null).open();
 }
 
 function handleEdit(row: Required<PayAppApi.App>) {
-  appModalApi.setData({ id: row.id }).open();
+  appFormModalApi.setData({ id: row.id }).open();
 }
 
 async function handleDelete(row: Required<PayAppApi.App>) {
@@ -100,7 +101,7 @@ function isChannelExists(channels: string[], channelCode: string) {
 }
 
 async function openChannelForm(row: PayAppApi.App, payCode: string) {
-  channelModalApi.setData({ id: row.id, payCode }).open();
+  channelFormModalApi.setData({ id: row.id, payCode }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -139,8 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <AppModal @success="onRefresh" />
-    <ChannelModal @success="onRefresh" />
+    <AppFormModal @success="onRefresh" />
+    <ChannelFormModal @success="onRefresh" />
 
     <Grid>
       <template #toolbar-tools>
@@ -185,6 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_APP.code,
@@ -210,6 +212,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_PC.code,
@@ -235,6 +238,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_WAP.code,
@@ -260,6 +264,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_QR.code,
@@ -285,6 +290,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.ALIPAY_BAR.code,
@@ -310,6 +316,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_LITE.code,
@@ -335,6 +342,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_PUB.code,
@@ -360,6 +368,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_APP.code,
@@ -385,6 +394,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_NATIVE.code,
@@ -410,6 +420,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_WAP.code,
@@ -435,6 +446,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WX_BAR.code,
@@ -460,6 +472,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(
                 row.channelCodes,
                 PayChannelEnum.WALLET.code,
@@ -485,6 +498,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               type: 'primary',
+              size: 'small',
               icon: isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)
                 ? 'lucide:check'
                 : 'lucide:x',

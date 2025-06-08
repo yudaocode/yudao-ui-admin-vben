@@ -23,12 +23,12 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'price',
         title: '交易金额',
-        formatter: 'formatFraction',
+        formatter: 'formatAmount2',
       },
       {
         field: 'balance',
         title: '钱包余额',
-        formatter: 'formatFraction',
+        formatter: 'formatAmount2',
       },
       {
         field: 'createTime',

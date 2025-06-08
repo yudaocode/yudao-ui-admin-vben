@@ -119,7 +119,7 @@ onMounted(async () => {
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['菜单']),
+              label: $t('ui.actionTitle.create', ['部门']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:dept:create'],
@@ -140,14 +140,14 @@ onMounted(async () => {
               label: '新增下级',
               type: 'link',
               icon: ACTION_ICON.ADD,
-              auth: ['system:menu:create'],
+              auth: ['system:dept:create'],
               onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['system:menu:update'],
+              auth: ['system:dept:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -155,7 +155,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['system:menu:delete'],
+              auth: ['system:dept:delete'],
               disabled: !!(row.children && row.children.length > 0),
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),

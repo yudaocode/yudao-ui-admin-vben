@@ -58,7 +58,6 @@ async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    // TODO @芋艿：时间筛选，后续处理；
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -114,7 +113,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['system:role:update'],
+              auth: ['system:tenant-package:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -122,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['system:role:delete'],
+              auth: ['system:tenant-package:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

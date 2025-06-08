@@ -3,7 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessExpressionApi {
-  /** BPM 流程表达式 VO */
+  // TODO @ziye：不用 VO 后缀
+  /** 流程表达式 VO */
   export interface ProcessExpressionVO {
     id: number; // 编号
     name: string; // 表达式名字

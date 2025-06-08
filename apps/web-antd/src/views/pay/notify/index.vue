@@ -2,6 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyTaskPage } from '#/api/pay/notify';
@@ -59,6 +60,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <template #doc>
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
+
     <DetailModal @success="onRefresh" />
     <Grid table-title="支付通知列表">
       <template #actions="{ row }">

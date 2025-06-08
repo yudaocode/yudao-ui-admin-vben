@@ -19,7 +19,7 @@ import { createContactBusinessList } from '#/api/crm/contact';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from '../data';
+import { useDetailListColumns } from './detail-data';
 import ListModal from './detail-list-modal.vue';
 import Form from './form.vue';
 

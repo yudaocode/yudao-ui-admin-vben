@@ -1,20 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { DescriptionItemSchema } from '#/components/description';
-
-import { h } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getProductCategoryList } from '#/api/crm/product/category';
-import { DictTag } from '#/components/dict-tag';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  erpPriceInputFormatter,
-  getDictOptions,
-} from '#/utils';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -184,86 +175,25 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 详情页的字段 */
-export function useDetailSchema(): DescriptionItemSchema[] {
+/** 代码生成表格列定义 */
+export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'seq', title: '序号', minWidth: 50 },
     {
-      field: 'categoryName',
-      label: '产品类别',
-    },
-    {
-      field: 'unit',
-      label: '产品单位',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: data?.unit }),
-    },
-    {
-      field: 'price',
-      label: '产品价格',
-      content: (data) => erpPriceInputFormatter(data.price),
-    },
-    {
-      field: 'no',
-      label: '产品编码',
-    },
-  ];
-}
-
-/** 详情页的基础字段 */
-export function useDetailBaseSchema(): DescriptionItemSchema[] {
-  return [
-    {
-      field: 'name',
-      label: '产品名称',
-    },
-    {
-      field: 'no',
-      label: '产品编码',
-    },
-    {
-      field: 'price',
-      label: '价格（元）',
-      content: (data) => erpPriceInputFormatter(data.price),
-    },
-    {
-      field: 'description',
-      label: '产品描述',
-    },
-    {
-      field: 'categoryName',
-      label: '产品类型',
-    },
-    {
-      field: 'status',
-      label: '是否上下架',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_STATUS, value: data?.status }),
-    },
-    {
-      field: 'unit',
-      label: '产品单位',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: data?.unit }),
-    },
-  ];
-}
-
-/** 详情列表的字段 */
-export function useDetailListColumns(
-  showBussinePrice: boolean,
-): VxeTableGridOptions['columns'] {
-  return [
-    {
-      field: 'productName',
+      field: 'productId',
       title: '产品名称',
+      minWidth: 100,
+      slots: { default: 'productId' },
     },
     {
       field: 'productNo',
-      title: '产品条码',
+      title: '条码',
+      minWidth: 150,
     },
     {
       field: 'productUnit',
-      title: '产品单位',
+      title: '单位',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
@@ -271,24 +201,33 @@ export function useDetailListColumns(
     },
     {
       field: 'productPrice',
-      title: '产品价格（元）',
+      title: '价格（元）',
+      minWidth: 100,
       formatter: 'formatNumber',
     },
     {
-      field: 'businessPrice',
-      title: '商机价格（元）',
-      formatter: 'formatNumber',
-      visible: showBussinePrice,
+      field: 'sellingPrice',
+      title: '售价（元）',
+      minWidth: 100,
+      slots: { default: 'sellingPrice' },
     },
     {
       field: 'count',
       title: '数量',
-      formatter: 'formatNumber',
+      minWidth: 100,
+      slots: { default: 'count' },
     },
     {
       field: 'totalPrice',
-      title: '合计金额（元）',
+      title: '合计',
+      minWidth: 100,
       formatter: 'formatNumber',
+    },
+    {
+      title: '操作',
+      width: 80,
+      fixed: 'right',
+      slots: { default: 'actions' },
     },
   ];
 }

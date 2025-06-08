@@ -1,34 +1,127 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallBrandApi } from '#/api/mall/product/brand';
 
-import { Button } from 'ant-design-vue';
+import { Page, useVbenModal } from '@vben/common-ui';
 
-import { DocAlert } from '#/components/doc-alert';
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteBrand, getBrandPage } from '#/api/mall/product/brand';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建品牌 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑品牌 */
+function handleEdit(row: MallBrandApi.Brand) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除品牌 */
+async function handleDelete(row: MallBrandApi.Brand) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteBrand(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getBrandPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallBrandApi.Brand>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="商城手册（功能开启）"
-      url="https://doc.iocoder.cn/mall/build/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/product/brand/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/product/brand/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="品牌列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['品牌']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['product:brand:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['product:brand:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['product:brand:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

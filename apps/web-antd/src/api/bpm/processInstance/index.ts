@@ -8,6 +8,7 @@ import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '#/utils';
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessInstanceApi {
+  // TODO @芋艿：一些注释缺少或者不对；
   export type Task = {
     id: number;
     name: string;
@@ -42,7 +43,7 @@ export namespace BpmProcessInstanceApi {
     tasks: ApprovalTaskInfo[];
   };
 
-  // 流程实例
+  /** 流程实例 */
   export type ProcessInstanceVO = {
     businessKey: string;
     category: string;

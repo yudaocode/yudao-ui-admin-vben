@@ -37,14 +37,6 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (formValues) => !formValues.id,
       },
     },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
     // DB / Local / FTP / SFTP
     {
       fieldName: 'config.basePath',
@@ -220,6 +212,14 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['storage'],
         show: (formValues) => !!formValues.storage,
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
       },
     },
   ];

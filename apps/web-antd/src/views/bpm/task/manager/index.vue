@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
 import { Page } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskManagerPage } from '#/api/bpm/task';
 import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
@@ -16,12 +13,22 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'BpmManagerTask' });
 
+/** 查看历史 */
+function handleHistory(row: BpmTaskApi.TaskManagerVO) {
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: {
+      id: row.processInstance.id,
+    },
+  });
+}
+
 const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -47,30 +54,6 @@ const [Grid] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<BpmTaskApi.TaskManagerVO>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<BpmTaskApi.TaskManagerVO>) {
-  switch (code) {
-    case 'history': {
-      onHistory(row);
-      break;
-    }
-  }
-}
-
-/** 查看历史 */
-function onHistory(row: BpmTaskApi.TaskManagerVO) {
-  console.warn(row);
-  router.push({
-    name: 'BpmProcessInstanceDetail',
-    query: {
-      id: row.processInstance.id,
-    },
-  });
-}
 </script>
 
 <template>
@@ -78,6 +61,20 @@ function onHistory(row: BpmTaskApi.TaskManagerVO) {
     <template #doc>
       <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
     </template>
-    <Grid table-title="流程任务" />
+    <Grid table-title="流程任务">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '历史',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:task:query'],
+              onClick: handleHistory.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

@@ -2,7 +2,7 @@
 import type { CrmProductApi } from '#/api/crm/product';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -14,16 +14,10 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getProduct } from '#/api/crm/product';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { ProductDetailsInfo } from '#/views/crm/product';
 
-import { useDetailSchema } from '../data';
-
-const ProductDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
+import { useDetailSchema } from './detail-data';
 
 const loading = ref(false);
 
@@ -87,7 +81,7 @@ onMounted(() => {
           <ProductDetailsInfo :product="product" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
-          <OperateLog :log-list="productLogList" />
+          <AsyncOperateLog :log-list="productLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
