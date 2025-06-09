@@ -1,31 +1,108 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiWriteApi } from '#/api/ai/write';
+import type { SystemUserApi } from '#/api/system/user';
+
+import { onMounted, ref } from 'vue';
+
 import { Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteWrite, getWritePage } from '#/api/ai/write';
+import { getSimpleUserList } from '#/api/system/user';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+
+const userList = ref<SystemUserApi.User[]>([]); // 用户列表
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 删除 */
+async function handleDelete(row: AiWriteApi.AiWritePageReqVO) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.id]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteWrite(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getWritePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<AiWriteApi.AiWritePageReqVO>,
+});
+onMounted(async () => {
+  // 获得下拉数据
+  userList.value = await getSimpleUserList();
+});
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <DocAlert title="AI 写作助手" url="https://doc.iocoder.cn/ai/write/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/write/manager/index.vue"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/write/manager/index.vue
-      代码，pull request 贡献给我们！
-    </Button>
+    <Grid table-title="写作管理列表">
+      <template #toolbar-tools>
+        <TableAction :actions="[]" />
+      </template>
+      <template #userId="{ row }">
+        <span>{{
+          userList.find((item) => item.id === row.userId)?.nickname
+        }}</span>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['ai:write:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>
