@@ -2,9 +2,11 @@
 import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 
 import { computed, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
@@ -22,7 +24,7 @@ import {
 } from 'ant-design-vue';
 
 import { deleteCategory } from '#/api/bpm/category';
-import { updateModelSortBatch } from '#/api/bpm/model';
+import { deployModel, updateModelSortBatch } from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { DICT_TYPE } from '#/utils';
@@ -43,6 +45,10 @@ const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+const router = useRouter();
+// 获取当前登录用户Id
+const userStore = useUserStore();
+const userId = userStore.userInfo?.id;
 const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.ModelVO[]>([]);
 const modelList = ref<BpmModelApi.ModelVO[]>([]);
@@ -62,7 +68,7 @@ const columns = [
     key: 'name',
     align: 'left' as const,
     ellipsis: true,
-    width: 250,
+    width: 230,
   },
   {
     title: '可见范围',
@@ -78,7 +84,7 @@ const columns = [
     key: 'type',
     align: 'center' as const,
     ellipsis: true,
-    width: 120,
+    width: 150,
   },
   {
     title: '表单信息',
@@ -185,6 +191,68 @@ function handleFormDetail(row: any) {
   console.warn('待实现', row);
 }
 
+/** 判断是否是流程管理员 */
+function isManagerUser(row: any) {
+  return row.managerUserIds && row.managerUserIds.includes(userId);
+}
+
+async function modelOperation(type: string, id: number) {
+  await router.push({
+    name: 'BpmModelUpdate',
+    params: { id, type },
+  });
+}
+
+/** 发布流程 */
+async function handleDeploy(row: any) {
+  confirm({
+    beforeClose: async ({ isConfirm }) => {
+      if (!isConfirm) return;
+      // 发起部署
+      await deployModel(row.id);
+      return true;
+    },
+    content: `确认要发布[${row.name}]流程吗？`,
+    icon: 'question',
+  }).then(async () => {
+    message.success(`发布[${row.name}]流程成功`);
+    // 刷新列表
+    emit('success');
+  });
+}
+
+/** '更多'操作按钮 */
+function handleModelCommand(command: string, row: any) {
+  switch (command) {
+    case 'handleChangeState': {
+      console.warn('停用/启用待实现', row);
+      break;
+    }
+    case 'handleClean': {
+      console.warn('清理待实现', row);
+      break;
+    }
+    case 'handleCopy': {
+      modelOperation('copy', row.id);
+      break;
+    }
+    case 'handleDefinitionList': {
+      console.warn('历史待实现', row);
+      break;
+    }
+    case 'handleDelete': {
+      console.warn('删除待实现', row);
+      break;
+    }
+    case 'handleReport': {
+      console.warn('报表待实现', row);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+}
 /** 更新 modelList 模型列表 */
 const updateModelList = useDebounceFn(() => {
   const newModelList = props.categoryInfo.modelList;
@@ -450,7 +518,72 @@ const handleRenameSuccess = () => {
               </template>
               <!-- 操作列 -->
               <template v-else-if="column.key === 'operation'">
-                <div class="flex items-center justify-center">待实现</div>
+                <div class="flex items-center space-x-0">
+                  <!-- TODO 权限校验-->
+                  <Button
+                    type="link"
+                    size="small"
+                    class="px-1"
+                    @click="modelOperation('update', record.id)"
+                    :disabled="!isManagerUser(record)"
+                  >
+                    修改
+                  </Button>
+                  <Button
+                    type="link"
+                    size="small"
+                    class="px-1"
+                    @click="handleDeploy(record)"
+                    :disabled="!isManagerUser(record)"
+                  >
+                    发布
+                  </Button>
+                  <Dropdown placement="bottomRight" arrow>
+                    <Button type="link" size="small" class="px-1">更多</Button>
+                    <!-- TODO 待实现 -->
+                    <template #overlay>
+                      <Menu
+                        @click="
+                          (e) => handleModelCommand(e.key as string, record)
+                        "
+                      >
+                        <Menu.Item key="handleCopy"> 复制 </Menu.Item>
+                        <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+                        <Menu.Item
+                          key="handleReport"
+                          :disabled="!isManagerUser(record)"
+                        >
+                          报表
+                        </Menu.Item>
+                        <Menu.Item
+                          key="handleChangeState"
+                          v-if="record.processDefinition"
+                          :disabled="!isManagerUser(record)"
+                        >
+                          {{
+                            record.processDefinition.suspensionState === 1
+                              ? '停用'
+                              : '启用'
+                          }}
+                        </Menu.Item>
+                        <Menu.Item
+                          danger
+                          key="handleClean"
+                          :disabled="!isManagerUser(record)"
+                        >
+                          清理
+                        </Menu.Item>
+                        <Menu.Item
+                          danger
+                          key="handleDelete"
+                          :disabled="!isManagerUser(record)"
+                        >
+                          删除
+                        </Menu.Item>
+                      </Menu>
+                    </template>
+                  </Dropdown>
+                </div>
               </template>
             </template>
           </Table>

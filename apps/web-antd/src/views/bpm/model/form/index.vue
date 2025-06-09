@@ -305,7 +305,7 @@ async function handleSave() {
 
     // 返回列表页（排除更新的情况）
     if (actionType !== 'update') {
-      await router.push({ name: 'BpmModel' });
+      router.push({ path: '/bpm/manager/model' });
     }
   } catch (error: any) {
     console.error('保存失败:', error);
@@ -339,8 +339,7 @@ async function handleDeploy() {
     // 发布
     await deployModel(formData.value.id);
     message.success('发布成功');
-    // TODO 返回列表页
-    await router.push({ name: 'BpmModel' });
+    await router.push({ path: '/bpm/manager/model' });
   } catch (error: any) {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
@@ -398,9 +397,11 @@ onBeforeUnmount(() => {
 
 <template>
   <Page auto-content-height>
-    <!-- 主体内容 -->
-    <Card class="mb-4">
-      <template #title>
+    <div class="mx-auto">
+      <!-- 头部导航栏 -->
+      <div
+        class="absolute inset-x-0 top-0 z-10 flex h-12 items-center border-b bg-white px-5"
+      >
         <!-- 左侧标题 -->
         <div class="flex w-[200px] items-center overflow-hidden">
           <ArrowLeft
@@ -414,82 +415,88 @@ onBeforeUnmount(() => {
             {{ formData.name || '创建流程' }}
           </span>
         </div>
-      </template>
-      <template #extra>
-        <Button
-          v-if="actionType === 'update'"
-          type="primary"
-          @click="handleDeploy"
-        >
-          发 布
-        </Button>
-        <Button type="primary" @click="handleSave">
-          <span v-if="actionType === 'definition'">恢 复</span>
-          <span v-else>保 存</span>
-        </Button>
-      </template>
-      <!-- 步骤条 -->
-      <div class="flex h-full flex-1 items-center justify-center">
-        <div class="flex h-full w-[400px] items-center justify-between">
-          <div
-            v-for="(step, index) in steps"
-            :key="index"
-            class="relative mx-[15px] flex h-full cursor-pointer items-center"
-            :class="[
-              currentStep === index
-                ? 'border-b-2 border-solid border-blue-500 text-blue-500'
-                : 'text-gray-500',
-            ]"
-            @click="handleStepClick(index)"
-          >
+
+        <!-- 步骤条 -->
+        <div class="flex h-full flex-1 items-center justify-center">
+          <div class="flex h-full w-auto items-center justify-center">
             <div
-              class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-[15px]"
+              v-for="(step, index) in steps"
+              :key="index"
+              class="relative mx-6 flex h-full cursor-pointer items-center"
               :class="[
                 currentStep === index
-                  ? 'border-blue-500 bg-blue-500 text-white'
-                  : 'border-gray-300 bg-white text-gray-500',
+                  ? 'border-b-2 border-solid border-blue-500 text-blue-500'
+                  : 'text-gray-500',
               ]"
+              @click="handleStepClick(index)"
             >
-              {{ index + 1 }}
+              <div
+                class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-[15px]"
+                :class="[
+                  currentStep === index
+                    ? 'border-blue-500 bg-blue-500 text-white'
+                    : 'border-gray-300 bg-white text-gray-500',
+                ]"
+              >
+                {{ index + 1 }}
+              </div>
+              <span class="whitespace-nowrap text-base font-bold">{{
+                step.title
+              }}</span>
             </div>
-            <span class="whitespace-nowrap text-base font-bold">{{
-              step.title
-            }}</span>
           </div>
         </div>
-      </div>
-      <div class="mt-[50px]">
-        <!-- 第一步：基本信息 -->
-        <div v-if="currentStep === 0" class="mx-auto w-4/6">
-          <BasicInfo
-            v-model="formData"
-            :category-list="categoryList"
-            :user-list="userList"
-            :dept-list="deptList"
-            ref="basicInfoRef"
-          />
-        </div>
-        <!-- 第二步：表单设计  -->
-        <div v-if="currentStep === 1" class="mx-auto w-4/6">
-          <FormDesign
-            v-model="formData"
-            :form-list="formList"
-            ref="formDesignRef"
-          />
-        </div>
 
-        <!-- 第三步：流程设计 -->
-        <ProcessDesign
-          v-if="currentStep === 2"
-          v-model="formData"
-          ref="processDesignRef"
-        />
-
-        <!-- 第四步：更多设置 -->
-        <div v-if="currentStep === 3" class="mx-auto w-4/6">
-          <ExtraSetting v-model="formData" ref="extraSettingRef" />
+        <!-- 右侧按钮 -->
+        <div class="flex w-[200px] items-center justify-end gap-2">
+          <Button
+            v-if="actionType === 'update'"
+            type="primary"
+            @click="handleDeploy"
+          >
+            发 布
+          </Button>
+          <Button type="primary" @click="handleSave">
+            <span v-if="actionType === 'definition'">恢 复</span>
+            <span v-else>保 存</span>
+          </Button>
         </div>
       </div>
-    </Card>
+      <!-- 主体内容 -->
+      <Card :body-style="{ padding: '10px' }" class="mb-4">
+        <div class="mt-[50px]">
+          <!-- 第一步：基本信息 -->
+          <div v-if="currentStep === 0" class="mx-auto w-4/6">
+            <BasicInfo
+              v-model="formData"
+              :category-list="categoryList"
+              :user-list="userList"
+              :dept-list="deptList"
+              ref="basicInfoRef"
+            />
+          </div>
+          <!-- 第二步：表单设计  -->
+          <div v-if="currentStep === 1" class="mx-auto w-4/6">
+            <FormDesign
+              v-model="formData"
+              :form-list="formList"
+              ref="formDesignRef"
+            />
+          </div>
+
+          <!-- 第三步：流程设计 -->
+          <ProcessDesign
+            v-if="currentStep === 2"
+            v-model="formData"
+            ref="processDesignRef"
+          />
+
+          <!-- 第四步：更多设置 -->
+          <div v-if="currentStep === 3" class="mx-auto w-4/6">
+            <ExtraSetting v-model="formData" ref="extraSettingRef" />
+          </div>
+        </div>
+      </Card>
+    </div>
   </Page>
 </template>
