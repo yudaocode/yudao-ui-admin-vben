@@ -170,7 +170,9 @@ async function handleCategorySortSubmit() {
         <Dropdown class="ml-2" placement="bottomRight" arrow>
           <Button>
             <template #icon>
-              <IconifyIcon icon="lucide:settings" />
+              <div class="flex items-center justify-center">
+                <IconifyIcon icon="lucide:settings" />
+              </div>
             </template>
           </Button>
           <template #overlay>
