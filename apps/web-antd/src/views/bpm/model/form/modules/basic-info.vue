@@ -391,7 +391,7 @@ defineExpose({ validate });
         </div>
       </Form.Item>
       <Form.Item label="流程管理员" name="managerUserIds" class="mb-5">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-1">
           <div
             v-for="user in selectedManagerUsers"
             :key="user.id"

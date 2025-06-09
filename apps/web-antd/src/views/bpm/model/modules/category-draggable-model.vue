@@ -24,7 +24,13 @@ import {
 } from 'ant-design-vue';
 
 import { deleteCategory } from '#/api/bpm/category';
-import { deployModel, updateModelSortBatch } from '#/api/bpm/model';
+import {
+  cleanModel,
+  deleteModel,
+  deployModel,
+  updateModelSortBatch,
+  updateModelState,
+} from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { DICT_TYPE } from '#/utils';
@@ -225,11 +231,11 @@ async function handleDeploy(row: any) {
 function handleModelCommand(command: string, row: any) {
   switch (command) {
     case 'handleChangeState': {
-      console.warn('停用/启用待实现', row);
+      handleChangeState(row);
       break;
     }
     case 'handleClean': {
-      console.warn('清理待实现', row);
+      handleClean(row);
       break;
     }
     case 'handleCopy': {
@@ -241,7 +247,7 @@ function handleModelCommand(command: string, row: any) {
       break;
     }
     case 'handleDelete': {
-      console.warn('删除待实现', row);
+      handleDelete(row);
       break;
     }
     case 'handleReport': {
@@ -253,6 +259,64 @@ function handleModelCommand(command: string, row: any) {
     }
   }
 }
+
+/** 更新状态操作 */
+function handleChangeState(row: any) {
+  const state = row.processDefinition.suspensionState;
+  const newState = state === 1 ? 2 : 1;
+  const statusState = state === 1 ? '停用' : '启用';
+  confirm({
+    beforeClose: async ({ isConfirm }) => {
+      if (!isConfirm) return;
+      // 发起更新状态
+      await updateModelState(row.id, newState);
+      return true;
+    },
+    content: `确认要${statusState}流程: "${row.name}" 吗？`,
+    icon: 'question',
+  }).then(async () => {
+    message.success(`${statusState} 流程: "${row.name}" 成功`);
+    // 刷新列表
+    emit('success');
+  });
+}
+
+/** 清理流程操作 */
+function handleClean(row: any) {
+  confirm({
+    beforeClose: async ({ isConfirm }) => {
+      if (!isConfirm) return;
+      // 发起清理操作
+      await cleanModel(row.id);
+      return true;
+    },
+    content: `确认要清理流程: "${row.name}" 吗？`,
+    icon: 'question',
+  }).then(async () => {
+    message.success(`清理流程: "${row.name}" 成功`);
+    // 刷新列表
+    emit('success');
+  });
+}
+
+/** 删除流程操作 */
+function handleDelete(row: any) {
+  confirm({
+    beforeClose: async ({ isConfirm }) => {
+      if (!isConfirm) return;
+      // 发起删除操作
+      await deleteModel(row.id);
+      return true;
+    },
+    content: `确认要删除流程: "${row.name}" 吗？`,
+    icon: 'question',
+  }).then(async () => {
+    message.success(`删除流程: "${row.name}" 成功`);
+    // 刷新列表
+    emit('success');
+  });
+}
+
 /** 更新 modelList 模型列表 */
 const updateModelList = useDebounceFn(() => {
   const newModelList = props.categoryInfo.modelList;
