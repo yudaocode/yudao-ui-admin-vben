@@ -176,13 +176,13 @@ export namespace MallOrderApi {
   /** 交易订单统计 */
   export interface OrderSummary {
     /** 订单数量 */
-    orderCount?: number;
+    orderCount: number;
     /** 订单金额 */
-    orderPayPrice?: string;
+    orderPayPrice: number;
     /** 退款单数 */
-    afterSaleCount?: number;
+    afterSaleCount: number;
     /** 退款金额 */
-    afterSalePrice?: string;
+    afterSalePrice: number;
   }
 
   /** 订单发货请求 */

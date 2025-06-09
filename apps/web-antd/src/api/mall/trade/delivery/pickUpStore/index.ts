@@ -35,6 +35,9 @@ export namespace MallDeliveryPickUpStoreApi {
 
   /** 绑定自提店员请求 */
   export interface BindStaffRequest {
+    id?: number;
+    /** 门店名称 */
+    name: string;
     /** 门店编号 */
     storeId: number;
     /** 用户编号列表 */

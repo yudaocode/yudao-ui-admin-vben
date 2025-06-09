@@ -30,7 +30,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
           label: 'nickname',
           value: 'id',
         },
-        multiple: true,
+        mode: 'tags',
         allowClear: true,
       },
       rules: 'required',
