@@ -7,7 +7,9 @@ import { alert, Page } from '@vben/common-ui';
 
 import { generateMindMap } from '#/api/ai/mindmap';
 import { MindMapContentExample } from '#/utils/constants';
+
 import Left from './modules/Left.vue';
+import Right from './modules/Right.vue';
 
 const ctrl = ref<AbortController>(); // 请求控制
 const isGenerating = ref(false); // 是否正在生成思维导图
@@ -79,6 +81,13 @@ onMounted(() => {
         :is-generating="isGenerating"
         @submit="submit"
         @direct-generate="directGenerate"
+      />
+      <Right
+        ref="rightRef"
+        :generated-content="generatedContent"
+        :is-end="isEnd"
+        :is-generating="isGenerating"
+        :is-start="isStart"
       />
     </div>
   </Page>
