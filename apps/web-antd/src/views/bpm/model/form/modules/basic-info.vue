@@ -326,12 +326,12 @@ defineExpose({ validate });
         </Select>
         <div
           v-if="modelData.startUserType === 1"
-          class="mt-2 flex flex-wrap gap-2"
+          class="mt-2 flex flex-wrap gap-1"
         >
           <div
             v-for="user in selectedStartUsers"
             :key="user.id"
-            class="bg-destructive text-destructive-foreground hover:bg-destructive-hover relative flex h-9 items-center rounded-full pr-2"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200"
           >
             <Avatar
               class="m-1"
@@ -344,7 +344,7 @@ defineExpose({ validate });
             </Avatar>
             {{ user.nickname }}
             <X
-              class="ml-2 size-4 cursor-pointer"
+              class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
               @click="handleRemoveStartUser(user)"
             />
           </div>
@@ -364,17 +364,17 @@ defineExpose({ validate });
         </div>
         <div
           v-if="modelData.startUserType === 2"
-          class="mt-2 flex flex-wrap gap-2"
+          class="mt-2 flex flex-wrap gap-1"
         >
           <div
             v-for="dept in selectedStartDepts"
             :key="dept.id"
-            class="bg-destructive text-destructive-foreground hover:bg-destructive-hover relative flex h-9 items-center rounded-full pr-2 shadow-sm"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 shadow-sm hover:bg-gray-200"
           >
             <IconifyIcon icon="ep:office-building" class="size-6 px-1" />
             {{ dept.name }}
             <X
-              class="ml-2 size-4 cursor-pointer"
+              class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
               @click="handleRemoveStartDept(dept)"
             />
           </div>
@@ -395,7 +395,7 @@ defineExpose({ validate });
           <div
             v-for="user in selectedManagerUsers"
             :key="user.id"
-            class="bg-destructive text-destructive-foreground hover:bg-destructive-hover relative flex h-9 items-center rounded-full pr-2"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200"
           >
             <Avatar
               class="m-1"
@@ -408,7 +408,7 @@ defineExpose({ validate });
             </Avatar>
             {{ user.nickname }}
             <X
-              class="ml-2 size-4 cursor-pointer"
+              class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
               @click="handleRemoveManagerUser(user)"
             />
           </div>
