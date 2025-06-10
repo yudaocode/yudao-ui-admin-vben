@@ -4,7 +4,7 @@ import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
@@ -73,8 +73,7 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     align: 'left' as const,
-    ellipsis: true,
-    width: 230,
+    width: 250,
   },
   {
     title: '可见范围',
@@ -486,7 +485,9 @@ const handleRenameSuccess = () => {
                     class="mr-2.5 h-9 w-9 rounded"
                     alt="图标"
                   />
-                  {{ record.name }}
+                  <EllipsisText :max-width="160" :tooltip-when-ellipsis="true">
+                    {{ record.name }}
+                  </EllipsisText>
                 </div>
               </template>
 
