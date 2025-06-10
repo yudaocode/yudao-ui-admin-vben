@@ -86,6 +86,18 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
+      {
+        path: 'manager/definition',
+        component: () => import('#/views/bpm/model/definition/index.vue'),
+        name: 'BpmProcessDefinition',
+        meta: {
+          title: '流程定义',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-modeler',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
     ],
   },
 ];

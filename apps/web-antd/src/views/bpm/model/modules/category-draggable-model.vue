@@ -257,7 +257,7 @@ function handleModelCommand(command: string, row: any) {
       break;
     }
     case 'handleDefinitionList': {
-      console.warn('历史待实现', row);
+      handleDefinitionList(row);
       break;
     }
     case 'handleDelete': {
@@ -328,6 +328,16 @@ function handleDelete(row: any) {
     message.success(`删除流程: "${row.name}" 成功`);
     // 刷新列表
     emit('success');
+  });
+}
+
+/** 跳转到指定流程定义列表 */
+function handleDefinitionList(row: any) {
+  router.push({
+    name: 'BpmProcessDefinition',
+    query: {
+      key: row.key,
+    },
   });
 }
 
@@ -620,7 +630,6 @@ const handleRenameSuccess = () => {
                   </Button>
                   <Dropdown placement="bottomRight" arrow>
                     <Button type="link" size="small" class="px-1">更多</Button>
-                    <!-- TODO 待实现 -->
                     <template #overlay>
                       <Menu
                         @click="
@@ -629,12 +638,14 @@ const handleRenameSuccess = () => {
                       >
                         <Menu.Item key="handleCopy"> 复制 </Menu.Item>
                         <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+
+                        <!-- TODO 待实现报表
                         <Menu.Item
                           key="handleReport"
                           :disabled="!isManagerUser(record)"
                         >
                           报表
-                        </Menu.Item>
+                        </Menu.Item> -->
                         <Menu.Item
                           key="handleChangeState"
                           v-if="record.processDefinition"
