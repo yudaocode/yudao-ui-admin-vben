@@ -4,7 +4,7 @@ import type { BpmTaskApi } from '#/api/bpm/task';
 
 import { h } from 'vue';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { Button, message, Textarea } from 'ant-design-vue';
 
@@ -14,7 +14,6 @@ import {
   getProcessInstanceMyPage,
 } from '#/api/bpm/processInstance';
 import { DictTag } from '#/components/dict-tag';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '#/utils';
 

@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessStatusApi } from '#/api/crm/business/status';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -11,7 +11,6 @@ import {
   deleteBusinessStatus,
   getBusinessStatusPage,
 } from '#/api/crm/business/status';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';

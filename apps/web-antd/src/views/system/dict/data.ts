@@ -77,6 +77,15 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'type',
+      label: '字典类型',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入字典类型',
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'Select',

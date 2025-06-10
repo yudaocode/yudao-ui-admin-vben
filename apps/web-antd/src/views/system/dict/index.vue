@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
-
-import { DocAlert } from '#/components/doc-alert';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import DataGrid from './modules/data-grid.vue';
 import TypeGrid from './modules/type-grid.vue';

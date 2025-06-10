@@ -8,7 +8,7 @@ import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -19,7 +19,6 @@ import {
   deleteMailTemplate,
   getMailTemplatePage,
 } from '#/api/system/mail/template';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

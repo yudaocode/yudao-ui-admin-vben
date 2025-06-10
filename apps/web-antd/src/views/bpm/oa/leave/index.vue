@@ -4,14 +4,13 @@ import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 
 import { h } from 'vue';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { message, Textarea } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLeavePage } from '#/api/bpm/oa/leave';
 import { cancelProcessInstanceByStartUser } from '#/api/bpm/processInstance';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 
 import { GridFormSchema, useGridColumns } from './data';

@@ -5,7 +5,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import {
   downloadFileFromBlobPart,
   handleTree,
@@ -23,7 +23,6 @@ import {
   getTabsCount,
   updateStatus,
 } from '#/api/mall/product/spu';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { fenToYuan, ProductSpuStatusEnum } from '#/utils';
 

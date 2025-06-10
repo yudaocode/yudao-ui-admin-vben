@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
-
-import { DocAlert } from '#/components/doc-alert';
 </script>
 
 <template>
   <Page>
-    <DocAlert
-      title="AI 工具调用（function calling）"
-      url="https://doc.iocoder.cn/ai/tool/"
-    />
+    <template #doc>
+      <DocAlert
+        title="AI 工具调用（function calling）"
+        url="https://doc.iocoder.cn/ai/tool/"
+      />
+    </template>
     <Button
       danger
       type="link"

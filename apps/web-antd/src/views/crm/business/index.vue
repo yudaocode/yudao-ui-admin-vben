@@ -4,7 +4,7 @@ import type { CrmBusinessApi } from '#/api/crm/business';
 
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -15,7 +15,6 @@ import {
   exportBusiness,
   getBusinessPage,
 } from '#/api/crm/business';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

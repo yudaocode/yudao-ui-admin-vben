@@ -5,14 +5,13 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { h } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, prompt, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
 import { Image, List, Tag, Textarea } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage, updateOrderRemark } from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import {
   DeliveryTypeEnum,

@@ -3,12 +3,11 @@ import type { InfraRedisApi } from '#/api/infra/redis';
 
 import { onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElCard } from 'element-plus';
 
 import { getRedisMonitorInfo } from '#/api/infra/redis';
-import { DocAlert } from '#/components/doc-alert';
 
 import Commands from './modules/commands.vue';
 import Info from './modules/info.vue';

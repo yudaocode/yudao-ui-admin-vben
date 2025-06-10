@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Recordable } from '@vben/types';
+
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemRoleApi } from '#/api/system/role';
 
@@ -13,6 +15,7 @@ import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';
+import { SystemMenuTypeEnum } from '#/utils';
 
 import { useAssignMenuFormSchema } from '../data';
 
@@ -121,6 +124,18 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   });
   return ids;
 }
+
+function getNodeClass(node: Recordable<any>) {
+  const classes: string[] = [];
+  if (node.value?.type === SystemMenuTypeEnum.BUTTON) {
+    classes.push('inline-flex');
+    if (node.index % 3 >= 1) {
+      classes.push('!pl-0');
+    }
+  }
+
+  return classes.join(' ');
+}
 </script>
 
 <template>
@@ -134,9 +149,11 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
           multiple
           bordered
           :expanded="expandedKeys"
+          :get-node-class="getNodeClass"
           v-bind="slotProps"
           value-field="id"
           label-field="name"
+          icon-field="meta.icon"
         />
       </template>
     </Form>
