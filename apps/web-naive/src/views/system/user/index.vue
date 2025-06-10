@@ -8,7 +8,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { ref } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus, Upload } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -22,7 +22,6 @@ import {
   getUserPage,
   updateUserStatus,
 } from '#/api/system/user';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 

@@ -1,34 +1,35 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { ref } from 'vue';
 
-import { Button } from 'ant-design-vue';
+import { DocAlert, Page } from '@vben/common-ui';
 
-import { DocAlert } from '#/components/doc-alert';
+import PropertyGrid from './modules/property-grid.vue';
+import ValueGrid from './modules/value-grid.vue';
+
+const searchPropertyId = ref<number>(); // 搜索的属性ID
+
+function handlePropertyIdSelect(propertyId: number) {
+  searchPropertyId.value = propertyId;
+}
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【商品】商品属性"
-      url="https://doc.iocoder.cn/mall/product-property/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/product/property/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/product/property/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【商品】商品属性"
+        url="https://doc.iocoder.cn/mall/product-property/"
+      />
+    </template>
+    <div class="flex h-full">
+      <!-- 左侧属性列表 -->
+      <div class="w-1/2 pr-3">
+        <PropertyGrid @select="handlePropertyIdSelect" />
+      </div>
+      <!-- 右侧属性数据列表 -->
+      <div class="w-1/2">
+        <ValueGrid :property-id="searchPropertyId" />
+      </div>
+    </div>
   </Page>
 </template>

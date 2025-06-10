@@ -7,7 +7,7 @@ import type { InfraJobApi } from '#/api/infra/job';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, History, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -22,7 +22,6 @@ import {
   runJob,
   updateJobStatus,
 } from '#/api/infra/job';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { InfraJobStatusEnum } from '#/utils';
 

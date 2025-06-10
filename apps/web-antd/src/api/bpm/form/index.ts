@@ -3,7 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmFormApi {
-  // 流程表单
+  /** 流程表单 */
+  // TODO @jason：不用 VO 后缀哈
   export interface FormVO {
     id?: number | undefined;
     name: string;
@@ -23,6 +24,7 @@ export async function getFormPage(params: PageParam) {
 }
 
 /** 获取表单详情 */
+// TODO @ziye：应该不会 string 的情况呢。
 export async function getFormDetail(id: number | string) {
   return requestClient.get<BpmFormApi.FormVO>(`/bpm/form/get?id=${id}`);
 }

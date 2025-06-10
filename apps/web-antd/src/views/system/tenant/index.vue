@@ -5,7 +5,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -13,7 +13,6 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -140,7 +139,7 @@ onMounted(async () => {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['system:role:update'],
+              auth: ['system:tenant:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -148,7 +147,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['system:role:delete'],
+              auth: ['system:tenant:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

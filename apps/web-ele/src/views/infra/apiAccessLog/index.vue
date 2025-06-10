@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -16,7 +16,6 @@ import {
   exportApiAccessLog,
   getApiAccessLogPage,
 } from '#/api/infra/api-access-log';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

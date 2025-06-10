@@ -1,34 +1,118 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallAfterSaleApi } from '#/api/mall/trade/afterSale';
 
-import { Button } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { DocAlert } from '#/components/doc-alert';
+import { DocAlert, Page } from '@vben/common-ui';
+
+import { Button, Tabs } from 'ant-design-vue';
+
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getAfterSalePage } from '#/api/mall/trade/afterSale';
+import { DICT_TYPE, getDictOptions } from '#/utils';
+
+import { useGridColumns, useGridFormSchema } from './data';
+
+const { push } = useRouter();
+
+const status = ref('0');
+const statusTabs = ref([
+  {
+    label: '全部',
+    value: '0',
+  },
+]);
+
+/** 处理退款 */
+function openAfterSaleDetail(row: MallAfterSaleApi.AfterSale) {
+  push({ name: 'TradeAfterSaleDetail', params: { id: row.id } });
+}
+
+/** 查看订单详情 */
+function openOrderDetail(row: MallAfterSaleApi.AfterSale) {
+  push({ name: 'TradeOrderDetail', params: { id: row.id } });
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getAfterSalePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            status: status.value === '0' ? undefined : status.value,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallAfterSaleApi.AfterSale>,
+});
+
+function onChangeStatus(key: number | string) {
+  status.value = key.toString();
+  gridApi.query();
+}
+onMounted(() => {
+  for (const dict of getDictOptions(DICT_TYPE.TRADE_AFTER_SALE_STATUS)) {
+    statusTabs.value.push({
+      label: dict.label,
+      value: dict.value.toString(),
+    });
+  }
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【交易】售后退款"
-      url="https://doc.iocoder.cn/mall/trade-aftersale/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/afterSale/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/afterSale/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【交易】交易订单"
+        url="https://doc.iocoder.cn/mall/trade-order/"
+      />
+    </template>
+    <Grid table-title="退款列表">
+      <template #top>
+        <Tabs class="border-none" @change="onChangeStatus">
+          <Tabs.TabPane
+            v-for="tab in statusTabs"
+            :key="tab.value"
+            :tab="tab.label"
+          />
+        </Tabs>
+      </template>
+      <template #orderNo="{ row }">
+        <Button type="link" @click="openOrderDetail(row)">
+          {{ row.orderNo }}
+        </Button>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '处理退款',
+              type: 'link',
+              onClick: openAfterSaleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

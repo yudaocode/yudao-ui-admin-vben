@@ -152,7 +152,7 @@ function onBack() {
 // ============================== 审核流程相关 ==============================
 
 /** 审批相关：获取审批详情 */
-const getApprovalDetail = async () => {
+async function getApprovalDetail() {
   try {
     const data = await getApprovalDetailApi({
       processDefinitionId: processDefinitionId.value,
@@ -188,13 +188,12 @@ const getApprovalDetail = async () => {
             : [];
       }
     }
-  } finally {
-  }
-};
+  } finally {}
+}
 /** 审批相关：选择发起人 */
-const selectUserConfirm = (id: string, userList: any[]) => {
+function selectUserConfirm(id: string, userList: any[]) {
   startUserSelectAssignees.value[id] = userList?.map((item: any) => item.id);
-};
+}
 
 /** 审批相关：预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次, formData.value可改成实际业务中的特定字段 */
 watch(

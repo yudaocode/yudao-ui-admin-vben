@@ -60,24 +60,24 @@ const processDesignRef = ref<InstanceType<typeof ProcessDesign>>();
 const extraSettingRef = ref<InstanceType<typeof ExtraSetting>>();
 
 /** 步骤校验函数 */
-const validateBasic = async () => {
+async function validateBasic() {
   await basicInfoRef.value?.validate();
-};
+}
 
 /** 表单设计校验 */
-const validateForm = async () => {
+async function validateForm() {
   await formDesignRef.value?.validate();
-};
+}
 
 /** 流程设计校验 */
-const validateProcess = async () => {
+async function validateProcess() {
   await processDesignRef.value?.validate();
-};
+}
 
 /** 更多设置校验 */
-const validateExtra = async () => {
+async function validateExtra() {
   await extraSettingRef.value?.validate();
-};
+}
 
 const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
 
@@ -139,7 +139,7 @@ const deptList = ref<SystemDeptApi.Dept[]>([]);
 
 /** 初始化数据 */
 const actionType = route.params.type as string;
-const initData = async () => {
+async function initData() {
   if (actionType === 'definition') {
     // 情况一：流程定义场景（恢复）
     const definitionId = route.params.id as string;
@@ -200,7 +200,7 @@ const initData = async () => {
 
   // 以前未配置更多设置的流程
   extraSettingRef.value?.initData();
-};
+}
 
 /** 根据类型切换流程数据 */
 watch(
@@ -218,7 +218,7 @@ watch(
 );
 
 /** 校验所有步骤数据是否完整 */
-const validateAllSteps = async () => {
+async function validateAllSteps() {
   // 基本信息校验
   try {
     await validateBasic();
@@ -254,10 +254,10 @@ const validateAllSteps = async () => {
   }
 
   return true;
-};
+}
 
 /** 保存操作 */
-const handleSave = async () => {
+async function handleSave() {
   try {
     // 保存前校验所有步骤的数据
     const result = await validateAllSteps();
@@ -305,16 +305,16 @@ const handleSave = async () => {
 
     // 返回列表页（排除更新的情况）
     if (actionType !== 'update') {
-      await router.push({ name: 'BpmModel' });
+      router.push({ path: '/bpm/manager/model' });
     }
   } catch (error: any) {
     console.error('保存失败:', error);
     // message.warning(error.msg || '请完善所有步骤的必填信息');
   }
-};
+}
 
 /** 发布操作 */
-const handleDeploy = async () => {
+async function handleDeploy() {
   try {
     // 修改场景下直接发布，新增场景下需要先确认
     if (!formData.value.id) {
@@ -339,16 +339,15 @@ const handleDeploy = async () => {
     // 发布
     await deployModel(formData.value.id);
     message.success('发布成功');
-    // TODO 返回列表页
-    await router.push({ name: 'BpmModel' });
+    await router.push({ path: '/bpm/manager/model' });
   } catch (error: any) {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
   }
-};
+}
 
 /** 步骤切换处理 */
-const handleStepClick = async (index: number) => {
+async function handleStepClick(index: number) {
   try {
     if (index !== 0) {
       await validateBasic();
@@ -370,17 +369,17 @@ const handleStepClick = async (index: number) => {
       message.warning('请先完善当前步骤必填信息');
     }
   }
-};
+}
 
 const tabs = useTabs();
 
 /** 返回列表页 */
-const handleBack = () => {
+function handleBack() {
   // 关闭当前页签
   tabs.closeCurrentTab();
   // 跳转到列表页，使用路径， 目前后端的路由 name： 'name'+ menuId
   router.push({ path: '/bpm/manager/model' });
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -419,11 +418,11 @@ onBeforeUnmount(() => {
 
         <!-- 步骤条 -->
         <div class="flex h-full flex-1 items-center justify-center">
-          <div class="flex h-full w-[400px] items-center justify-between">
+          <div class="flex h-full w-auto items-center justify-center">
             <div
               v-for="(step, index) in steps"
               :key="index"
-              class="relative mx-[15px] flex h-full cursor-pointer items-center"
+              class="relative mx-6 flex h-full cursor-pointer items-center"
               :class="[
                 currentStep === index
                   ? 'border-b-2 border-solid border-blue-500 text-blue-500'

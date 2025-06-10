@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -13,7 +13,6 @@ import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

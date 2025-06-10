@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -13,7 +13,6 @@ import {
   exportSmsTemplate,
   getSmsTemplatePage,
 } from '#/api/system/sms/template';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

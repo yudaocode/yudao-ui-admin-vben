@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -13,7 +13,6 @@ import { ElButton } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportLoginLog, getLoginLogPage } from '#/api/system/login-log';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

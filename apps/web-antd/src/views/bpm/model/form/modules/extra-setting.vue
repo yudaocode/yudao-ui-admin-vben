@@ -91,9 +91,9 @@ const numberExample = computed(() => {
 
 /** 是否开启流程前置通知 */
 const processBeforeTriggerEnable = ref(false);
-const handleProcessBeforeTriggerEnableChange = (
+function handleProcessBeforeTriggerEnableChange(
   val: boolean | number | string,
-) => {
+) {
   modelData.value.processBeforeTriggerSetting = val
     ? {
         url: '',
@@ -102,13 +102,11 @@ const handleProcessBeforeTriggerEnableChange = (
         response: [],
       }
     : null;
-};
+}
 
 /** 是否开启流程后置通知 */
 const processAfterTriggerEnable = ref(false);
-const handleProcessAfterTriggerEnableChange = (
-  val: boolean | number | string,
-) => {
+function handleProcessAfterTriggerEnableChange(val: boolean | number | string) {
   modelData.value.processAfterTriggerSetting = val
     ? {
         url: '',
@@ -117,13 +115,11 @@ const handleProcessAfterTriggerEnableChange = (
         response: [],
       }
     : null;
-};
+}
 
 /** 是否开启任务前置通知 */
 const taskBeforeTriggerEnable = ref(false);
-const handleTaskBeforeTriggerEnableChange = (
-  val: boolean | number | string,
-) => {
+function handleTaskBeforeTriggerEnableChange(val: boolean | number | string) {
   modelData.value.taskBeforeTriggerSetting = val
     ? {
         url: '',
@@ -132,11 +128,11 @@ const handleTaskBeforeTriggerEnableChange = (
         response: [],
       }
     : null;
-};
+}
 
 /** 是否开启任务后置通知 */
 const taskAfterTriggerEnable = ref(false);
-const handleTaskAfterTriggerEnableChange = (val: boolean | number | string) => {
+function handleTaskAfterTriggerEnableChange(val: boolean | number | string) {
   modelData.value.taskAfterTriggerSetting = val
     ? {
         url: '',
@@ -145,7 +141,7 @@ const handleTaskAfterTriggerEnableChange = (val: boolean | number | string) => {
         response: [],
       }
     : null;
-};
+}
 
 /** 表单选项 */
 const formField = ref<Array<{ field: string; title: string }>>([]);
@@ -181,7 +177,7 @@ const formFieldOptions4Summary = computed(() => {
 });
 
 /** 兼容以前未配置更多设置的流程 */
-const initData = () => {
+function initData() {
   if (!modelData.value.processIdRule) {
     modelData.value.processIdRule = {
       enable: false,
@@ -218,7 +214,7 @@ const initData = () => {
   if (modelData.value.taskAfterTriggerSetting) {
     taskAfterTriggerEnable.value = true;
   }
-};
+}
 
 /** 监听表单 ID 变化，加载表单数据 */
 watch(
@@ -242,9 +238,9 @@ watch(
 // 表单引用
 const formRef = ref();
 /** 表单校验 */
-const validate = async () => {
+async function validate() {
   await formRef.value?.validate();
-};
+}
 
 defineExpose({ initData, validate });
 </script>

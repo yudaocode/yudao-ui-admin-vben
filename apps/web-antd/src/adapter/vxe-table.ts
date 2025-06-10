@@ -1,3 +1,4 @@
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
 import { h } from 'vue';
@@ -63,7 +64,7 @@ setupVbenVxeTable({
         round: true,
         showOverflow: true,
         size: 'small',
-      },
+      } as VxeTableGridOptions,
     });
 
     // 表格配置项可以用 cellRender: { name: 'CellImage' },
@@ -71,6 +72,16 @@ setupVbenVxeTable({
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
         return h(Image, { src: row[column.field] });
+      },
+    });
+
+    vxeUI.renderer.add('CellImages', {
+      renderTableDefault(_renderOpts, params) {
+        const { column, row } = params;
+        if (column && column.field && row[column.field]) {
+          return row[column.field].map((item: any) => h(Image, { src: item }));
+        }
+        return '';
       },
     });
 
@@ -267,6 +278,38 @@ setupVbenVxeTable({
 
     // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
     // vxeUI.formats.add
+
+    vxeUI.formats.add('formatPast2', {
+      tableCellFormatMethod({ cellValue }) {
+        if (cellValue === null || cellValue === undefined) {
+          return '';
+        }
+        // 定义时间单位常量，便于维护
+        const SECOND = 1000;
+        const MINUTE = 60 * SECOND;
+        const HOUR = 60 * MINUTE;
+        const DAY = 24 * HOUR;
+
+        // 计算各时间单位
+        const day = Math.floor(cellValue / DAY);
+        const hour = Math.floor((cellValue % DAY) / HOUR);
+        const minute = Math.floor((cellValue % HOUR) / MINUTE);
+        const second = Math.floor((cellValue % MINUTE) / SECOND);
+
+        // 根据时间长短返回不同格式
+        if (day > 0) {
+          return `${day} 天${hour} 小时 ${minute} 分钟`;
+        }
+        if (hour > 0) {
+          return `${hour} 小时 ${minute} 分钟`;
+        }
+        if (minute > 0) {
+          return `${minute} 分钟`;
+        }
+        return second > 0 ? `${second} 秒` : `${0} 秒`;
+      },
+    });
+
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
@@ -284,7 +327,7 @@ setupVbenVxeTable({
       },
     });
 
-    vxeUI.formats.add('formatFraction', {
+    vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }) {
         if (cellValue === null || cellValue === undefined) {
           return '0.00';

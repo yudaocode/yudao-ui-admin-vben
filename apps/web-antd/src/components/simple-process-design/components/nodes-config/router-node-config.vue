@@ -201,7 +201,7 @@ function getRouterNode(node: any) {
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-[630px]">
+  <Drawer class="w-[40%]">
     <template #title>
       <div class="flex items-center">
         <Input

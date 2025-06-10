@@ -16,7 +16,7 @@ const processData = inject('processData') as Ref;
 const simpleDesign = ref();
 
 /** 表单校验 */
-const validate = async () => {
+async function validate() {
   // 获取最新的流程数据
   if (!processData.value) {
     throw new Error('请设计流程');
@@ -29,9 +29,9 @@ const validate = async () => {
     }
   }
   return true;
-};
+}
 /** 处理设计器保存成功 */
-const handleDesignSuccess = async (data?: any) => {
+async function handleDesignSuccess(data?: any) {
   if (data) {
     // 创建新的对象以触发响应式更新
     const newModelData = {
@@ -44,7 +44,7 @@ const handleDesignSuccess = async (data?: any) => {
     // 更新表单的模型数据部分
     modelData.value = newModelData;
   }
-};
+}
 
 /** 是否显示设计器 */
 const showDesigner = computed(() => {

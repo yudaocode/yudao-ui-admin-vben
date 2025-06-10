@@ -1,23 +1,19 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
 import { h } from 'vue';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { Button, message, Textarea } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   cancelProcessInstanceByStartUser,
   getProcessInstanceMyPage,
 } from '#/api/bpm/processInstance';
 import { DictTag } from '#/components/dict-tag';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '#/utils';
 
@@ -25,54 +21,21 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'BpmProcessInstanceMy' });
 
-const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: {
-    schema: useGridFormSchema(),
-  },
-  gridOptions: {
-    columns: useGridColumns(onActionClick),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          return await getProcessInstanceMyPage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-        },
-      },
-    },
-    rowConfig: {
-      keyField: 'id',
-    },
-    toolbarConfig: {
-      refresh: { code: 'query' },
-      search: true,
-    },
-    cellConfig: {
-      height: 64,
-    },
-  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
-});
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<BpmTaskApi.TaskVO>) {
-  switch (code) {
-    case 'cancel': {
-      onCancel(row);
-      break;
-    }
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
+/** 查看流程实例 */
+function handleDetail(row: BpmTaskApi.TaskVO) {
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: { id: row.id },
+  });
 }
 
 /** 取消流程实例 */
-function onCancel(row: BpmTaskApi.TaskVO) {
+function handleCancel(row: BpmTaskApi.TaskVO) {
   prompt({
     async beforeClose(scope) {
       if (scope.isConfirm) {
@@ -104,19 +67,37 @@ function onCancel(row: BpmTaskApi.TaskVO) {
   });
 }
 
-/** 查看流程实例 */
-function onDetail(row: BpmTaskApi.TaskVO) {
-  console.warn(row);
-  router.push({
-    name: 'BpmProcessInstanceDetail',
-    query: { id: row.id },
-  });
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getProcessInstanceMyPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+    cellConfig: {
+      height: 64,
+    },
+  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+});
 </script>
 
 <template>
@@ -126,7 +107,6 @@ function onRefresh() {
       url="https://doc.iocoder.cn/bpm/process-instance"
     />
 
-    <FormModal @success="onRefresh" />
     <Grid table-title="流程状态">
       <!-- 摘要 -->
       <template #slot-summary="{ row }">
@@ -154,7 +134,7 @@ function onRefresh() {
           <!-- 单人审批 -->
           <template v-if="row.tasks.length === 1">
             <span>
-              <Button type="link" @click="onDetail(row)">
+              <Button type="link" @click="handleDetail(row)">
                 {{ row.tasks[0].assigneeUser?.nickname }}
               </Button>
               ({{ row.tasks[0].name }}) 审批中
@@ -163,7 +143,7 @@ function onRefresh() {
           <!-- 多人审批 -->
           <template v-else>
             <span>
-              <Button type="link" @click="onDetail(row)">
+              <Button type="link" @click="handleDetail(row)">
                 {{ row.tasks[0].assigneeUser?.nickname }}
               </Button>
               等 {{ row.tasks.length }} 人 ({{ row.tasks[0].name }})审批中
@@ -177,6 +157,28 @@ function onRefresh() {
             :value="row.status"
           />
         </template>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:process-instance:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: $t('ui.actionTitle.cancel'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
+              auth: ['bpm:process-instance:cancel'],
+              onClick: handleCancel.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

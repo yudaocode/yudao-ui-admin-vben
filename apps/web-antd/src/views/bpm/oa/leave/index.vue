@@ -1,23 +1,16 @@
 <script lang="ts" setup>
-import type { PageParam } from '@vben/request';
-
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 
 import { h } from 'vue';
 
-import { Page, prompt } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
-import { Button, message, Textarea } from 'ant-design-vue';
+import { message, Textarea } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLeavePage } from '#/api/bpm/oa/leave';
 import { cancelProcessInstanceByStartUser } from '#/api/bpm/processInstance';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 
 import { GridFormSchema, useGridColumns } from './data';
@@ -27,12 +20,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: GridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page }: PageParam, formValues: any) => {
+        query: async ({ page }, formValues) => {
           return await getLeavePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -52,7 +45,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 创建请假 */
-function onCreate() {
+function handleCreate() {
   router.push({
     name: 'OALeaveCreate',
     query: {
@@ -62,15 +55,15 @@ function onCreate() {
 }
 
 /** 查看请假详情 */
-const onDetail = (row: BpmOALeaveApi.LeaveVO) => {
+function handleDetail(row: BpmOALeaveApi.LeaveVO) {
   router.push({
     name: 'OALeaveDetail',
     query: { id: row.id },
   });
-};
+}
 
 /** 取消请假 */
-const onCancel = (row: BpmOALeaveApi.LeaveVO) => {
+function handleCancel(row: BpmOALeaveApi.LeaveVO) {
   prompt({
     async beforeClose(scope) {
       if (scope.isConfirm) {
@@ -100,35 +93,14 @@ const onCancel = (row: BpmOALeaveApi.LeaveVO) => {
     title: '取消流程',
     modelPropName: 'value',
   });
-};
+}
 
 /** 审批进度 */
-const onProgress = (row: BpmOALeaveApi.LeaveVO) => {
+function handleProgress(row: BpmOALeaveApi.LeaveVO) {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: { id: row.processInstanceId },
   });
-};
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<BpmOALeaveApi.LeaveVO>) {
-  switch (code) {
-    case 'cancel': {
-      onCancel(row);
-      break;
-    }
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'progress': {
-      onProgress(row);
-      break;
-    }
-  }
 }
 
 /** 刷新表格 */
@@ -146,25 +118,48 @@ function onRefresh() {
 
     <Grid table-title="请假列表">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['bpm:category:create']"
-        >
-          <Plus class="size-5" />
-          发起请假
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '发起请假',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['bpm:oa-leave:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
       </template>
-
-      <template #userIds-cell="{ row }">
-        <span
-          v-for="(userId, index) in row.userIds"
-          :key="userId"
-          class="pr-5px"
-        >
-          {{ dataList.find((user) => user.id === userId)?.nickname }}
-          <span v-if="index < row.userIds.length - 1">、</span>
-        </span>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: '审批进度',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
+              onClick: handleProgress.bind(null, row),
+            },
+            {
+              label: '取消',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['bpm:user-group:query'],
+              popConfirm: {
+                title: '取消流程',
+                confirm: handleCancel.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

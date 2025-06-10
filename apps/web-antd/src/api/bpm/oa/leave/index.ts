@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmOALeaveApi {
+  // TODO @ziye：不用 VO 后缀
   export interface LeaveVO {
     id: number;
     status: number;

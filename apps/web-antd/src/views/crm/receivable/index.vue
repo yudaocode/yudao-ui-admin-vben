@@ -5,7 +5,7 @@ import type { CrmReceivableApi } from '#/api/crm/receivable';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Tabs } from 'ant-design-vue';
@@ -17,7 +17,6 @@ import {
   getReceivablePage,
   submitReceivable,
 } from '#/api/crm/receivable';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

@@ -3,7 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmCategoryApi {
-  /** BPM 流程分类 VO */
+  /** 流程分类 VO */
+  // TODO @jason：不用 VO 后缀哈
   export interface CategoryVO {
     id: number;
     name: string;

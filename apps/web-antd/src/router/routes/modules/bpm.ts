@@ -74,6 +74,18 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
+      {
+        path: 'manager/model/:type/:id',
+        component: () => import('#/views/bpm/model/form/index.vue'),
+        name: 'BpmModelUpdate',
+        meta: {
+          title: '修改流程',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-connection',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
     ],
   },
 ];

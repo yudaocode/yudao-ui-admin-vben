@@ -54,22 +54,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '余额',
       field: 'balance',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       title: '累计支出',
       field: 'totalExpense',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       title: '累计充值',
       field: 'totalRecharge',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       title: '冻结金额',
       field: 'freezePrice',
-      formatter: 'formatFraction',
+      formatter: 'formatAmount2',
     },
     {
       title: '创建时间',

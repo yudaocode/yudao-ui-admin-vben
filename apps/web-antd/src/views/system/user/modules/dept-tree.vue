@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { Search } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
-import { Input, Spin, Tree } from 'ant-design-vue';
+import { Input, Tree } from 'ant-design-vue';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 
@@ -66,18 +66,17 @@ onMounted(async () => {
         </template>
       </Input>
     </div>
-    <Spin :spinning="loading">
-      <Tree
-        class="pt-2"
-        v-if="deptTree.length > 0"
-        :tree-data="deptTree"
-        :field-names="{ title: 'name', key: 'id', children: 'children' }"
-        @select="handleSelect"
-        :default-expand-all="true"
-      />
-      <div v-else-if="!loading" class="py-4 text-center text-gray-500">
-        暂无数据
-      </div>
-    </Spin>
+    <Tree
+      :spinning="loading"
+      class="pt-2"
+      v-if="deptTree.length > 0"
+      :tree-data="deptTree"
+      :field-names="{ title: 'name', key: 'id', children: 'children' }"
+      @select="handleSelect"
+      :default-expand-all="true"
+    />
+    <div v-else-if="!loading" class="py-4 text-center text-gray-500">
+      暂无数据
+    </div>
   </div>
 </template>

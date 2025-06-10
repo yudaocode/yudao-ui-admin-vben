@@ -6,7 +6,7 @@ import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -18,7 +18,6 @@ import {
   syncCodegenFromDB,
 } from '#/api/infra/codegen';
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

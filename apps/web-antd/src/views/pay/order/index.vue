@@ -2,13 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayOrderApi } from '#/api/pay/order';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage } from '#/api/pay/order';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

@@ -1,3 +1,4 @@
+// TODO @xingyu：感觉 formatToFraction 可以整合起来；【优先级：低】
 /**
  * 将一个整数转换为分数保留两位小数
  * @param num

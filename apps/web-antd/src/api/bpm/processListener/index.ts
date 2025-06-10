@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessListenerApi {
+  // TODO @ziye：不用 VO 后缀
   /** BPM 流程监听器 VO */
   export interface ProcessListenerVO {
     id: number; // 编号

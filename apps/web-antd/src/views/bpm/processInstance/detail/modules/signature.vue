@@ -5,6 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, message, Space, Tooltip } from 'ant-design-vue';
+// TODO @ziye：这个可能，适合放到全局？！因为 element-plus 也用这个；
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';
@@ -16,6 +17,8 @@ defineOptions({
 
 const emits = defineEmits(['success']);
 
+const signature = ref<InstanceType<typeof Vue3Signature>>();
+
 const [Modal, modalApi] = useVbenModal({
   title: '流程签名',
   onOpenChange(visible) {
@@ -23,42 +26,31 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.close();
     }
   },
-  onConfirm: () => {
-    submit();
+  async onConfirm() {
+    message.success({
+      content: '签名上传中请稍等。。。',
+    });
+    const signFileUrl = await uploadFile({
+      file: download.base64ToFile(
+        signature?.value?.save('image/jpeg') || '',
+        '签名',
+      ),
+    });
+    emits('success', signFileUrl);
+    // TODO @ziye：下面有个告警哈；ps：所有告警，皆是错误，可以关注 ide 给的提示哈；
+    modalApi.close();
   },
 });
-
-const signature = ref<InstanceType<typeof Vue3Signature>>();
-
-const open = async () => {
-  modalApi.open();
-};
-
-defineExpose({ open });
-
-const submit = async () => {
-  message.success({
-    content: '签名上传中请稍等。。。',
-  });
-  const signFileUrl = await uploadFile({
-    file: download.base64ToFile(
-      signature?.value?.save('image/jpeg') || '',
-      '签名',
-    ),
-  });
-  emits('success', signFileUrl);
-  modalApi.close();
-};
 </script>
 
 <template>
-  <Modal class="h-[500px] w-[900px]">
+  <Modal class="h-[40%] w-[60%]">
     <div class="mb-2 flex justify-end">
       <Space>
         <Tooltip title="撤销上一步操作">
           <Button @click="signature?.undo()">
             <template #icon>
-              <IconifyIcon icon="mi:undo" class="mb-[4px] size-[16px]" />
+              <IconifyIcon icon="lucide:undo" class="mb-[4px] size-[16px]" />
             </template>
             撤销
           </Button>
@@ -67,10 +59,7 @@ const submit = async () => {
         <Tooltip title="清空画布">
           <Button @click="signature?.clear()">
             <template #icon>
-              <IconifyIcon
-                icon="mdi:delete-outline"
-                class="mb-[4px] size-[16px]"
-              />
+              <IconifyIcon icon="lucide:trash" class="mb-[4px] size-[16px]" />
             </template>
             <span>清除</span>
           </Button>

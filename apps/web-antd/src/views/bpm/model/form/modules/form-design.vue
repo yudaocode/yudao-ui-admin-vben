@@ -80,9 +80,9 @@ const rules: Record<string, Rule[]> = {
 };
 
 /** 表单校验 */
-const validate = async () => {
+async function validate() {
   await formRef.value?.validate();
-};
+}
 
 defineExpose({ validate });
 </script>
@@ -91,8 +91,8 @@ defineExpose({ validate });
     ref="formRef"
     :model="modelData"
     :rules="rules"
-    :label-col="{ span: 4 }"
-    :wrapper-col="{ span: 20 }"
+    :label-col="{ span: 3 }"
+    :wrapper-col="{ span: 21 }"
     class="mt-5"
   >
     <FormItem label="表单类型" name="formType" class="mb-5">

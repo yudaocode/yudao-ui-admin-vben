@@ -159,6 +159,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 </script>
+
 <template>
   <Modal :close-on-click-modal="false" :title="title" class="w-[40%]">
     <Form :schema="channelSchema(formType)" />

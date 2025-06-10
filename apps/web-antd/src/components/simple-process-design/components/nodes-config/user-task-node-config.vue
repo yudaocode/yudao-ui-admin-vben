@@ -1074,7 +1074,7 @@ onMounted(() => {
               </FormItem>
             </div>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">是否需要签名</Divider>
               <FormItem name="signEnable">
                 <Switch

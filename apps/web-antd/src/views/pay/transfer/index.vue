@@ -2,12 +2,11 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayTransferApi } from '#/api/pay/transfer';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportTransfer, getTransferPage } from '#/api/pay/transfer';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

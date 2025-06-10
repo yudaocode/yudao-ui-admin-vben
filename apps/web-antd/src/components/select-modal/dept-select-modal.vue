@@ -9,7 +9,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Button, Card, Col, Row, Tree } from 'ant-design-vue';
+import { Card, Col, Row, Tree } from 'ant-design-vue';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 
@@ -41,24 +41,6 @@ const emit = defineEmits<{
   confirm: [deptList: SystemDeptApi.Dept[]];
 }>();
 
-// 对话框配置
-const [Modal, modalApi] = useVbenModal({
-  title: props.title,
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      resetData();
-      return;
-    }
-    modalApi.setState({ loading: true });
-    try {
-      deptData.value = await getSimpleDeptList();
-      deptTree.value = handleTree(deptData.value) as DataNode[];
-    } finally {
-      modalApi.setState({ loading: false });
-    }
-  },
-  destroyOnClose: true,
-});
 type checkedKeys = number[] | { checked: number[]; halfChecked: number[] };
 // 部门树形结构
 const deptTree = ref<DataNode[]>([]);
@@ -67,25 +49,56 @@ const selectedDeptIds = ref<checkedKeys>([]);
 // 部门数据
 const deptData = ref<SystemDeptApi.Dept[]>([]);
 
-/** 打开对话框 */
-const open = async (selectedList?: SystemDeptApi.Dept[]) => {
-  modalApi.open();
-  // // 设置已选择的部门
-  if (selectedList?.length) {
-    const selectedIds = selectedList
-      .map((dept) => dept.id)
-      .filter((id): id is number => id !== undefined);
-    selectedDeptIds.value = props.checkStrictly
-      ? {
-          checked: selectedIds,
-          halfChecked: [],
-        }
-      : selectedIds;
-  }
-};
+// 对话框配置
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    // 获取选中的部门ID
+    const selectedIds: number[] = Array.isArray(selectedDeptIds.value)
+      ? selectedDeptIds.value
+      : selectedDeptIds.value.checked || [];
+    const deptArray = deptData.value.filter((dept) =>
+      selectedIds.includes(dept.id!),
+    );
+    emit('confirm', deptArray);
+    // 关闭并提示
+    await modalApi.close();
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      deptTree.value = [];
+      selectedDeptIds.value = [];
+      return;
+    }
+    // 加载数据
+    const data = modalApi.getData();
+    if (!data) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      deptData.value = await getSimpleDeptList();
+      deptTree.value = handleTree(deptData.value) as DataNode[];
+      // // 设置已选择的部门
+      if (data.selectedList?.length) {
+        const selectedIds = data.selectedList
+          .map((dept: SystemDeptApi.Dept) => dept.id)
+          .filter((id: number) => id !== undefined);
+        selectedDeptIds.value = props.checkStrictly
+          ? {
+              checked: selectedIds,
+              halfChecked: [],
+            }
+          : selectedIds;
+      }
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  destroyOnClose: true,
+});
 
 /** 处理选中状态变化 */
-const handleCheck = () => {
+function handleCheck() {
   if (!props.multiple) {
     // 单选模式下，只保留最后选择的节点
     if (Array.isArray(selectedDeptIds.value)) {
@@ -106,37 +119,10 @@ const handleCheck = () => {
       }
     }
   }
-};
-
-/** 提交选择 */
-const handleConfirm = async () => {
-  // 获取选中的部门ID
-  const selectedIds: number[] = Array.isArray(selectedDeptIds.value)
-    ? selectedDeptIds.value
-    : selectedDeptIds.value.checked || [];
-  const deptArray = deptData.value.filter((dept) =>
-    selectedIds.includes(dept.id!),
-  );
-  // 关闭并提示
-  await modalApi.close();
-  emit('confirm', deptArray);
-};
-
-const handleCancel = () => {
-  modalApi.close();
-};
-
-/** 重置数据 */
-const resetData = () => {
-  deptTree.value = [];
-  selectedDeptIds.value = [];
-};
-
-/** 提供 open 方法，用于打开对话框 */
-defineExpose({ open });
+}
 </script>
 <template>
-  <Modal>
+  <Modal :title="title" key="dept-select-modal" class="w-[40%]">
     <Row class="h-full">
       <Col :span="24">
         <Card class="h-full">
@@ -153,9 +139,5 @@ defineExpose({ open });
         </Card>
       </Col>
     </Row>
-    <template #footer>
-      <Button @click="handleCancel">{{ cancelText }}</Button>
-      <Button type="primary" @click="handleConfirm">{{ confirmText }}</Button>
-    </template>
   </Modal>
 </template>
