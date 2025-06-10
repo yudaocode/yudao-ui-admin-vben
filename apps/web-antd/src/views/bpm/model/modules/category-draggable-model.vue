@@ -33,10 +33,12 @@ import {
 } from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils';
+import { BpmModelFormType, DICT_TYPE } from '#/utils';
 
 // 导入重命名表单
 import CategoryRenameForm from '../../category/modules/rename-form.vue';
+// 导入 FormCreate 表单详情
+import FormCreateDetail from '../../form/modules/detail.vue';
 
 const props = defineProps<{
   categoryInfo: ModelCategoryInfo;
@@ -45,9 +47,15 @@ const props = defineProps<{
 
 const emit = defineEmits(['success']);
 
-// 重命名分类对话框
+/** 重命名分类对话框 */
 const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
   connectedComponent: CategoryRenameForm,
+  destroyOnClose: true,
+});
+
+/** 流程表单详情对话框 */
+const [FormCreateDetailModal, formCreateDetailModalApi] = useVbenModal({
+  connectedComponent: FormCreateDetail,
   destroyOnClose: true,
 });
 
@@ -192,8 +200,15 @@ async function handleDeleteCategory() {
 
 /** 处理表单详情点击 */
 function handleFormDetail(row: any) {
-  // TODO 待实现
-  console.warn('待实现', row);
+  if (row.formType === BpmModelFormType.NORMAL) {
+    const data = {
+      id: row.formId,
+    };
+    formCreateDetailModalApi.setData(data).open();
+  } else {
+    // TODO 待实现
+    console.warn('业务表单待实现', row);
+  }
 }
 
 /** 判断是否是流程管理员 */
@@ -544,7 +559,7 @@ const handleRenameSuccess = () => {
               <template v-else-if="column.key === 'formType'">
                 <!-- TODO BpmModelFormType.NORMAL -->
                 <Button
-                  v-if="record.formType === 10"
+                  v-if="record.formType === BpmModelFormType.NORMAL"
                   type="link"
                   @click="handleFormDetail(record)"
                 >
@@ -552,7 +567,7 @@ const handleRenameSuccess = () => {
                 </Button>
                 <!-- TODO BpmModelFormType.CUSTOM -->
                 <Button
-                  v-else-if="record.formType === 20"
+                  v-else-if="record.formType === BpmModelFormType.CUSTOM"
                   type="link"
                   @click="handleFormDetail(record)"
                 >
@@ -658,6 +673,8 @@ const handleRenameSuccess = () => {
 
     <!-- 重命名分类弹窗 -->
     <CategoryRenameModal @success="handleRenameSuccess" />
+    <!-- 流程表单详情对话框 -->
+    <FormCreateDetailModal />
   </div>
 </template>
 
