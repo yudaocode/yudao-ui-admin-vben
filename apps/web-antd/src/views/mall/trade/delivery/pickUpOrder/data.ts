@@ -42,7 +42,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['deliveryType'],
-        show: (values) => values.deliveryType === DeliveryTypeEnum.PICK_UP.type,
+        trigger: (values) =>
+          values.deliveryType === DeliveryTypeEnum.PICK_UP.type,
       },
     },
   ];
