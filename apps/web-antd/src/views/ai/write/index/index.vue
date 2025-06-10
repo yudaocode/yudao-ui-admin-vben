@@ -1,28 +1,86 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { AiWriteApi } from '#/api/ai/write';
 
-import { Button } from 'ant-design-vue';
+import { nextTick, ref } from 'vue';
+
+import { alert, Page } from '@vben/common-ui';
+
+import { writeStream } from '#/api/ai/write';
+import { WriteExample } from '#/utils/constants';
+
+import Left from './components/Left.vue';
+import Right from './components/Right.vue';
+
+const writeResult = ref(''); // 写作结果
+const isWriting = ref(false); // 是否正在写作中
+const abortController = ref<AbortController>(); // // 写作进行中 abort 控制器(控制 stream 写作)
+
+/** 停止 stream 生成 */
+const stopStream = () => {
+  abortController.value?.abort();
+  isWriting.value = false;
+};
+
+/** 执行写作 */
+const rightRef = ref<InstanceType<typeof Right>>();
+
+const submit = (data: Partial<AiWriteApi.WriteVO>) => {
+  abortController.value = new AbortController();
+  writeResult.value = '';
+  isWriting.value = true;
+  writeStream({
+    data,
+    onMessage: async (res: any) => {
+      const { code, data, msg } = JSON.parse(res.data);
+      if (code !== 0) {
+        alert(`写作异常! ${msg}`);
+        stopStream();
+        return;
+      }
+      writeResult.value = writeResult.value + data;
+      // 滚动到底部
+      await nextTick();
+      rightRef.value?.scrollToBottom();
+    },
+    ctrl: abortController.value,
+    onClose: stopStream,
+    onError: (error: any) => {
+      console.error('写作异常', error);
+      stopStream();
+      // 需要抛出异常，禁止重试
+      throw error;
+    },
+  });
+};
+
+/** 点击示例触发 */
+const handleExampleClick = (type: keyof typeof WriteExample) => {
+  writeResult.value = WriteExample[type].data;
+};
+
+/** 点击重置的时候清空写作的结果*/
+const reset = () => {
+  writeResult.value = '';
+};
 </script>
 
 <template>
-  <Page>
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/write/index/index.vue"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/write/index/index.vue
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <div class="absolute bottom-0 left-0 right-0 top-0 flex">
+      <Left
+        :is-writing="isWriting"
+        class="h-full"
+        @submit="submit"
+        @reset="reset"
+        @example="handleExampleClick"
+      />
+      <Right
+        :is-writing="isWriting"
+        @stop-stream="stopStream"
+        ref="rightRef"
+        class="flex-grow"
+        v-model:content="writeResult"
+      />
+    </div>
   </Page>
 </template>

@@ -1,31 +1,162 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiKnowledgeKnowledgeApi } from '#/api/ai/knowledge/knowledge';
 
-import { Button } from 'ant-design-vue';
+import { useRouter } from 'vue-router';
 
+import { Page, useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteKnowledge,
+  getKnowledgePage,
+} from '#/api/ai/knowledge/knowledge';
 import { DocAlert } from '#/components/doc-alert';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑 */
+function handleEdit(row: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除 */
+async function handleDelete(row: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteKnowledge(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+/** 文档按钮操作 */
+const router = useRouter();
+const handleDocument = (id: number) => {
+  router.push({
+    name: 'AiKnowledgeDocument',
+    query: { knowledgeId: id },
+  });
+};
+
+/** 跳转到文档召回测试页面 */
+const handleRetrieval = (id: number) => {
+  router.push({
+    name: 'AiKnowledgeRetrieval',
+    query: { id },
+  });
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getKnowledgePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<AiKnowledgeKnowledgeApi.KnowledgeVO>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert title="AI 知识库" url="https://doc.iocoder.cn/ai/knowledge/" />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/knowledge/knowledge/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/knowledge/knowledge/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <DocAlert title="AI 手册" url="https://doc.iocoder.cn/ai/build/" />
+    <FormModal @success="onRefresh" />
+    <Grid table-title="AI 知识库列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['AI 知识库']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['ai:knowledge:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['ai:knowledge:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('ui.widgets.document'),
+              type: 'link',
+              auth: ['ai:knowledge:query'],
+              onClick: handleDocument.bind(null, row.id),
+            },
+            {
+              label: '召回测试',
+              type: 'link',
+              auth: ['ai:knowledge:query'],
+              onClick: handleRetrieval.bind(null, row.id),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              auth: ['ai:api-key:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

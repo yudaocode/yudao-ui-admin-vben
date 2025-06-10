@@ -50,13 +50,19 @@ export namespace AiWriteApi {
   }
 }
 
-export function writeStream(
-  data: any,
-  onClose: any,
-  onMessage: any,
-  onError: any,
-  ctrl: any,
-) {
+export function writeStream({
+  data,
+  onClose,
+  onMessage,
+  onError,
+  ctrl,
+}: {
+  ctrl: AbortController;
+  data: Partial<AiWriteApi.WriteVO>;
+  onClose?: (...args: any[]) => void;
+  onError?: (...args: any[]) => void;
+  onMessage?: (res: any) => void;
+}) {
   const token = accessStore.accessToken;
   return fetchEventSource(
     `${import.meta.env.VITE_BASE_URL}/ai/write/generate-stream`,

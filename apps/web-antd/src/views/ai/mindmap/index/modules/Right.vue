@@ -37,9 +37,11 @@ onMounted(() => {
     if (contentAreaHeight.value && !initialized) {
       /** 初始化思维导图 */
       try {
-        markMap = Markmap.create(svgRef.value!);
-        const { el } = Toolbar.create(markMap);
-        toolBarRef.value?.append(el);
+        if (!markMap) {
+          markMap = Markmap.create(svgRef.value!);
+          const { el } = Toolbar.create(markMap);
+          toolBarRef.value?.append(el);
+        }
         nextTick(update);
       } catch {
         message.error('思维导图初始化失败');
