@@ -4,7 +4,7 @@ import type { CrmProductCategoryApi } from '#/api/crm/product/category';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -13,7 +13,6 @@ import {
   deleteProductCategory,
   getProductCategoryList,
 } from '#/api/crm/product/category';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -15,7 +15,6 @@ import {
   deleteSocialClient,
   getSocialClientPage,
 } from '#/api/system/social/client';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

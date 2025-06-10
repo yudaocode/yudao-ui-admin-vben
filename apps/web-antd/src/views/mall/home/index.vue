@@ -8,7 +8,12 @@ import type {
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { AnalysisOverview, Page, WorkbenchQuickNav } from '@vben/common-ui';
+import {
+  AnalysisOverview,
+  DocAlert,
+  Page,
+  WorkbenchQuickNav,
+} from '@vben/common-ui';
 import {
   SvgBellIcon,
   SvgCakeIcon,
@@ -19,7 +24,6 @@ import { isString, openWindow } from '@vben/utils';
 
 import { getUserCountComparison } from '#/api/mall/statistics/member';
 import { getOrderComparison } from '#/api/mall/statistics/trade';
-import { DocAlert } from '#/components/doc-alert';
 
 /** 商城首页 */
 defineOptions({ name: 'MallHome' });

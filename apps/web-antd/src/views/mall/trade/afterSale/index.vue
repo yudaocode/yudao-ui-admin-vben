@@ -5,13 +5,12 @@ import type { MallAfterSaleApi } from '#/api/mall/trade/afterSale';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button, Tabs } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';
-import { DocAlert } from '#/components/doc-alert';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';

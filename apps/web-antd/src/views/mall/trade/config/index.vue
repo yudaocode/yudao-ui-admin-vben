@@ -3,13 +3,12 @@ import type { MallTradeConfigApi } from '#/api/mall/trade/config';
 
 import { onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Card, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getTradeConfig, saveTradeConfig } from '#/api/mall/trade/config';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useFormSchema } from './data';

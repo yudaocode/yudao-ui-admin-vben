@@ -5,14 +5,13 @@ import type { BpmFormApi } from '#/api/bpm/form';
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteForm, getFormPage } from '#/api/bpm/form';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 
 import { useGridColumns, useGridFormSchema } from './data';

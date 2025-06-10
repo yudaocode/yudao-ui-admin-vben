@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
-
-import { DocAlert } from '#/components/doc-alert';
 </script>
 
 <template>
   <Page>
-    <DocAlert title="AI 思维导图" url="https://doc.iocoder.cn/ai/mindmap/" />
+    <template #doc>
+      <DocAlert title="AI 思维导图" url="https://doc.iocoder.cn/ai/mindmap/" />
+    </template>
     <Button
       danger
       type="link"

@@ -4,7 +4,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { computed, onMounted, ref, watchEffect } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 import { formatDate } from '@vben/utils';
 
@@ -24,7 +24,6 @@ import {
 
 import { message } from '#/adapters/message';
 import { getSimpleUserList } from '#/api/system/user';
-import { DocAlert } from '#/components/doc-alert';
 
 const accessStore = useAccessStore();
 const refreshToken = accessStore.refreshToken as string;

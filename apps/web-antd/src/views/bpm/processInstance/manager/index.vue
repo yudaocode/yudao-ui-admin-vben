@@ -4,7 +4,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { h } from 'vue';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { message, Textarea } from 'ant-design-vue';
 
@@ -13,7 +13,6 @@ import {
   cancelProcessInstanceByAdmin,
   getProcessInstanceManagerPage,
 } from '#/api/bpm/processInstance';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { router } from '#/router';
 import { BpmProcessInstanceStatus } from '#/utils';

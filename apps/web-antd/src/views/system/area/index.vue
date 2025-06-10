@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Search } from '@vben/icons';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAreaTree } from '#/api/system/area';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';

@@ -4,7 +4,7 @@ import type { MallCommentApi } from '#/api/mall/product/comment';
 
 import { h } from 'vue';
 
-import { confirm, Page, prompt, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
 import { message, Textarea } from 'ant-design-vue';
 
@@ -14,7 +14,6 @@ import {
   replyComment,
   updateCommentVisible,
 } from '#/api/mall/product/comment';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

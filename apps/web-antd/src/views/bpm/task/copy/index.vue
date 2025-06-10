@@ -2,11 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessInstanceCopyPage } from '#/api/bpm/processInstance';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { router } from '#/router';
 
