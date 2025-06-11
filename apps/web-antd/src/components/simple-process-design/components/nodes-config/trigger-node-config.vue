@@ -72,7 +72,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.TRIGGER_NODE,
 );
 // 触发器表单配置
@@ -388,6 +388,7 @@ onMounted(() => {
     <template #title>
       <div class="config-header">
         <Input
+          ref="inputRef"
           v-if="showInput"
           type="text"
           class="config-editable-input"

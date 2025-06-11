@@ -41,7 +41,7 @@ const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 /** 当前节点 */
 const currentNode = useWatchNode(props);
 /** 节点名称 */
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.ROUTER_BRANCH_NODE,
 );
 const routerGroups = ref<RouterSetting[]>([]);
@@ -205,6 +205,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
     <template #title>
       <div class="flex items-center">
         <Input
+          ref="inputRef"
           v-if="showInput"
           type="text"
           class="mr-2 w-48"

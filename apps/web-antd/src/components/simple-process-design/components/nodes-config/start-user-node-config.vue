@@ -52,7 +52,7 @@ const deptOptions = inject<Ref<SystemDeptApi.Dept[]>>('deptList');
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.START_USER_NODE,
 );
 // 激活的 Tab 标签页
@@ -145,8 +145,8 @@ defineExpose({ showStartUserNodeConfig });
   <Drawer>
     <template #title>
       <div class="config-header">
-        <!--    TODO v-mountedFocus 自动聚集 需要迁移一下 -->
         <Input
+          ref="inputRef"
           v-if="showInput"
           type="text"
           class="config-editable-input"

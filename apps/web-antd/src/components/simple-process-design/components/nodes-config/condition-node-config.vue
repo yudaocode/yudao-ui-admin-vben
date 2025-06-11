@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -53,8 +53,6 @@ const condition = ref<any>({
   },
 });
 
-// 显示名称输入框
-const showInput = ref(false);
 const conditionRef = ref();
 const fieldOptions = useFormFieldsAndStartUser(); // 流程表单字段和发起人字段
 
@@ -130,7 +128,18 @@ watch(
     currentNode.value = newValue;
   },
 );
-
+// 显示名称输入框
+const showInput = ref(false);
+// 输入框的引用
+const inputRef = ref<HTMLInputElement | null>(null);
+// 监听 showInput 的变化，当变为 true 时自动聚焦
+watch(showInput, (value) => {
+  if (value) {
+    nextTick(() => {
+      inputRef.value?.focus();
+    });
+  }
+});
 function clickIcon() {
   showInput.value = true;
 }
@@ -153,6 +162,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
     <template #title>
       <div class="flex items-center">
         <Input
+          ref="inputRef"
           v-if="showInput"
           type="text"
           class="mr-2 w-48"

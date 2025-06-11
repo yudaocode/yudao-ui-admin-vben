@@ -75,7 +75,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const currentNode = useWatchNode(props);
 
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.COPY_TASK_NODE,
 );
 
@@ -213,6 +213,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
       <div class="config-header">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="config-editable-input"
           @blur="blurEvent()"

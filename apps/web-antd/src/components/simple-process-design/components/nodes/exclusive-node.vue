@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
-import { getCurrentInstance, inject, ref, watch } from 'vue';
+import { getCurrentInstance, inject, nextTick, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
@@ -51,8 +51,27 @@ watch(
     currentNode.value = newValue;
   },
 );
-
+// 条件节点名称输入框引用
+const inputRefs = ref<HTMLInputElement[]>([]);
+// 节点名称输入框显示状态
 const showInputs = ref<boolean[]>([]);
+
+// 监听显示状态变化
+watch(
+  showInputs,
+  (newValues) => {
+    // 当状态为 true 时, 自动聚焦
+    newValues.forEach((value, index) => {
+      if (value) {
+        // 当显示状态从 false 变为 true 时, 自动聚焦
+        nextTick(() => {
+          inputRefs.value[index]?.focus();
+        });
+      }
+    });
+  },
+  { deep: true },
+);
 
 // 失去焦点
 function blurEvent(index: number) {
@@ -188,10 +207,15 @@ function recursiveFindParentNode(
               <div class="branch-node-title-container">
                 <div v-if="!readonly && showInputs[index]">
                   <Input
+                    :ref="
+                      (el) => {
+                        inputRefs[index] = el as HTMLInputElement;
+                      }
+                    "
                     type="text"
                     class="editable-title-input"
                     @blur="blurEvent(index)"
-                    v-model="item.name"
+                    v-model:value="item.name"
                   />
                 </div>
                 <div v-else class="branch-title" @click="clickEvent(index)">

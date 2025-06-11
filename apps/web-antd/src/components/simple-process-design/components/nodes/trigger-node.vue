@@ -35,7 +35,7 @@ const readonly = inject<Boolean>('readonly');
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
-const { showInput, blurEvent, clickTitle } = useNodeName2(
+const { showInput, blurEvent, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.TRIGGER_NODE,
 );
@@ -69,11 +69,12 @@ function deleteNode() {
             <span class="iconfont icon-trigger"></span>
           </div>
           <Input
+            ref="inputRef"
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"
             @blur="blurEvent()"
-            v-model="currentNode.name"
+            v-model:value="currentNode.name"
             :placeholder="currentNode.name"
           />
           <div v-else class="node-title" @click="clickTitle">

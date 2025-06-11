@@ -45,7 +45,7 @@ const props = defineProps({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.DELAY_TIMER_NODE,
 );
 // 抄送人表单配置
@@ -158,6 +158,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
       <div class="flex items-center">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="mr-2 w-48"
           @blur="blurEvent()"

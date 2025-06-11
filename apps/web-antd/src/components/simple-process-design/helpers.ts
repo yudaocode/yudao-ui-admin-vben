@@ -12,7 +12,7 @@ import type { SystemPostApi } from '#/api/system/post';
 import type { SystemRoleApi } from '#/api/system/role';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { inject, ref, toRaw, unref, watch } from 'vue';
+import { inject, nextTick, ref, toRaw, unref, watch } from 'vue';
 
 import {
   BpmNodeTypeEnum,
@@ -622,6 +622,8 @@ export function useNodeName(nodeType: BpmNodeTypeEnum) {
   const nodeName = ref<string>();
   // 节点名称输入框
   const showInput = ref(false);
+  // 输入框的引用
+  const inputRef = ref<HTMLInputElement | null>(null);
   // 点击节点名称编辑图标
   function clickIcon() {
     showInput.value = true;
@@ -632,9 +634,19 @@ export function useNodeName(nodeType: BpmNodeTypeEnum) {
     nodeName.value =
       nodeName.value || (NODE_DEFAULT_NAME.get(nodeType) as string);
   }
+  // 监听 showInput 的变化，当变为 true 时自动聚焦
+  watch(showInput, (value) => {
+    if (value) {
+      nextTick(() => {
+        inputRef.value?.focus();
+      });
+    }
+  });
+
   return {
     nodeName,
     showInput,
+    inputRef,
     clickIcon,
     blurEvent,
   };
@@ -646,11 +658,24 @@ export function useNodeName2(
 ) {
   // 显示节点名称输入框
   const showInput = ref(false);
+  // 输入框的引用
+  const inputRef = ref<HTMLInputElement | null>(null);
+
+  // 监听 showInput 的变化，当变为 true 时自动聚焦
+  watch(showInput, (value) => {
+    if (value) {
+      nextTick(() => {
+        inputRef.value?.focus();
+      });
+    }
+  });
+
   // 节点名称输入框失去焦点
   function blurEvent() {
     showInput.value = false;
     node.value.name =
       node.value.name || (NODE_DEFAULT_NAME.get(nodeType) as string);
+    console.warn('node.value.name===>', node.value.name);
   }
   // 点击节点标题进行输入
   function clickTitle() {
@@ -658,6 +683,7 @@ export function useNodeName2(
   }
   return {
     showInput,
+    inputRef,
     clickTitle,
     blurEvent,
   };

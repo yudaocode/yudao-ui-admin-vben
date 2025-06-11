@@ -114,7 +114,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 // 节点名称配置
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
+const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
   BpmNodeTypeEnum.USER_TASK_NODE,
 );
 
@@ -586,6 +586,7 @@ onMounted(() => {
       <div class="config-header">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="config-editable-input"
           @blur="blurEvent()"

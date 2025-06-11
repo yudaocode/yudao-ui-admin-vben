@@ -37,7 +37,7 @@ const tasks = inject<Ref<any[]>>('tasks', ref([]));
 // 监控节点变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
-const { showInput, blurEvent, clickTitle } = useNodeName2(
+const { showInput, blurEvent, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.START_USER_NODE,
 );
@@ -81,6 +81,7 @@ function nodeClick() {
             <span class="iconfont icon-start-user"></span>
           </div>
           <Input
+            ref="inputRef"
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"
