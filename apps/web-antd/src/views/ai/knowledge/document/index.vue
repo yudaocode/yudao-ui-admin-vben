@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAccess } from '@vben/access';
 import { confirm, Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message, Switch } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -151,7 +151,9 @@ onMounted(() => {
       </template>
       <template #status="{ row }">
         <Switch
-          v-model:checked="row.publicStatus"
+          v-model:checked="row.status"
+          :checked-value="0"
+          :un-checked-value="1"
           @change="handleStatusChange(row)"
           :disabled="!hasAccessByCodes(['ai:knowledge:update'])"
         />
@@ -177,7 +179,7 @@ onMounted(() => {
             {
               label: $t('common.delete'),
               type: 'link',
-              auth: ['ai:api-key:delete'],
+              auth: ['ai:knowledge:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

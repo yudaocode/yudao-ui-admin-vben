@@ -26,7 +26,7 @@ export function getKnowledgeSegmentPage(params: PageParam) {
 }
 
 // 查询知识库分段详情
-export function getKnowledge(id: number) {
+export function getKnowledgeSegment(id: number) {
   return requestClient.get<AiKnowledgeSegmentApi.KnowledgeSegmentVO>(
     `/ai/knowledge/segment/get?id=${id}`,
   );

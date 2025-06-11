@@ -148,7 +148,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.delete'),
               type: 'link',
-              auth: ['ai:api-key:delete'],
+              auth: ['ai:knowledge:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

@@ -21,30 +21,30 @@ const routes: RouteRecordRaw[] = [
           activePath: '/ai/knowledge',
         },
       },
-      // {
-      //   path: 'knowledge/document/create',
-      //   component: () => import('#/views/ai/knowledge/document/form/index.vue'),
-      //   name: 'AiKnowledgeDocumentCreate',
-      //   meta: {
-      //     noCache: true,
-      //     hidden: true,
-      //     canTo: true,
-      //     title: '创建文档',
-      //     activePath: '/ai/knowledge',
-      //   },
-      // },
-      // {
-      //   path: 'knowledge/document/update',
-      //   component: () => import('#/views/ai/knowledge/document/form/index.vue'),
-      //   name: 'AiKnowledgeDocumentUpdate',
-      //   meta: {
-      //     noCache: true,
-      //     hidden: true,
-      //     canTo: true,
-      //     title: '修改文档',
-      //     activePath: '/ai/knowledge',
-      //   },
-      // },
+      {
+        path: 'knowledge/document/create',
+        component: () => import('#/views/ai/knowledge/document/form/index.vue'),
+        name: 'AiKnowledgeDocumentCreate',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '创建文档',
+          activePath: '/ai/knowledge',
+        },
+      },
+      {
+        path: 'knowledge/document/update',
+        component: () => import('#/views/ai/knowledge/document/form/index.vue'),
+        name: 'AiKnowledgeDocumentUpdate',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '修改文档',
+          activePath: '/ai/knowledge',
+        },
+      },
       {
         path: 'knowledge/retrieval',
         component: () =>
@@ -58,18 +58,18 @@ const routes: RouteRecordRaw[] = [
           activePath: '/ai/knowledge',
         },
       },
-      // {
-      //   path: 'knowledge/segment',
-      //   component: () => import('#/views/ai/knowledge/segment/index.vue'),
-      //   name: 'AiKnowledgeSegment',
-      //   meta: {
-      //     noCache: true,
-      //     hidden: true,
-      //     canTo: true,
-      //     title: '知识库分段',
-      //     activePath: '/ai/knowledge',
-      //   },
-      // },
+      {
+        path: 'knowledge/segment',
+        component: () => import('#/views/ai/knowledge/segment/index.vue'),
+        name: 'AiKnowledgeSegment',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '知识库分段',
+          activePath: '/ai/knowledge',
+        },
+      },
       {
         path: 'console/workflow/create',
         component: () => import('#/views/ai/workflow/form/index.vue'),

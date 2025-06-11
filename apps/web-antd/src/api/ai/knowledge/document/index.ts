@@ -23,10 +23,8 @@ export function getKnowledgeDocumentPage(params: PageParam) {
 }
 
 // 查询知识库文档详情
-export function getKnowledge(id: number) {
-  return requestClient.get<AiKnowledgeDocumentApi.KnowledgeDocumentVO>(
-    `/ai/knowledge/document/get?id=${id}`,
-  );
+export function getKnowledgeDocument(id: number) {
+  return requestClient.get(`/ai/knowledge/document/get?id=${id}`);
 }
 // 新增知识库文档（单个）
 export function createKnowledge(data: any) {
@@ -38,7 +36,7 @@ export function createKnowledgeDocumentList(data: any) {
 }
 
 // 修改知识库文档
-export function updateKnowledge(data: any) {
+export function updateKnowledgeDocument(data: any) {
   return requestClient.put('/ai/knowledge/document/update', data);
 }
 
