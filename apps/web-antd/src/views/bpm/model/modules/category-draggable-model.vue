@@ -4,7 +4,7 @@ import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
@@ -33,10 +33,12 @@ import {
 } from '#/api/bpm/model';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils';
+import { BpmModelFormType, DICT_TYPE } from '#/utils';
 
 // 导入重命名表单
 import CategoryRenameForm from '../../category/modules/rename-form.vue';
+// 导入 FormCreate 表单详情
+import FormCreateDetail from '../../form/modules/detail.vue';
 
 const props = defineProps<{
   categoryInfo: ModelCategoryInfo;
@@ -45,9 +47,15 @@ const props = defineProps<{
 
 const emit = defineEmits(['success']);
 
-// 重命名分类对话框
+/** 重命名分类对话框 */
 const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
   connectedComponent: CategoryRenameForm,
+  destroyOnClose: true,
+});
+
+/** 流程表单详情对话框 */
+const [FormCreateDetailModal, formCreateDetailModalApi] = useVbenModal({
+  connectedComponent: FormCreateDetail,
   destroyOnClose: true,
 });
 
@@ -73,8 +81,7 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     align: 'left' as const,
-    ellipsis: true,
-    width: 230,
+    width: 250,
   },
   {
     title: '可见范围',
@@ -193,8 +200,15 @@ async function handleDeleteCategory() {
 
 /** 处理表单详情点击 */
 function handleFormDetail(row: any) {
-  // TODO 待实现
-  console.warn('待实现', row);
+  if (row.formType === BpmModelFormType.NORMAL) {
+    const data = {
+      id: row.formId,
+    };
+    formCreateDetailModalApi.setData(data).open();
+  } else {
+    // TODO 待实现
+    console.warn('业务表单待实现', row);
+  }
 }
 
 /** 判断是否是流程管理员 */
@@ -243,7 +257,7 @@ function handleModelCommand(command: string, row: any) {
       break;
     }
     case 'handleDefinitionList': {
-      console.warn('历史待实现', row);
+      handleDefinitionList(row);
       break;
     }
     case 'handleDelete': {
@@ -314,6 +328,16 @@ function handleDelete(row: any) {
     message.success(`删除流程: "${row.name}" 成功`);
     // 刷新列表
     emit('success');
+  });
+}
+
+/** 跳转到指定流程定义列表 */
+function handleDefinitionList(row: any) {
+  router.push({
+    name: 'BpmProcessDefinition',
+    query: {
+      key: row.key,
+    },
   });
 }
 
@@ -486,7 +510,9 @@ const handleRenameSuccess = () => {
                     class="mr-2.5 h-9 w-9 rounded"
                     alt="图标"
                   />
-                  {{ record.name }}
+                  <EllipsisText :max-width="160" :tooltip-when-ellipsis="true">
+                    {{ record.name }}
+                  </EllipsisText>
                 </div>
               </template>
 
@@ -543,7 +569,7 @@ const handleRenameSuccess = () => {
               <template v-else-if="column.key === 'formType'">
                 <!-- TODO BpmModelFormType.NORMAL -->
                 <Button
-                  v-if="record.formType === 10"
+                  v-if="record.formType === BpmModelFormType.NORMAL"
                   type="link"
                   @click="handleFormDetail(record)"
                 >
@@ -551,7 +577,7 @@ const handleRenameSuccess = () => {
                 </Button>
                 <!-- TODO BpmModelFormType.CUSTOM -->
                 <Button
-                  v-else-if="record.formType === 20"
+                  v-else-if="record.formType === BpmModelFormType.CUSTOM"
                   type="link"
                   @click="handleFormDetail(record)"
                 >
@@ -604,7 +630,6 @@ const handleRenameSuccess = () => {
                   </Button>
                   <Dropdown placement="bottomRight" arrow>
                     <Button type="link" size="small" class="px-1">更多</Button>
-                    <!-- TODO 待实现 -->
                     <template #overlay>
                       <Menu
                         @click="
@@ -613,12 +638,14 @@ const handleRenameSuccess = () => {
                       >
                         <Menu.Item key="handleCopy"> 复制 </Menu.Item>
                         <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+
+                        <!-- TODO 待实现报表
                         <Menu.Item
                           key="handleReport"
                           :disabled="!isManagerUser(record)"
                         >
                           报表
-                        </Menu.Item>
+                        </Menu.Item> -->
                         <Menu.Item
                           key="handleChangeState"
                           v-if="record.processDefinition"
@@ -657,6 +684,8 @@ const handleRenameSuccess = () => {
 
     <!-- 重命名分类弹窗 -->
     <CategoryRenameModal @success="handleRenameSuccess" />
+    <!-- 流程表单详情对话框 -->
+    <FormCreateDetailModal />
   </div>
 </template>
 
