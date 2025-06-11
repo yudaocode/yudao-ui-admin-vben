@@ -37,7 +37,7 @@ const tasks = inject<Ref<any[]>>('tasks', ref([]));
 // 监控节点变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
-const { showInput, blurEvent, clickTitle, inputRef } = useNodeName2(
+const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.START_USER_NODE,
 );
@@ -85,7 +85,8 @@ function nodeClick() {
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"
-            @blur="blurEvent()"
+            @blur="changeNodeName()"
+            @press-enter="changeNodeName()"
             v-model:value="currentNode.name"
             :placeholder="currentNode.name"
           />

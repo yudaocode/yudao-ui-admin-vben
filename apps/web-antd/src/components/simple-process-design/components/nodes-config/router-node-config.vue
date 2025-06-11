@@ -41,9 +41,8 @@ const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 /** 当前节点 */
 const currentNode = useWatchNode(props);
 /** 节点名称 */
-const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
-  BpmNodeTypeEnum.ROUTER_BRANCH_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.ROUTER_BRANCH_NODE);
 const routerGroups = ref<RouterSetting[]>([]);
 const nodeOptions = ref<any[]>([]);
 const conditionRef = ref<any[]>([]);
@@ -209,7 +208,8 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           v-if="showInput"
           type="text"
           class="mr-2 w-48"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />

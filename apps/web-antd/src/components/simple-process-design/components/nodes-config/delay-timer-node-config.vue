@@ -45,9 +45,8 @@ const props = defineProps({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
-  BpmNodeTypeEnum.DELAY_TIMER_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.DELAY_TIMER_NODE);
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref
 
@@ -161,7 +160,8 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           ref="inputRef"
           type="text"
           class="mr-2 w-48"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />

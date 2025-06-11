@@ -144,8 +144,8 @@ function clickIcon() {
   showInput.value = true;
 }
 
-// 输入框失去焦点
-function blurEvent() {
+// 修改节点名称
+function changeNodeName() {
   showInput.value = false;
   currentNode.value.name =
     currentNode.value.name ||
@@ -166,7 +166,8 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           v-if="showInput"
           type="text"
           class="mr-2 w-48"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="currentNode.name"
           :placeholder="currentNode.name"
         />

@@ -628,8 +628,8 @@ export function useNodeName(nodeType: BpmNodeTypeEnum) {
   function clickIcon() {
     showInput.value = true;
   }
-  // 节点名称输入框失去焦点
-  function blurEvent() {
+  // 修改节点名称
+  function changeNodeName() {
     showInput.value = false;
     nodeName.value =
       nodeName.value || (NODE_DEFAULT_NAME.get(nodeType) as string);
@@ -648,7 +648,7 @@ export function useNodeName(nodeType: BpmNodeTypeEnum) {
     showInput,
     inputRef,
     clickIcon,
-    blurEvent,
+    changeNodeName,
   };
 }
 
@@ -670,8 +670,8 @@ export function useNodeName2(
     }
   });
 
-  // 节点名称输入框失去焦点
-  function blurEvent() {
+  // 修改节点名称
+  function changeNodeName() {
     showInput.value = false;
     node.value.name =
       node.value.name || (NODE_DEFAULT_NAME.get(nodeType) as string);
@@ -685,7 +685,7 @@ export function useNodeName2(
     showInput,
     inputRef,
     clickTitle,
-    blurEvent,
+    changeNodeName,
   };
 }
 

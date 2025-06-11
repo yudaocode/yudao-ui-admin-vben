@@ -52,9 +52,8 @@ const deptOptions = inject<Ref<SystemDeptApi.Dept[]>>('deptList');
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent, inputRef } = useNodeName(
-  BpmNodeTypeEnum.START_USER_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.START_USER_NODE);
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
 
@@ -150,7 +149,8 @@ defineExpose({ showStartUserNodeConfig });
           v-if="showInput"
           type="text"
           class="config-editable-input"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />

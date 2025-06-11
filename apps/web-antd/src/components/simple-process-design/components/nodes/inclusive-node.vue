@@ -77,8 +77,8 @@ watch(
   },
   { deep: true },
 );
-// 失去焦点
-function blurEvent(index: number) {
+// 修改节点名称
+function changeNodeName(index: number) {
   showInputs.value[index] = false;
   const conditionNode = currentNode.value.conditionNodes?.at(
     index,
@@ -217,7 +217,8 @@ function recursiveFindParentNode(
                     "
                     type="text"
                     class="editable-title-input"
-                    @blur="blurEvent(index)"
+                    @blur="changeNodeName(index)"
+                    @press-enter="changeNodeName(index)"
                     v-model:value="item.name"
                   />
                 </div>
