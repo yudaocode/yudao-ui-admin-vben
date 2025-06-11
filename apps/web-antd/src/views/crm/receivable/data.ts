@@ -5,7 +5,7 @@ import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getReceivablePlanSimpleList } from '#/api/crm/receivable/plan';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -199,7 +199,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '回款金额（元）',
       field: 'price',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '回款方式',
@@ -219,7 +219,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '合同金额（元）',
       field: 'contract.totalPrice',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '负责人',

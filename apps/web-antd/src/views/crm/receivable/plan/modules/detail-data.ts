@@ -101,7 +101,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '计划回款(元)',
       field: 'price',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '计划回款日期',

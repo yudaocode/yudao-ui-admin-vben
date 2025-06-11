@@ -134,7 +134,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'description',
@@ -203,7 +203,7 @@ export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
       field: 'productPrice',
       title: '价格（元）',
       minWidth: 100,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'sellingPrice',
@@ -221,7 +221,7 @@ export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
       field: 'totalPrice',
       title: '合计',
       minWidth: 100,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '操作',

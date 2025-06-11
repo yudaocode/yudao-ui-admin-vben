@@ -10,7 +10,7 @@ import { Button, Image, Tag, Tooltip } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';
-import { BpmModelFormType } from '#/utils/constants';
+import { BpmModelFormType } from '#/utils';
 
 // 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';

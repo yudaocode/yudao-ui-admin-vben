@@ -50,12 +50,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '支付价格',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'createTime',

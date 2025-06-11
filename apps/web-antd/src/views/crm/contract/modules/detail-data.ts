@@ -120,7 +120,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '合同金额（元）',
       field: 'totalPrice',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '合同开始时间',
@@ -138,7 +138,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '已回款金额（元）',
       field: 'totalReceivablePrice',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '未回款金额（元）',

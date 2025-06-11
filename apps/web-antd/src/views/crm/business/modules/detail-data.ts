@@ -97,7 +97,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalPrice',
       title: '商机金额（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'dealTime',
