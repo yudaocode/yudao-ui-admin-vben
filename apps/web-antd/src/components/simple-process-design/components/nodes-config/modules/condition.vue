@@ -25,7 +25,7 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils/constants';
+import { BpmModelFormType } from '#/utils';
 
 import {
   COMPARISON_OPERATORS,

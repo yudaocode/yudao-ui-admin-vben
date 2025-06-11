@@ -4,6 +4,7 @@ import type { WalletRechargePackageApi } from '#/api/pay/wallet/rechargePackage'
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { fenToYuan, yuanToFen } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -14,7 +15,6 @@ import {
   updatePackage,
 } from '#/api/pay/wallet/rechargePackage';
 import { $t } from '#/locales';
-import { fenToYuan, yuanToFen } from '#/utils';
 
 import { useFormSchema } from '../data';
 

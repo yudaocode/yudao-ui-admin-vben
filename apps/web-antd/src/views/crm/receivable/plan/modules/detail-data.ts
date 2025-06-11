@@ -3,10 +3,10 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { formatDateTime } from '@vben/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, erpPriceInputFormatter } from '#/utils';
+import { DICT_TYPE } from '#/utils';
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
@@ -101,7 +101,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '计划回款(元)',
       field: 'price',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '计划回款日期',

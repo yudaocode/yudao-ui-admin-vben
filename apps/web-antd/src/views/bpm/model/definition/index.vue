@@ -4,14 +4,13 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { Button, Image, Tag, Tooltip } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';
-import { DocAlert } from '#/components/doc-alert';
-import { BpmModelFormType } from '#/utils/constants';
+import { BpmModelFormType } from '#/utils';
 
 // 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';

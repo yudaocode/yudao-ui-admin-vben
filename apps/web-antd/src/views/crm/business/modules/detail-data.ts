@@ -1,9 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { formatDateTime } from '@vben/utils';
-
-import { erpPriceInputFormatter } from '#/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
@@ -97,7 +95,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalPrice',
       title: '商机金额（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'dealTime',

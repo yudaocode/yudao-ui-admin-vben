@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import {
   downloadFileFromBlobPart,
+  fenToYuan,
   handleTree,
   treeToString,
 } from '@vben/utils';
@@ -24,7 +25,7 @@ import {
   updateStatus,
 } from '#/api/mall/product/spu';
 import { $t } from '#/locales';
-import { fenToYuan, ProductSpuStatusEnum } from '#/utils';
+import { ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

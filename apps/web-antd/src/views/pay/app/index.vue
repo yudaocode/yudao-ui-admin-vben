@@ -10,7 +10,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app';
 import { $t } from '#/locales';
-import { CommonStatusEnum, PayChannelEnum } from '#/utils/constants';
+import { CommonStatusEnum, PayChannelEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import appFrom from './modules/app-form.vue';

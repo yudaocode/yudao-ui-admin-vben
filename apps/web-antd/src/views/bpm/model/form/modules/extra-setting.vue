@@ -26,8 +26,11 @@ import {
   HttpRequestSetting,
   parseFormFields,
 } from '#/components/simple-process-design';
-import { ProcessVariableEnum } from '#/utils';
-import { BpmAutoApproveType, BpmModelFormType } from '#/utils/constants';
+import {
+  BpmAutoApproveType,
+  BpmModelFormType,
+  ProcessVariableEnum,
+} from '#/utils';
 
 const modelData = defineModel<any>();
 

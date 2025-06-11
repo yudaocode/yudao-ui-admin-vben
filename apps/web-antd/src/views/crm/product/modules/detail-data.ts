@@ -94,12 +94,12 @@ export function useDetailListColumns(
     {
       field: 'productPrice',
       title: '产品价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'businessPrice',
       title: '商机价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       visible: showBussinePrice,
     },
     {
@@ -110,7 +110,7 @@ export function useDetailListColumns(
     {
       field: 'totalPrice',
       title: '合计金额（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
   ];
 }
