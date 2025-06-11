@@ -12,6 +12,7 @@ import {
   transferDemoWithdraw,
 } from '#/api/pay/demo/withdraw';
 import { $t } from '#/locales';
+import { floatToFixed2 } from '#/utils';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';
@@ -109,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Tag v-else-if="row.type === 3">钱包余额</Tag>
       </template>
       <template #price="{ row }">
-        <span>￥{{ (row.price / 100.0).toFixed(2) }}</span>
+        <span>￥{{ floatToFixed2(row.price) }}</span>
       </template>
       <template #status="{ row }">
         <Tag v-if="row.status === 0 && !row.payTransferId" type="warning">
