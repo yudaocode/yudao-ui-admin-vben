@@ -1,9 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { formatDateTime } from '@vben/utils';
-
-import { erpPriceInputFormatter } from '#/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {

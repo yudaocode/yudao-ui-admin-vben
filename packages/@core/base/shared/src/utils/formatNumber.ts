@@ -1,12 +1,25 @@
-// TODO @xingyu：感觉 formatToFraction 可以整合起来；【优先级：低】
+import { isEmpty, isString, isUndefined } from './inference';
+
+/**
+ * 将一个整数转换为分数保留传入的小数
+ * @param num
+ * @param digit
+ */
+export function formatToFractionDigit(
+  num: number | string | undefined,
+  digit: number = 2,
+): string {
+  if (isUndefined(num)) return '0.00';
+  const parsedNumber = isString(num) ? Number.parseFloat(num) : num;
+  return (parsedNumber / 100).toFixed(digit);
+}
+
 /**
  * 将一个整数转换为分数保留两位小数
  * @param num
  */
 export function formatToFraction(num: number | string | undefined): string {
-  if (num === undefined) return '0.00';
-  const parsedNumber = typeof num === 'string' ? Number.parseFloat(num) : num;
-  return (parsedNumber / 100).toFixed(2);
+  return formatToFractionDigit(num, 2);
 }
 
 /**
@@ -17,9 +30,7 @@ export function formatToFraction(num: number | string | undefined): string {
  */
 export function floatToFixed2(num: number | string | undefined): string {
   let str = '0.00';
-  if (num === undefined) {
-    return str;
-  }
+  if (isUndefined(num)) return str;
   const f = formatToFraction(num);
   const decimalPart = f.toString().split('.')[1];
   const len = decimalPart ? decimalPart.length : 0;
@@ -45,8 +56,8 @@ export function floatToFixed2(num: number | string | undefined): string {
  * @param num
  */
 export function convertToInteger(num: number | string | undefined): number {
-  if (num === undefined) return 0;
-  const parsedNumber = typeof num === 'string' ? Number.parseFloat(num) : num;
+  if (isUndefined(num)) return 0;
+  const parsedNumber = isString(num) ? Number.parseFloat(num) : num;
   return Math.round(parsedNumber * 100);
 }
 
@@ -125,7 +136,6 @@ export function erpCountInputFormatter(num: number | string | undefined) {
   return erpNumberFormatter(num, ERP_COUNT_DIGIT);
 }
 
-// noinspection JSCommentMatchesSignature
 /**
  * 【ERP】格式化数量，保留三位小数
  *
@@ -148,7 +158,6 @@ export function erpPriceInputFormatter(num: number | string | undefined) {
   return erpNumberFormatter(num, ERP_PRICE_DIGIT);
 }
 
-// noinspection JSCommentMatchesSignature
 /**
  * 【ERP】格式化金额，保留二位小数
  *
@@ -167,9 +176,7 @@ export function erpPriceTableColumnFormatter(cellValue: any) {
  * @return 总价格。如果有任一为空，则返回 undefined
  */
 export function erpPriceMultiply(price: number, count: number) {
-  if (price === null || count === null) {
-    return undefined;
-  }
+  if (isEmpty(price) || isEmpty(count)) return undefined;
   return Number.parseFloat((price * count).toFixed(ERP_PRICE_DIGIT));
 }
 

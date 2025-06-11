@@ -4,6 +4,7 @@ import type { MemberUserApi } from '#/api/member/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { formatToFraction } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -11,7 +12,6 @@ import { useVbenForm } from '#/adapter/form';
 import { getUser, updateUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
-import { formatToFraction } from '#/utils';
 
 import { useBalanceFormSchema } from '../data';
 
