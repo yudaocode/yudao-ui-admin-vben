@@ -1,12 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { erpPriceMultiply, floatToFixed2 } from '@vben/utils';
+
 import { z } from '#/adapter/form';
 import { getSimpleBusinessList } from '#/api/crm/business';
 import { getSimpleContactList } from '#/api/crm/contact';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, erpPriceMultiply, floatToFixed2 } from '#/utils';
+import { DICT_TYPE } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

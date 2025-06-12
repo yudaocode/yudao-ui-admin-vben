@@ -4,13 +4,13 @@ import type { PayOrderApi } from '#/api/pay/order';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { floatToFixed2, formatDateTime } from '@vben/utils';
 
 import { Descriptions, Divider, Tag } from 'ant-design-vue';
 
 import { getOrder } from '#/api/pay/order';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, floatToFixed2 } from '#/utils';
+import { DICT_TYPE } from '#/utils';
 
 const detailData = ref<PayOrderApi.Order>();
 

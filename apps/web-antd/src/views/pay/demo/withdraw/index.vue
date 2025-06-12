@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { floatToFixed2 } from '@vben/utils';
 
 import { message, Tag } from 'ant-design-vue';
 
@@ -12,7 +13,6 @@ import {
   transferDemoWithdraw,
 } from '#/api/pay/demo/withdraw';
 import { $t } from '#/locales';
-import { floatToFixed2 } from '#/utils';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';
