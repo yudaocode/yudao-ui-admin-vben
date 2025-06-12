@@ -114,9 +114,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 // 节点名称配置
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  BpmNodeTypeEnum.USER_TASK_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.USER_TASK_NODE);
 
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
@@ -586,9 +585,11 @@ onMounted(() => {
       <div class="config-header">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="config-editable-input"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />
