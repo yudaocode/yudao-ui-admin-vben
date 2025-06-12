@@ -23,6 +23,11 @@ interface DictTagProps {
 
 const props = defineProps<DictTagProps>();
 
+function isHexColor(color: string) {
+  const reg = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
+  return reg.test(color);
+}
+
 /** 获取字典标签 */
 const dictTag = computed(() => {
   // 校验参数有效性
@@ -66,7 +71,16 @@ const dictTag = computed(() => {
 </script>
 
 <template>
-  <Tag v-if="dictTag" :color="dictTag.colorType">
+  <Tag
+    v-if="dictTag"
+    :color="
+      dictTag.colorType
+        ? dictTag.colorType
+        : dictTag.cssClass && isHexColor(dictTag.cssClass)
+          ? dictTag.cssClass
+          : ''
+    "
+  >
     {{ dictTag.label }}
   </Tag>
 </template>
