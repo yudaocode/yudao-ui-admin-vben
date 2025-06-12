@@ -2,11 +2,13 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import type { AiWriteTypeEnum } from '#/utils/constants';
 
+import { useAppConfig } from '@vben/hooks';
 import { fetchEventSource } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
 import { requestClient } from '#/api/request';
 
+const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 export namespace AiWriteApi {
   export interface WriteVO {
@@ -64,22 +66,19 @@ export function writeStream({
   onMessage?: (res: any) => void;
 }) {
   const token = accessStore.accessToken;
-  return fetchEventSource(
-    `${import.meta.env.VITE_BASE_URL}/ai/write/generate-stream`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      openWhenHidden: true,
-      body: JSON.stringify(data),
-      onmessage: onMessage,
-      onerror: onError,
-      onclose: onClose,
-      signal: ctrl.signal,
+  return fetchEventSource(`${apiURL}/ai/write/generate-stream`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  );
+    openWhenHidden: true,
+    body: JSON.stringify(data),
+    onmessage: onMessage,
+    onerror: onError,
+    onclose: onClose,
+    signal: ctrl.signal,
+  });
 }
 
 // 获取写作列表

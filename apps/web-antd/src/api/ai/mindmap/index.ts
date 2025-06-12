@@ -1,8 +1,10 @@
+import { useAppConfig } from '@vben/hooks';
 import { fetchEventSource } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
 import { requestClient } from '#/api/request';
 
+const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 export namespace AiMindmapApi {
   // AI 思维导图 VO
@@ -36,22 +38,19 @@ export function generateMindMap({
   onMessage?: (res: any) => void;
 }) {
   const token = accessStore.accessToken;
-  return fetchEventSource(
-    `${import.meta.env.VITE_BASE_URL}/ai/mind-map/generate-stream`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      openWhenHidden: true,
-      body: JSON.stringify(data),
-      onmessage: onMessage,
-      onerror: onError,
-      onclose: onClose,
-      signal: ctrl.signal,
+  return fetchEventSource(`${apiURL}/ai/mind-map/generate-stream`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  );
+    openWhenHidden: true,
+    body: JSON.stringify(data),
+    onmessage: onMessage,
+    onerror: onError,
+    onclose: onClose,
+    signal: ctrl.signal,
+  });
 }
 
 // 查询思维导图分页

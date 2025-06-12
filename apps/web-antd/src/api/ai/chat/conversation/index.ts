@@ -26,9 +26,9 @@ export namespace AiChatConversationApi {
 
 // 获得【我的】聊天对话
 export function getChatConversationMy(id: number) {
-  return requestClient.get<
-    PageResult<AiChatConversationApi.ChatConversationVO>
-  >(`/ai/chat/conversation/get-my?id=${id}`);
+  return requestClient.get<AiChatConversationApi.ChatConversationVO>(
+    `/ai/chat/conversation/get-my?id=${id}`,
+  );
 }
 
 // 新增【我的】聊天对话
@@ -46,7 +46,7 @@ export function updateChatConversationMy(
 }
 
 //  删除【我的】聊天对话
-export function deleteChatConversationMy(id: string) {
+export function deleteChatConversationMy(id: number) {
   return requestClient.delete(`/ai/chat/conversation/delete-my?id=${id}`);
 }
 

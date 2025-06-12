@@ -1,10 +1,12 @@
 import type { PageResult } from '@vben/request';
 
+import { useAppConfig } from '@vben/hooks';
 import { fetchEventSource } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
 import { requestClient } from '#/api/request';
 
+const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 export namespace AiChatMessageApi {
   export interface ChatMessageVO {
@@ -50,30 +52,27 @@ export function sendChatMessageStream(
   onClose: any,
 ) {
   const token = accessStore.accessToken;
-  return fetchEventSource(
-    `${import.meta.env.VITE_BASE_URL}/ai/chat/message/send-stream`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      openWhenHidden: true,
-      body: JSON.stringify({
-        conversationId,
-        content,
-        useContext: enableContext,
-      }),
-      onmessage: onMessage,
-      onerror: onError,
-      onclose: onClose,
-      signal: ctrl.signal,
+  return fetchEventSource(`${apiURL}/ai/chat/message/send-stream`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  );
+    openWhenHidden: true,
+    body: JSON.stringify({
+      conversationId,
+      content,
+      useContext: enableContext,
+    }),
+    onmessage: onMessage,
+    onerror: onError,
+    onclose: onClose,
+    signal: ctrl.signal,
+  });
 }
 
 // 删除消息
-export function deleteChatMessage(id: string) {
+export function deleteChatMessage(id: number) {
   return requestClient.delete(`/ai/chat/message/delete?id=${id}`);
 }
 
