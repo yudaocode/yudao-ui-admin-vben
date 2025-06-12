@@ -4,11 +4,12 @@ import type { CrmProductApi } from '#/api/crm/product';
 
 import { ref } from 'vue';
 
+import { erpPriceInputFormatter } from '@vben/utils';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBusiness } from '#/api/crm/business';
 import { getContract } from '#/api/crm/contract';
 import { BizTypeEnum } from '#/api/crm/permission';
-import { erpPriceInputFormatter } from '#/utils';
 
 import { useDetailListColumns } from './detail-data';
 

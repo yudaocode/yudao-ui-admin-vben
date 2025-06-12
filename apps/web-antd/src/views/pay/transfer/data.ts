@@ -4,7 +4,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { formatDateTime } from '@vben/utils';
+import { floatToFixed2, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
@@ -120,7 +120,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '转账金额',
-      formatter: ({ cellValue }) => `￥${(cellValue / 100).toFixed(2)}`,
+      formatter: 'formatAmount2',
     },
     {
       field: 'status',
@@ -217,7 +217,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       content: (data) => {
         return h(Tag, {
           color: 'blue',
-          content: `￥${(data?.price / 100).toFixed(2)}`,
+          content: `￥${floatToFixed2(data?.price)}`,
         });
       },
     },

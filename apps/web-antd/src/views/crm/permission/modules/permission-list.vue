@@ -140,7 +140,7 @@ async function handleQuit() {
     message.warning('你不是团队成员！');
     return;
   }
-  await deleteSelfPermission(userPermission.id);
+  await deleteSelfPermission(userPermission.id as number);
   message.success('退出团队成员成功！');
   emits('quitTeam');
 }

@@ -78,7 +78,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '提现金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'userName',

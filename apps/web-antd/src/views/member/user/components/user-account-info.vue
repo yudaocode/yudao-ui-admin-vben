@@ -2,10 +2,11 @@
 import type { MemberUserApi } from '#/api/member/user';
 import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
+import { fenToYuan } from '@vben/utils';
+
 import { Card } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
-import { fenToYuan } from '#/utils';
 
 withDefaults(
   defineProps<{

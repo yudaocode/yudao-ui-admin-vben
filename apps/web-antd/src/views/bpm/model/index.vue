@@ -178,13 +178,13 @@ async function handleCategorySortSubmit() {
           <template #overlay>
             <Menu @click="(e) => handleCommand(e.key as string)">
               <Menu.Item key="handleCategoryAdd">
-                <div class="flex items-center">
+                <div class="flex items-center gap-1">
                   <IconifyIcon icon="lucide:plus" />
                   新建分类
                 </div>
               </Menu.Item>
               <Menu.Item key="handleCategorySort">
-                <div class="flex items-center">
+                <div class="flex items-center gap-1">
                   <IconifyIcon icon="lucide:align-start-vertical" />
                   分类排序
                 </div>

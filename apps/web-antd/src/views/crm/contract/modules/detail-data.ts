@@ -3,11 +3,14 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { formatDateTime } from '@vben/utils';
+import {
+  erpPriceInputFormatter,
+  floatToFixed2,
+  formatDateTime,
+} from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, erpPriceInputFormatter, floatToFixed2 } from '#/utils';
-
+import { DICT_TYPE } from '#/utils';
 /** 详情头部的配置 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
@@ -120,7 +123,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '合同金额（元）',
       field: 'totalPrice',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '合同开始时间',
@@ -138,7 +141,7 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       title: '已回款金额（元）',
       field: 'totalReceivablePrice',
       minWidth: 150,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '未回款金额（元）',

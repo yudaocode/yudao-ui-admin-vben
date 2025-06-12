@@ -10,7 +10,12 @@ import {
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
-import { isFunction, isString } from '@vben/utils';
+import {
+  floatToFixed2,
+  formatToFractionDigit,
+  isFunction,
+  isString,
+} from '@vben/utils';
 
 import { Button, Image, Popconfirm, Switch } from 'ant-design-vue';
 
@@ -313,33 +318,13 @@ setupVbenVxeTable({
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
-        if (cellValue === null || cellValue === undefined) {
-          return '';
-        }
-        if (isString(cellValue)) {
-          cellValue = Number.parseFloat(cellValue);
-        }
-        // 如果非 number，则直接返回空串
-        if (Number.isNaN(cellValue)) {
-          return '';
-        }
-        return cellValue.toFixed(digits);
+        return formatToFractionDigit(cellValue, digits);
       },
     });
 
     vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }) {
-        if (cellValue === null || cellValue === undefined) {
-          return '0.00';
-        }
-        if (isString(cellValue)) {
-          cellValue = Number.parseFloat(cellValue);
-        }
-        // 如果非 number，则直接返回空串
-        if (Number.isNaN(cellValue)) {
-          return '0.00';
-        }
-        return `${(cellValue / 100).toFixed(2)}元`;
+        return `${floatToFixed2(cellValue)}元`;
       },
     });
   },

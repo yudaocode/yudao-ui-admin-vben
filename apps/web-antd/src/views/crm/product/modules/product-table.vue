@@ -5,12 +5,13 @@ import type { CrmProductApi } from '#/api/crm/product';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
+import { erpPriceMultiply } from '@vben/utils';
+
 import { InputNumber, Select } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getProductSimpleList } from '#/api/crm/product';
-import { erpPriceMultiply } from '#/utils';
 
 import { useProductEditTableColumns } from '../data';
 

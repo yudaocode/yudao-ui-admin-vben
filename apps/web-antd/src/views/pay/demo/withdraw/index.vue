@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { floatToFixed2 } from '@vben/utils';
 
 import { message, Tag } from 'ant-design-vue';
 
@@ -109,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Tag v-else-if="row.type === 3">钱包余额</Tag>
       </template>
       <template #price="{ row }">
-        <span>￥{{ (row.price / 100.0).toFixed(2) }}</span>
+        <span>￥{{ floatToFixed2(row.price) }}</span>
       </template>
       <template #status="{ row }">
         <Tag v-if="row.status === 0 && !row.payTransferId" type="warning">

@@ -4,13 +4,13 @@ import type { PayOrderApi } from '#/api/pay/order';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { floatToFixed2, formatDateTime } from '@vben/utils';
 
 import { Descriptions, Divider, Tag } from 'ant-design-vue';
 
 import { getOrder } from '#/api/pay/order';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '#/utils';
 
 const detailData = ref<PayOrderApi.Order>();
 
@@ -63,16 +63,16 @@ const [Modal, modalApi] = useVbenModal({
       </Descriptions.Item>
       <Descriptions.Item label="支付金额">
         <Tag color="green" size="small">
-          ￥{{ (detailData?.price || 0 / 100.0).toFixed(2) }}
+          ￥{{ floatToFixed2(detailData?.price) }}
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="手续费">
         <Tag color="orange" size="small">
-          ￥{{ (detailData?.channelFeePrice || 0 / 100.0).toFixed(2) }}
+          ￥{{ floatToFixed2(detailData?.channelFeePrice) }}
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="手续费比例">
-        {{ (detailData?.channelFeeRate || 0 / 100.0).toFixed(2) }}%
+        {{ floatToFixed2(detailData?.channelFeeRate) }}%
       </Descriptions.Item>
       <Descriptions.Item label="支付时间">
         {{ formatDateTime(detailData?.successTime) }}
@@ -115,7 +115,7 @@ const [Modal, modalApi] = useVbenModal({
       </Descriptions.Item>
       <Descriptions.Item label="退款金额" :span="2">
         <Tag size="small" color="red">
-          ￥{{ (detailData?.refundPrice || 0 / 100.0).toFixed(2) }}
+          ￥{{ floatToFixed2(detailData?.refundPrice) }}
         </Tag>
       </Descriptions.Item>
       <Descriptions.Item label="通知 URL">

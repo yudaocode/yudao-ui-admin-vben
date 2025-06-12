@@ -3,8 +3,10 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { erpPriceInputFormatter } from '@vben/utils';
+
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, erpPriceInputFormatter } from '#/utils';
+import { DICT_TYPE } from '#/utils';
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
@@ -94,12 +96,12 @@ export function useDetailListColumns(
     {
       field: 'productPrice',
       title: '产品价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'businessPrice',
       title: '商机价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       visible: showBussinePrice,
     },
     {
@@ -110,7 +112,7 @@ export function useDetailListColumns(
     {
       field: 'totalPrice',
       title: '合计金额（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
   ];
 }
