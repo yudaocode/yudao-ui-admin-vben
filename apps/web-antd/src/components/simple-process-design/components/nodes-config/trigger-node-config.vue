@@ -200,8 +200,8 @@ function addFormSettingCondition(
   formSetting: FormTriggerSetting,
 ) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
-  // TODO: jason Modal 使用 useVbenModal 初始化，弹出使用modalApi.setData(formSetting).open()
-  conditionDialog.open(formSetting);
+  // 使用modalApi来打开模态框并传递数据
+  conditionDialog.modalApi.setData(formSetting).open();
 }
 
 /** 删除条件配置 */
@@ -215,7 +215,8 @@ function openFormSettingCondition(
   formSetting: FormTriggerSetting,
 ) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
-  conditionDialog.open(formSetting);
+  // 使用 modalApi 来打开模态框并传递数据
+  conditionDialog.modalApi.setData(formSetting).open();
 }
 
 /** 处理条件配置保存 */
