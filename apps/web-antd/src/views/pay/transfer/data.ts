@@ -4,17 +4,12 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { formatDateTime } from '@vben/utils';
+import { floatToFixed2, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
-import {
-  DICT_TYPE,
-  floatToFixed2,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

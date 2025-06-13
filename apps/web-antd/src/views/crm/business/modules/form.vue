@@ -4,6 +4,7 @@ import type { CrmBusinessApi } from '#/api/crm/business';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { erpPriceMultiply } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -15,7 +16,6 @@ import {
 } from '#/api/crm/business';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { erpPriceMultiply } from '#/utils';
 import { ProductEditTable } from '#/views/crm/product';
 
 import { useFormSchema } from '../data';

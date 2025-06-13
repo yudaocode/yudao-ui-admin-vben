@@ -43,28 +43,27 @@ const { hasAccessByCodes } = useAccess();
 
 function isIfShow(action: ActionItem): boolean {
   const ifShow = action.ifShow;
-
   let isIfShow = true;
-
   if (isBoolean(ifShow)) {
     isIfShow = ifShow;
   }
   if (isFunction(ifShow)) {
     isIfShow = ifShow(action);
   }
+  if (isIfShow) {
+    isIfShow =
+      hasAccessByCodes(action.auth || []) || (action.auth || []).length === 0;
+  }
   return isIfShow;
 }
 
 const getActions = computed(() => {
-  return (toRaw(props.actions) || [])
-    .filter((action) => {
-      return (
-        (hasAccessByCodes(action.auth || []) ||
-          (action.auth || []).length === 0) &&
-        isIfShow(action)
-      );
+  const actions = toRaw(props.actions) || [];
+  return actions
+    .filter((action: ActionItem) => {
+      return isIfShow(action);
     })
-    .map((action) => {
+    .map((action: ActionItem) => {
       const { popConfirm } = action;
       return {
         type: action.type || 'link',
@@ -78,24 +77,21 @@ const getActions = computed(() => {
 });
 
 const getDropdownList = computed((): any[] => {
-  return (toRaw(props.dropDownActions) || [])
-    .filter((action) => {
-      return (
-        (hasAccessByCodes(action.auth || []) ||
-          (action.auth || []).length === 0) &&
-        isIfShow(action)
-      );
+  const dropDownActions = toRaw(props.dropDownActions) || [];
+  return dropDownActions
+    .filter((action: ActionItem) => {
+      return isIfShow(action);
     })
-    .map((action, index) => {
+    .map((action: ActionItem, index: number) => {
       const { label, popConfirm } = action;
+      delete action.icon;
       return {
         ...action,
         ...popConfirm,
         onConfirm: popConfirm?.confirm,
         onCancel: popConfirm?.cancel,
         text: label,
-        divider:
-          index < props.dropDownActions.length - 1 ? props.divider : false,
+        divider: index < dropDownActions.length - 1 ? props.divider : false,
       };
     });
 });
