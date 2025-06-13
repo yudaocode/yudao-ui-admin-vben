@@ -10,6 +10,18 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
+        path: 'image/square',
+        component: () => import('#/views/ai/image/square/index.vue'),
+        name: 'AiImageSquare',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '绘图作品',
+          activePath: '/ai/image',
+        },
+      },
+      {
         path: 'knowledge/document',
         component: () => import('#/views/ai/knowledge/document/index.vue'),
         name: 'AiKnowledgeDocument',

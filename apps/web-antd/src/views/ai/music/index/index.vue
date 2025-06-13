@@ -5,6 +5,7 @@ import { ref, unref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
+import List from './list/index.vue';
 import Mode from './mode/index.vue';
 
 defineOptions({ name: 'Index' });

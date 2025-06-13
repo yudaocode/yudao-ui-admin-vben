@@ -1,3 +1,79 @@
+import dayjs from 'dayjs';
+
+/**
+ * 时间日期转换
+ * @param date 当前时间，new Date() 格式
+ * @param format 需要转换的时间格式字符串
+ * @description format 字符串随意，如 `YYYY-MM、YYYY-MM-DD`
+ * @description format 季度："YYYY-MM-DD HH:mm:ss QQQQ"
+ * @description format 星期："YYYY-MM-DD HH:mm:ss WWW"
+ * @description format 几周："YYYY-MM-DD HH:mm:ss ZZZ"
+ * @description format 季度 + 星期 + 几周："YYYY-MM-DD HH:mm:ss WWW QQQQ ZZZ"
+ * @returns 返回拼接后的时间字符串
+ */
+export function formatDate(date: Date, format?: string): string {
+  // 日期不存在，则返回空
+  if (!date) {
+    return '';
+  }
+  // 日期存在，则进行格式化
+  return date ? dayjs(date).format(format ?? 'YYYY-MM-DD HH:mm:ss') : '';
+}
+
+/**
+ * 将时间转换为 `几秒前`、`几分钟前`、`几小时前`、`几天前`
+ * @param param 当前时间，new Date() 格式或者字符串时间格式
+ * @param format 需要转换的时间格式字符串
+ * @description param 10秒：  10 * 1000
+ * @description param 1分：   60 * 1000
+ * @description param 1小时： 60 * 60 * 1000
+ * @description param 24小时：60 * 60 * 24 * 1000
+ * @description param 3天：   60 * 60* 24 * 1000 * 3
+ * @returns 返回拼接后的时间字符串
+ */
+export function formatPast(
+  param: Date | string,
+  format = 'YYYY-MM-DD HH:mm:ss',
+): string {
+  // 传入格式处理、存储转换值
+  let s: number, t: any;
+  // 获取js 时间戳
+  let time: number = Date.now();
+  // 是否是对象
+  typeof param === 'string' || typeof param === 'object'
+    ? (t = new Date(param).getTime())
+    : (t = param);
+  // 当前时间戳 - 传入时间戳
+  time = Number.parseInt(`${time - t}`);
+  if (time < 10_000) {
+    // 10秒内
+    return '刚刚';
+  } else if (time < 60_000 && time >= 10_000) {
+    // 超过10秒少于1分钟内
+    s = Math.floor(time / 1000);
+    return `${s}秒前`;
+  } else if (time < 3_600_000 && time >= 60_000) {
+    // 超过1分钟少于1小时
+    s = Math.floor(time / 60_000);
+    return `${s}分钟前`;
+  } else if (time < 86_400_000 && time >= 3_600_000) {
+    // 超过1小时少于24小时
+    s = Math.floor(time / 3_600_000);
+    return `${s}小时前`;
+  } else if (time < 259_200_000 && time >= 86_400_000) {
+    // 超过1天少于3天内
+    s = Math.floor(time / 86_400_000);
+    return `${s}天前`;
+  } else {
+    // 超过3天
+    const date =
+      typeof param === 'string' || typeof param === 'object'
+        ? new Date(param)
+        : param;
+    return formatDate(date, format);
+  }
+}
+
 /**
  * 将毫秒，转换成时间字符串。例如说，xx 分钟
  *
@@ -29,4 +105,40 @@ export function formatPast2(ms: number): string {
     return `${minute} 分钟`;
   }
   return second > 0 ? `${second} 秒` : `${0} 秒`;
+}
+
+/**
+ * @param {Date | number | string} time 需要转换的时间
+ * @param {string} fmt 需要转换的格式 如 yyyy-MM-dd、yyyy-MM-dd HH:mm:ss
+ */
+export function formatTime(time: Date | number | string, fmt: string) {
+  if (time) {
+    const date = new Date(time);
+    const o = {
+      'M+': date.getMonth() + 1,
+      'd+': date.getDate(),
+      'H+': date.getHours(),
+      'm+': date.getMinutes(),
+      's+': date.getSeconds(),
+      'q+': Math.floor((date.getMonth() + 3) / 3),
+      S: date.getMilliseconds(),
+    };
+    if (/(y+)/.test(fmt)) {
+      fmt = fmt.replace(
+        RegExp.$1,
+        `${date.getFullYear()}`.slice(4 - RegExp.$1.length),
+      );
+    }
+    for (const k in o) {
+      if (new RegExp(`(${k})`).test(fmt)) {
+        fmt = fmt.replace(
+          RegExp.$1,
+          RegExp.$1.length === 1 ? o[k] : `00${o[k]}`.slice(`${o[k]}`.length),
+        );
+      }
+    }
+    return fmt;
+  } else {
+    return '';
+  }
 }

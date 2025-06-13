@@ -40,7 +40,7 @@ export namespace AiImageApi {
   export interface ImageMidjourneyImagineReqVO {
     prompt: string; // 提示词
     modelId: number; // 模型
-    base64Array: string[]; // size不能为空
+    base64Array?: string[]; // size不能为空
     width: string; // 图片宽度
     height: string; // 图片高度
     version: string; // 版本
@@ -62,7 +62,7 @@ export function getImagePageMy(params: PageParam) {
 
 // 获取【我的】绘图记录
 export function getImageMy(id: number) {
-  return requestClient.get<AiImageApi.ImageVO[]>(`/ai/image/get-my?id=${id}`);
+  return requestClient.get<AiImageApi.ImageVO>(`/ai/image/get-my?id=${id}`);
 }
 
 // 获取【我的】绘图记录列表
