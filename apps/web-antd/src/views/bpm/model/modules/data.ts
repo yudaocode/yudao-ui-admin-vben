@@ -9,19 +9,19 @@ export function useGridColumns(): VxeTableGridOptions<BpmModelApi.ModelVO>['colu
     {
       field: 'name',
       title: '流程名称',
-      width: 250,
+      minWidth: 250,
       slots: { default: 'name' },
     },
     {
       field: 'startUserIds',
       title: '可见范围',
-      width: 150,
+      minWidth: 150,
       slots: { default: 'startUserIds' },
     },
     {
       field: 'type',
       title: '流程类型',
-      width: 150,
+      minWidth: 150,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.BPM_MODEL_TYPE },
@@ -30,18 +30,18 @@ export function useGridColumns(): VxeTableGridOptions<BpmModelApi.ModelVO>['colu
     {
       field: 'formType',
       title: '表单信息',
-      width: 150,
+      minWidth: 150,
       slots: { default: 'formInfo' },
     },
     {
       field: 'deploymentTime',
       title: '最后发布',
-      width: 260,
+      minWidth: 260,
       slots: { default: 'deploymentTime' },
     },
     {
       title: '操作',
-      width: 150,
+      width: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },
