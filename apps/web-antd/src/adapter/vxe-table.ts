@@ -11,7 +11,7 @@ import {
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
 import {
-  floatToFixed2,
+  erpNumberFormatter,
   formatToFractionDigit,
   isFunction,
   isString,
@@ -333,8 +333,8 @@ setupVbenVxeTable({
     });
 
     vxeUI.formats.add('formatAmount2', {
-      tableCellFormatMethod({ cellValue }) {
-        return `${floatToFixed2(cellValue)}元`;
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(cellValue, digits)}元`;
       },
     });
   },
