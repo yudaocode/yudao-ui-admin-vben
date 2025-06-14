@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
@@ -18,11 +19,11 @@ import {
   Dropdown,
   Menu,
   message,
-  Table,
   Tag,
   Tooltip,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory } from '#/api/bpm/category';
 import {
   cleanModel,
@@ -31,14 +32,14 @@ import {
   updateModelSortBatch,
   updateModelState,
 } from '#/api/bpm/model';
-import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { BpmModelFormType, DICT_TYPE } from '#/utils';
+import { BpmModelFormType } from '#/utils';
 
 // 导入重命名表单
 import CategoryRenameForm from '../../category/modules/rename-form.vue';
 // 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';
+import { useGridColumns } from './data';
 
 const props = defineProps<{
   categoryInfo: ModelCategoryInfo;
@@ -67,66 +68,41 @@ const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.ModelVO[]>([]);
 const modelList = ref<BpmModelApi.ModelVO[]>([]);
 const isExpand = ref(false);
-const tableRef = ref();
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(),
+    pagerConfig: {
+      enabled: false,
+    },
+    data: modelList.value,
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      enabled: false, // 完全禁用工具栏
+    },
+  } as VxeTableGridOptions,
+});
 
 // 排序引用，以便后续启用或禁用排序
 const sortableInstance = ref<any>(null);
 /** 解决 v-model 问题，使用计算属性 */
 const expandKeys = computed(() => (isExpand.value ? ['1'] : []));
 
-// 表格列配置
-const columns = [
-  {
-    title: '流程名',
-    dataIndex: 'name',
-    key: 'name',
-    align: 'left' as const,
-    width: 250,
-  },
-  {
-    title: '可见范围',
-    dataIndex: 'startUserIds',
-    key: 'startUserIds',
-    align: 'center' as const,
-    ellipsis: true,
-    width: 150,
-  },
-  {
-    title: '流程类型',
-    dataIndex: 'type',
-    key: 'type',
-    align: 'center' as const,
-    ellipsis: true,
-    width: 150,
-  },
-  {
-    title: '表单信息',
-    dataIndex: 'formType',
-    key: 'formType',
-    align: 'center' as const,
-    ellipsis: true,
-    width: 150,
-  },
-  {
-    title: '最后发布',
-    dataIndex: 'deploymentTime',
-    key: 'deploymentTime',
-    align: 'center' as const,
-    width: 250,
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    align: 'center' as const,
-    fixed: 'right' as const,
-    width: 150,
-  },
-];
-
 /** 处理模型的排序 */
 function handleModelSort() {
-  // 保存初始数据
-  originalData.value = cloneDeep(props.categoryInfo.modelList);
+  // 保存初始数据并确保数据完整
+  if (props.categoryInfo.modelList && props.categoryInfo.modelList.length > 0) {
+    originalData.value = cloneDeep(props.categoryInfo.modelList);
+    modelList.value = cloneDeep(props.categoryInfo.modelList);
+  }
+
+  // 更新表格数据
+  gridApi.setGridOptions({
+    data: modelList.value,
+  });
+
   // 展开数据
   isExpand.value = true;
   isModelSorting.value = true;
@@ -135,9 +111,28 @@ function handleModelSort() {
     // 已存在实例，则启用排序功能
     sortableInstance.value.option('disabled', false);
   } else {
-    const sortableClass = `.category-${props.categoryInfo.id} .ant-table .ant-table-tbody`;
-    sortableInstance.value = useSortable(sortableClass, modelList, {
-      disabled: false, // 启用排序
+    const sortableClass = `.category-${props.categoryInfo.id} .vxe-table .vxe-table--body-wrapper:not(.fixed-right--wrapper) .vxe-table--body tbody`;
+    // 确保使用最新的数据
+    modelList.value = cloneDeep(props.categoryInfo.modelList);
+    // 更新表格数据
+    gridApi.setGridOptions({
+      data: modelList.value,
+    });
+
+    sortableInstance.value = useSortable(sortableClass, modelList.value, {
+      draggable: '.vxe-body--row',
+      animation: 150,
+      handle: '.drag-handle',
+      disabled: false,
+      onEnd: ({ newDraggableIndex, oldDraggableIndex }) => {
+        if (oldDraggableIndex !== newDraggableIndex) {
+          modelList.value.splice(
+            newDraggableIndex ?? 0,
+            0,
+            modelList.value.splice(oldDraggableIndex ?? 0, 1)[0]!,
+          );
+        }
+      },
     });
   }
 }
@@ -145,9 +140,26 @@ function handleModelSort() {
 /** 处理模型的排序提交 */
 async function handleModelSortSubmit() {
   try {
+    // 确保数据已经正确同步
+    if (!modelList.value || modelList.value.length === 0) {
+      message.error('排序数据异常，请重试');
+      return;
+    }
+
     // 保存排序
     const ids = modelList.value.map((item) => item.id);
-    await updateModelSortBatch(ids);
+
+    // 检查是否有所有必要的ID
+    if (ids.length === props.categoryInfo.modelList.length) {
+      // 使用排序后的数据
+      await updateModelSortBatch(ids);
+    } else {
+      console.warn('排序数据不完整，尝试使用原始数据');
+      // 如果数据不完整，使用原始数据
+      const originalIds = props.categoryInfo.modelList.map((item) => item.id);
+      await updateModelSortBatch(originalIds);
+    }
+
     // 刷新列表
     isModelSorting.value = false;
     message.success('排序模型成功');
@@ -160,12 +172,18 @@ async function handleModelSortSubmit() {
 /** 处理模型的排序取消 */
 function handleModelSortCancel() {
   // 恢复初始数据
-  modelList.value = cloneDeep(originalData.value);
-  isModelSorting.value = false;
+  if (originalData.value && originalData.value.length > 0) {
+    modelList.value = cloneDeep(originalData.value);
+    // 更新表格数据
+    gridApi.setGridOptions({
+      data: modelList.value,
+    });
+  }
   // 禁用排序功能
   if (sortableInstance.value) {
     sortableInstance.value.option('disabled', true);
   }
+  isModelSorting.value = false;
 }
 
 /** 处理下拉菜单命令 */
@@ -353,6 +371,10 @@ const updateModelList = useDebounceFn(() => {
     isModelSorting.value = false;
     // 重置排序实例
     sortableInstance.value = null;
+    // 更新表格数据
+    gridApi.setGridOptions({
+      data: modelList.value,
+    });
   }
 }, 100);
 
@@ -366,13 +388,6 @@ watchEffect(() => {
     isExpand.value = false;
   }
 });
-
-/** 自定义表格行渲染 */
-function customRow(_record: any) {
-  return {
-    class: isModelSorting.value ? 'cursor-move' : '',
-  };
-}
 
 // 处理重命名成功
 const handleRenameSuccess = () => {
@@ -476,208 +491,179 @@ const handleRenameSuccess = () => {
           class="border-0 bg-transparent p-0"
           v-show="isExpand"
         >
-          <Table
+          <Grid
             v-if="modelList && modelList.length > 0"
             :class="`category-${categoryInfo.id}`"
-            ref="tableRef"
-            :data-source="modelList"
-            :columns="columns"
-            :pagination="false"
-            :custom-row="customRow"
-            :scroll="{ x: '100%' }"
-            row-key="id"
           >
-            <template #bodyCell="{ column, record }">
-              <!-- 流程名 -->
-              <template v-if="column.key === 'name'">
-                <div class="flex items-center">
-                  <Tooltip v-if="isModelSorting" title="拖动排序">
-                    <span
-                      class="icon-[ic--round-drag-indicator] mr-2.5 cursor-move text-2xl text-gray-500"
-                    ></span>
-                  </Tooltip>
-                  <div
-                    v-if="!record.icon"
-                    class="mr-2.5 flex h-9 w-9 items-center justify-center rounded bg-blue-500 text-white"
-                  >
-                    <span style="font-size: 12px">
-                      {{ record.name.substring(0, 2) }}
-                    </span>
-                  </div>
-                  <img
-                    v-else
-                    :src="record.icon"
-                    class="mr-2.5 h-9 w-9 rounded"
-                    alt="图标"
-                  />
-                  <EllipsisText :max-width="160" :tooltip-when-ellipsis="true">
-                    {{ record.name }}
+            <template #name="{ row }">
+              <div class="flex items-center">
+                <Tooltip
+                  v-if="isModelSorting"
+                  title="拖动排序"
+                  placement="left"
+                >
+                  <span
+                    class="icon-[ic--round-drag-indicator] drag-handle mr-2.5 cursor-move text-2xl text-gray-500"
+                  ></span>
+                </Tooltip>
+                <div
+                  v-if="!row.icon"
+                  class="mr-2.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded bg-blue-500 text-white"
+                >
+                  <span style="font-size: 12px">
+                    {{ row.name.substring(0, 2) }}
+                  </span>
+                </div>
+                <img
+                  v-else
+                  :src="row.icon"
+                  class="mr-2.5 h-9 w-9 flex-shrink-0 rounded"
+                  alt="图标"
+                />
+                <div class="min-w-0">
+                  <EllipsisText :max-width="100" :tooltip-when-ellipsis="true">
+                    {{ row.name }}
                   </EllipsisText>
                 </div>
-              </template>
-
-              <!-- 可见范围列-->
-              <template v-else-if="column.key === 'startUserIds'">
-                <span
-                  v-if="
-                    !record.startUsers?.length && !record.startDepts?.length
+              </div>
+            </template>
+            <template #startUserIds="{ row }">
+              <span v-if="!row.startUsers?.length && !row.startDepts?.length">
+                全部可见
+              </span>
+              <span v-else-if="row.startUsers?.length === 1">
+                {{ row.startUsers[0].nickname }}
+              </span>
+              <span v-else-if="row.startDepts?.length === 1">
+                {{ row.startDepts[0].name }}
+              </span>
+              <span v-else-if="row.startDepts?.length > 1">
+                <Tooltip
+                  placement="top"
+                  :title="
+                    row.startDepts.map((dept: any) => dept.name).join('、')
                   "
                 >
-                  全部可见
-                </span>
-                <span v-else-if="record.startUsers?.length === 1">
-                  {{ record.startUsers[0].nickname }}
-                </span>
-                <span v-else-if="record.startDepts?.length === 1">
-                  {{ record.startDepts[0].name }}
-                </span>
-                <span v-else-if="record.startDepts?.length > 1">
-                  <Tooltip
-                    placement="top"
-                    :title="
-                      record.startDepts.map((dept: any) => dept.name).join('、')
-                    "
-                  >
-                    {{ record.startDepts[0].name }}等
-                    {{ record.startDepts.length }} 个部门可见
-                  </Tooltip>
-                </span>
-                <span v-else-if="record.startUsers?.length > 1">
-                  <Tooltip
-                    placement="top"
-                    :title="
-                      record.startUsers
-                        .map((user: any) => user.nickname)
-                        .join('、')
-                    "
-                  >
-                    {{ record.startUsers[0].nickname }}等
-                    {{ record.startUsers.length }} 人可见
-                  </Tooltip>
-                </span>
-              </template>
-              <!-- 流程类型列 -->
-              <template v-else-if="column.key === 'type'">
-                <!-- <DictTag :value="record.type" :type="DICT_TYPE.BPM_MODEL_TYPE" /> -->
-                <!-- <Tag>{{ record.type }}</Tag> -->
-                <DictTag
-                  :type="DICT_TYPE.BPM_MODEL_TYPE"
-                  :value="record.type"
-                />
-              </template>
-              <!-- 表单信息列 -->
-              <template v-else-if="column.key === 'formType'">
-                <!-- TODO BpmModelFormType.NORMAL -->
-                <Button
-                  v-if="record.formType === BpmModelFormType.NORMAL"
-                  type="link"
-                  @click="handleFormDetail(record)"
+                  {{ row.startDepts[0].name }}等
+                  {{ row.startDepts.length }} 个部门可见
+                </Tooltip>
+              </span>
+              <span v-else-if="row.startUsers?.length > 1">
+                <Tooltip
+                  placement="top"
+                  :title="
+                    row.startUsers.map((user: any) => user.nickname).join('、')
+                  "
                 >
-                  {{ record.formName }}
-                </Button>
-                <!-- TODO BpmModelFormType.CUSTOM -->
-                <Button
-                  v-else-if="record.formType === BpmModelFormType.CUSTOM"
-                  type="link"
-                  @click="handleFormDetail(record)"
+                  {{ row.startUsers[0].nickname }}等
+                  {{ row.startUsers.length }} 人可见
+                </Tooltip>
+              </span>
+            </template>
+            <template #formInfo="{ row }">
+              <Button
+                v-if="row.formType === BpmModelFormType.NORMAL"
+                type="link"
+                @click="handleFormDetail(row)"
+              >
+                {{ row.formName }}
+              </Button>
+              <!-- TODO BpmModelFormType.CUSTOM -->
+              <Button
+                v-else-if="row.formType === BpmModelFormType.CUSTOM"
+                type="link"
+                @click="handleFormDetail(row)"
+              >
+                {{ row.formCustomCreatePath }}
+              </Button>
+              <span v-else>暂无表单</span>
+            </template>
+            <template #deploymentTime="{ row }">
+              <div class="flex items-center justify-center">
+                <span v-if="row.processDefinition" class="w-[150px]">
+                  {{ formatDateTime(row.processDefinition.deploymentTime) }}
+                </span>
+                <Tag v-if="row.processDefinition">
+                  v{{ row.processDefinition.version }}
+                </Tag>
+                <Tag v-else color="warning">未部署</Tag>
+                <Tag
+                  v-if="row.processDefinition?.suspensionState === 2"
+                  color="warning"
+                  class="ml-[10px]"
                 >
-                  {{ record.formCustomCreatePath }}
+                  已停用
+                </Tag>
+              </div>
+            </template>
+            <template #actions="{ row }">
+              <div class="flex items-center space-x-0">
+                <!-- TODO 权限校验-->
+                <Button
+                  type="link"
+                  size="small"
+                  class="px-1"
+                  @click="modelOperation('update', row.id)"
+                  :disabled="!isManagerUser(row)"
+                >
+                  修改
                 </Button>
-                <span v-else>暂无表单</span>
-              </template>
-              <!-- 最后发布列 -->
-              <template v-else-if="column.key === 'deploymentTime'">
-                <div class="flex items-center justify-center">
-                  <span v-if="record.processDefinition" class="w-[150px]">
-                    {{
-                      formatDateTime(record.processDefinition.deploymentTime)
-                    }}
-                  </span>
-                  <Tag v-if="record.processDefinition">
-                    v{{ record.processDefinition.version }}
-                  </Tag>
-                  <Tag v-else color="warning">未部署</Tag>
-                  <Tag
-                    v-if="record.processDefinition?.suspensionState === 2"
-                    color="warning"
-                    class="ml-[10px]"
-                  >
-                    已停用
-                  </Tag>
-                </div>
-              </template>
-              <!-- 操作列 -->
-              <template v-else-if="column.key === 'operation'">
-                <div class="flex items-center space-x-0">
-                  <!-- TODO 权限校验-->
-                  <Button
-                    type="link"
-                    size="small"
-                    class="px-1"
-                    @click="modelOperation('update', record.id)"
-                    :disabled="!isManagerUser(record)"
-                  >
-                    修改
-                  </Button>
-                  <Button
-                    type="link"
-                    size="small"
-                    class="px-1"
-                    @click="handleDeploy(record)"
-                    :disabled="!isManagerUser(record)"
-                  >
-                    发布
-                  </Button>
-                  <Dropdown placement="bottomRight" arrow>
-                    <Button type="link" size="small" class="px-1">更多</Button>
-                    <template #overlay>
-                      <Menu
-                        @click="
-                          (e) => handleModelCommand(e.key as string, record)
-                        "
-                      >
-                        <Menu.Item key="handleCopy"> 复制 </Menu.Item>
-                        <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+                <Button
+                  type="link"
+                  size="small"
+                  class="px-1"
+                  @click="handleDeploy(row)"
+                  :disabled="!isManagerUser(row)"
+                >
+                  发布
+                </Button>
+                <Dropdown placement="bottomRight" arrow>
+                  <Button type="link" size="small" class="px-1">更多</Button>
+                  <template #overlay>
+                    <Menu
+                      @click="(e) => handleModelCommand(e.key as string, row)"
+                    >
+                      <Menu.Item key="handleCopy"> 复制 </Menu.Item>
+                      <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
 
-                        <!-- TODO 待实现报表
+                      <!-- TODO 待实现报表
                         <Menu.Item
                           key="handleReport"
                           :disabled="!isManagerUser(record)"
                         >
                           报表
                         </Menu.Item> -->
-                        <Menu.Item
-                          key="handleChangeState"
-                          v-if="record.processDefinition"
-                          :disabled="!isManagerUser(record)"
-                        >
-                          {{
-                            record.processDefinition.suspensionState === 1
-                              ? '停用'
-                              : '启用'
-                          }}
-                        </Menu.Item>
-                        <Menu.Item
-                          danger
-                          key="handleClean"
-                          :disabled="!isManagerUser(record)"
-                        >
-                          清理
-                        </Menu.Item>
-                        <Menu.Item
-                          danger
-                          key="handleDelete"
-                          :disabled="!isManagerUser(record)"
-                        >
-                          删除
-                        </Menu.Item>
-                      </Menu>
-                    </template>
-                  </Dropdown>
-                </div>
-              </template>
+                      <Menu.Item
+                        key="handleChangeState"
+                        v-if="row.processDefinition"
+                        :disabled="!isManagerUser(row)"
+                      >
+                        {{
+                          row.processDefinition.suspensionState === 1
+                            ? '停用'
+                            : '启用'
+                        }}
+                      </Menu.Item>
+                      <Menu.Item
+                        danger
+                        key="handleClean"
+                        :disabled="!isManagerUser(row)"
+                      >
+                        清理
+                      </Menu.Item>
+                      <Menu.Item
+                        danger
+                        key="handleDelete"
+                        :disabled="!isManagerUser(row)"
+                      >
+                        删除
+                      </Menu.Item>
+                    </Menu>
+                  </template>
+                </Dropdown>
+              </div>
             </template>
-          </Table>
+          </Grid>
         </Collapse.Panel>
       </Collapse>
     </Card>
@@ -691,20 +677,9 @@ const handleRenameSuccess = () => {
 
 <style lang="scss" scoped>
 .category-draggable-model {
-  // ant-table-tbody 自定义样式
-  :deep(.ant-table-tbody > tr > td) {
-    overflow: hidden;
-    border-bottom: none;
-  }
   // ant-collapse-header 自定义样式
   :deep(.ant-collapse-header) {
     padding: 0;
-  }
-
-  // 优化表格渲染性能
-  :deep(.ant-table-tbody) {
-    transform: translateZ(0);
-    will-change: transform;
   }
 
   // 折叠面板样式
