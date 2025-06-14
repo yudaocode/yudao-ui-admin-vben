@@ -53,7 +53,7 @@ export namespace BpmProcessInstanceApi {
     formVariables: Record<string, any>;
     id: number;
     name: string;
-    processDefinition?: BpmModelApi.ProcessDefinitionVO;
+    processDefinition?: BpmModelApi.ProcessDefinition;
     processDefinitionId: string;
     remark: string;
     result: number;
@@ -67,7 +67,7 @@ export namespace BpmProcessInstanceApi {
   export type ApprovalDetail = {
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[];
     formFieldsPermission: any;
-    processDefinition: BpmModelApi.ProcessDefinitionVO;
+    processDefinition: BpmModelApi.ProcessDefinition;
     processInstance: BpmProcessInstanceApi.ProcessInstanceVO;
     status: number;
     todoTask: BpmTaskApi.TaskVO;

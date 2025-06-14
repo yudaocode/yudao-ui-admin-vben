@@ -161,7 +161,7 @@ const processDefinitionGroup = computed(() => {
     string,
     BpmProcessDefinitionApi.ProcessDefinitionVO[]
   > = {};
-  categoryList.value.forEach((category: BpmCategoryApi.CategoryVO) => {
+  categoryList.value.forEach((category: BpmCategoryApi.Category) => {
     if (grouped[category.code]) {
       orderedGroup[category.code] = grouped[
         category.code
@@ -203,7 +203,7 @@ const availableCategories = computed(() => {
   const availableCategoryCodes = Object.keys(processDefinitionGroup.value);
 
   // 过滤出有流程的分类
-  return categoryList.value.filter((category: BpmCategoryApi.CategoryVO) =>
+  return categoryList.value.filter((category: BpmCategoryApi.Category) =>
     availableCategoryCodes.includes(category.code),
   );
 });

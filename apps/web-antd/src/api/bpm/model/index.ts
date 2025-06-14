@@ -11,9 +11,8 @@ export namespace BpmModelApi {
     deptName?: string;
   }
 
-  /** 流程定义 VO */
-  // TODO @jason：不用 VO 后缀哈
-  export interface ProcessDefinitionVO {
+  /** 流程定义 */
+  export interface ProcessDefinition {
     id: string;
     key?: string;
     version: number;
@@ -23,8 +22,8 @@ export namespace BpmModelApi {
     formCustomViewPath?: string;
   }
 
-  /** 流程模型 VO */
-  export interface ModelVO {
+  /** 流程模型 */
+  export interface Model {
     id: number;
     key: string;
     name: string;
@@ -36,7 +35,7 @@ export namespace BpmModelApi {
     formId: number;
     formCustomCreatePath: string;
     formCustomViewPath: string;
-    processDefinition: ProcessDefinitionVO;
+    processDefinition: ProcessDefinition;
     status: number;
     remark: string;
     createTime: string;
@@ -49,23 +48,23 @@ export namespace BpmModelApi {
 export interface ModelCategoryInfo {
   id: number;
   name: string;
-  modelList: BpmModelApi.ModelVO[];
+  modelList: BpmModelApi.Model[];
 }
 
 /** 获取流程模型列表 */
 export async function getModelList(name: string | undefined) {
-  return requestClient.get<BpmModelApi.ModelVO[]>('/bpm/model/list', {
+  return requestClient.get<BpmModelApi.Model[]>('/bpm/model/list', {
     params: { name },
   });
 }
 
 /** 获取流程模型详情 */
 export async function getModel(id: string) {
-  return requestClient.get<BpmModelApi.ModelVO>(`/bpm/model/get?id=${id}`);
+  return requestClient.get<BpmModelApi.Model>(`/bpm/model/get?id=${id}`);
 }
 
 /** 更新流程模型 */
-export async function updateModel(data: BpmModelApi.ModelVO) {
+export async function updateModel(data: BpmModelApi.Model) {
   return requestClient.put('/bpm/model/update', data);
 }
 
@@ -78,7 +77,7 @@ export async function updateModelSortBatch(ids: number[]) {
 }
 
 /** 更新流程模型的 BPMN XML */
-export async function updateModelBpmn(data: BpmModelApi.ModelVO) {
+export async function updateModelBpmn(data: BpmModelApi.Model) {
   return requestClient.put('/bpm/model/update-bpmn', data);
 }
 
@@ -92,7 +91,7 @@ export async function updateModelState(id: number, state: number) {
 }
 
 /** 创建流程模型 */
-export async function createModel(data: BpmModelApi.ModelVO) {
+export async function createModel(data: BpmModelApi.Model) {
   return requestClient.post('/bpm/model/create', data);
 }
 

@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<BpmCategoryApi.CategoryVO>();
+const formData = ref<BpmCategoryApi.Category>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['流程分类'])
@@ -39,7 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as BpmCategoryApi.CategoryVO;
+    const data = (await formApi.getValues()) as BpmCategoryApi.Category;
     try {
       await (formData.value?.id ? updateCategory(data) : createCategory(data));
       // 关闭并提示
@@ -56,7 +56,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmCategoryApi.CategoryVO>();
+    const data = modalApi.getData<BpmCategoryApi.Category>();
     if (!data || !data.id) {
       return;
     }

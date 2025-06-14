@@ -3,9 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmCategoryApi {
-  /** 流程分类 VO */
-  // TODO @jason：不用 VO 后缀哈
-  export interface CategoryVO {
+  /** 流程分类 */
+  export interface Category {
     id: number;
     name: string;
     code: string;
@@ -17,7 +16,7 @@ export namespace BpmCategoryApi {
 
 /** 查询流程分类分页 */
 export async function getCategoryPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmCategoryApi.CategoryVO>>(
+  return requestClient.get<PageResult<BpmCategoryApi.Category>>(
     '/bpm/category/page',
     { params },
   );
@@ -25,18 +24,18 @@ export async function getCategoryPage(params: PageParam) {
 
 /** 查询流程分类详情 */
 export async function getCategory(id: number) {
-  return requestClient.get<BpmCategoryApi.CategoryVO>(
+  return requestClient.get<BpmCategoryApi.Category>(
     `/bpm/category/get?id=${id}`,
   );
 }
 
 /** 新增流程分类 */
-export async function createCategory(data: BpmCategoryApi.CategoryVO) {
+export async function createCategory(data: BpmCategoryApi.Category) {
   return requestClient.post<number>('/bpm/category/create', data);
 }
 
 /** 修改流程分类 */
-export async function updateCategory(data: BpmCategoryApi.CategoryVO) {
+export async function updateCategory(data: BpmCategoryApi.Category) {
   return requestClient.put<boolean>('/bpm/category/update', data);
 }
 
@@ -47,7 +46,7 @@ export async function deleteCategory(id: number) {
 
 /** 查询流程分类列表 */
 export async function getCategorySimpleList() {
-  return requestClient.get<BpmCategoryApi.CategoryVO[]>(
+  return requestClient.get<BpmCategoryApi.Category[]>(
     `/bpm/category/simple-list`,
   );
 }

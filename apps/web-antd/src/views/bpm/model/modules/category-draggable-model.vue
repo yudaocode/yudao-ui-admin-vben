@@ -5,7 +5,8 @@ import type { BpmModelApi, ModelCategoryInfo } from '#/api/bpm/model';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { useAccess } from '@vben/access';
+import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
@@ -65,8 +66,8 @@ const router = useRouter();
 const userStore = useUserStore();
 const userId = userStore.userInfo?.id;
 const isModelSorting = ref(false);
-const originalData = ref<BpmModelApi.ModelVO[]>([]);
-const modelList = ref<BpmModelApi.ModelVO[]>([]);
+const originalData = ref<BpmModelApi.Model[]>([]);
+const modelList = ref<BpmModelApi.Model[]>([]);
 const isExpand = ref(false);
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -89,6 +90,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
 const sortableInstance = ref<any>(null);
 /** 解决 v-model 问题，使用计算属性 */
 const expandKeys = computed(() => (isExpand.value ? ['1'] : []));
+
+const { hasAccessByCodes } = useAccess();
+/** 权限校验：通过 computed 解决列表的卡顿问题 */
+const hasPermiUpdate = computed(() => {
+  return hasAccessByCodes(['bpm:model:update']);
+});
+const hasPermiDelete = computed(() => {
+  return hasAccessByCodes(['bpm:model:delete']);
+});
+const hasPermiDeploy = computed(() => {
+  return hasAccessByCodes(['bpm:model:deploy']);
+});
 
 /** 处理模型的排序 */
 function handleModelSort() {
@@ -145,21 +158,9 @@ async function handleModelSortSubmit() {
       message.error('排序数据异常，请重试');
       return;
     }
-
     // 保存排序
     const ids = modelList.value.map((item) => item.id);
-
-    // 检查是否有所有必要的ID
-    if (ids.length === props.categoryInfo.modelList.length) {
-      // 使用排序后的数据
-      await updateModelSortBatch(ids);
-    } else {
-      console.warn('排序数据不完整，尝试使用原始数据');
-      // 如果数据不完整，使用原始数据
-      const originalIds = props.categoryInfo.modelList.map((item) => item.id);
-      await updateModelSortBatch(originalIds);
-    }
-
+    await updateModelSortBatch(ids);
     // 刷新列表
     isModelSorting.value = false;
     message.success('排序模型成功');
@@ -520,11 +521,9 @@ const handleRenameSuccess = () => {
                   class="mr-2.5 h-9 w-9 flex-shrink-0 rounded"
                   alt="图标"
                 />
-                <div class="min-w-0">
-                  <EllipsisText :max-width="100" :tooltip-when-ellipsis="true">
-                    {{ row.name }}
-                  </EllipsisText>
-                </div>
+                <EllipsisText :max-width="160" :tooltip-when-ellipsis="true">
+                  {{ row.name }}
+                </EllipsisText>
               </div>
             </template>
             <template #startUserIds="{ row }">
@@ -598,13 +597,12 @@ const handleRenameSuccess = () => {
             </template>
             <template #actions="{ row }">
               <div class="flex items-center space-x-0">
-                <!-- TODO 权限校验-->
                 <Button
                   type="link"
                   size="small"
                   class="px-1"
                   @click="modelOperation('update', row.id)"
-                  :disabled="!isManagerUser(row)"
+                  :disabled="!isManagerUser(row) || !hasPermiUpdate"
                 >
                   修改
                 </Button>
@@ -613,7 +611,7 @@ const handleRenameSuccess = () => {
                   size="small"
                   class="px-1"
                   @click="handleDeploy(row)"
-                  :disabled="!isManagerUser(row)"
+                  :disabled="!isManagerUser(row) || !hasPermiDeploy"
                 >
                   发布
                 </Button>
@@ -654,7 +652,7 @@ const handleRenameSuccess = () => {
                       <Menu.Item
                         danger
                         key="handleDelete"
-                        :disabled="!isManagerUser(row)"
+                        :disabled="!isManagerUser(row) || !hasPermiDelete"
                       >
                         删除
                       </Menu.Item>
