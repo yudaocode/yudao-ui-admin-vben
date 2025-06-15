@@ -7,12 +7,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteCodegenTable,
+  deleteCodegenTableList,
   downloadCodegen,
   getCodegenTablePage,
   syncCodegenFromDB,
@@ -83,6 +85,31 @@ async function handleDelete(row: InfraCodegenApi.CodegenTable) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraCodegenApi.CodegenTable[];
+}) {
+  checkedIds.value = records.map((item) => item.id);
+}
+
+/** 批量删除代码生成配置 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteCodegenTableList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 /** 同步数据库 */
 async function handleSync(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
@@ -146,12 +173,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<InfraCodegenApi.CodegenTable>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 获取数据源配置列表 */
@@ -196,6 +228,15 @@ initDataSourceConfig();
               icon: ACTION_ICON.ADD,
               auth: ['infra:codegen:create'],
               onClick: handleImport,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:codegen:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

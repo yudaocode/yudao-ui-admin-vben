@@ -129,6 +129,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 表格列配置 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '任务编号',
