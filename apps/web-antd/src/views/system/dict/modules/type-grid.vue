@@ -5,14 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDictType,
+  deleteDictTypeList,
   exportDictType,
   getDictTypePage,
 } from '#/api/system/dict/type';
@@ -53,14 +56,37 @@ function handleEdit(row: any) {
 async function handleDelete(row: SystemDictTypeApi.DictType) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
+    key: 'action_process_msg',
   });
   try {
     await deleteDictType(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemDictTypeApi.DictType[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除字典类型 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteDictTypeList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     hideLoading();
@@ -72,6 +98,8 @@ const gridEvents: VxeGridListeners<SystemDictTypeApi.DictType> = {
   cellClick: ({ row }) => {
     emit('select', row.type);
   },
+  checkboxAll: handleRowCheckboxChange,
+  checkboxChange: handleRowCheckboxChange,
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -81,7 +109,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useTypeGridColumns(),
     height: 'auto',
-    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -96,6 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isCurrent: true,
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
@@ -127,6 +155,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:dict:export'],
               onClick: handleExport,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:dict:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

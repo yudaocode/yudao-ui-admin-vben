@@ -49,6 +49,13 @@ export function deleteMailAccount(id: number) {
   return requestClient.delete(`/system/mail-account/delete?id=${id}`);
 }
 
+/** 批量删除邮箱账号 */
+export function deleteMailAccountList(ids: number[]) {
+  return requestClient.delete(
+    `/system/mail-account/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 获得邮箱账号精简列表 */
 export function getSimpleMailAccountList() {
   return requestClient.get<SystemMailAccountApi.MailAccount[]>(

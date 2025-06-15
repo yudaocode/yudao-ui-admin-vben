@@ -2,13 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteMailAccount,
+  deleteMailAccountList,
   getMailAccountPage,
 } from '#/api/system/mail/account';
 import { $t } from '#/locales';
@@ -40,14 +44,37 @@ function handleEdit(row: SystemMailAccountApi.MailAccount) {
 async function handleDelete(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
-    key: 'action_key_msg',
+    duration: 0,
+    key: 'action_process_msg',
   });
   try {
     await deleteMailAccount(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.mail]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemMailAccountApi.MailAccount[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除邮箱账号 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteMailAccountList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     hideLoading();
@@ -75,12 +102,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemMailAccountApi.MailAccount>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 <template>
@@ -100,6 +132,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['system:mail-account:create'],
               onClick: handleCreate,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:mail-account:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />
@@ -121,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['system:mail-account:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.mail]),
                 confirm: handleDelete.bind(null, row),
               },
             },

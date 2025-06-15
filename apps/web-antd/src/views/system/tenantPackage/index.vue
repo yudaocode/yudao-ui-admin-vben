@@ -2,13 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteTenantPackage,
+  deleteTenantPackageList,
   getTenantPackagePage,
 } from '#/api/system/tenant-package';
 import { $t } from '#/locales';
@@ -40,14 +44,37 @@ function handleEdit(row: SystemTenantPackageApi.TenantPackage) {
 async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
+    key: 'action_process_msg',
   });
   try {
     await deleteTenantPackage(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemTenantPackageApi.TenantPackage[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除租户套餐 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteTenantPackageList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     hideLoading();
@@ -75,12 +102,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantPackageApi.TenantPackage>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -101,6 +133,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['system:tenant-package:create'],
               onClick: handleCreate,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:tenant-package:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

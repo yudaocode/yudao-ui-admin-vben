@@ -2,13 +2,20 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemPostApi } from '#/api/system/post';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deletePost, exportPost, getPostPage } from '#/api/system/post';
+import {
+  deletePost,
+  deletePostList,
+  exportPost,
+  getPostPage,
+} from '#/api/system/post';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -44,14 +51,37 @@ function handleEdit(row: SystemPostApi.Post) {
 async function handleDelete(row: SystemPostApi.Post) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
+    key: 'action_process_msg',
   });
   try {
     await deletePost(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemPostApi.Post[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除岗位 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deletePostList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     hideLoading();
@@ -79,12 +109,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemPostApi.Post>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -108,6 +143,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:post:export'],
               onClick: handleExport,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:post:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />
