@@ -45,12 +45,14 @@ function handleEdit(row: SystemNoticeApi.Notice) {
 async function handleDelete(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteNotice(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();
@@ -90,7 +92,10 @@ async function handlePush(row: SystemNoticeApi.Notice) {
   });
   try {
     await pushNotice(row.id as number);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    message.success({
+      content: $t('ui.actionMessage.operationSuccess'),
+      key: 'action_key_msg',
+    });
   } finally {
     hideLoading();
   }

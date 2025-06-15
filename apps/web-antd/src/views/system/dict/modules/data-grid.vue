@@ -58,12 +58,14 @@ function handleEdit(row: SystemDictDataApi.DictData) {
 async function handleDelete(row: SystemDictDataApi.DictData) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.label]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteDictData(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.label]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.label]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();

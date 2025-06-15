@@ -51,12 +51,14 @@ function handleEdit(row: SystemPostApi.Post) {
 async function handleDelete(row: SystemPostApi.Post) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deletePost(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();

@@ -28,13 +28,14 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [AssignMenuModal, assignMenuModalApi] = useVbenModal({
-  connectedComponent: AssignMenuForm,
-  destroyOnClose: true,
-});
+const [AssignDataPermissionFormModel, assignDataPermissionFormApi] =
+  useVbenModal({
+    connectedComponent: AssignDataPermissionForm,
+    destroyOnClose: true,
+  });
 
-const [AssignDataPermissionModal, assignDataPermissionModalApi] = useVbenModal({
-  connectedComponent: AssignDataPermissionForm,
+const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
+  connectedComponent: AssignMenuForm,
   destroyOnClose: true,
 });
 
@@ -46,12 +47,7 @@ function onRefresh() {
 /** 导出表格 */
 async function handleExport() {
   const data = await exportRole(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '角色数据.xls', source: data });
-}
-
-/** 创建角色 */
-function handleCreate() {
-  formModalApi.setData(null).open();
+  downloadFileFromBlobPart({ fileName: '角色.xls', source: data });
 }
 
 /** 编辑角色 */
@@ -59,16 +55,23 @@ function handleEdit(row: SystemRoleApi.Role) {
   formModalApi.setData(row).open();
 }
 
+/** 创建角色 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
 /** 删除角色 */
 async function handleDelete(row: SystemRoleApi.Role) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteRole(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();
@@ -100,14 +103,14 @@ async function handleDeleteBatch() {
   }
 }
 
-/** 分配菜单 */
-function handleAssignMenu(row: SystemRoleApi.Role) {
-  assignMenuModalApi.setData(row).open();
+/** 分配角色的数据权限 */
+function handleAssignDataPermission(row: SystemRoleApi.Role) {
+  assignDataPermissionFormApi.setData(row).open();
 }
 
-/** 分配数据权限 */
-function handleAssignDataPermission(row: SystemRoleApi.Role) {
-  assignDataPermissionModalApi.setData(row).open();
+/** 分配角色的菜单权限 */
+function handleAssignMenu(row: SystemRoleApi.Role) {
+  assignMenuFormApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -117,6 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
+    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -155,8 +159,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <FormModal @success="onRefresh" />
-    <AssignMenuModal @success="onRefresh" />
-    <AssignDataPermissionModal @success="onRefresh" />
+    <AssignDataPermissionFormModel @success="onRefresh" />
+    <AssignMenuFormModel @success="onRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
         <TableAction
@@ -211,16 +215,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
           :drop-down-actions="[
             {
-              label: '分配菜单',
-              type: 'link',
-              auth: ['system:permission:assign-role-menu'],
-              onClick: handleAssignMenu.bind(null, row),
-            },
-            {
-              label: '分配数据权限',
+              label: '数据权限',
               type: 'link',
               auth: ['system:permission:assign-role-data-scope'],
               onClick: handleAssignDataPermission.bind(null, row),
+            },
+            {
+              label: '菜单权限',
+              type: 'link',
+              auth: ['system:permission:assign-role-menu'],
+              onClick: handleAssignMenu.bind(null, row),
             },
           ]"
         />

@@ -44,12 +44,14 @@ function handleEdit(row: SystemMailAccountApi.MailAccount) {
 async function handleDelete(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteMailAccount(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.mail]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();

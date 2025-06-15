@@ -57,18 +57,17 @@ function handleSend(row: SystemMailTemplateApi.MailTemplate) {
 
 /** 删除邮件模板 */
 async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
-  const hideLoading = message.loading({
+  message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  try {
-    await deleteMailTemplate(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  await deleteMailTemplate(row.id as number);
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    key: 'action_key_msg',
+  });
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

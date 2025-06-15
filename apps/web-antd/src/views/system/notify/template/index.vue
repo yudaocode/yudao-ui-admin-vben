@@ -62,12 +62,14 @@ function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
 async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
+    key: 'action_key_msg',
   });
   try {
     await deleteNotifyTemplate(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
     onRefresh();
   } finally {
     hideLoading();
