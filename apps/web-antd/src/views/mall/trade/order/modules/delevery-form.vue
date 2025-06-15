@@ -34,6 +34,7 @@ const [Form, formApi] = useVbenForm({
         show: () => false,
       },
     },
+    // TODO @xingyu：发货默认选中第一个？
     {
       fieldName: 'expressType',
       label: '发货方式',

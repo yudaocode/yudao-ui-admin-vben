@@ -29,6 +29,7 @@ function onRefresh() {
   gridApi.query();
 }
 const { push } = useRouter();
+// TODO xingyu：貌似详情，还点不进去哇？
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });

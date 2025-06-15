@@ -175,6 +175,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <!-- TODO @xingyu：样式乱的 -->
     <Card class="mb-4 h-[10%]">
       <template class="flex flex-row gap-4">
         <SummaryCard
@@ -215,6 +216,7 @@ onMounted(() => {
         />
       </template>
     </Card>
+    <!-- TODO @xingyu：核销弹不出来 -->
     <Grid class="h-[80%]" table-title="核销订单">
       <template #toolbar-tools>
         <TableAction
