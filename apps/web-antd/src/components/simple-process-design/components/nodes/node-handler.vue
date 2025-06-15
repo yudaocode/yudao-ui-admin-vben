@@ -344,7 +344,7 @@ function addNode(type: number) {
             </div>
           </div>
         </template>
-        <div class="add-icon"><IconifyIcon icon="ep:plus" /></div>
+        <div class="add-icon"><IconifyIcon icon="lucide:plus" /></div>
       </Popover>
     </div>
   </div>

@@ -200,7 +200,7 @@ defineExpose({
             ghost
             class="ml-1"
           >
-            <IconifyIcon icon="ep:document" />
+            <IconifyIcon icon="lucide:file-text" />
             <span class="!ml-[2px] text-[12px]">查看表单</span>
           </Button>
         </div>

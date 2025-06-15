@@ -111,13 +111,13 @@ function findReturnTaskNodes(
           <div class="node-text" v-else>
             {{ NODE_DEFAULT_TEXT.get(currentNode.type) }}
           </div>
-          <IconifyIcon icon="ep:arrow-right-bold" v-if="!readonly" />
+          <IconifyIcon icon="lucide:chevron-right" v-if="!readonly" />
         </div>
         <div v-if="!readonly" class="node-toolbar">
           <div class="toolbar-icon">
             <IconifyIcon
               color="#0089ff"
-              icon="ep:circle-close-filled"
+              icon="lucide:circle-x"
               :size="18"
               @click="deleteNode"
             />

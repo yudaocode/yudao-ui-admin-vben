@@ -201,7 +201,7 @@ function recursiveFindParentNode(
                 <div class="toolbar-icon">
                   <IconifyIcon
                     color="#0089ff"
-                    icon="ep:circle-close-filled"
+                    icon="lucide:circle-x"
                     @click="deleteCondition(index)"
                   />
                 </div>

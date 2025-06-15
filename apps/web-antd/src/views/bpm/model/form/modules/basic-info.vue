@@ -354,10 +354,7 @@ defineExpose({ validate });
             class="flex items-center"
           >
             <template #icon>
-              <IconifyIcon
-                icon="mdi:account-plus-outline"
-                class="size-[18px]"
-              />
+              <IconifyIcon icon="lucide:user-plus" class="size-[18px]" />
             </template>
             选择人员
           </Button>
@@ -371,7 +368,7 @@ defineExpose({ validate });
             :key="dept.id"
             class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 shadow-sm hover:bg-gray-200"
           >
-            <IconifyIcon icon="ep:office-building" class="size-6 px-1" />
+            <IconifyIcon icon="lucide:building" class="size-6 px-1" />
             {{ dept.name }}
             <X
               class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
@@ -418,10 +415,7 @@ defineExpose({ validate });
             class="flex items-center"
           >
             <template #icon>
-              <IconifyIcon
-                icon="mdi:account-plus-outline"
-                class="size-[18px]"
-              />
+              <IconifyIcon icon="lucide:user-plus" class="size-[18px]" />
             </template>
             选择人员
           </Button>
