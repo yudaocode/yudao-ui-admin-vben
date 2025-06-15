@@ -29,7 +29,7 @@ import { DICT_TYPE, getBoolDictOptions, getIntDictOptions } from '#/utils';
 
 const props = defineProps({
   categoryList: {
-    type: Array as PropType<BpmCategoryApi.CategoryVO[]>,
+    type: Array as PropType<BpmCategoryApi.Category[]>,
     required: true,
   },
   userList: {

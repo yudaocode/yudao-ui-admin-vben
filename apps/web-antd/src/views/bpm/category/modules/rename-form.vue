@@ -12,7 +12,7 @@ import { getCategory, updateCategory } from '#/api/bpm/category';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
-const formData = ref<BpmCategoryApi.CategoryVO>();
+const formData = ref<BpmCategoryApi.Category>();
 
 // 定义表单结构
 const formSchema = [
@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
       status: formData.value?.status,
       description: formData.value?.description,
       sort: formData.value?.sort,
-    } as BpmCategoryApi.CategoryVO;
+    } as BpmCategoryApi.Category;
 
     try {
       await updateCategory(data);
@@ -74,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 加载数据
-    const data = modalApi.getData<BpmCategoryApi.CategoryVO>();
+    const data = modalApi.getData<BpmCategoryApi.Category>();
 
     if (!data || !data.id) {
       return;

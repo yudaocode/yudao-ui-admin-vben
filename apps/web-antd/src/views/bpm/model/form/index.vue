@@ -133,7 +133,7 @@ provide('modelData', formData);
 
 // 数据列表
 const formList = ref<BpmFormApi.FormVO[]>([]);
-const categoryList = ref<BpmCategoryApi.CategoryVO[]>([]);
+const categoryList = ref<BpmCategoryApi.Category[]>([]);
 const userList = ref<SystemUserApi.User[]>([]);
 const deptList = ref<SystemDeptApi.Dept[]>([]);
 

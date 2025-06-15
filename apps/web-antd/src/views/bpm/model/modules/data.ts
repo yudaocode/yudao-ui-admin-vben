@@ -4,12 +4,12 @@ import type { BpmModelApi } from '#/api/bpm/model';
 import { DICT_TYPE } from '#/utils';
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions<BpmModelApi.ModelVO>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<BpmModelApi.Model>['columns'] {
   return [
     {
       field: 'name',
       title: '流程名称',
-      minWidth: 250,
+      minWidth: 200,
       slots: { default: 'name' },
     },
     {
@@ -21,7 +21,7 @@ export function useGridColumns(): VxeTableGridOptions<BpmModelApi.ModelVO>['colu
     {
       field: 'type',
       title: '流程类型',
-      minWidth: 150,
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.BPM_MODEL_TYPE },
@@ -36,12 +36,12 @@ export function useGridColumns(): VxeTableGridOptions<BpmModelApi.ModelVO>['colu
     {
       field: 'deploymentTime',
       title: '最后发布',
-      minWidth: 260,
+      minWidth: 280,
       slots: { default: 'deploymentTime' },
     },
     {
       title: '操作',
-      width: 200,
+      width: 150,
       fixed: 'right',
       slots: { default: 'actions' },
     },
