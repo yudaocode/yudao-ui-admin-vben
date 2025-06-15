@@ -21,7 +21,7 @@ const emit = defineEmits<{
   (e: 'success'): void;
 }>();
 
-const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
+const formData = reactive<InfraCodegenApi.CodegenCreateListReq>({
   dataSourceConfigId: 0,
   tableNames: [], // 已选择的表列表
 });

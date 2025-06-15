@@ -35,7 +35,7 @@ interface DeptTreeNode {
 
 defineOptions({ name: 'UserSelectModal' });
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     cancelText?: string;
     confirmText?: string;
@@ -216,7 +216,9 @@ async function loadUserData(pageNo: number, pageSize: number) {
     if (newUsers.length > 0) {
       userList.value.push(...newUsers);
     }
-  } finally {}
+  } finally {
+    //
+  }
 }
 
 // 更新右侧列表数据

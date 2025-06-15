@@ -11,13 +11,19 @@ import {
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
 import {
-  floatToFixed2,
+  erpNumberFormatter,
   formatToFractionDigit,
   isFunction,
   isString,
 } from '@vben/utils';
 
-import { Button, Image, Popconfirm, Switch } from 'ant-design-vue';
+import {
+  Button,
+  Image,
+  ImagePreviewGroup,
+  Popconfirm,
+  Switch,
+} from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
@@ -84,7 +90,11 @@ setupVbenVxeTable({
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
         if (column && column.field && row[column.field]) {
-          return row[column.field].map((item: any) => h(Image, { src: item }));
+          return h(ImagePreviewGroup, {}, () => {
+            return row[column.field].map((item: any) =>
+              h(Image, { src: item }),
+            );
+          });
         }
         return '';
       },
@@ -323,8 +333,8 @@ setupVbenVxeTable({
     });
 
     vxeUI.formats.add('formatAmount2', {
-      tableCellFormatMethod({ cellValue }) {
-        return `${floatToFixed2(cellValue)}元`;
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(cellValue, digits)}元`;
       },
     });
   },

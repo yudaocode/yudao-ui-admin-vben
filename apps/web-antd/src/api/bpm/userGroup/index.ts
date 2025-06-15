@@ -3,9 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmUserGroupApi {
-  // TODO @ziye：不用 VO 后缀
-  /** BPM 用户组 VO */
-  export interface UserGroupVO {
+  /** BPM 用户组 */
+  export interface UserGroup {
     id: number;
     name: string;
     description: string;
@@ -18,7 +17,7 @@ export namespace BpmUserGroupApi {
 
 /** 查询用户组分页 */
 export async function getUserGroupPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmUserGroupApi.UserGroupVO>>(
+  return requestClient.get<PageResult<BpmUserGroupApi.UserGroup>>(
     '/bpm/user-group/page',
     { params },
   );
@@ -26,18 +25,18 @@ export async function getUserGroupPage(params: PageParam) {
 
 /** 查询用户组详情 */
 export async function getUserGroup(id: number) {
-  return requestClient.get<BpmUserGroupApi.UserGroupVO>(
+  return requestClient.get<BpmUserGroupApi.UserGroup>(
     `/bpm/user-group/get?id=${id}`,
   );
 }
 
 /** 新增用户组 */
-export async function createUserGroup(data: BpmUserGroupApi.UserGroupVO) {
+export async function createUserGroup(data: BpmUserGroupApi.UserGroup) {
   return requestClient.post<number>('/bpm/user-group/create', data);
 }
 
 /** 修改用户组 */
-export async function updateUserGroup(data: BpmUserGroupApi.UserGroupVO) {
+export async function updateUserGroup(data: BpmUserGroupApi.UserGroup) {
   return requestClient.put<boolean>('/bpm/user-group/update', data);
 }
 
@@ -48,7 +47,7 @@ export async function deleteUserGroup(id: number) {
 
 /** 查询用户组列表 */
 export async function getUserGroupSimpleList() {
-  return requestClient.get<BpmUserGroupApi.UserGroupVO[]>(
+  return requestClient.get<BpmUserGroupApi.UserGroup[]>(
     `/bpm/user-group/simple-list`,
   );
 }

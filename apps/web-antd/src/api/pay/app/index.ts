@@ -24,7 +24,7 @@ export namespace PayAppApi {
     status: number;
   }
 
-  export interface AppPageReqVO extends PageParam {
+  export interface AppPageReq extends PageParam {
     name?: string;
     status?: number;
     remark?: string;
@@ -37,7 +37,7 @@ export namespace PayAppApi {
 }
 
 /** 查询支付应用列表 */
-export function getAppPage(params: PayAppApi.AppPageReqVO) {
+export function getAppPage(params: PayAppApi.AppPageReq) {
   return requestClient.get<PageResult<PayAppApi.App>>('/pay/app/page', {
     params,
   });

@@ -260,7 +260,7 @@ export function useNodeForm(nodeType: BpmNodeTypeEnum) {
   const postOptions = inject<Ref<SystemPostApi.Post[]>>('postList', ref([])); // 岗位列表
   const userOptions = inject<Ref<SystemUserApi.User[]>>('userList', ref([])); // 用户列表
   const deptOptions = inject<Ref<SystemDeptApi.Dept[]>>('deptList', ref([])); // 部门列表
-  const userGroupOptions = inject<Ref<BpmUserGroupApi.UserGroupVO[]>>(
+  const userGroupOptions = inject<Ref<BpmUserGroupApi.UserGroup[]>>(
     'userGroupList',
     ref([]),
   ); // 用户组列表

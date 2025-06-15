@@ -91,13 +91,13 @@ function deleteNode() {
           <div class="node-text" v-else>
             {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.COPY_TASK_NODE) }}
           </div>
-          <IconifyIcon v-if="!readonly" icon="ep:arrow-right-bold" />
+          <IconifyIcon v-if="!readonly" icon="lucide:chevron-right" />
         </div>
         <div v-if="!readonly" class="node-toolbar">
           <div class="toolbar-icon">
             <IconifyIcon
               color="#0089ff"
-              icon="ep:circle-close-filled"
+              icon="lucide:circle-x"
               :size="18"
               @click="deleteNode"
             />

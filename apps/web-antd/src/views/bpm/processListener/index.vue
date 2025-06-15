@@ -32,12 +32,12 @@ function handleCreate() {
 }
 
 /** 编辑流程监听器 */
-function handleEdit(row: BpmProcessListenerApi.ProcessListenerVO) {
+function handleEdit(row: BpmProcessListenerApi.ProcessListener) {
   formModalApi.setData(row).open();
 }
 
 /** 删除流程监听器 */
-async function handleDelete(row: BpmProcessListenerApi.ProcessListenerVO) {
+async function handleDelete(row: BpmProcessListenerApi.ProcessListener) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -80,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmProcessListenerApi.ProcessListenerVO>,
+  } as VxeTableGridOptions<BpmProcessListenerApi.ProcessListener>,
 });
 </script>
 

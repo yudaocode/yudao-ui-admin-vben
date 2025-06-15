@@ -29,12 +29,12 @@ function handleCreate() {
 }
 
 /** 编辑流程分类 */
-function handleEdit(row: BpmCategoryApi.CategoryVO) {
+function handleEdit(row: BpmCategoryApi.Category) {
   formModalApi.setData(row).open();
 }
 
 /** 删除流程分类 */
-async function handleDelete(row: BpmCategoryApi.CategoryVO) {
+async function handleDelete(row: BpmCategoryApi.Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.code]),
     key: 'action_key_msg',
@@ -77,7 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmCategoryApi.CategoryVO>,
+  } as VxeTableGridOptions<BpmCategoryApi.Category>,
 });
 </script>
 

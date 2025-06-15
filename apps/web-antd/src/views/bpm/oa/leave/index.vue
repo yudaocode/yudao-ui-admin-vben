@@ -41,7 +41,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmOALeaveApi.LeaveVO>,
+  } as VxeTableGridOptions<BpmOALeaveApi.Leave>,
 });
 
 /** 创建请假 */
@@ -55,7 +55,7 @@ function handleCreate() {
 }
 
 /** 查看请假详情 */
-function handleDetail(row: BpmOALeaveApi.LeaveVO) {
+function handleDetail(row: BpmOALeaveApi.Leave) {
   router.push({
     name: 'OALeaveDetail',
     query: { id: row.id },
@@ -63,7 +63,7 @@ function handleDetail(row: BpmOALeaveApi.LeaveVO) {
 }
 
 /** 取消请假 */
-function handleCancel(row: BpmOALeaveApi.LeaveVO) {
+function handleCancel(row: BpmOALeaveApi.Leave) {
   prompt({
     async beforeClose(scope) {
       if (scope.isConfirm) {
@@ -96,7 +96,7 @@ function handleCancel(row: BpmOALeaveApi.LeaveVO) {
 }
 
 /** 审批进度 */
-function handleProgress(row: BpmOALeaveApi.LeaveVO) {
+function handleProgress(row: BpmOALeaveApi.Leave) {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: { id: row.processInstanceId },

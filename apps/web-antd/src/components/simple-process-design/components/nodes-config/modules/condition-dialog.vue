@@ -33,6 +33,18 @@ const [Modal, modalApi] = useVbenModal({
   title: '条件配置',
   destroyOnClose: true,
   draggable: true,
+  onOpenChange(isOpen) {
+    if (isOpen) {
+      // 获取传递的数据
+      const conditionObj = modalApi.getData();
+      if (conditionObj) {
+        conditionData.value.conditionType = conditionObj.conditionType;
+        conditionData.value.conditionExpression =
+          conditionObj.conditionExpression;
+        conditionData.value.conditionGroups = conditionObj.conditionGroups;
+      }
+    }
+  },
   async onConfirm() {
     // 校验表单
     if (!conditionRef.value) return;
@@ -50,17 +62,8 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-// TODO: jason  open 在 useVbenModal 中 onOpenChange 方法
-function open(conditionObj: any | undefined) {
-  if (conditionObj) {
-    conditionData.value.conditionType = conditionObj.conditionType;
-    conditionData.value.conditionExpression = conditionObj.conditionExpression;
-    conditionData.value.conditionGroups = conditionObj.conditionGroups;
-  }
-  modalApi.open();
-}
-// TODO: jason  不需要暴露expose，直接使用modalApi.setData(formSetting).open()
-defineExpose({ open });
+// TODO xingyu 暴露 modalApi 给父组件是否合适? trigger-node-config.vue 会有多个 conditionDialog 实例
+defineExpose({ modalApi });
 </script>
 <template>
   <Modal class="w-1/2">

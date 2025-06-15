@@ -5,6 +5,7 @@ import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getProductCategoryList } from '#/api/crm/product/category';
+import { getSimpleUserList } from '#/api/system/user';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -25,6 +26,16 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      component: 'ApiSelect',
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      rules: 'required',
+      componentProps: {
+        api: getSimpleUserList,
+        fieldNames: { label: 'nickname', value: 'id' },
+      },
+    },
+    {
       component: 'Input',
       fieldName: 'no',
       label: '产品编码',
@@ -32,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'ApiTreeSelect',
-      fieldName: 'categoryName',
+      fieldName: 'categoryId',
       label: '产品类型',
       rules: 'required',
       componentProps: {

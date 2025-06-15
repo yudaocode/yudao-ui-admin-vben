@@ -26,17 +26,23 @@ import ProcessDefinitionDetail from './modules/form.vue';
 
 defineOptions({ name: 'BpmProcessInstanceCreate' });
 
-const route = useRoute(); // 路由
+const route = useRoute();
 
-const searchName = ref(''); // 当前搜索关键字
-const isSearching = ref(false); // 是否处于搜索状态
-const processInstanceId: any = route.query.processInstanceId; // 流程实例编号。场景：重新发起时
-const loading = ref(true); // 加载中
-const categoryList: any = ref([]); // 分类的列表
-const activeCategory = ref(''); // 当前选中的分类
-const processDefinitionList = ref<
-  BpmProcessDefinitionApi.ProcessDefinitionVO[]
->([]); // 流程定义的列表
+// 当前搜索关键字
+const searchName = ref('');
+const isSearching = ref(false);
+// 流程实例编号。场景：重新发起时
+const processInstanceId: any = route.query.processInstanceId;
+// 加载中
+const loading = ref(true);
+// 分类的列表
+const categoryList: any = ref([]);
+// 当前选中的分类
+const activeCategory = ref('');
+// 流程定义的列表
+const processDefinitionList = ref<BpmProcessDefinitionApi.ProcessDefinition[]>(
+  [],
+);
 
 // 实现 groupBy 功能
 function groupBy(array: any[], key: string) {
@@ -112,7 +118,7 @@ async function handleGetProcessDefinitionList() {
 
 /** 用于存储搜索过滤后的流程定义 */
 const filteredProcessDefinitionList = ref<
-  BpmProcessDefinitionApi.ProcessDefinitionVO[]
+  BpmProcessDefinitionApi.ProcessDefinition[]
 >([]);
 
 /** 搜索流程 */
@@ -159,13 +165,13 @@ const processDefinitionGroup = computed(() => {
   // 按照 categoryList 的顺序重新组织数据
   const orderedGroup: Record<
     string,
-    BpmProcessDefinitionApi.ProcessDefinitionVO[]
+    BpmProcessDefinitionApi.ProcessDefinition[]
   > = {};
-  categoryList.value.forEach((category: BpmCategoryApi.CategoryVO) => {
+  categoryList.value.forEach((category: BpmCategoryApi.Category) => {
     if (grouped[category.code]) {
       orderedGroup[category.code] = grouped[
         category.code
-      ] as BpmProcessDefinitionApi.ProcessDefinitionVO[];
+      ] as BpmProcessDefinitionApi.ProcessDefinition[];
     }
   });
   return orderedGroup;
@@ -183,7 +189,7 @@ const processDefinitionDetailRef = ref();
 
 /** 处理选择流程的按钮操作 */
 async function handleSelect(
-  row: BpmProcessDefinitionApi.ProcessDefinitionVO,
+  row: BpmProcessDefinitionApi.ProcessDefinition,
   formVariables?: any,
 ) {
   // 设置选择的流程
@@ -203,7 +209,7 @@ const availableCategories = computed(() => {
   const availableCategoryCodes = Object.keys(processDefinitionGroup.value);
 
   // 过滤出有流程的分类
-  return categoryList.value.filter((category: BpmCategoryApi.CategoryVO) =>
+  return categoryList.value.filter((category: BpmCategoryApi.Category) =>
     availableCategoryCodes.includes(category.code),
   );
 });

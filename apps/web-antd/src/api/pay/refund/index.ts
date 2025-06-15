@@ -35,7 +35,7 @@ export namespace PayRefundApi {
   }
 
   /** 退款订单分页请求 */
-  export interface RefundPageReqVO extends PageParam {
+  export interface RefundPageReq extends PageParam {
     merchantId?: number;
     appId?: number;
     channelId?: number;
@@ -64,7 +64,7 @@ export namespace PayRefundApi {
   }
 
   /** 退款订单导出请求 */
-  export interface RefundExportReqVO {
+  export interface RefundExportReq {
     merchantId?: number;
     appId?: number;
     channelId?: number;
@@ -94,7 +94,7 @@ export namespace PayRefundApi {
 }
 
 /** 查询退款订单列表 */
-export function getRefundPage(params: PayRefundApi.RefundPageReqVO) {
+export function getRefundPage(params: PayRefundApi.RefundPageReq) {
   return requestClient.get<PageResult<PayRefundApi.Refund>>(
     '/pay/refund/page',
     {
@@ -124,6 +124,6 @@ export function deleteRefund(id: number) {
 }
 
 /** 导出退款订单 */
-export function exportRefund(params: PayRefundApi.RefundExportReqVO) {
+export function exportRefund(params: PayRefundApi.RefundExportReq) {
   return requestClient.download('/pay/refund/export-excel', { params });
 }

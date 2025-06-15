@@ -63,7 +63,7 @@ enum FieldPermissionType {
 }
 
 const processInstanceLoading = ref(false); // 流程实例的加载中
-const processInstance = ref<BpmProcessInstanceApi.ProcessInstanceVO>(); // 流程实例
+const processInstance = ref<BpmProcessInstanceApi.ProcessInstance>(); // 流程实例
 const processDefinition = ref<any>({}); // 流程定义
 const processModelView = ref<any>({}); // 流程模型视图
 const operationButtonRef = ref(); // 操作按钮组件 ref

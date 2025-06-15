@@ -1254,7 +1254,7 @@ defineExpose({ loadTodoTask });
         "
       >
         <Button type="dashed" @click="openPopover('return')">
-          <IconifyIcon :size="14" icon="ep:back" />
+          <IconifyIcon :size="14" icon="lucide:arrow-left" />
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.RETURN) }}
         </Button>
         <template #content>

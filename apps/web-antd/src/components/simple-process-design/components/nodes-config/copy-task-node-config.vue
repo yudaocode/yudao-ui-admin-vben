@@ -222,7 +222,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
         />
         <div v-else class="node-name">
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" @click="clickIcon()" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" @click="clickIcon()" />
         </div>
       </div>
     </template>
