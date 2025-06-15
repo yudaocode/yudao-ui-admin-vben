@@ -4,8 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace BpmFormApi {
   /** 流程表单 */
-  // TODO @ziye：不用 VO 后缀哈
-  export interface FormVO {
+  export interface Form {
     id?: number | undefined;
     name: string;
     conf: string;
@@ -18,24 +17,23 @@ export namespace BpmFormApi {
 
 /** 获取表单分页列表 */
 export async function getFormPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmFormApi.FormVO>>('/bpm/form/page', {
+  return requestClient.get<PageResult<BpmFormApi.Form>>('/bpm/form/page', {
     params,
   });
 }
 
 /** 获取表单详情 */
-// TODO @ziye：应该不会 string 的情况呢。
-export async function getFormDetail(id: number | string) {
-  return requestClient.get<BpmFormApi.FormVO>(`/bpm/form/get?id=${id}`);
+export async function getFormDetail(id: number) {
+  return requestClient.get<BpmFormApi.Form>(`/bpm/form/get?id=${id}`);
 }
 
 /** 创建表单 */
-export async function createForm(data: BpmFormApi.FormVO) {
+export async function createForm(data: BpmFormApi.Form) {
   return requestClient.post('/bpm/form/create', data);
 }
 
 /** 更新表单 */
-export async function updateForm(data: BpmFormApi.FormVO) {
+export async function updateForm(data: BpmFormApi.Form) {
   return requestClient.put('/bpm/form/update', data);
 }
 
@@ -46,5 +44,5 @@ export async function deleteForm(id: number) {
 
 /** 获取表单简单列表 */
 export async function getFormSimpleList() {
-  return requestClient.get<BpmFormApi.FormVO[]>('/bpm/form/simple-list');
+  return requestClient.get<BpmFormApi.Form[]>('/bpm/form/simple-list');
 }
