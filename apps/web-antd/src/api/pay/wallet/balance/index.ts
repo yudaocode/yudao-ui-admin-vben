@@ -4,12 +4,12 @@ import { requestClient } from '#/api/request';
 
 export namespace PayWalletApi {
   /** 用户钱包查询参数 */
-  export interface PayWalletUserReqVO {
+  export interface PayWalletUserReq {
     userId: number;
   }
 
   /** 钱包信息 */
-  export interface WalletVO {
+  export interface Wallet {
     id: number;
     userId: number;
     userType: number;
@@ -20,7 +20,7 @@ export namespace PayWalletApi {
   }
 
   /** 钱包分页请求 */
-  export interface WalletPageReqVO extends PageParam {
+  export interface WalletPageReq extends PageParam {
     userId?: number;
     userType?: number;
     balance?: number;
@@ -31,15 +31,15 @@ export namespace PayWalletApi {
 }
 
 /** 查询用户钱包详情 */
-export function getWallet(params: PayWalletApi.PayWalletUserReqVO) {
-  return requestClient.get<PayWalletApi.WalletVO>('/pay/wallet/get', {
+export function getWallet(params: PayWalletApi.PayWalletUserReq) {
+  return requestClient.get<PayWalletApi.Wallet>('/pay/wallet/get', {
     params,
   });
 }
 
 /** 查询会员钱包列表 */
-export function getWalletPage(params: PayWalletApi.WalletPageReqVO) {
-  return requestClient.get<PageResult<PayWalletApi.WalletVO>>(
+export function getWalletPage(params: PayWalletApi.WalletPageReq) {
+  return requestClient.get<PageResult<PayWalletApi.Wallet>>(
     '/pay/wallet/page',
     {
       params,
@@ -48,6 +48,6 @@ export function getWalletPage(params: PayWalletApi.WalletPageReqVO) {
 }
 
 /** 修改会员钱包余额 */
-export function updateWalletBalance(data: PayWalletApi.WalletVO) {
+export function updateWalletBalance(data: PayWalletApi.Wallet) {
   return requestClient.put('/pay/wallet/update-balance', data);
 }

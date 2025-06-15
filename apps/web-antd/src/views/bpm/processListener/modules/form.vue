@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<BpmProcessListenerApi.ProcessListenerVO>();
+const formData = ref<BpmProcessListenerApi.ProcessListener>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['流程监听器'])
@@ -47,7 +47,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as BpmProcessListenerApi.ProcessListenerVO;
+      (await formApi.getValues()) as BpmProcessListenerApi.ProcessListener;
     try {
       await (formData.value?.id
         ? updateProcessListener(data)
@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmProcessListenerApi.ProcessListenerVO>();
+    const data = modalApi.getData<BpmProcessListenerApi.ProcessListener>();
     if (!data || !data.id) {
       return;
     }

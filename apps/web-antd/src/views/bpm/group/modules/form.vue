@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<BpmUserGroupApi.UserGroupVO>();
+const formData = ref<BpmUserGroupApi.UserGroup>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['用户分组'])
@@ -46,7 +46,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as BpmUserGroupApi.UserGroupVO;
+    const data = (await formApi.getValues()) as BpmUserGroupApi.UserGroup;
     try {
       await (formData.value?.id
         ? updateUserGroup(data)
@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmUserGroupApi.UserGroupVO>();
+    const data = modalApi.getData<BpmUserGroupApi.UserGroup>();
     if (!data || !data.id) {
       return;
     }

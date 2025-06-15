@@ -30,7 +30,7 @@ const tempStartUserSelectAssignees = ref({}); // 历史发起人选择审批人�
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const processDefinitionId = ref('');
 
-const formData = ref<BpmOALeaveApi.LeaveVO>();
+const formData = ref<BpmOALeaveApi.Leave>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['请假'])
@@ -70,7 +70,7 @@ async function onSubmit() {
   }
 
   // 提交表单
-  const data = (await formApi.getValues()) as BpmOALeaveApi.LeaveVO;
+  const data = (await formApi.getValues()) as BpmOALeaveApi.Leave;
 
   // 审批相关：设置指定审批人
   if (startUserSelectTasks.value?.length > 0) {
@@ -78,7 +78,7 @@ async function onSubmit() {
   }
 
   // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.LeaveVO = {
+  const submitData: BpmOALeaveApi.Leave = {
     ...data,
     startTime: Number(data.startTime),
     endTime: Number(data.endTime),
@@ -112,10 +112,10 @@ async function onDraft() {
     return;
   }
 
-  const data = (await formApi.getValues()) as BpmOALeaveApi.LeaveVO;
+  const data = (await formApi.getValues()) as BpmOALeaveApi.Leave;
 
   // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.LeaveVO = {
+  const submitData: BpmOALeaveApi.Leave = {
     ...data,
     startTime: Number(data.startTime),
     endTime: Number(data.endTime),

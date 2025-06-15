@@ -42,7 +42,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemSmsTemplateApi.SmsSendReqVO = {
+    const data: SystemSmsTemplateApi.SmsSendReq = {
       mobile: values.mobile,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,

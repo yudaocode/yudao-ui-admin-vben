@@ -20,7 +20,7 @@ export namespace SystemSmsTemplateApi {
   }
 
   /** 发送短信请求 */
-  export interface SmsSendReqVO {
+  export interface SmsSendReq {
     mobile: string;
     templateCode: string;
     templateParams: Record<string, any>;
@@ -65,6 +65,6 @@ export function exportSmsTemplate(params: any) {
 }
 
 /** 发送短信 */
-export function sendSms(data: SystemSmsTemplateApi.SmsSendReqVO) {
+export function sendSms(data: SystemSmsTemplateApi.SmsSendReq) {
   return requestClient.post('/system/sms-template/send-sms', data);
 }

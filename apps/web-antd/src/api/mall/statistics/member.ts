@@ -1,32 +1,32 @@
-import type { MallDataComparisonRespVO } from './common';
+import type { MallDataComparisonResp } from './common';
 
 import { formatDate } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
 export namespace MallMemberStatisticsApi {
-  /** 会员分析 Request VO */
+  /** 会员分析 Request */
   export interface AnalyseReq {
     times: Date[];
   }
 
-  /** 会员分析对照数据 Response VO */
+  /** 会员分析对照数据 Response */
   export interface AnalyseComparison {
     registerUserCount: number;
     visitUserCount: number;
     rechargeUserCount: number;
   }
 
-  /** 会员分析 Response VO */
+  /** 会员分析 Response */
   export interface Analyse {
     visitUserCount: number;
     orderUserCount: number;
     payUserCount: number;
     atv: number;
-    comparison: MallDataComparisonRespVO<AnalyseComparison>;
+    comparison: MallDataComparisonResp<AnalyseComparison>;
   }
 
-  /** 会员地区统计 Response VO */
+  /** 会员地区统计 Response */
   export interface AreaStatistics {
     areaId: number;
     areaName: string;
@@ -36,13 +36,13 @@ export namespace MallMemberStatisticsApi {
     orderPayPrice: number;
   }
 
-  /** 会员性别统计 Response VO */
+  /** 会员性别统计 Response */
   export interface SexStatistics {
     sex: number;
     userCount: number;
   }
 
-  /** 会员统计 Response VO */
+  /** 会员统计 Response */
   export interface Summary {
     userCount: number;
     rechargeUserCount: number;
@@ -50,13 +50,13 @@ export namespace MallMemberStatisticsApi {
     expensePrice: number;
   }
 
-  /** 会员终端统计 Response VO */
+  /** 会员终端统计 Response */
   export interface TerminalStatistics {
     terminal: number;
     userCount: number;
   }
 
-  /** 会员数量统计 Response VO */
+  /** 会员数量统计 Response */
   export interface Count {
     /** 用户访问量 */
     visitUserCount: string;
@@ -64,7 +64,7 @@ export namespace MallMemberStatisticsApi {
     registerUserCount: number;
   }
 
-  /** 会员注册数量 Response VO */
+  /** 会员注册数量 Response */
   export interface RegisterCount {
     date: string;
     count: number;
@@ -114,7 +114,7 @@ export function getMemberTerminalStatisticsList() {
 /** 获得用户数量量对照 */
 export function getUserCountComparison() {
   return requestClient.get<
-    MallDataComparisonRespVO<MallMemberStatisticsApi.Count>
+    MallDataComparisonResp<MallMemberStatisticsApi.Count>
   >('/statistics/member/user-count-comparison');
 }
 

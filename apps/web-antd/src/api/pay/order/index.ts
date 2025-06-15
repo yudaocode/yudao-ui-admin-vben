@@ -40,7 +40,7 @@ export namespace PayOrderApi {
   }
 
   /** 支付订单分页请求 */
-  export interface OrderPageReqVO extends PageParam {
+  export interface OrderPageReq extends PageParam {
     merchantId?: number;
     appId?: number;
     channelId?: number;
@@ -66,7 +66,7 @@ export namespace PayOrderApi {
   }
 
   /** 支付订单导出请求 */
-  export interface OrderExportReqVO {
+  export interface OrderExportReq {
     merchantId?: number;
     appId?: number;
     channelId?: number;
@@ -93,7 +93,7 @@ export namespace PayOrderApi {
 }
 
 /** 查询支付订单列表 */
-export function getOrderPage(params: PayOrderApi.OrderPageReqVO) {
+export function getOrderPage(params: PayOrderApi.OrderPageReq) {
   return requestClient.get<PageResult<PayOrderApi.Order>>('/pay/order/page', {
     params,
   });
@@ -120,6 +120,6 @@ export function submitOrder(data: any) {
 }
 
 /** 导出支付订单 */
-export function exportOrder(params: PayOrderApi.OrderExportReqVO) {
+export function exportOrder(params: PayOrderApi.OrderExportReq) {
   return requestClient.download('/pay/order/export-excel', { params });
 }

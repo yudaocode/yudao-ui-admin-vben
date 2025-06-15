@@ -166,7 +166,7 @@ async function initProcessInfo(row: any, formVariables?: any) {
     });
 
     // 加载流程图
-    const processDefinitionDetail: BpmProcessDefinitionApi.ProcessDefinitionVO =
+    const processDefinitionDetail: BpmProcessDefinitionApi.ProcessDefinition =
       await getProcessDefinition(row.id);
     if (processDefinitionDetail) {
       bpmnXML.value = processDefinitionDetail.bpmnXml;

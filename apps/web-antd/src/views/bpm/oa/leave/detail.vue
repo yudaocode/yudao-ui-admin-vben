@@ -14,7 +14,7 @@ const props = defineProps<{
   id: string;
 }>();
 const datailLoading = ref(false);
-const detailData = ref<BpmOALeaveApi.LeaveVO>();
+const detailData = ref<BpmOALeaveApi.Leave>();
 
 const { query } = useRoute();
 const queryId = computed(() => query.id as string);

@@ -12,7 +12,7 @@ withDefaults(
   defineProps<{
     mode?: 'kefu' | 'member';
     user: MemberUserApi.User;
-    wallet: PayWalletApi.WalletVO;
+    wallet: PayWalletApi.Wallet;
   }>(),
   {
     mode: 'member',

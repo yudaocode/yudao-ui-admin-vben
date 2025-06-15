@@ -97,7 +97,7 @@ const postOptions = ref<SystemPostApi.Post[]>([]); // 岗位列表
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 const deptOptions = ref<SystemDeptApi.Dept[]>([]); // 部门列表
 const deptTreeOptions = ref();
-const userGroupOptions = ref<BpmUserGroupApi.UserGroupVO[]>([]); // 用户组列表
+const userGroupOptions = ref<BpmUserGroupApi.UserGroup[]>([]); // 用户组列表
 
 provide('formFields', formFields);
 provide('formType', formType);

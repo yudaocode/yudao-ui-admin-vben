@@ -36,7 +36,7 @@ const columns = shallowRef([
     field: 'approver',
     title: '审批人',
     slots: {
-      default: ({ row }: { row: BpmTaskApi.TaskManagerVO }) => {
+      default: ({ row }: { row: BpmTaskApi.TaskManager }) => {
         return row.assigneeUser?.nickname || row.ownerUser?.nickname;
       },
     },
@@ -106,7 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 60,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 
 /**
@@ -137,7 +137,7 @@ const taskForm = ref<TaskForm>({
  * 显示表单详情
  * @param row 任务数据
  */
-async function showFormDetail(row: BpmTaskApi.TaskManagerVO): Promise<void> {
+async function showFormDetail(row: BpmTaskApi.TaskManager): Promise<void> {
   // 设置表单配置和表单字段
   taskForm.value = {
     rule: [],

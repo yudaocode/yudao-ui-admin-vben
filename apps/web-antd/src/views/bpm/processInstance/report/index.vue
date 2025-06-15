@@ -70,7 +70,7 @@ function onRefresh() {
 }
 
 /** 查看详情 */
-const handleDetail = (row: BpmProcessInstanceApi.ProcessInstanceVO) => {
+const handleDetail = (row: BpmProcessInstanceApi.ProcessInstance) => {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: {
@@ -80,7 +80,7 @@ const handleDetail = (row: BpmProcessInstanceApi.ProcessInstanceVO) => {
 };
 
 /** 取消按钮操作 */
-const handleCancel = async (row: BpmProcessInstanceApi.ProcessInstanceVO) => {
+const handleCancel = async (row: BpmProcessInstanceApi.ProcessInstance) => {
   cancelReason.value = ''; // 重置取消原因
   confirm({
     title: '取消流程',

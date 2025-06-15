@@ -37,7 +37,7 @@ defineOptions({ name: 'BpmModelCreate' });
 
 // 流程定义类型
 type BpmProcessDefinitionType = Omit<
-  BpmProcessDefinitionApi.ProcessDefinitionVO,
+  BpmProcessDefinitionApi.ProcessDefinition,
   'modelId' | 'modelType'
 > & {
   id?: string;

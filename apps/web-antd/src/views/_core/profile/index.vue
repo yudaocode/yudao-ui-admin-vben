@@ -19,7 +19,7 @@ const authStore = useAuthStore();
 const activeName = ref('basicInfo');
 
 /** 加载个人信息 */
-const profile = ref<SystemUserProfileApi.UserProfileRespVO>();
+const profile = ref<SystemUserProfileApi.UserProfileResp>();
 async function loadProfile() {
   profile.value = await getUserProfile();
 }
