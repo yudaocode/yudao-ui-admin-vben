@@ -15,6 +15,7 @@ export namespace BpmProcessDefinitionApi {
     formType?: number;
     bpmnXml?: string;
     simpleModel?: string;
+    formFields?: string[];
   }
 }
 

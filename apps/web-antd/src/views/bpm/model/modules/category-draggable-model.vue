@@ -284,7 +284,7 @@ function handleModelCommand(command: string, row: any) {
       break;
     }
     case 'handleReport': {
-      console.warn('报表待实现', row);
+      handleReport(row);
       break;
     }
     default: {
@@ -356,6 +356,17 @@ function handleDefinitionList(row: any) {
     name: 'BpmProcessDefinition',
     query: {
       key: row.key,
+    },
+  });
+}
+
+/** 跳转到流程报表页面 */
+function handleReport(row: any) {
+  router.push({
+    name: 'BpmProcessInstanceReport',
+    query: {
+      processDefinitionId: row.processDefinition.id,
+      processDefinitionKey: row.key,
     },
   });
 }
@@ -567,7 +578,6 @@ const handleRenameSuccess = () => {
               >
                 {{ row.formName }}
               </Button>
-              <!-- TODO BpmModelFormType.CUSTOM -->
               <Button
                 v-else-if="row.formType === BpmModelFormType.CUSTOM"
                 type="link"
@@ -624,13 +634,12 @@ const handleRenameSuccess = () => {
                       <Menu.Item key="handleCopy"> 复制 </Menu.Item>
                       <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
 
-                      <!-- TODO 待实现报表
-                        <Menu.Item
-                          key="handleReport"
-                          :disabled="!isManagerUser(record)"
-                        >
-                          报表
-                        </Menu.Item> -->
+                      <Menu.Item
+                        key="handleReport"
+                        :disabled="!isManagerUser(row)"
+                      >
+                        报表
+                      </Menu.Item>
                       <Menu.Item
                         key="handleChangeState"
                         v-if="row.processDefinition"

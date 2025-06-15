@@ -98,6 +98,18 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
+      {
+        path: 'process-instance/report',
+        component: () => import('#/views/bpm/processInstance/report/index.vue'),
+        name: 'BpmProcessInstanceReport',
+        meta: {
+          title: '数据报表',
+          activeMenu: '/bpm/manager/model',
+          icon: 'carbon:data-2',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
     ],
   },
 ];
