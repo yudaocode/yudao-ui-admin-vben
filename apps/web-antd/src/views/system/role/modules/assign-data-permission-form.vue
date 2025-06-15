@@ -135,7 +135,6 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal title="数据权限" class="w-[40%]">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
         <VbenTree
           :tree-data="deptTree"
           multiple
