@@ -100,6 +100,7 @@ export function useTypeGridColumns<T = SystemDictTypeApi.DictType>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编号',
@@ -314,6 +315,7 @@ export function useDataGridColumns<T = SystemDictDataApi.DictData>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编码',
