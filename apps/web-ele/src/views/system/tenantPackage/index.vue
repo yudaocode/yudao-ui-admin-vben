@@ -5,14 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteTenantPackage,
+  deleteTenantPackageList,
   getTenantPackagePage,
 } from '#/api/system/tenant-package';
 import { $t } from '#/locales';
@@ -52,9 +55,35 @@ async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除租户套餐 */
+async function onDeleteBatch() {
+  const loadingInstance = ElMessage({
+    message: $t('ui.actionMessage.deleting'),
+    type: 'info',
+    duration: 0,
+  });
+  try {
+    await deleteTenantPackageList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemTenantPackageApi.TenantPackage[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -102,6 +131,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantPackageApi.TenantPackage>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -114,14 +147,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:tenant-package:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['套餐']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['套餐']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:tenant-package:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:tenant-package:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

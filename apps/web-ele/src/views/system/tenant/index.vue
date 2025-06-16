@@ -9,13 +9,17 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteTenant,
+  deleteTenantList,
+  exportTenant,
+  getTenantPage,
+} from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { $t } from '#/locales';
 
@@ -69,11 +73,34 @@ async function onDelete(row: SystemTenantApi.Tenant) {
     await deleteTenant(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
-    // 错误处理
   } finally {
     loading.close();
   }
+}
+
+/** 批量删除租户 */
+async function onDeleteBatch() {
+  const loading = ElLoading.service({
+    lock: true,
+    text: $t('ui.actionMessage.deleting'),
+    background: 'rgba(0, 0, 0, 0.7)',
+  });
+  try {
+    await deleteTenantList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loading.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemTenantApi.Tenant[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -120,6 +147,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantApi.Tenant>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 初始化 */
@@ -136,23 +167,32 @@ onMounted(async () => {
     <FormModal @success="onRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:tenant:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['租户']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:tenant:export']"
-        >
-          <Download class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['租户']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:tenant:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:tenant:export'],
+              onClick: onExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:tenant:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
