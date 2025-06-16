@@ -63,5 +63,5 @@ export function deleteSmsChannelList(ids: number[]) {
 
 /** 导出短信渠道 */
 export function exportSmsChannel(params: any) {
-  return requestClient.download('/system/sms-channel/export', { params });
+  return requestClient.download('/system/sms-channel/export-excel', { params });
 }

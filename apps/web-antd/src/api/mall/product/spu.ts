@@ -168,7 +168,7 @@ export function deleteSpu(id: number) {
 
 /** 导出商品 SPU Excel */
 export function exportSpu(params: PageParam) {
-  return requestClient.download('/product/spu/export', { params });
+  return requestClient.download('/product/spu/export-excel', { params });
 }
 
 /** 获得商品 SPU 精简列表 */
