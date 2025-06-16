@@ -521,32 +521,21 @@ onMounted(async () => {
             <Button
               type="primary"
               ghost
-              class="mr-[10px] px-[10px]"
+              class="mr-2 px-2"
               size="small"
               @click="openChatConversationUpdateForm"
             >
               <span v-html="activeConversation?.modelName"></span>
-              <IconifyIcon icon="ep:setting" class="ml-[10px]" />
+              <IconifyIcon icon="lucide:settings" class="ml-2" />
             </Button>
-            <Button
-              size="small"
-              class="mr-[10px] px-[10px]"
-              @click="handlerMessageClear"
-            >
-              <IconifyIcon
-                icon="heroicons-outline:archive-box-x-mark"
-                color="#787878"
-              />
+            <Button size="small" class="mr-2 px-2" @click="handlerMessageClear">
+              <IconifyIcon icon="lucide:trash" color="#787878" />
             </Button>
-            <Button size="small" class="mr-[10px] px-[10px]">
-              <IconifyIcon icon="ep:download" color="#787878" />
+            <Button size="small" class="mr-2 px-2">
+              <IconifyIcon icon="lucide:download" color="#787878" />
             </Button>
-            <Button
-              size="small"
-              class="mr-[10px] px-[10px]"
-              @click="handleGoTopMessage"
-            >
-              <IconifyIcon icon="ep:top" color="#787878" />
+            <Button size="small" class="mr-2 px-2" @click="handleGoTopMessage">
+              <IconifyIcon icon="lucide:arrow-up" color="#787878" />
             </Button>
           </div>
         </Layout.Header>

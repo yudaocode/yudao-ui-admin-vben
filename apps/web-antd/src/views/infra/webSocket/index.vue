@@ -4,6 +4,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { computed, onMounted, ref, watchEffect } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 import { formatDate } from '@vben/utils';
 
@@ -266,7 +267,7 @@ onMounted(async () => {
           @click="handlerSend"
         >
           <template #icon>
-            <span class="i-ant-design:send-outlined mr-1"></span>
+            <IconifyIcon icon="lucide:send-horizontal" />
           </template>
           发送消息
         </Button>
@@ -276,7 +277,10 @@ onMounted(async () => {
       <Card :bordered="false" class="w-full md:w-1/2">
         <template #title>
           <div class="flex items-center">
-            <span class="i-ant-design:message-outlined mr-2 text-lg"></span>
+            <IconifyIcon
+              icon="lucide:message-circle-more"
+              class="mr-2 text-lg"
+            />
             <span class="text-lg font-medium">消息记录</span>
             <Tag v-if="messageList.length > 0" class="ml-2">
               {{ messageList.length }} 条
@@ -294,16 +298,16 @@ onMounted(async () => {
               <div class="mb-1 flex items-center justify-between">
                 <div class="flex items-center">
                   <Badge :color="getMessageBadgeColor(msg.type)" />
-                  <span class="ml-1 font-medium text-gray-600">{{
-                    getMessageTypeText(msg.type)
-                  }}</span>
+                  <span class="ml-1 font-medium text-gray-600">
+                    {{ getMessageTypeText(msg.type) }}
+                  </span>
                   <span v-if="msg.userId" class="ml-2 text-gray-500">
                     用户 ID: {{ msg.userId }}
                   </span>
                 </div>
-                <span class="text-xs text-gray-400">{{
-                  formatDate(msg.time)
-                }}</span>
+                <span class="text-xs text-gray-400">
+                  {{ formatDate(msg.time) }}
+                </span>
               </div>
               <div class="mt-2 break-words text-gray-800">
                 {{ msg.text }}

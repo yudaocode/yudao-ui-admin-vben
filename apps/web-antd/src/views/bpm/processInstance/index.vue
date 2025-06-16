@@ -102,10 +102,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="流程发起、取消、重新发起"
-      url="https://doc.iocoder.cn/bpm/process-instance"
-    />
+    <template #doc>
+      <DocAlert
+        title="流程发起、取消、重新发起"
+        url="https://doc.iocoder.cn/bpm/process-instance"
+      />
+    </template>
 
     <Grid table-title="流程状态">
       <!-- 摘要 -->

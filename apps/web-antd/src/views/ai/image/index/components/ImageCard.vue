@@ -6,6 +6,7 @@ import type { AiImageApi } from '#/api/ai/image';
 import { onMounted, ref, toRefs, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
 
@@ -86,28 +87,28 @@ onMounted(async () => {
           type="text"
           @click="handleButtonClick('download', detail)"
         >
-          <span class="icon-[ant-design--download-outlined]"></span>
+          <IconifyIcon icon="lucide:download" />
         </Button>
         <Button
           class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('regeneration', detail)"
         >
-          <span class="icon-[ant-design--redo-outlined]"></span>
+          <IconifyIcon icon="lucide:refresh-cw" />
         </Button>
         <Button
           class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('delete', detail)"
         >
-          <span class="icon-[ant-design--delete-outlined]"></span>
+          <IconifyIcon icon="lucide:trash" />
         </Button>
         <Button
           class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('more', detail)"
         >
-          <span class="icon-[ant-design--more-outlined]"></span>
+          <IconifyIcon icon="lucide:ellipsis-vertical" />
         </Button>
       </div>
     </div>

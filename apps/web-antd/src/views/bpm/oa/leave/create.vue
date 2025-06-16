@@ -160,7 +160,9 @@ async function getApprovalDetail() {
             : [];
       }
     }
-  } finally {}
+  } finally {
+    //
+  }
 }
 /** 审批相关：选择发起人 */
 function selectUserConfirm(id: string, userList: any[]) {

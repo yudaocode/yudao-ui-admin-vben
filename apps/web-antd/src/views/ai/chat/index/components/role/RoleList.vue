@@ -86,19 +86,19 @@ async function handleTabsScroll() {
         <div v-if="showMore" class="absolute right-[12px] top-0">
           <Dropdown>
             <Button type="text">
-              <span class="icon-[ant-design--more-outlined] text-2xl"></span>
+              <IconifyIcon icon="lucide:ellipsis-vertical" />
             </Button>
             <template #overlay>
               <Menu>
                 <Menu.Item @click="handleMoreClick(['edit', role])">
                   <div class="flex items-center">
-                    <IconifyIcon icon="ep:edit" color="#787878" />
+                    <IconifyIcon icon="lucide:edit" color="#787878" />
                     <span>编辑</span>
                   </div>
                 </Menu.Item>
                 <Menu.Item @click="handleMoreClick(['delete', role])">
                   <div class="flex items-center">
-                    <IconifyIcon icon="ep:delete" color="red" />
+                    <IconifyIcon icon="lucide:trash" color="red" />
                     <span class="text-red-500">编辑</span>
                   </div>
                 </Menu.Item>

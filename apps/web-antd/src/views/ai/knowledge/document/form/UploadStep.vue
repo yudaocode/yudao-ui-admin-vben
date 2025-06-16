@@ -231,7 +231,10 @@ onMounted(() => {
             class="flex items-center justify-between rounded-sm border-l-4 border-l-[#409eff] px-[12px] py-[4px] shadow-sm transition-all duration-300 hover:bg-[#ecf5ff]"
           >
             <div class="flex items-center">
-              <IconifyIcon icon="ep:document" class="mr-[8px] text-[#409eff]" />
+              <IconifyIcon
+                icon="lucide:file-text"
+                class="mr-[8px] text-[#409eff]"
+              />
               <span class="break-all text-[13px] text-[#303133]">{{
                 file.name
               }}</span>
@@ -243,7 +246,7 @@ onMounted(() => {
               @click="removeFile(index)"
               class="ml-2"
             >
-              <IconifyIcon icon="ep:delete" />
+              <IconifyIcon icon="lucide:trash" />
             </Button>
           </div>
         </div>

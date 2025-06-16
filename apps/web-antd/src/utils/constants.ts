@@ -365,12 +365,12 @@ export const Dall3Models: ImageModelVO[] = [
   {
     key: 'dall-e-3',
     name: 'DALL·E 3',
-    image: `/static/dall2.jpg`,
+    image: `/static/imgs/ai/dall2.jpg`,
   },
   {
     key: 'dall-e-2',
     name: 'DALL·E 2',
-    image: `/static/dall3.jpg`,
+    image: `/static/imgs/ai/dall3.jpg`,
   },
 ];
 
@@ -378,12 +378,12 @@ export const Dall3StyleList: ImageModelVO[] = [
   {
     key: 'vivid',
     name: '清晰',
-    image: `/static/qingxi.jpg`,
+    image: `/static/imgs/ai/qingxi.jpg`,
   },
   {
     key: 'natural',
     name: '自然',
-    image: `/static/ziran.jpg`,
+    image: `/static/imgs/ai/ziran.jpg`,
   },
 ];
 export const MidjourneyModels: ImageModelVO[] = [

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import {
   MarkdownIt,
   Markmap,
@@ -126,7 +127,7 @@ defineExpose({
         <Button type="primary" size="small" class="flex" @click="downloadImage">
           <template #icon>
             <div class="flex items-center justify-center">
-              <span class="icon-[ant-design--copy-twotone]"></span>
+              <IconifyIcon icon="lucide:copy" />
             </div>
           </template>
           下载图片

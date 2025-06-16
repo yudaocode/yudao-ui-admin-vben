@@ -318,7 +318,7 @@ onMounted(async () => {
         type="primary"
         @click="createConversation"
       >
-        <IconifyIcon icon="ep:plus" class="mr-[5px]" />
+        <IconifyIcon icon="lucide:plus" class="mr-[5px]" />
         新建对话
       </Button>
 
@@ -330,7 +330,7 @@ onMounted(async () => {
         @keyup="searchConversation"
       >
         <template #prefix>
-          <IconifyIcon icon="ep:search" />
+          <IconifyIcon icon="lucide:search" />
         </template>
       </Input>
 
@@ -389,28 +389,28 @@ onMounted(async () => {
                   type="link"
                   @click.stop="handleTop(conversation)"
                 >
-                  <span
+                  <IconifyIcon
                     v-if="!conversation.pinned"
-                    class="icon-[ant-design--arrow-up-outlined]"
-                  ></span>
-                  <span
+                    icon="lucide:arrow-up"
+                  />
+                  <IconifyIcon
                     v-if="conversation.pinned"
-                    class="icon-[ant-design--arrow-down-outlined]"
-                  ></span>
+                    icon="lucide:arrow-down"
+                  />
                 </Button>
                 <Button
                   class="btn mr-0 px-[5px]"
                   type="link"
                   @click.stop="updateConversationTitle(conversation)"
                 >
-                  <IconifyIcon icon="ep:edit" />
+                  <IconifyIcon icon="lucide:edit" />
                 </Button>
                 <Button
                   class="btn mr-0 px-[5px]"
                   type="link"
                   @click.stop="deleteChatConversation(conversation)"
                 >
-                  <IconifyIcon icon="ep:delete" />
+                  <IconifyIcon icon="lucide:trash" />
                 </Button>
               </div>
             </div>
@@ -430,14 +430,14 @@ onMounted(async () => {
         class="flex cursor-pointer items-center text-[#606266]"
         @click="handleRoleRepository"
       >
-        <IconifyIcon icon="ep:user" />
+        <IconifyIcon icon="lucide:user" />
         <span class="ml-[5px]">角色仓库</span>
       </div>
       <div
         class="flex cursor-pointer items-center text-[#606266]"
         @click="handleClearConversation"
       >
-        <IconifyIcon icon="ep:delete" />
+        <IconifyIcon icon="lucide:trash" />
         <span class="ml-[5px]">清空未置顶对话</span>
       </div>
     </div>

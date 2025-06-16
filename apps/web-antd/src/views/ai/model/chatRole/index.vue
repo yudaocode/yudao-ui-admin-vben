@@ -83,7 +83,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="AI 对话聊天" url="https://doc.iocoder.cn/ai/chat/" />
+    <template #doc>
+      <DocAlert title="AI 对话聊天" url="https://doc.iocoder.cn/ai/chat/" />
+    </template>
     <FormModal @success="onRefresh" />
     <Grid table-title="聊天角色列表">
       <template #toolbar-tools>

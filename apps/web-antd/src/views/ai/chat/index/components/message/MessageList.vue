@@ -6,6 +6,7 @@ import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
 import { computed, nextTick, onMounted, ref, toRefs } from 'vue';
 
+import { IconifyIcon, SvgGptIcon } from '@vben/icons';
 import { preferences } from '@vben/preferences';
 import { useUserStore } from '@vben/stores';
 import { formatDate } from '@vben/utils';
@@ -40,9 +41,6 @@ const isScrolling = ref(false); // 用于判断用户是否在滚动
 
 const userAvatar = computed(
   () => userStore.userInfo?.avatar || preferences.app.defaultAvatar,
-);
-const roleAvatar = computed(
-  () => props.conversation.roleAvatar ?? '/static/gpt.svg',
 );
 
 const { list } = toRefs(props); // 定义 emits
@@ -121,7 +119,11 @@ onMounted(async () => {
       <!-- 左侧消息：system、assistant -->
       <div v-if="item.type !== 'user'" class="flex flex-row">
         <div class="avatar">
-          <Avatar :src="roleAvatar" />
+          <Avatar
+            v-if="conversation.roleAvatar"
+            :src="conversation.roleAvatar"
+          />
+          <SvgGptIcon v-else class="size-8" />
         </div>
         <div class="mx-[15px] flex flex-col text-left">
           <div class="text-left leading-[30px]">
@@ -142,7 +144,7 @@ onMounted(async () => {
               type="text"
               @click="copyContent(item.content)"
             >
-              <img class="h-[20px]" src="/static/copy.svg" />
+              <IconifyIcon icon="lucide:copy" />
             </Button>
             <Button
               v-if="item.id > 0"
@@ -150,7 +152,7 @@ onMounted(async () => {
               type="text"
               @click="onDelete(item.id)"
             >
-              <img class="h-[17px]" src="/static/delete.svg" />
+              <IconifyIcon icon="lucide:trash" />
             </Button>
           </div>
         </div>
@@ -178,28 +180,28 @@ onMounted(async () => {
               type="text"
               @click="copyContent(item.content)"
             >
-              <img class="h-[20px]" src="/static/copy.svg" />
+              <IconifyIcon icon="lucide:copy" />
             </Button>
             <Button
               class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="onDelete(item.id)"
             >
-              <img class="h-[17px]" src="/static/delete.svg" />
+              <IconifyIcon icon="lucide:trash" />
             </Button>
             <Button
               class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="onRefresh(item)"
             >
-              <span class="icon-[ant-design--redo-outlined]"></span>
+              <IconifyIcon icon="lucide:refresh-cw" />
             </Button>
             <Button
               class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="onEdit(item)"
             >
-              <span class="icon-[ant-design--form-outlined]"></span>
+              <IconifyIcon icon="lucide:edit" />
             </Button>
           </div>
         </div>
@@ -214,7 +216,7 @@ onMounted(async () => {
     @click="handleGoBottom"
   >
     <Button shape="circle">
-      <span class="icon-[ant-design--down-outlined]"></span>
+      <IconifyIcon icon="lucide:chevron-down" />
     </Button>
   </div>
 </template>

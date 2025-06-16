@@ -92,7 +92,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="AI 绘图创作" url="https://doc.iocoder.cn/ai/image/" />
+    <template #doc>
+      <DocAlert title="AI 绘图创作" url="https://doc.iocoder.cn/ai/image/" />
+    </template>
     <Grid table-title="绘画管理列表">
       <template #toolbar-tools>
         <TableAction :actions="[]" />
@@ -101,9 +103,9 @@ onMounted(async () => {
         <Image :src="row.picUrl" class="h-80px w-80px" />
       </template>
       <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
+        <span>
+          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+        </span>
       </template>
       <template #publicStatus="{ row }">
         <Switch

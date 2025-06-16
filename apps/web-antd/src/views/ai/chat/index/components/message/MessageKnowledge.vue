@@ -60,7 +60,7 @@ function handleClick(doc: any) {
     class="mt-[10px] rounded-[8px] bg-[#f5f5f5] p-[10px]"
   >
     <div class="text-14px mb-8px flex items-center text-[#666]">
-      <IconifyIcon icon="ep:document" class="mr-[5px]" /> 知识引用
+      <IconifyIcon icon="lucide:file-text" class="mr-[5px]" /> 知识引用
     </div>
     <div class="flex flex-wrap gap-[8px]">
       <div

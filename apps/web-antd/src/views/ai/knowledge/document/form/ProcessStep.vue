@@ -122,10 +122,10 @@ onBeforeUnmount(() => {
       >
         <!-- 文件图标和名称 -->
         <div class="mr-[10px] flex min-w-[200px] items-center">
-          <IconifyIcon icon="ep:document" class="mr-8px text-[#409eff]" />
-          <span class="break-all text-[13px] text-[#303133]">{{
-            file.name
-          }}</span>
+          <IconifyIcon icon="lucide:file-text" class="mr-8px text-[#409eff]" />
+          <span class="break-all text-[13px] text-[#303133]">
+            {{ file.name }}
+          </span>
         </div>
 
         <!-- 处理进度 -->

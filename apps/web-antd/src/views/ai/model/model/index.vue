@@ -92,7 +92,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="AI 手册" url="https://doc.iocoder.cn/ai/build/" />
+    <template #doc>
+      <DocAlert title="AI 手册" url="https://doc.iocoder.cn/ai/build/" />
+    </template>
     <FormModal @success="onRefresh" />
     <Grid table-title="模型配置列表">
       <template #toolbar-tools>

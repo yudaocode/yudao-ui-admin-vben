@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Layout, TabPane, Tabs } from 'ant-design-vue';
+import { Button, Input, Layout, Tabs } from 'ant-design-vue';
 
 import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';
@@ -194,7 +194,7 @@ onMounted(async () => {
             @click="handlerAddRole"
             class="ml-[20px]"
           >
-            <IconifyIcon icon="ep:user" style="margin-right: 5px" />
+            <IconifyIcon icon="lucide:user" style="margin-right: 5px" />
             添加角色
           </Button>
         </div>
@@ -205,7 +205,7 @@ onMounted(async () => {
           class="relative h-full p-4"
           @tab-click="handleTabsClick"
         >
-          <TabPane
+          <Tabs.TabPane
             key="my-role"
             class="flex h-full flex-col overflow-y-auto"
             tab="我的角色"
@@ -220,9 +220,9 @@ onMounted(async () => {
               @on-page="handlerCardPage('my')"
               class="mt-[20px]"
             />
-          </TabPane>
+          </Tabs.TabPane>
 
-          <TabPane
+          <Tabs.TabPane
             key="public-role"
             class="flex h-full flex-col overflow-y-auto"
             tab="公共角色"
@@ -242,7 +242,7 @@ onMounted(async () => {
               class="mt-[20px]"
               loading
             />
-          </TabPane>
+          </Tabs.TabPane>
         </Tabs>
       </Layout.Content>
     </Layout>

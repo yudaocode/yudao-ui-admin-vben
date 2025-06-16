@@ -90,7 +90,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="AI 思维导图" url="https://doc.iocoder.cn/ai/mindmap/" />
+    <template #doc>
+      <DocAlert title="AI 思维导图" url="https://doc.iocoder.cn/ai/mindmap/" />
+    </template>
     <Drawer class="w-[800px]">
       <Right
         v-if="previewVisible"
@@ -105,9 +107,9 @@ onMounted(async () => {
         <TableAction :actions="[]" />
       </template>
       <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
+        <span>
+          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+        </span>
       </template>
       <template #actions="{ row }">
         <TableAction

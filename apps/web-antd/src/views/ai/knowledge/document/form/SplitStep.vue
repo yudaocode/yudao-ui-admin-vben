@@ -176,7 +176,10 @@ onMounted(async () => {
             <template #title>
               系统会自动将文档内容分割成多个段落，您可以根据需要调整分段方式和内容。
             </template>
-            <IconifyIcon icon="ep:warning" class="ml-[5px] text-gray-400" />
+            <IconifyIcon
+              icon="lucide:circle-alert"
+              class="ml-[5px] text-gray-400"
+            />
           </Tooltip>
         </div>
         <div>
@@ -206,7 +209,7 @@ onMounted(async () => {
           trigger="click"
         >
           <div class="flex cursor-pointer items-center">
-            <IconifyIcon icon="ep:document" class="text-danger mr-[5px]" />
+            <IconifyIcon icon="lucide:file-text" class="text-danger mr-[5px]" />
             <span>{{ currentFile?.name || '请选择文件' }}</span>
             <span
               v-if="currentFile?.segments"
@@ -214,7 +217,7 @@ onMounted(async () => {
             >
               ({{ currentFile.segments.length }}个分片)
             </span>
-            <IconifyIcon icon="ep:arrow-down" class="ml-[5px]" />
+            <IconifyIcon icon="lucide:chevron-down" class="ml-[5px]" />
           </div>
           <template #overlay>
             <Menu>
@@ -244,7 +247,7 @@ onMounted(async () => {
           v-if="splitLoading"
           class="flex items-center justify-center py-[20px]"
         >
-          <IconifyIcon icon="ep:loading" class="is-loading" />
+          <IconifyIcon icon="lucide:loader" class="is-loading" />
           <span class="ml-[10px]">正在加载分段内容...</span>
         </div>
         <template

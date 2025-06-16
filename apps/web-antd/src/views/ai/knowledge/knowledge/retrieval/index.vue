@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   Button,
@@ -183,14 +184,18 @@ onMounted(() => {
               </div>
               <div class="flex items-center justify-between">
                 <div class="text-13 flex items-center text-gray-500">
-                  <span class="ep:document mr-5"></span>
+                  <IconifyIcon icon="lucide:file-text" class="mr-5" />
                   <span>{{ segment.documentName || '未知文档' }}</span>
                 </div>
                 <Button size="small" @click="toggleExpand(segment)">
                   {{ segment.expanded ? '收起' : '展开' }}
                   <span
                     class="mr-5"
-                    :class="segment.expanded ? 'ep:arrow-up' : 'ep:arrow-down'"
+                    :class="
+                      segment.expanded
+                        ? 'lucide:chevron-up'
+                        : 'lucide:chevron-down'
+                    "
                   ></span>
                 </Button>
               </div>
