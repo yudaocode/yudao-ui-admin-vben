@@ -5,17 +5,18 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, History, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteJob,
+  deleteJobList,
   exportJob,
   getJobPage,
   runJob,
@@ -117,6 +118,26 @@ async function onDelete(row: InfraJobApi.Job) {
   }
 }
 
+/** 批量删除任务 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteJobList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({ code, row }: OnActionClickParams<InfraJobApi.Job>) {
   switch (code) {
@@ -174,6 +195,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<InfraJobApi.Job>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -189,32 +214,39 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <DetailModal />
     <Grid table-title="定时任务列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['infra:job:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['任务']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:job:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onLog(undefined)"
-          v-access:code="['infra:job:query']"
-        >
-          <History class="size-5" />
-          执行日志
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['任务']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:job:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:job:export'],
+              onClick: onExport,
+            },
+            {
+              label: '执行日志',
+              type: 'primary',
+              icon: ACTION_ICON.MORE,
+              auth: ['infra:job:query'],
+              onClick: () => onLog(undefined),
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:job:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
