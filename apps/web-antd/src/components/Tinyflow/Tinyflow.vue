@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Item } from './ui';
+import type { Item } from './ui/typing';
 
 import { onMounted, onUnmounted, ref } from 'vue';
 
-import { Tinyflow as TinyflowNative } from './ui';
+import { Tinyflow as TinyflowNative } from './ui/typing';
 
 import './ui/index.css';
 
