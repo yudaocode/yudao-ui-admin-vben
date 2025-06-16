@@ -5,14 +5,13 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { nextTick, onMounted, ref } from 'vue';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMindMap, getMindMapPage } from '#/api/ai/mindmap';
 import { getSimpleUserList } from '#/api/system/user';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import Right from '../index/modules/Right.vue';

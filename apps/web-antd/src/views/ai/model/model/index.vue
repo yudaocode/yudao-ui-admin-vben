@@ -5,14 +5,13 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 import { deleteModel, getModelPage } from '#/api/ai/model/model';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
