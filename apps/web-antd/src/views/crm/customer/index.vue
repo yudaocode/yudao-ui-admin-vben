@@ -5,7 +5,7 @@ import type { CrmCustomerApi } from '#/api/crm/customer';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Tabs } from 'ant-design-vue';
@@ -16,11 +16,11 @@ import {
   exportCustomer,
   getCustomerPage,
 } from '#/api/crm/customer';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import ImportForm from './modules/import-form.vue';
 
 const { push } = useRouter();
 const sceneType = ref('1');
@@ -33,6 +33,16 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 刷新表格 */
 function onRefresh() {
   gridApi.query();
+}
+
+const [ImportModal, importModalApi] = useVbenModal({
+  connectedComponent: ImportForm,
+  destroyOnClose: true,
+});
+
+/** 导入客户 */
+function handleImport() {
+  importModalApi.open();
 }
 
 /** 导出表格 */
@@ -124,6 +134,7 @@ function onChangeSceneType(key: number | string) {
     </template>
 
     <FormModal @success="onRefresh" />
+    <ImportModal @success="onRefresh" />
     <Grid>
       <template #top>
         <Tabs class="border-none" @change="onChangeSceneType">
@@ -141,6 +152,13 @@ function onChangeSceneType(key: number | string) {
               icon: ACTION_ICON.ADD,
               auth: ['crm:customer:create'],
               onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.import'),
+              type: 'primary',
+              icon: ACTION_ICON.UPLOAD,
+              auth: ['crm:customer:import'],
+              onClick: handleImport,
             },
             {
               label: $t('ui.actionTitle.export'),

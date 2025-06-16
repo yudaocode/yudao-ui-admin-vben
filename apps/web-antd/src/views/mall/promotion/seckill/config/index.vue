@@ -1,34 +1,159 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallSeckillConfigApi } from '#/api/mall/promotion/seckill/seckillConfig';
 
-import { Button } from 'ant-design-vue';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 
-import { DocAlert } from '#/components/doc-alert';
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteSeckillConfig,
+  getSeckillConfigPage,
+  updateSeckillConfigStatus,
+} from '#/api/mall/promotion/seckill/seckillConfig';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建秒杀时段 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑秒杀时段 */
+function handleEdit(row: MallSeckillConfigApi.SeckillConfig) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除秒杀时段 */
+async function handleDelete(row: MallSeckillConfigApi.SeckillConfig) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteSeckillConfig(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 修改状态 */
+async function handleStatusChange(
+  newStatus: number,
+  row: MallSeckillConfigApi.SeckillConfig,
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    // 二次确认
+    const text = row.status === 0 ? '启用' : '停用';
+    confirm({
+      content: `确认要${text + row.name}吗?`,
+    })
+      .then(async () => {
+        // 更新状态
+        const res = await updateSeckillConfigStatus(row.id, newStatus);
+        if (res) {
+          // 提示并返回成功
+          message.success(`${text}成功`);
+          resolve(true);
+        } else {
+          reject(new Error('操作失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(handleStatusChange),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getSeckillConfigPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallSeckillConfigApi.SeckillConfig>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【营销】秒杀活动"
-      url="https://doc.iocoder.cn/mall/promotion-seckill/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/seckill/config/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/seckill/config/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="秒杀时段列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['秒杀时段']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['promotion:seckill-config:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['promotion:seckill-config:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['promotion:seckill-config:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

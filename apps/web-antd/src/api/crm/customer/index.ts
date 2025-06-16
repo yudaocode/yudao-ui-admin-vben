@@ -35,6 +35,11 @@ export namespace CrmCustomerApi {
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
   }
+  export interface CustomerImport {
+    ownerUserId: number;
+    file: File;
+    updateSupport: boolean;
+  }
 }
 
 /** 查询客户列表 */
@@ -78,8 +83,8 @@ export function importCustomerTemplate() {
 }
 
 /** 导入客户 */
-export function importCustomer(file: File) {
-  return requestClient.upload('/crm/customer/import', { file });
+export function importCustomer(data: CrmCustomerApi.CustomerImport) {
+  return requestClient.upload('/crm/customer/import', data);
 }
 
 /** 获取客户精简信息列表 */

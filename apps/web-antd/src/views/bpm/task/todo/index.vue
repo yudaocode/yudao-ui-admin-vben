@@ -1,27 +1,35 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskTodoPage } from '#/api/bpm/task';
-import { DocAlert } from '#/components/doc-alert';
 import { router } from '#/router';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'BpmTodoTask' });
 
-const [Grid, gridApi] = useVbenVxeGrid({
+/** 办理任务 */
+function handleAudit(row: BpmTaskApi.Task) {
+  console.warn(row);
+  router.push({
+    name: 'BpmProcessInstanceDetail',
+    query: {
+      id: row.processInstance.id,
+      taskId: row.id,
+    },
+  });
+}
+
+const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -45,35 +53,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 64,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<BpmTaskApi.TaskVO>) {
-  switch (code) {
-    case 'audit': {
-      onAudit(row);
-      break;
-    }
-  }
-}
-
-/** 办理任务 */
-function onAudit(row: BpmTaskApi.TaskVO) {
-  console.warn(row);
-  router.push({
-    name: 'BpmProcessInstanceDetail',
-    query: {
-      id: row.processInstance.id,
-      taskId: row.id,
-    },
-  });
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -90,6 +71,21 @@ function onRefresh() {
       />
       <DocAlert title="审批加签、减签" url="https://doc.iocoder.cn/bpm/sign/" />
     </template>
-    <Grid table-title="待办任务" />
+
+    <Grid table-title="待办任务">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '办理',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:task:query'],
+              onClick: handleAudit.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

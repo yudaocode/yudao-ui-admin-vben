@@ -1,27 +1,22 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { ref } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, Upload } from '@vben/icons';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteUser,
   exportUser,
   getUserPage,
   updateUserStatus,
 } from '#/api/system/user';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { DICT_TYPE, getDictLabel } from '#/utils';
 
@@ -138,34 +133,12 @@ async function onStatusChange(
   });
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.User>) {
-  switch (code) {
-    case 'assign-role': {
-      onAssignRole(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'reset-password': {
-      onResetPassword(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, onStatusChange),
+    columns: useGridColumns(onStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -216,32 +189,69 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <div class="w-5/6">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
-            <ElButton
-              type="primary"
-              @click="onCreate"
-              v-access:code="['system:user:create']"
-            >
-              <Plus class="mr-2 size-5" />
-              {{ $t('ui.actionTitle.create', ['用户']) }}
-            </ElButton>
-            <ElButton
-              type="primary"
-              class="ml-2"
-              @click="onExport"
-              v-access:code="['system:user:export']"
-            >
-              <Download class="mr-2 size-5" />
-              {{ $t('ui.actionTitle.export') }}
-            </ElButton>
-            <ElButton
-              type="primary"
-              class="ml-2"
-              @click="onImport"
-              v-access:code="['system:user:import']"
-            >
-              <Upload class="mr-2 size-5" />
-              {{ $t('ui.actionTitle.import', ['用户']) }}
-            </ElButton>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('ui.actionTitle.create', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.ADD,
+                  auth: ['system:user:create'],
+                  onClick: onCreate,
+                },
+                {
+                  label: $t('ui.actionTitle.export'),
+                  type: 'primary',
+                  icon: ACTION_ICON.DOWNLOAD,
+                  auth: ['system:user:export'],
+                  onClick: onExport,
+                },
+                {
+                  label: $t('ui.actionTitle.import', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.UPLOAD,
+                  auth: ['system:user:import'],
+                  onClick: onImport,
+                },
+              ]"
+            />
+          </template>
+          <template #actions="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  type: 'text',
+                  icon: ACTION_ICON.EDIT,
+                  auth: ['system:user:update'],
+                  onClick: onEdit.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  type: 'danger',
+                  text: true,
+                  icon: ACTION_ICON.DELETE,
+                  auth: ['system:user:delete'],
+                  popConfirm: {
+                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    confirm: onDelete.bind(null, row),
+                  },
+                },
+              ]"
+              :drop-down-actions="[
+                {
+                  label: '分配角色',
+                  type: 'text',
+                  auth: ['system:permission:assign-user-role'],
+                  onClick: onAssignRole.bind(null, row),
+                },
+                {
+                  label: '重置密码',
+                  type: 'text',
+                  auth: ['system:user:update-password'],
+                  onClick: onResetPassword.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </Grid>
       </div>

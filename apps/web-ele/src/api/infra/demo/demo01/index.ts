@@ -9,7 +9,7 @@ export namespace Demo01ContactApi {
   export interface Demo01Contact {
     id: number; // 编号
     name?: string; // 名字
-    sex?: boolean; // 性别
+    sex?: number; // 性别
     birthday?: Dayjs | string; // 出生年
     description?: string; // 简介
     avatar: string; // 头像
@@ -44,6 +44,13 @@ export function updateDemo01Contact(data: Demo01ContactApi.Demo01Contact) {
 /** 删除示例联系人 */
 export function deleteDemo01Contact(id: number) {
   return requestClient.delete(`/infra/demo01-contact/delete?id=${id}`);
+}
+
+/** 批量删除示例联系人 */
+export function deleteDemo01ContactList(ids: number[]) {
+  return requestClient.delete(
+    `/infra/demo01-contact/delete-list?ids=${ids.join(',')}`,
+  );
 }
 
 /** 导出示例联系人 */

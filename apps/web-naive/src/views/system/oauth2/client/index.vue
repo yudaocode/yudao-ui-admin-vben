@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
 import { NButton } from 'naive-ui';
@@ -16,7 +16,6 @@ import {
   deleteOAuth2Client,
   getOAuth2ClientPage,
 } from '#/api/system/oauth2/client';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

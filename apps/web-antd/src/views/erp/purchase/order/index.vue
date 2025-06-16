@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
-
-import { DocAlert } from '#/components/doc-alert';
 </script>
 
 <template>
   <Page>
-    <DocAlert
-      title="【采购】采购订单、入库、退货"
-      url="https://doc.iocoder.cn/erp/purchase/"
-    />
+    <template #doc>
+      <DocAlert
+        title="【采购】采购订单、入库、退货"
+        url="https://doc.iocoder.cn/erp/purchase/"
+      />
+    </template>
     <Button
       danger
       type="link"

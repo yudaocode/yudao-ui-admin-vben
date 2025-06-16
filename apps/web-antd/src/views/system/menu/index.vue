@@ -4,14 +4,13 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { SystemMenuTypeEnum } from '#/utils';
 

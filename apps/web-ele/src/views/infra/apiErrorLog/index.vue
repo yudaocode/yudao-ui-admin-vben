@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -17,7 +17,6 @@ import {
   getApiErrorLogPage,
   updateApiErrorLogStatus,
 } from '#/api/infra/api-error-log';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 

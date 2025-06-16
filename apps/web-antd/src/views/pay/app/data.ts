@@ -2,8 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
-import { CommonStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -162,6 +161,7 @@ export function useGridColumns<T = PayAppApi.App>(
     },
   ];
 }
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [

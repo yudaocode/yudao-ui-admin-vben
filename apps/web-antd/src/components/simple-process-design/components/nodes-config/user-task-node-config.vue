@@ -34,7 +34,11 @@ import {
   TypographyText,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils';
+import {
+  BpmModelFormType,
+  BpmNodeTypeEnum,
+  ProcessVariableEnum,
+} from '#/utils';
 
 import {
   APPROVE_METHODS,
@@ -49,9 +53,7 @@ import {
   DEFAULT_BUTTON_SETTING,
   FieldPermissionType,
   MULTI_LEVEL_DEPT,
-  NodeType,
   OPERATION_BUTTON_NAME,
-  ProcessVariableEnum,
   REJECT_HANDLER_TYPES,
   RejectHandlerType,
   TIME_UNIT_TYPES,
@@ -112,9 +114,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 // 节点名称配置
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.USER_TASK_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.USER_TASK_NODE);
 
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
@@ -245,7 +246,9 @@ const userTaskListenerRef = ref();
 
 /** 节点类型名称 */
 const nodeTypeName = computed(() => {
-  return currentNode.value.type === NodeType.TRANSACTOR_NODE ? '办理' : '审批';
+  return currentNode.value.type === BpmNodeTypeEnum.TRANSACTOR_NODE
+    ? '办理'
+    : '审批';
 });
 
 /** 校验节点配置 */
@@ -407,7 +410,7 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
   // 3. 操作按钮设置
   buttonsSetting.value =
     cloneDeep(node.buttonsSetting) ||
-    (node.type === NodeType.TRANSACTOR_NODE
+    (node.type === BpmNodeTypeEnum.TRANSACTOR_NODE
       ? TRANSACTOR_DEFAULT_BUTTON_SETTING
       : DEFAULT_BUTTON_SETTING);
   // 4. 表单字段权限配置
@@ -582,20 +585,22 @@ onMounted(() => {
       <div class="config-header">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="config-editable-input"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />
         <div v-else class="node-name">
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" @click="clickIcon()" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" @click="clickIcon()" />
         </div>
       </div>
     </template>
     <div
-      v-if="currentNode.type === NodeType.USER_TASK_NODE"
+      v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE"
       class="mb-3 flex items-center"
     >
       <span class="mr-3 text-[16px]">审批类型 :</span>
@@ -860,7 +865,7 @@ onMounted(() => {
               </RadioGroup>
             </FormItem>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">审批人拒绝时</Divider>
               <FormItem name="rejectHandlerType">
                 <RadioGroup
@@ -902,7 +907,7 @@ onMounted(() => {
               </FormItem>
             </div>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">审批人超时未处理时</Divider>
               <FormItem
                 label="启用开关"
@@ -1047,7 +1052,7 @@ onMounted(() => {
               </Select>
             </FormItem>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">
                 审批人与提交人为同一人时
               </Divider>
@@ -1070,7 +1075,7 @@ onMounted(() => {
               </FormItem>
             </div>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">是否需要签名</Divider>
               <FormItem name="signEnable">
                 <Switch
@@ -1081,7 +1086,7 @@ onMounted(() => {
               </FormItem>
             </div>
 
-            <div v-if="currentNode.type === NodeType.USER_TASK_NODE">
+            <div v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE">
               <Divider content-position="left">审批意见</Divider>
               <FormItem name="reasonRequire">
                 <Switch
@@ -1096,7 +1101,7 @@ onMounted(() => {
       </TabPane>
       <TabPane
         tab="操作按钮设置"
-        v-if="currentNode.type === NodeType.USER_TASK_NODE"
+        v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE"
         key="buttons"
       >
         <div class="p-1">
@@ -1130,7 +1135,7 @@ onMounted(() => {
                 <Button v-else text @click="changeBtnDisplayName(index)">
                   <div class="flex items-center">
                     {{ item.displayName }}
-                    <IconifyIcon icon="ep:edit" class="ml-2" />
+                    <IconifyIcon icon="lucide:edit" class="ml-2" />
                   </div>
                 </Button>
               </Col>

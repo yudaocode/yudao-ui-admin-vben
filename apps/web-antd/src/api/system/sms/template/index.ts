@@ -20,7 +20,7 @@ export namespace SystemSmsTemplateApi {
   }
 
   /** 发送短信请求 */
-  export interface SmsSendReqVO {
+  export interface SmsSendReq {
     mobile: string;
     templateCode: string;
     templateParams: Record<string, any>;
@@ -57,6 +57,13 @@ export function deleteSmsTemplate(id: number) {
   return requestClient.delete(`/system/sms-template/delete?id=${id}`);
 }
 
+/** 批量删除短信模板 */
+export function deleteSmsTemplateList(ids: number[]) {
+  return requestClient.delete(
+    `/system/sms-template/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出短信模板 */
 export function exportSmsTemplate(params: any) {
   return requestClient.download('/system/sms-template/export-excel', {
@@ -65,6 +72,6 @@ export function exportSmsTemplate(params: any) {
 }
 
 /** 发送短信 */
-export function sendSms(data: SystemSmsTemplateApi.SmsSendReqVO) {
+export function sendSms(data: SystemSmsTemplateApi.SmsSendReq) {
   return requestClient.post('/system/sms-template/send-sms', data);
 }

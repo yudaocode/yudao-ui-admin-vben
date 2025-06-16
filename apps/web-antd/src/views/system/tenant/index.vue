@@ -5,15 +5,19 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
+import {
+  deleteTenant,
+  deleteTenantList,
+  exportTenant,
+  getTenantPage,
+} from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -73,6 +77,31 @@ async function handleDelete(row: SystemTenantApi.Tenant) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemTenantApi.Tenant[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除租户 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteTenantList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -92,12 +121,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantApi.Tenant>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 初始化 */
@@ -130,6 +164,15 @@ onMounted(async () => {
               auth: ['system:tenant:export'],
               onClick: handleExport,
             },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:tenant:delete'],
+              onClick: handleDeleteBatch,
+            },
           ]"
         />
       </template>
@@ -140,7 +183,7 @@ onMounted(async () => {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['system:role:update'],
+              auth: ['system:tenant:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -148,7 +191,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['system:role:delete'],
+              auth: ['system:tenant:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

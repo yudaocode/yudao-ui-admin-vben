@@ -21,7 +21,9 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
-import { ConditionType, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { ConditionType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';
 import Condition from './modules/condition.vue';
 
@@ -39,9 +41,8 @@ const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 /** 当前节点 */
 const currentNode = useWatchNode(props);
 /** 节点名称 */
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.ROUTER_BRANCH_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.ROUTER_BRANCH_NODE);
 const routerGroups = ref<RouterSetting[]>([]);
 const nodeOptions = ref<any[]>([]);
 const conditionRef = ref<any[]>([]);
@@ -176,15 +177,15 @@ function getRouterNode(node: any) {
   while (true) {
     if (!node) break;
     if (
-      node.type !== NodeType.ROUTER_BRANCH_NODE &&
-      node.type !== NodeType.CONDITION_NODE
+      node.type !== BpmNodeTypeEnum.ROUTER_BRANCH_NODE &&
+      node.type !== BpmNodeTypeEnum.CONDITION_NODE
     ) {
       nodeOptions.value.push({
         label: node.name,
         value: node.id,
       });
     }
-    if (!node.childNode || node.type === NodeType.END_EVENT_NODE) {
+    if (!node.childNode || node.type === BpmNodeTypeEnum.END_EVENT_NODE) {
       break;
     }
     if (node.conditionNodes && node.conditionNodes.length > 0) {
@@ -199,14 +200,16 @@ function getRouterNode(node: any) {
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-[630px]">
+  <Drawer class="w-[40%]">
     <template #title>
       <div class="flex items-center">
         <Input
+          ref="inputRef"
           v-if="showInput"
           type="text"
           class="mr-2 w-48"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />
@@ -216,7 +219,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="clickIcon()"
         >
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" />
         </div>
       </div>
     </template>
@@ -263,7 +266,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
               @click="deleteRouterGroup(index)"
             >
               <template #icon>
-                <IconifyIcon icon="ep:close" />
+                <IconifyIcon icon="lucide:x" />
               </template>
             </Button>
           </div>
@@ -284,7 +287,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="addRouterGroup"
         >
           <template #icon>
-            <IconifyIcon icon="ep:setting" />
+            <IconifyIcon icon="lucide:settings" />
           </template>
           新增路由分支
         </Button>

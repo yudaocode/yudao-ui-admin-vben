@@ -19,7 +19,7 @@ import { useFormSchema } from '../data';
 const emit = defineEmits(['success']);
 
 const designerComponent = ref<InstanceType<typeof FcDesigner>>();
-const formData = ref<BpmFormApi.FormVO>();
+const formData = ref<BpmFormApi.Form>();
 const editorAction = ref<string>();
 
 const getTitle = computed(() => {
@@ -47,7 +47,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 获取表单数据
-      const data = (await formApi.getValues()) as BpmFormApi.FormVO;
+      const data = (await formApi.getValues()) as BpmFormApi.Form;
 
       // 编码表单配置和表单字段
       data.conf = encodeConf(designerComponent);
@@ -106,7 +106,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[600px]">
+  <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-4" />
   </Modal>
 </template>

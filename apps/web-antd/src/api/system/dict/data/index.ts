@@ -48,7 +48,14 @@ export function deleteDictData(id: number) {
   return requestClient.delete(`/system/dict-data/delete?id=${id}`);
 }
 
+// 批量删除字典数据
+export function deleteDictDataList(ids: number[]) {
+  return requestClient.delete(
+    `/system/dict-data/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 // 导出字典类型数据
 export function exportDictData(params: any) {
-  return requestClient.download('/system/dict-data/export', { params });
+  return requestClient.download('/system/dict-data/export-excel', { params });
 }

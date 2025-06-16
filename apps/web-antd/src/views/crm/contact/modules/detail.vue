@@ -2,7 +2,7 @@
 import type { CrmContactApi } from '#/api/crm/contact';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -14,36 +14,13 @@ import { getContact } from '#/api/crm/contact';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { BusinessDetailsList } from '#/views/crm/business';
+import { ContactDetailsInfo, ContactForm } from '#/views/crm/contact';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import { useDetailSchema } from '../data';
-
-const ContactDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const ContactForm = defineAsyncComponent(
-  () => import('#/views/crm/contact/modules/form.vue'),
-);
-
-const BusinessList = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/detail-list.vue'),
-);
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
+import { useDetailSchema } from './detail-data';
 
 const loading = ref(false);
 
@@ -107,9 +84,9 @@ function handleTransfer() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   contactId.value = Number(route.params.id);
-  await loadContactDetail();
+  loadContactDetail();
 });
 </script>
 
@@ -156,7 +133,7 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="商机" key="4" :force-render="true">
-          <BusinessList
+          <BusinessDetailsList
             :biz-id="contactId"
             :biz-type="BizTypeEnum.CRM_CONTACT"
             :contact-id="contactId"
@@ -164,7 +141,7 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="5" :force-render="true">
-          <OperateLog :log-list="contactLogList" />
+          <AsyncOperateLog :log-list="contactLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

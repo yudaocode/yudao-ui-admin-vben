@@ -5,7 +5,8 @@ import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -13,9 +14,9 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import {
   deleteMailTemplate,
+  deleteMailTemplateList,
   getMailTemplatePage,
 } from '#/api/system/mail/template';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -69,6 +70,31 @@ async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
   onRefresh();
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemMailTemplateApi.MailTemplate[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除邮件模板 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteMailTemplateList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 /** 获取邮箱账号 */
 function getAccountMail(accountId: number) {
   return accountList.value.find((account) => account.id === accountId)?.mail;
@@ -95,12 +121,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplate>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 初始化 */
@@ -126,6 +157,15 @@ onMounted(async () => {
               icon: ACTION_ICON.ADD,
               auth: ['system:mail-template:create'],
               onClick: handleCreate,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:mail-template:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

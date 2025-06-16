@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 // TODO @芋艿：是否有更好的组织形式？！
+// TODO @xingyu：你感觉，这个放到每个 system、infra 模块下，然后新建一个 components，表示每个模块，有一些共享的组件？然后，全局只放通用的（无业务含义的），可以哇？
 import type { Key } from 'ant-design-vue/es/table/interface';
 
 import type { SystemDeptApi } from '#/api/system/dept';
@@ -17,7 +18,6 @@ import {
   message,
   Pagination,
   Row,
-  Spin,
   Transfer,
   Tree,
 } from 'ant-design-vue';
@@ -35,7 +35,7 @@ interface DeptTreeNode {
 
 defineOptions({ name: 'UserSelectModal' });
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     cancelText?: string;
     confirmText?: string;
@@ -66,16 +66,66 @@ const expandedKeys = ref<Key[]>([]);
 const selectedDeptId = ref<number>();
 const deptSearchKeys = ref('');
 
-// 加载状态
-const loading = ref(false);
-
 // 用户数据管理
 const userList = ref<SystemUserApi.User[]>([]); // 存储所有已知用户
 const selectedUserIds = ref<string[]>([]);
 
+// 弹窗配置
+const [Modal, modalApi] = useVbenModal({
+  onCancel: handleCancel,
+  onClosed: handleClosed,
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      resetData();
+      return;
+    }
+    // 加载数据
+    const data = modalApi.getData();
+    if (!data) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      // 加载部门数据
+      const deptData = await getSimpleDeptList();
+      deptList.value = deptData;
+      const treeData = handleTree(deptData);
+      deptTree.value = treeData.map((node) => processDeptNode(node));
+      expandedKeys.value = deptTree.value.map((node) => node.key);
+
+      // 加载初始用户数据
+      await loadUserData(1, leftListState.value.pagination.pageSize);
+
+      // 设置已选用户
+      if (data.userIds?.length) {
+        selectedUserIds.value = data.userIds.map(String);
+        // 加载已选用户的完整信息  TODO   目前接口暂不支持 多个用户ID 查询， 需要后端支持
+        const { list } = await getUserPage({
+          pageNo: 1,
+          pageSize: 100, // 临时使用固定值确保能加载所有已选用户
+          userIds: data.userIds,
+        });
+        // 使用 Map 来去重，以用户 ID 为 key
+        const userMap = new Map(userList.value.map((user) => [user.id, user]));
+        list.forEach((user) => {
+          if (!userMap.has(user.id)) {
+            userMap.set(user.id, user);
+          }
+        });
+        userList.value = [...userMap.values()];
+        updateRightListData();
+      }
+
+      modalApi.open();
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  destroyOnClose: true,
+});
+
 // 左侧列表状态
 const leftListState = ref({
-  loading: false,
   searchValue: '',
   dataSource: [] as SystemUserApi.User[],
   pagination: {
@@ -145,8 +195,7 @@ const filteredDeptTree = computed(() => {
 });
 
 // 加载用户数据
-const loadUserData = async (pageNo: number, pageSize: number) => {
-  leftListState.value.loading = true;
+async function loadUserData(pageNo: number, pageSize: number) {
   try {
     const { list, total } = await getUserPage({
       pageNo,
@@ -168,12 +217,12 @@ const loadUserData = async (pageNo: number, pageSize: number) => {
       userList.value.push(...newUsers);
     }
   } finally {
-    leftListState.value.loading = false;
+    //
   }
-};
+}
 
 // 更新右侧列表数据
-const updateRightListData = () => {
+function updateRightListData() {
   // 使用 Set 来去重选中的用户ID
   const uniqueSelectedIds = new Set(selectedUserIds.value);
 
@@ -202,22 +251,22 @@ const updateRightListData = () => {
   const endIndex = startIndex + pageSize;
 
   rightListState.value.dataSource = filteredUsers.slice(startIndex, endIndex);
-};
+}
 
 // 处理左侧分页变化
-const handleLeftPaginationChange = async (page: number, pageSize: number) => {
+async function handleLeftPaginationChange(page: number, pageSize: number) {
   await loadUserData(page, pageSize);
-};
+}
 
 // 处理右侧分页变化
-const handleRightPaginationChange = (page: number, pageSize: number) => {
+function handleRightPaginationChange(page: number, pageSize: number) {
   rightListState.value.pagination.current = page;
   rightListState.value.pagination.pageSize = pageSize;
   updateRightListData();
-};
+}
 
 // 处理用户搜索
-const handleUserSearch = async (direction: string, value: string) => {
+async function handleUserSearch(direction: string, value: string) {
   if (direction === 'left') {
     leftListState.value.searchValue = value;
     leftListState.value.pagination.current = 1;
@@ -227,18 +276,18 @@ const handleUserSearch = async (direction: string, value: string) => {
     rightListState.value.pagination.current = 1;
     updateRightListData();
   }
-};
+}
 
 // 处理用户选择变化
-const handleUserChange = (targetKeys: string[]) => {
+function handleUserChange(targetKeys: string[]) {
   // 使用 Set 来去重选中的用户ID
   selectedUserIds.value = [...new Set(targetKeys)];
   emit('update:value', selectedUserIds.value.map(Number));
   updateRightListData();
-};
+}
 
 // 重置数据
-const resetData = () => {
+function resetData() {
   userList.value = [];
   selectedUserIds.value = [];
 
@@ -249,7 +298,6 @@ const resetData = () => {
   selectedUserIds.value = [];
 
   leftListState.value = {
-    loading: false,
     searchValue: '',
     dataSource: [],
     pagination: {
@@ -268,61 +316,20 @@ const resetData = () => {
       total: 0,
     },
   };
-};
-
-// 打开弹窗
-const open = async (userIds: string[]) => {
-  resetData();
-  loading.value = true;
-  try {
-    // 加载部门数据
-    const deptData = await getSimpleDeptList();
-    deptList.value = deptData;
-    const treeData = handleTree(deptData);
-    deptTree.value = treeData.map((node) => processDeptNode(node));
-    expandedKeys.value = deptTree.value.map((node) => node.key);
-
-    // 加载初始用户数据
-    await loadUserData(1, leftListState.value.pagination.pageSize);
-
-    // 设置已选用户
-    if (userIds?.length) {
-      selectedUserIds.value = userIds.map(String);
-      // 加载已选用户的完整信息  TODO   目前接口暂不支持 多个用户ID 查询， 需要后端支持
-      const { list } = await getUserPage({
-        pageNo: 1,
-        pageSize: 100, // 临时使用固定值确保能加载所有已选用户
-        userIds,
-      });
-      // 使用 Map 来去重，以用户 ID 为 key
-      const userMap = new Map(userList.value.map((user) => [user.id, user]));
-      list.forEach((user) => {
-        if (!userMap.has(user.id)) {
-          userMap.set(user.id, user);
-        }
-      });
-      userList.value = [...userMap.values()];
-      updateRightListData();
-    }
-
-    modalApi.open();
-  } finally {
-    loading.value = false;
-  }
-};
+}
 
 // TODO   后端接口目前仅支持  username 检索， 筛选条件需要跟后端请求参数保持一致。
-const filterOption = (inputValue: string, option: any) => {
+function filterOption(inputValue: string, option: any) {
   return option.username.toLowerCase().includes(inputValue.toLowerCase());
-};
+}
 
 // 处理部门树展开/折叠
-const handleExpand = (keys: Key[]) => {
+function handleExpand(keys: Key[]) {
   expandedKeys.value = keys;
-};
+}
 
 // 处理部门搜索
-const handleDeptSearch = (value: string) => {
+function handleDeptSearch(value: string) {
   deptSearchKeys.value = value;
 
   // 如果有搜索结果，自动展开所有节点
@@ -342,10 +349,10 @@ const handleDeptSearch = (value: string) => {
     // 清空搜索时，只展开第一级节点
     expandedKeys.value = deptTree.value.map((node) => node.key);
   }
-};
+}
 
 // 处理部门选择
-const handleDeptSelect = async (selectedKeys: Key[], _info: any) => {
+async function handleDeptSelect(selectedKeys: Key[], _info: any) {
   // 更新选中的部门ID
   const newDeptId =
     selectedKeys.length > 0 ? Number(selectedKeys[0]) : undefined;
@@ -356,10 +363,10 @@ const handleDeptSelect = async (selectedKeys: Key[], _info: any) => {
   const { pageSize } = leftListState.value.pagination;
   leftListState.value.pagination.current = 1;
   await loadUserData(1, pageSize);
-};
+}
 
 // 确认选择
-const handleConfirm = () => {
+function handleConfirm() {
   if (selectedUserIds.value.length === 0) {
     message.warning('请选择用户');
     return;
@@ -371,115 +378,101 @@ const handleConfirm = () => {
     ),
   );
   modalApi.close();
-};
+}
 
 // 取消选择
-const handleCancel = () => {
+function handleCancel() {
   emit('cancel');
   modalApi.close();
   // 确保在动画结束后再重置数据
   setTimeout(() => {
     resetData();
   }, 300);
-};
+}
 
 // 关闭弹窗
-const handleClosed = () => {
+function handleClosed() {
   emit('closed');
   resetData();
-};
-
-// 弹窗配置
-const [ModalComponent, modalApi] = useVbenModal({
-  title: props.title,
-  onCancel: handleCancel,
-  onClosed: handleClosed,
-  destroyOnClose: true,
-});
+}
 
 // 递归处理部门树节点
-const processDeptNode = (node: any): DeptTreeNode => {
+function processDeptNode(node: any): DeptTreeNode {
   return {
     key: String(node.id),
     title: `${node.name} (${node.id})`,
     name: node.name,
     children: node.children?.map((child: any) => processDeptNode(child)),
   };
-};
-
-defineExpose({
-  open,
-});
+}
 </script>
 
 <template>
-  <ModalComponent class="w-[1000px]" key="user-select-modal">
-    <Spin :spinning="loading">
-      <Row :gutter="[16, 16]">
-        <Col :span="6">
-          <div class="h-[500px] overflow-auto rounded border">
-            <div class="border-b p-2">
-              <Input
-                v-model:value="deptSearchKeys"
-                placeholder="搜索部门"
-                allow-clear
-                @input="(e) => handleDeptSearch(e.target?.value ?? '')"
-              />
-            </div>
-            <Tree
-              :tree-data="filteredDeptTree"
-              :expanded-keys="expandedKeys"
-              :selected-keys="selectedDeptId ? [String(selectedDeptId)] : []"
-              @select="handleDeptSelect"
-              @expand="handleExpand"
+  <Modal class="w-[40%]" key="user-select-modal" :title="title">
+    <Row :gutter="[16, 16]">
+      <Col :span="6">
+        <div class="h-[500px] overflow-auto rounded border">
+          <div class="border-b p-2">
+            <Input
+              v-model:value="deptSearchKeys"
+              placeholder="搜索部门"
+              allow-clear
+              @input="(e) => handleDeptSearch(e.target?.value ?? '')"
             />
           </div>
-        </Col>
-        <Col :span="18">
-          <Transfer
-            :row-key="(record) => String(record.id)"
-            :data-source="transferDataSource"
-            v-model:target-keys="selectedUserIds"
-            :titles="['未选', '已选']"
-            :show-search="true"
-            :show-select-all="true"
-            :filter-option="filterOption"
-            @change="handleUserChange"
-            @search="handleUserSearch"
-          >
-            <template #render="item">
-              <span>{{ item?.nickname }} ({{ item?.username }})</span>
-            </template>
+          <Tree
+            :tree-data="filteredDeptTree"
+            :expanded-keys="expandedKeys"
+            :selected-keys="selectedDeptId ? [String(selectedDeptId)] : []"
+            @select="handleDeptSelect"
+            @expand="handleExpand"
+          />
+        </div>
+      </Col>
+      <Col :span="18">
+        <Transfer
+          :row-key="(record) => String(record.id)"
+          :data-source="transferDataSource"
+          v-model:target-keys="selectedUserIds"
+          :titles="['未选', '已选']"
+          :show-search="true"
+          :show-select-all="true"
+          :filter-option="filterOption"
+          @change="handleUserChange"
+          @search="handleUserSearch"
+        >
+          <template #render="item">
+            <span>{{ item?.nickname }} ({{ item?.username }})</span>
+          </template>
 
-            <template #footer="{ direction }">
-              <div v-if="direction === 'left'">
-                <Pagination
-                  v-model:current="leftListState.pagination.current"
-                  v-model:page-size="leftListState.pagination.pageSize"
-                  :total="leftListState.pagination.total"
-                  :show-size-changer="true"
-                  :show-total="(total) => `共 ${total} 条`"
-                  size="small"
-                  @change="handleLeftPaginationChange"
-                />
-              </div>
+          <template #footer="{ direction }">
+            <div v-if="direction === 'left'">
+              <Pagination
+                v-model:current="leftListState.pagination.current"
+                v-model:page-size="leftListState.pagination.pageSize"
+                :total="leftListState.pagination.total"
+                :show-size-changer="true"
+                :show-total="(total) => `共 ${total} 条`"
+                size="small"
+                @change="handleLeftPaginationChange"
+              />
+            </div>
 
-              <div v-if="direction === 'right'">
-                <Pagination
-                  v-model:current="rightListState.pagination.current"
-                  v-model:page-size="rightListState.pagination.pageSize"
-                  :total="rightListState.pagination.total"
-                  :show-size-changer="true"
-                  :show-total="(total) => `共 ${total} 条`"
-                  size="small"
-                  @change="handleRightPaginationChange"
-                />
-              </div>
-            </template>
-          </Transfer>
-        </Col>
-      </Row>
-    </Spin>
+            <div v-if="direction === 'right'">
+              <Pagination
+                v-model:current="rightListState.pagination.current"
+                v-model:page-size="rightListState.pagination.pageSize"
+                :total="rightListState.pagination.total"
+                :show-size-changer="true"
+                :show-total="(total) => `共 ${total} 条`"
+                size="small"
+                @change="handleRightPaginationChange"
+              />
+            </div>
+          </template>
+        </Transfer>
+      </Col>
+    </Row>
     <template #footer>
       <Button
         type="primary"
@@ -490,7 +483,7 @@ defineExpose({
       </Button>
       <Button @click="handleCancel">{{ cancelText }}</Button>
     </template>
-  </ModalComponent>
+  </Modal>
 </template>
 
 <style lang="scss" scoped>

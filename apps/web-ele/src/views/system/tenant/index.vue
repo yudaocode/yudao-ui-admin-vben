@@ -8,7 +8,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -17,7 +17,6 @@ import { ElButton, ElLoading, ElMessage } from 'element-plus';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTenant, exportTenant, getTenantPage } from '#/api/system/tenant';
 import { getTenantPackageList } from '#/api/system/tenant-package';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmCategoryApi } from '#/api/bpm/category';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryPage } from '#/api/bpm/category';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -22,12 +17,46 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建流程分类 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑流程分类 */
+function handleEdit(row: BpmCategoryApi.Category) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除流程分类 */
+async function handleDelete(row: BpmCategoryApi.Category) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.code]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteCategory(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.code]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } catch {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -48,56 +77,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmCategoryApi.CategoryVO>,
+  } as VxeTableGridOptions<BpmCategoryApi.Category>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<BpmCategoryApi.CategoryVO>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 创建流程分类 */
-function onCreate() {
-  formModalApi.setData(null).open();
-}
-
-/** 编辑流程分类 */
-function onEdit(row: BpmCategoryApi.CategoryVO) {
-  formModalApi.setData(row).open();
-}
-
-/** 删除流程分类 */
-async function onDelete(row: BpmCategoryApi.CategoryVO) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.code]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteCategory(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.code]));
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
-}
 </script>
 
 <template>
@@ -109,14 +90,41 @@ async function onDelete(row: BpmCategoryApi.CategoryVO) {
     <FormModal @success="onRefresh" />
     <Grid table-title="流程分类">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['bpm:category:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['流程分类']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['流程分类']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['bpm:category:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['bpm:category:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['bpm:category:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

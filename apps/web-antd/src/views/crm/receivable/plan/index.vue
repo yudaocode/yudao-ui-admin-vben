@@ -5,7 +5,7 @@ import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Tabs } from 'ant-design-vue';
@@ -16,7 +16,6 @@ import {
   exportReceivablePlan,
   getReceivablePlanPage,
 } from '#/api/crm/receivable/plan';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import ReceivableForm from '../modules/form.vue';
@@ -53,12 +52,12 @@ function handleCreate() {
 }
 
 /** 编辑回款计划 */
-function handleEdit(row: CrmReceivablePlanApi.ReceivablePlan) {
+function handleEdit(row: CrmReceivablePlanApi.Plan) {
   formModalApi.setData(row).open();
 }
 
 /** 删除回款计划 */
-async function handleDelete(row: CrmReceivablePlanApi.ReceivablePlan) {
+async function handleDelete(row: CrmReceivablePlanApi.Plan) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.period]),
     key: 'action_key_msg',
@@ -76,17 +75,17 @@ async function handleDelete(row: CrmReceivablePlanApi.ReceivablePlan) {
 }
 
 /** 创建回款 */
-function handleCreateReceivable(row: CrmReceivablePlanApi.ReceivablePlan) {
+function handleCreateReceivable(row: CrmReceivablePlanApi.Plan) {
   receivableFormModalApi.setData({ plan: row }).open();
 }
 
 /** 查看回款计划详情 */
-function handleDetail(row: CrmReceivablePlanApi.ReceivablePlan) {
+function handleDetail(row: CrmReceivablePlanApi.Plan) {
   push({ name: 'CrmReceivablePlanDetail', params: { id: row.id } });
 }
 
 /** 查看客户详情 */
-function handleCustomerDetail(row: CrmReceivablePlanApi.ReceivablePlan) {
+function handleCustomerDetail(row: CrmReceivablePlanApi.Plan) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
 }
 
@@ -117,7 +116,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<CrmReceivablePlanApi.ReceivablePlan>,
+  } as VxeTableGridOptions<CrmReceivablePlanApi.Plan>,
 });
 
 function onChangeSceneType(key: number | string) {

@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
-import { getCurrentInstance, inject, ref, watch } from 'vue';
+import { getCurrentInstance, inject, nextTick, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
 
 import { Button, Input } from 'ant-design-vue';
 
+import { BpmNodeTypeEnum } from '#/utils';
+
 import {
   ConditionType,
   DEFAULT_CONDITION_GROUP_VALUE,
   NODE_DEFAULT_TEXT,
-  NodeType,
 } from '../../consts';
 import { getDefaultConditionNodeName, useTaskStatusClass } from '../../helpers';
 import ConditionNodeConfig from '../nodes-config/condition-node-config.vue';
@@ -50,11 +51,30 @@ watch(
     currentNode.value = newValue;
   },
 );
-
+// 条件节点名称输入框引用
+const inputRefs = ref<HTMLInputElement[]>([]);
+// 节点名称输入框显示状态
 const showInputs = ref<boolean[]>([]);
 
-// 失去焦点
-function blurEvent(index: number) {
+// 监听显示状态变化
+watch(
+  showInputs,
+  (newValues) => {
+    // 当状态为 true 时, 自动聚焦
+    newValues.forEach((value, index) => {
+      if (value) {
+        // 当显示状态从 false 变为 true 时, 自动聚焦
+        nextTick(() => {
+          inputRefs.value[index]?.focus();
+        });
+      }
+    });
+  },
+  { deep: true },
+);
+
+// 修改节点名称
+function changeNodeName(index: number) {
   showInputs.value[index] = false;
   const conditionNode = currentNode.value.conditionNodes?.at(
     index,
@@ -90,7 +110,7 @@ function addCondition() {
       id: `Flow_${generateUUID()}`,
       name: `条件${len}`,
       showText: '',
-      type: NodeType.CONDITION_NODE,
+      type: BpmNodeTypeEnum.CONDITION_NODE,
       childNode: undefined,
       conditionNodes: [],
       conditionSetting: {
@@ -138,7 +158,7 @@ function recursiveFindParentNode(
   node: SimpleFlowNode,
   nodeType: number,
 ) {
-  if (!node || node.type === NodeType.START_USER_NODE) {
+  if (!node || node.type === BpmNodeTypeEnum.START_USER_NODE) {
     return;
   }
   if (node.type === nodeType) {
@@ -187,10 +207,16 @@ function recursiveFindParentNode(
               <div class="branch-node-title-container">
                 <div v-if="!readonly && showInputs[index]">
                   <Input
+                    :ref="
+                      (el) => {
+                        inputRefs[index] = el as HTMLInputElement;
+                      }
+                    "
                     type="text"
                     class="editable-title-input"
-                    @blur="blurEvent(index)"
-                    v-model="item.name"
+                    @blur="changeNodeName(index)"
+                    @press-enter="changeNodeName(index)"
+                    v-model:value="item.name"
                   />
                 </div>
                 <div v-else class="branch-title" @click="clickEvent(index)">
@@ -210,7 +236,7 @@ function recursiveFindParentNode(
                   {{ item.showText }}
                 </div>
                 <div class="branch-node-text" v-else>
-                  {{ NODE_DEFAULT_TEXT.get(NodeType.CONDITION_NODE) }}
+                  {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.CONDITION_NODE) }}
                 </div>
               </div>
               <div
@@ -222,7 +248,7 @@ function recursiveFindParentNode(
                 <div class="toolbar-icon">
                   <IconifyIcon
                     color="#0089ff"
-                    icon="ep:circle-close-filled"
+                    icon="lucide:circle-x"
                     :size="18"
                     @click="deleteCondition(index)"
                   />
@@ -237,7 +263,7 @@ function recursiveFindParentNode(
                 "
                 @click="moveNode(index, -1)"
               >
-                <IconifyIcon icon="ep:arrow-left" />
+                <IconifyIcon icon="lucide:chevron-left" />
               </div>
 
               <div
@@ -249,7 +275,7 @@ function recursiveFindParentNode(
                 "
                 @click="moveNode(index, 1)"
               >
-                <IconifyIcon icon="ep:arrow-right" />
+                <IconifyIcon icon="lucide:chevron-right" />
               </div>
             </div>
             <NodeHandler

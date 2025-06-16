@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<BpmProcessExpressionApi.ProcessExpressionVO>();
+const formData = ref<BpmProcessExpressionApi.ProcessExpression>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['流程表达式'])
@@ -40,7 +40,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as BpmProcessExpressionApi.ProcessExpressionVO;
+      (await formApi.getValues()) as BpmProcessExpressionApi.ProcessExpression;
     try {
       await (formData.value?.id
         ? updateProcessExpression(data)
@@ -55,12 +55,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data =
-      modalApi.getData<BpmProcessExpressionApi.ProcessExpressionVO>();
+    const data = modalApi.getData<BpmProcessExpressionApi.ProcessExpression>();
     if (!data || !data.id) {
       return;
     }
@@ -77,7 +75,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[600px]">
+  <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-4" />
   </Modal>
 </template>

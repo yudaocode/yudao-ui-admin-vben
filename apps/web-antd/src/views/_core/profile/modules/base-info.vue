@@ -14,7 +14,7 @@ import { updateUserProfile } from '#/api/system/user/profile';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const props = defineProps<{
-  profile?: SystemUserProfileApi.UserProfileRespVO;
+  profile?: SystemUserProfileApi.UserProfileResp;
 }>();
 const emit = defineEmits<{
   (e: 'success'): void;
@@ -77,7 +77,7 @@ async function handleSubmit(values: Recordable<any>) {
   try {
     formApi.setLoading(true);
     // 提交表单
-    await updateUserProfile(values as SystemUserProfileApi.UpdateProfileReqVO);
+    await updateUserProfile(values as SystemUserProfileApi.UpdateProfileReq);
     // 关闭并提示
     emit('success');
     message.success($t('ui.actionMessage.operationSuccess'));

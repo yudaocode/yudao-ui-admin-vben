@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemNotifyTemplateApi.NotifySendReqVO = {
+    const data: SystemNotifyTemplateApi.NotifySendReq = {
       userId: values.userId,
       userType: values.userType,
       templateCode: formData.value?.code || '',

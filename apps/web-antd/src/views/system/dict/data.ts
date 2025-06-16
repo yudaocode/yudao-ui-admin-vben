@@ -77,6 +77,15 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'type',
+      label: '字典类型',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入字典类型',
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'Select',
@@ -92,6 +101,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
 /** 类型列表的字段 */
 export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编号',
@@ -279,6 +289,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
  */
 export function useDataGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编码',

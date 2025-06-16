@@ -1,21 +1,16 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessExpressionApi } from '#/api/bpm/processExpression';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProcessExpression,
   getProcessExpressionPage,
 } from '#/api/bpm/processExpression';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -25,12 +20,46 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建流程表达式 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑流程表达式 */
+function handleEdit(row: BpmProcessExpressionApi.ProcessExpression) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除流程表达式 */
+async function handleDelete(row: BpmProcessExpressionApi.ProcessExpression) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteProcessExpression(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -51,57 +80,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpressionVO>,
+  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<BpmProcessExpressionApi.ProcessExpressionVO>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 创建流程表达式 */
-function onCreate() {
-  formModalApi.setData(null).open();
-}
-
-/** 编辑流程表达式 */
-function onEdit(row: BpmProcessExpressionApi.ProcessExpressionVO) {
-  formModalApi.setData(row).open();
-}
-
-/** 删除流程表达式 */
-async function onDelete(row: BpmProcessExpressionApi.ProcessExpressionVO) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-
-  try {
-    await deleteProcessExpression(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
 </script>
 
 <template>
@@ -112,17 +92,45 @@ async function onDelete(row: BpmProcessExpressionApi.ProcessExpressionVO) {
         url="https://doc.iocoder.cn/bpm/expression/"
       />
     </template>
+
     <FormModal @success="onRefresh" />
     <Grid table-title="流程表达式">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['bpm:process-expression:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['流程表达式']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['流程表达式']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['bpm:process-expression:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['bpm:process-expression:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['bpm:process-expression:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

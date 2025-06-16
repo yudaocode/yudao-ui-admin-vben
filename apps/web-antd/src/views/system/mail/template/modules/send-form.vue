@@ -42,7 +42,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemMailTemplateApi.MailSendReqVO = {
+    const data: SystemMailTemplateApi.MailSendReq = {
       mail: values.mail,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,

@@ -65,13 +65,13 @@ export namespace InfraCodegenApi {
   }
 
   /** 更新代码生成请求 */
-  export interface CodegenUpdateReqVO {
+  export interface CodegenUpdateReq {
     table: any | CodegenTable;
     columns: CodegenColumn[];
   }
 
   /** 创建代码生成请求 */
-  export interface CodegenCreateListReqVO {
+  export interface CodegenCreateListReq {
     dataSourceConfigId?: number;
     tableNames: string[];
   }
@@ -106,7 +106,7 @@ export function getCodegenTable(tableId: number) {
 }
 
 /** 修改代码生成表定义 */
-export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReqVO) {
+export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReq) {
   return requestClient.put('/infra/codegen/update', data);
 }
 
@@ -136,9 +136,7 @@ export function getSchemaTableList(params: any) {
 }
 
 /** 基于数据库的表结构，创建代码生成器的表定义 */
-export function createCodegenList(
-  data: InfraCodegenApi.CodegenCreateListReqVO,
-) {
+export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReq) {
   return requestClient.post('/infra/codegen/create-list', data);
 }
 
@@ -147,4 +145,11 @@ export function deleteCodegenTable(tableId: number) {
   return requestClient.delete('/infra/codegen/delete', {
     params: { tableId },
   });
+}
+
+/** 批量删除代码生成表定义 */
+export function deleteCodegenTableList(tableIds: number[]) {
+  return requestClient.delete(
+    `/infra/codegen/delete-list?tableIds=${tableIds.join(',')}`,
+  );
 }

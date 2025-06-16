@@ -16,11 +16,8 @@ const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    componentProps: {
-      class: 'w-full',
-    },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
   schema: useImportFormSchema(),
@@ -62,7 +59,7 @@ async function handleDownload() {
 </script>
 
 <template>
-  <Modal title="导入用户">
+  <Modal title="导入用户" class="w-[30%]">
     <Form class="mx-4">
       <template #file>
         <div class="w-full">

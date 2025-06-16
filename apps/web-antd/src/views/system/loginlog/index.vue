@@ -2,12 +2,11 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportLoginLog, getLoginLogPage } from '#/api/system/login-log';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

@@ -1,36 +1,97 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmFormApi } from '#/api/bpm/form';
 
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import FormCreate from '@form-create/ant-design-vue';
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteForm, getFormDetail, getFormPage } from '#/api/bpm/form';
-import { DocAlert } from '#/components/doc-alert';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteForm, getFormPage } from '#/api/bpm/form';
 import { router } from '#/router';
-import { setConfAndFields2 } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 defineOptions({ name: 'BpmForm' });
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 新增 */
+function handleCreate() {
+  router.push({
+    name: 'BpmFormEditor',
+    query: {
+      type: 'create',
+    },
+  });
+}
+
+/** 编辑 */
+function handleEdit(row: BpmFormApi.Form) {
+  router.push({
+    name: 'BpmFormEditor',
+    query: {
+      id: row.id,
+      type: 'edit',
+    },
+  });
+}
+
+/** 复制 */
+function handleCopy(row: BpmFormApi.Form) {
+  router.push({
+    name: 'BpmFormEditor',
+    query: {
+      copyId: row.id,
+      type: 'copy',
+    },
+  });
+}
+
+/** 删除 */
+async function handleDelete(row: BpmFormApi.Form) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteForm(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+async function handleDetail(row: BpmFormApi.Form) {
+  detailModalApi.setData(row).open();
+}
+
+/** 详情弹窗 */
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
+
+/** 检测路由参数 */
+const route = useRoute();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -54,104 +115,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 64,
     },
-  } as VxeTableGridOptions<BpmFormApi.FormVO>,
+  } as VxeTableGridOptions<BpmFormApi.Form>,
 });
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<BpmFormApi.FormVO>) {
-  switch (code) {
-    case 'copy': {
-      onCopy(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-/** 复制 */
-function onCopy(row: BpmFormApi.FormVO) {
-  router.push({
-    name: 'BpmFormEditor',
-    query: {
-      copyId: row.id,
-      type: 'copy',
-    },
-  });
-}
-
-/** 删除 */
-async function onDelete(row: BpmFormApi.FormVO) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteForm(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 详情 */
-const formConfig = ref<any>({});
-async function onDetail(row: BpmFormApi.FormVO) {
-  formConfig.value = await getFormDetail(row.id as number);
-
-  setConfAndFields2(
-    formConfig.value,
-    formConfig.value.conf,
-    formConfig.value.fields,
-  );
-  detailModalApi.open();
-}
-
-/** 编辑 */
-function onEdit(row: BpmFormApi.FormVO) {
-  router.push({
-    name: 'BpmFormEditor',
-    query: {
-      id: row.id,
-      type: 'edit',
-    },
-  });
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 新增 */
-function onCreate() {
-  router.push({
-    name: 'BpmFormEditor',
-    query: {
-      type: 'create',
-    },
-  });
-}
-
-/** 详情弹窗 */
-const [DetailModal, detailModalApi] = useVbenModal({
-  destroyOnClose: true,
-  footer: false,
-});
-
-/** 检测路由参数 */
-const route = useRoute();
 watch(
   () => route.query.refresh,
   (val) => {
@@ -171,25 +137,60 @@ watch(
         url="https://doc.iocoder.cn/bpm/use-bpm-form/"
       />
     </template>
+
+    <DetailModal />
     <Grid table-title="流程表单">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['流程表单']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['流程表单']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['bpm:form:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.copy'),
+              type: 'link',
+              icon: ACTION_ICON.COPY,
+              auth: ['bpm:form:update'],
+              onClick: handleCopy.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['bpm:form:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['bpm:form:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['bpm:form:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
-
-    <DetailModal
-      title="流程表单详情"
-      class="w-[800px]"
-      :body-style="{
-        maxHeight: '100px',
-      }"
-    >
-      <div class="mx-4">
-        <FormCreate :option="formConfig.option" :rule="formConfig.rule" />
-      </div>
-    </DetailModal>
   </Page>
 </template>

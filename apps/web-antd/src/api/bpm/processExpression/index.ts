@@ -3,8 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessExpressionApi {
-  /** BPM 流程表达式 VO */
-  export interface ProcessExpressionVO {
+  /** 流程表达式 */
+  export interface ProcessExpression {
     id: number; // 编号
     name: string; // 表达式名字
     status: number; // 表达式状态
@@ -15,27 +15,27 @@ export namespace BpmProcessExpressionApi {
 /** 查询流程表达式分页 */
 export async function getProcessExpressionPage(params: PageParam) {
   return requestClient.get<
-    PageResult<BpmProcessExpressionApi.ProcessExpressionVO>
+    PageResult<BpmProcessExpressionApi.ProcessExpression>
   >('/bpm/process-expression/page', { params });
 }
 
 /** 查询流程表达式详情 */
 export async function getProcessExpression(id: number) {
-  return requestClient.get<BpmProcessExpressionApi.ProcessExpressionVO>(
+  return requestClient.get<BpmProcessExpressionApi.ProcessExpression>(
     `/bpm/process-expression/get?id=${id}`,
   );
 }
 
 /** 新增流程表达式 */
 export async function createProcessExpression(
-  data: BpmProcessExpressionApi.ProcessExpressionVO,
+  data: BpmProcessExpressionApi.ProcessExpression,
 ) {
   return requestClient.post<number>('/bpm/process-expression/create', data);
 }
 
 /** 修改流程表达式 */
 export async function updateProcessExpression(
-  data: BpmProcessExpressionApi.ProcessExpressionVO,
+  data: BpmProcessExpressionApi.ProcessExpression,
 ) {
   return requestClient.put<boolean>('/bpm/process-expression/update', data);
 }

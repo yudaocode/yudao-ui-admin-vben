@@ -5,7 +5,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { onMounted, ref } from 'vue';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 
 import { Image, message, Switch } from 'ant-design-vue';
 

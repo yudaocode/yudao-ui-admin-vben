@@ -5,11 +5,10 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
-import { DocAlert } from '#/components/doc-alert';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

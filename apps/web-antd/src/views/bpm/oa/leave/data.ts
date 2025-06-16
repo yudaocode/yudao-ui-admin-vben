@@ -1,18 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmCategoryApi } from '#/api/bpm/category';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
-
-import { useAccess } from '@vben/access';
 
 import dayjs from 'dayjs';
 
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
-const { hasAccessByCodes } = useAccess();
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -118,9 +114,7 @@ export function GridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -168,39 +162,11 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
       minWidth: 180,
       formatter: 'formatDateTime',
     },
-
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '请假',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['bpm:oa-leave:query']),
-          },
-          {
-            code: 'progress',
-            text: '进度',
-            show: hasAccessByCodes(['bpm:oa-leave:query']),
-          },
-          {
-            code: 'cancel',
-            text: '取消',
-            show: (row: any) =>
-              row.status === 1 && hasAccessByCodes(['bpm:oa-leave:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

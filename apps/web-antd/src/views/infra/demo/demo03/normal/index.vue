@@ -16,7 +16,7 @@ import { Button, message } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Student,
-  deleteDemo03StudentListByIds,
+  deleteDemo03StudentList,
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
@@ -61,13 +61,13 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除学生 ID
-function setDeleteIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo03StudentApi.Demo03Student[];
 }) {
-  deleteIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id);
 }
 /** 批量删除学生 */
 async function onDeleteBatch() {
@@ -77,7 +77,7 @@ async function onDeleteBatch() {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo03StudentListByIds(deleteIds.value);
+    await deleteDemo03StudentList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
@@ -139,8 +139,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Demo03StudentApi.Demo03Student>,
   gridEvents: {
-    checkboxAll: setDeleteIds,
-    checkboxChange: setDeleteIds,
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
   },
 });
 </script>
@@ -173,7 +173,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           type="primary"
           danger
           class="ml-2"
-          :disabled="isEmpty(deleteIds)"
+          :disabled="isEmpty(checkedIds)"
           @click="onDeleteBatch"
           v-access:code="['infra:demo03-student:delete']"
         >

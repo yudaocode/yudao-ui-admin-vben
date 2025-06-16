@@ -2,7 +2,7 @@
 import type { CrmCustomerApi } from '#/api/crm/customer';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
@@ -14,44 +14,23 @@ import { getCustomer, updateCustomerDealStatus } from '#/api/crm/customer';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { BusinessDetailsList } from '#/views/crm/business';
+import { ContactDetailsList } from '#/views/crm/contact';
+import { ContractDetailsList } from '#/views/crm/contract';
+import {
+  CustomerDetailsInfo,
+  CustomerForm,
+  DistributeForm,
+} from '#/views/crm/customer';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
+import {
+  ReceivableDetailsList,
+  ReceivablePlanDetailsList,
+} from '#/views/crm/receivable';
 
-import { useDetailSchema } from '../data';
-
-const CustomerDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
-
-const ContactDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contact/modules/detail-list.vue'),
-);
-
-const ContractDetailsList = defineAsyncComponent(
-  () => import('#/views/crm/contract/modules/detail-list.vue'),
-);
-
-const CustomerForm = defineAsyncComponent(
-  () => import('#/views/crm/customer/modules/form.vue'),
-);
-
-const BusinessList = defineAsyncComponent(
-  () => import('#/views/crm/business/modules/detail-list.vue'),
-);
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
+import { useDetailSchema } from './detail-data';
 
 const loading = ref(false);
 
@@ -81,6 +60,11 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const [TransferModal, transferModalApi] = useVbenModal({
   connectedComponent: TransferForm,
+  destroyOnClose: true,
+});
+
+const [DistributeModal, distributeModalApi] = useVbenModal({
+  connectedComponent: DistributeForm,
   destroyOnClose: true,
 });
 
@@ -131,7 +115,7 @@ function handleReceive() {
 
 /** 分配客户 */
 function handleDistributeForm() {
-  transferModalApi.setData({ id: customerId.value }).open();
+  distributeModalApi.setData({ id: customerId.value }).open();
 }
 
 /** 客户放入公海 */
@@ -165,9 +149,9 @@ async function handleUpdateDealStatus(): Promise<boolean | undefined> {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   customerId.value = Number(route.params.id);
-  await loadCustomerDetail();
+  loadCustomerDetail();
 });
 </script>
 
@@ -175,6 +159,7 @@ onMounted(async () => {
   <Page auto-content-height :title="customer?.name" :loading="loading">
     <FormModal @success="loadCustomerDetail" />
     <TransferModal @success="loadCustomerDetail" />
+    <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
       <div class="flex items-center gap-2">
         <Button
@@ -210,10 +195,18 @@ onMounted(async () => {
         >
           锁定
         </Button>
-        <Button v-if="!customer.ownerUserId" @click="handleReceive">
+        <Button
+          v-if="!customer.ownerUserId"
+          type="primary"
+          @click="handleReceive"
+        >
           领取
         </Button>
-        <Button v-if="!customer.ownerUserId" @click="handleDistributeForm">
+        <Button
+          v-if="!customer.ownerUserId"
+          type="primary"
+          @click="handleDistributeForm"
+        >
           分配
         </Button>
         <Button
@@ -252,7 +245,7 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="商机" key="5" :force-render="true">
-          <BusinessList
+          <BusinessDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
@@ -265,10 +258,11 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="回款" key="7" :force-render="true">
-          <div>回款</div>
+          <ReceivablePlanDetailsList :customer-id="customerId" />
+          <ReceivableDetailsList :customer-id="customerId" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
-          <OperateLog :log-list="customerLogList" />
+          <AsyncOperateLog :log-list="customerLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

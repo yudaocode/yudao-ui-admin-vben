@@ -1,3 +1,5 @@
+import type { Dayjs } from 'dayjs';
+
 import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
@@ -24,7 +26,7 @@ export namespace Demo03StudentApi {
     id: number; // 编号
     name?: string; // 名字
     sex?: number; // 性别
-    birthday?: Date; // 出生日期
+    birthday?: Dayjs | string; // 出生日期
     description?: string; // 简介
     demo03courses?: Demo03Course[];
     demo03grade?: Demo03Grade;
@@ -34,7 +36,7 @@ export namespace Demo03StudentApi {
 /** 查询学生分页 */
 export function getDemo03StudentPage(params: PageParam) {
   return requestClient.get<PageResult<Demo03StudentApi.Demo03Student>>(
-    '/infra/demo03-student/page',
+    '/infra/demo03-student-inner/page',
     { params },
   );
 }
@@ -42,28 +44,38 @@ export function getDemo03StudentPage(params: PageParam) {
 /** 查询学生详情 */
 export function getDemo03Student(id: number) {
   return requestClient.get<Demo03StudentApi.Demo03Student>(
-    `/infra/demo03-student/get?id=${id}`,
+    `/infra/demo03-student-inner/get?id=${id}`,
   );
 }
 
 /** 新增学生 */
 export function createDemo03Student(data: Demo03StudentApi.Demo03Student) {
-  return requestClient.post('/infra/demo03-student/create', data);
+  return requestClient.post('/infra/demo03-student-inner/create', data);
 }
 
 /** 修改学生 */
 export function updateDemo03Student(data: Demo03StudentApi.Demo03Student) {
-  return requestClient.put('/infra/demo03-student/update', data);
+  return requestClient.put('/infra/demo03-student-inner/update', data);
 }
 
 /** 删除学生 */
 export function deleteDemo03Student(id: number) {
-  return requestClient.delete(`/infra/demo03-student/delete?id=${id}`);
+  return requestClient.delete(`/infra/demo03-student-inner/delete?id=${id}`);
+}
+
+/** 批量删除学生 */
+export function deleteDemo03StudentList(ids: number[]) {
+  return requestClient.delete(
+    `/infra/demo03-student-inner/delete-list?ids=${ids.join(',')}`,
+  );
 }
 
 /** 导出学生 */
 export function exportDemo03Student(params: any) {
-  return requestClient.download('/infra/demo03-student/export-excel', params);
+  return requestClient.download(
+    '/infra/demo03-student-inner/export-excel',
+    params,
+  );
 }
 
 // ==================== 子表（学生课程） ====================
@@ -71,7 +83,7 @@ export function exportDemo03Student(params: any) {
 /** 获得学生课程列表 */
 export function getDemo03CourseListByStudentId(studentId: number) {
   return requestClient.get<Demo03StudentApi.Demo03Course[]>(
-    `/infra/demo03-student/demo03-course/list-by-student-id?studentId=${studentId}`,
+    `/infra/demo03-student-inner/demo03-course/list-by-student-id?studentId=${studentId}`,
   );
 }
 
@@ -80,6 +92,6 @@ export function getDemo03CourseListByStudentId(studentId: number) {
 /** 获得学生班级 */
 export function getDemo03GradeByStudentId(studentId: number) {
   return requestClient.get<Demo03StudentApi.Demo03Grade>(
-    `/infra/demo03-student/demo03-grade/get-by-student-id?studentId=${studentId}`,
+    `/infra/demo03-student-inner/demo03-grade/get-by-student-id?studentId=${studentId}`,
   );
 }

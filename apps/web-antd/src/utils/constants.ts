@@ -1093,6 +1093,23 @@ OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.ADD_SIGN, '加签');
 OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.RETURN, '退回');
 OPERATION_BUTTON_NAME.set(BpmTaskOperationButtonTypeEnum.COPY, '抄送');
 
+/**
+ * 流程实例的变量枚举
+ */
+export enum ProcessVariableEnum {
+  /**
+   * 流程定义名称
+   */
+  PROCESS_DEFINITION_NAME = 'PROCESS_DEFINITION_NAME',
+  /**
+   * 发起时间
+   */
+  START_TIME = 'PROCESS_START_TIME',
+  /**
+   * 发起用户 ID
+   */
+  START_USER_ID = 'PROCESS_START_USER_ID',
+}
 // ========== 【写作 UI】相关的枚举 ==========
 
 /** 写作点击示例时的数据 */

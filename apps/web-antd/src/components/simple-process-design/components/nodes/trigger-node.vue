@@ -7,7 +7,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import TriggerNodeConfig from '../nodes-config/trigger-node-config.vue';
 import NodeHandler from './node-handler.vue';
@@ -33,9 +35,9 @@ const readonly = inject<Boolean>('readonly');
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
-const { showInput, blurEvent, clickTitle } = useNodeName2(
+const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
-  NodeType.TRIGGER_NODE,
+  BpmNodeTypeEnum.TRIGGER_NODE,
 );
 
 const nodeSetting = ref();
@@ -67,11 +69,13 @@ function deleteNode() {
             <span class="iconfont icon-trigger"></span>
           </div>
           <Input
+            ref="inputRef"
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"
-            @blur="blurEvent()"
-            v-model="currentNode.name"
+            @blur="changeNodeName()"
+            @press-enter="changeNodeName()"
+            v-model:value="currentNode.name"
             :placeholder="currentNode.name"
           />
           <div v-else class="node-title" @click="clickTitle">
@@ -87,15 +91,15 @@ function deleteNode() {
             {{ currentNode.showText }}
           </div>
           <div class="node-text" v-else>
-            {{ NODE_DEFAULT_TEXT.get(NodeType.TRIGGER_NODE) }}
+            {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.TRIGGER_NODE) }}
           </div>
-          <IconifyIcon v-if="!readonly" icon="ep:arrow-right-bold" />
+          <IconifyIcon v-if="!readonly" icon="lucide:chevron-right" />
         </div>
         <div v-if="!readonly" class="node-toolbar">
           <div class="toolbar-icon">
             <IconifyIcon
               color="#0089ff"
-              icon="ep:circle-close-filled"
+              icon="lucide:circle-x"
               :size="18"
               @click="deleteNode"
             />

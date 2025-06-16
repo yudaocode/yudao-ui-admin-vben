@@ -21,8 +21,6 @@ import { $t } from '#/locales';
 import { useGridColumns } from './data';
 import Form from './permission-form.vue';
 
-defineOptions({ name: 'CrmPermissionList' });
-
 const props = defineProps<{
   bizId: number; // 模块数据编号
   bizType: number; // 模块类型
@@ -142,7 +140,7 @@ async function handleQuit() {
     message.warning('你不是团队成员！');
     return;
   }
-  await deleteSelfPermission(userPermission.id);
+  await deleteSelfPermission(userPermission.id as number);
   message.success('退出团队成员成功！');
   emits('quitTeam');
 }

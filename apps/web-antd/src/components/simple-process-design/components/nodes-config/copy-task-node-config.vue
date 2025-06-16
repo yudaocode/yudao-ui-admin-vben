@@ -27,14 +27,13 @@ import {
   TreeSelect,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils';
+import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
 import {
   CANDIDATE_STRATEGY,
   CandidateStrategy,
   FieldPermissionType,
   MULTI_LEVEL_DEPT,
-  NodeType,
 } from '../../consts';
 import {
   useFormFieldsPermission,
@@ -76,9 +75,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const currentNode = useWatchNode(props);
 
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.COPY_TASK_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.COPY_TASK_NODE);
 
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
@@ -137,7 +135,7 @@ const {
   getShowText,
   handleCandidateParam,
   parseCandidateParam,
-} = useNodeForm(NodeType.COPY_TASK_NODE);
+} = useNodeForm(BpmNodeTypeEnum.COPY_TASK_NODE);
 
 const configForm = tempConfigForm as Ref<CopyTaskFormType>;
 // 抄送人策略， 去掉发起人自选 和 发起人自己
@@ -214,15 +212,17 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
       <div class="config-header">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="config-editable-input"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />
         <div v-else class="node-name">
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" @click="clickIcon()" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" @click="clickIcon()" />
         </div>
       </div>
     </template>

@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmCategoryApi } from '#/api/bpm/category';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
@@ -26,8 +23,6 @@ export const EVENT_OPTIONS = [
   { label: 'update', value: 'update' },
   { label: 'timeout', value: 'timeout' },
 ];
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -80,6 +75,16 @@ export function useFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['type'],
+        trigger: (values) => (values.event = undefined),
+        componentProps: (values) => ({
+          options:
+            values.type === 'execution'
+              ? EVENT_EXECUTION_OPTIONS
+              : EVENT_OPTIONS,
+        }),
+      },
     },
     {
       fieldName: 'valueType',
@@ -96,9 +101,17 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'value',
-      label: '表达式',
+      label: '类路径|表达式',
       component: 'Input',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['valueType'],
+        trigger: (values) => (values.value = undefined),
+        componentProps: (values) => ({
+          placeholder:
+            values.valueType === 'class' ? '请输入类路径' : '请输入表达式',
+        }),
+      },
     },
   ];
 }
@@ -129,9 +142,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -178,29 +189,11 @@ export function useGridColumns<T = BpmCategoryApi.CategoryVO>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
+      field: 'actions',
       title: '操作',
       minWidth: 180,
-      align: 'center',
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '流程监听器',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['bpm:process-listener:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['bpm:process-listener:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

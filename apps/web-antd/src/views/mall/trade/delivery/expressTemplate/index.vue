@@ -1,34 +1,132 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallDeliveryExpressTemplateApi } from '#/api/mall/trade/delivery/expressTemplate';
 
-import { Button } from 'ant-design-vue';
+import { Page, useVbenModal } from '@vben/common-ui';
 
-import { DocAlert } from '#/components/doc-alert';
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteDeliveryExpressTemplate,
+  getDeliveryExpressTemplatePage,
+} from '#/api/mall/trade/delivery/expressTemplate';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建快递模板 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑快递模板 */
+function handleEdit(row: MallDeliveryExpressTemplateApi.ExpressTemplate) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除快递模板 */
+async function handleDelete(
+  row: MallDeliveryExpressTemplateApi.ExpressTemplate,
+) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteDeliveryExpressTemplate(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getDeliveryExpressTemplatePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallDeliveryExpressTemplateApi.ExpressTemplate>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【交易】快递发货"
-      url="https://doc.iocoder.cn/mall/trade-delivery-express/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/delivery/expressTemplate/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/delivery/expressTemplate/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <FormModal @success="onRefresh" />
+    <Grid table-title="快递模板列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['快递模板']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['trade:delivery:express-template:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['trade:delivery:express-template:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['trade:delivery:express-template:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

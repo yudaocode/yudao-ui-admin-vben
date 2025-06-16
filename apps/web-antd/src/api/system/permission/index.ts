@@ -2,19 +2,19 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemPermissionApi {
   /** 分配用户角色请求 */
-  export interface AssignUserRoleReqVO {
+  export interface AssignUserRoleReq {
     userId: number;
     roleIds: number[];
   }
 
   /** 分配角色菜单请求 */
-  export interface AssignRoleMenuReqVO {
+  export interface AssignRoleMenuReq {
     roleId: number;
     menuIds: number[];
   }
 
   /** 分配角色数据权限请求 */
-  export interface AssignRoleDataScopeReqVO {
+  export interface AssignRoleDataScopeReq {
     roleId: number;
     dataScope: number;
     dataScopeDeptIds: number[];
@@ -30,14 +30,14 @@ export async function getRoleMenuList(roleId: number) {
 
 /** 赋予角色菜单权限 */
 export async function assignRoleMenu(
-  data: SystemPermissionApi.AssignRoleMenuReqVO,
+  data: SystemPermissionApi.AssignRoleMenuReq,
 ) {
   return requestClient.post('/system/permission/assign-role-menu', data);
 }
 
 /** 赋予角色数据权限 */
 export async function assignRoleDataScope(
-  data: SystemPermissionApi.AssignRoleDataScopeReqVO,
+  data: SystemPermissionApi.AssignRoleDataScopeReq,
 ) {
   return requestClient.post('/system/permission/assign-role-data-scope', data);
 }
@@ -51,7 +51,7 @@ export async function getUserRoleList(userId: number) {
 
 /** 赋予用户角色 */
 export async function assignUserRole(
-  data: SystemPermissionApi.AssignUserRoleReqVO,
+  data: SystemPermissionApi.AssignUserRoleReq,
 ) {
   return requestClient.post('/system/permission/assign-user-role', data);
 }

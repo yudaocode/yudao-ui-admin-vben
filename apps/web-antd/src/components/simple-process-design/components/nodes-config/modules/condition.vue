@@ -25,7 +25,7 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { BpmModelFormType } from '#/utils/constants';
+import { BpmModelFormType } from '#/utils';
 
 import {
   COMPARISON_OPERATORS,
@@ -188,7 +188,7 @@ defineExpose({ validate });
           >
             <IconifyIcon
               color="#0089ff"
-              icon="ep:circle-close-filled"
+              icon="lucide:circle-x"
               class="size-4"
               @click="
                 deleteConditionGroup(condition.conditionGroups.conditions, cIdx)

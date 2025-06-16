@@ -4,6 +4,7 @@ import type { CrmContractApi } from '#/api/crm/contract';
 import { computed, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { erpPriceMultiply } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -12,7 +13,9 @@ import {
   getContract,
   updateContract,
 } from '#/api/crm/contract';
+import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
+import { ProductEditTable } from '#/views/crm/product';
 
 import { useFormSchema } from '../data';
 
@@ -24,15 +27,37 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['合同']);
 });
 
+function handleUpdateProducts(products: any) {
+  formData.value = modalApi.getData<CrmContractApi.Contract>();
+  formData.value!.products = products;
+  if (formData.value) {
+    const totalProductPrice =
+      formData.value.products?.reduce(
+        (prev, curr) => prev + curr.totalPrice,
+        0,
+      ) ?? 0;
+    const discountPercent = formData.value.discountPercent;
+    const discountPrice =
+      discountPercent === null
+        ? 0
+        : erpPriceMultiply(totalProductPrice, discountPercent / 100);
+    const totalPrice = totalProductPrice - (discountPrice ?? 0);
+    formData.value!.totalProductPrice = totalProductPrice;
+    formData.value!.totalPrice = totalPrice;
+    formApi.setValues(formData.value!);
+  }
+}
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
+    labelWidth: 120,
   },
-  // 一共2列
-  wrapperClass: 'grid-cols-2',
-  layout: 'horizontal',
+  // 一共3列
+  wrapperClass: 'grid-cols-3',
+  layout: 'vertical',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
@@ -46,6 +71,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as CrmContractApi.Contract;
+    data.products = formData.value?.products;
     try {
       await (formData.value?.id ? updateContract(data) : createContract(data));
       // 关闭并提示
@@ -79,7 +105,17 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[40%]">
-    <Form class="mx-4" />
+  <Modal :title="getTitle" class="w-[50%]">
+    <Form class="mx-4">
+      <template #product="slotProps">
+        <ProductEditTable
+          v-bind="slotProps"
+          class="w-full"
+          :products="formData?.products ?? []"
+          :biz-type="BizTypeEnum.CRM_CONTRACT"
+          @update:products="handleUpdateProducts"
+        />
+      </template>
+    </Form>
   </Modal>
 </template>

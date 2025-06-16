@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { formatDate } from '@vben/utils';
+import { fenToYuan, formatDate } from '@vben/utils';
 
 import {
   Button,
@@ -19,7 +19,6 @@ import {
 
 import { getOrder, submitOrder } from '#/api/pay/order';
 import {
-  fenToYuan,
   PayChannelEnum,
   PayDisplayModeEnum,
   PayOrderStatusEnum,

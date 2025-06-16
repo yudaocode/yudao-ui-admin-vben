@@ -2,18 +2,20 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { ref } from 'vue';
+
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteNotifyTemplate,
+  deleteNotifyTemplateList,
   exportNotifyTemplate,
   getNotifyTemplatePage,
 } from '#/api/system/notify/template';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -74,6 +76,31 @@ async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNotifyTemplateApi.NotifyTemplate[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除站内信模板 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteNotifyTemplateList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -95,12 +122,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<SystemNotifyTemplateApi.NotifyTemplate>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -129,6 +161,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:notify-template:export'],
               onClick: handleExport,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notify-template:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

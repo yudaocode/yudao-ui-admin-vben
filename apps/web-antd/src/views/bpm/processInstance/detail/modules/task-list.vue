@@ -14,7 +14,7 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
-import { DICT_TYPE, formatPast2, setConfAndFields2 } from '#/utils';
+import { DICT_TYPE, setConfAndFields2 } from '#/utils';
 
 defineOptions({
   name: 'BpmProcessInstanceTaskList',
@@ -25,7 +25,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-// 使用shallowRef减少不必要的深度响应
+// 使用 shallowRef 减少不必要的深度响应
 const columns = shallowRef([
   {
     field: 'name',
@@ -36,7 +36,7 @@ const columns = shallowRef([
     field: 'approver',
     title: '审批人',
     slots: {
-      default: ({ row }: { row: BpmTaskApi.TaskManagerVO }) => {
+      default: ({ row }: { row: BpmTaskApi.TaskManager }) => {
         return row.assigneeUser?.nickname || row.ownerUser?.nickname;
       },
     },
@@ -75,11 +75,7 @@ const columns = shallowRef([
     field: 'durationInMillis',
     title: '耗时',
     minWidth: 180,
-    slots: {
-      default: ({ row }: { row: BpmTaskApi.TaskManagerVO }) => {
-        return formatPast2(row.durationInMillis);
-      },
-    },
+    formatter: 'formatPast2',
   },
 ]);
 
@@ -110,15 +106,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 60,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 
 /**
  * 刷新表格数据
  */
-const refresh = (): void => {
+function refresh() {
   gridApi.query();
-};
+}
 
 // 表单相关
 interface TaskForm {
@@ -141,7 +137,7 @@ const taskForm = ref<TaskForm>({
  * 显示表单详情
  * @param row 任务数据
  */
-async function showFormDetail(row: BpmTaskApi.TaskManagerVO): Promise<void> {
+async function showFormDetail(row: BpmTaskApi.TaskManager): Promise<void> {
   // 设置表单配置和表单字段
   taskForm.value = {
     rule: [],
@@ -204,7 +200,7 @@ defineExpose({
             ghost
             class="ml-1"
           >
-            <IconifyIcon icon="ep:document" />
+            <IconifyIcon icon="lucide:file-text" />
             <span class="!ml-[2px] text-[12px]">查看表单</span>
           </Button>
         </div>

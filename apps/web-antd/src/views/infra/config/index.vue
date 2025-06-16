@@ -2,13 +2,20 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraConfigApi } from '#/api/infra/config';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteConfig, exportConfig, getConfigPage } from '#/api/infra/config';
+import {
+  deleteConfig,
+  deleteConfigList,
+  exportConfig,
+  getConfigPage,
+} from '#/api/infra/config';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -59,6 +66,31 @@ async function handleDelete(row: InfraConfigApi.Config) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraConfigApi.Config[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除参数 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteConfigList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -80,12 +112,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<InfraConfigApi.Config>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -109,6 +146,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['infra:config:export'],
               onClick: handleExport,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:config:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

@@ -37,14 +37,6 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (formValues) => !formValues.id,
       },
     },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
     // DB / Local / FTP / SFTP
     {
       fieldName: 'config.basePath',
@@ -222,6 +214,14 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (formValues) => !!formValues.storage,
       },
     },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
   ];
 }
 
@@ -262,6 +262,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',

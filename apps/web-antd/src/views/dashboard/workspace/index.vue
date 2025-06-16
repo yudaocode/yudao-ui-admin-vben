@@ -95,7 +95,7 @@ const quickNavItems: WorkbenchQuickNavItem[] = [
   },
   {
     color: '#ff6b6b',
-    icon: 'ep:shop',
+    icon: 'lucide:shopping-bag',
     title: '商城中心',
     url: '/mall',
   },

@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -13,7 +13,6 @@ import { NButton } from 'naive-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportOperateLog, getOperateLogPage } from '#/api/system/operate-log';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

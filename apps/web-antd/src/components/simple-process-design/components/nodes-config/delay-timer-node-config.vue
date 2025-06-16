@@ -22,10 +22,11 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
+import { BpmNodeTypeEnum } from '#/utils';
+
 import {
   DELAY_TYPE,
   DelayTypeEnum,
-  NodeType,
   TIME_UNIT_TYPES,
   TimeUnitType,
 } from '../../consts';
@@ -44,9 +45,8 @@ const props = defineProps({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
-const { nodeName, showInput, clickIcon, blurEvent } = useNodeName(
-  NodeType.DELAY_TIMER_NODE,
-);
+const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
+  useNodeName(BpmNodeTypeEnum.DELAY_TIMER_NODE);
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref
 
@@ -157,9 +157,11 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
       <div class="flex items-center">
         <Input
           v-if="showInput"
+          ref="inputRef"
           type="text"
           class="mr-2 w-48"
-          @blur="blurEvent()"
+          @blur="changeNodeName()"
+          @press-enter="changeNodeName()"
           v-model:value="nodeName"
           :placeholder="nodeName"
         />
@@ -169,7 +171,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="clickIcon()"
         >
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" :size="16" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" :size="16" />
         </div>
       </div>
     </template>

@@ -2,22 +2,23 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteJob,
+  deleteJobList,
   exportJob,
   getJobPage,
   runJob,
   updateJobStatus,
 } from '#/api/infra/job';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 import { InfraJobStatusEnum } from '#/utils';
 
@@ -115,6 +116,27 @@ async function handleDelete(row: InfraJobApi.Job) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除任务 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteJobList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -136,12 +158,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<InfraJobApi.Job>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -178,7 +205,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: 'lucide:history',
               auth: ['infra:job:export'],
-              onClick: handleExport,
+              onClick: handleLog,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:job:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

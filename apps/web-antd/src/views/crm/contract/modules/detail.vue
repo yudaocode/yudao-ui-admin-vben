@@ -2,7 +2,7 @@
 import type { CrmContractApi } from '#/api/crm/contract';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -15,29 +15,17 @@ import { getContract } from '#/api/crm/contract';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { ContractDetailsInfo, ContractForm } from '#/views/crm/contract';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
+import { ProductDetailsList } from '#/views/crm/product';
+import {
+  ReceivableDetailsList,
+  ReceivablePlanDetailsList,
+} from '#/views/crm/receivable';
 
-import { useDetailSchema } from '../data';
-import ClueForm from './form.vue';
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
-
-const ContractDetailsInfo = defineAsyncComponent(
-  () => import('./detail-info.vue'),
-);
+import { useDetailSchema } from './detail-data';
 
 const loading = ref(false);
 
@@ -67,7 +55,7 @@ const [Description] = useDescription({
 });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: ClueForm,
+  connectedComponent: ContractForm,
   destroyOnClose: true,
 });
 
@@ -107,9 +95,9 @@ function handleTransfer() {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   contractId.value = Number(route.params.id);
-  await loadContractDetail();
+  loadContractDetail();
 });
 </script>
 
@@ -147,8 +135,22 @@ onMounted(async () => {
         <Tabs.TabPane tab="合同跟进" key="2" :force-render="true">
           <FollowUp :biz-id="contractId" :biz-type="BizTypeEnum.CRM_CONTRACT" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="产品" key="3" :force-render="true" />
-        <Tabs.TabPane tab="回款" key="4" :force-render="true" />
+        <Tabs.TabPane tab="产品" key="3" :force-render="true">
+          <ProductDetailsList
+            :biz-id="contractId"
+            :biz-type="BizTypeEnum.CRM_CONTRACT"
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="回款" key="4" :force-render="true">
+          <ReceivablePlanDetailsList
+            :contract-id="contractId"
+            :customer-id="contract.customerId"
+          />
+          <ReceivableDetailsList
+            :contract-id="contractId"
+            :customer-id="contract.customerId"
+          />
+        </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="5" :force-render="true">
           <PermissionList
             ref="permissionListRef"
@@ -159,7 +161,7 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="6" :force-render="true">
-          <OperateLog :log-list="contractLogList" />
+          <AsyncOperateLog :log-list="contractLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

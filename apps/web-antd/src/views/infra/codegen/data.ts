@@ -394,6 +394,7 @@ export function useGridColumns(
   getDataSourceConfigName?: (dataSourceConfigId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'dataSourceConfigId',
       title: '数据源',

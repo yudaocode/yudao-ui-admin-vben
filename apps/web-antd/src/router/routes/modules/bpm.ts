@@ -74,6 +74,42 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
+      {
+        path: 'manager/model/:type/:id',
+        component: () => import('#/views/bpm/model/form/index.vue'),
+        name: 'BpmModelUpdate',
+        meta: {
+          title: '修改流程',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-connection',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
+      {
+        path: 'manager/definition',
+        component: () => import('#/views/bpm/model/definition/index.vue'),
+        name: 'BpmProcessDefinition',
+        meta: {
+          title: '流程定义',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-modeler',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
+      {
+        path: 'process-instance/report',
+        component: () => import('#/views/bpm/processInstance/report/index.vue'),
+        name: 'BpmProcessInstanceReport',
+        meta: {
+          title: '数据报表',
+          activeMenu: '/bpm/manager/model',
+          icon: 'carbon:data-2',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
     ],
   },
 ];

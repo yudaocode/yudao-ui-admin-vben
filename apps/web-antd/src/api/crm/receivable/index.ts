@@ -34,10 +34,21 @@ export namespace CrmReceivableApi {
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
   }
+
+  export interface ReceivablePageParam extends PageParam {
+    no?: string;
+    planId?: number;
+    customerId?: number;
+    contractId?: number;
+    sceneType?: number;
+    auditStatus?: number;
+  }
 }
 
 /** 查询回款列表 */
-export function getReceivablePage(params: PageParam) {
+export function getReceivablePage(
+  params: CrmReceivableApi.ReceivablePageParam,
+) {
   return requestClient.get<PageResult<CrmReceivableApi.Receivable>>(
     '/crm/receivable/page',
     { params },
@@ -45,7 +56,9 @@ export function getReceivablePage(params: PageParam) {
 }
 
 /** 查询回款列表，基于指定客户 */
-export function getReceivablePageByCustomer(params: PageParam) {
+export function getReceivablePageByCustomer(
+  params: CrmReceivableApi.ReceivablePageParam,
+) {
   return requestClient.get<PageResult<CrmReceivableApi.Receivable>>(
     '/crm/receivable/page-by-customer',
     { params },

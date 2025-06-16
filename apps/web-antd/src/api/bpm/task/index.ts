@@ -5,8 +5,8 @@ import type { BpmProcessInstanceApi } from '../processInstance';
 import { requestClient } from '#/api/request';
 
 export namespace BpmTaskApi {
-  /** BPM 流程监听器 VO */
-  export interface TaskVO {
+  /** BPM 流程监听器 */
+  export interface Task {
     id: number; // 编号
     name: string; // 监听器名字
     type: string; // 监听器类型
@@ -15,8 +15,8 @@ export namespace BpmTaskApi {
     valueType: string; // 监听器值类型
   }
 
-  // 流程任务 VO
-  export interface TaskManagerVO {
+  // 流程任务
+  export interface TaskManager {
     id: string; // 编号
     name: string; // 任务名称
     createTime: number; // 创建时间
@@ -28,7 +28,7 @@ export namespace BpmTaskApi {
     assigneeUser: any; // 处理人
     taskDefinitionKey: string; // 任务定义key
     processInstanceId: string; // 流程实例id
-    processInstance: BpmProcessInstanceApi.ProcessInstanceVO; // 流程实例
+    processInstance: BpmProcessInstanceApi.ProcessInstance; // 流程实例
     parentTaskId: any; // 父任务id
     children: any; // 子任务
     formId: any; // 表单id
@@ -45,27 +45,21 @@ export namespace BpmTaskApi {
 
 /** 查询待办任务分页 */
 export async function getTaskTodoPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmTaskApi.TaskVO>>(
-    '/bpm/task/todo-page',
-    {
-      params,
-    },
-  );
+  return requestClient.get<PageResult<BpmTaskApi.Task>>('/bpm/task/todo-page', {
+    params,
+  });
 }
 
 /** 查询已办任务分页 */
 export async function getTaskDonePage(params: PageParam) {
-  return requestClient.get<PageResult<BpmTaskApi.TaskVO>>(
-    '/bpm/task/done-page',
-    {
-      params,
-    },
-  );
+  return requestClient.get<PageResult<BpmTaskApi.Task>>('/bpm/task/done-page', {
+    params,
+  });
 }
 
 /** 查询任务管理分页 */
 export async function getTaskManagerPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmTaskApi.TaskVO>>(
+  return requestClient.get<PageResult<BpmTaskApi.Task>>(
     '/bpm/task/manager-page',
     { params },
   );

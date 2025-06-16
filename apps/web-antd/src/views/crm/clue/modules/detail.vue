@@ -15,25 +15,12 @@ import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
+import { FollowUp } from '#/views/crm/followup';
+import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import { useDetailSchema } from '../data';
+import { useDetailSchema } from './detail-data';
 import ClueForm from './form.vue';
-
-const FollowUp = defineAsyncComponent(
-  () => import('#/views/crm/followup/index.vue'),
-);
-
-const PermissionList = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/permission-list.vue'),
-);
-
-const TransferForm = defineAsyncComponent(
-  () => import('#/views/crm/permission/modules/transfer-form.vue'),
-);
-
-const OperateLog = defineAsyncComponent(
-  () => import('#/components/operate-log'),
-);
 
 const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
 
@@ -127,9 +114,9 @@ async function handleTransform(): Promise<boolean | undefined> {
 }
 
 // 加载数据
-onMounted(async () => {
+onMounted(() => {
   clueId.value = Number(route.params.id);
-  await loadClueDetail();
+  loadClueDetail();
 });
 </script>
 
@@ -184,7 +171,7 @@ onMounted(async () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
-          <OperateLog :log-list="clueLogList" />
+          <AsyncOperateLog :log-list="clueLogList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

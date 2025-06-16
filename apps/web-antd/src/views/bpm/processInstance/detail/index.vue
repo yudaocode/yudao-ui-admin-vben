@@ -63,7 +63,7 @@ enum FieldPermissionType {
 }
 
 const processInstanceLoading = ref(false); // 流程实例的加载中
-const processInstance = ref<BpmProcessInstanceApi.ProcessInstanceVO>(); // 流程实例
+const processInstance = ref<BpmProcessInstanceApi.ProcessInstance>(); // 流程实例
 const processDefinition = ref<any>({}); // 流程定义
 const processModelView = ref<any>({}); // 流程模型视图
 const operationButtonRef = ref(); // 操作按钮组件 ref
@@ -175,7 +175,7 @@ async function getApprovalDetail() {
 }
 
 /** 获取流程模型视图*/
-const getProcessModelView = async () => {
+async function getProcessModelView() {
   if (BpmModelType.BPMN === processDefinition.value?.modelType) {
     // 重置，解决 BPMN 流程图刷新不会重新渲染问题
     processModelView.value = {
@@ -186,14 +186,14 @@ const getProcessModelView = async () => {
   if (data) {
     processModelView.value = data;
   }
-};
+}
 
 // 审批节点信息
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 /**
  * 设置表单权限
  */
-const setFieldPermission = (field: string, permission: string) => {
+function setFieldPermission(field: string, permission: string) {
   if (permission === FieldPermissionType.READ) {
     // @ts-ignore
     fApi.value?.disabled(true, field);
@@ -208,7 +208,7 @@ const setFieldPermission = (field: string, permission: string) => {
     // @ts-ignore
     fApi.value?.hidden(true, field);
   }
-};
+}
 
 /**
  * 操作成功后刷新
@@ -222,7 +222,7 @@ const setFieldPermission = (field: string, permission: string) => {
 const activeTab = ref('form');
 const taskListRef = ref();
 
-// 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表
+/** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */
 watch(
   () => activeTab.value,
   (newVal) => {
@@ -238,7 +238,7 @@ watch(
 /** 初始化 */
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 onMounted(async () => {
-  getDetail();
+  await getDetail();
   // 获得用户列表
   userOptions.value = await getSimpleUserList();
 });

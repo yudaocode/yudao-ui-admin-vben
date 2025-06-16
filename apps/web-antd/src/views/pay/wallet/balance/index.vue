@@ -2,11 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getWalletPage } from '#/api/pay/wallet/balance';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -22,7 +21,7 @@ const [WalletModal, walletModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-function handleDetail(row: Required<PayWalletApi.WalletVO>) {
+function handleDetail(row: Required<PayWalletApi.Wallet>) {
   walletModalApi.setData(row).open();
 }
 
@@ -52,7 +51,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<PayWalletApi.WalletVO>,
+  } as VxeTableGridOptions<PayWalletApi.Wallet>,
 });
 </script>
 

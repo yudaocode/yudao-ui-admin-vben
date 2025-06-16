@@ -1,21 +1,16 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProcessListener,
   getProcessListenerPage,
 } from '#/api/bpm/processListener';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -25,12 +20,46 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** 创建流程监听器 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑流程监听器 */
+function handleEdit(row: BpmProcessListenerApi.ProcessListener) {
+  formModalApi.setData(row).open();
+}
+
+/** 删除流程监听器 */
+async function handleDelete(row: BpmProcessListenerApi.ProcessListener) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteProcessListener(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } catch {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -51,59 +80,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmProcessListenerApi.ProcessListenerVO>,
+  } as VxeTableGridOptions<BpmProcessListenerApi.ProcessListener>,
 });
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<BpmProcessListenerApi.ProcessListenerVO>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-/** 创建流程监听器 */
-function onCreate() {
-  formModalApi.setData(null).open();
-}
-
-/** 编辑流程监听器 */
-function onEdit(row: BpmProcessListenerApi.ProcessListenerVO) {
-  formModalApi.setData(row).open();
-}
-
-/** 删除流程监听器 */
-async function onDelete(row: BpmProcessListenerApi.ProcessListenerVO) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteProcessListener(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_process_msg',
-    });
-    onRefresh();
-  } catch {
-    hideLoading();
-  }
-}
 </script>
 
 <template>
@@ -114,17 +92,45 @@ async function onDelete(row: BpmProcessListenerApi.ProcessListenerVO) {
         url="https://doc.iocoder.cn/bpm/listener/"
       />
     </template>
+
     <FormModal @success="onRefresh" />
     <Grid table-title="流程监听器">
       <template #toolbar-tools>
-        <Button
-          type="primary"
-          @click="onCreate"
-          v-access:code="['bpm:process-listener:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['流程监听器']) }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['流程监听器']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['bpm:process-listener:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['bpm:process-listener:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['bpm:process-listener:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

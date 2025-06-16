@@ -46,6 +46,13 @@ export function deleteNotice(id: number) {
   return requestClient.delete(`/system/notice/delete?id=${id}`);
 }
 
+/** 批量删除公告 */
+export function deleteNoticeList(ids: number[]) {
+  return requestClient.delete(
+    `/system/notice/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 推送公告 */
 export function pushNotice(id: number) {
   return requestClient.post(`/system/notice/push?id=${id}`);

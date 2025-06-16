@@ -21,8 +21,6 @@ import CustomerTodayContactList from './modules/customer-today-contact-list.vue'
 import ReceivableAuditList from './modules/receivable-audit-list.vue';
 import ReceivablePlanRemindList from './modules/receivable-plan-remind-list.vue';
 
-defineOptions({ name: 'CrmBacklog' });
-
 const leftMenu = ref('customerTodayContact');
 
 const clueFollowCount = ref(0);

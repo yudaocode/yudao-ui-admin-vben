@@ -8,6 +8,8 @@ import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
 
 import { message, Popover } from 'ant-design-vue';
 
+import { BpmNodeTypeEnum } from '#/utils';
+
 import {
   ApproveMethodType,
   AssignEmptyHandlerType,
@@ -15,7 +17,6 @@ import {
   ConditionType,
   DEFAULT_CONDITION_GROUP_VALUE,
   NODE_DEFAULT_NAME,
-  NodeType,
   RejectHandlerType,
 } from '../../consts';
 
@@ -41,17 +42,21 @@ const readonly = inject<Boolean>('readonly'); // 是否只读
 function addNode(type: number) {
   // 校验：条件分支、包容分支后面，不允许直接添加并行分支
   if (
-    type === NodeType.PARALLEL_BRANCH_NODE &&
-    [NodeType.CONDITION_BRANCH_NODE, NodeType.INCLUSIVE_BRANCH_NODE].includes(
-      props.currentNode?.type,
-    )
+    type === BpmNodeTypeEnum.PARALLEL_BRANCH_NODE &&
+    [
+      BpmNodeTypeEnum.CONDITION_BRANCH_NODE,
+      BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE,
+    ].includes(props.currentNode?.type)
   ) {
     message.error('条件分支、包容分支后面，不允许直接添加并行分支');
     return;
   }
 
   popoverShow.value = false;
-  if (type === NodeType.USER_TASK_NODE || type === NodeType.TRANSACTOR_NODE) {
+  if (
+    type === BpmNodeTypeEnum.USER_TASK_NODE ||
+    type === BpmNodeTypeEnum.TRANSACTOR_NODE
+  ) {
     const id = `Activity_${generateUUID()}`;
     const data: SimpleFlowNode = {
       id,
@@ -83,20 +88,20 @@ function addNode(type: number) {
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.COPY_TASK_NODE) {
+  if (type === BpmNodeTypeEnum.COPY_TASK_NODE) {
     const data: SimpleFlowNode = {
       id: `Activity_${generateUUID()}`,
-      name: NODE_DEFAULT_NAME.get(NodeType.COPY_TASK_NODE) as string,
+      name: NODE_DEFAULT_NAME.get(BpmNodeTypeEnum.COPY_TASK_NODE) as string,
       showText: '',
-      type: NodeType.COPY_TASK_NODE,
+      type: BpmNodeTypeEnum.COPY_TASK_NODE,
       childNode: props.childNode,
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.CONDITION_BRANCH_NODE) {
+  if (type === BpmNodeTypeEnum.CONDITION_BRANCH_NODE) {
     const data: SimpleFlowNode = {
       name: '条件分支',
-      type: NodeType.CONDITION_BRANCH_NODE,
+      type: BpmNodeTypeEnum.CONDITION_BRANCH_NODE,
       id: `GateWay_${generateUUID()}`,
       childNode: props.childNode,
       conditionNodes: [
@@ -104,7 +109,7 @@ function addNode(type: number) {
           id: `Flow_${generateUUID()}`,
           name: '条件1',
           showText: '',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
           conditionSetting: {
             defaultFlow: false,
@@ -116,7 +121,7 @@ function addNode(type: number) {
           id: `Flow_${generateUUID()}`,
           name: '其它情况',
           showText: '未满足其它条件时，将进入此分支',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
           conditionSetting: {
             defaultFlow: true,
@@ -126,10 +131,10 @@ function addNode(type: number) {
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.PARALLEL_BRANCH_NODE) {
+  if (type === BpmNodeTypeEnum.PARALLEL_BRANCH_NODE) {
     const data: SimpleFlowNode = {
       name: '并行分支',
-      type: NodeType.PARALLEL_BRANCH_NODE,
+      type: BpmNodeTypeEnum.PARALLEL_BRANCH_NODE,
       id: `GateWay_${generateUUID()}`,
       childNode: props.childNode,
       conditionNodes: [
@@ -137,24 +142,24 @@ function addNode(type: number) {
           id: `Flow_${generateUUID()}`,
           name: '并行1',
           showText: '无需配置条件同时执行',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
         },
         {
           id: `Flow_${generateUUID()}`,
           name: '并行2',
           showText: '无需配置条件同时执行',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
         },
       ],
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.INCLUSIVE_BRANCH_NODE) {
+  if (type === BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE) {
     const data: SimpleFlowNode = {
       name: '包容分支',
-      type: NodeType.INCLUSIVE_BRANCH_NODE,
+      type: BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE,
       id: `GateWay_${generateUUID()}`,
       childNode: props.childNode,
       conditionNodes: [
@@ -162,7 +167,7 @@ function addNode(type: number) {
           id: `Flow_${generateUUID()}`,
           name: '包容条件1',
           showText: '',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
           conditionSetting: {
             defaultFlow: false,
@@ -174,7 +179,7 @@ function addNode(type: number) {
           id: `Flow_${generateUUID()}`,
           name: '其它情况',
           showText: '未满足其它条件时，将进入此分支',
-          type: NodeType.CONDITION_NODE,
+          type: BpmNodeTypeEnum.CONDITION_NODE,
           childNode: undefined,
           conditionSetting: {
             defaultFlow: true,
@@ -184,42 +189,42 @@ function addNode(type: number) {
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.DELAY_TIMER_NODE) {
+  if (type === BpmNodeTypeEnum.DELAY_TIMER_NODE) {
     const data: SimpleFlowNode = {
       id: `Activity_${generateUUID()}`,
-      name: NODE_DEFAULT_NAME.get(NodeType.DELAY_TIMER_NODE) as string,
+      name: NODE_DEFAULT_NAME.get(BpmNodeTypeEnum.DELAY_TIMER_NODE) as string,
       showText: '',
-      type: NodeType.DELAY_TIMER_NODE,
+      type: BpmNodeTypeEnum.DELAY_TIMER_NODE,
       childNode: props.childNode,
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.ROUTER_BRANCH_NODE) {
+  if (type === BpmNodeTypeEnum.ROUTER_BRANCH_NODE) {
     const data: SimpleFlowNode = {
       id: `GateWay_${generateUUID()}`,
-      name: NODE_DEFAULT_NAME.get(NodeType.ROUTER_BRANCH_NODE) as string,
+      name: NODE_DEFAULT_NAME.get(BpmNodeTypeEnum.ROUTER_BRANCH_NODE) as string,
       showText: '',
-      type: NodeType.ROUTER_BRANCH_NODE,
+      type: BpmNodeTypeEnum.ROUTER_BRANCH_NODE,
       childNode: props.childNode,
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.TRIGGER_NODE) {
+  if (type === BpmNodeTypeEnum.TRIGGER_NODE) {
     const data: SimpleFlowNode = {
       id: `Activity_${generateUUID()}`,
-      name: NODE_DEFAULT_NAME.get(NodeType.TRIGGER_NODE) as string,
+      name: NODE_DEFAULT_NAME.get(BpmNodeTypeEnum.TRIGGER_NODE) as string,
       showText: '',
-      type: NodeType.TRIGGER_NODE,
+      type: BpmNodeTypeEnum.TRIGGER_NODE,
       childNode: props.childNode,
     };
     emits('update:childNode', data);
   }
-  if (type === NodeType.CHILD_PROCESS_NODE) {
+  if (type === BpmNodeTypeEnum.CHILD_PROCESS_NODE) {
     const data: SimpleFlowNode = {
       id: `Activity_${generateUUID()}`,
-      name: NODE_DEFAULT_NAME.get(NodeType.CHILD_PROCESS_NODE) as string,
+      name: NODE_DEFAULT_NAME.get(BpmNodeTypeEnum.CHILD_PROCESS_NODE) as string,
       showText: '',
-      type: NodeType.CHILD_PROCESS_NODE,
+      type: BpmNodeTypeEnum.CHILD_PROCESS_NODE,
       childNode: props.childNode,
       childProcessSetting: {
         calledProcessDefinitionKey: '',
@@ -247,7 +252,10 @@ function addNode(type: number) {
       <Popover trigger="hover" placement="right" width="auto" v-if="!readonly">
         <template #content>
           <div class="handler-item-wrapper">
-            <div class="handler-item" @click="addNode(NodeType.USER_TASK_NODE)">
+            <div
+              class="handler-item"
+              @click="addNode(BpmNodeTypeEnum.USER_TASK_NODE)"
+            >
               <div class="approve handler-item-icon">
                 <span class="iconfont icon-approve icon-size"></span>
               </div>
@@ -255,14 +263,17 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.TRANSACTOR_NODE)"
+              @click="addNode(BpmNodeTypeEnum.TRANSACTOR_NODE)"
             >
               <div class="transactor handler-item-icon">
                 <span class="iconfont icon-transactor icon-size"></span>
               </div>
               <div class="handler-item-text">办理人</div>
             </div>
-            <div class="handler-item" @click="addNode(NodeType.COPY_TASK_NODE)">
+            <div
+              class="handler-item"
+              @click="addNode(BpmNodeTypeEnum.COPY_TASK_NODE)"
+            >
               <div class="handler-item-icon copy">
                 <span class="iconfont icon-size icon-copy"></span>
               </div>
@@ -270,7 +281,7 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.CONDITION_BRANCH_NODE)"
+              @click="addNode(BpmNodeTypeEnum.CONDITION_BRANCH_NODE)"
             >
               <div class="handler-item-icon condition">
                 <span class="iconfont icon-size icon-exclusive"></span>
@@ -279,7 +290,7 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.PARALLEL_BRANCH_NODE)"
+              @click="addNode(BpmNodeTypeEnum.PARALLEL_BRANCH_NODE)"
             >
               <div class="handler-item-icon parallel">
                 <span class="iconfont icon-size icon-parallel"></span>
@@ -288,7 +299,7 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.INCLUSIVE_BRANCH_NODE)"
+              @click="addNode(BpmNodeTypeEnum.INCLUSIVE_BRANCH_NODE)"
             >
               <div class="handler-item-icon inclusive">
                 <span class="iconfont icon-size icon-inclusive"></span>
@@ -297,7 +308,7 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.DELAY_TIMER_NODE)"
+              @click="addNode(BpmNodeTypeEnum.DELAY_TIMER_NODE)"
             >
               <div class="handler-item-icon delay">
                 <span class="iconfont icon-size icon-delay"></span>
@@ -306,14 +317,17 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.ROUTER_BRANCH_NODE)"
+              @click="addNode(BpmNodeTypeEnum.ROUTER_BRANCH_NODE)"
             >
               <div class="handler-item-icon router">
                 <span class="iconfont icon-size icon-router"></span>
               </div>
               <div class="handler-item-text">路由分支</div>
             </div>
-            <div class="handler-item" @click="addNode(NodeType.TRIGGER_NODE)">
+            <div
+              class="handler-item"
+              @click="addNode(BpmNodeTypeEnum.TRIGGER_NODE)"
+            >
               <div class="handler-item-icon trigger">
                 <span class="iconfont icon-size icon-trigger"></span>
               </div>
@@ -321,7 +335,7 @@ function addNode(type: number) {
             </div>
             <div
               class="handler-item"
-              @click="addNode(NodeType.CHILD_PROCESS_NODE)"
+              @click="addNode(BpmNodeTypeEnum.CHILD_PROCESS_NODE)"
             >
               <div class="handler-item-icon child-process">
                 <span class="iconfont icon-size icon-child-process"></span>
@@ -330,7 +344,7 @@ function addNode(type: number) {
             </div>
           </div>
         </template>
-        <div class="add-icon"><IconifyIcon icon="ep:plus" /></div>
+        <div class="add-icon"><IconifyIcon icon="lucide:plus" /></div>
       </Popover>
     </div>
   </div>

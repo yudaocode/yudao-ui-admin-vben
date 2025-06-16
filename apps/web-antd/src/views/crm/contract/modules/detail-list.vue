@@ -18,7 +18,7 @@ import {
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from '../data';
+import { useDetailListColumns } from './detail-data';
 import Form from './form.vue';
 
 const props = defineProps<{

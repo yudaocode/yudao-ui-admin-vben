@@ -1,26 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { h } from 'vue';
-
-import { useAccess } from '@vben/access';
 
 import { Button } from 'ant-design-vue';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getSimpleUserList } from '#/api/system/user';
-import { $t } from '#/locales';
-import {
-  DICT_TYPE,
-  formatPast2,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-import { BpmProcessInstanceStatus } from '../../../../utils/constants';
-
-const { hasAccessByCodes } = useAccess();
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -95,8 +83,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = BpmProcessInstanceApi.ProcessInstanceVO>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   onTaskClick: (task: BpmProcessInstanceApi.Task) => void,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -153,13 +140,7 @@ export function useGridColumns<T = BpmProcessInstanceApi.ProcessInstanceVO>(
       field: 'durationInMillis',
       title: '流程耗时',
       minWidth: 180,
-      slots: {
-        default: ({ row }) => {
-          return row.durationInMillis > 0
-            ? formatPast2(row.durationInMillis)
-            : '-';
-        },
-      },
+      formatter: 'formatPast2',
     },
 
     // 当前审批任务 tasks
@@ -192,36 +173,10 @@ export function useGridColumns<T = BpmProcessInstanceApi.ProcessInstanceVO>(
       minWidth: 320,
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 180,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '流程分类',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: $t('ui.actionTitle.detail'),
-            show: hasAccessByCodes(['bpm:process-instance:query']),
-          },
-          {
-            code: 'cancel',
-            text: $t('ui.actionTitle.cancel'),
-            show: (row: BpmProcessInstanceApi.ProcessInstanceVO) => {
-              return (
-                row.status === BpmProcessInstanceStatus.RUNNING &&
-                hasAccessByCodes(['bpm:process-instance:cancel'])
-              );
-            },
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

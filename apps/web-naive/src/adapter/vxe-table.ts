@@ -1,3 +1,4 @@
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
 import { h } from 'vue';
@@ -57,7 +58,7 @@ setupVbenVxeTable({
         round: true,
         showOverflow: true,
         size: 'small',
-      },
+      } as VxeTableGridOptions,
     });
 
     // 表格配置项可以用 cellRender: { name: 'CellImage' },
@@ -277,6 +278,7 @@ setupVbenVxeTable({
     // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
     // vxeUI.formats.add
     // add by 星语：数量格式化，例如说：金额
+    // TODO @xingyu：建议金额，和数量分开哈；原因是，有些团队希望金额，单独控制；
     vxeUI.formats.add('formatNumber', {
       cellFormatMethod({ cellValue }, digits = 2) {
         if (cellValue === null || cellValue === undefined) {

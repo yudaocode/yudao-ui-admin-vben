@@ -17,7 +17,7 @@ export namespace SystemNotifyTemplateApi {
   }
 
   /** 发送站内信请求 */
-  export interface NotifySendReqVO {
+  export interface NotifySendReq {
     userId: number;
     userType: number;
     templateCode: string;
@@ -59,6 +59,13 @@ export function deleteNotifyTemplate(id: number) {
   return requestClient.delete(`/system/notify-template/delete?id=${id}`);
 }
 
+/** 批量删除站内信模板 */
+export function deleteNotifyTemplateList(ids: number[]) {
+  return requestClient.delete(
+    `/system/notify-template/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出站内信模板 */
 export function exportNotifyTemplate(params: any) {
   return requestClient.download('/system/notify-template/export-excel', {
@@ -67,6 +74,6 @@ export function exportNotifyTemplate(params: any) {
 }
 
 /** 发送站内信 */
-export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReqVO) {
+export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReq) {
   return requestClient.post('/system/notify-template/send-notify', data);
 }

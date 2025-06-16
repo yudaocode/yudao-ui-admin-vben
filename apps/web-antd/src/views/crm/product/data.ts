@@ -5,6 +5,7 @@ import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getProductCategoryList } from '#/api/crm/product/category';
+import { getSimpleUserList } from '#/api/system/user';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -25,6 +26,16 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      component: 'ApiSelect',
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      rules: 'required',
+      componentProps: {
+        api: getSimpleUserList,
+        fieldNames: { label: 'nickname', value: 'id' },
+      },
+    },
+    {
       component: 'Input',
       fieldName: 'no',
       label: '产品编码',
@@ -32,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'ApiTreeSelect',
-      fieldName: 'categoryName',
+      fieldName: 'categoryId',
       label: '产品类型',
       rules: 'required',
       componentProps: {
@@ -134,7 +145,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '价格（元）',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       field: 'description',
@@ -169,6 +180,63 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       width: 160,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 代码生成表格列定义 */
+export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'seq', title: '序号', minWidth: 50 },
+    {
+      field: 'productId',
+      title: '产品名称',
+      minWidth: 100,
+      slots: { default: 'productId' },
+    },
+    {
+      field: 'productNo',
+      title: '条码',
+      minWidth: 150,
+    },
+    {
+      field: 'productUnit',
+      title: '单位',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
+      },
+    },
+    {
+      field: 'productPrice',
+      title: '价格（元）',
+      minWidth: 100,
+      formatter: 'formatAmount2',
+    },
+    {
+      field: 'sellingPrice',
+      title: '售价（元）',
+      minWidth: 100,
+      slots: { default: 'sellingPrice' },
+    },
+    {
+      field: 'count',
+      title: '数量',
+      minWidth: 100,
+      slots: { default: 'count' },
+    },
+    {
+      field: 'totalPrice',
+      title: '合计',
+      minWidth: 100,
+      formatter: 'formatAmount2',
+    },
+    {
+      title: '操作',
+      width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
     },

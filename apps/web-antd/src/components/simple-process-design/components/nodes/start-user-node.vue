@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @芋艿：后续是不是把业务组件，挪到每个模块里；待定；
 import type { Ref } from 'vue';
 
 import type { SimpleFlowNode } from '../../consts';
@@ -9,7 +10,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
 
-import { NODE_DEFAULT_TEXT, NodeType } from '../../consts';
+import { BpmNodeTypeEnum } from '#/utils';
+
+import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import StartUserNodeConfig from '../nodes-config/start-user-node-config.vue';
 import NodeHandler from './node-handler.vue';
@@ -34,9 +37,9 @@ const tasks = inject<Ref<any[]>>('tasks', ref([]));
 // 监控节点变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
-const { showInput, blurEvent, clickTitle } = useNodeName2(
+const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
-  NodeType.START_USER_NODE,
+  BpmNodeTypeEnum.START_USER_NODE,
 );
 
 const nodeSetting = ref();
@@ -78,10 +81,12 @@ function nodeClick() {
             <span class="iconfont icon-start-user"></span>
           </div>
           <Input
+            ref="inputRef"
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"
-            @blur="blurEvent()"
+            @blur="changeNodeName()"
+            @press-enter="changeNodeName()"
             v-model:value="currentNode.name"
             :placeholder="currentNode.name"
           />
@@ -98,9 +103,9 @@ function nodeClick() {
             {{ currentNode.showText }}
           </div>
           <div class="node-text" v-else>
-            {{ NODE_DEFAULT_TEXT.get(NodeType.START_USER_NODE) }}
+            {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.START_USER_NODE) }}
           </div>
-          <IconifyIcon icon="ep:arrow-right-bold" v-if="!readonly" />
+          <IconifyIcon icon="lucide:chevron-right" v-if="!readonly" />
         </div>
       </div>
       <!-- 传递子节点给添加节点组件。会在子节点前面添加节点 -->

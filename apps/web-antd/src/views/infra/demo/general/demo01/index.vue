@@ -25,7 +25,7 @@ import {
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
   deleteDemo01Contact,
-  deleteDemo01ContactListByIds,
+  deleteDemo01ContactList,
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
@@ -86,17 +86,17 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建示例联系人 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData({}).open();
 }
 
 /** 编辑示例联系人 */
-function onEdit(row: Demo01ContactApi.Demo01Contact) {
+function handleEdit(row: Demo01ContactApi.Demo01Contact) {
   formModalApi.setData(row).open();
 }
 
 /** 删除示例联系人 */
-async function onDelete(row: Demo01ContactApi.Demo01Contact) {
+async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -115,14 +115,14 @@ async function onDelete(row: Demo01ContactApi.Demo01Contact) {
 }
 
 /** 批量删除示例联系人 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01ContactListByIds(deleteIds.value);
+    await deleteDemo01ContactList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {
@@ -130,13 +130,13 @@ async function onDeleteBatch() {
   }
 }
 
-const deleteIds = ref<number[]>([]); // 待删除示例联系人 ID
-function setDeleteIds({
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
   records,
 }: {
   records: Demo01ContactApi.Demo01Contact[];
 }) {
-  deleteIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id);
 }
 
 /** 导出表格 */
@@ -173,7 +173,6 @@ onMounted(() => {
             class="w-full"
           />
         </Form.Item>
-        <!-- TODO @puhui999：貌似性别的宽度不对；并且选择后，会变哈； -->
         <Form.Item label="性别" name="sex">
           <Select
             v-model:value="queryParams.sex"
@@ -181,7 +180,6 @@ onMounted(() => {
             allow-clear
             class="w-full"
           >
-            <!-- TODO @puhui999：要不咱还是把 getIntDictOptions 还是搞出来？总归方便点~ -->
             <Select.Option
               v-for="dict in getDictOptions(
                 DICT_TYPE.SYSTEM_USER_SEX,
@@ -221,7 +219,7 @@ onMounted(() => {
             class="ml-2"
             :icon="h(Plus)"
             type="primary"
-            @click="onCreate"
+            @click="handleCreate"
             v-access:code="['infra:demo01-contact:create']"
           >
             {{ $t('ui.actionTitle.create', ['示例联系人']) }}
@@ -241,8 +239,8 @@ onMounted(() => {
             type="primary"
             danger
             class="ml-2"
-            :disabled="isEmpty(deleteIds)"
-            @click="onDeleteBatch"
+            :disabled="isEmpty(checkedIds)"
+            @click="handleDeleteBatch"
             v-access:code="['infra:demo01-contact:delete']"
           >
             批量删除
@@ -254,8 +252,8 @@ onMounted(() => {
         :data="list"
         show-overflow
         :loading="loading"
-        @checkbox-all="setDeleteIds"
-        @checkbox-change="setDeleteIds"
+        @checkbox-all="handleRowCheckboxChange"
+        @checkbox-change="handleRowCheckboxChange"
       >
         <VxeColumn type="checkbox" width="40" />
         <VxeColumn field="id" title="编号" align="center" />
@@ -282,7 +280,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row as any)"
+              @click="handleEdit(row as any)"
               v-access:code="['infra:demo01-contact:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -292,7 +290,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="onDelete(row as any)"
+              @click="handleDelete(row as any)"
               v-access:code="['infra:demo01-contact:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

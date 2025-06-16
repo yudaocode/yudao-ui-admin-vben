@@ -4,7 +4,7 @@ import type { CrmCustomerLimitConfigApi } from '#/api/crm/customer/limitConfig';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message, Tabs } from 'ant-design-vue';
 
@@ -14,7 +14,6 @@ import {
   getCustomerLimitConfigPage,
   LimitConfType,
 } from '#/api/crm/customer/limitConfig';
-import { DocAlert } from '#/components/doc-alert';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';

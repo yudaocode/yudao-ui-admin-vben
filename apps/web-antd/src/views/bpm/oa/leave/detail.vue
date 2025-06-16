@@ -14,19 +14,19 @@ const props = defineProps<{
   id: string;
 }>();
 const datailLoading = ref(false);
-const detailData = ref<BpmOALeaveApi.LeaveVO>();
+const detailData = ref<BpmOALeaveApi.Leave>();
 
 const { query } = useRoute();
 const queryId = computed(() => query.id as string);
 
-const getDetailData = async () => {
+async function getDetailData() {
   try {
     datailLoading.value = true;
     detailData.value = await getLeave(Number(props.id || queryId.value));
   } finally {
     datailLoading.value = false;
   }
-};
+}
 
 onMounted(() => {
   getDetailData();

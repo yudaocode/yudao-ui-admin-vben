@@ -1,8 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { floatToFixed2 } from '@vben/utils';
+
 import { getCustomerSimpleList } from '#/api/crm/customer';
-import { DICT_TYPE, getDictOptions } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -141,7 +143,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '计划回款金额（元）',
       field: 'price',
       minWidth: 160,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '计划回款日期',
@@ -183,7 +185,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '实际回款金额（元）',
       field: 'receivable.price',
       minWidth: 160,
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
     },
     {
       title: '实际回款日期',
@@ -197,9 +199,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 160,
       formatter: ({ row }) => {
         if (row.receivable) {
-          return row.price - row.receivable.price;
+          return floatToFixed2(row.price - row.receivable.price);
         }
-        return row.price;
+        return floatToFixed2(row.price);
       },
     },
     {

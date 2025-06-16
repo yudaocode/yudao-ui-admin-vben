@@ -6,9 +6,7 @@ import { Divider } from 'ant-design-vue';
 import { useDescription } from '#/components/description';
 import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
-import { useDetailBaseSchema } from '../data';
-
-defineOptions({ name: 'CrmClueDetailsInfo' });
+import { useDetailBaseSchema } from './detail-data';
 
 defineProps<{
   clue: CrmClueApi.Clue; // 线索信息
