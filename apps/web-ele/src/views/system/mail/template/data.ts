@@ -199,6 +199,10 @@ export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '编号',
       minWidth: 100,

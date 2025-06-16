@@ -56,6 +56,13 @@ export function deleteMailTemplate(id: number) {
   return requestClient.delete(`/system/mail-template/delete?id=${id}`);
 }
 
+/** 批量删除邮件模版 */
+export function deleteMailTemplateList(ids: number[]) {
+  return requestClient.delete(
+    `/system/mail-template/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 发送邮件 */
 export function sendMail(data: SystemMailTemplateApi.MailSendReqVO) {
   return requestClient.post('/system/mail-template/send-mail', data);

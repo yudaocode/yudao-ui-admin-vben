@@ -9,14 +9,15 @@ import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import {
   deleteMailTemplate,
+  deleteMailTemplateList,
   getMailTemplatePage,
 } from '#/api/system/mail/template';
 import { $t } from '#/locales';
@@ -77,6 +78,30 @@ async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
   }
 }
 
+/** 批量删除邮件模板 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteMailTemplateList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemMailTemplateApi.MailTemplate[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
@@ -125,6 +150,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemMailTemplateApi.MailTemplate>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 初始化 */
@@ -142,14 +171,25 @@ onMounted(async () => {
     <SendModal />
     <Grid table-title="邮件模板列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:mail-template:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['邮件模板']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['邮件模板']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:mail-template:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:mail-template:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
