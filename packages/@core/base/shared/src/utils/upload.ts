@@ -4,9 +4,9 @@
  * @param supportedFileTypes 支持的文件类型数组，如 ['PDF', 'DOC', 'DOCX']
  * @returns 用于文件上传组件 accept 属性的字符串
  */
-export const generateAcceptedFileTypes = (
+export function generateAcceptedFileTypes(
   supportedFileTypes: string[],
-): string => {
+): string {
   const allowedExtensions = supportedFileTypes.map((ext) => ext.toLowerCase());
   const mimeTypes: string[] = [];
 
@@ -64,4 +64,4 @@ export const generateAcceptedFileTypes = (
   const extensions = allowedExtensions.map((ext) => `.${ext}`);
 
   return [...mimeTypes, ...extensions].join(',');
-};
+}
