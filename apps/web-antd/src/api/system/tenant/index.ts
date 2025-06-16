@@ -61,6 +61,13 @@ export function deleteTenant(id: number) {
   return requestClient.delete(`/system/tenant/delete?id=${id}`);
 }
 
+/** 批量删除租户 */
+export function deleteTenantList(ids: number[]) {
+  return requestClient.delete(
+    `/system/tenant/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出租户 */
 export function exportTenant(params: any) {
   return requestClient.download('/system/tenant/export-excel', {

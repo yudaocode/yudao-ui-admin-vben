@@ -2,14 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSmsChannel,
+  deleteSmsChannelList,
   exportSmsChannel,
   getSmsChannelPage,
 } from '#/api/system/sms/channel';
@@ -62,6 +65,39 @@ async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
   }
 }
 
+// 选中的短信渠道ID
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemSmsChannelApi.SmsChannel[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除处理 */
+async function handleDeleteBatch() {
+  if (checkedIds.value.length === 0) {
+    message.warning('请至少选择一条数据');
+    return;
+  }
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', ['短信渠道']),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteSmsChannelList(checkedIds.value);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', ['短信渠道']),
+      key: 'action_key_msg',
+    });
+    checkedIds.value = [];
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -83,12 +119,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
+    checkboxConfig: {
+      checkField: 'checked',
+    },
   } as VxeTableGridOptions<SystemSmsChannelApi.SmsChannel>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -117,6 +161,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:sms-channel:export'],
               onClick: handleExport,
             },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:sms-channel:delete'],
+              onClick: handleDeleteBatch,
+            },
           ]"
         />
       </template>
@@ -137,7 +190,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['system:sms-channel:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.signature]),
                 confirm: handleDelete.bind(null, row),
               },
             },

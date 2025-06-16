@@ -46,6 +46,11 @@ export function deleteJob(id: number) {
   return requestClient.delete(`/infra/job/delete?id=${id}`);
 }
 
+/** 批量删除定时任务调度 */
+export function deleteJobList(ids: number[]) {
+  return requestClient.delete(`/infra/job/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出定时任务调度 */
 export function exportJob(params: any) {
   return requestClient.download('/infra/job/export-excel', { params });

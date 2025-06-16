@@ -50,6 +50,11 @@ export function deleteRole(id: number) {
   return requestClient.delete(`/system/role/delete?id=${id}`);
 }
 
+/** 批量删除角色 */
+export function deleteRoleList(ids: number[]) {
+  return requestClient.delete(`/system/role/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出角色 */
 export function exportRole(params: any) {
   return requestClient.download('/system/role/export-excel', {
