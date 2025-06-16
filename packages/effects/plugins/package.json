@@ -44,16 +44,16 @@
     "@vueuse/core": "catalog:",
     "@vueuse/motion": "catalog:",
     "echarts": "catalog:",
-    "markdown-it": "^14.1.0",
-    "markmap-common": "^0.16.0",
-    "markmap-lib": "^0.16.1",
-    "markmap-toolbar": "^0.17.0",
-    "markmap-view": "^0.16.0",
+    "markdown-it": "catalog:",
+    "markmap-common": "catalog:",
+    "markmap-lib": "catalog:",
+    "markmap-toolbar": "catalog:",
+    "markmap-view": "catalog:",
     "vue": "catalog:",
     "vxe-pc-ui": "catalog:",
     "vxe-table": "catalog:"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.2"
+    "@types/markdown-it": "catalog:"
   }
 }
