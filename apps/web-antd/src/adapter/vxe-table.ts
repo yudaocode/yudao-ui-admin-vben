@@ -12,6 +12,7 @@ import {
 } from '@vben/plugins/vxe-table';
 import {
   erpNumberFormatter,
+  formatPast2,
   formatToFractionDigit,
   isFunction,
   isString,
@@ -296,32 +297,7 @@ setupVbenVxeTable({
 
     vxeUI.formats.add('formatPast2', {
       tableCellFormatMethod({ cellValue }) {
-        if (cellValue === null || cellValue === undefined) {
-          return '';
-        }
-        // 定义时间单位常量，便于维护
-        const SECOND = 1000;
-        const MINUTE = 60 * SECOND;
-        const HOUR = 60 * MINUTE;
-        const DAY = 24 * HOUR;
-
-        // 计算各时间单位
-        const day = Math.floor(cellValue / DAY);
-        const hour = Math.floor((cellValue % DAY) / HOUR);
-        const minute = Math.floor((cellValue % HOUR) / MINUTE);
-        const second = Math.floor((cellValue % MINUTE) / SECOND);
-
-        // 根据时间长短返回不同格式
-        if (day > 0) {
-          return `${day} 天${hour} 小时 ${minute} 分钟`;
-        }
-        if (hour > 0) {
-          return `${hour} 小时 ${minute} 分钟`;
-        }
-        if (minute > 0) {
-          return `${minute} 分钟`;
-        }
-        return second > 0 ? `${second} 秒` : `${0} 秒`;
+        return formatPast2(cellValue);
       },
     });
 

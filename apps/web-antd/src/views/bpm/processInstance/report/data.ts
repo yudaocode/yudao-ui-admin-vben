@@ -55,7 +55,6 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
         allowClear: true,
       },
     },
@@ -65,7 +64,6 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
         allowClear: true,
       },
     },
@@ -93,8 +91,8 @@ export function useGridFormSchema(
 /** 列表的字段 */
 export function useGridColumns(
   formFields: any[] = [],
-): VxeTableGridOptions<BpmProcessInstanceApi.ProcessInstanceVO>['columns'] {
-  const baseColumns: VxeGridPropTypes.Columns<BpmProcessInstanceApi.ProcessInstanceVO> =
+): VxeTableGridOptions<BpmProcessInstanceApi.ProcessInstance>['columns'] {
+  const baseColumns: VxeGridPropTypes.Columns<BpmProcessInstanceApi.ProcessInstance> =
     [
       {
         field: 'name',

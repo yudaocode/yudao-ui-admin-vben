@@ -37,7 +37,7 @@ defineOptions({ name: 'BpmModelCreate' });
 
 // 流程定义类型
 type BpmProcessDefinitionType = Omit<
-  BpmProcessDefinitionApi.ProcessDefinitionVO,
+  BpmProcessDefinitionApi.ProcessDefinition,
   'modelId' | 'modelType'
 > & {
   id?: string;
@@ -132,7 +132,7 @@ provide('processData', processData);
 provide('modelData', formData);
 
 // 数据列表
-const formList = ref<BpmFormApi.FormVO[]>([]);
+const formList = ref<BpmFormApi.Form[]>([]);
 const categoryList = ref<BpmCategoryApi.Category[]>([]);
 const userList = ref<SystemUserApi.User[]>([]);
 const deptList = ref<SystemDeptApi.Dept[]>([]);

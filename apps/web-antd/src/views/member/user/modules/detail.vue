@@ -33,13 +33,13 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const userId = Number(route.query.id);
 const user = ref<MemberUserApi.User>();
-const wallet = ref<PayWalletApi.WalletVO>();
+const wallet = ref<PayWalletApi.Wallet>();
 /* 钱包初始化数据 */
 const WALLET_INIT_DATA = {
   balance: 0,
   totalExpense: 0,
   totalRecharge: 0,
-} as PayWalletApi.WalletVO;
+} as PayWalletApi.Wallet;
 
 async function getUserDetail() {
   if (!userId) {

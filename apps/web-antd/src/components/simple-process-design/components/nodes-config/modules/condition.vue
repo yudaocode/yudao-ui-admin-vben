@@ -188,7 +188,7 @@ defineExpose({ validate });
           >
             <IconifyIcon
               color="#0089ff"
-              icon="ep:circle-close-filled"
+              icon="lucide:circle-x"
               class="size-4"
               @click="
                 deleteConditionGroup(condition.conditionGroups.conditions, cIdx)

@@ -57,7 +57,7 @@ export function deletePostList(ids: number[]) {
 
 /** 导出岗位 */
 export function exportPost(params: any) {
-  return requestClient.download('/system/post/export', {
+  return requestClient.download('/system/post/export-excel', {
     params,
   });
 }

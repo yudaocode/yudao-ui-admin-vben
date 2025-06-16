@@ -30,7 +30,7 @@ const tempStartUserSelectAssignees = ref({}); // 历史发起人选择审批人�
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const processDefinitionId = ref('');
 
-const formData = ref<BpmOALeaveApi.LeaveVO>();
+const formData = ref<BpmOALeaveApi.Leave>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['请假'])
@@ -70,7 +70,7 @@ async function onSubmit() {
   }
 
   // 提交表单
-  const data = (await formApi.getValues()) as BpmOALeaveApi.LeaveVO;
+  const data = (await formApi.getValues()) as BpmOALeaveApi.Leave;
 
   // 审批相关：设置指定审批人
   if (startUserSelectTasks.value?.length > 0) {
@@ -78,7 +78,7 @@ async function onSubmit() {
   }
 
   // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.LeaveVO = {
+  const submitData: BpmOALeaveApi.Leave = {
     ...data,
     startTime: Number(data.startTime),
     endTime: Number(data.endTime),
@@ -95,41 +95,12 @@ async function onSubmit() {
       key: 'action_process_msg',
     });
 
-    router.push({
-      name: 'BpmOALeaveList',
+    // TODO @ziye、@jason：好像跳转不了？
+    await router.push({
+      name: 'BpmOALeave',
     });
   } catch (error: any) {
     message.error(error.message);
-  } finally {
-    formLoading.value = false;
-  }
-}
-
-/** 保存草稿 */
-async function onDraft() {
-  const { valid } = await formApi.validate();
-  if (!valid) {
-    return;
-  }
-
-  const data = (await formApi.getValues()) as BpmOALeaveApi.LeaveVO;
-
-  // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.LeaveVO = {
-    ...data,
-    startTime: Number(data.startTime),
-    endTime: Number(data.endTime),
-  };
-
-  try {
-    formLoading.value = true;
-    await (formData.value?.id
-      ? updateLeave(submitData)
-      : createLeave(submitData));
-    // 关闭并提示
-    message.success({
-      content: '保存草稿成功',
-    });
   } finally {
     formLoading.value = false;
   }
@@ -142,6 +113,7 @@ function onBack() {
     icon: 'warning',
     beforeClose({ isConfirm }) {
       if (isConfirm) {
+        // TODO @ziye、@jason：是不是要关闭当前标签哈。
         router.back();
       }
       return Promise.resolve(true);
@@ -188,7 +160,9 @@ async function getApprovalDetail() {
             : [];
       }
     }
-  } finally {}
+  } finally {
+    //
+  }
 }
 /** 审批相关：选择发起人 */
 function selectUserConfirm(id: string, userList: any[]) {
@@ -258,8 +232,6 @@ onMounted(async () => {
         <template #actions>
           <Space warp :size="12" class="w-full px-6">
             <Button type="primary" @click="onSubmit"> 提交 </Button>
-            <!-- TODO 后端接口暂不支持保存草稿 （即仅保存数据，不触发流程）-->
-            <!-- <Button type="default" @click="onDraft"> 保存草稿 </Button> -->
           </Space>
         </template>
       </Card>

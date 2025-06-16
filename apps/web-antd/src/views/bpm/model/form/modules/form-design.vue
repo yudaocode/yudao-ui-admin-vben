@@ -29,7 +29,7 @@ import {
 
 const props = defineProps({
   formList: {
-    type: Array<BpmFormApi.FormVO>,
+    type: Array<BpmFormApi.Form>,
     required: true,
   },
 });

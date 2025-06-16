@@ -1,31 +1,30 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Card, Tabs } from 'ant-design-vue';
+
+import ChatConversationList from './modules/ChatConversationList.vue';
+import ChatMessageList from './modules/ChatMessageList.vue';
+
+const activeTabName = ref('conversation');
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <template #doc>
       <DocAlert title="AI 对话聊天" url="https://doc.iocoder.cn/ai/chat/" />
     </template>
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/chat/manager/index.vue"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/ai/chat/manager/index.vue
-      代码，pull request 贡献给我们！
-    </Button>
+    <Card>
+      <Tabs v-model:active-key="activeTabName">
+        <Tabs.TabPane tab="对话列表" key="conversation">
+          <ChatConversationList />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="消息列表" key="message">
+          <ChatMessageList />
+        </Tabs.TabPane>
+      </Tabs>
+    </Card>
   </Page>
 </template>

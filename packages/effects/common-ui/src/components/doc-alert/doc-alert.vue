@@ -18,12 +18,13 @@ function goToUrl() {
 </script>
 <template>
   <!-- Alert Component -->
+  <!-- TODO @xingyu：是不是左右边距 + 下，和搜索的对齐，会好看一丢丢的 -->
   <div
     role="alert"
     v-if="isDocAlertEnable()"
     :class="
       cn(
-        'border-primary bg-primary/10 relative m-1 flex w-full items-center rounded-md border p-1',
+        'border-primary bg-primary/10 relative m-1 flex w-full items-center gap-5 rounded-md border p-1',
       )
     "
   >

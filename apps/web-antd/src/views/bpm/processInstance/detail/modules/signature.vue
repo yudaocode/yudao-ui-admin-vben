@@ -3,13 +3,13 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { base64ToFile } from '@vben/utils';
 
 import { Button, message, Space, Tooltip } from 'ant-design-vue';
 // TODO @ziye：这个可能，适合放到全局？！因为 element-plus 也用这个；
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';
-import { download } from '#/utils';
 
 defineOptions({
   name: 'BpmProcessInstanceSignature',
@@ -31,10 +31,7 @@ const [Modal, modalApi] = useVbenModal({
       content: '签名上传中请稍等。。。',
     });
     const signFileUrl = await uploadFile({
-      file: download.base64ToFile(
-        signature?.value?.save('image/jpeg') || '',
-        '签名',
-      ),
+      file: base64ToFile(signature?.value?.save('image/jpeg') || '', '签名'),
     });
     emits('success', signFileUrl);
     // TODO @ziye：下面有个告警哈；ps：所有告警，皆是错误，可以关注 ide 给的提示哈；

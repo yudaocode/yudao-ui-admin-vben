@@ -595,7 +595,7 @@ onMounted(() => {
         />
         <div v-else class="node-name">
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" @click="clickIcon()" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" @click="clickIcon()" />
         </div>
       </div>
     </template>
@@ -1135,7 +1135,7 @@ onMounted(() => {
                 <Button v-else text @click="changeBtnDisplayName(index)">
                   <div class="flex items-center">
                     {{ item.displayName }}
-                    <IconifyIcon icon="ep:edit" class="ml-2" />
+                    <IconifyIcon icon="lucide:edit" class="ml-2" />
                   </div>
                 </Button>
               </Col>

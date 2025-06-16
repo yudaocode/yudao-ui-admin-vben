@@ -51,5 +51,5 @@ export function deleteDictTypeList(ids: number[]) {
 
 // 导出字典类型
 export function exportDictType(params: any) {
-  return requestClient.download('/system/dict-type/export', { params });
+  return requestClient.download('/system/dict-type/export-excel', { params });
 }

@@ -21,7 +21,7 @@ export namespace PayTransferApi {
   }
 
   /** 转账单分页请求 */
-  export interface TransferPageReqVO extends PageParam {
+  export interface TransferPageReq extends PageParam {
     appId?: number;
     channelId?: number;
     channelCode?: string;
@@ -36,7 +36,7 @@ export namespace PayTransferApi {
 }
 
 /** 查询转账单列表 */
-export function getTransferPage(params: PayTransferApi.TransferPageReqVO) {
+export function getTransferPage(params: PayTransferApi.TransferPageReq) {
   return requestClient.get<PageResult<PayTransferApi.Transfer>>(
     '/pay/transfer/page',
     {

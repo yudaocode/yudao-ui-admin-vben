@@ -3,9 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessListenerApi {
-  // TODO @ziye：不用 VO 后缀
-  /** BPM 流程监听器 VO */
-  export interface ProcessListenerVO {
+  /** BPM 流程监听器 */
+  export interface ProcessListener {
     id: number; // 编号
     name: string; // 监听器名字
     type: string; // 监听器类型
@@ -18,7 +17,7 @@ export namespace BpmProcessListenerApi {
 
 /** 查询流程监听器分页 */
 export async function getProcessListenerPage(params: PageParam) {
-  return requestClient.get<PageResult<BpmProcessListenerApi.ProcessListenerVO>>(
+  return requestClient.get<PageResult<BpmProcessListenerApi.ProcessListener>>(
     '/bpm/process-listener/page',
     { params },
   );
@@ -26,21 +25,21 @@ export async function getProcessListenerPage(params: PageParam) {
 
 /** 查询流程监听器详情 */
 export async function getProcessListener(id: number) {
-  return requestClient.get<BpmProcessListenerApi.ProcessListenerVO>(
+  return requestClient.get<BpmProcessListenerApi.ProcessListener>(
     `/bpm/process-listener/get?id=${id}`,
   );
 }
 
 /** 新增流程监听器 */
 export async function createProcessListener(
-  data: BpmProcessListenerApi.ProcessListenerVO,
+  data: BpmProcessListenerApi.ProcessListener,
 ) {
   return requestClient.post<number>('/bpm/process-listener/create', data);
 }
 
 /** 修改流程监听器 */
 export async function updateProcessListener(
-  data: BpmProcessListenerApi.ProcessListenerVO,
+  data: BpmProcessListenerApi.ProcessListener,
 ) {
   return requestClient.put<boolean>('/bpm/process-listener/update', data);
 }

@@ -219,7 +219,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="clickIcon()"
         >
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" />
         </div>
       </div>
     </template>
@@ -266,7 +266,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
               @click="deleteRouterGroup(index)"
             >
               <template #icon>
-                <IconifyIcon icon="ep:close" />
+                <IconifyIcon icon="lucide:x" />
               </template>
             </Button>
           </div>
@@ -287,7 +287,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="addRouterGroup"
         >
           <template #icon>
-            <IconifyIcon icon="ep:setting" />
+            <IconifyIcon icon="lucide:settings" />
           </template>
           新增路由分支
         </Button>

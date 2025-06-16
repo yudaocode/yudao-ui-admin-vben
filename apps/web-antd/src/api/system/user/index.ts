@@ -56,7 +56,7 @@ export function deleteUserList(ids: number[]) {
 
 /** 导出用户 */
 export function exportUser(params: any) {
-  return requestClient.download('/system/user/export', params);
+  return requestClient.download('/system/user/export-excel', params);
 }
 
 /** 下载用户导入模板 */

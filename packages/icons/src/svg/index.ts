@@ -12,6 +12,9 @@ const SvgBellIcon = createIconifyIcon('svg:bell');
 const SvgCakeIcon = createIconifyIcon('svg:cake');
 const SvgAntdvLogoIcon = createIconifyIcon('svg:antdv-logo');
 
+/** AI */
+const SvgGptIcon = createIconifyIcon('svg:gpt');
+
 /** 支付 */
 const SvgAlipayPcIcon = createIconifyIcon('svg:alipay-pc');
 const SvgAlipayWapIcon = createIconifyIcon('svg:alipay-wap');
@@ -41,6 +44,7 @@ export {
   SvgCakeIcon,
   SvgCardIcon,
   SvgDownloadIcon,
+  SvgGptIcon,
   SvgMockIcon,
   SvgWalletIcon,
   SvgWxAppIcon,

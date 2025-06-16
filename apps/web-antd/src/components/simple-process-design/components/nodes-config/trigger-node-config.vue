@@ -399,7 +399,7 @@ onMounted(() => {
         />
         <div v-else class="node-name">
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" @click="clickIcon()" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" @click="clickIcon()" />
         </div>
       </div>
     </template>
@@ -456,7 +456,7 @@ onMounted(() => {
                     @click="deleteFormSetting(index)"
                   >
                     <template #icon>
-                      <IconifyIcon icon="ep:close" />
+                      <IconifyIcon icon="lucide:x" />
                     </template>
                   </Button>
                 </div>
@@ -486,7 +486,7 @@ onMounted(() => {
                     @click="addFormSettingCondition(index, formSetting)"
                   >
                     <template #icon>
-                      <IconifyIcon icon="ep:link" />
+                      <IconifyIcon icon="lucide:link" />
                     </template>
                     添加条件
                   </Button>
@@ -561,7 +561,7 @@ onMounted(() => {
                     @click="addFormFieldSetting(formSetting)"
                   >
                     <template #icon>
-                      <IconifyIcon icon="ep:memo" />
+                      <IconifyIcon icon="lucide:file-cog" />
                     </template>
                     添加修改字段
                   </Button>
@@ -579,7 +579,7 @@ onMounted(() => {
                 @click="addFormSetting"
               >
                 <template #icon>
-                  <IconifyIcon icon="ep:setting" />
+                  <IconifyIcon icon="lucide:settings" />
                 </template>
                 添加设置
               </Button>
@@ -604,7 +604,7 @@ onMounted(() => {
                     @click="deleteFormSetting(index)"
                   >
                     <template #icon>
-                      <IconifyIcon icon="ep:close" />
+                      <IconifyIcon icon="lucide:x" />
                     </template>
                   </Button>
                 </div>
@@ -635,7 +635,7 @@ onMounted(() => {
                     @click="addFormSettingCondition(index, formSetting)"
                   >
                     <template #icon>
-                      <IconifyIcon icon="ep:link" />
+                      <IconifyIcon icon="lucide:link" />
                     </template>
                     添加条件
                   </Button>
@@ -673,7 +673,7 @@ onMounted(() => {
                 @click="addFormSetting"
               >
                 <template #icon>
-                  <IconifyIcon icon="ep:setting" />
+                  <IconifyIcon icon="lucide:settings" />
                 </template>
                 添加设置
               </Button>

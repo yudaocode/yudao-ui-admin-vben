@@ -21,10 +21,11 @@ const accessStore = useAccessStore();
 
 const tenantEnable = isTenantEnable();
 
-const value = ref<number>(accessStore.visitTenantId ?? undefined); // 当前访问的租户 ID
-const tenants = ref<SystemTenantApi.Tenant[]>([]); // 租户列表
+// 当前访问的租户 ID
+const value = ref<number | undefined>(accessStore.visitTenantId ?? undefined);
+// 租户列表
+const tenants = ref<SystemTenantApi.Tenant[]>([]);
 
-// TODO @xingyu：这个有可能 3 端复用么？
 async function handleChange(id: SelectValue) {
   // 设置访问租户 ID
   accessStore.setVisitTenantId(id as number);

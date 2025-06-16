@@ -171,7 +171,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
           @click="clickIcon()"
         >
           {{ nodeName }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" :size="16" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" :size="16" />
         </div>
       </div>
     </template>

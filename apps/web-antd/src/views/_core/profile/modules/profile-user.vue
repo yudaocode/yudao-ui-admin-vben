@@ -14,7 +14,7 @@ import { CropperAvatar } from '#/components/cropper';
 import { useUpload } from '#/components/upload/use-upload';
 
 const props = defineProps<{
-  profile?: SystemUserProfileApi.UserProfileRespVO;
+  profile?: SystemUserProfileApi.UserProfileResp;
 }>();
 
 const emit = defineEmits<{

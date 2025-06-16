@@ -32,12 +32,12 @@ function handleCreate() {
 }
 
 /** 编辑流程表达式 */
-function handleEdit(row: BpmProcessExpressionApi.ProcessExpressionVO) {
+function handleEdit(row: BpmProcessExpressionApi.ProcessExpression) {
   formModalApi.setData(row).open();
 }
 
 /** 删除流程表达式 */
-async function handleDelete(row: BpmProcessExpressionApi.ProcessExpressionVO) {
+async function handleDelete(row: BpmProcessExpressionApi.ProcessExpression) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -80,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpressionVO>,
+  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>,
 });
 </script>
 

@@ -158,7 +158,7 @@ defineExpose({ showStartUserNodeConfig });
           {{ nodeName }}
           <IconifyIcon
             class="ml-1"
-            icon="ep:edit-pen"
+            icon="lucide:edit-3"
             :size="16"
             @click="clickIcon()"
           />

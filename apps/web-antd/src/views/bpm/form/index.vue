@@ -35,7 +35,7 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: BpmFormApi.FormVO) {
+function handleEdit(row: BpmFormApi.Form) {
   router.push({
     name: 'BpmFormEditor',
     query: {
@@ -46,7 +46,7 @@ function handleEdit(row: BpmFormApi.FormVO) {
 }
 
 /** 复制 */
-function handleCopy(row: BpmFormApi.FormVO) {
+function handleCopy(row: BpmFormApi.Form) {
   router.push({
     name: 'BpmFormEditor',
     query: {
@@ -57,7 +57,7 @@ function handleCopy(row: BpmFormApi.FormVO) {
 }
 
 /** 删除 */
-async function handleDelete(row: BpmFormApi.FormVO) {
+async function handleDelete(row: BpmFormApi.Form) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -73,7 +73,7 @@ async function handleDelete(row: BpmFormApi.FormVO) {
     hideLoading();
   }
 }
-async function handleDetail(row: BpmFormApi.FormVO) {
+async function handleDetail(row: BpmFormApi.Form) {
   detailModalApi.setData(row).open();
 }
 
@@ -115,7 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 64,
     },
-  } as VxeTableGridOptions<BpmFormApi.FormVO>,
+  } as VxeTableGridOptions<BpmFormApi.Form>,
 });
 
 watch(

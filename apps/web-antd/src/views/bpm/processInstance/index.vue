@@ -27,7 +27,7 @@ function onRefresh() {
 }
 
 /** 查看流程实例 */
-function handleDetail(row: BpmTaskApi.TaskVO) {
+function handleDetail(row: BpmTaskApi.Task) {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: { id: row.id },
@@ -35,7 +35,7 @@ function handleDetail(row: BpmTaskApi.TaskVO) {
 }
 
 /** 取消流程实例 */
-function handleCancel(row: BpmTaskApi.TaskVO) {
+function handleCancel(row: BpmTaskApi.Task) {
   prompt({
     async beforeClose(scope) {
       if (scope.isConfirm) {
@@ -96,16 +96,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     cellConfig: {
       height: 64,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskVO>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="流程发起、取消、重新发起"
-      url="https://doc.iocoder.cn/bpm/process-instance"
-    />
+    <template #doc>
+      <DocAlert
+        title="流程发起、取消、重新发起"
+        url="https://doc.iocoder.cn/bpm/process-instance"
+      />
+    </template>
 
     <Grid table-title="流程状态">
       <!-- 摘要 -->

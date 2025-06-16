@@ -15,7 +15,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<PayWalletApi.WalletVO>();
+    const data = modalApi.getData<PayWalletApi.Wallet>();
     if (!data || !data.id) {
       return;
     }

@@ -2,7 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemUserProfileApi {
   /** 用户个人中心信息 */
-  export interface UserProfileRespVO {
+  export interface UserProfileResp {
     id: number;
     username: string;
     nickname: string;
@@ -19,13 +19,13 @@ export namespace SystemUserProfileApi {
   }
 
   /** 更新密码请求 */
-  export interface UpdatePasswordReqVO {
+  export interface UpdatePasswordReq {
     oldPassword: string;
     newPassword: string;
   }
 
   /** 更新个人信息请求 */
-  export interface UpdateProfileReqVO {
+  export interface UpdateProfileReq {
     nickname?: string;
     email?: string;
     mobile?: string;
@@ -36,21 +36,19 @@ export namespace SystemUserProfileApi {
 
 /** 获取登录用户信息 */
 export function getUserProfile() {
-  return requestClient.get<SystemUserProfileApi.UserProfileRespVO>(
+  return requestClient.get<SystemUserProfileApi.UserProfileResp>(
     '/system/user/profile/get',
   );
 }
 
 /** 修改用户个人信息 */
-export function updateUserProfile(
-  data: SystemUserProfileApi.UpdateProfileReqVO,
-) {
+export function updateUserProfile(data: SystemUserProfileApi.UpdateProfileReq) {
   return requestClient.put('/system/user/profile/update', data);
 }
 
 /** 修改用户个人密码 */
 export function updateUserPassword(
-  data: SystemUserProfileApi.UpdatePasswordReqVO,
+  data: SystemUserProfileApi.UpdatePasswordReq,
 ) {
   return requestClient.put('/system/user/profile/update-password', data);
 }

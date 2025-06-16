@@ -148,6 +148,7 @@ async function handleCategorySortSubmit() {
 
 <template>
   <Page auto-content-height>
+    <!-- TODO @jason：体感整个页面的加载，有点卡顿。先看到分类，大概 1-2 秒后，上箭头变成下，然后看到每个模型。我本地大概 4 个分类，每个分类下 20+ 模型 -->
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
     <Card

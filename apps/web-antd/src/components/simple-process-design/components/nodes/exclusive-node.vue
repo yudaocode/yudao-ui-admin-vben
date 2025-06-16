@@ -248,7 +248,7 @@ function recursiveFindParentNode(
                 <div class="toolbar-icon">
                   <IconifyIcon
                     color="#0089ff"
-                    icon="ep:circle-close-filled"
+                    icon="lucide:circle-x"
                     :size="18"
                     @click="deleteCondition(index)"
                   />
@@ -263,7 +263,7 @@ function recursiveFindParentNode(
                 "
                 @click="moveNode(index, -1)"
               >
-                <IconifyIcon icon="ep:arrow-left" />
+                <IconifyIcon icon="lucide:chevron-left" />
               </div>
 
               <div
@@ -275,7 +275,7 @@ function recursiveFindParentNode(
                 "
                 @click="moveNode(index, 1)"
               >
-                <IconifyIcon icon="ep:arrow-right" />
+                <IconifyIcon icon="lucide:chevron-right" />
               </div>
             </div>
             <NodeHandler

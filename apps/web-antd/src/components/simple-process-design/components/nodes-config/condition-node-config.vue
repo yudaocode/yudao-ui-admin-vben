@@ -177,7 +177,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           @click="clickIcon()"
         >
           {{ currentNode.name }}
-          <IconifyIcon class="ml-1" icon="ep:edit-pen" />
+          <IconifyIcon class="ml-1" icon="lucide:edit-3" />
         </div>
       </div>
     </template>

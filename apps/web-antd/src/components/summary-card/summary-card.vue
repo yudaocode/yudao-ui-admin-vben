@@ -25,7 +25,10 @@ defineProps<SummaryCardProps>();
       <div class="flex items-center gap-1">
         <span class="text-3.5">{{ title }}</span>
         <Tooltip :content="tooltip" placement="topLeft" v-if="tooltip">
-          <IconifyIcon icon="ep:warning" class="item-center !text-3 flex" />
+          <IconifyIcon
+            icon="lucide:circle-alert"
+            class="item-center !text-3 flex"
+          />
         </Tooltip>
       </div>
       <div class="flex flex-row items-baseline gap-2">
@@ -42,7 +45,9 @@ defineProps<SummaryCardProps>();
         >
           <span class="text-sm">{{ Math.abs(Number(percent)) }}%</span>
           <IconifyIcon
-            :icon="Number(percent) > 0 ? 'ep:caret-top' : 'ep:caret-bottom'"
+            :icon="
+              Number(percent) > 0 ? 'lucide:chevron-up' : 'lucide:chevron-down'
+            "
             class="!text-3 ml-0.5"
           />
         </span>
