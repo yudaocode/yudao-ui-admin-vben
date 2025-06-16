@@ -5,14 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteOAuth2Client,
+  deleteOAuth2ClientList,
   getOAuth2ClientPage,
 } from '#/api/system/oauth2/client';
 import { $t } from '#/locales';
@@ -50,11 +53,33 @@ async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
     await deleteOAuth2Client(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除 OAuth2 客户端 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteOAuth2ClientList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemOAuth2ClientApi.OAuth2Client[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -101,6 +126,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemOAuth2ClientApi.OAuth2Client>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -116,14 +145,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="OAuth2 客户端列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:oauth2-client:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', [' OAuth2.0 客户端']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', [' OAuth2.0 客户端']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:oauth2-client:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:oauth2-client:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
