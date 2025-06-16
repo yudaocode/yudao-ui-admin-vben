@@ -19,9 +19,9 @@ const parent = inject('parent') as any;
 const pollingTimer = ref<null | number>(null); // 轮询定时器 ID，用于跟踪和清除轮询进程
 
 /** 判断文件处理是否完成 */
-const isProcessComplete = (file: any) => {
+function isProcessComplete(file: any) {
   return file.progress === 100;
-};
+}
 
 /** 判断所有文件是否都处理完成 */
 const allProcessComplete = computed(() => {
@@ -29,14 +29,14 @@ const allProcessComplete = computed(() => {
 });
 
 /** 完成按钮点击事件处理 */
-const handleComplete = () => {
+function handleComplete() {
   if (parent?.exposed?.handleBack) {
     parent.exposed.handleBack();
   }
-};
+}
 
 /** 获取文件处理进度 */
-const getProcessList = async () => {
+async function getProcessList() {
   try {
     // 1. 调用 API 获取处理进度
     const documentIds = props.modelValue.list
@@ -82,7 +82,7 @@ const getProcessList = async () => {
     console.error('获取处理进度失败:', error);
     pollingTimer.value = window.setTimeout(getProcessList, 5000);
   }
-};
+}
 
 /** 组件挂载时开始轮询 */
 onMounted(() => {

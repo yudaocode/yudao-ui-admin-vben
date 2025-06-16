@@ -5,7 +5,7 @@ import { Select, Switch, Textarea } from 'ant-design-vue';
 
 import Title from '../title/index.vue';
 
-defineOptions({ name: 'Desc' });
+defineOptions({ name: 'AiMusicModeDesc' });
 
 const formData = reactive({
   desc: '',

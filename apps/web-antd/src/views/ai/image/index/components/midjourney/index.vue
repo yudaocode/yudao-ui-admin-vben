@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModelVO, ImageSizeVO } from '#/utils/constants';
+import type { ImageModelVO, ImageSizeVO } from '#/utils';
 
 import { ref } from 'vue';
 
@@ -26,7 +26,7 @@ import {
   MidjourneySizeList,
   MidjourneyVersions,
   NijiVersionList,
-} from '#/utils/constants';
+} from '#/utils';
 
 // 消息弹窗
 
@@ -51,7 +51,7 @@ const selectVersion = ref<any>('6.0'); // 选中的 version
 const versionList = ref<any>(MidjourneyVersions); // version 列表
 
 /** 选择热词 */
-const handleHotWordClick = async (hotWord: string) => {
+async function handleHotWordClick(hotWord: string) {
   // 情况一：取消选中
   if (selectHotWord.value === hotWord) {
     selectHotWord.value = '';
@@ -61,23 +61,23 @@ const handleHotWordClick = async (hotWord: string) => {
   // 情况二：选中
   selectHotWord.value = hotWord; // 选中
   prompt.value = hotWord; // 设置提示次
-};
+}
 
 /** 点击 size 尺寸 */
-const handleSizeClick = async (imageSize: ImageSizeVO) => {
+async function handleSizeClick(imageSize: ImageSizeVO) {
   selectSize.value = imageSize.key;
-};
+}
 
 /** 点击 model 模型 */
-const handleModelClick = async (model: ImageModelVO) => {
+async function handleModelClick(model: ImageModelVO) {
   selectModel.value = model.key;
   versionList.value =
     model.key === 'niji' ? NijiVersionList : MidjourneyVersions;
   selectVersion.value = versionList.value[0].value;
-};
+}
 
 /** 图片生成 */
-const handleGenerateImage = async () => {
+async function handleGenerateImage() {
   // 从 models 中查找匹配的模型
   const matchedModel = props.models.find(
     (item) =>
@@ -115,10 +115,10 @@ const handleGenerateImage = async () => {
     // 加载结束
     drawIn.value = false;
   }
-};
+}
 
 /** 填充值 */
-const settingValues = async (detail: AiImageApi.ImageVO) => {
+async function settingValues(detail: AiImageApi.ImageVO) {
   // 提示词
   prompt.value = detail.prompt;
   // image size
@@ -137,7 +137,7 @@ const settingValues = async (detail: AiImageApi.ImageVO) => {
   ).value;
   // image
   referImageUrl.value = detail.options.referImageUrl;
-};
+}
 
 /** 暴露组件方法 */
 defineExpose({ settingValues });

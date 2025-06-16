@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
-import { AiMusicStatusEnum } from '#/utils/constants';
+import { AiMusicStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

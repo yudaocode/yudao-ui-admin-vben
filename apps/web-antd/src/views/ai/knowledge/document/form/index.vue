@@ -56,7 +56,7 @@ provide('parent', getCurrentInstance()); // 提供 parent 给子组件使用
 const tabs = useTabs();
 
 /** 返回列表页 */
-const handleBack = () => {
+function handleBack() {
   // 关闭当前页签
   tabs.closeCurrentTab();
   // 跳转到列表页，使用路径， 目前后端的路由 name： 'name'+ menuId
@@ -66,10 +66,10 @@ const handleBack = () => {
       knowledgeId: route.query.knowledgeId,
     },
   });
-};
+}
 
 /** 初始化数据 */
-const initData = async () => {
+async function initData() {
   if (route.query.knowledgeId) {
     formData.value.knowledgeId = route.query.knowledgeId as any;
   }
@@ -91,20 +91,20 @@ const initData = async () => {
     // 进入下一步
     goToNextStep();
   }
-};
+}
 /** 切换到下一步 */
-const goToNextStep = () => {
+function goToNextStep() {
   if (currentStep.value < steps.length - 1) {
     currentStep.value++;
   }
-};
+}
 
 /** 切换到上一步 */
-const goToPrevStep = () => {
+function goToPrevStep() {
   if (currentStep.value > 0) {
     currentStep.value--;
   }
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

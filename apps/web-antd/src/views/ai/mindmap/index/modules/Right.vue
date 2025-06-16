@@ -7,10 +7,9 @@ import {
   Toolbar,
   Transformer,
 } from '@vben/plugins/markmap';
+import { downloadImageByCanvas } from '@vben/utils';
 
 import { Button, Card, message } from 'ant-design-vue';
-
-import { download } from '#/utils/download';
 
 const props = defineProps<{
   generatedContent: string; // 生成结果
@@ -85,7 +84,7 @@ const update = () => {
   }
 };
 /** 处理内容 */
-const processContent = (text: string) => {
+function processContent(text: string) {
   const arr: string[] = [];
   const lines = text.split('\n');
   for (let line of lines) {
@@ -97,21 +96,21 @@ const processContent = (text: string) => {
     arr.push(line);
   }
   return arr.join('\n');
-};
+}
 /** 下载图片：download SVG to png file */
-const downloadImage = () => {
+function downloadImage() {
   const svgElement = mindMapRef.value;
   // 将 SVG 渲染到图片对象
   const serializer = new XMLSerializer();
   const source = `<?xml version="1.0" standalone="no"?>\r\n${serializer.serializeToString(svgRef.value!)}`;
   const base64Url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(source)}`;
-  download.image({
+  downloadImageByCanvas({
     url: base64Url,
     canvasWidth: svgElement?.offsetWidth,
     canvasHeight: svgElement?.offsetHeight,
     drawWithImageSize: false,
   });
-};
+}
 defineExpose({
   scrollBottom() {
     mdContainerRef.value?.scrollTo(0, mdContainerRef.value?.scrollHeight);

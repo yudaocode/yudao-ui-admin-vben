@@ -40,9 +40,9 @@ defineExpose({
 
 /** 点击复制的时候复制内容 */
 const showCopy = computed(() => props.content && !props.isWriting); // 是否展示复制按钮，在生成内容完成的时候展示
-const copyContent = () => {
+function copyContent() {
   copy(props.content);
-};
+}
 
 /** 复制成功的时候 copied.value 为 true */
 watch(copied, (val) => {

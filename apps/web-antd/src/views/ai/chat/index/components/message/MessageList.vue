@@ -14,7 +14,7 @@ import { useClipboard } from '@vueuse/core';
 import { Avatar, Button, message } from 'ant-design-vue';
 
 import { deleteChatMessage } from '#/api/ai/chat/message';
-import MarkdownView from '#/components/MarkdownView/index.vue';
+import { MarkdownView } from '#/components/markdown-view';
 
 import MessageKnowledge from './MessageKnowledge.vue';
 // 定义 props
@@ -67,44 +67,44 @@ function handleScroll() {
 }
 
 /** 回到底部 */
-const handleGoBottom = async () => {
+async function handleGoBottom() {
   const scrollContainer = messageContainer.value;
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
-};
+}
 
 /** 回到顶部 */
-const handlerGoTop = async () => {
+async function handlerGoTop() {
   const scrollContainer = messageContainer.value;
   scrollContainer.scrollTop = 0;
-};
+}
 
 defineExpose({ scrollToBottom, handlerGoTop }); // 提供方法给 parent 调用
 
 // ============ 处理消息操作 ==============
 
 /** 复制 */
-const copyContent = async (content: string) => {
+async function copyContent(content: string) {
   await copy(content);
   message.success('复制成功！');
-};
+}
 /** 删除 */
-const onDelete = async (id: number) => {
+async function onDelete(id: number) {
   // 删除 message
   await deleteChatMessage(id);
   message.success('删除成功！');
   // 回调
   emits('onDeleteSuccess');
-};
+}
 
 /** 刷新 */
-const onRefresh = async (message: AiChatMessageApi.ChatMessageVO) => {
+async function onRefresh(message: AiChatMessageApi.ChatMessageVO) {
   emits('onRefresh', message);
-};
+}
 
 /** 编辑 */
-const onEdit = async (message: AiChatMessageApi.ChatMessageVO) => {
+async function onEdit(message: AiChatMessageApi.ChatMessageVO) {
   emits('onEdit', message);
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

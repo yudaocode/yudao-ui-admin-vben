@@ -33,7 +33,7 @@ const emits = defineEmits(['onDelete', 'onEdit', 'onUse', 'onPage']);
 const tabsRef = ref<any>();
 
 /** 操作：编辑、删除 */
-const handleMoreClick = async (data: any) => {
+async function handleMoreClick(data: any) {
   const type = data[0];
   const role = data[1];
   if (type === 'delete') {
@@ -41,22 +41,22 @@ const handleMoreClick = async (data: any) => {
   } else {
     emits('onEdit', role);
   }
-};
+}
 
 /** 选中 */
-const handleUseClick = (role: any) => {
+function handleUseClick(role: any) {
   emits('onUse', role);
-};
+}
 
 /** 滚动 */
-const handleTabsScroll = async () => {
+async function handleTabsScroll() {
   if (tabsRef.value) {
     const { scrollTop, scrollHeight, clientHeight } = tabsRef.value;
     if (scrollTop + clientHeight >= scrollHeight - 20 && !props.loading) {
       await emits('onPage');
     }
   }
-};
+}
 </script>
 
 <template>

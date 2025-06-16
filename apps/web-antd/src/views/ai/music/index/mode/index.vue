@@ -8,7 +8,7 @@ import { Button, Card, Radio } from 'ant-design-vue';
 import desc from './desc.vue';
 import lyric from './lyric.vue';
 
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicModeIndex' });
 
 const emits = defineEmits(['generateMusic']);
 

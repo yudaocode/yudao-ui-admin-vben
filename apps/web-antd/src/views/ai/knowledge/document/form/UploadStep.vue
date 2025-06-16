@@ -10,11 +10,11 @@ import { computed, getCurrentInstance, inject, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
+import { generateAcceptedFileTypes } from '@vben/utils';
 
 import { Button, Form, message, UploadDragger } from 'ant-design-vue';
 
 import { useUpload } from '#/components/upload/use-upload';
-import { generateAcceptedFileTypes } from '#/utils/upload';
 
 const props = defineProps({
   modelValue: {
@@ -70,14 +70,14 @@ const modelData = computed({
   set: (val) => emit('update:modelValue', val),
 });
 /** 确保 list 属性存在 */
-const ensureListExists = () => {
+function ensureListExists() {
   if (!props.modelValue.list) {
     emit('update:modelValue', {
       ...props.modelValue,
       list: [],
     });
   }
-};
+}
 /** 是否所有文件都已上传完成 */
 const isAllUploaded = computed(() => {
   return (
@@ -93,7 +93,7 @@ const isAllUploaded = computed(() => {
  * @param file 待上传的文件
  * @returns 是否允许上传
  */
-const beforeUpload = (file: any) => {
+function beforeUpload(file: any) {
   // 1.1 检查文件扩展名
   const fileName = file.name.toLowerCase();
   const fileExtension = fileName.slice(
@@ -112,7 +112,7 @@ const beforeUpload = (file: any) => {
   // 2. 增加上传中的文件计数
   uploadingCount.value++;
   return true;
-};
+}
 async function customRequest(info: UploadRequestOption<any>) {
   const file = info.file as File;
   const name = file?.name;
@@ -148,7 +148,7 @@ async function customRequest(info: UploadRequestOption<any>) {
  *
  * @param index 要移除的文件索引
  */
-const removeFile = (index: number) => {
+function removeFile(index: number) {
   // 从列表中移除文件
   const newList = [...props.modelValue.list];
   newList.splice(index, 1);
@@ -157,10 +157,10 @@ const removeFile = (index: number) => {
     ...props.modelValue,
     list: newList,
   });
-};
+}
 
 /** 下一步按钮处理 */
-const handleNextStep = () => {
+function handleNextStep() {
   // 1.1 检查是否有文件上传
   if (!modelData.value.list || modelData.value.list.length === 0) {
     message.warning('请上传至少一个文件');
@@ -177,7 +177,7 @@ const handleNextStep = () => {
   if (parentEl && typeof parentEl.exposed?.goToNextStep === 'function') {
     parentEl.exposed.goToNextStep();
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {
@@ -210,9 +210,9 @@ onMounted(() => {
               />
               <div class="ant-upload-text text-[16px] text-[#606266]">
                 拖拽文件至此，或者
-                <em class="cursor-pointer not-italic text-[#409eff]"
-                  >选择文件</em
-                >
+                <em class="cursor-pointer not-italic text-[#409eff]">
+                  选择文件
+                </em>
               </div>
               <div class="ant-upload-tip mt-10px text-[12px] text-[#909399]">
                 已支持 {{ supportedFileTypes.join('、') }}，每个文件不超过

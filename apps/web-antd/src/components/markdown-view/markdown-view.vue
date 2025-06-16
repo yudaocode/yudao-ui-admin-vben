@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MarkdownViewProps } from './typing';
+
 import { computed, onMounted, ref } from 'vue';
 
 import { MarkdownIt } from '@vben/plugins/markmap';
@@ -10,15 +12,10 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.min.css';
 
 // 定义组件属性
-const props = defineProps({
-  content: {
-    type: String,
-    required: true,
-  },
-});
+const props = defineProps<MarkdownViewProps>();
 
 const { copy } = useClipboard(); // 初始化 copy 到粘贴板
-const contentRef = ref();
+const contentRef = ref<HTMLElement | null>(null);
 
 const md = new MarkdownIt({
   highlight(str, lang) {
@@ -40,7 +37,7 @@ const renderedMarkdown = computed(() => {
 /** 初始化 */
 onMounted(async () => {
   // 添加 copy 监听
-  contentRef.value.addEventListener('click', (e: any) => {
+  contentRef.value?.addEventListener('click', (e: any) => {
     if (e.target.id === 'copy') {
       copy(e.target?.dataset?.copy);
       message.success('复制成功!');

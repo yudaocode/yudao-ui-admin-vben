@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModelVO, ImageSizeVO } from '#/utils/constants';
+import type { ImageModelVO, ImageSizeVO } from '#/utils';
 
 import { ref } from 'vue';
 
@@ -17,7 +17,7 @@ import {
   Dall3SizeList,
   Dall3StyleList,
   ImageHotWords,
-} from '#/utils/constants';
+} from '#/utils';
 
 // 接收父组件传入的模型列表
 const props = defineProps({
@@ -37,7 +37,7 @@ const selectSize = ref<string>('1024x1024'); // 选中 size
 const style = ref<string>('vivid'); // style 样式
 
 /** 选择热词 */
-const handleHotWordClick = async (hotWord: string) => {
+async function handleHotWordClick(hotWord: string) {
   // 情况一：取消选中
   if (selectHotWord.value === hotWord) {
     selectHotWord.value = '';
@@ -47,10 +47,10 @@ const handleHotWordClick = async (hotWord: string) => {
   // 情况二：选中
   selectHotWord.value = hotWord;
   prompt.value = hotWord;
-};
+}
 
 /** 选择 model 模型 */
-const handleModelClick = async (model: ImageModelVO) => {
+async function handleModelClick(model: ImageModelVO) {
   selectModel.value = model.key;
   // 可以在这里添加模型特定的处理逻辑
   // 例如，如果未来需要根据不同模型设置不同参数
@@ -73,20 +73,20 @@ const handleModelClick = async (model: ImageModelVO) => {
   if (recommendedSize) {
     selectSize.value = recommendedSize.key;
   }
-};
+}
 
 /** 选择 style 样式  */
-const handleStyleClick = async (imageStyle: ImageModelVO) => {
+async function handleStyleClick(imageStyle: ImageModelVO) {
   style.value = imageStyle.key;
-};
+}
 
 /** 选择 size 大小  */
-const handleSizeClick = async (imageSize: ImageSizeVO) => {
+async function handleSizeClick(imageSize: ImageSizeVO) {
   selectSize.value = imageSize.key;
-};
+}
 
 /**  图片生产  */
-const handleGenerateImage = async () => {
+async function handleGenerateImage() {
   // 从 models 中查找匹配的模型
   const matchedModel = props.models.find(
     (item) =>
@@ -127,10 +127,10 @@ const handleGenerateImage = async () => {
     // 加载结束
     drawIn.value = false;
   }
-};
+}
 
 /** 填充值 */
-const settingValues = async (detail: AiImageApi.ImageVO) => {
+async function settingValues(detail: AiImageApi.ImageVO) {
   prompt.value = detail.prompt;
   selectModel.value = detail.model;
   style.value = detail.options?.style;
@@ -138,7 +138,7 @@ const settingValues = async (detail: AiImageApi.ImageVO) => {
     (item) => item.key === `${detail.width}x${detail.height}`,
   ) as ImageSizeVO;
   await handleSizeClick(imageSize);
-};
+}
 
 /** 暴露组件方法 */
 defineExpose({ settingValues });

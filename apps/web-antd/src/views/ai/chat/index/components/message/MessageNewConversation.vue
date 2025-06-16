@@ -4,9 +4,9 @@ import { Button } from 'ant-design-vue';
 const emits = defineEmits(['onNewConversation']);
 
 /** 新建 conversation 聊天对话 */
-const handlerNewChat = () => {
+function handlerNewChat() {
   emits('onNewConversation');
-};
+}
 </script>
 
 <template>

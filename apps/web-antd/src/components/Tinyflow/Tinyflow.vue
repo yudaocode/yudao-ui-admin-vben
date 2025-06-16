@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Item } from './ui/typeing';
+import type { Item } from './ui/typing';
 
 import { onMounted, onUnmounted, ref } from 'vue';
 

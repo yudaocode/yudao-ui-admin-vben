@@ -17,7 +17,7 @@ import {
   updateKnowledgeDocumentStatus,
 } from '#/api/ai/knowledge/document';
 import { $t } from '#/locales';
-import { CommonStatusEnum } from '#/utils/constants';
+import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

@@ -46,15 +46,15 @@ const activeCategory = ref<string>('全部'); // 选择中的分类
 const categoryList = ref<string[]>([]); // 角色分类类别
 
 /** tabs 点击 */
-const handleTabsClick = async (tab: any) => {
+async function handleTabsClick(tab: any) {
   // 设置切换状态
   activeTab.value = tab;
   // 切换的时候重新加载数据
   await getActiveTabsRole();
-};
+}
 
 /** 获取 my role 我的角色 */
-const getMyRole = async (append?: boolean) => {
+async function getMyRole(append?: boolean) {
   const params: AiModelChatRoleApi.ChatRolePageReqVO = {
     ...myRoleParams,
     name: search.value,
@@ -66,10 +66,10 @@ const getMyRole = async (append?: boolean) => {
   } else {
     myRoleList.value = list;
   }
-};
+}
 
 /** 获取 public role 公共角色 */
-const getPublicRole = async (append?: boolean) => {
+async function getPublicRole(append?: boolean) {
   const params: AiModelChatRoleApi.ChatRolePageReqVO = {
     ...publicRoleParams,
     category: activeCategory.value === '全部' ? '' : activeCategory.value,
@@ -82,10 +82,10 @@ const getPublicRole = async (append?: boolean) => {
   } else {
     publicRoleList.value = list;
   }
-};
+}
 
 /** 获取选中的 tabs 角色 */
-const getActiveTabsRole = async () => {
+async function getActiveTabsRole() {
   if (activeTab.value === 'my-role') {
     myRoleParams.pageNo = 1;
     await getMyRole();
@@ -93,43 +93,44 @@ const getActiveTabsRole = async () => {
     publicRoleParams.pageNo = 1;
     await getPublicRole();
   }
-};
+}
 
 /** 获取角色分类列表 */
-const getRoleCategoryList = async () => {
+async function getRoleCategoryList() {
   categoryList.value = ['全部', ...(await getCategoryList())];
-};
+}
 
 /** 处理分类点击 */
-const handlerCategoryClick = async (category: string) => {
+async function handlerCategoryClick(category: string) {
   // 切换选择的分类
   activeCategory.value = category;
   // 筛选
   await getActiveTabsRole();
-};
+}
 
-const handlerAddRole = async () => {
+async function handlerAddRole() {
   formModalApi.setData({ formType: 'my-create' }).open();
-};
+}
 /** 编辑角色 */
-const handlerCardEdit = async (role: any) => {
+async function handlerCardEdit(role: any) {
   formModalApi.setData({ formType: 'my-update', id: role.id }).open();
-};
+}
 
 /** 添加角色成功 */
-const handlerAddRoleSuccess = async () => {
+async function handlerAddRoleSuccess() {
   // 刷新数据
   await getActiveTabsRole();
-};
+}
 
 /** 删除角色 */
-const handlerCardDelete = async (role: any) => {
+async function handlerCardDelete(role: any) {
   await deleteMy(role.id);
   // 刷新数据
   await getActiveTabsRole();
-};
+}
+
 /** 角色分页：获取下一页 */
-const handlerCardPage = async (type: string) => {
+async function handlerCardPage(type: string) {
   try {
     loading.value = true;
     if (type === 'public') {
@@ -142,10 +143,10 @@ const handlerCardPage = async (type: string) => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 选择 card 角色：新建聊天对话 */
-const handlerCardUse = async (role: any) => {
+async function handlerCardUse(role: any) {
   // 1. 创建对话
   const data: AiChatConversationApi.ChatConversationVO = {
     roleId: role.id,
@@ -159,7 +160,8 @@ const handlerCardUse = async (role: any) => {
       conversationId,
     },
   });
-};
+}
+
 /** 初始化 */
 onMounted(async () => {
   // 获取分类

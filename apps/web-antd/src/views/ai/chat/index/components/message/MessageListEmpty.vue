@@ -11,9 +11,9 @@ const promptList = [
     prompt: '写一首好听的诗歌?',
   },
 ]; /** 选中 prompt 点击 */
-const handlerPromptClick = async (prompt: any) => {
+async function handlerPromptClick(prompt: any) {
   emits('onPrompt', prompt.prompt);
-};
+}
 </script>
 <template>
   <div class="relative flex h-full w-full flex-row justify-center">

@@ -47,10 +47,10 @@ const documentList = computed(() => {
 });
 
 /** 点击 document 处理 */
-const handleClick = (doc: any) => {
+function handleClick(doc: any) {
   document.value = doc;
   dialogVisible.value = true;
-};
+}
 </script>
 
 <template>

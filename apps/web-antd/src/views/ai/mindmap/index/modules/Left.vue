@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 
 import { Button, Textarea } from 'ant-design-vue';
 
-import { MindMapContentExample } from '#/utils/constants';
+import { MindMapContentExample } from '#/utils';
 
 defineProps<{
   isGenerating: boolean;

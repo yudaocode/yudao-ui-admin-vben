@@ -6,8 +6,12 @@ import { ref } from 'vue';
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
 
-import { DICT_TYPE, getIntDictOptions } from '#/utils';
-import { AiWriteTypeEnum, WriteExample } from '#/utils/constants';
+import {
+  AiWriteTypeEnum,
+  DICT_TYPE,
+  getIntDictOptions,
+  WriteExample,
+} from '#/utils';
 
 import Tag from './Tag.vue';
 
@@ -33,19 +37,19 @@ function omit(obj: Record<string, any>, keysToOmit: string[]) {
   return result;
 }
 /** 点击示例的时候，将定义好的文章作为示例展示出来 */
-const example = (type: 'reply' | 'write') => {
+function example(type: 'reply' | 'write') {
   formData.value = {
     ...initData,
     ...omit(WriteExample[type], ['data']),
   };
   emit('example', type);
-};
+}
 
 /** 重置，将表单值作为初选值 */
-const reset = () => {
+function reset() {
   formData.value = { ...initData };
   emit('reset');
-};
+}
 
 const selectedTab = ref<TabType>(AiWriteTypeEnum.WRITING);
 const tabs: {
@@ -83,7 +87,7 @@ const formData = ref<AiWriteApi.WriteVO>({ ...initData });
 /** 用来记录切换之前所填写的数据，切换的时候给赋值回来 */
 const recordFormData = {} as Record<AiWriteTypeEnum, AiWriteApi.WriteVO>;
 /** 切换tab */
-const switchTab = (value: TabType) => {
+function switchTab(value: TabType) {
   if (value !== selectedTab.value) {
     // 保存之前的久数据
     recordFormData[selectedTab.value] = formData.value;
@@ -91,10 +95,10 @@ const switchTab = (value: TabType) => {
     // 将之前的旧数据赋值回来
     formData.value = { ...initData, ...recordFormData[value] };
   }
-};
+}
 
 /** 提交写作 */
-const submit = () => {
+function submit() {
   if (selectedTab.value === 2 && !formData.value.originalContent) {
     message.warning('请输入原文');
     return;
@@ -111,7 +115,7 @@ const submit = () => {
     /** 使用选中 tab 值覆盖当前的 type 类型 */
     type: selectedTab.value,
   });
-};
+}
 </script>
 
 <template>

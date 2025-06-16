@@ -4,11 +4,12 @@ import type { Ref } from 'vue';
 import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { isNumber } from '@vben/utils';
 
 import { Button, Input, Select } from 'ant-design-vue';
 
 import { testWorkflow } from '#/api/ai/workflow';
-import Tinyflow from '#/components/tinyflow/tinyflow.vue';
+import { Tinyflow } from '#/components/tinyflow';
 
 defineProps<{
   provider: any;
@@ -28,26 +29,26 @@ const [Drawer, drawerApi] = useVbenDrawer({
   modal: false,
 });
 /** 展示工作流测试抽屉 */
-const testWorkflowModel = () => {
+function testWorkflowModel() {
   drawerApi.open();
   const startNode = getStartNode();
 
   // 获取参数定义
   const parameters = startNode.data?.parameters || [];
-  const paramDefinitions = {};
+  const paramDefinitions: Record<string, any> = {};
 
   // 加入参数选项方便用户添加非必须参数
-  parameters.forEach((param) => {
+  parameters.forEach((param: any) => {
     paramDefinitions[param.name] = param;
   });
 
-  function mergeIfRequiredButNotSet(target) {
+  function mergeIfRequiredButNotSet(target: any) {
     const needPushList = [];
     for (const key in paramDefinitions) {
       const param = paramDefinitions[key];
 
       if (param.required) {
-        const item = target.find((item) => item.key === key);
+        const item = target.find((item: any) => item.key === key);
 
         if (!item) {
           needPushList.push({
@@ -63,10 +64,10 @@ const testWorkflowModel = () => {
   mergeIfRequiredButNotSet(params4Test.value);
 
   paramsOfStartNode.value = paramDefinitions;
-};
+}
 
 /** 运行流程 */
-const goRun = async () => {
+async function goRun() {
   try {
     const val = tinyflowRef.value.getData();
     loading.value = true;
@@ -77,13 +78,13 @@ const goRun = async () => {
 
     // 获取参数定义
     const parameters = startNode.data?.parameters || [];
-    const paramDefinitions = {};
-    parameters.forEach((param) => {
+    const paramDefinitions: Record<string, any> = {};
+    parameters.forEach((param: any) => {
       paramDefinitions[param.name] = param.dataType;
     });
 
     // 参数类型转换
-    const convertedParams = {};
+    const convertedParams: Record<string, any> = {};
     for (const { key, value } of params4Test.value) {
       const paramKey = key.trim();
       if (!paramKey) continue;
@@ -95,8 +96,8 @@ const goRun = async () => {
 
       try {
         convertedParams[paramKey] = convertParamValue(value, dataType);
-      } catch (error_) {
-        throw new Error(`参数 ${paramKey} 转换失败: ${error_.message}`);
+      } catch (error: any) {
+        throw new Error(`参数 ${paramKey} 转换失败: ${error.message}`);
       }
     }
 
@@ -107,42 +108,42 @@ const goRun = async () => {
 
     const response = await testWorkflow(data);
     testResult.value = response;
-  } catch (error_) {
+  } catch (error: any) {
     error.value =
-      error_.response?.data?.message || '运行失败，请检查参数和网络连接';
+      error.response?.data?.message || '运行失败，请检查参数和网络连接';
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 获取开始节点 */
-const getStartNode = () => {
+function getStartNode() {
   const val = tinyflowRef.value.getData();
-  const startNode = val.nodes.find((node) => node.type === 'startNode');
+  const startNode = val.nodes.find((node: any) => node.type === 'startNode');
   if (!startNode) {
     throw new Error('流程缺少开始节点');
   }
   return startNode;
-};
+}
 
 /** 添加参数项 */
-const addParam = () => {
+function addParam() {
   params4Test.value.push({ key: '', value: '' });
-};
+}
 
 /** 删除参数项 */
-const removeParam = (index) => {
+function removeParam(index: number) {
   params4Test.value.splice(index, 1);
-};
+}
 
 /** 类型转换函数 */
-const convertParamValue = (value, dataType) => {
+function convertParamValue(value: string, dataType: string) {
   if (value === '') return null; // 空值处理
 
   switch (dataType) {
     case 'Number': {
       const num = Number(value);
-      if (isNaN(num)) throw new Error('非数字格式');
+      if (!isNumber(num)) throw new Error('非数字格式');
       return num;
     }
     case 'String': {
@@ -157,24 +158,24 @@ const convertParamValue = (value, dataType) => {
     case 'Object': {
       try {
         return JSON.parse(value);
-      } catch (error_) {
-        throw new Error(`JSON格式错误: ${error_.message}`);
+      } catch (error: any) {
+        throw new Error(`JSON格式错误: ${error.message}`);
       }
     }
     default: {
       throw new Error(`不支持的类型: ${dataType}`);
     }
   }
-};
+}
 /** 表单校验 */
-const validate = async () => {
+async function validate() {
   // 获取最新的流程数据
   if (!workflowData.value) {
     throw new Error('请设计流程');
   }
   workflowData.value = tinyflowRef.value.getData();
   return true;
-};
+}
 
 defineExpose({ validate });
 </script>

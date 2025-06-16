@@ -32,7 +32,7 @@ const queryParams = reactive({
 });
 
 /** 调用文档召回测试接口 */
-const getRetrievalResult = async () => {
+async function getRetrievalResult() {
   if (!queryParams.content) {
     message.warning('请输入查询文本');
     return;
@@ -54,15 +54,15 @@ const getRetrievalResult = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 展开/收起段落内容 */
-const toggleExpand = (segment: any) => {
+function toggleExpand(segment: any) {
   segment.expanded = !segment.expanded;
-};
+}
 
 /** 获取知识库信息 */
-const getKnowledgeInfo = async (id: number) => {
+async function getKnowledgeInfo(id: number) {
   try {
     const knowledge = await getKnowledge(id);
     if (knowledge) {
@@ -71,7 +71,7 @@ const getKnowledgeInfo = async (id: number) => {
         knowledge.similarityThreshold || queryParams.similarityThreshold;
     }
   } catch {}
-};
+}
 
 /** 初始化 */
 onMounted(() => {

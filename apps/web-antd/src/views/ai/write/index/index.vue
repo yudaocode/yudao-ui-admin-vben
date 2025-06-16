@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 import { alert, Page } from '@vben/common-ui';
 
 import { writeStream } from '#/api/ai/write';
-import { WriteExample } from '#/utils/constants';
+import { WriteExample } from '#/utils';
 
 import Left from './components/Left.vue';
 import Right from './components/Right.vue';
@@ -16,15 +16,15 @@ const isWriting = ref(false); // 是否正在写作中
 const abortController = ref<AbortController>(); // // 写作进行中 abort 控制器(控制 stream 写作)
 
 /** 停止 stream 生成 */
-const stopStream = () => {
+function stopStream() {
   abortController.value?.abort();
   isWriting.value = false;
-};
+}
 
 /** 执行写作 */
 const rightRef = ref<InstanceType<typeof Right>>();
 
-const submit = (data: Partial<AiWriteApi.WriteVO>) => {
+function submit(data: Partial<AiWriteApi.WriteVO>) {
   abortController.value = new AbortController();
   writeResult.value = '';
   isWriting.value = true;
@@ -51,17 +51,17 @@ const submit = (data: Partial<AiWriteApi.WriteVO>) => {
       throw error;
     },
   });
-};
+}
 
 /** 点击示例触发 */
-const handleExampleClick = (type: keyof typeof WriteExample) => {
+function handleExampleClick(type: keyof typeof WriteExample) {
   writeResult.value = WriteExample[type].data;
-};
+}
 
 /** 点击重置的时候清空写作的结果*/
-const reset = () => {
+function reset() {
   writeResult.value = '';
-};
+}
 </script>
 
 <template>

@@ -75,13 +75,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AiMindmapApi.MindMapVO>,
 });
-const openPreview = async (row: AiMindmapApi.MindMapVO) => {
+async function openPreview(row: AiMindmapApi.MindMapVO) {
   previewVisible.value = false;
   drawerApi.open();
   await nextTick();
   previewVisible.value = true;
   previewContent.value = row.generatedContent;
-};
+}
 onMounted(async () => {
   // 获得下拉数据
   userList.value = await getSimpleUserList();

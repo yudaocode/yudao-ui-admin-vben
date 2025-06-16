@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteImage, getImagePage, updateImage } from '#/api/ai/image';
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
-import { AiImageStatusEnum } from '#/utils/constants';
+import { AiImageStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

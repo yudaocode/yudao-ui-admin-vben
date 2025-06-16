@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import List from './list/index.vue';
 import Mode from './mode/index.vue';
 
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicIndex' });
 
 const listRef = ref<Nullable<{ generateMusic: (...args: any) => void }>>(null);
 

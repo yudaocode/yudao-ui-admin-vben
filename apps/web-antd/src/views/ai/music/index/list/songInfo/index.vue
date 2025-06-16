@@ -3,7 +3,7 @@ import { inject } from 'vue';
 
 import { Button, Card, Image } from 'ant-design-vue';
 
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicSongInfoIndex' });
 
 const currentSong = inject('currentSong', {});
 </script>

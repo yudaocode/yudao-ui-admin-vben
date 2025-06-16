@@ -4,12 +4,11 @@ import type { Nullable } from '@vben/types';
 import { inject, reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { formatPast } from '@vben/utils';
 
 import { Image, Slider } from 'ant-design-vue';
 
-import { formatPast } from '#/utils/formatTime';
-
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicAudioBarIndex' });
 
 const currentSong = inject('currentSong', {});
 

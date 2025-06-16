@@ -9,7 +9,7 @@ import audioBar from './audioBar/index.vue';
 import songCard from './songCard/index.vue';
 import songInfo from './songInfo/index.vue';
 
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicListIndex' });
 
 const currentType = ref('mine');
 // loading 状态

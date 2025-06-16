@@ -9,7 +9,7 @@ import { confirm } from '@vben/common-ui';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
 
-import { AiImageStatusEnum } from '#/utils/constants';
+import { AiImageStatusEnum } from '#/utils';
 
 // 消息
 
@@ -24,20 +24,18 @@ const emits = defineEmits(['onBtnClick', 'onMjBtnClick']);
 const cardImageRef = ref<any>(); // 卡片 image ref
 
 /** 处理点击事件  */
-const handleButtonClick = async (type: string, detail: AiImageApi.ImageVO) => {
+async function handleButtonClick(type: string, detail: AiImageApi.ImageVO) {
   emits('onBtnClick', type, detail);
-};
+}
 
 /** 处理 Midjourney 按钮点击事件  */
-const handleMidjourneyBtnClick = async (
+async function handleMidjourneyBtnClick(
   button: AiImageApi.ImageMidjourneyButtonsVO,
-) => {
+) {
   // 确认窗体
   await confirm(`确认操作 "${button.label} ${button.emoji}" ?`);
   emits('onMjBtnClick', button, props.detail);
-};
-
-// emits
+}
 
 /** 监听详情 */
 const { detail } = toRefs(props);
@@ -46,7 +44,7 @@ watch(detail, async (newVal) => {
 });
 const loading = ref();
 /** 处理加载状态 */
-const handleLoading = async (status: number) => {
+async function handleLoading(status: number) {
   // 情况一：如果是生成中，则设置加载中的 loading
   if (status === AiImageStatusEnum.IN_PROGRESS) {
     loading.value = message.loading({
@@ -57,7 +55,7 @@ const handleLoading = async (status: number) => {
   } else {
     if (loading.value) setTimeout(loading.value, 100);
   }
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

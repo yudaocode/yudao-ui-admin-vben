@@ -61,7 +61,7 @@ const receiveMessageDisplayedText = ref('');
 // =========== 【聊天对话】相关 ===========
 
 /** 获取对话信息 */
-const getConversation = async (id: null | number) => {
+async function getConversation(id: null | number) {
   if (!id) {
     return;
   }
@@ -72,7 +72,7 @@ const getConversation = async (id: null | number) => {
   }
   activeConversation.value = conversation;
   activeConversationId.value = conversation.id;
-};
+}
 
 /**
  * 点击某个对话
@@ -80,9 +80,9 @@ const getConversation = async (id: null | number) => {
  * @param conversation 选中的对话
  * @return 是否切换成功
  */
-const handleConversationClick = async (
+async function handleConversationClick(
   conversation: AiChatConversationApi.ChatConversationVO,
-) => {
+) {
   // 对话进行中，不允许切换
   if (conversationInProgress.value) {
     alert('对话中，不允许切换!');
@@ -99,20 +99,20 @@ const handleConversationClick = async (
   // 清空输入框
   prompt.value = '';
   return true;
-};
+}
 
 /** 删除某个对话*/
-const handlerConversationDelete = async (
+async function handlerConversationDelete(
   delConversation: AiChatConversationApi.ChatConversationVO,
-) => {
+) {
   // 删除的对话如果是当前选中的，那么就重置
   if (activeConversationId.value === delConversation.id) {
     await handleConversationClear();
   }
-};
+}
 
 /** 清空选中的对话 */
-const handleConversationClear = async () => {
+async function handleConversationClear() {
   // 对话进行中，不允许切换
   if (conversationInProgress.value) {
     alert('对话中，不允许切换!');
@@ -121,31 +121,31 @@ const handleConversationClear = async () => {
   activeConversationId.value = null;
   activeConversation.value = null;
   activeMessageList.value = [];
-};
+}
 
-const openChatConversationUpdateForm = async () => {
+async function openChatConversationUpdateForm() {
   formModalApi.setData({ id: activeConversationId.value }).open();
-};
-const handleConversationUpdateSuccess = async () => {
+}
+async function handleConversationUpdateSuccess() {
   // 对话更新成功，刷新最新信息
   await getConversation(activeConversationId.value);
-};
+}
 
 /** 处理聊天对话的创建成功 */
-const handleConversationCreate = async () => {
+async function handleConversationCreate() {
   // 创建对话
   await conversationListRef.value.createConversation();
-};
+}
 /** 处理聊天对话的创建成功 */
-const handleConversationCreateSuccess = async () => {
+async function handleConversationCreateSuccess() {
   // 创建新的对话，清空输入框
   prompt.value = '';
-};
+}
 
 // =========== 【消息列表】相关 ===========
 
 /** 获取消息 message 列表 */
-const getMessageList = async () => {
+async function getMessageList() {
   try {
     if (activeConversationId.value === null) {
       return;
@@ -171,7 +171,7 @@ const getMessageList = async () => {
     // 加载结束
     activeMessageListLoading.value = false;
   }
-};
+}
 
 /**
  * 消息列表
@@ -196,17 +196,17 @@ const messageList = computed(() => {
 });
 
 /** 处理删除 message 消息 */
-const handleMessageDelete = () => {
+function handleMessageDelete() {
   if (conversationInProgress.value) {
     alert('回答中，不能删除!');
     return;
   }
   // 刷新 message 列表
   getMessageList();
-};
+}
 
 /** 处理 message 清空 */
-const handlerMessageClear = async () => {
+async function handlerMessageClear() {
   if (!activeConversationId.value) {
     return;
   }
@@ -218,16 +218,16 @@ const handlerMessageClear = async () => {
     // 刷新 message 列表
     activeMessageList.value = [];
   } catch {}
-};
+}
 
 /** 回到 message 列表的顶部 */
-const handleGoTopMessage = () => {
+function handleGoTopMessage() {
   messageRef.value.handlerGoTop();
-};
+}
 
 // =========== 【发送消息】相关 ===========
 /** 处理来自 keydown 的发送消息 */
-const handleSendByKeydown = async (event: any) => {
+async function handleSendByKeydown(event: any) {
   // 判断用户是否在输入
   if (isComposing.value) {
     return;
@@ -248,15 +248,15 @@ const handleSendByKeydown = async (event: any) => {
       event.preventDefault(); // 防止默认的提交行为
     }
   }
-};
+}
 
 /** 处理来自【发送】按钮的发送消息 */
-const handleSendByButton = () => {
+function handleSendByButton() {
   doSendMessage(prompt.value?.trim() as string);
-};
+}
 
 /** 处理 prompt 输入变化 */
-const handlePromptInput = (event) => {
+function handlePromptInput(event: any) {
   // 非输入法 输入设置为 true
   if (!isComposing.value) {
     // 回车 event data 是 null
@@ -273,27 +273,27 @@ const handlePromptInput = (event) => {
   inputTimeout.value = setTimeout(() => {
     isComposing.value = false;
   }, 400);
-};
+}
 
-const onCompositionstart = () => {
+function onCompositionstart() {
   isComposing.value = true;
-};
+}
 
-const onCompositionend = () => {
+function onCompositionend() {
   // console.log('输入结束...')
   setTimeout(() => {
     isComposing.value = false;
   }, 200);
-};
+}
 
 /** 真正执行【发送】消息操作 */
-const doSendMessage = async (content: string) => {
+async function doSendMessage(content: string) {
   // 校验
   if (content.length === 0) {
     message.error('发送失败，原因：内容为空！');
     return;
   }
-  if (activeConversationId.value == null) {
+  if (activeConversationId.value === null) {
     message.error('还没创建对话，不能发送!');
     return;
   }
@@ -304,12 +304,12 @@ const doSendMessage = async (content: string) => {
     conversationId: activeConversationId.value,
     content,
   } as AiChatMessageApi.ChatMessageVO);
-};
+}
 
 /** 真正执行【发送】消息操作 */
-const doSendMessageStream = async (
+async function doSendMessageStream(
   userMessage: AiChatMessageApi.ChatMessageVO,
-) => {
+) {
   // 创建 AbortController 实例，以便中止请求
   conversationInAbortController.value = new AbortController();
   // 标记对话进行中
@@ -385,40 +385,40 @@ const doSendMessageStream = async (
       },
     );
   } catch {}
-};
+}
 
 /** 停止 stream 流式调用 */
-const stopStream = async () => {
+async function stopStream() {
   // tip：如果 stream 进行中的 message，就需要调用 controller 结束
   if (conversationInAbortController.value) {
     conversationInAbortController.value.abort();
   }
   // 设置为 false
   conversationInProgress.value = false;
-};
+}
 
 /** 编辑 message：设置为 prompt，可以再次编辑 */
-const handleMessageEdit = (message: AiChatMessageApi.ChatMessageVO) => {
+function handleMessageEdit(message: AiChatMessageApi.ChatMessageVO) {
   prompt.value = message.content;
-};
+}
 
 /** 刷新 message：基于指定消息，再次发起对话 */
-const handleMessageRefresh = (message: AiChatMessageApi.ChatMessageVO) => {
+function handleMessageRefresh(message: AiChatMessageApi.ChatMessageVO) {
   doSendMessage(message.content);
-};
+}
 
 // ============== 【消息滚动】相关 =============
 
 /** 滚动到 message 底部 */
-const scrollToBottom = async (isIgnore?: boolean) => {
+async function scrollToBottom(isIgnore?: boolean) {
   await nextTick();
   if (messageRef.value) {
     messageRef.value.scrollToBottom(isIgnore);
   }
-};
+}
 
 /** 自提滚动效果 */
-const textRoll = async () => {
+async function textRoll() {
   let index = 0;
   try {
     // 只能执行一次
@@ -475,7 +475,7 @@ const textRoll = async () => {
     };
     let timer = setTimeout(task, textSpeed.value);
   } catch {}
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -569,8 +569,8 @@ onMounted(async () => {
             <MessageList
               v-if="!activeMessageListLoading && messageList.length > 0"
               ref="messageRef"
-              :conversation="activeConversation"
-              :list="messageList"
+              :conversation="activeConversation as any"
+              :list="messageList as any"
               @on-delete-success="handleMessageDelete"
               @on-edit="handleMessageEdit"
               @on-refresh="handleMessageRefresh"

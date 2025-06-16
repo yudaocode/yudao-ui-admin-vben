@@ -55,7 +55,6 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
         allowClear: true,
       },
     },
@@ -65,7 +64,6 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
         allowClear: true,
       },
     },

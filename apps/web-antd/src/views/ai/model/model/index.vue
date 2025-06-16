@@ -109,9 +109,9 @@ onMounted(async () => {
         />
       </template>
       <template #keyId="{ row }">
-        <span>{{
-          apiKeyList.find((item) => item.id === row.keyId)?.name
-        }}</span>
+        <span>
+          {{ apiKeyList.find((item) => item.id === row.keyId)?.name }}
+        </span>
       </template>
       <template #actions="{ row }">
         <TableAction

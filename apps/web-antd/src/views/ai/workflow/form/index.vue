@@ -28,14 +28,14 @@ const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
 const workflowDesignRef = ref<InstanceType<typeof WorkflowDesign>>();
 
 /** 步骤校验函数 */
-const validateBasic = async () => {
+async function validateBasic() {
   await basicInfoRef.value?.validate();
-};
+}
 
 /** 工作流设计校验 */
-const validateWorkflow = async () => {
+async function validateWorkflow() {
   await workflowDesignRef.value?.validate();
-};
+}
 
 const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
 
@@ -60,7 +60,8 @@ provide('workflowData', workflowData);
 
 /** 初始化数据 */
 const actionType = route.params.type as string;
-const initData = async () => {
+
+async function initData() {
   if (actionType === 'update') {
     const workflowId = route.params.id as string;
     formData.value = await getWorkflow(workflowId);
@@ -79,10 +80,10 @@ const initData = async () => {
 
   // 设置当前步骤
   currentStep.value = 0;
-};
+}
 
 /** 校验所有步骤数据是否完整 */
-const validateAllSteps = async () => {
+async function validateAllSteps() {
   // 基本信息校验
   try {
     await validateBasic();
@@ -99,10 +100,10 @@ const validateAllSteps = async () => {
     throw new Error('请完善工作流信息');
   }
   return true;
-};
+}
 
 /** 保存操作 */
-const handleSave = async () => {
+async function handleSave() {
   try {
     // 保存前校验所有步骤的数据
     await validateAllSteps();
@@ -124,10 +125,10 @@ const handleSave = async () => {
     console.error('保存失败:', error);
     message.warning(error.message || '请完善所有步骤的必填信息');
   }
-};
+}
 
 /** 发布操作 */
-const handleDeploy = async () => {
+async function handleDeploy() {
   try {
     // 修改场景下直接发布，新增场景下需要先确认
     if (!formData.value.id) {
@@ -158,10 +159,10 @@ const handleDeploy = async () => {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
   }
-};
+}
 
 /** 步骤切换处理 */
-const handleStepClick = async (index: number) => {
+async function handleStepClick(index: number) {
   try {
     if (index !== 0) {
       await validateBasic();
@@ -176,17 +177,17 @@ const handleStepClick = async (index: number) => {
     console.error('步骤切换失败:', error);
     message.warning('请先完善当前步骤必填信息');
   }
-};
+}
 
 const tabs = useTabs();
 
 /** 返回列表页 */
-const handleBack = () => {
+function handleBack() {
   // 关闭当前页签
   tabs.closeCurrentTab();
   // 跳转到列表页，使用路径， 目前后端的路由 name： 'name'+ menuId
   router.push({ path: '/ai/workflow' });
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

@@ -23,10 +23,7 @@ import {
   StableDiffusionClipGuidancePresets,
   StableDiffusionSamplers,
   StableDiffusionStylePresets,
-} from '#/utils/constants';
-import { hasChinese } from '#/utils/utils';
-
-// 消息弹窗
+} from '#/utils';
 
 // 接收父组件传入的模型列表
 const props = defineProps({
@@ -35,7 +32,12 @@ const props = defineProps({
     default: () => [] as AiModelModelApi.ModelVO[],
   },
 });
+
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
+
+function hasChinese(str: string) {
+  return /[\u4E00-\u9FA5]/.test(str);
+}
 
 // 定义属性
 const drawIn = ref<boolean>(false); // 生成中
@@ -52,7 +54,7 @@ const clipGuidancePreset = ref<string>('NONE'); // 文本提示相匹配的图�
 const stylePreset = ref<string>('3d-model'); // 风格
 
 /** 选择热词 */
-const handleHotWordClick = async (hotWord: string) => {
+async function handleHotWordClick(hotWord: string) {
   // 情况一：取消选中
   if (selectHotWord.value === hotWord) {
     selectHotWord.value = '';
@@ -62,10 +64,10 @@ const handleHotWordClick = async (hotWord: string) => {
   // 情况二：选中
   selectHotWord.value = hotWord; // 选中
   prompt.value = hotWord; // 替换提示词
-};
+}
 
 /** 图片生成 */
-const handleGenerateImage = async () => {
+async function handleGenerateImage() {
   // 从 models 中查找匹配的模型
   const selectModel = 'stable-diffusion-v1-6';
   const matchedModel = props.models.find(
@@ -112,10 +114,10 @@ const handleGenerateImage = async () => {
     // 加载结束
     drawIn.value = false;
   }
-};
+}
 
 /** 填充值 */
-const settingValues = async (detail: AiImageApi.ImageVO) => {
+async function settingValues(detail: AiImageApi.ImageVO) {
   prompt.value = detail.prompt;
   width.value = detail.width;
   height.value = detail.height;
@@ -125,7 +127,7 @@ const settingValues = async (detail: AiImageApi.ImageVO) => {
   sampler.value = detail.options?.sampler;
   clipGuidancePreset.value = detail.options?.clipGuidancePreset;
   stylePreset.value = detail.options?.stylePreset;
-};
+}
 
 /** 暴露组件方法 */
 defineExpose({ settingValues });

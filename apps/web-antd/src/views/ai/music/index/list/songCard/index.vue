@@ -5,7 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Image } from 'ant-design-vue';
 
-defineOptions({ name: 'Index' });
+defineOptions({ name: 'AiMusicSongCardIndex' });
 
 defineProps({
   songInfo: {

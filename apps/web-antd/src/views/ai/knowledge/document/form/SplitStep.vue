@@ -42,12 +42,13 @@ const currentFile = ref<any>(null); // 当前选中的文件
 const submitLoading = ref(false); // 提交按钮加载状态
 
 /** 选择文件 */
-const selectFile = async (index: number) => {
+async function selectFile(index: number) {
   currentFile.value = modelData.value.list[index];
   await splitContentFile(currentFile.value);
-};
+}
+
 /** 获取文件分段内容 */
-const splitContentFile = async (file: any) => {
+async function splitContentFile(file: any) {
   if (!file || !file.url) {
     message.warning('文件 URL 不存在');
     return;
@@ -65,9 +66,9 @@ const splitContentFile = async (file: any) => {
   } finally {
     splitLoading.value = false;
   }
-};
+}
 /** 处理预览分段 */
-const handleAutoSegment = async () => {
+async function handleAutoSegment() {
   // 如果没有选中文件，默认选中第一个
   if (
     !currentFile.value &&
@@ -84,18 +85,18 @@ const handleAutoSegment = async () => {
 
   // 获取分段内容
   await splitContentFile(currentFile.value);
-};
+}
 
 /** 上一步按钮处理 */
-const handlePrevStep = () => {
+function handlePrevStep() {
   const parentEl = parent || getCurrentInstance()?.parent;
   if (parentEl && typeof parentEl.exposed?.goToPrevStep === 'function') {
     parentEl.exposed.goToPrevStep();
   }
-};
+}
 
 /** 保存操作 */
-const handleSave = async () => {
+async function handleSave() {
   // 保存前验证
   if (
     !currentFile?.value?.segments ||
@@ -140,7 +141,7 @@ const handleSave = async () => {
     // 关闭按钮加载状态
     submitLoading.value = false;
   }
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

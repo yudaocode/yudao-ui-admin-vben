@@ -57,20 +57,20 @@ async function handleDelete(row: AiKnowledgeKnowledgeApi.KnowledgeVO) {
 }
 /** 文档按钮操作 */
 const router = useRouter();
-const handleDocument = (id: number) => {
+function handleDocument(id: number) {
   router.push({
     name: 'AiKnowledgeDocument',
     query: { knowledgeId: id },
   });
-};
+}
 
 /** 跳转到文档召回测试页面 */
-const handleRetrieval = (id: number) => {
+function handleRetrieval(id: number) {
   router.push({
     name: 'AiKnowledgeRetrieval',
     query: { id },
   });
-};
+}
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {

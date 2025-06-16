@@ -6,7 +6,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { alert, Page } from '@vben/common-ui';
 
 import { generateMindMap } from '#/api/ai/mindmap';
-import { MindMapContentExample } from '#/utils/constants';
+import { MindMapContentExample } from '#/utils';
 
 import Left from './modules/Left.vue';
 import Right from './modules/Right.vue';
@@ -21,13 +21,13 @@ const leftRef = ref<InstanceType<typeof Left>>(); // 左边组件
 const rightRef = ref(); // 右边组件
 
 /** 使用已有内容直接生成 */
-const directGenerate = (existPrompt: string) => {
+function directGenerate(existPrompt: string) {
   isEnd.value = false; // 先设置为 false 再设置为 true，让子组建的 watch 能够监听到
   generatedContent.value = existPrompt;
   isEnd.value = true;
-};
+}
 /** 提交生成 */
-const submit = (data: AiMindmapApi.AiMindMapGenerateReqVO) => {
+function submit(data: AiMindmapApi.AiMindMapGenerateReqVO) {
   isGenerating.value = true;
   isStart.value = true;
   isEnd.value = false;
@@ -59,13 +59,13 @@ const submit = (data: AiMindmapApi.AiMindMapGenerateReqVO) => {
     },
     ctrl: ctrl.value,
   });
-};
+}
 /** 停止 stream 生成 */
-const stopStream = () => {
+function stopStream() {
   isGenerating.value = false;
   isStart.value = false;
   ctrl.value?.abort();
-};
+}
 
 /** 初始化 */
 onMounted(() => {

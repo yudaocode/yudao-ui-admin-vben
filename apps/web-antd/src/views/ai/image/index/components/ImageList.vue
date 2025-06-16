@@ -5,6 +5,7 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, useVbenDrawer } from '@vben/common-ui';
+import { downloadFileFromImageUrl } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
 import { Button, Card, message, Pagination } from 'ant-design-vue';
@@ -15,8 +16,7 @@ import {
   getImagePageMy,
   midjourneyAction,
 } from '#/api/ai/image';
-import { AiImageStatusEnum } from '#/utils/constants';
-import { download } from '#/utils/download';
+import { AiImageStatusEnum } from '#/utils';
 
 import ImageCard from './ImageCard.vue';
 import ImageDetail from './ImageDetail.vue';
@@ -43,18 +43,18 @@ const inProgressTimer = ref<any>(); // 生成中的 image 定时器，轮询生�
 const showImageDetailId = ref<number>(0); // 图片详情的图片编号
 
 /** 处理查看绘图作品 */
-const handleViewPublic = () => {
+function handleViewPublic() {
   router.push({
     name: 'AiImageSquare',
   });
-};
+}
 
 /** 查看图片的详情  */
-const handleDetailOpen = async () => {
+async function handleDetailOpen() {
   drawerApi.open();
-};
+}
 /** 获得 image 图片列表 */
-const getImageList = async () => {
+async function getImageList() {
   const loading = message.loading({
     content: `加载中...`,
   });
@@ -77,10 +77,10 @@ const getImageList = async () => {
     // 关闭正在“加载中”的 Loading
     loading();
   }
-};
+}
 const debounceGetImageList = useDebounceFn(getImageList, 80);
 /** 轮询生成中的 image 列表 */
-const refreshWatchImages = async () => {
+async function refreshWatchImages() {
   const imageIds = Object.keys(inProgressImageMap.value).map(Number);
   if (imageIds.length === 0) {
     return;
@@ -101,13 +101,13 @@ const refreshWatchImages = async () => {
     }
   });
   inProgressImageMap.value = newWatchImages;
-};
+}
 
 /** 图片的点击事件 */
-const handleImageButtonClick = async (
+async function handleImageButtonClick(
   type: string,
   imageDetail: AiImageApi.ImageVO,
-) => {
+) {
   // 详情
   if (type === 'more') {
     showImageDetailId.value = imageDetail.id;
@@ -124,20 +124,23 @@ const handleImageButtonClick = async (
   }
   // 下载
   if (type === 'download') {
-    await download.image({ url: imageDetail.picUrl });
+    await downloadFileFromImageUrl({
+      fileName: imageDetail.model,
+      source: imageDetail.picUrl,
+    });
     return;
   }
   // 重新生成
   if (type === 'regeneration') {
     await emits('onRegeneration', imageDetail);
   }
-};
+}
 
 /** 处理 Midjourney 按钮点击事件  */
-const handleImageMidjourneyButtonClick = async (
+async function handleImageMidjourneyButtonClick(
   button: AiImageApi.ImageMidjourneyButtonsVO,
   imageDetail: AiImageApi.ImageVO,
-) => {
+) {
   // 1. 构建 params 参数
   const data = {
     id: imageDetail.id,
@@ -147,7 +150,7 @@ const handleImageMidjourneyButtonClick = async (
   await midjourneyAction(data);
   // 3. 刷新列表
   await getImageList();
-};
+}
 
 defineExpose({ getImageList }); /** 组件挂在的时候 */
 onMounted(async () => {

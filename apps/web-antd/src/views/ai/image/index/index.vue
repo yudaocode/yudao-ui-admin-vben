@@ -9,7 +9,7 @@ import { Page } from '@vben/common-ui';
 import { Segmented } from 'ant-design-vue';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
-import { AiModelTypeEnum, AiPlatformEnum } from '#/utils/constants';
+import { AiModelTypeEnum, AiPlatformEnum } from '#/utils';
 
 import Common from './components/common/index.vue';
 import Dall3 from './components/dall3/index.vue';

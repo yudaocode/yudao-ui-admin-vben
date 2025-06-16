@@ -5,7 +5,7 @@ import { Button, Input, Select, Space, Tag, Textarea } from 'ant-design-vue';
 
 import Title from '../title/index.vue';
 
-defineOptions({ name: 'Lyric' });
+defineOptions({ name: 'AiMusicModeLyric' });
 
 const tags = ['rock', 'punk', 'jazz', 'soul', 'country', 'kidsmusic', 'pop'];
 

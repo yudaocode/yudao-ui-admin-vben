@@ -18,7 +18,7 @@ import {
   updateKnowledgeSegmentStatus,
 } from '#/api/ai/knowledge/segment';
 import { $t } from '#/locales';
-import { CommonStatusEnum } from '#/utils/constants';
+import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -93,9 +93,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 修改是否发布 */
-const handleStatusChange = async (
+async function handleStatusChange(
   row: AiKnowledgeSegmentApi.KnowledgeSegmentVO,
-) => {
+) {
   try {
     // 修改状态的二次确认
     const text = row.status ? '启用' : '禁用';
@@ -112,7 +112,8 @@ const handleStatusChange = async (
         ? CommonStatusEnum.DISABLE
         : CommonStatusEnum.ENABLE;
   }
-};
+}
+
 onMounted(() => {
   gridApi.formApi.setFieldValue('documentId', route.query.documentId);
 });

@@ -10,11 +10,7 @@ import { confirm } from '@vben/common-ui';
 import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
-import {
-  AiPlatformEnum,
-  ImageHotWords,
-  OtherPlatformEnum,
-} from '#/utils/constants';
+import { AiPlatformEnum, ImageHotWords, OtherPlatformEnum } from '#/utils';
 
 // 消息弹窗
 
@@ -39,7 +35,7 @@ const platformModels = ref<AiModelModelApi.ModelVO[]>([]); // 模型列表
 const modelId = ref<number>(); // 选中的模型
 
 /** 选择热词 */
-const handleHotWordClick = async (hotWord: string) => {
+async function handleHotWordClick(hotWord: string) {
   // 情况一：取消选中
   if (selectHotWord.value === hotWord) {
     selectHotWord.value = '';
@@ -49,10 +45,10 @@ const handleHotWordClick = async (hotWord: string) => {
   // 情况二：选中
   selectHotWord.value = hotWord; // 选中
   prompt.value = hotWord; // 替换提示词
-};
+}
 
 /** 图片生成 */
-const handleGenerateImage = async () => {
+async function handleGenerateImage() {
   // 二次确认
   await confirm(`确认生成内容?`);
   try {
@@ -76,17 +72,17 @@ const handleGenerateImage = async () => {
     // 加载结束
     drawIn.value = false;
   }
-};
+}
 
 /** 填充值 */
-const settingValues = async (detail: AiImageApi.ImageVO) => {
+async function settingValues(detail: AiImageApi.ImageVO) {
   prompt.value = detail.prompt;
   width.value = detail.width;
   height.value = detail.height;
-};
+}
 
 /** 平台切换 */
-const handlerPlatformChange = async (platform: any) => {
+async function handlerPlatformChange(platform: any) {
   // 根据选择的平台筛选模型
   platformModels.value = props.models.filter(
     (item: AiModelModelApi.ModelVO) => item.platform === platform,
@@ -96,7 +92,7 @@ const handlerPlatformChange = async (platform: any) => {
       ? platformModels.value[0].id
       : undefined;
   // 切换平台，默认选择一个模型
-};
+}
 
 /** 监听 models 变化 */
 watch(

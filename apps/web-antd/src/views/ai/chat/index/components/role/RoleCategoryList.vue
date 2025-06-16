@@ -19,9 +19,9 @@ defineProps({
 const emits = defineEmits(['onCategoryClick']);
 
 /** 处理分类点击事件 */
-const handleCategoryClick = async (category: string) => {
+async function handleCategoryClick(category: string) {
   emits('onCategoryClick', category);
-};
+}
 </script>
 
 <template>

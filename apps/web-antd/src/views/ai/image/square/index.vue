@@ -9,7 +9,7 @@ import { useDebounceFn } from '@vueuse/core';
 import { Input, Pagination } from 'ant-design-vue';
 
 import { getImagePageMy } from '#/api/ai/image';
-// TODO @fan：加个 loading 加载中的状态
+
 const loading = ref(true); // 列表的加载中
 const list = ref<AiImageApi.ImageVO[]>([]); // 列表的数据
 const total = ref(0); // 列表的总页数
@@ -21,7 +21,7 @@ const queryParams = reactive({
 });
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await getImagePageMy(queryParams);
@@ -30,7 +30,7 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 const debounceGetList = useDebounceFn(getList, 80);
 /** 搜索按钮操作 */
 const handleQuery = () => {

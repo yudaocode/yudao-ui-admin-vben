@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE } from '#/utils';
+import { DICT_TYPE, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchemaConversation(): VbenFormSchema[] {
@@ -22,8 +22,7 @@ export function useGridFormSchemaConversation(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },
@@ -118,8 +117,7 @@ export function useGridFormSchemaMessage(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

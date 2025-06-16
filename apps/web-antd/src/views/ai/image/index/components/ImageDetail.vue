@@ -3,6 +3,8 @@ import type { AiImageApi } from '#/api/ai/image';
 
 import { ref, toRefs, watch } from 'vue';
 
+import { formatDate } from '@vben/utils';
+
 import { Image } from 'ant-design-vue';
 
 import { getImageMy } from '#/api/ai/image';
@@ -12,8 +14,7 @@ import {
   StableDiffusionClipGuidancePresets,
   StableDiffusionSamplers,
   StableDiffusionStylePresets,
-} from '#/utils/constants';
-import { formatTime } from '#/utils/formatTime';
+} from '#/utils';
 
 // 图片详细信息
 const props = defineProps({
@@ -25,9 +26,9 @@ const props = defineProps({
 const detail = ref<AiImageApi.ImageVO>({} as AiImageApi.ImageVO);
 
 /**  获取图片详情  */
-const getImageDetail = async (id: number) => {
+async function getImageDetail(id: number) {
   detail.value = await getImageMy(id);
-};
+}
 
 const { id } = toRefs(props);
 watch(
@@ -53,10 +54,10 @@ watch(
     <div class="tip text-lg font-bold">时间</div>
     <div class="body mt-2 text-gray-600">
       <div>
-        提交时间：{{ formatTime(detail.createTime, 'yyyy-MM-dd HH:mm:ss') }}
+        提交时间：{{ formatDate(detail.createTime, 'yyyy-MM-dd HH:mm:ss') }}
       </div>
       <div>
-        生成时间：{{ formatTime(detail.finishTime, 'yyyy-MM-dd HH:mm:ss') }}
+        生成时间：{{ formatDate(detail.finishTime, 'yyyy-MM-dd HH:mm:ss') }}
       </div>
     </div>
   </div>
