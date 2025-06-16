@@ -140,6 +140,10 @@ export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '编号',
       minWidth: 100,
