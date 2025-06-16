@@ -91,6 +91,10 @@ export function useGridColumns<T = SystemPostApi.Post>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '岗位编号',
       minWidth: 200,
