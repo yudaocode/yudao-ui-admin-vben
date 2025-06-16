@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AiImageApi } from '#/api/ai/image';
-import type { ImageModelVO } from '#/utils/constants';
 
 import { ref, toRefs, watch } from 'vue';
 
@@ -43,15 +42,16 @@ watch(
 </script>
 
 <template>
-  <div class="item">
-    <div class="body">
-      <Image class="image" :src="detail?.picUrl" />
+  <div class="mb-5 w-full overflow-hidden break-words">
+    <div class="body mt-2 text-gray-600">
+      <Image class="rounded-[10px]" :src="detail?.picUrl" />
     </div>
   </div>
+
   <!-- 时间 -->
-  <div class="item">
-    <div class="tip">时间</div>
-    <div class="body">
+  <div class="mb-5 w-full overflow-hidden break-words">
+    <div class="tip text-lg font-bold">时间</div>
+    <div class="body mt-2 text-gray-600">
       <div>
         提交时间：{{ formatTime(detail.createTime, 'yyyy-MM-dd HH:mm:ss') }}
       </div>
@@ -60,177 +60,150 @@ watch(
       </div>
     </div>
   </div>
+
   <!-- 模型 -->
-  <div class="item">
-    <div class="tip">模型</div>
-    <div class="body">
+  <div class="mb-5 w-full overflow-hidden break-words">
+    <div class="tip text-lg font-bold">模型</div>
+    <div class="body mt-2 text-gray-600">
       {{ detail.model }}({{ detail.height }}x{{ detail.width }})
     </div>
   </div>
+
   <!-- 提示词 -->
-  <div class="item">
-    <div class="tip">提示词</div>
-    <div class="body">
+  <div class="mb-5 w-full overflow-hidden break-words">
+    <div class="tip text-lg font-bold">提示词</div>
+    <div class="body mt-2 text-gray-600">
       {{ detail.prompt }}
     </div>
   </div>
-  <!-- 地址 -->
-  <div class="item">
-    <div class="tip">图片地址</div>
-    <div class="body">
+
+  <!-- 图片地址 -->
+  <div class="mb-5 w-full overflow-hidden break-words">
+    <div class="tip text-lg font-bold">图片地址</div>
+    <div class="body mt-2 text-gray-600">
       {{ detail.picUrl }}
     </div>
   </div>
-  <!-- StableDiffusion 专属区域 -->
+
+  <!-- StableDiffusion 专属 -->
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.sampler
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">采样方法</div>
-    <div class="body">
+    <div class="tip text-lg font-bold">采样方法</div>
+    <div class="body mt-2 text-gray-600">
       {{
         StableDiffusionSamplers.find(
-          (item: ImageModelVO) => item.key === detail?.options?.sampler,
+          (item) => item.key === detail?.options?.sampler,
         )?.name
       }}
     </div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.clipGuidancePreset
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">CLIP</div>
-    <div class="body">
+    <div class="tip text-lg font-bold">CLIP</div>
+    <div class="body mt-2 text-gray-600">
       {{
         StableDiffusionClipGuidancePresets.find(
-          (item: ImageModelVO) =>
-            item.key === detail?.options?.clipGuidancePreset,
+          (item) => item.key === detail?.options?.clipGuidancePreset,
         )?.name
       }}
     </div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.stylePreset
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">风格</div>
-    <div class="body">
+    <div class="tip text-lg font-bold">风格</div>
+    <div class="body mt-2 text-gray-600">
       {{
         StableDiffusionStylePresets.find(
-          (item: ImageModelVO) => item.key === detail?.options?.stylePreset,
+          (item) => item.key === detail?.options?.stylePreset,
         )?.name
       }}
     </div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.steps
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">迭代步数</div>
-    <div class="body">
-      {{ detail?.options?.steps }}
-    </div>
+    <div class="tip text-lg font-bold">迭代步数</div>
+    <div class="body mt-2 text-gray-600">{{ detail?.options?.steps }}</div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.scale
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">引导系数</div>
-    <div class="body">
-      {{ detail?.options?.scale }}
-    </div>
+    <div class="tip text-lg font-bold">引导系数</div>
+    <div class="body mt-2 text-gray-600">{{ detail?.options?.scale }}</div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
       detail?.options?.seed
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">随机因子</div>
-    <div class="body">
-      {{ detail?.options?.seed }}
-    </div>
+    <div class="tip text-lg font-bold">随机因子</div>
+    <div class="body mt-2 text-gray-600">{{ detail?.options?.seed }}</div>
   </div>
-  <!-- Dall3 专属区域 -->
+
+  <!-- Dall3 专属 -->
   <div
-    class="item"
     v-if="detail.platform === AiPlatformEnum.OPENAI && detail?.options?.style"
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">风格选择</div>
-    <div class="body">
+    <div class="tip text-lg font-bold">风格选择</div>
+    <div class="body mt-2 text-gray-600">
       {{
-        Dall3StyleList.find(
-          (item: ImageModelVO) => item.key === detail?.options?.style,
-        )?.name
+        Dall3StyleList.find((item) => item.key === detail?.options?.style)?.name
       }}
     </div>
   </div>
-  <!-- Midjourney 专属区域 -->
+
+  <!-- Midjourney 专属 -->
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.MIDJOURNEY && detail?.options?.version
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">模型版本</div>
-    <div class="body">
-      {{ detail?.options?.version }}
-    </div>
+    <div class="tip text-lg font-bold">模型版本</div>
+    <div class="body mt-2 text-gray-600">{{ detail?.options?.version }}</div>
   </div>
+
   <div
-    class="item"
     v-if="
       detail.platform === AiPlatformEnum.MIDJOURNEY &&
       detail?.options?.referImageUrl
     "
+    class="mb-5 w-full overflow-hidden break-words"
   >
-    <div class="tip">参考图</div>
-    <div class="body">
+    <div class="tip text-lg font-bold">参考图</div>
+    <div class="body mt-2 text-gray-600">
       <Image :src="detail.options.referImageUrl" />
     </div>
   </div>
 </template>
-<style scoped lang="scss">
-.item {
-  width: 100%;
-  margin-bottom: 20px;
-  overflow: hidden;
-  word-wrap: break-word;
-
-  .header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .tip {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .body {
-    margin-top: 10px;
-    color: #616161;
-
-    .taskImage {
-      border-radius: 10px;
-    }
-  }
-}
-</style>

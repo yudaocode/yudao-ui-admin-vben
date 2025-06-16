@@ -151,19 +151,18 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="w-100% mt-[15px]"
+      class="mt-[15px] w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
-  <div class="hot-words">
-    <div>
-      <b>随机热词</b>
-    </div>
-    <Space wrap class="word-list">
+
+  <div class="hot-words mt-[30px] flex flex-col">
+    <div><b>随机热词</b></div>
+    <Space wrap class="word-list mt-[15px] flex flex-wrap justify-start">
       <Button
         shape="round"
-        class="btn"
+        class="btn m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotWords"
         :key="hotWord"
@@ -173,15 +172,17 @@ defineExpose({ settingValues });
       </Button>
     </Space>
   </div>
-  <div class="model">
-    <div>
-      <b>模型选择</b>
-    </div>
-    <Space wrap class="model-list">
+
+  <div class="model mt-[30px]">
+    <div><b>模型选择</b></div>
+    <Space wrap class="model-list mt-[15px] flex flex-wrap gap-[10px]">
       <div
-        :class="
-          selectModel === model.key ? 'modal-item selectModel' : 'modal-item'
-        "
+        class="modal-item flex w-[110px] cursor-pointer flex-col items-center overflow-hidden rounded-[5px] border-[3px]"
+        :class="[
+          selectModel === model.key
+            ? 'border-[#1293ff!important]'
+            : 'border-transparent',
+        ]"
         v-for="model in Dall3Models"
         :key="model.key"
       >
@@ -191,21 +192,21 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleModelClick(model)"
         />
-        <div class="model-font">{{ model.name }}</div>
+        <div class="model-font text-[14px] font-bold text-[#3e3e3e]">
+          {{ model.name }}
+        </div>
       </div>
     </Space>
   </div>
-  <div class="image-style">
-    <div>
-      <b>风格选择</b>
-    </div>
-    <Space wrap class="image-style-list">
+
+  <div class="image-style mt-[30px]">
+    <div><b>风格选择</b></div>
+    <Space wrap class="image-style-list mt-[15px] flex flex-wrap gap-[10px]">
       <div
-        :class="
-          style === imageStyle.key
-            ? 'image-style-item selectImageStyle'
-            : 'image-style-item'
-        "
+        class="image-style-item flex w-[110px] cursor-pointer flex-col items-center overflow-hidden rounded-[5px] border-[3px]"
+        :class="[
+          style === imageStyle.key ? 'border-[#1293ff]' : 'border-transparent',
+        ]"
         v-for="imageStyle in Dall3StyleList"
         :key="imageStyle.key"
       >
@@ -215,35 +216,41 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleStyleClick(imageStyle)"
         />
-        <div class="style-font">{{ imageStyle.name }}</div>
+        <div class="style-font text-[14px] font-bold text-[#3e3e3e]">
+          {{ imageStyle.name }}
+        </div>
       </div>
     </Space>
   </div>
-  <div class="image-size">
-    <div>
-      <b>画面比例</b>
-    </div>
-    <Space wrap class="size-list">
+
+  <div class="image-size mt-[30px] w-full">
+    <div><b>画面比例</b></div>
+    <Space
+      wrap
+      class="size-list mt-[20px] flex w-full flex-row justify-between"
+    >
       <div
-        class="size-item"
+        class="size-item flex cursor-pointer flex-col items-center"
         v-for="imageSize in Dall3SizeList"
         :key="imageSize.key"
         @click="handleSizeClick(imageSize)"
       >
         <div
-          :class="
-            selectSize === imageSize.key
-              ? 'size-wrapper selectImageSize'
-              : 'size-wrapper'
-          "
+          class="size-wrapper flex h-[50px] w-[50px] flex-col items-center justify-center rounded-[7px] border bg-white p-[4px]"
+          :class="[
+            selectSize === imageSize.key ? 'border-[#1293ff]' : 'border-white',
+          ]"
         >
           <div :style="imageSize.style"></div>
         </div>
-        <div class="size-font">{{ imageSize.name }}</div>
+        <div class="size-font text-[14px] font-bold text-[#3e3e3e]">
+          {{ imageSize.name }}
+        </div>
       </div>
     </Space>
   </div>
-  <div class="btns">
+
+  <div class="btns mt-[50px] flex justify-center">
     <Button
       type="primary"
       size="large"
@@ -256,134 +263,3 @@ defineExpose({ settingValues });
     </Button>
   </div>
 </template>
-<style scoped lang="scss">
-// 热词
-.hot-words {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-
-  .word-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: start;
-    margin-top: 15px;
-
-    .btn {
-      margin: 0;
-    }
-  }
-}
-
-// 模型
-.model {
-  margin-top: 30px;
-
-  .model-list {
-    margin-top: 15px;
-
-    .modal-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 110px;
-      //outline: 1px solid blue;
-      overflow: hidden;
-      cursor: pointer;
-      border: 3px solid transparent;
-
-      .model-font {
-        font-size: 14px;
-        font-weight: bold;
-        color: #3e3e3e;
-      }
-    }
-
-    .selectModel {
-      border: 3px solid #1293ff;
-      border-radius: 5px;
-    }
-  }
-}
-
-// 样式 style
-.image-style {
-  margin-top: 30px;
-
-  .image-style-list {
-    margin-top: 15px;
-
-    .image-style-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 110px;
-      //outline: 1px solid blue;
-      overflow: hidden;
-      cursor: pointer;
-      border: 3px solid transparent;
-
-      .style-font {
-        font-size: 14px;
-        font-weight: bold;
-        color: #3e3e3e;
-      }
-    }
-
-    .selectImageStyle {
-      border: 3px solid #1293ff;
-      border-radius: 5px;
-    }
-  }
-}
-
-// 尺寸
-.image-size {
-  width: 100%;
-  margin-top: 30px;
-
-  .size-list {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
-
-    .size-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-
-      .size-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        padding: 4px;
-        background-color: #fff;
-        border: 1px solid #fff;
-        border-radius: 7px;
-      }
-
-      .size-font {
-        font-size: 14px;
-        font-weight: bold;
-        color: #3e3e3e;
-      }
-    }
-  }
-
-  .selectImageSize {
-    border: 1px solid #1293ff !important;
-  }
-}
-
-.btns {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-}
-</style>

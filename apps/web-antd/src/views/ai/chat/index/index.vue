@@ -494,7 +494,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <Layout class="ai-layout">
+    <Layout class="absolute left-0 top-0 h-full w-full flex-1">
       <!-- 左侧：对话列表 -->
       <ConversationList
         :active-id="activeConversationId"
@@ -504,19 +504,24 @@ onMounted(async () => {
         @on-conversation-clear="handleConversationClear"
         @on-conversation-delete="handlerConversationDelete"
       />
-      <Layout class="detail-container">
-        <Layout.Header class="header">
-          <div class="title">
+
+      <!-- 右侧：详情部分 -->
+      <Layout class="bg-white">
+        <Layout.Header
+          class="flex items-center justify-between bg-[#fbfbfb!important] shadow-none"
+        >
+          <div class="text-[18px] font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
             <span v-if="activeMessageList.length > 0">
               ({{ activeMessageList.length }})
             </span>
           </div>
-          <div class="btns" v-if="activeConversation">
+
+          <div class="flex w-[300px] justify-end" v-if="activeConversation">
             <Button
               type="primary"
               ghost
-              class="mr-[10px]"
+              class="mr-[10px] px-[10px]"
               size="small"
               @click="openChatConversationUpdateForm"
             >
@@ -525,7 +530,7 @@ onMounted(async () => {
             </Button>
             <Button
               size="small"
-              class="btn mr-[10px]"
+              class="mr-[10px] px-[10px]"
               @click="handlerMessageClear"
             >
               <IconifyIcon
@@ -533,54 +538,52 @@ onMounted(async () => {
                 color="#787878"
               />
             </Button>
-            <Button size="small" class="btn mr-[10px]">
+            <Button size="small" class="mr-[10px] px-[10px]">
               <IconifyIcon icon="ep:download" color="#787878" />
             </Button>
             <Button
               size="small"
-              class="btn mr-[10px]"
+              class="mr-[10px] px-[10px]"
               @click="handleGoTopMessage"
             >
               <IconifyIcon icon="ep:top" color="#787878" />
             </Button>
           </div>
         </Layout.Header>
-        <Layout.Content class="main-container">
-          <div>
-            <div class="message-container">
-              <!-- 情况一：消息加载中 -->
-              <MessageLoading v-if="activeMessageListLoading" />
-              <!-- 情况二：无聊天对话时 -->
-              <MessageNewConversation
-                v-if="!activeConversation"
-                @on-new-conversation="handleConversationCreate"
-              />
-              <!-- 情况三：消息列表为空 -->
-              <MessageListEmpty
-                v-if="
-                  !activeMessageListLoading &&
-                  messageList.length === 0 &&
-                  activeConversation
-                "
-                @on-prompt="doSendMessage"
-              />
-              <!-- 情况四：消息列表不为空 -->
-              <MessageList
-                v-if="!activeMessageListLoading && messageList.length > 0"
-                ref="messageRef"
-                :conversation="activeConversation"
-                :list="messageList"
-                @on-delete-success="handleMessageDelete"
-                @on-edit="handleMessageEdit"
-                @on-refresh="handleMessageRefresh"
-              />
-            </div>
+
+        <Layout.Content class="relative m-0 h-full w-full p-0">
+          <div class="absolute inset-0 m-0 overflow-y-hidden p-0">
+            <MessageLoading v-if="activeMessageListLoading" />
+            <MessageNewConversation
+              v-if="!activeConversation"
+              @on-new-conversation="handleConversationCreate"
+            />
+            <MessageListEmpty
+              v-if="
+                !activeMessageListLoading &&
+                messageList.length === 0 &&
+                activeConversation
+              "
+              @on-prompt="doSendMessage"
+            />
+            <MessageList
+              v-if="!activeMessageListLoading && messageList.length > 0"
+              ref="messageRef"
+              :conversation="activeConversation"
+              :list="messageList"
+              @on-delete-success="handleMessageDelete"
+              @on-edit="handleMessageEdit"
+              @on-refresh="handleMessageRefresh"
+            />
           </div>
         </Layout.Content>
-        <Layout.Footer class="footer-container">
-          <form class="prompt-from">
+
+        <Layout.Footer class="m-0 flex flex-col bg-[white!important] p-0">
+          <form
+            class="m-[10px_20px_20px] flex flex-col rounded-[10px] border border-[#e3e3e3] p-[9px_10px]"
+          >
             <textarea
-              class="prompt-input"
+              class="box-border h-[80px] resize-none overflow-auto border-none p-[0_2px] focus:outline-none"
               v-model="prompt"
               @keydown="handleSendByKeydown"
               @input="handlePromptInput"
@@ -588,10 +591,10 @@ onMounted(async () => {
               @compositionend="onCompositionend"
               placeholder="问我任何问题...（Shift+Enter 换行，按下 Enter 发送）"
             ></textarea>
-            <div class="prompt-btns">
-              <div>
+            <div class="flex justify-between pb-0 pt-[5px]">
+              <div class="flex items-center">
                 <Switch v-model:checked="enableContext" />
-                <span class="ml-5px text-14px text-#8f8f8f">上下文</span>
+                <span class="ml-[5px] text-[14px] text-[#8f8f8f]">上下文</span>
               </div>
               <Button
                 type="primary"
@@ -616,202 +619,3 @@ onMounted(async () => {
     <FormModal @success="handleConversationUpdateSuccess" />
   </Page>
 </template>
-
-<style lang="scss" scoped>
-.ai-layout {
-  position: absolute;
-  top: 0;
-  left: 0;
-  flex: 1;
-  width: 100%;
-  height: 100%;
-}
-
-.conversation-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px 10px 0;
-
-  .btn-new-conversation {
-    padding: 18px 0;
-  }
-
-  .search-input {
-    margin-top: 20px;
-  }
-
-  .conversation-list {
-    margin-top: 20px;
-
-    .conversation {
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5px;
-      margin-top: 10px;
-      line-height: 30px;
-      cursor: pointer;
-      border-radius: 5px;
-
-      &.active {
-        background-color: #e6e6e6;
-
-        .button {
-          display: inline-block;
-        }
-      }
-
-      .title-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .title {
-        max-width: 220px;
-        padding: 5px 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-
-      .avatar {
-        display: flex;
-        flex-direction: row;
-        justify-items: center;
-        width: 28px;
-        height: 28px;
-      }
-
-      // 对话编辑、删除
-      .button-wrapper {
-        right: 2px;
-        display: flex;
-        flex-direction: row;
-        justify-items: center;
-        color: #606266;
-
-        .el-icon {
-          margin-right: 5px;
-        }
-      }
-    }
-  }
-
-  // 角色仓库、清空未设置对话
-  .tool-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    line-height: 35px;
-    color: var(--el-text-color);
-
-    > div {
-      display: flex;
-      align-items: center;
-      padding: 0;
-      margin: 0;
-      color: #606266;
-      cursor: pointer;
-
-      > span {
-        margin-left: 5px;
-      }
-    }
-  }
-}
-
-// 头部
-.detail-container {
-  background: #fff;
-
-  .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background: #fbfbfb;
-    box-shadow: 0 0 0 0 #dcdfe6;
-
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .btns {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      width: 300px;
-      //justify-content: space-between;
-
-      .btn {
-        padding: 0 10px;
-      }
-    }
-  }
-}
-
-// main 容器
-.main-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-
-  .message-container {
-    position: absolute;
-    inset: 0;
-    padding: 0;
-    margin: 0;
-    overflow-y: hidden;
-  }
-}
-
-// 底部
-.footer-container {
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  padding: 0;
-  margin: 0;
-  background-color: white;
-
-  .prompt-from {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    padding: 9px 10px;
-    margin: 10px 20px 20px;
-    border: 1px solid #e3e3e3;
-    border-radius: 10px;
-  }
-
-  .prompt-input {
-    box-sizing: border-box;
-    height: 80px;
-    padding: 0 2px;
-    overflow: auto;
-    resize: none;
-    //box-shadow: none;
-    border: none;
-  }
-
-  .prompt-input:focus {
-    outline: none;
-  }
-
-  .prompt-btns {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 5px;
-    padding-bottom: 0;
-  }
-}
-</style>

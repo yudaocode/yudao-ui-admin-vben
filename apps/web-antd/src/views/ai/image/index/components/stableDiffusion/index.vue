@@ -9,7 +9,6 @@ import { alert, confirm } from '@vben/common-ui';
 
 import {
   Button,
-  Input,
   InputNumber,
   message,
   Select,
@@ -139,19 +138,19 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="w-100% mt-[15px]"
+      class="mt-[15px] w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
-  <div class="hot-words">
-    <div>
-      <b>随机热词</b>
-    </div>
-    <Space wrap class="word-list">
+
+  <!-- 热词区域 -->
+  <div class="mt-[30px] flex flex-col">
+    <div><b>随机热词</b></div>
+    <Space wrap class="mt-[15px] flex flex-wrap justify-start">
       <Button
         shape="round"
-        class="btn"
+        class="m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotEnglishWords"
         :key="hotWord"
@@ -161,11 +160,11 @@ defineExpose({ settingValues });
       </Button>
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>采样方法</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- 参数项：采样方法 -->
+  <div class="mt-[30px]">
+    <div><b>采样方法</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <Select
         v-model:value="sampler"
         placeholder="Select"
@@ -182,11 +181,11 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>CLIP</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- CLIP -->
+  <div class="mt-[30px]">
+    <div><b>CLIP</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <Select
         v-model:value="clipGuidancePreset"
         placeholder="Select"
@@ -203,11 +202,11 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>风格</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- 风格 -->
+  <div class="mt-[30px]">
+    <div><b>风格</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <Select
         v-model:value="stylePreset"
         placeholder="Select"
@@ -225,35 +224,43 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>图片尺寸</b>
-    </div>
-    <Space wrap class="group-item-body">
-      <Input v-model="width" class="w-[170px]" placeholder="图片宽度" />
-      <Input v-model="height" class="w-[170px]" placeholder="图片高度" />
+
+  <!-- 图片尺寸 -->
+  <div class="mt-[30px]">
+    <div><b>图片尺寸</b></div>
+    <Space wrap class="mt-[15px] w-full">
+      <InputNumber
+        v-model:value="width"
+        class="w-[170px]"
+        placeholder="图片宽度"
+      />
+      <InputNumber
+        v-model:value="height"
+        class="w-[170px]"
+        placeholder="图片高度"
+      />
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>迭代步数</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- 迭代步数 -->
+  <div class="mt-[30px]">
+    <div><b>迭代步数</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <InputNumber
-        v-model="steps"
+        v-model:value="steps"
         size="large"
         class="!w-[330px]"
         placeholder="Please input"
       />
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>引导系数</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- 引导系数 -->
+  <div class="mt-[30px]">
+    <div><b>引导系数</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <InputNumber
-        v-model="scale"
+        v-model:value="scale"
         type="number"
         size="large"
         class="!w-[330px]"
@@ -261,11 +268,11 @@ defineExpose({ settingValues });
       />
     </Space>
   </div>
-  <div class="group-item">
-    <div>
-      <b>随机因子</b>
-    </div>
-    <Space wrap class="group-item-body">
+
+  <!-- 随机因子 -->
+  <div class="mt-[30px]">
+    <div><b>随机因子</b></div>
+    <Space wrap class="mt-[15px] w-full">
       <InputNumber
         v-model:value="seed"
         size="large"
@@ -274,7 +281,9 @@ defineExpose({ settingValues });
       />
     </Space>
   </div>
-  <div class="btns">
+
+  <!-- 生成按钮 -->
+  <div class="mt-[50px] flex justify-center">
     <Button
       type="primary"
       size="large"
@@ -287,38 +296,3 @@ defineExpose({ settingValues });
     </Button>
   </div>
 </template>
-<style scoped lang="scss">
-// 热词
-.hot-words {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-
-  .word-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: start;
-    margin-top: 15px;
-
-    .btn {
-      margin: 0;
-    }
-  }
-}
-
-// 模型
-.group-item {
-  margin-top: 30px;
-
-  .group-item-body {
-    width: 100%;
-    margin-top: 15px;
-  }
-}
-
-.btns {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-}
-</style>

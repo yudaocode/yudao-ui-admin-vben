@@ -150,19 +150,18 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="w-100% mt-[15px]"
+      class="mt-[15px] w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
-  <div class="hot-words">
-    <div>
-      <b>随机热词</b>
-    </div>
-    <Space wrap class="word-list">
+
+  <div class="mt-8 flex flex-col">
+    <div><b>随机热词</b></div>
+    <Space wrap class="mt-4 flex flex-wrap gap-2">
       <Button
         shape="round"
-        class="btn"
+        class="m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotWords"
         :key="hotWord"
@@ -172,41 +171,41 @@ defineExpose({ settingValues });
       </Button>
     </Space>
   </div>
-  <div class="image-size">
-    <div>
-      <b>尺寸</b>
-    </div>
-    <Space wrap class="size-list">
+
+  <div class="mt-8 w-full">
+    <div><b>尺寸</b></div>
+    <Space wrap class="mt-5 flex w-full flex-row justify-between">
       <div
-        class="size-item"
+        class="flex cursor-pointer flex-col items-center"
         v-for="imageSize in MidjourneySizeList"
         :key="imageSize.key"
         @click="handleSizeClick(imageSize)"
       >
         <div
-          :class="
-            selectSize === imageSize.key
-              ? 'size-wrapper selectImageSize'
-              : 'size-wrapper'
-          "
+          class="flex h-[50px] w-[50px] items-center justify-center rounded-[7px] border bg-white p-1"
+          :class="[
+            selectSize === imageSize.key ? 'border-[#1293ff]' : 'border-white',
+          ]"
         >
           <div :style="imageSize.style"></div>
         </div>
-        <div class="size-font">{{ imageSize.key }}</div>
+        <div class="text-sm font-bold text-[#3e3e3e]">{{ imageSize.key }}</div>
       </div>
     </Space>
   </div>
-  <div class="model">
-    <div>
-      <b>模型</b>
-    </div>
-    <Space wrap class="model-list">
+
+  <div class="mt-8">
+    <div><b>模型</b></div>
+    <Space wrap class="mt-4 flex flex-wrap gap-4">
       <div
-        :class="
-          selectModel === model.key ? 'modal-item selectModel' : 'modal-item'
-        "
         v-for="model in MidjourneyModels"
         :key="model.key"
+        class="flex w-[150px] cursor-pointer flex-col items-center overflow-hidden border-[3px]"
+        :class="[
+          selectModel === model.key
+            ? 'rounded border-[#1293ff]'
+            : 'border-transparent',
+        ]"
       >
         <Image
           :preview="false"
@@ -214,18 +213,17 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleModelClick(model)"
         />
-        <div class="model-font">{{ model.name }}</div>
+        <div class="text-sm font-bold text-[#3e3e3e]">{{ model.name }}</div>
       </div>
     </Space>
   </div>
-  <div class="version">
-    <div>
-      <b>版本</b>
-    </div>
-    <Space wrap class="version-list">
+
+  <div class="mt-5">
+    <div><b>版本</b></div>
+    <Space wrap class="mt-5 w-full">
       <Select
         v-model:value="selectVersion"
-        class="version-select !w-[330px]"
+        class="!w-[330px]"
         clearable
         placeholder="请选择版本"
       >
@@ -239,15 +237,15 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="model">
-    <div>
-      <b>参考图</b>
-    </div>
-    <Space wrap class="model-list">
+
+  <div class="mt-8">
+    <div><b>参考图</b></div>
+    <Space wrap class="mt-4">
       <ImageUpload v-model:value="referImageUrl" :show-description="false" />
     </Space>
   </div>
-  <div class="btns">
+
+  <div class="mt-[50px] flex justify-center">
     <Button
       type="primary"
       size="large"
@@ -259,113 +257,3 @@ defineExpose({ settingValues });
     </Button>
   </div>
 </template>
-<style scoped lang="scss">
-// 热词
-.hot-words {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-
-  .word-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: start;
-    margin-top: 15px;
-
-    .btn {
-      margin: 0;
-    }
-  }
-}
-
-// version
-.version {
-  margin-top: 20px;
-
-  .version-list {
-    width: 100%;
-    margin-top: 20px;
-  }
-}
-
-// 模型
-.model {
-  margin-top: 30px;
-
-  .model-list {
-    margin-top: 15px;
-
-    .modal-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 150px;
-      //outline: 1px solid blue;
-      overflow: hidden;
-      cursor: pointer;
-      border: 3px solid transparent;
-
-      .model-font {
-        font-size: 14px;
-        font-weight: bold;
-        color: #3e3e3e;
-      }
-    }
-
-    .selectModel {
-      border: 3px solid #1293ff;
-      border-radius: 5px;
-    }
-  }
-}
-
-// 尺寸
-.image-size {
-  width: 100%;
-  margin-top: 30px;
-
-  .size-list {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
-
-    .size-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-
-      .size-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        padding: 4px;
-        background-color: #fff;
-        border: 1px solid #fff;
-        border-radius: 7px;
-      }
-
-      .size-font {
-        font-size: 14px;
-        font-weight: bold;
-        color: #3e3e3e;
-      }
-    }
-  }
-
-  .selectImageSize {
-    border: 1px solid #1293ff !important;
-  }
-}
-
-.btns {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-}
-</style>

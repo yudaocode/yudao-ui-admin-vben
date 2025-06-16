@@ -24,7 +24,11 @@ defineExpose({
 </script>
 <template>
   <div class="flex w-[350px] flex-col bg-[#f5f7f9] p-5">
-    <h3 class="title w-full text-center leading-[28px]">思维导图创作中心</h3>
+    <h3
+      class="h-[1.75rem] w-full text-center text-[1.25rem] leading-[28px] text-[hsl(var(--primary))]"
+    >
+      思维导图创作中心
+    </h3>
     <div class="flex-grow overflow-y-auto">
       <div>
         <b>您的需求？</b>
@@ -67,11 +71,3 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.title {
-  height: 1.75rem;
-  font-size: 1.25rem;
-  color: hsl(var(--primary));
-}
-</style>

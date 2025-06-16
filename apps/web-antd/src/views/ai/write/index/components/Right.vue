@@ -52,7 +52,7 @@ watch(copied, (val) => {
 });
 </script>
 <template>
-  <Card class="my-card h-full">
+  <Card class="my-card flex h-full flex-col">
     <template #title>
       <h3 class="m-0 flex shrink-0 items-center justify-between px-7">
         <span>预览</span>
@@ -123,9 +123,6 @@ watch(copied, (val) => {
 }
 
 .my-card {
-  display: flex;
-  flex-direction: column;
-
   :deep(.ant-card-body) {
     box-sizing: border-box;
     flex-grow: 1;

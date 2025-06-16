@@ -117,19 +117,20 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="w-100% mt-[15px]"
+      class="mt-[15px] w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
-  <div class="hot-words">
+
+  <div class="hot-words mt-[30px] flex flex-col">
     <div>
       <b>随机热词</b>
     </div>
-    <Space wrap class="word-list">
+    <Space wrap class="word-list mt-[15px] flex flex-wrap justify-start">
       <Button
         shape="round"
-        class="btn"
+        class="btn m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotWords"
         :key="hotWord"
@@ -139,16 +140,17 @@ defineExpose({ settingValues });
       </Button>
     </Space>
   </div>
-  <div class="group-item">
+
+  <div class="group-item mt-[30px]">
     <div>
       <b>平台</b>
     </div>
-    <Space wrap class="group-item-body">
+    <Space wrap class="group-item-body mt-[15px] w-full">
       <Select
         v-model:value="otherPlatform"
         placeholder="Select"
         size="large"
-        class="!w-[330px]"
+        class="!important w-[330px]"
         @change="handlerPlatformChange"
       >
         <Select.Option
@@ -161,16 +163,17 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="group-item">
+
+  <div class="group-item mt-[30px]">
     <div>
       <b>模型</b>
     </div>
-    <Space wrap class="group-item-body">
+    <Space wrap class="group-item-body mt-[15px] w-full">
       <Select
         v-model:value="modelId"
         placeholder="Select"
         size="large"
-        class="!w-[330px]"
+        class="!important w-[330px]"
       >
         <Select.Option
           v-for="item in platformModels"
@@ -182,11 +185,12 @@ defineExpose({ settingValues });
       </Select>
     </Space>
   </div>
-  <div class="group-item">
+
+  <div class="group-item mt-[30px]">
     <div>
       <b>图片尺寸</b>
     </div>
-    <Space wrap class="group-item-body">
+    <Space wrap class="group-item-body mt-[15px] flex flex-wrap gap-x-[20px]">
       <InputNumber
         v-model:value="width"
         class="mt-[10px] w-[170px]"
@@ -199,7 +203,8 @@ defineExpose({ settingValues });
       />
     </Space>
   </div>
-  <div class="btns">
+
+  <div class="btns mt-[50px] flex justify-center">
     <Button
       type="primary"
       size="large"
@@ -212,37 +217,3 @@ defineExpose({ settingValues });
     </Button>
   </div>
 </template>
-<style scoped lang="scss">
-.hot-words {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-
-  .word-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: start;
-    margin-top: 15px;
-
-    .btn {
-      margin: 0;
-    }
-  }
-}
-
-// 模型
-.group-item {
-  margin-top: 30px;
-
-  .group-item-body {
-    width: 100%;
-    margin-top: 15px;
-  }
-}
-
-.btns {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-}
-</style>

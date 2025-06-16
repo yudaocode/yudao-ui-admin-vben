@@ -16,16 +16,21 @@ const handlerPromptClick = async (prompt: any) => {
 };
 </script>
 <template>
-  <div class="chat-empty">
-    <!-- title -->
-    <div class="center-container">
-      <div class="title">芋道 AI</div>
-      <div class="role-list">
+  <div class="relative flex h-full w-full flex-row justify-center">
+    <!-- center-container -->
+    <div class="flex flex-col justify-center">
+      <!-- title -->
+      <div class="text-center text-[28px] font-bold">芋道 AI</div>
+
+      <!-- role-list -->
+      <div
+        class="mt-[20px] flex w-[460px] flex-wrap items-center justify-center"
+      >
         <div
-          class="role-item"
           v-for="prompt in promptList"
           :key="prompt.prompt"
           @click="handlerPromptClick(prompt)"
+          class="m-[10px] flex w-[180px] cursor-pointer justify-center rounded-[10px] border border-[#e4e4e4] leading-[50px] hover:bg-[rgba(243,243,243,0.73)]"
         >
           {{ prompt.prompt }}
         </div>
@@ -33,49 +38,3 @@ const handlerPromptClick = async (prompt: any) => {
     </div>
   </div>
 </template>
-<style scoped lang="scss">
-.chat-empty {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-
-  .center-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .title {
-      font-size: 28px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .role-list {
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-      justify-content: center;
-      width: 460px;
-      margin-top: 20px;
-
-      .role-item {
-        display: flex;
-        justify-content: center;
-        width: 180px;
-        margin: 10px;
-        line-height: 50px;
-        cursor: pointer;
-        border: 1px solid #e4e4e4;
-        border-radius: 10px;
-      }
-
-      .role-item:hover {
-        background-color: rgb(243 243 243 / 73%);
-      }
-    }
-  }
-}
-</style>

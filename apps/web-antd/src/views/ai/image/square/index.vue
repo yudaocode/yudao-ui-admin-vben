@@ -45,72 +45,44 @@ onMounted(async () => {
 </script>
 <template>
   <Page auto-content-height>
-    <div class="square-container">
-      <!-- TODO @fan：style 建议换成 unocss -->
+    <div class="bg-[#fff] p-[20px]">
       <!-- TODO @fan：Search 可以换成 Icon 组件么？ -->
       <Input.Search
         v-model="queryParams.prompt"
-        style="width: 100%; margin-bottom: 20px"
+        class="mb-[20px] w-full"
         size="large"
         placeholder="请输入要搜索的内容"
         @keyup.enter="handleQuery"
       />
-      <div class="gallery">
+      <div
+        class="grid gap-[10px] bg-[#fff] shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+        style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))"
+      >
         <!-- TODO @fan：这个图片的风格，要不和 ImageCard.vue 界面一致？（只有卡片，没有操作）；因为看着更有相框的感觉~~~ -->
-        <div v-for="item in list" :key="item.id" class="gallery-item">
-          <img :src="item.picUrl" class="img" />
+        <div
+          v-for="item in list"
+          :key="item.id"
+          class="relative cursor-pointer overflow-hidden bg-[#f0f0f0] transition-transform duration-300 hover:scale-[1.05]"
+        >
+          <img
+            :src="item.picUrl"
+            class="block h-auto w-full transition-transform duration-300 hover:scale-[1.1]"
+          />
         </div>
       </div>
       <!-- TODO @fan：缺少翻页 -->
       <!-- 分页 -->
       <Pagination
         :total="total"
-        :show-total="(total: number) => `共 ${total} 条`"
+        :show-total="(total) => `共 ${total} 条`"
         show-quick-jumper
         show-size-changer
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
         @change="debounceGetList"
         @show-size-change="debounceGetList"
+        class="mt-[20px]"
       />
     </div>
   </Page>
 </template>
-<style scoped lang="scss">
-.square-container {
-  padding: 20px;
-  background-color: #fff;
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    //max-width: 1000px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-  }
-
-  .gallery-item {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    background: #f0f0f0;
-    transition: transform 0.3s;
-  }
-
-  .gallery-item img {
-    display: block;
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s;
-  }
-
-  .gallery-item:hover img {
-    transform: scale(1.1);
-  }
-
-  .gallery-item:hover {
-    transform: scale(1.05);
-  }
-}
-</style>

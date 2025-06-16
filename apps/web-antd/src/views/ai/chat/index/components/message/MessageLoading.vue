@@ -3,13 +3,7 @@ import { Skeleton } from 'ant-design-vue';
 </script>
 
 <template>
-  <div class="message-loading">
+  <div class="p-[30px]">
     <Skeleton active />
   </div>
 </template>
-
-<style scoped lang="scss">
-.message-loading {
-  padding: 30px;
-}
-</style>

@@ -171,15 +171,18 @@ onMounted(async () => {
 
 <template>
   <Drawer>
-    <Layout class="role-container">
+    <Layout
+      class="absolute inset-0 flex h-full w-full flex-col overflow-hidden bg-white"
+    >
       <FormModal @success="handlerAddRoleSuccess" />
-      <Layout.Content class="role-main">
-        <div class="search-container">
-          <!-- 搜索按钮 -->
+
+      <Layout.Content class="relative m-0 flex-1 overflow-hidden p-0">
+        <div class="absolute right-0 top-[-5px] z-[100] mr-[20px] mt-[20px]">
+          <!-- 搜索输入框 -->
           <Input.Search
             :loading="loading"
             v-model:value="search"
-            class="search-input"
+            class="w-[240px]"
             placeholder="请输入搜索的内容"
             @search="getActiveTabsRole"
           />
@@ -193,12 +196,18 @@ onMounted(async () => {
             添加角色
           </Button>
         </div>
+
+        <!-- 标签页内容 -->
         <Tabs
           v-model:value="activeTab"
-          class="tabs p-4"
+          class="relative h-full p-4"
           @tab-click="handleTabsClick"
         >
-          <TabPane key="my-role" class="role-pane" tab="我的角色">
+          <TabPane
+            key="my-role"
+            class="flex h-full flex-col overflow-y-auto"
+            tab="我的角色"
+          >
             <RoleList
               :loading="loading"
               :role-list="myRoleList"
@@ -210,12 +219,17 @@ onMounted(async () => {
               class="mt-[20px]"
             />
           </TabPane>
-          <TabPane key="public-role" class="role-pane" tab="公共角色">
+
+          <TabPane
+            key="public-role"
+            class="flex h-full flex-col overflow-y-auto"
+            tab="公共角色"
+          >
             <RoleCategoryList
-              class="role-category-list"
               :category-list="categoryList"
               :active="activeCategory"
               @on-category-click="handlerCategoryClick"
+              class="mx-[27px]"
             />
             <RoleList
               :role-list="publicRoleList"
@@ -232,56 +246,3 @@ onMounted(async () => {
     </Layout>
   </Drawer>
 </template>
-
-<style scoped lang="scss">
-// 跟容器
-.role-container {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  background-color: #fff;
-
-  .role-main {
-    position: relative;
-    flex: 1;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-
-    .search-container {
-      position: absolute;
-      top: -5px;
-      right: 0;
-      z-index: 100;
-      margin: 20px 20px 0;
-    }
-
-    .search-input {
-      width: 240px;
-    }
-
-    .tabs {
-      position: relative;
-      height: 100%;
-
-      .role-category-list {
-        margin: 0 27px;
-      }
-    }
-
-    .role-pane {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow-y: auto;
-    }
-  }
-}
-</style>

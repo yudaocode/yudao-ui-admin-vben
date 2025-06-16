@@ -25,8 +25,12 @@ const handleCategoryClick = async (category: string) => {
 </script>
 
 <template>
-  <div class="category-list">
-    <div class="category" v-for="category in categoryList" :key="category">
+  <div class="flex flex-wrap items-center">
+    <div
+      class="mr-[10px] flex flex-row"
+      v-for="category in categoryList"
+      :key="category"
+    >
       <Button
         size="small"
         shape="round"
@@ -38,17 +42,3 @@ const handleCategoryClick = async (category: string) => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.category-list {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-
-  .category {
-    display: flex;
-    flex-direction: row;
-    margin-right: 10px;
-  }
-}
-</style>

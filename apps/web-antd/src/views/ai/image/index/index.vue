@@ -90,15 +90,16 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <div class="ai-image">
-      <div class="left">
+    <div class="ai-image absolute inset-0 flex h-full w-full flex-row">
+      <div class="left flex w-[390px] flex-col p-5">
         <div class="segmented flex justify-center">
           <Segmented
             v-model:value="selectPlatform"
             :options="platformOptions"
+            class="bg-[#ececec]"
           />
         </div>
-        <div class="modal-switch-container">
+        <div class="modal-switch-container mt-[30px] h-full overflow-y-auto">
           <Common
             v-if="selectPlatform === 'common'"
             ref="commonRef"
@@ -125,47 +126,9 @@ onMounted(async () => {
           />
         </div>
       </div>
-      <div class="main">
+      <div class="main flex-1 bg-white">
         <ImageList ref="imageListRef" @on-regeneration="handleRegeneration" />
       </div>
     </div>
   </Page>
 </template>
-
-<style scoped lang="scss">
-.ai-image {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-
-  .left {
-    display: flex;
-    flex-direction: column;
-    width: 390px;
-    padding: 20px;
-
-    .segmented .ant-segmented {
-      background-color: #ececec;
-    }
-
-    .modal-switch-container {
-      height: 100%;
-      margin-top: 30px;
-      overflow-y: auto;
-    }
-  }
-
-  .main {
-    flex: 1;
-    background-color: #fff;
-  }
-
-  .right {
-    width: 350px;
-    background-color: #f7f8fa;
-  }
-}
-</style>

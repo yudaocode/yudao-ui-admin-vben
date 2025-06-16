@@ -303,23 +303,26 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Layout.Sider width="260px" class="conversation-container h-full">
+  <Layout.Sider
+    width="260px"
+    class="conversation-container relative flex h-full flex-col justify-between overflow-hidden bg-[hsl(var(--primary-foreground))!important] p-[10px_10px_0]"
+  >
     <Drawer />
     <!-- 左顶部：对话 -->
-    <div class="flex h-full" style="flex-direction: column">
+    <div class="flex h-full flex-col">
       <Button
-        class="w-1/1 btn-new-conversation"
+        class="btn-new-conversation h-[38px] w-full"
         type="primary"
         @click="createConversation"
       >
         <IconifyIcon icon="ep:plus" class="mr-[5px]" />
         新建对话
       </Button>
-      <!-- 左顶部：搜索对话 -->
+
       <Input
         v-model:value="searchName"
         size="large"
-        class="search-input mt-[10px]"
+        class="search-input mt-[20px]"
         placeholder="搜索历史记录"
         @keyup="searchConversation"
       >
@@ -329,50 +332,57 @@ onMounted(async () => {
       </Input>
 
       <!-- 左中间：对话列表 -->
-      <div class="conversation-list">
+      <div class="conversation-list mt-[10px] flex-1 overflow-auto">
         <!-- 情况一：加载中 -->
         <Empty v-if="loading" description="." v-loading="loading" />
-        <!-- 情况二：按照 group 分组，展示聊天会话 list 列表 -->
+
+        <!-- 情况二：按照 group 分组 -->
         <div
           v-for="conversationKey in Object.keys(conversationMap)"
           :key="conversationKey"
+          class=""
         >
           <div
-            class="conversation-item classify-title"
             v-if="conversationMap[conversationKey].length > 0"
+            class="conversation-item classify-title pt-[10px]"
           >
-            <b class="mx-1">
+            <b class="mx-[4px]">
               {{ conversationKey }}
             </b>
           </div>
+
           <div
-            class="conversation-item"
             v-for="conversation in conversationMap[conversationKey]"
             :key="conversation.id"
             @click="handleConversationClick(conversation.id)"
             @mouseover="hoverConversationId = conversation.id"
             @mouseout="hoverConversationId = null"
+            class="conversation-item mt-[5px]"
           >
             <div
-              :class="
-                conversation.id === activeConversationId
-                  ? 'conversation active'
-                  : 'conversation'
-              "
+              class="conversation flex cursor-pointer flex-row items-center justify-between rounded-[5px] px-[5px] leading-[30px]"
+              :class="[
+                conversation.id === activeConversationId ? 'bg-[#e6e6e6]' : '',
+              ]"
             >
-              <div class="title-wrapper">
+              <div class="title-wrapper flex items-center">
                 <img
-                  class="avatar"
+                  class="avatar h-[25px] w-[25px] rounded-[5px]"
                   :src="conversation.roleAvatar ?? '/static/gpt.svg'"
                 />
-                <span class="title">{{ conversation.title }}</span>
+                <span
+                  class="title text-black/77 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap px-[10px] py-[2px] text-[14px] font-normal"
+                >
+                  {{ conversation.title }}
+                </span>
               </div>
+
               <div
-                class="button-wrapper"
                 v-show="hoverConversationId === conversation.id"
+                class="button-wrapper relative right-[2px] flex items-center text-[#606266]"
               >
                 <Button
-                  class="btn"
+                  class="btn mr-0 px-[5px]"
                   type="link"
                   @click.stop="handleTop(conversation)"
                 >
@@ -386,14 +396,14 @@ onMounted(async () => {
                   ></span>
                 </Button>
                 <Button
-                  class="btn"
+                  class="btn mr-0 px-[5px]"
                   type="link"
                   @click.stop="updateConversationTitle(conversation)"
                 >
                   <IconifyIcon icon="ep:edit" />
                 </Button>
                 <Button
-                  class="btn"
+                  class="btn mr-0 px-[5px]"
                   type="link"
                   @click.stop="deleteChatConversation(conversation)"
                 >
@@ -404,143 +414,29 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <!-- 底部占位  -->
-      <div class="w-100% h-[50px]"></div>
+
+      <!-- 底部占位 -->
+      <div class="h-[50px] w-full"></div>
     </div>
+
     <!-- 左底部：工具栏 -->
-    <div class="tool-box">
-      <div @click="handleRoleRepository">
+    <div
+      class="tool-box absolute bottom-0 left-0 right-0 flex items-center justify-between bg-[#f4f4f4] px-[20px] leading-[35px] text-[var(--el-text-color)] shadow-[0_0_1px_1px_rgba(228,228,228,0.8)]"
+    >
+      <div
+        class="flex cursor-pointer items-center text-[#606266]"
+        @click="handleRoleRepository"
+      >
         <IconifyIcon icon="ep:user" />
-        <span>角色仓库</span>
+        <span class="ml-[5px]">角色仓库</span>
       </div>
-      <div @click="handleClearConversation">
+      <div
+        class="flex cursor-pointer items-center text-[#606266]"
+        @click="handleClearConversation"
+      >
         <IconifyIcon icon="ep:delete" />
-        <span>清空未置顶对话</span>
+        <span class="ml-[5px]">清空未置顶对话</span>
       </div>
     </div>
   </Layout.Sider>
 </template>
-
-<style scoped lang="scss">
-.conversation-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px 10px 0;
-  overflow: hidden;
-  background-color: hsl(var(--primary-foreground));
-
-  .btn-new-conversation {
-    width: 100%;
-    height: 38px;
-  }
-
-  .search-input {
-    margin-top: 20px;
-  }
-
-  .conversation-list {
-    height: 100%;
-    overflow: auto;
-
-    .classify-title {
-      padding-top: 10px;
-    }
-
-    .conversation-item {
-      margin-top: 5px;
-    }
-
-    .conversation {
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5px;
-      line-height: 30px;
-      cursor: pointer;
-      border-radius: 5px;
-
-      &.active {
-        background-color: #e6e6e6;
-
-        .button {
-          display: inline-block;
-        }
-      }
-
-      .title-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .title {
-        max-width: 150px;
-        padding: 2px 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 14px;
-        font-weight: 400;
-        color: rgb(0 0 0 / 77%);
-        white-space: nowrap;
-      }
-
-      .avatar {
-        display: flex;
-        flex-direction: row;
-        justify-items: center;
-        width: 25px;
-        height: 25px;
-        border-radius: 5px;
-      }
-
-      // 对话编辑、删除
-      .button-wrapper {
-        right: 2px;
-        display: flex;
-        flex-direction: row;
-        place-items: center center;
-        color: #606266;
-
-        .btn {
-          padding: 0 5px 0 0;
-          margin: 0;
-        }
-      }
-    }
-  }
-
-  // 角色仓库、清空未设置对话
-  .tool-box {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    //width: 100%;
-    padding: 0 20px;
-    line-height: 35px;
-    color: var(--el-text-color);
-    background-color: #f4f4f4;
-    box-shadow: 0 0 1px 1px rgb(228 228 228 / 80%);
-
-    > div {
-      display: flex;
-      align-items: center;
-      padding: 0;
-      margin: 0;
-      color: #606266;
-      cursor: pointer;
-
-      > span {
-        margin-left: 5px;
-      }
-    }
-  }
-}
-</style>

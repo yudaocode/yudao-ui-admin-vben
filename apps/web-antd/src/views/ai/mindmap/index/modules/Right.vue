@@ -120,7 +120,7 @@ defineExpose({
 </script>
 
 <template>
-  <Card class="my-card h-full flex-grow">
+  <Card class="my-card flex h-full flex-grow flex-col">
     <template #title>
       <div class="m-0 flex shrink-0 items-center justify-between px-7">
         <h3>思维导图预览</h3>
@@ -176,9 +176,6 @@ defineExpose({
 }
 
 .my-card {
-  display: flex;
-  flex-direction: column;
-
   :deep(.ant-card-body) {
     box-sizing: border-box;
     flex-grow: 1;

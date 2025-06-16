@@ -60,10 +60,18 @@ const handleTabsScroll = async () => {
 </script>
 
 <template>
-  <div class="card-list" ref="tabsRef" @scroll="handleTabsScroll">
-    <div class="card-item" v-for="role in roleList" :key="role.id">
+  <div
+    class="relative flex h-full flex-wrap content-start items-start overflow-auto px-[25px] pb-[140px]"
+    ref="tabsRef"
+    @scroll="handleTabsScroll"
+  >
+    <div
+      class="mb-[20px] mr-[20px] inline-block"
+      v-for="role in roleList"
+      :key="role.id"
+    >
       <Card
-        class="card"
+        class="relative rounded-[10px]"
         :body-style="{
           position: 'relative',
           display: 'flex',
@@ -75,7 +83,7 @@ const handleTabsScroll = async () => {
         }"
       >
         <!-- 更多操作 -->
-        <div class="more-container" v-if="showMore">
+        <div v-if="showMore" class="absolute right-[12px] top-0">
           <Dropdown>
             <Button type="text">
               <span class="icon-[ant-design--more-outlined] text-2xl"></span>
@@ -91,23 +99,32 @@ const handleTabsScroll = async () => {
                 <Menu.Item @click="handleMoreClick(['delete', role])">
                   <div class="flex items-center">
                     <IconifyIcon icon="ep:delete" color="red" />
-                    <span style="color: red">编辑</span>
+                    <span class="text-red-500">编辑</span>
                   </div>
                 </Menu.Item>
               </Menu>
             </template>
           </Dropdown>
         </div>
+
         <!-- 角色信息 -->
         <div>
-          <img class="avatar" :src="role.avatar" />
+          <img
+            :src="role.avatar"
+            class="h-[40px] w-[40px] overflow-hidden rounded-[10px]"
+          />
         </div>
-        <div class="right-container">
-          <div class="content-container">
-            <div class="title">{{ role.name }}</div>
-            <div class="description">{{ role.description }}</div>
+
+        <div class="ml-[10px] w-full">
+          <div class="h-[85px]">
+            <div class="max-w-[140px] text-[18px] font-bold text-[#3e3e3e]">
+              {{ role.name }}
+            </div>
+            <div class="mt-[10px] text-[14px] text-[#6a6a6a]">
+              {{ role.description }}
+            </div>
           </div>
-          <div class="btn-container">
+          <div class="mt-[2px] flex flex-row-reverse">
             <Button type="primary" size="small" @click="handleUseClick(role)">
               使用
             </Button>
@@ -117,67 +134,3 @@ const handleTabsScroll = async () => {
     </div>
   </div>
 </template>
-<style scoped lang="scss">
-// 卡片列表
-.card-list {
-  position: relative;
-  display: flex;
-  flex-flow: row wrap;
-  place-content: flex-start start;
-  align-items: start;
-  height: 100%;
-  padding: 0 25px;
-  padding-bottom: 140px;
-  overflow: auto;
-
-  .card {
-    position: relative;
-    display: inline-block;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-
-    .more-container {
-      position: absolute;
-      top: 0;
-      right: 12px;
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-
-    .right-container {
-      width: 100%;
-      margin-left: 10px;
-      //height: 100px;
-
-      .content-container {
-        height: 85px;
-
-        .title {
-          max-width: 140px;
-          font-size: 18px;
-          font-weight: bold;
-          color: #3e3e3e;
-        }
-
-        .description {
-          margin-top: 10px;
-          font-size: 14px;
-          color: #6a6a6a;
-        }
-      }
-
-      .btn-container {
-        display: flex;
-        flex-direction: row-reverse;
-        margin-top: 2px;
-      }
-    }
-  }
-}
-</style>

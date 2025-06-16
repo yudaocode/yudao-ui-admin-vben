@@ -166,38 +166,46 @@ onUnmounted(async () => {
   }
 });
 </script>
-
 <template>
   <Drawer class="w-[600px]">
     <ImageDetail :id="showImageDetailId" />
   </Drawer>
   <Card
-    class="dr-task"
+    class="dr-task flex h-full w-full flex-col"
     :body-style="{
       margin: 0,
       padding: 0,
       height: '100%',
       position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
     }"
   >
     <template #title>
       绘画任务
-      <!-- TODO @fan：看看，怎么优化下这个样子哈。 -->
       <Button @click="handleViewPublic">绘画作品</Button>
     </template>
-    <div class="task-image-list" ref="imageListRef">
+
+    <div
+      class="task-image-list flex flex-1 flex-wrap content-start overflow-y-auto p-5 pb-[140px] pt-5"
+      ref="imageListRef"
+    >
       <ImageCard
         v-for="image in imageList"
         :key="image.id"
         :detail="image"
         @on-btn-click="handleImageButtonClick"
         @on-mj-btn-click="handleImageMidjourneyButtonClick"
+        class="mb-5 mr-5"
       />
     </div>
-    <div class="task-image-pagination">
+
+    <div
+      class="task-image-pagination sticky bottom-0 z-50 flex h-[60px] items-center justify-center bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.1)]"
+    >
       <Pagination
         :total="pageTotal"
-        :show-total="(total: number) => `共 ${total} 条`"
+        :show-total="(total) => `共 ${total} 条`"
         show-quick-jumper
         show-size-changer
         v-model:current="queryParams.pageNo"
@@ -208,43 +216,3 @@ onUnmounted(async () => {
     </div>
   </Card>
 </template>
-<style lang="scss">
-.dr-task {
-  width: 100%;
-  height: 100%;
-}
-
-.task-image-list {
-  position: relative;
-  box-sizing: border-box; /* 确保内边距不会增加高度 */
-  display: flex;
-  flex-flow: row wrap;
-  align-content: flex-start;
-  height: 100%;
-  padding: 20px 20px 140px;
-  overflow: auto;
-
-  > div {
-    margin-right: 20px;
-    margin-bottom: 20px;
-  }
-
-  > div:last-of-type {
-    //margin-bottom: 100px;
-  }
-}
-
-.task-image-pagination {
-  position: absolute;
-  bottom: 60px;
-  z-index: 999;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 50px;
-  line-height: 90px;
-  background-color: #fff;
-}
-</style>

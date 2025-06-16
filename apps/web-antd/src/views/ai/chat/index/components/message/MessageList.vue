@@ -113,66 +113,92 @@ onMounted(async () => {
 </script>
 <template>
   <div ref="messageContainer" class="relative h-full overflow-y-auto">
-    <div class="chat-list" v-for="(item, index) in list" :key="index">
-      <!-- 靠左 message：system、assistant 类型 -->
-      <div class="left-message message-item" v-if="item.type !== 'user'">
+    <div
+      v-for="(item, index) in list"
+      :key="index"
+      class="mt-[50px] flex flex-col overflow-y-hidden px-[20px]"
+    >
+      <!-- 左侧消息：system、assistant -->
+      <div v-if="item.type !== 'user'" class="flex flex-row">
         <div class="avatar">
           <Avatar :src="roleAvatar" />
         </div>
-        <div class="message">
-          <div>
-            <div class="time">{{ formatDate(item.createTime) }}</div>
+        <div class="mx-[15px] flex flex-col text-left">
+          <div class="text-left leading-[30px]">
+            {{ formatDate(item.createTime) }}
           </div>
-          <div class="left-text-container">
-            <MarkdownView class="left-text" :content="item.content" />
+          <div
+            class="relative flex flex-col break-words rounded-[10px] bg-[#e4e4e4cc] p-[10px] pb-[5px] pt-[10px] shadow-[0_0_0_1px_rgba(228,228,228,0.8)]"
+          >
+            <MarkdownView
+              class="text-[0.95rem] text-[#393939]"
+              :content="item.content"
+            />
             <MessageKnowledge v-if="item.segments" :segments="item.segments" />
           </div>
-          <div class="left-btns">
+          <div class="mt-[8px] flex flex-row">
             <Button
-              class="btn-cus"
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="copyContent(item.content)"
             >
-              <img class="btn-image" src="/static/copy.svg" />
+              <img class="h-[20px]" src="/static/copy.svg" />
             </Button>
             <Button
               v-if="item.id > 0"
-              class="btn-cus"
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="onDelete(item.id)"
             >
-              <img class="btn-image h-[17px]" src="/static/delete.svg" />
+              <img class="h-[17px]" src="/static/delete.svg" />
             </Button>
           </div>
         </div>
       </div>
-      <!-- 靠右 message：user 类型 -->
-      <div class="right-message message-item" v-if="item.type === 'user'">
+
+      <!-- 右侧消息：user -->
+      <div v-else class="flex flex-row-reverse justify-start">
         <div class="avatar">
           <Avatar :src="userAvatar" />
         </div>
-        <div class="message">
-          <div>
-            <div class="time">{{ formatDate(item.createTime) }}</div>
+        <div class="mx-[15px] flex flex-col text-left">
+          <div class="text-left leading-[30px]">
+            {{ formatDate(item.createTime) }}
           </div>
-          <div class="right-text-container">
-            <div class="right-text">{{ item.content }}</div>
+          <div class="flex flex-row-reverse">
+            <div
+              class="inline w-auto whitespace-pre-wrap break-words rounded-[10px] bg-[#267fff] p-[10px] text-[0.95rem] text-white shadow-[0_0_0_1px_#267fff]"
+            >
+              {{ item.content }}
+            </div>
           </div>
-          <div class="right-btns">
+          <div class="mt-[8px] flex flex-row-reverse">
             <Button
-              class="btn-cus"
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
               type="text"
               @click="copyContent(item.content)"
             >
-              <img class="btn-image" src="/static/copy.svg" />
+              <img class="h-[20px]" src="/static/copy.svg" />
             </Button>
-            <Button class="btn-cus" type="text" @click="onDelete(item.id)">
-              <img class="btn-image h-[17px]" src="/static/delete.svg" />
+            <Button
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              type="text"
+              @click="onDelete(item.id)"
+            >
+              <img class="h-[17px]" src="/static/delete.svg" />
             </Button>
-            <Button class="btn-cus" type="text" @click="onRefresh(item)">
+            <Button
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              type="text"
+              @click="onRefresh(item)"
+            >
               <span class="icon-[ant-design--redo-outlined]"></span>
             </Button>
-            <Button class="btn-cus" type="text" @click="onEdit(item)">
+            <Button
+              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              type="text"
+              @click="onEdit(item)"
+            >
               <span class="icon-[ant-design--form-outlined]"></span>
             </Button>
           </div>
@@ -180,117 +206,15 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <!-- 回到底部 -->
-  <div v-if="isScrolling" class="to-bottom" @click="handleGoBottom">
+
+  <!-- 回到底部按钮 -->
+  <div
+    v-if="isScrolling"
+    class="absolute bottom-0 right-1/2 z-[1000]"
+    @click="handleGoBottom"
+  >
     <Button shape="circle">
       <span class="icon-[ant-design--down-outlined]"></span>
     </Button>
   </div>
 </template>
-<style scoped lang="scss">
-// 中间
-.chat-list {
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-  overflow-y: hidden;
-
-  .message-item {
-    margin-top: 50px;
-  }
-
-  .left-message {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .right-message {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-start;
-  }
-
-  .message {
-    display: flex;
-    flex-direction: column;
-    margin: 0 15px;
-    text-align: left;
-
-    .time {
-      line-height: 30px;
-      text-align: left;
-    }
-
-    .left-text-container {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      padding: 10px 10px 5px;
-      overflow-wrap: break-word;
-      background-color: rgb(228 228 228 / 80%);
-      border-radius: 10px;
-      box-shadow: 0 0 0 1px rgb(228 228 228 / 80%);
-
-      .left-text {
-        font-size: 0.95rem;
-        color: #393939;
-      }
-    }
-
-    .right-text-container {
-      display: flex;
-      flex-direction: row-reverse;
-
-      .right-text {
-        display: inline;
-        width: auto;
-        padding: 10px;
-        font-size: 0.95rem;
-        color: #fff;
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
-        background-color: #267fff;
-        border-radius: 10px;
-        box-shadow: 0 0 0 1px #267fff;
-      }
-    }
-
-    .left-btns {
-      display: flex;
-      flex-direction: row;
-      margin-top: 8px;
-    }
-
-    .right-btns {
-      display: flex;
-      flex-direction: row-reverse;
-      margin-top: 8px;
-    }
-  }
-
-  // 复制、删除按钮
-  .btn-cus {
-    display: flex;
-    align-items: center;
-    padding: 0 5px;
-    background-color: transparent;
-
-    .btn-image {
-      height: 20px;
-    }
-  }
-
-  .btn-cus:hover {
-    cursor: pointer;
-    background-color: #f6f6f6;
-  }
-}
-
-// 回到底部
-.to-bottom {
-  position: absolute;
-  right: 50%;
-  bottom: 0;
-  z-index: 1000;
-}
-</style>

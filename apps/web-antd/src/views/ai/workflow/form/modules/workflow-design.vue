@@ -8,7 +8,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { Button, Input, Select } from 'ant-design-vue';
 
 import { testWorkflow } from '#/api/ai/workflow';
-import Tinyflow from '#/components/Tinyflow/Tinyflow.vue';
+import Tinyflow from '#/components/tinyflow/tinyflow.vue';
 
 defineProps<{
   provider: any;
@@ -25,7 +25,7 @@ const error = ref(null);
 const [Drawer, drawerApi] = useVbenDrawer({
   footer: false,
   closeOnClickModal: false,
-  modal: false
+  modal: false,
 });
 /** 展示工作流测试抽屉 */
 const testWorkflowModel = () => {
@@ -180,7 +180,7 @@ defineExpose({ validate });
 </script>
 
 <template>
-  <div class="relative" style="width: 100%; height: 700px">
+  <div class="relative h-[700px] w-[100%]">
     <Tinyflow
       v-if="workflowData"
       ref="tinyflowRef"
@@ -198,12 +198,19 @@ defineExpose({ validate });
         测试
       </Button>
     </div>
+
     <Drawer title="工作流测试">
-      <fieldset>
-        <legend class="ml-2"><h3>运行参数配置</h3></legend>
-        <div class="p-2">
+      <fieldset
+        class="min-inline-size-auto m-0 rounded-[6px] border border-[#dcdfe6] p-[12px_16px]"
+      >
+        <legend
+          class="ml-[8px] px-[10px] text-[16px] font-semibold text-[#303133]"
+        >
+          <h3>运行参数配置</h3>
+        </legend>
+        <div class="p-[8px]">
           <div
-            class="mb-1 flex justify-around"
+            class="mb-[4px] flex items-center justify-around"
             v-for="(param, index) in params4Test"
             :key="index"
           >
@@ -218,7 +225,7 @@ defineExpose({ validate });
               </Select.Option>
             </Select>
             <Input
-              class="w-[200px]"
+              class="mx-[8px] w-[200px]"
               v-model:value="param.value"
               placeholder="参数值"
             />
@@ -228,26 +235,35 @@ defineExpose({ validate });
               </template>
             </Button>
           </div>
-          <Button type="primary" plain @click="addParam">添加参数</Button>
+          <Button type="primary" plain class="mt-[8px]" @click="addParam">
+            添加参数
+          </Button>
         </div>
       </fieldset>
-      <fieldset class="mt-2" style="background-color: #f8f9fa">
-        <legend class="ml-2"><h3>运行结果</h3></legend>
-        <div class="p-2">
-          <div v-if="loading"><el-text type="primary">执行中...</el-text></div>
-          <div v-else-if="error">
-            <el-text type="danger">{{ error }}</el-text>
-          </div>
-          <pre v-else-if="testResult" class="result-content">
-            {{ JSON.stringify(testResult, null, 2) }}
+
+      <fieldset
+        class="min-inline-size-auto m-0 mt-[8px] rounded-[6px] border border-[#dcdfe6] bg-[#f8f9fa] p-[12px_16px]"
+      >
+        <legend
+          class="ml-[8px] px-[10px] text-[16px] font-semibold text-[#303133]"
+        >
+          <h3>运行结果</h3>
+        </legend>
+        <div class="p-[8px]">
+          <div v-if="loading" class="text-primary">执行中...</div>
+          <div v-else-if="error" class="text-danger">{{ error }}</div>
+          <pre
+            v-else-if="testResult"
+            class="max-h-[300px] overflow-auto whitespace-pre-wrap rounded-[4px] bg-white p-[12px] font-mono text-[14px] leading-[1.5]"
+            >{{ JSON.stringify(testResult, null, 2) }}
           </pre>
-          <div v-else style="color: #909399">点击运行查看结果</div>
+          <div v-else class="text-[#909399]">点击运行查看结果</div>
         </div>
       </fieldset>
+
       <Button
-        class="mt-2"
         size="large"
-        style="width: 100%; color: white; background-color: #67c23a"
+        class="mt-[8px] w-[100%] bg-[#67c23a] text-white"
         @click="goRun"
       >
         运行流程
@@ -255,32 +271,3 @@ defineExpose({ validate });
     </Drawer>
   </div>
 </template>
-
-<style lang="css" scoped>
-.result-content {
-  max-height: 300px;
-  padding: 12px;
-  overflow: auto;
-  font-family: Monaco, Consolas, monospace;
-  font-size: 14px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  background: white;
-  border-radius: 4px;
-}
-
-fieldset {
-  min-inline-size: auto;
-  padding: 12px 16px;
-  margin: 0;
-  border: 1px solid #dcdfe6;
-  border-radius: 6px;
-}
-
-legend {
-  padding: 0 10px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
-}
-</style>

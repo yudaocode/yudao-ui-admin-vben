@@ -65,8 +65,12 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <Card body-class="" class="image-card">
-    <div class="image-operation">
+  <Card
+    body-class=""
+    class="relative flex h-auto w-[320px] flex-col rounded-[10px]"
+  >
+    <!-- 图片操作区 -->
+    <div class="flex flex-row justify-between">
       <div>
         <Button v-if="detail?.status === AiImageStatusEnum.IN_PROGRESS">
           生成中
@@ -78,31 +82,30 @@ onMounted(async () => {
           异常
         </Button>
       </div>
-      <!-- 操作区 -->
-      <div>
+      <div class="flex">
         <Button
-          class="btn"
+          class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('download', detail)"
         >
           <span class="icon-[ant-design--download-outlined]"></span>
         </Button>
         <Button
-          class="btn"
+          class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('regeneration', detail)"
         >
           <span class="icon-[ant-design--redo-outlined]"></span>
         </Button>
         <Button
-          class="btn"
+          class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('delete', detail)"
         >
           <span class="icon-[ant-design--delete-outlined]"></span>
         </Button>
         <Button
-          class="btn"
+          class="m-0 p-[10px]"
           type="text"
           @click="handleButtonClick('more', detail)"
         >
@@ -110,14 +113,17 @@ onMounted(async () => {
         </Button>
       </div>
     </div>
-    <div class="image-wrapper" ref="cardImageRef">
-      <Image class="image" :src="detail?.picUrl" />
+
+    <!-- 图片展示区域 -->
+    <div class="mt-[20px] h-[280px] flex-1 overflow-hidden" ref="cardImageRef">
+      <Image class="w-full rounded-[10px]" :src="detail?.picUrl" />
       <div v-if="detail?.status === AiImageStatusEnum.FAIL">
         {{ detail?.errorMessage }}
       </div>
     </div>
-    <!-- Midjourney 专属操作 -->
-    <div class="image-mj-btns">
+
+    <!-- Midjourney 专属操作按钮 -->
+    <div class="mt-[5px] flex w-full flex-wrap justify-start">
       <Button
         size="small"
         v-for="(button, index) in detail?.buttons"
@@ -130,46 +136,3 @@ onMounted(async () => {
     </div>
   </Card>
 </template>
-
-<style scoped lang="scss">
-.image-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 320px;
-  height: auto;
-  border-radius: 10px;
-
-  .image-operation {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .btn {
-      //border: 1px solid red;
-      padding: 10px;
-      margin: 0;
-    }
-  }
-
-  .image-wrapper {
-    flex: 1;
-    height: 280px;
-    margin-top: 20px;
-    overflow: hidden;
-
-    .image {
-      width: 100%;
-      border-radius: 10px;
-    }
-  }
-
-  .image-mj-btns {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    width: 100%;
-    margin-top: 5px;
-  }
-}
-</style>
