@@ -157,6 +157,10 @@ export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '编号',
       minWidth: 80,

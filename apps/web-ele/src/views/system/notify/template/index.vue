@@ -5,15 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteNotifyTemplate,
+  deleteNotifyTemplateList,
   exportNotifyTemplate,
   getNotifyTemplatePage,
 } from '#/api/system/notify/template';
@@ -76,6 +78,32 @@ async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   }
 }
 
+/** 批量删除站内信模板 */
+async function onDeleteBatch() {
+  const loadingInstance = ElMessage({
+    message: $t('ui.actionMessage.deleting'),
+    type: 'info',
+    duration: 0,
+  });
+  try {
+    await deleteNotifyTemplateList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNotifyTemplateApi.NotifyTemplate[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
 /** 表格操作按钮的回调函数 */
 function onActionClick({
   code,
@@ -124,6 +152,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemNotifyTemplateApi.NotifyTemplate>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -137,23 +169,32 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:notify-template:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['站内信模板']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:notify-template:export']"
-        >
-          <Download class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['站内信模板']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notify-template:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:notify-template:export'],
+              onClick: onExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:notify-template:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

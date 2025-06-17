@@ -5,14 +5,21 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteRole, exportRole, getRolePage } from '#/api/system/role';
+import {
+  deleteRole,
+  deleteRoleList,
+  exportRole,
+  getRolePage,
+} from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -67,11 +74,33 @@ async function onDelete(row: SystemRoleApi.Role) {
     await deleteRole(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除角色 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteRoleList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemRoleApi.Role[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 分配角色的数据权限 */
@@ -133,6 +162,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemRoleApi.Role>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -167,6 +200,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
         >
           <Download class="mr-2 size-5" />
           {{ $t('ui.actionTitle.export') }}
+        </ElButton>
+        <ElButton
+          type="danger"
+          class="ml-2"
+          @click="onDeleteBatch"
+          v-access:code="['system:role:delete']"
+          :disabled="isEmpty(checkedIds)"
+        >
+          <i class="fa-solid fa-trash-can mr-2"></i>
+          {{ $t('ui.actionTitle.deleteBatch') }}
         </ElButton>
       </template>
     </Grid>

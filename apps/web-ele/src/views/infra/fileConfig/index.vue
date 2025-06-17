@@ -5,15 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
+import { ref } from 'vue';
+
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-import { openWindow } from '@vben/utils';
+import { isEmpty, openWindow } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteFileConfig,
+  deleteFileConfigList,
   getFileConfigPage,
   testFileConfig,
   updateFileConfigMaster,
@@ -93,9 +95,34 @@ async function onDelete(row: InfraFileConfigApi.FileConfig) {
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除文件配置 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteFileConfigList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraFileConfigApi.FileConfig[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -150,6 +177,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<InfraFileConfigApi.FileConfig>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -158,14 +189,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="文件配置列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['infra:file-config:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['文件配置']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['文件配置']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:file-config:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:file-config:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

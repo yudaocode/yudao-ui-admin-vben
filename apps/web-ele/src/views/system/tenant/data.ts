@@ -168,6 +168,10 @@ export function useGridColumns<T = SystemTenantApi.Tenant>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '租户编号',
       minWidth: 100,

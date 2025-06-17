@@ -194,6 +194,10 @@ export function useGridColumns<T = SystemRoleApi.Role>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '角色编号',
       minWidth: 200,

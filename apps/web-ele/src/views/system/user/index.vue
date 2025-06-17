@@ -6,13 +6,14 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteUser,
+  deleteUserList,
   exportUser,
   getUserPage,
   updateUserStatus,
@@ -90,11 +91,33 @@ async function onDelete(row: SystemUserApi.User) {
     await deleteUser(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.username]));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除用户 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteUserList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemUserApi.User[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 重置密码 */
@@ -161,6 +184,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemUserApi.User>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -211,6 +238,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   icon: ACTION_ICON.UPLOAD,
                   auth: ['system:user:import'],
                   onClick: onImport,
+                },
+                {
+                  label: $t('ui.actionTitle.deleteBatch'),
+                  type: 'danger',
+                  icon: ACTION_ICON.DELETE,
+                  disabled: isEmpty(checkedIds),
+                  auth: ['system:user:delete'],
+                  onClick: onDeleteBatch,
                 },
               ]"
             />

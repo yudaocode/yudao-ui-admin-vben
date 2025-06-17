@@ -196,6 +196,10 @@ export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'clientId',
       title: '客户端编号',
       minWidth: 200,

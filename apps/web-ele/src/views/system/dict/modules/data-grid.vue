@@ -5,17 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemDictDataApi } from '#/api/system/dict/data';
 
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDictData,
+  deleteDictDataList,
   exportDictData,
   getDictDataPage,
 } from '#/api/system/dict/data';
@@ -67,11 +67,33 @@ async function onDelete(row: any) {
     await deleteDictData(row.id);
     ElMessage.success($t('common.operationSuccess'));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除字典数据 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteDictDataList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemDictDataApi.DictData[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮回调 */
@@ -116,6 +138,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemDictDataApi.DictData>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 监听 dictType 变化，重新查询 */
@@ -135,23 +161,32 @@ watch(
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['字典数据']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典数据']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: onExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:dict:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>

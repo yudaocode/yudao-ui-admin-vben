@@ -155,3 +155,10 @@ export function deleteCodegenTable(tableId: number) {
     params: { tableId },
   });
 }
+
+/** 批量删除代码生成表定义 */
+export function deleteCodegenTableList(tableIds: number[]) {
+  return requestClient.delete(
+    `/infra/codegen/delete-list?tableIds=${tableIds.join(',')}`,
+  );
+}

@@ -96,6 +96,10 @@ export function useGridColumns<T = SystemNoticeApi.Notice>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      type: 'checkbox',
+      width: 40,
+    },
+    {
       field: 'id',
       title: '公告编号',
       minWidth: 100,

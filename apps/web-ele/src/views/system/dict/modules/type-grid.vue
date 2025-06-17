@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 import type {
   OnActionClickParams,
-  VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDictType,
+  deleteDictTypeList,
   exportDictType,
   getDictTypePage,
 } from '#/api/system/dict/type';
@@ -61,11 +62,33 @@ async function onDelete(row: SystemDictTypeApi.DictType) {
     await deleteDictType(row.id as number);
     ElMessage.success($t('common.operationSuccess'));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除字典类型 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteDictTypeList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemDictTypeApi.DictType[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮回调 */
@@ -84,13 +107,6 @@ function onActionClick({
     }
   }
 }
-
-/** 表格事件 */
-const gridEvents: VxeGridListeners<SystemDictTypeApi.DictType> = {
-  cellClick: ({ row }) => {
-    emit('select', row.type);
-  },
-};
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -120,7 +136,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemDictTypeApi.DictType>,
-  gridEvents,
+  gridEvents: {
+    cellClick: ({ row }: { row: SystemDictTypeApi.DictType }) => {
+      emit('select', row.type);
+    },
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -130,23 +152,32 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dict:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['字典类型']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:dict:export']"
-        >
-          <Download class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['字典类型']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dict:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:dict:export'],
+              onClick: onExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:dict:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>

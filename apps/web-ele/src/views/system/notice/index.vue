@@ -5,13 +5,20 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteNotice, getNoticePage, pushNotice } from '#/api/system/notice';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteNotice,
+  deleteNoticeList,
+  getNoticePage,
+  pushNotice,
+} from '#/api/system/notice';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -49,9 +56,35 @@ async function onDelete(row: SystemNoticeApi.Notice) {
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     onRefresh();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除公告 */
+async function onDeleteBatch() {
+  const loadingInstance = ElMessage({
+    message: $t('ui.actionMessage.deleting'),
+    type: 'info',
+    duration: 0,
+  });
+  try {
+    await deleteNoticeList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNoticeApi.Notice[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 推送公告 */
@@ -65,7 +98,7 @@ async function onPush(row: SystemNoticeApi.Notice) {
     await pushNotice(row.id as number);
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  } catch {
+  } finally {
     loadingInstance.close();
   }
 }
@@ -118,6 +151,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<SystemNoticeApi.Notice>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -126,14 +163,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="公告列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:notice:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['公告']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['公告']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notice:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:notice:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
