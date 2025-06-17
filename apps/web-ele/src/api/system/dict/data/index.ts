@@ -57,5 +57,5 @@ export function deleteDictDataList(ids: number[]) {
 
 // 导出字典类型数据
 export function exportDictData(params: any) {
-  return requestClient.download('/system/dict-data/export', { params });
+  return requestClient.download('/system/dict-data/export-excel', { params });
 }
