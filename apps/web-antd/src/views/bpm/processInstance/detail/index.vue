@@ -253,14 +253,14 @@ onMounted(async () => {
       }"
     >
       <template #title>
-        <span class="text-[#878c93]">编号：{{ id || '-' }}</span>
+        <span class="text-gray-500">编号：{{ id || '-' }}</span>
       </template>
 
-      <div class="flex h-[100%] flex-col">
+      <div class="flex h-full flex-col">
         <!-- 流程基本信息 -->
         <div class="flex flex-col gap-2">
-          <div class="mb-10px h-40px flex items-center gap-5">
-            <div class="mb-5px text-[26px] font-bold">
+          <div class="mb-2.5 flex h-10 items-center gap-5">
+            <div class="mb-1 text-2xl font-bold">
               {{ processInstance?.name }}
             </div>
             <DictTag
@@ -270,9 +270,9 @@ onMounted(async () => {
             />
           </div>
 
-          <div class="mb-10px text-13px h-35px flex items-center gap-5">
+          <div class="mb-2.5 flex h-12 items-center gap-5 text-sm">
             <div
-              class="flex items-center gap-2 rounded-3xl bg-gray-100 px-[10px] py-[4px] dark:bg-gray-600"
+              class="flex items-center gap-2 rounded-3xl bg-gray-100 px-2.5 py-1 dark:bg-gray-600"
             >
               <Avatar
                 :size="28"
@@ -285,11 +285,11 @@ onMounted(async () => {
               >
                 {{ processInstance?.startUser?.nickname.substring(0, 1) }}
               </Avatar>
-              <span class="text-12px">{{
+              <span class="text-sm">{{
                 processInstance?.startUser?.nickname
               }}</span>
             </div>
-            <div class="text-[#878c93]">
+            <div class="text-gray-500">
               {{ formatDateTime(processInstance?.startTime) }} 提交
             </div>
           </div>
@@ -297,7 +297,7 @@ onMounted(async () => {
           <component
             v-if="processInstance?.status"
             :is="auditIconsMap[processInstance?.status]"
-            class="absolute right-[20px] top-[10px] size-[150px]"
+            class="absolute right-5 top-2.5 size-36"
           />
         </div>
 

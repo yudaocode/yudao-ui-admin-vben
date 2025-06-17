@@ -2,14 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
+import { ref } from 'vue';
+
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { openWindow } from '@vben/utils';
+import { isEmpty, openWindow } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteFileConfig,
+  deleteFileConfigList,
   getFileConfigPage,
   testFileConfig,
   updateFileConfigMaster,
@@ -97,6 +100,31 @@ async function handleDelete(row: InfraFileConfigApi.FileConfig) {
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraFileConfigApi.FileConfig[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
+}
+
+/** 批量删除文件配置 */
+async function handleDeleteBatch() {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    await deleteFileConfigList(checkedIds.value);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -118,12 +146,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: { code: 'query' },
       search: true,
     },
   } as VxeTableGridOptions<InfraFileConfigApi.FileConfig>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -140,6 +173,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['infra:file-config:create'],
               onClick: handleCreate,
+            },
+            {
+              label: '批量删除',
+              type: 'primary',
+              danger: true,
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:file-config:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

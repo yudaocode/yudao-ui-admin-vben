@@ -38,6 +38,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// TODO @xingyu：城市处理；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -84,7 +85,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[40%]" :title="getTitle">
+  <Modal class="w-2/5" :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>

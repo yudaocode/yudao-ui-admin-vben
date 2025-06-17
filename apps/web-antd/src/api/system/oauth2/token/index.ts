@@ -32,3 +32,10 @@ export function deleteOAuth2Token(accessToken: string) {
     `/system/oauth2-token/delete?accessToken=${accessToken}`,
   );
 }
+
+/** 批量删除 OAuth2.0 令牌 */
+export function deleteOAuth2TokenList(accessTokens: string[]) {
+  return requestClient.delete(
+    `/system/oauth2-token/delete-list?accessTokens=${accessTokens.join(',')}`,
+  );
+}

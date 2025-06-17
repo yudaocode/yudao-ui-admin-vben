@@ -162,7 +162,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="添加跟进记录" class="w-[40%]">
+  <Modal title="添加跟进记录" class="w-2/5">
     <Form class="mx-4" />
   </Modal>
 </template>

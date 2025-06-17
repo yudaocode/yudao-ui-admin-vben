@@ -82,13 +82,13 @@ const [Modal, modalApi] = useVbenModal({
               customerId: plan.customerId,
               contractId: plan.contractId,
             }
-          : {
+          : ({
               customerId: plan.customerId,
               contractId: plan.contractId,
-            };
+            } as any);
       }
       // 设置到 values
-      await formApi.setValues(formData.value);
+      await formApi.setValues(formData.value as any);
     } finally {
       modalApi.unlock();
     }
@@ -97,7 +97,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[40%]">
+  <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-4" />
   </Modal>
 </template>

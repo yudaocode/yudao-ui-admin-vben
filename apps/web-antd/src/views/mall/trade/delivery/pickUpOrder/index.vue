@@ -32,7 +32,7 @@ async function getOrderSum() {
 /** 核销 */
 async function handlePickup(pickUpVerifyCode?: string) {
   if (!pickUpVerifyCode) {
-    pickUpVerifyCode = await prompt({
+    await prompt({
       component: () => {
         return h(Input, {});
       },
@@ -41,7 +41,7 @@ async function handlePickup(pickUpVerifyCode?: string) {
       modelPropName: 'value',
     }).then(async (val) => {
       if (val) {
-        return val;
+        pickUpVerifyCode = val;
       }
     });
   }
@@ -176,7 +176,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <Card class="mb-4 h-[10%]">
-      <template class="flex flex-row gap-4">
+      <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"
           title="订单数量"
@@ -213,9 +213,9 @@ onMounted(() => {
           :decimals="2"
           :value="Number(fenToYuan(summary?.afterSalePrice || 0))"
         />
-      </template>
+      </div>
     </Card>
-    <Grid class="h-[80%]" table-title="核销订单">
+    <Grid class="h-4/5" table-title="核销订单">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -224,7 +224,7 @@ onMounted(() => {
               type: 'primary',
               icon: 'lucide:circle-check-big',
               auth: ['trade:order:pick-up'],
-              onClick: handlePickup,
+              onClick: handlePickup.bind(null, undefined),
             },
             {
               label: serialPort ? '断开扫描枪' : '连接扫描枪',

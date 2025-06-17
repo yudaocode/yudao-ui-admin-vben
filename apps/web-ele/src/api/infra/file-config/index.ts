@@ -69,6 +69,13 @@ export function deleteFileConfig(id: number) {
   return requestClient.delete(`/infra/file-config/delete?id=${id}`);
 }
 
+/** 批量删除文件配置 */
+export function deleteFileConfigList(ids: number[]) {
+  return requestClient.delete(
+    `/infra/file-config/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 测试文件配置 */
 export function testFileConfig(id: number) {
   return requestClient.get(`/infra/file-config/test?id=${id}`);

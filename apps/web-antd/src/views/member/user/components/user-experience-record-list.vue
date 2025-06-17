@@ -64,7 +64,7 @@ const [Grid] = useVbenVxeGrid({
             return h(
               Tag,
               {
-                class: 'mr-5px',
+                class: 'mr-1',
                 color: row.experience > 0 ? 'blue' : 'red',
               },
               () =>

@@ -139,10 +139,9 @@ function getNodeClass(node: Recordable<any>) {
 </script>
 
 <template>
-  <Modal title="数据权限" class="w-[40%]">
+  <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
         <VbenTree
           :spinning="menuLoading"
           :tree-data="menuTree"

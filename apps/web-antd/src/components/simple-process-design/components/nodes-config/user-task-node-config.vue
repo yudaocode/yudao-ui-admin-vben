@@ -580,14 +580,14 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Drawer class="w-[580px]">
+  <Drawer class="w-1/3">
     <template #title>
       <div class="config-header">
         <Input
           v-if="showInput"
           ref="inputRef"
           type="text"
-          class="config-editable-input"
+          class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           @blur="changeNodeName()"
           @press-enter="changeNodeName()"
           v-model:value="nodeName"
@@ -603,7 +603,7 @@ onMounted(() => {
       v-if="currentNode.type === BpmNodeTypeEnum.USER_TASK_NODE"
       class="mb-3 flex items-center"
     >
-      <span class="mr-3 text-[16px]">审批类型 :</span>
+      <span class="mr-3 text-base">审批类型 :</span>
       <RadioGroup v-model:value="approveType">
         <RadioButton
           v-for="(item, index) in APPROVE_TYPE"
@@ -949,7 +949,7 @@ onMounted(() => {
                 label="超时时间设置"
                 v-if="configForm.timeoutHandlerEnable"
                 label-align="left"
-                class="h-[32px]"
+                class="h-8"
                 :label-col="{ span: 6 }"
                 :wrapper-col="{ span: 18 }"
               >
@@ -1105,7 +1105,7 @@ onMounted(() => {
         key="buttons"
       >
         <div class="p-1">
-          <div class="mb-4 text-[16px] font-bold">操作按钮</div>
+          <div class="mb-4 text-base font-bold">操作按钮</div>
 
           <!-- 表头 -->
           <Row class="border border-gray-200 px-4 py-3">
@@ -1127,7 +1127,7 @@ onMounted(() => {
                 <Input
                   v-if="btnDisplayNameEdit[index]"
                   type="text"
-                  class="input-edit max-w-[130px]"
+                  class="max-w-32 focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
                   @blur="btnDisplayNameBlurEvent(index)"
                   v-model:value="item.displayName"
                   :placeholder="item.displayName"
@@ -1152,7 +1152,7 @@ onMounted(() => {
         v-if="formType === BpmModelFormType.NORMAL"
       >
         <div class="p-1">
-          <div class="mb-4 text-[16px] font-bold">字段权限</div>
+          <div class="mb-4 text-base font-bold">字段权限</div>
 
           <!-- 表头 -->
           <Row class="border border-gray-200 px-4 py-3">
@@ -1234,12 +1234,3 @@ onMounted(() => {
     </Tabs>
   </Drawer>
 </template>
-<style lang="scss" scoped>
-.input-edit {
-  &:focus {
-    outline: 0;
-    border-color: #40a9ff;
-    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
-  }
-}
-</style>

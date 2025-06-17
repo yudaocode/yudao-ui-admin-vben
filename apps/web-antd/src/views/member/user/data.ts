@@ -228,7 +228,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
               Tag,
               {
                 key: index,
-                class: 'mr-5px',
+                class: 'mr-1',
                 color: 'blue',
               },
               () => tagName,

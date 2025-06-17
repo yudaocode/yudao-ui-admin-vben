@@ -29,14 +29,14 @@ withDefaults(
   <Card :body-style="bodyStyle" :title="title" class="mb-4">
     <template v-if="title" #title>
       <div class="flex items-center">
-        <span class="text-4 font-[700]">{{ title }}</span>
+        <span class="text-base font-bold">{{ title }}</span>
         <Tooltip placement="right">
           <template #title>
             <div class="max-w-[200px]">{{ message }}</div>
           </template>
-          <ShieldQuestion :size="14" class="ml-5px" />
+          <ShieldQuestion :size="14" class="ml-1" />
         </Tooltip>
-        <div class="pl-20px flex flex-grow">
+        <div class="flex flex-grow pl-5">
           <slot name="header"></slot>
         </div>
       </div>

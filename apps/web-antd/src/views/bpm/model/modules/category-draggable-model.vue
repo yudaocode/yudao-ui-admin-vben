@@ -437,9 +437,10 @@ const handleRenameSuccess = () => {
             :class="isExpand ? 'rotate-180' : 'rotate-0'"
             @click="isExpand = !isExpand"
           >
-            <span
-              class="icon-[ic--round-expand-more] text-3xl text-gray-400"
-            ></span>
+            <IconifyIcon
+              icon="lucide:chevron-down"
+              class="text-3xl text-gray-400"
+            />
           </div>
 
           <div
@@ -451,7 +452,7 @@ const handleRenameSuccess = () => {
                 v-if="categoryInfo.modelList.length > 0"
                 type="link"
                 size="small"
-                class="flex items-center text-[14px]"
+                class="flex items-center text-sm"
                 @click.stop="handleModelSort"
               >
                 <template #icon>
@@ -463,7 +464,7 @@ const handleRenameSuccess = () => {
                 <Button
                   type="link"
                   size="small"
-                  class="flex items-center text-[14px]"
+                  class="flex items-center text-sm"
                 >
                   <template #icon>
                     <IconifyIcon icon="lucide:settings" />
@@ -514,15 +515,16 @@ const handleRenameSuccess = () => {
                   title="拖动排序"
                   placement="left"
                 >
-                  <span
-                    class="icon-[ic--round-drag-indicator] drag-handle mr-2.5 cursor-move text-2xl text-gray-500"
-                  ></span>
+                  <IconifyIcon
+                    icon="ic:round-drag-indicator"
+                    class="mr-2.5 cursor-move text-2xl text-gray-500"
+                  />
                 </Tooltip>
                 <div
                   v-if="!row.icon"
                   class="mr-2.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded bg-blue-500 text-white"
                 >
-                  <span style="font-size: 12px">
+                  <span class="text-xs">
                     {{ row.name.substring(0, 2) }}
                   </span>
                 </div>
@@ -589,7 +591,7 @@ const handleRenameSuccess = () => {
             </template>
             <template #deploymentTime="{ row }">
               <div class="flex items-center justify-center">
-                <span v-if="row.processDefinition" class="w-[150px]">
+                <span v-if="row.processDefinition" class="w-36">
                   {{ formatDateTime(row.processDefinition.deploymentTime) }}
                 </span>
                 <Tag v-if="row.processDefinition">
@@ -599,7 +601,7 @@ const handleRenameSuccess = () => {
                 <Tag
                   v-if="row.processDefinition?.suspensionState === 2"
                   color="warning"
-                  class="ml-[10px]"
+                  class="ml-2.5"
                 >
                   已停用
                 </Tag>

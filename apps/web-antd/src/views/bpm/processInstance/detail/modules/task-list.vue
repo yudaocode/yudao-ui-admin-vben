@@ -201,7 +201,7 @@ defineExpose({
             class="ml-1"
           >
             <IconifyIcon icon="lucide:file-text" />
-            <span class="!ml-[2px] text-[12px]">查看表单</span>
+            <span class="!ml-0.5 text-xs">查看表单</span>
           </Button>
         </div>
       </template>

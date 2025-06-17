@@ -398,6 +398,7 @@ export function useGridColumns<T = InfraCodegenApi.CodegenTable>(
   getDataSourceConfigName?: (dataSourceConfigId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'dataSourceConfigId',
       title: '数据源',

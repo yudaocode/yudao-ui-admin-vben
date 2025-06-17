@@ -5,15 +5,16 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Upload } from '@vben/icons';
-import { openWindow } from '@vben/utils';
+import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
 import { ElButton, ElImage, ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteFile, getFilePage } from '#/api/infra/file';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteFile, deleteFileList, getFilePage } from '#/api/infra/file';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -70,9 +71,34 @@ async function onDelete(row: InfraFileApi.File) {
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
     onRefresh();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除文件 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteFileList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraFileApi.File[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -116,6 +142,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<InfraFileApi.File>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -124,10 +154,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="文件列表">
       <template #toolbar-tools>
-        <ElButton type="primary" @click="onUpload">
-          <Upload class="size-5" />
-          上传图片
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: '上传图片',
+              type: 'primary',
+              icon: ACTION_ICON.UPLOAD,
+              onClick: onUpload,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:file:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
       <template #file-content="{ row }">
         <ElImage v-if="row.type && row.type.includes('image')" :src="row.url" />

@@ -3,7 +3,12 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getDictOptions,
+  getRangePickerDefaultProps,
+} from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -87,7 +92,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },

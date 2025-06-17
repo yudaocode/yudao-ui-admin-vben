@@ -17,7 +17,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 <template>
-  <Modal class="w-[40%]" :title="$t('ui.widgets.qa')">
+  <Modal class="w-2/5" :title="$t('ui.widgets.qa')">
     <div class="mt-2 flex flex-col">
       <div class="mt-2 flex flex-row">
         <VbenButtonGroup class="basis-1/3" :gap="2" border size="large">

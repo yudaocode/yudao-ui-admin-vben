@@ -5,7 +5,7 @@ import type { VxeToolbarInstance } from '#/adapter/vxe-table';
 import { ref } from 'vue';
 
 import { useContentMaximize, useRefresh } from '@vben/hooks';
-import { Expand, MsRefresh, Search, TMinimize } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Tooltip } from 'ant-design-vue';
 
@@ -41,37 +41,39 @@ defineExpose({
       <slot></slot>
       <Tooltip placement="bottom">
         <template #title>
-          <div class="max-w-[200px]">搜索</div>
+          <div class="max-w-52">搜索</div>
         </template>
         <Button
-          class="ml-2 font-[8px]"
+          class="ml-2 font-normal"
           shape="circle"
           @click="onHiddenSearchBar"
         >
-          <Search :size="15" />
+          <IconifyIcon icon="lucide:search" :size="15" />
         </Button>
       </Tooltip>
       <Tooltip placement="bottom">
         <template #title>
-          <div class="max-w-[200px]">刷新</div>
+          <div class="max-w-52">刷新</div>
         </template>
-        <Button class="ml-2 font-[8px]" shape="circle" @click="refresh">
-          <MsRefresh :size="15" />
+        <Button class="ml-2 font-medium" shape="circle" @click="refresh">
+          <IconifyIcon icon="lucide:refresh-cw" :size="15" />
         </Button>
       </Tooltip>
       <Tooltip placement="bottom">
         <template #title>
-          <div class="max-w-[200px]">
+          <div class="max-w-52">
             {{ contentIsMaximize ? '还原' : '全屏' }}
           </div>
         </template>
         <Button
-          class="ml-2 font-[8px]"
+          class="ml-2 font-medium"
           shape="circle"
           @click="toggleMaximizeAndTabbarHidden"
         >
-          <Expand v-if="!contentIsMaximize" :size="15" />
-          <TMinimize v-else :size="15" />
+          <IconifyIcon
+            :icon="contentIsMaximize ? 'lucide:minimize' : 'lucide:maximize'"
+            :size="15"
+          />
         </Button>
       </Tooltip>
     </template>

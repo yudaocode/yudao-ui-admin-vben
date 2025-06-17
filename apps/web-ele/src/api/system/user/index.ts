@@ -49,9 +49,14 @@ export function deleteUser(id: number) {
   return requestClient.delete(`/system/user/delete?id=${id}`);
 }
 
+/** 批量删除用户 */
+export function deleteUserList(ids: number[]) {
+  return requestClient.delete(`/system/user/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出用户 */
 export function exportUser(params: any) {
-  return requestClient.download('/system/user/export', params);
+  return requestClient.download('/system/user/export-excel', params);
 }
 
 /** 下载用户导入模板 */

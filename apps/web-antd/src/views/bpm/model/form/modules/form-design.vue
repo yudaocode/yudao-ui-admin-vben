@@ -173,9 +173,9 @@ defineExpose({ validate });
       "
       class="mb-5 mt-7 rounded-sm border border-solid border-gray-200 p-5"
     >
-      <div class="mb-[15px] flex items-center">
-        <div class="mr-[10px] h-[15px] w-[4px] bg-[#1890ff]"></div>
-        <span class="text-[15px] font-bold">表单预览</span>
+      <div class="mb-4 flex items-center">
+        <div class="mr-2 h-4 w-1 bg-blue-500"></div>
+        <span class="text-base font-bold">表单预览</span>
       </div>
       <FormCreate
         v-model:api="formPreview.formData"

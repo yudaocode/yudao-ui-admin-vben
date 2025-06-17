@@ -113,6 +113,7 @@ export function useGridColumns(
   getLeaderName?: (userId: number) => string | undefined,
 ): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '部门名称',

@@ -207,14 +207,14 @@ onMounted(() => {
 defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-[580px]">
+  <Drawer class="w-1/3">
     <template #title>
       <div class="config-header">
         <Input
           v-if="showInput"
           ref="inputRef"
           type="text"
-          class="config-editable-input"
+          class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           @blur="changeNodeName()"
           @press-enter="changeNodeName()"
           v-model:value="nodeName"
@@ -446,7 +446,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
         v-if="formType === BpmModelFormType.NORMAL"
       >
         <div class="p-1">
-          <div class="mb-4 text-[16px] font-bold">字段权限</div>
+          <div class="mb-4 text-base font-bold">字段权限</div>
 
           <!-- 表头 -->
           <Row class="border border-gray-200 px-4 py-3">
@@ -522,12 +522,3 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
     </Tabs>
   </Drawer>
 </template>
-<style lang="scss" scoped>
-.config-editable-input {
-  &:focus {
-    outline: 0;
-    border-color: #40a9ff;
-    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
-  }
-}
-</style>

@@ -101,6 +101,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
 /** 类型列表的字段 */
 export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编号',
@@ -288,6 +289,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
  */
 export function useDataGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '字典编码',

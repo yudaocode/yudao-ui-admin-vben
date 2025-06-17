@@ -46,3 +46,10 @@ export function updateSocialClient(data: SystemSocialClientApi.SocialClient) {
 export function deleteSocialClient(id: number) {
   return requestClient.delete(`/system/social-client/delete?id=${id}`);
 }
+
+/** 批量删除社交客户端 */
+export function deleteSocialClientList(ids: number[]) {
+  return requestClient.delete(
+    `/system/social-client/delete-list?ids=${ids.join(',')}`,
+  );
+}

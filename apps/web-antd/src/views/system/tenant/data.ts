@@ -161,6 +161,7 @@ export function useGridColumns(
   getPackageName?: (packageId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '租户编号',

@@ -61,6 +61,7 @@ export function useGridColumns<T = InfraFileApi.File>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '文件名',

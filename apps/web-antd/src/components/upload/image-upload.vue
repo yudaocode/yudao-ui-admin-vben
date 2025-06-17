@@ -8,7 +8,7 @@ import type { AxiosProgressEvent } from '#/api/infra/file';
 
 import { ref, toRefs, watch } from 'vue';
 
-import { CloudUpload } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
 
@@ -214,13 +214,13 @@ function getValue() {
         v-if="fileList && fileList.length < maxNumber"
         class="flex flex-col items-center justify-center"
       >
-        <CloudUpload />
+        <IconifyIcon icon="lucide:cloud-upload" />
         <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
       </div>
     </Upload>
     <div
       v-if="showDescription"
-      class="mt-2 flex flex-wrap items-center text-[14px]"
+      class="mt-2 flex flex-wrap items-center text-sm"
     >
       请上传不超过
       <div class="text-primary mx-1 font-bold">{{ maxSize }}MB</div>

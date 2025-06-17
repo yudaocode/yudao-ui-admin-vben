@@ -50,13 +50,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 发起时间
     {
       fieldName: 'createTime',
       label: '发起时间',
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];

@@ -201,7 +201,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="simple-process-model-container">
-    <div class="absolute right-[0px] top-[0px] bg-[#fff]">
+    <div class="absolute right-0 top-0 bg-white">
       <Row type="flex" justify="end">
         <ButtonGroup key="scale-control">
           <Button v-if="!readonly" @click="exportJson">
@@ -216,7 +216,7 @@ onMounted(() => {
             type="file"
             id="files"
             ref="refFile"
-            style="display: none"
+            class="hidden"
             accept=".json"
             @change="importLocalFile"
           />
@@ -226,7 +226,7 @@ onMounted(() => {
           <Button :plain="true" @click="zoomOut()">
             <IconifyIcon icon="lucide:zoom-out" />
           </Button>
-          <Button class="w-80px"> {{ scaleValue }}% </Button>
+          <Button class="w-20"> {{ scaleValue }}% </Button>
           <Button :plain="true" @click="zoomIn()">
             <IconifyIcon icon="lucide:zoom-in" />
           </Button>
@@ -258,7 +258,7 @@ onMounted(() => {
   >
     <div class="mb-2">以下节点内容不完善，请修改后保存</div>
     <div
-      class="b-rounded-1 line-height-normal mb-3 bg-gray-100 p-2"
+      class="line-height-normal mb-3 rounded bg-gray-100 p-2"
       v-for="(item, index) in errorNodes"
       :key="index"
     >

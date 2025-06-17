@@ -25,8 +25,8 @@ const formLoading = ref(false); // 表单的加载中：1）修改时的数据�
 // 审批相关：变量
 const processDefineKey = 'oa_leave'; // 流程定义 Key
 const startUserSelectTasks = ref<any>([]); // 发起人需要选择审批人的用户任务列表
-const startUserSelectAssignees = ref({}); // 发起人选择审批人的数据
-const tempStartUserSelectAssignees = ref({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
+const startUserSelectAssignees = ref<any>({}); // 发起人选择审批人的数据
+const tempStartUserSelectAssignees = ref<any>({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const processDefinitionId = ref('');
 
@@ -95,41 +95,12 @@ async function onSubmit() {
       key: 'action_process_msg',
     });
 
-    router.push({
-      name: 'BpmOALeaveList',
+    // TODO @ziye、@jason：好像跳转不了？
+    await router.push({
+      name: 'BpmOALeave',
     });
   } catch (error: any) {
     message.error(error.message);
-  } finally {
-    formLoading.value = false;
-  }
-}
-
-/** 保存草稿 */
-async function onDraft() {
-  const { valid } = await formApi.validate();
-  if (!valid) {
-    return;
-  }
-
-  const data = (await formApi.getValues()) as BpmOALeaveApi.Leave;
-
-  // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.Leave = {
-    ...data,
-    startTime: Number(data.startTime),
-    endTime: Number(data.endTime),
-  };
-
-  try {
-    formLoading.value = true;
-    await (formData.value?.id
-      ? updateLeave(submitData)
-      : createLeave(submitData));
-    // 关闭并提示
-    message.success({
-      content: '保存草稿成功',
-    });
   } finally {
     formLoading.value = false;
   }
@@ -142,6 +113,7 @@ function onBack() {
     icon: 'warning',
     beforeClose({ isConfirm }) {
       if (isConfirm) {
+        // TODO @ziye、@jason：是不是要关闭当前标签哈。
         router.back();
       }
       return Promise.resolve(true);
@@ -188,7 +160,9 @@ async function getApprovalDetail() {
             : [];
       }
     }
-  } finally {}
+  } finally {
+    //
+  }
 }
 /** 审批相关：选择发起人 */
 function selectUserConfirm(id: string, userList: any[]) {
@@ -217,7 +191,7 @@ watch(
 
 // ============================== 生命周期 ==============================
 onMounted(async () => {
-  const processDefinitionDetail = await getProcessDefinition(
+  const processDefinitionDetail: any = await getProcessDefinition(
     undefined,
     processDefineKey,
   );
@@ -236,11 +210,11 @@ onMounted(async () => {
 
 <template>
   <Page>
-    <div class="w-80vw mx-auto max-w-[920px]">
+    <div class="mx-auto w-[80vw] max-w-[920px]">
       <Card :title="getTitle" class="w-full">
         <template #extra>
           <Button type="default" @click="onBack">
-            <IconifyIcon icon="mdi:arrow-left" />
+            <IconifyIcon icon="lucide:arrow-left" />
             返回
           </Button>
         </template>
@@ -258,8 +232,6 @@ onMounted(async () => {
         <template #actions>
           <Space warp :size="12" class="w-full px-6">
             <Button type="primary" @click="onSubmit"> 提交 </Button>
-            <!-- TODO 后端接口暂不支持保存草稿 （即仅保存数据，不触发流程）-->
-            <!-- <Button type="default" @click="onDraft"> 保存草稿 </Button> -->
           </Space>
         </template>
       </Card>

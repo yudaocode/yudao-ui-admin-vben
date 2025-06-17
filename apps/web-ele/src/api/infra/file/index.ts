@@ -45,6 +45,11 @@ export function deleteFile(id: number) {
   return requestClient.delete(`/infra/file/delete?id=${id}`);
 }
 
+/** 批量删除文件 */
+export function deleteFileList(ids: number[]) {
+  return requestClient.delete(`/infra/file/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 获取文件预签名地址 */
 export function getFilePresignedUrl(name: string, directory?: string) {
   return requestClient.get<InfraFileApi.FilePresignedUrlRespVO>(

@@ -158,7 +158,7 @@ function changeNodeName() {
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>
 <template>
-  <Drawer class="w-[580px]">
+  <Drawer class="w-1/3">
     <template #title>
       <div class="flex items-center">
         <Input

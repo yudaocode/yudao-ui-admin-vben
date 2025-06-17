@@ -243,7 +243,7 @@ onMounted(() => {
           <div class="flex items-end">
             <InputSearch
               v-model:value="searchName"
-              class="!w-50% mb-15px"
+              class="!w-50% mb-4"
               placeholder="请输入流程名称检索"
               allow-clear
               @input="handleQuery"
@@ -311,7 +311,7 @@ onMounted(() => {
             </Tabs.TabPane>
           </Tabs>
         </div>
-        <div v-else class="!py-200px text-center">
+        <div v-else class="!py-48 text-center">
           <Space direction="vertical" size="large">
             <span class="text-gray-500">没有找到搜索结果</span>
           </Space>

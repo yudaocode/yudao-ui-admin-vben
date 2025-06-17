@@ -10,13 +10,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteCodegenTable,
+  deleteCodegenTableList,
   downloadCodegen,
   getCodegenTablePage,
   syncCodegenFromDB,
@@ -79,6 +80,21 @@ async function onDelete(row: InfraCodegenApi.CodegenTable) {
   try {
     await deleteCodegenTable(row.id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+/** 批量删除代码生成配置 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteCodegenTableList(checkedIds.value);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
     loadingInstance.close();
@@ -150,6 +166,15 @@ function onActionClick({
   }
 }
 
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraCodegenApi.CodegenTable[];
+}) {
+  checkedIds.value = records.map((item) => item.id);
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -177,6 +202,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<InfraCodegenApi.CodegenTable>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 获取数据源配置列表 */
@@ -213,14 +242,25 @@ initDataSourceConfig();
     <PreviewModal />
     <Grid table-title="代码生成列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onImport"
-          v-access:code="['infra:codegen:create']"
-        >
-          <Plus class="size-5" />
-          导入
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: '导入',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:codegen:create'],
+              onClick: onImport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:codegen:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

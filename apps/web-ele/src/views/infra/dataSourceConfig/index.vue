@@ -5,16 +5,17 @@ import type {
 } from '#/adapter/vxe-table';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDataSourceConfig,
+  deleteDataSourceConfigList,
   getDataSourceConfigList,
 } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
@@ -48,9 +49,34 @@ async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     await handleLoadData();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
+}
+
+/** 批量删除数据源 */
+async function onDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
+    fullscreen: true,
+  });
+  try {
+    await deleteDataSourceConfigList(checkedIds.value);
+    loadingInstance.close();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    await handleLoadData();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraDataSourceConfigApi.DataSourceConfig[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 表格操作按钮的回调函数 */
@@ -87,6 +113,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
   } as VxeTableGridOptions<InfraDataSourceConfigApi.DataSourceConfig>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 加载数据 */
@@ -110,14 +140,25 @@ onMounted(() => {
     <FormModal @success="onRefresh" />
     <Grid table-title="数据源列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['infra:data-source-config:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['数据源']) }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['数据源']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:data-source-config:create'],
+              onClick: onCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:data-source-config:delete'],
+              onClick: onDeleteBatch,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

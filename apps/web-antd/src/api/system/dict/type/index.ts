@@ -42,7 +42,14 @@ export function deleteDictType(id: number) {
   return requestClient.delete(`/system/dict-type/delete?id=${id}`);
 }
 
+// 批量删除字典
+export function deleteDictTypeList(ids: number[]) {
+  return requestClient.delete(
+    `/system/dict-type/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 // 导出字典类型
 export function exportDictType(params: any) {
-  return requestClient.download('/system/dict-type/export', { params });
+  return requestClient.download('/system/dict-type/export-excel', { params });
 }

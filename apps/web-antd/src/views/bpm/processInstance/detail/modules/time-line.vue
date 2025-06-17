@@ -217,7 +217,7 @@ function handleUserSelectCancel() {
 
 <template>
   <div>
-    <Timeline class="pt-20px">
+    <Timeline class="pt-5">
       <!-- 遍历每个审批节点 -->
       <Timeline.Item
         v-for="(activity, index) in activityNodes"
@@ -227,17 +227,17 @@ function handleUserSelectCancel() {
         <template #dot>
           <div class="relative">
             <div
-              class="position-absolute left--10px top--6px flex h-[32px] w-[32px] items-center justify-center rounded-full border border-solid border-[#dedede] bg-[#3f73f7] p-[6px]"
+              class="position-absolute left--2.5 top--1.5 flex h-8 w-8 items-center justify-center rounded-full border border-solid border-gray-200 bg-blue-500 p-1.5"
             >
               <IconifyIcon
                 :icon="getApprovalNodeTypeIcon(activity.nodeType)"
-                class="size-[24px] text-white"
+                class="size-6 text-white"
               />
             </div>
 
             <div
               v-if="showStatusIcon"
-              class="absolute right-[-10px] top-[18px] flex size-[20px] items-center rounded-full border-[2px] border-solid border-white p-[2px]"
+              class="absolute right--2.5 top-4 flex size-5 items-center rounded-full border-2 border-solid border-white p-0.5"
               :style="{
                 backgroundColor: getApprovalNodeColor(activity.status),
               }"
@@ -261,7 +261,7 @@ function handleUserSelectCancel() {
             <!-- 信息：时间 -->
             <div
               v-if="activity.status !== BpmTaskStatusEnum.NOT_START"
-              class="ml-auto mt-1 text-[13px] text-[#a5a5a5]"
+              class="ml-auto mt-1 text-sm text-gray-500"
             >
               {{ getApprovalNodeTime(activity) }}
             </div>
@@ -294,10 +294,7 @@ function handleUserSelectCancel() {
                 "
               >
                 <template #icon>
-                  <IconifyIcon
-                    icon="mdi:account-plus-outline"
-                    class="size-[18px]"
-                  />
+                  <IconifyIcon icon="lucide:user-plus" class="size-4" />
                 </template>
               </Button>
             </Tooltip>
@@ -305,19 +302,19 @@ function handleUserSelectCancel() {
             <div
               v-for="(user, userIndex) in customApproveUsers[activity.id]"
               :key="user.id || userIndex"
-              class="relative flex h-[36px] items-center gap-2 rounded-3xl bg-gray-100 pr-[8px] dark:bg-gray-600"
+              class="relative flex h-9 items-center gap-2 rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
             >
               <Avatar
-                class="!m-[5px]"
+                class="!m-1"
                 :size="28"
                 v-if="user.avatar"
                 :src="user.avatar"
               />
 
-              <Avatar class="!m-[5px]" :size="28" v-else>
+              <Avatar class="!m-1" :size="28" v-else>
                 <span>{{ user.nickname.substring(0, 1) }}</span>
               </Avatar>
-              <span class="text-[13px]">{{ user.nickname }}</span>
+              <span class="text-sm">{{ user.nickname }}</span>
             </div>
           </div>
 
@@ -326,7 +323,7 @@ function handleUserSelectCancel() {
             <div
               v-for="(task, idx) in activity.tasks"
               :key="idx"
-              class="flex flex-col gap-2 pr-[8px]"
+              class="flex flex-col gap-2 pr-2"
             >
               <div
                 class="relative flex flex-wrap gap-2"
@@ -334,7 +331,7 @@ function handleUserSelectCancel() {
               >
                 <!-- 信息：头像昵称 -->
                 <div
-                  class="h-35px relative flex items-center rounded-3xl bg-gray-100 pr-[8px] dark:bg-gray-600"
+                  class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
                 >
                   <template
                     v-if="
@@ -342,12 +339,12 @@ function handleUserSelectCancel() {
                     "
                   >
                     <Avatar
-                      class="!m-[5px]"
+                      class="!m-1"
                       :size="28"
                       v-if="task.assigneeUser?.avatar"
                       :src="task.assigneeUser?.avatar"
                     />
-                    <Avatar class="!m-[5px]" :size="28" v-else>
+                    <Avatar class="!m-1" :size="28" v-else>
                       {{ task.assigneeUser?.nickname.substring(0, 1) }}
                     </Avatar>
                     {{ task.assigneeUser?.nickname }}
@@ -358,12 +355,12 @@ function handleUserSelectCancel() {
                     "
                   >
                     <Avatar
-                      class="!m-[5px]"
+                      class="!m-1"
                       :size="28"
                       v-if="task.ownerUser?.avatar"
                       :src="task.ownerUser?.avatar"
                     />
-                    <Avatar class="!m-[5px]" :size="28" v-else>
+                    <Avatar class="!m-1" :size="28" v-else>
                       {{ task.ownerUser?.nickname.substring(0, 1) }}
                     </Avatar>
                     {{ task.ownerUser?.nickname }}
@@ -374,16 +371,14 @@ function handleUserSelectCancel() {
                     v-if="
                       showStatusIcon && onlyStatusIconShow.includes(task.status)
                     "
-                    class="absolute left-[24px] top-[20px] flex items-center rounded-full border-2 border-solid border-white p-[2px]"
+                    class="absolute left-6 top-5 flex items-center rounded-full border-2 border-solid border-white p-1"
                     :style="{
                       backgroundColor: statusIconMap[task.status]?.color,
                     }"
                   >
                     <IconifyIcon
-                      :icon="
-                        statusIconMap[task.status]?.icon || 'mdi:clock-outline'
-                      "
-                      class="size-[10px] text-white"
+                      :icon="statusIconMap[task.status]?.icon || 'lucide:clock'"
+                      class="size-2 text-white"
                       :class="[statusIconMap[task.status]?.animation]"
                     />
                   </div>
@@ -394,7 +389,7 @@ function handleUserSelectCancel() {
               <teleport defer :to="`#activity-task-${activity.id}-${index}`">
                 <div
                   v-if="shouldShowApprovalReason(task, activity.nodeType)"
-                  class="mt-1 w-full rounded-md bg-[#f8f8fa] p-2 text-[13px] text-[#a5a5a5]"
+                  class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
                 >
                   审批意见：{{ task.reason }}
                 </div>
@@ -403,11 +398,11 @@ function handleUserSelectCancel() {
                     task.signPicUrl &&
                     activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
                   "
-                  class="mt-1 w-full rounded-md bg-[#f8f8fa] p-2 text-[13px] text-[#a5a5a5]"
+                  class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
                 >
                   签名：
                   <Image
-                    class="ml-[5px] h-[40px] w-[90px]"
+                    class="ml-1 h-10 w-24"
                     :src="task.signPicUrl"
                     :preview="{ src: task.signPicUrl }"
                   />
@@ -419,30 +414,30 @@ function handleUserSelectCancel() {
             <div
               v-for="(user, userIndex) in activity.candidateUsers"
               :key="userIndex"
-              class="relative flex h-[35px] items-center rounded-3xl bg-gray-100 pr-[8px] dark:bg-gray-600"
+              class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
             >
               <Avatar
-                class="!m-[5px]"
+                class="!m-1"
                 :size="28"
                 v-if="user.avatar"
                 :src="user.avatar"
               />
-              <Avatar class="!m-[5px]" :size="28" v-else>
+              <Avatar class="!m-1" :size="28" v-else>
                 {{ user.nickname.substring(0, 1) }}
               </Avatar>
-              <span class="text-[13px]">
+              <span class="text-sm">
                 {{ user.nickname }}
               </span>
 
               <!-- 候选任务状态图标 -->
               <div
                 v-if="showStatusIcon"
-                class="absolute left-[24px] top-[20px] flex items-center rounded-full border-2 border-solid border-white p-[1px]"
+                class="absolute left-6 top-5 flex items-center rounded-full border-2 border-solid border-white p-1"
                 :style="{ backgroundColor: statusIconMap['-1']?.color }"
               >
                 <IconifyIcon
-                  class="text-[11px] text-white"
-                  :icon="statusIconMap['-1']?.icon || 'mdi:clock-outline'"
+                  class="text-xs text-white"
+                  :icon="statusIconMap['-1']?.icon || 'lucide:clock'"
                 />
               </div>
             </div>

@@ -20,6 +20,7 @@
     }
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "catalog:",
     "@vben/locales": "workspace:*",
     "@vben/utils": "workspace:*",
     "axios": "catalog:",
