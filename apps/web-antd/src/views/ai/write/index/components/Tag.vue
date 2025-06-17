@@ -17,12 +17,12 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-[8px]">
+  <div class="flex flex-wrap gap-2">
     <span
       v-for="tag in props.tags"
       :key="tag.value"
-      class="tag mb-2 cursor-pointer rounded-[4px] border-[2px] border-solid border-[#DDDFE3] bg-[#DDDFE3] px-2 text-[12px] leading-6"
-      :class="modelValue === tag.value && '!border-[#846af7] text-[#846af7]'"
+      class="mb-2 cursor-pointer rounded border-2 border-solid border-gray-200 bg-gray-200 px-1 text-xs leading-6"
+      :class="modelValue === tag.value && '!border-purple-500 !text-purple-500'"
       @click="emits('update:modelValue', tag.value)"
     >
       {{ tag.label }}

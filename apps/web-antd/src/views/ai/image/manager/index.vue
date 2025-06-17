@@ -100,7 +100,7 @@ onMounted(async () => {
         <TableAction :actions="[]" />
       </template>
       <template #picUrl="{ row }">
-        <Image :src="row.picUrl" class="h-80px w-80px" />
+        <Image :src="row.picUrl" class="h-20 w-20" />
       </template>
       <template #userId="{ row }">
         <span>

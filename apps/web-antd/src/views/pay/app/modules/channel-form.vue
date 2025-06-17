@@ -161,7 +161,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :close-on-click-modal="false" :title="title" class="w-[40%]">
+  <Modal :close-on-click-modal="false" :title="title" class="w-2/5">
     <Form :schema="channelSchema(formType)" />
   </Modal>
 </template>

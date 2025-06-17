@@ -178,7 +178,7 @@ defineExpose({ validate });
           {{ condition.conditionGroups.and ? '且' : '或' }}
         </template>
         <Card
-          class="group relative w-full hover:border-[#1890ff]"
+          class="group relative w-full hover:border-blue-500"
           v-for="(equation, cIdx) in condition.conditionGroups.conditions"
           :key="cIdx"
         >
@@ -187,7 +187,7 @@ defineExpose({ validate });
             v-if="condition.conditionGroups.conditions.length > 1"
           >
             <IconifyIcon
-              color="#0089ff"
+              color="blue"
               icon="lucide:circle-x"
               class="size-4"
               @click="
@@ -290,7 +290,7 @@ defineExpose({ validate });
               </FormItem>
             </Col>
             <Col :span="3">
-              <div class="flex h-[32px] items-center">
+              <div class="flex h-8 items-center">
                 <Trash2
                   v-if="equation.rules.length > 1"
                   class="mr-2 size-4 cursor-pointer text-red-500"
@@ -307,7 +307,7 @@ defineExpose({ validate });
       </Space>
       <div title="添加条件组" class="mt-4 cursor-pointer">
         <Plus
-          class="size-[24px] text-blue-500"
+          class="size-6 text-blue-500"
           @click="addConditionGroup(condition.conditionGroups?.conditions)"
         />
       </div>

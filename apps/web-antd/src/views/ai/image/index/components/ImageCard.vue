@@ -64,10 +64,7 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <Card
-    body-class=""
-    class="relative flex h-auto w-[320px] flex-col rounded-[10px]"
-  >
+  <Card class="relative flex h-auto w-80 flex-col rounded-lg">
     <!-- 图片操作区 -->
     <div class="flex flex-row justify-between">
       <div>
@@ -83,28 +80,28 @@ onMounted(async () => {
       </div>
       <div class="flex">
         <Button
-          class="m-0 p-[10px]"
+          class="m-0 p-2.5"
           type="text"
           @click="handleButtonClick('download', detail)"
         >
           <IconifyIcon icon="lucide:download" />
         </Button>
         <Button
-          class="m-0 p-[10px]"
+          class="m-0 p-2.5"
           type="text"
           @click="handleButtonClick('regeneration', detail)"
         >
           <IconifyIcon icon="lucide:refresh-cw" />
         </Button>
         <Button
-          class="m-0 p-[10px]"
+          class="m-0 p-2.5"
           type="text"
           @click="handleButtonClick('delete', detail)"
         >
           <IconifyIcon icon="lucide:trash" />
         </Button>
         <Button
-          class="m-0 p-[10px]"
+          class="m-0 p-2.5"
           type="text"
           @click="handleButtonClick('more', detail)"
         >
@@ -114,20 +111,20 @@ onMounted(async () => {
     </div>
 
     <!-- 图片展示区域 -->
-    <div class="mt-[20px] h-[280px] flex-1 overflow-hidden" ref="cardImageRef">
-      <Image class="w-full rounded-[10px]" :src="detail?.picUrl" />
+    <div class="mt-5 h-72 flex-1 overflow-hidden" ref="cardImageRef">
+      <Image class="w-full rounded-lg" :src="detail?.picUrl" />
       <div v-if="detail?.status === AiImageStatusEnum.FAIL">
         {{ detail?.errorMessage }}
       </div>
     </div>
 
     <!-- Midjourney 专属操作按钮 -->
-    <div class="mt-[5px] flex w-full flex-wrap justify-start">
+    <div class="mt-2 flex w-full flex-wrap justify-start">
       <Button
         size="small"
         v-for="(button, index) in detail?.buttons"
         :key="index"
-        class="ml-0 mr-[10px] mt-[5px] min-w-[40px]"
+        class="m-2 ml-0 min-w-10"
         @click="handleMidjourneyBtnClick(button)"
       >
         {{ button.label }}{{ button.emoji }}

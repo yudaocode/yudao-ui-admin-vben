@@ -110,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <span v-else>引用 {{ row.toolIds.length }} 个</span>
       </template>
       <template #avatar="{ row }">
-        <Image :src="row.avatar" class="w-32px h-32px" />
+        <Image :src="row.avatar" class="h-8 w-8" />
       </template>
       <template #actions="{ row }">
         <TableAction

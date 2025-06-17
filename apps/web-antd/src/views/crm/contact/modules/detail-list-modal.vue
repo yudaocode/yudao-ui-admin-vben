@@ -132,7 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Modal title="关联联系人" class="w-[40%]">
+  <Modal title="关联联系人" class="w-2/5">
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>

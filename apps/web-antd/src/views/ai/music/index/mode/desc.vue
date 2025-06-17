@@ -33,7 +33,7 @@ defineExpose({
       />
     </Title>
 
-    <Title title="纯音乐" class="mt-[20px]" desc="创建一首没有歌词的歌曲">
+    <Title title="纯音乐" class="mt-5" desc="创建一首没有歌词的歌曲">
       <template #extra>
         <Switch v-model:checked="formData.pure" size="small" />
       </template>

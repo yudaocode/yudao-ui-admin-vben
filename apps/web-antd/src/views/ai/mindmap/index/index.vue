@@ -75,9 +75,10 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <div class="absolute bottom-0 left-0 right-0 top-0 flex">
+    <div class="absolute bottom-0 left-0 right-0 top-0 m-4 flex">
       <Left
         ref="leftRef"
+        class="mr-4"
         :is-generating="isGenerating"
         @submit="submit"
         @direct-generate="directGenerate"

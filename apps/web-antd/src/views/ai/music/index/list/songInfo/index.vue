@@ -5,21 +5,21 @@ import { Button, Card, Image } from 'ant-design-vue';
 
 defineOptions({ name: 'AiMusicSongInfoIndex' });
 
-const currentSong = inject('currentSong', {});
+const currentSong = inject<any>('currentSong', {});
 </script>
 
 <template>
-  <Card class="line-height-24px mb-[0!important] w-[300px]">
-    <Image :src="currentSong.imageUrl" style="width: 100%; height: 100%" />
+  <Card class="!mb-0 w-40 leading-6">
+    <Image :src="currentSong.imageUrl" class="h-full w-full" />
 
     <div class="">{{ currentSong.title }}</div>
-    <div class="line-clamp-1 text-[12px]">
+    <div class="line-clamp-1 text-xs">
       {{ currentSong.desc }}
     </div>
-    <div class="text-[12px]">
+    <div class="text-xs">
       {{ currentSong.date }}
     </div>
-    <Button size="small" shape="round" class="my-[6px]">信息复用</Button>
-    <div class="text-[12px]" v-html="currentSong.lyric"></div>
+    <Button size="small" shape="round" class="my-2">信息复用</Button>
+    <div class="text-xs" v-html="currentSong.lyric"></div>
   </Card>
 </template>

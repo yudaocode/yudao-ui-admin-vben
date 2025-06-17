@@ -6,7 +6,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 
 import { useDebounceFn } from '@vueuse/core';
-import { Input, Pagination } from 'ant-design-vue';
+import { Image, Input, Pagination } from 'ant-design-vue';
 
 import { getImagePageMy } from '#/api/ai/image';
 
@@ -45,32 +45,28 @@ onMounted(async () => {
 </script>
 <template>
   <Page auto-content-height>
-    <div class="bg-white p-[20px]">
-      <!-- TODO @fan：Search 可以换成 Icon 组件么？ -->
+    <div class="bg-white p-5">
       <Input.Search
         v-model="queryParams.prompt"
-        class="mb-[20px] w-full"
+        class="mb-5 w-full"
         size="large"
         placeholder="请输入要搜索的内容"
         @keyup.enter="handleQuery"
       />
       <div
-        class="grid gap-[10px] bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-        style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))"
+        class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 bg-white shadow-sm"
       >
-        <!-- TODO @fan：这个图片的风格，要不和 ImageCard.vue 界面一致？（只有卡片，没有操作）；因为看着更有相框的感觉~~~ -->
         <div
           v-for="item in list"
           :key="item.id"
-          class="relative cursor-pointer overflow-hidden bg-white transition-transform duration-300 hover:scale-[1.05]"
+          class="relative cursor-pointer overflow-hidden bg-white transition-transform duration-300 hover:scale-105"
         >
-          <img
+          <Image
             :src="item.picUrl"
-            class="block h-auto w-full transition-transform duration-300 hover:scale-[1.1]"
+            class="block h-auto w-full transition-transform duration-300 hover:scale-110"
           />
         </div>
       </div>
-      <!-- TODO @fan：缺少翻页 -->
       <!-- 分页 -->
       <Pagination
         :total="total"
@@ -81,7 +77,7 @@ onMounted(async () => {
         v-model:page-size="queryParams.pageSize"
         @change="debounceGetList"
         @show-size-change="debounceGetList"
-        class="mt-[20px]"
+        class="mt-5"
       />
     </div>
   </Page>

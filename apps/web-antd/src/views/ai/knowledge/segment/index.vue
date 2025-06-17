@@ -147,27 +147,9 @@ onMounted(() => {
       </template>
       <template #expand_content="{ row }">
         <div
-          class="content-expand"
-          style="
-            padding: 10px 20px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            background-color: #f9f9f9;
-            border-left: 3px solid #409eff;
-            border-radius: 4px;
-          "
+          class="whitespace-pre-wrap border-l-4 border-blue-500 bg-gray-100 px-2.5 py-5 leading-5"
         >
-          <div
-            class="content-title"
-            style="
-              margin-bottom: 8px;
-              font-size: 14px;
-              font-weight: bold;
-              color: #606266;
-            "
-          >
-            完整内容：
-          </div>
+          <div class="mb-2 text-sm font-bold text-gray-600">完整内容：</div>
           {{ row.content }}
         </div>
       </template>

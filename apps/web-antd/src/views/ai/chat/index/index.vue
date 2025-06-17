@@ -494,10 +494,10 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <Layout class="absolute left-0 top-0 h-full w-full flex-1">
+    <Layout class="absolute left-0 top-0 m-4 h-full w-full flex-1">
       <!-- 左侧：对话列表 -->
       <ConversationList
-        :active-id="activeConversationId"
+        :active-id="activeConversationId as any"
         ref="conversationListRef"
         @on-conversation-create="handleConversationCreateSuccess"
         @on-conversation-click="handleConversationClick"
@@ -506,18 +506,18 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <Layout class="bg-white">
+      <Layout class="ml-4 bg-white">
         <Layout.Header
-          class="flex items-center justify-between bg-[#fbfbfb!important] shadow-none"
+          class="flex items-center justify-between !bg-gray-50 shadow-none"
         >
-          <div class="text-[18px] font-bold">
+          <div class="text-lg font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
             <span v-if="activeMessageList.length > 0">
               ({{ activeMessageList.length }})
             </span>
           </div>
 
-          <div class="flex w-[300px] justify-end" v-if="activeConversation">
+          <div class="flex w-72 justify-end" v-if="activeConversation">
             <Button
               type="primary"
               ghost
@@ -526,10 +526,10 @@ onMounted(async () => {
               @click="openChatConversationUpdateForm"
             >
               <span v-html="activeConversation?.modelName"></span>
-              <IconifyIcon icon="lucide:settings" class="ml-2" />
+              <IconifyIcon icon="lucide:settings" class="ml-2 size-4" />
             </Button>
             <Button size="small" class="mr-2 px-2" @click="handlerMessageClear">
-              <IconifyIcon icon="lucide:trash" color="#787878" />
+              <IconifyIcon icon="lucide:trash-2" color="#787878" />
             </Button>
             <Button size="small" class="mr-2 px-2">
               <IconifyIcon icon="lucide:download" color="#787878" />
@@ -567,12 +567,12 @@ onMounted(async () => {
           </div>
         </Layout.Content>
 
-        <Layout.Footer class="m-0 flex flex-col bg-[white!important] p-0">
+        <Layout.Footer class="m-0 flex flex-col !bg-white p-0">
           <form
-            class="m-[10px_20px_20px] flex flex-col rounded-[10px] border border-[#e3e3e3] p-[9px_10px]"
+            class="my-5 mb-5 mt-2 flex flex-col rounded-xl border border-gray-200 px-2 py-2.5"
           >
             <textarea
-              class="box-border h-[80px] resize-none overflow-auto border-none p-[0_2px] focus:outline-none"
+              class="box-border h-20 resize-none overflow-auto border-none px-0 py-0.5 focus:outline-none"
               v-model="prompt"
               @keydown="handleSendByKeydown"
               @input="handlePromptInput"
@@ -580,10 +580,10 @@ onMounted(async () => {
               @compositionend="onCompositionend"
               placeholder="问我任何问题...（Shift+Enter 换行，按下 Enter 发送）"
             ></textarea>
-            <div class="flex justify-between pb-0 pt-[5px]">
+            <div class="flex justify-between pb-0 pt-1">
               <div class="flex items-center">
                 <Switch v-model:checked="enableContext" />
-                <span class="ml-[5px] text-[14px] text-[#8f8f8f]">上下文</span>
+                <span class="ml-1 text-sm text-gray-400">上下文</span>
               </div>
               <Button
                 type="primary"
@@ -591,13 +591,22 @@ onMounted(async () => {
                 :loading="conversationInProgress"
                 v-if="conversationInProgress === false"
               >
+                <IconifyIcon
+                  :icon="
+                    conversationInProgress
+                      ? 'lucide:loader'
+                      : 'lucide:send-horizontal'
+                  "
+                />
                 {{ conversationInProgress ? '进行中' : '发送' }}
               </Button>
               <Button
+                type="primary"
                 danger
                 @click="stopStream()"
                 v-if="conversationInProgress === true"
               >
+                <IconifyIcon icon="lucide:circle-stop" />
                 停止
               </Button>
             </div>

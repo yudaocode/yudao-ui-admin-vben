@@ -7,7 +7,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, Dropdown, Menu } from 'ant-design-vue';
+import { Avatar, Button, Card, Dropdown, Menu } from 'ant-design-vue';
 
 // tabs ref
 
@@ -61,17 +61,13 @@ async function handleTabsScroll() {
 
 <template>
   <div
-    class="relative flex h-full flex-wrap content-start items-start overflow-auto px-[25px] pb-[140px]"
+    class="relative flex h-full flex-wrap content-start items-start overflow-auto px-6 pb-36"
     ref="tabsRef"
     @scroll="handleTabsScroll"
   >
-    <div
-      class="mb-[20px] mr-[20px] inline-block"
-      v-for="role in roleList"
-      :key="role.id"
-    >
+    <div class="mb-5 mr-5 inline-block" v-for="role in roleList" :key="role.id">
       <Card
-        class="relative rounded-[10px]"
+        class="relative rounded-lg"
         :body-style="{
           position: 'relative',
           display: 'flex',
@@ -83,9 +79,9 @@ async function handleTabsScroll() {
         }"
       >
         <!-- 更多操作 -->
-        <div v-if="showMore" class="absolute right-[12px] top-0">
+        <div v-if="showMore" class="absolute right-3 top-0">
           <Dropdown>
-            <Button type="text">
+            <Button type="link">
               <IconifyIcon icon="lucide:ellipsis-vertical" />
             </Button>
             <template #overlay>
@@ -99,7 +95,7 @@ async function handleTabsScroll() {
                 <Menu.Item @click="handleMoreClick(['delete', role])">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:trash" color="red" />
-                    <span class="text-red-500">编辑</span>
+                    <span class="text-red-500">删除</span>
                   </div>
                 </Menu.Item>
               </Menu>
@@ -109,22 +105,19 @@ async function handleTabsScroll() {
 
         <!-- 角色信息 -->
         <div>
-          <img
-            :src="role.avatar"
-            class="h-[40px] w-[40px] overflow-hidden rounded-[10px]"
-          />
+          <Avatar :src="role.avatar" class="h-10 w-10 overflow-hidden" />
         </div>
 
-        <div class="ml-[10px] w-full">
-          <div class="h-[85px]">
-            <div class="max-w-[140px] text-[18px] font-bold text-[#3e3e3e]">
+        <div class="ml-2 w-full">
+          <div class="h-20">
+            <div class="max-w-36 text-lg font-bold text-gray-600">
               {{ role.name }}
             </div>
-            <div class="mt-[10px] text-[14px] text-[#6a6a6a]">
+            <div class="mt-2 text-sm text-gray-400">
               {{ role.description }}
             </div>
           </div>
-          <div class="mt-[2px] flex flex-row-reverse">
+          <div class="mt-1 flex flex-row-reverse">
             <Button type="primary" size="small" @click="handleUseClick(role)">
               使用
             </Button>

@@ -3,6 +3,8 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
 
@@ -121,8 +123,8 @@ function submit() {
 <template>
   <DefineTab v-slot="{ active, text, itemClick }">
     <span
-      :class="active ? 'text-black shadow-md' : 'hover:bg-[#DDDFE3]'"
-      class="z-1 relative inline-block w-1/2 cursor-pointer rounded-full text-center leading-[30px] text-[5C6370] hover:text-black"
+      :class="active ? 'text-black shadow-md' : 'hover:bg-gray-200'"
+      class="relative z-10 inline-block w-1/2 cursor-pointer rounded-full text-center leading-7 text-gray-400 hover:text-black"
       @click="itemClick"
     >
       {{ text }}
@@ -130,27 +132,27 @@ function submit() {
   </DefineTab>
   <!-- 定义 label 组件：长度/格式/语气/语言等 -->
   <DefineLabel v-slot="{ label, hint, hintClick }">
-    <h3 class="mb-3 mt-5 flex items-center justify-between text-[14px]">
+    <h3 class="mb-3 mt-5 flex items-center justify-between text-sm">
       <span>{{ label }}</span>
       <span
         v-if="hint"
-        class="flex cursor-pointer select-none items-center text-[12px] text-[#846af7]"
+        class="flex cursor-pointer select-none items-center text-xs text-purple-500"
         @click="hintClick"
       >
-        <span class="icon-[ant-design--question-circle-outlined]"> </span>
+        <IconifyIcon icon="lucide:circle-help" />
         {{ hint }}
       </span>
     </h3>
   </DefineLabel>
   <div class="flex flex-col" v-bind="$attrs">
-    <div class="flex w-full justify-center bg-[#f5f7f9] pt-2">
-      <div class="z-10 w-[303px] rounded-full bg-[#DDDFE3] p-1">
+    <div class="flex w-full justify-center bg-gray-50 pt-2">
+      <div class="z-10 w-72 rounded-full bg-gray-200 p-1">
         <div
           :class="
             selectedTab === AiWriteTypeEnum.REPLY &&
             'after:translate-x-[100%] after:transform'
           "
-          class="relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-[30px] after:w-1/2 after:rounded-full after:bg-white after:transition-transform after:content-['']"
+          class="relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-7 after:w-1/2 after:rounded-full after:bg-white after:transition-transform after:content-['']"
         >
           <ReuseTab
             v-for="tab in tabs"
@@ -164,7 +166,7 @@ function submit() {
       </div>
     </div>
     <div
-      class="box-border h-full w-[380px] flex-grow overflow-y-auto bg-[#f5f7f9] px-7 pb-2 lg:block"
+      class="box-border h-full w-96 flex-grow overflow-y-auto bg-gray-50 px-7 pb-2 lg:block"
     >
       <div>
         <template v-if="selectedTab === 1">
@@ -233,7 +235,7 @@ function submit() {
           </Button>
           <Button
             :loading="isWriting"
-            style="color: white; background-color: #846af7"
+            class="bg-purple-500 text-white"
             @click="submit"
           >
             生成

@@ -4,6 +4,7 @@ import type { Ref } from 'vue';
 import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { isNumber } from '@vben/utils';
 
 import { Button, Input, Select } from 'ant-design-vue';
@@ -181,20 +182,20 @@ defineExpose({ validate });
 </script>
 
 <template>
-  <div class="relative h-[700px] w-[100%]">
+  <div class="relative h-[700px] w-full">
     <Tinyflow
       v-if="workflowData"
       ref="tinyflowRef"
       class-name="custom-class"
-      :style="{ width: '100%', height: '100%' }"
+      class="h-full w-full"
       :data="workflowData"
       :provider="provider"
     />
-    <div class="absolute right-[30px] top-[30px]">
+    <div class="absolute right-8 top-8">
       <Button
         @click="testWorkflowModel"
         type="primary"
-        v-hasPermi="['ai:workflow:test']"
+        v-access:code="['ai:workflow:test']"
       >
         测试
       </Button>
@@ -202,20 +203,18 @@ defineExpose({ validate });
 
     <Drawer title="工作流测试">
       <fieldset
-        class="min-inline-size-auto m-0 rounded-[6px] border border-[#dcdfe6] p-[12px_16px]"
+        class="min-inline-size-auto m-0 rounded-lg border border-gray-200 px-3 py-4"
       >
-        <legend
-          class="ml-[8px] px-[10px] text-[16px] font-semibold text-[#303133]"
-        >
+        <legend class="ml-2 px-2.5 text-base font-semibold text-gray-600">
           <h3>运行参数配置</h3>
         </legend>
-        <div class="p-[8px]">
+        <div class="p-2">
           <div
-            class="mb-[4px] flex items-center justify-around"
+            class="mb-1 flex items-center justify-around"
             v-for="(param, index) in params4Test"
             :key="index"
           >
-            <Select class="w-[200px]" v-model="param.key" placeholder="参数名">
+            <Select class="w-48" v-model="param.key" placeholder="参数名">
               <Select.Option
                 v-for="(value, key) in paramsOfStartNode"
                 :key="key"
@@ -226,45 +225,44 @@ defineExpose({ validate });
               </Select.Option>
             </Select>
             <Input
-              class="mx-[8px] w-[200px]"
+              class="mx-2 w-48"
               v-model:value="param.value"
               placeholder="参数值"
             />
             <Button danger plain circle @click="removeParam(index)">
               <template #icon>
-                <span class="icon-[ant-design--delete-outlined]"></span>
+                <IconifyIcon icon="lucide:trash" />
               </template>
             </Button>
           </div>
-          <Button type="primary" plain class="mt-[8px]" @click="addParam">
+          <Button type="primary" plain class="mt-2" @click="addParam">
             添加参数
           </Button>
         </div>
       </fieldset>
 
       <fieldset
-        class="min-inline-size-auto m-0 mt-[8px] rounded-[6px] border border-[#dcdfe6] bg-[#f8f9fa] p-[12px_16px]"
+        class="m-0 mt-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-4"
       >
-        <legend
-          class="ml-[8px] px-[10px] text-[16px] font-semibold text-[#303133]"
-        >
+        <legend class="ml-2 px-2.5 text-base font-semibold text-gray-600">
           <h3>运行结果</h3>
         </legend>
-        <div class="p-[8px]">
+        <div class="p-2">
           <div v-if="loading" class="text-primary">执行中...</div>
           <div v-else-if="error" class="text-danger">{{ error }}</div>
           <pre
             v-else-if="testResult"
-            class="max-h-[300px] overflow-auto whitespace-pre-wrap rounded-[4px] bg-white p-[12px] font-mono text-[14px] leading-[1.5]"
-            >{{ JSON.stringify(testResult, null, 2) }}
+            class="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-white p-3 font-mono text-sm leading-5"
+          >
+            {{ JSON.stringify(testResult, null, 2) }}
           </pre>
-          <div v-else class="text-[#909399]">点击运行查看结果</div>
+          <div v-else class="text-gray-400">点击运行查看结果</div>
         </div>
       </fieldset>
 
       <Button
         size="large"
-        class="mt-[8px] w-[100%] bg-[#67c23a] text-white"
+        class="mt-2 w-full bg-green-500 text-white"
         @click="goRun"
       >
         运行流程

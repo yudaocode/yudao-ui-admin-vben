@@ -170,11 +170,11 @@ onUnmounted(async () => {
 });
 </script>
 <template>
-  <Drawer class="w-[600px]">
+  <Drawer class="w-2/5">
     <ImageDetail :id="showImageDetailId" />
   </Drawer>
   <Card
-    class="dr-task flex h-full w-full flex-col"
+    class="flex h-full w-full flex-col"
     :body-style="{
       margin: 0,
       padding: 0,
@@ -190,7 +190,7 @@ onUnmounted(async () => {
     </template>
 
     <div
-      class="task-image-list flex flex-1 flex-wrap content-start overflow-y-auto p-5 pb-[140px] pt-5"
+      class="flex flex-1 flex-wrap content-start overflow-y-auto p-5 pb-28 pt-5"
       ref="imageListRef"
     >
       <ImageCard
@@ -204,7 +204,7 @@ onUnmounted(async () => {
     </div>
 
     <div
-      class="task-image-pagination sticky bottom-0 z-50 flex h-[60px] items-center justify-center bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.1)]"
+      class="sticky bottom-0 z-50 flex h-16 items-center justify-center bg-white shadow-sm"
     >
       <Pagination
         :total="pageTotal"

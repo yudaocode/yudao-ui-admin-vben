@@ -190,7 +190,7 @@ export const useApiSelect = (option: ApiSelectProps) => {
           // fix：多写此步是为了解决 multiple 属性问题
           return (
             <Select
-              class="w-1/1"
+              class="w-full"
               loading={loading.value}
               mode="multiple"
               {...attrs}
@@ -210,7 +210,7 @@ export const useApiSelect = (option: ApiSelectProps) => {
         }
         return (
           <Select
-            class="w-1/1"
+            class="w-full"
             loading={loading.value}
             {...attrs}
             // TODO: @dhb52 remote 对等实现, 还是说没作用
@@ -235,7 +235,7 @@ export const useApiSelect = (option: ApiSelectProps) => {
           ];
         }
         return (
-          <CheckboxGroup class="w-1/1" {...attrs}>
+          <CheckboxGroup class="w-full" {...attrs}>
             {options.value.map(
               (item: { label: any; value: any }, index: any) => (
                 <Checkbox key={index} value={item.value}>
@@ -254,7 +254,7 @@ export const useApiSelect = (option: ApiSelectProps) => {
           ];
         }
         return (
-          <RadioGroup class="w-1/1" {...attrs}>
+          <RadioGroup class="w-full" {...attrs}>
             {options.value.map(
               (item: { label: any; value: any }, index: any) => (
                 <Radio key={index} value={item.value}>

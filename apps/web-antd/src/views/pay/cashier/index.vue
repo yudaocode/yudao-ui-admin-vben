@@ -364,7 +364,7 @@ onMounted(async () => {
         </div>
       </div>
     </Card>
-    <Modal class="w-[40%]" :title="title">
+    <Modal class="w-2/5" :title="title">
       <QRCode v-if="qrCode.visible" :value="qrCode.url" />
       <Input
         v-if="barCode.visible"

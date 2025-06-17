@@ -16,14 +16,14 @@ defineProps<SummaryCardProps>();
     class="flex flex-row items-center gap-3 rounded bg-[var(--el-bg-color-overlay)] p-4"
   >
     <div
-      class="rounded-1 flex h-12 w-12 flex-shrink-0 items-center justify-center"
+      class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded"
       :class="`${iconColor} ${iconBgColor}`"
     >
       <IconifyIcon v-if="icon" :icon="icon" class="!text-6" />
     </div>
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1">
-        <span class="text-3.5">{{ title }}</span>
+        <span class="text-base">{{ title }}</span>
         <Tooltip :content="tooltip" placement="topLeft" v-if="tooltip">
           <IconifyIcon
             icon="lucide:circle-alert"
@@ -32,7 +32,7 @@ defineProps<SummaryCardProps>();
         </Tooltip>
       </div>
       <div class="flex flex-row items-baseline gap-2">
-        <div class="text-7">
+        <div class="text-lg">
           <CountTo
             :prefix="prefix"
             :end-val="value ?? 0"
@@ -48,7 +48,7 @@ defineProps<SummaryCardProps>();
             :icon="
               Number(percent) > 0 ? 'lucide:chevron-up' : 'lucide:chevron-down'
             "
-            class="!text-3 ml-0.5"
+            class="ml-0.5 !text-sm"
           />
         </span>
       </div>

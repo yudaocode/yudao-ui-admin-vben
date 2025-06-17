@@ -76,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[600px]" title="设定">
+  <Modal class="w-2/5" title="设定">
     <Form class="mx-4" />
   </Modal>
 </template>

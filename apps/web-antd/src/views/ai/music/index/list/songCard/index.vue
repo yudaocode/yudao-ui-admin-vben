@@ -16,7 +16,7 @@ defineProps({
 
 const emits = defineEmits(['play']);
 
-const currentSong = inject('currentSong', {});
+const currentSong = inject<any>('currentSong', {});
 
 function playSong() {
   emits('play');
@@ -24,11 +24,11 @@ function playSong() {
 </script>
 
 <template>
-  <div class="rounded-1 mb-[12px] flex p-[12px]">
+  <div class="mb-3 flex rounded p-3">
     <div class="relative" @click="playSong">
-      <Image :src="songInfo.imageUrl" class="w-80px flex-none" />
+      <Image :src="songInfo.imageUrl" class="w-20 flex-none" />
       <div
-        class="bg-op-40 absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black"
+        class="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black bg-opacity-40"
       >
         <IconifyIcon
           :icon="
@@ -40,9 +40,9 @@ function playSong() {
         />
       </div>
     </div>
-    <div class="ml-[8px]">
+    <div class="ml-2">
       <div>{{ songInfo.title }}</div>
-      <div class="mt-[8px] line-clamp-2 text-[12px]">
+      <div class="mt-2 line-clamp-2 text-xs">
         {{ songInfo.desc }}
       </div>
     </div>

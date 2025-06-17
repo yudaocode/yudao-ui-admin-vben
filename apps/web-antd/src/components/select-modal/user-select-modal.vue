@@ -408,7 +408,7 @@ function processDeptNode(node: any): DeptTreeNode {
 </script>
 
 <template>
-  <Modal class="w-[40%]" key="user-select-modal" :title="title">
+  <Modal class="w-2/5" key="user-select-modal" :title="title">
     <Row :gutter="[16, 16]">
       <Col :span="6">
         <div class="h-[500px] overflow-auto rounded border">

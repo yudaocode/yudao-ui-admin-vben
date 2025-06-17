@@ -122,7 +122,7 @@ function handleCheck() {
 }
 </script>
 <template>
-  <Modal :title="title" key="dept-select-modal" class="w-[40%]">
+  <Modal :title="title" key="dept-select-modal" class="w-2/5">
     <Row class="h-full">
       <Col :span="24">
         <Card class="h-full">

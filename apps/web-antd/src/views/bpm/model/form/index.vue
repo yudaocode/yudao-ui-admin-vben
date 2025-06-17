@@ -403,7 +403,7 @@ onBeforeUnmount(() => {
         class="absolute inset-x-0 top-0 z-10 flex h-12 items-center border-b bg-white px-5"
       >
         <!-- 左侧标题 -->
-        <div class="flex w-[200px] items-center overflow-hidden">
+        <div class="flex w-48 items-center overflow-hidden">
           <ArrowLeft
             class="size-5 flex-shrink-0 cursor-pointer"
             @click="handleBack"
@@ -431,7 +431,7 @@ onBeforeUnmount(() => {
               @click="handleStepClick(index)"
             >
               <div
-                class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-[15px]"
+                class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-base"
                 :class="[
                   currentStep === index
                     ? 'border-blue-500 bg-blue-500 text-white'
@@ -448,7 +448,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- 右侧按钮 -->
-        <div class="flex w-[200px] items-center justify-end gap-2">
+        <div class="flex w-48 items-center justify-end gap-2">
           <Button
             v-if="actionType === 'update'"
             type="primary"
@@ -464,7 +464,7 @@ onBeforeUnmount(() => {
       </div>
       <!-- 主体内容 -->
       <Card :body-style="{ padding: '10px' }" class="mb-4">
-        <div class="mt-[50px]">
+        <div class="mt-12">
           <!-- 第一步：基本信息 -->
           <div v-if="currentStep === 0" class="mx-auto w-4/6">
             <BasicInfo

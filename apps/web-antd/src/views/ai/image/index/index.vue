@@ -90,16 +90,16 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <div class="ai-image absolute inset-0 flex h-full w-full flex-row">
-      <div class="left flex w-[390px] flex-col p-5">
+    <div class="absolute inset-0 flex h-full w-full flex-row bg-gray-50">
+      <div class="left-0 flex w-96 flex-col p-4">
         <div class="segmented flex justify-center">
           <Segmented
             v-model:value="selectPlatform"
             :options="platformOptions"
-            class="bg-[#ececec]"
+            class="bg-gray-100"
           />
         </div>
-        <div class="modal-switch-container mt-[30px] h-full overflow-y-auto">
+        <div class="mt-8 h-full overflow-y-auto">
           <Common
             v-if="selectPlatform === 'common'"
             ref="commonRef"
@@ -126,7 +126,7 @@ onMounted(async () => {
           />
         </div>
       </div>
-      <div class="main flex-1 bg-white">
+      <div class="ml-4 flex-1 bg-white">
         <ImageList ref="imageListRef" @on-regeneration="handleRegeneration" />
       </div>
     </div>

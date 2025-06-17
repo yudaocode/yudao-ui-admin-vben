@@ -14,12 +14,12 @@ defineProps({
 </script>
 
 <template>
-  <div class="mb-[12px]">
-    <div class="flex items-center justify-between" style="color: #303133">
+  <div class="mb-3">
+    <div class="flex items-center justify-between text-gray-600">
       <span>{{ title }}</span>
       <slot name="extra"></slot>
     </div>
-    <div class="my-[8px] text-[12px]" style="color: #909399">
+    <div class="my-2 text-xs text-gray-400">
       {{ desc }}
     </div>
     <slot></slot>

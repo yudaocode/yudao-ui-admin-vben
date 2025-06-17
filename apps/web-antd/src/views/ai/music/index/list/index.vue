@@ -74,7 +74,7 @@ provide('currentSong', currentSong);
     <div class="flex flex-auto overflow-hidden">
       <Tabs
         v-model:active-key="currentType"
-        class="flex-auto px-[20px]"
+        class="flex-auto px-5"
         tab-position="bottom"
       >
         <!-- 我的创作 -->

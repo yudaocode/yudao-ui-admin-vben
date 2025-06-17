@@ -27,8 +27,8 @@ function generateMusic() {
 </script>
 
 <template>
-  <Card class="mb-[0!important] h-full w-[300px]">
-    <Radio.Group v-model:value="generateMode" class="mb-[15px]">
+  <Card class="!mb-0 h-full w-80">
+    <Radio.Group v-model:value="generateMode" class="mb-4">
       <Radio.Button value="desc"> 描述模式 </Radio.Button>
       <Radio.Button value="lyric"> 歌词模式 </Radio.Button>
     </Radio.Group>

@@ -113,20 +113,20 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="mt-[15px] w-full"
+      class="mt-4 w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
 
-  <div class="hot-words mt-[30px] flex flex-col">
+  <div class="mt-8 flex flex-col">
     <div>
       <b>随机热词</b>
     </div>
-    <Space wrap class="word-list mt-[15px] flex flex-wrap justify-start">
+    <Space wrap class="mt-4 flex flex-col flex-wrap justify-start">
       <Button
         shape="round"
-        class="btn m-0"
+        class="m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotWords"
         :key="hotWord"
@@ -137,16 +137,16 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="group-item mt-[30px]">
+  <div class="mt-8">
     <div>
       <b>平台</b>
     </div>
-    <Space wrap class="group-item-body mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <Select
         v-model:value="otherPlatform"
         placeholder="Select"
         size="large"
-        class="!important w-[330px]"
+        class="!w-80"
         @change="handlerPlatformChange"
       >
         <Select.Option
@@ -160,16 +160,16 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="group-item mt-[30px]">
+  <div class="mt-8">
     <div>
       <b>模型</b>
     </div>
-    <Space wrap class="group-item-body mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <Select
         v-model:value="modelId"
         placeholder="Select"
         size="large"
-        class="!important w-[330px]"
+        class="!w-80"
       >
         <Select.Option
           v-for="item in platformModels"
@@ -182,25 +182,29 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="group-item mt-[30px]">
+  <div class="mt-8">
     <div>
       <b>图片尺寸</b>
     </div>
-    <Space wrap class="group-item-body mt-[15px] flex flex-wrap gap-x-[20px]">
+    <Space wrap class="mt-4 flex flex-wrap gap-x-5">
       <InputNumber
         v-model:value="width"
-        class="mt-[10px] w-[170px]"
+        class="w-40"
         placeholder="图片宽度"
+        addon-before="宽"
+        addon-after="px"
       />
       <InputNumber
         v-model:value="height"
-        class="w-[170px]"
+        class="w-40"
         placeholder="图片高度"
+        addon-before="高"
+        addon-after="px"
       />
     </Space>
   </div>
 
-  <div class="btns mt-[50px] flex justify-center">
+  <div class="mt-12 flex justify-center">
     <Button
       type="primary"
       size="large"

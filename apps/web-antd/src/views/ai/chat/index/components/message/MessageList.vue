@@ -114,7 +114,7 @@ onMounted(async () => {
     <div
       v-for="(item, index) in list"
       :key="index"
-      class="mt-[50px] flex flex-col overflow-y-hidden px-[20px]"
+      class="mt-12 flex flex-col overflow-y-hidden px-5"
     >
       <!-- 左侧消息：system、assistant -->
       <div v-if="item.type !== 'user'" class="flex flex-row">
@@ -125,22 +125,22 @@ onMounted(async () => {
           />
           <SvgGptIcon v-else class="size-8" />
         </div>
-        <div class="mx-[15px] flex flex-col text-left">
-          <div class="text-left leading-[30px]">
+        <div class="mx-4 flex flex-col text-left">
+          <div class="text-left leading-10">
             {{ formatDate(item.createTime) }}
           </div>
           <div
-            class="relative flex flex-col break-words rounded-[10px] bg-[#e4e4e4cc] p-[10px] pb-[5px] pt-[10px] shadow-[0_0_0_1px_rgba(228,228,228,0.8)]"
+            class="relative flex flex-col break-words rounded-lg bg-gray-100 p-2.5 pb-1 pt-2.5 shadow-sm"
           >
             <MarkdownView
-              class="text-[0.95rem] text-[#393939]"
+              class="text-sm text-gray-600"
               :content="item.content"
             />
             <MessageKnowledge v-if="item.segments" :segments="item.segments" />
           </div>
-          <div class="mt-[8px] flex flex-row">
+          <div class="mt-2 flex flex-row">
             <Button
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="copyContent(item.content)"
             >
@@ -148,7 +148,7 @@ onMounted(async () => {
             </Button>
             <Button
               v-if="item.id > 0"
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="onDelete(item.id)"
             >
@@ -163,41 +163,41 @@ onMounted(async () => {
         <div class="avatar">
           <Avatar :src="userAvatar" />
         </div>
-        <div class="mx-[15px] flex flex-col text-left">
-          <div class="text-left leading-[30px]">
+        <div class="mx-4 flex flex-col text-left">
+          <div class="text-left leading-8">
             {{ formatDate(item.createTime) }}
           </div>
           <div class="flex flex-row-reverse">
             <div
-              class="inline w-auto whitespace-pre-wrap break-words rounded-[10px] bg-[#267fff] p-[10px] text-[0.95rem] text-white shadow-[0_0_0_1px_#267fff]"
+              class="inline w-auto whitespace-pre-wrap break-words rounded-lg bg-blue-500 p-2.5 text-sm text-white shadow-sm"
             >
               {{ item.content }}
             </div>
           </div>
-          <div class="mt-[8px] flex flex-row-reverse">
+          <div class="mt-2 flex flex-row-reverse">
             <Button
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="copyContent(item.content)"
             >
               <IconifyIcon icon="lucide:copy" />
             </Button>
             <Button
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="onDelete(item.id)"
             >
               <IconifyIcon icon="lucide:trash" />
             </Button>
             <Button
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="onRefresh(item)"
             >
               <IconifyIcon icon="lucide:refresh-cw" />
             </Button>
             <Button
-              class="flex items-center bg-transparent px-[5px] hover:bg-[#f6f6f6]"
+              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
               @click="onEdit(item)"
             >
@@ -212,7 +212,7 @@ onMounted(async () => {
   <!-- 回到底部按钮 -->
   <div
     v-if="isScrolling"
-    class="absolute bottom-0 right-1/2 z-[1000]"
+    class="z-1000 absolute bottom-0 right-1/2"
     @click="handleGoBottom"
   >
     <Button shape="circle">

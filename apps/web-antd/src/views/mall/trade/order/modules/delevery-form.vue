@@ -125,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[30%]" title="发货">
+  <Modal class="w-1/3" title="发货">
     <Form class="mx-4" />
   </Modal>
 </template>

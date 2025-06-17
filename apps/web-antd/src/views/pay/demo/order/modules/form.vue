@@ -49,7 +49,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[40%]" :title="$t('ui.actionTitle.create', ['退款订单'])">
+  <Modal class="w-2/5" :title="$t('ui.actionTitle.create', ['退款订单'])">
     <Form class="mx-4" />
   </Modal>
 </template>

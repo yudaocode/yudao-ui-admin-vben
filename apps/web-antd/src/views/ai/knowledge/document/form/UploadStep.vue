@@ -186,11 +186,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form ref="formRef" :model="modelData" label-width="0" class="mt-[20px]">
-    <Form.Item class="mb-[20px]">
+  <Form ref="formRef" :model="modelData" label-width="0" class="mt-5">
+    <Form.Item class="mb-5">
       <div class="w-full">
         <div
-          class="w-full rounded-md border-2 border-dashed border-[#dcdfe6] p-[20px] text-center hover:border-[#409eff]"
+          class="w-full rounded-md border-2 border-dashed border-gray-200 p-5 text-center hover:border-blue-500"
         >
           <UploadDragger
             ref="uploadRef"
@@ -203,18 +203,18 @@ onMounted(() => {
             :custom-request="customRequest"
             :multiple="true"
           >
-            <div class="flex flex-col items-center justify-center py-[20px]">
+            <div class="flex flex-col items-center justify-center py-5">
               <IconifyIcon
                 icon="ep:upload-filled"
-                class="mb-[10px] text-[48px] text-[#c0c4cc]"
+                class="mb-2.5 text-xs text-gray-400"
               />
-              <div class="ant-upload-text text-[16px] text-[#606266]">
+              <div class="ant-upload-text text-base text-gray-400">
                 拖拽文件至此，或者
-                <em class="cursor-pointer not-italic text-[#409eff]">
+                <em class="cursor-pointer not-italic text-blue-500">
                   选择文件
                 </em>
               </div>
-              <div class="ant-upload-tip mt-10px text-[12px] text-[#909399]">
+              <div class="mt-2.5 text-sm text-gray-400">
                 已支持 {{ supportedFileTypes.join('、') }}，每个文件不超过
                 {{ maxFileSize }} MB。
               </div>
@@ -223,19 +223,16 @@ onMounted(() => {
         </div>
         <div
           v-if="modelData.list && modelData.list.length > 0"
-          class="mt-[15px] grid grid-cols-1 gap-2"
+          class="mt-4 grid grid-cols-1 gap-2"
         >
           <div
             v-for="(file, index) in modelData.list"
             :key="index"
-            class="flex items-center justify-between rounded-sm border-l-4 border-l-[#409eff] px-[12px] py-[4px] shadow-sm transition-all duration-300 hover:bg-[#ecf5ff]"
+            class="flex items-center justify-between rounded-sm border-l-4 border-l-blue-500 px-3 py-1 shadow-sm transition-all duration-300 hover:bg-blue-50"
           >
             <div class="flex items-center">
-              <IconifyIcon
-                icon="lucide:file-text"
-                class="mr-[8px] text-[#409eff]"
-              />
-              <span class="break-all text-[13px] text-[#303133]">{{
+              <IconifyIcon icon="lucide:file-text" class="mr-2 text-blue-500" />
+              <span class="break-all text-sm text-gray-600">{{
                 file.name
               }}</span>
             </div>
@@ -246,7 +243,7 @@ onMounted(() => {
               @click="removeFile(index)"
               class="ml-2"
             >
-              <IconifyIcon icon="lucide:trash" />
+              <IconifyIcon icon="lucide:trash-2" />
             </Button>
           </div>
         </div>

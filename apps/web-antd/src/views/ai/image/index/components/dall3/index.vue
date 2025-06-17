@@ -151,18 +151,18 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="mt-[15px] w-full"
+      class="mt-4 w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
 
-  <div class="hot-words mt-[30px] flex flex-col">
+  <div class="mt-8 flex flex-col">
     <div><b>随机热词</b></div>
-    <Space wrap class="word-list mt-[15px] flex flex-wrap justify-start">
+    <Space wrap class="mt-4 flex flex-wrap justify-start">
       <Button
         shape="round"
-        class="btn m-0"
+        class="m-0"
         :type="selectHotWord === hotWord ? 'primary' : 'default'"
         v-for="hotWord in ImageHotWords"
         :key="hotWord"
@@ -173,15 +173,13 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="model mt-[30px]">
+  <div class="mt-8">
     <div><b>模型选择</b></div>
-    <Space wrap class="model-list mt-[15px] flex flex-wrap gap-[10px]">
+    <Space wrap class="mt-4 flex flex-wrap gap-2">
       <div
-        class="modal-item flex w-[110px] cursor-pointer flex-col items-center overflow-hidden rounded-[5px] border-[3px]"
+        class="flex w-28 cursor-pointer flex-col items-center overflow-hidden rounded-lg border-2"
         :class="[
-          selectModel === model.key
-            ? 'border-[#1293ff!important]'
-            : 'border-transparent',
+          selectModel === model.key ? '!border-blue-500' : 'border-transparent',
         ]"
         v-for="model in Dall3Models"
         :key="model.key"
@@ -192,20 +190,20 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleModelClick(model)"
         />
-        <div class="model-font text-[14px] font-bold text-[#3e3e3e]">
+        <div class="text-sm font-bold text-gray-600">
           {{ model.name }}
         </div>
       </div>
     </Space>
   </div>
 
-  <div class="image-style mt-[30px]">
+  <div class="mt-8">
     <div><b>风格选择</b></div>
-    <Space wrap class="image-style-list mt-[15px] flex flex-wrap gap-[10px]">
+    <Space wrap class="mt-4 flex flex-wrap gap-2">
       <div
-        class="image-style-item flex w-[110px] cursor-pointer flex-col items-center overflow-hidden rounded-[5px] border-[3px]"
+        class="flex w-28 cursor-pointer flex-col items-center overflow-hidden rounded-lg border-2"
         :class="[
-          style === imageStyle.key ? 'border-[#1293ff]' : 'border-transparent',
+          style === imageStyle.key ? 'border-blue-500' : 'border-transparent',
         ]"
         v-for="imageStyle in Dall3StyleList"
         :key="imageStyle.key"
@@ -216,41 +214,38 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleStyleClick(imageStyle)"
         />
-        <div class="style-font text-[14px] font-bold text-[#3e3e3e]">
+        <div class="text-sm font-bold text-gray-600">
           {{ imageStyle.name }}
         </div>
       </div>
     </Space>
   </div>
 
-  <div class="image-size mt-[30px] w-full">
+  <div class="mt-8 w-full">
     <div><b>画面比例</b></div>
-    <Space
-      wrap
-      class="size-list mt-[20px] flex w-full flex-row justify-between"
-    >
+    <Space wrap class="mt-5 flex w-full flex-wrap gap-2">
       <div
-        class="size-item flex cursor-pointer flex-col items-center"
+        class="flex cursor-pointer flex-col items-center"
         v-for="imageSize in Dall3SizeList"
         :key="imageSize.key"
         @click="handleSizeClick(imageSize)"
       >
         <div
-          class="size-wrapper flex h-[50px] w-[50px] flex-col items-center justify-center rounded-[7px] border bg-white p-[4px]"
+          class="flex h-12 w-12 flex-col items-center justify-center rounded-lg border bg-white p-0"
           :class="[
-            selectSize === imageSize.key ? 'border-[#1293ff]' : 'border-white',
+            selectSize === imageSize.key ? 'border-blue-500' : 'border-white',
           ]"
         >
           <div :style="imageSize.style"></div>
         </div>
-        <div class="size-font text-[14px] font-bold text-[#3e3e3e]">
+        <div class="text-sm font-bold text-gray-600">
           {{ imageSize.name }}
         </div>
       </div>
     </Space>
   </div>
 
-  <div class="btns mt-[50px] flex justify-center">
+  <div class="mt-12 flex justify-center">
     <Button
       type="primary"
       size="large"

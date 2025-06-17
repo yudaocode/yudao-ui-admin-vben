@@ -37,7 +37,7 @@ defineExpose({
 
     <Title title="音乐风格">
       <Space class="flex-wrap">
-        <Tag v-for="tag in tags" :key="tag" class="mb-[8px]">
+        <Tag v-for="tag in tags" :key="tag" class="mb-2">
           {{ tag }}
         </Tag>
       </Space>
@@ -46,7 +46,7 @@ defineExpose({
         :type="showCustom ? 'primary' : 'default'"
         shape="round"
         size="small"
-        class="mb-[6px]"
+        class="mb-2"
         @click="showCustom = !showCustom"
       >
         自定义风格
@@ -56,7 +56,7 @@ defineExpose({
     <Title
       v-show="showCustom"
       desc="描述您想要的音乐风格，Suno无法识别艺术家的名字，但可以理解流派和氛围"
-      class="mt-[12px]"
+      class="mt-3"
     >
       <Textarea
         v-model="formData.style"

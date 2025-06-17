@@ -18,7 +18,7 @@ function generateMusic(args: { formData: Recordable<any> }) {
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <div class="flex h-full items-stretch">
       <!-- 模式 -->
       <Mode class="flex-none" @generate-music="generateMusic" />

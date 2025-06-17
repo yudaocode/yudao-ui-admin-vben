@@ -168,9 +168,9 @@ onMounted(async () => {
 <template>
   <div>
     <!-- 上部分段设置部分 -->
-    <div class="mb-[20px]">
-      <div class="mb-[20px] flex items-center justify-between">
-        <div class="flex items-center text-[16px] font-bold">
+    <div class="mb-5">
+      <div class="mb-5 flex items-center justify-between">
+        <div class="flex items-center text-base font-bold">
           分段设置
           <Tooltip placement="top">
             <template #title>
@@ -178,7 +178,7 @@ onMounted(async () => {
             </template>
             <IconifyIcon
               icon="lucide:circle-alert"
-              class="ml-[5px] text-gray-400"
+              class="ml-1 text-gray-400"
             />
           </Tooltip>
         </div>
@@ -188,7 +188,7 @@ onMounted(async () => {
           </Button>
         </div>
       </div>
-      <div class="segment-settings mb-[20px]">
+      <div class="mb-5">
         <Form :label-col="{ span: 5 }">
           <Form.Item label="最大 Token 数">
             <InputNumber
@@ -200,24 +200,24 @@ onMounted(async () => {
         </Form>
       </div>
     </div>
-    <div class="mb-[10px]">
-      <div class="mb-[10px] text-[16px] font-bold">分段预览</div>
+    <div class="mb-2.5">
+      <div class="mb-2.5 text-base font-bold">分段预览</div>
       <!-- 文件选择器 -->
-      <div class="file-selector mb-[10px]">
+      <div class="mb-2.5">
         <Dropdown
           v-if="modelData.list && modelData.list.length > 0"
           trigger="click"
         >
           <div class="flex cursor-pointer items-center">
-            <IconifyIcon icon="lucide:file-text" class="text-danger mr-[5px]" />
+            <IconifyIcon icon="lucide:file-text" class="mr-1" />
             <span>{{ currentFile?.name || '请选择文件' }}</span>
             <span
               v-if="currentFile?.segments"
-              class="ml-5px text-[12px] text-gray-500"
+              class="ml-1 text-sm text-gray-500"
             >
               ({{ currentFile.segments.length }}个分片)
             </span>
-            <IconifyIcon icon="lucide:chevron-down" class="ml-[5px]" />
+            <IconifyIcon icon="lucide:chevron-down" class="ml-1" />
           </div>
           <template #overlay>
             <Menu>
@@ -227,10 +227,7 @@ onMounted(async () => {
                 @click="selectFile(index)"
               >
                 {{ file.name }}
-                <span
-                  v-if="file.segments"
-                  class="ml-[5px] text-[12px] text-gray-500"
-                >
+                <span v-if="file.segments" class="ml-1 text-sm text-gray-500">
                   ({{ file.segments.length }}个分片)
                 </span>
               </Menu.Item>
@@ -240,15 +237,10 @@ onMounted(async () => {
         <div v-else class="text-gray-400">暂无上传文件</div>
       </div>
       <!-- 文件内容预览 -->
-      <div
-        class="file-preview max-h-[600px] overflow-y-auto rounded-md bg-gray-50 p-[15px]"
-      >
-        <div
-          v-if="splitLoading"
-          class="flex items-center justify-center py-[20px]"
-        >
+      <div class="max-h-[600px] overflow-y-auto rounded-md bg-gray-50 p-4">
+        <div v-if="splitLoading" class="flex items-center justify-center py-5">
           <IconifyIcon icon="lucide:loader" class="is-loading" />
-          <span class="ml-[10px]">正在加载分段内容...</span>
+          <span class="ml-2.5">正在加载分段内容...</span>
         </div>
         <template
           v-else-if="
@@ -260,13 +252,13 @@ onMounted(async () => {
           <div
             v-for="(segment, index) in currentFile.segments"
             :key="index"
-            class="mb-[10px]"
+            class="mb-2.5"
           >
-            <div class="mb-[5px] text-[12px] text-gray-500">
+            <div class="mb-1 text-sm text-gray-500">
               分片-{{ index + 1 }} · {{ segment.contentLength || 0 }} 字符数 ·
               {{ segment.tokens || 0 }} Token
             </div>
-            <div class="rounded-md bg-white p-[10px]">
+            <div class="rounded-md bg-white p-2">
               {{ segment.content }}
             </div>
           </div>
@@ -275,7 +267,7 @@ onMounted(async () => {
       </div>
     </div>
     <!-- 添加底部按钮 -->
-    <div class="mt-[20px] flex justify-between">
+    <div class="mt-5 flex justify-between">
       <div>
         <Button v-if="!modelData.id" @click="handlePrevStep">上一步</Button>
       </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRefs, watch } from 'vue';
 
-import { Plus, Trash2 } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   Alert,
@@ -153,9 +153,10 @@ function deleteHttpResponseSetting(
           </FormItem>
         </Col>
         <Col :span="2">
-          <div class="flex h-[32px] items-center">
-            <Trash2
+          <div class="flex h-8 items-center">
+            <IconifyIcon
               class="size-4 cursor-pointer text-red-500"
+              icon="lucide:trash-2"
               @click="deleteHttpResponseSetting(setting.response!, index)"
             />
           </div>
@@ -167,7 +168,7 @@ function deleteHttpResponseSetting(
         class="flex items-center"
       >
         <template #icon>
-          <Plus class="size-[18px]" />
+          <IconifyIcon class="size-4" icon="lucide:plus" />
         </template>
         添加一行
       </Button>

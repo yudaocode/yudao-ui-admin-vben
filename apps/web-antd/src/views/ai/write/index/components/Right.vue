@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useClipboard } from '@vueuse/core';
 import { Button, Card, message, Textarea } from 'ant-design-vue';
 // 粘贴板
@@ -58,15 +60,14 @@ watch(copied, (val) => {
         <span>预览</span>
         <!-- 展示在右上角 -->
         <Button
-          style="color: white; background-color: #846af7"
+          class="flex bg-purple-500 text-white"
           v-show="showCopy"
           @click="copyContent"
           size="small"
-          class="flex"
         >
           <template #icon>
             <div class="flex items-center justify-center">
-              <span class="icon-[ant-design--copy-twotone]"></span>
+              <IconifyIcon icon="lucide:copy" />
             </div>
           </template>
           复制
@@ -83,13 +84,13 @@ watch(copied, (val) => {
         <!-- 终止生成内容的按钮 -->
         <Button
           v-show="isWriting"
-          class="z-36 absolute bottom-2 left-1/2 flex -translate-x-1/2 sm:bottom-5"
+          class="absolute bottom-2 left-1/2 z-40 flex -translate-x-1/2 sm:bottom-5"
           @click="emits('stopStream')"
           size="small"
         >
           <template #icon>
             <div class="flex items-center justify-center">
-              <span class="icon-[ant-design--stop-twotone]"></span>
+              <IconifyIcon icon="lucide:ban" />
             </div>
           </template>
           终止生成

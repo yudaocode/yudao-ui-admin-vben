@@ -152,7 +152,7 @@ function openDrawer(node: SimpleFlowNode) {
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-[480px]">
+  <Drawer class="w-1/3">
     <template #title>
       <div class="flex items-center">
         <Input

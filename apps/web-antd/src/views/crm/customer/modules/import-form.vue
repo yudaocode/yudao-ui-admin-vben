@@ -95,7 +95,7 @@ async function handleDownload() {
 </script>
 
 <template>
-  <Modal title="客户导入" class="w-[30%]">
+  <Modal title="客户导入" class="w-1/3">
     <Form class="mx-4">
       <template #file>
         <div class="w-full">

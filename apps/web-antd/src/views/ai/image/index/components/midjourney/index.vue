@@ -150,7 +150,7 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="mt-[15px] w-full"
+      class="mt-4 w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
@@ -172,38 +172,38 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="mt-8 w-full">
+  <div class="mt-8">
     <div><b>尺寸</b></div>
-    <Space wrap class="mt-5 flex w-full flex-row justify-between">
+    <Space wrap class="mt-4 flex w-full flex-wrap gap-2">
       <div
-        class="flex cursor-pointer flex-col items-center"
+        class="flex cursor-pointer flex-col items-center overflow-hidden"
         v-for="imageSize in MidjourneySizeList"
         :key="imageSize.key"
         @click="handleSizeClick(imageSize)"
       >
         <div
-          class="flex h-[50px] w-[50px] items-center justify-center rounded-[7px] border bg-white p-1"
+          class="flex h-12 w-12 items-center justify-center rounded-lg border bg-white p-0"
           :class="[
-            selectSize === imageSize.key ? 'border-[#1293ff]' : 'border-white',
+            selectSize === imageSize.key ? 'border-blue-500' : 'border-white',
           ]"
         >
           <div :style="imageSize.style"></div>
         </div>
-        <div class="text-sm font-bold text-[#3e3e3e]">{{ imageSize.key }}</div>
+        <div class="text-sm font-bold text-gray-600">{{ imageSize.key }}</div>
       </div>
     </Space>
   </div>
 
   <div class="mt-8">
     <div><b>模型</b></div>
-    <Space wrap class="mt-4 flex flex-wrap gap-4">
+    <Space wrap class="mt-4 flex flex-wrap gap-2">
       <div
         v-for="model in MidjourneyModels"
         :key="model.key"
-        class="flex w-[150px] cursor-pointer flex-col items-center overflow-hidden border-[3px]"
+        class="flex max-w-40 cursor-pointer flex-col items-center overflow-hidden"
         :class="[
           selectModel === model.key
-            ? 'rounded border-[#1293ff]'
+            ? 'rounded border-blue-500'
             : 'border-transparent',
         ]"
       >
@@ -213,17 +213,17 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleModelClick(model)"
         />
-        <div class="text-sm font-bold text-[#3e3e3e]">{{ model.name }}</div>
+        <div class="text-sm font-bold text-gray-600">{{ model.name }}</div>
       </div>
     </Space>
   </div>
 
-  <div class="mt-5">
+  <div class="mt-8">
     <div><b>版本</b></div>
-    <Space wrap class="mt-5 w-full">
+    <Space wrap class="mt-5 flex w-full flex-wrap gap-2">
       <Select
         v-model:value="selectVersion"
-        class="!w-[330px]"
+        class="!w-80"
         clearable
         placeholder="请选择版本"
       >
@@ -245,7 +245,7 @@ defineExpose({ settingValues });
     </Space>
   </div>
 
-  <div class="mt-[50px] flex justify-center">
+  <div class="mt-8 flex justify-center">
     <Button
       type="primary"
       size="large"

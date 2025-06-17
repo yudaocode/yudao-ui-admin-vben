@@ -3,7 +3,7 @@ export const ACTION_ICON = {
   UPLOAD: 'lucide:upload',
   ADD: 'lucide:plus',
   EDIT: 'lucide:edit',
-  DELETE: 'lucide:trash',
+  DELETE: 'lucide:trash-2',
   REFRESH: 'lucide:refresh-cw',
   SEARCH: 'lucide:search',
   FILTER: 'lucide:filter',

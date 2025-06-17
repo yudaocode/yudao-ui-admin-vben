@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
         class="absolute inset-x-0 top-0 z-10 flex h-12 items-center border-b bg-white px-5"
       >
         <!-- 左侧标题 -->
-        <div class="flex w-[200px] items-center overflow-hidden">
+        <div class="flex w-48 items-center overflow-hidden">
           <ArrowLeft
             class="size-5 flex-shrink-0 cursor-pointer"
             @click="handleBack"
@@ -225,11 +225,11 @@ onBeforeUnmount(() => {
 
         <!-- 步骤条 -->
         <div class="flex h-full flex-1 items-center justify-center">
-          <div class="flex h-full w-[400px] items-center justify-between">
+          <div class="flex h-full w-96 items-center justify-between">
             <div
               v-for="(step, index) in steps"
               :key="index"
-              class="relative mx-[15px] flex h-full cursor-pointer items-center"
+              class="relative mx-4 flex h-full cursor-pointer items-center"
               :class="[
                 currentStep === index
                   ? 'border-b-2 border-solid border-blue-500 text-blue-500'
@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
               @click="handleStepClick(index)"
             >
               <div
-                class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-[15px]"
+                class="mr-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-solid text-base"
                 :class="[
                   currentStep === index
                     ? 'border-blue-500 bg-blue-500 text-white'
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- 右侧按钮 -->
-        <div class="flex w-[200px] items-center justify-end gap-2">
+        <div class="flex w-48 items-center justify-end gap-2">
           <Button
             v-if="actionType === 'update'"
             type="primary"
@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
       </div>
       <!-- 主体内容 -->
       <Card :body-style="{ padding: '10px' }" class="mb-4">
-        <div class="mt-[50px]">
+        <div class="mt-12">
           <!-- 第一步：基本信息 -->
           <div v-if="currentStep === 0" class="mx-auto w-4/6">
             <BasicInfo v-model="formData" ref="basicInfoRef" />

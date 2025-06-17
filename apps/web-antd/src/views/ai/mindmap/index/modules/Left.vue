@@ -23,10 +23,8 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="flex w-[350px] flex-col bg-[#f5f7f9] p-5">
-    <h3
-      class="h-[1.75rem] w-full text-center text-[1.25rem] leading-[28px] text-[hsl(var(--primary))]"
-    >
+  <div class="flex w-80 flex-col bg-gray-50 p-5">
+    <h3 class="text-primary h-7 w-full text-center text-xl leading-7">
       思维导图创作中心
     </h3>
     <div class="flex-grow overflow-y-auto">
@@ -36,12 +34,12 @@ defineExpose({
           v-model:value="formData.prompt"
           :maxlength="1024"
           :rows="8"
-          class="w-100% mt-15px"
+          class="mt-4 w-full"
           placeholder="请输入提示词，让AI帮你完善"
           show-count
         />
         <Button
-          class="mt-[15px] !w-full"
+          class="mt-4 !w-full"
           type="primary"
           :loading="isGenerating"
           @click="emits('submit', formData)"
@@ -49,18 +47,18 @@ defineExpose({
           智能生成思维导图
         </Button>
       </div>
-      <div class="mt-[30px]">
+      <div class="mt-7">
         <b>使用已有内容生成？</b>
         <Textarea
           v-model:value="generatedContent"
           :maxlength="1024"
           :rows="8"
-          class="w-100% mt-15px"
+          class="mt-4 w-full"
           placeholder="例如：童话里的小屋应该是什么样子？"
           show-count
         />
         <Button
-          class="mt-[15px] !w-full"
+          class="mt-4 !w-full"
           type="primary"
           @click="emits('directGenerate', generatedContent)"
           :disabled="isGenerating"

@@ -215,7 +215,7 @@ onMounted(() => {
         />
       </div>
     </Card>
-    <Grid class="h-[80%]" table-title="核销订单">
+    <Grid class="h-4/5" table-title="核销订单">
       <template #toolbar-tools>
         <TableAction
           :actions="[

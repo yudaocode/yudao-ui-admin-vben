@@ -20,17 +20,15 @@ async function handlerPromptClick(prompt: any) {
     <!-- center-container -->
     <div class="flex flex-col justify-center">
       <!-- title -->
-      <div class="text-center text-[28px] font-bold">芋道 AI</div>
+      <div class="text-center text-3xl font-bold">芋道 AI</div>
 
       <!-- role-list -->
-      <div
-        class="mt-[20px] flex w-[460px] flex-wrap items-center justify-center"
-      >
+      <div class="mt-5 flex w-96 flex-wrap items-center justify-center">
         <div
           v-for="prompt in promptList"
           :key="prompt.prompt"
           @click="handlerPromptClick(prompt)"
-          class="m-[10px] flex w-[180px] cursor-pointer justify-center rounded-[10px] border border-[#e4e4e4] leading-[50px] hover:bg-[rgba(243,243,243,0.73)]"
+          class="m-2.5 flex w-44 cursor-pointer justify-center rounded-lg border border-gray-200 leading-10 hover:bg-gray-100"
         >
           {{ prompt.prompt }}
         </div>

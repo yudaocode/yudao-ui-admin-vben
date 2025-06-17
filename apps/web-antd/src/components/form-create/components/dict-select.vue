@@ -45,7 +45,7 @@ const getDictOptions = computed(() => {
 </script>
 
 <template>
-  <Select v-if="selectType === 'select'" class="w-1/1" v-bind="attrs">
+  <Select v-if="selectType === 'select'" class="w-full" v-bind="attrs">
     <SelectOption
       v-for="(dict, index) in getDictOptions"
       :key="index"
@@ -54,7 +54,7 @@ const getDictOptions = computed(() => {
       {{ dict.label }}
     </SelectOption>
   </Select>
-  <RadioGroup v-if="selectType === 'radio'" class="w-1/1" v-bind="attrs">
+  <RadioGroup v-if="selectType === 'radio'" class="w-full" v-bind="attrs">
     <Radio
       v-for="(dict, index) in getDictOptions"
       :key="index"
@@ -63,7 +63,7 @@ const getDictOptions = computed(() => {
       {{ dict.label }}
     </Radio>
   </RadioGroup>
-  <CheckboxGroup v-if="selectType === 'checkbox'" class="w-1/1" v-bind="attrs">
+  <CheckboxGroup v-if="selectType === 'checkbox'" class="w-full" v-bind="attrs">
     <Checkbox
       v-for="(dict, index) in getDictOptions"
       :key="index"

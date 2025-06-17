@@ -139,7 +139,7 @@ function getNodeClass(node: Recordable<any>) {
 </script>
 
 <template>
-  <Modal title="数据权限" class="w-[40%]">
+  <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
         <VbenTree

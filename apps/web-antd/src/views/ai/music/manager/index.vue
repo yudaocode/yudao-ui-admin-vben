@@ -111,7 +111,7 @@ onMounted(async () => {
           v-if="row.audioUrl?.length > 0"
           :href="row.audioUrl"
           target="_blank"
-          style="padding: 0"
+          class="p-0"
         >
           音乐
         </Button>
@@ -120,8 +120,7 @@ onMounted(async () => {
           v-if="row.videoUrl?.length > 0"
           :href="row.videoUrl"
           target="_blank"
-          class="!pl-5px"
-          style="padding: 0"
+          class="p-0 !pl-1"
         >
           视频
         </Button>
@@ -130,8 +129,7 @@ onMounted(async () => {
           v-if="row.imageUrl?.length > 0"
           :href="row.imageUrl"
           target="_blank"
-          class="!pl-5px"
-          style="padding: 0"
+          class="p-0 !pl-1"
         >
           封面
         </Button>
@@ -144,7 +142,7 @@ onMounted(async () => {
         />
       </template>
       <template #tags="{ row }">
-        <Tag v-for="tag in row.tags" :key="tag" class="ml-2px">
+        <Tag v-for="tag in row.tags" :key="tag" class="ml-1">
           {{ tag }}
         </Tag>
       </template>

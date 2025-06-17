@@ -94,12 +94,11 @@ onMounted(() => {
       <Card class="min-w-300 flex-1">
         <div class="mb-15">
           <h3
-            class="m-0 mb-2 font-semibold leading-none tracking-tight"
-            style="font-size: 18px"
+            class="m-0 mb-2 text-lg font-semibold leading-none tracking-tight"
           >
             召回测试
           </h3>
-          <div class="text-14 text-gray-500">
+          <div class="text-sm text-gray-500">
             根据给定的查询文本测试召回效果。
           </div>
         </div>
@@ -110,7 +109,7 @@ onMounted(() => {
               :rows="8"
               placeholder="请输入文本"
             />
-            <div class="text-12 absolute bottom-2 right-2 text-gray-400">
+            <div class="absolute bottom-2 right-2 text-sm text-gray-400">
               {{ queryParams.content?.length }} / 200
             </div>
           </div>
@@ -148,7 +147,7 @@ onMounted(() => {
       <Card class="min-w-300 flex-1">
         <!-- 加载中状态 -->
         <template v-if="loading">
-          <div class="flex h-[300px] items-center justify-center">
+          <div class="flex h-72 items-center justify-center">
             <Empty description="正在检索中..." />
           </div>
         </template>
@@ -162,19 +161,19 @@ onMounted(() => {
               :key="index"
               class="p-15 mb-20 rounded border border-solid border-gray-200"
             >
-              <div class="text-12 mb-5 flex justify-between text-gray-500">
+              <div class="mb-5 flex justify-between text-sm text-gray-500">
                 <span>
                   分段({{ segment.id }}) · {{ segment.contentLength }} 字符数 ·
                   {{ segment.tokens }} Token
                 </span>
                 <span
-                  class="-8 text-12 rounded-full bg-blue-50 py-4 font-bold text-blue-500"
+                  class="rounded-full bg-blue-50 py-4 text-sm font-bold text-blue-500"
                 >
                   score: {{ segment.score }}
                 </span>
               </div>
               <div
-                class="text-13 mb-10 overflow-hidden whitespace-pre-wrap rounded bg-gray-50 p-10 transition-all duration-100"
+                class="mb-10 overflow-hidden whitespace-pre-wrap rounded bg-gray-50 p-10 text-sm transition-all duration-100"
                 :class="{
                   'max-h-50 line-clamp-2': !segment.expanded,
                   'max-h-500': segment.expanded,
@@ -183,7 +182,7 @@ onMounted(() => {
                 {{ segment.content }}
               </div>
               <div class="flex items-center justify-between">
-                <div class="text-13 flex items-center text-gray-500">
+                <div class="flex items-center text-sm text-gray-500">
                   <IconifyIcon icon="lucide:file-text" class="mr-5" />
                   <span>{{ segment.documentName || '未知文档' }}</span>
                 </div>
@@ -205,7 +204,7 @@ onMounted(() => {
 
         <!-- 无召回结果 -->
         <template v-else>
-          <div class="flex h-[300px] items-center justify-center">
+          <div class="flex h-72 items-center justify-center">
             <Empty description="暂无召回结果" />
           </div>
         </template>

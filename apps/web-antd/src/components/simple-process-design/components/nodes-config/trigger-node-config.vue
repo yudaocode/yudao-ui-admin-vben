@@ -11,7 +11,7 @@ import type {
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { IconifyIcon, Trash2 } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import {
@@ -384,14 +384,14 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Drawer class="w-[580px]">
+  <Drawer class="w-1/3">
     <template #title>
       <div class="config-header">
         <Input
           ref="inputRef"
           v-if="showInput"
           type="text"
-          class="config-editable-input"
+          class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           @blur="changeNodeName()"
           @press-enter="changeNodeName()"
           v-model:value="nodeName"
@@ -543,9 +543,10 @@ onMounted(() => {
                   </FormItem>
                 </Col>
                 <Col :span="2">
-                  <div class="flex h-[32px] items-center">
-                    <Trash2
+                  <div class="flex h-8 items-center">
+                    <IconifyIcon
                       class="size-4 cursor-pointer text-red-500"
+                      icon="lucide:trash-2"
                       @click="deleteFormFieldSetting(formSetting, key)"
                     />
                   </div>
@@ -684,12 +685,3 @@ onMounted(() => {
     </div>
   </Drawer>
 </template>
-<style lang="scss" scoped>
-.config-editable-input {
-  &:focus {
-    outline: 0;
-    border-color: #40a9ff;
-    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
-  }
-}
-</style>

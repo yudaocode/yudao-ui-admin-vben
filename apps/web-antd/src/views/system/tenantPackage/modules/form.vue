@@ -131,12 +131,12 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[40%]">
+  <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-6">
       <template #menuIds="slotProps">
         <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
         <VbenTree
-          class="max-h-[400px] overflow-y-auto"
+          class="max-h-96 overflow-y-auto"
           :loading="menuLoading"
           :tree-data="menuTree"
           multiple

@@ -700,15 +700,12 @@ defineExpose({ loadTodoTask });
         "
       >
         <Button ghost type="primary" @click="openPopover('approve')">
-          <IconifyIcon icon="icon-park-outline:check" />
+          <IconifyIcon icon="lucide:check" />
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.APPROVE) }}
         </Button>
         <template #content>
           <!-- 办理表单 -->
-          <div
-            class="flex flex-1 flex-col px-[20px] pt-[20px]"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -717,10 +714,7 @@ defineExpose({ loadTodoTask });
               :rules="approveReasonRule"
               label-width="100px"
             >
-              <Card
-                v-if="runningTask?.formId > 0"
-                class="!-mt-[10px] mb-[15px]"
-              >
+              <Card v-if="runningTask?.formId > 0" class="!-mt-2.5 mb-3.5">
                 <template #title>
                   <span class="el-icon-picture-outline">
                     填写表单【{{ runningTask?.formName }}】
@@ -739,7 +733,7 @@ defineExpose({ loadTodoTask });
                 name="nextAssignees"
                 v-if="nextAssigneesActivityNode.length > 0"
               >
-                <div class="-mb-[35px] -mt-[15px] ml-[10px]">
+                <div class="-mb-8 -mt-3.5 ml-2.5">
                   <ProcessInstanceTimeline
                     :activity-nodes="nextAssigneesActivityNode"
                     :show-status-icon="false"
@@ -759,7 +753,7 @@ defineExpose({ loadTodoTask });
 
                 <div class="mt-2">
                   <Image
-                    style="float: left; width: 326px; height: 150px"
+                    class="float-left h-40 w-80"
                     v-if="approveReasonForm.signPicUrl"
                     :src="approveReasonForm.signPicUrl"
                   />
@@ -815,10 +809,7 @@ defineExpose({ loadTodoTask });
         </Button>
         <template #content>
           <!-- 审批表单 -->
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -874,10 +865,7 @@ defineExpose({ loadTodoTask });
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.COPY) }}
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -949,10 +937,7 @@ defineExpose({ loadTodoTask });
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.TRANSFER) }}
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -1025,10 +1010,7 @@ defineExpose({ loadTodoTask });
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.DELEGATE) }}
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -1101,10 +1083,7 @@ defineExpose({ loadTodoTask });
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.ADD_SIGN) }}
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -1184,10 +1163,7 @@ defineExpose({ loadTodoTask });
           <IconifyIcon :size="14" icon="icon-park-outline:minus" /> 减签
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -1258,10 +1234,7 @@ defineExpose({ loadTodoTask });
           {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.RETURN) }}
         </Button>
         <template #content>
-          <div
-            class="pt-20px px-20px flex flex-1 flex-col"
-            v-loading="formLoading"
-          >
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
             <Form
               layout="vertical"
               class="mb-auto"
@@ -1334,7 +1307,7 @@ defineExpose({ loadTodoTask });
         </Button>
         <template #content>
           <div
-            class="pt-20px px-20px flex w-[400px] flex-1 flex-col"
+            class="flex w-96 flex-1 flex-col px-5 pt-5"
             v-loading="formLoading"
           >
             <Form
@@ -1347,7 +1320,7 @@ defineExpose({ loadTodoTask });
             >
               <FormItem label="取消理由" name="cancelReason">
                 <Alert
-                  class="text-12px mb-2"
+                  class="mb-2 text-xs"
                   type="warning"
                   size="small"
                   show-icon
@@ -1389,7 +1362,7 @@ defineExpose({ loadTodoTask });
           processDefinition?.formType === 10
         "
       >
-        <IconifyIcon :size="14" icon="icon-park-outline:refresh" /> 再次提交
+        <IconifyIcon :size="14" icon="lucide:refresh-cw" /> 再次提交
       </Button>
     </Space>
   </div>

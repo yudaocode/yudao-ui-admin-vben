@@ -44,7 +44,7 @@ const [Grid] = useVbenVxeGrid({
             return h(
               Tag,
               {
-                class: 'mr-5px',
+                class: 'mr-1',
                 color: row.defaultStatus ? 'blue' : 'red',
               },
               () => (row.defaultStatus ? '是' : '否'),

@@ -25,8 +25,8 @@ const formLoading = ref(false); // 表单的加载中：1）修改时的数据�
 // 审批相关：变量
 const processDefineKey = 'oa_leave'; // 流程定义 Key
 const startUserSelectTasks = ref<any>([]); // 发起人需要选择审批人的用户任务列表
-const startUserSelectAssignees = ref({}); // 发起人选择审批人的数据
-const tempStartUserSelectAssignees = ref({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
+const startUserSelectAssignees = ref<any>({}); // 发起人选择审批人的数据
+const tempStartUserSelectAssignees = ref<any>({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const processDefinitionId = ref('');
 
@@ -191,7 +191,7 @@ watch(
 
 // ============================== 生命周期 ==============================
 onMounted(async () => {
-  const processDefinitionDetail = await getProcessDefinition(
+  const processDefinitionDetail: any = await getProcessDefinition(
     undefined,
     processDefineKey,
   );
@@ -210,11 +210,11 @@ onMounted(async () => {
 
 <template>
   <Page>
-    <div class="w-80vw mx-auto max-w-[920px]">
+    <div class="mx-auto w-[80vw] max-w-[920px]">
       <Card :title="getTitle" class="w-full">
         <template #extra>
           <Button type="default" @click="onBack">
-            <IconifyIcon icon="mdi:arrow-left" />
+            <IconifyIcon icon="lucide:arrow-left" />
             返回
           </Button>
         </template>

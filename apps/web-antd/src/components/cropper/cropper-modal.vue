@@ -4,6 +4,7 @@ import type { CropendResult, CropperModalProps, CropperType } from './typing';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { dataURLtoBlob, isFunction } from '@vben/utils';
 
@@ -118,7 +119,7 @@ async function handleOk() {
     :confirm-text="$t('ui.cropper.okText')"
     :fullscreen-button="false"
     :title="$t('ui.cropper.modalTitle')"
-    class="w-[800px]"
+    class="w-2/3"
   >
     <div :class="prefixCls">
       <div :class="`${prefixCls}-left`" class="w-full">
@@ -143,7 +144,7 @@ async function handleOk() {
               <Button size="small" type="primary">
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--upload-outlined]"></span>
+                    <IconifyIcon icon="lucide:upload" />
                   </div>
                 </template>
               </Button>
@@ -159,7 +160,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--reload-outlined]"></span>
+                    <IconifyIcon icon="lucide:rotate-ccw" />
                   </div>
                 </template>
               </Button>
@@ -176,9 +177,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span
-                      class="icon-[ant-design--rotate-left-outlined]"
-                    ></span>
+                    <IconifyIcon icon="ant-design:rotate-left-outlined" />
                   </div>
                 </template>
               </Button>
@@ -189,16 +188,13 @@ async function handleOk() {
             >
               <Button
                 :disabled="!src"
-                pre-icon="ant-design:rotate-right-outlined"
                 size="small"
                 type="primary"
                 @click="handlerToolbar('rotate', 45)"
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span
-                      class="icon-[ant-design--rotate-right-outlined]"
-                    ></span>
+                    <IconifyIcon icon="ant-design:rotate-right-outlined" />
                   </div>
                 </template>
               </Button>
@@ -212,7 +208,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-h]"></span>
+                    <IconifyIcon icon="vaadin--arrows-long-h" />
                   </div>
                 </template>
               </Button>
@@ -226,7 +222,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-v]"></span>
+                    <IconifyIcon icon="vaadin:arrows-long-v" />
                   </div>
                 </template>
               </Button>
@@ -240,7 +236,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-in-outlined]"></span>
+                    <IconifyIcon icon="lucide:zoom-in" />
                   </div>
                 </template>
               </Button>
@@ -254,7 +250,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-out-outlined]"></span>
+                    <IconifyIcon icon="lucide:zoom-out" />
                   </div>
                 </template>
               </Button>

@@ -21,7 +21,7 @@ const router = useRouter(); // 路由对象
 const [Drawer] = useVbenDrawer({
   title: '角色管理',
   footer: false,
-  class: 'w-[754px]',
+  class: 'w-2/5',
 });
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -179,12 +179,12 @@ onMounted(async () => {
       <FormModal @success="handlerAddRoleSuccess" />
 
       <Layout.Content class="relative m-0 flex-1 overflow-hidden p-0">
-        <div class="absolute right-0 top-[-5px] z-[100] mr-[20px] mt-[20px]">
+        <div class="z-100 absolute right-0 top--1 mr-5 mt-5">
           <!-- 搜索输入框 -->
           <Input.Search
             :loading="loading"
             v-model:value="search"
-            class="w-[240px]"
+            class="w-60"
             placeholder="请输入搜索的内容"
             @search="getActiveTabsRole"
           />
@@ -192,9 +192,9 @@ onMounted(async () => {
             v-if="activeTab === 'my-role'"
             type="primary"
             @click="handlerAddRole"
-            class="ml-[20px]"
+            class="ml-5"
           >
-            <IconifyIcon icon="lucide:user" style="margin-right: 5px" />
+            <IconifyIcon icon="lucide:user" class="mr-1.5" />
             添加角色
           </Button>
         </div>
@@ -218,7 +218,7 @@ onMounted(async () => {
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('my')"
-              class="mt-[20px]"
+              class="mt-5"
             />
           </Tabs.TabPane>
 
@@ -231,7 +231,7 @@ onMounted(async () => {
               :category-list="categoryList"
               :active="activeCategory"
               @on-category-click="handlerCategoryClick"
-              class="mx-[27px]"
+              class="mx-6"
             />
             <RoleList
               :role-list="publicRoleList"
@@ -239,7 +239,7 @@ onMounted(async () => {
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('public')"
-              class="mt-[20px]"
+              class="mt-5"
               loading
             />
           </Tabs.TabPane>

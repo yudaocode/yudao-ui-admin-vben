@@ -57,21 +57,21 @@ function handleClick(doc: any) {
   <!-- 知识引用列表 -->
   <div
     v-if="segments && segments.length > 0"
-    class="mt-[10px] rounded-[8px] bg-[#f5f5f5] p-[10px]"
+    class="mt-2 rounded-lg bg-gray-50 p-2"
   >
-    <div class="text-14px mb-8px flex items-center text-[#666]">
-      <IconifyIcon icon="lucide:file-text" class="mr-[5px]" /> 知识引用
+    <div class="mb-2 flex items-center text-sm text-gray-400">
+      <IconifyIcon icon="lucide:file-text" class="mr-1" /> 知识引用
     </div>
-    <div class="flex flex-wrap gap-[8px]">
+    <div class="flex flex-wrap gap-2">
       <div
         v-for="(doc, index) in documentList"
         :key="index"
-        class="cursor-pointer rounded-[6px] bg-white p-[8px] px-[12px] transition-all hover:bg-[#e6f4ff]"
+        class="cursor-pointer rounded-lg bg-white p-2 px-3 transition-all hover:bg-blue-50"
         @click="handleClick(doc)"
       >
-        <div class="mb-[4px] text-[14px] text-[#333]">
+        <div class="mb-1 text-sm text-gray-600">
           {{ doc.title }}
-          <span class="ml-[4px] text-[12px] text-[#999]">
+          <span class="ml-1 text-xs text-gray-300">
             （{{ doc.segments.length }} 条）
           </span>
         </div>
@@ -81,19 +81,19 @@ function handleClick(doc: any) {
   <Tooltip placement="topLeft" trigger="click">
     <div ref="documentRef"></div>
     <template #title>
-      <div class="mb-[12px] text-[16px] font-bold">{{ document?.title }}</div>
+      <div class="mb-3 text-base font-bold">{{ document?.title }}</div>
       <div class="max-h-[60vh] overflow-y-auto">
         <div
           v-for="(segment, index) in document?.segments"
           :key="index"
-          class="border-b-solid border-b-[#eee] p-[12px] last:border-b-0"
+          class="border-b-solid border-b-gray-200 p-3 last:border-b-0"
         >
           <div
-            class="mb-[8px] block w-fit rounded-[4px] bg-[#f5f5f5] px-[8px] py-[2px] text-[12px] text-[#666]"
+            class="mb-2 block w-fit rounded-sm bg-gray-50 px-2 py-1 text-xs text-gray-400"
           >
             分段 {{ segment.id }}
           </div>
-          <div class="mt-[10px] text-[14px] leading-[1.6] text-[#333]">
+          <div class="mt-2 text-sm leading-[1.6] text-gray-600">
             {{ segment.content }}
           </div>
         </div>

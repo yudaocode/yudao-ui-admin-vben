@@ -140,16 +140,16 @@ defineExpose({ settingValues });
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
-      class="mt-[15px] w-full"
+      class="mt-4 w-full"
       placeholder="例如：童话里的小屋应该是什么样子？"
       show-count
     />
   </div>
 
   <!-- 热词区域 -->
-  <div class="mt-[30px] flex flex-col">
+  <div class="mt-8 flex flex-col">
     <div><b>随机热词</b></div>
-    <Space wrap class="mt-[15px] flex flex-wrap justify-start">
+    <Space wrap class="mt-4 flex flex-wrap gap-2">
       <Button
         shape="round"
         class="m-0"
@@ -164,14 +164,14 @@ defineExpose({ settingValues });
   </div>
 
   <!-- 参数项：采样方法 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>采样方法</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <Select
         v-model:value="sampler"
         placeholder="Select"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
       >
         <Select.Option
           v-for="item in StableDiffusionSamplers"
@@ -185,14 +185,14 @@ defineExpose({ settingValues });
   </div>
 
   <!-- CLIP -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>CLIP</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <Select
         v-model:value="clipGuidancePreset"
         placeholder="Select"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
       >
         <Select.Option
           v-for="item in StableDiffusionClipGuidancePresets"
@@ -206,14 +206,14 @@ defineExpose({ settingValues });
   </div>
 
   <!-- 风格 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>风格</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <Select
         v-model:value="stylePreset"
         placeholder="Select"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
       >
         <Select.Option
           v-for="item in StableDiffusionStylePresets"
@@ -228,64 +228,68 @@ defineExpose({ settingValues });
   </div>
 
   <!-- 图片尺寸 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>图片尺寸</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <InputNumber
         v-model:value="width"
-        class="w-[170px]"
+        class="w-40"
         placeholder="图片宽度"
+        addon-before="宽"
+        addon-after="px"
       />
       <InputNumber
         v-model:value="height"
-        class="w-[170px]"
+        class="w-40"
         placeholder="图片高度"
+        addon-before="高"
+        addon-after="px"
       />
     </Space>
   </div>
 
   <!-- 迭代步数 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>迭代步数</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <InputNumber
         v-model:value="steps"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
         placeholder="Please input"
       />
     </Space>
   </div>
 
   <!-- 引导系数 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>引导系数</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <InputNumber
         v-model:value="scale"
         type="number"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
         placeholder="Please input"
       />
     </Space>
   </div>
 
   <!-- 随机因子 -->
-  <div class="mt-[30px]">
+  <div class="mt-8">
     <div><b>随机因子</b></div>
-    <Space wrap class="mt-[15px] w-full">
+    <Space wrap class="mt-4 w-full">
       <InputNumber
         v-model:value="seed"
         size="large"
-        class="!w-[330px]"
+        class="!w-80"
         placeholder="Please input"
       />
     </Space>
   </div>
 
   <!-- 生成按钮 -->
-  <div class="mt-[50px] flex justify-center">
+  <div class="mt-12 flex justify-center">
     <Button
       type="primary"
       size="large"

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Nullable } from '@vben/types';
-
 import { inject, reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
@@ -10,9 +8,9 @@ import { Image, Slider } from 'ant-design-vue';
 
 defineOptions({ name: 'AiMusicAudioBarIndex' });
 
-const currentSong = inject('currentSong', {});
+const currentSong = inject<any>('currentSong', {});
 
-const audioRef = ref<Nullable<HTMLElement>>(null);
+const audioRef = ref<HTMLAudioElement | null>(null);
 // 音频相关属性https://www.runoob.com/tags/ref-av-dom.html
 const audioProps = reactive<any>({
   autoplay: true,
@@ -42,26 +40,24 @@ function audioTimeUpdate(args: any) {
 
 <template>
   <div
-    class="b-solid b-1 b-l-none flex h-[72px] items-center justify-between px-2"
-    style="background-color: #fffffd; border-color: #dcdfe6"
+    class="b-1 b-l-none h-18 flex items-center justify-between border border-solid border-rose-100 bg-white px-2"
   >
     <!-- 歌曲信息 -->
-    <div class="flex gap-[10px]">
+    <div class="flex gap-2.5">
       <Image
         src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
         :width="45"
       />
       <div>
         <div>{{ currentSong.name }}</div>
-        <div class="text-[12px] text-gray-400">{{ currentSong.singer }}</div>
+        <div class="text-xs text-gray-400">{{ currentSong.singer }}</div>
       </div>
     </div>
     <!-- 音频controls -->
-    <div class="flex items-center gap-[12px]">
+    <div class="flex items-center gap-3">
       <IconifyIcon
         icon="majesticons:back-circle"
-        :size="20"
-        class="cursor-pointer text-gray-300"
+        class="size-5 cursor-pointer text-gray-300"
       />
       <IconifyIcon
         :icon="
@@ -69,21 +65,19 @@ function audioTimeUpdate(args: any) {
             ? 'mdi:arrow-right-drop-circle'
             : 'solar:pause-circle-bold'
         "
-        :size="30"
-        class="cursor-pointer"
+        class="size-7 cursor-pointer"
         @click="toggleStatus('paused')"
       />
       <IconifyIcon
         icon="majesticons:next-circle"
-        :size="20"
-        class="cursor-pointer text-gray-300"
+        class="size-5 cursor-pointer text-gray-300"
       />
-      <div class="flex items-center gap-[16px]">
+      <div class="flex items-center gap-4">
         <span>{{ audioProps.currentTime }}</span>
         <Slider
           v-model:value="audioProps.duration"
           color="#409eff"
-          class="w-[160px!important]"
+          class="!w-40"
         />
         <span>{{ audioProps.duration }}</span>
       </div>
@@ -98,18 +92,13 @@ function audioTimeUpdate(args: any) {
         <!-- <source :src="audioUrl" /> -->
       </audio>
     </div>
-    <div class="flex items-center gap-[16px]">
+    <div class="flex items-center gap-4">
       <IconifyIcon
         :icon="audioProps.muted ? 'tabler:volume-off' : 'tabler:volume'"
-        :size="20"
-        class="cursor-pointer"
+        class="size-5 cursor-pointer"
         @click="toggleStatus('muted')"
       />
-      <Slider
-        v-model:value="audioProps.volume"
-        color="#409eff"
-        class="w-[160px!important]"
-      />
+      <Slider v-model:value="audioProps.volume" color="#409eff" class="!w-40" />
     </div>
   </div>
 </template>

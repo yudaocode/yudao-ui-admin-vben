@@ -6,6 +6,7 @@ import type { CropperAvatarProps } from './typing';
 import { computed, ref, unref, watch, watchEffect } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { Button, message } from 'ant-design-vue';
@@ -80,15 +81,16 @@ defineExpose({
       @click="openModal"
     >
       <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
-        <span
+        <IconifyIcon
+          icon="lucide:cloud-upload"
+          class="text-gray-400"
           :style="{
             ...getImageWrapperStyle,
             width: `${getIconWidth}`,
             height: `${getIconWidth}`,
             lineHeight: `${getIconWidth}`,
           }"
-          class="icon-[ant-design--cloud-upload-outlined] text-[#d6d6d6]"
-        ></span>
+        />
       </div>
       <img v-if="sourceValue" :src="sourceValue" alt="avatar" />
     </div>

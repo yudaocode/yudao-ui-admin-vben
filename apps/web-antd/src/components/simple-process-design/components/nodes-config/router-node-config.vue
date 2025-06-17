@@ -200,7 +200,7 @@ function getRouterNode(node: any) {
 defineExpose({ openDrawer }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-[40%]">
+  <Drawer class="w-2/5">
     <template #title>
       <div class="flex items-center">
         <Input
@@ -236,7 +236,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
             <div class="flex items-center font-normal">
               <span class="font-medium">路由{{ index + 1 }}</span>
               <FormItem
-                class="mb-0 ml-4 inline-block w-[180px]"
+                class="mb-0 ml-4 inline-block w-48"
                 :name="['routerGroups', index, 'nodeId']"
                 :rules="{
                   required: true,

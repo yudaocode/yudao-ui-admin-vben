@@ -114,16 +114,16 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <!-- 文件处理列表 -->
-    <div class="mt-[15px] grid grid-cols-1 gap-2">
+    <div class="mt-4 grid grid-cols-1 gap-2">
       <div
         v-for="(file, index) in modelValue.list"
         :key="index"
-        class="flex items-center rounded-sm border-l-4 border-l-[#409eff] px-[12px] py-[4px] shadow-sm transition-all duration-300 hover:bg-[#ecf5ff]"
+        class="flex items-center rounded-sm border-l-4 border-l-blue-500 px-3 py-1 shadow-sm transition-all duration-300 hover:bg-blue-50"
       >
         <!-- 文件图标和名称 -->
-        <div class="mr-[10px] flex min-w-[200px] items-center">
-          <IconifyIcon icon="lucide:file-text" class="mr-8px text-[#409eff]" />
-          <span class="break-all text-[13px] text-[#303133]">
+        <div class="mr-2 flex min-w-48 items-center">
+          <IconifyIcon icon="lucide:file-text" class="mr-2 text-blue-500" />
+          <span class="break-all text-sm text-gray-600">
             {{ file.name }}
           </span>
         </div>
@@ -138,14 +138,14 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- 分段数量 -->
-        <div class="ml-[10px] text-[13px] text-[#606266]">
+        <div class="ml-2 text-sm text-gray-400">
           分段数量：{{ file.count ? file.count : '-' }}
         </div>
       </div>
     </div>
 
     <!-- 底部完成按钮 -->
-    <div class="mt-[20px] flex justify-end">
+    <div class="mt-5 flex justify-end">
       <Button
         :type="allProcessComplete ? 'primary' : 'default'"
         :disabled="!allProcessComplete"

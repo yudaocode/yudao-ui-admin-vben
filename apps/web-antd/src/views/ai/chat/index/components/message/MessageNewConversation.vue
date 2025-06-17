@@ -12,10 +12,10 @@ function handlerNewChat() {
 <template>
   <div class="flex h-full w-full flex-row justify-center">
     <div class="flex flex-col justify-center">
-      <div class="text-center text-[14px] text-[#858585]">
+      <div class="text-center text-sm text-gray-400">
         点击下方按钮，开始你的对话吧
       </div>
-      <div class="mt-[20px] flex flex-row justify-center">
+      <div class="mt-5 flex flex-row justify-center">
         <Button type="primary" round @click="handlerNewChat">新建对话</Button>
       </div>
     </div>

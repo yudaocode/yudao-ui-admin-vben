@@ -153,7 +153,7 @@ defineExpose({
           :style="{ height: `${contentAreaHeight}px` }"
           class="w-full"
         />
-        <div ref="toolBarRef" class="absolute bottom-[10px] right-5"></div>
+        <div ref="toolBarRef" class="absolute bottom-2.5 right-5"></div>
       </div>
     </div>
   </Card>

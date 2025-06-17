@@ -88,7 +88,7 @@ async function handleSubmit(values: Recordable<any>) {
 </script>
 
 <template>
-  <div class="mt-[16px] md:w-full lg:w-1/2 2xl:w-2/5">
+  <div class="mt-4 md:w-full lg:w-1/2 2xl:w-2/5">
     <Form />
   </div>
 </template>
