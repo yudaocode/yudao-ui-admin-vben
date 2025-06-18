@@ -16,6 +16,7 @@ import {
 } from '@vben/icons';
 import {
   BasicLayout,
+  Help,
   LockScreen,
   Notification,
   TenantDropdown,
@@ -38,8 +39,6 @@ import { $t } from '#/locales';
 import { router } from '#/router';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
-
-import Help from './components/help.vue';
 
 // 租户列表
 const tenants = ref<SystemTenantApi.Tenant[]>([]);
