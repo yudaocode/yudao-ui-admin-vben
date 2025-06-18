@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import type { NotificationItem } from '@vben/layouts';
 
+import type { SystemTenantApi } from '#/api/system/tenant';
+
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
-import { useWatermark } from '@vben/hooks';
+import { isTenantEnable, useTabs, useWatermark } from '@vben/hooks';
 import {
   AntdProfileOutlined,
   BookOpenText,
@@ -14,32 +17,35 @@ import {
 } from '@vben/icons';
 import {
   BasicLayout,
+  Help,
   LockScreen,
   Notification,
+  TenantDropdown,
   UserDropdown,
 } from '@vben/layouts';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { formatDateTime, openWindow } from '@vben/utils';
 
+import { message } from '#/adapter/naive';
 import {
   getUnreadNotifyMessageCount,
   getUnreadNotifyMessageList,
   updateAllNotifyMessageRead,
   updateNotifyMessageRead,
 } from '#/api/system/notify/message';
+import { getSimpleTenantList } from '#/api/system/tenant';
 import { $t } from '#/locales';
 import { router } from '#/router';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-import Help from './components/help.vue';
-import TenantDropdown from './components/tenant-dropdown.vue';
-
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
+const { hasAccessByCodes } = useAccess();
 const { destroyWatermark, updateWatermark } = useWatermark();
+const { closeOtherTabs, refreshTab } = useTabs();
 
 const notifications = ref<NotificationItem[]>([]);
 const unreadCount = ref(0);
@@ -148,10 +154,40 @@ function handleNotificationOpen(open: boolean) {
   handleNotificationGetUnreadCount();
 }
 
+// 租户列表
+const tenants = ref<SystemTenantApi.Tenant[]>([]);
+const tenantEnable = computed(
+  () => hasAccessByCodes(['system:tenant:visit']) && isTenantEnable(),
+);
+
+/** 获取租户列表 */
+async function handleGetTenantList() {
+  if (tenantEnable.value) {
+    tenants.value = await getSimpleTenantList();
+  }
+}
+
+/** 处理租户切换 */
+async function handleTenantChange(tenant: SystemTenantApi.Tenant) {
+  if (!tenant || !tenant.id) {
+    message.error('切换租户失败');
+    return;
+  }
+  // 设置访问租户 ID
+  accessStore.setVisitTenantId(tenant.id as number);
+  // 关闭其他标签页，只保留当前页
+  await closeOtherTabs();
+  // 刷新当前页面
+  await refreshTab();
+  // 提示切换成功
+  message.success(`切换当前租户为: ${tenant.name}`);
+}
 // ========== 初始化 ==========
 onMounted(() => {
   // 首次加载未读数量
   handleNotificationGetUnreadCount();
+  // 获取租户列表
+  handleGetTenantList();
   // 轮询刷新未读数量
   setInterval(
     () => {
@@ -204,7 +240,14 @@ watch(
       />
     </template>
     <template #header-right-1>
-      <TenantDropdown class="mr-2" />
+      <div v-if="tenantEnable">
+        <TenantDropdown
+          class="mr-2"
+          :tenant-list="tenants"
+          :visit-tenant-id="accessStore.visitTenantId"
+          @success="handleTenantChange"
+        />
+      </div>
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

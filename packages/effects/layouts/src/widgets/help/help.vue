@@ -1,11 +1,20 @@
 <script lang="ts" setup>
-// TODO @xingyu：这个有可能 3 端复用么？想着是把 layouts 下的 components 没有这个目录哈；
-import { useVbenModal, VbenButton, VbenButtonGroup } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 import { openWindow } from '@vben/utils';
 
-import { Image, Tag } from 'ant-design-vue';
+import { useVbenModal } from '@vben-core/popup-ui';
+import { Badge, VbenButton, VbenButtonGroup } from '@vben-core/shadcn-ui';
 
-import { $t } from '#/locales';
+import { useMagicKeys, whenever } from '@vueuse/core';
+
+defineOptions({
+  name: 'Help',
+});
+
+const keys = useMagicKeys();
+whenever(keys['Alt+KeyH']!, () => {
+  modalApi.open();
+});
 
 const [Modal, modalApi] = useVbenModal({
   draggable: true,
@@ -79,12 +88,12 @@ const [Modal, modalApi] = useVbenModal({
       </div>
       <p class="mt-2 flex justify-center">
         <span>
-          <Image src="/wx-xingyu.png" alt="数舵科技" />
+          <img src="/wx-xingyu.png" alt="数舵科技" />
         </span>
       </p>
       <p class="mt-2 flex justify-center pt-4 text-sm italic">
-        本项目采用<Tag color="blue">MIT</Tag>开源协议，个人与企业可100%
-        免费使用。
+        本项目采用<Badge variant="destructive">MIT</Badge>
+        开源协议，个人与企业可100% 免费使用。
       </p>
     </div>
   </Modal>

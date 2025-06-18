@@ -80,28 +80,28 @@ onMounted(async () => {
       </div>
       <div class="flex">
         <Button
-          class="m-0 p-2.5"
+          class="m-0 p-2"
           type="text"
           @click="handleButtonClick('download', detail)"
         >
           <IconifyIcon icon="lucide:download" />
         </Button>
         <Button
-          class="m-0 p-2.5"
+          class="m-0 p-2"
           type="text"
           @click="handleButtonClick('regeneration', detail)"
         >
           <IconifyIcon icon="lucide:refresh-cw" />
         </Button>
         <Button
-          class="m-0 p-2.5"
+          class="m-0 p-2"
           type="text"
           @click="handleButtonClick('delete', detail)"
         >
           <IconifyIcon icon="lucide:trash" />
         </Button>
         <Button
-          class="m-0 p-2.5"
+          class="m-0 p-2"
           type="text"
           @click="handleButtonClick('more', detail)"
         >

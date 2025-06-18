@@ -506,7 +506,7 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <Layout class="ml-4 bg-white">
+      <Layout class="mx-4 bg-white">
         <Layout.Header
           class="flex items-center justify-between !bg-gray-50 shadow-none"
         >
@@ -572,7 +572,7 @@ onMounted(async () => {
             class="my-5 mb-5 mt-2 flex flex-col rounded-xl border border-gray-200 px-2 py-2.5"
           >
             <textarea
-              class="box-border h-20 resize-none overflow-auto border-none px-0 py-0.5 focus:outline-none"
+              class="box-border h-24 resize-none overflow-auto border-none px-0 py-1 focus:outline-none"
               v-model="prompt"
               @keydown="handleSendByKeydown"
               @input="handlePromptInput"

@@ -123,7 +123,7 @@ defineExpose({ settingValues });
     <div>
       <b>随机热词</b>
     </div>
-    <Space wrap class="mt-4 flex flex-col flex-wrap justify-start">
+    <Space wrap class="mt-4 flex flex-wrap justify-start">
       <Button
         shape="round"
         class="m-0"

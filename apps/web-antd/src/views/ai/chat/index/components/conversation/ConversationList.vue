@@ -306,17 +306,13 @@ onMounted(async () => {
 
 <template>
   <Layout.Sider
-    width="260px"
-    class="!bg-primary-foreground conversation-container relative flex h-full flex-col justify-between overflow-hidden py-2.5 pb-0 pt-2.5"
+    width="280px"
+    class="!bg-primary-foreground conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
     <!-- 左顶部：对话 -->
     <div class="flex h-full flex-col">
-      <Button
-        class="btn-new-conversation h-9 w-full"
-        type="primary"
-        @click="createConversation"
-      >
+      <Button class="h-9 w-full" type="primary" @click="createConversation">
         <IconifyIcon icon="lucide:plus" class="mr-1" />
         新建对话
       </Button>
@@ -324,7 +320,7 @@ onMounted(async () => {
       <Input
         v-model:value="searchName"
         size="large"
-        class="search-input mt-5"
+        class="search-input mt-4"
         placeholder="搜索历史记录"
         @keyup="searchConversation"
       >
@@ -334,7 +330,7 @@ onMounted(async () => {
       </Input>
 
       <!-- 左中间：对话列表 -->
-      <div class="conversation-list mt-2.5 flex-1 overflow-auto">
+      <div class="conversation-list mt-2 flex-1 overflow-auto">
         <!-- 情况一：加载中 -->
         <Empty v-if="loading" description="." v-loading="loading" />
 
@@ -346,7 +342,7 @@ onMounted(async () => {
         >
           <div
             v-if="conversationMap[conversationKey].length > 0"
-            class="conversation-item classify-title pt-2.5"
+            class="conversation-item classify-title pt-2"
           >
             <b class="mx-1">
               {{ conversationKey }}
@@ -362,7 +358,7 @@ onMounted(async () => {
             class="conversation-item mt-1"
           >
             <div
-              class="conversation flex cursor-pointer flex-row items-center justify-between rounded-lg px-2.5 leading-10"
+              class="conversation flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
               :class="[
                 conversation.id === activeConversationId ? 'bg-gray-100' : '',
               ]"
@@ -374,7 +370,7 @@ onMounted(async () => {
                 />
                 <SvgGptIcon v-else class="size-8" />
                 <span
-                  class="max-w-36 overflow-hidden text-ellipsis whitespace-nowrap px-2.5 py-1 text-sm font-normal text-gray-600"
+                  class="max-w-36 overflow-hidden text-ellipsis whitespace-nowrap p-2 text-sm font-normal text-gray-600"
                 >
                   {{ conversation.title }}
                 </span>
@@ -424,7 +420,7 @@ onMounted(async () => {
 
     <!-- 左底部：工具栏 -->
     <div
-      class="tool-box absolute bottom-0 left-0 right-0 flex items-center justify-between bg-gray-50 px-5 leading-9 text-gray-400 shadow-sm"
+      class="absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between bg-gray-50 px-5 leading-9 text-gray-400 shadow-sm"
     >
       <div
         class="flex cursor-pointer items-center text-gray-400"
