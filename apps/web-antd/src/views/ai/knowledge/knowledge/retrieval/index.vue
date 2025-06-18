@@ -91,19 +91,17 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <div class="flex w-full gap-4">
-      <Card class="min-w-300 flex-1">
+      <Card class="w-3/4 flex-1">
         <div class="mb-15">
-          <h3
-            class="m-0 mb-2 text-lg font-semibold leading-none tracking-tight"
-          >
+          <h3 class="m-2 text-lg font-semibold leading-none tracking-tight">
             召回测试
           </h3>
-          <div class="text-sm text-gray-500">
+          <div class="m-2 text-sm text-gray-500">
             根据给定的查询文本测试召回效果。
           </div>
         </div>
         <div>
-          <div class="relative mb-2">
+          <div class="relative m-2">
             <Textarea
               v-model:value="queryParams.content"
               :rows="8"
@@ -113,7 +111,7 @@ onMounted(() => {
               {{ queryParams.content?.length }} / 200
             </div>
           </div>
-          <div class="mb-2 flex items-center">
+          <div class="m-2 flex items-center">
             <span class="w-16 text-gray-500">topK:</span>
             <InputNumber
               v-model:value="queryParams.topK"
@@ -122,7 +120,7 @@ onMounted(() => {
               class="w-full"
             />
           </div>
-          <div class="mb-2 flex items-center">
+          <div class="m-2 flex items-center">
             <span class="w-16 text-gray-500">相似度:</span>
             <InputNumber
               v-model:value="queryParams.similarityThreshold"
@@ -176,7 +174,7 @@ onMounted(() => {
                 class="mb-10 overflow-hidden whitespace-pre-wrap rounded bg-gray-50 p-10 text-sm transition-all duration-100"
                 :class="{
                   'max-h-50 line-clamp-2': !segment.expanded,
-                  'max-h-500': segment.expanded,
+                  'max-h-[1500px]': segment.expanded,
                 }"
               >
                 {{ segment.content }}

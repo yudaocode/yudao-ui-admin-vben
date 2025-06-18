@@ -73,6 +73,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<AiChatConversationApi.ChatConversationVO>,
+  separator: false,
 });
 onMounted(async () => {
   // 获得用户列表

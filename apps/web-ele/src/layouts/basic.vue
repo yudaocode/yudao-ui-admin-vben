@@ -204,7 +204,7 @@ watch(
       />
     </template>
     <template #header-right-1>
-      <TenantDropdown class="w-30 mr-2" />
+      <TenantDropdown class="mr-2 w-44" />
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal
