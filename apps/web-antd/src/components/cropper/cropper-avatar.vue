@@ -28,12 +28,9 @@ const props = withDefaults(defineProps<CropperAvatarProps>(), {
 const emit = defineEmits(['update:value', 'change']);
 
 const sourceValue = ref(props.value || '');
-const prefixCls = 'cropper-avatar';
 const [CropperModal, modalApi] = useVbenModal({
   connectedComponent: cropperModal,
 });
-
-const getClass = computed(() => [prefixCls]);
 
 const getWidth = computed(() => `${`${props.width}`.replace(/px/, '')}px`);
 
@@ -74,29 +71,42 @@ defineExpose({
 </script>
 
 <template>
-  <div :class="getClass" :style="getStyle">
+  <!-- 头像容器 -->
+  <div class="inline-block text-center" :style="getStyle">
+    <!-- 图片包装器 -->
     <div
-      :class="`${prefixCls}-image-wrapper`"
+      class="group relative cursor-pointer overflow-hidden rounded-full border border-gray-200 bg-white"
       :style="getImageWrapperStyle"
       @click="openModal"
     >
-      <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
+      <!-- 遮罩层 -->
+      <div
+        class="duration-400 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black bg-opacity-40 opacity-0 transition-opacity group-hover:opacity-100"
+        :style="getImageWrapperStyle"
+      >
         <IconifyIcon
           icon="lucide:cloud-upload"
-          class="text-gray-400"
+          class="m-auto text-gray-400"
           :style="{
             ...getImageWrapperStyle,
-            width: `${getIconWidth}`,
-            height: `${getIconWidth}`,
-            lineHeight: `${getIconWidth}`,
+            width: getIconWidth,
+            height: getIconWidth,
+            lineHeight: getIconWidth,
           }"
         />
       </div>
-      <img v-if="sourceValue" :src="sourceValue" alt="avatar" />
+      <!-- 头像图片 -->
+      <img
+        v-if="sourceValue"
+        :src="sourceValue"
+        alt="avatar"
+        class="h-full w-full object-cover"
+      />
     </div>
+    <!-- 上传按钮 -->
     <Button
       v-if="showBtn"
-      :class="`${prefixCls}-upload-btn`"
+      class="mx-auto mt-2"
       @click="openModal"
       v-bind="btnProps"
     >
@@ -111,49 +121,3 @@ defineExpose({
     />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.cropper-avatar {
-  display: inline-block;
-  text-align: center;
-
-  &-image-wrapper {
-    overflow: hidden;
-    cursor: pointer;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 50%;
-
-    img {
-      width: 100%;
-    }
-  }
-
-  &-image-mask {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: inherit;
-    height: inherit;
-    cursor: pointer;
-    background: rgb(0 0 0 / 40%);
-    border: inherit;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.4s;
-
-    ::v-deep(svg) {
-      margin: auto;
-    }
-  }
-
-  &-image-mask:hover {
-    opacity: 40;
-  }
-
-  &-upload-btn {
-    margin: 10px auto;
-  }
-}
-</style>
