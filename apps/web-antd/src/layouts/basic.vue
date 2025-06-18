@@ -5,9 +5,10 @@ import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
-import { useTabs, useWatermark } from '@vben/hooks';
+import { isTenantEnable, useTabs, useWatermark } from '@vben/hooks';
 import {
   AntdProfileOutlined,
   BookOpenText,
@@ -40,12 +41,10 @@ import { router } from '#/router';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-// 租户列表
-const tenants = ref<SystemTenantApi.Tenant[]>([]);
-
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
+const { hasAccessByCodes } = useAccess();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const { closeOtherTabs, refreshTab } = useTabs();
 
@@ -156,9 +155,17 @@ function handleNotificationOpen(open: boolean) {
   handleNotificationGetUnreadCount();
 }
 
+// 租户列表
+const tenants = ref<SystemTenantApi.Tenant[]>([]);
+const tenantEnable = computed(
+  () => hasAccessByCodes(['system:tenant:visit']) && isTenantEnable(),
+);
+
 /** 获取租户列表 */
 async function handleGetTenantList() {
-  tenants.value = await getSimpleTenantList();
+  if (tenantEnable.value) {
+    tenants.value = await getSimpleTenantList();
+  }
 }
 
 /** 处理租户切换 */
@@ -235,7 +242,7 @@ watch(
       />
     </template>
     <template #header-right-1>
-      <div v-access:code="['system:tenant:visit']">
+      <div v-if="tenantEnable">
         <TenantDropdown
           class="mr-2"
           :tenant-list="tenants"

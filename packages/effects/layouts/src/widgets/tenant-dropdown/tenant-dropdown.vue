@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { isTenantEnable } from '@vben/hooks';
-
 import {
   Button,
   DropdownMenu,
@@ -35,8 +33,6 @@ const props = defineProps<{
 
 const emit = defineEmits(['success']);
 
-const tenantEnable = isTenantEnable();
-
 // 租户列表
 const tenants = computed(() => props.tenantList ?? []);
 
@@ -50,7 +46,7 @@ async function handleChange(id: number | undefined) {
 }
 </script>
 <template>
-  <DropdownMenu v-if="tenantEnable">
+  <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button
         variant="outline"
