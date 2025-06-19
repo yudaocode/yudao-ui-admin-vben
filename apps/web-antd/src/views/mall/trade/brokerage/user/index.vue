@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
-import { onMounted } from 'vue';
-
 import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -142,11 +140,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MallBrokerageUserApi.BrokerageUser>,
-});
-
-/** 初始化 */
-onMounted(() => {
-  // 表格初始化时会自动查询，无需手动调用
 });
 </script>
 
