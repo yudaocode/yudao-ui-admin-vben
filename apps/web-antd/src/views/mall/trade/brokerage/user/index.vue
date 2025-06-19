@@ -1,32 +1,234 @@
 <script lang="ts" setup>
-import { DocAlert, Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
-import { Button } from 'ant-design-vue';
+import { onMounted } from 'vue';
+
+import { useAccess } from '@vben/access';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+
+import { Avatar, message, Switch } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  clearBindUser,
+  getBrokerageUserPage,
+  updateBrokerageEnabled,
+} from '#/api/mall/trade/brokerage/user';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import BrokerageOrderListModal from './modules/order-list-modal.vue';
+import BrokerageUserCreateForm from './modules/user-create-form.vue';
+import BrokerageUserListModal from './modules/user-list-modal.vue';
+import BrokerageUserUpdateForm from './modules/user-update-form.vue';
+
+defineOptions({ name: 'TradeBrokerageUser' });
+
+const { hasAccessByCodes } = useAccess();
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+const [OrderListModal, OrderListModalApi] = useVbenModal({
+  connectedComponent: BrokerageOrderListModal,
+});
+
+const [UserCreateModal, UserCreateModalApi] = useVbenModal({
+  connectedComponent: BrokerageUserCreateForm,
+});
+
+const [UserListModal, UserListModalApi] = useVbenModal({
+  connectedComponent: BrokerageUserListModal,
+});
+
+const [UserUpdateModal, UserUpdateModalApi] = useVbenModal({
+  connectedComponent: BrokerageUserUpdateForm,
+});
+
+/** 打开推广人列表 */
+function openBrokerageUserTable(row: MallBrokerageUserApi.BrokerageUser) {
+  UserListModalApi.setData(row).open();
+}
+
+/** 打开推广订单列表 */
+function openBrokerageOrderTable(row: MallBrokerageUserApi.BrokerageUser) {
+  OrderListModalApi.setData(row).open();
+}
+
+/** 打开表单：修改上级推广人 */
+function openUpdateBindUserForm(row: MallBrokerageUserApi.BrokerageUser) {
+  UserUpdateModalApi.setData(row).open();
+}
+
+/** 创建分销员 */
+function openCreateUserForm() {
+  UserCreateModalApi.open();
+}
+
+/** 清除上级推广人 */
+async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
+  const hideLoading = message.loading({
+    content: `正在清除"${row.nickname}"的上级推广人...`,
+    key: 'clear_bind_user_msg',
+  });
+  try {
+    await clearBindUser({ id: row.id as number });
+    message.success({
+      content: '清除成功',
+      key: 'clear_bind_user_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 推广资格：开通/关闭 */
+async function handleBrokerageEnabledChange(
+  row: MallBrokerageUserApi.BrokerageUser,
+) {
+  const text = row.brokerageEnabled ? '开通' : '关闭';
+  const hideLoading = message.loading({
+    content: `正在${text}"${row.nickname}"的推广资格...`,
+    key: 'brokerage_enabled_msg',
+  });
+  try {
+    await updateBrokerageEnabled({
+      id: row.id as number,
+      enabled: row.brokerageEnabled as boolean,
+    });
+    message.success({
+      content: `${text}成功`,
+      key: 'brokerage_enabled_msg',
+    });
+    onRefresh();
+  } catch {
+    // 异常时，需要重置回之前的值
+    row.brokerageEnabled = !row.brokerageEnabled;
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    showOverflow: 'tooltip',
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getBrokerageUserPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallBrokerageUserApi.BrokerageUser>,
+});
+
+/** 初始化 */
+onMounted(() => {
+  // 表格初始化时会自动查询，无需手动调用
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【交易】分销返佣"
-      url="https://doc.iocoder.cn/mall/trade-brokerage/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/brokerage/user/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/brokerage/user/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【交易】分销返佣"
+        url="https://doc.iocoder.cn/mall/trade-brokerage/"
+      />
+    </template>
+
+    <Grid table-title="分销用户列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['分销员']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['trade:brokerage-user:create'],
+              onClick: openCreateUserForm,
+            },
+          ]"
+        />
+      </template>
+
+      <template #avatar="{ row }">
+        <Avatar :src="row.avatar" />
+      </template>
+
+      <template #brokerageEnabled="{ row }">
+        <Switch
+          v-model:checked="row.brokerageEnabled"
+          :disabled="
+            !hasAccessByCodes(['trade:brokerage-user:update-bind-user'])
+          "
+          checked-children="有"
+          un-checked-children="无"
+          @change="handleBrokerageEnabledChange(row)"
+        />
+      </template>
+
+      <template #actions="{ row }">
+        <TableAction
+          :drop-down-actions="[
+            {
+              label: '推广人',
+              type: 'link',
+              auth: ['trade:brokerage-user:user-query'],
+              onClick: openBrokerageUserTable.bind(null, row),
+            },
+            {
+              label: '推广订单',
+              type: 'link',
+              auth: ['trade:brokerage-user:order-query'],
+              onClick: openBrokerageOrderTable.bind(null, row),
+            },
+            {
+              label: '修改上级推广人',
+              type: 'link',
+              auth: ['trade:brokerage-user:update-bind-user'],
+              onClick: openUpdateBindUserForm.bind(null, row),
+            },
+            {
+              label: '清除上级推广人',
+              type: 'link',
+              auth: ['trade:brokerage-user:clear-bind-user'],
+              onClick: handleClearBindUser.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+
+    <!-- 修改上级推广人表单 -->
+    <UserUpdateModal @success="onRefresh" />
+    <!-- 推广人列表 -->
+    <UserListModal />
+    <!-- 推广订单列表 -->
+    <OrderListModal />
+    <!-- 创建分销员 -->
+    <UserCreateModal @success="onRefresh" />
   </Page>
 </template>
