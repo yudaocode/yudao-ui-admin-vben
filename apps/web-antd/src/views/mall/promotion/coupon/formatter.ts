@@ -10,7 +10,7 @@ import {
 // 格式化【优惠金额/折扣】
 export function discountFormat(row: MallCouponTemplateApi.CouponTemplate) {
   if (row.discountType === PromotionDiscountTypeEnum.PRICE.type) {
-    return `￥${floatToFixed2(row.discountPrice)}`;
+    return `¥${floatToFixed2(row.discountPrice)}`;
   }
   if (row.discountType === PromotionDiscountTypeEnum.PERCENT.type) {
     return `${row.discountPercent}%`;
@@ -61,5 +61,5 @@ export function remainedCountFormat(row: MallCouponTemplateApi.CouponTemplate) {
 
 // 格式化【最低消费】
 export function usePriceFormat(row: MallCouponTemplateApi.CouponTemplate) {
-  return `￥${floatToFixed2(row.usePrice)}`;
+  return `¥${floatToFixed2(row.usePrice)}`;
 }
