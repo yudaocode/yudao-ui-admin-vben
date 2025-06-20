@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 
-import {
-  DICT_TYPE,
-  getDictOptions,
-  getIntDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -29,9 +24,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'picUrl',
       label: '图片地址',
       component: 'ImageUpload',
-      componentProps: {
-        maxSize: 1,
-      },
       rules: 'required',
     },
     {
@@ -102,7 +94,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        options: getIntDictOptions(DICT_TYPE.COMMON_STATUS),
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
     {

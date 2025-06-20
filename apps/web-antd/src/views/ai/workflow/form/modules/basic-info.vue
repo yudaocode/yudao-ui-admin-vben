@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { Form, Input, Select } from 'ant-design-vue';
 
-import { DICT_TYPE, getIntDictOptions } from '#/utils';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 // 创建本地数据副本
 const modelData = defineModel<any>();
@@ -57,7 +57,7 @@ defineExpose({ validate });
         placeholder="请选择状态"
       >
         <Select.Option
-          v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+          v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
           :key="dict.value"
           :value="dict.value"
         >

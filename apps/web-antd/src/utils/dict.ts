@@ -1,6 +1,8 @@
 // TODO @芋艿：后续再优化
 // TODO @芋艿：可以共享么？
 
+import type { DictItem } from '#/store';
+
 import { isObject } from '@vben/utils';
 
 import { useDictStore } from '#/store';
@@ -9,33 +11,103 @@ import { useDictStore } from '#/store';
 // 先临时移入到方法中
 // const dictStore = useDictStore();
 
-// TODO @dhb: antd 组件的 color 类型
+/** AntD 组件的颜色类型 */
 type ColorType = 'error' | 'info' | 'success' | 'warning';
 
+/** 字典值类型 */
+type DictValueType = 'boolean' | 'number' | 'string';
+
+/** 基础字典数据类型 */
 export interface DictDataType {
   dictType?: string;
   label: string;
   value: boolean | number | string;
-  colorType?: ColorType;
+  colorType?: string;
   cssClass?: string;
 }
 
+/** 数字类型字典数据 */
 export interface NumberDictDataType extends DictDataType {
   value: number;
 }
 
+/** 字符串类型字典数据 */
 export interface StringDictDataType extends DictDataType {
   value: string;
 }
 
+/** 布尔类型字典数据 */
+export interface BooleanDictDataType extends DictDataType {
+  value: boolean;
+}
+
+/** 字典缓存管理器 */
+class DictCacheManager {
+  private cache = new Map<string, DictDataType[]>();
+  private maxCacheSize = 100; // 最大缓存数量
+
+  /** 清空缓存 */
+  clear(): void {
+    this.cache.clear();
+  }
+
+  /** 删除指定字典类型的缓存 */
+  delete(dictType: string): void {
+    const keysToDelete = [];
+    for (const key of this.cache.keys()) {
+      if (key.startsWith(`${dictType}:`)) {
+        keysToDelete.push(key);
+      }
+    }
+    keysToDelete.forEach((key) => this.cache.delete(key));
+  }
+
+  /** 获取缓存数据 */
+  get(dictType: string, valueType: DictValueType): DictDataType[] | undefined {
+    return this.cache.get(this.getCacheKey(dictType, valueType));
+  }
+
+  /** 设置缓存数据 */
+  set(dictType: string, valueType: DictValueType, data: DictDataType[]): void {
+    const key = this.getCacheKey(dictType, valueType);
+
+    // 如果缓存数量超过限制，删除最早的缓存
+    if (this.cache.size >= this.maxCacheSize) {
+      const firstKey = this.cache.keys().next().value;
+      if (firstKey) {
+        this.cache.delete(firstKey);
+      }
+    }
+
+    this.cache.set(key, data);
+  }
+
+  /** 获取缓存键 */
+  private getCacheKey(dictType: string, valueType: DictValueType): string {
+    return `${dictType}:${valueType}`;
+  }
+}
+
+/** 字典缓存实例 */
+const dictCache = new DictCacheManager();
+
+/** 值转换器映射 */
+const valueConverters: Record<
+  DictValueType,
+  (value: any) => boolean | number | string
+> = {
+  boolean: (value: any) => `${value}` === 'true',
+  number: (value: any) => Number.parseInt(`${value}`, 10),
+  string: (value: any) => `${value}`,
+};
+
 /**
  * 获取字典标签
- *
  * @param dictType 字典类型
  * @param value 字典值
  * @returns 字典标签
  */
-function getDictLabel(dictType: string, value: any) {
+function getDictLabel(dictType: string, value: any): string {
   const dictStore = useDictStore();
   const dictObj = dictStore.getDictData(dictType, value);
   return isObject(dictObj) ? dictObj.label : '';
@@ -43,103 +115,73 @@ function getDictLabel(dictType: string, value: any) {
 
 /**
  * 获取字典对象
- *
  * @param dictType 字典类型
  * @param value 字典值
  * @returns 字典对象
  */
-function getDictObj(dictType: string, value: any) {
+function getDictObj(dictType: string, value: any): DictItem | null {
   const dictStore = useDictStore();
   const dictObj = dictStore.getDictData(dictType, value);
   return isObject(dictObj) ? dictObj : null;
 }
 
 /**
- * 获取字典数组 用于select radio 等
- *
+ * 获取字典数组 - 优化版本，支持缓存和泛型
  * @param dictType 字典类型
  * @param valueType 字典值类型，默认 string 类型
  * @returns 字典数组
  */
-function getDictOptions(
+function getDictOptions<T extends DictValueType = 'string'>(
   dictType: string,
-  valueType: 'boolean' | 'number' | 'string' = 'string',
-): DictDataType[] {
+  valueType: T = 'string' as T,
+): T extends 'number'
+  ? NumberDictDataType[]
+  : T extends 'boolean'
+    ? BooleanDictDataType[]
+    : StringDictDataType[] {
+  // 检查缓存
+  const cachedData = dictCache.get(dictType, valueType);
+  if (cachedData) {
+    return cachedData as any;
+  }
+
   const dictStore = useDictStore();
   const dictOpts = dictStore.getDictOptions(dictType);
-  const dictOptions: DictDataType[] = [];
-  if (dictOpts.length > 0) {
-    let dictValue: boolean | number | string = '';
-    dictOpts.forEach((d) => {
-      switch (valueType) {
-        case 'boolean': {
-          dictValue = `${d.value}` === 'true';
-          break;
-        }
-        case 'number': {
-          dictValue = Number.parseInt(`${d.value}`);
-          break;
-        }
-        case 'string': {
-          dictValue = `${d.value}`;
-          break;
-        }
-        // No default
-      }
-      dictOptions.push({
-        value: dictValue,
-        label: d.label,
-      });
-    });
+
+  if (dictOpts.length === 0) {
+    return [] as any;
   }
-  return dictOptions.length > 0 ? dictOptions : [];
+
+  const converter = valueConverters[valueType];
+  const dictOptions: DictDataType[] = dictOpts.map((d: DictItem) => ({
+    value: converter(d.value),
+    label: d.label,
+    colorType: d.colorType,
+    cssClass: d.cssClass,
+  }));
+
+  // 缓存结果
+  dictCache.set(dictType, valueType, dictOptions);
+
+  return dictOptions as any;
 }
 
-// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
-export const getIntDictOptions = (dictType: string): NumberDictDataType[] => {
-  // 获得通用的 DictDataType 列表
-  const dictOptions = getDictOptions(dictType) as DictDataType[];
-  // 转换成 number 类型的 NumberDictDataType 类型
-  // why 需要特殊转换：避免 IDEA 在 v-for="dict in getIntDictOptions(...)" 时，el-option 的 key 会告警
-  const dictOption: NumberDictDataType[] = [];
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: Number.parseInt(`${dict.value}`),
-    });
-  });
-  return dictOption;
+/**
+ * 清空字典缓存
+ */
+export const clearDictCache = (): void => {
+  dictCache.clear();
 };
 
-// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
-export const getStrDictOptions = (dictType: string) => {
-  // 获得通用的 DictDataType 列表
-  const dictOptions = getDictOptions(dictType) as DictDataType[];
-  // 转换成 string 类型的 StringDictDataType 类型
-  // why 需要特殊转换：避免 IDEA 在 v-for="dict in getStrDictOptions(...)" 时，el-option 的 key 会告警
-  const dictOption: StringDictDataType[] = [];
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: `${dict.value}`,
-    });
-  });
-  return dictOption;
+/**
+ * 删除指定字典类型的缓存
+ * @param dictType 字典类型
+ */
+export const deleteDictCache = (dictType: string): void => {
+  dictCache.delete(dictType);
 };
 
-// TODO @dhb52：下面的一系列方法，看看能不能复用 getDictOptions 方法
-export const getBoolDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = [];
-  const dictOptions = getDictOptions(dictType) as DictDataType[];
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: `${dict.value}` === 'true',
-    });
-  });
-  return dictOption;
-};
-
+/** 字典类型枚举 - 按模块分组和排序 */
 enum DICT_TYPE {
   AI_GENERATE_MODE = 'ai_generate_mode', // AI 生成模式
   AI_IMAGE_STATUS = 'ai_image_status', // AI 图片状态
@@ -274,4 +316,12 @@ enum DICT_TYPE {
   TRADE_ORDER_TYPE = 'trade_order_type', // 订单 - 类型
   USER_TYPE = 'user_type',
 }
-export { DICT_TYPE, getDictLabel, getDictObj, getDictOptions };
+
+export {
+  type ColorType,
+  DICT_TYPE,
+  type DictValueType,
+  getDictLabel,
+  getDictObj,
+  getDictOptions,
+};

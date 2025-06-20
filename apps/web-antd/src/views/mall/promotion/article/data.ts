@@ -52,9 +52,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'picUrl',
       label: '文章封面',
       component: 'ImageUpload',
-      componentProps: {
-        maxSize: 1,
-      },
       rules: 'required',
     },
     {

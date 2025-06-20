@@ -2,12 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getAppList } from '#/api/pay/app';
-import {
-  DICT_TYPE,
-  getIntDictOptions,
-  getRangePickerDefaultProps,
-  getStrDictOptions,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -34,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getStrDictOptions(DICT_TYPE.PAY_CHANNEL_CODE),
+        options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'string'),
       },
     },
     {
@@ -63,7 +58,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getIntDictOptions(DICT_TYPE.PAY_REFUND_STATUS),
+        options: getDictOptions(DICT_TYPE.PAY_REFUND_STATUS, 'number'),
       },
     },
     {

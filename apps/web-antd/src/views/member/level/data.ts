@@ -52,17 +52,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ImageUpload',
       fieldName: 'icon',
       label: '等级图标',
-      componentProps: {
-        maxSize: 1,
-      },
     },
     {
       component: 'ImageUpload',
       fieldName: 'backgroundUrl',
       label: '等级背景图',
-      componentProps: {
-        maxSize: 1,
-      },
     },
     {
       fieldName: 'status',

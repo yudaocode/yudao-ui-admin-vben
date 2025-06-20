@@ -1,32 +1,132 @@
 <script lang="ts" setup>
-import { DocAlert, Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallCouponApi } from '#/api/mall/promotion/coupon/coupon';
 
-import { Button } from 'ant-design-vue';
+import { ref } from 'vue';
+
+import { DocAlert, Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+
+import { message, TabPane, Tabs } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteCoupon,
+  getCouponPage,
+} from '#/api/mall/promotion/coupon/coupon';
+
+import { getStatusTabs, useGridColumns, useGridFormSchema } from './data';
+
+defineOptions({ name: 'PromotionCoupon' });
+
+const activeTab = ref('all');
+const statusTabs = ref(getStatusTabs());
+
+/** 删除优惠券 */
+async function handleDelete(row: MallCouponApi.Coupon) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    key: 'action_key_msg',
+  });
+  try {
+    await deleteCoupon(row.id as number);
+    message.success({
+      content: '回收成功',
+      key: 'action_key_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
+}
+
+/** Tab切换 */
+function onTabChange(tabName: string) {
+  activeTab.value = tabName;
+  // 设置状态查询参数
+  const formValues = gridApi.formApi.getValues();
+  const status = tabName === 'all' ? undefined : Number(tabName);
+  gridApi.formApi.setValues({ ...formValues, status });
+  gridApi.query();
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          const params = {
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+            // Tab状态过滤
+            status:
+              activeTab.value === 'all' ? undefined : Number(activeTab.value),
+          };
+          return await getCouponPage(params);
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallCouponApi.Coupon>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【营销】优惠劵"
-      url="https://doc.iocoder.cn/mall/promotion-coupon/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/coupon/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/coupon/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【营销】优惠劵"
+        url="https://doc.iocoder.cn/mall/promotion-coupon/"
+      />
+    </template>
+
+    <Grid table-title="优惠券列表">
+      <template #top>
+        <Tabs v-model:active-key="activeTab" type="card" @change="onTabChange">
+          <TabPane
+            v-for="tab in statusTabs"
+            :key="tab.value"
+            :tab="tab.label"
+          />
+        </Tabs>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '回收',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['promotion:coupon:delete'],
+              popConfirm: {
+                title:
+                  '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

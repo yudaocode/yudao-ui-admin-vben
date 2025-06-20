@@ -31,9 +31,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'userAvatar',
       label: '用户头像',
       component: 'ImageUpload',
-      componentProps: {
-        maxSize: 1,
-      },
       rules: 'required',
     },
     {
@@ -65,7 +62,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '评论图片',
       component: 'ImageUpload',
       componentProps: {
-        maxSize: 9,
+        maxNumber: 9,
       },
       rules: 'required',
     },

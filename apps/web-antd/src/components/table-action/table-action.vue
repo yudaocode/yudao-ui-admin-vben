@@ -4,7 +4,7 @@ import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
 
-import { computed, toRaw } from 'vue';
+import { computed, ref, toRaw, unref, watchEffect } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
@@ -41,6 +41,14 @@ const props = defineProps({
 
 const { hasAccessByCodes } = useAccess();
 
+/** 缓存处理后的actions */
+const processedActions = ref<any[]>([]);
+const processedDropdownActions = ref<any[]>([]);
+
+/** 用于比较的字符串化版本 */
+const actionsStringified = ref('');
+const dropdownActionsStringified = ref('');
+
 function isIfShow(action: ActionItem): boolean {
   const ifShow = action.ifShow;
   let isIfShow = true;
@@ -57,8 +65,8 @@ function isIfShow(action: ActionItem): boolean {
   return isIfShow;
 }
 
-const getActions = computed(() => {
-  const actions = toRaw(props.actions) || [];
+/** 处理actions的纯函数 */
+function processActions(actions: ActionItem[]): any[] {
   return actions
     .filter((action: ActionItem) => {
       return isIfShow(action);
@@ -74,30 +82,101 @@ const getActions = computed(() => {
         enable: !!popConfirm,
       };
     });
-});
+}
 
-const getDropdownList = computed((): any[] => {
-  const dropDownActions = toRaw(props.dropDownActions) || [];
+/** 处理下拉菜单actions的纯函数 */
+function processDropdownActions(
+  dropDownActions: ActionItem[],
+  divider: boolean,
+): any[] {
   return dropDownActions
     .filter((action: ActionItem) => {
       return isIfShow(action);
     })
     .map((action: ActionItem, index: number) => {
       const { label, popConfirm } = action;
-      delete action.icon;
+      const processedAction = { ...action };
+      delete processedAction.icon;
       return {
-        ...action,
+        ...processedAction,
         ...popConfirm,
         onConfirm: popConfirm?.confirm,
         onCancel: popConfirm?.cancel,
         text: label,
-        divider: index < dropDownActions.length - 1 ? props.divider : false,
+        divider: index < dropDownActions.length - 1 ? divider : false,
       };
     });
+}
+
+/** 监听actions变化并更新缓存 */
+watchEffect(() => {
+  const rawActions = toRaw(props.actions) || [];
+  const currentStringified = JSON.stringify(
+    rawActions.map((a) => ({
+      ...a,
+      onClick: undefined, // 排除函数以便比较
+      popConfirm: a.popConfirm
+        ? { ...a.popConfirm, confirm: undefined, cancel: undefined }
+        : undefined,
+    })),
+  );
+
+  if (currentStringified !== actionsStringified.value) {
+    actionsStringified.value = currentStringified;
+    processedActions.value = processActions(rawActions);
+  }
 });
 
+/** 监听dropDownActions变化并更新缓存 */
+watchEffect(() => {
+  const rawDropDownActions = toRaw(props.dropDownActions) || [];
+  const currentStringified = JSON.stringify({
+    actions: rawDropDownActions.map((a) => ({
+      ...a,
+      onClick: undefined, // 排除函数以便比较
+      popConfirm: a.popConfirm
+        ? { ...a.popConfirm, confirm: undefined, cancel: undefined }
+        : undefined,
+    })),
+    divider: props.divider,
+  });
+
+  if (currentStringified !== dropdownActionsStringified.value) {
+    dropdownActionsStringified.value = currentStringified;
+    processedDropdownActions.value = processDropdownActions(
+      rawDropDownActions,
+      props.divider,
+    );
+  }
+});
+
+const getActions = computed(() => processedActions.value);
+
+const getDropdownList = computed(() => processedDropdownActions.value);
+
+/** 缓存Space组件的size计算结果 */
+const spaceSize = computed(() => {
+  return unref(getActions)?.some((item: ActionItem) => item.type === 'link')
+    ? 0
+    : 8;
+});
+
+/** 缓存PopConfirm属性 */
+const popConfirmPropsMap = new Map<string, any>();
+
 function getPopConfirmProps(attrs: PopConfirm) {
-  const originAttrs: any = attrs;
+  const key = JSON.stringify({
+    title: attrs.title,
+    okText: attrs.okText,
+    cancelText: attrs.cancelText,
+    disabled: attrs.disabled,
+  });
+
+  if (popConfirmPropsMap.has(key)) {
+    return popConfirmPropsMap.get(key);
+  }
+
+  const originAttrs: any = { ...attrs };
   delete originAttrs.icon;
   if (attrs.confirm && isFunction(attrs.confirm)) {
     originAttrs.onConfirm = attrs.confirm;
@@ -107,34 +186,76 @@ function getPopConfirmProps(attrs: PopConfirm) {
     originAttrs.onCancel = attrs.cancel;
     delete originAttrs.cancel;
   }
+
+  popConfirmPropsMap.set(key, originAttrs);
   return originAttrs;
 }
 
+/** 缓存Button属性 */
+const buttonPropsMap = new Map<string, any>();
+
 function getButtonProps(action: ActionItem) {
+  const key = JSON.stringify({
+    type: action.type,
+    disabled: action.disabled,
+    loading: action.loading,
+    size: action.size,
+  });
+
+  if (buttonPropsMap.has(key)) {
+    return { ...buttonPropsMap.get(key) };
+  }
+
   const res = {
     type: action.type || 'primary',
-    ...action,
+    disabled: action.disabled,
+    loading: action.loading,
+    size: action.size,
   };
-  delete res.icon;
+
+  buttonPropsMap.set(key, res);
   return res;
 }
 
+/** 缓存Tooltip属性 */
+const tooltipPropsMap = new Map<string, any>();
+
+function getTooltipProps(tooltip: any | string) {
+  if (!tooltip) return {};
+
+  const key = typeof tooltip === 'string' ? tooltip : JSON.stringify(tooltip);
+
+  if (tooltipPropsMap.has(key)) {
+    return tooltipPropsMap.get(key);
+  }
+
+  const result =
+    typeof tooltip === 'string' ? { title: tooltip } : { ...tooltip };
+
+  tooltipPropsMap.set(key, result);
+  return result;
+}
+
 function handleMenuClick(e: any) {
-  const action = getDropdownList.value[e.key];
+  const action = unref(getDropdownList)[e.key];
   if (action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
+}
+
+/** 生成稳定的key */
+function getActionKey(action: ActionItem, index: number) {
+  return `${action.label || ''}-${action.type || ''}-${index}`;
 }
 </script>
 
 <template>
   <div class="table-actions">
-    <Space
-      :size="
-        getActions?.some((item: ActionItem) => item.type === 'link') ? 0 : 8
-      "
-    >
-      <template v-for="(action, index) in getActions" :key="index">
+    <Space :size="spaceSize">
+      <template
+        v-for="(action, index) in getActions"
+        :key="getActionKey(action, index)"
+      >
         <Popconfirm
           v-if="action.popConfirm"
           v-bind="getPopConfirmProps(action.popConfirm)"
@@ -142,13 +263,7 @@ function handleMenuClick(e: any) {
           <template v-if="action.popConfirm.icon" #icon>
             <IconifyIcon :icon="action.popConfirm.icon" />
           </template>
-          <Tooltip
-            v-bind="
-              typeof action.tooltip === 'string'
-                ? { title: action.tooltip }
-                : { ...action.tooltip }
-            "
-          >
+          <Tooltip v-bind="getTooltipProps(action.tooltip)">
             <Button v-bind="getButtonProps(action)">
               <template v-if="action.icon" #icon>
                 <IconifyIcon :icon="action.icon" />
@@ -157,14 +272,7 @@ function handleMenuClick(e: any) {
             </Button>
           </Tooltip>
         </Popconfirm>
-        <Tooltip
-          v-else
-          v-bind="
-            typeof action.tooltip === 'string'
-              ? { title: action.tooltip }
-              : { ...action.tooltip }
-          "
-        >
+        <Tooltip v-else v-bind="getTooltipProps(action.tooltip)">
           <Button v-bind="getButtonProps(action)" @click="action.onClick">
             <template v-if="action.icon" #icon>
               <IconifyIcon :icon="action.icon" />
@@ -186,7 +294,10 @@ function handleMenuClick(e: any) {
       </slot>
       <template #overlay>
         <Menu @click="handleMenuClick">
-          <Menu.Item v-for="(action, index) in getDropdownList" :key="index">
+          <Menu.Item
+            v-for="(action, index) in getDropdownList"
+            :key="`dropdown-${index}`"
+          >
             <template v-if="action.popConfirm">
               <Popconfirm v-bind="getPopConfirmProps(action.popConfirm)">
                 <template v-if="action.popConfirm.icon" #icon>

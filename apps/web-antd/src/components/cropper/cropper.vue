@@ -33,7 +33,6 @@ const imgElRef = ref<ElRef<HTMLImageElement>>();
 const cropper = ref<Cropper | null>();
 const isReady = ref(false);
 
-const prefixCls = 'cropper-image';
 const debounceRealTimeCropped = useDebounceFn(realTimeCropped, 80);
 
 const getImageStyle = computed((): CSSProperties => {
@@ -46,10 +45,9 @@ const getImageStyle = computed((): CSSProperties => {
 
 const getClass = computed(() => {
   return [
-    prefixCls,
     attrs.class,
     {
-      [`${prefixCls}--circled`]: props.circled,
+      'cropper-image--circled': props.circled,
     },
   ];
 });
@@ -115,10 +113,9 @@ function cropped() {
         imgInfo,
       });
     };
-    // eslint-disable-next-line unicorn/prefer-add-event-listener
-    fileReader.onerror = () => {
+    fileReader.addEventListener('error', () => {
       emit('cropendError');
-    };
+    });
   }, 'image/png');
 }
 
@@ -157,6 +154,7 @@ function getRoundedCanvas() {
       :crossorigin="crossorigin"
       :src="src"
       :style="getImageStyle"
+      class="h-auto max-w-full"
     />
   </div>
 </template>

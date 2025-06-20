@@ -66,6 +66,7 @@ const dictTag = computed(() => {
   return {
     label: dict.label || '',
     colorType,
+    cssClass: dict.cssClass,
   };
 });
 </script>

@@ -1,32 +1,63 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallBrokerageRecordApi } from '#/api/mall/trade/brokerage/record';
+
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Avatar } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';
+
+import { useGridColumns, useGridFormSchema } from './data';
+
+defineOptions({ name: 'TradeBrokerageRecord' });
+
+const [Grid] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    showOverflow: 'tooltip',
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getBrokerageRecordPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallBrokerageRecordApi.BrokerageRecord>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【交易】分销返佣"
-      url="https://doc.iocoder.cn/mall/trade-brokerage/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/brokerage/record/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/trade/brokerage/record/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【交易】分销返佣"
+        url="https://doc.iocoder.cn/mall/trade-brokerage/"
+      />
+    </template>
+
+    <Grid table-title="分销返佣记录">
+      <template #userAvatar="{ row }">
+        <Avatar :src="row.userAvatar" />
+      </template>
+    </Grid>
   </Page>
 </template>
