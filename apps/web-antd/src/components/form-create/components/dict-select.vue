@@ -13,7 +13,7 @@ import {
   SelectOption,
 } from 'ant-design-vue';
 
-import { getDictObj, getIntDictOptions, getStrDictOptions } from '#/utils';
+import { getDictOptions } from '#/utils';
 
 defineOptions({ name: 'DictSelect' });
 
@@ -25,17 +25,16 @@ const props = withDefaults(defineProps<DictSelectProps>(), {
 const attrs = useAttrs();
 
 // 获得字典配置
-// TODO @dhb：可以使用 getDictOptions 替代么？
-const getDictOptions = computed(() => {
+const getDictOption = computed(() => {
   switch (props.valueType) {
     case 'bool': {
-      return getDictObj(props.dictType, 'bool');
+      return getDictOptions(props.dictType, 'boolean');
     }
     case 'int': {
-      return getIntDictOptions(props.dictType);
+      return getDictOptions(props.dictType, 'number');
     }
     case 'str': {
-      return getStrDictOptions(props.dictType);
+      return getDictOptions(props.dictType, 'string');
     }
     default: {
       return [];
@@ -47,7 +46,7 @@ const getDictOptions = computed(() => {
 <template>
   <Select v-if="selectType === 'select'" class="w-full" v-bind="attrs">
     <SelectOption
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in getDictOption"
       :key="index"
       :value="dict.value"
     >
@@ -56,7 +55,7 @@ const getDictOptions = computed(() => {
   </Select>
   <RadioGroup v-if="selectType === 'radio'" class="w-full" v-bind="attrs">
     <Radio
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in getDictOption"
       :key="index"
       :value="dict.value"
     >
@@ -65,7 +64,7 @@ const getDictOptions = computed(() => {
   </RadioGroup>
   <CheckboxGroup v-if="selectType === 'checkbox'" class="w-full" v-bind="attrs">
     <Checkbox
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in getDictOption"
       :key="index"
       :value="dict.value"
     >

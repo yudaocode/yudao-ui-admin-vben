@@ -11,7 +11,7 @@ import { Button, message, Textarea } from 'ant-design-vue';
 import {
   AiWriteTypeEnum,
   DICT_TYPE,
-  getIntDictOptions,
+  getDictOptions,
   WriteExample,
 } from '#/utils';
 
@@ -211,22 +211,22 @@ function submit() {
         <ReuseLabel label="长度" />
         <Tag
           v-model="formData.length"
-          :tags="getIntDictOptions(DICT_TYPE.AI_WRITE_LENGTH)"
+          :tags="getDictOptions(DICT_TYPE.AI_WRITE_LENGTH, 'number')"
         />
         <ReuseLabel label="格式" />
         <Tag
           v-model="formData.format"
-          :tags="getIntDictOptions(DICT_TYPE.AI_WRITE_FORMAT)"
+          :tags="getDictOptions(DICT_TYPE.AI_WRITE_FORMAT, 'number')"
         />
         <ReuseLabel label="语气" />
         <Tag
           v-model="formData.tone"
-          :tags="getIntDictOptions(DICT_TYPE.AI_WRITE_TONE)"
+          :tags="getDictOptions(DICT_TYPE.AI_WRITE_TONE, 'number')"
         />
         <ReuseLabel label="语言" />
         <Tag
           v-model="formData.language"
-          :tags="getIntDictOptions(DICT_TYPE.AI_WRITE_LANGUAGE)"
+          :tags="getDictOptions(DICT_TYPE.AI_WRITE_LANGUAGE, 'number')"
         />
 
         <div class="mt-3 flex items-center justify-center">

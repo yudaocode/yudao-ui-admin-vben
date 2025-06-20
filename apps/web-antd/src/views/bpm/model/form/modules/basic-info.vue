@@ -25,7 +25,7 @@ import {
 
 import { DeptSelectModal, UserSelectModal } from '#/components/select-modal';
 import { ImageUpload } from '#/components/upload';
-import { DICT_TYPE, getBoolDictOptions, getIntDictOptions } from '#/utils';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const props = defineProps({
   categoryList: {
@@ -295,7 +295,7 @@ defineExpose({ validate });
         <Radio.Group v-model:value="modelData.type">
           <!-- TODO BPMN 流程类型需要整合，暂时禁用 -->
           <Radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.BPM_MODEL_TYPE)"
+            v-for="dict in getDictOptions(DICT_TYPE.BPM_MODEL_TYPE, 'number')"
             :key="dict.value"
             :value="dict.value"
             :disabled="dict.value === 10"
@@ -307,10 +307,11 @@ defineExpose({ validate });
       <Form.Item label="是否可见" name="visible" class="mb-5">
         <Radio.Group v-model:value="modelData.visible">
           <Radio
-            v-for="(dict, index) in getBoolDictOptions(
+            v-for="dict in getDictOptions(
               DICT_TYPE.INFRA_BOOLEAN_STRING,
+              'boolean',
             )"
-            :key="index"
+            :key="dict.label"
             :value="dict.value"
           >
             {{ dict.label }}
