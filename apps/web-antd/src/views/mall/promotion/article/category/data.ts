@@ -29,9 +29,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'picUrl',
       label: '图标地址',
       component: 'ImageUpload',
-      componentProps: {
-        maxSize: 1,
-      },
     },
     {
       fieldName: 'sort',

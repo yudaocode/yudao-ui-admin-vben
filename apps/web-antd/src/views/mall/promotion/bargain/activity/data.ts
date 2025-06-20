@@ -9,8 +9,8 @@ import { DICT_TYPE, getDictOptions } from '#/utils';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,

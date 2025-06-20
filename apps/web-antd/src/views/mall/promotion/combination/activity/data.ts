@@ -9,6 +9,14 @@ import { DICT_TYPE, getDictOptions } from '#/utils';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'name',
       label: '活动名称',
       component: 'Input',

@@ -56,9 +56,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ImageUpload',
       fieldName: 'avatar',
       label: '头像',
-      componentProps: {
-        maxSize: 1,
-      },
     },
     {
       component: 'Input',

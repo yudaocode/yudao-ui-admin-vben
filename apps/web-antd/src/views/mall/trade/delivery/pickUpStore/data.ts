@@ -26,9 +26,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ImageUpload',
       fieldName: 'logo',
       label: '门店logo',
-      componentProps: {
-        maxSize: 1,
-      },
       rules: 'required',
     },
     {
