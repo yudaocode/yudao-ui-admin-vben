@@ -293,8 +293,13 @@ function getActionKey(action: ActionItem, index: number) {
         </Button>
       </slot>
       <template #overlay>
-        <Menu @click="handleMenuClick">
-          <Menu.Item v-for="(action, index) in getDropdownList" :key="index">
+        <Menu>
+          <Menu.Item
+            v-for="(action, index) in getDropdownList"
+            :key="index"
+            :disabled="action.disabled"
+            @click="!action.popConfirm && handleMenuClick({ key: index })"
+          >
             <template v-if="action.popConfirm">
               <Popconfirm v-bind="getPopConfirmProps(action.popConfirm)">
                 <template v-if="action.popConfirm.icon" #icon>
