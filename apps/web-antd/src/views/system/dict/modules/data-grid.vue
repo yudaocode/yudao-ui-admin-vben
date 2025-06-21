@@ -7,7 +7,7 @@ import { ref, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message, Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -176,6 +176,12 @@ watch(
             },
           ]"
         />
+      </template>
+      <template #colorType="{ row }">
+        <Tag :color="row.colorType">{{ row.colorType }}</Tag>
+      </template>
+      <template #cssClass="{ row }">
+        <Tag :color="row.cssClass">{{ row.cssClass }}</Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

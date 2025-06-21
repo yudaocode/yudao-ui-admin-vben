@@ -317,10 +317,12 @@ export function useDataGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'colorType',
       title: '颜色类型',
+      slots: { default: 'colorType' },
     },
     {
       field: 'cssClass',
       title: 'CSS Class',
+      slots: { default: 'cssClass' },
     },
     {
       title: '创建时间',
