@@ -6,6 +6,7 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
@@ -15,6 +16,7 @@ import { BpmNodeTypeEnum } from '#/utils';
 import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import StartUserNodeConfig from '../nodes-config/start-user-node-config.vue';
+import TaskListModal from './modules/task-list-modal.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'StartUserNode' });
@@ -27,7 +29,6 @@ const props = defineProps({
 });
 
 // 定义事件，更新父组件。
-// const emits = defineEmits<{
 defineEmits<{
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();
@@ -44,24 +45,25 @@ const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
 
 const nodeSetting = ref();
 
-// 任务的弹窗显示，用于只读模式
-const selectTasks = ref<any[] | undefined>([]); // 选中的任务数组
-
+const [Modal, modalApi] = useVbenModal({
+  connectedComponent: TaskListModal,
+  destroyOnClose: true,
+});
 function nodeClick() {
   if (readonly) {
     // 只读模式，弹窗显示任务信息
     if (tasks && tasks.value) {
-      console.warn(
-        'TODO 只读模式，弹窗显示任务信息',
-        tasks.value,
-        selectTasks.value,
+      // 过滤出当前节点的任务
+      const nodeTasks = tasks.value.filter(
+        (task) => task.taskDefinitionKey === currentNode.value.id,
       );
+      // 弹窗显示任务信息
+      modalApi
+        .setData(nodeTasks)
+        .setState({ title: currentNode.value.name })
+        .open();
     }
   } else {
-    console.warn(
-      'TODO 编辑模式，打开节点配置、把当前节点传递给配置组件',
-      nodeSetting.value,
-    );
     nodeSetting.value.showStartUserNodeConfig(currentNode.value);
   }
 }
@@ -122,5 +124,6 @@ function nodeClick() {
     ref="nodeSetting"
     :flow-node="currentNode"
   />
-  <!-- 审批记录  TODO -->
+  <!-- 审批记录弹窗 -->
+  <Modal />
 </template>
