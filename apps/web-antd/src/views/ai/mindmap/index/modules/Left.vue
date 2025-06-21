@@ -23,7 +23,7 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="flex w-80 flex-col bg-gray-50 p-5">
+  <div class="bg-card flex w-80 flex-col rounded-lg p-5">
     <h3 class="text-primary h-7 w-full text-center text-xl leading-7">
       思维导图创作中心
     </h3>

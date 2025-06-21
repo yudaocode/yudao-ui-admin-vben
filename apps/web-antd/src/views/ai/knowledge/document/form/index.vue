@@ -131,7 +131,7 @@ defineExpose({
     <div class="mx-auto">
       <!-- 头部导航栏 -->
       <div
-        class="absolute left-0 right-0 top-0 z-10 flex h-12 items-center border-b bg-white px-4"
+        class="bg-card absolute left-0 right-0 top-0 z-10 flex h-12 items-center border-b px-4"
       >
         <!-- 左侧标题 -->
         <div class="flex w-48 items-center overflow-hidden">
