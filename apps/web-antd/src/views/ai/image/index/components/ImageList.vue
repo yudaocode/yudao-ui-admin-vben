@@ -204,7 +204,7 @@ onUnmounted(async () => {
     </div>
 
     <div
-      class="sticky bottom-0 z-50 flex h-16 items-center justify-center bg-white shadow-sm"
+      class="bg-card sticky bottom-0 z-50 flex h-16 items-center justify-center shadow-sm"
     >
       <Pagination
         :total="pageTotal"

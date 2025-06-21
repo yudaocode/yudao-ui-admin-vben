@@ -122,13 +122,11 @@ getDetail();
 
 <template>
   <Page auto-content-height v-loading="loading">
-    <div
-      class="flex h-[95%] flex-col rounded-md bg-white p-4 dark:bg-gray-800 dark:text-gray-300"
-    >
+    <div class="bg-card flex h-[95%] flex-col rounded-md p-4">
       <Steps
         type="navigation"
         v-model:current="currentStep"
-        class="mb-8 rounded shadow-sm dark:bg-gray-700"
+        class="mb-8 rounded shadow-sm"
       >
         <Steps.Step
           v-for="(step, index) in steps"

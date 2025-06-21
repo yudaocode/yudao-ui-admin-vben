@@ -237,7 +237,7 @@ onMounted(async () => {
         <div v-else class="text-gray-400">暂无上传文件</div>
       </div>
       <!-- 文件内容预览 -->
-      <div class="max-h-[600px] overflow-y-auto rounded-md bg-gray-50 p-4">
+      <div class="max-h-[600px] overflow-y-auto rounded-md p-4">
         <div v-if="splitLoading" class="flex items-center justify-center py-5">
           <IconifyIcon icon="lucide:loader" class="is-loading" />
           <span class="ml-2.5">正在加载分段内容...</span>
@@ -258,7 +258,7 @@ onMounted(async () => {
               分片-{{ index + 1 }} · {{ segment.contentLength || 0 }} 字符数 ·
               {{ segment.tokens || 0 }} Token
             </div>
-            <div class="rounded-md bg-white p-2">
+            <div class="bg-card rounded-md p-2">
               {{ segment.content }}
             </div>
           </div>

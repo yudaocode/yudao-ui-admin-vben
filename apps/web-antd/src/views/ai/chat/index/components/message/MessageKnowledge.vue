@@ -66,7 +66,7 @@ function handleClick(doc: any) {
       <div
         v-for="(doc, index) in documentList"
         :key="index"
-        class="cursor-pointer rounded-lg bg-white p-2 px-3 transition-all hover:bg-blue-50"
+        class="bg-card cursor-pointer rounded-lg p-2 px-3 transition-all hover:bg-blue-50"
         @click="handleClick(doc)"
       >
         <div class="mb-1 text-sm text-gray-600">
@@ -89,7 +89,7 @@ function handleClick(doc: any) {
           class="border-b-solid border-b-gray-200 p-3 last:border-b-0"
         >
           <div
-            class="mb-2 block w-fit rounded-sm bg-gray-50 px-2 py-1 text-xs text-gray-400"
+            class="mb-2 block w-fit rounded-sm px-2 py-1 text-xs text-gray-400"
           >
             分段 {{ segment.id }}
           </div>

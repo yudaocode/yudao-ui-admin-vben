@@ -237,7 +237,7 @@ function getTooltipProps(tooltip: any | string) {
 }
 
 function handleMenuClick(e: any) {
-  const action = unref(getDropdownList)[e.key];
+  const action = getDropdownList.value[e.key];
   if (action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
@@ -293,10 +293,12 @@ function getActionKey(action: ActionItem, index: number) {
         </Button>
       </slot>
       <template #overlay>
-        <Menu @click="handleMenuClick">
+        <Menu>
           <Menu.Item
             v-for="(action, index) in getDropdownList"
-            :key="`dropdown-${index}`"
+            :key="index"
+            :disabled="action.disabled"
+            @click="!action.popConfirm && handleMenuClick({ key: index })"
           >
             <template v-if="action.popConfirm">
               <Popconfirm v-bind="getPopConfirmProps(action.popConfirm)">

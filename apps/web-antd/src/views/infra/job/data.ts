@@ -2,12 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { formatDateTime } from '@vben/utils';
 
 import { Timeline } from 'ant-design-vue';
 
+import { CronTab } from '#/components/cron-tab';
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
@@ -37,10 +38,12 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入处理器的名字',
-        // readonly: ({ values }) => !!values.id,
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
       },
       rules: 'required',
-      // TODO @芋艿：在修改场景下，禁止调整
     },
     {
       fieldName: 'handlerParam',
@@ -53,12 +56,8 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'cronExpression',
       label: 'CRON 表达式',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入 CRON 表达式',
-      },
+      component: markRaw(CronTab),
       rules: 'required',
-      // TODO @芋艿：未来支持动态的 CRON 表达式选择
     },
     {
       fieldName: 'retryCount',
