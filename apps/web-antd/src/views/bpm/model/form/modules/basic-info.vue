@@ -335,7 +335,7 @@ defineExpose({ validate });
           <div
             v-for="user in selectedStartUsers"
             :key="user.id"
-            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200"
+            class="relative flex h-9 items-center rounded-full pr-2 hover:bg-gray-200"
           >
             <Avatar
               class="m-1"
@@ -371,7 +371,7 @@ defineExpose({ validate });
           <div
             v-for="dept in selectedStartDepts"
             :key="dept.id"
-            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 shadow-sm hover:bg-gray-200"
+            class="relative flex h-9 items-center rounded-full pr-2 shadow-sm hover:bg-gray-200"
           >
             <IconifyIcon icon="lucide:building" class="size-6 px-1" />
             {{ dept.name }}
@@ -398,7 +398,7 @@ defineExpose({ validate });
           <div
             v-for="user in selectedManagerUsers"
             :key="user.id"
-            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200"
+            class="hover:bg-primary-500 relative flex h-9 items-center rounded-full pr-2"
           >
             <Avatar
               class="m-1"

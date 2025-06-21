@@ -75,7 +75,7 @@ defineExpose({
   <div class="inline-block text-center" :style="getStyle">
     <!-- 图片包装器 -->
     <div
-      class="group relative cursor-pointer overflow-hidden rounded-full border border-gray-200 bg-white"
+      class="bg-card group relative cursor-pointer overflow-hidden rounded-full border border-gray-200"
       :style="getImageWrapperStyle"
       @click="openModal"
     >

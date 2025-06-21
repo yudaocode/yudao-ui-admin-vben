@@ -238,7 +238,7 @@ defineExpose({ validate });
     <ErrorModal title="流程设计校验不通过" class="w-2/5">
       <div class="mb-2 text-base">以下节点配置不完善，请修改相关配置</div>
       <div
-        class="mb-3 rounded-md bg-gray-100 p-2 text-sm"
+        class="mb-3 rounded-md p-2 text-sm"
         v-for="(item, index) in errorModalApi.getData()"
         :key="index"
       >
