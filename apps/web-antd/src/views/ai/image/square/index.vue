@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 <template>
   <Page auto-content-height>
-    <div class="bg-white p-5">
+    <div class="bg-card p-5">
       <Input.Search
         v-model="queryParams.prompt"
         class="mb-5 w-full"
@@ -54,12 +54,12 @@ onMounted(async () => {
         @keyup.enter="handleQuery"
       />
       <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 bg-white shadow-sm"
+        class="bg-card grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 shadow-sm"
       >
         <div
           v-for="item in list"
           :key="item.id"
-          class="relative cursor-pointer overflow-hidden bg-white transition-transform duration-300 hover:scale-105"
+          class="bg-card relative cursor-pointer overflow-hidden transition-transform duration-300 hover:scale-105"
         >
           <Image
             :src="item.picUrl"

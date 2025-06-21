@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSeckillConfigApi } from '#/api/mall/promotion/seckill/seckillConfig';
 
-import { DICT_TYPE, getDictOptions, getIntDictOptions } from '#/utils';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -83,7 +83,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        options: getIntDictOptions(DICT_TYPE.COMMON_STATUS),
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
   ];

@@ -29,12 +29,14 @@ export namespace MallBrokerageUserApi {
   export interface CreateRequest {
     /** 用户编号 */
     userId: number;
+    /** 推广员编号 */
+    bindUserId: number;
   }
 
   /** 修改推广员请求 */
   export interface UpdateBindUserRequest {
     /** 用户编号 */
-    userId: number;
+    id: number;
     /** 推广员编号 */
     bindUserId: number;
   }
@@ -42,15 +44,15 @@ export namespace MallBrokerageUserApi {
   /** 清除推广员请求 */
   export interface ClearBindUserRequest {
     /** 用户编号 */
-    userId: number;
+    id: number;
   }
 
   /** 修改推广资格请求 */
   export interface UpdateBrokerageEnabledRequest {
     /** 用户编号 */
-    userId: number;
+    id: number;
     /** 是否启用分销 */
-    brokerageEnabled: boolean;
+    enabled: boolean;
   }
 }
 

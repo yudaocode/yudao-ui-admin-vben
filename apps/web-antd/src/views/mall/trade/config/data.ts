@@ -137,9 +137,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'brokeragePosterUrls',
       label: '分销海报图',
       component: 'ImageUpload',
-      componentProps: {
-        maxSize: 1,
-      },
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === 'brokerage',

@@ -147,7 +147,7 @@ onMounted(() => {
       </template>
       <template #expand_content="{ row }">
         <div
-          class="whitespace-pre-wrap border-l-4 border-blue-500 bg-gray-100 px-2.5 py-5 leading-5"
+          class="whitespace-pre-wrap border-l-4 border-blue-500 px-2.5 py-5 leading-5"
         >
           <div class="mb-2 text-sm font-bold text-gray-600">完整内容：</div>
           {{ row.content }}

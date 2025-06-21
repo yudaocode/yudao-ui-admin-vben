@@ -1,32 +1,83 @@
 <script lang="ts" setup>
-import { DocAlert, Page } from '@vben/common-ui';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallBargainRecordApi } from '#/api/mall/promotion/bargain/bargainRecord';
 
-import { Button } from 'ant-design-vue';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getBargainRecordPage } from '#/api/mall/promotion/bargain/bargainRecord';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import HelpListModal from './modules/list.vue';
+
+defineOptions({ name: 'PromotionBargainRecord' });
+
+const [HelpListModalApi, helpListModalApi] = useVbenModal({
+  connectedComponent: HelpListModal,
+  destroyOnClose: true,
+});
+
+/** 查看助力详情 */
+function handleViewHelp(row: MallBargainRecordApi.BargainRecord) {
+  helpListModalApi.setData({ recordId: row.id }).open();
+}
+
+const [Grid] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getBargainRecordPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: { code: 'query' },
+      search: true,
+    },
+  } as VxeTableGridOptions<MallBargainRecordApi.BargainRecord>,
+});
 </script>
 
 <template>
-  <Page>
-    <DocAlert
-      title="【营销】砍价活动"
-      url="https://doc.iocoder.cn/mall/promotion-bargain/"
-    />
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/bargain/record/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/promotion/bargain/record/index
-      代码，pull request 贡献给我们！
-    </Button>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【营销】砍价活动"
+        url="https://doc.iocoder.cn/mall/promotion-bargain/"
+      />
+    </template>
+
+    <HelpListModalApi />
+
+    <Grid table-title="砍价记录列表">
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '助力',
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['promotion:bargain-help:query'],
+              onClick: handleViewHelp.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

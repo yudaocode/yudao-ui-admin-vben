@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { isValidColor, TinyColor } from '@vben/utils';
+
 import { Tag } from 'ant-design-vue';
 
-// import { isHexColor } from '@/utils/color' // TODO @芋艿：【可优化】增加 cssClass 的处理 https://gitee.com/yudaocode/yudao-ui-admin-vben/blob/v2.4.1/src/components/DictTag/src/DictTag.vue#L60
 import { getDictObj } from '#/utils';
 
 interface DictTagProps {
@@ -22,11 +23,6 @@ interface DictTagProps {
 }
 
 const props = defineProps<DictTagProps>();
-
-function isHexColor(color: string) {
-  const reg = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
-  return reg.test(color);
-}
 
 /** 获取字典标签 */
 const dictTag = computed(() => {
@@ -63,9 +59,14 @@ const dictTag = computed(() => {
     }
   }
 
+  if (isValidColor(dict.cssClass)) {
+    colorType = new TinyColor(dict.cssClass).toHexString();
+  }
+
   return {
     label: dict.label || '',
     colorType,
+    cssClass: dict.cssClass,
   };
 });
 </script>
@@ -73,13 +74,7 @@ const dictTag = computed(() => {
 <template>
   <Tag
     v-if="dictTag"
-    :color="
-      dictTag.colorType
-        ? dictTag.colorType
-        : dictTag.cssClass && isHexColor(dictTag.cssClass)
-          ? dictTag.cssClass
-          : ''
-    "
+    :color="dictTag.colorType ? dictTag.colorType : dictTag.cssClass"
   >
     {{ dictTag.label }}
   </Tag>

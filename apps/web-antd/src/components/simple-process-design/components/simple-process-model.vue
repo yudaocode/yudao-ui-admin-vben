@@ -201,7 +201,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="simple-process-model-container">
-    <div class="absolute right-0 top-0 bg-white">
+    <div class="bg-card absolute right-0 top-0">
       <Row type="flex" justify="end">
         <ButtonGroup key="scale-control">
           <Button v-if="!readonly" @click="exportJson">
@@ -258,7 +258,7 @@ onMounted(() => {
   >
     <div class="mb-2">以下节点内容不完善，请修改后保存</div>
     <div
-      class="line-height-normal mb-3 rounded bg-gray-100 p-2"
+      class="line-height-normal mb-3 rounded p-2"
       v-for="(item, index) in errorNodes"
       :key="index"
     >
