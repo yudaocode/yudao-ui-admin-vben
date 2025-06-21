@@ -5,6 +5,7 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
@@ -14,6 +15,26 @@ import { BpmNodeTypeEnum } from '#/utils';
 import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
 import UserTaskNodeConfig from '../nodes-config/user-task-node-config.vue';
+import TaskListModal from './modules/task-list-modal.vue';
+// // 使用useVbenVxeGrid
+// const [Grid, gridApi] = useVbenVxeGrid({
+//   gridOptions: {
+//     columns: columns.value,
+//     keepSource: true,
+//     border: true,
+//     height: 'auto',
+//     data: selectTasks.value,
+//     rowConfig: {
+//       keyField: 'id',
+//     },
+//     pagerConfig: {
+//       enabled: false,
+//     },
+//     toolbarConfig: {
+//       enabled: false,
+//     },
+//   } as VxeTableGridOptions<any>,
+// });
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'UserTaskNode' });
@@ -42,11 +63,23 @@ const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
 );
 const nodeSetting = ref();
 
+const [Modal, modalApi] = useVbenModal({
+  connectedComponent: TaskListModal,
+  destroyOnClose: true,
+});
+
 function nodeClick() {
   if (readonly) {
     if (tasks && tasks.value) {
-      // 只读模式，弹窗显示任务信息 TODO 待实现
-      console.warn('只读模式，弹窗显示任务信息待实现');
+      // 过滤出当前节点的任务
+      const nodeTasks = tasks.value.filter(
+        (task) => task.taskDefinitionKey === currentNode.value.id,
+      );
+      // 弹窗显示任务信息
+      modalApi
+        .setData(nodeTasks)
+        .setState({ title: currentNode.value.name })
+        .open();
     }
   } else {
     // 编辑模式，打开节点配置、把当前节点传递给配置组件
@@ -64,8 +97,6 @@ function findReturnTaskNodes(
   // 从父节点查找
   emits('findParentNode', matchNodeList, BpmNodeTypeEnum.USER_TASK_NODE);
 }
-
-// const selectTasks = ref<any[] | undefined>([]); // 选中的任务数组
 </script>
 <template>
   <div class="node-wrapper">
@@ -138,5 +169,6 @@ function findReturnTaskNodes(
     :flow-node="currentNode"
     @find-return-task-nodes="findReturnTaskNodes"
   />
-  <!--  TODO 审批记录 -->
+  <!--  审批记录弹窗 -->
+  <Modal />
 </template>

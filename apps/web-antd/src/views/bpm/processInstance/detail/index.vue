@@ -346,7 +346,12 @@ onMounted(async () => {
               </Row>
             </TabPane>
 
-            <TabPane tab="流程图" key="diagram" class="tab-pane-content">
+            <TabPane
+              tab="流程图"
+              key="diagram"
+              class="tab-pane-content"
+              :force-render="true"
+            >
               <div class="h-full">
                 <ProcessInstanceSimpleViewer
                   v-show="

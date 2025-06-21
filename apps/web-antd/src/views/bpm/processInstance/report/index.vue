@@ -2,10 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
-import { h, nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { Page, prompt } from '@vben/common-ui';
 
 import { Input, message } from 'ant-design-vue';
 
@@ -29,7 +29,6 @@ const processDefinitionId = query.processDefinitionId as string;
 const formFields = ref<any[]>([]);
 const userList = ref<any[]>([]); // 用户列表
 const gridReady = ref(false); // 表格是否准备好
-const cancelReason = ref(''); // 取消原因
 
 // 表格的列需要解析表单字段，这里定义成变量，解析表单字段后再渲染
 let Grid: any = null;
@@ -81,26 +80,19 @@ const handleDetail = (row: BpmProcessInstanceApi.ProcessInstance) => {
 
 /** 取消按钮操作 */
 const handleCancel = async (row: BpmProcessInstanceApi.ProcessInstance) => {
-  cancelReason.value = ''; // 重置取消原因
-  confirm({
+  prompt({
+    content: '请输入取消原因：',
     title: '取消流程',
-    content: h('div', [
-      h('p', '请输入取消原因：'),
-      h(Input, {
-        value: cancelReason.value,
-        'onUpdate:value': (val: string) => {
-          cancelReason.value = val;
-        },
-        placeholder: '请输入取消原因',
-      }),
-    ]),
-    beforeClose: async ({ isConfirm }) => {
-      if (!isConfirm) return;
-      if (!cancelReason.value.trim()) {
+    icon: 'question',
+    component: Input,
+    modelPropName: 'value',
+    async beforeClose(scope) {
+      if (!scope.isConfirm) return;
+      if (!scope.value) {
         message.warning('请输入取消原因');
         return false;
       }
-      await cancelProcessInstanceByAdmin(row.id, cancelReason.value);
+      await cancelProcessInstanceByAdmin(row.id, scope.value);
       return true;
     },
   }).then(() => {
