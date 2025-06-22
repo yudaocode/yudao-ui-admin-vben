@@ -41,11 +41,12 @@ const props = defineProps({
 
 const { hasAccessByCodes } = useAccess();
 
-/** 缓存处理后的actions */
+/** 缓存处理后的 actions */
 const processedActions = ref<any[]>([]);
 const processedDropdownActions = ref<any[]>([]);
 
 /** 用于比较的字符串化版本 */
+// TODO @xingyu：下面的拼写错误，需要修改
 const actionsStringified = ref('');
 const dropdownActionsStringified = ref('');
 
@@ -65,7 +66,7 @@ function isIfShow(action: ActionItem): boolean {
   return isIfShow;
 }
 
-/** 处理actions的纯函数 */
+/** 处理 actions 的纯函数 */
 function processActions(actions: ActionItem[]): any[] {
   return actions
     .filter((action: ActionItem) => {
@@ -84,7 +85,7 @@ function processActions(actions: ActionItem[]): any[] {
     });
 }
 
-/** 处理下拉菜单actions的纯函数 */
+/** 处理下拉菜单 actions 的纯函数 */
 function processDropdownActions(
   dropDownActions: ActionItem[],
   divider: boolean,
@@ -108,7 +109,7 @@ function processDropdownActions(
     });
 }
 
-/** 监听actions变化并更新缓存 */
+/** 监听 actions 变化并更新缓存 */
 watchEffect(() => {
   const rawActions = toRaw(props.actions) || [];
   const currentStringified = JSON.stringify(
@@ -127,7 +128,7 @@ watchEffect(() => {
   }
 });
 
-/** 监听dropDownActions变化并更新缓存 */
+/** 监听 dropDownActions 变化并更新缓存 */
 watchEffect(() => {
   const rawDropDownActions = toRaw(props.dropDownActions) || [];
   const currentStringified = JSON.stringify({
@@ -154,14 +155,14 @@ const getActions = computed(() => processedActions.value);
 
 const getDropdownList = computed(() => processedDropdownActions.value);
 
-/** 缓存Space组件的size计算结果 */
+/** 缓存 Space 组件的 size 计算结果 */
 const spaceSize = computed(() => {
   return unref(getActions)?.some((item: ActionItem) => item.type === 'link')
     ? 0
     : 8;
 });
 
-/** 缓存PopConfirm属性 */
+/** 缓存 PopConfirm 属性 */
 const popConfirmPropsMap = new Map<string, any>();
 
 function getPopConfirmProps(attrs: PopConfirm) {
@@ -191,7 +192,7 @@ function getPopConfirmProps(attrs: PopConfirm) {
   return originAttrs;
 }
 
-/** 缓存Button属性 */
+/** 缓存 Button 属性 */
 const buttonPropsMap = new Map<string, any>();
 
 function getButtonProps(action: ActionItem) {
@@ -217,7 +218,7 @@ function getButtonProps(action: ActionItem) {
   return res;
 }
 
-/** 缓存Tooltip属性 */
+/** 缓存 Tooltip 属性 */
 const tooltipPropsMap = new Map<string, any>();
 
 function getTooltipProps(tooltip: any | string) {
@@ -243,7 +244,7 @@ function handleMenuClick(e: any) {
   }
 }
 
-/** 生成稳定的key */
+/** 生成稳定的 key */
 function getActionKey(action: ActionItem, index: number) {
   return `${action.label || ''}-${action.type || ''}-${index}`;
 }

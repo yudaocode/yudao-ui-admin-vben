@@ -46,6 +46,7 @@ async function handleChange(id: number | undefined) {
 }
 </script>
 <template>
+  <!-- TODO @xingyu：1）未选择的时候，空着一块，有点怪。是不是有个 placeholder 会好看点哈（之前有 page.tenant.placeholder）？2）是不是要支持个 clear 选择 -->
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button
