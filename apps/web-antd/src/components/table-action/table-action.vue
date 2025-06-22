@@ -46,9 +46,8 @@ const processedActions = ref<any[]>([]);
 const processedDropdownActions = ref<any[]>([]);
 
 /** 用于比较的字符串化版本 */
-// TODO @xingyu：下面的拼写错误，需要修改
-const actionsStringified = ref('');
-const dropdownActionsStringified = ref('');
+const actionsStringField = ref('');
+const dropdownActionsStringField = ref('');
 
 function isIfShow(action: ActionItem): boolean {
   const ifShow = action.ifShow;
@@ -112,7 +111,7 @@ function processDropdownActions(
 /** 监听 actions 变化并更新缓存 */
 watchEffect(() => {
   const rawActions = toRaw(props.actions) || [];
-  const currentStringified = JSON.stringify(
+  const currentStringField = JSON.stringify(
     rawActions.map((a) => ({
       ...a,
       onClick: undefined, // 排除函数以便比较
@@ -122,8 +121,8 @@ watchEffect(() => {
     })),
   );
 
-  if (currentStringified !== actionsStringified.value) {
-    actionsStringified.value = currentStringified;
+  if (currentStringField !== actionsStringField.value) {
+    actionsStringField.value = currentStringField;
     processedActions.value = processActions(rawActions);
   }
 });
@@ -131,7 +130,7 @@ watchEffect(() => {
 /** 监听 dropDownActions 变化并更新缓存 */
 watchEffect(() => {
   const rawDropDownActions = toRaw(props.dropDownActions) || [];
-  const currentStringified = JSON.stringify({
+  const currentStringField = JSON.stringify({
     actions: rawDropDownActions.map((a) => ({
       ...a,
       onClick: undefined, // 排除函数以便比较
@@ -142,8 +141,8 @@ watchEffect(() => {
     divider: props.divider,
   });
 
-  if (currentStringified !== dropdownActionsStringified.value) {
-    dropdownActionsStringified.value = currentStringified;
+  if (currentStringField !== dropdownActionsStringField.value) {
+    dropdownActionsStringField.value = currentStringField;
     processedDropdownActions.value = processDropdownActions(
       rawDropDownActions,
       props.divider,
