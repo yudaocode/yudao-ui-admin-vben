@@ -97,6 +97,71 @@ export namespace CrmStatisticsCustomerApi {
     interval: number;
     deptId: number;
     userId: number;
+    userIds: number[];
+  }
+}
+
+export function getDatas(activeTabName: any, params: any) {
+  switch (activeTabName) {
+    case 'conversionStat': {
+      return getContractSummary(params);
+    }
+    case 'customerSummary': {
+      return getCustomerSummaryByUser(params);
+    }
+    case 'dealCycleByArea': {
+      return getCustomerDealCycleByArea(params);
+    }
+    case 'dealCycleByProduct': {
+      return getCustomerDealCycleByProduct(params);
+    }
+    case 'dealCycleByUser': {
+      return getCustomerDealCycleByUser(params);
+    }
+    case 'followUpSummary': {
+      return getFollowUpSummaryByUser(params);
+    }
+    case 'followUpType': {
+      return getFollowUpSummaryByType(params);
+    }
+    case 'poolSummary': {
+      return getPoolSummaryByUser(params);
+    }
+    default: {
+      return [];
+    }
+  }
+}
+
+export function getChartOptions(activeTabName: any, params: any) {
+  switch (activeTabName) {
+    case 'conversionStat': {
+      return getCustomerSummaryByDate(params);
+    }
+    case 'customerSummary': {
+      return getCustomerSummaryByDate(params);
+    }
+    case 'dealCycleByArea': {
+      return getCustomerDealCycleByArea(params);
+    }
+    case 'dealCycleByProduct': {
+      return getCustomerDealCycleByProduct(params);
+    }
+    case 'dealCycleByUser': {
+      return getCustomerDealCycleByUser(params);
+    }
+    case 'followUpSummary': {
+      return getFollowUpSummaryByDate(params);
+    }
+    case 'followUpType': {
+      return getFollowUpSummaryByType(params);
+    }
+    case 'poolSummary': {
+      return getPoolSummaryByDate(params);
+    }
+    default: {
+      return [];
+    }
   }
 }
 

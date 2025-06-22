@@ -13,91 +13,25 @@ import { Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getCustomerDealCycleByUser,
   getCustomerSummaryByDate,
   getCustomerSummaryByUser,
+  getDatas,
 } from '#/api/crm/statistics/customer';
 
-import { useGridFormSchema, useSummaryGridColumns } from './data';
+import { getChartOptions } from './chartOptions';
+import { customerSummaryTabs, useGridColumns, useGridFormSchema } from './data';
 
 const activeTabName = ref('customerSummary');
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
-
-async function setChartData(res: any) {
-  renderEcharts({
-    grid: {
-      bottom: '5%',
-      containLabel: true,
-      left: '5%',
-      right: '5%',
-      top: '5 %',
-    },
-    legend: {},
-    series: [
-      {
-        name: '新增客户数',
-        type: 'bar',
-        yAxisIndex: 0,
-        data: res.map((item: any) => item.customerCreateCount),
-      },
-      {
-        name: '成交客户数',
-        type: 'bar',
-        yAxisIndex: 1,
-        data: res.map((item: any) => item.customerDealCount),
-      },
-    ],
-    toolbox: {
-      feature: {
-        dataZoom: {
-          xAxisIndex: false, // 数据区域缩放：Y 轴不缩放
-        },
-        brush: {
-          type: ['lineX', 'clear'], // 区域缩放按钮、还原按钮
-        },
-        saveAsImage: { show: true, name: '客户总量分析' }, // 保存为图片
-      },
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
-      },
-    },
-    yAxis: [
-      {
-        type: 'value',
-        name: '新增客户数',
-        min: 0,
-        minInterval: 1, // 显示整数刻度
-      },
-      {
-        type: 'value',
-        name: '成交客户数',
-        min: 0,
-        minInterval: 1, // 显示整数刻度
-        splitLine: {
-          lineStyle: {
-            type: 'dotted', // 右侧网格线虚化, 减少混乱
-            opacity: 0.7,
-          },
-        },
-      },
-    ],
-    xAxis: {
-      type: 'category',
-      name: '日期',
-      data: res.map((item: any) => item.time),
-    },
-  });
-}
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useSummaryGridColumns(),
+    columns: useGridColumns(activeTabName.value),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -107,8 +41,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async (_, formValues) => {
           const res = await getCustomerSummaryByDate(formValues);
-          setChartData(res);
-          return await getCustomerSummaryByUser(formValues);
+          renderEcharts(getChartOptions(activeTabName.value, res));
+          return await getDatas(activeTabName.value, formValues);
         },
       },
     },
@@ -122,9 +56,79 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUser>,
 });
 
-function handleTabChange(key: any) {
+async function handleTabChange(key: any) {
   activeTabName.value = key;
-  gridApi.query();
+  const params = (await gridApi.formApi.getValues()) as any;
+  switch (key) {
+    case 'conversionStat': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerSummaryByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'customerSummary': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerSummaryByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'dealCycleByArea': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerDealCycleByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'dealCycleByProduct': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerDealCycleByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'dealCycleByUser': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerDealCycleByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'followUpSummary': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerSummaryByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'followUpType': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerSummaryByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    case 'poolSummary': {
+      gridApi.setGridOptions({
+        columns: useGridColumns(key),
+      });
+      const data = await getCustomerSummaryByUser(params);
+      renderEcharts(getChartOptions(key, data), true);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+  gridApi.reload();
 }
 </script>
 
@@ -134,13 +138,9 @@ function handleTabChange(key: any) {
       <template #top>
         <Tabs v-model:active-key="activeTabName" @change="handleTabChange">
           <Tabs.TabPane
-            tab="客户总量分析"
-            key="customerSummary"
-            :force-render="true"
-          />
-          <Tabs.TabPane
-            tab="客户跟进次数分析"
-            key="followUpSummary"
+            v-for="item in customerSummaryTabs"
+            :key="item.key"
+            :tab="item.tab"
             :force-render="true"
           />
         </Tabs>
