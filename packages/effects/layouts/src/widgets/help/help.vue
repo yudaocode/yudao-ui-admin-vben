@@ -29,6 +29,7 @@ const [Modal, modalApi] = useVbenModal({
   <Modal class="w-2/5" :title="$t('ui.widgets.qa')">
     <div class="mt-2 flex flex-col">
       <div class="mt-2 flex flex-row">
+        <!-- TODO @xingyu：要不要垂直？1. 项目地址；2. 问题反馈；3. 开发文档 -->
         <VbenButtonGroup class="basis-1/3" :gap="2" border size="large">
           <p class="p-2">项目地址:</p>
           <VbenButton
