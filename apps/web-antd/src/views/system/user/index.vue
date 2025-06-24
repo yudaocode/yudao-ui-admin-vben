@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { Card, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -215,9 +215,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <div class="h-full w-1/6 pr-4">
+      <Card class="mr-4 h-full w-1/6">
         <DeptTree @select="handleDeptSelect" />
-      </div>
+      </Card>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">
         <Grid table-title="用户列表">
