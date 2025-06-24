@@ -11,6 +11,38 @@ export namespace CrmStatisticsRankApi {
   }
 }
 
+export function getDatas(activeTabName: any, params: any) {
+  switch (activeTabName) {
+    case 'contactCountRank': {
+      return getContactsCountRank(params);
+    }
+    case 'contractCountRank': {
+      return getContractCountRank(params);
+    }
+    case 'contractPriceRank': {
+      return getContractPriceRank(params);
+    }
+    case 'customerCountRank': {
+      return getCustomerCountRank(params);
+    }
+    case 'followCountRank': {
+      return getFollowCountRank(params);
+    }
+    case 'followCustomerCountRank': {
+      return getFollowCustomerCountRank(params);
+    }
+    case 'productSalesRank': {
+      return getProductSalesRank(params);
+    }
+    case 'receivablePriceRank': {
+      return getReceivablePriceRank(params);
+    }
+    default: {
+      return [];
+    }
+  }
+}
+
 /** 获得合同排行榜 */
 export function getContractPriceRank(params: PageParam) {
   return requestClient.get<CrmStatisticsRankApi.Rank[]>(
