@@ -19,6 +19,7 @@ import {
 } from '@vueuse/core';
 
 import echarts from './echarts';
+import chinaMap from './map/china.json';
 
 type EchartsUIType = typeof EchartsUI | undefined;
 
@@ -31,6 +32,18 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
   const { isDark } = usePreferences();
   const { height, width } = useWindowSize();
   const resizeHandler: () => void = useDebounceFn(resize, 200);
+
+  echarts.registerMap('china', {
+    geoJSON: chinaMap as any,
+    specialAreas: {
+      china: {
+        left: 500,
+        top: 500,
+        width: 1000,
+        height: 1000,
+      },
+    },
+  });
 
   const getOptions = computed((): EChartsOption => {
     if (!isDark.value) {
