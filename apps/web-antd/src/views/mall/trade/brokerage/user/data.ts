@@ -54,7 +54,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'avatar',
       title: '头像',
       width: 70,
-      slots: { default: 'avatar' },
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+          shape: 'circle',
+        },
+      },
     },
     {
       field: 'nickname',

@@ -101,15 +101,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'content' },
     },
     {
-      field: 'status',
-      title: '绘画状态',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.AI_IMAGE_STATUS },
-      },
-    },
-    {
       field: 'duration',
       title: '时长（秒）',
       minWidth: 100,
@@ -139,9 +130,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       },
     },
     {
+      field: 'tags',
       title: '风格标签',
       minWidth: 180,
-      slots: { default: 'tags' },
+      cellRender: {
+        name: 'CellTags',
+      },
     },
     {
       minWidth: 100,

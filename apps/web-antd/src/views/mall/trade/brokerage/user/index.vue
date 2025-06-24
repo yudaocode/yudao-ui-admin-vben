@@ -6,7 +6,7 @@ import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Avatar, message, Switch } from 'ant-design-vue';
+import { message, Switch } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -165,10 +165,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
-      </template>
-
-      <template #avatar="{ row }">
-        <Avatar :src="row.avatar" />
       </template>
 
       <template #brokerageEnabled="{ row }">

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+import { $t } from '@vben/locales';
+
 import {
   Button,
   DropdownMenu,
@@ -47,15 +50,17 @@ async function handleChange(id: number | undefined) {
 </script>
 <template>
   <DropdownMenu>
-    <DropdownMenuTrigger as-child>
+    <DropdownMenuTrigger>
       <Button
         variant="outline"
-        class="hover:bg-accent ml-1 mr-2 h-8 w-24 cursor-pointer rounded-full p-1.5"
+        class="hover:bg-accent ml-1 mr-2 h-8 w-32 cursor-pointer rounded-full p-1.5"
       >
-        {{ tenants.find((item) => item.id === visitTenantId)?.name }}
+        <IconifyIcon icon="lucide:align-justify" class="mr-4" />
+        {{ $t('page.tenant.placeholder') }}
+        <!-- {{ tenants.find((item) => item.id === visitTenantId)?.name }} -->
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-56 p-0 pb-1">
+    <DropdownMenuContent class="w-40 p-0 pb-1">
       <DropdownMenuGroup>
         <DropdownMenuItem
           v-for="tenant in tenants"
@@ -64,7 +69,13 @@ async function handleChange(id: number | undefined) {
           class="mx-1 flex cursor-pointer items-center rounded-sm py-1 leading-8"
           @click="handleChange(tenant.id)"
         >
-          {{ tenant.name }}
+          <template v-if="tenant.id === visitTenantId">
+            <IconifyIcon icon="lucide:check" class="mr-2" />
+            {{ tenant.name }}
+          </template>
+          <template v-else>
+            {{ tenant.name }}
+          </template>
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </DropdownMenuContent>

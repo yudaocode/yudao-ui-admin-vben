@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { Button, message, Switch, Tag } from 'ant-design-vue';
+import { Button, message, Switch } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
@@ -101,9 +101,9 @@ onMounted(async () => {
       </template>
 
       <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
+        <span>
+          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+        </span>
       </template>
       <template #content="{ row }">
         <Button
@@ -140,11 +140,6 @@ onMounted(async () => {
           @change="handleUpdatePublicStatusChange(row)"
           :disabled="row.status !== AiMusicStatusEnum.SUCCESS"
         />
-      </template>
-      <template #tags="{ row }">
-        <Tag v-for="tag in row.tags" :key="tag" class="ml-1">
-          {{ tag }}
-        </Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

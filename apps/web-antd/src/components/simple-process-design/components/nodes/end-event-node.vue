@@ -5,7 +5,10 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
+
 import { useTaskStatusClass, useWatchNode } from '../../helpers';
+import ProcessInstanceModal from './modules/process-instance-modal.vue';
 
 defineOptions({ name: 'EndEventNode' });
 const props = defineProps({
@@ -20,15 +23,26 @@ const currentNode = useWatchNode(props);
 const readonly = inject<Boolean>('readonly');
 const processInstance = inject<Ref<any>>('processInstance', ref({}));
 
-const processInstanceInfos = ref<any[]>([]); // 流程的审批信息
+const [Modal, modalApi] = useVbenModal({
+  connectedComponent: ProcessInstanceModal,
+  destroyOnClose: true,
+});
 
 function nodeClick() {
   if (readonly && processInstance && processInstance.value) {
-    console.warn(
-      'TODO 只读模式，弹窗显示审批信息',
-      processInstance.value,
-      processInstanceInfos.value,
-    );
+    const processInstanceInfo = [
+      {
+        startUser: processInstance.value.startUser,
+        createTime: processInstance.value.startTime,
+        endTime: processInstance.value.endTime,
+        status: processInstance.value.status,
+        durationInMillis: processInstance.value.durationInMillis,
+      },
+    ];
+    modalApi
+      .setData(processInstanceInfo)
+      .setState({ title: '流程信息' })
+      .open();
   }
 }
 </script>
@@ -42,5 +56,6 @@ function nodeClick() {
       <span class="node-fixed-name" title="结束">结束</span>
     </div>
   </div>
-  <!-- TODO 审批信息 -->
+  <!-- 流程信息弹窗 -->
+  <Modal />
 </template>

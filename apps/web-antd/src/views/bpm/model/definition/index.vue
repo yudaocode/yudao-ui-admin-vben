@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Image, Tag, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';
@@ -93,16 +93,6 @@ onMounted(() => {
       <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
     </template>
     <Grid table-title="流程定义列表">
-      <template #icon="{ row }">
-        <Image
-          v-if="row.icon"
-          :src="row.icon"
-          :width="24"
-          :height="24"
-          class="rounded"
-        />
-        <span v-else> 无图标 </span>
-      </template>
       <template #startUsers="{ row }">
         <template v-if="!row.startUsers?.length">全部可见</template>
         <template v-else-if="row.startUsers.length === 1">
@@ -134,9 +124,6 @@ onMounted(() => {
           <span>{{ row.formCustomCreatePath }}</span>
         </Button>
         <span v-else>暂无表单</span>
-      </template>
-      <template #version="{ row }">
-        <Tag>v{{ row.version }}</Tag>
       </template>
       <template #actions="{ row }">
         <TableAction
