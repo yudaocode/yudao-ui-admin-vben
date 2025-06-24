@@ -42,7 +42,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             getChartOptions(activeTabName.value, active.value, res),
           );
           return await getDatas(activeTabName.value, {
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });

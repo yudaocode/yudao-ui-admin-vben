@@ -108,7 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getContactPageByCustomer({
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             customerId: props.customerId,
             ...formValues,
