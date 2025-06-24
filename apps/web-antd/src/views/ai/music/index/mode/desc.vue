@@ -26,7 +26,7 @@ defineExpose({
     >
       <Textarea
         v-model:value="formData.desc"
-        :autosize="{ minRows: 6, maxRows: 6 }"
+        :auto-size="{ minRows: 6, maxRows: 6 }"
         :maxlength="1200"
         :show-count="true"
         placeholder="一首关于糟糕分手的欢快歌曲"

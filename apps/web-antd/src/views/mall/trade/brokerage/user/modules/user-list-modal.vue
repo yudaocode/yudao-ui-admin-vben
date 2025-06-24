@@ -7,7 +7,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Avatar, Tag } from 'ant-design-vue';
+import { Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageUserPage } from '#/api/mall/trade/brokerage/user';
@@ -76,7 +76,14 @@ function useColumns(): VxeTableGridOptions['columns'] {
       field: 'avatar',
       title: '头像',
       width: 70,
-      slots: { default: 'avatar' },
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+          shape: 'circle',
+        },
+      },
     },
     {
       field: 'nickname',
@@ -144,10 +151,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Modal title="推广人列表" class="w-3/5">
     <Grid table-title="推广人列表">
-      <template #avatar="{ row }">
-        <Avatar :src="row.avatar" />
-      </template>
-
       <template #brokerageEnabled="{ row }">
         <Tag v-if="row.brokerageEnabled" color="success">有</Tag>
         <Tag v-else>无</Tag>

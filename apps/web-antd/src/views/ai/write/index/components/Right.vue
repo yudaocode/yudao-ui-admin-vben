@@ -98,7 +98,7 @@ watch(copied, (val) => {
         <Textarea
           id="inputId"
           v-model:value="compContent"
-          autosize
+          auto-size
           :bordered="false"
           placeholder="生成的内容……"
         />
