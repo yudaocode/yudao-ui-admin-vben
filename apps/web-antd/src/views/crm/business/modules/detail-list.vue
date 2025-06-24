@@ -121,14 +121,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         query: async ({ page }, formValues) => {
           if (props.bizType === BizTypeEnum.CRM_CUSTOMER) {
             return await getBusinessPageByCustomer({
-              page: page.currentPage,
+              pageNo: page.currentPage,
               pageSize: page.pageSize,
               customerId: props.customerId,
               ...formValues,
             });
           } else if (props.bizType === BizTypeEnum.CRM_CONTACT) {
             return await getBusinessPageByContact({
-              page: page.currentPage,
+              pageNo: page.currentPage,
               pageSize: page.pageSize,
               contactId: props.contactId,
               ...formValues,

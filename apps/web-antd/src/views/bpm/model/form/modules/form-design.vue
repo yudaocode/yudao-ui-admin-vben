@@ -102,7 +102,7 @@ defineExpose({ validate });
             DICT_TYPE.BPM_MODEL_FORM_TYPE,
             'number',
           )"
-          :key="dict.value as string"
+          :key="dict.value"
           :value="dict.value"
         >
           {{ dict.label }}
