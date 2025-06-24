@@ -35,7 +35,7 @@ function close() {
       <VbenIcon icon="mdi:information-outline" class="text-primary size-5" />
     </span>
     <div class="text-primary min-w-0 flex-1 font-sans text-sm leading-none">
-      <span class="inline-block w-40">【{{ title }}】</span>
+      <span class="inline-block">【{{ title }}】</span>
       <a
         class="hover:text-success cursor-pointer break-all"
         @click="goToUrl"
