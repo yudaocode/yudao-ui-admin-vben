@@ -27,7 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户来源',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
       },
       rules: 'required',
     },
@@ -74,7 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户行业',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
       },
     },
     {
@@ -82,7 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户级别',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL),
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
       },
     },
     {
