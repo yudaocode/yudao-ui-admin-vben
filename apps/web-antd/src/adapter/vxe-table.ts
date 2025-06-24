@@ -24,6 +24,7 @@ import {
   ImagePreviewGroup,
   Popconfirm,
   Switch,
+  Tag,
 } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
@@ -109,6 +110,35 @@ setupVbenVxeTable({
           Button,
           { size: 'small', type: 'link' },
           { default: () => props?.text },
+        );
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'CellTag' },
+    vxeUI.renderer.add('CellTag', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        return h(Tag, { color: props?.color }, () => row[column.field]);
+      },
+    });
+
+    vxeUI.renderer.add('CellTags', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        if (!row[column.field] || row[column.field].length === 0) {
+          return '';
+        }
+        return h(
+          'div',
+          { class: 'flex items-center justify-center' },
+          {
+            default: () =>
+              row[column.field].map((item: any) =>
+                h(Tag, { color: props?.color }, { default: () => item }),
+              ),
+          },
         );
       },
     });
