@@ -133,7 +133,7 @@ export function getDatas(activeTabName: any, params: any) {
   }
 }
 
-export function getChartOptions(activeTabName: any, params: any) {
+export function getChartDatas(activeTabName: any, params: any) {
   switch (activeTabName) {
     case 'conversionStat': {
       return getCustomerSummaryByDate(params);

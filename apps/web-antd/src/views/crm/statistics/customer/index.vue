@@ -12,12 +12,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getCustomerDealCycleByUser,
-  getCustomerSummaryByDate,
-  getCustomerSummaryByUser,
-  getDatas,
-} from '#/api/crm/statistics/customer';
+import { getChartDatas, getDatas } from '#/api/crm/statistics/customer';
 
 import { getChartOptions } from './chartOptions';
 import { customerSummaryTabs, useGridColumns, useGridFormSchema } from './data';
@@ -40,7 +35,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_, formValues) => {
-          const res = await getCustomerSummaryByDate(formValues);
+          const res = await getChartDatas(activeTabName.value, formValues);
           renderEcharts(getChartOptions(activeTabName.value, res));
           return await getDatas(activeTabName.value, formValues);
         },
@@ -58,76 +53,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 async function handleTabChange(key: any) {
   activeTabName.value = key;
-  const params = (await gridApi.formApi.getValues()) as any;
-  switch (key) {
-    case 'conversionStat': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerSummaryByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'customerSummary': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerSummaryByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'dealCycleByArea': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerDealCycleByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'dealCycleByProduct': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerDealCycleByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'dealCycleByUser': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerDealCycleByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'followUpSummary': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerSummaryByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'followUpType': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerSummaryByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    case 'poolSummary': {
-      gridApi.setGridOptions({
-        columns: useGridColumns(key),
-      });
-      const data = await getCustomerSummaryByUser(params);
-      renderEcharts(getChartOptions(key, data), true);
-      break;
-    }
-    default: {
-      break;
-    }
-  }
+  gridApi.setGridOptions({
+    columns: useGridColumns(key),
+  });
   gridApi.reload();
 }
 </script>
