@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal :title="getTitle" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>

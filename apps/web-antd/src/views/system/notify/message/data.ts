@@ -1,6 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
+import { formatDateTime } from '@vben/utils';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -132,6 +138,87 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '编号',
+    },
+    {
+      field: 'userType',
+      label: '用户类型',
+      content: (data) => {
+        return h(DictTag, {
+          type: DICT_TYPE.USER_TYPE,
+          value: data?.userType,
+        });
+      },
+    },
+    {
+      field: 'userId',
+      label: '用户编号',
+    },
+    {
+      field: 'templateId',
+      label: '模版编号',
+    },
+    {
+      field: 'templateCode',
+      label: '模板编码',
+    },
+    {
+      field: 'templateNickname',
+      label: '发送人名称',
+    },
+    {
+      field: 'templateContent',
+      label: '模版内容',
+    },
+    {
+      field: 'templateParams',
+      label: '模版参数',
+      content: (data) => {
+        try {
+          return JSON.stringify(data?.templateParams);
+        } catch {
+          return '';
+        }
+      },
+    },
+    {
+      field: 'templateType',
+      label: '模版类型',
+      content: (data) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          value: data?.templateType,
+        });
+      },
+    },
+    {
+      field: 'readStatus',
+      label: '是否已读',
+      content: (data) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_BOOLEAN_STRING,
+          value: data?.readStatus,
+        });
+      },
+    },
+    {
+      field: 'readTime',
+      label: '阅读时间',
+      content: (data) => formatDateTime(data?.readTime || '') as string,
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime || '') as string,
     },
   ];
 }

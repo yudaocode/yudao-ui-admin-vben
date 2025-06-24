@@ -87,7 +87,7 @@ async function handleDeleteBatch() {
 /** 推送公告 */
 async function handlePush(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.processing', ['推送']),
+    content: '正在推送中',
     key: 'action_process_msg',
   });
   try {
