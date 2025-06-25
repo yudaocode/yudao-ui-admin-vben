@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { floatToFixed2 } from '@vben/utils';
 
+import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
@@ -24,13 +25,31 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'contractId',
       label: '合同',
-      component: 'ApiSelect',
+      component: 'Select',
       rules: 'required',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        options: [],
         placeholder: '请选择合同',
+      },
+      dependencies: {
+        triggerFields: ['customerId'],
+        disabled: (values) => !values.customerId,
+        async componentProps(values) {
+          if (!values.customerId) {
+            return {
+              options: [],
+              placeholder: '请选择客户',
+            };
+          }
+          const res = await getContractSimpleList(values.customerId);
+          return {
+            options: res.map((item) => ({
+              label: item.name,
+              value: item.id,
+            })),
+            placeholder: '请选择合同',
+          };
+        },
       },
     },
     {
