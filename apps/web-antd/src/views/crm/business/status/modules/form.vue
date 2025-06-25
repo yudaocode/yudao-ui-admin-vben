@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CrmBusinessStatusApi } from '#/api/crm/business/status';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -100,16 +100,20 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 添加状态 */
-function addStatus() {
-  formData.value!.statuses!.push({
+async function addStatus() {
+  formData.value!.statuses!.unshift({
     name: '',
     percent: undefined,
   } as any);
+  await nextTick();
+  gridApi.grid.reloadData(formData.value!.statuses as any);
 }
 
 /** 删除状态 */
-function deleteStatusArea(row: any) {
-  formData.value!.statuses!.splice(row.index, 1);
+async function deleteStatusArea(row: any, rowIndex: number) {
+  gridApi.grid.remove(row);
+  formData.value!.statuses!.splice(rowIndex, 1);
+  gridApi.grid.reloadData(formData.value!.statuses as any);
 }
 
 /** 表格配置 */
@@ -187,7 +191,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
             <span v-else>{{ row.percent }}</span>
           </template>
-          <template #actions="{ row }">
+          <template #actions="{ row, rowIndex }">
             <TableAction
               :actions="[
                 {
@@ -203,7 +207,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   ifShow: () => !row.endStatus,
                   popConfirm: {
                     title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                    confirm: deleteStatusArea.bind(null, row),
+                    confirm: deleteStatusArea.bind(null, row, rowIndex),
                   },
                 },
               ]"
