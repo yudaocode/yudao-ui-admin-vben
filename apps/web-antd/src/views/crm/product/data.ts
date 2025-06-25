@@ -124,15 +124,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '产品名称',
+      minWidth: 240,
       slots: { default: 'name' },
     },
     {
       field: 'categoryName',
       title: '产品类型',
+      minWidth: 120,
     },
     {
       field: 'unit',
       title: '产品单位',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
@@ -141,15 +144,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'no',
       title: '产品编码',
+      minWidth: 120,
     },
     {
       field: 'price',
       title: '价格（元）',
       formatter: 'formatAmount2',
+      minWidth: 120,
     },
     {
       field: 'description',
       title: '产品描述',
+      minWidth: 200,
     },
     {
       field: 'status',
@@ -158,24 +164,29 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_PRODUCT_STATUS },
       },
+      minWidth: 120,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
+      minWidth: 120,
     },
     {
       field: 'updateTime',
       title: '更新时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'creatorName',
       title: '创建人',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       title: '操作',

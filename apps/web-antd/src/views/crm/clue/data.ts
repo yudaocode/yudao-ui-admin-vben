@@ -164,6 +164,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'name',
       title: '线索名称',
       fixed: 'left',
+      minWidth: 240,
       slots: {
         default: 'name',
       },
@@ -171,6 +172,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'source',
       title: '线索来源',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -179,22 +181,27 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'mobile',
       title: '手机',
+      minWidth: 120,
     },
     {
       field: 'telephone',
       title: '电话',
+      minWidth: 120,
     },
     {
       field: 'email',
       title: '邮箱',
+      minWidth: 120,
     },
     {
       field: 'detailAddress',
       title: '地址',
+      minWidth: 120,
     },
     {
       field: 'industryId',
       title: '客户行业',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -203,6 +210,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'level',
       title: '客户级别',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
@@ -211,34 +219,41 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'ownerUserName',
       title: '负责人',
+      minWidth: 120,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
+      minWidth: 120,
     },
     {
       field: 'contactNextTime',
       title: '下次联系时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'updateTime',
       title: '更新时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
+      minWidth: 120,
     },
     {
       field: 'creatorName',
       title: '创建人',
+      minWidth: 120,
     },
     {
       title: '操作',
