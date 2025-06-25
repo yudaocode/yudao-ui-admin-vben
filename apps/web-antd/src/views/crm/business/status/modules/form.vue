@@ -51,6 +51,10 @@ const [Modal, modalApi] = useVbenModal({
     const data =
       (await formApi.getValues()) as CrmBusinessStatusApi.BusinessStatus;
     try {
+      if (formData.value?.statuses && formData.value.statuses.length > 0) {
+        data.statuses = formData.value.statuses;
+        data.statuses.splice(-3, 3);
+      }
       await (formData.value?.id
         ? updateBusinessStatus(data)
         : createBusinessStatus(data));
@@ -89,10 +93,12 @@ const [Modal, modalApi] = useVbenModal({
         }
       }
       // 设置到 values
+
       await formApi.setValues(formData.value as any);
-      formData.value!.statuses =
-        formData.value?.statuses?.concat(DEFAULT_STATUSES);
-      gridApi.grid.reloadData(formData.value!.statuses as any);
+      gridApi.grid.reloadData(
+        (formData.value!.statuses =
+          formData.value?.statuses?.concat(DEFAULT_STATUSES)) as any,
+      );
     } finally {
       modalApi.unlock();
     }
