@@ -307,9 +307,7 @@ async function doSendMessage(content: string) {
 }
 
 /** 真正执行【发送】消息操作 */
-async function doSendMessageStream(
-  userMessage: AiChatMessageApi.ChatMessage,
-) {
+async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
   // 创建 AbortController 实例，以便中止请求
   conversationInAbortController.value = new AbortController();
   // 标记对话进行中

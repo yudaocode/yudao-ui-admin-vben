@@ -260,9 +260,7 @@ async function handleClearConversation() {
 }
 
 /** 对话置顶 */
-async function handleTop(
-  conversation: AiChatConversationApi.ChatConversation,
-) {
+async function handleTop(conversation: AiChatConversationApi.ChatConversation) {
   // 更新对话置顶
   conversation.pinned = !conversation.pinned;
   await updateChatConversationMy(conversation);

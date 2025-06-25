@@ -93,9 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 修改是否发布 */
-async function handleStatusChange(
-  row: AiKnowledgeSegmentApi.KnowledgeSegment,
-) {
+async function handleStatusChange(row: AiKnowledgeSegmentApi.KnowledgeSegment) {
   try {
     // 修改状态的二次确认
     const text = row.status ? '启用' : '禁用';
