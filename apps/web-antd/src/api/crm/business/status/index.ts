@@ -5,20 +5,19 @@ import { requestClient } from '#/api/request';
 export namespace CrmBusinessStatusApi {
   /** 商机状态信息 */
   export interface BusinessStatusType {
-    id: number;
+    id?: number;
     name: string;
     percent: number;
-    sort: number;
   }
 
   /** 商机状态组信息 */
   export interface BusinessStatus {
-    id: number;
+    id?: number;
     name: string;
-    deptIds: number[];
-    deptNames: string[];
-    creator: string;
-    createTime: Date;
+    deptIds?: number[];
+    deptNames?: string[];
+    creator?: string;
+    createTime?: Date;
     statuses?: BusinessStatusType[];
   }
 }

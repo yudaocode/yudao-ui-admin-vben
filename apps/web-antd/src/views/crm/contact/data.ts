@@ -43,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         api: () => getCustomerSimpleList(),
         fieldNames: {
-          label: 'nickname',
+          label: 'name',
           value: 'id',
         },
       },
