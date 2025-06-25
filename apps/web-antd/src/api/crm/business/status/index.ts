@@ -5,6 +5,7 @@ import { requestClient } from '#/api/request';
 export namespace CrmBusinessStatusApi {
   /** 商机状态信息 */
   export interface BusinessStatusType {
+    [x: string]: any;
     id?: number;
     name: string;
     percent: number;

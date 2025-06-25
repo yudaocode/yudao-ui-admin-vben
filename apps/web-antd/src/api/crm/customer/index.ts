@@ -121,10 +121,9 @@ export function putCustomerPool(id: number) {
 
 /** 更新客户的成交状态 */
 export function updateCustomerDealStatus(id: number, dealStatus: boolean) {
-  return requestClient.put('/crm/customer/update-deal-status', {
-    id,
-    dealStatus,
-  });
+  return requestClient.put(
+    `/crm/customer/update-deal-status?id=${id}&dealStatus=${dealStatus}`,
+  );
 }
 
 /** 进入公海客户提醒的客户列表 */

@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { erpPriceMultiply } from '@vben/utils';
 
+import { z } from '#/adapter/form';
 import { getBusinessStatusTypeSimpleList } from '#/api/crm/business/status';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       fieldName: 'id',
@@ -35,6 +38,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
+      defaultValue: userStore.userInfo?.id,
       rules: 'required',
     },
     {
@@ -50,7 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['id'],
-        disabled: (values) => !values.customerId,
+        disabled: (values) => values.customerDefault,
       },
       rules: 'required',
     },
@@ -103,8 +107,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        precision: 2,
       },
-      rules: 'required',
+      rules: z.number().min(0).optional().default(0),
     },
     {
       fieldName: 'discountPercent',
@@ -114,15 +119,19 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
       },
-      rules: 'required',
+      rules: z.number().min(0).max(100).optional().default(0),
     },
     {
       fieldName: 'totalPrice',
       label: '折扣后金额',
       component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['totalProductPrice', 'discountPercent'],
-        disabled: () => true,
         trigger(values, form) {
           const discountPrice =
             erpPriceMultiply(

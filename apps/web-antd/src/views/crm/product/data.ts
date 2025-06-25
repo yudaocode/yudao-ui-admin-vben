@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -10,6 +11,7 @@ import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       component: 'Input',
@@ -31,9 +33,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       rules: 'required',
       componentProps: {
-        api: getSimpleUserList,
-        fieldNames: { label: 'nickname', value: 'id' },
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
+      defaultValue: userStore.userInfo?.id,
     },
     {
       component: 'Input',

@@ -16,9 +16,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },
@@ -121,9 +123,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },

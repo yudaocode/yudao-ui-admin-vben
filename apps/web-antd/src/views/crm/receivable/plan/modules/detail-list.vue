@@ -40,7 +40,12 @@ function onRefresh() {
 
 /** 创建回款计划 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi
+    .setData({
+      contractId: props.contractId,
+      customerId: props.customerId,
+    })
+    .open();
 }
 
 /** 创建回款 */
