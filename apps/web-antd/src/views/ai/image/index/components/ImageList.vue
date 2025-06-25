@@ -35,7 +35,7 @@ const queryParams = reactive({
   pageSize: 10,
 });
 const pageTotal = ref<number>(0); // page size
-const imageList = ref<AiImageApi.ImageVO[]>([]); // image 列表
+const imageList = ref<AiImageApi.Image[]>([]); // image 列表
 const imageListRef = ref<any>(); // ref
 // 图片轮询相关的参数（正在生成中的）
 const inProgressImageMap = ref<{}>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image
@@ -85,7 +85,7 @@ async function refreshWatchImages() {
   if (imageIds.length === 0) {
     return;
   }
-  const list = (await getImageListMyByIds(imageIds)) as AiImageApi.ImageVO[];
+  const list = (await getImageListMyByIds(imageIds)) as AiImageApi.Image[];
   const newWatchImages: any = {};
   list.forEach((image) => {
     if (image.status === AiImageStatusEnum.IN_PROGRESS) {
@@ -106,7 +106,7 @@ async function refreshWatchImages() {
 /** 图片的点击事件 */
 async function handleImageButtonClick(
   type: string,
-  imageDetail: AiImageApi.ImageVO,
+  imageDetail: AiImageApi.Image,
 ) {
   // 详情
   if (type === 'more') {
@@ -138,14 +138,14 @@ async function handleImageButtonClick(
 
 /** 处理 Midjourney 按钮点击事件  */
 async function handleImageMidjourneyButtonClick(
-  button: AiImageApi.ImageMidjourneyButtonsVO,
-  imageDetail: AiImageApi.ImageVO,
+  button: AiImageApi.ImageMidjourneyButtons,
+  imageDetail: AiImageApi.Image,
 ) {
   // 1. 构建 params 参数
   const data = {
     id: imageDetail.id,
     customId: button.customId,
-  } as AiImageApi.ImageMidjourneyActionVO;
+  } as AiImageApi.ImageMidjourneyAction;
   // 2. 发送 action
   await midjourneyAction(data);
   // 3. 刷新列表

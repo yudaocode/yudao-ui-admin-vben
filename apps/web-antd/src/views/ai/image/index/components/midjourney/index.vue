@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModelVO, ImageSizeVO } from '#/utils';
+import type { ImageModel, ImageSize } from '#/utils';
 
 import { ref } from 'vue';
 
@@ -33,8 +33,8 @@ import {
 // 接收父组件传入的模型列表
 const props = defineProps({
   models: {
-    type: Array<AiModelModelApi.ModelVO>,
-    default: () => [] as AiModelModelApi.ModelVO[],
+    type: Array<AiModelModelApi.Model>,
+    default: () => [] as AiModelModelApi.Model[],
   },
 });
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
@@ -64,12 +64,12 @@ async function handleHotWordClick(hotWord: string) {
 }
 
 /** 点击 size 尺寸 */
-async function handleSizeClick(imageSize: ImageSizeVO) {
+async function handleSizeClick(imageSize: ImageSize) {
   selectSize.value = imageSize.key;
 }
 
 /** 点击 model 模型 */
-async function handleModelClick(model: ImageModelVO) {
+async function handleModelClick(model: ImageModel) {
   selectModel.value = model.key;
   versionList.value =
     model.key === 'niji' ? NijiVersionList : MidjourneyVersions;
@@ -99,7 +99,7 @@ async function handleGenerateImage() {
     // 发送请求
     const imageSize = MidjourneySizeList.find(
       (item) => selectSize.value === item.key,
-    ) as ImageSizeVO;
+    ) as ImageSize;
     const req = {
       prompt: prompt.value,
       modelId: matchedModel.id,
@@ -107,7 +107,7 @@ async function handleGenerateImage() {
       height: imageSize.height,
       version: selectVersion.value,
       referImageUrl: referImageUrl.value,
-    } as AiImageApi.ImageMidjourneyImagineReqVO;
+    } as AiImageApi.ImageMidjourneyImagineReq;
     await midjourneyImagine(req);
   } finally {
     // 回调
@@ -118,18 +118,18 @@ async function handleGenerateImage() {
 }
 
 /** 填充值 */
-async function settingValues(detail: AiImageApi.ImageVO) {
+async function settingValues(detail: AiImageApi.Image) {
   // 提示词
   prompt.value = detail.prompt;
   // image size
   const imageSize = MidjourneySizeList.find(
     (item) => item.key === `${detail.width}:${detail.height}`,
-  ) as ImageSizeVO;
+  ) as ImageSize;
   selectSize.value = imageSize.key;
   // 选中模型
   const model = MidjourneyModels.find(
     (item) => item.key === detail.options?.model,
-  ) as ImageModelVO;
+  ) as ImageModel;
   await handleModelClick(model);
   // 版本
   selectVersion.value = versionList.value.find(

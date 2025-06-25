@@ -21,11 +21,11 @@ import MessageKnowledge from './MessageKnowledge.vue';
 // 定义 props
 const props = defineProps({
   conversation: {
-    type: Object as PropType<AiChatConversationApi.ChatConversationVO>,
+    type: Object as PropType<AiChatConversationApi.ChatConversation>,
     required: true,
   },
   list: {
-    type: Array as PropType<AiChatMessageApi.ChatMessageVO[]>,
+    type: Array as PropType<AiChatMessageApi.ChatMessage[]>,
     required: true,
   },
 });
@@ -95,12 +95,12 @@ async function onDelete(id: number) {
 }
 
 /** 刷新 */
-async function onRefresh(message: AiChatMessageApi.ChatMessageVO) {
+async function onRefresh(message: AiChatMessageApi.ChatMessage) {
   emits('onRefresh', message);
 }
 
 /** 编辑 */
-async function onEdit(message: AiChatMessageApi.ChatMessageVO) {
+async function onEdit(message: AiChatMessageApi.ChatMessage) {
   emits('onEdit', message);
 }
 

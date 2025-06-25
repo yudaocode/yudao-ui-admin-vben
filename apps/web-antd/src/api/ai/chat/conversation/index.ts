@@ -3,7 +3,7 @@ import type { PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiChatConversationApi {
-  export interface ChatConversationVO {
+  export interface ChatConversation {
     id: number; // ID 编号
     userId: number; // 用户编号
     title: string; // 对话标题
@@ -26,21 +26,21 @@ export namespace AiChatConversationApi {
 
 // 获得【我的】聊天对话
 export function getChatConversationMy(id: number) {
-  return requestClient.get<AiChatConversationApi.ChatConversationVO>(
+  return requestClient.get<AiChatConversationApi.ChatConversation>(
     `/ai/chat/conversation/get-my?id=${id}`,
   );
 }
 
 // 新增【我的】聊天对话
 export function createChatConversationMy(
-  data: AiChatConversationApi.ChatConversationVO,
+  data: AiChatConversationApi.ChatConversation,
 ) {
   return requestClient.post('/ai/chat/conversation/create-my', data);
 }
 
 //  更新【我的】聊天对话
 export function updateChatConversationMy(
-  data: AiChatConversationApi.ChatConversationVO,
+  data: AiChatConversationApi.ChatConversation,
 ) {
   return requestClient.put(`/ai/chat/conversation/update-my`, data);
 }
@@ -57,7 +57,7 @@ export function deleteChatConversationMyByUnpinned() {
 
 //  获得【我的】聊天对话列表
 export function getChatConversationMyList() {
-  return requestClient.get<AiChatConversationApi.ChatConversationVO[]>(
+  return requestClient.get<AiChatConversationApi.ChatConversation[]>(
     `/ai/chat/conversation/my-list`,
   );
 }
@@ -65,7 +65,7 @@ export function getChatConversationMyList() {
 //  获得【我的】聊天对话列表
 export function getChatConversationPage(params: any) {
   return requestClient.get<
-    PageResult<AiChatConversationApi.ChatConversationVO[]>
+    PageResult<AiChatConversationApi.ChatConversation[]>
   >(`/ai/chat/conversation/page`, { params });
 }
 

@@ -3,8 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiKnowledgeSegmentApi {
-  // AI 知识库分段 VO
-  export interface KnowledgeSegmentVO {
+  // AI 知识库分段
+  export interface KnowledgeSegment {
     id: number; // 编号
     documentId: number; // 文档编号
     knowledgeId: number; // 知识库编号
@@ -20,27 +20,28 @@ export namespace AiKnowledgeSegmentApi {
 
 // 查询知识库分段分页
 export function getKnowledgeSegmentPage(params: PageParam) {
-  return requestClient.get<
-    PageResult<AiKnowledgeSegmentApi.KnowledgeSegmentVO>
-  >('/ai/knowledge/segment/page', { params });
+  return requestClient.get<PageResult<AiKnowledgeSegmentApi.KnowledgeSegment>>(
+    '/ai/knowledge/segment/page',
+    { params },
+  );
 }
 
 // 查询知识库分段详情
 export function getKnowledgeSegment(id: number) {
-  return requestClient.get<AiKnowledgeSegmentApi.KnowledgeSegmentVO>(
+  return requestClient.get<AiKnowledgeSegmentApi.KnowledgeSegment>(
     `/ai/knowledge/segment/get?id=${id}`,
   );
 }
 // 新增知识库分段
 export function createKnowledgeSegment(
-  data: AiKnowledgeSegmentApi.KnowledgeSegmentVO,
+  data: AiKnowledgeSegmentApi.KnowledgeSegment,
 ) {
   return requestClient.post('/ai/knowledge/segment/create', data);
 }
 
 // 修改知识库分段
 export function updateKnowledgeSegment(
-  data: AiKnowledgeSegmentApi.KnowledgeSegmentVO,
+  data: AiKnowledgeSegmentApi.KnowledgeSegment,
 ) {
   return requestClient.put('/ai/knowledge/segment/update', data);
 }

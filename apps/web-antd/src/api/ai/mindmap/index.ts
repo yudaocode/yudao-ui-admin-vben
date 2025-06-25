@@ -7,8 +7,8 @@ import { requestClient } from '#/api/request';
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 export namespace AiMindmapApi {
-  // AI 思维导图 VO
-  export interface MindMapVO {
+  // AI 思维导图
+  export interface MindMap {
     id: number; // 编号
     userId: number; // 用户编号
     prompt: string; // 生成内容提示
@@ -18,8 +18,8 @@ export namespace AiMindmapApi {
     errorMessage: string; // 错误信息
   }
 
-  // AI 思维导图生成 VO
-  export interface AiMindMapGenerateReqVO {
+  // AI 思维导图生成
+  export interface AiMindMapGenerateReq {
     prompt: string;
   }
 }
@@ -32,7 +32,7 @@ export function generateMindMap({
   ctrl,
 }: {
   ctrl: AbortController;
-  data: AiMindmapApi.AiMindMapGenerateReqVO;
+  data: AiMindmapApi.AiMindMapGenerateReq;
   onClose?: (...args: any[]) => void;
   onError?: (...args: any[]) => void;
   onMessage?: (res: any) => void;

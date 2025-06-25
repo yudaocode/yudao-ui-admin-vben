@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<AiKnowledgeSegmentApi.KnowledgeSegmentVO>();
+const formData = ref<AiKnowledgeSegmentApi.KnowledgeSegment>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['分段'])
@@ -47,7 +47,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as AiKnowledgeSegmentApi.KnowledgeSegmentVO;
+      (await formApi.getValues()) as AiKnowledgeSegmentApi.KnowledgeSegment;
     try {
       await (formData.value?.id
         ? updateKnowledgeSegment(data)
@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiKnowledgeSegmentApi.KnowledgeSegmentVO>();
+    const data = modalApi.getData<AiKnowledgeSegmentApi.KnowledgeSegment>();
     if (!data || !data.id) {
       await formApi.setValues(data);
       return;

@@ -28,8 +28,8 @@ import {
 // 接收父组件传入的模型列表
 const props = defineProps({
   models: {
-    type: Array<AiModelModelApi.ModelVO>,
-    default: () => [] as AiModelModelApi.ModelVO[],
+    type: Array<AiModelModelApi.Model>,
+    default: () => [] as AiModelModelApi.Model[],
   },
 });
 
@@ -106,7 +106,7 @@ async function handleGenerateImage() {
         clipGuidancePreset: clipGuidancePreset.value, // 文本提示相匹配的图像 CLIP
         stylePreset: stylePreset.value, // 风格
       },
-    } as unknown as AiImageApi.ImageDrawReqVO;
+    } as unknown as AiImageApi.ImageDrawReq;
     await drawImage(form);
   } finally {
     // 回调
@@ -117,7 +117,7 @@ async function handleGenerateImage() {
 }
 
 /** 填充值 */
-async function settingValues(detail: AiImageApi.ImageVO) {
+async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   width.value = detail.width;
   height.value = detail.height;

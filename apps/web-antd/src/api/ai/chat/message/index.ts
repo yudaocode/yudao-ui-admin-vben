@@ -9,7 +9,7 @@ import { requestClient } from '#/api/request';
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 export namespace AiChatMessageApi {
-  export interface ChatMessageVO {
+  export interface ChatMessage {
     id: number; // 编号
     conversationId: number; // 对话编号
     type: string; // 消息类型
@@ -36,7 +36,7 @@ export namespace AiChatMessageApi {
 export function getChatMessageListByConversationId(
   conversationId: null | number,
 ) {
-  return requestClient.get<AiChatMessageApi.ChatMessageVO[]>(
+  return requestClient.get<AiChatMessageApi.ChatMessage[]>(
     `/ai/chat/message/list-by-conversation-id?conversationId=${conversationId}`,
   );
 }
@@ -84,7 +84,7 @@ export function deleteByConversationId(conversationId: number) {
 }
 // 获得消息分页
 export function getChatMessagePage(params: any) {
-  return requestClient.get<PageResult<AiChatMessageApi.ChatMessageVO>>(
+  return requestClient.get<PageResult<AiChatMessageApi.ChatMessage>>(
     '/ai/chat/message/page',
     { params },
   );

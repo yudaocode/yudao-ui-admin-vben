@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<AiKnowledgeKnowledgeApi.KnowledgeVO>();
+const formData = ref<AiKnowledgeKnowledgeApi.Knowledge>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['AI 知识库'])
@@ -47,7 +47,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as AiKnowledgeKnowledgeApi.KnowledgeVO;
+      (await formApi.getValues()) as AiKnowledgeKnowledgeApi.Knowledge;
     try {
       await (formData.value?.id
         ? updateKnowledge(data)
@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiKnowledgeKnowledgeApi.KnowledgeVO>();
+    const data = modalApi.getData<AiKnowledgeKnowledgeApi.Knowledge>();
     if (!data || !data.id) {
       return;
     }

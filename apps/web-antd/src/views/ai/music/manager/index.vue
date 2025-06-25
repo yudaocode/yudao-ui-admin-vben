@@ -24,7 +24,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiMusicApi.MusicVO) {
+async function handleDelete(row: AiMusicApi.Music) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -41,7 +41,7 @@ async function handleDelete(row: AiMusicApi.MusicVO) {
   }
 }
 /** 修改是否发布 */
-const handleUpdatePublicStatusChange = async (row: AiMusicApi.MusicVO) => {
+const handleUpdatePublicStatusChange = async (row: AiMusicApi.Music) => {
   try {
     // 修改状态的二次确认
     const text = row.publicStatus ? '公开' : '私有';
@@ -82,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiMusicApi.MusicVO>,
+  } as VxeTableGridOptions<AiMusicApi.Music>,
 });
 onMounted(async () => {
   // 获得下拉数据

@@ -23,7 +23,7 @@ const props = defineProps({
     required: true,
   },
 });
-const detail = ref<AiImageApi.ImageVO>({} as AiImageApi.ImageVO);
+const detail = ref<AiImageApi.Image>({} as AiImageApi.Image);
 
 /**  获取图片详情  */
 async function getImageDetail(id: number) {

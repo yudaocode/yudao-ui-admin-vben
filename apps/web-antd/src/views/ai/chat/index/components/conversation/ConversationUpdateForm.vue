@@ -17,7 +17,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<AiChatConversationApi.ChatConversationVO>();
+const formData = ref<AiChatConversationApi.ChatConversation>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -41,7 +41,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as AiChatConversationApi.ChatConversationVO;
+      (await formApi.getValues()) as AiChatConversationApi.ChatConversation;
     try {
       await updateChatConversationMy(data);
 
@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiChatConversationApi.ChatConversationVO>();
+    const data = modalApi.getData<AiChatConversationApi.ChatConversation>();
     if (!data || !data.id) {
       return;
     }

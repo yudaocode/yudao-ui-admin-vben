@@ -16,7 +16,7 @@ import { AiImageStatusEnum } from '#/utils';
 
 const props = defineProps({
   detail: {
-    type: Object as PropType<AiImageApi.ImageVO>,
+    type: Object as PropType<AiImageApi.Image>,
     default: () => ({}),
   },
 });
@@ -25,13 +25,13 @@ const emits = defineEmits(['onBtnClick', 'onMjBtnClick']);
 const cardImageRef = ref<any>(); // 卡片 image ref
 
 /** 处理点击事件  */
-async function handleButtonClick(type: string, detail: AiImageApi.ImageVO) {
+async function handleButtonClick(type: string, detail: AiImageApi.Image) {
   emits('onBtnClick', type, detail);
 }
 
 /** 处理 Midjourney 按钮点击事件  */
 async function handleMidjourneyBtnClick(
-  button: AiImageApi.ImageMidjourneyButtonsVO,
+  button: AiImageApi.ImageMidjourneyButtons,
 ) {
   // 确认窗体
   await confirm(`确认操作 "${button.label} ${button.emoji}" ?`);

@@ -15,7 +15,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<AiModelModelApi.ModelVO>();
+const formData = ref<AiModelModelApi.Model>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['模型配置'])
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as AiModelModelApi.ModelVO;
+    const data = (await formApi.getValues()) as AiModelModelApi.Model;
     try {
       await (formData.value?.id ? updateModel(data) : createModel(data));
       // 关闭并提示
@@ -60,7 +60,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiModelModelApi.ModelVO>();
+    const data = modalApi.getData<AiModelModelApi.Model>();
     if (!data || !data.id) {
       return;
     }

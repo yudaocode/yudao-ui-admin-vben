@@ -24,7 +24,7 @@ function stopStream() {
 /** 执行写作 */
 const rightRef = ref<InstanceType<typeof Right>>();
 
-function submit(data: Partial<AiWriteApi.WriteVO>) {
+function submit(data: Partial<AiWriteApi.Write>) {
   abortController.value = new AbortController();
   writeResult.value = '';
   isWriting.value = true;

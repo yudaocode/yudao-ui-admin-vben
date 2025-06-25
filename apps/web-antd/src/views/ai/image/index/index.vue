@@ -44,7 +44,7 @@ const platformOptions = [
   },
 ];
 
-const models = ref<AiModelModelApi.ModelVO[]>([]); // 模型列表
+const models = ref<AiModelModelApi.Model[]>([]); // 模型列表
 
 /** 绘画 start  */
 const handleDrawStart = async () => {};
@@ -55,7 +55,7 @@ const handleDrawComplete = async () => {
 };
 
 /** 重新生成：将画图详情填充到对应平台 */
-const handleRegeneration = async (image: AiImageApi.ImageVO) => {
+const handleRegeneration = async (image: AiImageApi.Image) => {
   // 切换平台
   selectPlatform.value = image.platform;
   // 根据不同平台填充 image

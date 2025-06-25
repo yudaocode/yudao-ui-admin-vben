@@ -31,7 +31,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiMindmapApi.MindMapVO) {
+async function handleDelete(row: AiMindmapApi.MindMap) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -73,9 +73,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiMindmapApi.MindMapVO>,
+  } as VxeTableGridOptions<AiMindmapApi.MindMap>,
 });
-async function openPreview(row: AiMindmapApi.MindMapVO) {
+async function openPreview(row: AiMindmapApi.MindMap) {
   previewVisible.value = false;
   drawerApi.open();
   await nextTick();

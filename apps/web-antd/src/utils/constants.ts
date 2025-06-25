@@ -30,12 +30,12 @@ export const AiModelTypeEnum = {
   EMBEDDING: 5, // 向量
   RERANK: 6, // 重排
 };
-export interface ImageModelVO {
+export interface ImageModel {
   key: string;
   name: string;
   image?: string;
 }
-export const OtherPlatformEnum: ImageModelVO[] = [
+export const OtherPlatformEnum: ImageModel[] = [
   {
     key: AiPlatformEnum.TONG_YI,
     name: '通义万相',
@@ -98,7 +98,7 @@ export const ImageHotEnglishWords = [
   'The Great Wall of China',
 ]; // 图片热词（英文）
 
-export const StableDiffusionSamplers: ImageModelVO[] = [
+export const StableDiffusionSamplers: ImageModel[] = [
   {
     key: 'DDIM',
     name: 'DDIM',
@@ -141,7 +141,7 @@ export const StableDiffusionSamplers: ImageModelVO[] = [
   },
 ];
 
-export const StableDiffusionStylePresets: ImageModelVO[] = [
+export const StableDiffusionStylePresets: ImageModel[] = [
   {
     key: '3d-model',
     name: '3d-model',
@@ -213,7 +213,7 @@ export const StableDiffusionStylePresets: ImageModelVO[] = [
   },
 ];
 
-export const StableDiffusionClipGuidancePresets: ImageModelVO[] = [
+export const StableDiffusionClipGuidancePresets: ImageModel[] = [
   {
     key: 'NONE',
     name: 'NONE',
@@ -330,14 +330,14 @@ export const InfraApiErrorLogProcessStatusEnum = {
   DONE: 1, // 已处理
   IGNORE: 2, // 已忽略
 };
-export interface ImageSizeVO {
+export interface ImageSize {
   key: string;
   name?: string;
   style: string;
   width: string;
   height: string;
 }
-export const Dall3SizeList: ImageSizeVO[] = [
+export const Dall3SizeList: ImageSize[] = [
   {
     key: '1024x1024',
     name: '1:1',
@@ -361,7 +361,7 @@ export const Dall3SizeList: ImageSizeVO[] = [
   },
 ];
 
-export const Dall3Models: ImageModelVO[] = [
+export const Dall3Models: ImageModel[] = [
   {
     key: 'dall-e-3',
     name: 'DALL·E 3',
@@ -374,7 +374,7 @@ export const Dall3Models: ImageModelVO[] = [
   },
 ];
 
-export const Dall3StyleList: ImageModelVO[] = [
+export const Dall3StyleList: ImageModel[] = [
   {
     key: 'vivid',
     name: '清晰',
@@ -386,7 +386,7 @@ export const Dall3StyleList: ImageModelVO[] = [
     image: `/static/imgs/ai/ziran.jpg`,
   },
 ];
-export const MidjourneyModels: ImageModelVO[] = [
+export const MidjourneyModels: ImageModel[] = [
   {
     key: 'midjourney',
     name: 'MJ',
@@ -428,7 +428,7 @@ export const NijiVersionList = [
   },
 ];
 
-export const MidjourneySizeList: ImageSizeVO[] = [
+export const MidjourneySizeList: ImageSize[] = [
   {
     key: '1:1',
     width: '1',
