@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@form-create/designer": "^3.2.6",
-    "@form-create/element-ui": "^3.2.11",
+    "@form-create/element-ui": "^3.2.26",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
