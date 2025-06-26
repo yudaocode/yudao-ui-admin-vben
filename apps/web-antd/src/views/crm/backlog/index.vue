@@ -93,12 +93,13 @@ onMounted(async () => {
       <Card class="w-1/5">
         <List item-layout="horizontal" :data-source="leftSides">
           <template #renderItem="{ item }">
-            <List.Item>
+            <List.Item
+              @click="sideClick(item)"
+              class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
               <List.Item.Meta>
                 <template #title>
-                  <a @click="sideClick(item)">
-                    {{ item.name }}
-                  </a>
+                  {{ item.name }}
                 </template>
               </List.Item.Meta>
               <template #extra>
