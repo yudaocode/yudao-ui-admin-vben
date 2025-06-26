@@ -91,13 +91,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '参团时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '结束时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -155,13 +155,13 @@ export function useUserGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '参团时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '结束时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

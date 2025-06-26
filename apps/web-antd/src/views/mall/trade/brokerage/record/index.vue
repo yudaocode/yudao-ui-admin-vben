@@ -4,8 +4,6 @@ import type { MallBrokerageRecordApi } from '#/api/mall/trade/brokerage/record';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Avatar } from 'ant-design-vue';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';
 
@@ -54,10 +52,6 @@ const [Grid] = useVbenVxeGrid({
       />
     </template>
 
-    <Grid table-title="分销返佣记录">
-      <template #userAvatar="{ row }">
-        <Avatar :src="row.userAvatar" />
-      </template>
-    </Grid>
+    <Grid table-title="分销返佣记录" />
   </Page>
 </template>
