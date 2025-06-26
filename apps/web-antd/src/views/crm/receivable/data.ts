@@ -78,7 +78,7 @@ export function useFormSchema(): VbenFormSchema[] {
               options: contracts.map((item) => ({
                 label: item.name,
                 value: item.id,
-                disabled: item.auditStatus === 20,
+                disabled: item.auditStatus !== 20,
               })),
               placeholder: '请选择合同',
             } as any;
