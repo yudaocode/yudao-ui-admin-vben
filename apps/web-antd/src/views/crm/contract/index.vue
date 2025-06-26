@@ -72,13 +72,13 @@ async function handleDelete(row: CrmContractApi.Contract) {
 /** 提交审核 */
 async function handleSubmit(row: CrmContractApi.Contract) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.submitting', [row.name]),
+    content: '提交审核中...',
     key: 'action_key_msg',
   });
   try {
     await submitContract(row.id as number);
     message.success({
-      content: $t('ui.actionMessage.submitSuccess', [row.name]),
+      content: '提交审核成功',
       key: 'action_key_msg',
     });
     onRefresh();

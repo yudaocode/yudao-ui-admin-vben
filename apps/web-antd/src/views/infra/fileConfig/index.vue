@@ -51,7 +51,7 @@ async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id as number);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    message.success($t('ui.actionMessage.updateSuccess', [row.name]));
     onRefresh();
   } finally {
     hideLoading();

@@ -18,7 +18,7 @@ const props = defineProps({
     required: true,
   },
   roleList: {
-    type: Array as PropType<AiModelChatRoleApi.ChatRoleVO[]>,
+    type: Array as PropType<AiModelChatRoleApi.ChatRole[]>,
     required: true,
   },
   showMore: {

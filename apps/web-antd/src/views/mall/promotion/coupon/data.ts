@@ -89,13 +89,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '领取时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'useTime',
       title: '使用时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

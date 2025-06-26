@@ -24,7 +24,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiImageApi.ImageVO) {
+async function handleDelete(row: AiImageApi.Image) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -41,7 +41,7 @@ async function handleDelete(row: AiImageApi.ImageVO) {
   }
 }
 /** 修改是否发布 */
-const handleUpdatePublicStatusChange = async (row: AiImageApi.ImageVO) => {
+const handleUpdatePublicStatusChange = async (row: AiImageApi.Image) => {
   try {
     // 修改状态的二次确认
     const text = row.publicStatus ? '公开' : '私有';
@@ -82,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiImageApi.ImageVO>,
+  } as VxeTableGridOptions<AiImageApi.Image>,
 });
 onMounted(async () => {
   // 获得下拉数据

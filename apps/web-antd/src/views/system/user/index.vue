@@ -274,7 +274,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   icon: ACTION_ICON.DELETE,
                   auth: ['system:user:delete'],
                   popConfirm: {
-                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    title: $t('ui.actionMessage.deleteConfirm', [row.username]),
                     confirm: handleDelete.bind(null, row),
                   },
                 },

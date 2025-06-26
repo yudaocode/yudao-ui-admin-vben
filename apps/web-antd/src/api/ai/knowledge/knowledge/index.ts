@@ -3,7 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiKnowledgeKnowledgeApi {
-  export interface KnowledgeVO {
+  export interface Knowledge {
     id: number; // 编号
     name: string; // 知识库名称
     description: string; // 知识库描述
@@ -15,7 +15,7 @@ export namespace AiKnowledgeKnowledgeApi {
 
 // 查询知识库分页
 export function getKnowledgePage(params: PageParam) {
-  return requestClient.get<PageResult<AiKnowledgeKnowledgeApi.KnowledgeVO>>(
+  return requestClient.get<PageResult<AiKnowledgeKnowledgeApi.Knowledge>>(
     '/ai/knowledge/page',
     { params },
   );
@@ -23,17 +23,17 @@ export function getKnowledgePage(params: PageParam) {
 
 // 查询知识库详情
 export function getKnowledge(id: number) {
-  return requestClient.get<AiKnowledgeKnowledgeApi.KnowledgeVO>(
+  return requestClient.get<AiKnowledgeKnowledgeApi.Knowledge>(
     `/ai/knowledge/get?id=${id}`,
   );
 }
 // 新增知识库
-export function createKnowledge(data: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+export function createKnowledge(data: AiKnowledgeKnowledgeApi.Knowledge) {
   return requestClient.post('/ai/knowledge/create', data);
 }
 
 // 修改知识库
-export function updateKnowledge(data: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+export function updateKnowledge(data: AiKnowledgeKnowledgeApi.Knowledge) {
   return requestClient.put('/ai/knowledge/update', data);
 }
 
@@ -44,7 +44,7 @@ export function deleteKnowledge(id: number) {
 
 // 获取知识库简单列表
 export function getSimpleKnowledgeList() {
-  return requestClient.get<AiKnowledgeKnowledgeApi.KnowledgeVO[]>(
+  return requestClient.get<AiKnowledgeKnowledgeApi.Knowledge[]>(
     '/ai/knowledge/simple-list',
   );
 }

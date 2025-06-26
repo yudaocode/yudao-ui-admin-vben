@@ -3,7 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiModelChatRoleApi {
-  export interface ChatRoleVO {
+  export interface ChatRole {
     id: number; // 角色编号
     modelId: number; // 模型编号
     name: string; // 角色名称
@@ -19,8 +19,8 @@ export namespace AiModelChatRoleApi {
     toolIds?: number[]; // 引用的工具 ID 列表
   }
 
-  // AI 聊天角色 分页请求 vo
-  export interface ChatRolePageReqVO {
+  // AI 聊天角色 分页请求
+  export interface ChatRolePageReq {
     name?: string; // 角色名称
     category?: string; // 角色类别
     publicStatus: boolean; // 是否公开
@@ -31,7 +31,7 @@ export namespace AiModelChatRoleApi {
 
 // 查询聊天角色分页
 export function getChatRolePage(params: PageParam) {
-  return requestClient.get<PageResult<AiModelChatRoleApi.ChatRoleVO>>(
+  return requestClient.get<PageResult<AiModelChatRoleApi.ChatRole>>(
     '/ai/chat-role/page',
     { params },
   );
@@ -39,17 +39,17 @@ export function getChatRolePage(params: PageParam) {
 
 // 查询聊天角色详情
 export function getChatRole(id: number) {
-  return requestClient.get<AiModelChatRoleApi.ChatRoleVO>(
+  return requestClient.get<AiModelChatRoleApi.ChatRole>(
     `/ai/chat-role/get?id=${id}`,
   );
 }
 // 新增聊天角色
-export function createChatRole(data: AiModelChatRoleApi.ChatRoleVO) {
+export function createChatRole(data: AiModelChatRoleApi.ChatRole) {
   return requestClient.post('/ai/chat-role/create', data);
 }
 
 // 修改聊天角色
-export function updateChatRole(data: AiModelChatRoleApi.ChatRoleVO) {
+export function updateChatRole(data: AiModelChatRoleApi.ChatRole) {
   return requestClient.put('/ai/chat-role/update', data);
 }
 
@@ -60,7 +60,7 @@ export function deleteChatRole(id: number) {
 
 // ======= chat 聊天
 // 获取 my role
-export function getMyPage(params: AiModelChatRoleApi.ChatRolePageReqVO) {
+export function getMyPage(params: AiModelChatRoleApi.ChatRolePageReq) {
   return requestClient.get('/ai/chat-role/my-page', { params });
 }
 
@@ -70,12 +70,12 @@ export function getCategoryList() {
 }
 
 // 创建角色
-export function createMy(data: AiModelChatRoleApi.ChatRoleVO) {
+export function createMy(data: AiModelChatRoleApi.ChatRole) {
   return requestClient.post('/ai/chat-role/create-my', data);
 }
 
 // 更新角色
-export function updateMy(data: AiModelChatRoleApi.ChatRoleVO) {
+export function updateMy(data: AiModelChatRoleApi.ChatRole) {
   return requestClient.put('/ai/chat-role/update', data);
 }
 

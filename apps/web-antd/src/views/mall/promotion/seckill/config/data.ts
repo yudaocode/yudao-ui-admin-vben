@@ -100,21 +100,22 @@ export function useGridColumns<T = MallSeckillConfigApi.SeckillConfig>(
     {
       title: '秒杀时段名称',
       field: 'name',
-      width: 200,
+      minWidth: 200,
     },
     {
       title: '开始时间点',
       field: 'startTime',
-      width: 120,
+      minWidth: 120,
     },
     {
       title: '结束时间点',
       field: 'endTime',
-      width: 120,
+      minWidth: 120,
     },
     {
       title: '秒杀轮播图',
       field: 'sliderPicUrls',
+      minWidth: 100,
       cellRender: {
         name: 'CellImages',
       },
@@ -122,7 +123,7 @@ export function useGridColumns<T = MallSeckillConfigApi.SeckillConfig>(
     {
       title: '活动状态',
       field: 'status',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
@@ -137,7 +138,7 @@ export function useGridColumns<T = MallSeckillConfigApi.SeckillConfig>(
     {
       title: '创建时间',
       field: 'createTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

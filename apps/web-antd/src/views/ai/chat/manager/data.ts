@@ -46,7 +46,7 @@ export function useGridColumnsConversation(): VxeTableGridOptions['columns'] {
     },
     {
       title: '用户',
-      width: 180,
+      minWidth: 180,
       slots: { default: 'userId' },
     },
     {
@@ -141,7 +141,7 @@ export function useGridColumnsMessage(): VxeTableGridOptions['columns'] {
     },
     {
       title: '用户',
-      width: 180,
+      minWidth: 180,
       slots: { default: 'userId' },
     },
     {

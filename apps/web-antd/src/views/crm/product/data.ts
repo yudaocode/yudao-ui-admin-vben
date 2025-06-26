@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -10,6 +11,7 @@ import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       component: 'Input',
@@ -31,9 +33,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       rules: 'required',
       componentProps: {
-        api: getSimpleUserList,
-        fieldNames: { label: 'nickname', value: 'id' },
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
+      defaultValue: userStore.userInfo?.id,
     },
     {
       component: 'Input',
@@ -124,15 +130,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '产品名称',
+      minWidth: 240,
       slots: { default: 'name' },
     },
     {
       field: 'categoryName',
       title: '产品类型',
+      minWidth: 120,
     },
     {
       field: 'unit',
       title: '产品单位',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
@@ -141,15 +150,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'no',
       title: '产品编码',
+      minWidth: 120,
     },
     {
       field: 'price',
       title: '价格（元）',
       formatter: 'formatAmount2',
+      minWidth: 120,
     },
     {
       field: 'description',
       title: '产品描述',
+      minWidth: 200,
     },
     {
       field: 'status',
@@ -158,24 +170,29 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_PRODUCT_STATUS },
       },
+      minWidth: 120,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
+      minWidth: 120,
     },
     {
       field: 'updateTime',
       title: '更新时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'creatorName',
       title: '创建人',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       title: '操作',

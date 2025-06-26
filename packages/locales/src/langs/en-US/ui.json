@@ -32,7 +32,9 @@
     "importSuccess": "Import succeeded",
     "importFail": "Import failed",
     "downloadTemplateFail": "Download template failed",
-    "updating": "Updating {0}..."
+    "updating": "Updating {0}...",
+    "updateSuccess": "Update {0} successfully",
+    "updateFailed": "Update {0} failed"
   },
   "placeholder": {
     "input": "Please enter",

@@ -29,12 +29,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: AiModelToolApi.ToolVO) {
+function handleEdit(row: AiModelToolApi.Tool) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 */
-async function handleDelete(row: AiModelToolApi.ToolVO) {
+async function handleDelete(row: AiModelToolApi.Tool) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -77,7 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiModelToolApi.ToolVO>,
+  } as VxeTableGridOptions<AiModelToolApi.Tool>,
 });
 </script>
 

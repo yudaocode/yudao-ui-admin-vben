@@ -45,7 +45,15 @@ function onRefresh() {
 
 /** 创建合同 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi
+    .setData(
+      props.bizType === BizTypeEnum.CRM_CUSTOMER
+        ? {
+            customerId: props.bizId,
+          }
+        : { businessId: props.bizId },
+    )
+    .open();
 }
 
 /** 查看合同详情 */

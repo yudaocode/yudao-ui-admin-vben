@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { erpPriceMultiply } from '@vben/utils';
 
+import { z } from '#/adapter/form';
 import { getBusinessStatusTypeSimpleList } from '#/api/crm/business/status';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       fieldName: 'id',
@@ -35,6 +38,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
+      defaultValue: userStore.userInfo?.id,
       rules: 'required',
     },
     {
@@ -50,7 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['id'],
-        disabled: (values) => !values.customerId,
+        disabled: (values) => values.customerDefault,
       },
       rules: 'required',
     },
@@ -103,8 +107,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        precision: 2,
       },
-      rules: 'required',
+      rules: z.number().min(0).optional().default(0),
     },
     {
       fieldName: 'discountPercent',
@@ -114,15 +119,19 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
       },
-      rules: 'required',
+      rules: z.number().min(0).max(100).optional().default(0),
     },
     {
       fieldName: 'totalPrice',
       label: '折扣后金额',
       component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['totalProductPrice', 'discountPercent'],
-        disabled: () => true,
         trigger(values, form) {
           const discountPrice =
             erpPriceMultiply(
@@ -157,69 +166,83 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'name',
       title: '商机名称',
       fixed: 'left',
+      minWidth: 240,
       slots: { default: 'name' },
     },
     {
       field: 'customerName',
       title: '客户名称',
       fixed: 'left',
+      minWidth: 240,
       slots: { default: 'customerName' },
     },
     {
       field: 'totalPrice',
       title: '商机金额（元）',
+      minWidth: 140,
       formatter: 'formatAmount2',
     },
     {
       field: 'dealTime',
       title: '预计成交日期',
       formatter: 'formatDate',
+      minWidth: 180,
     },
     {
       field: 'remark',
       title: '备注',
+      minWidth: 200,
     },
     {
       field: 'contactNextTime',
       title: '下次联系时间',
       formatter: 'formatDate',
+      minWidth: 180,
     },
     {
       field: 'ownerUserName',
       title: '负责人',
+      minWidth: 120,
     },
     {
       field: 'ownerUserDeptName',
       title: '所属部门',
+      minWidth: 120,
     },
     {
       field: 'contactLastTime',
       title: '最后跟进时间',
       formatter: 'formatDateTime',
-    },
-    {
-      field: 'updateTime',
-      title: '更新时间',
-      formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'creatorName',
       title: '创建人',
+      minWidth: 120,
+    },
+    {
+      field: 'updateTime',
+      title: '更新时间',
+      formatter: 'formatDateTime',
+      minWidth: 180,
     },
     {
       field: 'statusTypeName',
       title: '商机状态组',
       fixed: 'right',
+      minWidth: 120,
     },
     {
       field: 'statusName',
       title: '商机阶段',
       fixed: 'right',
+      minWidth: 120,
     },
     {
       title: '操作',

@@ -42,12 +42,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
     },
     {
-      field: 'createTime',
-      title: '发起时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    {
       field: 'name',
       title: '当前任务',
       minWidth: 180,

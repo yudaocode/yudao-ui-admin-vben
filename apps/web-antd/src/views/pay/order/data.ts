@@ -1,6 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
+import { floatToFixed2, formatDateTime } from '@vben/utils';
+
+import { Tag } from 'ant-design-vue';
+
+import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -131,6 +139,116 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 100,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'merchantOrderId',
+      label: '商户单号',
+    },
+    {
+      field: 'no',
+      label: '支付单号',
+    },
+    {
+      field: 'appId',
+      label: '应用编号',
+    },
+    {
+      field: 'appName',
+      label: '应用名称',
+    },
+    {
+      field: 'status',
+      label: '支付状态',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.PAY_ORDER_STATUS,
+          value: data?.status,
+        }),
+    },
+    {
+      field: 'price',
+      label: '支付金额',
+      content: (data) => `￥${floatToFixed2(data?.price)}`,
+    },
+    {
+      field: 'channelFeePrice',
+      label: '手续费',
+      content: (data) => `￥${floatToFixed2(data?.channelFeePrice)}`,
+    },
+    {
+      field: 'channelFeeRate',
+      label: '手续费比例',
+      content: (data) => `${floatToFixed2(data?.channelFeeRate)}%`,
+    },
+    {
+      field: 'successTime',
+      label: '支付时间',
+      content: (data) => formatDateTime(data?.successTime) as string,
+    },
+    {
+      field: 'expireTime',
+      label: '失效时间',
+      content: (data) => formatDateTime(data?.expireTime) as string,
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+    {
+      field: 'updateTime',
+      label: '更新时间',
+      content: (data) => formatDateTime(data?.updateTime) as string,
+    },
+    {
+      field: 'subject',
+      label: '商品标题',
+    },
+    {
+      field: 'body',
+      label: '商品描述',
+    },
+    {
+      field: 'channelCode',
+      label: '支付渠道',
+      content: (data) =>
+        h(DictTag, {
+          type: DICT_TYPE.PAY_CHANNEL_CODE,
+          value: data?.channelCode,
+        }),
+    },
+    {
+      field: 'userIp',
+      label: '支付 IP',
+    },
+    {
+      field: 'channelOrderNo',
+      label: '渠道单号',
+      content: (data) =>
+        h(Tag, { color: 'green' }, () => data?.channelOrderNo || ''),
+    },
+    {
+      field: 'channelUserId',
+      label: '渠道用户',
+    },
+    {
+      field: 'refundPrice',
+      label: '退款金额',
+      content: (data) => `￥${floatToFixed2(data?.refundPrice)}`,
+    },
+    {
+      field: 'notifyUrl',
+      label: '通知 URL',
+    },
+    {
+      field: 'channelNotifyData',
+      label: '支付通道异步回调内容',
     },
   ];
 }

@@ -89,6 +89,12 @@ export function useGridColumns(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      field: 'id',
+      title: '流程编号',
+      minWidth: 320,
+      fixed: 'left',
+    },
+    {
       field: 'name',
       title: '流程名称',
       minWidth: 200,
@@ -166,12 +172,6 @@ export function useGridColumns(
           );
         },
       },
-    },
-
-    {
-      field: 'id',
-      title: '流程编号',
-      minWidth: 320,
     },
     {
       title: '操作',

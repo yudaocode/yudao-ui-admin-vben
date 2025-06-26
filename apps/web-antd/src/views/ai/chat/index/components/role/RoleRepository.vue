@@ -36,12 +36,12 @@ const myRoleParams = reactive({
   pageNo: 1,
   pageSize: 50,
 });
-const myRoleList = ref<AiModelChatRoleApi.ChatRoleVO[]>([]); // my 分页大小
+const myRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // my 分页大小
 const publicRoleParams = reactive({
   pageNo: 1,
   pageSize: 50,
 });
-const publicRoleList = ref<AiModelChatRoleApi.ChatRoleVO[]>([]); // public 分页大小
+const publicRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // public 分页大小
 const activeCategory = ref<string>('全部'); // 选择中的分类
 const categoryList = ref<string[]>([]); // 角色分类类别
 
@@ -55,7 +55,7 @@ async function handleTabsClick(tab: any) {
 
 /** 获取 my role 我的角色 */
 async function getMyRole(append?: boolean) {
-  const params: AiModelChatRoleApi.ChatRolePageReqVO = {
+  const params: AiModelChatRoleApi.ChatRolePageReq = {
     ...myRoleParams,
     name: search.value,
     publicStatus: false,
@@ -70,7 +70,7 @@ async function getMyRole(append?: boolean) {
 
 /** 获取 public role 公共角色 */
 async function getPublicRole(append?: boolean) {
-  const params: AiModelChatRoleApi.ChatRolePageReqVO = {
+  const params: AiModelChatRoleApi.ChatRolePageReq = {
     ...publicRoleParams,
     category: activeCategory.value === '全部' ? '' : activeCategory.value,
     name: search.value,
@@ -148,9 +148,9 @@ async function handlerCardPage(type: string) {
 /** 选择 card 角色：新建聊天对话 */
 async function handlerCardUse(role: any) {
   // 1. 创建对话
-  const data: AiChatConversationApi.ChatConversationVO = {
+  const data: AiChatConversationApi.ChatConversation = {
     roleId: role.id,
-  } as unknown as AiChatConversationApi.ChatConversationVO;
+  } as unknown as AiChatConversationApi.ChatConversation;
   const conversationId = await createChatConversationMy(data);
 
   // 2. 跳转页面

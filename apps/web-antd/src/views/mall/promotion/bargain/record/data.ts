@@ -102,7 +102,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'endTime',
       title: '结束时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

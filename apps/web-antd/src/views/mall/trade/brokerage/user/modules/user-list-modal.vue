@@ -75,7 +75,7 @@ function useColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'avatar',
       title: '头像',
-      width: 70,
+      minWidth: 70,
       cellRender: {
         name: 'CellImage',
         props: {

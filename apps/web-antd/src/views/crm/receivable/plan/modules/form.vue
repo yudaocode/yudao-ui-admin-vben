@@ -66,6 +66,8 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<CrmReceivablePlanApi.Plan>();
     if (!data || !data.id) {
+      // 设置到 values
+      await formApi.setValues(data);
       return;
     }
     modalApi.lock();

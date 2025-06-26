@@ -197,6 +197,7 @@ const buttonPropsMap = new Map<string, any>();
 function getButtonProps(action: ActionItem) {
   const key = JSON.stringify({
     type: action.type,
+    danger: action.danger || false,
     disabled: action.disabled,
     loading: action.loading,
     size: action.size,
@@ -207,7 +208,8 @@ function getButtonProps(action: ActionItem) {
   }
 
   const res = {
-    type: action.type || 'primary',
+    type: action.type || 'link',
+    danger: action.danger || false,
     disabled: action.disabled,
     loading: action.loading,
     size: action.size,

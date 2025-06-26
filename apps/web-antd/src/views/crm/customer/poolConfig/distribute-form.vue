@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 
 import { message } from 'ant-design-vue';
 
@@ -9,6 +10,8 @@ import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
+
+const userStore = useUserStore();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -39,6 +42,7 @@ const [Form, formApi] = useVbenForm({
           value: 'id',
         },
       },
+      defaultValue: userStore.userInfo?.id,
       rules: 'required',
     },
   ],

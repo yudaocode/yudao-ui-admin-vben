@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { erpPriceMultiply, floatToFixed2 } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -12,6 +13,7 @@ import { DICT_TYPE } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       fieldName: 'id',
@@ -27,7 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '保存时自动生成',
-        disabled: () => true,
+        disabled: true,
       },
     },
     {
@@ -50,6 +52,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
+      defaultValue: userStore.userInfo?.id,
       rules: 'required',
     },
     {
@@ -58,21 +61,44 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },
     {
       fieldName: 'businessId',
       label: '商机名称',
-      component: 'ApiSelect',
+      component: 'Select',
       componentProps: {
-        api: getSimpleBusinessList,
-        labelField: 'name',
-        valueField: 'id',
+        options: [],
         placeholder: '请选择商机',
+      },
+      dependencies: {
+        triggerFields: ['customerId'],
+        disabled: (values) => !values.customerId,
+        async componentProps(values) {
+          if (!values.customerId) {
+            return {
+              options: [],
+              placeholder: '请选择客户',
+            };
+          }
+          const res = await getSimpleBusinessList();
+          const list = res.filter(
+            (item) => item.customerId === values.customerId,
+          );
+          return {
+            options: list.map((item) => ({
+              label: item.name,
+              value: item.id,
+            })),
+            placeholder: '请选择商机',
+          };
+        },
       },
     },
     {
@@ -117,16 +143,38 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
+      defaultValue: userStore.userInfo?.id,
     },
     {
       fieldName: 'signContactId',
       label: '客户签约人',
-      component: 'ApiSelect',
+      component: 'Select',
       componentProps: {
-        api: getSimpleContactList,
-        labelField: 'name',
-        valueField: 'id',
+        options: [],
         placeholder: '请选择客户签约人',
+      },
+      dependencies: {
+        triggerFields: ['customerId'],
+        disabled: (values) => !values.customerId,
+        async componentProps(values) {
+          if (!values.customerId) {
+            return {
+              options: [],
+              placeholder: '请选择客户',
+            };
+          }
+          const res = await getSimpleContactList();
+          const list = res.filter(
+            (item) => item.customerId === values.customerId,
+          );
+          return {
+            options: list.map((item) => ({
+              label: item.name,
+              value: item.id,
+            })),
+            placeholder: '请选择客户签约人',
+          };
+        },
       },
     },
     {
@@ -150,25 +198,31 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        precision: 2,
       },
+      rules: z.number().min(0).optional().default(0),
     },
     {
       fieldName: 'discountPercent',
       label: '整单折扣（%）',
       component: 'InputNumber',
-      rules: z.number().min(0).max(100).default(0),
       componentProps: {
         min: 0,
         precision: 2,
       },
+      rules: z.number().min(0).max(100).optional().default(0),
     },
     {
       fieldName: 'totalPrice',
       label: '折扣后金额',
       component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['totalProductPrice', 'discountPercent'],
-        disabled: () => true,
         trigger(values, form) {
           const discountPrice =
             erpPriceMultiply(
@@ -203,9 +257,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },
@@ -223,20 +279,20 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '合同名称',
       field: 'name',
-      minWidth: 150,
+      minWidth: 220,
       fixed: 'left',
       slots: { default: 'name' },
     },
     {
       title: '客户名称',
       field: 'customerName',
-      minWidth: 150,
+      minWidth: 240,
       slots: { default: 'customerName' },
     },
     {
       title: '商机名称',
       field: 'businessName',
-      minWidth: 150,
+      minWidth: 220,
       slots: { default: 'businessName' },
     },
     {

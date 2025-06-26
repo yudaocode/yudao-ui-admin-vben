@@ -29,7 +29,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiChatConversationApi.ChatConversationVO) {
+async function handleDelete(row: AiChatConversationApi.ChatConversation) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -72,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiChatConversationApi.ChatConversationVO>,
+  } as VxeTableGridOptions<AiChatConversationApi.ChatConversation>,
   separator: false,
 });
 onMounted(async () => {

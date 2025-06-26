@@ -17,7 +17,7 @@ import {
 
 import Tag from './Tag.vue';
 
-type TabType = AiWriteApi.WriteVO['type'];
+type TabType = AiWriteApi.Write['type'];
 
 defineProps<{
   isWriting: boolean;
@@ -26,7 +26,7 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'example', param: 'reply' | 'write'): void;
   (e: 'reset'): void;
-  (e: 'submit', params: Partial<AiWriteApi.WriteVO>): void;
+  (e: 'submit', params: Partial<AiWriteApi.Write>): void;
 }>();
 
 function omit(obj: Record<string, any>, keysToOmit: string[]) {
@@ -74,7 +74,7 @@ const [DefineLabel, ReuseLabel] = createReusableTemplate<{
   label: string;
 }>();
 
-const initData: AiWriteApi.WriteVO = {
+const initData: AiWriteApi.Write = {
   type: 1,
   prompt: '',
   originalContent: '',
@@ -84,10 +84,10 @@ const initData: AiWriteApi.WriteVO = {
   format: 1,
 };
 
-const formData = ref<AiWriteApi.WriteVO>({ ...initData });
+const formData = ref<AiWriteApi.Write>({ ...initData });
 
 /** 用来记录切换之前所填写的数据，切换的时候给赋值回来 */
-const recordFormData = {} as Record<AiWriteTypeEnum, AiWriteApi.WriteVO>;
+const recordFormData = {} as Record<AiWriteTypeEnum, AiWriteApi.Write>;
 /** 切换tab */
 function switchTab(value: TabType) {
   if (value !== selectedTab.value) {

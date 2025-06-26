@@ -3,7 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiKnowledgeDocumentApi {
-  export interface KnowledgeDocumentVO {
+  export interface KnowledgeDocument {
     id: number; // 编号
     knowledgeId: number; // 知识库编号
     name: string; // 文档名称
@@ -18,7 +18,7 @@ export namespace AiKnowledgeDocumentApi {
 // 查询知识库文档分页
 export function getKnowledgeDocumentPage(params: PageParam) {
   return requestClient.get<
-    PageResult<AiKnowledgeDocumentApi.KnowledgeDocumentVO>
+    PageResult<AiKnowledgeDocumentApi.KnowledgeDocument>
   >('/ai/knowledge/document/page', { params });
 }
 

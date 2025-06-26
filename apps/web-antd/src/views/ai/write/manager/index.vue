@@ -23,7 +23,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiWriteApi.AiWritePageReqVO) {
+async function handleDelete(row: AiWriteApi.AiWritePageReq) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -65,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiWriteApi.AiWritePageReqVO>,
+  } as VxeTableGridOptions<AiWriteApi.AiWritePageReq>,
 });
 onMounted(async () => {
   // 获得下拉数据

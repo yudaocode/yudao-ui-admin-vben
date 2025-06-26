@@ -102,7 +102,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '活动状态',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -111,23 +111,23 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'stock',
       title: '库存',
-      width: 80,
+      minWidth: 80,
     },
     {
       field: 'totalStock',
       title: '总库存',
-      width: 80,
+      minWidth: 80,
     },
     {
       field: 'redeemedQuantity',
       title: '已兑换数量',
-      width: 100,
+      minWidth: 100,
       slots: { default: 'redeemedQuantity' },
     },
     {
       field: 'createTime',
       title: '创建时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

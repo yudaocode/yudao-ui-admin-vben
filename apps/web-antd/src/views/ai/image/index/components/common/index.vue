@@ -17,8 +17,8 @@ import { AiPlatformEnum, ImageHotWords, OtherPlatformEnum } from '#/utils';
 // 接收父组件传入的模型列表
 const props = defineProps({
   models: {
-    type: Array<AiModelModelApi.ModelVO>,
-    default: () => [] as AiModelModelApi.ModelVO[],
+    type: Array<AiModelModelApi.Model>,
+    default: () => [] as AiModelModelApi.Model[],
   },
 });
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
@@ -31,7 +31,7 @@ const prompt = ref<string>(''); // 提示词
 const width = ref<number>(512); // 图片宽度
 const height = ref<number>(512); // 图片高度
 const otherPlatform = ref<string>(AiPlatformEnum.TONG_YI); // 平台
-const platformModels = ref<AiModelModelApi.ModelVO[]>([]); // 模型列表
+const platformModels = ref<AiModelModelApi.Model[]>([]); // 模型列表
 const modelId = ref<number>(); // 选中的模型
 
 /** 选择热词 */
@@ -64,7 +64,7 @@ async function handleGenerateImage() {
       width: width.value, // 图片宽度
       height: height.value, // 图片高度
       options: {},
-    } as unknown as AiImageApi.ImageDrawReqVO;
+    } as unknown as AiImageApi.ImageDrawReq;
     await drawImage(form);
   } finally {
     // 回调
@@ -75,7 +75,7 @@ async function handleGenerateImage() {
 }
 
 /** 填充值 */
-async function settingValues(detail: AiImageApi.ImageVO) {
+async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   width.value = detail.width;
   height.value = detail.height;
@@ -85,7 +85,7 @@ async function settingValues(detail: AiImageApi.ImageVO) {
 async function handlerPlatformChange(platform: any) {
   // 根据选择的平台筛选模型
   platformModels.value = props.models.filter(
-    (item: AiModelModelApi.ModelVO) => item.platform === platform,
+    (item: AiModelModelApi.Model) => item.platform === platform,
   );
   modelId.value =
     platformModels.value.length > 0 && platformModels.value[0]

@@ -49,7 +49,7 @@ function handleEdit(id: number) {
 }
 
 /** 删除 */
-async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocumentVO) {
+async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocument) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -74,7 +74,7 @@ const handleSegment = (id: number) => {
 };
 /** 修改是否发布 */
 const handleStatusChange = async (
-  row: AiKnowledgeDocumentApi.KnowledgeDocumentVO,
+  row: AiKnowledgeDocumentApi.KnowledgeDocument,
 ) => {
   try {
     // 修改状态的二次确认
@@ -120,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiKnowledgeDocumentApi.KnowledgeDocumentVO>,
+  } as VxeTableGridOptions<AiKnowledgeDocumentApi.KnowledgeDocument>,
 });
 /** 初始化 */
 onMounted(() => {

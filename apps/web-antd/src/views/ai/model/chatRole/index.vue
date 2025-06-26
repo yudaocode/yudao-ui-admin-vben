@@ -29,12 +29,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: AiModelChatRoleApi.ChatRoleVO) {
+function handleEdit(row: AiModelChatRoleApi.ChatRole) {
   formModalApi.setData({ formType: 'update', ...row }).open();
 }
 
 /** 删除 */
-async function handleDelete(row: AiModelChatRoleApi.ChatRoleVO) {
+async function handleDelete(row: AiModelChatRoleApi.ChatRole) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -77,7 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiModelChatRoleApi.ChatRoleVO>,
+  } as VxeTableGridOptions<AiModelChatRoleApi.ChatRole>,
 });
 </script>
 
