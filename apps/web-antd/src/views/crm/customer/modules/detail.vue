@@ -10,7 +10,13 @@ import { useTabs } from '@vben/hooks';
 
 import { Button, Card, message, Tabs } from 'ant-design-vue';
 
-import { getCustomer, updateCustomerDealStatus } from '#/api/crm/customer';
+import {
+  getCustomer,
+  lockCustomer,
+  putCustomerPool,
+  receiveCustomer,
+  updateCustomerDealStatus,
+} from '#/api/crm/customer';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
@@ -99,18 +105,45 @@ function handleTransfer() {
 }
 
 /** 锁定客户 */
-function handleLock() {
-  transferModalApi.setData({ id: customerId.value }).open();
-}
-
-/** 解锁客户 */
-function handleUnlock() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定锁定客户【${customer.value.name}】吗？`,
+    })
+      .then(async () => {
+        const res = await lockCustomer(customerId.value, lockStatus);
+        if (res) {
+          message.success(lockStatus ? '锁定客户成功' : '解锁客户成功');
+          resolve(true);
+        } else {
+          reject(new Error(lockStatus ? '锁定客户失败' : '解锁客户失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 领取客户 */
-function handleReceive() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handleReceive(): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定领取客户【${customer.value.name}】吗？`,
+    })
+      .then(async () => {
+        const res = await receiveCustomer([customerId.value]);
+        if (res) {
+          message.success('领取客户成功');
+          resolve(true);
+        } else {
+          reject(new Error('领取客户失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 分配客户 */
@@ -119,8 +152,24 @@ function handleDistributeForm() {
 }
 
 /** 客户放入公海 */
-function handlePutPool() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handlePutPool(): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定将客户【${customer.value.name}】放入公海吗？`,
+    })
+      .then(async () => {
+        const res = await putCustomerPool(customerId.value);
+        if (res) {
+          message.success('放入公海成功');
+          resolve(true);
+        } else {
+          reject(new Error('放入公海失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 更新成交状态操作 */
@@ -185,13 +234,13 @@ onMounted(() => {
         </Button>
         <Button
           v-if="customer.lockStatus && permissionListRef?.validateOwnerUser"
-          @click="handleUnlock"
+          @click="handleLock(false)"
         >
           解锁
         </Button>
         <Button
           v-if="!customer.lockStatus && permissionListRef?.validateOwnerUser"
-          @click="handleLock"
+          @click="handleLock(true)"
         >
           锁定
         </Button>
