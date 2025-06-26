@@ -495,6 +495,7 @@ onMounted(async () => {
     <Layout class="absolute left-0 top-0 m-4 h-full w-full flex-1">
       <!-- 左侧：对话列表 -->
       <ConversationList
+        class="!bg-card"
         :active-id="activeConversationId as any"
         ref="conversationListRef"
         @on-conversation-create="handleConversationCreateSuccess"
@@ -504,9 +505,9 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <Layout class="mx-4 bg-white">
+      <Layout class="bg-card mx-4">
         <Layout.Header
-          class="flex items-center justify-between !bg-gray-50 shadow-none"
+          class="!bg-card border-border flex items-center justify-between border-b"
         >
           <div class="text-lg font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
@@ -565,9 +566,9 @@ onMounted(async () => {
           </div>
         </Layout.Content>
 
-        <Layout.Footer class="m-0 flex flex-col !bg-white p-0">
+        <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
           <form
-            class="my-5 mb-5 mt-2 flex flex-col rounded-xl border border-gray-200 px-2 py-2.5"
+            class="border-border my-5 mb-5 mt-2 flex flex-col rounded-xl border px-2 py-2.5"
           >
             <textarea
               class="box-border h-24 resize-none overflow-auto border-none px-0 py-1 focus:outline-none"
