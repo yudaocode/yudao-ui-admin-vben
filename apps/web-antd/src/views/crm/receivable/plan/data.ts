@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
 import { floatToFixed2 } from '@vben/utils';
 
 import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
+import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       fieldName: 'customerId',
@@ -64,6 +67,24 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !values.id,
+      },
+      defaultValue: userStore.userInfo?.id,
+      rules: 'required',
+    },
+    {
       fieldName: 'price',
       label: '计划回款金额',
       component: 'InputNumber',
@@ -81,6 +102,9 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请选择计划回款日期',
+        showTime: false,
+        valueFormat: 'x',
+        format: 'YYYY-MM-DD',
       },
     },
     {
@@ -247,7 +271,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       field: 'actions',
-      width: 180,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },

@@ -5,7 +5,10 @@ import { useUserStore } from '@vben/stores';
 
 import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
-import { getReceivablePlanSimpleList } from '#/api/crm/receivable/plan';
+import {
+  getReceivablePlan,
+  getReceivablePlanSimpleList,
+} from '#/api/crm/receivable/plan';
 import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
@@ -25,7 +28,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'no',
       label: '回款编号',
       component: 'Input',
-      rules: 'required',
       componentProps: {
         placeholder: '保存时自动生成',
         disabled: true,
@@ -105,6 +107,12 @@ export function useFormSchema(): VbenFormSchema[] {
                 value: item.id,
               })),
               placeholder: '请选择回款期数',
+              onChange: async (value: any) => {
+                const plan = await getReceivablePlan(value);
+                values.returnTime = plan?.returnTime;
+                values.price = plan?.price;
+                values.returnType = plan?.returnType;
+              },
             } as any;
           }
         },

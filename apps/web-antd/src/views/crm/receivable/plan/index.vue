@@ -195,8 +195,6 @@ function onChangeSceneType(key: number | string) {
               auth: ['crm:receivable-plan:update'],
               onClick: handleEdit.bind(null, row),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: $t('common.delete'),
               type: 'link',

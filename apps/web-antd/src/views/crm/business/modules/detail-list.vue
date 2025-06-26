@@ -15,7 +15,10 @@ import {
   getBusinessPageByContact,
   getBusinessPageByCustomer,
 } from '#/api/crm/business';
-import { createContactBusinessList } from '#/api/crm/contact';
+import {
+  createContactBusinessList,
+  deleteContactBusinessList,
+} from '#/api/crm/contact';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
@@ -73,7 +76,7 @@ async function handleDeleteContactBusinessList() {
       content: `确定要将${checkedRows.value.map((item) => item.name).join(',')}解除关联吗？`,
     })
       .then(async () => {
-        const res = await createContactBusinessList({
+        const res = await deleteContactBusinessList({
           contactId: props.bizId,
           businessIds: checkedRows.value.map((item) => item.id),
         });
