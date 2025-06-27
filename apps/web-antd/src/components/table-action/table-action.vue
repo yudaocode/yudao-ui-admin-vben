@@ -244,28 +244,24 @@ function handleMenuClick(e: any) {
     action.onClick();
   }
 }
-
-/** 生成稳定的 key */
-function getActionKey(action: ActionItem, index: number) {
-  return `${action.label || ''}-${action.type || ''}-${index}`;
-}
 </script>
 
 <template>
   <div class="table-actions">
     <Space :size="spaceSize">
-      <template
-        v-for="(action, index) in getActions"
-        :key="getActionKey(action, index)"
-      >
+      <template v-for="(action, index) in getActions">
         <Popconfirm
           v-if="action.popConfirm"
           v-bind="getPopConfirmProps(action.popConfirm)"
+          :key="getActionKey(action, index)"
         >
           <template v-if="action.popConfirm.icon" #icon>
             <IconifyIcon :icon="action.popConfirm.icon" />
           </template>
-          <Tooltip v-bind="getTooltipProps(action.tooltip)">
+          <Tooltip
+            v-bind="getTooltipProps(action.tooltip)"
+            :key="getActionKey(action, index)"
+          >
             <Button v-bind="getButtonProps(action)">
               <template v-if="action.icon" #icon>
                 <IconifyIcon :icon="action.icon" />
@@ -274,7 +270,11 @@ function getActionKey(action: ActionItem, index: number) {
             </Button>
           </Tooltip>
         </Popconfirm>
-        <Tooltip v-else v-bind="getTooltipProps(action.tooltip)">
+        <Tooltip
+          v-else
+          v-bind="getTooltipProps(action.tooltip)"
+          :key="`tooltip-${getActionKey(action, index)}`"
+        >
           <Button v-bind="getButtonProps(action)" @click="action.onClick">
             <template v-if="action.icon" #icon>
               <IconifyIcon :icon="action.icon" />
