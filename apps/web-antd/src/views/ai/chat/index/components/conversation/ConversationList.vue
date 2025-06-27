@@ -305,7 +305,7 @@ onMounted(async () => {
 <template>
   <Layout.Sider
     width="280px"
-    class="!bg-primary-foreground conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
+    class="conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
     <!-- 左顶部：对话 -->
