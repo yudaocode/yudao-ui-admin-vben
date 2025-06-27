@@ -53,6 +53,13 @@ export function useFormSchema(): VbenFormSchema[] {
               value: item.id,
             })),
             placeholder: '请选择合同',
+            onChange: (value: number) => {
+              const contract = res.find((item) => item.id === value);
+              if (contract) {
+                values.price =
+                  contract.totalPrice - contract.totalReceivablePrice;
+              }
+            },
           };
         },
       },
@@ -106,6 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         format: 'YYYY-MM-DD',
       },
+      defaultValue: new Date(),
     },
     {
       fieldName: 'remindDays',
