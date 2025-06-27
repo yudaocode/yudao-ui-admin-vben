@@ -93,7 +93,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'used',
       title: '是否使用',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -107,7 +107,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

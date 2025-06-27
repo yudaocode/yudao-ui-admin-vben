@@ -45,7 +45,15 @@ function onRefresh() {
 
 /** 创建合同 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi
+    .setData(
+      props.bizType === BizTypeEnum.CRM_CUSTOMER
+        ? {
+            customerId: props.bizId,
+          }
+        : { businessId: props.bizId },
+    )
+    .open();
 }
 
 /** 查看合同详情 */
@@ -63,14 +71,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         query: async ({ page }, formValues) => {
           if (props.bizType === BizTypeEnum.CRM_CUSTOMER) {
             return await getContractPageByCustomer({
-              page: page.currentPage,
+              pageNo: page.currentPage,
               pageSize: page.pageSize,
               customerId: props.bizId,
               ...formValues,
             });
           } else if (props.bizType === BizTypeEnum.CRM_CONTACT) {
             return await getContractPageByBusiness({
-              page: page.currentPage,
+              pageNo: page.currentPage,
               pageSize: page.pageSize,
               businessId: props.bizId,
               ...formValues,

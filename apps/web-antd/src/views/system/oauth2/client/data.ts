@@ -116,7 +116,17 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入自动授权范围',
         mode: 'multiple',
-        // TODO @芋艿：根据权限，自动授权范围
+      },
+      dependencies: {
+        triggerFields: ['scopes'],
+        componentProps: (values) => ({
+          options: values.scopes
+            ? values.scopes.map((scope: string) => ({
+                label: scope,
+                value: scope,
+              }))
+            : [],
+        }),
       },
     },
     {

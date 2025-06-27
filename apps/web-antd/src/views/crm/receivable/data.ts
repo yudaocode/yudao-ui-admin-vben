@@ -1,14 +1,20 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { useUserStore } from '@vben/stores';
+
 import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
-import { getReceivablePlanSimpleList } from '#/api/crm/receivable/plan';
+import {
+  getReceivablePlan,
+  getReceivablePlanSimpleList,
+} from '#/api/crm/receivable/plan';
 import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       fieldName: 'id',
@@ -22,7 +28,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'no',
       label: '回款编号',
       component: 'Input',
-      rules: 'required',
       componentProps: {
         placeholder: '保存时自动生成',
         disabled: true,
@@ -34,11 +39,14 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: getSimpleUserList,
-        labelField: 'nickname',
-        valueField: 'id',
-        placeholder: '请选择客户',
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+        placeholder: '请选择负责人',
       },
+      defaultValue: userStore.userInfo?.id,
     },
     {
       fieldName: 'customerId',
@@ -46,9 +54,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },
@@ -68,7 +78,7 @@ export function useFormSchema(): VbenFormSchema[] {
               options: contracts.map((item) => ({
                 label: item.name,
                 value: item.id,
-                disabled: item.auditStatus === 20,
+                disabled: item.auditStatus !== 20,
               })),
               placeholder: '请选择合同',
             } as any;
@@ -97,6 +107,12 @@ export function useFormSchema(): VbenFormSchema[] {
                 value: item.id,
               })),
               placeholder: '请选择回款期数',
+              onChange: async (value: any) => {
+                const plan = await getReceivablePlan(value);
+                values.returnTime = plan?.returnTime;
+                values.price = plan?.price;
+                values.returnType = plan?.returnType;
+              },
             } as any;
           }
         },
@@ -159,9 +175,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
-        api: getCustomerSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        api: () => getCustomerSimpleList(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择客户',
       },
     },

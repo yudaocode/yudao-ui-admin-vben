@@ -3,8 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiMusicApi {
-  // AI 音乐 VO
-  export interface MusicVO {
+  // AI 音乐
+  export interface Music {
     id: number; // 编号
     userId: number; // 用户编号
     title: string; // 音乐名称
@@ -28,7 +28,7 @@ export namespace AiMusicApi {
 
 // 查询音乐分页
 export function getMusicPage(params: PageParam) {
-  return requestClient.get<PageResult<AiMusicApi.MusicVO>>(`/ai/music/page`, {
+  return requestClient.get<PageResult<AiMusicApi.Music>>(`/ai/music/page`, {
     params,
   });
 }

@@ -72,13 +72,13 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
 /** 提交审核 */
 async function handleSubmit(row: CrmReceivableApi.Receivable) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.submitting', [row.no]),
+    content: '提交审核中...',
     key: 'action_key_msg',
   });
   try {
     await submitReceivable(row.id as number);
     message.success({
-      content: $t('ui.actionMessage.submitSuccess', [row.no]),
+      content: '提交审核成功',
       key: 'action_key_msg',
     });
     onRefresh();
@@ -122,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getReceivablePage({
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             sceneType: sceneType.value,
             ...formValues,

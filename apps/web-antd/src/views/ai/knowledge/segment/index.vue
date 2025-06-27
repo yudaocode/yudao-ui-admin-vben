@@ -41,12 +41,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+function handleEdit(row: AiKnowledgeKnowledgeApi.Knowledge) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 */
-async function handleDelete(row: AiKnowledgeKnowledgeApi.KnowledgeVO) {
+async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -89,13 +89,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiKnowledgeKnowledgeApi.KnowledgeVO>,
+  } as VxeTableGridOptions<AiKnowledgeKnowledgeApi.Knowledge>,
 });
 
 /** 修改是否发布 */
-async function handleStatusChange(
-  row: AiKnowledgeSegmentApi.KnowledgeSegmentVO,
-) {
+async function handleStatusChange(row: AiKnowledgeSegmentApi.KnowledgeSegment) {
   try {
     // 修改状态的二次确认
     const text = row.status ? '启用' : '禁用';

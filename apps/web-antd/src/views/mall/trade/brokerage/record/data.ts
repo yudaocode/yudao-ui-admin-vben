@@ -65,8 +65,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userAvatar',
       title: '头像',
-      width: 70,
-      slots: { default: 'userAvatar' },
+      minWidth: 70,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          height: 40,
+          width: 40,
+          shape: 'circle',
+        },
+      },
     },
     {
       field: 'userNickname',
@@ -115,7 +122,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'unfreezeTime',
       title: '解冻时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

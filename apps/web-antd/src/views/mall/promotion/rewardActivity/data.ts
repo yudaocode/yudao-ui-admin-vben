@@ -132,13 +132,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'startTime',
       title: '活动开始时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '活动结束时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -153,7 +153,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

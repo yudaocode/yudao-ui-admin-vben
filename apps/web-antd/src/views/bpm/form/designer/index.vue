@@ -21,7 +21,7 @@ const props = defineProps<{
   type: 'copy' | 'create' | 'edit';
 }>();
 
-// 流程表单详情
+/** 流程表单详情 */
 const flowFormConfig = ref();
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -31,7 +31,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const designerRef = ref<InstanceType<typeof FcDesigner>>();
 
-// 表单设计器配置
+/** 表单设计器配置 */
 const designerConfig = ref({
   switchType: [], // 是否可以切换组件类型,或者可以相互切换的字段
   autoActive: true, // 是否自动选中拖入的组件
@@ -80,7 +80,7 @@ const currentFormId = computed(() => {
 });
 
 // 加载表单配置
-async function loadFormConfig(id: number | string) {
+async function loadFormConfig(id: number) {
   try {
     const formDetail = await getFormDetail(id);
     flowFormConfig.value = formDetail;
@@ -106,8 +106,7 @@ async function initializeDesigner() {
   }
 }
 
-// TODO @ziye：注释使用 /** */ 风格，高亮更明显哈，方法注释；
-// 保存表单
+/** 保存表单 */
 function handleSave() {
   formModalApi
     .setData({
@@ -118,7 +117,7 @@ function handleSave() {
     .open();
 }
 
-// 返回列表页
+/** 返回列表页 */
 function onBack() {
   router.push({
     path: '/bpm/manager/form',
@@ -137,7 +136,11 @@ onMounted(() => {
   <Page auto-content-height>
     <FormModal @success="onBack" />
 
-    <FcDesigner class="my-designer" ref="designerRef" :config="designerConfig">
+    <FcDesigner
+      class="h-full min-h-[500px]"
+      ref="designerRef"
+      :config="designerConfig"
+    >
       <template #handle>
         <Button size="small" type="primary" @click="handleSave">
           <IconifyIcon icon="mdi:content-save" />
@@ -147,10 +150,3 @@ onMounted(() => {
     </FcDesigner>
   </Page>
 </template>
-
-<style scoped>
-.my-designer {
-  height: 100%;
-  min-height: 500px;
-}
-</style>

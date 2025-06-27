@@ -27,7 +27,7 @@ function directGenerate(existPrompt: string) {
   isEnd.value = true;
 }
 /** 提交生成 */
-function submit(data: AiMindmapApi.AiMindMapGenerateReqVO) {
+function submit(data: AiMindmapApi.AiMindMapGenerateReq) {
   isGenerating.value = true;
   isStart.value = true;
   isEnd.value = false;

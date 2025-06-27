@@ -8,13 +8,20 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, message, Tabs } from 'ant-design-vue';
+import { Card, message, Tabs } from 'ant-design-vue';
 
-import { getCustomer, updateCustomerDealStatus } from '#/api/crm/customer';
+import {
+  getCustomer,
+  lockCustomer,
+  putCustomerPool,
+  receiveCustomer,
+  updateCustomerDealStatus,
+} from '#/api/crm/customer';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { BusinessDetailsList } from '#/views/crm/business';
 import { ContactDetailsList } from '#/views/crm/contact';
 import { ContractDetailsList } from '#/views/crm/contract';
@@ -99,18 +106,45 @@ function handleTransfer() {
 }
 
 /** 锁定客户 */
-function handleLock() {
-  transferModalApi.setData({ id: customerId.value }).open();
-}
-
-/** 解锁客户 */
-function handleUnlock() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定锁定客户【${customer.value.name}】吗？`,
+    })
+      .then(async () => {
+        const res = await lockCustomer(customerId.value, lockStatus);
+        if (res) {
+          message.success(lockStatus ? '锁定客户成功' : '解锁客户成功');
+          resolve(true);
+        } else {
+          reject(new Error(lockStatus ? '锁定客户失败' : '解锁客户失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 领取客户 */
-function handleReceive() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handleReceive(): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定领取客户【${customer.value.name}】吗？`,
+    })
+      .then(async () => {
+        const res = await receiveCustomer([customerId.value]);
+        if (res) {
+          message.success('领取客户成功');
+          resolve(true);
+        } else {
+          reject(new Error('领取客户失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 分配客户 */
@@ -119,8 +153,24 @@ function handleDistributeForm() {
 }
 
 /** 客户放入公海 */
-function handlePutPool() {
-  transferModalApi.setData({ id: customerId.value }).open();
+function handlePutPool(): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    confirm({
+      content: `确定将客户【${customer.value.name}】放入公海吗？`,
+    })
+      .then(async () => {
+        const res = await putCustomerPool(customerId.value);
+        if (res) {
+          message.success('放入公海成功');
+          resolve(true);
+        } else {
+          reject(new Error('放入公海失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 更新成交状态操作 */
@@ -161,61 +211,62 @@ onMounted(() => {
     <TransferModal @success="loadCustomerDetail" />
     <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
-      <div class="flex items-center gap-2">
-        <Button
-          v-if="permissionListRef?.validateWrite"
-          type="primary"
-          @click="handleEdit"
-          v-access:code="['crm:customer:update']"
-        >
-          {{ $t('ui.actionTitle.edit') }}
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateOwnerUser"
-          type="primary"
-          @click="handleTransfer"
-        >
-          转移
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateWrite"
-          @click="handleUpdateDealStatus"
-        >
-          更改成交状态
-        </Button>
-        <Button
-          v-if="customer.lockStatus && permissionListRef?.validateOwnerUser"
-          @click="handleUnlock"
-        >
-          解锁
-        </Button>
-        <Button
-          v-if="!customer.lockStatus && permissionListRef?.validateOwnerUser"
-          @click="handleLock"
-        >
-          锁定
-        </Button>
-        <Button
-          v-if="!customer.ownerUserId"
-          type="primary"
-          @click="handleReceive"
-        >
-          领取
-        </Button>
-        <Button
-          v-if="!customer.ownerUserId"
-          type="primary"
-          @click="handleDistributeForm"
-        >
-          分配
-        </Button>
-        <Button
-          v-if="customer.ownerUserId && permissionListRef?.validateOwnerUser"
-          @click="handlePutPool"
-        >
-          放入公海
-        </Button>
-      </div>
+      <TableAction
+        :actions="[
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            icon: ACTION_ICON.EDIT,
+            auth: ['crm:customer:update'],
+            ifShow: permissionListRef?.validateWrite,
+            onClick: handleEdit,
+          },
+          {
+            label: '转移',
+            type: 'primary',
+            ifShow: permissionListRef?.validateOwnerUser,
+            onClick: handleTransfer,
+          },
+          {
+            label: '更改成交状态',
+            type: 'default',
+            ifShow: permissionListRef?.validateWrite,
+            onClick: handleUpdateDealStatus,
+          },
+          {
+            label: '锁定',
+            type: 'default',
+            ifShow:
+              !customer.lockStatus && permissionListRef?.validateOwnerUser,
+            onClick: handleLock.bind(null, true),
+          },
+          {
+            label: '解锁',
+            type: 'default',
+            ifShow: customer.lockStatus && permissionListRef?.validateOwnerUser,
+            onClick: handleLock.bind(null, false),
+          },
+          {
+            label: '领取',
+            type: 'primary',
+            ifShow: !customer.ownerUserId,
+            onClick: handleReceive,
+          },
+          {
+            label: '分配',
+            type: 'default',
+            ifShow: !customer.ownerUserId,
+            onClick: handleDistributeForm,
+          },
+          {
+            label: '放入公海',
+            type: 'default',
+            ifShow:
+              !!customer.ownerUserId && permissionListRef?.validateOwnerUser,
+            onClick: handlePutPool,
+          },
+        ]"
+      />
     </template>
     <Card class="min-h-[10%]">
       <Description :data="customer" />

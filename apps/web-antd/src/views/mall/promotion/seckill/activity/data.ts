@@ -44,7 +44,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'configIds',
       title: '秒杀时段',
-      width: 220,
+      minWidth: 220,
       slots: { default: 'configIds' },
     },
     {
@@ -112,7 +112,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       title: '创建时间',
       align: 'center',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

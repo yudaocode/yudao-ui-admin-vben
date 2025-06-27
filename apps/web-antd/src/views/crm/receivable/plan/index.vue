@@ -101,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getReceivablePlanPage({
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             sceneType: sceneType.value,
             ...formValues,
@@ -195,8 +195,6 @@ function onChangeSceneType(key: number | string) {
               auth: ['crm:receivable-plan:update'],
               onClick: handleEdit.bind(null, row),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: $t('common.delete'),
               type: 'link',

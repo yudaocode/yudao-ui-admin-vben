@@ -54,22 +54,18 @@ watch(copied, (val) => {
 });
 </script>
 <template>
-  <Card class="my-card flex h-full flex-col">
+  <Card class="flex h-full flex-col">
     <template #title>
       <h3 class="m-0 flex shrink-0 items-center justify-between px-7">
         <span>预览</span>
         <!-- 展示在右上角 -->
         <Button
-          class="flex bg-purple-500 text-white"
+          type="primary"
           v-show="showCopy"
           @click="copyContent"
           size="small"
         >
-          <template #icon>
-            <div class="flex items-center justify-center">
-              <IconifyIcon icon="lucide:copy" />
-            </div>
-          </template>
+          <IconifyIcon icon="lucide:copy" />
           复制
         </Button>
       </h3>
@@ -79,7 +75,7 @@ watch(copied, (val) => {
       class="hide-scroll-bar box-border h-full overflow-y-auto"
     >
       <div
-        class="relative box-border min-h-full w-full flex-grow bg-white p-3 sm:p-7"
+        class="bg-card relative box-border min-h-full w-full flex-grow p-3 sm:p-7"
       >
         <!-- 终止生成内容的按钮 -->
         <Button
@@ -98,7 +94,7 @@ watch(copied, (val) => {
         <Textarea
           id="inputId"
           v-model:value="compContent"
-          autosize
+          auto-size
           :bordered="false"
           placeholder="生成的内容……"
         />

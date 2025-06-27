@@ -19,7 +19,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<AiModelChatRoleApi.ChatRoleVO>();
+const formData = ref<AiModelChatRoleApi.ChatRole>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['聊天角色'])
@@ -47,7 +47,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as AiModelChatRoleApi.ChatRoleVO;
+    const data = (await formApi.getValues()) as AiModelChatRoleApi.ChatRole;
     try {
       await (formData.value?.id ? updateChatRole(data) : createChatRole(data));
       // 关闭并提示
@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiModelChatRoleApi.ChatRoleVO>();
+    const data = modalApi.getData<AiModelChatRoleApi.ChatRole>();
     if (!data || !data.id) {
       await formApi.setValues(data);
       return;

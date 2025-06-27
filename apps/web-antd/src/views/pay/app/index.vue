@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @xingyu：是不是不引入 @form-create/ant-design-vue 组件哈；保持和 vben 一致~；
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 

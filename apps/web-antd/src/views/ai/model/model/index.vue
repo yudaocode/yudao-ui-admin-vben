@@ -17,7 +17,7 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-const apiKeyList = ref([] as AiModelApiKeyApi.ApiKeyVO[]);
+const apiKeyList = ref([] as AiModelApiKeyApi.ApiKey[]);
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -34,12 +34,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: AiModelModelApi.ModelVO) {
+function handleEdit(row: AiModelModelApi.Model) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 */
-async function handleDelete(row: AiModelModelApi.ModelVO) {
+async function handleDelete(row: AiModelModelApi.Model) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     key: 'action_key_msg',
@@ -82,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiModelModelApi.ModelVO>,
+  } as VxeTableGridOptions<AiModelModelApi.Model>,
 });
 onMounted(async () => {
   // 获得下拉数据

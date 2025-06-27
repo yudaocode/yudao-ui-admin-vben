@@ -9,8 +9,6 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { Avatar, Tag } from 'ant-design-vue';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
@@ -101,8 +99,14 @@ function useColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'sourceUserAvatar',
       title: '头像',
-      width: 70,
-      slots: { default: 'avatar' },
+      minWidth: 70,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+        },
+      },
     },
     {
       field: 'sourceUserNickname',
@@ -119,7 +123,10 @@ function useColumns(): VxeTableGridOptions['columns'] {
       field: 'status',
       title: '状态',
       minWidth: 85,
-      slots: { default: 'status' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.BROKERAGE_RECORD_STATUS },
+      },
     },
     {
       field: 'createTime',
@@ -173,21 +180,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Modal title="推广订单列表" class="w-3/5">
-    <Grid table-title="推广订单列表">
-      <template #avatar="{ row }">
-        <Avatar :src="row.sourceUserAvatar" />
-      </template>
-
-      <template #status="{ row }">
-        <template
-          v-for="dict in getDictOptions(DICT_TYPE.BROKERAGE_RECORD_STATUS)"
-          :key="dict.value"
-        >
-          <Tag v-if="dict.value === row.status" :color="dict.colorType">
-            {{ dict.label }}
-          </Tag>
-        </template>
-      </template>
-    </Grid>
+    <Grid table-title="推广订单列表" />
   </Modal>
 </template>

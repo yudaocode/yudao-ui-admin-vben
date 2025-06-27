@@ -4,7 +4,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import dayjs from 'dayjs';
+import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
@@ -186,12 +186,12 @@ export function useDetailFormSchema(): DescriptionItemSchema[] {
     {
       label: '开始时间',
       field: 'startTime',
-      content: (data) => dayjs(data?.startTime).format('YYYY-MM-DD HH:mm:ss'),
+      content: (data) => formatDateTime(data?.startTime) as string,
     },
     {
       label: '结束时间',
       field: 'endTime',
-      content: (data) => dayjs(data?.endTime).format('YYYY-MM-DD HH:mm:ss'),
+      content: (data) => formatDateTime(data?.endTime) as string,
     },
     {
       label: '原因',

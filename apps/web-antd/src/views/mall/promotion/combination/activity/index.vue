@@ -52,7 +52,7 @@ async function handleClose(
   }
 
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.processing'),
+    content: '关闭中...',
     key: 'action_key_msg',
   });
   try {

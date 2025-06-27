@@ -34,14 +34,14 @@ const [FormModal, formModalApi] = useVbenModal({
 // 聊天对话
 const conversationListRef = ref();
 const activeConversationId = ref<null | number>(null); // 选中的对话编号
-const activeConversation = ref<AiChatConversationApi.ChatConversationVO | null>(
+const activeConversation = ref<AiChatConversationApi.ChatConversation | null>(
   null,
 ); // 选中的 Conversation
 const conversationInProgress = ref(false); // 对话是否正在进行中。目前只有【发送】消息时，会更新为 true，避免切换对话、删除对话等操作
 
 // 消息列表
 const messageRef = ref();
-const activeMessageList = ref<AiChatMessageApi.ChatMessageVO[]>([]); // 选中对话的消息列表
+const activeMessageList = ref<AiChatMessageApi.ChatMessage[]>([]); // 选中对话的消息列表
 const activeMessageListLoading = ref<boolean>(false); // activeMessageList 是否正在加载中
 const activeMessageListLoadingTimer = ref<any>(); // activeMessageListLoading Timer 定时器。如果加载速度很快，就不进入加载中
 // 消息滚动
@@ -65,7 +65,7 @@ async function getConversation(id: null | number) {
   if (!id) {
     return;
   }
-  const conversation: AiChatConversationApi.ChatConversationVO =
+  const conversation: AiChatConversationApi.ChatConversation =
     await getChatConversationMy(id);
   if (!conversation) {
     return;
@@ -81,7 +81,7 @@ async function getConversation(id: null | number) {
  * @return 是否切换成功
  */
 async function handleConversationClick(
-  conversation: AiChatConversationApi.ChatConversationVO,
+  conversation: AiChatConversationApi.ChatConversation,
 ) {
   // 对话进行中，不允许切换
   if (conversationInProgress.value) {
@@ -103,7 +103,7 @@ async function handleConversationClick(
 
 /** 删除某个对话*/
 async function handlerConversationDelete(
-  delConversation: AiChatConversationApi.ChatConversationVO,
+  delConversation: AiChatConversationApi.ChatConversation,
 ) {
   // 删除的对话如果是当前选中的，那么就重置
   if (activeConversationId.value === delConversation.id) {
@@ -303,13 +303,11 @@ async function doSendMessage(content: string) {
   await doSendMessageStream({
     conversationId: activeConversationId.value,
     content,
-  } as AiChatMessageApi.ChatMessageVO);
+  } as AiChatMessageApi.ChatMessage);
 }
 
 /** 真正执行【发送】消息操作 */
-async function doSendMessageStream(
-  userMessage: AiChatMessageApi.ChatMessageVO,
-) {
+async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
   // 创建 AbortController 实例，以便中止请求
   conversationInAbortController.value = new AbortController();
   // 标记对话进行中
@@ -326,14 +324,14 @@ async function doSendMessageStream(
         type: 'user',
         content: userMessage.content,
         createTime: new Date(),
-      } as AiChatMessageApi.ChatMessageVO,
+      } as AiChatMessageApi.ChatMessage,
       {
         id: -2,
         conversationId: activeConversationId.value,
         type: 'assistant',
         content: '思考中...',
         createTime: new Date(),
-      } as AiChatMessageApi.ChatMessageVO,
+      } as AiChatMessageApi.ChatMessage,
     );
     // 1.2 滚动到最下面
     await nextTick();
@@ -398,12 +396,12 @@ async function stopStream() {
 }
 
 /** 编辑 message：设置为 prompt，可以再次编辑 */
-function handleMessageEdit(message: AiChatMessageApi.ChatMessageVO) {
+function handleMessageEdit(message: AiChatMessageApi.ChatMessage) {
   prompt.value = message.content;
 }
 
 /** 刷新 message：基于指定消息，再次发起对话 */
-function handleMessageRefresh(message: AiChatMessageApi.ChatMessageVO) {
+function handleMessageRefresh(message: AiChatMessageApi.ChatMessage) {
   doSendMessage(message.content);
 }
 
@@ -497,6 +495,7 @@ onMounted(async () => {
     <Layout class="absolute left-0 top-0 m-4 h-full w-full flex-1">
       <!-- 左侧：对话列表 -->
       <ConversationList
+        class="!bg-card"
         :active-id="activeConversationId as any"
         ref="conversationListRef"
         @on-conversation-create="handleConversationCreateSuccess"
@@ -506,9 +505,9 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <Layout class="mx-4 bg-white">
+      <Layout class="bg-card mx-4">
         <Layout.Header
-          class="flex items-center justify-between !bg-gray-50 shadow-none"
+          class="!bg-card border-border flex items-center justify-between border-b"
         >
           <div class="text-lg font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
@@ -567,9 +566,9 @@ onMounted(async () => {
           </div>
         </Layout.Content>
 
-        <Layout.Footer class="m-0 flex flex-col !bg-white p-0">
+        <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
           <form
-            class="my-5 mb-5 mt-2 flex flex-col rounded-xl border border-gray-200 px-2 py-2.5"
+            class="border-border my-5 mb-5 mt-2 flex flex-col rounded-xl border px-2 py-2.5"
           >
             <textarea
               class="box-border h-24 resize-none overflow-auto border-none px-0 py-1 focus:outline-none"

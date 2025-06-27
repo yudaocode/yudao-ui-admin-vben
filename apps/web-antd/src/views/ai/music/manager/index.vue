@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { Button, message, Switch, Tag } from 'ant-design-vue';
+import { Button, message, Switch } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
@@ -24,7 +24,7 @@ function onRefresh() {
 }
 
 /** 删除 */
-async function handleDelete(row: AiMusicApi.MusicVO) {
+async function handleDelete(row: AiMusicApi.Music) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     key: 'action_key_msg',
@@ -41,7 +41,7 @@ async function handleDelete(row: AiMusicApi.MusicVO) {
   }
 }
 /** 修改是否发布 */
-const handleUpdatePublicStatusChange = async (row: AiMusicApi.MusicVO) => {
+const handleUpdatePublicStatusChange = async (row: AiMusicApi.Music) => {
   try {
     // 修改状态的二次确认
     const text = row.publicStatus ? '公开' : '私有';
@@ -82,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: { code: 'query' },
       search: true,
     },
-  } as VxeTableGridOptions<AiMusicApi.MusicVO>,
+  } as VxeTableGridOptions<AiMusicApi.Music>,
 });
 onMounted(async () => {
   // 获得下拉数据
@@ -101,9 +101,9 @@ onMounted(async () => {
       </template>
 
       <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
+        <span>
+          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+        </span>
       </template>
       <template #content="{ row }">
         <Button
@@ -140,11 +140,6 @@ onMounted(async () => {
           @change="handleUpdatePublicStatusChange(row)"
           :disabled="row.status !== AiMusicStatusEnum.SUCCESS"
         />
-      </template>
-      <template #tags="{ row }">
-        <Tag v-for="tag in row.tags" :key="tag" class="ml-1">
-          {{ tag }}
-        </Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

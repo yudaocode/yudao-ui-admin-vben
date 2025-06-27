@@ -11,7 +11,6 @@ const [Description, descApi] = useDescription({
   componentProps: {
     bordered: true,
     column: 1,
-    size: 'middle',
     class: 'mx-4',
   },
   schema: useDetailSchema(),
@@ -40,6 +39,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal
     title="消息详情"
+    class="w-1/3"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >

@@ -24,7 +24,7 @@ function stopStream() {
 /** 执行写作 */
 const rightRef = ref<InstanceType<typeof Right>>();
 
-function submit(data: Partial<AiWriteApi.WriteVO>) {
+function submit(data: Partial<AiWriteApi.Write>) {
   abortController.value = new AbortController();
   writeResult.value = '';
   isWriting.value = true;
@@ -66,10 +66,10 @@ function reset() {
 
 <template>
   <Page auto-content-height>
-    <div class="absolute bottom-0 left-0 right-0 top-0 flex">
+    <div class="absolute bottom-0 left-0 right-0 top-0 m-4 flex">
       <Left
         :is-writing="isWriting"
-        class="h-full"
+        class="mr-4 h-full rounded-lg"
         @submit="submit"
         @reset="reset"
         @example="handleExampleClick"

@@ -120,7 +120,7 @@ export function useBindFormSchema(): VbenFormSchema[] {
       label: '门店名称',
       dependencies: {
         triggerFields: ['id'],
-        disabled: () => true,
+        disabled: true,
       },
     },
     {
@@ -149,7 +149,7 @@ export function useBindFormSchema(): VbenFormSchema[] {
         trigger(values, form) {
           form.setFieldValue('verifyUsers', values.verifyUserIds);
         },
-        disabled: () => true,
+        disabled: true,
       },
     },
   ];

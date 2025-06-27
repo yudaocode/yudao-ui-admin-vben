@@ -11,7 +11,7 @@ import { Image, Input, Pagination } from 'ant-design-vue';
 import { getImagePageMy } from '#/api/ai/image';
 
 const loading = ref(true); // 列表的加载中
-const list = ref<AiImageApi.ImageVO[]>([]); // 列表的数据
+const list = ref<AiImageApi.Image[]>([]); // 列表的数据
 const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,

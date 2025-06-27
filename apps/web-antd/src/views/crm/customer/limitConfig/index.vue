@@ -73,7 +73,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getCustomerLimitConfigPage({
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             type: configType.value,
             ...formValues,

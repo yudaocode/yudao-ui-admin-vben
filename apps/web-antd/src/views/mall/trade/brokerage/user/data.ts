@@ -53,8 +53,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'avatar',
       title: '头像',
-      width: 70,
-      slots: { default: 'avatar' },
+      minWidth: 70,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+          shape: 'circle',
+        },
+      },
     },
     {
       field: 'nickname',
@@ -64,7 +71,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'brokerageUserCount',
       title: '推广人数',
-      width: 80,
+      minWidth: 80,
     },
     {
       field: 'brokerageOrderCount',
@@ -109,18 +116,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'brokerageTime',
       title: '成为推广员时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'bindUserId',
       title: '上级推广员编号',
-      width: 150,
+      minWidth: 150,
     },
     {
       field: 'bindUserTime',
       title: '推广员绑定时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

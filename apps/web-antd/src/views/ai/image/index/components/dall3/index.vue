@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModelVO, ImageSizeVO } from '#/utils';
+import type { ImageModel, ImageSize } from '#/utils';
 
 import { ref } from 'vue';
 
@@ -22,8 +22,8 @@ import {
 // 接收父组件传入的模型列表
 const props = defineProps({
   models: {
-    type: Array<AiModelModelApi.ModelVO>,
-    default: () => [] as AiModelModelApi.ModelVO[],
+    type: Array<AiModelModelApi.Model>,
+    default: () => [] as AiModelModelApi.Model[],
   },
 });
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
@@ -50,7 +50,7 @@ async function handleHotWordClick(hotWord: string) {
 }
 
 /** 选择 model 模型 */
-async function handleModelClick(model: ImageModelVO) {
+async function handleModelClick(model: ImageModel) {
   selectModel.value = model.key;
   // 可以在这里添加模型特定的处理逻辑
   // 例如，如果未来需要根据不同模型设置不同参数
@@ -76,12 +76,12 @@ async function handleModelClick(model: ImageModelVO) {
 }
 
 /** 选择 style 样式  */
-async function handleStyleClick(imageStyle: ImageModelVO) {
+async function handleStyleClick(imageStyle: ImageModel) {
   style.value = imageStyle.key;
 }
 
 /** 选择 size 大小  */
-async function handleSizeClick(imageSize: ImageSizeVO) {
+async function handleSizeClick(imageSize: ImageSize) {
   selectSize.value = imageSize.key;
 }
 
@@ -107,7 +107,7 @@ async function handleGenerateImage() {
     emits('onDrawStart', AiPlatformEnum.OPENAI);
     const imageSize = Dall3SizeList.find(
       (item) => item.key === selectSize.value,
-    ) as ImageSizeVO;
+    ) as ImageSize;
     const form = {
       platform: AiPlatformEnum.OPENAI,
       prompt: prompt.value, // 提示词
@@ -118,7 +118,7 @@ async function handleGenerateImage() {
       options: {
         style: style.value, // 图像生成的风格
       },
-    } as AiImageApi.ImageDrawReqVO;
+    } as AiImageApi.ImageDrawReq;
     // 发送请求
     await drawImage(form);
   } finally {
@@ -130,13 +130,13 @@ async function handleGenerateImage() {
 }
 
 /** 填充值 */
-async function settingValues(detail: AiImageApi.ImageVO) {
+async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   selectModel.value = detail.model;
   style.value = detail.options?.style;
   const imageSize = Dall3SizeList.find(
     (item) => item.key === `${detail.width}x${detail.height}`,
-  ) as ImageSizeVO;
+  ) as ImageSize;
   await handleSizeClick(imageSize);
 }
 

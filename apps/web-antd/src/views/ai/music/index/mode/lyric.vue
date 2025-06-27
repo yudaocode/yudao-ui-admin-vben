@@ -28,7 +28,7 @@ defineExpose({
     <Title title="歌词" desc="自己编写歌词或使用Ai生成歌词，两节/8行效果最佳">
       <Textarea
         v-model:value="formData.lyric"
-        :autosize="{ minRows: 6, maxRows: 6 }"
+        :auto-size="{ minRows: 6, maxRows: 6 }"
         :maxlength="1200"
         :show-count="true"
         placeholder="请输入您自己的歌词"
@@ -60,7 +60,7 @@ defineExpose({
     >
       <Textarea
         v-model="formData.style"
-        :autosize="{ minRows: 4, maxRows: 4 }"
+        :auto-size="{ minRows: 4, maxRows: 4 }"
         :maxlength="256"
         show-count
         placeholder="输入音乐风格(英文)"

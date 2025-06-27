@@ -36,6 +36,26 @@ export namespace CrmStatisticsPortraitApi {
   }
 }
 
+export function getDatas(activeTabName: any, params: any) {
+  switch (activeTabName) {
+    case 'area': {
+      return getCustomerArea(params);
+    }
+    case 'industry': {
+      return getCustomerIndustry(params);
+    }
+    case 'level': {
+      return getCustomerLevel(params);
+    }
+    case 'source': {
+      return getCustomerSource(params);
+    }
+    default: {
+      return [];
+    }
+  }
+}
+
 /** 获取客户行业统计数据 */
 export function getCustomerIndustry(params: PageParam) {
   return requestClient.get<CrmStatisticsPortraitApi.CustomerIndustry[]>(

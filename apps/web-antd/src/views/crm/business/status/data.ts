@@ -3,9 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -38,17 +36,13 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择应用部门',
         treeDefaultExpandAll: true,
       },
+      help: '不选择部门时，默认全公司生效',
     },
     {
-      fieldName: 'status',
-      label: '状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
+      fieldName: 'statuses',
+      label: '阶段设置',
+      component: 'Input',
+      rules: 'required',
     },
   ];
 }

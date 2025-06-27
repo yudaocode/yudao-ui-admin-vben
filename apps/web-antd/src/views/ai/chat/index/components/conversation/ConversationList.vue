@@ -44,7 +44,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const searchName = ref<string>(''); // 对话搜索
 const activeConversationId = ref<null | number>(null); // 选中的对话，默认为 null
 const hoverConversationId = ref<null | number>(null); // 悬浮上去的对话
-const conversationList = ref([] as AiChatConversationApi.ChatConversationVO[]); // 对话列表
+const conversationList = ref([] as AiChatConversationApi.ChatConversation[]); // 对话列表
 const conversationMap = ref<any>({}); // 对话分组 (置顶、今天、三天前、一星期前、一个月前)
 const loading = ref<boolean>(false); // 加载中
 const loadingTime = ref<any>();
@@ -118,7 +118,7 @@ async function getChatConversationList() {
 
 /** 按照 creteTime 创建时间，进行分组 */
 async function getConversationGroupByCreateTime(
-  list: AiChatConversationApi.ChatConversationVO[],
+  list: AiChatConversationApi.ChatConversation[],
 ) {
   // 排序、指定、时间分组(今天、一天前、三天前、七天前、30天前)
   // noinspection NonAsciiCharacters
@@ -164,7 +164,7 @@ async function getConversationGroupByCreateTime(
 async function createConversation() {
   // 1. 新建对话
   const conversationId = await createChatConversationMy(
-    {} as unknown as AiChatConversationApi.ChatConversationVO,
+    {} as unknown as AiChatConversationApi.ChatConversation,
   );
   // 2. 获取对话内容
   await getChatConversationList();
@@ -176,7 +176,7 @@ async function createConversation() {
 
 /** 修改对话的标题 */
 async function updateConversationTitle(
-  conversation: AiChatConversationApi.ChatConversationVO,
+  conversation: AiChatConversationApi.ChatConversation,
 ) {
   // 1. 二次确认
   prompt({
@@ -188,7 +188,7 @@ async function updateConversationTitle(
             await updateChatConversationMy({
               id: conversation.id,
               title: scope.value,
-            } as AiChatConversationApi.ChatConversationVO);
+            } as AiChatConversationApi.ChatConversation);
             message.success('重命名成功');
             // 3. 刷新列表
             await getChatConversationList();
@@ -230,7 +230,7 @@ async function updateConversationTitle(
 
 /** 删除聊天对话 */
 async function deleteChatConversation(
-  conversation: AiChatConversationApi.ChatConversationVO,
+  conversation: AiChatConversationApi.ChatConversation,
 ) {
   try {
     // 删除的二次确认
@@ -260,9 +260,7 @@ async function handleClearConversation() {
 }
 
 /** 对话置顶 */
-async function handleTop(
-  conversation: AiChatConversationApi.ChatConversationVO,
-) {
+async function handleTop(conversation: AiChatConversationApi.ChatConversation) {
   // 更新对话置顶
   conversation.pinned = !conversation.pinned;
   await updateChatConversationMy(conversation);
@@ -307,7 +305,7 @@ onMounted(async () => {
 <template>
   <Layout.Sider
     width="280px"
-    class="!bg-primary-foreground conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
+    class="conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
     <!-- 左顶部：对话 -->
@@ -360,7 +358,9 @@ onMounted(async () => {
             <div
               class="conversation flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
               :class="[
-                conversation.id === activeConversationId ? 'bg-gray-100' : '',
+                conversation.id === activeConversationId
+                  ? 'bg-primary-200'
+                  : '',
               ]"
             >
               <div class="title-wrapper flex items-center">
@@ -420,7 +420,7 @@ onMounted(async () => {
 
     <!-- 左底部：工具栏 -->
     <div
-      class="absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between bg-gray-50 px-5 leading-9 text-gray-400 shadow-sm"
+      class="bg-card absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between px-5 leading-9 text-gray-400 shadow-sm"
     >
       <div
         class="flex cursor-pointer items-center text-gray-400"
