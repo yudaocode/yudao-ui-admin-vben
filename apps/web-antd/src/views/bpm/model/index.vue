@@ -7,7 +7,6 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { refAutoReset } from '@vueuse/core';
 import { useSortable } from '@vueuse/integrations/useSortable';
 import { Button, Card, Dropdown, Input, Menu, message } from 'ant-design-vue';
 
@@ -28,7 +27,7 @@ const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 // 模型列表加载状态
-const modelListSpinning = refAutoReset(false, 3000);
+const modelListSpinning = ref(false);
 // 保存排序状态
 const saveSortLoading = ref(false);
 // 按照 category 分组的数据
@@ -148,7 +147,6 @@ async function handleCategorySortSubmit() {
 
 <template>
   <Page auto-content-height>
-    <!-- TODO @jason：体感整个页面的加载，有点卡顿。先看到分类，大概 1-2 秒后，上箭头变成下，然后看到每个模型。我本地大概 4 个分类，每个分类下 20+ 模型 -->
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
     <Card
@@ -212,11 +210,12 @@ async function handleCategorySortSubmit() {
       <!-- 按照分类，展示其所属的模型列表 -->
       <div class="px-3" ref="categoryGroupRef">
         <CategoryDraggableModel
-          v-for="element in categoryGroup"
+          v-for="(element, index) in categoryGroup"
           :class="isCategorySorting ? 'cursor-move' : ''"
           :key="element.id"
           :category-info="element"
           :is-category-sorting="isCategorySorting"
+          :is-first="index === 0"
           @success="getList"
         />
       </div>
