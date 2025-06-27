@@ -79,7 +79,7 @@ async function handleTabsScroll() {
         }"
       >
         <!-- 更多操作 -->
-        <div v-if="showMore" class="absolute right-3 top-0">
+        <div v-if="showMore" class="absolute right-2 top-0">
           <Dropdown>
             <Button type="link">
               <IconifyIcon icon="lucide:ellipsis-vertical" />
@@ -89,7 +89,7 @@ async function handleTabsScroll() {
                 <Menu.Item @click="handleMoreClick(['edit', role])">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:edit" color="#787878" />
-                    <span>编辑</span>
+                    <span class="text-primary">编辑</span>
                   </div>
                 </Menu.Item>
                 <Menu.Item @click="handleMoreClick(['delete', role])">
@@ -108,12 +108,12 @@ async function handleTabsScroll() {
           <Avatar :src="role.avatar" class="h-10 w-10 overflow-hidden" />
         </div>
 
-        <div class="ml-2 w-full">
+        <div class="ml-2 w-4/5">
           <div class="h-20">
-            <div class="max-w-36 text-lg font-bold text-gray-600">
+            <div class="max-w-32 text-lg font-bold">
               {{ role.name }}
             </div>
-            <div class="mt-2 text-sm text-gray-400">
+            <div class="mt-2 text-sm">
               {{ role.description }}
             </div>
           </div>

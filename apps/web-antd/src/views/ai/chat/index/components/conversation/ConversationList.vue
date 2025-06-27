@@ -305,7 +305,7 @@ onMounted(async () => {
 <template>
   <Layout.Sider
     width="280px"
-    class="!bg-primary-foreground conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
+    class="conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
     <!-- 左顶部：对话 -->
@@ -358,7 +358,9 @@ onMounted(async () => {
             <div
               class="conversation flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
               :class="[
-                conversation.id === activeConversationId ? 'bg-gray-100' : '',
+                conversation.id === activeConversationId
+                  ? 'bg-primary-200'
+                  : '',
               ]"
             >
               <div class="title-wrapper flex items-center">
@@ -418,7 +420,7 @@ onMounted(async () => {
 
     <!-- 左底部：工具栏 -->
     <div
-      class="absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between bg-gray-50 px-5 leading-9 text-gray-400 shadow-sm"
+      class="bg-card absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between px-5 leading-9 text-gray-400 shadow-sm"
     >
       <div
         class="flex cursor-pointer items-center text-gray-400"

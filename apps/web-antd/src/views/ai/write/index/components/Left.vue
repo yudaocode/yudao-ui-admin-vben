@@ -123,8 +123,10 @@ function submit() {
 <template>
   <DefineTab v-slot="{ active, text, itemClick }">
     <span
-      :class="active ? 'text-black shadow-md' : 'hover:bg-gray-200'"
-      class="relative z-10 inline-block w-1/2 cursor-pointer rounded-full text-center leading-7 text-gray-400 hover:text-black"
+      :class="
+        active ? 'bg-primary-600 text-white shadow-md' : 'hover:bg-primary-200'
+      "
+      class="relative z-10 inline-block w-1/2 cursor-pointer rounded-full text-center leading-7 hover:text-black"
       @click="itemClick"
     >
       {{ text }}
@@ -136,7 +138,7 @@ function submit() {
       <span>{{ label }}</span>
       <span
         v-if="hint"
-        class="flex cursor-pointer select-none items-center text-xs text-purple-500"
+        class="text-primary-500 flex cursor-pointer select-none items-center text-xs"
         @click="hintClick"
       >
         <IconifyIcon icon="lucide:circle-help" />
@@ -145,14 +147,14 @@ function submit() {
     </h3>
   </DefineLabel>
   <div class="flex flex-col" v-bind="$attrs">
-    <div class="flex w-full justify-center bg-gray-50 pt-2">
-      <div class="z-10 w-72 rounded-full bg-gray-200 p-1">
+    <div class="bg-card flex w-full justify-center pt-2">
+      <div class="bg-card z-10 w-72 rounded-full p-1">
         <div
           :class="
             selectedTab === AiWriteTypeEnum.REPLY &&
             'after:translate-x-[100%] after:transform'
           "
-          class="relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-7 after:w-1/2 after:rounded-full after:bg-white after:transition-transform after:content-['']"
+          class="after:bg-card relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-7 after:w-1/2 after:rounded-full after:transition-transform after:content-['']"
         >
           <ReuseTab
             v-for="tab in tabs"
@@ -166,7 +168,7 @@ function submit() {
       </div>
     </div>
     <div
-      class="box-border h-full w-96 flex-grow overflow-y-auto bg-gray-50 px-7 pb-2 lg:block"
+      class="bg-card box-border h-full w-96 flex-grow overflow-y-auto px-7 pb-2 lg:block"
     >
       <div>
         <template v-if="selectedTab === 1">
@@ -233,11 +235,7 @@ function submit() {
           <Button :disabled="isWriting" class="mr-2" @click="reset">
             重置
           </Button>
-          <Button
-            :loading="isWriting"
-            class="bg-purple-500 text-white"
-            @click="submit"
-          >
+          <Button type="primary" :loading="isWriting" @click="submit">
             生成
           </Button>
         </div>

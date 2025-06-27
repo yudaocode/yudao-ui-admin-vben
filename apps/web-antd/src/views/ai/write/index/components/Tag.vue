@@ -21,8 +21,10 @@ const emits = defineEmits<{
     <span
       v-for="tag in props.tags"
       :key="tag.value"
-      class="mb-2 cursor-pointer rounded border-2 border-solid border-gray-200 bg-gray-200 px-1 text-xs leading-6"
-      :class="modelValue === tag.value && '!border-purple-500 !text-purple-500'"
+      class="bg-card border-card-100 mb-2 cursor-pointer rounded border-2 border-solid px-1 text-xs leading-6"
+      :class="
+        modelValue === tag.value && '!border-primary-500 !text-primary-500'
+      "
       @click="emits('update:modelValue', tag.value)"
     >
       {{ tag.label }}

@@ -174,7 +174,7 @@ onMounted(async () => {
 <template>
   <Drawer>
     <Layout
-      class="absolute inset-0 flex h-full w-full flex-col overflow-hidden bg-white"
+      class="bg-card absolute inset-0 flex h-full w-full flex-col overflow-hidden"
     >
       <FormModal @success="handlerAddRoleSuccess" />
 
