@@ -4,7 +4,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { floatToFixed2, formatDateTime } from '@vben/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
@@ -174,17 +174,17 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'price',
       label: '支付金额',
-      content: (data) => `￥${floatToFixed2(data?.price)}`,
+      content: (data) => `￥${erpPriceInputFormatter(data?.price)}`,
     },
     {
       field: 'channelFeePrice',
       label: '手续费',
-      content: (data) => `￥${floatToFixed2(data?.channelFeePrice)}`,
+      content: (data) => `￥${erpPriceInputFormatter(data?.channelFeePrice)}`,
     },
     {
       field: 'channelFeeRate',
       label: '手续费比例',
-      content: (data) => `${floatToFixed2(data?.channelFeeRate)}%`,
+      content: (data) => `${erpPriceInputFormatter(data?.channelFeeRate)}%`,
     },
     {
       field: 'successTime',
@@ -240,7 +240,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'refundPrice',
       label: '退款金额',
-      content: (data) => `￥${floatToFixed2(data?.refundPrice)}`,
+      content: (data) => `￥${erpPriceInputFormatter(data?.refundPrice)}`,
     },
     {
       field: 'notifyUrl',

@@ -4,7 +4,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { floatToFixed2, formatDateTime } from '@vben/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
@@ -217,7 +217,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       content: (data) => {
         return h(Tag, {
           color: 'blue',
-          content: `￥${floatToFixed2(data?.price)}`,
+          content: `￥${erpPriceInputFormatter(data?.price)}`,
         });
       },
     },
