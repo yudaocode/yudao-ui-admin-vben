@@ -105,6 +105,12 @@ export function useDetailListColumns(
       visible: showBussinePrice,
     },
     {
+      field: 'contractPrice',
+      title: '合同价格（元）',
+      formatter: 'formatAmount2',
+      visible: !showBussinePrice,
+    },
+    {
       field: 'count',
       title: '数量',
       formatter: 'formatNumber',
