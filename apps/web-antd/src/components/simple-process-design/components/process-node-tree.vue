@@ -4,6 +4,7 @@ import type { SimpleFlowNode } from '../consts';
 import { BpmNodeTypeEnum } from '#/utils';
 
 import { useWatchNode } from '../helpers';
+import ChildProcessNode from './nodes/child-process-node.vue';
 import CopyTaskNode from './nodes/copy-task-node.vue';
 import DelayTimerNode from './nodes/delay-timer-node.vue';
 import EndEventNode from './nodes/end-event-node.vue';
@@ -140,11 +141,13 @@ function recursiveFindParentNode(
     @update:flow-node="handleModelValueUpdate"
   />
   <!-- 子流程节点 -->
-  <!-- <ChildProcessNode
-    v-if="currentNode && currentNode.type === NodeType.CHILD_PROCESS_NODE"
+  <ChildProcessNode
+    v-if="
+      currentNode && currentNode.type === BpmNodeTypeEnum.CHILD_PROCESS_NODE
+    "
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
-  /> -->
+  />
   <!-- 递归显示孩子节点  -->
   <ProcessNodeTree
     v-if="currentNode && currentNode.childNode"
