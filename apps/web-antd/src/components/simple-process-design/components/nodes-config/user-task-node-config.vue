@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Rule } from 'ant-design-vue/es/form';
 
-import type { Ref } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
 
 import type { ButtonSetting, SimpleFlowNode } from '../../consts';
 import type { UserTaskFormType } from '../../helpers';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -144,6 +144,7 @@ const {
   btnDisplayNameEdit,
   changeBtnDisplayName,
   btnDisplayNameBlurEvent,
+  setInputRef,
 } = useButtonsSetting();
 
 const approveType = ref(ApproveType.USER);
@@ -453,9 +454,19 @@ function useButtonsSetting() {
   const buttonsSetting = ref<ButtonSetting[]>();
   // 操作按钮显示名称可编辑
   const btnDisplayNameEdit = ref<boolean[]>([]);
+  // 输入框的引用数组 - 内部使用，不暴露出去
+  const _btnDisplayNameInputRefs = ref<Array<HTMLInputElement | null>>([]);
+
   const changeBtnDisplayName = (index: number) => {
     btnDisplayNameEdit.value[index] = true;
+    // 输入框自动聚集
+    nextTick(() => {
+      if (_btnDisplayNameInputRefs.value[index]) {
+        _btnDisplayNameInputRefs.value[index]?.focus();
+      }
+    });
   };
+
   const btnDisplayNameBlurEvent = (index: number) => {
     btnDisplayNameEdit.value[index] = false;
     const buttonItem = buttonsSetting.value![index];
@@ -463,11 +474,21 @@ function useButtonsSetting() {
       buttonItem.displayName =
         buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
   };
+
+  // 设置 ref 引用的方法
+  const setInputRef = (
+    el: ComponentPublicInstance | Element | null,
+    index: number,
+  ) => {
+    _btnDisplayNameInputRefs.value[index] = el as HTMLInputElement;
+  };
+
   return {
     buttonsSetting,
     btnDisplayNameEdit,
     changeBtnDisplayName,
     btnDisplayNameBlurEvent,
+    setInputRef,
   };
 }
 
@@ -1123,12 +1144,13 @@ onMounted(() => {
                 {{ OPERATION_BUTTON_NAME.get(item.id) }}
               </Col>
               <Col :span="12" class="flex items-center">
-                <!-- TODO  v-mountedFocus 自动聚集需要迁移 -->
                 <Input
                   v-if="btnDisplayNameEdit[index]"
+                  :ref="(el) => setInputRef(el, index)"
                   type="text"
                   class="max-w-32 focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
                   @blur="btnDisplayNameBlurEvent(index)"
+                  @press-enter="btnDisplayNameBlurEvent(index)"
                   v-model:value="item.displayName"
                   :placeholder="item.displayName"
                 />

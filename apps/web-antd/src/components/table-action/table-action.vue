@@ -4,7 +4,7 @@ import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
 
-import { computed, ref, toRaw, unref, watchEffect } from 'vue';
+import { computed, unref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
@@ -41,14 +41,7 @@ const props = defineProps({
 
 const { hasAccessByCodes } = useAccess();
 
-/** 缓存处理后的 actions */
-const processedActions = ref<any[]>([]);
-const processedDropdownActions = ref<any[]>([]);
-
-/** 用于比较的字符串化版本 */
-const actionsStringField = ref('');
-const dropdownActionsStringField = ref('');
-
+/** 检查是否显示 */
 function isIfShow(action: ActionItem): boolean {
   const ifShow = action.ifShow;
   let isIfShow = true;
@@ -65,12 +58,10 @@ function isIfShow(action: ActionItem): boolean {
   return isIfShow;
 }
 
-/** 处理 actions 的纯函数 */
-function processActions(actions: ActionItem[]): any[] {
-  return actions
-    .filter((action: ActionItem) => {
-      return isIfShow(action);
-    })
+/** 处理按钮 actions */
+const getActions = computed(() => {
+  return (props.actions || [])
+    .filter((action: ActionItem) => isIfShow(action))
     .map((action: ActionItem) => {
       const { popConfirm } = action;
       return {
@@ -82,17 +73,12 @@ function processActions(actions: ActionItem[]): any[] {
         enable: !!popConfirm,
       };
     });
-}
+});
 
-/** 处理下拉菜单 actions 的纯函数 */
-function processDropdownActions(
-  dropDownActions: ActionItem[],
-  divider: boolean,
-): any[] {
-  return dropDownActions
-    .filter((action: ActionItem) => {
-      return isIfShow(action);
-    })
+/** 处理下拉菜单 actions */
+const getDropdownList = computed(() => {
+  return (props.dropDownActions || [])
+    .filter((action: ActionItem) => isIfShow(action))
     .map((action: ActionItem, index: number) => {
       const { label, popConfirm } = action;
       const processedAction = { ...action };
@@ -103,79 +89,21 @@ function processDropdownActions(
         onConfirm: popConfirm?.confirm,
         onCancel: popConfirm?.cancel,
         text: label,
-        divider: index < dropDownActions.length - 1 ? divider : false,
+        divider:
+          index < props.dropDownActions.length - 1 ? props.divider : false,
       };
     });
-}
-
-/** 监听 actions 变化并更新缓存 */
-watchEffect(() => {
-  const rawActions = toRaw(props.actions) || [];
-  const currentStringField = JSON.stringify(
-    rawActions.map((a) => ({
-      ...a,
-      onClick: undefined, // 排除函数以便比较
-      popConfirm: a.popConfirm
-        ? { ...a.popConfirm, confirm: undefined, cancel: undefined }
-        : undefined,
-    })),
-  );
-
-  if (currentStringField !== actionsStringField.value) {
-    actionsStringField.value = currentStringField;
-    processedActions.value = processActions(rawActions);
-  }
 });
 
-/** 监听 dropDownActions 变化并更新缓存 */
-watchEffect(() => {
-  const rawDropDownActions = toRaw(props.dropDownActions) || [];
-  const currentStringField = JSON.stringify({
-    actions: rawDropDownActions.map((a) => ({
-      ...a,
-      onClick: undefined, // 排除函数以便比较
-      popConfirm: a.popConfirm
-        ? { ...a.popConfirm, confirm: undefined, cancel: undefined }
-        : undefined,
-    })),
-    divider: props.divider,
-  });
-
-  if (currentStringField !== dropdownActionsStringField.value) {
-    dropdownActionsStringField.value = currentStringField;
-    processedDropdownActions.value = processDropdownActions(
-      rawDropDownActions,
-      props.divider,
-    );
-  }
-});
-
-const getActions = computed(() => processedActions.value);
-
-const getDropdownList = computed(() => processedDropdownActions.value);
-
-/** 缓存 Space 组件的 size 计算结果 */
+/** Space 组件的 size */
 const spaceSize = computed(() => {
   return unref(getActions)?.some((item: ActionItem) => item.type === 'link')
     ? 0
     : 8;
 });
 
-/** 缓存 PopConfirm 属性 */
-const popConfirmPropsMap = new Map<string, any>();
-
+/** 获取 PopConfirm 属性 */
 function getPopConfirmProps(attrs: PopConfirm) {
-  const key = JSON.stringify({
-    title: attrs.title,
-    okText: attrs.okText,
-    cancelText: attrs.cancelText,
-    disabled: attrs.disabled,
-  });
-
-  if (popConfirmPropsMap.has(key)) {
-    return popConfirmPropsMap.get(key);
-  }
-
   const originAttrs: any = { ...attrs };
   delete originAttrs.icon;
   if (attrs.confirm && isFunction(attrs.confirm)) {
@@ -186,61 +114,30 @@ function getPopConfirmProps(attrs: PopConfirm) {
     originAttrs.onCancel = attrs.cancel;
     delete originAttrs.cancel;
   }
-
-  popConfirmPropsMap.set(key, originAttrs);
   return originAttrs;
 }
 
-/** 缓存 Button 属性 */
-const buttonPropsMap = new Map<string, any>();
-
+/** 获取 Button 属性 */
 function getButtonProps(action: ActionItem) {
-  const key = JSON.stringify({
-    type: action.type,
-    danger: action.danger || false,
-    disabled: action.disabled,
-    loading: action.loading,
-    size: action.size,
-  });
-
-  if (buttonPropsMap.has(key)) {
-    return { ...buttonPropsMap.get(key) };
-  }
-
-  const res = {
+  return {
     type: action.type || 'link',
     danger: action.danger || false,
     disabled: action.disabled,
     loading: action.loading,
     size: action.size,
   };
-
-  buttonPropsMap.set(key, res);
-  return res;
 }
 
-/** 缓存 Tooltip 属性 */
-const tooltipPropsMap = new Map<string, any>();
-
+/** 获取 Tooltip 属性 */
 function getTooltipProps(tooltip: any | string) {
   if (!tooltip) return {};
-
-  const key = typeof tooltip === 'string' ? tooltip : JSON.stringify(tooltip);
-
-  if (tooltipPropsMap.has(key)) {
-    return tooltipPropsMap.get(key);
-  }
-
-  const result =
-    typeof tooltip === 'string' ? { title: tooltip } : { ...tooltip };
-
-  tooltipPropsMap.set(key, result);
-  return result;
+  return typeof tooltip === 'string' ? { title: tooltip } : { ...tooltip };
 }
 
+/** 处理菜单点击 */
 function handleMenuClick(e: any) {
   const action = getDropdownList.value[e.key];
-  if (action.onClick && isFunction(action.onClick)) {
+  if (action && action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
 }
@@ -287,7 +184,7 @@ function getActionKey(action: ActionItem, index: number) {
 
     <Dropdown v-if="getDropdownList.length > 0" :trigger="['hover']">
       <slot name="more">
-        <Button :type="getDropdownList[0].type">
+        <Button :type="getDropdownList[0]?.type">
           <template #icon>
             {{ $t('page.action.more') }}
             <IconifyIcon icon="lucide:ellipsis-vertical" />
@@ -339,6 +236,7 @@ function getActionKey(action: ActionItem, index: number) {
     </Dropdown>
   </div>
 </template>
+
 <style lang="scss">
 .table-actions {
   .ant-btn-link {

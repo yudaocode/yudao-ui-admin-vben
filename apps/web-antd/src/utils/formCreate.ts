@@ -5,14 +5,12 @@
 import { isRef } from 'vue';
 
 // 编码表单 Conf
-export const encodeConf = (designerRef: object) => {
-  // @ts-ignore designerRef.value is dynamically added by form-create-designer
+export const encodeConf = (designerRef: any) => {
   return JSON.stringify(designerRef.value.getOption());
 };
 
 // 编码表单 Fields
-export const encodeFields = (designerRef: object) => {
-  // @ts-ignore designerRef.value is dynamically added by form-create-designer
+export const encodeFields = (designerRef: any) => {
   const rule = JSON.parse(designerRef.value.getJson());
   const fields: string[] = [];
   rule.forEach((item: unknown) => {
@@ -32,33 +30,29 @@ export const decodeFields = (fields: string[]) => {
 
 // 设置表单的 Conf 和 Fields，适用 FcDesigner 场景
 export const setConfAndFields = (
-  designerRef: object,
+  designerRef: any,
   conf: string,
   fields: string | string[],
 ) => {
-  // @ts-ignore designerRef.value is dynamically added by form-create-designer
   designerRef.value.setOption(JSON.parse(conf));
-  // @ts-ignore designerRef.value is dynamically added by form-create-designer
-  designerRef.value.setRule(decodeFields(fields));
+  // 处理 fields 参数类型，确保传入 decodeFields 的是 string[] 类型
+  const fieldsArray = Array.isArray(fields) ? fields : [fields];
+  designerRef.value.setRule(decodeFields(fieldsArray));
 };
 
 // 设置表单的 Conf 和 Fields，适用 form-create 场景
 export const setConfAndFields2 = (
-  detailPreview: object,
+  detailPreview: any,
   conf: string,
   fields: string[],
-  value?: object,
+  value?: any,
 ) => {
   if (isRef(detailPreview)) {
-    // @ts-ignore detailPreview.value is dynamically added by form-create-designer
     detailPreview = detailPreview.value;
   }
-  // @ts-ignore detailPreview properties are dynamically added by form-create-designer
   detailPreview.option = JSON.parse(conf);
-  // @ts-ignore detailPreview properties are dynamically added by form-create-designer
   detailPreview.rule = decodeFields(fields);
   if (value) {
-    // @ts-ignore detailPreview properties are dynamically added by form-create-designer
     detailPreview.value = value;
   }
 };

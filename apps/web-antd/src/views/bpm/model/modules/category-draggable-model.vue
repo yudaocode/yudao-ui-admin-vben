@@ -45,6 +45,7 @@ import { useGridColumns } from './data';
 const props = defineProps<{
   categoryInfo: ModelCategoryInfo;
   isCategorySorting: boolean;
+  isFirst?: boolean; // 是否为第一个分类
 }>();
 
 const emit = defineEmits(['success']);
@@ -68,7 +69,8 @@ const userId = userStore.userInfo?.id;
 const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.Model[]>([]);
 const modelList = ref<BpmModelApi.Model[]>([]);
-const isExpand = ref(false);
+// 根据是否为第一个分类, 来设置初始展开状态
+const isExpand = ref(!!props.isFirst);
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -376,9 +378,7 @@ const updateModelList = useDebounceFn(() => {
   const newModelList = props.categoryInfo.modelList;
   if (!isEqual(modelList.value, newModelList)) {
     modelList.value = cloneDeep(newModelList);
-    if (newModelList?.length > 0) {
-      isExpand.value = true;
-    }
+    // 不再自动设置展开状态，除非是第一个分类
     // 关闭排序
     isModelSorting.value = false;
     // 重置排序实例

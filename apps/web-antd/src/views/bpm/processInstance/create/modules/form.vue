@@ -255,15 +255,12 @@ async function getApprovalDetail(row: {
  */
 function setFieldPermission(field: string, permission: string) {
   if (permission === BpmFieldPermissionType.READ) {
-    // @ts-ignore
     fApi.value?.disabled(true, field);
   }
   if (permission === BpmFieldPermissionType.WRITE) {
-    // @ts-ignore
     fApi.value?.disabled(false, field);
   }
   if (permission === BpmFieldPermissionType.NONE) {
-    // @ts-ignore
     fApi.value?.hidden(true, field);
   }
 }

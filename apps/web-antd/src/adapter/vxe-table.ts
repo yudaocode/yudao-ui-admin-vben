@@ -11,9 +11,9 @@ import {
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
 import {
+  erpCountInputFormatter,
   erpNumberFormatter,
   formatPast2,
-  formatToFractionDigit,
   isFunction,
   isString,
 } from '@vben/utils';
@@ -333,8 +333,8 @@ setupVbenVxeTable({
 
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
-      tableCellFormatMethod({ cellValue }, digits = 2) {
-        return formatToFractionDigit(cellValue, digits);
+      tableCellFormatMethod({ cellValue }) {
+        return erpCountInputFormatter(cellValue);
       },
     });
 
