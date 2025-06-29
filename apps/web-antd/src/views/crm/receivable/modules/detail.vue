@@ -53,7 +53,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 加载线索详情 */
+/** 加载回款详情 */
 async function loadReceivableDetail() {
   loading.value = true;
   const data = await getReceivable(receivableId.value);

@@ -64,14 +64,14 @@ const [TransferModal, transferModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 加载线索详情 */
+/** 加载合同详情 */
 async function loadContractDetail() {
   loading.value = true;
   const data = await getContract(contractId.value);
   contract.value = data;
   // 操作日志
   const logList = await getOperateLogPage({
-    bizType: BizTypeEnum.CRM_CLUE,
+    bizType: BizTypeEnum.CRM_CONTRACT,
     bizId: contractId.value,
   });
   contractLogList.value = logList.list;

@@ -3,11 +3,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import {
-  erpPriceInputFormatter,
-  floatToFixed2,
-  formatDateTime,
-} from '@vben/utils';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE } from '#/utils';
@@ -148,7 +144,9 @@ export function useDetailListColumns(): VxeTableGridOptions['columns'] {
       field: 'unpaidPrice',
       minWidth: 150,
       formatter: ({ row }) => {
-        return floatToFixed2(row.totalPrice - row.totalReceivablePrice);
+        return erpPriceInputFormatter(
+          row.totalPrice - row.totalReceivablePrice,
+        );
       },
     },
     {

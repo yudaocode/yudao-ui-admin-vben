@@ -330,9 +330,7 @@ function handleUserSelectCancel() {
                 v-if="task.assigneeUser || task.ownerUser"
               >
                 <!-- 信息：头像昵称 -->
-                <div
-                  class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
-                >
+                <div class="relative flex h-8 items-center rounded-3xl pr-2">
                   <template
                     v-if="
                       task.assigneeUser?.avatar || task.assigneeUser?.nickname
@@ -414,7 +412,7 @@ function handleUserSelectCancel() {
             <div
               v-for="(user, userIndex) in activity.candidateUsers"
               :key="userIndex"
-              class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
+              class="relative flex h-8 items-center rounded-3xl pr-2"
             >
               <Avatar
                 class="!m-1"

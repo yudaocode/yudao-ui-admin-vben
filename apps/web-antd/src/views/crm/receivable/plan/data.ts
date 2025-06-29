@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { useUserStore } from '@vben/stores';
-import { floatToFixed2 } from '@vben/utils';
+import { erpPriceInputFormatter } from '@vben/utils';
 
 import { getContractSimpleList } from '#/api/crm/contract';
 import { getCustomerSimpleList } from '#/api/crm/customer';
@@ -53,6 +53,13 @@ export function useFormSchema(): VbenFormSchema[] {
               value: item.id,
             })),
             placeholder: '请选择合同',
+            onChange: (value: number) => {
+              const contract = res.find((item) => item.id === value);
+              if (contract) {
+                values.price =
+                  contract.totalPrice - contract.totalReceivablePrice;
+              }
+            },
           };
         },
       },
@@ -106,6 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         format: 'YYYY-MM-DD',
       },
+      defaultValue: new Date(),
     },
     {
       fieldName: 'remindDays',
@@ -246,9 +254,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 160,
       formatter: ({ row }) => {
         if (row.receivable) {
-          return floatToFixed2(row.price - row.receivable.price);
+          return erpPriceInputFormatter(row.price - row.receivable.price);
         }
-        return floatToFixed2(row.price);
+        return erpPriceInputFormatter(row.price);
       },
     },
     {

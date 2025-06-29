@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { useUserStore } from '@vben/stores';
-import { erpPriceMultiply, floatToFixed2 } from '@vben/utils';
+import { erpPriceInputFormatter, erpPriceMultiply } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getSimpleBusinessList } from '#/api/crm/business';
@@ -341,7 +341,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'unpaidPrice',
       minWidth: 150,
       formatter: ({ row }) => {
-        return floatToFixed2(row.totalPrice - row.totalReceivablePrice);
+        return erpPriceInputFormatter(
+          row.totalPrice - row.totalReceivablePrice,
+        );
       },
     },
     {

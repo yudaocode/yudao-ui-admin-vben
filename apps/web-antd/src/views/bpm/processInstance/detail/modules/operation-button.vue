@@ -359,7 +359,6 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
       const formCreateApi = approveFormFApi.value;
       if (Object.keys(formCreateApi)?.length > 0) {
         await formCreateApi.validate();
-        // @ts-ignore
         data.variables = approveForm.value.value;
       }
       await TaskApi.approveTask(data);
