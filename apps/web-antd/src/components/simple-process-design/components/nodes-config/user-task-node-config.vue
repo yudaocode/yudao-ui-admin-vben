@@ -601,7 +601,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Drawer class="w-1/3">
+  <Drawer class="w-2/5">
     <template #title>
       <div class="config-header">
         <Input

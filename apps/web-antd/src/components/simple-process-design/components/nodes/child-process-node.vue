@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -11,7 +11,7 @@ import { BpmNodeTypeEnum } from '#/utils';
 
 import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
-// import ChildProcessNodeConfig from '../nodes-config/child-process-node-config.vue';
+import ChildProcessNodeConfig from '../nodes-config/child-process-node-config.vue';
 import NodeHandler from './node-handler.vue';
 
 defineOptions({ name: 'ChildProcessNode' });
@@ -20,7 +20,7 @@ const props = defineProps<{
   flowNode: SimpleFlowNode;
 }>();
 
-// 定义事件，更新父组件。
+/** 定义事件，更新父组件。 */
 const emits = defineEmits<{
   'update:flowNode': [node: SimpleFlowNode | undefined];
 }>();
@@ -28,26 +28,27 @@ const emits = defineEmits<{
 // 是否只读
 const readonly = inject<Boolean>('readonly');
 
-// 监控节点的变化
+/** 监控节点的变化 */
 const currentNode = useWatchNode(props);
 
-// 节点名称编辑
+/** 节点名称编辑 */
 const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.CHILD_PROCESS_NODE,
 );
 
-// 打开节点配置
+// 节点配置 Ref
+const nodeConfigRef = ref();
+
+/** 打开节点配置 */
 const openNodeConfig = () => {
   if (readonly) {
-    console.warn('TODO: 打开节点配置');
+    return;
   }
-  // 暂时注释掉，因为child-process-node-config.vue文件不存在
-  // nodeSetting.value.showChildProcessNodeConfig(currentNode.value);
-  // nodeSetting.value.openDrawer();
+  nodeConfigRef.value.showChildProcessNodeConfig(currentNode.value);
 };
 
-// 删除节点。更新当前节点为孩子节点
+/** 删除节点。更新当前节点为孩子节点 */
 const deleteNode = () => {
   emits('update:flowNode', currentNode.value.childNode);
 };
@@ -118,11 +119,11 @@ const deleteNode = () => {
         :current-node="currentNode"
       />
     </div>
-    <!-- <ChildProcessNodeConfig
+    <ChildProcessNodeConfig
       v-if="!readonly && currentNode"
-      ref="nodeSetting"
+      ref="nodeConfigRef"
       :flow-node="currentNode"
-    /> -->
+    />
   </div>
 </template>
 

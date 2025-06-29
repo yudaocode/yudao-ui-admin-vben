@@ -852,7 +852,7 @@ export const CHILD_PROCESS_START_USER_TYPE = [
     label: '同主流程发起人',
     value: ChildProcessStartUserTypeEnum.MAIN_PROCESS_START_USER,
   },
-  { label: '表单', value: ChildProcessStartUserTypeEnum.FROM_FORM },
+  { label: '从表单中获取', value: ChildProcessStartUserTypeEnum.FROM_FORM },
 ];
 
 export const CHILD_PROCESS_START_USER_EMPTY_TYPE = [
