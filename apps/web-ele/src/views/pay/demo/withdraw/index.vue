@@ -5,7 +5,7 @@ import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { erpPriceInputFormatter } from '@vben/utils';
 
-import { ElMessage, ElLoading, ElTag } from 'element-plus';
+import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

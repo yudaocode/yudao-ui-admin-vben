@@ -99,7 +99,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #no="{ row }">
         <div class="flex flex-col gap-1 text-left">
           <p class="text-sm">
-            <ElTag size="small" type="primary"> 商户</ElTag> {{ row.merchantOrderId }}
+            <ElTag size="small" type="primary"> 商户</ElTag>
+            {{ row.merchantOrderId }}
           </p>
           <p class="text-sm" v-if="row.no">
             <ElTag size="small" type="warning">支付</ElTag> {{ row.no }}

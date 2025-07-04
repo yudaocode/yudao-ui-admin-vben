@@ -10,7 +10,13 @@ import {
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
-import { erpCountInputFormatter, erpNumberFormatter, formatPast2, isFunction, isString } from '@vben/utils';
+import {
+  erpCountInputFormatter,
+  erpNumberFormatter,
+  formatPast2,
+  isFunction,
+  isString,
+} from '@vben/utils';
 
 import { ElButton, ElImage, ElPopconfirm, ElSwitch } from 'element-plus';
 
@@ -285,7 +291,6 @@ setupVbenVxeTable({
         return `${erpNumberFormatter(cellValue, digits)}元`;
       },
     });
-    
   },
   useVbenForm,
 });

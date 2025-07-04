@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { ElMessage, ElLoading } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemoOrderPage, refundDemoOrder } from '#/api/pay/demo/order';

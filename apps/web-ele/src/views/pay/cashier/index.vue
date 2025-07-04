@@ -12,9 +12,9 @@ import {
   ElButton,
   ElCard,
   ElDescriptions,
+  ElImage,
   ElInput,
   ElMessage,
-  ElImage,
 } from 'element-plus';
 
 import { getOrder, submitOrder } from '#/api/pay/order';

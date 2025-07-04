@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PayOrderApi } from '#/api/pay/order';
 
-import { ref, } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 

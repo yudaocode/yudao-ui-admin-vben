@@ -53,8 +53,8 @@ const Description = defineComponent({
         {...props}
         border={props.componentProps?.border}
         column={props.componentProps?.column}
-        extra={props.componentProps?.extra}
         direction={props.componentProps?.direction}
+        extra={props.componentProps?.extra}
         size={props.componentProps?.size}
         title={props.componentProps?.title}
       >
