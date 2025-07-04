@@ -210,7 +210,7 @@ function handleMenuClick(command: any) {
 
     <ElDropdown v-if="getDropdownList.length > 0" @command="handleMenuClick">
       <slot name="more">
-        <ElButton :type="getDropdownList[0].type">
+        <ElButton :type="getDropdownList[0].type" link>
           {{ $t('page.action.more') }}
           <IconifyIcon icon="lucide:ellipsis-vertical" class="ml-1" />
         </ElButton>
