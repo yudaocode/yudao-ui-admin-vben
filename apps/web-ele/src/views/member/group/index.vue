@@ -4,8 +4,7 @@ import type { MemberGroupApi } from '#/api/member/group';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
-import { ElLoading } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteGroup, getGroupPage } from '#/api/member/group';
