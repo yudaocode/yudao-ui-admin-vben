@@ -178,7 +178,8 @@ const processDefinitionGroup = computed(() => {
 });
 
 /** 通过分类 code 获取对应的名称 */
-function getCategoryName(categoryCode: string) {
+// eslint-disable-next-line no-unused-vars
+function _getCategoryName(categoryCode: string) {
   return categoryList.value?.find((ctg: any) => ctg.code === categoryCode)
     ?.name;
 }
@@ -281,7 +282,6 @@ onMounted(() => {
                     }"
                   >
                     <div class="flex items-center">
-                      <!-- TODO @ziye：icon、name 会告警~~ -->
                       <img
                         v-if="definition.icon"
                         :src="definition.icon"
