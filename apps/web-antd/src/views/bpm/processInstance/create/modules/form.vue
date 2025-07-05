@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { ApiAttrs } from '@form-create/ant-design-vue/types/config';
-
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 
 import { computed, nextTick, ref, watch } from 'vue';
@@ -80,7 +78,7 @@ const detailForm = ref<ProcessFormData>({
   value: {},
 });
 
-const fApi = ref<ApiAttrs>();
+const fApi = ref<any>();
 const startUserSelectTasks = ref<UserTask[]>([]);
 const startUserSelectAssignees = ref<Record<string, string[]>>({});
 const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
@@ -330,7 +328,12 @@ defineExpose({ initProcessInfo });
         </Row>
       </Tabs.TabPane>
 
-      <Tabs.TabPane tab="流程图" key="flow" class="flex flex-1 overflow-hidden">
+      <Tabs.TabPane
+        tab="流程图"
+        key="flow"
+        class="flex flex-1 overflow-hidden"
+        :force-render="true"
+      >
         <div class="w-full">
           <ProcessInstanceSimpleViewer
             :simple-json="simpleJson"

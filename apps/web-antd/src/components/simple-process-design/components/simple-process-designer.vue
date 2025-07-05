@@ -126,7 +126,8 @@ function updateModel() {
       name: '发起人',
       type: BpmNodeTypeEnum.START_USER_NODE,
       id: NodeId.START_USER_NODE_ID,
-      showText: '默认配置',
+      // 默认为空，需要进行配置
+      showText: '',
       childNode: {
         id: NodeId.END_EVENT_NODE_ID,
         name: '结束',

@@ -31,6 +31,7 @@ import { getModelList } from '#/api/bpm/model';
 import { BpmNodeTypeEnum } from '#/utils';
 
 import {
+  CHILD_PROCESS_MULTI_INSTANCE_SOURCE_TYPE,
   CHILD_PROCESS_START_USER_EMPTY_TYPE,
   CHILD_PROCESS_START_USER_TYPE,
   ChildProcessMultiInstanceSourceTypeEnum,
@@ -114,6 +115,15 @@ const formRules: Record<string, Rule[]> = reactive({
   multiInstanceEnable: [
     { required: true, message: '多实例设置不能为空', trigger: 'change' },
   ],
+  sequential: [
+    { required: true, message: '是否串行不能为空', trigger: 'change' },
+  ],
+  multiInstanceSourceType: [
+    { required: true, message: '实例数量不能为空', trigger: 'change' },
+  ],
+  approveRatio: [
+    { required: true, message: '完成比例不能为空', trigger: 'change' },
+  ],
 });
 
 type ChildProcessFormType = {
@@ -167,15 +177,16 @@ const formFieldOptions = useFormFields();
 const startUserFormFieldOptions = computed(() => {
   return formFieldOptions.filter((item) => item.type === 'UserSelect');
 });
-//  TODO: 多实例暂时注释
-// const digitalFormFieldOptions = computed(() => {
-//   return formFieldOptions.filter((item) => item.type === 'inputNumber');
-// });
-// const multiFormFieldOptions = computed(() => {
-//   return formFieldOptions.filter(
-//     (item) => item.type === 'select' || item.type === 'checkbox',
-//   );
-// });
+// 数字表单字段选项
+const digitalFormFieldOptions = computed(() => {
+  return formFieldOptions.filter((item) => item.type === 'inputNumber');
+});
+// 多选表单字段选项
+const multiFormFieldOptions = computed(() => {
+  return formFieldOptions.filter(
+    (item) => item.type === 'select' || item.type === 'checkbox',
+  );
+});
 const childFormFieldOptions = ref<any[]>([]);
 
 /** 保存配置 */
@@ -365,10 +376,10 @@ const getIsoTimeDuration = () => {
   }
   return strTimeDuration;
 };
-/** TODO: 多实例暂时注释 */
-// const handleMultiInstanceSourceTypeChange = () => {
-//   configForm.value.multiInstanceSource = '';
-// };
+
+const handleMultiInstanceSourceTypeChange = () => {
+  configForm.value.multiInstanceSource = '';
+};
 
 onMounted(async () => {
   try {
@@ -630,17 +641,6 @@ onMounted(async () => {
             >
               {{ item.label }}
             </Radio>
-            <!-- <Row :gutter="[0, 8]">
-              <Col
-                v-for="item in CHILD_PROCESS_START_USER_EMPTY_TYPE"
-                :key="item.value"
-                :span="24"
-              >
-                <Radio :value="item.value" :label="item.value">
-                  {{ item.label }}
-                </Radio>
-              </Col>
-            </Row> -->
           </RadioGroup>
         </FormItem>
 
@@ -728,8 +728,14 @@ onMounted(async () => {
           </FormItem>
         </div>
 
-        <!-- <Divider>多实例设置 TODO: 多实例暂时注释</Divider> -->
-        <!-- <FormItem label="启用开关" name="multiInstanceEnable">
+        <Divider>多实例设置</Divider>
+        <FormItem
+          label="启用开关"
+          label-align="left"
+          name="multiInstanceEnable"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 4 }"
+        >
           <Switch
             v-model:checked="configForm.multiInstanceEnable"
             checked-children="开启"
@@ -737,27 +743,41 @@ onMounted(async () => {
           />
         </FormItem>
         <div v-if="configForm.multiInstanceEnable">
-          <FormItem name="sequential">
+          <FormItem
+            name="sequential"
+            label="是否串行"
+            label-align="left"
+            :label-col="{ span: 5 }"
+            :wrapper-col="{ span: 4 }"
+          >
             <Switch
               v-model:checked="configForm.sequential"
-              checked-children="串行"
-              un-checked-children="并行"
+              checked-children="是"
+              un-checked-children="否"
             />
           </FormItem>
-          <FormItem name="approveRatio">
-            <TypographyText>完成比例(%)</TypographyText>
+          <FormItem
+            name="approveRatio"
+            label="完成比例(%)"
+            label-align="left"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 4 }"
+          >
             <InputNumber
-              class="ml-2"
               v-model:value="configForm.approveRatio"
               :min="10"
               :max="100"
               :step="10"
             />
           </FormItem>
-          <FormItem name="multiInstanceSourceType">
-            <TypographyText>多实例来源</TypographyText>
+          <FormItem
+            name="multiInstanceSourceType"
+            label="实例数量"
+            label-align="left"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Select
-              class="ml-2 w-48"
               v-model:value="configForm.multiInstanceSourceType"
               @change="handleMultiInstanceSourceTypeChange"
             >
@@ -776,6 +796,16 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.FIXED_QUANTITY
             "
+            name="multiInstanceSource"
+            label="固定数量"
+            label-align="left"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 12 }"
+            :rules="{
+              required: true,
+              message: '固定数量不能为空',
+              trigger: 'change',
+            }"
           >
             <InputNumber
               v-model:value="configForm.multiInstanceSource"
@@ -787,8 +817,18 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.NUMBER_FORM
             "
+            name="multiInstanceSource"
+            label="数字表单"
+            label-align="left"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 12 }"
+            :rules="{
+              required: true,
+              message: '数字表单字段不能为空',
+              trigger: 'change',
+            }"
           >
-            <Select class="w-48" v-model:value="configForm.multiInstanceSource">
+            <Select v-model:value="configForm.multiInstanceSource">
               <SelectOption
                 v-for="(field, fIdx) in digitalFormFieldOptions"
                 :key="fIdx"
@@ -804,8 +844,18 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.MULTIPLE_FORM
             "
+            name="multiInstanceSource"
+            label="多选表单"
+            label-align="left"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 12 }"
+            :rules="{
+              required: true,
+              message: '多选表单字段不能为空',
+              trigger: 'change',
+            }"
           >
-            <Select class="w-48" v-model:value="configForm.multiInstanceSource">
+            <Select v-model:value="configForm.multiInstanceSource">
               <SelectOption
                 v-for="(field, fIdx) in multiFormFieldOptions"
                 :key="fIdx"
@@ -816,7 +866,7 @@ onMounted(async () => {
               </SelectOption>
             </Select>
           </FormItem>
-        </div> -->
+        </div>
       </Form>
     </div>
   </Drawer>

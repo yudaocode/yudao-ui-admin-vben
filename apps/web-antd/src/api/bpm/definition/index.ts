@@ -7,6 +7,7 @@ export namespace BpmProcessDefinitionApi {
   export interface ProcessDefinition {
     id: string;
     version: number;
+    name: string;
     deploymentTime: number;
     suspensionState: number;
     modelType: number;
@@ -15,6 +16,7 @@ export namespace BpmProcessDefinitionApi {
     bpmnXml?: string;
     simpleModel?: string;
     formFields?: string[];
+    icon?: string;
   }
 }
 
