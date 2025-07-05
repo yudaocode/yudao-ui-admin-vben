@@ -78,7 +78,7 @@ const dictTag = computed(() => {
 </script>
 
 <template>
-  <ElTag v-if="dictTag" :type="dictTag.colorType">
+  <ElTag v-if="dictTag.label" :type="dictTag.colorType as any">
     {{ dictTag.label }}
   </ElTag>
 </template>

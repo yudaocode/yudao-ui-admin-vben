@@ -3,11 +3,10 @@ import type {
   UploadFile,
   UploadProgressEvent,
   UploadRequestOptions,
+  UploadUserFile,
 } from 'element-plus';
 
 import type { AxiosResponse } from '@vben/request';
-
-import type { CustomUploadFile } from './typing';
 
 import type { AxiosProgressEvent } from '#/api/infra/file';
 
@@ -63,7 +62,7 @@ const props = withDefaults(
     showDescription: false,
   },
 );
-const emit = defineEmits(['change', 'update:value', 'delete']);
+const emit = defineEmits(['change', 'update:value', 'delete', 'returnText']);
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
@@ -73,7 +72,7 @@ const { getStringAccept } = useUploadType({
   maxSizeRef: maxSize,
 });
 
-const fileList = ref<CustomUploadFile[]>([]);
+const fileList = ref<UploadUserFile[]>([]);
 const isLtMsg = ref<boolean>(true); // 文件大小错误提示
 const isActMsg = ref<boolean>(true); // 文件类型错误提示
 const isFirstRender = ref<boolean>(true); // 是否第一次渲染
@@ -100,7 +99,7 @@ watch(
               name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
               status: UploadResultStatus.DONE,
               url: item,
-            } as CustomUploadFile;
+            } as UploadUserFile;
           } else if (item && isObject(item)) {
             const file = item as Record<string, any>;
             return {
@@ -111,11 +110,11 @@ watch(
               response: file.response,
               percentage: file.percentage,
               size: file.size,
-            } as CustomUploadFile;
+            } as UploadUserFile;
           }
           return null;
         })
-        .filter(Boolean) as CustomUploadFile[];
+        .filter(Boolean) as UploadUserFile[];
     }
     if (!isFirstRender.value) {
       emit('change', value);
@@ -141,6 +140,8 @@ const handleRemove = async (file: UploadFile) => {
 };
 
 const beforeUpload = async (file: File) => {
+  const fileContent = await file.text();
+  emit('returnText', fileContent);
   const { maxSize, accept } = props;
   const isAct = checkFileType(file, accept);
   if (!isAct) {
@@ -175,17 +176,17 @@ async function customRequest(options: UploadRequestOptions) {
         total: e.total || 0,
         loaded: e.loaded || 0,
         lengthComputable: true,
-        target: e.target as EventTarget,
+        target: e.event.target as EventTarget,
         bubbles: false,
         cancelBubble: false,
         cancelable: false,
         composed: false,
-        currentTarget: e.target as EventTarget,
+        currentTarget: e.event.target as EventTarget,
         defaultPrevented: false,
         eventPhase: 0,
         isTrusted: true,
         returnValue: true,
-        srcElement: e.target as EventTarget,
+        srcElement: e.event.target as EventTarget,
         timeStamp: Date.now(),
         type: 'progress',
         composedPath: () => [],
@@ -193,6 +194,10 @@ async function customRequest(options: UploadRequestOptions) {
         preventDefault: () => {},
         stopImmediatePropagation: () => {},
         stopPropagation: () => {},
+        NONE: 0,
+        CAPTURING_PHASE: 1,
+        AT_TARGET: 2,
+        BUBBLING_PHASE: 3,
       };
       options.onProgress!(progressEvent);
     };
