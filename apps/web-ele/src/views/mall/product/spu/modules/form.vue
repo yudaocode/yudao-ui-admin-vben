@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, unref } from 'vue';
+import { cloneDeep } from '@vben/utils';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 import { useRouter, useRoute } from 'vue-router';
-import { floatToFixed2, formatToFraction } from '#/utils';
+import { floatToFixed2, formatToFraction, convertToInteger } from '@vben/utils';
 import * as ProductSpuApi from '#/api/mall/product/spu';
+import { ElMessage } from 'element-plus';
 
 import InfoForm from '../components/info-form.vue';
 import DeliveryForm from '../components/delivery-form.vue';
@@ -50,7 +52,7 @@ const formData = ref<MallSpuApi.Spu>({
 
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(false); // 是否查看详情
-const { push, currentRoute } = useRouter(); // 路由
+const { push } = useRouter(); // 路由
 const { params, name } = useRoute(); // 查询参数
 /** 获得详情 */
 const getDetail = async () => {
@@ -87,6 +89,59 @@ const getDetail = async () => {
   }
 };
 
+/** 提交按钮 */
+const infoRef = ref<InstanceType<typeof InfoForm>>();
+const skuRef = ref<InstanceType<typeof SkuForm>>();
+const deliveryRef = ref<InstanceType<typeof DeliveryForm>>();
+const descriptionRef = ref<InstanceType<typeof DescriptionForm>>();
+const otherRef = ref<InstanceType<typeof OtherForm>>();
+const submitForm = async () => {
+  // 提交请求
+  formLoading.value = true;
+  try {
+    // 校验各表单
+    await unref(infoRef)?.validate();
+    await unref(skuRef)?.validate();
+    await unref(deliveryRef)?.validate();
+    await unref(descriptionRef)?.validate();
+    await unref(otherRef)?.validate();
+    // 深拷贝一份, 这样最终 server 端不满足，不需要影响原始数据
+    const deepCopyFormData = cloneDeep(unref(formData.value)) as MallSpuApi.Spu;
+    deepCopyFormData.skus!.forEach((item) => {
+      // 给sku name赋值
+      item.name = deepCopyFormData.name;
+      // sku相关价格元转分
+      item.price = convertToInteger(item.price);
+      item.marketPrice = convertToInteger(item.marketPrice);
+      item.costPrice = convertToInteger(item.costPrice);
+      item.firstBrokeragePrice = convertToInteger(item.firstBrokeragePrice);
+      item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice);
+    });
+    // 处理轮播图列表
+    const newSliderPicUrls: any[] = [];
+    deepCopyFormData.sliderPicUrls!.forEach((item: any) => {
+      // 如果是前端选的图
+      typeof item === 'object'
+        ? newSliderPicUrls.push(item.url)
+        : newSliderPicUrls.push(item);
+    });
+    deepCopyFormData.sliderPicUrls = newSliderPicUrls;
+    // 校验都通过后提交表单
+    const data = deepCopyFormData as MallSpuApi.Spu;
+    const id = params.id as unknown as number;
+    if (!id) {
+      await ProductSpuApi.createSpu(data);
+      ElMessage.success('创建成功');
+    } else {
+      await ProductSpuApi.updateSpu(data);
+      ElMessage.success('更新成功');
+    }
+    close();
+  } finally {
+    formLoading.value = false;
+  }
+};
+
 /** 关闭按钮 */
 const close = () => {
   push({ name: 'ProductSpu' });
@@ -102,26 +157,44 @@ onMounted(async () => {
   <Page :auto-content-height="true">
     <ElTabs v-model="activeTab">
       <ElTabPane label="基础设置" name="info">
-        <InfoForm :propFormData="formData" v-model:activeName="activeName" />
+        <InfoForm
+          :propFormData="formData"
+          v-model:activeName="activeName"
+          ref="infoRef"
+        />
       </ElTabPane>
       <ElTabPane label="价格库存" name="sku">
-        <SkuForm :propFormData="formData" v-model:activeName="activeName" />
+        <SkuForm
+          :propFormData="formData"
+          v-model:activeName="activeName"
+          ref="skuRef"
+        />
       </ElTabPane>
       <ElTabPane label="物流设置" name="delivery">
         <DeliveryForm
           :propFormData="formData"
           v-model:activeName="activeName"
+          ref="deliveryRef"
         />
       </ElTabPane>
       <ElTabPane label="商品详情" name="description">
         <DescriptionForm
           :propFormData="formData"
           v-model:activeName="activeName"
+          ref="descriptionRef"
         />
       </ElTabPane>
       <ElTabPane label="其它设置" name="other">
-        <OtherForm :propFormData="formData" v-model:activeName="activeName" />
+        <OtherForm
+          :propFormData="formData"
+          v-model:activeName="activeName"
+          ref="otherRef"
+        />
       </ElTabPane>
     </ElTabs>
+    <ElButton type="primary" :loading="formLoading" @click="submitForm"
+      >保存</ElButton
+    >
+    <ElButton @click="close">返回</ElButton>
   </Page>
 </template>

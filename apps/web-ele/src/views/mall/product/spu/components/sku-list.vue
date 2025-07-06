@@ -1,7 +1,7 @@
 <template>
   <!-- 情况一：添加/修改 -->
   <el-table
-    v-if="!isDetail && !isActivityComponent"
+    v-if="!isActivityComponent"
     :data="isBatch ? skuList : formData!.skus!"
     border
     class="tabNumWidth"
@@ -164,89 +164,7 @@
     </el-table-column>
   </el-table>
 
-  <!-- 情况二：详情 -->
-  <el-table
-    v-if="isDetail"
-    ref="activitySkuListRef"
-    :data="formData!.skus!"
-    border
-    max-height="500"
-    size="small"
-    style="width: 99%"
-    @selection-change="handleSelectionChange"
-  >
-    <el-table-column v-if="isComponent" type="selection" width="45" />
-    <el-table-column align="center" label="图片" min-width="80">
-      <template #default="{ row }">
-        <el-image v-if="row.picUrl" :src="row.picUrl" class="h-50px w-50px" />
-      </template>
-    </el-table-column>
-    <template v-if="formData!.specType && !isBatch">
-      <!--  根据商品属性动态添加 -->
-      <el-table-column
-        v-for="(item, index) in tableHeaders"
-        :key="index"
-        :label="item.label"
-        align="center"
-        min-width="80"
-      >
-        <template #default="{ row }">
-          <span style="font-weight: bold; color: #40aaff">
-            {{ row.properties?.[index]?.valueName }}
-          </span>
-        </template>
-      </el-table-column>
-    </template>
-    <el-table-column align="center" label="商品条码" min-width="100">
-      <template #default="{ row }">
-        {{ row.barCode }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="销售价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.price }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="市场价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.marketPrice }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="成本价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.costPrice }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="库存" min-width="80">
-      <template #default="{ row }">
-        {{ row.stock }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="重量(kg)" min-width="80">
-      <template #default="{ row }">
-        {{ row.weight }}
-      </template>
-    </el-table-column>
-    <el-table-column align="center" label="体积(m^3)" min-width="80">
-      <template #default="{ row }">
-        {{ row.volume }}
-      </template>
-    </el-table-column>
-    <template v-if="formData!.subCommissionType">
-      <el-table-column align="center" label="一级返佣(元)" min-width="80">
-        <template #default="{ row }">
-          {{ row.firstBrokeragePrice }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="二级返佣(元)" min-width="80">
-        <template #default="{ row }">
-          {{ row.secondBrokeragePrice }}
-        </template>
-      </el-table-column>
-    </template>
-  </el-table>
-
-  <!-- 情况三：作为活动组件 -->
+  <!-- 情况二：作为活动组件 -->
   <el-table
     v-if="isActivityComponent"
     :data="formData!.skus!"
@@ -307,7 +225,8 @@
   </el-table>
 </template>
 <script lang="ts" setup>
-import { copyValueToTarget, formatToFraction } from '#/utils';
+import { copyValueToTarget } from '#/utils';
+import { formatToFraction } from '@vben/utils';
 import type { PropertyAndValues, RuleConfig } from './model';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ElTable, ElInput, ElMessage } from 'element-plus';
@@ -335,10 +254,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   }, // 是否作为批量操作组件
-  isDetail: {
-    type: Boolean,
-    default: false,
-  }, // 是否作为 sku 详情组件
   isComponent: {
     type: Boolean,
     default: false,
