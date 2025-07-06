@@ -1,55 +1,57 @@
 <!-- 商品发布 - 库存价格 - 属性列表 -->
 <template>
-  <el-col v-for="(item, index) in attributeList" :key="index">
+  <ElCol v-for="(item, index) in attributeList" :key="index">
     <div>
-      <el-text class="mx-1">属性名：</el-text>
-      <el-tag class="mx-1" type="success" @close="handleCloseProperty(index)">
+      <ElText class="mx-1">属性名：</ElText>
+      <ElTag class="mx-1" type="success" @close="handleCloseProperty(index)">
         {{ item.name }}
-      </el-tag>
+      </ElTag>
     </div>
     <div>
-      <el-text class="mx-1">属性值：</el-text>
-      <el-tag
-        v-for="(value, valueIndex) in item.values"
-        :key="value.id"
-        class="mx-1"
-        @close="handleCloseValue(index, valueIndex)"
-      >
-        {{ value.name }}
-      </el-tag>
-      <el-select
-        v-show="inputVisible(index)"
-        :id="`input${index}`"
-        :ref="setInputRef"
-        v-model="inputValue"
-        :reserve-keyword="false"
-        allow-create
-        class="!w-30"
-        default-first-option
-        filterable
-        size="small"
-        @blur="handleInputConfirm(index, item.id)"
-        @change="handleInputConfirm(index, item.id)"
-        @keyup.enter="handleInputConfirm(index, item.id)"
-      >
-        <el-option
-          v-for="item2 in attributeOptions"
-          :key="item2.id"
-          :label="item2.name"
-          :value="item2.name"
-        />
-      </el-select>
-      <el-button
-        v-show="!inputVisible(index)"
-        class="button-new-tag ml-1"
-        size="small"
-        @click="showInput(index)"
-      >
-        + 添加
-      </el-button>
+      <ElSpace :size="1">
+        <ElText class="mx-1">属性值：</ElText>
+        <ElTag
+          v-for="(value, valueIndex) in item.values"
+          :key="value.id"
+          class="mx-1"
+          @close="handleCloseValue(index, valueIndex)"
+        >
+          {{ value.name }}
+        </ElTag>
+        <ElSelect
+          v-show="inputVisible(index)"
+          :id="`input${index}`"
+          :ref="setInputRef"
+          v-model="inputValue"
+          :reserve-keyword="false"
+          allow-create
+          class="!w-30"
+          default-first-option
+          filterable
+          size="small"
+          @blur="handleInputConfirm(index, item.id)"
+          @change="handleInputConfirm(index, item.id)"
+          @keyup.enter="handleInputConfirm(index, item.id)"
+        >
+          <el-option
+            v-for="item2 in attributeOptions"
+            :key="item2.id"
+            :label="item2.name"
+            :value="item2.name"
+          />
+        </ElSelect>
+        <ElButton
+          v-show="!inputVisible(index)"
+          class="button-new-tag ml-1"
+          size="small"
+          @click="showInput(index)"
+        >
+          + 添加
+        </ElButton>
+      </ElSpace>
     </div>
-    <el-divider class="my-10px" />
-  </el-col>
+    <ElDivider class="my-10px" />
+  </ElCol>
 </template>
 
 <script lang="ts" setup>
@@ -58,18 +60,17 @@ import type { PropType } from 'vue';
 
 import * as PropertyApi from '#/api/mall/product/property';
 import type { MallPropertyApi } from '#/api/mall/product/property';
-import { ElMessage } from 'element-plus';
+import {
+  ElMessage,
+  ElCol,
+  ElTag,
+  ElText,
+  ElButton,
+  ElDivider,
+  ElSpace,
+} from 'element-plus';
 import { $t } from '#/locales';
-
-// 定义PropertyAndValues接口
-interface PropertyAndValues {
-  id: number;
-  name: string;
-  values: Array<{
-    id: number;
-    name: string;
-  }>;
-}
+import type { PropertyAndValues } from './model';
 
 defineOptions({ name: 'ProductAttributes' });
 
@@ -117,7 +118,8 @@ watch(
 /** 删除属性值*/
 const handleCloseValue = (index: number, valueIndex: number) => {
   if (index < attributeList.value.length) {
-    attributeList.value[index]!.values.splice(valueIndex, 1);
+    const values = attributeList.value[index]!.values as any[];
+    values.splice(valueIndex, 1);
   }
 };
 
@@ -144,11 +146,8 @@ const emit = defineEmits(['success']); // 定义 success 事件，用于操作�
 const handleInputConfirm = async (index: number, propertyId: number) => {
   if (inputValue.value && index < attributeList.value.length) {
     // 1. 重复添加校验
-    if (
-      attributeList.value[index]!.values.find(
-        (item) => item.name === inputValue.value,
-      )
-    ) {
+    const values = attributeList.value[index]!.values as any[];
+    if (values.find((item) => item.name === inputValue.value)) {
       ElMessage.warning('已存在相同属性值，请重试');
       attributeIndex.value = null;
       inputValue.value = '';
@@ -162,7 +161,8 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
     if (existValue) {
       attributeIndex.value = null;
       inputValue.value = '';
-      attributeList.value[index]!.values.push({
+      const values = attributeList.value[index]!.values as any[];
+      values.push({
         id: existValue.id!,
         name: existValue.name,
       });
@@ -176,7 +176,8 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
         propertyId,
         name: inputValue.value,
       });
-      attributeList.value[index]!.values.push({ id, name: inputValue.value });
+      const values = attributeList.value[index]!.values as any[];
+      values.push({ id, name: inputValue.value });
       ElMessage.success($t('common.createSuccess'));
       emit('success', attributeList.value);
     } catch {

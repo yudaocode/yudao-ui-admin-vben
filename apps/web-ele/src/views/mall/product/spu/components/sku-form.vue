@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { useVbenForm } from '#/adapter/form';
 import { watch, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElSpace } from 'element-plus';
 import SkuList from './sku-list.vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import ProductPropertyAddForm from './product-property-add-form.vue';
+import { getPropertyList } from './data';
+import ProductAttributes from './product-attributes.vue';
 
 const props = defineProps<{
   propFormData: Object;
@@ -151,6 +153,24 @@ const [Form, formApi] = useVbenForm({
         show: (values) => values.specType,
       },
     },
+    {
+      fieldName: 'batchSettings',
+      label: '批量设置',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        show: (values) => values.specType && propertyList.value.length > 0,
+      },
+    },
+    {
+      fieldName: 'specTypeItemList',
+      label: '规格列表',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        show: (values) => values.specType && propertyList.value.length > 0,
+      },
+    },
   ],
   showDefaultActions: false,
 });
@@ -165,6 +185,21 @@ const skuListRef = ref();
 const generateSkus = (propertyList: any[]) => {
   skuListRef.value.generateTableData(propertyList);
 };
+
+/** 将传进来的值赋值给 formData */
+watch(
+  () => props.propFormData,
+  (data) => {
+    if (!data) {
+      return;
+    }
+    // 将 SKU 的属性，整理成 PropertyAndValues 数组
+    propertyList.value = getPropertyList(data);
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 <template>
   <Page :auto-content-height="true">
@@ -178,12 +213,28 @@ const generateSkus = (propertyList: any[]) => {
         />
       </template>
       <template #specTypeItem>
-        <ElButton type="primary" @click="productPropertyAddFormApi.open()"
-          >添加属性</ElButton
-        >
-        <ProductAttributes
+        <ElSpace direction="vertical" alignment="flex-start">
+          <ElButton type="primary" @click="productPropertyAddFormApi.open()"
+            >添加属性</ElButton
+          >
+          <ProductAttributes
+            :property-list="propertyList"
+            @success="generateSkus"
+          />
+        </ElSpace>
+      </template>
+      <template #batchSettings>
+        <SkuList
+          :is-batch="true"
+          :prop-form-data="props.propFormData"
           :property-list="propertyList"
-          @success="generateSkus"
+        />
+      </template>
+      <template #specTypeItemList>
+        <SkuList
+          :prop-form-data="props.propFormData"
+          :property-list="propertyList"
+          :rule-config="ruleConfig"
         />
       </template>
     </Form>
