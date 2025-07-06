@@ -103,6 +103,9 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       title: '品牌图片',
       cellRender: {
         name: 'CellImage',
+        props: {
+          class: 'w-10 h-10',
+        },
       },
     },
     {
