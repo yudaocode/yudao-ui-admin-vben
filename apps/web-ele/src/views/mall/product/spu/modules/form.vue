@@ -4,7 +4,7 @@ import { onMounted, ref, unref } from 'vue';
 import { cloneDeep } from '@vben/utils';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 import { useRouter, useRoute } from 'vue-router';
-import { floatToFixed2, formatToFraction, convertToInteger } from '@vben/utils';
+import { formatToFraction, convertToInteger } from '@vben/utils';
 import * as ProductSpuApi from '#/api/mall/product/spu';
 import { ElMessage } from 'element-plus';
 
@@ -51,36 +51,22 @@ const formData = ref<MallSpuApi.Spu>({
 });
 
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const isDetail = ref(false); // 是否查看详情
 const { push } = useRouter(); // 路由
-const { params, name } = useRoute(); // 查询参数
+const { params } = useRoute(); // 查询参数
 /** 获得详情 */
 const getDetail = async () => {
-  if ('ProductSpuDetail' === name) {
-    isDetail.value = true;
-  }
   const id = params.id as unknown as number;
   if (id) {
     formLoading.value = true;
     try {
       const res = (await ProductSpuApi.getSpu(id)) as MallSpuApi.Spu;
       res.skus?.forEach((item: MallSpuApi.Sku) => {
-        if (isDetail.value) {
-          item.price = floatToFixed2(item.price);
-          item.marketPrice = floatToFixed2(item.marketPrice);
-          item.costPrice = floatToFixed2(item.costPrice);
-          item.firstBrokeragePrice = floatToFixed2(item.firstBrokeragePrice);
-          item.secondBrokeragePrice = floatToFixed2(item.secondBrokeragePrice);
-        } else {
-          // 回显价格分转元
-          item.price = formatToFraction(item.price);
-          item.marketPrice = formatToFraction(item.marketPrice);
-          item.costPrice = formatToFraction(item.costPrice);
-          item.firstBrokeragePrice = formatToFraction(item.firstBrokeragePrice);
-          item.secondBrokeragePrice = formatToFraction(
-            item.secondBrokeragePrice,
-          );
-        }
+        // 回显价格分转元
+        item.price = formatToFraction(item.price);
+        item.marketPrice = formatToFraction(item.marketPrice);
+        item.costPrice = formatToFraction(item.costPrice);
+        item.firstBrokeragePrice = formatToFraction(item.firstBrokeragePrice);
+        item.secondBrokeragePrice = formatToFraction(item.secondBrokeragePrice);
       });
       formData.value = res;
     } finally {
