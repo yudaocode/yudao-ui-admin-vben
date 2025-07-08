@@ -31,13 +31,19 @@ catalogs:
       specifier: ^9.9.0
       version: 9.9.0
     '@form-create/ant-design-vue':
-      specifier: ^3.2.22
+      specifier: ^3.2.27
       version: 3.2.27
     '@form-create/antd-designer':
-      specifier: ^3.2.11
+      specifier: ^3.3.0
       version: 3.3.0
+    '@form-create/designer':
+      specifier: ^3.3.0
+      version: 3.3.0
+    '@form-create/element-ui':
+      specifier: ^3.2.27
+      version: 3.2.27
     '@form-create/naive-ui':
-      specifier: ^3.2.22
+      specifier: ^3.2.27
       version: 3.2.27
     '@iconify/json':
       specifier: ^2.2.354
@@ -535,7 +541,7 @@ catalogs:
       specifier: ^3.2.4
       version: 3.2.4
     vue-dompurify-html:
-      specifier: ^5.2.0
+      specifier: ^5.3.0
       version: 5.3.0
     vue-eslint-parser:
       specifier: ^10.2.0
@@ -799,10 +805,10 @@ importers:
   apps/web-ele:
     dependencies:
       '@form-create/designer':
-        specifier: ^3.2.6
+        specifier: 'catalog:'
         version: 3.3.0(vue@3.5.17(typescript@5.8.3))
       '@form-create/element-ui':
-        specifier: ^3.2.11
+        specifier: 'catalog:'
         version: 3.2.27(vue@3.5.17(typescript@5.8.3))
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
