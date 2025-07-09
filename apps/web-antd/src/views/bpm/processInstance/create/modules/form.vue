@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
+import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
@@ -20,7 +21,6 @@ import {
   BpmModelFormType,
   BpmModelType,
   BpmNodeIdEnum,
-  BpmNodeTypeEnum,
   decodeFields,
   setConfAndFields2,
 } from '#/utils';
@@ -37,22 +37,6 @@ interface ProcessFormData {
 interface UserTask {
   id: number;
   name: string;
-}
-
-interface ApprovalNodeInfo {
-  id: number;
-  name: string;
-  candidateStrategy: BpmCandidateStrategyEnum;
-  candidateUsers?: Array<{
-    avatar: string;
-    id: number;
-    nickname: string;
-  }>;
-  endTime?: Date;
-  nodeType: BpmNodeTypeEnum;
-  startTime?: Date;
-  status: number;
-  tasks: any[];
 }
 
 defineOptions({ name: 'BpmProcessInstanceCreateForm' });
@@ -86,7 +70,7 @@ const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);
 const timelineRef = ref<any>();
 const activeTab = ref('form');
-const activityNodes = ref<ApprovalNodeInfo[]>([]);
+const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 const processInstanceStartLoading = ref(false);
 
 /** 提交按钮 */
@@ -217,7 +201,7 @@ async function getApprovalDetail(row: {
     }
 
     // 获取审批节点
-    activityNodes.value = data.activityNodes as unknown as ApprovalNodeInfo[];
+    activityNodes.value = data.activityNodes;
 
     // 获取发起人自选的任务
     startUserSelectTasks.value = (data.activityNodes?.filter(
