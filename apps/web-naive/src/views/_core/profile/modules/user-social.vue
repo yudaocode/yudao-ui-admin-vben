@@ -6,6 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
+import { getUrlValue } from '@vben/utils';
 
 import { NButton, NCard, NImage } from 'naive-ui';
 
@@ -150,13 +151,6 @@ async function bindSocial() {
   window.history.replaceState({}, '', location.pathname);
 }
 
-// TODO @芋艿：后续搞到 util 里；
-// 双层 encode 需要在回调后进行 decode
-function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href));
-  return url.searchParams.get(key) ?? '';
-}
-
 /** 初始化 */
 onMounted(() => {
   bindSocial();
@@ -201,7 +195,7 @@ onMounted(() => {
               <NButton
                 :disabled="!!item.socialUser"
                 size="small"
-                type="link"
+                text
                 @click="onBind(item)"
               >
                 {{ item.socialUser ? '已绑定' : '绑定' }}
