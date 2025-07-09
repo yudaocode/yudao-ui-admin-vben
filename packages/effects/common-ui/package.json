@@ -41,6 +41,7 @@
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "crypto-js": "catalog:",
+    "json-bigint": "catalog:",
     "qrcode": "catalog:",
     "tippy.js": "catalog:",
     "vue": "catalog:",
