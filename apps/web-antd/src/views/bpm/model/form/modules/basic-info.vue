@@ -335,7 +335,7 @@ defineExpose({ validate });
           <div
             v-for="user in selectedStartUsers"
             :key="user.id"
-            class="relative flex h-9 items-center rounded-full pr-2 hover:bg-gray-200"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200 dark:border dark:border-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             <Avatar
               class="m-1"
@@ -346,7 +346,9 @@ defineExpose({ validate });
             <Avatar class="m-1" :size="28" v-else>
               {{ user.nickname?.substring(0, 1) }}
             </Avatar>
-            {{ user.nickname }}
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ user.nickname }}
+            </span>
             <IconifyIcon
               icon="lucide:x"
               class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
@@ -371,10 +373,12 @@ defineExpose({ validate });
           <div
             v-for="dept in selectedStartDepts"
             :key="dept.id"
-            class="relative flex h-9 items-center rounded-full pr-2 shadow-sm hover:bg-gray-200"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 shadow-sm hover:bg-gray-200 dark:border dark:border-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             <IconifyIcon icon="lucide:building" class="size-6 px-1" />
-            {{ dept.name }}
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ dept.name }}
+            </span>
             <IconifyIcon
               icon="lucide:x"
               class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
@@ -398,7 +402,7 @@ defineExpose({ validate });
           <div
             v-for="user in selectedManagerUsers"
             :key="user.id"
-            class="hover:bg-primary-500 relative flex h-9 items-center rounded-full pr-2"
+            class="relative flex h-9 items-center rounded-full bg-gray-100 pr-2 hover:bg-gray-200 dark:border dark:border-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             <Avatar
               class="m-1"
@@ -409,7 +413,9 @@ defineExpose({ validate });
             <Avatar class="m-1" :size="28" v-else>
               {{ user.nickname?.substring(0, 1) }}
             </Avatar>
-            {{ user.nickname }}
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ user.nickname }}
+            </span>
             <IconifyIcon
               icon="lucide:x"
               class="ml-2 size-4 cursor-pointer text-gray-400 hover:text-red-500"
@@ -432,6 +438,7 @@ defineExpose({ validate });
 
     <!-- 用户选择弹窗 -->
     <UserSelectModalComp
+      class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
       title="选择用户"
@@ -441,6 +448,7 @@ defineExpose({ validate });
     />
     <!-- 部门选择对话框 -->
     <DeptSelectModalComp
+      class="w-3/5"
       title="发起人部门选择"
       :check-strictly="true"
       @confirm="handleDeptSelectConfirm"

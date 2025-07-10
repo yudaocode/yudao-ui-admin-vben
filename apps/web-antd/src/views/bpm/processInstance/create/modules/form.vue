@@ -72,7 +72,6 @@ const timelineRef = ref<any>();
 const activeTab = ref('form');
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 const processInstanceStartLoading = ref(false);
-
 /** 提交按钮 */
 async function submitForm() {
   if (!fApi.value || !props.selectProcessDefinition) {
@@ -109,7 +108,6 @@ async function submitForm() {
 
     await router.push({ path: '/bpm/task/my' });
   } catch (error) {
-    message.error('发起流程失败');
     console.error('发起流程失败:', error);
   } finally {
     processInstanceStartLoading.value = false;
@@ -330,7 +328,12 @@ defineExpose({ initProcessInfo });
     <template #actions>
       <template v-if="activeTab === 'form'">
         <Space wrap class="flex w-full justify-center">
-          <Button plain type="primary" @click="submitForm">
+          <Button
+            plain
+            type="primary"
+            @click="submitForm"
+            :loading="processInstanceStartLoading"
+          >
             <IconifyIcon icon="lucide:check" />
             发起
           </Button>

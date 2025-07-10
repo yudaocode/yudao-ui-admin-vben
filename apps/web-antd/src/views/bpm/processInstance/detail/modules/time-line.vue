@@ -20,13 +20,15 @@ import {
 
 defineOptions({ name: 'BpmProcessInstanceTimeline' });
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[]; // 审批节点信息
     showStatusIcon?: boolean; // 是否显示头像右下角状态图标
+    useNextAssignees?: boolean; //  是否用于下一个节点审批人选择
   }>(),
   {
     showStatusIcon: true, // 默认值为 true
+    useNextAssignees: false, // 默认值为 false
   },
 );
 
@@ -196,8 +198,9 @@ function shouldShowCustomUserSelect(
     isEmpty(activity.candidateUsers) &&
     (BpmCandidateStrategyEnum.START_USER_SELECT ===
       activity.candidateStrategy ||
-      BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
-        activity.candidateStrategy)
+      (BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
+        activity.candidateStrategy &&
+        props.useNextAssignees))
   );
 }
 
@@ -457,6 +460,7 @@ function handleUserSelectCancel() {
 
     <!-- 用户选择弹窗 -->
     <UserSelectModalComp
+      class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
       title="选择用户"
