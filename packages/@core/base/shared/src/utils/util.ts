@@ -42,3 +42,13 @@ export function getNestedValue<T>(obj: T, path: string): any {
 
   return current;
 }
+
+/**
+ * 获取 URL 参数值
+ * @param key - 参数键
+ * @returns 参数值，或者未找到时返回空字符串
+ */
+export function getUrlValue(key: string): string {
+  const url = new URL(decodeURIComponent(location.href));
+  return url.searchParams.get(key) ?? '';
+}
