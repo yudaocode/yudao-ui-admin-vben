@@ -5,6 +5,4 @@ export * from './formCreate';
 export * from './rangePickerProps';
 export * from './routerHelper';
 export * from './validator';
-export * from './tree';
-export * from './is';
 export * from './bean';

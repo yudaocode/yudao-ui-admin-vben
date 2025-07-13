@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVbenForm } from '#/adapter/form';
-import { handleTree } from '#/utils';
+import { handleTree } from '@vben/utils';
 import * as ProductCategoryApi from '#/api/mall/product/category';
 import * as ProductBrandApi from '#/api/mall/product/brand';
 import { watch } from 'vue';

@@ -226,11 +226,10 @@
 </template>
 <script lang="ts" setup>
 import { copyValueToTarget } from '#/utils';
-import { formatToFraction } from '@vben/utils';
+import { formatToFraction, isEmpty } from '@vben/utils';
 import type { PropertyAndValues, RuleConfig } from './model';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ElTable, ElInput, ElMessage } from 'element-plus';
-import { isEmpty } from '#/utils/is';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 import { ref, watch } from 'vue';
 import type { PropType } from 'vue';
