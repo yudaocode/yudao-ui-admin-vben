@@ -8,6 +8,7 @@ export namespace BpmProcessDefinitionApi {
     id: string;
     version: number;
     name: string;
+    description: string;
     deploymentTime: number;
     suspensionState: number;
     modelType: number;

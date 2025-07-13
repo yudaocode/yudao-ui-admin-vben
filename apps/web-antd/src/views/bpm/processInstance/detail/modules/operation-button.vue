@@ -735,6 +735,7 @@ defineExpose({ loadTodoTask });
                   <ProcessInstanceTimeline
                     :activity-nodes="nextAssigneesActivityNode"
                     :show-status-icon="false"
+                    :use-next-assignees="true"
                     @select-user-confirm="selectNextAssigneesConfirm"
                   />
                 </div>
