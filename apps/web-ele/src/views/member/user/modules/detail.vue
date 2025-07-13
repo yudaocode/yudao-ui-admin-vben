@@ -16,9 +16,14 @@ import { $t } from '#/locales';
 
 import UserAccountInfo from '../components/user-account-info.vue';
 import UserAddressList from '../components/user-address-list.vue';
+import UserAfterSaleList from '../components/user-after-sale-list.vue';
 import UserBalanceList from '../components/user-balance-list.vue';
 import UserBasicInfo from '../components/user-basic-info.vue';
+import UserBrokerageList from '../components/user-brokerage-list.vue';
+import UserCouponList from '../components/user-coupon-list.vue';
 import UserExperienceRecordList from '../components/user-experience-record-list.vue';
+import UserFavoriteList from '../components/user-favorite-list.vue';
+import UserOrderList from '../components/user-order-list.vue';
 import UserPointList from '../components/user-point-list.vue';
 import UserSignList from '../components/user-sign-list.vue';
 import Form from './form.vue';
@@ -102,31 +107,31 @@ onMounted(async () => {
           <ElTabPane label="订单管理" name="UserOrderList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
-              <h1>订单管理</h1>
+              <UserOrderList class="h-full" :user-id="userId" />
             </div>
           </ElTabPane>
           <ElTabPane label="售后管理" name="UserAfterSaleList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
-              <h1>售后管理</h1>
+              <UserAfterSaleList class="h-full" :user-id="userId" />
             </div>
           </ElTabPane>
           <ElTabPane label="收藏记录" name="UserFavoriteList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
-              <h1>收藏记录</h1>
+              <UserFavoriteList class="h-full" :user-id="userId" />
             </div>
           </ElTabPane>
           <ElTabPane label="优惠劵" name="UserCouponList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
-              <h1>优惠劵</h1>
+              <UserCouponList class="h-full" :user-id="userId" />
             </div>
           </ElTabPane>
           <ElTabPane label="推广用户" name="UserBrokerageList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
-              <h1>推广用户</h1>
+              <UserBrokerageList class="h-full" :user-id="userId" />
             </div>
           </ElTabPane>
         </ElTabs>

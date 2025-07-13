@@ -48,10 +48,14 @@ const props = withDefaults(
     resultField?: string;
     // 是否显示下面的描述
     showDescription?: boolean;
-    value?: string | string[];
+    modelValue?: string | string[];
+    // 上传框宽度
+    width?: string | number;
+    // 上传框高度
+    height?: string | number;
   }>(),
   {
-    value: () => [],
+    modelValue: () => [],
     directory: undefined,
     disabled: false,
     listType: 'picture-card',
@@ -63,11 +67,13 @@ const props = withDefaults(
     api: undefined,
     resultField: '',
     showDescription: true,
+    width: '',
+    height: '',
   },
 );
 
-const emit = defineEmits(['change', 'update:value', 'delete']);
-const { accept, helpText, maxNumber, maxSize } = toRefs(props);
+const emit = defineEmits(['change', 'update:modelValue', 'delete']);
+const { accept, helpText, maxNumber, maxSize, width, height } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
   acceptRef: accept,
@@ -82,7 +88,7 @@ const isActMsg = ref<boolean>(true); // 文件类型错误提示
 const isFirstRender = ref<boolean>(true); // 是否第一次渲染
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   async (v) => {
     if (isInnerOperate.value) {
       isInnerOperate.value = false;
@@ -101,7 +107,7 @@ watch(
             return {
               uid: -i,
               name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
-              status: UploadResultStatus.DONE,
+              status: UploadResultStatus.SUCCESS,
               url: item,
             } as UploadFile;
           } else if (item && isObject(item)) {
@@ -109,7 +115,7 @@ watch(
             return {
               uid: file.uid || -i,
               name: file.name || '',
-              status: UploadResultStatus.DONE,
+              status: UploadResultStatus.SUCCESS,
               url: file.url,
             } as UploadFile;
           }
@@ -154,7 +160,7 @@ const handleRemove = async (file: UploadFile) => {
     index !== -1 && fileList.value.splice(index, 1);
     const value = getValue();
     isInnerOperate.value = true;
-    emit('update:value', value);
+    emit('update:modelValue', value);
     emit('change', value);
     emit('delete', file);
   }
@@ -204,7 +210,7 @@ async function customRequest(options: UploadRequestOptions) {
     // 更新文件
     const value = getValue();
     isInnerOperate.value = true;
-    emit('update:value', value);
+    emit('update:modelValue', value);
     emit('change', value);
   } catch (error: any) {
     console.error(error);
@@ -213,13 +219,14 @@ async function customRequest(options: UploadRequestOptions) {
 }
 
 function getValue() {
+  console.log(fileList.value);
   const list = (fileList.value || [])
-    .filter((item) => item?.status === UploadResultStatus.DONE)
+    .filter((item) => item?.status === UploadResultStatus.SUCCESS)
     .map((item: any) => {
       if (item?.response && props?.resultField) {
         return item?.response;
       }
-      return item?.url || item?.response?.url || item?.response;
+      return item?.response?.url || item?.response;
     });
   // add by 芋艿：【特殊】单个文件的情况，获取首个元素，保证返回的是 String 类型
   if (props.maxNumber === 1) {
@@ -243,10 +250,11 @@ function getValue() {
       :multiple="multiple"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
+      :class="width || height ? 'custom-upload' : ''"
     >
       <div
-        v-if="fileList && fileList.length < maxNumber"
-        class="flex flex-col items-center justify-center"
+        class="upload-content flex flex-col items-center justify-center"
+        :style="{ width: width || '', height: height || '' }"
       >
         <CloudUpload />
         <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
@@ -261,5 +269,23 @@ function getValue() {
 <style>
 .ant-upload-select-picture-card {
   @apply flex items-center justify-center;
+}
+
+.custom-upload .el-upload {
+  width: auto !important;
+  height: auto !important;
+}
+
+.custom-upload .el-upload--picture-card {
+  width: auto !important;
+  height: auto !important;
+  line-height: normal !important;
+}
+
+.custom-upload .upload-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 </style>

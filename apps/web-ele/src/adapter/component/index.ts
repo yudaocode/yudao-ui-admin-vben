@@ -126,6 +126,12 @@ const ElUpload = defineAsyncComponent(() =>
     import('element-plus/es/components/upload/style/css'),
   ]).then(([res]) => res.ElUpload),
 );
+const ElCascader = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/cascader/index'),
+    import('element-plus/es/components/cascader/style/css'),
+  ]).then(([res]) => res.ElCascader),
+);
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -185,6 +191,7 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
+  | 'ApiCascader'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -202,6 +209,23 @@ async function initComponentAdapter() {
         component: ElSelectV2,
         loadingSlot: 'loading',
         visibleEvent: 'onVisibleChange',
+      },
+    ),
+    ApiCascader: withDefaultPlaceholder(
+      {
+        ...ApiComponent,
+        name: 'ApiCascader',
+      },
+      'select',
+      {
+        component: ElCascader,
+        props: {
+          props: {
+            label: 'label',
+            value: 'value',
+            children: 'children',
+          },
+        },
       },
     ),
     ApiTreeSelect: withDefaultPlaceholder(
