@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { ApiAttrs } from '@form-create/ant-design-vue/types/config';
-
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
+import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
@@ -22,7 +21,6 @@ import {
   BpmModelFormType,
   BpmModelType,
   BpmNodeIdEnum,
-  BpmNodeTypeEnum,
   decodeFields,
   setConfAndFields2,
 } from '#/utils';
@@ -39,22 +37,6 @@ interface ProcessFormData {
 interface UserTask {
   id: number;
   name: string;
-}
-
-interface ApprovalNodeInfo {
-  id: number;
-  name: string;
-  candidateStrategy: BpmCandidateStrategyEnum;
-  candidateUsers?: Array<{
-    avatar: string;
-    id: number;
-    nickname: string;
-  }>;
-  endTime?: Date;
-  nodeType: BpmNodeTypeEnum;
-  startTime?: Date;
-  status: number;
-  tasks: any[];
 }
 
 defineOptions({ name: 'BpmProcessInstanceCreateForm' });
@@ -80,7 +62,7 @@ const detailForm = ref<ProcessFormData>({
   value: {},
 });
 
-const fApi = ref<ApiAttrs>();
+const fApi = ref<any>();
 const startUserSelectTasks = ref<UserTask[]>([]);
 const startUserSelectAssignees = ref<Record<string, string[]>>({});
 const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
@@ -88,9 +70,8 @@ const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);
 const timelineRef = ref<any>();
 const activeTab = ref('form');
-const activityNodes = ref<ApprovalNodeInfo[]>([]);
+const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 const processInstanceStartLoading = ref(false);
-
 /** 提交按钮 */
 async function submitForm() {
   if (!fApi.value || !props.selectProcessDefinition) {
@@ -127,7 +108,6 @@ async function submitForm() {
 
     await router.push({ path: '/bpm/task/my' });
   } catch (error) {
-    message.error('发起流程失败');
     console.error('发起流程失败:', error);
   } finally {
     processInstanceStartLoading.value = false;
@@ -219,7 +199,7 @@ async function getApprovalDetail(row: {
     }
 
     // 获取审批节点
-    activityNodes.value = data.activityNodes as unknown as ApprovalNodeInfo[];
+    activityNodes.value = data.activityNodes;
 
     // 获取发起人自选的任务
     startUserSelectTasks.value = (data.activityNodes?.filter(
@@ -330,7 +310,12 @@ defineExpose({ initProcessInfo });
         </Row>
       </Tabs.TabPane>
 
-      <Tabs.TabPane tab="流程图" key="flow" class="flex flex-1 overflow-hidden">
+      <Tabs.TabPane
+        tab="流程图"
+        key="flow"
+        class="flex flex-1 overflow-hidden"
+        :force-render="true"
+      >
         <div class="w-full">
           <ProcessInstanceSimpleViewer
             :simple-json="simpleJson"
@@ -343,7 +328,12 @@ defineExpose({ initProcessInfo });
     <template #actions>
       <template v-if="activeTab === 'form'">
         <Space wrap class="flex w-full justify-center">
-          <Button plain type="primary" @click="submitForm">
+          <Button
+            plain
+            type="primary"
+            @click="submitForm"
+            :loading="processInstanceStartLoading"
+          >
             <IconifyIcon icon="lucide:check" />
             发起
           </Button>

@@ -29,7 +29,7 @@ function close() {
   <div
     role="alert"
     v-if="isDocAlertEnable() && isVisible"
-    class="border-primary bg-primary/10 relative my-2 flex h-8 w-full items-center gap-2 rounded-md border p-2"
+    class="border-primary bg-primary/10 relative m-3 my-2 flex h-8 items-center gap-2 rounded-md border p-2"
   >
     <span class="grid shrink-0 place-items-center">
       <VbenIcon icon="mdi:information-outline" class="text-primary size-5" />

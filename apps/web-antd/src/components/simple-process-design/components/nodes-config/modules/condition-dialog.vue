@@ -62,9 +62,15 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-// TODO xingyu 暴露 modalApi 给父组件是否合适? trigger-node-config.vue 会有多个 conditionDialog 实例
-// 不用暴露啊，用 useVbenModal 就可以了
-defineExpose({ modalApi });
+/**
+ * 打开条件配置弹窗，不暴露 modalApi 给父组件
+ */
+function openModal(conditionObj: any) {
+  modalApi.setData(conditionObj).open();
+}
+
+// 暴露方法给父组件
+defineExpose({ openModal });
 </script>
 <template>
   <Modal class="w-1/2">

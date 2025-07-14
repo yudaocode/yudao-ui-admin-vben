@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
-
 import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Input } from 'ant-design-vue';
@@ -14,71 +11,49 @@ import { BpmNodeTypeEnum } from '#/utils';
 
 import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';
-import UserTaskNodeConfig from '../nodes-config/user-task-node-config.vue';
-import TaskListModal from './modules/task-list-modal.vue';
+import ChildProcessNodeConfig from '../nodes-config/child-process-node-config.vue';
 import NodeHandler from './node-handler.vue';
 
-defineOptions({ name: 'UserTaskNode' });
+defineOptions({ name: 'ChildProcessNode' });
 
-const props = defineProps({
-  flowNode: {
-    type: Object as () => SimpleFlowNode,
-    required: true,
-  },
-});
+const props = defineProps<{
+  flowNode: SimpleFlowNode;
+}>();
 
+/** 定义事件，更新父组件。 */
 const emits = defineEmits<{
-  findParentNode: [nodeList: SimpleFlowNode[], nodeType: BpmNodeTypeEnum];
   'update:flowNode': [node: SimpleFlowNode | undefined];
 }>();
 
 // 是否只读
 const readonly = inject<Boolean>('readonly');
-const tasks = inject<Ref<any[]>>('tasks', ref([]));
-// 监控节点变化
+
+/** 监控节点的变化 */
 const currentNode = useWatchNode(props);
-// 节点名称编辑
+
+/** 节点名称编辑 */
 const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
-  BpmNodeTypeEnum.USER_TASK_NODE,
+  BpmNodeTypeEnum.CHILD_PROCESS_NODE,
 );
-const nodeSetting = ref();
 
-const [Modal, modalApi] = useVbenModal({
-  connectedComponent: TaskListModal,
-  destroyOnClose: true,
-});
+// 节点配置 Ref
+const nodeConfigRef = ref();
 
-function nodeClick() {
+/** 打开节点配置 */
+const openNodeConfig = () => {
   if (readonly) {
-    if (tasks && tasks.value) {
-      // 过滤出当前节点的任务
-      const nodeTasks = tasks.value.filter(
-        (task) => task.taskDefinitionKey === currentNode.value.id,
-      );
-      // 弹窗显示任务信息
-      modalApi
-        .setData(nodeTasks)
-        .setState({ title: currentNode.value.name })
-        .open();
-    }
-  } else {
-    // 编辑模式，打开节点配置、把当前节点传递给配置组件
-    nodeSetting.value.showUserTaskNodeConfig(currentNode.value);
+    return;
   }
-}
+  nodeConfigRef.value.showChildProcessNodeConfig(currentNode.value);
+};
 
-function deleteNode() {
+/** 删除节点。更新当前节点为孩子节点 */
+const deleteNode = () => {
   emits('update:flowNode', currentNode.value.childNode);
-}
-// 查找可以驳回用户节点
-function findReturnTaskNodes(
-  matchNodeList: SimpleFlowNode[], // 匹配的节点
-) {
-  // 从父节点查找
-  emits('findParentNode', matchNodeList, BpmNodeTypeEnum.USER_TASK_NODE);
-}
+};
 </script>
+
 <template>
   <div class="node-wrapper">
     <div class="node-container">
@@ -91,10 +66,10 @@ function findReturnTaskNodes(
       >
         <div class="node-title-container">
           <div
-            :class="`node-title-icon ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'transactor-task' : 'user-task'}`"
+            :class="`node-title-icon ${currentNode.childProcessSetting?.async === true ? 'async-child-process' : 'child-process'}`"
           >
             <span
-              :class="`iconfont ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'icon-transactor' : 'icon-approve'}`"
+              :class="`iconfont ${currentNode.childProcessSetting?.async === true ? 'icon-async-child-process' : 'icon-child-process'}`"
             >
             </span>
           </div>
@@ -112,7 +87,7 @@ function findReturnTaskNodes(
             {{ currentNode.name }}
           </div>
         </div>
-        <div class="node-content" @click="nodeClick">
+        <div class="node-content" @click="openNodeConfig">
           <div
             class="node-text"
             :title="currentNode.showText"
@@ -121,9 +96,9 @@ function findReturnTaskNodes(
             {{ currentNode.showText }}
           </div>
           <div class="node-text" v-else>
-            {{ NODE_DEFAULT_TEXT.get(currentNode.type) }}
+            {{ NODE_DEFAULT_TEXT.get(BpmNodeTypeEnum.CHILD_PROCESS_NODE) }}
           </div>
-          <IconifyIcon icon="lucide:chevron-right" v-if="!readonly" />
+          <IconifyIcon v-if="!readonly" icon="lucide:chevron-right" />
         </div>
         <div v-if="!readonly" class="node-toolbar">
           <div class="toolbar-icon">
@@ -136,6 +111,7 @@ function findReturnTaskNodes(
           </div>
         </div>
       </div>
+
       <!-- 添加节点组件。会在子节点前面添加节点 -->
       <NodeHandler
         v-if="currentNode"
@@ -143,13 +119,12 @@ function findReturnTaskNodes(
         :current-node="currentNode"
       />
     </div>
+    <ChildProcessNodeConfig
+      v-if="!readonly && currentNode"
+      ref="nodeConfigRef"
+      :flow-node="currentNode"
+    />
   </div>
-  <UserTaskNodeConfig
-    v-if="currentNode"
-    ref="nodeSetting"
-    :flow-node="currentNode"
-    @find-return-task-nodes="findReturnTaskNodes"
-  />
-  <!--  审批记录弹窗 -->
-  <Modal />
 </template>
+
+<style scoped></style>

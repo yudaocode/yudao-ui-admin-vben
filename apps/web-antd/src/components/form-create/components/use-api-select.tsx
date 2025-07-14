@@ -186,6 +186,12 @@ export const useApiSelect = (option: ApiSelectProps) => {
       });
 
       const buildSelect = () => {
+        const {
+          modelValue,
+          'onUpdate:modelValue': onUpdateModelValue,
+          ...restAttrs
+        } = attrs;
+
         if (props.multiple) {
           // fix：多写此步是为了解决 multiple 属性问题
           return (
@@ -193,7 +199,9 @@ export const useApiSelect = (option: ApiSelectProps) => {
               class="w-full"
               loading={loading.value}
               mode="multiple"
-              {...attrs}
+              onUpdate:value={onUpdateModelValue as any}
+              value={modelValue as any}
+              {...restAttrs}
               // TODO: remote 对等实现
               // remote={props.remote}
               {...(props.remote && { remoteMethod })}
@@ -212,7 +220,9 @@ export const useApiSelect = (option: ApiSelectProps) => {
           <Select
             class="w-full"
             loading={loading.value}
-            {...attrs}
+            onUpdate:value={onUpdateModelValue as any}
+            value={modelValue as any}
+            {...restAttrs}
             // TODO: @dhb52 remote 对等实现, 还是说没作用
             // remote={props.remote}
             {...(props.remote && { remoteMethod })}
@@ -228,6 +238,11 @@ export const useApiSelect = (option: ApiSelectProps) => {
         );
       };
       const buildCheckbox = () => {
+        const {
+          modelValue,
+          'onUpdate:modelValue': onUpdateModelValue,
+          ...restAttrs
+        } = attrs;
         if (isEmpty(options.value)) {
           options.value = [
             { label: '选项1', value: '选项1' },
@@ -235,7 +250,12 @@ export const useApiSelect = (option: ApiSelectProps) => {
           ];
         }
         return (
-          <CheckboxGroup class="w-full" {...attrs}>
+          <CheckboxGroup
+            class="w-full"
+            onUpdate:value={onUpdateModelValue as any}
+            value={modelValue as any}
+            {...restAttrs}
+          >
             {options.value.map(
               (item: { label: any; value: any }, index: any) => (
                 <Checkbox key={index} value={item.value}>
@@ -247,6 +267,11 @@ export const useApiSelect = (option: ApiSelectProps) => {
         );
       };
       const buildRadio = () => {
+        const {
+          modelValue,
+          'onUpdate:modelValue': onUpdateModelValue,
+          ...restAttrs
+        } = attrs;
         if (isEmpty(options.value)) {
           options.value = [
             { label: '选项1', value: '选项1' },
@@ -254,7 +279,12 @@ export const useApiSelect = (option: ApiSelectProps) => {
           ];
         }
         return (
-          <RadioGroup class="w-full" {...attrs}>
+          <RadioGroup
+            class="w-full"
+            onUpdate:value={onUpdateModelValue as any}
+            value={modelValue as any}
+            {...restAttrs}
+          >
             {options.value.map(
               (item: { label: any; value: any }, index: any) => (
                 <Radio key={index} value={item.value}>

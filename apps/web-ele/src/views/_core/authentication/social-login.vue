@@ -10,6 +10,7 @@ import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
+import { getUrlValue } from '@vben/utils';
 
 import {
   checkCaptcha,
@@ -122,12 +123,6 @@ async function handleVerifySuccess({ captchaVerification }: any) {
   } catch (error) {
     console.error('Error in handleLogin:', error);
   }
-}
-
-/** tricky: 配合 login.vue 中，redirectUri 需要对参数进行 encode，需要在回调后进行decode */
-function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href));
-  return url.searchParams.get(key) ?? '';
 }
 
 /** 组件挂载时获取租户信息 */

@@ -2,7 +2,12 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getDictOptions,
+  getRangePickerDefaultProps,
+} from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -97,7 +102,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // TODO 创建时间 等通用方法完善后加
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
   ];
 }
 

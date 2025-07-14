@@ -60,39 +60,14 @@ function isIfShow(action: ActionItem): boolean {
 
 /** 处理按钮 actions */
 const getActions = computed(() => {
-  return (props.actions || [])
-    .filter((action: ActionItem) => isIfShow(action))
-    .map((action: ActionItem) => {
-      const { popConfirm } = action;
-      return {
-        type: action.type || 'link',
-        ...action,
-        ...popConfirm,
-        onConfirm: popConfirm?.confirm,
-        onCancel: popConfirm?.cancel,
-        enable: !!popConfirm,
-      };
-    });
+  return (props.actions || []).filter((action: ActionItem) => isIfShow(action));
 });
 
 /** 处理下拉菜单 actions */
 const getDropdownList = computed(() => {
-  return (props.dropDownActions || [])
-    .filter((action: ActionItem) => isIfShow(action))
-    .map((action: ActionItem, index: number) => {
-      const { label, popConfirm } = action;
-      const processedAction = { ...action };
-      delete processedAction.icon;
-      return {
-        ...processedAction,
-        ...popConfirm,
-        onConfirm: popConfirm?.confirm,
-        onCancel: popConfirm?.cancel,
-        text: label,
-        divider:
-          index < props.dropDownActions.length - 1 ? props.divider : false,
-      };
-    });
+  return (props.dropDownActions || []).filter((action: ActionItem) =>
+    isIfShow(action),
+  );
 });
 
 /** Space 组件的 size */
@@ -103,18 +78,27 @@ const spaceSize = computed(() => {
 });
 
 /** 获取 PopConfirm 属性 */
-function getPopConfirmProps(attrs: PopConfirm) {
-  const originAttrs: any = { ...attrs };
-  delete originAttrs.icon;
-  if (attrs.confirm && isFunction(attrs.confirm)) {
-    originAttrs.onConfirm = attrs.confirm;
-    delete originAttrs.confirm;
+function getPopConfirmProps(popConfirm: PopConfirm) {
+  if (!popConfirm) return {};
+
+  const attrs: Record<string, any> = {};
+
+  // 复制基本属性，排除函数
+  Object.keys(popConfirm).forEach((key) => {
+    if (key !== 'confirm' && key !== 'cancel' && key !== 'icon') {
+      attrs[key] = popConfirm[key as keyof PopConfirm];
+    }
+  });
+
+  // 单独处理事件函数
+  if (popConfirm.confirm && isFunction(popConfirm.confirm)) {
+    attrs.onConfirm = popConfirm.confirm;
   }
-  if (attrs.cancel && isFunction(attrs.cancel)) {
-    originAttrs.onCancel = attrs.cancel;
-    delete originAttrs.cancel;
+  if (popConfirm.cancel && isFunction(popConfirm.cancel)) {
+    attrs.onCancel = popConfirm.cancel;
   }
-  return originAttrs;
+
+  return attrs;
 }
 
 /** 获取 Button 属性 */
@@ -146,6 +130,13 @@ function handleMenuClick(e: any) {
 function getActionKey(action: ActionItem, index: number) {
   return `${action.label || ''}-${action.type || ''}-${index}`;
 }
+
+/** 处理按钮点击 */
+function handleButtonClick(action: ActionItem) {
+  if (action.onClick && isFunction(action.onClick)) {
+    action.onClick();
+  }
+}
 </script>
 
 <template>
@@ -172,7 +163,10 @@ function getActionKey(action: ActionItem, index: number) {
           </Tooltip>
         </Popconfirm>
         <Tooltip v-else v-bind="getTooltipProps(action.tooltip)">
-          <Button v-bind="getButtonProps(action)" @click="action.onClick">
+          <Button
+            v-bind="getButtonProps(action)"
+            @click="handleButtonClick(action)"
+          >
             <template v-if="action.icon" #icon>
               <IconifyIcon :icon="action.icon" />
             </template>
@@ -184,7 +178,7 @@ function getActionKey(action: ActionItem, index: number) {
 
     <Dropdown v-if="getDropdownList.length > 0" :trigger="['hover']">
       <slot name="more">
-        <Button :type="getDropdownList[0]?.type">
+        <Button type="link">
           <template #icon>
             {{ $t('page.action.more') }}
             <IconifyIcon icon="lucide:ellipsis-vertical" />
@@ -213,7 +207,7 @@ function getActionKey(action: ActionItem, index: number) {
                 >
                   <IconifyIcon v-if="action.icon" :icon="action.icon" />
                   <span :class="action.icon ? 'ml-1' : ''">
-                    {{ action.text }}
+                    {{ action.label }}
                   </span>
                 </div>
               </Popconfirm>

@@ -56,8 +56,10 @@ async function handleChange(id: number | undefined) {
         class="hover:bg-accent ml-1 mr-2 h-8 w-32 cursor-pointer rounded-full p-1.5"
       >
         <IconifyIcon icon="lucide:align-justify" class="mr-4" />
-        {{ $t('page.tenant.placeholder') }}
-        <!-- {{ tenants.find((item) => item.id === visitTenantId)?.name }} -->
+        {{
+          tenants.find((item) => item.id === visitTenantId)?.name ||
+          $t('page.tenant.placeholder')
+        }}
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-40 p-0 pb-1">
