@@ -74,7 +74,7 @@ export function useGridColumns<T = MallSpuApi.Spu>(
     {
       field: 'price',
       title: '价格',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'salesCount',

@@ -81,7 +81,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'payPrice',
       title: '实付金额(元)',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
       minWidth: 180,
     },
     {

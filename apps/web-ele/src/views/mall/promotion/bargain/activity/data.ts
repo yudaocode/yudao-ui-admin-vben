@@ -204,13 +204,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'bargainFirstPrice',
       title: '起始价格',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'bargainMinPrice',
       title: '砍价底价',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'recordUserCount',

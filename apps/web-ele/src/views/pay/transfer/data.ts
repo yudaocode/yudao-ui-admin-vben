@@ -120,7 +120,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'price',
       title: '转账金额',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'status',

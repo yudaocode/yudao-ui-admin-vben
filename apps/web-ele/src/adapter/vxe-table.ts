@@ -13,6 +13,7 @@ import {
 import {
   erpCountInputFormatter,
   erpNumberFormatter,
+  fenToYuan,
   formatPast2,
   isFunction,
   isString,
@@ -295,6 +296,12 @@ setupVbenVxeTable({
     vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
         return `${erpNumberFormatter(cellValue, digits)}元`;
+      },
+    });
+
+    vxeUI.formats.add('formatFenToYuanAmount', {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}元`;
       },
     });
   },

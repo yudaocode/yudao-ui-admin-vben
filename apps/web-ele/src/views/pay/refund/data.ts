@@ -99,12 +99,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'payPrice',
       title: '支付金额',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'status',
