@@ -54,22 +54,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '余额',
       field: 'balance',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '累计支出',
       field: 'totalExpense',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '累计充值',
       field: 'totalRecharge',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '冻结金额',
       field: 'freezePrice',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '创建时间',

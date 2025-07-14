@@ -166,7 +166,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'payPrice',
       title: '实际支付',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
       minWidth: 180,
     },
     {

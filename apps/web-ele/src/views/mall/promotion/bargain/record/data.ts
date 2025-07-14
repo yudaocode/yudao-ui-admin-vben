@@ -72,13 +72,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'activity.bargainMinPrice',
       title: '最低价',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'bargainPrice',
       title: '当前价',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'activity.helpMaxCount',
@@ -149,7 +149,7 @@ export function useHelpGridColumns(): VxeTableGridOptions['columns'] {
       field: 'reducePrice',
       title: '砍价金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'createTime',

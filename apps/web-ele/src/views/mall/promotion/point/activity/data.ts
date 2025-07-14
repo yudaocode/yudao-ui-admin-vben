@@ -86,7 +86,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'marketPrice',
       title: '原价',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'point',
@@ -97,7 +97,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '兑换金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'status',
