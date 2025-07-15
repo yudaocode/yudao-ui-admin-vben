@@ -8,8 +8,8 @@ import { useVbenModal } from '@vben/common-ui';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
-import { deliveryOrder } from '#/api/mall/trade/order';
+import { updateOrderAddress } from '#/api/mall/trade/order';
+import { getAreaTree } from '#/api/system/area';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
@@ -36,41 +36,44 @@ const [Form, formApi] = useVbenForm({
     },
     // TODO @xingyu：发货默认选中第一个？
     {
-      fieldName: 'expressType',
-      label: '发货方式',
-      component: 'RadioGroup',
+      fieldName: 'receiverName',
+      label: '收件人',
+      component: 'Input',
       componentProps: {
-        options: [
-          { label: '快递', value: 'express' },
-          { label: '无需发货', value: 'none' },
-        ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        placeholder: '请输入收件人名称',
       },
     },
     {
-      fieldName: 'logisticsId',
-      label: '物流公司',
-      component: 'ApiSelect',
+      fieldName: 'receiverMobile',
+      label: '手机号',
+      component: 'Input',
       componentProps: {
-        api: getSimpleDeliveryExpressList,
+        placeholder: '请输入收件人手机号',
+      },
+    },
+    {
+      fieldName: 'receiverAreaId',
+      label: '所在地',
+      component: 'ApiTreeSelect',
+      componentProps: {
+        api: () => getAreaTree(),
         props: {
           label: 'name',
           value: 'id',
+          children: 'children',
         },
-      },
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
+        placeholder: '请选择收件人所在地',
+        treeDefaultExpandAll: true,
       },
     },
     {
-      fieldName: 'logisticsNo',
-      label: '物流单号',
+      fieldName: 'receiverDetailAddress',
+      label: '详细地址',
       component: 'Input',
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
+      componentProps: {
+        placeholder: '请输入收件人详细地址',
+        type: 'textarea',
+        rows: 3,
       },
     },
   ],
@@ -85,14 +88,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.DeliveryRequest;
-    if (data.expressType === 'none') {
-      // 无需发货的情况
-      data.logisticsId = 0;
-      data.logisticsNo = '';
-    }
+    const data = (await formApi.getValues()) as MallOrderApi.AddressRequest;
     try {
-      await deliveryOrder(data);
+      await updateOrderAddress(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -113,9 +111,13 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      if (data.logisticsId === 0) {
-        await formApi.setValues({ expressType: 'none' });
-      }
+      await formApi.setValues({
+        id: data.id,
+        receiverName: data.receiverName,
+        receiverMobile: data.receiverMobile,
+        receiverAreaId: data.receiverAreaId,
+        receiverDetailAddress: data.receiverDetailAddress,
+      });
       // 设置到 values
     } finally {
       modalApi.unlock();

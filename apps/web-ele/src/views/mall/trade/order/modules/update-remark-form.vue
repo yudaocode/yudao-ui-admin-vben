@@ -8,8 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
-import { deliveryOrder } from '#/api/mall/trade/order';
+import { updateOrderRemark } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
@@ -36,41 +35,12 @@ const [Form, formApi] = useVbenForm({
     },
     // TODO @xingyu：发货默认选中第一个？
     {
-      fieldName: 'expressType',
-      label: '发货方式',
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          { label: '快递', value: 'express' },
-          { label: '无需发货', value: 'none' },
-        ],
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-    },
-    {
-      fieldName: 'logisticsId',
-      label: '物流公司',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleDeliveryExpressList,
-        props: {
-          label: 'name',
-          value: 'id',
-        },
-      },
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
-    },
-    {
-      fieldName: 'logisticsNo',
-      label: '物流单号',
+      fieldName: 'remark',
+      label: '备注',
       component: 'Input',
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
+      componentProps: {
+        type: 'textarea',
+        rows: 3,
       },
     },
   ],
@@ -85,14 +55,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.DeliveryRequest;
-    if (data.expressType === 'none') {
-      // 无需发货的情况
-      data.logisticsId = 0;
-      data.logisticsNo = '';
-    }
+    const data = (await formApi.getValues()) as MallOrderApi.RemarkRequest;
     try {
-      await deliveryOrder(data);
+      await updateOrderRemark(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -113,9 +78,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      if (data.logisticsId === 0) {
-        await formApi.setValues({ expressType: 'none' });
-      }
+      await formApi.setValues({ id: data.id, remark: data.remark });
       // 设置到 values
     } finally {
       modalApi.unlock();

@@ -11,7 +11,7 @@ import { onMounted, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptList } from '#/api/system/dept';
@@ -62,19 +62,14 @@ function onEdit(row: SystemDeptApi.Dept) {
 
 /** 删除部门 */
 async function onDelete(row: SystemDeptApi.Dept) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该部门吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDept(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    // 异常处理
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteDept(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 表格操作按钮的回调函数 */

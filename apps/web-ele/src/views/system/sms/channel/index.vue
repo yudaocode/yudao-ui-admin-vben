@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -52,32 +52,26 @@ function onEdit(row: SystemSmsChannelApi.SmsChannel) {
 
 /** 删除短信渠道 */
 async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.signature]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该短信渠道吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteSmsChannel(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteSmsChannel(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
+  onRefresh();
 }
 
 /** 批量删除短信渠道 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该短信渠道吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteSmsChannelList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteSmsChannelList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

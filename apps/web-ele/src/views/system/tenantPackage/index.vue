@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,36 +45,26 @@ function onEdit(row: SystemTenantPackageApi.TenantPackage) {
 
 /** 删除租户套餐 */
 async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.name]),
-    type: 'info',
-    duration: 0,
+  await ElMessageBox.confirm('确定要删除该租户套餐吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteTenantPackage(row.id as number);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteTenantPackage(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 批量删除租户套餐 */
 async function onDeleteBatch() {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting'),
-    type: 'info',
-    duration: 0,
+  await ElMessageBox.confirm('确定要删除该租户套餐吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteTenantPackageList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteTenantPackageList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

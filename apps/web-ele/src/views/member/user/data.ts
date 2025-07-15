@@ -86,7 +86,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '所在地',
       componentProps: {
         api: () => getAreaTree(),
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        props: { label: 'name', value: 'id', children: 'children' },
       },
     },
     {
@@ -95,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户标签',
       componentProps: {
         api: () => getSimpleTagList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
         mode: 'multiple',
       },
     },
@@ -105,7 +105,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户分组',
       componentProps: {
         api: () => getSimpleGroupList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
       },
     },
     {
@@ -151,7 +151,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleTagList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
         mode: 'multiple',
       },
     },
@@ -161,7 +161,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
       },
     },
     {
@@ -170,7 +170,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleGroupList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
       },
     },
   ];
@@ -290,7 +290,7 @@ export function useLeavelFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        fieldNames: { label: 'name', value: 'id' },
+        props: { label: 'name', value: 'id' },
       },
     },
     {

@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -37,17 +37,14 @@ function handleEdit(row: any) {
 
 /** 删除套餐 */
 async function handleDelete(row: any) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该充值套餐吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deletePackage(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deletePackage(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -10,7 +10,7 @@ import { ref, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -59,32 +59,26 @@ function onEdit(row: any) {
 
 /** 删除字典数据 */
 async function onDelete(row: any) {
-  const loadingInstance = ElLoading.service({
-    text: $t('common.processing'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该字典数据吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDictData(row.id);
-    ElMessage.success($t('common.operationSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteDictData(row.id);
+  ElMessage.success($t('common.operationSuccess'));
+  onRefresh();
 }
 
 /** 批量删除字典数据 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该字典数据吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDictDataList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteDictDataList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

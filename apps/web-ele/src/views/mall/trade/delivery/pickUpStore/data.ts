@@ -51,7 +51,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         api: () => getAreaTree(),
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        props: { label: 'name', value: 'id', children: 'children' },
       },
     },
     {
@@ -130,7 +130,7 @@ export function useBindFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         api: () => getSimpleUserList(),
-        fieldNames: { label: 'nickname', value: 'id' },
+        props: { label: 'nickname', value: 'id' },
         mode: 'tags',
         allowClear: true,
       },

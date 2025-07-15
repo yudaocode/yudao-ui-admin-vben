@@ -4,9 +4,9 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -48,18 +48,24 @@ function handleEdit(row: MallPointActivityApi.PointActivity) {
 }
 
 /** 关闭积分活动 */
-function handleClose(row: MallPointActivityApi.PointActivity) {
-  confirm({
-    content: '确认关闭该积分商城活动吗？',
-  }).then(async () => {
-    await closePointActivity(row.id);
-    ElMessage.success('关闭成功');
-    onRefresh();
+async function handleClose(row: MallPointActivityApi.PointActivity) {
+  await ElMessageBox.confirm('确认关闭该积分商城活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
+  await closePointActivity(row.id);
+  ElMessage.success('关闭成功');
+  onRefresh();
 }
 
 /** 删除积分活动 */
 async function handleDelete(row: MallPointActivityApi.PointActivity) {
+  await ElMessageBox.confirm('确定删除该积分商城活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
   await deletePointActivity(row.id);
   onRefresh();
 }

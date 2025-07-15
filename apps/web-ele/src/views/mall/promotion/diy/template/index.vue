@@ -4,9 +4,9 @@ import type { MallDiyTemplateApi } from '#/api/mall/promotion/diy/template';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -51,19 +51,26 @@ function handleDecorate(row: MallDiyTemplateApi.DiyTemplate) {
 
 /** 使用模板 */
 async function handleUse(row: MallDiyTemplateApi.DiyTemplate) {
-  confirm({
-    content: `是否使用模板"${row.name}"?`,
-  }).then(async () => {
-    // 发起删除
-    await useDiyTemplate(row.id as number);
-    ElMessage.success('使用成功');
-    onRefresh();
+  await ElMessageBox.confirm(`是否使用模板"${row.name}"?`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
+  // 发起删除
+  await useDiyTemplate(row.id as number);
+  ElMessage.success('使用成功');
+  onRefresh();
 }
 
 /** 删除DIY模板 */
 async function handleDelete(row: MallDiyTemplateApi.DiyTemplate) {
+  await ElMessageBox.confirm('确定删除该装修模板吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
   await deleteDiyTemplate(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
   onRefresh();
 }
 

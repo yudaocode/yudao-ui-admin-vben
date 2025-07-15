@@ -1,5 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import type { MallOrderApi } from '#/api/mall/trade/order';
+
 import { requestClient } from '#/api/request';
 
 export namespace MallAfterSaleApi {
@@ -75,6 +77,21 @@ export namespace MallAfterSaleApi {
     receiveTime?: Date;
     /** 收货备注 */
     receiveReason?: string;
+    /** 订单 */
+    order?: MallOrderApi.Order;
+    /** 订单操作日志 */
+    logs?: MallOrderApi.OrderLog[];
+    /** 订单项 */
+    orderItem?: MallOrderApi.OrderItem;
+    /** 用户信息 */
+    user?: {
+      /** 用户头像 */
+      avatar?: string;
+      /** 用户编号 */
+      id?: null | number;
+      /** 用户昵称 */
+      nickname?: string;
+    };
   }
 
   /** 拒绝售后请求 */

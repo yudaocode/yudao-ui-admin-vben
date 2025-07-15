@@ -4,10 +4,10 @@ import type { MallBrokerageWithdrawApi } from '#/api/mall/trade/brokerage/withdr
 
 import { h } from 'vue';
 
-import { confirm, Page, prompt } from '@vben/common-ui';
+import { Page, prompt } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { ElInput, ElMessage } from 'element-plus';
+import { ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -35,14 +35,14 @@ function onRefresh() {
 
 /** 审核通过 */
 async function handleApprove(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
-  try {
-    await confirm('确定要审核通过吗？');
-    await approveBrokerageWithdraw(row.id);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('审核失败:', error);
-  }
+  await ElMessageBox.confirm('确定要审核通过吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await approveBrokerageWithdraw(row.id);
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  onRefresh();
 }
 
 /** 审核驳回 */
@@ -73,14 +73,14 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
 async function handleRetryTransfer(
   row: MallBrokerageWithdrawApi.BrokerageWithdraw,
 ) {
-  try {
-    await confirm('确定要重新转账吗？');
-    await approveBrokerageWithdraw(row.id);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('重新转账失败:', error);
-  }
+  await ElMessageBox.confirm('确定要重新转账吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await approveBrokerageWithdraw(row.id);
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

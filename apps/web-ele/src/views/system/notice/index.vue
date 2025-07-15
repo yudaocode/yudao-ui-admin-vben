@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -46,36 +46,26 @@ function onEdit(row: SystemNoticeApi.Notice) {
 
 /** 删除公告 */
 async function onDelete(row: SystemNoticeApi.Notice) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.title]),
-    type: 'info',
-    duration: 0,
+  await ElMessageBox.confirm('确定要删除该公告吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteNotice(row.id as number);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteNotice(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+  onRefresh();
 }
 
 /** 批量删除公告 */
 async function onDeleteBatch() {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting'),
-    type: 'info',
-    duration: 0,
+  await ElMessageBox.confirm('确定要删除该公告吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteNoticeList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteNoticeList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

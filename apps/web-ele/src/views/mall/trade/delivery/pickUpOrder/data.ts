@@ -35,7 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleDeliveryPickUpStoreList,
-        fieldNames: {
+        props: {
           label: 'name',
           value: 'id',
         },

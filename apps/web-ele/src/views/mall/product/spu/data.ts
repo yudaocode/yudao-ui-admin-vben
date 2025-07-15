@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           const res = await getCategoryList({});
           return handleTree(res, 'id', 'parentId', 'children');
         },
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        props: { label: 'name', value: 'id', children: 'children' },
       },
     },
     {

@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
@@ -47,19 +47,14 @@ function onEdit(row: SystemMenuApi.Menu) {
 
 /** 删除菜单 */
 async function onDelete(row: SystemMenuApi.Menu) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该菜单吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteMenu(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    // 异常处理
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteMenu(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 表格操作按钮的回调函数 */

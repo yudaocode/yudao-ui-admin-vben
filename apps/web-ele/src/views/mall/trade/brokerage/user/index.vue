@@ -6,7 +6,7 @@ import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElLoading, ElMessage, ElSwitch } from 'element-plus';
+import { ElLoading, ElMessage, ElMessageBox, ElSwitch } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -68,17 +68,14 @@ function openCreateUserForm() {
 
 /** 清除上级推广人 */
 async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
-  const loadingInstance = ElLoading.service({
-    text: `正在清除"${row.nickname}"的上级推广人...`,
-    fullscreen: true,
+  await ElMessageBox.confirm(`确定清除"${row.nickname}"的上级推广人吗？`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await clearBindUser({ id: row.id as number });
-    ElMessage.success('清除成功');
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await clearBindUser({ id: row.id as number });
+  ElMessage.success('清除成功');
+  onRefresh();
 }
 
 /** 推广资格：开通/关闭 */

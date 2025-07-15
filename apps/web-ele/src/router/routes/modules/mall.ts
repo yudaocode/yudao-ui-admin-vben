@@ -40,37 +40,37 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  // {
-  //   path: '/mall/trade',
-  //   name: 'TradeCenter',
-  //   meta: {
-  //     title: '交易中心',
-  //     icon: 'lucide:shopping-cart',
-  //     keepAlive: true,
-  //     hideInMenu: true,
-  //   },
-  //   children: [
-  //     {
-  //       path: String.raw`order/detail/:id(\d+)`,
-  //       name: 'TradeOrderDetail',
-  //       meta: {
-  //         title: '订单详情',
-  //         activeMenu: '/mall/trade/order',
-  //       },
-  //       component: () => import('#/views/mall/trade/order/detail/index.vue'),
-  //     },
-  //     {
-  //       path: String.raw`after-sale/detail/:id(\d+)`,
-  //       name: 'TradeAfterSaleDetail',
-  //       meta: {
-  //         title: '退款详情',
-  //         activeMenu: '/mall/trade/after-sale',
-  //       },
-  //       component: () =>
-  //         import('#/views/mall/trade/afterSale/detail/index.vue'),
-  //     },
-  //   ],
-  // },
+  {
+    path: '/mall/trade',
+    name: 'TradeCenter',
+    meta: {
+      title: '交易中心',
+      icon: 'lucide:shopping-cart',
+      keepAlive: true,
+      hideInMenu: true,
+    },
+    children: [
+      {
+        path: String.raw`order/detail/:id(\d+)`,
+        name: 'TradeOrderDetail',
+        meta: {
+          title: '订单详情',
+          activeMenu: '/mall/trade/order',
+        },
+        component: () => import('#/views/mall/trade/order/modules/detail.vue'),
+      },
+      {
+        path: String.raw`after-sale/detail/:id(\d+)`,
+        name: 'TradeAfterSaleDetail',
+        meta: {
+          title: '退款详情',
+          activeMenu: '/mall/trade/after-sale',
+        },
+        component: () =>
+          import('#/views/mall/trade/afterSale/modules/detail.vue'),
+      },
+    ],
+  },
 ];
 
 export default routes;

@@ -4,7 +4,7 @@ import type { MallBrandApi } from '#/api/mall/product/brand';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteBrand, getBrandPage } from '#/api/mall/product/brand';
@@ -35,17 +35,15 @@ function handleEdit(row: MallBrandApi.Brand) {
 
 /** 删除品牌 */
 async function handleDelete(row: MallBrandApi.Brand) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  // 二次确认
+  await ElMessageBox.confirm('确定删除该品牌吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteBrand(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteBrand(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

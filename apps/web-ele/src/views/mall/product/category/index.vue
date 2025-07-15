@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryList } from '#/api/mall/product/category';
@@ -52,17 +52,14 @@ const handleViewSpu = (id: number) => {
 
 /** 删除分类 */
 async function handleDelete(row: MallCategoryApi.Category) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定删除该分类吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteCategory(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteCategory(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 切换树形展开/收缩状态 */

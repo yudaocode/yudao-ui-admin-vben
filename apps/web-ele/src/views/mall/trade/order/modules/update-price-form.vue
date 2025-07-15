@@ -4,17 +4,18 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { floatToFixed2 } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
-import { deliveryOrder } from '#/api/mall/trade/order';
+import { updateOrderPrice } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
 
 const formData = ref<MallOrderApi.DeliveryRequest>();
+const newPayPrice = ref<string>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -36,41 +37,40 @@ const [Form, formApi] = useVbenForm({
     },
     // TODO @xingyu：发货默认选中第一个？
     {
-      fieldName: 'expressType',
-      label: '发货方式',
-      component: 'RadioGroup',
+      fieldName: 'payPrice',
+      label: '应付金额(总)',
+      component: 'Input',
       componentProps: {
-        options: [
-          { label: '快递', value: 'express' },
-          { label: '无需发货', value: 'none' },
-        ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        placeholder: '请输入应付金额(总)',
+        disabled: true,
+        formatter: (value: string) => `${floatToFixed2(value)}元`,
       },
     },
     {
-      fieldName: 'logisticsId',
-      label: '物流公司',
-      component: 'ApiSelect',
+      fieldName: 'adjustPrice',
+      label: '订单调价',
+      component: 'InputNumber',
       componentProps: {
-        api: getSimpleDeliveryExpressList,
-        props: {
-          label: 'name',
-          value: 'id',
+        class: 'w-100%',
+        placeholder: '请输入订单调价',
+        step: 0.1,
+        precision: 2,
+        onChange: async (value: number) => {
+          const { payPrice } = await formApi.getValues();
+          await formApi.setValues({
+            newPayPrice: (payPrice + value * 100).toFixed(2),
+          });
         },
       },
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
+      description: '订单调价。 正数，加价；负数，减价',
     },
     {
-      fieldName: 'logisticsNo',
-      label: '物流单号',
+      fieldName: 'newPayPrice',
+      label: '调价后',
       component: 'Input',
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
+      componentProps: {
+        disabled: true,
+        formatter: (value: string) => `${floatToFixed2(value)}元`,
       },
     },
   ],
@@ -85,14 +85,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.DeliveryRequest;
-    if (data.expressType === 'none') {
-      // 无需发货的情况
-      data.logisticsId = 0;
-      data.logisticsNo = '';
+    const data = (await formApi.getValues()) as MallOrderApi.PriceRequest;
+    if (data.adjustPrice) {
+      data.adjustPrice = data.adjustPrice * 100;
     }
     try {
-      await deliveryOrder(data);
+      await updateOrderPrice(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -113,9 +111,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      if (data.logisticsId === 0) {
-        await formApi.setValues({ expressType: 'none' });
-      }
+      newPayPrice.value = data.payPrice?.toString();
+      data.adjustPrice = data.adjustPrice ? data.adjustPrice / 100 : 0;
+      await formApi.setValues({
+        id: data.id,
+        payPrice: data.payPrice,
+        adjustPrice: data.adjustPrice,
+        newPayPrice: newPayPrice.value,
+      });
       // 设置到 values
     } finally {
       modalApi.unlock();
