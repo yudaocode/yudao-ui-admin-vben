@@ -226,7 +226,7 @@ onMounted(async () => {
             v-for="(item, index) in formData.applyPicUrls"
             :key="index"
             :src="item"
-            style="margin-right: 10px; height: 60px; width: 60px"
+            style="width: 60px; height: 60px; margin-right: 10px"
             :preview-src-list="formData.applyPicUrls ?? []"
           />
         </ElDescriptionsItem>
@@ -379,8 +379,8 @@ onMounted(async () => {
       width: 3px;
       height: 20px;
       margin-right: 10px;
-      background-color: #409eff;
       content: '';
+      background-color: #409eff;
     }
   }
 
@@ -415,14 +415,14 @@ onMounted(async () => {
 
 /* 单独定义气泡样式，不使用嵌套 */
 :deep(.el-timeline-right-content) {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 30px;
   padding: 10px;
+  margin-left: 10px;
   background-color: #f5f7fa; /* 使用明确的颜色替代变量 */
   border-radius: 4px;
-  position: relative;
-  margin-left: 10px;
 }
 
 :deep(.el-timeline-right-content)::before {
@@ -430,9 +430,9 @@ onMounted(async () => {
   top: 10px;
   left: -16px;
   content: '';
-  border-width: 8px;
-  border-style: solid;
   border-color: transparent #f5f7fa transparent transparent;
+  border-style: solid;
+  border-width: 8px;
 }
 
 .dot-node-style {

@@ -526,14 +526,14 @@ onMounted(async () => {
 
 /* 单独定义气泡样式，不使用嵌套 */
 :deep(.el-timeline-right-content) {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 30px;
   padding: 10px;
+  margin-left: 10px;
   background-color: #f5f7fa; /* 使用明确的颜色替代变量 */
   border-radius: 4px;
-  position: relative;
-  margin-left: 10px;
 }
 
 :deep(.el-timeline-right-content)::before {
@@ -541,9 +541,9 @@ onMounted(async () => {
   top: 10px;
   left: -16px;
   content: '';
-  border-width: 8px;
-  border-style: solid;
   border-color: transparent #f5f7fa transparent transparent;
+  border-style: solid;
+  border-width: 8px;
 }
 
 .dot-node-style {

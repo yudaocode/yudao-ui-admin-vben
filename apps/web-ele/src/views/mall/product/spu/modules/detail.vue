@@ -485,14 +485,17 @@ onMounted(async () => {
   background-color: #fff;
   border-radius: 4px;
 }
+
 .product-description :deep(img) {
   max-width: 100%;
   height: auto;
 }
+
 .product-description :deep(table) {
   width: 100%;
   border-collapse: collapse;
 }
+
 .product-description :deep(table td) {
   padding: 8px;
   border: 1px solid #eee;
