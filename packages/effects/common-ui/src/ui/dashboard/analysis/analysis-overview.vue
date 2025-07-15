@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AnalysisOverviewItem } from '../typing';
 
+import { computed } from 'vue';
+
 import {
   Card,
   CardContent,
@@ -13,20 +15,29 @@ import {
 
 interface Props {
   items?: AnalysisOverviewItem[];
+  modelValue?: AnalysisOverviewItem[];
 }
 
 defineOptions({
   name: 'AnalysisOverview',
 });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   items: () => [],
+  modelValue: () => [],
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const itemsData = computed({
+  get: () => (props.modelValue?.length ? props.modelValue : props.items),
+  set: (value) => emit('update:modelValue', value),
 });
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <template v-for="item in items" :key="item.title">
+    <template v-for="item in itemsData" :key="item.title">
       <Card :title="item.title" class="w-full">
         <CardHeader>
           <CardTitle class="text-xl">{{ item.title }}</CardTitle>

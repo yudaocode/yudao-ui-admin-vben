@@ -39,9 +39,18 @@ interface WorkbenchQuickNavItem {
   url?: string;
 }
 
+interface WorkbenchQuickDataShowItem {
+  name: string;
+  value: number;
+  prefix: string;
+  decimals: number;
+  routerName: string;
+}
+
 export type {
   AnalysisOverviewItem,
   WorkbenchProjectItem,
+  WorkbenchQuickDataShowItem,
   WorkbenchQuickNavItem,
   WorkbenchTodoItem,
   WorkbenchTrendItem,
