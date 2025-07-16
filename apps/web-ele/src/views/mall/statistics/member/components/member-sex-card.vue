@@ -45,7 +45,7 @@ const getMemberSexStatisticsList = async () => {
   const list = await MemberStatisticsApi.getMemberSexStatisticsList();
   const dictDataList = getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX);
   dictDataList.push({ label: '未知', value: null } as any);
-  sexChartOptions.series![0].data = dictDataList.map(
+  (sexChartOptions.series[0] as any).data = dictDataList.map(
     (dictData: DictDataType) => {
       const userCount = list.find(
         (item: MallMemberStatisticsApi.SexStatistics) =>
