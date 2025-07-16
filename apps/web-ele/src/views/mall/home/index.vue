@@ -29,6 +29,11 @@ import { getUserCountComparison } from '#/api/mall/statistics/member';
 import { getWalletRechargePrice } from '#/api/mall/statistics/pay';
 import { getOrderComparison, getOrderCount } from '#/api/mall/statistics/trade';
 
+import MemberFunnelCard from './components/member-funnel-card.vue';
+import MemberStatisticsCard from './components/member-statistics-card.vue';
+import MemberTerminalCard from './components/member-terminal-card.vue';
+import TradeTrendCard from './components/trade-trend-card.vue';
+
 /** 商城首页 */
 defineOptions({ name: 'MallHome' });
 
@@ -287,7 +292,12 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
         url="https://doc.iocoder.cn/mall/build/"
       />
     </template>
-    <AnalysisOverview v-model:model-value="overviewItems" />
+    <div class="mt-5 w-full md:flex">
+      <AnalysisOverview
+        v-model:model-value="overviewItems"
+        class="mt-5 md:mr-4 md:mt-0 md:w-full"
+      />
+    </div>
     <div class="mt-5 w-full md:flex">
       <WorkbenchQuickNav
         :items="quickNavItems"
@@ -301,6 +311,16 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
         title="运营数据"
         class="mt-5 md:mr-4 md:mt-0 md:w-1/2"
       />
+    </div>
+    <div class="mb-4 mt-5 w-full md:flex">
+      <MemberFunnelCard class="mt-5 md:mr-4 md:mt-0 md:w-2/3" />
+      <MemberTerminalCard class="mt-5 md:mr-4 md:mt-0 md:w-1/3" />
+    </div>
+    <div class="mb-4 mt-5 w-full md:flex">
+      <TradeTrendCard class="mt-5 md:mr-4 md:mt-0 md:w-full" />
+    </div>
+    <div class="mb-4 mt-5 w-full md:flex">
+      <MemberStatisticsCard class="mt-5 md:mr-4 md:mt-0 md:w-full" />
     </div>
   </Page>
 </template>

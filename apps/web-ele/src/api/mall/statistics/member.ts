@@ -1,6 +1,6 @@
 import type { MallDataComparisonResp } from './common';
 
-import { formatDate } from '@vben/utils';
+import { formatDate2 } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -84,7 +84,10 @@ export function getMemberAnalyse(params: MallMemberStatisticsApi.AnalyseReq) {
     '/statistics/member/analyse',
     {
       params: {
-        times: [formatDate(params.times[0]), formatDate(params.times[1])],
+        times: [
+          formatDate2(params.times[0] || new Date()),
+          formatDate2(params.times[1] || new Date()),
+        ],
       },
     },
   );
@@ -124,7 +127,7 @@ export function getMemberRegisterCountList(beginTime: Date, endTime: Date) {
     '/statistics/member/register-count-list',
     {
       params: {
-        times: [formatDate(beginTime), formatDate(endTime)],
+        times: [formatDate2(beginTime), formatDate2(endTime)],
       },
     },
   );

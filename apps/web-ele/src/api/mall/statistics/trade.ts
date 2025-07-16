@@ -1,6 +1,6 @@
 import type { MallDataComparisonResp } from './common';
 
-import { formatDate } from '@vben/utils';
+import { formatDate, formatDate2 } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -128,8 +128,8 @@ export function getOrderCountTrendComparison(
   >('/statistics/trade/order-count-trend', {
     params: {
       type,
-      beginTime: formatDate(beginTime),
-      endTime: formatDate(endTime),
+      beginTime: formatDate2(beginTime),
+      endTime: formatDate2(endTime),
     },
   });
 }
