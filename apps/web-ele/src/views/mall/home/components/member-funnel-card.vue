@@ -132,31 +132,31 @@ const handleTimeRangeChange = async (
 </template>
 <style lang="scss" scoped>
 .trapezoid1 {
+  z-index: 1;
   width: 19.25rem;
-  margin-left: -9.625rem;
   margin-top: 0.381rem;
+  margin-left: -9.625rem;
   font-size: 0.875rem;
   transform: perspective(5em) rotateX(-11deg);
-  z-index: 1;
 }
 
 .trapezoid2 {
+  z-index: 1;
   width: 14rem;
   height: 6.25rem;
   margin-top: 0.425rem;
   margin-left: -7rem;
   font-size: 0.875rem;
   transform: perspective(7em) rotateX(-20deg);
-  z-index: 1;
 }
 
 .trapezoid3 {
+  z-index: 1;
   width: 9rem;
   height: 5.75rem;
   margin-top: 0.8125rem;
   margin-left: -4.5rem;
   font-size: 0.875rem;
   transform: perspective(3em) rotateX(-13deg);
-  z-index: 1;
 }
 </style>
