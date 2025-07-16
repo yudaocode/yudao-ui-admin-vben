@@ -52,7 +52,7 @@ const itemsData = computed({
           />
           <VbenIcon :icon="item.icon" class="size-8 flex-shrink-0" />
         </CardContent>
-        <CardFooter class="justify-between">
+        <CardFooter v-if="item.totalTitle" class="justify-between">
           <span>{{ item.totalTitle }}</span>
           <VbenCountToAnimator
             :end-val="item.totalValue"
