@@ -39,10 +39,7 @@ const handleTimeRangeChange = async (
     <template #default>
       <div class="min-w-225 py-1.75" v-loading="loading">
         <div class="relative flex h-24">
-          <div
-            class="w-75% <lg:w-35% <xl:w-55% h-full bg-blue-50"
-            style="width: 75%"
-          >
+          <div class="<lg:w-35% <xl:w-55% h-full w-3/4 bg-blue-50">
             <div class="ml-15 flex h-full flex-col justify-center">
               <div class="font-bold">
                 注册用户数量：{{
@@ -60,7 +57,7 @@ const handleTimeRangeChange = async (
             </div>
           </div>
           <div
-            class="trapezoid1 ml--38.5 w-77 text-3.5 mt-1.5 flex h-full flex-col items-center justify-center bg-blue-500 text-white"
+            class="trapezoid1 text-3.5 flex h-full flex-col items-center justify-center bg-blue-500 text-white"
           >
             <span class="text-6 font-bold">{{
               analyseData?.visitUserCount || 0
@@ -69,10 +66,7 @@ const handleTimeRangeChange = async (
           </div>
         </div>
         <div class="relative flex h-24">
-          <div
-            class="w-75% <lg:w-35% <xl:w-55% flex h-full bg-cyan-50"
-            style="width: 75%"
-          >
+          <div class="<lg:w-35% <xl:w-55% flex h-full w-3/4 bg-cyan-50">
             <div class="ml-15 flex h-full flex-col justify-center">
               <div class="font-bold">
                 活跃用户数量：{{
@@ -90,7 +84,7 @@ const handleTimeRangeChange = async (
             </div>
           </div>
           <div
-            class="trapezoid2 mt-1.7 h-25 text-3.5 ml--28 flex w-56 flex-col items-center justify-center bg-cyan-500 text-white"
+            class="trapezoid2 flex flex-col items-center justify-center bg-cyan-500 text-white"
           >
             <span class="text-6 font-bold">{{
               analyseData?.orderUserCount || 0
@@ -99,10 +93,7 @@ const handleTimeRangeChange = async (
           </div>
         </div>
         <div class="relative flex h-24">
-          <div
-            class="w-75% <lg:w-35% <xl:w-55% flex bg-slate-50"
-            style="width: 75%"
-          >
+          <div class="<lg:w-35% <xl:w-55% flex w-3/4 bg-slate-50">
             <div class="ml-15 flex h-full flex-row gap-x-16">
               <div class="flex flex-col justify-center">
                 <div class="font-bold">
@@ -127,7 +118,7 @@ const handleTimeRangeChange = async (
             </div>
           </div>
           <div
-            class="trapezoid3 ml--18 mt-3.25 h-23 text-3.5 flex w-36 flex-col items-center justify-center bg-slate-500 text-white"
+            class="trapezoid3 flex flex-col items-center justify-center bg-slate-500 text-white"
           >
             <span class="text-6 font-bold">{{
               analyseData?.payUserCount || 0
@@ -141,27 +132,31 @@ const handleTimeRangeChange = async (
 </template>
 <style lang="scss" scoped>
 .trapezoid1 {
-  transform: perspective(5em) rotateX(-11deg);
-  font-size: 0.875rem;
   width: 19.25rem;
   margin-left: -9.625rem;
+  margin-top: 0.381rem;
+  font-size: 0.875rem;
+  transform: perspective(5em) rotateX(-11deg);
+  z-index: 1;
 }
 
 .trapezoid2 {
-  transform: perspective(7em) rotateX(-20deg);
-  font-size: 0.875rem;
   width: 14rem;
-  margin-left: -7rem;
   height: 6.25rem;
   margin-top: 0.425rem;
+  margin-left: -7rem;
+  font-size: 0.875rem;
+  transform: perspective(7em) rotateX(-20deg);
+  z-index: 1;
 }
 
 .trapezoid3 {
-  transform: perspective(3em) rotateX(-13deg);
-  font-size: 0.875rem;
   width: 9rem;
   height: 5.75rem;
   margin-top: 0.8125rem;
   margin-left: -4.5rem;
+  font-size: 0.875rem;
+  transform: perspective(3em) rotateX(-13deg);
+  z-index: 1;
 }
 </style>
