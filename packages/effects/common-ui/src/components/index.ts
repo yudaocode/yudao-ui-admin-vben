@@ -18,6 +18,7 @@ export {
   VbenAvatar,
   VbenButton,
   VbenButtonGroup,
+  VbenCheckbox,
   VbenCheckButtonGroup,
   VbenCountToAnimator,
   VbenFullScreen,
@@ -25,6 +26,7 @@ export {
   VbenLoading,
   VbenLogo,
   VbenPinInput,
+  VbenSelect,
   VbenSpinner,
   VbenTree,
 } from '@vben-core/shadcn-ui';

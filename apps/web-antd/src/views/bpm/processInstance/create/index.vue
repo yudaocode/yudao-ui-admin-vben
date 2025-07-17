@@ -2,7 +2,7 @@
 import type { BpmCategoryApi } from '#/api/bpm/category';
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -146,6 +146,11 @@ function handleQuery() {
     // 如果没有搜索关键字，恢复所有数据
     isSearching.value = false;
     filteredProcessDefinitionList.value = processDefinitionList.value;
+
+    // 恢复到第一个可用分类
+    if (availableCategories.value.length > 0) {
+      activeCategory.value = availableCategories.value[0].code;
+    }
   }
 }
 
@@ -178,7 +183,8 @@ const processDefinitionGroup = computed(() => {
 });
 
 /** 通过分类 code 获取对应的名称 */
-function getCategoryName(categoryCode: string) {
+// eslint-disable-next-line no-unused-vars
+function _getCategoryName(categoryCode: string) {
   return categoryList.value?.find((ctg: any) => ctg.code === categoryCode)
     ?.name;
 }
@@ -215,10 +221,27 @@ const availableCategories = computed(() => {
 });
 
 /** 获取 tab 的位置 */
-
 const tabPosition = computed(() => {
   return window.innerWidth < 768 ? 'top' : 'left';
 });
+
+/** 监听可用分类变化，自动设置正确的活动分类 */
+watch(
+  availableCategories,
+  (newCategories) => {
+    if (newCategories.length > 0) {
+      // 如果当前活动分类不在可用分类中，切换到第一个可用分类
+      const currentCategoryExists = newCategories.some(
+        (category: BpmCategoryApi.Category) =>
+          category.code === activeCategory.value,
+      );
+      if (!currentCategoryExists) {
+        activeCategory.value = newCategories[0].code;
+      }
+    }
+  },
+  { immediate: true },
+);
 
 /** 初始化 */
 onMounted(() => {
@@ -240,10 +263,10 @@ onMounted(() => {
         :loading="loading"
       >
         <template #extra>
-          <div class="flex items-end">
+          <div class="flex h-full items-center justify-center">
             <InputSearch
               v-model:value="searchName"
-              class="!w-50% mb-4"
+              class="!w-50%"
               placeholder="请输入流程名称检索"
               allow-clear
               @input="handleQuery"
@@ -259,15 +282,15 @@ onMounted(() => {
               :key="category.code"
               :tab="category.name"
             >
-              <Row :gutter="[16, 16]">
+              <Row :gutter="[16, 16]" :wrap="true">
                 <Col
                   v-for="definition in processDefinitionGroup[category.code]"
                   :key="definition.id"
                   :xs="24"
                   :sm="12"
                   :md="8"
-                  :lg="6"
-                  :xl="4"
+                  :lg="8"
+                  :xl="6"
                   @click="handleSelect(definition)"
                 >
                   <Card
@@ -278,10 +301,10 @@ onMounted(() => {
                     }"
                     :body-style="{
                       width: '100%',
+                      padding: '16px',
                     }"
                   >
                     <div class="flex items-center">
-                      <!-- TODO @ziye：icon、name 会告警~~ -->
                       <img
                         v-if="definition.icon"
                         :src="definition.icon"
@@ -290,16 +313,14 @@ onMounted(() => {
                       />
 
                       <div v-else class="flow-icon flex-shrink-0">
-                        <Tooltip :title="definition.name">
-                          <span class="text-xs text-white">
-                            {{ definition.name?.slice(0, 2) }}
-                          </span>
-                        </Tooltip>
+                        <span class="text-xs text-white">
+                          {{ definition.name?.slice(0, 2) }}
+                        </span>
                       </div>
                       <span class="ml-3 flex-1 truncate text-base">
                         <Tooltip
                           placement="topLeft"
-                          :title="`${definition.name}`"
+                          :title="`${definition.description}`"
                         >
                           {{ definition.name }}
                         </Tooltip>

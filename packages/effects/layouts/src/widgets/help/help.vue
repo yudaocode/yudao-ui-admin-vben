@@ -86,18 +86,20 @@ const [Modal, modalApi] = useVbenModal({
           </VbenButton>
         </VbenButtonGroup>
       </div>
+
       <div class="mt-2 flex justify-start">
         <p class="w-24 p-2">软件外包:</p>
         <img
           src="/wx-xingyu.png"
           alt="数舵科技"
           class="cursor-pointer"
+          width="80%"
           @click="openWindow('https://shuduokeji.com')"
         />
       </div>
       <p class="mt-2 flex justify-center pt-4 text-sm italic">
         本项目采用 <Badge class="mx-2" variant="destructive">MIT</Badge>
-        开源协议，个人与企业可100% 免费使用。
+        开源协议，个人与企业可100% 免费使用
       </p>
     </div>
   </Modal>

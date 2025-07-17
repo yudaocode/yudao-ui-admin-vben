@@ -200,8 +200,8 @@ function addFormSettingCondition(
   formSetting: FormTriggerSetting,
 ) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
-  // 使用modalApi来打开模态框并传递数据
-  conditionDialog.modalApi.setData(formSetting).open();
+  // 打开模态框并传递数据
+  conditionDialog.openModal(formSetting);
 }
 
 /** 删除条件配置 */
@@ -215,8 +215,8 @@ function openFormSettingCondition(
   formSetting: FormTriggerSetting,
 ) {
   const conditionDialog = proxy.$refs[`condition-${index}`][0];
-  // 使用 modalApi 来打开模态框并传递数据
-  conditionDialog.modalApi.setData(formSetting).open();
+  // 打开模态框并传递数据
+  conditionDialog.openModal(formSetting);
 }
 
 /** 处理条件配置保存 */

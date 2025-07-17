@@ -5,6 +5,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime, isEmpty } from '@vben/utils';
 
@@ -19,13 +20,15 @@ import {
 
 defineOptions({ name: 'BpmProcessInstanceTimeline' });
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[]; // 审批节点信息
     showStatusIcon?: boolean; // 是否显示头像右下角状态图标
+    useNextAssignees?: boolean; //  是否用于下一个节点审批人选择
   }>(),
   {
     showStatusIcon: true, // 默认值为 true
+    useNextAssignees: false, // 默认值为 false
   },
 );
 
@@ -102,7 +105,7 @@ const nodeTypeSvgMap = {
     color: '#14bb83',
     icon: 'icon-park-outline:tree-diagram',
   },
-};
+} as Record<BpmNodeTypeEnum, { color: string; icon: string }>;
 
 // 只有状态是 -1、0、1 才展示头像右小角状态小icon
 const onlyStatusIconShow = [-1, 0, 1];
@@ -150,21 +153,27 @@ function getApprovalNodeTime(node: BpmProcessInstanceApi.ApprovalNodeInfo) {
 }
 
 // 选择自定义审批人
-const userSelectFormRef = ref();
+const [UserSelectModalComp, userSelectModalApi] = useVbenModal({
+  connectedComponent: UserSelectModal,
+  destroyOnClose: true,
+});
 const selectedActivityNodeId = ref<string>();
 const customApproveUsers = ref<Record<string, any[]>>({}); // key：activityId，value：用户列表
 
 // 打开选择用户弹窗
 const handleSelectUser = (activityId: string, selectedList: any[]) => {
   selectedActivityNodeId.value = activityId;
-  userSelectFormRef.value.open(
-    selectedList?.length ? selectedList.map((item) => item.id) : [],
-  );
+  userSelectModalApi
+    .setData({ userIds: selectedList.map((item) => item.id) })
+    .open();
 };
 
 // 选择用户完成
 const selectedUsers = ref<number[]>([]);
 function handleUserSelectConfirm(userList: any[]) {
+  if (!selectedActivityNodeId.value) {
+    return;
+  }
   customApproveUsers.value[selectedActivityNodeId.value] = userList || [];
 
   emit('selectUserConfirm', selectedActivityNodeId.value, userList);
@@ -189,8 +198,9 @@ function shouldShowCustomUserSelect(
     isEmpty(activity.candidateUsers) &&
     (BpmCandidateStrategyEnum.START_USER_SELECT ===
       activity.candidateStrategy ||
-      BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
-        activity.candidateStrategy)
+      (BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
+        activity.candidateStrategy &&
+        props.useNextAssignees))
   );
 }
 
@@ -289,8 +299,12 @@ function handleUserSelectCancel() {
                 type="primary"
                 size="middle"
                 ghost
+                class="flex items-center justify-center"
                 @click="
-                  handleSelectUser(activity.id, customApproveUsers[activity.id])
+                  handleSelectUser(
+                    activity.id,
+                    customApproveUsers[activity.id] ?? [],
+                  )
                 "
               >
                 <template #icon>
@@ -330,9 +344,7 @@ function handleUserSelectCancel() {
                 v-if="task.assigneeUser || task.ownerUser"
               >
                 <!-- 信息：头像昵称 -->
-                <div
-                  class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
-                >
+                <div class="relative flex h-8 items-center rounded-3xl pr-2">
                   <template
                     v-if="
                       task.assigneeUser?.avatar || task.assigneeUser?.nickname
@@ -414,7 +426,7 @@ function handleUserSelectCancel() {
             <div
               v-for="(user, userIndex) in activity.candidateUsers"
               :key="userIndex"
-              class="relative flex h-8 items-center rounded-3xl bg-gray-100 pr-2 dark:bg-gray-600"
+              class="relative flex h-8 items-center rounded-3xl pr-2"
             >
               <Avatar
                 class="!m-1"
@@ -447,8 +459,8 @@ function handleUserSelectCancel() {
     </Timeline>
 
     <!-- 用户选择弹窗 -->
-    <UserSelectModal
-      ref="userSelectFormRef"
+    <UserSelectModalComp
+      class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
       title="选择用户"

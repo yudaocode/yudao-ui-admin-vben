@@ -6,6 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
+import { getUrlValue } from '@vben/utils';
 
 import { ElButton, ElCard, ElImage, ElMessage } from 'element-plus';
 
@@ -147,13 +148,6 @@ async function bindSocial() {
   await gridApi.reload();
   // 清理 URL 参数，避免刷新重复触发
   window.history.replaceState({}, '', location.pathname);
-}
-
-// TODO @芋艿：后续搞到 util 里；
-// 双层 encode 需要在回调后进行 decode
-function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href));
-  return url.searchParams.get(key) ?? '';
 }
 
 /** 初始化 */

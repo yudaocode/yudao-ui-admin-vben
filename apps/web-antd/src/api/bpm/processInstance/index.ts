@@ -35,7 +35,7 @@ export namespace BpmProcessInstanceApi {
     candidateStrategy?: BpmCandidateStrategyEnum;
     candidateUsers?: User[];
     endTime?: Date;
-    id: number;
+    id: string;
     name: string;
     nodeType: BpmNodeTypeEnum;
     startTime?: Date;

@@ -657,8 +657,7 @@ async function validateNormalForm() {
 function getUpdatedProcessInstanceVariables() {
   const variables: any = {};
   props.writableFields.forEach((field: string) => {
-    if (field && variables[field])
-      variables[field] = props.normalFormApi.getValue(field);
+    variables[field] = props.normalFormApi.getValue(field);
   });
   return variables;
 }
@@ -736,6 +735,7 @@ defineExpose({ loadTodoTask });
                   <ProcessInstanceTimeline
                     :activity-nodes="nextAssigneesActivityNode"
                     :show-status-icon="false"
+                    :use-next-assignees="true"
                     @select-user-confirm="selectNextAssigneesConfirm"
                   />
                 </div>
