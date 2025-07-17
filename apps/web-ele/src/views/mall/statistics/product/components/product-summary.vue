@@ -223,7 +223,7 @@ const loadOverview = () => {
       title: '商品浏览量',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.browseCount,
-      value: trendSummary?.value?.browseUserCount || 0,
+      value: trendSummary.value?.value?.browseCount || 0,
       tooltip:
         '在选定条件下，所有商品详情页被访问的次数，一个人在统计时间内访问多次记为多次',
     },
@@ -232,7 +232,7 @@ const loadOverview = () => {
       title: '商品访客数',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.browseUserCount || 0,
-      value: trendSummary?.value?.browseUserCount || 0,
+      value: trendSummary.value?.value?.browseUserCount || 0,
       tooltip:
         '在选定条件下，访问任何商品详情页的人数，一个人在统计时间范围内访问多次只记为一个',
     },
@@ -241,28 +241,28 @@ const loadOverview = () => {
       title: '支付件数',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.orderPayCount || 0,
-      value: trendSummary?.value?.orderPayCount || 0,
+      value: trendSummary.value?.value?.orderPayCount || 0,
     },
     {
       icon: SvgBellIcon,
       title: '支付金额',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
-      value: trendSummary?.value?.orderPayPrice || 0,
+      value: trendSummary.value?.value?.orderPayPrice || 0,
     },
     {
       icon: SvgBellIcon,
       title: '退款件数',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
-      value: trendSummary?.value?.afterSaleCount || 0,
+      value: trendSummary.value?.value?.afterSaleCount || 0,
     },
     {
       icon: SvgBellIcon,
       title: '退款金额',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleRefundPrice || 0,
-      value: trendSummary?.value?.afterSaleRefundPrice || 0,
+      value: trendSummary.value?.value?.afterSaleRefundPrice || 0,
     },
   ];
 };
