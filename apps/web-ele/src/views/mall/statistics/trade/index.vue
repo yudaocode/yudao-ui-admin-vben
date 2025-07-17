@@ -1,7 +1,63 @@
 <script lang="ts" setup>
-import { DocAlert, Page } from '@vben/common-ui';
+import type { AnalysisOverviewItem } from '@vben/common-ui';
 
-import { ElButton } from 'element-plus';
+import type { MallDataComparisonResp } from '#/api/mall/statistics/common';
+import type { MallTradeStatisticsApi } from '#/api/mall/statistics/trade';
+
+import { onMounted, ref } from 'vue';
+
+import { AnalysisOverview, DocAlert, Page } from '@vben/common-ui';
+import {
+  SvgBellIcon,
+  SvgCakeIcon,
+  SvgDownloadIcon,
+  SvgEyeIcon,
+} from '@vben/icons';
+
+import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+
+const overviewItems = ref<AnalysisOverviewItem[]>();
+const summary =
+  ref<MallDataComparisonResp<MallTradeStatisticsApi.TradeSummary>>();
+const loadOverview = () => {
+  overviewItems.value = [
+    {
+      icon: SvgEyeIcon,
+      title: '昨日订单数量',
+      value: summary.value?.value?.yesterdayOrderCount || 0,
+      tooltip: '昨日订单数量',
+    },
+    {
+      icon: SvgCakeIcon,
+      title: '本月订单数量',
+      value: summary.value?.value?.monthOrderCount || 0,
+      tooltip: '本月订单数量',
+    },
+    {
+      icon: SvgDownloadIcon,
+      title: '昨日支付金额',
+      value: summary.value?.value?.yesterdayPayPrice || 0,
+      tooltip: '昨日支付金额',
+    },
+    {
+      icon: SvgBellIcon,
+      title: '本月支付金额',
+      value: summary.value?.value?.monthPayPrice || 0,
+      tooltip: '本月支付金额',
+    },
+  ];
+};
+
+/** 查询交易统计 */
+const getTradeStatisticsSummary = async () => {
+  summary.value = await TradeStatisticsApi.getTradeStatisticsSummary();
+};
+
+/** 初始化 */
+onMounted(async () => {
+  await getTradeStatisticsSummary();
+  loadOverview();
+});
 </script>
 
 <template>
@@ -10,25 +66,10 @@ import { ElButton } from 'element-plus';
       title="【统计】会员、商品、交易统计"
       url="https://doc.iocoder.cn/mall/statistics/"
     />
-    <ElButton
-      danger
-      type="primary"
-      link
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </ElButton>
-    <br />
-    <ElButton
-      type="primary"
-      link
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/statistics/trade/index"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/mall/statistics/trade/index
-      代码，pull request 贡献给我们！
-    </ElButton>
+    <!-- 统计值 -->
+    <AnalysisOverview
+      v-model:model-value="overviewItems"
+      class="mt-5 md:mr-4 md:mt-0 md:w-full"
+    />
   </Page>
 </template>

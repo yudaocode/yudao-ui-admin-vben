@@ -242,6 +242,7 @@ const loadOverview = () => {
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.orderPayCount || 0,
       value: trendSummary.value?.value?.orderPayCount || 0,
+      tooltip: '在选定条件下，成功付款订单的商品件数之和',
     },
     {
       icon: SvgBellIcon,
@@ -249,6 +250,7 @@ const loadOverview = () => {
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
       value: trendSummary.value?.value?.orderPayPrice || 0,
+      tooltip: '在选定条件下，成功付款订单的商品金额之和',
     },
     {
       icon: SvgBellIcon,
@@ -256,6 +258,7 @@ const loadOverview = () => {
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
       value: trendSummary.value?.value?.afterSaleCount || 0,
+      tooltip: '在选定条件下，成功退款的商品件数之和',
     },
     {
       icon: SvgBellIcon,
@@ -263,6 +266,7 @@ const loadOverview = () => {
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleRefundPrice || 0,
       value: trendSummary.value?.value?.afterSaleRefundPrice || 0,
+      tooltip: '在选定条件下，成功退款的商品金额之和',
     },
   ];
 };
