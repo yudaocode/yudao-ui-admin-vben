@@ -6,12 +6,7 @@ import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member'; // 
 import { onMounted, ref } from 'vue';
 
 import { AnalysisOverview, DocAlert, Page } from '@vben/common-ui';
-import {
-  SvgBellIcon,
-  SvgCakeIcon,
-  SvgCardIcon,
-  SvgDownloadIcon,
-} from '@vben/icons';
+import { SvgCakeIcon, SvgCardIcon } from '@vben/icons';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member'; // 会员统计数据
 import MemberFunnelCard from '#/views/mall/home/components/member-funnel-card.vue';
@@ -27,22 +22,22 @@ const loadOverview = async () => {
   summary.value = await MemberStatisticsApi.getMemberSummary();
   overviewItems.value = [
     {
-      icon: SvgCardIcon,
+      icon: SvgCakeIcon, // 自定义立体用户群组图标 - 累计会员数
       title: '累计会员数',
       value: summary.value?.userCount || 0,
     },
     {
-      icon: SvgCakeIcon,
+      icon: SvgCardIcon, // 自定义立体信用卡图标 - 累计充值人数
       title: '累计充值人数',
       value: summary.value?.rechargeUserCount || 0,
     },
     {
-      icon: SvgDownloadIcon,
+      icon: SvgCardIcon, // 自定义立体钞票图标 - 累计充值金额
       title: '累计充值金额',
       value: summary.value?.rechargePrice || 0,
     },
     {
-      icon: SvgBellIcon,
+      icon: SvgCakeIcon, // 自定义立体用户添加图标 - 今日会员注册量
       title: '今日会员注册量',
       value: summary.value?.expensePrice || 0,
     },

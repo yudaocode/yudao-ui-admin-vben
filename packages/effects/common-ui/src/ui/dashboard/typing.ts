@@ -7,6 +7,8 @@ interface AnalysisOverviewItem {
   totalValue?: number;
   value: number;
   tooltip?: string;
+  // 环比增长相关字段
+  showGrowthRate?: boolean; // 是否显示环比增长率，默认为false
 }
 
 interface WorkbenchProjectItem {

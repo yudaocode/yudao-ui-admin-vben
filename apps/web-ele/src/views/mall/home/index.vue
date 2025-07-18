@@ -120,6 +120,7 @@ const loadOverview = () => {
       totalTitle: '昨日数据',
       totalValue: orderComparison.value?.reference?.orderPayPrice || 0,
       value: orderComparison.value?.orderPayPrice || 0,
+      showGrowthRate: true,
     },
     {
       icon: SvgCakeIcon,
@@ -127,6 +128,7 @@ const loadOverview = () => {
       totalTitle: '总访问量',
       totalValue: userComparison.value?.reference?.visitUserCount || 0,
       value: userComparison.value?.visitUserCount || 0,
+      showGrowthRate: true,
     },
     {
       icon: SvgDownloadIcon,
@@ -134,6 +136,7 @@ const loadOverview = () => {
       totalTitle: '总订单量',
       totalValue: orderComparison.value?.orderPayCount || 0,
       value: orderComparison.value?.reference?.orderPayCount || 0,
+      // 不显示环比增长率
     },
     {
       icon: SvgBellIcon,
@@ -141,6 +144,7 @@ const loadOverview = () => {
       totalTitle: '总会员注册量',
       totalValue: userComparison.value?.registerUserCount || 0,
       value: userComparison.value?.reference?.registerUserCount || 0,
+      showGrowthRate: true,
     },
   ];
 };

@@ -8,12 +8,7 @@ import type { MallProductStatisticsApi } from '#/api/mall/statistics/product';
 import { reactive, ref } from 'vue';
 
 import { AnalysisChartCard, AnalysisOverview, confirm } from '@vben/common-ui';
-import {
-  SvgBellIcon,
-  SvgCakeIcon,
-  SvgDownloadIcon,
-  SvgEyeIcon,
-} from '@vben/icons';
+import { SvgCakeIcon, SvgCardIcon, SvgEyeIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import {
   downloadFileFromBlobPart,
@@ -222,10 +217,11 @@ const loadOverview = () => {
       icon: SvgEyeIcon,
       title: '商品浏览量',
       totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.browseCount,
+      totalValue: trendSummary.value?.reference?.browseCount || 0,
       value: trendSummary.value?.value?.browseCount || 0,
       tooltip:
         '在选定条件下，所有商品详情页被访问的次数，一个人在统计时间内访问多次记为多次',
+      showGrowthRate: true,
     },
     {
       icon: SvgCakeIcon,
@@ -235,38 +231,43 @@ const loadOverview = () => {
       value: trendSummary.value?.value?.browseUserCount || 0,
       tooltip:
         '在选定条件下，访问任何商品详情页的人数，一个人在统计时间范围内访问多次只记为一个',
+      showGrowthRate: true,
     },
     {
-      icon: SvgDownloadIcon,
+      icon: SvgCakeIcon,
       title: '支付件数',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.orderPayCount || 0,
       value: trendSummary.value?.value?.orderPayCount || 0,
       tooltip: '在选定条件下，成功付款订单的商品件数之和',
+      showGrowthRate: true,
     },
     {
-      icon: SvgBellIcon,
+      icon: SvgCardIcon,
       title: '支付金额',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
       value: trendSummary.value?.value?.orderPayPrice || 0,
       tooltip: '在选定条件下，成功付款订单的商品金额之和',
+      showGrowthRate: true,
     },
     {
-      icon: SvgBellIcon,
+      icon: SvgCakeIcon,
       title: '退款件数',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
       value: trendSummary.value?.value?.afterSaleCount || 0,
       tooltip: '在选定条件下，成功退款的商品件数之和',
+      showGrowthRate: true,
     },
     {
-      icon: SvgBellIcon,
+      icon: SvgCardIcon,
       title: '退款金额',
       totalTitle: '昨日数据',
       totalValue: trendSummary.value?.reference?.afterSaleRefundPrice || 0,
       value: trendSummary.value?.value?.afterSaleRefundPrice || 0,
       tooltip: '在选定条件下，成功退款的商品金额之和',
+      showGrowthRate: true,
     },
   ];
 };
