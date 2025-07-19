@@ -8,6 +8,7 @@ import { requestClient } from '#/api/request';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
+
 export namespace AiChatMessageApi {
   export interface ChatMessage {
     id: number; // 编号
@@ -82,6 +83,7 @@ export function deleteByConversationId(conversationId: number) {
     `/ai/chat/message/delete-by-conversation-id?conversationId=${conversationId}`,
   );
 }
+
 // 获得消息分页
 export function getChatMessagePage(params: any) {
   return requestClient.get<PageResult<AiChatMessageApi.ChatMessage>>(
@@ -89,6 +91,7 @@ export function getChatMessagePage(params: any) {
     { params },
   );
 }
+
 // 管理员删除消息
 export function deleteChatMessageByAdmin(id: number) {
   return requestClient.delete(`/ai/chat/message/delete-by-admin?id=${id}`);

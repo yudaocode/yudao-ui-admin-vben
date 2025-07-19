@@ -137,7 +137,7 @@ function handleButtonClick(action: ActionItem) {
   }
 }
 
-// 监听props变化，强制重新计算
+/** 监听props变化，强制重新计算 */
 watch(
   () => [props.actions, props.dropDownActions],
   () => {
