@@ -4,7 +4,7 @@ import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
 
-import { computed, unref } from 'vue';
+import { computed, unref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
@@ -60,21 +60,20 @@ function isIfShow(action: ActionItem): boolean {
 
 /** 处理按钮 actions */
 const getActions = computed(() => {
-  return (props.actions || []).filter((action: ActionItem) => isIfShow(action));
+  const actions = props.actions || [];
+  return actions.filter((action: ActionItem) => isIfShow(action));
 });
 
 /** 处理下拉菜单 actions */
 const getDropdownList = computed(() => {
-  return (props.dropDownActions || []).filter((action: ActionItem) =>
-    isIfShow(action),
-  );
+  const dropDownActions = props.dropDownActions || [];
+  return dropDownActions.filter((action: ActionItem) => isIfShow(action));
 });
 
 /** Space 组件的 size */
 const spaceSize = computed(() => {
-  return unref(getActions)?.some((item: ActionItem) => item.type === 'link')
-    ? 0
-    : 8;
+  const actions = unref(getActions);
+  return actions?.some((item: ActionItem) => item.type === 'link') ? 0 : 8;
 });
 
 /** 获取 PopConfirm 属性 */
@@ -137,6 +136,15 @@ function handleButtonClick(action: ActionItem) {
     action.onClick();
   }
 }
+
+// 监听props变化，强制重新计算
+watch(
+  () => [props.actions, props.dropDownActions],
+  () => {
+    // 这里不需要额外处理，computed会自动重新计算
+  },
+  { deep: true },
+);
 </script>
 
 <template>
