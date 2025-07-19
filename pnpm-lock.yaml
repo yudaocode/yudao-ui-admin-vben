@@ -175,7 +175,7 @@ catalogs:
       specifier: ^13.4.0
       version: 13.5.0
     '@vueuse/integrations':
-      specifier: ^13.4.0
+      specifier: ^13.5.0
       version: 13.5.0
     '@vueuse/motion':
       specifier: ^3.0.3
