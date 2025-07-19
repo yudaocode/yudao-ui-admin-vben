@@ -84,7 +84,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isCurrent: true,
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<MallPropertyApi.Property>,
