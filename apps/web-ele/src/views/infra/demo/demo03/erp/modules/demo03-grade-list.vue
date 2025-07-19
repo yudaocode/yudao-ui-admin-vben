@@ -110,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: true,
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
     height: '600px',

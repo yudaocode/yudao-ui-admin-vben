@@ -57,7 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       resizable: true,
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<PayOrderApi.Order>,

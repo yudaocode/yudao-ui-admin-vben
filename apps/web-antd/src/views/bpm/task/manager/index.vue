@@ -45,7 +45,7 @@ const [Grid] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
     cellConfig: {
