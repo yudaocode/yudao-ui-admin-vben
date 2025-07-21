@@ -9,6 +9,8 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { Card } from 'ant-design-vue';
 
+import { CardTitle } from '#/components/card';
+
 interface Props {
   title: string;
   value?: Array<{ price: number; time: string }>;
@@ -112,9 +114,9 @@ watch(
 <template>
   <Card>
     <template #title>
-      {{ title }}
+      <CardTitle :title="title" />
     </template>
     <!-- 折线图 -->
-    <EchartsUI ref="chartRef" :height="300" />
+    <EchartsUI ref="chartRef" />
   </Card>
 </template>
