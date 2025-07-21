@@ -75,11 +75,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      await formApi.setValues(await getRole(data.id as number));
-
       // 加载部门列表
       await loadDeptTree();
       toggleExpandAll();
+      // 设置表单值, 一定要在加载树之后
+      await formApi.setValues(await getRole(data.id as number));
     } finally {
       modalApi.unlock();
     }

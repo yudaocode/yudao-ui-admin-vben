@@ -47,20 +47,19 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemRoleApi.SystemRole>();
       formApi.resetForm();
+      if (permissions.value.length === 0) {
+        await loadPermissions();
+      }
       if (data) {
         formData.value = data;
         id.value = data.id;
         formApi.setValues(data);
       } else {
         id.value = undefined;
-      }
-
-      if (permissions.value.length === 0) {
-        loadPermissions();
       }
     }
   },
