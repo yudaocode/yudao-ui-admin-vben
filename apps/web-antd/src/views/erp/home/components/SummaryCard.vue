@@ -1,29 +1,69 @@
 <script lang="ts" setup>
-import { VbenCountToAnimator } from '@vben/common-ui';
+import type { AnalysisOverviewItem } from '@vben/common-ui';
+
+import { computed } from 'vue';
+
+import { AnalysisOverview } from '@vben/common-ui';
+import {
+  SvgBellIcon,
+  SvgCakeIcon,
+  SvgCardIcon,
+  SvgDownloadIcon,
+} from '@vben/icons';
 
 interface Props {
-  title: string;
-  value?: number;
+  saleSummary?: {
+    monthPrice?: number;
+    todayPrice?: number;
+    yearPrice?: number;
+    yesterdayPrice?: number;
+  };
+  purchaseSummary?: {
+    monthPrice?: number;
+    todayPrice?: number;
+    yearPrice?: number;
+    yesterdayPrice?: number;
+  };
 }
 
-withDefaults(defineProps<Props>(), {
-  value: 0,
+const props = withDefaults(defineProps<Props>(), {
+  saleSummary: () => ({}),
+  purchaseSummary: () => ({}),
 });
+
+/** 概览数据 */
+const overviewItems = computed<AnalysisOverviewItem[]>(() => [
+  {
+    icon: SvgCardIcon,
+    title: '今日销售',
+    totalTitle: '今日采购',
+    totalValue: props.purchaseSummary?.todayPrice || 0,
+    value: props.saleSummary?.todayPrice || 0,
+  },
+  {
+    icon: SvgCakeIcon,
+    title: '昨日销售',
+    totalTitle: '昨日采购',
+    totalValue: props.purchaseSummary?.yesterdayPrice || 0,
+    value: props.saleSummary?.yesterdayPrice || 0,
+  },
+  {
+    icon: SvgDownloadIcon,
+    title: '本月销售',
+    totalTitle: '本月采购',
+    totalValue: props.purchaseSummary?.monthPrice || 0,
+    value: props.saleSummary?.monthPrice || 0,
+  },
+  {
+    icon: SvgBellIcon,
+    title: '今年销售',
+    totalTitle: '今年采购',
+    totalValue: props.purchaseSummary?.yearPrice || 0,
+    value: props.saleSummary?.yearPrice || 0,
+  },
+]);
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 rounded-lg border bg-white p-6 shadow-sm">
-    <div class="flex items-center justify-between text-gray-500">
-      <span>{{ title }}</span>
-    </div>
-    <div class="flex flex-row items-baseline justify-between">
-      <VbenCountToAnimator
-        :end-val="value"
-        :decimals="2"
-        :duration="500"
-        prefix="￥"
-        class="text-3xl font-semibold text-gray-900"
-      />
-    </div>
-  </div>
+  <AnalysisOverview :items="overviewItems" />
 </template>

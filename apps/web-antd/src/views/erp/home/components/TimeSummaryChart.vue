@@ -3,22 +3,50 @@ import type { EChartsOption } from 'echarts';
 
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
-import { ref, watch } from 'vue';
+import type { ErpPurchaseStatisticsApi } from '#/api/erp/statistics/purchase';
+import type { ErpSaleStatisticsApi } from '#/api/erp/statistics/sale';
+
+import { onMounted, ref, watch } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { Card } from 'ant-design-vue';
 
+import {
+  getPurchaseSummary,
+  getPurchaseTimeSummary,
+} from '#/api/erp/statistics/purchase';
+import { getSaleSummary, getSaleTimeSummary } from '#/api/erp/statistics/sale';
 import { CardTitle } from '#/components/card';
 
 interface Props {
   title: string;
-  value?: Array<{ price: number; time: string }>;
+  type?: 'purchase' | 'sale';
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: () => [],
+  type: 'sale',
 });
+
+/** 销售统计数据 */
+const saleSummary = ref<ErpSaleStatisticsApi.SaleSummary>(); // 销售概况统计
+const saleTimeSummaryList = ref<ErpSaleStatisticsApi.SaleTimeSummary[]>(); // 销售时段统计
+const getSaleStatistics = async () => {
+  saleSummary.value = await getSaleSummary();
+  saleTimeSummaryList.value = await getSaleTimeSummary();
+};
+
+/** 采购统计数据 */
+const purchaseSummary = ref<ErpPurchaseStatisticsApi.PurchaseSummary>(); // 采购概况统计
+const purchaseTimeSummaryList =
+  ref<ErpPurchaseStatisticsApi.PurchaseTimeSummary[]>(); // 采购时段统计
+const getPurchaseStatistics = async () => {
+  purchaseSummary.value = await getPurchaseSummary();
+  purchaseTimeSummaryList.value = await getPurchaseTimeSummary();
+};
+
+/** 获取当前类型的时段数据 */
+const currentTimeSummaryList = ref<Array<{ price: number; time: string }>>();
 
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
@@ -80,8 +108,20 @@ const lineChartOptions: EChartsOption = {
   },
 };
 
+/** 初始化数据 */
+const initData = async () => {
+  if (props.type === 'sale') {
+    await getSaleStatistics();
+    currentTimeSummaryList.value = saleTimeSummaryList.value;
+  } else {
+    await getPurchaseStatistics();
+    currentTimeSummaryList.value = purchaseTimeSummaryList.value;
+  }
+};
+
+/** 监听数据变化并更新图表 */
 watch(
-  () => props.value,
+  () => currentTimeSummaryList.value,
   (val) => {
     if (!val || val.length === 0) {
       return;
@@ -109,6 +149,19 @@ watch(
   },
   { immediate: true },
 );
+
+/** 组件挂载时初始化数据 */
+onMounted(() => {
+  initData();
+});
+
+/** 暴露数据给父组件使用 */
+defineExpose({
+  saleSummary,
+  purchaseSummary,
+  saleTimeSummaryList,
+  purchaseTimeSummaryList,
+});
 </script>
 
 <template>
