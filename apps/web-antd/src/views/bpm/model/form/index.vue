@@ -178,6 +178,16 @@ async function initData() {
     // 特殊：复制场景
     if (route.params.type === 'copy') {
       delete formData.value.id;
+      if (formData.value.bpmnXml) {
+        formData.value.bpmnXml = formData.value.bpmnXml.replaceAll(
+          formData.value.name,
+          `${formData.value.name}副本`,
+        );
+        formData.value.bpmnXml = formData.value.bpmnXml.replaceAll(
+          formData.value.key,
+          `${formData.value.key}_copy`,
+        );
+      }
       formData.value.name += '副本';
       formData.value.key += '_copy';
     }
