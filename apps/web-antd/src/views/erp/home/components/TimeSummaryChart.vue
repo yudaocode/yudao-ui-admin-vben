@@ -17,7 +17,6 @@ import {
   getPurchaseTimeSummary,
 } from '#/api/erp/statistics/purchase';
 import { getSaleSummary, getSaleTimeSummary } from '#/api/erp/statistics/sale';
-import { CardTitle } from '#/components/card';
 
 interface Props {
   title: string;
@@ -167,7 +166,7 @@ defineExpose({
 <template>
   <Card>
     <template #title>
-      <CardTitle :title="title" />
+      <span>{{ title }}</span>
     </template>
     <!-- 折线图 -->
     <EchartsUI ref="chartRef" />

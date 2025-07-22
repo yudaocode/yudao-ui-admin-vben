@@ -30,10 +30,7 @@ const purchaseChartRef = ref();
     <Spin :spinning="loading">
       <div class="flex flex-col gap-4">
         <!-- 销售/采购的全局统计 -->
-        <SummaryCard
-          :sale-summary="saleChartRef?.saleSummary"
-          :purchase-summary="purchaseChartRef?.purchaseSummary"
-        />
+        <SummaryCard />
 
         <!-- 销售/采购的时段统计 -->
         <Row :gutter="16">
