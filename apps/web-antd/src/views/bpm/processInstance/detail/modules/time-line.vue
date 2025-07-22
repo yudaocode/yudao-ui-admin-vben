@@ -181,6 +181,9 @@ function handleUserSelectConfirm(userList: any[]) {
 
 /** 跳转子流程 */
 function handleChildProcess(activity: any) {
+  if (!activity.processInstanceId) {
+    return;
+  }
   push({
     name: 'BpmProcessInstanceDetail',
     query: {
@@ -284,6 +287,7 @@ function handleUserSelectCancel() {
               ghost
               size="small"
               @click="handleChildProcess(activity)"
+              :disabled="!activity.processInstanceId"
             >
               查看子流程
             </Button>
