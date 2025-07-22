@@ -61,6 +61,15 @@ export function getStockCount(productId: number) {
 }
 
 /**
+ * 根据产品ID获得库存数量
+ */
+export function getStockCountByProductId(productId: number) {
+  return requestClient.get<number>('/erp/stock/get-count', {
+    params: { productId },
+  });
+}
+
+/**
  * 导出产品库存 Excel
  */
 export function exportStock(params: ErpStockApi.StockPageParams) {
