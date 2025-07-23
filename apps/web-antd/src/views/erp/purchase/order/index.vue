@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { PurchaseOrderApi } from '#/api/erp/purchase/order';
+import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -41,13 +41,13 @@ const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
-  records: PurchaseOrderApi.PurchaseOrder[];
+  records: ErpPurchaseOrderApi.PurchaseOrder[];
 }) {
   checkedIds.value = records.map((item) => item.id);
 }
 
 /** 详情 */
-function handleDetail(row: PurchaseOrderApi.PurchaseOrder) {
+function handleDetail(row: ErpPurchaseOrderApi.PurchaseOrder) {
   push({ name: 'ErpPurchaseOrderDetail', params: { id: row.id } });
 }
 
@@ -57,12 +57,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: PurchaseOrderApi.PurchaseOrder) {
+function handleEdit(row: ErpPurchaseOrderApi.PurchaseOrder) {
   formModalApi.setData({ type: 'edit', id: row.id }).open();
 }
 
 /** 删除 */
-function handleDelete(row: PurchaseOrderApi.PurchaseOrder) {
+function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
   handleBatchDelete([row.id]);
 }
 
@@ -89,7 +89,7 @@ async function handleBatchDelete() {
 
 /** 审批/反审批操作 */
 function handleUpdateStatus(
-  row: PurchaseOrderApi.PurchaseOrder,
+  row: ErpPurchaseOrderApi.PurchaseOrder,
   status: number,
 ) {
   const hideLoading = message.loading({
@@ -151,7 +151,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<PurchaseOrderApi.PurchaseOrder>,
+  } as VxeTableGridOptions<ErpPurchaseOrderApi.PurchaseOrder>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

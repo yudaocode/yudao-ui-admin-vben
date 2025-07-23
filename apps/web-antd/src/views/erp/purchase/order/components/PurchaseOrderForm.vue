@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PurchaseOrderApi } from '#/api/erp/purchase/order';
+import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 
@@ -55,7 +55,7 @@ const [Modal, modalApi] = useVbenModal({
 
 const formLoading = ref(false);
 const formType = ref('');
-const formData = ref<PurchaseOrderApi.PurchaseOrder>({
+const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>({
   id: undefined,
   no: undefined,
   supplierId: undefined,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PurchaseOrderApi } from '#/api/erp/purchase/order';
+import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { onMounted, ref, watch } from 'vue';
 
@@ -25,11 +25,11 @@ const getSumValue = (values: (number | undefined)[]): number => {
 };
 
 interface Props {
-  items?: PurchaseOrderApi.PurchaseOrderItem[];
+  items?: ErpPurchaseOrderApi.PurchaseOrderItem[];
   disabled?: boolean;
 }
 
-const formData = ref<PurchaseOrderApi.PurchaseOrderItem[]>([]);
+const formData = ref<ErpPurchaseOrderApi.PurchaseOrderItem[]>([]);
 const productList = ref<any[]>([]);
 
 /** 监听 props.items 变化，重新设置 formData */
@@ -225,7 +225,7 @@ const getData = () => {
 };
 
 /** 初始化 */
-const init = (items: PurchaseOrderApi.PurchaseOrderItem[]) => {
+const init = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
   formData.value = items || [];
   // 如果没有数据，默认添加一行
   if (formData.value.length === 0) {
