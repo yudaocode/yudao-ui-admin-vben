@@ -1,15 +1,11 @@
 <script lang="ts" setup>
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-import {
-  erpCountInputFormatter,
-  erpPriceInputFormatter,
-  erpPriceMultiply,
-} from '@vben/utils';
+import { erpPriceMultiply } from '@vben/utils';
 
-import { Button, InputNumber, Select, Table, Textarea } from 'ant-design-vue';
+import { Button, Input, InputNumber, Select, Table } from 'ant-design-vue';
 
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getStockCountByProductId } from '#/api/erp/stock/stock';
@@ -19,11 +15,6 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
-// 计算数组总和的工具函数
-const getSumValue = (values: (number | undefined)[]): number => {
-  return values.reduce((sum, value) => sum + (value || 0), 0);
-};
-
 interface Props {
   items?: ErpPurchaseOrderApi.PurchaseOrderItem[];
   disabled?: boolean;
@@ -32,7 +23,6 @@ interface Props {
 const formData = ref<ErpPurchaseOrderApi.PurchaseOrderItem[]>([]);
 const productList = ref<any[]>([]);
 
-/** 监听 props.items 变化，重新设置 formData */
 watch(
   () => props.items,
   (val) => {
@@ -41,39 +31,87 @@ watch(
   { immediate: true },
 );
 
-/** 监听 formData 变化，计算相关价格 */
-watch(
-  formData,
-  (val) => {
-    if (!val) return;
-    val.forEach((item) => {
-      if (item.productPrice && item.count) {
-        item.totalPrice = erpPriceMultiply(item.productPrice, item.count);
-        item.taxPrice = erpPriceMultiply(
-          item.totalPrice,
-          (item.taxPercent || 0) / 100,
-        );
-        item.totalTaxPrice = item.totalPrice + item.taxPrice;
-      }
-    });
-  },
-  { deep: true },
-);
+// 初始化时加载产品列表
+const initProductList = async () => {
+  if (productList.value.length === 0) {
+    productList.value = await getProductSimpleList();
+  }
+};
 
-/** 表格列定义 */
+// 组件挂载时加载产品列表
+initProductList();
+
+const onChangeProduct = async (productId: number, index: number) => {
+  const product = productList.value.find((item) => item.id === productId);
+  if (!product) return;
+
+  const stockCount = await getStockCountByProductId(productId);
+
+  const item = formData.value[index];
+  if (item) {
+    item.productId = productId;
+    item.productUnitId = product.unitId;
+    item.productBarCode = product.barCode;
+    item.productUnitName = product.unitName;
+    item.productName = product.name;
+    item.stockCount = stockCount || 0;
+    item.productPrice = product.purchasePrice;
+
+    calculatePrice(index);
+  }
+};
+
+const calculatePrice = (index: number) => {
+  const item = formData.value[index];
+  if (item && item.productPrice && item.count) {
+    item.totalProductPrice = erpPriceMultiply(item.productPrice, item.count);
+    item.taxPrice = erpPriceMultiply(
+      item.totalProductPrice,
+      (item.taxPercent || 0) / 100,
+    );
+    item.totalPrice = item.totalProductPrice + item.taxPrice;
+  }
+};
+
+const onCountChange = (value: null | number, index: number) => {
+  const item = formData.value[index];
+  if (item) {
+    item.count = value || 0;
+    calculatePrice(index);
+  }
+};
+
+const onPriceChange = (value: null | number, index: number) => {
+  const item = formData.value[index];
+  if (item) {
+    item.productPrice = value || 0;
+    calculatePrice(index);
+  }
+};
+
+const onTaxPercentChange = (value: null | number, index: number) => {
+  const item = formData.value[index];
+  if (item) {
+    item.taxPercent = value || 0;
+    calculatePrice(index);
+  }
+};
+
+const onRemarkChange = (value: string, index: number) => {
+  const item = formData.value[index];
+  if (item) {
+    item.remark = value;
+  }
+};
+
 const columns = [
   {
     title: '产品名称',
-    dataIndex: 'productId',
-    key: 'productId',
+    dataIndex: 'productName',
+    key: 'productName',
     width: 200,
   },
-  {
-    title: '库存',
-    dataIndex: 'stockCount',
-    key: 'stockCount',
-    width: 80,
-  },
+  { title: '库存', dataIndex: 'stockCount', key: 'stockCount', width: 80 },
   {
     title: '条码',
     dataIndex: 'productBarCode',
@@ -86,12 +124,7 @@ const columns = [
     key: 'productUnitName',
     width: 80,
   },
-  {
-    title: '数量',
-    dataIndex: 'count',
-    key: 'count',
-    width: 120,
-  },
+  { title: '数量', dataIndex: 'count', key: 'count', width: 120 },
   {
     title: '产品单价',
     dataIndex: 'productPrice',
@@ -100,111 +133,72 @@ const columns = [
   },
   {
     title: '金额',
-    dataIndex: 'totalPrice',
-    key: 'totalPrice',
+    dataIndex: 'totalProductPrice',
+    key: 'totalProductPrice',
     width: 120,
   },
-  {
-    title: '税率(%)',
-    dataIndex: 'taxPercent',
-    key: 'taxPercent',
-    width: 100,
-  },
-  {
-    title: '税额',
-    dataIndex: 'taxPrice',
-    key: 'taxPrice',
-    width: 120,
-  },
-  {
-    title: '税额合计',
-    dataIndex: 'totalTaxPrice',
-    key: 'totalTaxPrice',
-    width: 120,
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
-    key: 'remark',
-    width: 150,
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 80,
-  },
+  { title: '税率(%)', dataIndex: 'taxPercent', key: 'taxPercent', width: 100 },
+  { title: '税额', dataIndex: 'taxPrice', key: 'taxPrice', width: 120 },
+  { title: '税额合计', dataIndex: 'totalPrice', key: 'totalPrice', width: 120 },
+  { title: '备注', dataIndex: 'remark', key: 'remark', width: 150 },
+  { title: '操作', key: 'operation', width: 120 },
 ];
 
-/** 合计行 */
-const getSummaries = () => {
-  const sums: any = {};
-  sums.productId = '合计';
-  sums.count = getSumValue(formData.value.map((item) => item.count));
-  sums.totalPrice = getSumValue(formData.value.map((item) => item.totalPrice));
-  sums.taxPrice = getSumValue(formData.value.map((item) => item.taxPrice));
-  sums.totalTaxPrice = getSumValue(
-    formData.value.map((item) => item.totalTaxPrice),
-  );
+const getSummaries = (): {
+  count: number;
+  productName: string;
+  taxPrice: number;
+  totalPrice: number;
+  totalProductPrice: number;
+} => {
+  const sums = {
+    productName: '合计',
+    count: formData.value.reduce((sum, item) => sum + (item.count || 0), 0),
+    totalProductPrice: formData.value.reduce(
+      (sum, item) => sum + (item.totalProductPrice || 0),
+      0,
+    ),
+    taxPrice: formData.value.reduce(
+      (sum, item) => sum + (item.taxPrice || 0),
+      0,
+    ),
+    totalPrice: formData.value.reduce(
+      (sum, item) => sum + (item.totalPrice || 0),
+      0,
+    ),
+  };
   return sums;
 };
 
-/** 新增行 */
-const handleAdd = () => {
-  const row = {
+const handleAdd = async () => {
+  await initProductList();
+
+  const newItem: ErpPurchaseOrderApi.PurchaseOrderItem = {
     id: undefined,
+    orderId: undefined,
     productId: undefined,
     productUnitId: undefined,
     productPrice: undefined,
     count: 1,
-    totalPrice: undefined,
+    totalProductPrice: 0,
     taxPercent: 0,
     taxPrice: 0,
-    totalTaxPrice: 0,
+    totalPrice: 0,
     remark: undefined,
-    // 显示字段
     productName: undefined,
     productBarCode: undefined,
     productUnitName: undefined,
     stockCount: 0,
   };
-  formData.value.push(row);
+
+  formData.value.push(newItem);
 };
 
-/** 删除行 */
 const handleDelete = (index: number) => {
   formData.value.splice(index, 1);
 };
 
-/** 产品变更 */
-const onChangeProduct = async (productId: number, index: number) => {
-  // 获得产品
-  const product = productList.value.find((item) => item.id === productId);
-  if (!product) {
-    return;
-  }
-  // 设置产品信息
-  formData.value[index].productUnitId = product.unitId;
-  formData.value[index].productBarCode = product.barCode;
-  formData.value[index].productUnitName = product.unitName;
-  formData.value[index].productPrice = product.purchasePrice;
-  // 加载库存
-  await setStockCount(index);
-};
-
-/** 设置库存 */
-const setStockCount = async (index: number) => {
-  const row = formData.value[index];
-  if (!row.productId) {
-    row.stockCount = 0;
-    return;
-  }
-  const stockCount = await getStockCountByProductId(row.productId);
-  row.stockCount = stockCount || 0;
-};
-
-/** 表单校验 */
-const validate = async () => {
-  // 校验表单
+const validate = async (): Promise<void> => {
   for (let i = 0; i < formData.value.length; i++) {
     const item = formData.value[i];
     if (!item.productId) {
@@ -219,29 +213,12 @@ const validate = async () => {
   }
 };
 
-/** 获取表单数据 */
-const getData = () => {
-  return formData.value;
-};
-
-/** 初始化 */
-const init = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
+const getData = (): ErpPurchaseOrderApi.PurchaseOrderItem[] => formData.value;
+const init = (
+  items: ErpPurchaseOrderApi.PurchaseOrderItem[] | undefined,
+): void => {
   formData.value = items || [];
-  // 如果没有数据，默认添加一行
-  if (formData.value.length === 0) {
-    handleAdd();
-  }
 };
-
-/** 组件挂载时 */
-onMounted(async () => {
-  // 加载产品列表
-  productList.value = await getProductSimpleList();
-  // 默认添加一行
-  if (formData.value.length === 0) {
-    handleAdd();
-  }
-});
 
 defineExpose({ validate, getData, init });
 </script>
@@ -263,100 +240,84 @@ defineExpose({ validate, getData, init });
       :scroll="{ x: 1400 }"
     >
       <template #bodyCell="{ column, record, index }">
-        <template v-if="column.dataIndex === 'productId'">
+        <!-- 产品名称 -->
+        <template v-if="column.key === 'productName'">
           <Select
+            v-if="!disabled"
             v-model:value="record.productId"
             placeholder="请选择产品"
-            allow-clear
             show-search
-            :disabled="disabled"
-            @change="onChangeProduct($event, index)"
+            :filter-option="false"
+            @change="(value) => onChangeProduct(value, index)"
             class="w-full"
           >
             <Select.Option
-              v-for="item in productList"
-              :key="item.id"
-              :value="item.id"
+              v-for="product in productList"
+              :key="product.id"
+              :value="product.id"
             >
-              {{ item.name }}
+              {{ product.name }}
             </Select.Option>
           </Select>
+          <span v-else>{{ record.productName || '-' }}</span>
         </template>
-        <template v-else-if="column.dataIndex === 'stockCount'">
-          <span>{{ record.stockCount || 0 }}</span>
-        </template>
-        <template v-else-if="column.dataIndex === 'productBarCode'">
-          <span>{{ record.productBarCode }}</span>
-        </template>
-        <template v-else-if="column.dataIndex === 'productUnitName'">
-          <span>{{ record.productUnitName }}</span>
-        </template>
-        <template v-else-if="column.dataIndex === 'count'">
+
+        <!-- 数量 -->
+        <template v-if="column.key === 'count'">
           <InputNumber
+            v-if="!disabled"
             v-model:value="record.count"
-            :formatter="erpCountInputFormatter"
-            placeholder="请输入数量"
-            :disabled="disabled"
-            :min="1"
-            class="w-full"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'productPrice'">
-          <InputNumber
-            v-model:value="record.productPrice"
-            :formatter="erpPriceInputFormatter"
-            placeholder="请输入单价"
-            :disabled="disabled"
             :min="0"
+            :precision="2"
+            @change="(value: number | null) => onCountChange(value, index)"
             class="w-full"
           />
+          <span v-else>{{ record.count || '-' }}</span>
         </template>
-        <template v-else-if="column.dataIndex === 'totalPrice'">
+
+        <!-- 产品单价 -->
+        <template v-if="column.key === 'productPrice'">
           <InputNumber
-            v-model:value="record.totalPrice"
-            :formatter="erpPriceInputFormatter"
-            placeholder="金额"
-            :disabled="true"
+            v-if="!disabled"
+            v-model:value="record.productPrice"
+            :min="0"
+            :precision="2"
+            @change="(value: number | null) => onPriceChange(value, index)"
             class="w-full"
           />
+          <span v-else>{{ record.productPrice || '-' }}</span>
         </template>
-        <template v-else-if="column.dataIndex === 'taxPercent'">
+
+        <!-- 税率 -->
+        <template v-if="column.key === 'taxPercent'">
           <InputNumber
+            v-if="!disabled"
             v-model:value="record.taxPercent"
-            placeholder="请输入税率"
-            :disabled="disabled"
             :min="0"
             :max="100"
+            :precision="2"
+            @change="(value: number | null) => onTaxPercentChange(value, index)"
             class="w-full"
           />
+          <span v-else>{{ record.taxPercent || '-' }}</span>
         </template>
-        <template v-else-if="column.dataIndex === 'taxPrice'">
-          <InputNumber
-            v-model:value="record.taxPrice"
-            :formatter="erpPriceInputFormatter"
-            placeholder="税额"
-            :disabled="true"
-            class="w-full"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'totalTaxPrice'">
-          <InputNumber
-            v-model:value="record.totalTaxPrice"
-            :formatter="erpPriceInputFormatter"
-            placeholder="税额合计"
-            :disabled="true"
-            class="w-full"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'remark'">
-          <Textarea
+
+        <!-- 备注 -->
+        <template v-if="column.key === 'remark'">
+          <Input
+            v-if="!disabled"
             v-model:value="record.remark"
-            placeholder="请输入备注"
-            :disabled="disabled"
-            :rows="1"
+            @change="
+              (e: Event) =>
+                onRemarkChange((e.target as HTMLInputElement).value, index)
+            "
+            class="w-full"
           />
+          <span v-else>{{ record.remark || '-' }}</span>
         </template>
-        <template v-else-if="column.key === 'operation'">
+
+        <!-- 操作 -->
+        <template v-if="column.key === 'operation'">
           <Button
             v-if="!disabled"
             type="link"
@@ -376,9 +337,9 @@ defineExpose({ validate, getData, init });
         <span class="font-medium">合计：</span>
         <div class="flex space-x-4">
           <span>数量：{{ getSummaries().count }}</span>
-          <span>金额：{{ getSummaries().totalPrice }}</span>
+          <span>金额：{{ getSummaries().totalProductPrice }}</span>
           <span>税额：{{ getSummaries().taxPrice }}</span>
-          <span>税额合计：{{ getSummaries().totalTaxPrice }}</span>
+          <span>税额合计：{{ getSummaries().totalPrice }}</span>
         </div>
       </div>
     </div>

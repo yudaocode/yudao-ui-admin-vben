@@ -129,11 +129,19 @@ defineExpose({ modalApi });
   >
     <Form />
 
-    <!-- 子表的表单 -->
-    <PurchaseOrderItemForm
-      ref="itemFormRef"
-      :items="formData?.items || []"
-      :disabled="formType === 'detail'"
-    />
+    <!-- Tab卡片 -->
+    <div class="mt-4 rounded-lg border border-gray-200 p-2">
+      <a-tabs default-active-key="1">
+        <a-tab-pane key="1" tab="订单产品清单">
+          <div class="p-4">
+            <PurchaseOrderItemForm
+              ref="itemFormRef"
+              :items="formData?.items || []"
+              :disabled="formType === 'detail'"
+            />
+          </div>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
   </Modal>
 </template>
