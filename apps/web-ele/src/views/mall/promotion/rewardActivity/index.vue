@@ -2,9 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -41,40 +41,27 @@ function handleEdit(row: MallRewardActivityApi.RewardActivity) {
 
 /** 关闭活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
-  try {
-    await confirm({
-      content: '确认关闭该满减送活动吗？',
-    });
-  } catch {
-    return;
-  }
-
-  const loadingInstance = ElLoading.service({
-    text: '正在关闭中',
-    fullscreen: true,
+  await ElMessageBox.confirm('确认关闭该满减送活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await closeRewardActivity(row.id as number);
-    ElMessage.success('关闭成功');
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+
+  await closeRewardActivity(row.id as number);
+  ElMessage.success('关闭成功');
+  onRefresh();
 }
 
 /** 删除活动 */
 async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定删除该满减送活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteRewardActivity(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteRewardActivity(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

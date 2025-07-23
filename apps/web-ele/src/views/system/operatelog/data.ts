@@ -18,7 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        fieldNames: {
+        props: {
           label: 'nickname',
           value: 'id',
         },

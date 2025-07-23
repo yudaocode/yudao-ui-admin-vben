@@ -2,9 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCombinationActivityApi } from '#/api/mall/promotion/combination/combinationActivity';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -43,42 +43,30 @@ function handleEdit(row: MallCombinationActivityApi.CombinationActivity) {
 async function handleClose(
   row: MallCombinationActivityApi.CombinationActivity,
 ) {
-  try {
-    await confirm({
-      content: '确认关闭该拼团活动吗？',
-    });
-  } catch {
-    return;
-  }
-
-  const loadingInstance = ElLoading.service({
-    text: '关闭中...',
-    fullscreen: true,
+  await ElMessageBox.confirm('确定关闭该拼团活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await closeCombinationActivity(row.id as number);
-    ElMessage.success('关闭成功');
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+
+  await closeCombinationActivity(row.id as number);
+  ElMessage.success('关闭成功');
+  onRefresh();
 }
 
 /** 删除拼团活动 */
 async function handleDelete(
   row: MallCombinationActivityApi.CombinationActivity,
 ) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定删除该拼团活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteCombinationActivity(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+
+  await deleteCombinationActivity(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -4,7 +4,7 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -49,16 +49,14 @@ function handleBind(row: MallDeliveryPickUpStoreApi.PickUpStore) {
 
 /** 删除门店 */
 async function handleDelete(row: MallDeliveryPickUpStoreApi.PickUpStore) {
-  const hideLoading = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
+  await ElMessageBox.confirm('确定要删除该门店吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDeliveryPickUpStore(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading.close();
-  }
+  await deleteDeliveryPickUpStore(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

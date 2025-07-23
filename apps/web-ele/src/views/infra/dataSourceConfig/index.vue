@@ -10,7 +10,7 @@ import { onMounted, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -40,34 +40,26 @@ function onEdit(row: InfraDataSourceConfigApi.DataSourceConfig) {
 
 /** 删除数据源 */
 async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该数据源吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDataSourceConfig(row.id as number);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    await handleLoadData();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteDataSourceConfig(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 批量删除数据源 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该数据源吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteDataSourceConfigList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    await handleLoadData();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteDataSourceConfigList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

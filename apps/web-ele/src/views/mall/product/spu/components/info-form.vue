@@ -1,19 +1,24 @@
 <script lang="ts" setup>
-import { useVbenForm } from '#/adapter/form';
-import { handleTree } from '@vben/utils';
-import * as ProductCategoryApi from '#/api/mall/product/category';
-import * as ProductBrandApi from '#/api/mall/product/brand';
 import { watch } from 'vue';
+
+import { handleTree } from '@vben/utils';
+
 import { ElMessage } from 'element-plus';
+
+import { useVbenForm } from '#/adapter/form';
+import * as ProductBrandApi from '#/api/mall/product/brand';
+import * as ProductCategoryApi from '#/api/mall/product/category';
+
+const props = defineProps<{
+  propFormData: Object;
+}>();
+
+const emit = defineEmits(['update:activeName']);
 
 const getCategoryList = async () => {
   const data = await ProductCategoryApi.getCategorySimpleList();
   return handleTree(data, 'id');
 };
-
-const props = defineProps<{
-  propFormData: Object;
-}>();
 
 /** 将传进来的值赋值给 formData */
 watch(
@@ -26,7 +31,6 @@ watch(
   },
 );
 
-const emit = defineEmits(['update:activeName']);
 const validate = async () => {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -35,10 +39,10 @@ const validate = async () => {
   try {
     // 校验通过更新数据
     Object.assign(props.propFormData, formApi.getValues());
-  } catch (e) {
+  } catch (error) {
     ElMessage.error('【基础设置】不完善，请填写相关信息');
     emit('update:activeName', 'info');
-    throw e; // 目的截断之后的校验
+    throw error; // 目的截断之后的校验
   }
 };
 defineExpose({ validate });
@@ -68,11 +72,9 @@ const [Form, formApi] = useVbenForm({
       component: 'ApiCascader',
       componentProps: {
         api: getCategoryList,
-        props: {
-          label: 'name',
-          value: 'id',
-          children: 'children',
-        },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
       },
       rules: 'required',
     },

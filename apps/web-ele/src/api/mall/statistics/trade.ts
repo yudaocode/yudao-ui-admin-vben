@@ -1,6 +1,6 @@
 import type { MallDataComparisonResp } from './common';
 
-import { formatDate } from '@vben/utils';
+import { formatDate2 } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -15,7 +15,7 @@ export namespace MallTradeStatisticsApi {
 
   /** 交易状况 Request */
   export interface TradeTrendReq {
-    times: [Date, Date];
+    times: Date[];
   }
 
   /** 交易状况统计 Response */
@@ -64,8 +64,11 @@ export namespace MallTradeStatisticsApi {
 /** 时间参数需要格式化, 确保接口能识别 */
 const formatDateParam = (params: MallTradeStatisticsApi.TradeTrendReq) => {
   return {
-    times: [formatDate(params.times[0]), formatDate(params.times[1])],
-  } as MallTradeStatisticsApi.TradeTrendReq;
+    times: [
+      formatDate2(params.times[0] || new Date()),
+      formatDate2(params.times[1] || new Date()),
+    ],
+  };
 };
 
 /** 查询交易统计 */
@@ -128,8 +131,8 @@ export function getOrderCountTrendComparison(
   >('/statistics/trade/order-count-trend', {
     params: {
       type,
-      beginTime: formatDate(beginTime),
-      endTime: formatDate(endTime),
+      beginTime: formatDate2(beginTime),
+      endTime: formatDate2(endTime),
     },
   });
 }

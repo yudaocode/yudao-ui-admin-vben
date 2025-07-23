@@ -13,7 +13,7 @@ import {
   treeToString,
 } from '@vben/utils';
 
-import { ElDescriptions, ElLoading, ElMessage, ElTabs } from 'element-plus';
+import { ElDescriptions, ElMessage, ElMessageBox, ElTabs } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
@@ -97,35 +97,31 @@ function handleEdit(row: MallSpuApi.Spu) {
 
 /** 删除商品 */
 async function handleDelete(row: MallSpuApi.Spu) {
-  const hideLoading = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定删除该商品吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteSpu(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    hideLoading.close();
-  }
+  await deleteSpu(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 /** 添加到仓库 / 回收站的状态 */
 async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
-  // 二次确认
   const text =
     newStatus === ProductSpuStatusEnum.RECYCLE.status
       ? '加入到回收站'
       : '恢复到仓库';
-  confirm(`确认要"${row.name}"${text}吗？`)
-    .then(async () => {
-      await updateStatus({ id: row.id as number, status: newStatus });
-      ElMessage.success(`${text}成功`);
-      onRefresh();
-    })
-    .catch(() => {
-      ElMessage.error(`${text}失败`);
-    });
+  // 二次确认
+  await ElMessageBox.confirm(`确认要jian"${row.name}"${text}吗？`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await updateStatus({ id: row.id as number, status: newStatus });
+  ElMessage.success(`${text}成功`);
+  onRefresh();
 }
 
 /** 更新状态 */

@@ -2,6 +2,8 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import type { MallDataComparisonResp } from './common';
 
+import { formatDate2 } from '@vben/utils';
+
 import { requestClient } from '#/api/request';
 
 export namespace MallProductStatisticsApi {
@@ -38,26 +40,58 @@ export namespace MallProductStatisticsApi {
     /** 浏览转化率 */
     browseConvertPercent: number;
   }
+
+  /** 会员分析 Request */
+  export interface ProductStatisticsReq {
+    times: Date[];
+  }
 }
 
 /** 获得商品统计分析 */
-export function getProductStatisticsAnalyse(params: PageParam) {
+export function getProductStatisticsAnalyse(
+  params: MallProductStatisticsApi.ProductStatisticsReq,
+) {
   return requestClient.get<
     MallDataComparisonResp<MallProductStatisticsApi.ProductStatistics>
-  >('/statistics/product/analyse', { params });
+  >('/statistics/product/analyse', {
+    params: {
+      times: [
+        formatDate2(params.times[0] || new Date()),
+        formatDate2(params.times[1] || new Date()),
+      ],
+    },
+  });
 }
 
 /** 获得商品状况明细 */
-export function getProductStatisticsList(params: PageParam) {
+export function getProductStatisticsList(
+  params: MallProductStatisticsApi.ProductStatisticsReq,
+) {
   return requestClient.get<MallProductStatisticsApi.ProductStatistics[]>(
     '/statistics/product/list',
-    { params },
+    {
+      params: {
+        times: [
+          formatDate2(params.times[0] || new Date()),
+          formatDate2(params.times[1] || new Date()),
+        ],
+      },
+    },
   );
 }
 
 /** 导出获得商品状况明细 Excel */
-export function exportProductStatisticsExcel(params: PageParam) {
-  return requestClient.download('/statistics/product/export-excel', { params });
+export function exportProductStatisticsExcel(
+  params: MallProductStatisticsApi.ProductStatisticsReq,
+) {
+  return requestClient.download('/statistics/product/export-excel', {
+    params: {
+      times: [
+        formatDate2(params.times[0] || new Date()),
+        formatDate2(params.times[1] || new Date()),
+      ],
+    },
+  });
 }
 
 /** 获得商品排行榜分页 */

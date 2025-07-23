@@ -11,7 +11,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
-import { ElButton, ElImage, ElLoading, ElMessage } from 'element-plus';
+import { ElButton, ElImage, ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFile, deleteFileList, getFilePage } from '#/api/infra/file';
@@ -60,36 +60,28 @@ function openUrl(url?: string) {
 
 /** 删除文件 */
 async function onDelete(row: InfraFileApi.File) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name || row.path]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该文件吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteFile(row.id as number);
-    loadingInstance.close();
-    ElMessage.success(
-      $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
-    );
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteFile(row.id as number);
+  ElMessage.success(
+    $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
+  );
+  onRefresh();
 }
 
 /** 批量删除文件 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该文件吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteFileList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteFileList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

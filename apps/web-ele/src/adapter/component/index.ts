@@ -163,6 +163,7 @@ const withDefaultPlaceholder = <T extends Component>(
 
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
+  | 'ApiCascader'
   | 'ApiSelect'
   | 'ApiTreeSelect'
   | 'Checkbox'
@@ -184,7 +185,6 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
-  | 'ApiCascader'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -212,13 +212,6 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElCascader,
-        props: {
-          props: {
-            label: 'label',
-            value: 'value',
-            children: 'children',
-          },
-        },
       },
     ),
     ApiTreeSelect: withDefaultPlaceholder(
@@ -229,7 +222,6 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElTreeSelect,
-        props: { label: 'label', children: 'children' },
         nodeKey: 'value',
         loadingSlot: 'loading',
         optionsPropName: 'data',

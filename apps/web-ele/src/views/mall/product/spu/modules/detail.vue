@@ -1,29 +1,31 @@
 <script lang="ts" setup>
-import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { floatToFixed2 } from '@vben/utils';
-import * as ProductSpuApi from '#/api/mall/product/spu';
 import type { MallSpuApi } from '#/api/mall/product/spu';
-import * as ProductCategoryApi from '#/api/mall/product/category';
-import * as ProductBrandApi from '#/api/mall/product/brand';
+
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { Page } from '@vben/common-ui';
-import { getIntDictOptions, DICT_TYPE } from '#/utils/dict';
+import { IconifyIcon } from '@vben/icons';
+import { floatToFixed2 } from '@vben/utils';
+
 import {
+  ElButton,
   ElCard,
-  ElDescriptions,
-  ElDescriptionsItem,
   ElCarousel,
   ElCarouselItem,
-  ElImage,
-  ElDivider,
-  ElButton,
-  ElTabs,
-  ElTabPane,
-  ElTag,
-  ElBadge,
+  ElDescriptions,
+  ElDescriptionsItem,
   ElEmpty,
+  ElImage,
+  ElTabPane,
+  ElTabs,
+  ElTag,
 } from 'element-plus';
-import { IconifyIcon } from '@vben/icons';
+
+import * as ProductBrandApi from '#/api/mall/product/brand';
+import * as ProductCategoryApi from '#/api/mall/product/category';
+import * as ProductSpuApi from '#/api/mall/product/spu';
+import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 
 interface Category {
   id: number;
@@ -214,18 +216,18 @@ onMounted(async () => {
             <ElTag v-if="formData.specType" type="success">多规格</ElTag>
             <ElTag v-else type="info">单规格</ElTag>
             <ElTag v-if="formData.subCommissionType" type="warning">分销</ElTag>
-            <ElTag type="danger"
-              >库存:
+            <ElTag type="danger">
+              库存:
               {{
                 formData.skus?.reduce(
                   (sum, sku) => sum + (sku.stock || 0),
                   0,
                 ) || 0
-              }}</ElTag
-            >
-            <ElTag type="info"
-              >分类: {{ getCategoryNameById(formData.categoryId) }}</ElTag
-            >
+              }}
+            </ElTag>
+            <ElTag type="info">
+              分类: {{ getCategoryNameById(formData.categoryId) }}
+            </ElTag>
           </div>
         </div>
       </div>
@@ -236,32 +238,31 @@ onMounted(async () => {
             <!-- 基本信息 -->
             <ElCard shadow="never" header="商品信息" class="h-full">
               <ElDescriptions :column="1" border>
-                <ElDescriptionsItem label="商品名称">{{
-                  formData.name
-                }}</ElDescriptionsItem>
+                <ElDescriptionsItem label="商品名称">
+                  {{ formData.name }}
+                </ElDescriptionsItem>
                 <ElDescriptionsItem label="商品分类">
-                  <ElTag type="success">{{
-                    getCategoryNameById(formData.categoryId)
-                  }}</ElTag>
+                  <ElTag type="success">
+                    {{ getCategoryNameById(formData.categoryId) }}
+                  </ElTag>
                 </ElDescriptionsItem>
                 <ElDescriptionsItem label="商品品牌">
-                  <ElTag type="primary">{{
-                    getBrandNameById(formData.brandId)
-                  }}</ElTag>
+                  <ElTag type="primary">
+                    {{ getBrandNameById(formData.brandId) }}
+                  </ElTag>
                 </ElDescriptionsItem>
                 <ElDescriptionsItem label="关键字">
-                  <ElTag type="danger"></ElTag
-                  >{{ formData.keyword || '无' }}</ElDescriptionsItem
-                >
-                <ElDescriptionsItem label="赠送积分">{{
-                  formData.giveIntegral
-                }}</ElDescriptionsItem>
-                <ElDescriptionsItem label="虚拟销量">{{
-                  formData.virtualSalesCount
-                }}</ElDescriptionsItem>
-                <ElDescriptionsItem label="排序">{{
-                  formData.sort
-                }}</ElDescriptionsItem>
+                  <ElTag type="danger" />{{ formData.keyword || '无' }}
+                </ElDescriptionsItem>
+                <ElDescriptionsItem label="赠送积分">
+                  {{ formData.giveIntegral }}
+                </ElDescriptionsItem>
+                <ElDescriptionsItem label="虚拟销量">
+                  {{ formData.virtualSalesCount }}
+                </ElDescriptionsItem>
+                <ElDescriptionsItem label="排序">
+                  {{ formData.sort }}
+                </ElDescriptionsItem>
                 <ElDescriptionsItem label="规格类型">
                   <ElTag :type="formData.specType ? 'success' : 'info'">
                     {{ formData.specType ? '多规格' : '单规格' }}
@@ -309,9 +310,9 @@ onMounted(async () => {
                     </span>
                   </div>
                 </ElDescriptionsItem>
-                <ElDescriptionsItem label="运费模板">{{
-                  formData.deliveryTemplateId || '未设置'
-                }}</ElDescriptionsItem>
+                <ElDescriptionsItem label="运费模板">
+                  {{ formData.deliveryTemplateId || '未设置' }}
+                </ElDescriptionsItem>
               </ElDescriptions>
             </ElCard>
           </div>
@@ -370,7 +371,7 @@ onMounted(async () => {
             >
               <ElCard
                 shadow="hover"
-                :header="`规格 ${index + 1}${sku.properties && sku.properties.length > 0 ? ' - ' + sku.properties.map((p) => p.valueName).join('/') : ''}`"
+                :header="`规格 ${index + 1}${sku.properties && sku.properties.length > 0 ? ` - ${sku.properties.map((p) => p.valueName).join('/')}` : ''}`"
               >
                 <div class="flex flex-col gap-4 md:flex-row">
                   <ElImage
@@ -484,14 +485,17 @@ onMounted(async () => {
   background-color: #fff;
   border-radius: 4px;
 }
+
 .product-description :deep(img) {
   max-width: 100%;
   height: auto;
 }
+
 .product-description :deep(table) {
   width: 100%;
   border-collapse: collapse;
 }
+
 .product-description :deep(table td) {
   padding: 8px;
   border: 1px solid #eee;

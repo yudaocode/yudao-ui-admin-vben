@@ -7,7 +7,7 @@ import { onMounted } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElLoading, ElMessage, ElTag } from 'element-plus';
+import { ElMessage, ElMessageBox, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,32 +45,26 @@ function handleCreate() {
 
 /** 关闭活动 */
 async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.closing', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确认关闭该秒杀活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await closeSeckillActivity(row.id as number);
-    ElMessage.success('关闭成功');
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await closeSeckillActivity(row.id as number);
+  ElMessage.success('关闭成功');
+  onRefresh();
 }
 
 /** 删除活动 */
 async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定删除该秒杀活动吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteSeckillActivity(row.id as number);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteSeckillActivity(row.id as number);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+  onRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -12,7 +12,7 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -73,47 +73,38 @@ function onEdit(row: InfraCodegenApi.CodegenTable) {
 
 /** 删除代码生成配置 */
 async function onDelete(row: InfraCodegenApi.CodegenTable) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.tableName]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该代码生成配置吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteCodegenTable(row.id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteCodegenTable(row.id);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
+  onRefresh();
 }
 
 /** 批量删除代码生成配置 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要删除该代码生成配置吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await deleteCodegenTableList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await deleteCodegenTableList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 /** 同步数据库 */
 async function onSync(row: InfraCodegenApi.CodegenTable) {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.updating', [row.tableName]),
-    fullscreen: true,
+  await ElMessageBox.confirm('确定要同步该代码生成配置吗？', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   });
-  try {
-    await syncCodegenFromDB(row.id);
-    ElMessage.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await syncCodegenFromDB(row.id);
+  ElMessage.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
+  onRefresh();
 }
 
 /** 生成代码 */

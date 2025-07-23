@@ -53,6 +53,8 @@ export namespace MallOrderApi {
 
   /** 订单日志 */
   export interface OrderLog {
+    /** 日志编号 */
+    id: number;
     /** 日志内容 */
     content?: string;
     /** 创建时间 */
@@ -108,7 +110,7 @@ export namespace MallOrderApi {
     /** 订单调价（总） */
     adjustPrice?: null | number;
     /** 应付金额（总） */
-    payPrice?: null | number;
+    payPrice?: null | number | string;
     /** 发货方式 */
     deliveryType?: null | number;
     /** 自提门店编号 */
@@ -226,6 +228,13 @@ export namespace MallOrderApi {
     /** 收件人详细地址 */
     receiverDetailAddress: string;
   }
+
+  export interface OrderExpressTrackRespDTO {
+    /** 发生时间 */
+    time: Date;
+    /** 快递状态 */
+    content: string;
+  }
 }
 
 /** 查询交易订单列表 */
@@ -254,7 +263,9 @@ export function getOrder(id: number) {
 
 /** 查询交易订单物流详情 */
 export function getExpressTrackList(id: number) {
-  return requestClient.get(`/trade/order/get-express-track-list?id=${id}`);
+  return requestClient.get<MallOrderApi.OrderExpressTrackRespDTO[]>(
+    `/trade/order/get-express-track-list?id=${id}`,
+  );
 }
 
 /** 订单发货 */
