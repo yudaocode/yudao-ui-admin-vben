@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { WorkbenchQuickDataShowItem } from '../typing';
+import type { WorkbenchQuickDataShowItem } from './data';
 
 import { computed } from 'vue';
 
 import { CountTo } from '@vben/common-ui';
-
-import { Card, CardContent, CardHeader, CardTitle } from '@vben-core/shadcn-ui';
 
 interface Props {
   items?: WorkbenchQuickDataShowItem[];
@@ -34,13 +32,16 @@ const itemsData = computed({
 </script>
 
 <template>
-  <Card>
-    <CardHeader class="py-4">
-      <CardTitle class="text-lg">{{ title }}</CardTitle>
-    </CardHeader>
-    <CardContent class="flex flex-wrap p-0">
-      <template v-for="(item, index) in itemsData" :key="item.name">
+  <el-card>
+    <template #header>
+      <!--      <CardTitle class="text-lg " >{{ title }}</CardTitle>-->
+      <div class="text-lg font-semibold">{{ title }}</div>
+    </template>
+    <template #default>
+      <div class="flex flex-wrap p-0">
         <div
+          v-for="(item, index) in itemsData"
+          :key="item.name"
           :class="{
             'border-r-0': index % 4 === 3,
             'border-b-0': index < 4,
@@ -60,7 +61,12 @@ const itemsData = computed({
           </div>
           <span class="truncate text-base text-gray-500">{{ item.name }}</span>
         </div>
-      </template>
-    </CardContent>
-  </Card>
+      </div>
+    </template>
+    <!--    <CardContent class="flex flex-wrap p-0">-->
+    <!--      <template>-->
+    <!--        -->
+    <!--      </template>-->
+    <!--    </CardContent>-->
+  </el-card>
 </template>

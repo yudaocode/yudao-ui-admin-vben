@@ -212,13 +212,6 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElCascader,
-        props: {
-          props: {
-            label: 'label',
-            value: 'value',
-            children: 'children',
-          },
-        },
       },
     ),
     ApiTreeSelect: withDefaultPlaceholder(
@@ -229,7 +222,6 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElTreeSelect,
-        props: { label: 'label', children: 'children' },
         nodeKey: 'value',
         loadingSlot: 'loading',
         optionsPropName: 'data',

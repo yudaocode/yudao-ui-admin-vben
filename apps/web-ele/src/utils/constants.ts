@@ -202,6 +202,16 @@ export const PayOrderStatusEnum = {
 
 // ========== MALL - 商品模块 ==========
 /**
+ * 商品 首页 日期类型
+ */
+export enum TimeRangeTypeEnum {
+  DAY30 = 1,
+  MONTH = 30,
+  WEEK = 7,
+  YEAR = 365,
+}
+
+/**
  * 商品 SPU 状态
  */
 export const ProductSpuStatusEnum = {

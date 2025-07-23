@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { AnalysisOverviewItem } from '@vben/common-ui';
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type { MallDataComparisonResp } from '#/api/mall/statistics/common';
 import type { MallProductStatisticsApi } from '#/api/mall/statistics/product';
+import type { AnalysisOverviewIconItem } from '#/views/mall/home/components/data';
 
 import { reactive, ref } from 'vue';
 
-import { AnalysisChartCard, AnalysisOverview, confirm } from '@vben/common-ui';
-import { SvgCakeIcon, SvgCardIcon, SvgEyeIcon } from '@vben/icons';
+import { confirm } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import {
+  calculateRelativeRate,
   downloadFileFromBlobPart,
   fenToYuan,
   formatDate,
@@ -20,6 +20,8 @@ import {
 import dayjs from 'dayjs';
 
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
+import AnalysisChartCard from '#/views/mall/home/components/analysis-chart-card.vue';
+import AnalysisOverviewIcon from '#/views/mall/home/components/analysis-overview-icon.vue';
 import ShortcutDateRangePicker from '#/views/mall/home/components/shortcut-date-range-picker.vue';
 
 /** 商品概况 */
@@ -210,64 +212,88 @@ const handleExport = async () => {
   }
 };
 
-const overviewItems = ref<AnalysisOverviewItem[]>();
+const overviewItems = ref<AnalysisOverviewIconItem[]>();
 const loadOverview = () => {
   overviewItems.value = [
     {
-      icon: SvgEyeIcon,
+      icon: 'ep:view',
       title: '商品浏览量',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.browseCount || 0,
       value: trendSummary.value?.value?.browseCount || 0,
+      iconColor: 'bg-blue-100',
+      iconBgColor: 'text-blue-500',
       tooltip:
         '在选定条件下，所有商品详情页被访问的次数，一个人在统计时间内访问多次记为多次',
-      showGrowthRate: true,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.browseCount,
+        trendSummary.value?.reference?.browseCount,
+      ),
     },
     {
-      icon: SvgCakeIcon,
+      icon: 'ep:user-filled',
       title: '商品访客数',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.browseUserCount || 0,
       value: trendSummary.value?.value?.browseUserCount || 0,
+      iconColor: 'bg-purple-100',
+      iconBgColor: 'text-purple-500',
       tooltip:
         '在选定条件下，访问任何商品详情页的人数，一个人在统计时间范围内访问多次只记为一个',
-      showGrowthRate: true,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.browseUserCount,
+        trendSummary.value?.reference?.browseUserCount,
+      ),
     },
     {
-      icon: SvgCakeIcon,
+      icon: 'fa-solid:money-check-alt',
       title: '支付件数',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.orderPayCount || 0,
+      iconColor: 'bg-yellow-100',
+      iconBgColor: 'text-yellow-500',
       value: trendSummary.value?.value?.orderPayCount || 0,
       tooltip: '在选定条件下，成功付款订单的商品件数之和',
-      showGrowthRate: true,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.orderPayCount,
+        trendSummary.value?.reference?.orderPayCount,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'ep:warning-filled',
       title: '支付金额',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
-      value: trendSummary.value?.value?.orderPayPrice || 0,
+      iconColor: 'bg-green-100',
+      iconBgColor: 'text-green-500',
+      prefix: '￥',
+      value: Number(fenToYuan(trendSummary.value?.value?.orderPayPrice || 0)),
       tooltip: '在选定条件下，成功付款订单的商品金额之和',
-      showGrowthRate: true,
+      decimals: 2,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.orderPayPrice,
+        trendSummary.value?.reference?.orderPayPrice,
+      ),
     },
     {
-      icon: SvgCakeIcon,
+      icon: 'fa-solid:wallet',
       title: '退款件数',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.afterSaleCount || 0,
+      iconColor: 'bg-cyan-100',
+      iconBgColor: 'text-cyan-500',
       value: trendSummary.value?.value?.afterSaleCount || 0,
       tooltip: '在选定条件下，成功退款的商品件数之和',
-      showGrowthRate: true,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.afterSaleCount,
+        trendSummary.value?.reference?.afterSaleCount,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'fa-solid:award',
       title: '退款金额',
-      totalTitle: '昨日数据',
-      totalValue: trendSummary.value?.reference?.afterSaleRefundPrice || 0,
-      value: trendSummary.value?.value?.afterSaleRefundPrice || 0,
+      iconColor: 'bg-yellow-100',
+      iconBgColor: 'text-yellow-500',
+      prefix: '￥',
+      decimals: 2,
+      value: Number(
+        fenToYuan(trendSummary.value?.value?.afterSaleRefundPrice || 0),
+      ),
       tooltip: '在选定条件下，成功退款的商品金额之和',
-      showGrowthRate: true,
+      percent: calculateRelativeRate(
+        trendSummary?.value?.value?.afterSaleRefundPrice,
+        trendSummary.value?.reference?.afterSaleRefundPrice,
+      ),
     },
   ];
 };
@@ -291,7 +317,7 @@ const loadOverview = () => {
       </ShortcutDateRangePicker>
     </template>
     <!-- 统计值 -->
-    <AnalysisOverview
+    <AnalysisOverviewIcon
       v-model:model-value="overviewItems"
       :columns-number="6"
       class="mt-5 md:mr-4 md:mt-0 md:w-full"

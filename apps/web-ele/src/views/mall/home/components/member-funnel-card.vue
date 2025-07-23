@@ -3,13 +3,13 @@ import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
 
 import { ref } from 'vue';
 
-import { AnalysisChartCard } from '@vben/common-ui';
 import { calculateRelativeRate, fenToYuan } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
 
+import AnalysisChartCard from './analysis-chart-card.vue';
 import ShortcutDateRangePicker from './shortcut-date-range-picker.vue';
 
 /** 会员概览卡片 */

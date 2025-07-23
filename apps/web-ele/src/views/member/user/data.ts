@@ -86,7 +86,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '所在地',
       componentProps: {
         api: () => getAreaTree(),
-        props: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
       },
     },
     {
@@ -95,7 +97,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户标签',
       componentProps: {
         api: () => getSimpleTagList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
       },
     },
@@ -105,7 +108,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户分组',
       componentProps: {
         api: () => getSimpleGroupList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -151,7 +155,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleTagList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
       },
     },
@@ -161,7 +166,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -170,7 +176,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleGroupList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
   ];
@@ -290,7 +297,8 @@ export function useLeavelFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        props: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {

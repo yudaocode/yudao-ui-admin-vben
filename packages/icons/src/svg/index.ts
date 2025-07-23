@@ -10,7 +10,6 @@ const SvgDownloadIcon = createIconifyIcon('svg:download');
 const SvgCardIcon = createIconifyIcon('svg:card');
 const SvgBellIcon = createIconifyIcon('svg:bell');
 const SvgCakeIcon = createIconifyIcon('svg:cake');
-const SvgEyeIcon = createIconifyIcon('svg:eye');
 const SvgAntdvLogoIcon = createIconifyIcon('svg:antdv-logo');
 
 /** AI */
@@ -45,7 +44,6 @@ export {
   SvgCakeIcon,
   SvgCardIcon,
   SvgDownloadIcon,
-  SvgEyeIcon,
   SvgGptIcon,
   SvgMockIcon,
   SvgWalletIcon,

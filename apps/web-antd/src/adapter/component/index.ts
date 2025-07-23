@@ -156,7 +156,7 @@ async function initComponentAdapter() {
       'select',
       {
         component: TreeSelect,
-        props: { label: 'label', value: 'value', children: 'children' },
+        fieldNames: { label: 'label', value: 'value', children: 'children' },
         loadingSlot: 'suffixIcon',
         modelPropName: 'value',
         optionsPropName: 'treeData',

@@ -15,10 +15,7 @@ withDefaults(defineProps<Props>(), {});
 <template>
   <Card>
     <CardHeader>
-      <div class="my--1.5 flex flex-row items-center justify-between">
-        <CardTitle class="text-xl">{{ title }}</CardTitle>
-        <slot name="header-suffix"></slot>
-      </div>
+      <CardTitle class="text-xl">{{ title }}</CardTitle>
     </CardHeader>
     <CardContent>
       <slot></slot>

@@ -1,27 +1,17 @@
 <script lang="ts" setup>
 import type {
-  AnalysisOverviewItem,
   WorkbenchProjectItem,
-  WorkbenchQuickDataShowItem,
   WorkbenchQuickNavItem,
 } from '@vben/common-ui';
+
+import type { AnalysisOverviewItem } from './components/data';
+
+import type { WorkbenchQuickDataShowItem } from '#/views/mall/home/components/data';
 
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import {
-  AnalysisOverview,
-  DocAlert,
-  Page,
-  WorkbenchQuickDataShow,
-  WorkbenchQuickNav,
-} from '@vben/common-ui';
-import {
-  SvgBellIcon,
-  SvgCakeIcon,
-  SvgCardIcon,
-  SvgDownloadIcon,
-} from '@vben/icons';
+import { DocAlert, Page, WorkbenchQuickNav } from '@vben/common-ui';
 import { isString, openWindow } from '@vben/utils';
 
 import { getTabsCount } from '#/api/mall/product/spu';
@@ -29,10 +19,12 @@ import { getUserCountComparison } from '#/api/mall/statistics/member';
 import { getWalletRechargePrice } from '#/api/mall/statistics/pay';
 import { getOrderComparison, getOrderCount } from '#/api/mall/statistics/trade';
 
+import AnalysisOverview from './components/analysis-overview.vue';
 import MemberFunnelCard from './components/member-funnel-card.vue';
 import MemberStatisticsCard from './components/member-statistics-card.vue';
 import MemberTerminalCard from './components/member-terminal-card.vue';
 import TradeTrendCard from './components/trade-trend-card.vue';
+import WorkbenchQuickDataShow from './components/workbench-quick-data-show.vue';
 
 /** 商城首页 */
 defineOptions({ name: 'MallHome' });
@@ -115,7 +107,6 @@ const overviewItems = ref<AnalysisOverviewItem[]>([]);
 const loadOverview = () => {
   overviewItems.value = [
     {
-      icon: SvgCardIcon,
       title: '今日销售额',
       totalTitle: '昨日数据',
       totalValue: orderComparison.value?.reference?.orderPayPrice || 0,
@@ -123,7 +114,6 @@ const loadOverview = () => {
       showGrowthRate: true,
     },
     {
-      icon: SvgCakeIcon,
       title: '今日用户访问量',
       totalTitle: '总访问量',
       totalValue: userComparison.value?.reference?.visitUserCount || 0,
@@ -131,15 +121,13 @@ const loadOverview = () => {
       showGrowthRate: true,
     },
     {
-      icon: SvgDownloadIcon,
       title: '今日订单量',
       totalTitle: '总订单量',
       totalValue: orderComparison.value?.orderPayCount || 0,
       value: orderComparison.value?.reference?.orderPayCount || 0,
-      // 不显示环比增长率
+      showGrowthRate: true,
     },
     {
-      icon: SvgBellIcon,
       title: '今日会员注册量',
       totalTitle: '总会员注册量',
       totalValue: userComparison.value?.registerUserCount || 0,

@@ -1,13 +1,17 @@
 <script lang="ts" setup>
+import { watch } from 'vue';
+
+import { ElMessage } from 'element-plus';
+
 import { useVbenForm } from '#/adapter/form';
 import * as ExpressTemplateApi from '#/api/mall/trade/delivery/expressTemplate';
-import { watch } from 'vue';
-import { ElMessage } from 'element-plus';
-import { DICT_TYPE, getIntDictOptions, DeliveryTypeEnum } from '#/utils';
+import { DeliveryTypeEnum, DICT_TYPE, getIntDictOptions } from '#/utils';
 
 const props = defineProps<{
   propFormData: Object;
 }>();
+
+const emit = defineEmits(['update:activeName']);
 
 /** 将传进来的值赋值给 formData */
 watch(
@@ -20,7 +24,6 @@ watch(
   },
 );
 
-const emit = defineEmits(['update:activeName']);
 const validate = async () => {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -29,10 +32,10 @@ const validate = async () => {
   try {
     // 校验通过更新数据
     Object.assign(props.propFormData, formApi.getValues());
-  } catch (e) {
+  } catch (error) {
     ElMessage.error('【物流设置】不完善，请填写相关信息');
     emit('update:activeName', 'delivery');
-    throw e; // 目的截断之后的校验
+    throw error; // 目的截断之后的校验
   }
 };
 defineExpose({ validate });
@@ -62,11 +65,8 @@ const [Form, formApi] = useVbenForm({
       component: 'ApiSelect',
       componentProps: {
         api: ExpressTemplateApi.getSimpleTemplateList,
-        props: {
-          label: 'name',
-          value: 'id',
-          children: 'children',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
       rules: 'required',
       dependencies: {

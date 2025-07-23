@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import type { AnalysisOverviewItem } from '@vben/common-ui';
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type { MallDataComparisonResp } from '#/api/mall/statistics/common';
 import type { MallTradeStatisticsApi } from '#/api/mall/statistics/trade';
+import type { AnalysisOverviewIconItem } from '#/views/mall/home/components/data';
 
 import { reactive, ref } from 'vue';
 
-import { AnalysisChartCard, AnalysisOverview } from '@vben/common-ui';
-import { SvgCakeIcon, SvgCardIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import {
+  calculateRelativeRate,
   downloadFileFromBlobPart,
   fenToYuan,
   formatDate,
@@ -21,11 +20,13 @@ import dayjs from 'dayjs';
 import { ElMessageBox } from 'element-plus';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import AnalysisChartCard from '#/views/mall/home/components/analysis-chart-card.vue';
+import AnalysisOverviewIcon from '#/views/mall/home/components/analysis-overview-icon.vue';
 import ShortcutDateRangePicker from '#/views/mall/home/components/shortcut-date-range-picker.vue';
 
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
-const overviewItems = ref<AnalysisOverviewItem[]>();
+const overviewItems = ref<AnalysisOverviewIconItem[]>();
 const summary =
   ref<MallDataComparisonResp<MallTradeStatisticsApi.TradeTrendSummary>>();
 const shortcutDateRangePicker = ref();
@@ -34,61 +35,105 @@ const trendLoading = ref(true); // 交易状态加载中
 const loadOverview = () => {
   overviewItems.value = [
     {
-      icon: SvgCakeIcon,
+      icon: 'fa-solid:yen-sign',
       title: '营业额',
-      value: summary?.value?.value.turnoverPrice || 0,
+      value: Number(fenToYuan(summary?.value?.value.turnoverPrice || 0)),
       tooltip: '商品支付金额、充值金额',
-      totalValue: summary?.value?.reference?.turnoverPrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-blue-100',
+      iconBgColor: 'text-blue-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.turnoverPrice,
+        summary?.value?.reference?.turnoverPrice,
+      ),
     },
     {
-      icon: SvgCakeIcon,
+      icon: 'fa-solid:shopping-cart',
       title: '商品支付金额',
-      value: summary.value?.value?.orderPayPrice || 0,
+      value: Number(fenToYuan(summary.value?.value?.orderPayPrice || 0)),
       tooltip:
         '用户购买商品的实际支付金额，包括微信支付、余额支付、支付宝支付、线下支付金额（拼团商品在成团之后计入，线下支付订单在后台确认支付后计入）',
-      totalValue: summary?.value?.reference?.orderPayPrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-purple-100',
+      iconBgColor: 'text-purple-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.orderPayPrice,
+        summary?.value?.reference?.orderPayPrice,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'fa-solid:money-check-alt',
       title: '充值金额',
-      value: summary.value?.value?.rechargePrice || 0,
+      value: Number(fenToYuan(summary.value?.value?.rechargePrice || 0)),
       tooltip: '用户成功充值的金额',
-      totalValue: summary?.value?.reference?.rechargePrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-yellow-100',
+      iconBgColor: 'text-yellow-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.rechargePrice,
+        summary?.value?.reference?.rechargePrice,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'ep:warning-filled',
       title: '支出金额',
-      value: summary.value?.value?.expensePrice || 0,
+      value: Number(fenToYuan(summary.value?.value?.expensePrice || 0)),
       tooltip: '余额支付金额、支付佣金金额、商品退款金额',
-      totalValue: summary?.value?.reference?.expensePrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-green-100',
+      iconBgColor: 'text-green-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.expensePrice,
+        summary?.value?.reference?.expensePrice,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'fa-solid:wallet',
       title: '余额支付金额',
-      value: summary.value?.value?.walletPayPrice || 0,
+      value: Number(fenToYuan(summary.value?.value?.walletPayPrice || 0)),
       tooltip: '余额支付金额、支付佣金金额、商品退款金额',
-      totalValue: summary?.value?.reference?.walletPayPrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-cyan-100',
+      iconBgColor: 'text-cyan-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.walletPayPrice,
+        summary?.value?.reference?.walletPayPrice,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'fa-solid:award',
       title: '支付佣金金额',
-      value: summary.value?.value?.brokerageSettlementPrice || 0,
+      value: Number(
+        fenToYuan(summary.value?.value?.brokerageSettlementPrice || 0),
+      ),
       tooltip: '后台给推广员支付的推广佣金，以实际支付为准',
-      totalValue: summary?.value?.reference?.brokerageSettlementPrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-yellow-100',
+      iconBgColor: 'text-yellow-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.brokerageSettlementPrice,
+        summary?.value?.reference?.brokerageSettlementPrice,
+      ),
     },
     {
-      icon: SvgCardIcon,
+      icon: 'fa-solid:times-circle',
       title: '商品退款金额',
-      value: summary.value?.value?.afterSaleRefundPrice || 0,
+      value: Number(fenToYuan(summary.value?.value?.afterSaleRefundPrice || 0)),
       tooltip: '用户成功退款的商品金额',
-      totalValue: summary?.value?.reference?.afterSaleRefundPrice || 0,
-      showGrowthRate: true,
+      iconColor: 'bg-blue-100',
+      iconBgColor: 'text-blue-500',
+      prefix: '￥',
+      decimals: 2,
+      percent: calculateRelativeRate(
+        summary?.value?.value?.afterSaleRefundPrice,
+        summary?.value?.reference?.afterSaleRefundPrice,
+      ),
     },
   ];
 };
@@ -229,7 +274,7 @@ const lineChartOptions = reactive({
         </el-button>
       </ShortcutDateRangePicker>
     </template>
-    <AnalysisOverview v-model:model-value="overviewItems" />
+    <AnalysisOverviewIcon v-model:model-value="overviewItems" />
     <EchartsUI height="500px" ref="chartRef" />
   </AnalysisChartCard>
 </template>

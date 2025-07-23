@@ -10,8 +10,7 @@ import { fenToYuan, formatDate } from '@vben/utils';
 import dayjs, { Dayjs } from 'dayjs';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
-
-import { TimeRangeTypeEnum } from '../data';
+import { TimeRangeTypeEnum } from '#/utils/constants';
 
 /** 交易量趋势 */
 defineOptions({ name: 'TradeTrendCard' });

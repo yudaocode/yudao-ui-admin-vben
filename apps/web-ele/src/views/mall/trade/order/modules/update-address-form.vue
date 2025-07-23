@@ -57,11 +57,9 @@ const [Form, formApi] = useVbenForm({
       component: 'ApiTreeSelect',
       componentProps: {
         api: () => getAreaTree(),
-        props: {
-          label: 'name',
-          value: 'id',
-          children: 'children',
-        },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择收件人所在地',
         treeDefaultExpandAll: true,
       },

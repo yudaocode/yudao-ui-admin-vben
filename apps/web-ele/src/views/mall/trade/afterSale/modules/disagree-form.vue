@@ -54,10 +54,8 @@ const [Form, formApi] = useVbenForm({
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleDeliveryExpressList,
-        props: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
       dependencies: {
         triggerFields: ['expressType'],
