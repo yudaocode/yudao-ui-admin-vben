@@ -42,7 +42,7 @@ const areaChartOptions = reactive({
     {
       name: '会员地域分布',
       type: 'map' as const,
-      map: 'china2',
+      map: 'china',
       roam: false,
       selectedMode: false,
       data: [] as any[],
@@ -50,29 +50,10 @@ const areaChartOptions = reactive({
   ],
 });
 
-function areaReplace(areaName: string) {
-  if (!areaName) {
-    return areaName;
-  }
-  return areaName
-    .replace('维吾尔自治区', '')
-    .replace('壮族自治区', '')
-    .replace('回族自治区', '')
-    .replace('自治区', '')
-    .replace('省', '');
-}
-
 /** 按照省份，查询会员统计列表 */
 const getMemberAreaStatisticsList = async () => {
-  const list = await MemberStatisticsApi.getMemberAreaStatisticsList();
-  areaStatisticsList.value = list.map(
-    (item: MallMemberStatisticsApi.AreaStatistics) => {
-      return {
-        ...item,
-        areaName: areaReplace(item.areaName),
-      };
-    },
-  );
+  areaStatisticsList.value =
+    await MemberStatisticsApi.getMemberAreaStatisticsList();
   let min = 0;
   let max = 0;
 

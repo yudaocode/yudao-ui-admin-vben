@@ -20,7 +20,6 @@ import {
 
 import echarts from './echarts';
 // TODO @xingyu：有 500kb，china.json 会影响打包么？
-import chinaMap2 from './map/china2.json';
 import chinaMap from './map/china.json';
 
 type EchartsUIType = typeof EchartsUI | undefined;
@@ -37,18 +36,6 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
 
   echarts.registerMap('china', {
     geoJSON: chinaMap as any,
-    specialAreas: {
-      china: {
-        left: 500,
-        top: 500,
-        width: 1000,
-        height: 1000,
-      },
-    },
-  });
-
-  echarts.registerMap('china2', {
-    geoJSON: chinaMap2 as any,
     specialAreas: {
       china: {
         left: 500,
