@@ -19,8 +19,8 @@ import {
 } from '#/api/erp/purchase/order';
 import { $t } from '#/locales';
 
-import PurchaseOrderForm from './components/PurchaseOrderForm.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import PurchaseOrderForm from './modules/form.vue';
 
 /** ERP 采购订单列表 */
 defineOptions({ name: 'ErpPurchaseOrder' });
