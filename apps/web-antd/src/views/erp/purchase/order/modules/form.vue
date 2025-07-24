@@ -34,9 +34,10 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    labelWidth: 120,
   },
-  wrapperClass: 'grid-cols-2',
-  layout: 'horizontal',
+  wrapperClass: 'grid-cols-3',
+  layout: 'vertical',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
@@ -133,22 +134,17 @@ defineExpose({ modalApi });
     :closable="true"
     :mask-closable="true"
   >
-    <Form />
-
-    <!-- Tab卡片 -->
-    <div class="border-border bg-card mt-4 rounded-lg border p-2">
-      <a-tabs default-active-key="1">
-        <a-tab-pane key="1" tab="订单产品清单">
-          <div class="p-4">
-            <PurchaseOrderItemForm
-              ref="itemFormRef"
-              :items="formData?.items || []"
-              :disabled="formType === 'detail'"
-              @update:items="handleUpdateItems"
-            />
-          </div>
-        </a-tab-pane>
-      </a-tabs>
-    </div>
+    <Form class="mx-3">
+      <template #product="slotProps">
+        <PurchaseOrderItemForm
+          v-bind="slotProps"
+          ref="itemFormRef"
+          class="w-full"
+          :items="formData?.items || []"
+          :disabled="formType === 'detail'"
+          @update:items="handleUpdateItems"
+        />
+      </template>
+    </Form>
   </Modal>
 </template>

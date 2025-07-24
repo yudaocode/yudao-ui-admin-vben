@@ -40,6 +40,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     border: true,
     showOverflow: true,
     autoResize: true,
+    minHeight: 250,
     keepSource: true,
     rowConfig: {
       keyField: 'id',

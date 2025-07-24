@@ -13,6 +13,15 @@ import { DICT_TYPE, getDictOptions } from '#/utils';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
+      component: 'Input',
+      componentProps: {
+        placeholder: '系统自动生成',
+        disabled: true,
+      },
+      fieldName: 'no',
+      label: '订单单号',
+    },
+    {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择供应商',
@@ -50,17 +59,35 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       fieldName: 'remark',
       label: '备注',
-      formItemClass: 'col-span-2',
+      formItemClass: 'col-span-3',
     },
     {
-      component: 'Input',
+      component: 'FileUpload',
       componentProps: {
-        placeholder: '请输入附件地址',
-        class: 'w-full',
+        maxNumber: 5,
+        maxSize: 10,
+        accept: [
+          'pdf',
+          'doc',
+          'docx',
+          'xls',
+          'xlsx',
+          'txt',
+          'jpg',
+          'jpeg',
+          'png',
+        ],
+        showDescription: true,
       },
       fieldName: 'fileUrl',
       label: '附件',
-      formItemClass: 'col-span-2',
+      formItemClass: 'col-span-3',
+    },
+    {
+      fieldName: 'product',
+      label: '产品清单',
+      component: 'Input',
+      formItemClass: 'col-span-3',
     },
     {
       component: 'InputNumber',
@@ -214,6 +241,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入订单单号',
         allowClear: true,
+        disabled: true,
       },
     },
     {
