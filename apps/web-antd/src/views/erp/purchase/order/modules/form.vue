@@ -136,7 +136,7 @@ defineExpose({ modalApi });
     <Form />
 
     <!-- Tab卡片 -->
-    <div class="mt-4 rounded-lg border border-gray-200 p-2">
+    <div class="border-border bg-card mt-4 rounded-lg border p-2">
       <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="订单产品清单">
           <div class="p-4">
