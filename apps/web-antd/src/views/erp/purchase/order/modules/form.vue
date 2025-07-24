@@ -67,6 +67,12 @@ watch(
   { deep: true },
 );
 
+const handleUpdateItems = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
+  if (formData.value) {
+    formData.value.items = items;
+  }
+};
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -138,6 +144,7 @@ defineExpose({ modalApi });
               ref="itemFormRef"
               :items="formData?.items || []"
               :disabled="formType === 'detail'"
+              @update:items="handleUpdateItems"
             />
           </div>
         </a-tab-pane>

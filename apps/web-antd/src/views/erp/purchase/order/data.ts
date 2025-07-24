@@ -128,6 +128,82 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 采购订单项表格列定义 */
+export function usePurchaseOrderItemTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'seq', title: '序号', minWidth: 50 },
+    {
+      field: 'productId',
+      title: '产品名称',
+      minWidth: 200,
+      slots: { default: 'productId' },
+    },
+    {
+      field: 'stockCount',
+      title: '库存',
+      minWidth: 80,
+    },
+    {
+      field: 'productBarCode',
+      title: '条码',
+      minWidth: 120,
+    },
+    {
+      field: 'productUnitName',
+      title: '单位',
+      minWidth: 80,
+    },
+    {
+      field: 'count',
+      title: '数量',
+      minWidth: 120,
+      slots: { default: 'count' },
+    },
+    {
+      field: 'productPrice',
+      title: '产品单价',
+      minWidth: 120,
+      slots: { default: 'productPrice' },
+    },
+    {
+      field: 'totalProductPrice',
+      title: '金额',
+      minWidth: 120,
+      formatter: 'formatAmount2',
+    },
+    {
+      field: 'taxPercent',
+      title: '税率(%)',
+      minWidth: 100,
+      slots: { default: 'taxPercent' },
+    },
+    {
+      field: 'taxPrice',
+      title: '税额',
+      minWidth: 120,
+      formatter: 'formatAmount2',
+    },
+    {
+      field: 'totalPrice',
+      title: '税额合计',
+      minWidth: 120,
+      formatter: 'formatAmount2',
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
+    },
+    {
+      title: '操作',
+      width: 120,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
