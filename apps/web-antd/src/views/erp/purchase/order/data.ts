@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { erpCountInputFormatter, erpPriceInputFormatter } from '@vben/utils';
 
+import { z } from '#/adapter/form';
 import { getAccountSimpleList } from '#/api/erp/finance/account';
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getSupplierSimpleList } from '#/api/erp/purchase/supplier';
@@ -96,11 +97,11 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         max: 100,
         precision: 2,
-        formatter: erpPriceInputFormatter,
         style: { width: '100%' },
       },
       fieldName: 'discountPercent',
       label: '优惠率(%)',
+      rules: z.number().min(0).optional(),
     },
     {
       component: 'InputNumber',
@@ -146,11 +147,12 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入支付订金',
         precision: 2,
-        formatter: erpPriceInputFormatter,
         style: { width: '100%' },
+        min: 0,
       },
       fieldName: 'depositPrice',
       label: '支付订金',
+      rules: z.number().min(0).optional(),
     },
   ];
 }

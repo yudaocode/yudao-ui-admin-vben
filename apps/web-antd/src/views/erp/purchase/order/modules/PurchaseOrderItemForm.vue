@@ -16,13 +16,19 @@ import { usePurchaseOrderItemTableColumns } from '../data';
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   disabled: false,
+  discountPercent: 0,
 });
 
-const emit = defineEmits(['update:items']);
+const emit = defineEmits([
+  'update:items',
+  'update:discount-price',
+  'update:total-price',
+]);
 
 interface Props {
   items?: ErpPurchaseOrderApi.PurchaseOrderItem[];
   disabled?: boolean;
+  discountPercent?: number;
 }
 
 const tableData = ref<ErpPurchaseOrderApi.PurchaseOrderItem[]>([]);
@@ -62,12 +68,37 @@ watch(
       return;
     }
     await nextTick();
-    tableData.value = items;
+    tableData.value = [...items];
+    await nextTick();
     gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,
   },
+);
+
+/** 计算 discountPrice、totalPrice 价格 */
+watch(
+  () => [tableData.value, props.discountPercent],
+  () => {
+    if (!tableData.value || tableData.value.length === 0) {
+      return;
+    }
+    const totalPrice = tableData.value.reduce(
+      (prev, curr) => prev + (curr.totalPrice || 0),
+      0,
+    );
+    const discountPrice =
+      props.discountPercent === null
+        ? 0
+        : erpPriceMultiply(totalPrice, props.discountPercent / 100);
+    const finalTotalPrice = totalPrice - discountPrice;
+
+    // 发送计算结果给父组件
+    emit('update:discount-price', discountPrice);
+    emit('update:total-price', finalTotalPrice);
+  },
+  { deep: true },
 );
 
 /** 初始化 */
@@ -81,6 +112,11 @@ function handleAdd() {
 
 function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrderItem) {
   gridApi.grid.remove(row);
+  const index = tableData.value.findIndex((item) => item.id === row.id);
+  if (index !== -1) {
+    tableData.value.splice(index, 1);
+  }
+  emit('update:items', [...tableData.value]);
 }
 
 async function handleProductChange(productId: any, row: any) {
@@ -121,7 +157,7 @@ function handleUpdateValue(row: any) {
   } else {
     tableData.value[index] = row;
   }
-  emit('update:items', tableData.value);
+  emit('update:items', [...tableData.value]);
 }
 
 const getSummaries = (): {
@@ -131,7 +167,7 @@ const getSummaries = (): {
   totalPrice: number;
   totalProductPrice: number;
 } => {
-  const sums = {
+  return {
     productName: '合计',
     count: tableData.value.reduce((sum, item) => sum + (item.count || 0), 0),
     totalProductPrice: tableData.value.reduce(
@@ -147,20 +183,21 @@ const getSummaries = (): {
       0,
     ),
   };
-  return sums;
 };
 
 const validate = async (): Promise<void> => {
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item.productId) {
-      throw new Error(`第 ${i + 1} 行：产品不能为空`);
-    }
-    if (!item.count || item.count <= 0) {
-      throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
-    }
-    if (!item.productPrice || item.productPrice <= 0) {
-      throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
+    if (item) {
+      if (!item.productId) {
+        throw new Error(`第 ${i + 1} 行：产品不能为空`);
+      }
+      if (!item.count || item.count <= 0) {
+        throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
+      }
+      if (!item.productPrice || item.productPrice <= 0) {
+        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
+      }
     }
   }
 };
@@ -169,8 +206,10 @@ const getData = (): ErpPurchaseOrderApi.PurchaseOrderItem[] => tableData.value;
 const init = (
   items: ErpPurchaseOrderApi.PurchaseOrderItem[] | undefined,
 ): void => {
-  tableData.value = items || [];
-  gridApi.grid.reloadData(tableData.value);
+  tableData.value = items ? [...items] : [];
+  nextTick(() => {
+    gridApi.grid.reloadData(tableData.value);
+  });
 };
 
 defineExpose({ validate, getData, init });
@@ -232,7 +271,6 @@ defineExpose({ validate, getData, init });
     </template>
 
     <template #bottom>
-      <!-- 合计行 -->
       <div class="border-border bg-muted mt-2 rounded border p-2">
         <div class="text-muted-foreground flex justify-between text-sm">
           <span class="text-foreground font-medium">合计：</span>

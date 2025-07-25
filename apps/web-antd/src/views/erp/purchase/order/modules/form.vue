@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { erpPriceMultiply, formatDateTime } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -40,37 +40,35 @@ const [Form, formApi] = useVbenForm({
   layout: 'vertical',
   schema: useFormSchema(),
   showDefaultActions: false,
+  handleValuesChange: (values, changedFields) => {
+    if (formData.value && changedFields.includes('discountPercent')) {
+      formData.value.discountPercent = values.discountPercent;
+    }
+  },
 });
 
-/** 计算 discountPrice、totalPrice 价格 */
-watch(
-  () => [formData.value?.items, formData.value?.discountPercent],
-  () => {
-    if (!formData.value?.items) {
-      return;
-    }
-    // 计算 discountPrice 价格
-    let totalPrice = 0;
-    formData.value.items.forEach((item) => {
-      totalPrice += item.totalPrice || 0;
-    });
-    formData.value.discountPrice = erpPriceMultiply(
-      totalPrice,
-      formData.value.discountPercent / 100,
-    );
-    formData.value.totalPrice = totalPrice - formData.value.discountPrice;
-    // 更新表单值
-    formApi.setValues({
-      discountPrice: formData.value.discountPrice,
-      totalPrice: formData.value.totalPrice,
-    });
-  },
-  { deep: true },
-);
-
 const handleUpdateItems = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
+  formData.value = modalApi.getData<ErpPurchaseOrderApi.PurchaseOrder>();
   if (formData.value) {
     formData.value.items = items;
+  }
+};
+
+const handleUpdateDiscountPrice = (discountPrice: number) => {
+  if (formData.value) {
+    formData.value.discountPrice = discountPrice;
+    formApi.setValues({
+      discountPrice: formData.value.discountPrice,
+    });
+  }
+};
+
+const handleUpdateTotalPrice = (totalPrice: number) => {
+  if (formData.value) {
+    formData.value.totalPrice = totalPrice;
+    formApi.setValues({
+      totalPrice: formData.value.totalPrice,
+    });
   }
 };
 
@@ -80,12 +78,18 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    await itemFormRef.value?.validate();
+    // 验证子表单
+    if (itemFormRef.value && typeof itemFormRef.value.validate === 'function') {
+      await itemFormRef.value.validate();
+    }
     modalApi.lock();
     // 提交表单
     const data =
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
-    data.items = itemFormRef.value?.getData();
+    data.items =
+      itemFormRef.value && typeof itemFormRef.value.getData === 'function'
+        ? itemFormRef.value.getData()
+        : [];
     try {
       await (formType.value === 'create'
         ? createPurchaseOrder(data)
@@ -140,9 +144,12 @@ defineExpose({ modalApi });
           v-bind="slotProps"
           ref="itemFormRef"
           class="w-full"
-          :items="formData?.items || []"
+          :items="formData?.items ?? []"
           :disabled="formType === 'detail'"
+          :discount-percent="formData?.discountPercent ?? 0"
           @update:items="handleUpdateItems"
+          @update:discount-price="handleUpdateDiscountPrice"
+          @update:total-price="handleUpdateTotalPrice"
         />
       </template>
     </Form>
