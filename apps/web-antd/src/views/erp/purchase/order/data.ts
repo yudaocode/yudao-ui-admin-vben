@@ -44,7 +44,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '选择订单时间',
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
         style: { width: '100%' },
       },
       fieldName: 'orderTime',
@@ -65,7 +65,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'FileUpload',
       componentProps: {
-        maxNumber: 5,
+        maxNumber: 1,
         maxSize: 10,
         accept: [
           'pdf',
@@ -340,17 +340,19 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'no',
       title: '订单单号',
-      width: 260,
+      width: 200,
       fixed: 'left',
     },
     {
       field: 'productNames',
       title: '产品信息',
       showOverflow: 'tooltip',
+      minWidth: 120,
     },
     {
       field: 'supplierName',
       title: '供应商',
+      minWidth: 120,
     },
     {
       field: 'orderTime',
@@ -361,40 +363,45 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'creatorName',
       title: '创建人',
+      minWidth: 120,
     },
     {
       field: 'totalCount',
       title: '总数量',
-      formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'inCount',
       title: '入库数量',
-      formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'returnCount',
       title: '退货数量',
-      formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'totalProductPrice',
       title: '金额合计',
       formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'totalPrice',
       title: '含税金额',
       formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'depositPrice',
       title: '支付订金',
       formatter: 'formatNumber',
+      minWidth: 120,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.ERP_AUDIT_STATUS },

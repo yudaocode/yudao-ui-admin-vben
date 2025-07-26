@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -72,6 +71,9 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
+/**
+ * 创建或更新采购订单
+ */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -79,17 +81,49 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 验证子表单
-    if (itemFormRef.value && typeof itemFormRef.value.validate === 'function') {
-      await itemFormRef.value.validate();
+    await nextTick(); // 确保组件已经挂载
+
+    // 获取组件实例 - itemFormRef.value 是数组，需要访问第一个元素
+    const itemFormInstance = Array.isArray(itemFormRef.value)
+      ? itemFormRef.value[0]
+      : itemFormRef.value;
+    if (itemFormInstance && typeof itemFormInstance.validate === 'function') {
+      try {
+        const isValid = await itemFormInstance.validate();
+        if (!isValid) {
+          message.error('子表单验证失败');
+          return;
+        }
+      } catch (error) {
+        message.error(error.message || '子表单验证失败');
+        return;
+      }
+    } else {
+      message.error('子表单验证方法不存在');
+      return;
     }
+
+    // 验证产品清单不能为空
+    if (!formData.value?.items || formData.value.items.length === 0) {
+      message.error('产品清单不能为空，请至少添加一个产品');
+      return;
+    }
+
     modalApi.lock();
     // 提交表单
     const data =
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
-    data.items =
-      itemFormRef.value && typeof itemFormRef.value.getData === 'function'
-        ? itemFormRef.value.getData()
-        : [];
+    data.items = formData.value?.items;
+    if (data.items) {
+      data.items = data.items.map((item) => {
+        const { ...itemWithoutId } = item;
+        return itemWithoutId;
+      });
+    }
+    // 将文件数组转换为字符串
+    if (data.fileUrl && Array.isArray(data.fileUrl)) {
+      data.fileUrl = data.fileUrl.length > 0 ? data.fileUrl[0] : '';
+    }
     try {
       await (formType.value === 'create'
         ? createPurchaseOrder(data)
@@ -109,18 +143,46 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<{ id?: number; type: string }>();
-    if (!data || !data.id) {
+    if (!data) {
       return;
     }
     formType.value = data.type;
+
+    if (!data.id) {
+      // 初始化空的表单数据
+      formData.value = { items: [] } as ErpPurchaseOrderApi.PurchaseOrder;
+      await nextTick();
+      const itemFormInstance = Array.isArray(itemFormRef.value)
+        ? itemFormRef.value[0]
+        : itemFormRef.value;
+      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
+        itemFormInstance.init([]);
+      }
+      return;
+    }
+
     modalApi.lock();
     try {
       formData.value = await getPurchaseOrder(data.id);
-      formData.value.orderTime = formatDateTime(formData.value.orderTime);
+      // 将字符串形式的文件URL转换为数组形式以适配FileUpload组件
+      if (
+        formData.value.fileUrl &&
+        typeof formData.value.fileUrl === 'string'
+      ) {
+        formData.value.fileUrl = formData.value.fileUrl
+          ? [formData.value.fileUrl]
+          : [];
+      }
       // 设置到 values
       await formApi.setValues(formData.value);
       // 初始化子表单
-      itemFormRef.value?.init(formData.value.items || []);
+      await nextTick();
+      const itemFormInstance = Array.isArray(itemFormRef.value)
+        ? itemFormRef.value[0]
+        : itemFormRef.value;
+      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
+        itemFormInstance.init(formData.value.items || []);
+      }
     } finally {
       modalApi.unlock();
     }

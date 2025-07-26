@@ -58,6 +58,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: false,
     },
   },
+  gridEvents: {
+    // editClosed: ({ row }) => {
+    //   // 当单元格编辑完成时，同步更新tableData
+    //   const index = tableData.value.findIndex((item) => item.id === row.id);
+    //   if (index !== -1) {
+    //     tableData.value[index] = { ...row };
+    //     emit('update:items', [...tableData.value]);
+    //   }
+    // },
+  },
 });
 
 /** 监听外部传入的列数据 */
@@ -107,7 +117,25 @@ onMounted(async () => {
 });
 
 function handleAdd() {
-  gridApi.grid.insertAt(null, -1);
+  const newRow = {
+    id: tableData.value.length + 1,
+    productId: null,
+    productName: '',
+    productUnitId: null,
+    productUnitName: '',
+    productBarCode: '',
+    count: 1,
+    productPrice: 0,
+    totalProductPrice: 0,
+    taxPercent: 0,
+    taxPrice: 0,
+    totalPrice: 0,
+    stockCount: 0,
+    remark: '',
+  };
+  tableData.value.push(newRow);
+  gridApi.grid.insertAt(newRow, -1);
+  emit('update:items', [...tableData.value]);
 }
 
 function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrderItem) {
@@ -185,20 +213,26 @@ const getSummaries = (): {
   };
 };
 
-const validate = async (): Promise<void> => {
-  for (let i = 0; i < tableData.value.length; i++) {
-    const item = tableData.value[i];
-    if (item) {
-      if (!item.productId) {
-        throw new Error(`第 ${i + 1} 行：产品不能为空`);
-      }
-      if (!item.count || item.count <= 0) {
-        throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
-      }
-      if (!item.productPrice || item.productPrice <= 0) {
-        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
+const validate = async (): Promise<boolean> => {
+  try {
+    for (let i = 0; i < tableData.value.length; i++) {
+      const item = tableData.value[i];
+      if (item) {
+        if (!item.productId) {
+          throw new Error(`第 ${i + 1} 行：产品不能为空`);
+        }
+        if (!item.count || item.count <= 0) {
+          throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
+        }
+        if (!item.productPrice || item.productPrice <= 0) {
+          throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
+        }
       }
     }
+    return true;
+  } catch (error) {
+    console.error('验证失败:', error);
+    throw error;
   }
 };
 
@@ -212,7 +246,11 @@ const init = (
   });
 };
 
-defineExpose({ validate, getData, init });
+defineExpose({
+  validate,
+  getData,
+  init,
+});
 </script>
 
 <template>
