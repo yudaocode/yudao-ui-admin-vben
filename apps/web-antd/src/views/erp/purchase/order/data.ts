@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { erpCountInputFormatter, erpPriceInputFormatter } from '@vben/utils';
+import { erpPriceInputFormatter } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getAccountSimpleList } from '#/api/erp/finance/account';
@@ -13,6 +13,16 @@ import { DICT_TYPE, getDictOptions } from '#/utils';
 /** 表单的配置项 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
+    {
+      component: 'Input',
+      componentProps: {
+        style: { display: 'none' },
+      },
+      fieldName: 'id',
+      label: 'ID',
+      hideLabel: true,
+      formItemClass: 'hidden',
+    },
     {
       component: 'Input',
       componentProps: {
@@ -160,7 +170,7 @@ export function useFormSchema(): VbenFormSchema[] {
 /** 采购订单项表格列定义 */
 export function usePurchaseOrderItemTableColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'seq', title: '序号', minWidth: 50 },
+    { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
       field: 'productId',
       title: '产品名称',
@@ -226,7 +236,7 @@ export function usePurchaseOrderItemTableColumns(): VxeTableGridOptions['columns
     },
     {
       title: '操作',
-      width: 120,
+      width: 50,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -412,116 +422,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
-    },
-  ];
-}
-
-/** 采购订单明细项表单配置 */
-export function useItemFormSchema(
-  onProductChange?: (productId: number) => void,
-): VbenFormSchema[] {
-  return [
-    {
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择产品',
-        allowClear: true,
-        showSearch: true,
-        api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
-        onChange: onProductChange,
-      },
-      fieldName: 'productId',
-      label: '产品名称',
-      rules: 'required',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入数量',
-        min: 1,
-        precision: 2,
-        formatter: erpCountInputFormatter,
-        style: { width: '100%' },
-      },
-      fieldName: 'count',
-      label: '数量',
-      rules: 'required',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入单价',
-        min: 0,
-        precision: 2,
-        formatter: erpPriceInputFormatter,
-        style: { width: '100%' },
-      },
-      fieldName: 'productPrice',
-      label: '产品单价',
-      rules: 'required',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '金额',
-        precision: 2,
-        formatter: erpPriceInputFormatter,
-        disabled: true,
-        style: { width: '100%' },
-      },
-      fieldName: 'totalPrice',
-      label: '金额',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入税率',
-        min: 0,
-        max: 100,
-        precision: 2,
-        style: { width: '100%' },
-      },
-      fieldName: 'taxPercent',
-      label: '税率(%)',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '税额',
-        precision: 2,
-        formatter: erpPriceInputFormatter,
-        disabled: true,
-        style: { width: '100%' },
-      },
-      fieldName: 'taxPrice',
-      label: '税额',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '税额合计',
-        precision: 2,
-        formatter: erpPriceInputFormatter,
-        disabled: true,
-        style: { width: '100%' },
-      },
-      fieldName: 'totalTaxPrice',
-      label: '税额合计',
-    },
-    {
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-        autoSize: { minRows: 2, maxRows: 4 },
-        class: 'w-full',
-      },
-      fieldName: 'remark',
-      label: '备注',
-      formItemClass: 'col-span-2',
     },
   ];
 }

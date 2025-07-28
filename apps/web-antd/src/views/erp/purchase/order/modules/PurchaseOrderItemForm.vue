@@ -58,16 +58,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: false,
     },
   },
-  gridEvents: {
-    // editClosed: ({ row }) => {
-    //   // 当单元格编辑完成时，同步更新tableData
-    //   const index = tableData.value.findIndex((item) => item.id === row.id);
-    //   if (index !== -1) {
-    //     tableData.value[index] = { ...row };
-    //     emit('update:items', [...tableData.value]);
-    //   }
-    // },
-  },
 });
 
 /** 监听外部传入的列数据 */
@@ -118,7 +108,6 @@ onMounted(async () => {
 
 function handleAdd() {
   const newRow = {
-    id: tableData.value.length + 1,
     productId: null,
     productName: '',
     productUnitId: null,
@@ -180,7 +169,6 @@ function handlePriceChange(row: any) {
 function handleUpdateValue(row: any) {
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index === -1) {
-    row.id = tableData.value.length + 1;
     tableData.value.push(row);
   } else {
     tableData.value[index] = row;
@@ -240,7 +228,23 @@ const getData = (): ErpPurchaseOrderApi.PurchaseOrderItem[] => tableData.value;
 const init = (
   items: ErpPurchaseOrderApi.PurchaseOrderItem[] | undefined,
 ): void => {
-  tableData.value = items ? [...items] : [];
+  tableData.value =
+    items && items.length > 0
+      ? items.map((item) => {
+          const newItem = { ...item };
+          if (newItem.productPrice && newItem.count) {
+            newItem.totalProductPrice =
+              erpPriceMultiply(newItem.productPrice, newItem.count) ?? 0;
+            newItem.taxPrice =
+              erpPriceMultiply(
+                newItem.totalProductPrice,
+                (newItem.taxPercent || 0) / 100,
+              ) ?? 0;
+            newItem.totalPrice = newItem.totalProductPrice + newItem.taxPrice;
+          }
+          return newItem;
+        })
+      : [];
   nextTick(() => {
     gridApi.grid.reloadData(tableData.value);
   });

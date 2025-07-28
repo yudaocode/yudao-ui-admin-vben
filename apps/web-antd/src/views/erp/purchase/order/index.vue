@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
@@ -12,6 +11,7 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  deletePurchaseOrder,
   deletePurchaseOrderList,
   exportPurchaseOrder,
   getPurchaseOrderPage,
@@ -35,8 +35,6 @@ function onRefresh() {
   gridApi.query();
 }
 
-const { push } = useRouter();
-
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
@@ -48,7 +46,7 @@ function handleRowCheckboxChange({
 
 /** 详情 */
 function handleDetail(row: ErpPurchaseOrderApi.PurchaseOrder) {
-  push({ name: 'ErpPurchaseOrderDetail', params: { id: row.id } });
+  formModalApi.setData({ type: 'detail', id: row.id }).open();
 }
 
 /** 新增 */
@@ -62,8 +60,24 @@ function handleEdit(row: ErpPurchaseOrderApi.PurchaseOrder) {
 }
 
 /** 删除 */
-function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
-  handleBatchDelete([row.id]);
+async function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+  try {
+    if (row.id) await deletePurchaseOrder(row.id);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess'),
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } catch {
+    // 处理错误
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 批量删除 */
@@ -195,7 +209,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['erp:purchase-order:delete'],
-              onClick: handleBatchDelete,
+              popConfirm: {
+                title: `是否删除所选中数据？`,
+                confirm: handleBatchDelete,
+              },
             },
           ]"
         />
@@ -224,18 +241,26 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: row.status === 10 ? '审批' : '反审批',
               type: 'link',
               auth: ['erp:purchase-order:update-status'],
-              onClick: handleUpdateStatus.bind(
-                null,
-                row,
-                row.status === 10 ? 20 : 10,
-              ),
+              popConfirm: {
+                title: `确认${row.status === 10 ? '审批' : '反审批'}${row.no}吗？`,
+                confirm: handleUpdateStatus.bind(
+                  null,
+                  row,
+                  row.status === 10 ? 20 : 10,
+                ),
+              },
             },
             {
               label: $t('common.delete'),
               type: 'link',
+              danger: true,
               color: 'error',
               auth: ['erp:purchase-order:delete'],
               onClick: handleDelete.bind(null, row),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.no]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

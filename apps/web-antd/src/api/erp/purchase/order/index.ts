@@ -13,6 +13,7 @@ export namespace ErpPurchaseOrderApi {
     productUnitId?: number; // 产品单位编号
     productUnitName?: string; // 产品单位名称
     productPrice?: number; // 产品单价，单位：元
+    totalProductPrice?: number; // 产品总价，单位：元
     count?: number; // 数量
     totalPrice?: number; // 总价，单位：元
     taxPercent?: number; // 税率，百分比

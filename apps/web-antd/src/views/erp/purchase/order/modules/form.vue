@@ -80,10 +80,8 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    // 验证子表单
-    await nextTick(); // 确保组件已经挂载
+    await nextTick();
 
-    // 获取组件实例 - itemFormRef.value 是数组，需要访问第一个元素
     const itemFormInstance = Array.isArray(itemFormRef.value)
       ? itemFormRef.value[0]
       : itemFormRef.value;
@@ -114,12 +112,6 @@ const [Modal, modalApi] = useVbenModal({
     const data =
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
     data.items = formData.value?.items;
-    if (data.items) {
-      data.items = data.items.map((item) => {
-        const { ...itemWithoutId } = item;
-        return itemWithoutId;
-      });
-    }
     // 将文件数组转换为字符串
     if (data.fileUrl && Array.isArray(data.fileUrl)) {
       data.fileUrl = data.fileUrl.length > 0 ? data.fileUrl[0] : '';
@@ -199,6 +191,7 @@ defineExpose({ modalApi });
     class="w-1/2"
     :closable="true"
     :mask-closable="true"
+    :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
       <template #product="slotProps">
