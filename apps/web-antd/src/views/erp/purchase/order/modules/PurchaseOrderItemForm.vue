@@ -9,7 +9,7 @@ import { Input, InputNumber, Select } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
-import { getStockCountByProductId } from '#/api/erp/stock/stock';
+import { getStockCount } from '#/api/erp/stock/stock';
 
 import { usePurchaseOrderItemTableColumns } from '../data';
 
@@ -142,7 +142,7 @@ async function handleProductChange(productId: any, row: any) {
     return;
   }
 
-  const stockCount = await getStockCountByProductId(productId);
+  const stockCount = await getStockCount(productId);
 
   row.productId = productId;
   row.productUnitId = product.unitId;
