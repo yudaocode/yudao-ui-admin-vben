@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
 import { DICT_TYPE, getDictOptions } from '#/utils';
 
@@ -122,7 +123,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
+  onDefaultStatusChange?: (
+    newStatus: boolean,
+    row: T,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
@@ -174,7 +180,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'defaultStatus',
       title: '是否默认',
       width: 100,
-      slots: { default: 'defaultStatus' },
+      cellRender: {
+        attrs: { beforeChange: onDefaultStatusChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: true,
+          unCheckedValue: false,
+        },
+      },
     },
     {
       field: 'remark',

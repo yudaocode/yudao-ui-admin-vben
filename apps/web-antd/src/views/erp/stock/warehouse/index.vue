@@ -2,10 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { message, Switch } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -56,20 +56,26 @@ async function handleDelete(row: ErpWarehouseApi.Warehouse) {
 }
 
 /** 修改默认状态 */
-async function handleDefaultStatusChange(row: ErpWarehouseApi.Warehouse) {
-  try {
-    const text = row.defaultStatus ? '设置' : '取消';
-    await message.confirm({
-      title: '确认',
+async function handleDefaultStatusChange(
+  newStatus: boolean,
+  row: ErpWarehouseApi.Warehouse,
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    const text = newStatus ? '开启' : '取消';
+
+    confirm({
       content: `确认要${text}"${row.name}"默认吗?`,
-    });
-    await updateWarehouseDefaultStatus(row.id!, row.defaultStatus);
-    message.success(`${text}默认状态成功`);
-    onRefresh();
-  } catch {
-    // 取消后，进行恢复按钮
-    row.defaultStatus = !row.defaultStatus;
-  }
+    })
+      .then(async () => {
+        // 更新默认状态
+        await updateWarehouseDefaultStatus(row.id!, newStatus);
+        message.success(`${text}默认状态成功`);
+        resolve(true);
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 /** 导出仓库 */
@@ -88,7 +94,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleDefaultStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -142,13 +148,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleExport,
             },
           ]"
-        />
-      </template>
-
-      <template #defaultStatus="{ row }">
-        <Switch
-          v-model:checked="row.defaultStatus"
-          @change="handleDefaultStatusChange(row)"
         />
       </template>
 
