@@ -129,13 +129,8 @@ function handleUpdateStatus(
 
 /** 导出 */
 async function handleExport() {
-  try {
-    const formValues = gridApi.getFormData();
-    const data = await exportPurchaseOrder(formValues);
-    downloadFileFromBlobPart({ fileName: '采购订单.xls', source: data });
-  } catch {
-    // 处理错误
-  }
+  const data = await exportPurchaseOrder(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '采购订单.xls', source: data });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
