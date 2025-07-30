@@ -163,13 +163,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Select',
+      fieldName: 'telephone',
+      label: '联系电话',
+      component: 'Input',
       componentProps: {
-        placeholder: '请选择状态',
+        placeholder: '请输入联系电话',
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
   ];

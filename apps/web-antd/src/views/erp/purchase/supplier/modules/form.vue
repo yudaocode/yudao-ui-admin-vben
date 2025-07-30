@@ -95,7 +95,7 @@ defineExpose({
 <template>
   <Modal
     :title="formType === 'create' ? '新增供应商' : '编辑供应商'"
-    class="w-2/5"
+    class="w-3/5"
   >
     <Form class="mx-4" />
   </Modal>
