@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ErpSupplierApi } from '#/api/erp/purchase/supplier';
+import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
 import { ref } from 'vue';
 
@@ -9,10 +9,10 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createSupplier,
-  getSupplier,
-  updateSupplier,
-} from '#/api/erp/purchase/supplier';
+  createWarehouse,
+  getWarehouse,
+  updateWarehouse,
+} from '#/api/erp/stock/warehouse';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -20,7 +20,7 @@ import { useFormSchema } from '../data';
 const emit = defineEmits(['success']);
 
 const formType = ref<'create' | 'update'>('create');
-const supplierId = ref<number>();
+const warehouseId = ref<number>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -43,13 +43,13 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as ErpSupplierApi.Supplier;
+    const data = (await formApi.getValues()) as ErpWarehouseApi.Warehouse;
     try {
       if (formType.value === 'create') {
-        await createSupplier(data);
+        await createWarehouse(data);
         message.success($t('ui.actionMessage.createSuccess'));
       } else {
-        await updateSupplier(data);
+        await updateWarehouse(data);
         message.success($t('ui.actionMessage.updateSuccess'));
       }
       // 关闭并提示
@@ -69,14 +69,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     formType.value = data.type;
-    supplierId.value = data.id;
+    warehouseId.value = data.id;
 
     modalApi.lock();
     try {
       if (data.type === 'update' && data.id) {
-        // 编辑模式，加载数据
-        const supplierData = await getSupplier(data.id);
-        await formApi.setValues(supplierData);
+        const warehouseData = await getWarehouse(data.id);
+        await formApi.setValues(warehouseData);
       }
     } finally {
       modalApi.unlock();
@@ -90,10 +89,7 @@ defineExpose({
 </script>
 
 <template>
-  <Modal
-    :title="formType === 'create' ? '新增供应商' : '编辑供应商'"
-    class="w-3/5"
-  >
+  <Modal :title="formType === 'create' ? '新增仓库' : '编辑仓库'" class="w-3/5">
     <Form class="mx-4" />
   </Modal>
 </template>
