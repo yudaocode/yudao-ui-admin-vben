@@ -1,0 +1,368 @@
+<script lang="ts" setup>
+import type { ErpStockInApi } from '#/api/erp/stock/in';
+
+import { nextTick, onMounted, ref, watch } from 'vue';
+
+import { erpPriceMultiply } from '@vben/utils';
+
+import { Input, InputNumber, Select } from 'ant-design-vue';
+
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getProductSimpleList } from '#/api/erp/product/product';
+import { getStockCount } from '#/api/erp/stock/stock';
+import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
+
+import { useStockInItemTableColumns } from '../data';
+
+const props = withDefaults(defineProps<Props>(), {
+  items: () => [],
+  disabled: false,
+});
+
+const emit = defineEmits([
+  'update:items',
+  'update:total-count',
+  'update:total-price',
+]);
+
+interface Props {
+  items?: ErpStockInApi.StockInItem[];
+  disabled?: boolean;
+}
+
+const tableData = ref<ErpStockInApi.StockInItem[]>([]);
+const productOptions = ref<any[]>([]);
+const warehouseOptions = ref<any[]>([]);
+
+/** 表格配置 */
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    editConfig: {
+      trigger: 'click',
+      mode: 'cell',
+    },
+    columns: useStockInItemTableColumns(),
+    data: tableData.value,
+    border: true,
+    showOverflow: true,
+    autoResize: true,
+    minHeight: 250,
+    keepSource: true,
+    rowConfig: {
+      keyField: 'id',
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      enabled: false,
+    },
+    showFooter: true,
+    footerMethod: ({ columns }) => {
+      const footers: any[][] = [];
+      const sums = getSummaries();
+      const footerData: any[] = [];
+      columns.forEach((column, columnIndex) => {
+        if (columnIndex === 0) {
+          footerData.push('合计');
+        } else if (column.field === 'count') {
+          footerData.push(sums.count);
+        } else if (column.field === 'totalPrice') {
+          footerData.push(sums.totalPrice);
+        } else {
+          footerData.push('');
+        }
+      });
+      footers.push(footerData);
+      return footers;
+    },
+  },
+});
+
+/** 监听外部传入的列数据 */
+watch(
+  () => props.items,
+  async (items) => {
+    if (!items) {
+      return;
+    }
+    await nextTick();
+    tableData.value = [...items];
+    await nextTick();
+    gridApi.grid.reloadData(tableData.value);
+  },
+  {
+    immediate: true,
+  },
+);
+
+/** 计算 totalCount、totalPrice */
+watch(
+  () => tableData.value,
+  () => {
+    if (!tableData.value || tableData.value.length === 0) {
+      emit('update:total-count', 0);
+      emit('update:total-price', 0);
+      return;
+    }
+    const totalCount = tableData.value.reduce(
+      (prev, curr) => prev + (curr.count || 0),
+      0,
+    );
+    const totalPrice = tableData.value.reduce(
+      (prev, curr) => prev + (curr.totalPrice || 0),
+      0,
+    );
+
+    // 发送计算结果给父组件
+    emit('update:total-count', totalCount);
+    emit('update:total-price', totalPrice);
+  },
+  { deep: true },
+);
+
+/** 初始化 */
+onMounted(async () => {
+  productOptions.value = await getProductSimpleList();
+  warehouseOptions.value = await getWarehouseSimpleList();
+});
+
+function handleAdd() {
+  const newRow = {
+    warehouseId: null,
+    productId: null,
+    productName: '',
+    productUnitId: null,
+    productUnitName: '',
+    productBarCode: '',
+    count: 1,
+    productPrice: 0,
+    totalPrice: 0,
+    stockCount: 0,
+    remark: '',
+  };
+  tableData.value.push(newRow);
+  gridApi.grid.insertAt(newRow, -1);
+  emit('update:items', [...tableData.value]);
+}
+
+function handleDelete(row: ErpStockInApi.StockInItem) {
+  gridApi.grid.remove(row);
+  const index = tableData.value.findIndex((item) => item.id === row.id);
+  if (index !== -1) {
+    tableData.value.splice(index, 1);
+  }
+  emit('update:items', [...tableData.value]);
+}
+
+async function handleWarehouseChange(warehouseId: any, row: any) {
+  const warehouse = warehouseOptions.value.find((w) => w.id === warehouseId);
+  if (!warehouse) {
+    return;
+  }
+
+  row.warehouseId = warehouseId;
+
+  // 如果已选择产品，重新获取库存
+  if (row.productId) {
+    const stockCount = await getStockCount(row.productId, warehouseId);
+    row.stockCount = stockCount || 0;
+  }
+
+  handleUpdateValue(row);
+}
+
+async function handleProductChange(productId: any, row: any) {
+  const product = productOptions.value.find((p) => p.id === productId);
+  if (!product) {
+    return;
+  }
+
+  // 获取库存数量
+  const stockCount = row.warehouseId
+    ? await getStockCount(productId, row.warehouseId)
+    : await getStockCount(productId);
+
+  row.productId = productId;
+  row.productUnitId = product.unitId;
+  row.productBarCode = product.barCode;
+  row.productUnitName = product.unitName;
+  row.productName = product.name;
+  row.stockCount = stockCount || 0;
+  row.productPrice = product.purchasePrice || 0;
+  row.count = row.count || 1;
+
+  handlePriceChange(row);
+}
+
+function handlePriceChange(row: any) {
+  if (row.productPrice && row.count) {
+    row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
+  }
+  handleUpdateValue(row);
+}
+
+function handleUpdateValue(row: any) {
+  const index = tableData.value.findIndex((item) => item.id === row.id);
+  if (index === -1) {
+    tableData.value.push(row);
+  } else {
+    tableData.value[index] = row;
+  }
+  emit('update:items', [...tableData.value]);
+}
+
+const getSummaries = (): {
+  count: number;
+  totalPrice: number;
+} => {
+  return {
+    count: tableData.value.reduce((sum, item) => sum + (item.count || 0), 0),
+    totalPrice: tableData.value.reduce(
+      (sum, item) => sum + (item.totalPrice || 0),
+      0,
+    ),
+  };
+};
+
+/** 验证表单 */
+function validate(): Promise<boolean> {
+  return new Promise((resolve) => {
+    // 验证是否有产品清单
+    if (!tableData.value || tableData.value.length === 0) {
+      resolve(false);
+      return;
+    }
+
+    // 验证每一行的必填字段
+    for (const item of tableData.value) {
+      if (
+        !item.warehouseId ||
+        !item.productId ||
+        !item.count ||
+        item.count <= 0
+      ) {
+        resolve(false);
+        return;
+      }
+    }
+
+    resolve(true);
+  });
+}
+
+/** 初始化表格数据 */
+function init(items: ErpStockInApi.StockInItem[]) {
+  tableData.value = items || [];
+  gridApi.grid.reloadData(tableData.value);
+}
+
+defineExpose({
+  validate,
+  init,
+});
+</script>
+
+<template>
+  <div class="w-full">
+    <div class="mb-4 flex justify-between">
+      <span class="text-lg font-medium">入库产品清单</span>
+      <TableAction
+        v-if="!disabled"
+        :actions="[
+          {
+            label: '添加产品',
+            type: 'primary',
+            onClick: handleAdd,
+          },
+        ]"
+      />
+    </div>
+
+    <Grid>
+      <template #warehouseId="{ row }">
+        <Select
+          v-model:value="row.warehouseId"
+          placeholder="请选择仓库"
+          :disabled="disabled"
+          show-search
+          :filter-option="false"
+          @change="(value) => handleWarehouseChange(value, row)"
+          class="w-full"
+        >
+          <Select.Option
+            v-for="warehouse in warehouseOptions"
+            :key="warehouse.id"
+            :value="warehouse.id"
+          >
+            {{ warehouse.name }}
+          </Select.Option>
+        </Select>
+      </template>
+
+      <template #productId="{ row }">
+        <Select
+          v-model:value="row.productId"
+          placeholder="请选择产品"
+          :disabled="disabled"
+          show-search
+          :filter-option="false"
+          @change="(value) => handleProductChange(value, row)"
+          class="w-full"
+        >
+          <Select.Option
+            v-for="product in productOptions"
+            :key="product.id"
+            :value="product.id"
+          >
+            {{ product.name }}
+          </Select.Option>
+        </Select>
+      </template>
+
+      <template #count="{ row }">
+        <InputNumber
+          v-model:value="row.count"
+          :disabled="disabled"
+          :min="0.001"
+          :precision="3"
+          @change="() => handlePriceChange(row)"
+          class="w-full"
+        />
+      </template>
+
+      <template #productPrice="{ row }">
+        <InputNumber
+          v-model:value="row.productPrice"
+          :disabled="disabled"
+          :min="0.01"
+          :precision="2"
+          @change="() => handlePriceChange(row)"
+          class="w-full"
+        />
+      </template>
+
+      <template #remark="{ row }">
+        <Input
+          v-model:value="row.remark"
+          :disabled="disabled"
+          placeholder="请输入备注"
+        />
+      </template>
+
+      <template #actions="{ row }">
+        <TableAction
+          v-if="!disabled"
+          :actions="[
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              onClick: () => handleDelete(row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </div>
+</template>
