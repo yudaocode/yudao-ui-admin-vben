@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpStockApi {
+export namespace ErpStockApi {
   /** 产品库存信息 */
   export interface Stock {
     id?: number; // 编号
