@@ -169,19 +169,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '详情',
+              icon: ACTION_ICON.VIEW,
               auth: ['erp:stock-in:query'],
               onClick: () => openForm('detail', row.id),
             },
             {
               label: '编辑',
-              type: 'primary',
               auth: ['erp:stock-in:update'],
-              ifShow: row.status === 10,
+              icon: ACTION_ICON.EDIT,
+              disabled: row.status !== 10,
               onClick: () => openForm('update', row.id),
             },
             {
               label: '审核',
-              type: 'primary',
               auth: ['erp:stock-in:update'],
               ifShow: row.status === 10,
               popConfirm: {
@@ -203,7 +203,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '删除',
               danger: true,
               auth: ['erp:stock-in:delete'],
-              ifShow: row.status === 10,
+              disabled: row.status !== 10,
               popConfirm: {
                 title: '确认要删除该入库单吗？',
                 confirm: () => handleDelete([row.id]),

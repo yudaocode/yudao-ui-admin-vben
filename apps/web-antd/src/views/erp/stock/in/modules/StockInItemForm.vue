@@ -246,41 +246,27 @@ defineExpose({
       <template #warehouseId="{ row }">
         <Select
           v-model:value="row.warehouseId"
+          :options="warehouseOptions"
+          :field-names="{ label: 'name', value: 'id' }"
           placeholder="请选择仓库"
           :disabled="disabled"
           show-search
-          :filter-option="false"
           @change="(value) => handleWarehouseChange(value, row)"
           class="w-full"
-        >
-          <Select.Option
-            v-for="warehouse in warehouseOptions"
-            :key="warehouse.id"
-            :value="warehouse.id"
-          >
-            {{ warehouse.name }}
-          </Select.Option>
-        </Select>
+        />
       </template>
 
       <template #productId="{ row }">
         <Select
           v-model:value="row.productId"
+          :options="productOptions"
+          :field-names="{ label: 'name', value: 'id' }"
           placeholder="请选择产品"
           :disabled="disabled"
           show-search
-          :filter-option="false"
           @change="(value) => handleProductChange(value, row)"
           class="w-full"
-        >
-          <Select.Option
-            v-for="product in productOptions"
-            :key="product.id"
-            :value="product.id"
-          >
-            {{ product.name }}
-          </Select.Option>
-        </Select>
+        />
       </template>
 
       <template #count="{ row }">

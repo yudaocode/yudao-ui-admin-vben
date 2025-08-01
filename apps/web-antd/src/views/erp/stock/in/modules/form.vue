@@ -198,39 +198,5 @@ defineExpose({ modalApi, handleUpdateStatus });
         />
       </template>
     </Form>
-
-    <!-- 审核操作按钮 -->
-    <template #footer>
-      <div class="flex w-full justify-between">
-        <div>
-          <template v-if="formType === 'detail' && formData">
-            <a-button
-              v-if="formData.status === 10"
-              type="primary"
-              @click="handleUpdateStatus(formData.id!, 20)"
-            >
-              审核
-            </a-button>
-            <a-button
-              v-if="formData.status === 20"
-              danger
-              @click="handleUpdateStatus(formData.id!, 10)"
-            >
-              反审核
-            </a-button>
-          </template>
-        </div>
-        <div>
-          <a-button
-            v-if="formType !== 'detail'"
-            type="primary"
-            @click="modalApi.confirm()"
-          >
-            确定
-          </a-button>
-          <a-button @click="modalApi.close()">取消</a-button>
-        </div>
-      </div>
-    </template>
   </Modal>
 </template>
