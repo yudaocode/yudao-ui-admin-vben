@@ -49,24 +49,6 @@ const handleUpdateItems = (items: ErpStockInApi.StockInItem[]) => {
   }
 };
 
-const handleUpdateTotalCount = (totalCount: number) => {
-  if (formData.value) {
-    formData.value.totalCount = totalCount;
-    formApi.setValues({
-      totalCount: formData.value.totalCount,
-    });
-  }
-};
-
-const handleUpdateTotalPrice = (totalPrice: number) => {
-  if (formData.value) {
-    formData.value.totalPrice = totalPrice;
-    formApi.setValues({
-      totalPrice: formData.value.totalPrice,
-    });
-  }
-};
-
 /**
  * 创建或更新其它入库单
  */
@@ -145,6 +127,10 @@ const [Modal, modalApi] = useVbenModal({
       if (itemFormInstance && typeof itemFormInstance.init === 'function') {
         itemFormInstance.init([]);
       }
+      // 如果是新增，自动添加一行
+      if (formType.value === 'create' && itemFormInstance) {
+        itemFormInstance.handleAdd();
+      }
       return;
     }
 
@@ -209,8 +195,6 @@ defineExpose({ modalApi, handleUpdateStatus });
           :items="formData?.items ?? []"
           :disabled="formType === 'detail'"
           @update:items="handleUpdateItems"
-          @update:total-count="handleUpdateTotalCount"
-          @update:total-price="handleUpdateTotalPrice"
         />
       </template>
     </Form>

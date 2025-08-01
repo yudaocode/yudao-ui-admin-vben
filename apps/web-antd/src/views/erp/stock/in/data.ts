@@ -1,8 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { erpPriceInputFormatter } from '@vben/utils';
-
 import { getSupplierSimpleList } from '#/api/erp/purchase/supplier';
 import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils';
@@ -95,29 +93,6 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '合计数量',
-        precision: 2,
-        disabled: true,
-        style: { width: '100%' },
-      },
-      fieldName: 'totalCount',
-      label: '合计数量',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '合计金额',
-        precision: 2,
-        formatter: erpPriceInputFormatter,
-        disabled: true,
-        style: { width: '100%' },
-      },
-      fieldName: 'totalPrice',
-      label: '合计金额',
     },
   ];
 }
@@ -295,28 +270,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'creatorName',
       title: '创建人',
       minWidth: 100,
-    },
-    {
-      field: 'totalCount',
-      title: '数量',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellAmount',
-        props: {
-          digits: 2,
-        },
-      },
-    },
-    {
-      field: 'totalPrice',
-      title: '金额',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellAmount',
-        props: {
-          digits: 2,
-        },
-      },
     },
     {
       field: 'status',

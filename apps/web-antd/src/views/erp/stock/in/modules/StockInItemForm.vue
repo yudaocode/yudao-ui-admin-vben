@@ -19,11 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
-const emit = defineEmits([
-  'update:items',
-  'update:total-count',
-  'update:total-price',
-]);
+const emit = defineEmits(['update:items']);
 
 interface Props {
   items?: ErpStockInApi.StockInItem[];
@@ -58,6 +54,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: false,
     },
     showFooter: true,
+    footerCellClassName: 'stock-in-footer-cell',
     footerMethod: ({ columns }) => {
       const footers: any[][] = [];
       const sums = getSummaries();
@@ -94,31 +91,6 @@ watch(
   {
     immediate: true,
   },
-);
-
-/** 计算 totalCount、totalPrice */
-watch(
-  () => tableData.value,
-  () => {
-    if (!tableData.value || tableData.value.length === 0) {
-      emit('update:total-count', 0);
-      emit('update:total-price', 0);
-      return;
-    }
-    const totalCount = tableData.value.reduce(
-      (prev, curr) => prev + (curr.count || 0),
-      0,
-    );
-    const totalPrice = tableData.value.reduce(
-      (prev, curr) => prev + (curr.totalPrice || 0),
-      0,
-    );
-
-    // 发送计算结果给父组件
-    emit('update:total-count', totalCount);
-    emit('update:total-price', totalPrice);
-  },
-  { deep: true },
 );
 
 /** 初始化 */
@@ -260,23 +232,14 @@ function init(items: ErpStockInApi.StockInItem[]) {
 defineExpose({
   validate,
   init,
+  handleAdd,
 });
 </script>
 
 <template>
   <div class="w-full">
     <div class="mb-4 flex justify-between">
-      <span class="text-lg font-medium">入库产品清单</span>
-      <TableAction
-        v-if="!disabled"
-        :actions="[
-          {
-            label: '添加产品',
-            type: 'primary',
-            onClick: handleAdd,
-          },
-        ]"
-      />
+      <span class="text-lg font-medium"></span>
     </div>
 
     <Grid>
@@ -366,6 +329,26 @@ defineExpose({
           ]"
         />
       </template>
+
+      <template #bottom>
+        <TableAction
+          v-if="!disabled"
+          class="mt-4 flex justify-center"
+          :actions="[
+            {
+              label: '添加产品',
+              type: 'default',
+              onClick: handleAdd,
+            },
+          ]"
+        />
+      </template>
     </Grid>
   </div>
 </template>
+
+<style scoped>
+:deep(.vxe-table .vxe-footer--column.stock-in-footer-cell .vxe-cell) {
+  background-color: #f5f5f5 !important;
+}
+</style>
