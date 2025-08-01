@@ -281,12 +281,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'supplierName',
       title: '供应商',
-      width: 120,
+      minWidth: 120,
     },
     {
       field: 'inTime',
       title: '入库时间',
-      width: 180,
+      minWidth: 180,
       cellRender: {
         name: 'CellDateTime',
       },
@@ -294,12 +294,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'creatorName',
       title: '创建人',
-      width: 100,
+      minWidth: 100,
     },
     {
       field: 'totalCount',
       title: '数量',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellAmount',
         props: {
@@ -310,7 +310,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalPrice',
       title: '金额',
-      width: 120,
+      minWidth: 120,
       cellRender: {
         name: 'CellAmount',
         props: {
@@ -321,7 +321,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '状态',
-      width: 90,
+      minWidth: 90,
       fixed: 'right',
       cellRender: {
         name: 'CellDict',
@@ -330,7 +330,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 220,
+      width: 300,
       fixed: 'right',
       slots: { default: 'actions' },
     },

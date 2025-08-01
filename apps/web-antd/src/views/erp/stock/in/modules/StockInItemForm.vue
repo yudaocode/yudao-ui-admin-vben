@@ -358,7 +358,10 @@ defineExpose({
               label: '删除',
               type: 'link',
               danger: true,
-              onClick: () => handleDelete(row),
+              popConfirm: {
+                title: '确认删除该产品吗？',
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

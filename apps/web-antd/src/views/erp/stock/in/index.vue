@@ -2,12 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpStockInApi } from '#/api/erp/stock/in';
 
-import { ref } from 'vue';
-
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { message, Modal } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -24,7 +22,10 @@ import StockInForm from './modules/form.vue';
 /** 其它入库单管理 */
 defineOptions({ name: 'ErpStockIn' });
 
-const formRef = ref();
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: StockInForm,
+  destroyOnClose: true,
+});
 
 /** 刷新表格 */
 function onRefresh() {
@@ -39,34 +40,46 @@ async function handleExport() {
 
 /** 新增/编辑/详情 */
 function openForm(type: string, id?: number) {
-  formRef.value?.modalApi.open({ type, id });
+  formModalApi.setData({ type, id }).open();
 }
 
 /** 删除 */
-function handleDelete(ids: any[]) {
-  Modal.confirm({
-    title: '系统提示',
-    content: `是否确认删除编号为 ${ids.join(',')} 的其它入库单？`,
-    onOk: async () => {
-      await deleteStockIn(ids);
-      message.success('删除成功');
-      onRefresh();
-    },
+async function handleDelete(ids: any[]) {
+  const hideLoading = message.loading({
+    content: '删除中...',
+    duration: 0,
+    key: 'action_process_msg',
   });
+  try {
+    await deleteStockIn(ids);
+    message.success({
+      content: '删除成功',
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 审核/反审核 */
-function handleUpdateStatus(id: any, status: number) {
+async function handleUpdateStatus(id: any, status: number) {
   const statusText = status === 20 ? '审核' : '反审核';
-  Modal.confirm({
-    title: '系统提示',
-    content: `确认要${statusText}该入库单吗？`,
-    onOk: async () => {
-      await updateStockInStatus({ id, status });
-      message.success(`${statusText}成功`);
-      onRefresh();
-    },
+  const hideLoading = message.loading({
+    content: `${statusText}中...`,
+    duration: 0,
+    key: 'action_process_msg',
   });
+  try {
+    await updateStockInStatus({ id, status });
+    message.success({
+      content: `${statusText}成功`,
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -135,13 +148,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['erp:stock-in:delete'],
-              onClick: () => {
-                const checkboxRecords = gridApi.grid.getCheckboxRecords();
-                if (checkboxRecords.length === 0) {
-                  message.warning('请选择要删除的数据');
-                  return;
-                }
-                handleDelete(checkboxRecords.map((item) => item.id));
+              popConfirm: {
+                title: '是否删除所选中数据？',
+                confirm: () => {
+                  const checkboxRecords = gridApi.grid.getCheckboxRecords();
+                  if (checkboxRecords.length === 0) {
+                    message.warning('请选择要删除的数据');
+                    return;
+                  }
+                  handleDelete(checkboxRecords.map((item) => item.id));
+                },
               },
             },
           ]"
@@ -168,21 +184,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               auth: ['erp:stock-in:update'],
               ifShow: row.status === 10,
-              onClick: () => handleUpdateStatus(row.id, 20),
+              popConfirm: {
+                title: '确认要审核该入库单吗？',
+                confirm: () => handleUpdateStatus(row.id, 20),
+              },
             },
             {
               label: '反审核',
               danger: true,
               auth: ['erp:stock-in:update'],
               ifShow: row.status === 20,
-              onClick: () => handleUpdateStatus(row.id, 10),
+              popConfirm: {
+                title: '确认要反审核该入库单吗？',
+                confirm: () => handleUpdateStatus(row.id, 10),
+              },
             },
             {
               label: '删除',
               danger: true,
               auth: ['erp:stock-in:delete'],
               ifShow: row.status === 10,
-              onClick: () => handleDelete([row.id]),
+              popConfirm: {
+                title: '确认要删除该入库单吗？',
+                confirm: () => handleDelete([row.id]),
+              },
             },
           ]"
         />
@@ -190,6 +215,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
 
     <!-- 表单弹窗 -->
-    <StockInForm ref="formRef" @success="onRefresh" />
+    <FormModal @success="onRefresh" />
   </Page>
 </template>
