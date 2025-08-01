@@ -7,10 +7,10 @@ import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,23 +45,22 @@ function onEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
 
 /** 删除 OAuth2 客户端 */
 async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
-  await ElMessageBox.confirm('确定要删除该 OAuth2 客户端吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteOAuth2Client(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteOAuth2Client(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除 OAuth2 客户端 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该 OAuth2 客户端吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该 OAuth2 客户端吗？');
   await deleteOAuth2ClientList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

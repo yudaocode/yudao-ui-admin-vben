@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -86,23 +86,22 @@ async function onTest(row: InfraFileConfigApi.FileConfig) {
 
 /** 删除文件配置 */
 async function onDelete(row: InfraFileConfigApi.FileConfig) {
-  await ElMessageBox.confirm('确定要删除该文件配置吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteFileConfig(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteFileConfig(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除文件配置 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该文件配置吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该文件配置吗？');
   await deleteFileConfigList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

@@ -4,7 +4,7 @@ import type { MemberTagApi } from '#/api/member/tag';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMemberTag, getMemberTagPage } from '#/api/member/tag';
@@ -35,14 +35,17 @@ function handleEdit(row: MemberTagApi.Tag) {
 
 /** 删除会员标签 */
 async function handleDelete(row: MemberTagApi.Tag) {
-  await ElMessageBox.confirm('确定要删除该会员标签吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteMemberTag(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteMemberTag(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

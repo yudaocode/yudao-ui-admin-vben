@@ -6,14 +6,13 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { fenToYuan, formatDate } from '@vben/utils';
 
 import {
   ElDescriptions,
   ElDescriptionsItem,
   ElMessage,
-  ElMessageBox,
   ElTimeline,
   ElTimelineItem,
 } from 'element-plus';
@@ -109,12 +108,7 @@ const updatePrice = () => {
 /** 核销 */
 const handlePickUp = async () => {
   // 二次确认
-  await ElMessageBox.confirm('确认核销订单吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
-  // 提交
+  await confirm(`确认核销订单吗？`);
   await TradeOrderApi.pickUpOrder(formData.value.id!);
   ElMessage.success('核销成功');
   // 刷新列表

@@ -117,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <div class="order-items">
           <div v-for="item in row.items" :key="item.id" class="order-item">
             <div class="order-item-image">
-              <ElImage :src="item.picUrl" :width="40" :height="40" />
+              <ElImage :src="item.picUrl" class="h-40 w-40" />
             </div>
             <div class="order-item-content">
               <div class="order-item-name">
@@ -131,11 +131,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 </ElTag>
               </div>
               <div class="order-item-info">
-                <span
-                  >原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
+                <span>
+                  原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
                     item.count
-                  }}个</span
-                >
+                  }}个
+                </span>
                 <DictTag
                   :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
                   :value="item.afterSaleStatus"

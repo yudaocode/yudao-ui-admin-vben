@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryList } from '#/api/mall/product/category';
@@ -52,14 +52,17 @@ const handleViewSpu = (id: number) => {
 
 /** 删除分类 */
 async function handleDelete(row: MallCategoryApi.Category) {
-  await ElMessageBox.confirm('确定删除该分类吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteCategory(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteCategory(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 切换树形展开/收缩状态 */
@@ -162,8 +165,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               icon: ACTION_ICON.VIEW,
               auth: ['product:category:update'],
-              ifShow: row.parentId > 0,
-              onClick: handleViewSpu.bind(null, row),
+              ifShow: row.parentId !== undefined && row.parentId > 0,
+              onClick: handleViewSpu.bind(null, row.id || 0),
             },
             {
               label: $t('common.delete'),

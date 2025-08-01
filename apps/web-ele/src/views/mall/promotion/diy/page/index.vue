@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDiyPage, getDiyPagePage } from '#/api/mall/promotion/diy/page';
@@ -47,14 +47,17 @@ function handleDecorate(row: MallDiyPageApi.DiyPage) {
 
 /** 删除DIY页面 */
 async function handleDelete(row: MallDiyPageApi.DiyPage) {
-  await ElMessageBox.confirm('确定删除该装修页面吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteDiyPage(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteDiyPage(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

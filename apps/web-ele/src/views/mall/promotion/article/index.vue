@@ -4,7 +4,7 @@ import type { MallArticleApi } from '#/api/mall/promotion/article';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteArticle, getArticlePage } from '#/api/mall/promotion/article';
@@ -35,14 +35,17 @@ function handleEdit(row: MallArticleApi.Article) {
 
 /** 删除品牌 */
 async function handleDelete(row: MallArticleApi.Article) {
-  await ElMessageBox.confirm('确定删除该文章吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.title]),
+    fullscreen: true,
   });
-  await deleteArticle(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
-  onRefresh();
+  try {
+    await deleteArticle(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

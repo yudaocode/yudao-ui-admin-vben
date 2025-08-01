@@ -2,9 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCombinationActivityApi } from '#/api/mall/promotion/combination/combinationActivity';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -43,12 +43,7 @@ function handleEdit(row: MallCombinationActivityApi.CombinationActivity) {
 async function handleClose(
   row: MallCombinationActivityApi.CombinationActivity,
 ) {
-  await ElMessageBox.confirm('确定关闭该拼团活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
-
+  await confirm('确定关闭该拼团活动吗？');
   await closeCombinationActivity(row.id as number);
   ElMessage.success('关闭成功');
   onRefresh();
@@ -58,15 +53,17 @@ async function handleClose(
 async function handleDelete(
   row: MallCombinationActivityApi.CombinationActivity,
 ) {
-  await ElMessageBox.confirm('确定删除该拼团活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-
-  await deleteCombinationActivity(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteCombinationActivity(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

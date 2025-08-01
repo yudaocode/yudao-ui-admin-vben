@@ -4,9 +4,9 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -49,11 +49,7 @@ function handleEdit(row: MallPointActivityApi.PointActivity) {
 
 /** 关闭积分活动 */
 async function handleClose(row: MallPointActivityApi.PointActivity) {
-  await ElMessageBox.confirm('确认关闭该积分商城活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确认关闭该积分商城活动吗？');
   await closePointActivity(row.id);
   ElMessage.success('关闭成功');
   onRefresh();
@@ -61,13 +57,16 @@ async function handleClose(row: MallPointActivityApi.PointActivity) {
 
 /** 删除积分活动 */
 async function handleDelete(row: MallPointActivityApi.PointActivity) {
-  await ElMessageBox.confirm('确定删除该积分商城活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.spuName]),
+    fullscreen: true,
   });
-  await deletePointActivity(row.id);
-  onRefresh();
+  try {
+    await deletePointActivity(row.id);
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -4,7 +4,7 @@ import type { MallBannerApi } from '#/api/mall/market/banner';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteBanner, getBannerPage } from '#/api/mall/market/banner';
@@ -35,14 +35,17 @@ function handleEdit(row: MallBannerApi.Banner) {
 
 /** 删除Banner */
 async function handleDelete(row: MallBannerApi.Banner) {
-  await ElMessageBox.confirm('确定删除该Banner吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.title]),
+    fullscreen: true,
   });
-  await deleteBanner(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
-  onRefresh();
+  try {
+    await deleteBanner(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

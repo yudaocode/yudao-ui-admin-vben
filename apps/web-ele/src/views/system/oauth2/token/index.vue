@@ -7,7 +7,7 @@ import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -25,14 +25,17 @@ function onRefresh() {
 
 /** 删除 OAuth2 令牌 */
 async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
-  await ElMessageBox.confirm('确定要删除该令牌吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.accessToken]),
+    fullscreen: true,
   });
-  await deleteOAuth2Token(row.accessToken);
-  ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  onRefresh();
+  try {
+    await deleteOAuth2Token(row.accessToken);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.accessToken]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 表格操作按钮的回调函数 */

@@ -4,7 +4,7 @@ import type { PayAppApi } from '#/api/pay/app/index';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app/index';
@@ -39,14 +39,17 @@ function handleEdit(row: Required<PayAppApi.App>) {
 }
 
 async function handleDelete(row: Required<PayAppApi.App>) {
-  await ElMessageBox.confirm('确定要删除该应用吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteApp(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteApp(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 更新状态 */

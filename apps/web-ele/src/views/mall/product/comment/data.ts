@@ -187,8 +187,8 @@ export function useGridColumns<T = MallCommentApi.Comment>(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
-          checkedValue: true,
-          unCheckedValue: false,
+          activeValue: true,
+          inactiveValue: false,
         },
       },
     },

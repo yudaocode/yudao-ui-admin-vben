@@ -59,10 +59,6 @@ onMounted(() => {
 });
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: {
-    // 所有表单项
-    labelClass: 'w-2/6',
-  },
   wrapperClass: 'grid-cols-1',
   actionWrapperClass: 'text-center',
   handleSubmit: onSubmit,
@@ -75,7 +71,7 @@ const [Form, formApi] = useVbenForm({
 </script>
 
 <template>
-  <Page>
+  <Page auto-content-height>
     <template #doc>
       <DocAlert
         title="【交易】交易订单"
@@ -86,11 +82,11 @@ const [Form, formApi] = useVbenForm({
         url="https://doc.iocoder.cn/mall/trade-cart/"
       />
     </template>
-    <ElCard>
-      <ElTabs :active-key="activeKey" @change="handleTabChange">
-        <ElTabPane tab="售后" key="afterSale" :force-render="true" />
-        <ElTabPane tab="配送" key="delivery" :force-render="true" />
-        <ElTabPane tab="分销" key="brokerage" :force-render="true" />
+    <ElCard class="h-full">
+      <ElTabs v-model="activeKey" @tab-change="handleTabChange">
+        <ElTabPane label="售后" name="afterSale" :force-render="true" />
+        <ElTabPane label="配送" name="delivery" :force-render="true" />
+        <ElTabPane label="分销" name="brokerage" :force-render="true" />
       </ElTabs>
       <Form class="w-3/5" />
     </ElCard>

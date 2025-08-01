@@ -2,9 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBargainActivityApi } from '#/api/mall/promotion/bargain/bargainActivity';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -41,11 +41,7 @@ function handleEdit(row: MallBargainActivityApi.BargainActivity) {
 
 /** 关闭砍价活动 */
 async function handleClose(row: MallBargainActivityApi.BargainActivity) {
-  await ElMessageBox.confirm('确定关闭该砍价活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定关闭该砍价活动吗？');
   await closeBargainActivity(row.id as number);
   ElMessage.success('关闭成功');
   onRefresh();
@@ -53,14 +49,17 @@ async function handleClose(row: MallBargainActivityApi.BargainActivity) {
 
 /** 删除砍价活动 */
 async function handleDelete(row: MallBargainActivityApi.BargainActivity) {
-  await ElMessageBox.confirm('确定删除该砍价活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteBargainActivity(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteBargainActivity(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

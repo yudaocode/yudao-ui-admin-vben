@@ -5,7 +5,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { confirm, Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { fenToYuan, formatDate } from '@vben/utils';
 
@@ -14,7 +14,6 @@ import {
   ElDescriptionsItem,
   ElImage,
   ElMessage,
-  ElMessageBox,
   ElTimeline,
   ElTimelineItem,
 } from 'element-plus';
@@ -74,11 +73,7 @@ const getDetail = async () => {
 /** 同意售后 */
 const agree = async () => {
   // 二次确认
-  await ElMessageBox.confirm('是否同意售后？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('是否同意售后？');
   await AfterSaleApi.agree(formData.value.id!);
   // 提示成功
   ElMessage.success($t('page.common.success'));
@@ -93,11 +88,7 @@ const disagree = async () => {
 /** 确认收货 */
 const receive = async () => {
   // 二次确认
-  await ElMessageBox.confirm('是否确认收货？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('是否确认收货？');
   await AfterSaleApi.receive(formData.value.id!);
   // 提示成功
   ElMessage.success($t('page.common.success'));
@@ -107,11 +98,7 @@ const receive = async () => {
 /** 拒绝收货 */
 const refuse = async () => {
   // 二次确认
-  await ElMessageBox.confirm('是否拒绝收货？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('是否拒绝收货？');
   await AfterSaleApi.refuse(formData.value.id!);
   // 提示成功
   ElMessage.success($t('page.common.success'));
@@ -121,11 +108,7 @@ const refuse = async () => {
 /** 确认退款 */
 const refund = async () => {
   // 二次确认
-  await ElMessageBox.confirm('是否确认退款？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('是否确认退款？');
   await AfterSaleApi.refund(formData.value.id!);
   // 提示成功
   ElMessage.success($t('page.common.success'));

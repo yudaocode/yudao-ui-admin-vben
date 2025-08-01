@@ -4,7 +4,7 @@ import type { MallDeliveryExpressTemplateApi } from '#/api/mall/trade/delivery/e
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -40,14 +40,17 @@ function handleEdit(row: MallDeliveryExpressTemplateApi.ExpressTemplate) {
 async function handleDelete(
   row: MallDeliveryExpressTemplateApi.ExpressTemplate,
 ) {
-  await ElMessageBox.confirm($t('ui.actionMessage.deleting', [row.name]), {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteDeliveryExpressTemplate(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteDeliveryExpressTemplate(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
