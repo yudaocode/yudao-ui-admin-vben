@@ -130,3 +130,8 @@ export const getChildrenTaskList = async (id: string) => {
     `/bpm/task/list-by-parent-task-id?parentTaskId=${id}`,
   );
 };
+
+// 撤回任务
+export const withdrawTask = async (taskId: string) => {
+  return await requestClient.put('/bpm/task/withdraw', null, { params: { taskId } });
+};

@@ -123,6 +123,7 @@ const formData: any = ref({
     enable: false,
     summary: [],
   },
+  allowWithdrawTask: false,
 });
 
 // 流程数据
