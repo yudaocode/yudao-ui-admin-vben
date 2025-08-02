@@ -115,3 +115,29 @@
 .vxe-grid--layout-body-content-wrapper {
   overflow: hidden;
 }
+
+/* 必填字段错误样式 */
+.vxe-table .required-field-error::after {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 10;
+  padding: 1px 4px;
+  font-size: 10px;
+  line-height: 1;
+  color: white;
+  content: '必填';
+  background-color: #ff4d4f;
+  border-radius: 0 0 0 4px;
+}
+
+/* 必填字段内的输入框样式 */
+.vxe-table .required-field-error .ant-select,
+.vxe-table .required-field-error .ant-input-number,
+.vxe-table .required-field-error .ant-input {
+  border-color: #ff4d4f !important;
+}
+
+.vxe-table .required-field-error .ant-select .ant-select-selector {
+  border-color: #ff4d4f !important;
+}

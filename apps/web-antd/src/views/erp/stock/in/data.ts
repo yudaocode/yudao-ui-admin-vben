@@ -98,7 +98,9 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 入库产品清单表格列定义 */
-export function useStockInItemTableColumns(): VxeTableGridOptions['columns'] {
+export function useStockInItemTableColumns(
+  isValidating?: any,
+): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
@@ -106,12 +108,22 @@ export function useStockInItemTableColumns(): VxeTableGridOptions['columns'] {
       title: '仓库名称',
       minWidth: 150,
       slots: { default: 'warehouseId' },
+      className: ({ row }: { row: any }) => {
+        return isValidating?.value && !row.warehouseId
+          ? 'required-field-error'
+          : '';
+      },
     },
     {
       field: 'productId',
       title: '产品名称',
       minWidth: 200,
       slots: { default: 'productId' },
+      className: ({ row }: { row: any }) => {
+        return isValidating?.value && !row.productId
+          ? 'required-field-error'
+          : '';
+      },
     },
     {
       field: 'stockCount',
@@ -133,6 +145,11 @@ export function useStockInItemTableColumns(): VxeTableGridOptions['columns'] {
       title: '数量',
       minWidth: 120,
       slots: { default: 'count' },
+      className: ({ row }: { row: any }) => {
+        return isValidating?.value && (!row.count || row.count <= 0)
+          ? 'required-field-error'
+          : '';
+      },
     },
     {
       field: 'productPrice',

@@ -29,6 +29,7 @@ interface Props {
 const tableData = ref<ErpStockInApi.StockInItem[]>([]);
 const productOptions = ref<any[]>([]);
 const warehouseOptions = ref<any[]>([]);
+const isValidating = ref(false);
 
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -37,7 +38,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'click',
       mode: 'cell',
     },
-    columns: useStockInItemTableColumns(),
+    columns: useStockInItemTableColumns(isValidating),
     data: tableData.value,
     border: true,
     showOverflow: true,
@@ -116,6 +117,10 @@ function handleAdd() {
   tableData.value.push(newRow);
   gridApi.grid.insertAt(newRow, -1);
   emit('update:items', [...tableData.value]);
+  // 触发表格重新渲染以更新cellClassName
+  nextTick(() => {
+    gridApi.grid.refreshColumn();
+  });
 }
 
 function handleDelete(row: ErpStockInApi.StockInItem) {
@@ -182,6 +187,10 @@ function handleUpdateValue(row: any) {
     tableData.value[index] = row;
   }
   emit('update:items', [...tableData.value]);
+  // 触发表格重新渲染以更新cellClassName
+  nextTick(() => {
+    gridApi.grid.refreshColumn();
+  });
 }
 
 const getSummaries = (): {
@@ -200,6 +209,13 @@ const getSummaries = (): {
 /** 验证表单 */
 function validate(): Promise<boolean> {
   return new Promise((resolve) => {
+    isValidating.value = true;
+
+    // 触发表格重新渲染以显示验证错误
+    nextTick(() => {
+      gridApi.grid.refreshColumn();
+    });
+
     // 验证是否有产品清单
     if (!tableData.value || tableData.value.length === 0) {
       resolve(false);
@@ -218,6 +234,12 @@ function validate(): Promise<boolean> {
         return;
       }
     }
+
+    // 验证通过，清除验证状态
+    isValidating.value = false;
+    nextTick(() => {
+      gridApi.grid.refreshColumn();
+    });
 
     resolve(true);
   });
