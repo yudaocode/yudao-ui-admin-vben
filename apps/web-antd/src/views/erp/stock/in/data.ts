@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { createRequiredValidation } from '#/adapter/vxe-table';
 import { getSupplierSimpleList } from '#/api/erp/purchase/supplier';
 import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions } from '#/utils';
@@ -108,22 +109,14 @@ export function useStockInItemTableColumns(
       title: '仓库名称',
       minWidth: 150,
       slots: { default: 'warehouseId' },
-      className: ({ row }: { row: any }) => {
-        return isValidating?.value && !row.warehouseId
-          ? 'required-field-error'
-          : '';
-      },
+      className: createRequiredValidation(isValidating, 'warehouseId'),
     },
     {
       field: 'productId',
       title: '产品名称',
       minWidth: 200,
       slots: { default: 'productId' },
-      className: ({ row }: { row: any }) => {
-        return isValidating?.value && !row.productId
-          ? 'required-field-error'
-          : '';
-      },
+      className: createRequiredValidation(isValidating, 'productId'),
     },
     {
       field: 'stockCount',
@@ -145,11 +138,7 @@ export function useStockInItemTableColumns(
       title: '数量',
       minWidth: 120,
       slots: { default: 'count' },
-      className: ({ row }: { row: any }) => {
-        return isValidating?.value && (!row.count || row.count <= 0)
-          ? 'required-field-error'
-          : '';
-      },
+      className: createRequiredValidation(isValidating, 'count'),
     },
     {
       field: 'productPrice',
