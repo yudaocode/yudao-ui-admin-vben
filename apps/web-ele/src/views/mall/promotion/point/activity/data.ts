@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE, getDictOptions } from '#/utils/dict';
 
 /** 表单配置 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -55,7 +55,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择活动状态',
         clearable: true,
-        dictType: DICT_TYPE.COMMON_STATUS,
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
   ];

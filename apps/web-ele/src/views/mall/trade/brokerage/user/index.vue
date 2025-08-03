@@ -3,10 +3,10 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElLoading, ElMessage, ElMessageBox, ElSwitch } from 'element-plus';
+import { ElLoading, ElMessage, ElSwitch } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -68,11 +68,7 @@ function openCreateUserForm() {
 
 /** 清除上级推广人 */
 async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
-  await ElMessageBox.confirm(`确定清除"${row.nickname}"的上级推广人吗？`, {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm(`确定清除"${row.nickname}"的上级推广人吗？`);
   await clearBindUser({ id: row.id as number });
   ElMessage.success('清除成功');
   onRefresh();

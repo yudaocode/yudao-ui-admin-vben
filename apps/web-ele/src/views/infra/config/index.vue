@@ -7,10 +7,10 @@ import type { InfraConfigApi } from '#/api/infra/config';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -52,23 +52,22 @@ function onEdit(row: InfraConfigApi.Config) {
 
 /** 删除参数 */
 async function onDelete(row: InfraConfigApi.Config) {
-  await ElMessageBox.confirm('确定要删除该参数吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteConfig(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteConfig(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除参数 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该参数吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该参数吗？');
   await deleteConfigList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

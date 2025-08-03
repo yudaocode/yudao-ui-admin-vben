@@ -4,10 +4,10 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 
 import { onMounted } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElMessage, ElMessageBox, ElTag } from 'element-plus';
+import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,11 +45,7 @@ function handleCreate() {
 
 /** 关闭活动 */
 async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
-  await ElMessageBox.confirm('确认关闭该秒杀活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确认关闭该秒杀活动吗？');
   await closeSeckillActivity(row.id as number);
   ElMessage.success('关闭成功');
   onRefresh();
@@ -57,14 +53,17 @@ async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
 
 /** 删除活动 */
 async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
-  await ElMessageBox.confirm('确定删除该秒杀活动吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteSeckillActivity(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteSeckillActivity(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -85,6 +84,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
+    },
+    cellConfig: {
+      height: 250,
     },
     rowConfig: {
       keyField: 'id',
@@ -163,10 +165,7 @@ onMounted(async () => {
               link: true,
               auth: ['promotion:seckill-activity:close'],
               ifShow: row.status === 0,
-              popConfirm: {
-                title: '确认关闭该秒杀活动吗？',
-                confirm: handleClose.bind(null, row),
-              },
+              onClick: handleClose.bind(null, row),
             },
             {
               label: $t('common.delete'),

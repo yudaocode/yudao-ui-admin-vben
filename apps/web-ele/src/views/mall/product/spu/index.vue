@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import {
@@ -13,7 +13,7 @@ import {
   treeToString,
 } from '@vben/utils';
 
-import { ElDescriptions, ElMessage, ElMessageBox, ElTabs } from 'element-plus';
+import { ElDescriptions, ElLoading, ElMessage, ElTabs } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
@@ -31,7 +31,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const tabType = ref(0);
-
+const route = useRoute(); // 路由
 const categoryList = ref();
 
 // tabs 数据
@@ -64,8 +64,9 @@ const tabsData = ref([
 ]);
 
 /** 刷新表格 */
-function onRefresh() {
+async function onRefresh() {
   gridApi.query();
+  await getTabCount();
 }
 
 /** 获得每个 Tab 的数量 */
@@ -97,28 +98,27 @@ function handleEdit(row: MallSpuApi.Spu) {
 
 /** 删除商品 */
 async function handleDelete(row: MallSpuApi.Spu) {
-  await ElMessageBox.confirm('确定删除该商品吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteSpu(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteSpu(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    hideLoading.close();
+  }
 }
 
 /** 添加到仓库 / 回收站的状态 */
 async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
+  // 二次确认
   const text =
     newStatus === ProductSpuStatusEnum.RECYCLE.status
       ? '加入到回收站'
       : '恢复到仓库';
-  // 二次确认
-  await ElMessageBox.confirm(`确认要jian"${row.name}"${text}吗？`, {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm(`确认要"${row.name}"${text}吗？`);
   await updateStatus({ id: row.id as number, status: newStatus });
   ElMessage.success(`${text}成功`);
   onRefresh();
@@ -202,11 +202,16 @@ function onChangeTab(key: any) {
   gridApi.query();
 }
 
-onMounted(() => {
-  getTabCount();
-  getCategoryList({}).then((res) => {
-    categoryList.value = handleTree(res, 'id', 'parentId', 'children');
-  });
+onMounted(async () => {
+  // 解析路由的 categoryId
+  if (route.query.categoryId) {
+    gridApi.formApi.setValues({
+      categoryId: Number(route.query.categoryId),
+    });
+  }
+  await getTabCount();
+  const res = await getCategoryList({});
+  categoryList.value = handleTree(res, 'id', 'parentId', 'children');
 });
 </script>
 
@@ -221,11 +226,12 @@ onMounted(() => {
 
     <Grid>
       <template #top>
-        <ElTabs class="border-none" @change="onChangeTab">
+        <ElTabs class="border-none" @tab-change="onChangeTab">
           <ElTabs.TabPane
             v-for="item in tabsData"
             :key="item.type"
-            :tab="`${item.name} (${item.count})`"
+            :label="`${item.name} (${item.count})`"
+            :name="item.type"
           />
         </ElTabs>
       </template>
@@ -261,23 +267,23 @@ onMounted(() => {
           :content-style="{ width: '100px', fontSize: '14px' }"
         >
           <ElDescriptions.Item label="商品分类">
-            {{ treeToString(categoryList, row.categoryId) }}
+            {{ treeToString(categoryList, row.categoryId || 0) }}
           </ElDescriptions.Item>
           <ElDescriptions.Item label="商品名称">
             {{ row.name }}
           </ElDescriptions.Item>
 
           <ElDescriptions.Item label="市场价">
-            {{ fenToYuan(row.marketPrice) }} 元
+            {{ fenToYuan(row.marketPrice || 0) }} 元
           </ElDescriptions.Item>
           <ElDescriptions.Item label="成本价">
-            {{ fenToYuan(row.costPrice) }} 元
+            {{ fenToYuan(row.costPrice || 0) }} 元
           </ElDescriptions.Item>
           <ElDescriptions.Item label="浏览量">
-            {{ row.browseCount }}
+            {{ row.browseCount || 0 }}
           </ElDescriptions.Item>
           <ElDescriptions.Item label="虚拟销量">
-            {{ row.virtualSalesCount }}
+            {{ row.virtualSalesCount || 0 }}
           </ElDescriptions.Item>
         </ElDescriptions>
       </template>
@@ -305,7 +311,7 @@ onMounted(() => {
               link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => row.type === 4,
+              ifShow: () => tabType === 4,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -317,7 +323,7 @@ onMounted(() => {
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type === 4,
+              ifShow: () => tabType === 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,
@@ -330,7 +336,7 @@ onMounted(() => {
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type !== 4,
+              ifShow: () => tabType !== 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,

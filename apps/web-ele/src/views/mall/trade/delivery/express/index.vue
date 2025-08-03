@@ -5,7 +5,7 @@ import type { MallDeliveryExpressApi } from '#/api/mall/trade/delivery/express';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -46,14 +46,17 @@ function handleEdit(row: MallDeliveryExpressApi.DeliveryExpress) {
 
 /** 删除快递公司 */
 async function handleDelete(row: MallDeliveryExpressApi.DeliveryExpress) {
-  await ElMessageBox.confirm($t('ui.actionMessage.deleting', [row.name]), {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteDeliveryExpress(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteDeliveryExpress(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

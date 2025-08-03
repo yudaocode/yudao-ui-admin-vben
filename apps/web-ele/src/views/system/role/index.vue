@@ -7,11 +7,11 @@ import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
+import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -66,23 +66,22 @@ function onCreate() {
 
 /** 删除角色 */
 async function onDelete(row: SystemRoleApi.Role) {
-  await ElMessageBox.confirm('确定要删除该角色吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteRole(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteRole(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除角色 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该角色吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该角色吗？');
   await deleteRoleList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

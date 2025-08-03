@@ -9,10 +9,10 @@ import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -73,23 +73,22 @@ function onEdit(row: InfraCodegenApi.CodegenTable) {
 
 /** 删除代码生成配置 */
 async function onDelete(row: InfraCodegenApi.CodegenTable) {
-  await ElMessageBox.confirm('确定要删除该代码生成配置吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.tableName]),
+    fullscreen: true,
   });
-  await deleteCodegenTable(row.id);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
-  onRefresh();
+  try {
+    await deleteCodegenTable(row.id);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除代码生成配置 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该代码生成配置吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该代码生成配置吗？');
   await deleteCodegenTableList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
@@ -97,11 +96,7 @@ async function onDeleteBatch() {
 
 /** 同步数据库 */
 async function onSync(row: InfraCodegenApi.CodegenTable) {
-  await ElMessageBox.confirm('确定要同步该代码生成配置吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要同步该代码生成配置吗？');
   await syncCodegenFromDB(row.id);
   ElMessage.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
   onRefresh();

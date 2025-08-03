@@ -45,6 +45,8 @@ export namespace MallRewardActivityApi {
     productCategoryIds?: number[];
     /** 商品 SPU 编号列表（仅表单使用） */
     productSpuIds?: number[];
+    /** 状态 */
+    status?: number;
   }
 }
 

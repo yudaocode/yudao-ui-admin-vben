@@ -7,10 +7,10 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -54,23 +54,22 @@ function onEdit(row: any) {
 
 /** 删除字典类型 */
 async function onDelete(row: SystemDictTypeApi.DictType) {
-  await ElMessageBox.confirm('确定要删除该字典类型吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteDictType(row.id as number);
-  ElMessage.success($t('common.operationSuccess'));
-  onRefresh();
+  try {
+    await deleteDictType(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除字典类型 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该字典类型吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该字典类型吗？');
   await deleteDictTypeList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

@@ -7,6 +7,7 @@ import type { AnalysisOverviewIconItem } from '#/views/mall/home/components/data
 
 import { reactive, ref } from 'vue';
 
+import { confirm } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import {
   calculateRelativeRate,
@@ -17,7 +18,6 @@ import {
 } from '@vben/utils';
 
 import dayjs from 'dayjs';
-import { ElMessageBox } from 'element-plus';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 import AnalysisChartCard from '#/views/mall/home/components/analysis-chart-card.vue';
@@ -142,7 +142,7 @@ const loadOverview = () => {
 const handleExport = async () => {
   try {
     // 导出的二次确认
-    await ElMessageBox.confirm('确定要导出交易状况吗？');
+    await confirm('确定要导出交易状况吗？');
     // 发起导出
     exportLoading.value = true;
     const times = shortcutDateRangePicker.value.times;

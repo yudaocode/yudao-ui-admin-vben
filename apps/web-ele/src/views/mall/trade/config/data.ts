@@ -26,9 +26,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '退款理由',
       component: 'Select',
       componentProps: {
-        mode: 'tags',
         placeholder: '请直接输入退款理由',
+        multiple: true,
+        options: [],
         class: 'w-full',
+        allowCreate: true,
+        filterable: true,
+        reserveKeyword: false,
       },
       dependencies: {
         triggerFields: ['type'],
@@ -40,9 +44,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '退货理由',
       component: 'Select',
       componentProps: {
-        mode: 'tags',
         placeholder: '请直接输入退货理由',
+        multiple: true,
+        options: [],
         class: 'w-full',
+        allowCreate: true,
+        filterable: true,
+        reserveKeyword: false,
       },
       dependencies: {
         triggerFields: ['type'],

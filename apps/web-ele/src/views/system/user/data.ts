@@ -336,7 +336,7 @@ export function useGridColumns<T = SystemUserApi.User>(
     },
     {
       title: '操作',
-      width: 180,
+      width: 250,
       fixed: 'right',
       slots: { default: 'actions' },
     },

@@ -6,13 +6,14 @@ import { ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteCoupon,
   getCouponPage,
 } from '#/api/mall/promotion/coupon/coupon';
+import { $t } from '#/locales';
 
 import { getStatusTabs, useGridColumns, useGridFormSchema } from './data';
 
@@ -23,14 +24,17 @@ const statusTabs = ref(getStatusTabs());
 
 /** 删除优惠券 */
 async function handleDelete(row: MallCouponApi.Coupon) {
-  await ElMessageBox.confirm('确定回收该优惠券吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteCoupon(row.id as number);
-  ElMessage.success('回收成功');
-  onRefresh();
+  try {
+    await deleteCoupon(row.id as number);
+    ElMessage.success('回收成功');
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 刷新表格 */

@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -83,23 +83,22 @@ function onEdit(row: SystemUserApi.User) {
 
 /** 删除用户 */
 async function onDelete(row: SystemUserApi.User) {
-  await ElMessageBox.confirm('确定要删除该用户吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.username]),
+    fullscreen: true,
   });
-  await deleteUser(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.username]));
-  onRefresh();
+  try {
+    await deleteUser(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.username]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除用户 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该用户吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该用户吗？');
   await deleteUserList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
@@ -261,7 +260,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   icon: ACTION_ICON.DELETE,
                   auth: ['system:user:delete'],
                   popConfirm: {
-                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    title: $t('ui.actionMessage.deleteConfirm', [row.username]),
                     confirm: onDelete.bind(null, row),
                   },
                 },

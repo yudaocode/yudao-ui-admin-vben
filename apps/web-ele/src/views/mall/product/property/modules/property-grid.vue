@@ -7,7 +7,7 @@ import type { MallPropertyApi } from '#/api/mall/product/property';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteProperty, getPropertyPage } from '#/api/mall/product/property';
@@ -40,14 +40,17 @@ function handleEdit(row: any) {
 
 /** 删除属性 */
 async function handleDelete(row: MallPropertyApi.Property) {
-  await ElMessageBox.confirm('确定删除该属性吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
-  await deleteProperty(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-  onRefresh();
+  try {
+    await deleteProperty(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 表格事件 */

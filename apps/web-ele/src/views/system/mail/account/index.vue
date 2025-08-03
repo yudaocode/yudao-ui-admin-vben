@@ -7,10 +7,10 @@ import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,23 +45,22 @@ function onEdit(row: SystemMailAccountApi.MailAccount) {
 
 /** 删除邮箱账号 */
 async function onDelete(row: SystemMailAccountApi.MailAccount) {
-  await ElMessageBox.confirm('确定要删除该邮箱账号吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.mail]),
+    fullscreen: true,
   });
-  await deleteMailAccount(row.id as number);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
-  onRefresh();
+  try {
+    await deleteMailAccount(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 批量删除邮箱账号 */
 async function onDeleteBatch() {
-  await ElMessageBox.confirm('确定要删除该邮箱账号吗？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  });
+  await confirm('确定要批量删除该邮箱账号吗？');
   await deleteMailAccountList(checkedIds.value);
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();

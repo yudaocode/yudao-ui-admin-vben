@@ -38,6 +38,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/mall/product/spu/modules/detail.vue'),
       },
+      {
+        path: '/product/spu',
+        name: 'ProductSpu',
+        meta: {
+          title: '商品列表',
+          activeMenu: '/mall/product/spu',
+        },
+        component: () => import('#/views/mall/product/spu/index.vue'),
+      },
     ],
   },
   {
