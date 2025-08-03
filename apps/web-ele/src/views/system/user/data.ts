@@ -323,8 +323,8 @@ export function useGridColumns<T = SystemUserApi.User>(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
-          checkedValue: CommonStatusEnum.ENABLE,
-          unCheckedValue: CommonStatusEnum.DISABLE,
+          activeValue: CommonStatusEnum.ENABLE,
+          inactiveValue: CommonStatusEnum.DISABLE,
         },
       },
     },
@@ -336,7 +336,7 @@ export function useGridColumns<T = SystemUserApi.User>(
     },
     {
       title: '操作',
-      width: 250,
+      width: 180,
       fixed: 'right',
       slots: { default: 'actions' },
     },
