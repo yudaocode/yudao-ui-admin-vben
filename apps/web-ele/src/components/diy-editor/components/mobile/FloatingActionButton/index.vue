@@ -1,0 +1,86 @@
+<script setup lang="ts">
+import type { FloatingActionButtonProperty } from './config';
+
+import { ref } from 'vue';
+
+import { ElMessage } from 'element-plus';
+
+/** 悬浮按钮 */
+defineOptions({ name: 'FloatingActionButton' });
+// 定义属性
+defineProps<{ property: FloatingActionButtonProperty }>();
+
+// 是否展开
+const expanded = ref(false);
+// 处理展开/折叠
+const handleToggleFab = () => {
+  expanded.value = !expanded.value;
+};
+
+const handleActive = (index: number) => {
+  ElMessage.success(`点击了${index}`);
+};
+</script>
+<template>
+  <div
+    class="bottom-32px z-12 gap-12px absolute right-[calc(50%-375px/2+32px)] flex items-center"
+    :class="[
+      {
+        'flex-row': property.direction === 'horizontal',
+        'flex-col': property.direction === 'vertical',
+      },
+    ]"
+  >
+    <template v-if="expanded">
+      <div
+        v-for="(item, index) in property.list"
+        :key="index"
+        class="flex flex-col items-center"
+        @click="handleActive(index)"
+      >
+        <el-image :src="item.imgUrl" fit="contain" class="h-27px w-27px">
+          <template #error>
+            <div class="flex h-full w-full items-center justify-center">
+              <Icon icon="ep:picture" :color="item.textColor" />
+            </div>
+          </template>
+        </el-image>
+        <span
+          v-if="property.showText"
+          class="mt-4px text-12px"
+          :style="{ color: item.textColor }"
+        >
+          {{ item.text }}
+        </span>
+      </div>
+    </template>
+    <!-- todo: @owen 使用APP主题色 -->
+    <el-button type="primary" size="large" circle @click="handleToggleFab">
+      <Icon icon="ep:plus" class="fab-icon" :class="[{ active: expanded }]" />
+    </el-button>
+  </div>
+  <!-- 模态背景：展开时显示，点击后折叠 -->
+  <div v-if="expanded" class="modal-bg" @click="handleToggleFab"></div>
+</template>
+
+<style scoped lang="scss">
+/* 模态背景 */
+.modal-bg {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 375px / 2);
+  z-index: 11;
+  width: 375px;
+  height: 100%;
+  background-color: rgb(0 0 0 / 40%);
+}
+
+.fab-icon {
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+
+  &.active {
+    transform: rotate(135deg);
+  }
+}
+</style>

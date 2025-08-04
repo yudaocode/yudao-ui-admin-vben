@@ -55,6 +55,8 @@ export namespace MallSeckillActivityApi {
     seckillPrice?: number;
     /** 秒杀商品列表 */
     products?: SeckillProduct[];
+    /** 图片 */
+    picUrl?: string;
   }
 
   /** 扩展 SKU 配置 */

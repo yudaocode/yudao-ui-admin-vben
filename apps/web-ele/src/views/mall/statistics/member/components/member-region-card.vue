@@ -7,7 +7,7 @@ import { onMounted, reactive, ref } from 'vue';
 
 import { AnalysisChartCard } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { fenToYuan } from '@vben/utils';
+import { fenToYuan, fenToYuanFormat } from '@vben/utils';
 
 import { ElRow } from 'element-plus';
 
@@ -68,11 +68,6 @@ const getMemberAreaStatisticsList = async () => {
   (areaChartOptions.series[0] as any).data = mapData;
   areaChartOptions.visualMap.min = min;
   areaChartOptions.visualMap.max = max;
-};
-
-// 格式化为元
-const fenToYuanFormat = (row: any, column: any, cellValue: any) => {
-  return fenToYuan(cellValue);
 };
 
 onMounted(async () => {

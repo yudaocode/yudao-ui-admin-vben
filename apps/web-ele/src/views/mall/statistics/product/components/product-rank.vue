@@ -4,7 +4,7 @@ import type { MallProductStatisticsApi } from '#/api/mall/statistics/product';
 import { onMounted, reactive, ref } from 'vue';
 
 import { AnalysisChartCard } from '@vben/common-ui';
-import { buildSortingField, floatToFixed2 } from '@vben/utils';
+import { buildSortingField, fenToYuanFormat } from '@vben/utils';
 
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/views/mall/home/components/shortcut-date-range-picker.vue';
@@ -50,12 +50,6 @@ const getSpuList = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-// 格式化金额【分转元】
-// @ts-ignore
-const fenToYuanFormat = (_, __, cellValue: any, ___) => {
-  return `￥${floatToFixed2(cellValue)}`;
 };
 
 /** 初始化 */

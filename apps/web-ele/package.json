@@ -51,7 +51,9 @@
     "highlight.js": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:"
+    "vue-dompurify-html": "catalog:",
+    "vue-router": "catalog:",
+    "vuedraggable": "catalog:"
   },
   "devDependencies": {
     "unplugin-element-plus": "catalog:"
