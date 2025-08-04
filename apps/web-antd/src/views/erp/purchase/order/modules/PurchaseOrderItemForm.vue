@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @nehc：看看整个逻辑，和 erp 风格的主子表，能不能更统一一些；
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
@@ -25,6 +26,7 @@ const emit = defineEmits([
   'update:total-price',
 ]);
 
+// TODO @nehc:这种一次性的，是不是可以不定义哈？
 interface Props {
   items?: ErpPurchaseOrderApi.PurchaseOrderItem[];
   disabled?: boolean;
@@ -70,6 +72,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
+    // TODO @nehc：这里，是不是直接 await 下？
     gridApi.grid.reloadData(tableData.value);
   },
   {
@@ -92,6 +95,7 @@ watch(
       props.discountPercent === null
         ? 0
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
+    // TODO @nehc：这里的 idea 红色告警？
     const finalTotalPrice = totalPrice - discountPrice;
 
     // 发送计算结果给父组件
@@ -122,6 +126,7 @@ function handleAdd() {
     stockCount: 0,
     remark: '',
   };
+  // TODO @nehc：这里的红色告警哈？
   tableData.value.push(newRow);
   gridApi.grid.insertAt(newRow, -1);
   emit('update:items', [...tableData.value]);

@@ -35,6 +35,7 @@ function onRefresh() {
   gridApi.query();
 }
 
+// TODO @nehc handleRowCheckboxChange 放的位置；
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
@@ -81,6 +82,7 @@ async function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
 }
 
 /** 批量删除 */
+// TODO @nehc handleBatchDelete 是不是和别的模块，一个风格
 async function handleBatchDelete() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
@@ -106,6 +108,7 @@ function handleUpdateStatus(
   row: ErpPurchaseOrderApi.PurchaseOrder,
   status: number,
 ) {
+  // TODO @nehc 是不是和别的模块，类似的 status 处理一个风格
   const hideLoading = message.loading({
     content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
     duration: 0,
