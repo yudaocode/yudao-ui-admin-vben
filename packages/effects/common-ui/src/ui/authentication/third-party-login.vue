@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AntdDingTalk, MdiGithub, MdiQqchat, MdiWechat } from '@vben/icons';
+import { MdiGithub, MdiQqchat, MdiWechat, RiDingding } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { VbenIconButton } from '@vben-core/shadcn-ui';
@@ -37,7 +37,7 @@ function handleThirdLogin(type: number) {
         <MdiWechat />
       </VbenIconButton>
       <VbenIconButton class="mb-3" @click="handleThirdLogin(20)">
-        <AntdDingTalk />
+        <RiDingding />
       </VbenIconButton>
       <VbenIconButton class="mb-3" @click="handleThirdLogin(0)">
         <MdiQqchat />

@@ -217,6 +217,9 @@ function initData() {
   if (modelData.value.taskAfterTriggerSetting) {
     taskAfterTriggerEnable.value = true;
   }
+  if (modelData.value.allowWithdrawTask === undefined) {
+    modelData.value.allowWithdrawTask = false;
+  }
 }
 
 /** 监听表单 ID 变化，加载表单数据 */
@@ -263,6 +266,18 @@ defineExpose({ initData, validate });
         <div class="ml-6">
           <TypographyText type="warning">
             第一个审批节点通过后，提交人仍可撤销申请
+          </TypographyText>
+        </div>
+      </div>
+    </FormItem>
+    <FormItem class="mb-5" label="审批人权限">
+      <div class="mt-1 flex flex-col">
+        <Checkbox v-model:checked="modelData.allowWithdrawTask">
+          允许审批人撤回任务
+        </Checkbox>
+        <div class="ml-6">
+          <TypographyText type="secondary">
+            审批人可撤回正在审批节点的前一节点
           </TypographyText>
         </div>
       </div>

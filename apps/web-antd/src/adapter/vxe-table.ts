@@ -7,6 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
   AsyncComponents,
+  createRequiredValidation,
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
@@ -354,7 +355,7 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-export { useVbenVxeGrid };
+export { createRequiredValidation, useVbenVxeGrid };
 
 const [VxeTable, VxeColumn, VxeToolbar] = AsyncComponents;
 export { VxeColumn, VxeTable, VxeToolbar };

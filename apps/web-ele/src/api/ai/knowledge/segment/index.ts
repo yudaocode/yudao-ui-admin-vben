@@ -32,6 +32,7 @@ export function getKnowledgeSegment(id: number) {
     `/ai/knowledge/segment/get?id=${id}`,
   );
 }
+
 // 新增知识库分段
 export function createKnowledgeSegment(
   data: AiKnowledgeSegmentApi.KnowledgeSegment,
