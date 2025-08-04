@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpStockApi {
+export namespace ErpStockApi {
   /** 产品库存信息 */
   export interface Stock {
     id?: number; // 编号
@@ -54,9 +54,13 @@ export function getStockByProductAndWarehouse(
 /**
  * 获得产品库存数量
  */
-export function getStockCount(productId: number) {
+export function getStockCount(productId: number, warehouseId?: number) {
+  const params: any = { productId };
+  if (warehouseId !== undefined) {
+    params.warehouseId = warehouseId;
+  }
   return requestClient.get<number>('/erp/stock/get-count', {
-    params: { productId },
+    params,
   });
 }
 
