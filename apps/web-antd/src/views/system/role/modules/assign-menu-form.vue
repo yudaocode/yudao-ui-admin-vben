@@ -66,6 +66,8 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+    // 加载菜单列表
+    await loadMenuTree();
     const data = modalApi.getData<SystemRoleApi.Role>();
     if (!data || !data.id) {
       return;
@@ -75,8 +77,6 @@ const [Modal, modalApi] = useVbenModal({
       // 加载角色菜单
       const menuIds = await getRoleMenuList(data.id as number);
       await formApi.setFieldValue('menuIds', menuIds);
-      // 加载菜单列表
-      await loadMenuTree();
 
       await formApi.setValues(data);
     } finally {
