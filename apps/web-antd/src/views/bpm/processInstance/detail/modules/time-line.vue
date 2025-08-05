@@ -43,6 +43,8 @@ const statusIconMap: Record<
   string,
   { animation?: string; color: string; icon: string }
 > = {
+  // 跳过
+  '-2': { color: '#909398', icon: 'mdi:skip-forward-outline' },
   // 审批未开始
   '-1': { color: '#909398', icon: 'mdi:clock-outline' },
   // 待审批
@@ -267,7 +269,12 @@ function handleUserSelectCancel() {
         >
           <!-- 第一行：节点名称、时间 -->
           <div class="flex w-full">
-            <div class="font-bold">{{ activity.name }}</div>
+            <div class="font-bold">
+              {{ activity.name }}
+              <span v-if="activity.status === BpmTaskStatusEnum.SKIP">
+                【跳过】
+              </span>
+            </div>
             <!-- 信息：时间 -->
             <div
               v-if="activity.status !== BpmTaskStatusEnum.NOT_START"
