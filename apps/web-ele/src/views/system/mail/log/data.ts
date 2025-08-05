@@ -91,9 +91,28 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'toMail',
-      title: '收件邮箱',
-      minWidth: 160,
+      field: 'userType',
+      title: '接收用户',
+      minWidth: 150,
+      slots: { default: 'userInfo' },
+    },
+    {
+      field: 'toMails',
+      title: '接收信息',
+      minWidth: 300,
+      formatter: ({ row }) => {
+        const lines: string[] = [];
+        if (row.toMails && row.toMails.length > 0) {
+          lines.push(`收件：${row.toMails.join('、')}`);
+        }
+        if (row.ccMails && row.ccMails.length > 0) {
+          lines.push(`抄送：${row.ccMails.join('、')}`);
+        }
+        if (row.bccMails && row.bccMails.length > 0) {
+          lines.push(`密送：${row.bccMails.join('、')}`);
+        }
+        return lines.join('\n');
+      },
     },
     {
       field: 'templateTitle',

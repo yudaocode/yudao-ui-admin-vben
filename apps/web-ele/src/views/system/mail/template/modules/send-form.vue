@@ -42,8 +42,17 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
+    const parseEmails = (text: string): string[] => {
+      if (!text) return [];
+      return text
+        .split('\n')
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0);
+    };
     const data: SystemMailTemplateApi.MailSendReqVO = {
-      mail: values.mail,
+      toMails: parseEmails(values.toMails || ''),
+      ccMails: parseEmails(values.ccMails || ''),
+      bccMails: parseEmails(values.bccMails || ''),
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
