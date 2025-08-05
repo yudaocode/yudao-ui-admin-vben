@@ -5,6 +5,8 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { onMounted, ref, watch } from 'vue';
 
+import { ElScrollbar } from 'element-plus';
+
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 
 import {
@@ -64,9 +66,9 @@ onMounted(() => {
 });
 </script>
 <template>
-  <el-scrollbar class="z-1 min-h-30px" wrap-class="w-full" ref="containerRef">
+  <ElScrollbar class="z-10 min-h-[30px]" wrap-class="w-full" ref="containerRef">
     <div
-      class="text-12px flex flex-row"
+      class="flex flex-row text-xs"
       :style="{
         gap: `${property.space}px`,
         width: scrollbarWidth,
@@ -87,9 +89,9 @@ onMounted(() => {
         <!-- 布局1：1列-->
         <div
           v-if="property.columns === 1"
-          class="m-l-16px p-8px flex flex-row justify-between"
+          class="ml-4 flex flex-row justify-between p-2"
         >
-          <div class="gap-4px flex flex-col justify-evenly">
+          <div class="flex flex-col justify-evenly gap-1">
             <!-- 优惠值 -->
             <CouponDiscount :coupon="coupon" />
             <!-- 优惠描述 -->
@@ -99,7 +101,7 @@ onMounted(() => {
           </div>
           <div class="flex flex-col justify-evenly">
             <div
-              class="rounded-20px p-x-8px p-y-2px"
+              class="rounded-full px-2 py-0.5"
               :style="{
                 color: property.button.color,
                 background: property.button.bgColor,
@@ -112,9 +114,9 @@ onMounted(() => {
         <!-- 布局2：2列-->
         <div
           v-else-if="property.columns === 2"
-          class="m-l-16px p-8px flex flex-row justify-between"
+          class="ml-4 flex flex-row justify-between p-2"
         >
-          <div class="gap-4px flex flex-col justify-evenly">
+          <div class="flex flex-col justify-evenly gap-1">
             <!-- 优惠值 -->
             <CouponDiscount :coupon="coupon" />
             <!-- 优惠描述 -->
@@ -127,7 +129,7 @@ onMounted(() => {
           </div>
           <div class="flex flex-col">
             <div
-              class="w-20px rounded-20px p-x-2px p-y-8px h-full text-center"
+              class="h-full w-5 rounded-full px-0.5 py-2 text-center"
               :style="{
                 color: property.button.color,
                 background: property.button.bgColor,
@@ -138,16 +140,13 @@ onMounted(() => {
           </div>
         </div>
         <!-- 布局3：3列-->
-        <div
-          v-else
-          class="gap-4px p-4px flex flex-col items-center justify-around"
-        >
+        <div v-else class="flex flex-col items-center justify-around gap-1 p-1">
           <!-- 优惠值 -->
           <CouponDiscount :coupon="coupon" />
           <!-- 优惠描述 -->
           <CouponDiscountDesc :coupon="coupon" />
           <div
-            class="rounded-20px p-x-8px p-y-2px"
+            class="rounded-full px-2 py-0.5"
             :style="{
               color: property.button.color,
               background: property.button.bgColor,
@@ -158,6 +157,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </el-scrollbar>
+  </ElScrollbar>
 </template>
 <style scoped lang="scss"></style>

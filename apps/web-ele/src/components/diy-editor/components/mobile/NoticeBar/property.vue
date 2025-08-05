@@ -21,7 +21,11 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <el-form label-width="80px" :model="formData" :rules="rules">
       <el-form-item label="公告图标" prop="iconUrl">
-        <UploadImg v-model="formData.iconUrl" height="48px">
+        <UploadImg
+          v-model="formData.iconUrl"
+          height="48px"
+          :show-description="false"
+        >
           <template #tip>建议尺寸：24 * 24</template>
         </UploadImg>
       </el-form-item>

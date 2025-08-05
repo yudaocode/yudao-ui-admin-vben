@@ -16,7 +16,12 @@ const formData = useVModel(props, 'modelValue', emit);
     <Draggable v-model="formData.list" :empty-item="{ showType: 'once' }">
       <template #default="{ element, index }">
         <el-form-item label="图片" :prop="`list[${index}].imgUrl`">
-          <UploadImg v-model="element.imgUrl" height="56px" width="56px" />
+          <UploadImg
+            v-model="element.imgUrl"
+            height="56px"
+            width="56px"
+            :show-description="false"
+          />
         </el-form-item>
         <el-form-item label="跳转链接" :prop="`list[${index}].url`">
           <AppLinkInput v-model="element.url" />

@@ -3,9 +3,23 @@ import type { SearchProperty } from './config';
 
 import { watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { isString } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSlider,
+  ElSwitch,
+  ElTooltip,
+} from 'element-plus';
+
+import ComponentContainerProperty from '#/components/diy-editor/components/ComponentContainerProperty.vue';
+import Draggable from '#/components/draggable/index.vue';
 
 /** 搜索框属性面板 */
 defineOptions({ name: 'SearchProperty' });
@@ -31,9 +45,15 @@ watch(
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <!-- 表单 -->
-    <el-form label-width="80px" :model="formData" class="m-t-8px">
-      <el-card header="搜索热词" class="property-group" shadow="never">
-        <Draggable v-model="formData.hotKeywords" empty-item="" :min="0">
+    <ElForm label-width="80px" :model="formData" class="m-t-8px">
+      <ElCard header="搜索热词" class="property-group" shadow="never">
+        <Draggable
+          v-model="formData.hotKeywords"
+          :empty-item="{
+            type: 'input',
+            placeholder: '请输入热词',
+          }"
+        >
           <template #default="{ index }">
             <el-input
               v-model="formData.hotKeywords[index]"
@@ -41,59 +61,59 @@ watch(
             />
           </template>
         </Draggable>
-      </el-card>
-      <el-card header="搜索样式" class="property-group" shadow="never">
-        <el-form-item label="框体样式">
-          <el-radio-group v-model="formData!.borderRadius">
-            <el-tooltip content="方形" placement="top">
-              <el-radio-button :value="0">
-                <Icon icon="tabler:input-search" />
-              </el-radio-button>
-            </el-tooltip>
-            <el-tooltip content="圆形" placement="top">
-              <el-radio-button :value="10">
-                <Icon icon="iconoir:input-search" />
-              </el-radio-button>
-            </el-tooltip>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="提示文字" prop="placeholder">
+      </ElCard>
+      <ElCard header="搜索样式" class="property-group" shadow="never">
+        <ElFormItem label="框体样式">
+          <ElRadioGroup v-model="formData!.borderRadius">
+            <ElTooltip content="方形" placement="top">
+              <ElRadioButton :value="0">
+                <IconifyIcon icon="tabler:input-search" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip content="圆形" placement="top">
+              <ElRadioButton :value="10">
+                <IconifyIcon icon="iconoir:input-search" />
+              </ElRadioButton>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="提示文字" prop="placeholder">
           <el-input v-model="formData.placeholder" />
-        </el-form-item>
-        <el-form-item label="文本位置" prop="placeholderPosition">
-          <el-radio-group v-model="formData!.placeholderPosition">
-            <el-tooltip content="居左" placement="top">
-              <el-radio-button value="left">
-                <Icon icon="ant-design:align-left-outlined" />
-              </el-radio-button>
-            </el-tooltip>
-            <el-tooltip content="居中" placement="top">
-              <el-radio-button value="center">
-                <Icon icon="ant-design:align-center-outlined" />
-              </el-radio-button>
-            </el-tooltip>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="扫一扫" prop="showScan">
-          <el-switch v-model="formData!.showScan" />
-        </el-form-item>
-        <el-form-item label="框体高度" prop="height">
-          <el-slider
+        </ElFormItem>
+        <ElFormItem label="文本位置" prop="placeholderPosition">
+          <ElRadioGroup v-model="formData!.placeholderPosition">
+            <ElTooltip content="居左" placement="top">
+              <ElRadioButton value="left">
+                <IconifyIcon icon="ant-design:align-left-outlined" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip content="居中" placement="top">
+              <ElRadioButton value="center">
+                <IconifyIcon icon="ant-design:align-center-outlined" />
+              </ElRadioButton>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="扫一扫" prop="showScan">
+          <ElSwitch v-model="formData!.showScan" />
+        </ElFormItem>
+        <ElFormItem label="框体高度" prop="height">
+          <ElSlider
             v-model="formData!.height"
             :max="50"
             :min="28"
             show-input
             input-size="small"
           />
-        </el-form-item>
-        <el-form-item label="框体颜色" prop="backgroundColor">
+        </ElFormItem>
+        <ElFormItem label="框体颜色" prop="backgroundColor">
           <ColorInput v-model="formData.backgroundColor" />
-        </el-form-item>
-        <el-form-item class="lef" label="文本颜色" prop="textColor">
+        </ElFormItem>
+        <ElFormItem class="lef" label="文本颜色" prop="textColor">
           <ColorInput v-model="formData.textColor" />
-        </el-form-item>
-      </el-card>
-    </el-form>
+        </ElFormItem>
+      </ElCard>
+    </ElForm>
   </ComponentContainerProperty>
 </template>
 

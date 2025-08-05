@@ -3,20 +3,40 @@ import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { inject, onMounted, ref, unref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
+import {
+  ElAside,
+  ElButtonGroup,
+  ElCard,
+  ElContainer,
+  ElDialog,
+  ElHeader,
+  ElScrollbar,
+  ElTag,
+  ElText,
+  ElTooltip,
+} from 'element-plus';
 import draggable from 'vuedraggable';
 
-import { componentConfigs } from '#/components/diy-editor/components/mobile';
+import statusBarImg from '#/assets/imgs/diy/statusBar.png';
+import {
+  componentConfigs,
+  components,
+} from '#/components/diy-editor/components/mobile';
 import { component as PAGE_CONFIG_COMPONENT } from '#/components/diy-editor/components/mobile/PageConfig/config';
 
+import ComponentContainer from './components/ComponentContainer.vue';
 import ComponentLibrary from './components/ComponentLibrary.vue';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/NavigationBar/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/TabBar/config';
 
 /** 页面装修详情页 */
-defineOptions({ name: 'DiyPageDetail' });
-
+defineOptions({
+  name: 'DiyPageDetail',
+  components,
+});
 // 定义属性
 const props = defineProps({
   // 页面配置，支持Json字符串
@@ -34,7 +54,6 @@ const props = defineProps({
   // 预览地址：提供了预览地址，才会显示预览按钮
   previewUrl: { type: String, default: '' },
 });
-
 // 工具栏操作
 const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']);
 
@@ -271,218 +290,217 @@ watch(
   () => [props.showPageConfig, props.showNavigationBar, props.showTabBar],
   () => setDefaultSelectedComponent(),
 );
-
-onMounted(() => setDefaultSelectedComponent());
+onMounted(() => {
+  setDefaultSelectedComponent();
+});
 </script>
 <template>
-  <el-container class="editor">
-    <!-- 顶部：工具栏 -->
-    <el-header class="editor-header">
-      <!-- 左侧操作区 -->
-      <slot name="toolBarLeft"></slot>
-      <!-- 中心操作区 -->
-      <div class="header-center flex flex-1 items-center justify-center">
-        <span>{{ title }}</span>
-      </div>
-      <!-- 右侧操作区 -->
-      <el-button-group class="header-right">
-        <el-tooltip content="重置">
-          <el-button @click="handleReset">
-            <Icon :size="24" icon="system-uicons:reset-alt" />
-          </el-button>
-        </el-tooltip>
-        <el-tooltip v-if="previewUrl" content="预览">
-          <el-button @click="handlePreview">
-            <Icon :size="24" icon="ep:view" />
-          </el-button>
-        </el-tooltip>
-        <el-tooltip content="保存">
-          <el-button @click="handleSave">
-            <Icon :size="24" icon="ep:check" />
-          </el-button>
-        </el-tooltip>
-      </el-button-group>
-    </el-header>
+  <div>
+    <ElContainer class="editor">
+      <!-- 顶部：工具栏 -->
+      <ElHeader class="editor-header">
+        <!-- 左侧操作区 -->
+        <slot name="toolBarLeft"></slot>
+        <!-- 中心操作区 -->
+        <div class="header-center flex flex-1 items-center justify-center">
+          <span>{{ title }}</span>
+        </div>
+        <!-- 右侧操作区 -->
+        <ElButtonGroup class="header-right">
+          <ElTooltip content="重置">
+            <ElButton @click="handleReset">
+              <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
+            </ElButton>
+          </ElTooltip>
+          <ElTooltip v-if="previewUrl" content="预览">
+            <ElButton @click="handlePreview">
+              <IconifyIcon :size="24" icon="ep:view" />
+            </ElButton>
+          </ElTooltip>
+          <ElTooltip content="保存">
+            <ElButton @click="handleSave">
+              <IconifyIcon :size="24" icon="ep:check" />
+            </ElButton>
+          </ElTooltip>
+        </ElButtonGroup>
+      </ElHeader>
 
-    <!-- 中心区域 -->
-    <el-container class="editor-container">
-      <!-- 左侧：组件库（ComponentLibrary） -->
-      <ComponentLibrary
-        v-if="libs && libs.length > 0"
-        ref="componentLibrary"
-        :list="libs"
-      />
-      <!-- 中心：设计区域（ComponentContainer） -->
-      <div class="editor-center page-prop-area" @click="handlePageSelected">
-        <!-- 手机顶部 -->
-        <div class="editor-design-top">
-          <!-- 手机顶部状态栏 -->
-          <img
-            alt=""
-            class="status-bar"
-            src="@/assets/imgs/diy/statusBar.png"
-          />
-          <!-- 手机顶部导航栏 -->
-          <ComponentContainer
-            v-if="showNavigationBar"
-            :active="selectedComponent?.id === navigationBarComponent.id"
-            :component="navigationBarComponent"
-            :show-toolbar="false"
-            class="cursor-pointer!"
-            @click="handleNavigationBarSelected"
-          />
-        </div>
-        <!-- 绝对定位的组件：例如 弹窗、浮动按钮等 -->
-        <div
-          v-for="(component, index) in pageComponents"
-          :key="index"
-          @click="handleComponentSelected(component, index)"
-        >
-          <component
-            :is="component.id"
-            v-if="
-              component.position === 'fixed' &&
-              selectedComponent?.uid === component.uid
-            "
-            :property="component.property"
-          />
-        </div>
-        <!-- 手机页面编辑区域 -->
-        <el-scrollbar
-          :view-style="{
-            backgroundColor: pageConfigComponent.property.backgroundColor,
-            backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
-          }"
-          height="100%"
-          view-class="phone-container"
-          wrap-class="editor-design-center page-prop-area"
-        >
-          <draggable
-            v-model="pageComponents"
-            :animation="200"
-            :force-fallback="true"
-            class="page-prop-area drag-area"
-            filter=".component-toolbar"
-            ghost-class="draggable-ghost"
-            group="component"
-            item-key="index"
-            @change="handleComponentChange"
-          >
-            <template #item="{ element, index }">
-              <ComponentContainer
-                v-if="!element.position || element.position === 'center'"
-                :active="selectedComponentIndex === index"
-                :can-move-down="index < pageComponents.length - 1"
-                :can-move-up="index > 0"
-                :component="element"
-                @click="handleComponentSelected(element, index)"
-                @copy="handleCopyComponent(index)"
-                @delete="handleDeleteComponent(index)"
-                @move="
-                  (direction: number) => handleMoveComponent(index, direction)
-                "
-              />
-            </template>
-          </draggable>
-        </el-scrollbar>
-        <!-- 手机底部导航 -->
-        <div
-          v-if="showTabBar"
-          class="editor-design-bottom component cursor-pointer!"
-        >
-          <ComponentContainer
-            :active="selectedComponent?.id === tabBarComponent.id"
-            :component="tabBarComponent"
-            :show-toolbar="false"
-            @click="handleTabBarSelected"
-          />
-        </div>
-        <!-- 固定布局的组件 操作按钮区 -->
-        <div class="fixed-component-action-group">
-          <el-tag
-            v-if="showPageConfig"
-            :effect="
-              selectedComponent?.uid === pageConfigComponent.uid
-                ? 'dark'
-                : 'plain'
-            "
-            :type="
-              selectedComponent?.uid === pageConfigComponent.uid
-                ? 'primary'
-                : 'info'
-            "
-            size="large"
-            @click="handleComponentSelected(pageConfigComponent)"
-          >
-            <Icon :icon="pageConfigComponent.icon" :size="12" />
-            <span>{{ pageConfigComponent.name }}</span>
-          </el-tag>
-          <template v-for="(component, index) in pageComponents" :key="index">
-            <el-tag
-              v-if="component.position === 'fixed'"
-              :effect="
-                selectedComponent?.uid === component.uid ? 'dark' : 'plain'
-              "
-              :type="
-                selectedComponent?.uid === component.uid ? 'primary' : 'info'
-              "
-              closable
-              size="large"
-              @click="handleComponentSelected(component)"
-              @close="handleDeleteComponent(index)"
-            >
-              <Icon :icon="component.icon" :size="12" />
-              <span>{{ component.name }}</span>
-            </el-tag>
-          </template>
-        </div>
-      </div>
-      <!-- 右侧：属性面板（ComponentContainerProperty） -->
-      <el-aside
-        v-if="selectedComponent?.property"
-        class="editor-right"
-        width="350px"
-      >
-        <el-card
-          body-class="h-[calc(100%-var(--el-card-padding)-var(--el-card-padding))]"
-          class="h-full"
-          shadow="never"
-        >
-          <!-- 组件名称 -->
-          <template #header>
-            <div class="gap-8px flex items-center">
-              <Icon :icon="selectedComponent?.icon" color="gray" />
-              <span>{{ selectedComponent?.name }}</span>
-            </div>
-          </template>
-          <el-scrollbar
-            class="m-[calc(0px-var(--el-card-padding))]"
-            view-class="p-[var(--el-card-padding)] p-b-[calc(var(--el-card-padding)+var(--el-card-padding))] property"
+      <!-- 中心区域 -->
+      <ElContainer class="editor-container">
+        <!-- 左侧：组件库（ComponentLibrary） -->
+        <ComponentLibrary
+          v-if="libs && libs.length > 0"
+          ref="componentLibrary"
+          :list="libs"
+        />
+        <!-- 中心：设计区域（ComponentContainer） -->
+        <div class="editor-center page-prop-area" @click="handlePageSelected">
+          <!-- 手机顶部 -->
+          <div class="editor-design-top">
+            <!-- 手机顶部状态栏 -->
+            <img alt="" class="status-bar" :src="statusBarImg" />
+            <!-- 手机顶部导航栏 -->
+            <ComponentContainer
+              v-if="showNavigationBar"
+              :active="selectedComponent?.id === navigationBarComponent.id"
+              :component="navigationBarComponent"
+              :show-toolbar="false"
+              class="cursor-pointer"
+              @click="handleNavigationBarSelected"
+            />
+          </div>
+          <!-- 绝对定位的组件：例如 弹窗、浮动按钮等 -->
+          <div
+            v-for="(component, index) in pageComponents"
+            :key="index"
+            @click="handleComponentSelected(component, index)"
           >
             <component
-              :is="`${selectedComponent?.id}Property`"
-              :key="selectedComponent?.uid || selectedComponent?.id"
-              v-model="selectedComponent.property"
+              :is="component.id"
+              v-if="
+                component.position === 'fixed' &&
+                selectedComponent?.uid === component.uid
+              "
+              :property="component.property"
             />
-          </el-scrollbar>
-        </el-card>
-      </el-aside>
-    </el-container>
-  </el-container>
+          </div>
+          <!-- 手机页面编辑区域 -->
+          <ElScrollbar
+            :view-style="{
+              backgroundColor: pageConfigComponent.property.backgroundColor,
+              backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
+            }"
+            view-class="phone-container"
+            wrap-class="editor-design-center page-prop-area"
+            style="height: calc(100vh - 135px - 120px)"
+          >
+            <draggable
+              v-model="pageComponents"
+              :animation="200"
+              :force-fallback="true"
+              class="page-prop-area drag-area"
+              filter=".component-toolbar"
+              ghost-class="draggable-ghost"
+              group="component"
+              item-key="index"
+              @change="handleComponentChange"
+            >
+              <template #item="{ element, index }">
+                <ComponentContainer
+                  v-if="!element.position || element.position === 'center'"
+                  :active="selectedComponentIndex === index"
+                  :can-move-down="index < pageComponents.length - 1"
+                  :can-move-up="index > 0"
+                  :component="element"
+                  @click="handleComponentSelected(element, index)"
+                  @copy="handleCopyComponent(index)"
+                  @delete="handleDeleteComponent(index)"
+                  @move="
+                    (direction: number) => handleMoveComponent(index, direction)
+                  "
+                />
+              </template>
+            </draggable>
+          </ElScrollbar>
+          <!-- 手机底部导航 -->
+          <div
+            v-if="showTabBar"
+            class="editor-design-bottom component cursor-pointer"
+          >
+            <ComponentContainer
+              :active="selectedComponent?.id === tabBarComponent.id"
+              :component="tabBarComponent"
+              :show-toolbar="false"
+              @click="handleTabBarSelected"
+            />
+          </div>
+          <!-- 固定布局的组件 操作按钮区 -->
+          <div class="fixed-component-action-group gap-2">
+            <ElTag
+              v-if="showPageConfig"
+              :effect="
+                selectedComponent?.uid === pageConfigComponent.uid
+                  ? 'dark'
+                  : 'plain'
+              "
+              :type="
+                selectedComponent?.uid === pageConfigComponent.uid
+                  ? 'primary'
+                  : 'info'
+              "
+              size="large"
+              @click="handleComponentSelected(pageConfigComponent)"
+            >
+              <IconifyIcon :icon="pageConfigComponent.icon" :size="12" />
+              <span>{{ pageConfigComponent.name }}</span>
+            </ElTag>
+            <template v-for="(component, index) in pageComponents" :key="index">
+              <ElTag
+                v-if="component.position === 'fixed'"
+                :effect="
+                  selectedComponent?.uid === component.uid ? 'dark' : 'plain'
+                "
+                :type="
+                  selectedComponent?.uid === component.uid ? 'primary' : 'info'
+                "
+                closable
+                size="large"
+                @click="handleComponentSelected(component)"
+                @close="handleDeleteComponent(index)"
+              >
+                <IconifyIcon :icon="component.icon" :size="12" />
+                <span>{{ component.name }}</span>
+              </ElTag>
+            </template>
+          </div>
+        </div>
+        <!-- 右侧：属性面板（ComponentContainerProperty） -->
+        <ElAside
+          v-if="selectedComponent?.property"
+          class="editor-right"
+          width="350px"
+        >
+          <ElCard
+            body-class="h-[calc(100%-var(--el-card-padding)-var(--el-card-padding))]"
+            class="h-full"
+            shadow="never"
+          >
+            <!-- 组件名称 -->
+            <template #header>
+              <div class="flex items-center gap-2">
+                <IconifyIcon :icon="selectedComponent?.icon" color="gray" />
+                <span>{{ selectedComponent?.name }}</span>
+              </div>
+            </template>
+            <ElScrollbar
+              class="m-[calc(0px-var(--el-card-padding))]"
+              view-class="p-[var(--el-card-padding)] pb-[calc(var(--el-card-padding)+var(--el-card-padding))] property"
+            >
+              <component
+                :is="`${selectedComponent?.id}Property`"
+                :key="selectedComponent?.uid || selectedComponent?.id"
+                v-model="selectedComponent.property"
+              />
+            </ElScrollbar>
+          </ElCard>
+        </ElAside>
+      </ElContainer>
+    </ElContainer>
 
-  <!-- 预览弹框 -->
-  <Dialog v-model="previewDialogVisible" title="预览" width="700">
-    <div class="flex justify-around">
-      <IFrame
-        :src="previewUrl"
-        class="w-375px border-4px border-rounded-8px p-2px h-667px! border-solid"
-      />
-      <div class="flex flex-col">
-        <el-text>手机扫码预览</el-text>
-        <Qrcode :text="previewUrl" logo="/logo.gif" />
+    <!-- 预览弹框 -->
+    <ElDialog v-model="previewDialogVisible" title="预览" width="700">
+      <div class="flex justify-around">
+        <IFrame
+          :src="previewUrl"
+          class="h-[667px] w-[375px] rounded-lg border-4 border-solid p-0.5"
+        />
+        <div class="flex flex-col">
+          <ElText>手机扫码预览</ElText>
+          <Qrcode :text="previewUrl" logo="/logo.gif" />
+        </div>
       </div>
-    </div>
-  </Dialog>
+    </ElDialog>
+  </div>
 </template>
 <style lang="scss" scoped>
 /* 手机宽度 */
@@ -493,7 +511,6 @@ $phone-width: 375px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin: calc(0px - var(--app-content-padding));
 
   /* 顶部：工具栏 */
   .editor-header {
@@ -525,15 +542,10 @@ $phone-width: 375px;
 
   /* 中心操作区 */
   .editor-container {
-    height: calc(
-      100vh - var(--top-tool-height) - var(--tags-view-height) - var(
-          --app-footer-height
-        ) -
-        42px
-    );
+    height: calc(100vh - 135px);
 
     /* 右侧属性面板 */
-    .editor-right {
+    :deep(.editor-right) {
       flex-shrink: 0;
       overflow: hidden;
       box-shadow: -8px 0 8px -8px rgb(0 0 0 / 12%);
@@ -624,7 +636,6 @@ $phone-width: 375px;
         right: 16px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
 
         :deep(.el-tag) {
           border: none;

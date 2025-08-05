@@ -1,11 +1,21 @@
 <script lang="ts" setup>
-import * as DiyPageApi from '@/api/mall/promotion/diy/page';
+import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
+import type { MallDiyTemplateApi } from '#/api/mall/promotion/diy/template';
+import type { DiyComponentLibrary } from '#/components/diy-editor/util'; // 商城的 DIY 组件，在 DiyEditor 目录下
+
+import { onMounted, reactive, ref, unref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { IconifyIcon } from '@vben/icons';
+import { isEmpty } from '@vben/utils';
+
+import { ElMessage } from 'element-plus';
+
+import * as DiyPageApi from '#/api/mall/promotion/diy/page';
 // TODO @疯狂：要不要建个 decorate 目录，然后挪进去，改成 index.vue，这样可以更明确看到是个独立界面哈，更好找
-import * as DiyTemplateApi from '@/api/mall/promotion/diy/template';
-import { DiyComponentLibrary, PAGE_LIBS } from '@/components/DiyEditor/util'; // 商城的 DIY 组件，在 DiyEditor 目录下
-import { useTagsViewStore } from '@/store/modules/tagsView';
-import { isEmpty } from '@/utils/is';
-import { toNumber } from 'lodash-es';
+import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
+import DiyEditor from '#/components/diy-editor/index.vue';
+import { PAGE_LIBS } from '#/components/diy-editor/util';
 
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
@@ -18,20 +28,18 @@ const templateItems = reactive([
   { name: '我的', icon: 'ep:user-filled' },
 ]);
 
-const message = useMessage(); // 消息弹窗
-
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formData = ref<DiyTemplateApi.DiyTemplatePropertyVO>();
+const formData = ref<MallDiyTemplateApi.DiyTemplateProperty>();
 const formRef = ref(); // 表单 Ref
 // 当前编辑的属性
 const currentFormData = ref<
-  DiyPageApi.DiyPageVO | DiyTemplateApi.DiyTemplatePropertyVO
+  MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty
 >({
   property: '',
-} as DiyPageApi.DiyPageVO);
+} as MallDiyPageApi.DiyPage);
 // templateItem 对应的缓存
 const currentFormDataMap = ref<
-  Map<string, DiyPageApi.DiyPageVO | DiyTemplateApi.DiyTemplatePropertyVO>
+  Map<string, MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty>
 >(new Map());
 // 商城 H5 预览地址
 const previewUrl = ref('');
@@ -57,11 +65,11 @@ const libs = ref<DiyComponentLibrary[]>(templateLibs);
 const handleTemplateItemChange = (val: number) => {
   // 缓存模版编辑数据
   currentFormDataMap.value.set(
-    templateItems[selectedTemplateItem.value].name,
+    templateItems[selectedTemplateItem.value]?.name || '',
     currentFormData.value!,
   );
   // 读取模版缓存
-  const data = currentFormDataMap.value.get(templateItems[val].name);
+  const data = currentFormDataMap.value.get(templateItems[val]?.name || '');
 
   // 切换模版
   selectedTemplateItem.value = val;
@@ -69,8 +77,8 @@ const handleTemplateItemChange = (val: number) => {
   if (val === 0) {
     libs.value = templateLibs;
     currentFormData.value = (isEmpty(data) ? formData.value : data) as
-      | DiyPageApi.DiyPageVO
-      | DiyTemplateApi.DiyTemplatePropertyVO;
+      | MallDiyPageApi.DiyPage
+      | MallDiyTemplateApi.DiyTemplateProperty;
     return;
   }
 
@@ -79,16 +87,17 @@ const handleTemplateItemChange = (val: number) => {
   currentFormData.value = (
     isEmpty(data)
       ? formData.value!.pages.find(
-          (page: DiyPageApi.DiyPageVO) => page.name === templateItems[val].name,
+          (page: MallDiyPageApi.DiyPage) =>
+            page.name === templateItems[val]?.name,
         )
       : data
-  ) as DiyPageApi.DiyPageVO | DiyTemplateApi.DiyTemplatePropertyVO;
+  ) as MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty;
 };
 
 // 提交表单
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return;
+  if (!formRef.value) return;
   // 提交请求
   formLoading.value = true;
   try {
@@ -114,7 +123,7 @@ const submitForm = async () => {
         await DiyPageApi.updateDiyPageProperty(data!);
       }
     }
-    message.success('保存成功');
+    ElMessage.success('保存成功');
   } finally {
     formLoading.value = false;
   }
@@ -131,7 +140,7 @@ const resetForm = () => {
     previewPicUrls: [],
     property: '',
     pages: [],
-  } as DiyTemplateApi.DiyTemplatePropertyVO;
+  } as MallDiyTemplateApi.DiyTemplateProperty;
   formRef.value?.resetFields();
 };
 
@@ -147,17 +156,17 @@ const storePageIndex = () =>
 // 2. 恢复
 const recoverPageIndex = () => {
   // 恢复重置前的页面，默认是第一个页面
-  const pageIndex = toNumber(sessionStorage.getItem(DIY_PAGE_INDEX_KEY)) || 0;
+  const pageIndex = Number(sessionStorage.getItem(DIY_PAGE_INDEX_KEY)) || 0;
   // 移除标记
   sessionStorage.removeItem(DIY_PAGE_INDEX_KEY);
 
   // 重新初始化数据
   currentFormData.value = formData.value as
-    | DiyPageApi.DiyPageVO
-    | DiyTemplateApi.DiyTemplatePropertyVO;
+    | MallDiyPageApi.DiyPage
+    | MallDiyTemplateApi.DiyTemplateProperty;
   currentFormDataMap.value = new Map<
     string,
-    DiyPageApi.DiyPageVO | DiyTemplateApi.DiyTemplatePropertyVO
+    MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty
   >();
   // 切换页面
   if (pageIndex !== selectedTemplateItem.value) {
@@ -168,15 +177,12 @@ const recoverPageIndex = () => {
 
 /** 初始化 */
 const { currentRoute } = useRouter(); // 路由
-const { delView } = useTagsViewStore(); // 视图操作
 onMounted(async () => {
   resetForm();
   if (!currentRoute.value.params.id) {
-    message.warning('参数错误，页面编号不能为空！');
-    delView(unref(currentRoute));
+    ElMessage.warning('参数错误，页面编号不能为空！');
     return;
   }
-
   // 查询详情
   await getPageDetail(currentRoute.value.params.id);
   // 恢复重置前的页面
@@ -192,7 +198,7 @@ onMounted(async () => {
     :show-navigation-bar="selectedTemplateItem !== 0"
     :show-page-config="selectedTemplateItem !== 0"
     :show-tab-bar="selectedTemplateItem === 0"
-    :title="templateItems[selectedTemplateItem].name"
+    :title="templateItems[selectedTemplateItem]?.name || ''"
     @reset="handleEditorReset"
     @save="submitForm"
   >
@@ -208,7 +214,7 @@ onMounted(async () => {
           :content="item.name"
         >
           <el-radio-button :value="index">
-            <Icon :icon="item.icon" :size="24" />
+            <IconifyIcon :icon="item.icon" :size="24" />
           </el-radio-button>
         </el-tooltip>
       </el-radio-group>

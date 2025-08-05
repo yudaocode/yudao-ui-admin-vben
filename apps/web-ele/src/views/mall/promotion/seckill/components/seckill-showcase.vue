@@ -3,6 +3,10 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 
 import { computed, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { ElImage, ElTooltip } from 'element-plus';
+
 import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
 import SeckillTableSelect from '#/views/mall/promotion/seckill/components/seckill-table-select.vue';
 
@@ -120,23 +124,23 @@ const emitActivityChange = () => {
       :key="seckillActivity.id"
       class="select-box spu-pic"
     >
-      <el-tooltip :content="seckillActivity.name">
+      <ElTooltip :content="seckillActivity.name">
         <div class="relative h-full w-full">
-          <el-image :src="seckillActivity.picUrl" class="h-full w-full" />
-          <Icon
+          <ElImage :src="seckillActivity.picUrl" class="h-full w-full" />
+          <IconifyIcon
             v-show="!disabled"
             class="del-icon"
             icon="ep:circle-close-filled"
             @click="handleRemoveActivity(index)"
           />
         </div>
-      </el-tooltip>
+      </ElTooltip>
     </div>
-    <el-tooltip content="选择活动" v-if="canAdd">
+    <ElTooltip content="选择活动" v-if="canAdd">
       <div class="select-box" @click="openSeckillActivityTableSelect">
-        <Icon icon="ep:plus" />
+        <IconifyIcon icon="ep:plus" />
       </div>
-    </el-tooltip>
+    </ElTooltip>
   </div>
   <!-- 拼团活动选择对话框（表格形式） -->
   <SeckillTableSelect

@@ -6,11 +6,16 @@ import type {
 
 import { computed } from 'vue';
 
+import { ElButton, ElTooltip } from 'element-plus';
+
+import { components } from '#/components/diy-editor/components/mobile';
+import VerticalButtonGroup from '#/components/vertical-button-group/index.vue';
+
 /**
  * 组件容器：目前在中间部分
  * 用于包裹组件，为组件提供 背景、外边距、内边距、边框等样式
  */
-defineOptions({ name: 'ComponentContainer' });
+defineOptions({ name: 'ComponentContainer', components });
 
 const props = defineProps({
   component: {
@@ -26,6 +31,10 @@ const props = defineProps({
     default: false,
   },
   canMoveDown: {
+    type: Boolean,
+    default: false,
+  },
+  showToolbar: {
     type: Boolean,
     default: false,
   },
@@ -106,34 +115,37 @@ const handleDeleteComponent = () => {
         {{ component.name }}
       </div>
       <!-- 右侧：组件操作工具栏 -->
-      <div class="component-toolbar" v-if="component.name && active">
+      <div
+        class="component-toolbar"
+        v-if="showToolbar && component.name && active"
+      >
         <VerticalButtonGroup type="primary">
-          <el-tooltip content="上移" placement="right">
-            <el-button
+          <ElTooltip content="上移" placement="right">
+            <ElButton
               :disabled="!canMoveUp"
               @click.stop="handleMoveComponent(-1)"
             >
               <Icon icon="ep:arrow-up" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="下移" placement="right">
-            <el-button
+            </ElButton>
+          </ElTooltip>
+          <ElTooltip content="下移" placement="right">
+            <ElButton
               :disabled="!canMoveDown"
               @click.stop="handleMoveComponent(1)"
             >
               <Icon icon="ep:arrow-down" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="复制" placement="right">
-            <el-button @click.stop="handleCopyComponent()">
+            </ElButton>
+          </ElTooltip>
+          <ElTooltip content="复制" placement="right">
+            <ElButton @click.stop="handleCopyComponent()">
               <Icon icon="ep:copy-document" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="right">
-            <el-button @click.stop="handleDeleteComponent()">
+            </ElButton>
+          </ElTooltip>
+          <ElTooltip content="删除" placement="right">
+            <ElButton @click.stop="handleDeleteComponent()">
               <Icon icon="ep:delete" />
-            </el-button>
-          </el-tooltip>
+            </ElButton>
+          </ElTooltip>
         </VerticalButtonGroup>
       </div>
     </div>

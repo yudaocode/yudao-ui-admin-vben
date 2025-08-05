@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import { propTypes } from '@/utils/propTypes';
+import { ref, watch } from 'vue';
+
+import AppLinkSelectDialog from './app-link-select-dialog.vue';
 
 // APP 链接输入框
 defineOptions({ name: 'AppLinkInput' });
 // 定义属性
 const props = defineProps({
   // 当前选中的链接
-  modelValue: propTypes.string.def(''),
+  modelValue: {
+    type: String,
+    default: '',
+  },
 });
 // setter
 const emit = defineEmits<{

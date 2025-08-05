@@ -10,6 +10,7 @@ import type { SearchProperty } from '#/components/diy-editor/components/mobile/S
 
 import { computed } from 'vue';
 
+import appNavbarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
 import SearchBar from '#/components/diy-editor/components/mobile/SearchBar/index.vue';
 
 /** 页面顶部导航栏 */
@@ -75,9 +76,9 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
     </div>
     <img
       v-if="property._local?.previewMp"
-      src="@/assets/imgs/diy/app-nav-bar-mp.png"
+      :src="appNavbarMp"
       alt=""
-      class="h-30px w-86px"
+      style="width: 86px; height: 30px"
     />
   </div>
 </template>

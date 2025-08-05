@@ -1,7 +1,24 @@
 <script setup lang="ts">
 import type { TabBarProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
+import {
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElOption,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSelect,
+  ElText,
+} from 'element-plus';
+
+import AppLinkInput from '#/components/app-link-input/index.vue';
+import ColorInput from '#/components/color-input/index.vue';
+import Draggable from '#/components/draggable/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 import { component, THEME_LIST } from './config';
 // 底部导航栏
@@ -26,10 +43,10 @@ const handleThemeChange = () => {
 <template>
   <div class="tab-bar">
     <!-- 表单 -->
-    <el-form :model="formData" label-width="80px">
-      <el-form-item label="主题" prop="theme">
-        <el-select v-model="formData!.theme" @change="handleThemeChange">
-          <el-option
+    <ElForm :model="formData" label-width="80px">
+      <ElFormItem label="主题" prop="theme">
+        <ElSelect v-model="formData!.theme" @change="handleThemeChange">
+          <ElOption
             v-for="(theme, index) in THEME_LIST"
             :key="index"
             :label="theme.name"
@@ -37,55 +54,56 @@ const handleThemeChange = () => {
           >
             <template #default>
               <div class="flex items-center justify-between">
-                <Icon :icon="theme.icon" :color="theme.color" />
+                <IconifyIcon :icon="theme.icon" :color="theme.color" />
                 <span>{{ theme.name }}</span>
               </div>
             </template>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="默认颜色">
+          </ElOption>
+        </ElSelect>
+      </ElFormItem>
+      <ElFormItem label="默认颜色">
         <ColorInput v-model="formData!.style.color" />
-      </el-form-item>
-      <el-form-item label="选中颜色">
+      </ElFormItem>
+      <ElFormItem label="选中颜色">
         <ColorInput v-model="formData!.style.activeColor" />
-      </el-form-item>
-      <el-form-item label="导航背景">
-        <el-radio-group v-model="formData!.style.bgType">
-          <el-radio-button value="color">纯色</el-radio-button>
-          <el-radio-button value="img">图片</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="选择颜色" v-if="formData!.style.bgType === 'color'">
+      </ElFormItem>
+      <ElFormItem label="导航背景">
+        <ElRadioGroup v-model="formData!.style.bgType">
+          <ElRadioButton value="color">纯色</ElRadioButton>
+          <ElRadioButton value="img">图片</ElRadioButton>
+        </ElRadioGroup>
+      </ElFormItem>
+      <ElFormItem label="选择颜色" v-if="formData!.style.bgType === 'color'">
         <ColorInput v-model="formData!.style.bgColor" />
-      </el-form-item>
-      <el-form-item label="选择图片" v-if="formData!.style.bgType === 'img'">
+      </ElFormItem>
+      <ElFormItem label="选择图片" v-if="formData!.style.bgType === 'img'">
         <UploadImg
           v-model="formData!.style.bgImg"
           width="100%"
           height="50px"
-          class="min-w-200px"
+          class="min-w-[200px]"
+          :show-description="false"
         >
           <template #tip> 建议尺寸 375 * 50 </template>
         </UploadImg>
-      </el-form-item>
+      </ElFormItem>
 
-      <el-text tag="p">图标设置</el-text>
-      <el-text type="info" size="small">
+      <ElText tag="p">图标设置</ElText>
+      <ElText type="info" size="small">
         拖动左上角的小圆点可对其排序, 图标建议尺寸 44*44
-      </el-text>
+      </ElText>
       <Draggable v-model="formData.items" :limit="5">
         <template #default="{ element }">
-          <div class="m-b-8px flex items-center justify-around">
+          <div class="mb-2 flex items-center justify-around">
             <div class="flex flex-col items-center justify-between">
               <UploadImg
                 v-model="element.iconUrl"
                 width="40px"
                 height="40px"
                 :show-delete="false"
-                :show-btn-text="false"
+                :show-description="false"
               />
-              <el-text size="small">未选中</el-text>
+              <ElText size="small">未选中</ElText>
             </div>
             <div>
               <UploadImg
@@ -93,30 +111,20 @@ const handleThemeChange = () => {
                 width="40px"
                 height="40px"
                 :show-delete="false"
-                :show-btn-text="false"
+                :show-description="false"
               />
-              <el-text>已选中</el-text>
+              <ElText>已选中</ElText>
             </div>
           </div>
-          <el-form-item
-            prop="text"
-            label="文字"
-            label-width="48px"
-            class="m-b-8px!"
-          >
-            <el-input v-model="element.text" placeholder="请输入文字" />
-          </el-form-item>
-          <el-form-item
-            prop="url"
-            label="链接"
-            label-width="48px"
-            class="m-b-0!"
-          >
+          <ElFormItem prop="text" label="文字" label-width="48px" class="mb-2">
+            <ElInput v-model="element.text" placeholder="请输入文字" />
+          </ElFormItem>
+          <ElFormItem prop="url" label="链接" label-width="48px" class="mb-0">
             <AppLinkInput v-model="element.url" />
-          </el-form-item>
+          </ElFormItem>
         </template>
       </Draggable>
-    </el-form>
+    </ElForm>
   </div>
 </template>
 

@@ -18,7 +18,12 @@ const rules = {};
     <el-form label-width="85px" :model="formData" :rules="rules">
       <el-card header="风格" class="property-group" shadow="never">
         <el-form-item label="背景图片" prop="bgImgUrl">
-          <UploadImg v-model="formData.bgImgUrl" width="100%" height="40px">
+          <UploadImg
+            v-model="formData.bgImgUrl"
+            width="100%"
+            height="40px"
+            :show-description="false"
+          >
             <template #tip>建议尺寸 750*80</template>
           </UploadImg>
         </el-form-item>

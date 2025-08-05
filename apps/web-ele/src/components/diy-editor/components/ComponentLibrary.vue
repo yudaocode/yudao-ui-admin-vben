@@ -6,8 +6,10 @@ import type {
 
 import { reactive, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
+import { ElAside, ElCollapse, ElCollapseItem, ElScrollbar } from 'element-plus';
 import draggable from 'vuedraggable';
 
 import { componentConfigs } from '../components/mobile/index';
@@ -63,10 +65,10 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 </script>
 
 <template>
-  <el-aside class="editor-left" width="261px">
-    <el-scrollbar>
-      <el-collapse v-model="extendGroups">
-        <el-collapse-item
+  <ElAside class="editor-left" width="261px">
+    <ElScrollbar>
+      <ElCollapse v-model="extendGroups">
+        <ElCollapseItem
           v-for="group in groups"
           :key="group.name"
           :name="group.name"
@@ -87,16 +89,16 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
               <div>
                 <div class="drag-placement">组件放置区域</div>
                 <div class="component">
-                  <Icon :icon="element.icon" :size="32" />
+                  <IconifyIcon :icon="element.icon" :size="32" />
                   <span class="mt-4px text-12px">{{ element.name }}</span>
                 </div>
               </div>
             </template>
           </draggable>
-        </el-collapse-item>
-      </el-collapse>
-    </el-scrollbar>
-  </el-aside>
+        </ElCollapseItem>
+      </ElCollapse>
+    </ElScrollbar>
+  </ElAside>
 </template>
 
 <style scoped lang="scss">

@@ -70,6 +70,7 @@ if (!formData.value._local) {
           :limit="1"
           width="56px"
           height="56px"
+          :show-description="false"
         />
         <span class="mb-2 ml-2 text-xs text-gray-400">建议宽度：750</span>
       </div>

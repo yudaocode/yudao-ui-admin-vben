@@ -4,16 +4,18 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/diy',
     name: 'DiyCenter',
-    meta: { hidden: true },
-    component: Layout,
+    meta: {
+      title: '营销中心',
+      icon: 'lucide:shopping-bag',
+      keepAlive: true,
+      hideInMenu: true,
+    },
     children: [
       {
-        path: 'template/decorate/:id',
+        path: String.raw`template/decorate/:id(\d+)`,
         name: 'DiyTemplateDecorate',
         meta: {
           title: '模板装修',
-          noCache: false,
-          hidden: true,
           activeMenu: '/mall/promotion/diy-template/diy-template',
         },
         component: () =>

@@ -46,7 +46,12 @@ const formData = useVModel(props, 'modelValue', emit);
         >
           <template #default="{ element }">
             <el-form-item label="图标" prop="iconUrl">
-              <UploadImg v-model="element.iconUrl" height="80px" width="80px">
+              <UploadImg
+                v-model="element.iconUrl"
+                height="80px"
+                width="80px"
+                :show-description="false"
+              >
                 <template #tip> 建议尺寸：98 * 98 </template>
               </UploadImg>
             </el-form-item>

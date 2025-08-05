@@ -6,7 +6,21 @@ import { onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
-import { CHANGE_EVENT } from 'element-plus';
+import {
+  CHANGE_EVENT,
+  ElButton,
+  ElCheckbox,
+  ElDatePicker,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElImage,
+  ElInput,
+  ElRadio,
+  ElTable,
+  ElTableColumn,
+  ElTreeSelect,
+} from 'element-plus';
 
 import * as ProductCategoryApi from '#/api/mall/product/category';
 import * as ProductSpuApi from '#/api/mall/product/spu';
@@ -210,30 +224,30 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Dialog
+  <ElDialog
     v-model="dialogVisible"
     :append-to-body="true"
     title="选择商品"
     width="70%"
   >
     <ContentWrap>
-      <el-form
+      <ElForm
         :inline="true"
         :model="queryParams"
         class="-mb-15px"
         label-width="68px"
       >
-        <el-form-item label="商品名称" prop="name">
-          <el-input
+        <ElFormItem label="商品名称" prop="name">
+          <ElInput
             v-model="queryParams.name"
             class="!w-240px"
             clearable
             placeholder="请输入商品名称"
             @keyup.enter="handleQuery"
           />
-        </el-form-item>
-        <el-form-item label="商品分类" prop="categoryId">
-          <el-tree-select
+        </ElFormItem>
+        <ElFormItem label="商品分类" prop="categoryId">
+          <ElTreeSelect
             v-model="queryParams.categoryId"
             :data="categoryTreeList"
             :props="{
@@ -248,9 +262,9 @@ onMounted(async () => {
             node-key="id"
             placeholder="请选择商品分类"
           />
-        </el-form-item>
-        <el-form-item label="创建时间" prop="createTime">
-          <el-date-picker
+        </ElFormItem>
+        <ElFormItem label="创建时间" prop="createTime">
+          <ElDatePicker
             v-model="queryParams.createTime"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             class="!w-240px"
@@ -259,67 +273,67 @@ onMounted(async () => {
             type="daterange"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery">
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton @click="handleQuery">
             <Icon class="mr-5px" icon="ep:search" />
             搜索
-          </el-button>
-          <el-button @click="resetQuery">
+          </ElButton>
+          <ElButton @click="resetQuery">
             <Icon class="mr-5px" icon="ep:refresh" />
             重置
-          </el-button>
-        </el-form-item>
-      </el-form>
-      <el-table v-loading="loading" :data="list" show-overflow-tooltip>
+          </ElButton>
+        </ElFormItem>
+      </ElForm>
+      <ElTable v-loading="loading" :data="list" show-overflow-tooltip>
         <!-- 1. 多选模式（不能使用type="selection"，Element会忽略Header插槽） -->
-        <el-table-column width="55" v-if="multiple">
+        <ElTableColumn width="55" v-if="multiple">
           <template #header>
-            <el-checkbox
+            <ElCheckbox
               v-model="isCheckAll"
               :indeterminate="isIndeterminate"
               @change="handleCheckAll"
             />
           </template>
           <template #default="{ row }">
-            <el-checkbox
+            <ElCheckbox
               v-model="checkedStatus[row.id]"
               @change="(checked: boolean) => handleCheckOne(checked, row, true)"
             />
           </template>
-        </el-table-column>
+        </ElTableColumn>
         <!-- 2. 单选模式 -->
-        <el-table-column label="#" width="55" v-else>
+        <ElTableColumn label="#" width="55" v-else>
           <template #default="{ row }">
-            <el-radio
+            <ElRadio
               :value="row.id"
               v-model="selectedSpuId"
               @change="handleSingleSelected(row)"
             >
               <!-- 空格不能省略，是为了让单选框不显示label，如果不指定label不会有选中的效果 -->
               &nbsp;
-            </el-radio>
+            </ElRadio>
           </template>
-        </el-table-column>
-        <el-table-column
+        </ElTableColumn>
+        <ElTableColumn
           key="id"
           align="center"
           label="商品编号"
           prop="id"
           min-width="60"
         />
-        <el-table-column label="商品图" min-width="80">
+        <ElTableColumn label="商品图" min-width="80">
           <template #default="{ row }">
-            <el-image
+            <ElImage
               :src="row.picUrl"
               class="h-30px w-30px"
               :preview-src-list="[row.picUrl]"
               preview-teleported
             />
           </template>
-        </el-table-column>
-        <el-table-column label="商品名称" min-width="200" prop="name" />
-        <el-table-column label="商品分类" min-width="100" prop="categoryId">
+        </ElTableColumn>
+        <ElTableColumn label="商品名称" min-width="200" prop="name" />
+        <ElTableColumn label="商品分类" min-width="100" prop="categoryId">
           <template #default="{ row }">
             <span>{{
               categoryList?.find(
@@ -327,8 +341,8 @@ onMounted(async () => {
               )?.name
             }}</span>
           </template>
-        </el-table-column>
-      </el-table>
+        </ElTableColumn>
+      </ElTable>
       <!-- 分页 -->
       <Pagination
         v-model:limit="queryParams.pageSize"
@@ -338,8 +352,8 @@ onMounted(async () => {
       />
     </ContentWrap>
     <template #footer v-if="multiple">
-      <el-button type="primary" @click="handleEmitChange">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <ElButton type="primary" @click="handleEmitChange">确 定</ElButton>
+      <ElButton @click="dialogVisible = false">取 消</ElButton>
     </template>
-  </Dialog>
+  </ElDialog>
 </template>

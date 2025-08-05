@@ -32,6 +32,7 @@ const handleOpenEditDialog = () => {
           height="50px"
           width="auto"
           class="min-w-80px"
+          :show-description="false"
         >
           <template #tip>
             <el-text type="info" size="small"> 推荐宽度 750</el-text>

@@ -6,6 +6,10 @@ import type { HotZoneItemProperty } from '#/components/diy-editor/components/mob
 
 import { ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { ElButton, ElDialog, ElImage } from 'element-plus';
+
 import {
   CONTROL_DOT_LIST,
   CONTROL_TYPE_ENUM,
@@ -172,14 +176,14 @@ const handleAppLinkChange = (appLink: AppLink) => {
 </script>
 
 <template>
-  <Dialog
+  <ElDialog
     v-model="dialogVisible"
     title="设置热区"
     width="780"
     @close="handleClose"
   >
     <div ref="container" class="w-750px relative h-full">
-      <el-image
+      <ElImage
         :src="imgUrl"
         class="w-750px pointer-events-none h-full select-none"
       />
@@ -199,7 +203,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
         <span class="pointer-events-none select-none">{{
           item.name || '双击选择链接'
         }}</span>
-        <Icon
+        <IconifyIcon
           icon="ep:close"
           class="delete"
           :size="14"
@@ -217,16 +221,16 @@ const handleAppLinkChange = (appLink: AppLink) => {
       </div>
     </div>
     <template #footer>
-      <el-button @click="handleAdd" type="primary" plain>
-        <Icon icon="ep:plus" class="mr-5px" />
+      <ElButton @click="handleAdd" type="primary" plain>
+        <IconifyIcon icon="ep:plus" class="mr-5px" />
         添加热区
-      </el-button>
-      <el-button @click="handleSubmit" type="primary" plain>
-        <Icon icon="ep:check" class="mr-5px" />
+      </ElButton>
+      <ElButton @click="handleSubmit" type="primary" plain>
+        <IconifyIcon icon="ep:check" class="mr-5px" />
         确定
-      </el-button>
+      </ElButton>
     </template>
-  </Dialog>
+  </ElDialog>
   <AppLinkSelectDialog
     ref="appLinkDialogRef"
     @app-link-change="handleAppLinkChange"

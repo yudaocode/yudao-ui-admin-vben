@@ -21,6 +21,7 @@ const formData = useVModel(props, 'modelValue', emit);
           height="80px"
           width="100%"
           class="min-w-80px"
+          :show-description="false"
         >
           <template #tip> 建议宽度750 </template>
         </UploadImg>

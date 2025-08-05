@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { SearchProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 /** 搜索框 */
 defineOptions({ name: 'SearchBar' });
 defineProps<{ property: SearchProperty }>();
@@ -28,7 +30,7 @@ defineProps<{ property: SearchProperty }>();
           justifyContent: property.placeholderPosition,
         }"
       >
-        <Icon icon="ep:search" />
+        <IconifyIcon icon="ep:search" />
         <span>{{ property.placeholder || '搜索商品' }}</span>
       </div>
       <div class="right">
@@ -37,7 +39,10 @@ defineProps<{ property: SearchProperty }>();
           keyword
         }}</span>
         <!-- 扫一扫 -->
-        <Icon icon="ant-design:scan-outlined" v-show="property.showScan" />
+        <IconifyIcon
+          icon="ant-design:scan-outlined"
+          v-show="property.showScan"
+        />
       </div>
     </div>
   </div>

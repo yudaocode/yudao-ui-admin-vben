@@ -2,6 +2,20 @@
 import type { ComponentStyle } from '#/components/diy-editor/util';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElRadio,
+  ElRadioGroup,
+  ElSlider,
+  ElTabPane,
+  ElTabs,
+  ElTree,
+} from 'element-plus';
+
+import ColorInput from '#/components/color-input/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 /**
  * 组件容器属性：目前右边部分
@@ -110,48 +124,54 @@ const handleSliderChange = (prop: string) => {
 </script>
 
 <template>
-  <el-tabs stretch>
+  <ElTabs stretch>
     <!-- 每个组件的自定义内容 -->
-    <el-tab-pane label="内容" v-if="$slots.default">
+    <ElTabPane label="内容" v-if="$slots.default">
       <slot></slot>
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 每个组件的通用内容 -->
-    <el-tab-pane label="样式" lazy>
-      <el-card header="组件样式" class="property-group">
-        <el-form :model="formData" label-width="80px">
-          <el-form-item label="组件背景" prop="bgType">
-            <el-radio-group v-model="formData.bgType">
-              <el-radio value="color">纯色</el-radio>
-              <el-radio value="img">图片</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item
+    <ElTabPane label="样式" lazy>
+      <ElCard header="组件样式" class="property-group">
+        <ElForm :model="formData" label-width="80px">
+          <ElFormItem label="组件背景" prop="bgType">
+            <ElRadioGroup v-model="formData.bgType">
+              <ElRadio value="color">纯色</ElRadio>
+              <ElRadio value="img">图片</ElRadio>
+            </ElRadioGroup>
+          </ElFormItem>
+          <ElFormItem
             label="选择颜色"
             prop="bgColor"
             v-if="formData.bgType === 'color'"
           >
             <ColorInput v-model="formData.bgColor" />
-          </el-form-item>
-          <el-form-item label="上传图片" prop="bgImg" v-else>
-            <UploadImg v-model="formData.bgImg" :limit="1">
+          </ElFormItem>
+          <ElFormItem label="上传图片" prop="bgImg" v-else>
+            <UploadImg
+              v-model="formData.bgImg"
+              :limit="1"
+              :show-description="false"
+            >
               <template #tip>建议宽度 750px</template>
             </UploadImg>
-          </el-form-item>
-          <el-tree
+          </ElFormItem>
+          <ElTree
             :data="treeData"
             :expand-on-click-node="false"
             default-expand-all
           >
             <template #default="{ node, data }">
-              <el-form-item
+              <ElFormItem
                 :label="data.label"
                 :prop="data.prop"
                 :label-width="node.level === 1 ? '80px' : '62px'"
                 class="m-b-0! w-full"
               >
-                <el-slider
-                  v-model="formData[data.prop as keyof ComponentStyle]"
+                <ElSlider
+                  v-model="
+                    formData[data.prop as keyof ComponentStyle] as number
+                  "
                   :max="100"
                   :min="0"
                   show-input
@@ -159,14 +179,14 @@ const handleSliderChange = (prop: string) => {
                   :show-input-controls="false"
                   @input="handleSliderChange(data.prop)"
                 />
-              </el-form-item>
+              </ElFormItem>
             </template>
-          </el-tree>
+          </ElTree>
           <slot name="style" :style="formData"></slot>
-        </el-form>
-      </el-card>
-    </el-tab-pane>
-  </el-tabs>
+        </ElForm>
+      </ElCard>
+    </ElTabPane>
+  </ElTabs>
 </template>
 
 <style scoped lang="scss">

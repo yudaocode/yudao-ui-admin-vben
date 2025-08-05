@@ -2,6 +2,19 @@
 import type { FloatingActionButtonProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElRadio,
+  ElRadioGroup,
+  ElSwitch,
+} from 'element-plus';
+
+import AppLinkInput from '#/components/app-link-input/index.vue';
+import Draggable from '#/components/draggable/index.vue';
+import InputWithColor from '#/components/input-with-color/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 // 悬浮按钮属性面板
 defineOptions({ name: 'FloatingActionButtonProperty' });
@@ -12,37 +25,42 @@ const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <el-form label-width="80px" :model="formData">
-    <el-card header="按钮配置" class="property-group" shadow="never">
-      <el-form-item label="展开方向" prop="direction">
-        <el-radio-group v-model="formData.direction">
-          <el-radio value="vertical">垂直</el-radio>
-          <el-radio value="horizontal">水平</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="显示文字" prop="showText">
-        <el-switch v-model="formData.showText" />
-      </el-form-item>
-    </el-card>
-    <el-card header="按钮列表" class="property-group" shadow="never">
+  <ElForm label-width="80px" :model="formData">
+    <ElCard header="按钮配置" class="property-group" shadow="never">
+      <ElFormItem label="展开方向" prop="direction">
+        <ElRadioGroup v-model="formData.direction">
+          <ElRadio value="vertical">垂直</ElRadio>
+          <ElRadio value="horizontal">水平</ElRadio>
+        </ElRadioGroup>
+      </ElFormItem>
+      <ElFormItem label="显示文字" prop="showText">
+        <ElSwitch v-model="formData.showText" />
+      </ElFormItem>
+    </ElCard>
+    <ElCard header="按钮列表" class="property-group" shadow="never">
       <Draggable v-model="formData.list" :empty-item="{ textColor: '#fff' }">
         <template #default="{ element, index }">
-          <el-form-item label="图标" :prop="`list[${index}].imgUrl`">
-            <UploadImg v-model="element.imgUrl" height="56px" width="56px" />
-          </el-form-item>
-          <el-form-item label="文字" :prop="`list[${index}].text`">
+          <ElFormItem label="图标" :prop="`list[${index}].imgUrl`">
+            <UploadImg
+              v-model="element.imgUrl"
+              height="56px"
+              width="56px"
+              :show-description="false"
+            />
+          </ElFormItem>
+          <ElFormItem label="文字" :prop="`list[${index}].text`">
             <InputWithColor
               v-model="element.text"
               v-model:color="element.textColor"
             />
-          </el-form-item>
-          <el-form-item label="跳转链接" :prop="`list[${index}].url`">
+          </ElFormItem>
+          <ElFormItem label="跳转链接" :prop="`list[${index}].url`">
             <AppLinkInput v-model="element.url" />
-          </el-form-item>
+          </ElFormItem>
         </template>
       </Draggable>
-    </el-card>
-  </el-form>
+    </ElCard>
+  </ElForm>
 </template>
 
 <style scoped lang="scss"></style>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { MenuGridProperty } from './config';
 
+import { ElImage } from 'element-plus';
+
 /** 宫格导航 */
 defineOptions({ name: 'MenuGrid' });
 defineProps<{ property: MenuGridProperty }>();
@@ -11,13 +13,13 @@ defineProps<{ property: MenuGridProperty }>();
     <div
       v-for="(item, index) in property.list"
       :key="index"
-      class="p-b-14px p-t-20px relative flex flex-col items-center"
+      class="relative flex flex-col items-center pb-3.5 pt-5"
       :style="{ width: `${100 * (1 / property.column)}%` }"
     >
       <!-- 右上角角标 -->
       <span
         v-if="item.badge?.show"
-        class="left-50% top-10px z-1 h-20px rounded-50% p-x-6px text-12px leading-20px absolute text-center"
+        class="absolute left-1/2 top-2.5 z-10 h-5 rounded-full px-1.5 text-center text-xs leading-5"
         :style="{
           color: item.badge.textColor,
           backgroundColor: item.badge.bgColor,
@@ -25,15 +27,15 @@ defineProps<{ property: MenuGridProperty }>();
       >
         {{ item.badge.text }}
       </span>
-      <el-image v-if="item.iconUrl" class="h-28px w-28px" :src="item.iconUrl" />
+      <ElImage v-if="item.iconUrl" class="h-7 w-7" :src="item.iconUrl" />
       <span
-        class="m-t-8px h-16px text-12px leading-16px"
+        class="mt-2 h-4 text-xs leading-4"
         :style="{ color: item.titleColor }"
       >
         {{ item.title }}
       </span>
       <span
-        class="m-t-6px h-12px text-10px leading-12px"
+        class="mt-1.5 h-3 text-xs leading-3"
         :style="{ color: item.subtitleColor }"
       >
         {{ item.subtitle }}

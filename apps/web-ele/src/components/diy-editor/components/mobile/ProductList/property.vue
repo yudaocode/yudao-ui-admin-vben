@@ -61,7 +61,12 @@ const formData = useVModel(props, 'modelValue', emit);
           prop="badge.imgUrl"
           v-if="formData.badge.show"
         >
-          <UploadImg v-model="formData.badge.imgUrl" height="44px" width="72px">
+          <UploadImg
+            v-model="formData.badge.imgUrl"
+            height="44px"
+            width="72px"
+            :show-description="false"
+          >
             <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </el-form-item>

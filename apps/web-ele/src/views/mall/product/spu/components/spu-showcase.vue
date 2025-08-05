@@ -3,6 +3,10 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { ElImage, ElTooltip } from 'element-plus';
+
 import * as ProductSpuApi from '#/api/mall/product/spu';
 import SpuTableSelect from '#/views/mall/product/spu/components/spu-table-select.vue';
 
@@ -110,23 +114,23 @@ const emitSpuChange = () => {
       :key="spu.id"
       class="select-box spu-pic"
     >
-      <el-tooltip :content="spu.name">
+      <ElTooltip :content="spu.name">
         <div class="relative h-full w-full">
-          <el-image :src="spu.picUrl" class="h-full w-full" />
-          <Icon
+          <ElImage :src="spu.picUrl" class="h-full w-full" />
+          <IconifyIcon
             v-show="!disabled"
             class="del-icon"
             icon="ep:circle-close-filled"
             @click="handleRemoveSpu(index)"
           />
         </div>
-      </el-tooltip>
+      </ElTooltip>
     </div>
-    <el-tooltip content="选择商品" v-if="canAdd">
+    <ElTooltip content="选择商品" v-if="canAdd">
       <div class="select-box" @click="openSpuTableSelect">
-        <Icon icon="ep:plus" />
+        <IconifyIcon icon="ep:plus" />
       </div>
-    </el-tooltip>
+    </ElTooltip>
   </div>
   <!-- 商品选择对话框（表格形式） -->
   <SpuTableSelect

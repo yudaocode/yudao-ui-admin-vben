@@ -1,7 +1,26 @@
 <script setup lang="ts">
 import type { CarouselProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
+import {
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSlider,
+  ElSwitch,
+  ElText,
+  ElTooltip,
+} from 'element-plus';
+
+import AppLinkInput from '#/components/app-link-input/index.vue';
+import ComponentContainerProperty from '#/components/diy-editor/components/ComponentContainerProperty.vue';
+import Draggable from '#/components/draggable/index.vue';
+import UploadFile from '#/components/upload/file-upload.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 // 轮播图属性面板
 defineOptions({ name: 'CarouselProperty' });
@@ -13,33 +32,33 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <el-form label-width="80px" :model="formData">
-      <el-card header="样式设置" class="property-group" shadow="never">
-        <el-form-item label="样式" prop="type">
-          <el-radio-group v-model="formData.type">
-            <el-tooltip class="item" content="默认" placement="bottom">
-              <el-radio-button value="default">
-                <Icon icon="system-uicons:carousel" />
-              </el-radio-button>
-            </el-tooltip>
-            <el-tooltip class="item" content="卡片" placement="bottom">
-              <el-radio-button value="card">
-                <Icon icon="ic:round-view-carousel" />
-              </el-radio-button>
-            </el-tooltip>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="指示器" prop="indicator">
-          <el-radio-group v-model="formData.indicator">
-            <el-radio value="dot">小圆点</el-radio>
-            <el-radio value="number">数字</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否轮播" prop="autoplay">
-          <el-switch v-model="formData.autoplay" />
-        </el-form-item>
-        <el-form-item label="播放间隔" prop="interval" v-if="formData.autoplay">
-          <el-slider
+    <ElForm label-width="80px" :model="formData">
+      <ElCard header="样式设置" class="property-group" shadow="never">
+        <ElFormItem label="样式" prop="type">
+          <ElRadioGroup v-model="formData.type">
+            <ElTooltip class="item" content="默认" placement="bottom">
+              <ElRadioButton value="default">
+                <IconifyIcon icon="system-uicons:carousel" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip class="item" content="卡片" placement="bottom">
+              <ElRadioButton value="card">
+                <IconifyIcon icon="ic:round-view-carousel" />
+              </ElRadioButton>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="指示器" prop="indicator">
+          <ElRadioGroup v-model="formData.indicator">
+            <ElRadio value="dot">小圆点</ElRadio>
+            <ElRadio value="number">数字</ElRadio>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="是否轮播" prop="autoplay">
+          <ElSwitch v-model="formData.autoplay" />
+        </ElFormItem>
+        <ElFormItem label="播放间隔" prop="interval" v-if="formData.autoplay">
+          <ElSlider
             v-model="formData.interval"
             :max="10"
             :min="0.5"
@@ -48,24 +67,24 @@ const formData = useVModel(props, 'modelValue', emit);
             input-size="small"
             :show-input-controls="false"
           />
-          <el-text type="info">单位：秒</el-text>
-        </el-form-item>
-      </el-card>
-      <el-card header="内容设置" class="property-group" shadow="never">
+          <ElText type="info">单位：秒</ElText>
+        </ElFormItem>
+      </ElCard>
+      <ElCard header="内容设置" class="property-group" shadow="never">
         <Draggable v-model="formData.items" :empty-item="{ type: 'img' }">
           <template #default="{ element }">
-            <el-form-item
+            <ElFormItem
               label="类型"
               prop="type"
               class="m-b-8px!"
               label-width="40px"
             >
-              <el-radio-group v-model="element.type">
-                <el-radio value="img">图片</el-radio>
-                <el-radio value="video">视频</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item
+              <ElRadioGroup v-model="element.type">
+                <ElRadio value="img">图片</ElRadio>
+                <ElRadio value="video">视频</ElRadio>
+              </ElRadioGroup>
+            </ElFormItem>
+            <ElFormItem
               label="图片"
               class="m-b-8px!"
               label-width="40px"
@@ -77,19 +96,21 @@ const formData = useVModel(props, 'modelValue', emit);
                 height="80px"
                 width="100%"
                 class="min-w-80px"
+                :show-description="false"
               />
-            </el-form-item>
+            </ElFormItem>
             <template v-else>
-              <el-form-item label="封面" class="m-b-8px!" label-width="40px">
+              <ElFormItem label="封面" class="m-b-8px!" label-width="40px">
                 <UploadImg
                   v-model="element.imgUrl"
                   draggable="false"
+                  :show-description="false"
                   height="80px"
                   width="100%"
                   class="min-w-80px"
                 />
-              </el-form-item>
-              <el-form-item label="视频" class="m-b-8px!" label-width="40px">
+              </ElFormItem>
+              <ElFormItem label="视频" class="m-b-8px!" label-width="40px">
                 <UploadFile
                   v-model="element.videoUrl"
                   :file-type="['mp4']"
@@ -97,15 +118,15 @@ const formData = useVModel(props, 'modelValue', emit);
                   :file-size="100"
                   class="min-w-80px"
                 />
-              </el-form-item>
+              </ElFormItem>
             </template>
-            <el-form-item label="链接" class="m-b-8px!" label-width="40px">
+            <ElFormItem label="链接" class="m-b-8px!" label-width="40px">
               <AppLinkInput v-model="element.url" />
-            </el-form-item>
+            </ElFormItem>
           </template>
         </Draggable>
-      </el-card>
-    </el-form>
+      </ElCard>
+    </ElForm>
   </ComponentContainerProperty>
 </template>
 

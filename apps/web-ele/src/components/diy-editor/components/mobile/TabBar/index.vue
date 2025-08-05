@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { TabBarProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { ElImage } from 'element-plus';
+
 /** 页面底部导航栏 */
 defineOptions({ name: 'TabBar' });
 
@@ -24,13 +28,13 @@ defineProps<{ property: TabBarProperty }>();
         :key="index"
         class="tab-bar-item"
       >
-        <el-image :src="index === 0 ? item.activeIconUrl : item.iconUrl">
+        <ElImage :src="index === 0 ? item.activeIconUrl : item.iconUrl">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <Icon icon="ep:picture" />
+              <IconifyIcon icon="ep:picture" />
             </div>
           </template>
-        </el-image>
+        </ElImage>
         <span
           :style="{
             color:

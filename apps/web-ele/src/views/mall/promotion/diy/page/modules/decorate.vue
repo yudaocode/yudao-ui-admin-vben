@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
 
 import * as DiyPageApi from '#/api/mall/promotion/diy/page';
-import { PAGE_LIBS } from '#/components/DiyEditor/util';
+import { PAGE_LIBS } from '#/components/diy-editor/util';
 
 /** 装修页面表单 */
 defineOptions({ name: 'DiyPageDecorate' });

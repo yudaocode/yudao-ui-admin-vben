@@ -3,7 +3,9 @@ import type { FloatingActionButtonProperty } from './config';
 
 import { ref } from 'vue';
 
-import { ElMessage } from 'element-plus';
+import { IconifyIcon } from '@vben/icons';
+
+import { ElImage, ElMessage } from 'element-plus';
 
 /** 悬浮按钮 */
 defineOptions({ name: 'FloatingActionButton' });
@@ -23,7 +25,7 @@ const handleActive = (index: number) => {
 </script>
 <template>
   <div
-    class="bottom-32px z-12 gap-12px absolute right-[calc(50%-375px/2+32px)] flex items-center"
+    class="absolute bottom-8 right-[calc(50%-375px/2+32px)] z-20 flex items-center gap-3"
     :class="[
       {
         'flex-row': property.direction === 'horizontal',
@@ -38,16 +40,16 @@ const handleActive = (index: number) => {
         class="flex flex-col items-center"
         @click="handleActive(index)"
       >
-        <el-image :src="item.imgUrl" fit="contain" class="h-27px w-27px">
+        <ElImage :src="item.imgUrl" fit="contain" class="h-7 w-7">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <Icon icon="ep:picture" :color="item.textColor" />
+              <IconifyIcon icon="ep:picture" :color="item.textColor" />
             </div>
           </template>
-        </el-image>
+        </ElImage>
         <span
           v-if="property.showText"
-          class="mt-4px text-12px"
+          class="mt-1 text-xs"
           :style="{ color: item.textColor }"
         >
           {{ item.text }}
@@ -56,7 +58,11 @@ const handleActive = (index: number) => {
     </template>
     <!-- todo: @owen 使用APP主题色 -->
     <el-button type="primary" size="large" circle @click="handleToggleFab">
-      <Icon icon="ep:plus" class="fab-icon" :class="[{ active: expanded }]" />
+      <IconifyIcon
+        icon="ep:plus"
+        class="fab-icon"
+        :class="[{ active: expanded }]"
+      />
     </el-button>
   </div>
   <!-- 模态背景：展开时显示，点击后折叠 -->

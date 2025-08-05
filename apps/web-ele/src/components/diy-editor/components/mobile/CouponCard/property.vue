@@ -5,11 +5,23 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { floatToFixed2 } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSlider,
+  ElTooltip,
+} from 'element-plus';
 
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
+import ColorInput from '#/components/color-input/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 import {
   CouponTemplateTakeTypeEnum,
   PromotionDiscountTypeEnum,
@@ -52,15 +64,15 @@ watch(
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <el-form label-width="80px" :model="formData">
-      <el-card header="优惠券列表" class="property-group" shadow="never">
+    <ElForm label-width="80px" :model="formData">
+      <ElCard header="优惠券列表" class="property-group" shadow="never">
         <div
           v-for="(coupon, index) in couponList"
           :key="index"
           class="flex items-center justify-between"
         >
-          <el-text size="large" truncated>{{ coupon.name }}</el-text>
-          <el-text type="info" truncated>
+          <ElText size="large" truncated>{{ coupon.name }}</ElText>
+          <ElText type="info" truncated>
             <span v-if="coupon.usePrice > 0">
               满{{ floatToFixed2(coupon.usePrice) }}元，
             </span>
@@ -72,58 +84,59 @@ watch(
               减{{ floatToFixed2(coupon.discountPrice) }}元
             </span>
             <span v-else> 打{{ coupon.discountPercent }}折 </span>
-          </el-text>
+          </ElText>
         </div>
-        <el-form-item label-width="0">
-          <el-button
+        <ElFormItem label-width="0">
+          <ElButton
             @click="handleAddCoupon"
             type="primary"
             plain
             class="m-t-8px w-full"
           >
-            <Icon icon="ep:plus" class="mr-5px" /> 添加
-          </el-button>
-        </el-form-item>
-      </el-card>
-      <el-card header="优惠券样式" class="property-group" shadow="never">
-        <el-form-item label="列数" prop="type">
-          <el-radio-group v-model="formData.columns">
-            <el-tooltip class="item" content="一列" placement="bottom">
-              <el-radio-button :value="1">
-                <Icon icon="fluent:text-column-one-24-filled" />
-              </el-radio-button>
-            </el-tooltip>
-            <el-tooltip class="item" content="二列" placement="bottom">
-              <el-radio-button :value="2">
-                <Icon icon="fluent:text-column-two-24-filled" />
-              </el-radio-button>
-            </el-tooltip>
-            <el-tooltip class="item" content="三列" placement="bottom">
-              <el-radio-button :value="3">
-                <Icon icon="fluent:text-column-three-24-filled" />
-              </el-radio-button>
-            </el-tooltip>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="背景图片" prop="bgImg">
+            <IconifyIcon icon="ep:plus" class="mr-5px" /> 添加
+          </ElButton>
+        </ElFormItem>
+      </ElCard>
+      <ElCard header="优惠券样式" class="property-group" shadow="never">
+        <ElFormItem label="列数" prop="type">
+          <ElRadioGroup v-model="formData.columns">
+            <ElTooltip class="item" content="一列" placement="bottom">
+              <ElRadioButton :value="1">
+                <IconifyIcon icon="fluent:text-column-one-24-filled" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip class="item" content="二列" placement="bottom">
+              <ElRadioButton :value="2">
+                <IconifyIcon icon="fluent:text-column-two-24-filled" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip class="item" content="三列" placement="bottom">
+              <ElRadioButton :value="3">
+                <IconifyIcon icon="fluent:text-column-three-24-filled" />
+              </ElRadioButton>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="背景图片" prop="bgImg">
           <UploadImg
             v-model="formData.bgImg"
             height="80px"
             width="100%"
             class="min-w-160px"
+            :show-description="false"
           />
-        </el-form-item>
-        <el-form-item label="文字颜色" prop="textColor">
+        </ElFormItem>
+        <ElFormItem label="文字颜色" prop="textColor">
           <ColorInput v-model="formData.textColor" />
-        </el-form-item>
-        <el-form-item label="按钮背景" prop="button.bgColor">
+        </ElFormItem>
+        <ElFormItem label="按钮背景" prop="button.bgColor">
           <ColorInput v-model="formData.button.bgColor" />
-        </el-form-item>
-        <el-form-item label="按钮文字" prop="button.color">
+        </ElFormItem>
+        <ElFormItem label="按钮文字" prop="button.color">
           <ColorInput v-model="formData.button.color" />
-        </el-form-item>
-        <el-form-item label="间隔" prop="space">
-          <el-slider
+        </ElFormItem>
+        <ElFormItem label="间隔" prop="space">
+          <ElSlider
             v-model="formData.space"
             :max="100"
             :min="0"
@@ -131,9 +144,9 @@ watch(
             input-size="small"
             :show-input-controls="false"
           />
-        </el-form-item>
-      </el-card>
-    </el-form>
+        </ElFormItem>
+      </ElCard>
+    </ElForm>
   </ComponentContainerProperty>
   <!-- 优惠券选择 -->
   <CouponSelect

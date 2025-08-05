@@ -3,6 +3,8 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed, ref, watch } from 'vue';
 
+import { ElImage, ElTooltip } from 'element-plus';
+
 import * as PointActivityApi from '#/api/mall/promotion/point';
 
 import PointTableSelect from './point-table-select.vue';
@@ -123,23 +125,23 @@ const emitActivityChange = () => {
       :key="pointActivity.id"
       class="select-box spu-pic"
     >
-      <el-tooltip :content="pointActivity.spuName">
+      <ElTooltip :content="pointActivity.spuName">
         <div class="relative h-full w-full">
-          <el-image :src="pointActivity.picUrl" class="h-full w-full" />
-          <Icon
+          <ElImage :src="pointActivity.picUrl" class="h-full w-full" />
+          <IconifyIcon
             v-show="!disabled"
             class="del-icon"
             icon="ep:circle-close-filled"
             @click="handleRemoveActivity(index)"
           />
         </div>
-      </el-tooltip>
+      </ElTooltip>
     </div>
-    <el-tooltip v-if="canAdd" content="选择活动">
+    <ElTooltip v-if="canAdd" content="选择活动">
       <div class="select-box" @click="openSeckillActivityTableSelect">
-        <Icon icon="ep:plus" />
+        <IconifyIcon icon="ep:plus" />
       </div>
-    </el-tooltip>
+    </ElTooltip>
   </div>
   <!-- 拼团活动选择对话框（表格形式） -->
   <PointTableSelect

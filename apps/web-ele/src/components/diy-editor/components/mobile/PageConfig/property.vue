@@ -28,7 +28,11 @@ const formData = useVModel(props, 'modelValue', emit);
       <ColorInput v-model="formData!.backgroundColor" />
     </el-form-item>
     <el-form-item label="背景图片" prop="backgroundImage">
-      <UploadImg v-model="formData!.backgroundImage" :limit="1">
+      <UploadImg
+        v-model="formData!.backgroundImage"
+        :limit="1"
+        :show-description="false"
+      >
         <template #tip>建议宽度 750px</template>
       </UploadImg>
     </el-form-item>

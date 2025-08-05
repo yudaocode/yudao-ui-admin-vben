@@ -7,6 +7,8 @@ import { nextTick, ref } from 'vue';
 
 import { getUrlNumberValue } from '@vben/utils';
 
+import { ElScrollbar } from 'element-plus';
+
 import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
 
 import { APP_LINK_GROUP_LIST, APP_LINK_TYPE_ENUM } from './data';
@@ -28,7 +30,6 @@ const dialogVisible = ref(false);
 const open = (link: string) => {
   activeAppLink.value.path = link;
   dialogVisible.value = true;
-
   // 滚动到当前的链接
   const group = APP_LINK_GROUP_LIST.find((group) =>
     group.links.some((linkItem) => {
@@ -127,7 +128,7 @@ const scrollToGroupBtn = (group: string) => {
 
 // 是否为相同的链接（不比较参数，只比较链接）
 const isSameLink = (link1: string, link2: string) => {
-  return link1.split('?')[0] === link2.split('?')[0];
+  return link2 ? link1.split('?')[0] === link2.split('?')[0] : false;
 };
 
 // 详情选择对话框
@@ -154,10 +155,10 @@ const handleProductCategorySelected = (id: number) => {
 };
 </script>
 <template>
-  <Dialog v-model="dialogVisible" title="选择链接" width="65%">
-    <div class="h-500px gap-8px flex">
+  <el-dialog v-model="dialogVisible" title="选择链接" width="65%">
+    <div class="flex h-[500px] gap-2">
       <!-- 左侧分组列表 -->
-      <el-scrollbar
+      <ElScrollbar
         wrap-class="h-full"
         ref="groupScrollbar"
         view-class="flex flex-col"
@@ -165,7 +166,7 @@ const handleProductCategorySelected = (id: number) => {
         <el-button
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
-          class="m-r-16px m-l-0px! justify-start! w-90px"
+          class="ml-0 mr-4 w-[90px] justify-start"
           :class="[{ active: activeGroup === group.name }]"
           ref="groupBtnRefs"
           :text="activeGroup !== group.name"
@@ -174,9 +175,9 @@ const handleProductCategorySelected = (id: number) => {
         >
           {{ group.name }}
         </el-button>
-      </el-scrollbar>
+      </ElScrollbar>
       <!-- 右侧链接列表 -->
-      <el-scrollbar
+      <ElScrollbar
         class="h-full flex-1"
         @scroll="handleScroll"
         ref="linkScrollbar"
@@ -196,7 +197,7 @@ const handleProductCategorySelected = (id: number) => {
             :show-after="300"
           >
             <el-button
-              class="m-b-8px m-r-8px m-l-0px!"
+              class="mb-2 ml-0 mr-2"
               :type="
                 isSameLink(appLink.path, activeAppLink.path)
                   ? 'primary'
@@ -208,16 +209,16 @@ const handleProductCategorySelected = (id: number) => {
             </el-button>
           </el-tooltip>
         </div>
-      </el-scrollbar>
+      </ElScrollbar>
     </div>
     <!-- 底部对话框操作按钮 -->
     <template #footer>
       <el-button type="primary" @click="handleSubmit">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
-  </Dialog>
-  <Dialog v-model="detailSelectDialog.visible" title="" width="50%">
-    <el-form class="min-h-200px">
+  </el-dialog>
+  <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
+    <el-form class="min-h-[200px]">
       <el-form-item
         label="选择分类"
         v-if="
@@ -231,6 +232,10 @@ const handleProductCategorySelected = (id: number) => {
         />
       </el-form-item>
     </el-form>
-  </Dialog>
+  </el-dialog>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.el-button + .el-button) {
+  margin-left: 0 !important;
+}
+</style>
