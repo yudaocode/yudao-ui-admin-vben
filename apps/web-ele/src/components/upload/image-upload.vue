@@ -326,87 +326,91 @@ const triggerEdit = () => {
 
 <style lang="scss" scoped>
 .upload-box {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px dashed var(--el-border-color-darker);
-  position: relative;
   overflow: hidden;
   background: #fafafa;
+  border: 1px dashed var(--el-border-color-darker);
   transition: border-color 0.2s;
 
   .upload {
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent;
+    border: none !important;
   }
 
   .upload-content {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    height: 100%;
     cursor: pointer;
   }
 
   .upload-image-wrapper {
-    width: 100%;
-    height: 100%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
-    border-radius: inherit;
     background: #fff;
+    border-radius: inherit;
   }
 
   .upload-image {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     border-radius: inherit;
-    display: block;
   }
 
   .upload-handle {
     position: absolute;
     top: 0;
     right: 0;
-    width: 100%;
-    height: 100%;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background: rgb(0 0 0 / 50%);
     opacity: 0;
     transition: opacity 0.2s;
-    cursor: pointer;
-    z-index: 2;
+
     &:hover {
       opacity: 1;
     }
+
     .handle-icon {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #fff;
       margin: 0 8px;
       font-size: 18px;
+      color: #fff;
+
       span {
-        font-size: 12px;
         margin-top: 2px;
+        font-size: 12px;
       }
     }
   }
+
   .upload-image-wrapper:hover .upload-handle {
     opacity: 1;
   }

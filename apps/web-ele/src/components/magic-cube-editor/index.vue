@@ -259,11 +259,12 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
   border-collapse: collapse;
 
   .cube {
-    border: 1px solid var(--el-border-color);
-    text-align: center;
-    color: var(--el-text-color-secondary);
-    cursor: pointer;
     box-sizing: border-box;
+    color: var(--el-text-color-secondary);
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid var(--el-border-color);
+
     &.active {
       background: var(--el-color-primary-light-9);
     }
@@ -271,29 +272,29 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
 
   .hot-area {
     position: absolute;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--el-color-primary);
-    background: var(--el-color-primary-light-8);
     color: var(--el-color-primary);
-    box-sizing: border-box;
+    cursor: pointer;
     border-spacing: 0;
     border-collapse: collapse;
-    cursor: pointer;
+    background: var(--el-color-primary-light-8);
+    border: 1px solid var(--el-color-primary);
 
     .btn-delete {
-      z-index: 1;
       position: absolute;
       top: -8px;
       right: -8px;
-      height: 16px;
-      width: 16px;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      width: 16px;
+      height: 16px;
       background-color: #fff;
+      border-radius: 50%;
     }
   }
 }

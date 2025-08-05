@@ -27,9 +27,9 @@ defineOptions({ name: 'VerticalButtonGroup' });
 
 .el-button-group > :deep(.el-button:last-child) {
   border-top-color: var(--el-button-divide-border-color);
+  border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-bottom-left-radius: var(--el-border-radius-base);
-  border-top-left-radius: 0;
 }
 
 .el-button-group :deep(.el-button--primary:not(:first-child, :last-child)) {
