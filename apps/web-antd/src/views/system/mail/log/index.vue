@@ -6,6 +6,8 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
+import { DictTag } from '#/components/dict-tag';
+import { DICT_TYPE } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -62,6 +64,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <DetailModal @success="onRefresh" />
     <Grid table-title="邮件日志列表">
+      <template #userInfo="{ row }">
+        <div v-if="row.userType && row.userId" class="flex items-center gap-1">
+          <DictTag :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
+          <span>({{ row.userId }})</span>
+        </div>
+        <div v-else>-</div>
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

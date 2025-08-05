@@ -88,8 +88,28 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       formatter: 'formatDateTime',
     },
     {
-      field: 'toMail',
-      title: '收件邮箱',
+      field: 'userType',
+      title: '接收用户',
+      width: 150,
+      slots: { default: 'userInfo' },
+    },
+    {
+      field: 'toMails',
+      title: '接收信息',
+      width: 300,
+      formatter: ({ row }) => {
+        const lines: string[] = [];
+        if (row.toMails && row.toMails.length > 0) {
+          lines.push(`收件：${row.toMails.join('、')}`);
+        }
+        if (row.ccMails && row.ccMails.length > 0) {
+          lines.push(`抄送：${row.ccMails.join('、')}`);
+        }
+        if (row.bccMails && row.bccMails.length > 0) {
+          lines.push(`密送：${row.bccMails.join('、')}`);
+        }
+        return lines.join('\n');
+      },
     },
     {
       field: 'templateTitle',
@@ -137,20 +157,47 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       content: (data) => formatDateTime(data?.createTime || '') as string,
     },
     {
-      field: 'toMail',
-      label: '收件邮箱',
-    },
-    {
       field: 'fromMail',
       label: '发送邮箱',
     },
     {
       field: 'userId',
-      label: '用户编号',
+      label: '接收用户',
+      content: (data) => {
+        if (data?.userType && data?.userId) {
+          return h('div', [
+            h(DictTag, {
+              type: DICT_TYPE.USER_TYPE,
+              value: data.userType,
+            }),
+            ` (${data.userId})`,
+          ]);
+        }
+        return '无';
+      },
     },
     {
-      field: 'userType',
-      label: '用户类型',
+      field: 'toMails',
+      label: '接收信息',
+      content: (data) => {
+        const lines: string[] = [];
+        if (data?.toMails && data.toMails.length > 0) {
+          lines.push(`收件：${data.toMails.join('、')}`);
+        }
+        if (data?.ccMails && data.ccMails.length > 0) {
+          lines.push(`抄送：${data.ccMails.join('、')}`);
+        }
+        if (data?.bccMails && data.bccMails.length > 0) {
+          lines.push(`密送：${data.bccMails.join('、')}`);
+        }
+        return h(
+          'div',
+          {
+            style: { whiteSpace: 'pre-line' },
+          },
+          lines.join('\n'),
+        );
+      },
     },
     {
       field: 'templateId',
