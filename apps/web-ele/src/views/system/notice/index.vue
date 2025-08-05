@@ -7,10 +7,10 @@ import type { SystemNoticeApi } from '#/api/system/notice';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -46,14 +46,12 @@ function onEdit(row: SystemNoticeApi.Notice) {
 
 /** 删除公告 */
 async function onDelete(row: SystemNoticeApi.Notice) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.title]),
-    type: 'info',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.title]),
+    fullscreen: true,
   });
   try {
     await deleteNotice(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     onRefresh();
   } finally {
@@ -63,19 +61,10 @@ async function onDelete(row: SystemNoticeApi.Notice) {
 
 /** 批量删除公告 */
 async function onDeleteBatch() {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting'),
-    type: 'info',
-    duration: 0,
-  });
-  try {
-    await deleteNoticeList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该公告吗？');
+  await deleteNoticeList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -147,7 +136,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemNoticeApi.Notice>,

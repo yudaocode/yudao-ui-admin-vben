@@ -66,7 +66,7 @@ function handleUpdateValue(row: any) {
   } else {
     tableData.value[index] = row;
   }
-  emit('update:products', tableData.value);
+  emit('update:products', [...tableData.value]);
 }
 
 /** 表格配置 */

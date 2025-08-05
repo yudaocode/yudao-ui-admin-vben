@@ -7,10 +7,10 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,14 +45,12 @@ function onEdit(row: SystemTenantPackageApi.TenantPackage) {
 
 /** 删除租户套餐 */
 async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.name]),
-    type: 'info',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+    fullscreen: true,
   });
   try {
     await deleteTenantPackage(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
@@ -62,19 +60,10 @@ async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
 
 /** 批量删除租户套餐 */
 async function onDeleteBatch() {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting'),
-    type: 'info',
-    duration: 0,
-  });
-  try {
-    await deleteTenantPackageList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该租户套餐吗？');
+  await deleteTenantPackageList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -127,7 +116,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantPackageApi.TenantPackage>,

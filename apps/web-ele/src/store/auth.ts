@@ -44,16 +44,26 @@ export const useAuthStore = defineStore('auth', () => {
     // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {
+      let loginResult: AuthApi.LoginResult;
       loginLoading.value = true;
-      const { accessToken, refreshToken } =
-        type === 'mobile'
-          ? await smsLogin(params as AuthApi.SmsLoginParams)
-          : type === 'register'
-            ? await register(params as AuthApi.RegisterParams)
-            : // eslint-disable-next-line unicorn/no-nested-ternary
-              type === 'social'
-              ? await socialLogin(params as AuthApi.SocialLoginParams)
-              : await loginApi(params);
+      switch (type) {
+        case 'mobile': {
+          loginResult = await smsLogin(params as AuthApi.SmsLoginParams);
+          break;
+        }
+        case 'register': {
+          loginResult = await register(params as AuthApi.RegisterParams);
+          break;
+        }
+        case 'social': {
+          loginResult = await socialLogin(params as AuthApi.SocialLoginParams);
+          break;
+        }
+        default: {
+          loginResult = await loginApi(params);
+        }
+      }
+      const { accessToken, refreshToken } = loginResult;
 
       // 如果成功获取到 accessToken
       if (accessToken) {
@@ -122,8 +132,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     // 加载
-    let authPermissionInfo: AuthPermissionInfo | null;
-    authPermissionInfo = await getAuthPermissionInfoApi();
+    const authPermissionInfo: AuthPermissionInfo | null =
+      await getAuthPermissionInfoApi();
     // userStore
     userStore.setUserInfo(authPermissionInfo.user);
     userStore.setUserRoles(authPermissionInfo.roles);

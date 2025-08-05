@@ -1,7 +1,21 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Col, Row, Spin } from 'ant-design-vue';
+
+import SummaryCard from './components/SummaryCard.vue';
+import TimeSummaryChart from './components/TimeSummaryChart.vue';
+
+/** ERP首页 */
+defineOptions({ name: 'ErpHome' });
+
+const loading = ref(false); // 加载中
+
+/** 图表组件引用 */
+const saleChartRef = ref();
+const purchaseChartRef = ref();
 </script>
 
 <template>
@@ -12,23 +26,28 @@ import { Button } from 'ant-design-vue';
         url="https://doc.iocoder.cn/erp/build/"
       />
     </template>
-    <Button
-      danger
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3"
-    >
-      该功能支持 Vue3 + element-plus 版本！
-    </Button>
-    <br />
-    <Button
-      type="link"
-      target="_blank"
-      href="https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/erp/home/index.vue"
-    >
-      可参考
-      https://github.com/yudaocode/yudao-ui-admin-vue3/blob/master/src/views/erp/home/index.vue
-      代码，pull request 贡献给我们！
-    </Button>
+
+    <Spin :spinning="loading">
+      <div class="flex flex-col gap-4">
+        <!-- 销售/采购的全局统计 -->
+        <SummaryCard />
+
+        <!-- 销售/采购的时段统计 -->
+        <Row :gutter="16">
+          <!-- 销售统计 -->
+          <Col :md="12" :sm="12" :xs="24">
+            <TimeSummaryChart ref="saleChartRef" title="销售统计" type="sale" />
+          </Col>
+          <!-- 采购统计 -->
+          <Col :md="12" :sm="12" :xs="24">
+            <TimeSummaryChart
+              ref="purchaseChartRef"
+              title="采购统计"
+              type="purchase"
+            />
+          </Col>
+        </Row>
+      </div>
+    </Spin>
   </Page>
 </template>

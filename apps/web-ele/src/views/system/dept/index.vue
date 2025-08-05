@@ -70,8 +70,6 @@ async function onDelete(row: SystemDeptApi.Dept) {
     await deleteDept(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
@@ -114,7 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
     },
     treeConfig: {
       parentField: 'parentId',

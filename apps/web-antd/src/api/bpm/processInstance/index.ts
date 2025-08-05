@@ -40,6 +40,7 @@ export namespace BpmProcessInstanceApi {
     nodeType: BpmNodeTypeEnum;
     startTime?: Date;
     status: number;
+    processInstanceId?: string;
     tasks: ApprovalTaskInfo[];
   }
 

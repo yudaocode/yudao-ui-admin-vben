@@ -7,7 +7,7 @@ import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -60,12 +60,12 @@ function onEdit(row: any) {
 /** 删除字典数据 */
 async function onDelete(row: any) {
   const loadingInstance = ElLoading.service({
-    text: $t('common.processing'),
+    text: $t('ui.actionMessage.deleting', [row.name]),
     fullscreen: true,
   });
   try {
     await deleteDictData(row.id);
-    ElMessage.success($t('common.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
     loadingInstance.close();
@@ -74,17 +74,10 @@ async function onDelete(row: any) {
 
 /** 批量删除字典数据 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
-  });
-  try {
-    await deleteDictDataList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该字典数据吗？');
+  await deleteDictDataList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -134,7 +127,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemDictDataApi.DictData>,

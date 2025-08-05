@@ -7,7 +7,7 @@ import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -46,9 +46,8 @@ async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   });
   try {
     await deleteDataSourceConfig(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    await handleLoadData();
+    onRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -56,18 +55,10 @@ async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
 
 /** 批量删除数据源 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
-  });
-  try {
-    await deleteDataSourceConfigList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    await handleLoadData();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该数据源吗？');
+  await deleteDataSourceConfigList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);

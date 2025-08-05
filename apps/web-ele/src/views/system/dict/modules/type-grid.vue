@@ -7,7 +7,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -55,12 +55,12 @@ function onEdit(row: any) {
 /** 删除字典类型 */
 async function onDelete(row: SystemDictTypeApi.DictType) {
   const loadingInstance = ElLoading.service({
-    text: $t('common.processing'),
+    text: $t('ui.actionMessage.deleting', [row.name]),
     fullscreen: true,
   });
   try {
     await deleteDictType(row.id as number);
-    ElMessage.success($t('common.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
     loadingInstance.close();
@@ -69,17 +69,10 @@ async function onDelete(row: SystemDictTypeApi.DictType) {
 
 /** 批量删除字典类型 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
-  });
-  try {
-    await deleteDictTypeList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该字典类型吗？');
+  await deleteDictTypeList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -132,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isCurrent: true,
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemDictTypeApi.DictType>,

@@ -20,7 +20,9 @@ export namespace SystemMailTemplateApi {
 
   /** 邮件发送信息 */
   export interface MailSendReqVO {
-    mail: string;
+    toMails: string[];
+    ccMails?: string[];
+    bccMails?: string[];
     templateCode: string;
     templateParams: Record<string, any>;
   }

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @gjd：https://t.zsxq.com/pmNb1 AI 对话、绘图底部没对齐
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
@@ -23,6 +24,7 @@ import MessageList from './components/message/MessageList.vue';
 import MessageListEmpty from './components/message/MessageListEmpty.vue';
 import MessageLoading from './components/message/MessageLoading.vue';
 import MessageNewConversation from './components/message/MessageNewConversation.vue';
+
 /** AI 聊天对话 列表 */
 defineOptions({ name: 'AiChat' });
 

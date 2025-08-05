@@ -79,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<AiImageApi.Image>,
@@ -104,7 +104,10 @@ onMounted(async () => {
       </template>
       <template #userId="{ row }">
         <span>
-          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+          {{
+            userList.find((item: SystemUserApi.User) => item.id === row.userId)
+              ?.nickname
+          }}
         </span>
       </template>
       <template #publicStatus="{ row }">

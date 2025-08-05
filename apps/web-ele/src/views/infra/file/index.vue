@@ -7,7 +7,7 @@ import type { InfraFileApi } from '#/api/infra/file';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
@@ -66,7 +66,6 @@ async function onDelete(row: InfraFileApi.File) {
   });
   try {
     await deleteFile(row.id as number);
-    loadingInstance.close();
     ElMessage.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
@@ -78,18 +77,10 @@ async function onDelete(row: InfraFileApi.File) {
 
 /** 批量删除文件 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
-  });
-  try {
-    await deleteFileList(checkedIds.value);
-    loadingInstance.close();
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该文件吗？');
+  await deleteFileList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -138,7 +129,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<InfraFileApi.File>,

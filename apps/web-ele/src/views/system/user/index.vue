@@ -98,17 +98,10 @@ async function onDelete(row: SystemUserApi.User) {
 
 /** 批量删除用户 */
 async function onDeleteBatch() {
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
-  });
-  try {
-    await deleteUserList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+  await confirm('确定要批量删除该用户吗？');
+  await deleteUserList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -180,7 +173,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemUserApi.User>,
@@ -267,7 +260,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   icon: ACTION_ICON.DELETE,
                   auth: ['system:user:delete'],
                   popConfirm: {
-                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    title: $t('ui.actionMessage.deleteConfirm', [row.username]),
                     confirm: onDelete.bind(null, row),
                   },
                 },

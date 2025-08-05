@@ -26,15 +26,13 @@ function onRefresh() {
 /** 删除 OAuth2 令牌 */
 async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', ['令牌']),
+    text: $t('ui.actionMessage.deleting', [row.accessToken]),
     fullscreen: true,
   });
   try {
     await deleteOAuth2Token(row.accessToken);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.accessToken]));
     onRefresh();
-  } catch {
-    // 异常处理
   } finally {
     loadingInstance.close();
   }
@@ -76,7 +74,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemOAuth2TokenApi.OAuth2Token>,

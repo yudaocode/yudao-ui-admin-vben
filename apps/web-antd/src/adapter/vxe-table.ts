@@ -7,12 +7,14 @@ import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
   AsyncComponents,
+  createRequiredValidation,
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
 import {
   erpCountInputFormatter,
   erpNumberFormatter,
+  fenToYuan,
   formatPast2,
   isFunction,
   isString,
@@ -343,11 +345,17 @@ setupVbenVxeTable({
         return `${erpNumberFormatter(cellValue, digits)}元`;
       },
     });
+
+    vxeUI.formats.add('formatFenToYuanAmount', {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}元`;
+      },
+    });
   },
   useVbenForm,
 });
 
-export { useVbenVxeGrid };
+export { createRequiredValidation, useVbenVxeGrid };
 
 const [VxeTable, VxeColumn, VxeToolbar] = AsyncComponents;
 export { VxeColumn, VxeTable, VxeToolbar };

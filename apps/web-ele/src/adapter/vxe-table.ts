@@ -10,7 +10,14 @@ import {
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
-import { isFunction, isString } from '@vben/utils';
+import {
+  erpCountInputFormatter,
+  erpNumberFormatter,
+  fenToYuan,
+  formatPast2,
+  isFunction,
+  isString,
+} from '@vben/utils';
 
 import { ElButton, ElImage, ElPopconfirm, ElSwitch } from 'element-plus';
 
@@ -69,10 +76,16 @@ setupVbenVxeTable({
 
     // 表格配置项可以用 cellRender: { name: 'CellImage' },
     vxeUI.renderer.add('CellImage', {
-      renderTableDefault(_renderOpts, params) {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
         const { column, row } = params;
         const src = row[column.field];
-        return h(ElImage, { src, previewSrcList: [src] });
+        return h(ElImage, {
+          src,
+          previewSrcList: [src],
+          class: props?.class,
+          previewTeleported: true,
+        });
       },
     });
 
@@ -267,19 +280,28 @@ setupVbenVxeTable({
 
     // 添加数量格式化，例如金额
     // TODO @xingyu：建议金额，和数量分开哈；原因是，有些团队希望金额，单独控制；
+    vxeUI.formats.add('formatPast2', {
+      tableCellFormatMethod({ cellValue }) {
+        return formatPast2(cellValue);
+      },
+    });
+
+    // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
-      cellFormatMethod({ cellValue }, digits = 2) {
-        if (cellValue === null || cellValue === undefined) {
-          return '';
-        }
-        if (isString(cellValue)) {
-          cellValue = Number.parseFloat(cellValue);
-        }
-        // 如果非 number，则直接返回空串
-        if (Number.isNaN(cellValue)) {
-          return '';
-        }
-        return cellValue.toFixed(digits);
+      tableCellFormatMethod({ cellValue }) {
+        return erpCountInputFormatter(cellValue);
+      },
+    });
+
+    vxeUI.formats.add('formatAmount2', {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(cellValue, digits)}元`;
+      },
+    });
+
+    vxeUI.formats.add('formatFenToYuanAmount', {
+      tableCellFormatMethod({ cellValue }, digits = 2) {
+        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}元`;
       },
     });
   },

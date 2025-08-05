@@ -8,7 +8,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { onMounted, ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -64,34 +64,25 @@ function onEdit(row: SystemTenantApi.Tenant) {
 
 /** 删除租户 */
 async function onDelete(row: SystemTenantApi.Tenant) {
-  const loading = ElLoading.service({
-    lock: true,
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    background: 'rgba(0, 0, 0, 0.7)',
+    fullscreen: true,
   });
   try {
     await deleteTenant(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
-    loading.close();
+    loadingInstance.close();
   }
 }
 
 /** 批量删除租户 */
 async function onDeleteBatch() {
-  const loading = ElLoading.service({
-    lock: true,
-    text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
-  });
-  try {
-    await deleteTenantList(checkedIds.value);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    loading.close();
-  }
+  await confirm('确定要批量删除该租户吗？');
+  await deleteTenantList(checkedIds.value);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -143,7 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemTenantApi.Tenant>,

@@ -42,7 +42,7 @@ const [Grid] = useVbenVxeGrid({
       },
     },
     toolbarConfig: {
-      refresh: { code: 'query' },
+      refresh: true,
       search: true,
     },
     keepSource: true,

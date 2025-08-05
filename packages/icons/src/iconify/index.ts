@@ -20,8 +20,7 @@ export const MsRefresh = createIconifyIcon('material-symbols:refresh-rounded');
 
 export const TMinimize = createIconifyIcon('tabler:arrows-minimize');
 
-export const AntdDingTalk = createIconifyIcon('ant-design:dingtalk');
-
 export const AntdProfileOutlined = createIconifyIcon(
   'ant-design:profile-outlined',
 );
+export const RiDingding = createIconifyIcon('ri:dingding-fill');

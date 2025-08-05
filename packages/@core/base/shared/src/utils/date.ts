@@ -26,6 +26,15 @@ export function formatDateTime(time: Date | number | string | undefined) {
   return formatDate(time, 'YYYY-MM-DD HH:mm:ss');
 }
 
+export function formatDate2(date: Date, format?: string): string {
+  // 日期不存在，则返回空
+  if (!date) {
+    return '';
+  }
+  // 日期存在，则进行格式化
+  return date ? dayjs(date).format(format ?? 'YYYY-MM-DD HH:mm:ss') : '';
+}
+
 export function isDate(value: any): value is Date {
   return value instanceof Date;
 }

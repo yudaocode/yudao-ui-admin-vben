@@ -69,7 +69,27 @@ const selectedUsers = ref<number[]>();
 
 const rules: Record<string, Rule[]> = {
   name: [{ required: true, message: '流程名称不能为空', trigger: 'blur' }],
-  key: [{ required: true, message: '流程标识不能为空', trigger: 'blur' }],
+  key: [
+    { required: true, message: '流程标识不能为空', trigger: 'blur' },
+    {
+      validator: (_rule: any, value: string, callback: any) => {
+        if (!value) {
+          callback();
+          return;
+        }
+        if (!/^[a-z_][\-\w.$]*$/i.test(value)) {
+          callback(
+            new Error(
+              '只能包含字母、数字、下划线、连字符和点号，且必须以字母或下划线开头',
+            ),
+          );
+          return;
+        }
+        callback();
+      },
+      trigger: 'blur',
+    },
+  ],
   category: [{ required: true, message: '流程分类不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '流程类型不能为空', trigger: 'blur' }],
   visible: [{ required: true, message: '是否可见不能为空', trigger: 'blur' }],

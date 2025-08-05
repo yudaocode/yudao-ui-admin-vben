@@ -47,17 +47,31 @@ const [Modal, modalApi] = useVbenModal({
         <ElDescriptionsItem label="创建时间">
           {{ formatDateTime(formData?.createTime || '') }}
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="收件邮箱">
-          {{ formData?.toMail }}
-        </ElDescriptionsItem>
         <ElDescriptionsItem label="发送邮箱">
           {{ formData?.fromMail }}
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="用户编号">
-          {{ formData?.userId }}
+        <ElDescriptionsItem label="接收用户">
+          <div
+            v-if="formData?.userType && formData?.userId"
+            class="flex items-center gap-1"
+          >
+            <DictTag :type="DICT_TYPE.USER_TYPE" :value="formData.userType" />
+            <span>({{ formData.userId }})</span>
+          </div>
+          <div v-else>无</div>
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="用户类型">
-          {{ formData?.userType }}
+        <ElDescriptionsItem label="接收信息" :span="2">
+          <div v-if="formData">
+            <div v-if="formData.toMails && formData.toMails.length > 0">
+              收件：{{ formData.toMails.join('、') }}
+            </div>
+            <div v-if="formData.ccMails && formData.ccMails.length > 0">
+              抄送：{{ formData.ccMails.join('、') }}
+            </div>
+            <div v-if="formData.bccMails && formData.bccMails.length > 0">
+              密送：{{ formData.bccMails.join('、') }}
+            </div>
+          </div>
         </ElDescriptionsItem>
         <ElDescriptionsItem label="模板编号">
           {{ formData?.templateId }}
