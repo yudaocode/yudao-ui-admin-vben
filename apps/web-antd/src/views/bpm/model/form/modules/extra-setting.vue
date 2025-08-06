@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 
 import { CircleHelp } from '@vben/icons';
 
@@ -146,7 +146,7 @@ function handleTaskAfterTriggerEnableChange(val: boolean | number | string) {
     : null;
 }
 
-/** 表单选项 */
+/** 表单字段 */
 const formField = ref<Array<{ field: string; title: string }>>([]);
 const formFieldOptions4Title = computed(() => {
   const cloneFormField = formField.value.map((item) => {
@@ -178,6 +178,9 @@ const formFieldOptions4Summary = computed(() => {
     };
   });
 });
+const unParsedFormFields = ref<string[]>([]); // 未解析的表单字段
+// 暴露给子组件 HttpRequestSetting 使用
+provide('formFields', unParsedFormFields);
 
 /** 兼容以前未配置更多设置的流程 */
 function initData() {
@@ -230,6 +233,7 @@ watch(
       const data = await FormApi.getFormDetail(newFormId);
       const result: Array<{ field: string; title: string }> = [];
       if (data.fields) {
+        unParsedFormFields.value = data.fields;
         data.fields.forEach((fieldStr: string) => {
           parseFormFields(JSON.parse(fieldStr), result);
         });
@@ -237,6 +241,7 @@ watch(
       formField.value = result;
     } else {
       formField.value = [];
+      unParsedFormFields.value = [];
     }
   },
   { immediate: true },

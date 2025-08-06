@@ -979,11 +979,11 @@ export enum BpmTaskStatusEnum {
    * 审批通过
    */
   APPROVE = 2,
-
   /**
    * 审批通过中
    */
   APPROVING = 7,
+
   /**
    * 已取消
    */
@@ -992,7 +992,6 @@ export enum BpmTaskStatusEnum {
    * 未开始
    */
   NOT_START = -1,
-
   /**
    * 审批不通过
    */
@@ -1002,10 +1001,15 @@ export enum BpmTaskStatusEnum {
    * 已退回
    */
   RETURN = 5,
+
   /**
    * 审批中
    */
   RUNNING = 1,
+  /**
+   * 跳过
+   */
+  SKIP = -2,
   /**
    * 待审批
    */
