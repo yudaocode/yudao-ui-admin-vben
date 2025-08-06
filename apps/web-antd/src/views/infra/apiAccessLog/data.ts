@@ -5,7 +5,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { formatDateTime, isObject } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
@@ -192,10 +192,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'requestParams',
       label: '请求参数',
       content: (data) => {
-        return h(JsonViewer, {
-          value: data.requestParams,
-          previewMode: true,
-        });
+        if (isObject(data.requestParams)) {
+          return h(JsonViewer, {
+            value: data.requestParams,
+            previewMode: true,
+          });
+        }
+        return data.requestParams;
       },
     },
     {
