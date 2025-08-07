@@ -48,6 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
           } as SystemMenuApi.Menu);
           return handleTree(data);
         },
+        checkStrictly: true,
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
