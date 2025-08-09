@@ -96,6 +96,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteRoleList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

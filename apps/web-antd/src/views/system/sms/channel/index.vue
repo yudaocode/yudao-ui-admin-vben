@@ -87,6 +87,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteSmsChannelList(checkedIds.value);
+    checkedIds.value = [];
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', ['短信渠道']),
       key: 'action_key_msg',

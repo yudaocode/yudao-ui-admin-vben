@@ -88,6 +88,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteDictTypeList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

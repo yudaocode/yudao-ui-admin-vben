@@ -130,6 +130,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteJobList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
