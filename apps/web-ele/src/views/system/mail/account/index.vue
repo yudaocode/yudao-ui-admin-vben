@@ -62,6 +62,7 @@ async function onDelete(row: SystemMailAccountApi.MailAccount) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该邮箱账号吗？');
   await deleteMailAccountList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

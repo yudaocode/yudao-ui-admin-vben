@@ -81,6 +81,7 @@ async function onDeleteBatch() {
   });
   try {
     await deleteDemo03CourseList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {

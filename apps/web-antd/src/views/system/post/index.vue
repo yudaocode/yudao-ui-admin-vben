@@ -83,6 +83,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deletePostList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

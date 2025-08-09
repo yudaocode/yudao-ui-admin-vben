@@ -1,5 +1,6 @@
-import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { PropertyAndValues } from './model';
+
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 /**
  * 获得商品的规格列表 - 商品相关的公共函数

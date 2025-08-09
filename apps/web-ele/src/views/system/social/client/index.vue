@@ -62,6 +62,7 @@ async function onDelete(row: SystemSocialClientApi.SocialClient) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该社交客户端吗？');
   await deleteSocialClientList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

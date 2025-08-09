@@ -71,6 +71,7 @@ async function onDelete(row: SystemDictTypeApi.DictType) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该字典类型吗？');
   await deleteDictTypeList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

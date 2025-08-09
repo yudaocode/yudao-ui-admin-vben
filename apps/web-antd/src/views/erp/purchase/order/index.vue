@@ -91,6 +91,7 @@ async function handleBatchDelete() {
   });
   try {
     await deletePurchaseOrderList(checkedIds.value);
+    checkedIds.value = [];
     message.success({
       content: $t('ui.actionMessage.deleteSuccess'),
       key: 'action_process_msg',

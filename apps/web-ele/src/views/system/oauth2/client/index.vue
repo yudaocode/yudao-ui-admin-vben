@@ -62,6 +62,7 @@ async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该 OAuth2 客户端吗？');
   await deleteOAuth2ClientList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

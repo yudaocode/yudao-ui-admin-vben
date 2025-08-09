@@ -80,6 +80,7 @@ async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该短信模板吗？');
   await deleteSmsTemplateList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

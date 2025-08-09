@@ -118,6 +118,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteFileConfigList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

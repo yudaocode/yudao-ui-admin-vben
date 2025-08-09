@@ -124,6 +124,7 @@ async function onDeleteBatch() {
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {
