@@ -133,6 +133,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);
+    checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {

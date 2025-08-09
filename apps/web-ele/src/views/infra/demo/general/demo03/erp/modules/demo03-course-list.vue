@@ -77,6 +77,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteDemo03CourseList(checkedIds.value);
+    checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
   } finally {

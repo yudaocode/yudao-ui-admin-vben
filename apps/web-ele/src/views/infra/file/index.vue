@@ -79,6 +79,7 @@ async function onDelete(row: InfraFileApi.File) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该文件吗？');
   await deleteFileList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

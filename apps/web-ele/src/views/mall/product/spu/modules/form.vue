@@ -1,16 +1,19 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
-import { onMounted, ref, unref } from 'vue';
-import { cloneDeep } from '@vben/utils';
 import type { MallSpuApi } from '#/api/mall/product/spu';
-import { useRouter, useRoute } from 'vue-router';
-import { formatToFraction, convertToInteger } from '@vben/utils';
-import * as ProductSpuApi from '#/api/mall/product/spu';
+
+import { onMounted, ref, unref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+import { Page } from '@vben/common-ui';
+import { cloneDeep, convertToInteger, formatToFraction } from '@vben/utils';
+
 import { ElMessage } from 'element-plus';
 
-import InfoForm from '../components/info-form.vue';
+import * as ProductSpuApi from '#/api/mall/product/spu';
+
 import DeliveryForm from '../components/delivery-form.vue';
 import DescriptionForm from '../components/description-form.vue';
+import InfoForm from '../components/info-form.vue';
 import OtherForm from '../components/other-form.vue';
 import SkuForm from '../components/sku-form.vue';
 
@@ -115,12 +118,12 @@ const submitForm = async () => {
     // 校验都通过后提交表单
     const data = deepCopyFormData as MallSpuApi.Spu;
     const id = params.id as unknown as number;
-    if (!id) {
-      await ProductSpuApi.createSpu(data);
-      ElMessage.success('创建成功');
-    } else {
+    if (id) {
       await ProductSpuApi.updateSpu(data);
       ElMessage.success('更新成功');
+    } else {
+      await ProductSpuApi.createSpu(data);
+      ElMessage.success('创建成功');
     }
     close();
   } finally {
@@ -144,43 +147,43 @@ onMounted(async () => {
     <ElTabs v-model="activeTab">
       <ElTabPane label="基础设置" name="info">
         <InfoForm
-          :propFormData="formData"
-          v-model:activeName="activeName"
+          :prop-form-data="formData"
+          v-model:active-name="activeName"
           ref="infoRef"
         />
       </ElTabPane>
       <ElTabPane label="价格库存" name="sku">
         <SkuForm
-          :propFormData="formData"
-          v-model:activeName="activeName"
+          :prop-form-data="formData"
+          v-model:active-name="activeName"
           ref="skuRef"
         />
       </ElTabPane>
       <ElTabPane label="物流设置" name="delivery">
         <DeliveryForm
-          :propFormData="formData"
-          v-model:activeName="activeName"
+          :prop-form-data="formData"
+          v-model:active-name="activeName"
           ref="deliveryRef"
         />
       </ElTabPane>
       <ElTabPane label="商品详情" name="description">
         <DescriptionForm
-          :propFormData="formData"
-          v-model:activeName="activeName"
+          :prop-form-data="formData"
+          v-model:active-name="activeName"
           ref="descriptionRef"
         />
       </ElTabPane>
       <ElTabPane label="其它设置" name="other">
         <OtherForm
-          :propFormData="formData"
-          v-model:activeName="activeName"
+          :prop-form-data="formData"
+          v-model:active-name="activeName"
           ref="otherRef"
         />
       </ElTabPane>
     </ElTabs>
-    <ElButton type="primary" :loading="formLoading" @click="submitForm"
-      >保存</ElButton
-    >
+    <ElButton type="primary" :loading="formLoading" @click="submitForm">
+      保存
+    </ElButton>
     <ElButton @click="close">返回</ElButton>
   </Page>
 </template>

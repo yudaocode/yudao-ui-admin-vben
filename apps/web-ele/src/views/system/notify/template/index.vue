@@ -87,6 +87,7 @@ async function onDeleteBatch() {
   });
   try {
     await deleteNotifyTemplateList(checkedIds.value);
+    checkedIds.value = [];
     loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();

@@ -1,16 +1,22 @@
 <script lang="ts" setup>
-import { useVbenForm } from '#/adapter/form';
-import { watch, ref } from 'vue';
-import { ElMessage, ElSpace } from 'element-plus';
-import SkuList from './sku-list.vue';
+import { ref, watch } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import ProductPropertyAddForm from './product-property-add-form.vue';
+
+import { ElMessage, ElSpace } from 'element-plus';
+
+import { useVbenForm } from '#/adapter/form';
+
 import { getPropertyList } from './data';
 import ProductAttributes from './product-attributes.vue';
+import ProductPropertyAddForm from './product-property-add-form.vue';
+import SkuList from './sku-list.vue';
 
 const props = defineProps<{
   propFormData: Object;
 }>();
+
+const emit = defineEmits(['update:activeName']);
 
 interface PropertyAndValues {
   id: number;
@@ -71,7 +77,6 @@ watch(
   },
 );
 
-const emit = defineEmits(['update:activeName']);
 const validate = async () => {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -80,10 +85,10 @@ const validate = async () => {
   try {
     // 校验通过更新数据
     Object.assign(props.propFormData, formApi.getValues());
-  } catch (e) {
+  } catch (error) {
     ElMessage.error('【库存价格】不完善，请填写相关信息');
     emit('update:activeName', 'sku');
-    throw e; // 目的截断之后的校验
+    throw error; // 目的截断之后的校验
   }
 };
 defineExpose({ validate });
@@ -214,9 +219,9 @@ watch(
       </template>
       <template #specTypeItem>
         <ElSpace direction="vertical" alignment="flex-start">
-          <ElButton type="primary" @click="productPropertyAddFormApi.open()"
-            >添加属性</ElButton
-          >
+          <ElButton type="primary" @click="productPropertyAddFormApi.open()">
+            添加属性
+          </ElButton>
           <ProductAttributes
             :property-list="propertyList"
             @success="generateSkus"
@@ -238,6 +243,6 @@ watch(
         />
       </template>
     </Form>
-    <ProductPropertyAddFormModal :propertyList="propertyList" />
+    <ProductPropertyAddFormModal :property-list="propertyList" />
   </Page>
 </template>

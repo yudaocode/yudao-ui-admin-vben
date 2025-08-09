@@ -76,6 +76,7 @@ async function onDelete(row: any) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该字典数据吗？');
   await deleteDictDataList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

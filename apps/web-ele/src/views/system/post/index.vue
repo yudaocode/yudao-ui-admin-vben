@@ -69,6 +69,7 @@ async function onDelete(row: SystemPostApi.Post) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该岗位吗？');
   await deletePostList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

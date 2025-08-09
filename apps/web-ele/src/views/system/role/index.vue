@@ -83,6 +83,7 @@ async function onDelete(row: SystemRoleApi.Role) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该角色吗？');
   await deleteRoleList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }
