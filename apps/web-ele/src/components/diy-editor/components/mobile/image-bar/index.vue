@@ -2,6 +2,7 @@
 import type { ImageBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
+
 import { ElImage } from 'element-plus';
 
 /** 图片展示 */

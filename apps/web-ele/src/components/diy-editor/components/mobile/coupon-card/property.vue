@@ -21,8 +21,8 @@ import {
 
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 import ColorInput from '#/components/color-input/index.vue';
-import UploadImg from '#/components/upload/image-upload.vue';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 import {
   CouponTemplateTakeTypeEnum,
   PromotionDiscountTypeEnum,

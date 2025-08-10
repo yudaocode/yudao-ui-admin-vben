@@ -3,6 +3,7 @@ import type { MenuSwiperProperty } from './config';
 
 import { cloneDeep } from '@vben/utils';
 
+import { useVModel } from '@vueuse/core';
 import {
   ElCard,
   ElForm,
@@ -12,15 +13,14 @@ import {
   ElSwitch,
 } from 'element-plus';
 
-import { useVModel } from '@vueuse/core';
-
-import { EMPTY_MENU_SWIPER_ITEM_PROPERTY } from './config';
-import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import UploadImg from '#/components/upload/image-upload.vue';
-import Draggable from '#/components/draggable/index.vue';
-import InputWithColor from '#/components/input-with-color/index.vue';
 import AppLinkInput from '#/components/app-link-input/index.vue';
 import ColorInput from '#/components/color-input/index.vue';
+import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
+import Draggable from '#/components/draggable/index.vue';
+import InputWithColor from '#/components/input-with-color/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
+
+import { EMPTY_MENU_SWIPER_ITEM_PROPERTY } from './config';
 
 /** 菜单导航属性面板 */
 defineOptions({ name: 'MenuSwiperProperty' });

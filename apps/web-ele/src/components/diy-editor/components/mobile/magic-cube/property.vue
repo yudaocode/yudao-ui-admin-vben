@@ -5,10 +5,11 @@ import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElSlider, ElText } from 'element-plus';
-import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import UploadImg from '#/components/upload/image-upload.vue';
+
 import AppLinkInput from '#/components/app-link-input/index.vue';
+import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import MagicCubeEditor from '#/components/magic-cube-editor/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 /** 广告魔方属性面板 */
 defineOptions({ name: 'MagicCubeProperty' });

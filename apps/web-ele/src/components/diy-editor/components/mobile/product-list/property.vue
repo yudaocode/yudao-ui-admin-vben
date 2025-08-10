@@ -3,19 +3,19 @@ import type { ProductListProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
 import {
+  ElCard,
   ElForm,
   ElFormItem,
-  ElCard,
-  ElRadioGroup,
   ElRadioButton,
+  ElRadioGroup,
   ElSlider,
   ElSwitch,
   ElTooltip,
 } from 'element-plus';
+
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import ColorInput from '#/components/input-with-color/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-
 import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
 // 商品栏属性面板
@@ -67,7 +67,7 @@ const formData = useVModel(props, 'modelValue', emit);
       </ElCard>
       <ElCard header="角标" class="property-group" shadow="never">
         <ElFormItem label="角标" prop="badge.show">
-          <el-switch v-model="formData.badge.show" />
+          <ElSwitch v-model="formData.badge.show" />
         </ElFormItem>
         <ElFormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
           <UploadImg

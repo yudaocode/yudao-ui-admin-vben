@@ -4,7 +4,8 @@ import type { HotZoneProperty } from './config';
 import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { ElForm, ElFormItem, ElText, ElButton } from 'element-plus';
+import { ElButton, ElForm, ElFormItem, ElText } from 'element-plus';
+
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 

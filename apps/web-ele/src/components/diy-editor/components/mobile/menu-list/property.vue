@@ -4,12 +4,13 @@ import type { MenuListProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElText } from 'element-plus';
 
-import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
+import AppLinkInput from '#/components/app-link-input/index.vue';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import Draggable from '#/components/draggable/index.vue';
-import UploadImg from '#/components/upload/image-upload.vue';
 import InputWithColor from '#/components/input-with-color/index.vue';
-import AppLinkInput from '#/components/app-link-input/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
+
+import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
 
 /** 列表导航属性面板 */
 defineOptions({ name: 'MenuListProperty' });

@@ -2,6 +2,7 @@
 import type { UserWalletProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
+
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 
 // 用户资产属性面板

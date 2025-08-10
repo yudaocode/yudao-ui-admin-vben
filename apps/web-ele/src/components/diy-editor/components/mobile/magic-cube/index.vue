@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { MagicCubeProperty } from './config';
 
-import { ElImage } from 'element-plus';
+import { computed } from 'vue';
+
 import { IconifyIcon } from '@vben/icons';
 
-import { computed } from 'vue';
+import { ElImage } from 'element-plus';
 
 /** 广告魔方 */
 defineOptions({ name: 'MagicCube' });

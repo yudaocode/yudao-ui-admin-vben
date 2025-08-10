@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { TitleBarProperty } from './config';
 
-import { ElImage } from 'element-plus';
 import { IconifyIcon } from '@vben/icons';
+
+import { ElImage } from 'element-plus';
 
 /** 标题栏 */
 defineOptions({ name: 'TitleBar' });

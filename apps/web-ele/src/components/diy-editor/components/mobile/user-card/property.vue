@@ -2,6 +2,7 @@
 import type { UserCardProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
+
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 
 // 用户卡片属性面板

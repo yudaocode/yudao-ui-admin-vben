@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { NoticeBarProperty } from './config';
 
-import { ElCarousel, ElCarouselItem, ElImage, ElDivider } from 'element-plus';
 import { IconifyIcon } from '@vben/icons';
+
+import { ElCarousel, ElCarouselItem, ElDivider, ElImage } from 'element-plus';
 
 /** 公告栏 */
 defineOptions({ name: 'NoticeBar' });
@@ -12,7 +13,7 @@ defineProps<{ property: NoticeBarProperty }>();
 
 <template>
   <div
-    class="py-1 text-xs flex items-center"
+    class="flex items-center py-1 text-xs"
     :style="{
       backgroundColor: property.backgroundColor,
       color: property.textColor,
@@ -24,10 +25,10 @@ defineProps<{ property: NoticeBarProperty }>();
       height="24px"
       direction="vertical"
       :autoplay="true"
-      class="pr-2 flex-1"
+      class="flex-1 pr-2"
     >
       <ElCarouselItem v-for="(item, index) in property.contents" :key="index">
-        <div class="h-6 leading-6 truncate">{{ item.text }}</div>
+        <div class="h-6 truncate leading-6">{{ item.text }}</div>
       </ElCarouselItem>
     </ElCarousel>
     <IconifyIcon icon="ep:arrow-right" />

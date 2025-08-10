@@ -56,37 +56,37 @@ const formData = useVModel(props, 'modelValue', emit);
           </ElRadioGroup>
         </ElFormItem>
         <ElFormItem label="商品名称" prop="fields.name.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.name.color" />
             <ElCheckbox v-model="formData.fields.name.show" />
           </div>
         </ElFormItem>
         <ElFormItem label="商品简介" prop="fields.introduction.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.introduction.color" />
             <ElCheckbox v-model="formData.fields.introduction.show" />
           </div>
         </ElFormItem>
         <ElFormItem label="商品价格" prop="fields.price.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.price.color" />
             <ElCheckbox v-model="formData.fields.price.show" />
           </div>
         </ElFormItem>
         <ElFormItem label="市场价" prop="fields.marketPrice.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.marketPrice.color" />
             <ElCheckbox v-model="formData.fields.marketPrice.show" />
           </div>
         </ElFormItem>
         <ElFormItem label="商品销量" prop="fields.salesCount.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.salesCount.color" />
             <ElCheckbox v-model="formData.fields.salesCount.show" />
           </div>
         </ElFormItem>
         <ElFormItem label="商品库存" prop="fields.stock.show">
-          <div class="gap-2 flex">
+          <div class="flex gap-2">
             <ColorInput v-model="formData.fields.stock.color" />
             <ElCheckbox v-model="formData.fields.stock.show" />
           </div>

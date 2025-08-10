@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { UserCardProperty } from './config';
 
-import { ElAvatar } from 'element-plus';
 import { IconifyIcon } from '@vben/icons';
+
+import { ElAvatar } from 'element-plus';
 
 /** 用户卡片 */
 defineOptions({ name: 'UserCard' });

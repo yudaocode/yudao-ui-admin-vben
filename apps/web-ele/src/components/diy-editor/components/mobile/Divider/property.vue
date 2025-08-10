@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { DividerProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
 import {
   ElForm,
@@ -10,7 +12,6 @@ import {
   ElSlider,
   ElTooltip,
 } from 'element-plus';
-import { IconifyIcon } from '@vben/icons';
 
 import ColorInput from '#/components/input-with-color/index.vue';
 

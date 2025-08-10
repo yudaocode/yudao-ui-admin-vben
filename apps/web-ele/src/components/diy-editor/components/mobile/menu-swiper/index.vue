@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { MenuSwiperItemProperty, MenuSwiperProperty } from './config';
 
-import { ElCarousel, ElCarouselItem, ElImage } from 'element-plus';
 import { ref, watch } from 'vue';
+
+import { ElCarousel, ElCarouselItem, ElImage } from 'element-plus';
 
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });

@@ -3,6 +3,7 @@ import type { PageConfigProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElInput } from 'element-plus';
+
 import ColorInput from '#/components/input-with-color/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 

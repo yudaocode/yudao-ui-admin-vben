@@ -6,6 +6,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { onMounted, ref, watch } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
+
 import { ElImage, ElScrollbar } from 'element-plus';
 
 import * as ProductSpuApi from '#/api/mall/product/spu';

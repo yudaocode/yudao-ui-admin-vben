@@ -6,12 +6,12 @@ import type {
 
 import { computed } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { ElButton, ElTooltip } from 'element-plus';
 
 import { components } from '#/components/diy-editor/components/mobile';
 import VerticalButtonGroup from '#/components/vertical-button-group/index.vue';
-
-import { IconifyIcon } from '@vben/icons';
 
 /**
  * 组件容器：目前在中间部分

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { PopoverProperty } from './config';
 
-import { ElImage } from 'element-plus';
+import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { ref } from 'vue';
+import { ElImage } from 'element-plus';
 
 /** 弹窗广告 */
 defineOptions({ name: 'Popover' });

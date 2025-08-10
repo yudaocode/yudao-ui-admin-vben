@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import type { TitleBarProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
 import {
+  ElCard,
+  ElCheckbox,
   ElForm,
   ElFormItem,
+  ElInput,
   ElRadioButton,
   ElRadioGroup,
   ElSlider,
   ElTooltip,
-  ElInput,
-  ElCheckbox,
-  ElCard,
 } from 'element-plus';
-import { IconifyIcon } from '@vben/icons';
 
-import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import UploadImg from '#/components/upload/image-upload.vue';
-import InputWithColor from '#/components/input-with-color/index.vue';
 import AppLinkInput from '#/components/app-link-input/index.vue';
+import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
+import InputWithColor from '#/components/input-with-color/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
 
 // 导航栏属性面板
 defineOptions({ name: 'TitleBarProperty' });
@@ -59,7 +60,7 @@ const rules = {};
           </ElRadioGroup>
         </ElFormItem>
         <ElFormItem label="偏移量" prop="marginLeft" label-width="70px">
-          <el-slider
+          <ElSlider
             v-model="formData.marginLeft"
             :max="100"
             :min="0"
@@ -68,7 +69,7 @@ const rules = {};
           />
         </ElFormItem>
         <ElFormItem label="高度" prop="height" label-width="70px">
-          <el-slider
+          <ElSlider
             v-model="formData.height"
             :max="200"
             :min="20"
