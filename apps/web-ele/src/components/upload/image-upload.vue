@@ -13,7 +13,7 @@ import type { AxiosProgressEvent } from '#/api/infra/file';
 
 import { nextTick, ref, toRefs, watch } from 'vue';
 
-import { CloudUpload } from '@vben/icons';
+import { Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
 
@@ -313,8 +313,7 @@ const triggerEdit = () => {
         }"
       >
         <div class="upload-content flex flex-col items-center justify-center">
-          <CloudUpload />
-          <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
+          <Plus />
         </div>
       </ElUpload>
     </template>

@@ -2,6 +2,18 @@
 import type { DividerProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElForm,
+  ElFormItem,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSlider,
+  ElTooltip,
+} from 'element-plus';
+import { IconifyIcon } from '@vben/icons';
+
+import ColorInput from '#/components/input-with-color/index.vue';
+
 // 导航栏属性面板
 defineOptions({ name: 'DividerProperty' });
 const props = defineProps<{ modelValue: DividerProperty }>();
@@ -34,60 +46,60 @@ const BORDER_TYPES = [
 </script>
 
 <template>
-  <el-form label-width="80px" :model="formData">
-    <el-form-item label="高度" prop="height">
-      <el-slider
+  <ElForm label-width="80px" :model="formData">
+    <ElFormItem label="高度" prop="height">
+      <ElSlider
         v-model="formData.height"
         :min="1"
         :max="100"
         show-input
         input-size="small"
       />
-    </el-form-item>
-    <el-form-item label="选择样式" prop="borderType">
-      <el-radio-group v-model="formData!.borderType">
-        <el-tooltip
+    </ElFormItem>
+    <ElFormItem label="选择样式" prop="borderType">
+      <ElRadioGroup v-model="formData!.borderType">
+        <ElTooltip
           placement="top"
           v-for="(item, index) in BORDER_TYPES"
           :key="index"
           :content="item.text"
         >
-          <el-radio-button :value="item.type">
-            <Icon :icon="item.icon" />
-          </el-radio-button>
-        </el-tooltip>
-      </el-radio-group>
-    </el-form-item>
+          <ElRadioButton :value="item.type">
+            <IconifyIcon :icon="item.icon" />
+          </ElRadioButton>
+        </ElTooltip>
+      </ElRadioGroup>
+    </ElFormItem>
     <template v-if="formData.borderType !== 'none'">
-      <el-form-item label="线宽" prop="lineWidth">
-        <el-slider
+      <ElFormItem label="线宽" prop="lineWidth">
+        <ElSlider
           v-model="formData.lineWidth"
           :min="1"
           :max="30"
           show-input
           input-size="small"
         />
-      </el-form-item>
-      <el-form-item label="左右边距" prop="paddingType">
-        <el-radio-group v-model="formData!.paddingType">
-          <el-tooltip content="无边距" placement="top">
-            <el-radio-button value="none">
-              <Icon icon="tabler:box-padding" />
-            </el-radio-button>
-          </el-tooltip>
-          <el-tooltip content="左右留边" placement="top">
-            <el-radio-button value="horizontal">
-              <Icon icon="vaadin:padding" />
-            </el-radio-button>
-          </el-tooltip>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="颜色">
+      </ElFormItem>
+      <ElFormItem label="左右边距" prop="paddingType">
+        <ElRadioGroup v-model="formData!.paddingType">
+          <ElTooltip content="无边距" placement="top">
+            <ElRadioButton value="none">
+              <IconifyIcon icon="tabler:box-padding" />
+            </ElRadioButton>
+          </ElTooltip>
+          <ElTooltip content="左右留边" placement="top">
+            <ElRadioButton value="horizontal">
+              <IconifyIcon icon="vaadin:padding" />
+            </ElRadioButton>
+          </ElTooltip>
+        </ElRadioGroup>
+      </ElFormItem>
+      <ElFormItem label="颜色">
         <!-- 分割线颜色 -->
         <ColorInput v-model="formData.lineColor" />
-      </el-form-item>
+      </ElFormItem>
     </template>
-  </el-form>
+  </ElForm>
 </template>
 
 <style scoped lang="scss"></style>

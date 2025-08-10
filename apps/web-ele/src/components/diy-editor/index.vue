@@ -25,12 +25,12 @@ import {
   componentConfigs,
   components,
 } from '#/components/diy-editor/components/mobile';
-import { component as PAGE_CONFIG_COMPONENT } from '#/components/diy-editor/components/mobile/PageConfig/config';
+import { component as PAGE_CONFIG_COMPONENT } from '#/components/diy-editor/components/mobile/page-config/config';
 
-import ComponentContainer from './components/ComponentContainer.vue';
-import ComponentLibrary from './components/ComponentLibrary.vue';
-import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/NavigationBar/config';
-import { component as TAB_BAR_COMPONENT } from './components/mobile/TabBar/config';
+import ComponentContainer from './components/component-container.vue';
+import ComponentLibrary from './components/component-library.vue';
+import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
+import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
 
 /** 页面装修详情页 */
 defineOptions({

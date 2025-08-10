@@ -17,7 +17,7 @@ import {
 } from 'element-plus';
 
 import AppLinkInput from '#/components/app-link-input/index.vue';
-import ComponentContainerProperty from '#/components/diy-editor/components/ComponentContainerProperty.vue';
+import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import Draggable from '#/components/draggable/index.vue';
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -76,7 +76,7 @@ const formData = useVModel(props, 'modelValue', emit);
             <ElFormItem
               label="类型"
               prop="type"
-              class="m-b-8px!"
+              class="mb-2"
               label-width="40px"
             >
               <ElRadioGroup v-model="element.type">
@@ -86,7 +86,7 @@ const formData = useVModel(props, 'modelValue', emit);
             </ElFormItem>
             <ElFormItem
               label="图片"
-              class="m-b-8px!"
+              class="mb-2"
               label-width="40px"
               v-if="element.type === 'img'"
             >
@@ -95,32 +95,32 @@ const formData = useVModel(props, 'modelValue', emit);
                 draggable="false"
                 height="80px"
                 width="100%"
-                class="min-w-80px"
+                class="min-w-[80px]"
                 :show-description="false"
               />
             </ElFormItem>
             <template v-else>
-              <ElFormItem label="封面" class="m-b-8px!" label-width="40px">
+              <ElFormItem label="封面" class="mb-2" label-width="40px">
                 <UploadImg
                   v-model="element.imgUrl"
                   draggable="false"
                   :show-description="false"
                   height="80px"
                   width="100%"
-                  class="min-w-80px"
+                  class="min-w-[80px]"
                 />
               </ElFormItem>
-              <ElFormItem label="视频" class="m-b-8px!" label-width="40px">
+              <ElFormItem label="视频" class="mb-2" label-width="40px">
                 <UploadFile
                   v-model="element.videoUrl"
                   :file-type="['mp4']"
                   :limit="1"
                   :file-size="100"
-                  class="min-w-80px"
+                  class="min-w-[80px]"
                 />
               </ElFormItem>
             </template>
-            <ElFormItem label="链接" class="m-b-8px!" label-width="40px">
+            <ElFormItem label="链接" class="mb-2" label-width="40px">
               <AppLinkInput v-model="element.url" />
             </ElFormItem>
           </template>

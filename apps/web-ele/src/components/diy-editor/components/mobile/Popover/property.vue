@@ -2,6 +2,16 @@
 import type { PopoverProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
+import {
+  ElForm,
+  ElFormItem,
+  ElRadio,
+  ElRadioGroup,
+  ElTooltip,
+} from 'element-plus';
+import Draggable from '#/components/draggable/index.vue';
+import UploadImg from '#/components/upload/image-upload.vue';
+import AppLinkInput from '#/components/app-link-input/index.vue';
 
 // 弹窗广告属性面板
 defineOptions({ name: 'PopoverProperty' });
@@ -12,36 +22,36 @@ const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <el-form label-width="80px" :model="formData">
+  <ElForm label-width="80px" :model="formData">
     <Draggable v-model="formData.list" :empty-item="{ showType: 'once' }">
       <template #default="{ element, index }">
-        <el-form-item label="图片" :prop="`list[${index}].imgUrl`">
+        <ElFormItem label="图片" :prop="`list[${index}].imgUrl`">
           <UploadImg
             v-model="element.imgUrl"
             height="56px"
             width="56px"
             :show-description="false"
           />
-        </el-form-item>
-        <el-form-item label="跳转链接" :prop="`list[${index}].url`">
+        </ElFormItem>
+        <ElFormItem label="跳转链接" :prop="`list[${index}].url`">
           <AppLinkInput v-model="element.url" />
-        </el-form-item>
-        <el-form-item label="显示次数" :prop="`list[${index}].showType`">
-          <el-radio-group v-model="element.showType">
-            <el-tooltip
+        </ElFormItem>
+        <ElFormItem label="显示次数" :prop="`list[${index}].showType`">
+          <ElRadioGroup v-model="element.showType">
+            <ElTooltip
               content="只显示一次，下次打开时不显示"
               placement="bottom"
             >
-              <el-radio value="once">一次</el-radio>
-            </el-tooltip>
-            <el-tooltip content="每次打开时都会显示" placement="bottom">
-              <el-radio value="always">不限</el-radio>
-            </el-tooltip>
-          </el-radio-group>
-        </el-form-item>
+              <ElRadio value="once">一次</ElRadio>
+            </ElTooltip>
+            <ElTooltip content="每次打开时都会显示" placement="bottom">
+              <ElRadio value="always">不限</ElRadio>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
       </template>
     </Draggable>
-  </el-form>
+  </ElForm>
 </template>
 
 <style scoped lang="scss"></style>
