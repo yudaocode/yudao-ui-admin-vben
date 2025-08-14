@@ -68,15 +68,6 @@ async function handleDelete(row: ErpProductCategoryApi.ProductCategory) {
   }
 }
 
-const checkedIds = ref<number[]>([]);
-function handleRowCheckboxChange({
-  records,
-}: {
-  records: ErpProductCategoryApi.ProductCategory[];
-}) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -107,10 +98,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       accordion: false,
     },
   } as VxeTableGridOptions<ErpProductCategoryApi.ProductCategory>,
-  gridEvents: {
-    checkboxAll: handleRowCheckboxChange,
-    checkboxChange: handleRowCheckboxChange,
-  },
 });
 </script>
 
