@@ -4,11 +4,12 @@ export namespace ErpProductCategoryApi {
   /** ERP 产品分类信息 */
   export interface ProductCategory {
     id?: number; // 分类编号
-    parentId: number; // 父分类编号
+    parentId?: number; // 父分类编号
     name: string; // 分类名称
-    code: string; // 分类编码
-    sort: number; // 分类排序
-    status: number; // 开启状态
+    code?: string; // 分类编码
+    sort?: number; // 分类排序
+    status?: number; // 开启状态
+    children?: ProductCategory[]; // 子分类
   }
 }
 
