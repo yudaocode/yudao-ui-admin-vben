@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ErpStockInApi } from '#/api/erp/stock/in';
+import type { ErpStockOutApi } from '#/api/erp/stock/out';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -9,24 +9,24 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createStockIn,
-  getStockIn,
-  updateStockIn,
-  updateStockInStatus,
-} from '#/api/erp/stock/in';
+  createStockOut,
+  getStockOut,
+  updateStockOut,
+  updateStockOutStatus,
+} from '#/api/erp/stock/out';
 
 import { useFormSchema } from '../data';
-import StockInItemForm from './StockInItemForm.vue';
+import StockInItemForm from './stock-out-item-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<ErpStockInApi.StockIn>();
+const formData = ref<ErpStockOutApi.StockOut>();
 const formType = ref('');
 const itemFormRef = ref();
 
 const getTitle = computed(() => {
-  if (formType.value === 'create') return '添加其它入库单';
-  if (formType.value === 'update') return '编辑其它入库单';
-  return '其它入库单详情';
+  if (formType.value === 'create') return '添加其它出库单';
+  if (formType.value === 'update') return '编辑其它出库单';
+  return '其它出库单详情';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -38,19 +38,19 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema(formType.value),
   showDefaultActions: false,
 });
 
-const handleUpdateItems = (items: ErpStockInApi.StockInItem[]) => {
-  formData.value = modalApi.getData<ErpStockInApi.StockIn>();
+const handleUpdateItems = (items: ErpStockOutApi.StockOutItem[]) => {
+  formData.value = modalApi.getData<ErpStockOutApi.StockOut>();
   if (formData.value) {
     formData.value.items = items;
   }
 };
 
 /**
- * 创建或更新其它入库单
+ * 创建或更新其它出库单
  */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
           message.error('产品清单验证失败，请检查必填项');
           return;
         }
-      } catch (error) {
+      } catch (error: any) {
         message.error(error.message || '产品清单验证失败');
         return;
       }
@@ -87,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as ErpStockInApi.StockIn;
+    const data = (await formApi.getValues()) as ErpStockOutApi.StockOut;
     data.items = formData.value?.items?.map((item) => ({
       ...item,
       id: undefined,
@@ -98,8 +98,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     try {
       await (formType.value === 'create'
-        ? createStockIn(data)
-        : updateStockIn(data));
+        ? createStockOut(data)
+        : updateStockOut(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -119,10 +119,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     formType.value = data.type;
-
+    formApi.updateSchema(useFormSchema(formType.value));
     if (!data.id) {
       // 初始化空的表单数据
-      formData.value = { items: [] } as ErpStockInApi.StockIn;
+      formData.value = { items: [] } as unknown as ErpStockOutApi.StockOut;
       await nextTick();
       const itemFormInstance = Array.isArray(itemFormRef.value)
         ? itemFormRef.value[0]
@@ -139,16 +139,7 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     try {
-      formData.value = await getStockIn(data.id);
-      // 将字符串形式的文件URL转换为数组形式以适配FileUpload组件
-      if (
-        formData.value.fileUrl &&
-        typeof formData.value.fileUrl === 'string'
-      ) {
-        formData.value.fileUrl = formData.value.fileUrl
-          ? [formData.value.fileUrl]
-          : [];
-      }
+      formData.value = await getStockOut(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
       // 初始化子表单
@@ -168,11 +159,11 @@ const [Modal, modalApi] = useVbenModal({
 /** 审核/反审核 */
 async function handleUpdateStatus(id: number, status: number) {
   try {
-    await updateStockInStatus({ id, status });
+    await updateStockOutStatus({ id, status });
     message.success(status === 20 ? '审核成功' : '反审核成功');
     emit('success');
     await modalApi.close();
-  } catch (error) {
+  } catch (error: any) {
     message.error(error.message || '操作失败');
   }
 }
