@@ -66,7 +66,7 @@ export namespace AuthApi {
 export async function loginApi(data: AuthApi.LoginParams) {
   return requestClient.post<AuthApi.LoginResult>('/system/auth/login', data, {
     headers: {
-      isEncrypt: true,
+      isEncrypt: false,
     },
   });
 }
