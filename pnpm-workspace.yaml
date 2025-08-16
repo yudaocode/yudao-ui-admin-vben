@@ -92,6 +92,7 @@ catalog:
   cropperjs: ^1.6.2
   crypto-js: ^4.2.0
   cspell: ^8.19.4
+  jsencrypt: ^3.3.2
   cssnano: ^7.0.7
   cz-git: ^1.11.2
   czg: ^1.11.1

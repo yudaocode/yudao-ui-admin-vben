@@ -49,6 +49,7 @@
     "dayjs": "catalog:",
     "element-plus": "catalog:",
     "highlight.js": "catalog:",
+    "jsencrypt": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

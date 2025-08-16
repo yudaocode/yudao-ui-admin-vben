@@ -330,6 +330,9 @@ catalogs:
     is-ci:
       specifier: ^4.1.0
       version: 4.1.0
+    jsencrypt:
+      specifier: ^3.3.2
+      version: 3.5.4
     json-bigint:
       specifier: ^1.0.0
       version: 1.0.0
@@ -782,6 +785,9 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
+      jsencrypt:
+        specifier: 'catalog:'
+        version: 3.5.4
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
@@ -873,6 +879,9 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
+      jsencrypt:
+        specifier: 'catalog:'
+        version: 3.5.4
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
@@ -8073,6 +8082,9 @@ packages:
   jsdoc-type-pratt-parser@4.1.0:
     resolution: {integrity: sha512-Hicd6JK5Njt2QB6XYFS7ok9e37O8AYk3jTcppG4YVQnYjOemymvTcmc7OWsmq/Qqj5TdRFO5/x/tIPmBeRtGHg==}
     engines: {node: '>=12.0.0'}
+
+  jsencrypt@3.5.4:
+    resolution: {integrity: sha512-kNjfYEMNASxrDGsmcSQh/rUTmcoRfSUkxnAz+MMywM8jtGu+fFEZ3nJjHM58zscVnwR0fYmG9sGkTDjqUdpiwA==}
 
   jsesc@3.0.2:
     resolution: {integrity: sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==}
@@ -18549,6 +18561,8 @@ snapshots:
   jsbn@1.1.0: {}
 
   jsdoc-type-pratt-parser@4.1.0: {}
+
+  jsencrypt@3.5.4: {}
 
   jsesc@3.0.2: {}
 

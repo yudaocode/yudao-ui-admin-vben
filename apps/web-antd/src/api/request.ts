@@ -16,6 +16,7 @@ import { useAccessStore } from '@vben/stores';
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '#/store';
+import { ApiEncrypt } from '#/utils/encrypt';
 
 import { refreshTokenApi } from './core';
 
@@ -84,7 +85,43 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       config.headers['visit-tenant-id'] = tenantEnable
         ? accessStore.visitTenantId
         : undefined;
+
+      // 是否 API 加密
+      if ((config.headers || {}).isEncrypt) {
+        try {
+          // 加密请求数据
+          if (config.data) {
+            config.data = ApiEncrypt.encryptRequest(config.data);
+            // 设置加密标识头
+            config.headers[ApiEncrypt.getEncryptHeader()] = 'true';
+          }
+        } catch (error) {
+          console.error('请求数据加密失败:', error);
+          throw error;
+        }
+      }
       return config;
+    },
+  });
+
+  // API 解密响应拦截器
+  client.addResponseInterceptor({
+    fulfilled: (response) => {
+      // 检查是否需要解密响应数据
+      const encryptHeader = ApiEncrypt.getEncryptHeader();
+      const isEncryptResponse =
+        response.headers[encryptHeader] === 'true' ||
+        response.headers[encryptHeader.toLowerCase()] === 'true';
+      if (isEncryptResponse && typeof response.data === 'string') {
+        try {
+          // 解密响应数据
+          response.data = ApiEncrypt.decryptResponse(response.data);
+        } catch (error) {
+          console.error('响应数据解密失败:', error);
+          throw new Error(`响应数据解密失败: ${(error as Error).message}`);
+        }
+      }
+      return response;
     },
   });
 

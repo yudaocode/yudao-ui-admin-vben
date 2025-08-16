@@ -50,6 +50,7 @@
     "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
+    "jsencrypt": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",

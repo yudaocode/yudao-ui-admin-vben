@@ -11,6 +11,12 @@ export interface VbenAdminProAppConfigRaw {
   VITE_GLOB_API_URL: string;
   VITE_GLOB_AUTH_DINGDING_CLIENT_ID: string;
   VITE_GLOB_AUTH_DINGDING_CORP_ID: string;
+  // API 加解密相关配置
+  VITE_APP_API_ENCRYPT_ENABLE: string;
+  VITE_APP_API_ENCRYPT_HEADER: string;
+  VITE_APP_API_ENCRYPT_ALGORITHM: string;
+  VITE_APP_API_ENCRYPT_REQUEST_KEY: string;
+  VITE_APP_API_ENCRYPT_RESPONSE_KEY: string;
 }
 
 interface AuthConfig {
