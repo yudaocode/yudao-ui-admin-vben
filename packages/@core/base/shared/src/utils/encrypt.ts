@@ -6,18 +6,6 @@ import { JSEncrypt } from 'jsencrypt';
  * 支持 AES 和 RSA 加密算法
  */
 
-// 从环境变量获取配置
-const API_ENCRYPT_ENABLE =
-  import.meta.env.VITE_APP_API_ENCRYPT_ENABLE === 'true';
-const API_ENCRYPT_HEADER =
-  import.meta.env.VITE_APP_API_ENCRYPT_HEADER || 'X-Api-Encrypt';
-const API_ENCRYPT_ALGORITHM =
-  import.meta.env.VITE_APP_API_ENCRYPT_ALGORITHM || 'AES';
-const API_ENCRYPT_REQUEST_KEY =
-  import.meta.env.VITE_APP_API_ENCRYPT_REQUEST_KEY || ''; // AES密钥 或 RSA公钥
-const API_ENCRYPT_RESPONSE_KEY =
-  import.meta.env.VITE_APP_API_ENCRYPT_RESPONSE_KEY || ''; // AES密钥 或 RSA私钥
-
 /**
  * AES 加密工具类
  */
@@ -147,51 +135,30 @@ export const RSA = {
 };
 
 /**
+ * API 加解密配置接口
+ */
+export interface ApiEncryptConfig {
+  /** 加密算法 */
+  algorithm: 'AES' | 'RSA';
+  /** 是否启用加解密 */
+  enable: boolean;
+  /** 加密头名称 */
+  header: string;
+  /** 请求加密密钥（AES密钥或RSA公钥） */
+  requestKey: string;
+  /** 响应解密密钥（AES密钥或RSA私钥） */
+  responseKey: string;
+}
+
+/**
  * API 加解密主类
  */
-export const ApiEncrypt = {
-  /**
-   * 获取加密头名称
-   */
-  getEncryptHeader(): string {
-    return API_ENCRYPT_HEADER;
-  },
+export class ApiEncrypt {
+  private config: ApiEncryptConfig;
 
-  /**
-   * 加密请求数据
-   * @param data 要加密的数据
-   * @returns 加密后的数据
-   */
-  encryptRequest(data: any): string {
-    if (!API_ENCRYPT_ENABLE) {
-      return data;
-    }
-
-    try {
-      const jsonData = typeof data === 'string' ? data : JSON.stringify(data);
-
-      if (API_ENCRYPT_ALGORITHM.toUpperCase() === 'AES') {
-        if (!API_ENCRYPT_REQUEST_KEY) {
-          throw new Error('AES 请求加密密钥未配置');
-        }
-        return AES.encrypt(jsonData, API_ENCRYPT_REQUEST_KEY);
-      } else if (API_ENCRYPT_ALGORITHM.toUpperCase() === 'RSA') {
-        if (!API_ENCRYPT_REQUEST_KEY) {
-          throw new Error('RSA 公钥未配置');
-        }
-        const result = RSA.encrypt(jsonData, API_ENCRYPT_REQUEST_KEY);
-        if (result === false) {
-          throw new Error('RSA 加密失败');
-        }
-        return result;
-      } else {
-        throw new Error(`不支持的加密算法: ${API_ENCRYPT_ALGORITHM}`);
-      }
-    } catch (error) {
-      console.error('请求数据加密失败:', error);
-      throw error;
-    }
-  },
+  constructor(config: ApiEncryptConfig) {
+    this.config = config;
+  }
 
   /**
    * 解密响应数据
@@ -199,27 +166,27 @@ export const ApiEncrypt = {
    * @returns 解密后的数据
    */
   decryptResponse(encryptedData: string): any {
-    if (!API_ENCRYPT_ENABLE) {
+    if (!this.config.enable) {
       return encryptedData;
     }
 
     try {
       let decryptedData: false | string = '';
-      if (API_ENCRYPT_ALGORITHM.toUpperCase() === 'AES') {
-        if (!API_ENCRYPT_RESPONSE_KEY) {
+      if (this.config.algorithm.toUpperCase() === 'AES') {
+        if (!this.config.responseKey) {
           throw new Error('AES 响应解密密钥未配置');
         }
-        decryptedData = AES.decrypt(encryptedData, API_ENCRYPT_RESPONSE_KEY);
-      } else if (API_ENCRYPT_ALGORITHM.toUpperCase() === 'RSA') {
-        if (!API_ENCRYPT_RESPONSE_KEY) {
+        decryptedData = AES.decrypt(encryptedData, this.config.responseKey);
+      } else if (this.config.algorithm.toUpperCase() === 'RSA') {
+        if (!this.config.responseKey) {
           throw new Error('RSA 私钥未配置');
         }
-        decryptedData = RSA.decrypt(encryptedData, API_ENCRYPT_RESPONSE_KEY);
+        decryptedData = RSA.decrypt(encryptedData, this.config.responseKey);
         if (decryptedData === false) {
           throw new Error('RSA 解密失败');
         }
       } else {
-        throw new Error(`不支持的解密算法: ${API_ENCRYPT_ALGORITHM}`);
+        throw new Error(`不支持的解密算法: ${this.config.algorithm}`);
       }
 
       if (!decryptedData) {
@@ -236,5 +203,65 @@ export const ApiEncrypt = {
       console.error('响应数据解密失败:', error);
       throw error;
     }
-  },
-};
+  }
+
+  /**
+   * 加密请求数据
+   * @param data 要加密的数据
+   * @returns 加密后的数据
+   */
+  encryptRequest(data: any): string {
+    if (!this.config.enable) {
+      return data;
+    }
+
+    try {
+      const jsonData = typeof data === 'string' ? data : JSON.stringify(data);
+
+      if (this.config.algorithm.toUpperCase() === 'AES') {
+        if (!this.config.requestKey) {
+          throw new Error('AES 请求加密密钥未配置');
+        }
+        return AES.encrypt(jsonData, this.config.requestKey);
+      } else if (this.config.algorithm.toUpperCase() === 'RSA') {
+        if (!this.config.requestKey) {
+          throw new Error('RSA 公钥未配置');
+        }
+        const result = RSA.encrypt(jsonData, this.config.requestKey);
+        if (result === false) {
+          throw new Error('RSA 加密失败');
+        }
+        return result;
+      } else {
+        throw new Error(`不支持的加密算法: ${this.config.algorithm}`);
+      }
+    } catch (error) {
+      console.error('请求数据加密失败:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 获取加密头名称
+   */
+  getEncryptHeader(): string {
+    return this.config.header;
+  }
+}
+
+/**
+ * 创建基于环境变量的 API 加解密实例
+ * @param env 环境变量对象
+ * @returns ApiEncrypt 实例
+ */
+export function createApiEncrypt(env: Record<string, any>): ApiEncrypt {
+  const config: ApiEncryptConfig = {
+    enable: env.VITE_APP_API_ENCRYPT_ENABLE === 'true',
+    header: env.VITE_APP_API_ENCRYPT_HEADER || 'X-Api-Encrypt',
+    algorithm: env.VITE_APP_API_ENCRYPT_ALGORITHM || 'AES',
+    requestKey: env.VITE_APP_API_ENCRYPT_REQUEST_KEY || '',
+    responseKey: env.VITE_APP_API_ENCRYPT_RESPONSE_KEY || '',
+  };
+
+  return new ApiEncrypt(config);
+}

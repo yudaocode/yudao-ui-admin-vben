@@ -12,16 +12,17 @@ import {
   RequestClient,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
+import { createApiEncrypt } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
 
 import { useAuthStore } from '#/store';
-import { ApiEncrypt } from '#/utils/encrypt';
 
 import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const tenantEnable = isTenantEnable();
+const apiEncrypt = createApiEncrypt(import.meta.env);
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({
@@ -91,9 +92,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         try {
           // 加密请求数据
           if (config.data) {
-            config.data = ApiEncrypt.encryptRequest(config.data);
+            config.data = apiEncrypt.encryptRequest(config.data);
             // 设置加密标识头
-            config.headers[ApiEncrypt.getEncryptHeader()] = 'true';
+            config.headers[apiEncrypt.getEncryptHeader()] = 'true';
           }
         } catch (error) {
           console.error('请求数据加密失败:', error);
@@ -108,14 +109,14 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addResponseInterceptor({
     fulfilled: (response) => {
       // 检查是否需要解密响应数据
-      const encryptHeader = ApiEncrypt.getEncryptHeader();
+      const encryptHeader = apiEncrypt.getEncryptHeader();
       const isEncryptResponse =
         response.headers[encryptHeader] === 'true' ||
         response.headers[encryptHeader.toLowerCase()] === 'true';
       if (isEncryptResponse && typeof response.data === 'string') {
         try {
           // 解密响应数据
-          response.data = ApiEncrypt.decryptResponse(response.data);
+          response.data = apiEncrypt.decryptResponse(response.data);
         } catch (error) {
           console.error('响应数据解密失败:', error);
           throw new Error(`响应数据解密失败: ${(error as Error).message}`);

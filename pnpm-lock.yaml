@@ -776,18 +776,12 @@ importers:
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.2
-      crypto-js:
-        specifier: 'catalog:'
-        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
-      jsencrypt:
-        specifier: 'catalog:'
-        version: 3.5.4
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
@@ -867,9 +861,6 @@ importers:
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.2
-      crypto-js:
-        specifier: 'catalog:'
-        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -879,9 +870,6 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
-      jsencrypt:
-        specifier: 'catalog:'
-        version: 3.5.4
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
@@ -1377,12 +1365,18 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
       defu:
         specifier: 'catalog:'
         version: 6.1.4
+      jsencrypt:
+        specifier: 'catalog:'
+        version: 3.5.4
       lodash.clonedeep:
         specifier: 'catalog:'
         version: 4.5.0
