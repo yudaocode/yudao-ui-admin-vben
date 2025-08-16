@@ -211,3 +211,4 @@ catalog:
   zod-defaults: ^0.1.3
   highlight.js: ^11.11.1
   vue3-signature: ^0.2.4
+  vuedraggable: ^4.1.0

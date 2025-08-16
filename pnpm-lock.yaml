@@ -564,6 +564,9 @@ catalogs:
     vue3-signature:
       specifier: ^0.2.4
       version: 0.2.4
+    vuedraggable:
+      specifier: ^4.1.0
+      version: 4.1.0
     vxe-pc-ui:
       specifier: ^4.7.12
       version: 4.7.16
@@ -879,9 +882,15 @@ importers:
       vue:
         specifier: ^3.5.17
         version: 3.5.17(typescript@5.8.3)
+      vue-dompurify-html:
+        specifier: 'catalog:'
+        version: 5.3.0(vue@3.5.17(typescript@5.8.3))
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.17(typescript@5.8.3))
+      vuedraggable:
+        specifier: 'catalog:'
+        version: 4.1.0(vue@3.5.17(typescript@5.8.3))
     devDependencies:
       unplugin-element-plus:
         specifier: 'catalog:'

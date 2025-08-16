@@ -1,4 +1,5 @@
 import { createApp, watchEffect } from 'vue';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
 
 import { registerAccessDirective } from '@vben/access';
 import { registerLoadingDirective } from '@vben/common-ui';
@@ -34,7 +35,7 @@ async function bootstrap(namespace: string) {
   //   zIndex: 2000,
   // });
   const app = createApp(App);
-
+  app.use(VueDOMPurifyHTML);
   // 注册Element Plus提供的v-loading指令
   app.directive('loading', ElLoading.directive);
 
