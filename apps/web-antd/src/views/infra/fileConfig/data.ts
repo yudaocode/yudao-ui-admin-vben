@@ -200,6 +200,25 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       defaultValue: false,
     },
+    {
+      fieldName: 'config.enablePublicAccess',
+      label: '公开访问',
+      component: 'RadioGroup',
+      componentProps: {
+        options: [
+          { label: '公开', value: true },
+          { label: '私有', value: false },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      rules: 'required',
+      dependencies: {
+        triggerFields: ['storage'],
+        show: (formValues) => formValues.storage === 20,
+      },
+      defaultValue: false,
+    },
     // 通用
     {
       fieldName: 'config.domain',
