@@ -16,6 +16,7 @@ import * as DiyPageApi from '#/api/mall/promotion/diy/page';
 import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
 import DiyEditor from '#/components/diy-editor/index.vue';
 import { PAGE_LIBS } from '#/components/diy-editor/util';
+import {useAccessStore} from '@vben/stores';
 
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
@@ -51,7 +52,8 @@ const getPageDetail = async (id: any) => {
     formData.value = await DiyTemplateApi.getDiyTemplateProperty(id);
     // 拼接手机预览链接
     const domain = import.meta.env.VITE_MALL_H5_DOMAIN;
-    previewUrl.value = `${domain}/#/pages/index/index?templateId=${formData.value.id}`;
+    const accessStore = useAccessStore();
+    previewUrl.value = `${domain}?templateId=${formData.value.id}&${accessStore.tenantId}`;
   } finally {
     formLoading.value = false;
   }
