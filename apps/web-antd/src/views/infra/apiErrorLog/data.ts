@@ -5,7 +5,9 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
-import { formatDateTime, isObject } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
+
+import { Textarea } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
 import {
@@ -177,13 +179,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'requestParams',
       label: '请求参数',
       content: (data) => {
-        if (isObject(data.requestParams)) {
+        if (data.requestParams) {
           return h(JsonViewer, {
-            value: data.requestParams,
+            value: JSON.parse(data.requestParams),
             previewMode: true,
           });
         }
-        return data.requestParams;
+        return '';
       },
     },
     {
@@ -201,13 +203,10 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'exceptionStackTrace',
       label: '异常堆栈',
       content: (data) => {
-        if (isObject(data.exceptionStackTrace)) {
-          return h(JsonViewer, {
-            value: data.exceptionStackTrace,
-            previewMode: true,
-          });
-        }
-        return data.exceptionStackTrace;
+        return h(Textarea, {
+          value: data.exceptionStackTrace,
+          rows: 20,
+        });
       },
     },
     {

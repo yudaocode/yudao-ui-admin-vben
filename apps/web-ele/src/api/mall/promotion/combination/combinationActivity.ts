@@ -48,6 +48,8 @@ export namespace MallCombinationActivityApi {
     combinationPrice?: number;
     /** 商品列表 */
     products: CombinationProduct[];
+    /** 图片 */
+    picUrl?: string;
   }
 
   /** 扩展 SKU 配置 */

@@ -42,3 +42,14 @@ export function isDate(value: any): value is Date {
 export function isDayjsObject(value: any): value is dayjs.Dayjs {
   return dayjs.isDayjs(value);
 }
+
+/**
+ * element plus 的时间 Formatter 实现，使用 YYYY-MM-DD HH:mm:ss 格式
+ *
+ * @param _row
+ * @param _column
+ * @param cellValue 字段值
+ */
+export function dateFormatter(_row: any, _column: any, cellValue: any): string {
+  return cellValue ? formatDate(cellValue)?.toString() || '' : '';
+}

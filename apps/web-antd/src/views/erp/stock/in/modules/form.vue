@@ -88,7 +88,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as ErpStockInApi.StockIn;
-    data.items = formData.value?.items;
+    data.items = formData.value?.items?.map((item) => ({
+      ...item,
+      id: undefined,
+    }));
     // 将文件数组转换为字符串
     if (data.fileUrl && Array.isArray(data.fileUrl)) {
       data.fileUrl = data.fileUrl.length > 0 ? data.fileUrl[0] : '';

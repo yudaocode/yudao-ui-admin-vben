@@ -44,11 +44,27 @@ export function getNestedValue<T>(obj: T, path: string): any {
 }
 
 /**
- * 获取 URL 参数值
- * @param key - 参数键
- * @returns 参数值，或者未找到时返回空字符串
+ * 获取链接的参数值（值类型）
+ * @param key 参数键名
+ * @param urlStr 链接地址，默认为当前浏览器的地址
  */
-export function getUrlValue(key: string): string {
-  const url = new URL(decodeURIComponent(location.href));
+export const getUrlNumberValue = (
+  key: string,
+  urlStr: string = location.href,
+): number => {
+  return Number(getUrlValue(key, urlStr));
+};
+
+/**
+ * 获取链接的参数值
+ * @param key 参数键名
+ * @param urlStr 链接地址，默认为当前浏览器的地址
+ */
+export const getUrlValue = (
+  key: string,
+  urlStr: string = location.href,
+): string => {
+  if (!urlStr || !key) return '';
+  const url = new URL(decodeURIComponent(urlStr));
   return url.searchParams.get(key) ?? '';
-}
+};
