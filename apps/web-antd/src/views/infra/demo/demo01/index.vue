@@ -66,6 +66,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteDemo01ContactList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

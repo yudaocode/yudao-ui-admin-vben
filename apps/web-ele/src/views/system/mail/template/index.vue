@@ -82,6 +82,7 @@ async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该邮件模板吗？');
   await deleteMailTemplateList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

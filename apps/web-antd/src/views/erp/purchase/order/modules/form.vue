@@ -71,6 +71,7 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
+// TODO @nehc：这里的注释使用 /** */ 和别的模块一致哈；
 /**
  * 创建或更新采购订单
  */
@@ -82,6 +83,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await nextTick();
 
+    // TODO @nehc：应该不会不存在，直接校验，简洁一点！另外，可以看看别的模块，主子表的处理哈；
     const itemFormInstance = Array.isArray(itemFormRef.value)
       ? itemFormRef.value[0]
       : itemFormRef.value;
@@ -93,6 +95,7 @@ const [Modal, modalApi] = useVbenModal({
           return;
         }
       } catch (error) {
+        // TODO @nehc：这里的红色告警，看看怎么处理掉
         message.error(error.message || '子表单验证失败');
         return;
       }
@@ -148,6 +151,7 @@ const [Modal, modalApi] = useVbenModal({
       // 初始化空的表单数据
       formData.value = { items: [] } as ErpPurchaseOrderApi.PurchaseOrder;
       await nextTick();
+      // TODO @nehc：看看有没办法简化
       const itemFormInstance = Array.isArray(itemFormRef.value)
         ? itemFormRef.value[0]
         : itemFormRef.value;
@@ -160,7 +164,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getPurchaseOrder(data.id);
-      // 将字符串形式的文件URL转换为数组形式以适配FileUpload组件
+      // 将字符串形式的文件 URL 转换为数组形式以适配 FileUpload 组件
+      // TODO @nehc：这里的 idea 会有黄色告警，看看是不是简化下？
+      // TODO @nehc：记忆中，好像不用数组的转换，可以在看看？
       if (
         formData.value.fileUrl &&
         typeof formData.value.fileUrl === 'string'

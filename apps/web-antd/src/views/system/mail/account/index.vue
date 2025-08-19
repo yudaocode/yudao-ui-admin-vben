@@ -76,6 +76,7 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteMailAccountList(checkedIds.value);
+    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

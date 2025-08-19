@@ -214,6 +214,7 @@ export type UserTaskFormType = {
   returnNodeId?: string;
   roleIds?: number[]; // 角色
   signEnable: boolean;
+  skipExpression?: string; // 跳过表达式
   taskAssignListener?: {
     body: HttpRequestParam[];
     header: HttpRequestParam[];

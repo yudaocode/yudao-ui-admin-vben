@@ -100,6 +100,7 @@ async function onDelete(row: SystemUserApi.User) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该用户吗？');
   await deleteUserList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

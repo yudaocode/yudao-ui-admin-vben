@@ -57,6 +57,7 @@ async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该数据源吗？');
   await deleteDataSourceConfigList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

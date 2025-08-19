@@ -359,7 +359,8 @@ async function saveConfig() {
   currentNode.value.signEnable = configForm.value.signEnable;
   // 审批意见
   currentNode.value.reasonRequire = configForm.value.reasonRequire;
-
+  // 跳过表达式
+  currentNode.value.skipExpression = configForm.value.skipExpression;
   currentNode.value.showText = getShowText();
   drawerApi.close();
   return true;
@@ -443,7 +444,8 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
   configForm.value.signEnable = node?.signEnable ?? false;
   // 7. 审批意见
   configForm.value.reasonRequire = node?.reasonRequire ?? false;
-
+  // 8. 跳过表达式
+  configForm.value.skipExpression = node?.skipExpression ?? '';
   drawerApi.open();
 }
 
@@ -850,7 +852,7 @@ onMounted(() => {
               label="流程表达式"
               name="expression"
             >
-              <Textarea v-model:value="configForm.expression" clearable />
+              <Textarea v-model:value="configForm.expression" allow-clear />
             </FormItem>
             <!-- 多人审批/办理 方式 -->
             <FormItem :label="`多人${nodeTypeName}方式`" name="approveMethod">
@@ -1114,6 +1116,16 @@ onMounted(() => {
                   v-model:checked="configForm.reasonRequire"
                   checked-children="必填"
                   un-checked-children="非必填"
+                />
+              </FormItem>
+            </div>
+            <div>
+              <Divider content-position="left">跳过表达式</Divider>
+              <FormItem prop="skipExpression">
+                <Textarea
+                  v-model:value="configForm.skipExpression"
+                  allow-clear
+                  :rows="2"
                 />
               </FormItem>
             </div>

@@ -69,6 +69,7 @@ async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该短信渠道吗？');
   await deleteSmsChannelList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

@@ -12,6 +12,7 @@ import {
   RequestClient,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
+import { createApiEncrypt } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -21,6 +22,7 @@ import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const tenantEnable = isTenantEnable();
+const apiEncrypt = createApiEncrypt(import.meta.env);
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({
@@ -84,7 +86,43 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       config.headers['visit-tenant-id'] = tenantEnable
         ? accessStore.visitTenantId
         : undefined;
+
+      // 是否 API 加密
+      if ((config.headers || {}).isEncrypt) {
+        try {
+          // 加密请求数据
+          if (config.data) {
+            config.data = apiEncrypt.encryptRequest(config.data);
+            // 设置加密标识头
+            config.headers[apiEncrypt.getEncryptHeader()] = 'true';
+          }
+        } catch (error) {
+          console.error('请求数据加密失败:', error);
+          throw error;
+        }
+      }
       return config;
+    },
+  });
+
+  // API 解密响应拦截器
+  client.addResponseInterceptor({
+    fulfilled: (response) => {
+      // 检查是否需要解密响应数据
+      const encryptHeader = apiEncrypt.getEncryptHeader();
+      const isEncryptResponse =
+        response.headers[encryptHeader] === 'true' ||
+        response.headers[encryptHeader.toLowerCase()] === 'true';
+      if (isEncryptResponse && typeof response.data === 'string') {
+        try {
+          // 解密响应数据
+          response.data = apiEncrypt.decryptResponse(response.data);
+        } catch (error) {
+          console.error('响应数据解密失败:', error);
+          throw new Error(`响应数据解密失败: ${(error as Error).message}`);
+        }
+      }
+      return response;
     },
   });
 

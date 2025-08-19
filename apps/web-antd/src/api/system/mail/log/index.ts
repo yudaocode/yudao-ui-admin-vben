@@ -8,7 +8,9 @@ export namespace SystemMailLogApi {
     id: number;
     userId: number;
     userType: number;
-    toMail: string;
+    toMails: string[];
+    ccMails?: string[];
+    bccMails?: string[];
     accountId: number;
     fromMail: string;
     templateId: number;
@@ -31,16 +33,4 @@ export function getMailLogPage(params: PageParam) {
     '/system/mail-log/page',
     { params },
   );
-}
-
-/** 查询邮件日志详情 */
-export function getMailLog(id: number) {
-  return requestClient.get<SystemMailLogApi.MailLog>(
-    `/system/mail-log/get?id=${id}`,
-  );
-}
-
-/** 重新发送邮件 */
-export function resendMail(id: number) {
-  return requestClient.put(`/system/mail-log/resend?id=${id}`);
 }

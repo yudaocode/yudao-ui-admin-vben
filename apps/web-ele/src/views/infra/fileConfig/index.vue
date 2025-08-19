@@ -103,6 +103,7 @@ async function onDelete(row: InfraFileConfigApi.FileConfig) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该文件配置吗？');
   await deleteFileConfigList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

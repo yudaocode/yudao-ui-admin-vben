@@ -1,5 +1,3 @@
-import SkuList from './SkuList.vue';
-
 interface PropertyAndValues {
   id: number;
   name: string;
@@ -22,4 +20,6 @@ interface RuleConfig {
   message: string;
 }
 
-export { SkuList, PropertyAndValues, RuleConfig, getPropertyList };
+export { getPropertyList, PropertyAndValues, RuleConfig };
+
+export { default as SkuList } from './SkuList.vue';

@@ -64,7 +64,11 @@ export namespace AuthApi {
 
 /** 登录 */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/system/auth/login', data);
+  return requestClient.post<AuthApi.LoginResult>('/system/auth/login', data, {
+    headers: {
+      isEncrypt: false,
+    },
+  });
 }
 
 /** 刷新 accessToken */
