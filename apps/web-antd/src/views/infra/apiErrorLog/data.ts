@@ -7,6 +7,8 @@ import { h } from 'vue';
 import { JsonViewer } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
+import { Textarea } from 'ant-design-vue';
+
 import { DictTag } from '#/components/dict-tag';
 import {
   DICT_TYPE,
@@ -177,10 +179,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'requestParams',
       label: '请求参数',
       content: (data) => {
-        return h(JsonViewer, {
-          value: data.requestParams,
-          previewMode: true,
-        });
+        if (data.requestParams) {
+          return h(JsonViewer, {
+            value: JSON.parse(data.requestParams),
+            previewMode: true,
+          });
+        }
+        return '';
       },
     },
     {
@@ -198,9 +203,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'exceptionStackTrace',
       label: '异常堆栈',
       content: (data) => {
-        return h(JsonViewer, {
+        return h(Textarea, {
           value: data.exceptionStackTrace,
-          previewMode: true,
+          rows: 20,
         });
       },
     },
