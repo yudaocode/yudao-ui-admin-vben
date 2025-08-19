@@ -4,6 +4,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { Textarea } from 'ant-design-vue';
 import { JsonViewer } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
@@ -177,10 +178,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'requestParams',
       label: '请求参数',
       content: (data) => {
-        return h(JsonViewer, {
-          value: data.requestParams,
-          previewMode: true,
-        });
+        if (data.requestParams) {
+          return h(JsonViewer, {
+            value: JSON.parse(data.requestParams),
+            previewMode: true,
+          });
+        }
+        return '';
       },
     },
     {
@@ -198,9 +202,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'exceptionStackTrace',
       label: '异常堆栈',
       content: (data) => {
-        return h(JsonViewer, {
+        return h(Textarea, {
           value: data.exceptionStackTrace,
-          previewMode: true,
+          rows: 20,
         });
       },
     },
