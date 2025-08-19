@@ -4,9 +4,10 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { Textarea } from 'ant-design-vue';
 import { JsonViewer } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
+
+import { Textarea } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
 import {
