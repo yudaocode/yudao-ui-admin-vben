@@ -50,6 +50,9 @@ const props = defineProps({
 
 const emit = defineEmits(['cancel']);
 
+// 增加表单就绪状态变量 表单就绪后再渲染form-create
+const isFormReady = ref(false)
+
 const { closeCurrentTab } = useTabs();
 
 const getTitle = computed(() => {
@@ -135,6 +138,9 @@ async function initProcessInfo(row: any, formVariables?: any) {
       }
     }
     setConfAndFields2(detailForm, row.formConf, row.formFields, formVariables);
+
+    // 设置表单就绪状态
+    isFormReady.value = true
 
     await nextTick();
     fApi.value?.btn.show(false); // 隐藏提交按钮
@@ -292,6 +298,7 @@ defineExpose({ initProcessInfo });
             class="flex-1 overflow-auto"
           >
             <form-create
+              v-if="isFormReady"
               :rule="detailForm.rule"
               v-model:api="fApi"
               v-model="detailForm.value"
