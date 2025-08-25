@@ -52,7 +52,7 @@ const props = defineProps({
 const emit = defineEmits(['cancel']);
 
 // 增加表单就绪状态变量 表单就绪后再渲染form-create
-const isFormReady = ref(false)
+const isFormReady = ref(false);
 
 const { closeCurrentTab } = useTabs();
 
@@ -132,7 +132,6 @@ async function initProcessInfo(row: any, formVariables?: any) {
     //        这样，就可能导致一个流程被审批不通过后，重新发起时，会直接后端报错！！！
     const formApi = formCreate.create(decodeFields(row.formFields));
     const allowedFields = formApi.fields();
-    console.error('allowedFields===>', allowedFields);
     for (const key in formVariables) {
       if (!allowedFields.includes(key)) {
         delete formVariables[key];
@@ -141,7 +140,7 @@ async function initProcessInfo(row: any, formVariables?: any) {
     setConfAndFields2(detailForm, row.formConf, row.formFields, formVariables);
 
     // 设置表单就绪状态
-    isFormReady.value = true
+    isFormReady.value = true;
 
     await nextTick();
     fApi.value?.btn.show(false); // 隐藏提交按钮
