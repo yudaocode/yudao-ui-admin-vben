@@ -62,6 +62,7 @@ async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该租户套餐吗？');
   await deleteTenantPackageList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

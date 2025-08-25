@@ -90,6 +90,7 @@ async function onDelete(row: InfraCodegenApi.CodegenTable) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该代码生成配置吗？');
   await deleteCodegenTableList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

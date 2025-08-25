@@ -16,6 +16,7 @@ export namespace InfraFileConfigApi {
     accessKey?: string;
     accessSecret?: string;
     pathStyle?: boolean;
+    enablePublicAccess?: boolean;
     domain: string;
   }
 

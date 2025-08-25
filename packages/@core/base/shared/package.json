@@ -1,6 +1,6 @@
 {
   "name": "@vben-core/shared",
-  "version": "5.5.8",
+  "version": "5.5.9",
   "homepage": "https://github.com/vbenjs/vue-vben-admin",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -83,8 +83,10 @@
     "@tanstack/vue-store": "catalog:",
     "@vue/shared": "catalog:",
     "clsx": "catalog:",
+    "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "defu": "catalog:",
+    "jsencrypt": "catalog:",
     "lodash.clonedeep": "catalog:",
     "lodash.get": "catalog:",
     "lodash.isequal": "catalog:",

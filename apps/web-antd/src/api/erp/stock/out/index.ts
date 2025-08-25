@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpStockOutApi {
+export namespace ErpStockOutApi {
   /** 其它出库单信息 */
   export interface StockOut {
     id?: number; // 出库编号
@@ -13,6 +13,24 @@ namespace ErpStockOutApi {
     totalPrice: number; // 合计金额，单位：元
     status: number; // 状态
     remark: string; // 备注
+    fileUrl?: string; // 附件
+    items?: StockOutItem[]; // 出库产品清单
+  }
+
+  /** 其它出库单产品信息 */
+  export interface StockOutItem {
+    id?: number; // 编号
+    warehouseId?: number; // 仓库编号
+    productId?: number; // 产品编号
+    productName?: string; // 产品名称
+    productUnitId?: number; // 产品单位编号
+    productUnitName?: string; // 产品单位名称
+    productBarCode?: string; // 产品条码
+    count: number; // 数量
+    productPrice: number; // 产品单价
+    totalPrice: number; // 总价
+    stockCount?: number; // 库存数量
+    remark?: string; // 备注
   }
 
   /** 其它出库单分页查询参数 */

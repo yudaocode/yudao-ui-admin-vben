@@ -90,9 +90,13 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       label: '绑定域名',
-      fieldName: 'website',
-      component: 'Input',
-      rules: 'required',
+      fieldName: 'websites',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入绑定域名，多个域名请换行分隔',
+        rows: 3,
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
@@ -195,7 +199,7 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'website',
+      field: 'websites',
       title: '绑定域名',
     },
     {

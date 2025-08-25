@@ -63,6 +63,7 @@ async function onDelete(row: SystemNoticeApi.Notice) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该公告吗？');
   await deleteNoticeList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

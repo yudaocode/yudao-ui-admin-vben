@@ -69,6 +69,7 @@ async function onDelete(row: InfraConfigApi.Config) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该参数吗？');
   await deleteConfigList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

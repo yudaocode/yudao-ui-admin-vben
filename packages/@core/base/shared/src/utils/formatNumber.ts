@@ -75,6 +75,11 @@ export function fenToYuan(price: number | string): string {
   return formatToFraction(price);
 }
 
+// 格式化金额【分转元】
+export const fenToYuanFormat = (_: any, __: any, cellValue: any, ___: any) => {
+  return `￥${floatToFixed2(cellValue)}`;
+};
+
 /**
  * 计算环比
  *

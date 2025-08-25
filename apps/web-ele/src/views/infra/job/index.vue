@@ -122,6 +122,7 @@ async function onDelete(row: InfraJobApi.Job) {
 async function onDeleteBatch() {
   await confirm('确定要批量删除该任务吗？');
   await deleteJobList(checkedIds.value);
+  checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   onRefresh();
 }

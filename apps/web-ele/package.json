@@ -1,6 +1,6 @@
 {
   "name": "@vben/web-ele",
-  "version": "5.5.8",
+  "version": "5.5.9",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -45,13 +45,14 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "cropperjs": "catalog:",
-    "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
     "highlight.js": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:"
+    "vue-dompurify-html": "catalog:",
+    "vue-router": "catalog:",
+    "vuedraggable": "catalog:"
   },
   "devDependencies": {
     "unplugin-element-plus": "catalog:"

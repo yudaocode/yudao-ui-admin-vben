@@ -192,10 +192,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'requestParams',
       label: '请求参数',
       content: (data) => {
-        return h(JsonViewer, {
-          value: data.requestParams,
-          previewMode: true,
-        });
+        if (data.requestParams) {
+          return h(JsonViewer, {
+            value: JSON.parse(data.requestParams),
+            previewMode: true,
+          });
+        }
+        return '';
       },
     },
     {

@@ -11,9 +11,9 @@ import type { UploadListType } from './typing';
 
 import type { AxiosProgressEvent } from '#/api/infra/file';
 
-import { ref, toRefs, watch } from 'vue';
+import { nextTick, ref, toRefs, watch } from 'vue';
 
-import { CloudUpload } from '@vben/icons';
+import { Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
 
@@ -33,26 +33,28 @@ const props = withDefaults(
       file: File,
       onUploadProgress?: AxiosProgressEvent,
     ) => Promise<AxiosResponse<any>>;
+    // 组件边框圆角
+    borderradius?: string;
     // 上传的目录
     directory?: string;
     disabled?: boolean;
+    // 上传框高度
+    height?: number | string;
     helpText?: string;
     listType?: UploadListType;
     // 最大数量的文件，Infinity不限制
     maxNumber?: number;
     // 文件最大多少MB
     maxSize?: number;
+    modelValue?: string | string[];
     // 是否支持多选
     multiple?: boolean;
     // support xxx.xxx.xx
     resultField?: string;
     // 是否显示下面的描述
     showDescription?: boolean;
-    modelValue?: string | string[];
     // 上传框宽度
-    width?: string | number;
-    // 上传框高度
-    height?: string | number;
+    width?: number | string;
   }>(),
   {
     modelValue: () => [],
@@ -69,11 +71,13 @@ const props = withDefaults(
     showDescription: true,
     width: '',
     height: '',
+    borderradius: '8px',
   },
 );
 
 const emit = defineEmits(['change', 'update:modelValue', 'delete']);
-const { accept, helpText, maxNumber, maxSize, width, height } = toRefs(props);
+const { accept, helpText, maxNumber, maxSize, width, height, borderradius } =
+  toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
   acceptRef: accept,
@@ -219,7 +223,6 @@ async function customRequest(options: UploadRequestOptions) {
 }
 
 function getValue() {
-  console.log(fileList.value);
   const list = (fileList.value || [])
     .filter((item) => item?.status === UploadResultStatus.SUCCESS)
     .map((item: any) => {
@@ -234,58 +237,181 @@ function getValue() {
   }
   return list;
 }
+
+// 编辑按钮：触发文件选择
+const triggerEdit = () => {
+  if (props.disabled) return;
+  // 只查找当前 upload-box 下的 input
+  nextTick(() => {
+    const uploadBox = document.querySelector('.upload-box');
+    if (uploadBox) {
+      const input = uploadBox.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement | null;
+      if (input) input.click();
+    }
+  });
+};
 </script>
 
 <template>
-  <div>
-    <ElUpload
-      v-bind="$attrs"
-      v-model:file-list="fileList"
-      :accept="getStringAccept"
-      :before-upload="beforeUpload"
-      :http-request="customRequest"
-      :disabled="disabled"
-      :list-type="listType"
-      :limit="maxNumber"
-      :multiple="multiple"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :class="width || height ? 'custom-upload' : ''"
+  <div
+    class="upload-box"
+    :style="{
+      width: width || '150px',
+      height: height || '150px',
+      borderRadius: borderradius,
+    }"
+  >
+    <template
+      v-if="
+        fileList.length > 0 &&
+        fileList[0] &&
+        fileList[0].status === UploadResultStatus.SUCCESS
+      "
     >
-      <div
-        class="upload-content flex flex-col items-center justify-center"
-        :style="{ width: width || '', height: height || '' }"
-      >
-        <CloudUpload />
-        <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
+      <div class="upload-image-wrapper">
+        <img :src="fileList[0].url" class="upload-image" />
+        <div class="upload-handle">
+          <div class="handle-icon" @click="handlePreview(fileList[0]!)">
+            <i class="el-icon el-icon-zoom-in"></i>
+            <span>详情</span>
+          </div>
+          <div v-if="!disabled" class="handle-icon" @click="triggerEdit">
+            <i class="el-icon el-icon-edit"></i>
+            <span>编辑</span>
+          </div>
+          <div
+            v-if="!disabled"
+            class="handle-icon"
+            @click="handleRemove(fileList[0]!)"
+          >
+            <i class="el-icon el-icon-delete"></i>
+            <span>删除</span>
+          </div>
+        </div>
       </div>
-    </ElUpload>
+    </template>
+    <template v-else>
+      <ElUpload
+        v-bind="$attrs"
+        v-model:file-list="fileList"
+        :accept="getStringAccept"
+        :before-upload="beforeUpload"
+        :http-request="customRequest"
+        :disabled="disabled"
+        :list-type="listType"
+        :limit="maxNumber"
+        :multiple="multiple"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        class="upload"
+        :style="{
+          width: width || '150px',
+          height: height || '150px',
+          borderRadius: borderradius,
+        }"
+      >
+        <div class="upload-content flex flex-col items-center justify-center">
+          <Plus />
+        </div>
+      </ElUpload>
+    </template>
     <div v-if="showDescription" class="mt-2 text-xs text-gray-500">
       {{ getStringAccept }}
     </div>
   </div>
 </template>
 
-<style>
-.ant-upload-select-picture-card {
-  @apply flex items-center justify-center;
-}
-
-.custom-upload .el-upload {
-  width: auto !important;
-  height: auto !important;
-}
-
-.custom-upload .el-upload--picture-card {
-  width: auto !important;
-  height: auto !important;
-  line-height: normal !important;
-}
-
-.custom-upload .upload-content {
+<style lang="scss" scoped>
+.upload-box {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #fafafa;
+  border: 1px dashed var(--el-border-color-darker);
+  transition: border-color 0.2s;
+
+  .upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent;
+    border: none !important;
+  }
+
+  .upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .upload-image-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-radius: inherit;
+  }
+
+  .upload-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: inherit;
+  }
+
+  .upload-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background: rgb(0 0 0 / 50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .handle-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
+      font-size: 18px;
+      color: #fff;
+
+      span {
+        margin-top: 2px;
+        font-size: 12px;
+      }
+    }
+  }
+
+  .upload-image-wrapper:hover .upload-handle {
+    opacity: 1;
+  }
 }
 </style>

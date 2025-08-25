@@ -114,7 +114,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data =
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
-    data.items = formData.value?.items;
+    data.items = formData.value?.items?.map((item) => ({
+      ...item,
+      // 解决新增采购订单报错
+      id: undefined,
+    }));
     // 将文件数组转换为字符串
     if (data.fileUrl && Array.isArray(data.fileUrl)) {
       data.fileUrl = data.fileUrl.length > 0 ? data.fileUrl[0] : '';

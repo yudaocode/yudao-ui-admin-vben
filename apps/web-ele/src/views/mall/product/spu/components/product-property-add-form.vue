@@ -1,26 +1,25 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
 import type { PropType } from 'vue';
+
+import type { MallPropertyApi } from '#/api/mall/product/property';
+
+import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { $t } from '#/locales';
 import { getPropertySimpleList } from '#/api/mall/product/property';
 import * as PropertyApi from '#/api/mall/product/property';
-import type { MallPropertyApi } from '#/api/mall/product/property';
+import { $t } from '#/locales';
 
 // 扩展Property接口，添加values属性
 interface ExtendedProperty extends MallPropertyApi.Property {
   values?: any[];
 }
 
-const emit = defineEmits(['success']);
-
-const attributeList = ref<ExtendedProperty[]>([]); // 商品属性列表
-const attributeOptions = ref([] as MallPropertyApi.Property[]); // 商品属性名称下拉框
+// 商品属性名称下拉框
 
 const props = defineProps({
   propertyList: {
@@ -29,6 +28,10 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['success']);
+
+const attributeList = ref<ExtendedProperty[]>([]); // 商品属性列表
+const attributeOptions = ref([] as MallPropertyApi.Property[]);
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
