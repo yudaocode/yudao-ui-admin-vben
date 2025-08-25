@@ -4,6 +4,7 @@
 // TODO @芋艿：后续这些 form-create 的优化；另外需要使用 form-create-helper 会好点
 import { isRef } from 'vue';
 
+import formCreate from '@form-create/ant-design-vue';
 // 编码表单 Conf
 export const encodeConf = (designerRef: any) => {
   return JSON.stringify(designerRef.value.getOption());
@@ -23,7 +24,7 @@ export const encodeFields = (designerRef: any) => {
 export const decodeFields = (fields: string[]) => {
   const rule: object[] = [];
   fields.forEach((item) => {
-    rule.push(JSON.parse(item));
+    rule.push(formCreate.parseJson(item));
   });
   return rule;
 };
@@ -34,7 +35,7 @@ export const setConfAndFields = (
   conf: string,
   fields: string | string[],
 ) => {
-  designerRef.value.setOption(JSON.parse(conf));
+  designerRef.value.setOption(formCreate.parseJson(conf));
   // 处理 fields 参数类型，确保传入 decodeFields 的是 string[] 类型
   const fieldsArray = Array.isArray(fields) ? fields : [fields];
   designerRef.value.setRule(decodeFields(fieldsArray));
@@ -50,7 +51,7 @@ export const setConfAndFields2 = (
   if (isRef(detailPreview)) {
     detailPreview = detailPreview.value;
   }
-  detailPreview.option = JSON.parse(conf);
+  detailPreview.option = formCreate.parseJson(conf);
   detailPreview.rule = decodeFields(fields);
   if (value) {
     detailPreview.value = value;
