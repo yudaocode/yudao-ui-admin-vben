@@ -7,6 +7,7 @@ import { computed, nextTick, ref, watch } from 'vue';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
+import formCreate from '@form-create/ant-design-vue';
 import { Button, Card, Col, message, Row, Space, Tabs } from 'ant-design-vue';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
@@ -129,11 +130,11 @@ async function initProcessInfo(row: any, formVariables?: any) {
     // 注意：需要从 formVariables 中，移除不在 row.formFields 的值。
     // 原因是：后端返回的 formVariables 里面，会有一些非表单的信息。例如说，某个流程节点的审批人。
     //        这样，就可能导致一个流程被审批不通过后，重新发起时，会直接后端报错！！！
-    const allowedFields = new Set(
-      decodeFields(row.formFields).map((fieldObj: any) => fieldObj.field),
-    );
+    const formApi = formCreate.create(decodeFields(row.formFields));
+    const allowedFields = formApi.fields();
+    console.error('allowedFields===>', allowedFields);
     for (const key in formVariables) {
-      if (!allowedFields.has(key)) {
+      if (!allowedFields.includes(key)) {
         delete formVariables[key];
       }
     }
