@@ -72,3 +72,12 @@ export function exportStock(params: ErpStockApi.StockPageParams) {
     params,
   });
 }
+
+/**
+ * 获取库存数量
+ */
+export function getWarehouseStockCount(params: ErpStockApi.StockQueryParams) {
+  return requestClient.get<number>('/erp/stock/get-count', {
+    params,
+  });
+}

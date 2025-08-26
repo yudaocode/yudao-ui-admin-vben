@@ -95,8 +95,7 @@ watch(
       props.discountPercent === null
         ? 0
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
-    // TODO @nehc：这里的 idea 红色告警？
-    const finalTotalPrice = totalPrice - discountPrice;
+    const finalTotalPrice = totalPrice - discountPrice!;
 
     // 发送计算结果给父组件
     emit('update:discount-price', discountPrice);
@@ -112,9 +111,9 @@ onMounted(async () => {
 
 function handleAdd() {
   const newRow = {
-    productId: null,
+    productId: undefined,
     productName: '',
-    productUnitId: null,
+    productUnitId: undefined,
     productUnitName: '',
     productBarCode: '',
     count: 1,

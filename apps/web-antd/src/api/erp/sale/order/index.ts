@@ -8,13 +8,40 @@ export namespace ErpSaleOrderApi {
     id?: number; // 订单工单编号
     no: string; // 销售订单号
     customerId: number; // 客户编号
+    accountId?: number; // 收款账户编号
     orderTime: Date; // 订单时间
     totalCount: number; // 合计数量
     totalPrice: number; // 合计金额，单位：元
     status: number; // 状态
     remark: string; // 备注
     outCount: number; // 销售出库数量
+    fileUrl?: string; // 附件地址
+    inCount?: number; // 采购入库数量
     returnCount: number; // 销售退货数量
+    totalProductPrice?: number; // 产品金额，单位：元
+    discountPercent?: number; // 优惠率，百分比
+    discountPrice?: number; // 优惠金额，单位：元
+    depositPrice?: number; // 定金金额，单位：元
+    items?: SaleOrderItem[]; // 销售订单产品明细列表
+  }
+  /** ERP 销售订单产品明细 */
+  export interface SaleOrderItem {
+    id?: number; // 订单项编号
+    orderId?: number; // 采购订单编号
+    productId?: number; // 产品编号
+    productName?: string; // 产品名称
+    productBarCode?: string; // 产品条码
+    productUnitId?: number; // 产品单位编号
+    productUnitName?: string; // 产品单位名称
+    productPrice?: number; // 产品单价，单位：元
+    totalProductPrice?: number; // 产品总价，单位：元
+    count?: number; // 数量
+    totalPrice?: number; // 总价，单位：元
+    taxPercent?: number; // 税率，百分比
+    taxPrice?: number; // 税额，单位：元
+    totalTaxPrice?: number; // 含税总价，单位：元
+    remark?: string; // 备注
+    stockCount?: number; // 库存数量（显示字段）
   }
 
   /** 销售订单分页查询参数 */

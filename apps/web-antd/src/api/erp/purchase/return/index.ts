@@ -2,17 +2,40 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpPurchaseReturnApi {
+export namespace ErpPurchaseReturnApi {
   /** 采购退货信息 */
   export interface PurchaseReturn {
     id?: number; // 采购退货编号
-    no: string; // 采购退货号
-    supplierId: number; // 供应商编号
-    returnTime: Date; // 退货时间
-    totalCount: number; // 合计数量
+    no?: string; // 采购退货号
+    supplierId?: number; // 供应商编号
+    returnTime?: Date; // 退货时间
+    totalCount?: number; // 合计数量
     totalPrice: number; // 合计金额，单位：元
-    status: number; // 状态
-    remark: string; // 备注
+    discountPercent?: number; // 折扣百分比
+    discountPrice?: number; // 折扣金额
+    status?: number; // 状态
+    remark?: string; // 备注
+    totalTaxPrice?: number; // 合计税额
+    otherPrice?: number; // 其他费用
+    items?: PurchaseReturnItem[];
+  }
+  export interface PurchaseReturnItem {
+    count?: number;
+    id?: number;
+    orderItemId?: number;
+    productBarCode?: string;
+    productId?: number;
+    productName: string;
+    productPrice: number;
+    productUnitId?: number;
+    productUnitName?: string;
+    totalProductPrice?: number;
+    remark: string;
+    stockCount?: number;
+    taxPercent?: number;
+    taxPrice?: number;
+    totalPrice?: number;
+    warehouseId?: number;
   }
 
   /** 采购退货分页查询参数 */

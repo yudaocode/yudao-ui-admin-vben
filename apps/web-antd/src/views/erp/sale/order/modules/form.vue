@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
+import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -9,23 +9,23 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createPurchaseOrder,
-  getPurchaseOrder,
-  updatePurchaseOrder,
-} from '#/api/erp/purchase/order';
+  createSaleOrder,
+  getSaleOrder,
+  updateSaleOrder,
+} from '#/api/erp/sale/order';
 
 import { useFormSchema } from '../data';
-import PurchaseOrderItemForm from './purchase-order-item-form.vue';
+import SaleOrderItemForm from './sale-order-item-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>();
+const formData = ref<ErpSaleOrderApi.SaleOrder>();
 const formType = ref('');
 const itemFormRef = ref();
 
 const getTitle = computed(() => {
-  if (formType.value === 'create') return '添加采购订单';
-  if (formType.value === 'update') return '编辑采购订单';
-  return '采购订单详情';
+  if (formType.value === 'create') return '添加销售订单';
+  if (formType.value === 'update') return '编辑销售订单';
+  return '销售订单详情';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -46,8 +46,8 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-const handleUpdateItems = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
-  formData.value = modalApi.getData<ErpPurchaseOrderApi.PurchaseOrder>();
+const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
+  formData.value = modalApi.getData<ErpSaleOrderApi.SaleOrder>();
   if (formData.value) {
     formData.value.items = items;
   }
@@ -71,9 +71,8 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
-// TODO @nehc：这里的注释使用 /** */ 和别的模块一致哈；
 /**
- * 创建或更新采购订单
+ * 创建或更新销售订单
  */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -83,7 +82,6 @@ const [Modal, modalApi] = useVbenModal({
     }
     await nextTick();
 
-    // TODO @nehc：应该不会不存在，直接校验，简洁一点！另外，可以看看别的模块，主子表的处理哈；
     const itemFormInstance = Array.isArray(itemFormRef.value)
       ? itemFormRef.value[0]
       : itemFormRef.value;
@@ -111,11 +109,10 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
+    const data = (await formApi.getValues()) as ErpSaleOrderApi.SaleOrder;
     data.items = formData.value?.items?.map((item) => ({
       ...item,
-      // 解决新增采购订单报错
+      // 解决新增销售订单报错
       id: undefined,
     }));
     // 将文件数组转换为字符串
@@ -124,8 +121,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     try {
       await (formType.value === 'create'
-        ? createPurchaseOrder(data)
-        : updatePurchaseOrder(data));
+        ? createSaleOrder(data)
+        : updateSaleOrder(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -148,9 +145,8 @@ const [Modal, modalApi] = useVbenModal({
 
     if (!data.id) {
       // 初始化空的表单数据
-      formData.value = { items: [] } as ErpPurchaseOrderApi.PurchaseOrder;
+      formData.value = { items: [] } as unknown as ErpSaleOrderApi.SaleOrder;
       await nextTick();
-      // TODO @nehc：看看有没办法简化
       const itemFormInstance = Array.isArray(itemFormRef.value)
         ? itemFormRef.value[0]
         : itemFormRef.value;
@@ -162,7 +158,7 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     try {
-      formData.value = await getPurchaseOrder(data.id);
+      formData.value = await getSaleOrder(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
       // 初始化子表单
@@ -193,7 +189,7 @@ defineExpose({ modalApi });
   >
     <Form class="mx-3">
       <template #product="slotProps">
-        <PurchaseOrderItemForm
+        <SaleOrderItemForm
           v-bind="slotProps"
           ref="itemFormRef"
           class="w-full"
