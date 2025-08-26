@@ -5,7 +5,7 @@ import type { Recordable } from '@vben/types';
 
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenDrawer, VbenTree } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -47,19 +47,26 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
+
   async onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemRoleApi.SystemRole>();
       formApi.resetForm();
-      if (permissions.value.length === 0) {
-        await loadPermissions();
-      }
+
       if (data) {
         formData.value = data;
         id.value = data.id;
-        formApi.setValues(data);
       } else {
         id.value = undefined;
+      }
+
+      if (permissions.value.length === 0) {
+        await loadPermissions();
+      }
+      // Wait for Vue to flush DOM updates (form fields mounted)
+      await nextTick();
+      if (data) {
+        formApi.setValues(data);
       }
     }
   },
