@@ -74,7 +74,7 @@ export function deleteCustomer(id: number) {
 
 /** 导出客户 */
 export function exportCustomer(params: any) {
-  return requestClient.download('/crm/customer/export-excel', params);
+  return requestClient.download('/crm/customer/export-excel', { params });
 }
 
 /** 下载客户导入模板 */

@@ -8,7 +8,7 @@ export const copyValueToTarget = (target: any, source: any) => {
   // 删除多余属性
   Object.keys(newObj).forEach((key) => {
     // 如果不是target中的属性则删除
-    if (Object.keys(target).indexOf(key) === -1) {
+    if (!Object.keys(target).includes(key)) {
       delete newObj[key];
     }
   });

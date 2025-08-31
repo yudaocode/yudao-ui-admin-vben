@@ -49,5 +49,7 @@ export async function deleteProcessExpression(id: number) {
 
 /** 导出流程表达式 */
 export async function exportProcessExpression(params: any) {
-  return requestClient.download('/bpm/process-expression/export-excel', params);
+  return requestClient.download('/bpm/process-expression/export-excel', {
+    params,
+  });
 }

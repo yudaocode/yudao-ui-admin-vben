@@ -53,5 +53,5 @@ export function deleteProduct(id: number) {
 
 /** 导出产品 */
 export function exportProduct(params: any) {
-  return requestClient.download('/crm/product/export-excel', params);
+  return requestClient.download('/crm/product/export-excel', { params });
 }

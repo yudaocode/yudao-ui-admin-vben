@@ -7,6 +7,7 @@ import { onMounted, reactive, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@vben/icons';
+import { useAccessStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
@@ -16,7 +17,6 @@ import * as DiyPageApi from '#/api/mall/promotion/diy/page';
 import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
 import DiyEditor from '#/components/diy-editor/index.vue';
 import { PAGE_LIBS } from '#/components/diy-editor/util';
-import {useAccessStore} from '@vben/stores';
 
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });

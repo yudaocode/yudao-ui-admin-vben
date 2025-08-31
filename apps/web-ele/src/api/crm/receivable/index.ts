@@ -89,7 +89,7 @@ export function deleteReceivable(id: number) {
 
 /** 导出回款 */
 export function exportReceivable(params: any) {
-  return requestClient.download('/crm/receivable/export-excel', params);
+  return requestClient.download('/crm/receivable/export-excel', { params });
 }
 
 /** 提交审核 */
