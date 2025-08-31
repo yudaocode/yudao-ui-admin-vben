@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
-import type { SystemUserApi } from '#/api/system/user';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
@@ -12,7 +11,6 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, deleteDeptList, getDeptList } from '#/api/system/dept';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -22,13 +20,6 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
-
-const userList = ref<SystemUserApi.User[]>([]);
-
-/** 获取负责人名称 */
-function getLeaderName(userId: number) {
-  return userList.value.find((user) => user.id === userId)?.nickname;
-}
 
 /** 刷新表格 */
 function onRefresh() {
@@ -93,7 +84,6 @@ async function handleDeleteBatch() {
   });
   try {
     await deleteDeptList(checkedIds.value);
-    checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {
@@ -103,7 +93,7 @@ async function handleDeleteBatch() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(getLeaderName),
+    columns: useGridColumns(),
     height: 'auto',
     proxyConfig: {
       ajax: {
@@ -135,11 +125,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,
   },
-});
-
-/** 初始化 */
-onMounted(async () => {
-  userList.value = await getSimpleUserList();
 });
 </script>
 

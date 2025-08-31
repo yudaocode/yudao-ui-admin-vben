@@ -64,13 +64,13 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'leaderUserId',
-      label: '负责人',
+      label: '部门主管',
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        labelField: 'nickname',
+        labelField: 'name',
         valueField: 'id',
-        placeholder: '请选择负责人',
+        placeholder: '请选择部门主管',
         allowClear: true,
       },
       rules: z.number().optional(),
@@ -109,9 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getLeaderName?: (userId: number) => string | undefined,
-): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -122,9 +120,8 @@ export function useGridColumns(
       treeNode: true,
     },
     {
-      field: 'leaderUserId',
-      title: '负责人',
-      formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
+      field: 'leaderUserName',
+      title: '部门主管',
     },
     {
       field: 'sort',
