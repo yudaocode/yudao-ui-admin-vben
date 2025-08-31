@@ -67,6 +67,13 @@ function toggleExpand() {
   gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
 
+/** 切换显示/隐藏状态关闭的菜单 */
+const hidden = ref(true);
+function toggleHidden() {
+  hidden.value = !hidden.value;
+  gridApi.query();
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -78,7 +85,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_params) => {
-          return await getMenuList();
+          const params = {};
+          if (hidden.value) {
+            Object.assign(params, { status: 0 });
+          }
+          return await getMenuList(params);
         },
       },
     },
@@ -119,6 +130,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['system:menu:create'],
               onClick: handleCreate,
+            },
+            {
+              label: `${hidden ? '显示' : '隐藏'}已关闭菜单`,
+              type: 'primary',
+              onClick: toggleHidden,
             },
             {
               label: isExpanded ? '收缩' : '展开',
