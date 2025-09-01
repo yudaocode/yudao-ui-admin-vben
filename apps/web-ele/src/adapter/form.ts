@@ -8,6 +8,7 @@ import type { ComponentType } from './component';
 import { setupVbenForm, useVbenForm as useForm, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+// TODO @xingyu：要不搞到全局的校验？
 const MOBILE_REGEX = /(?:0|86|\+86)?1[3-9]\d{9}/;
 
 async function initSetupVbenForm() {

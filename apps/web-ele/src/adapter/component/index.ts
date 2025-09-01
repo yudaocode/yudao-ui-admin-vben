@@ -222,6 +222,7 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElTreeSelect,
+        // TODO @xingyu：这里要加 props: { label: 'label', children: 'children' }, vben 官方是有的
         nodeKey: 'value',
         loadingSlot: 'loading',
         optionsPropName: 'data',
@@ -250,6 +251,7 @@ async function initComponentAdapter() {
     },
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
+      // TODO @xingyu：, type: 'info' 要加么？vben5 是有的；
       return h(ElButton, { ...props, attrs }, slots);
     },
     // 自定义主要按钮
