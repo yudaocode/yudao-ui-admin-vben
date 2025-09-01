@@ -69,6 +69,24 @@ async function handelUpload({
         <DescriptionsItem>
           <template #label>
             <div class="flex items-center">
+              <IconifyIcon icon="ant-design:user-outlined" class="mr-1" />
+              用户姓名
+            </div>
+          </template>
+          {{ profile.name }}
+        </DescriptionsItem>
+        <DescriptionsItem>
+          <template #label>
+            <div class="flex items-center">
+              <IconifyIcon icon="ant-design:user-outlined" class="mr-1" />
+              用户昵称
+            </div>
+          </template>
+          {{ profile.nickname }}
+        </DescriptionsItem>
+        <DescriptionsItem>
+          <template #label>
+            <div class="flex items-center">
               <IconifyIcon
                 icon="ant-design:user-switch-outlined"
                 class="mr-1"
@@ -115,7 +133,11 @@ async function handelUpload({
               所属岗位
             </div>
           </template>
-          {{ profile.posts && profile.posts.length > 0 ? profile.posts.map(post => post.name).join(',') : '-' }}
+          {{
+            profile.posts && profile.posts.length > 0
+              ? profile.posts.map((post) => post.name).join(',')
+              : '-'
+          }}
         </DescriptionsItem>
         <DescriptionsItem>
           <template #label>

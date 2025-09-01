@@ -13,6 +13,10 @@ interface BasicUserInfo {
    */
   avatar: string;
   /**
+   * 用户姓名
+   */
+  name: string;
+  /**
    * 用户昵称
    */
   nickname: string;
@@ -25,7 +29,7 @@ interface BasicUserInfo {
    */
   userId: string;
   /**
-   * 用户名
+   * 用户账号
    */
   username: string;
 }

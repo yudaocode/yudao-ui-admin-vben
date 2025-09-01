@@ -26,6 +26,15 @@ const [Form, formApi] = useVbenForm({
   },
   schema: [
     {
+      label: '用户姓名',
+      fieldName: 'name',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户姓名',
+      },
+      rules: 'required',
+    },
+    {
       label: '用户昵称',
       fieldName: 'nickname',
       component: 'Input',

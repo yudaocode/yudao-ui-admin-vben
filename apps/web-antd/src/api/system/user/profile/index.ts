@@ -16,6 +16,7 @@ export namespace SystemUserProfileApi {
     roles: any[];
     dept: any;
     posts: any[];
+    name: string;
   }
 
   /** 更新密码请求 */
@@ -31,6 +32,7 @@ export namespace SystemUserProfileApi {
     mobile?: string;
     sex?: number;
     avatar?: string;
+    name: string;
   }
 }
 
