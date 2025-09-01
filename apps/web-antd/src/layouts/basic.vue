@@ -223,7 +223,7 @@ watch(
     <template #user-dropdown>
       <UserDropdown
         :avatar
-        :menus
+        :menus="menus.slice(0, 1)"
         :text="userStore.userInfo?.nickname"
         :description="userStore.userInfo?.email"
         :tag-text="userStore.userInfo?.username"

@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCodeLogin: true,
   showForgetPassword: true,
   showQrcodeLogin: true,
-  showRegister: true,
+  showRegister: false,
   showRememberMe: true,
   showThirdPartyLogin: true,
   submitButtonText: '',
@@ -100,6 +100,10 @@ onMounted(() => {
 defineExpose({
   getFormApi: () => formApi,
 });
+
+function isDocAlertEnable(): boolean {
+  return import.meta.env.VITE_APP_DOCALERT_ENABLE !== 'false';
+}
 </script>
 
 <template>
@@ -107,7 +111,7 @@ defineExpose({
     <slot name="title">
       <Title>
         <slot name="title">
-          {{ title || `${$t('authentication.welcomeBack')} 👋🏻` }}
+          {{ title || `${$t('authentication.welcomeBack')}` }}
         </slot>
         <template #desc>
           <span class="text-muted-foreground">
@@ -198,6 +202,6 @@ defineExpose({
     </slot>
 
     <!-- 萌新必读 -->
-    <DocLink />
+    <DocLink v-if="isDocAlertEnable()" />
   </div>
 </template>

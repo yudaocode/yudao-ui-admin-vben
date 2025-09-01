@@ -10,16 +10,23 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     /** 后端路由模式 */
     accessMode: 'backend',
-    name: import.meta.env.VITE_APP_TITLE,
+    name: '智慧社区',
     enableRefreshToken: true,
+    authPageLayout: 'panel-center',
+    defaultHomePath: '/workspace',
   },
   footer: {
     /** 默认关闭 footer 页脚，因为有一定遮挡 */
-    enable: false,
+    enable: true,
     fixed: false,
   },
   copyright: {
-    companyName: import.meta.env.VITE_APP_TITLE,
+    enable: true,
+    date: '2025',
+    companyName: '重庆XX健康科技有限公司',
     companySiteLink: 'https://gitee.com/yudaocode/yudao-ui-admin-vben',
+  },
+  theme: {
+    mode: 'light',
   },
 });

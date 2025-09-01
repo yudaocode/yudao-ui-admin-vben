@@ -4,7 +4,7 @@
   "pageDesc": "Efficient, versatile frontend template",
   "loginSuccess": "Login Successful",
   "loginSuccessDesc": "Welcome Back",
-  "loginSubtitle": "Enter your account details to manage your projects",
+  "loginSubtitle": "",
   "selectAccount": "Quick Select Account",
   "username": "Username",
   "password": "Password",
