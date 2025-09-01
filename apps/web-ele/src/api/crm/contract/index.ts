@@ -108,7 +108,7 @@ export function deleteContract(id: number) {
 
 /** 导出合同 */
 export function exportContract(params: any) {
-  return requestClient.download('/crm/contract/export-excel', params);
+  return requestClient.download('/crm/contract/export-excel', { params });
 }
 
 /** 提交审核 */

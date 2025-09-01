@@ -108,7 +108,7 @@ export function deleteBusiness(id: number) {
 
 /** 导出商机 */
 export function exportBusiness(params: any) {
-  return requestClient.download('/crm/business/export-excel', params);
+  return requestClient.download('/crm/business/export-excel', { params });
 }
 
 /** 联系人关联商机列表 */

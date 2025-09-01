@@ -67,7 +67,7 @@ export function deleteClue(id: number) {
 
 /** 导出线索 */
 export function exportClue(params: any) {
-  return requestClient.download('/crm/clue/export-excel', params);
+  return requestClient.download('/crm/clue/export-excel', { params });
 }
 
 /** 线索转移 */

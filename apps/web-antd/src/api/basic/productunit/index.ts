@@ -53,5 +53,5 @@ export function deleteProductUnitListByIds(ids: number[]) {
 
 /** 导出产品单位 */
 export function exportProductUnit(params: any) {
-  return requestClient.download('/basic/product-unit/export-excel', params);
+  return requestClient.download('/basic/product-unit/export-excel', { params });
 }

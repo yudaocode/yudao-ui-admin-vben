@@ -96,7 +96,7 @@ export function deleteContact(id: number) {
 
 /** 导出联系人 */
 export function exportContact(params: any) {
-  return requestClient.download('/crm/contact/export-excel', params);
+  return requestClient.download('/crm/contact/export-excel', { params });
 }
 
 /** 获得联系人列表（精简） */
