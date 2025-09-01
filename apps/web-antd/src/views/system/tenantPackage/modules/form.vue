@@ -10,7 +10,7 @@ import { handleTree } from '@vben/utils';
 import { Checkbox, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
+import { getSimpleMenusList as getMenuList } from '#/api/system/menu';
 import {
   createTenantPackage,
   getTenantPackage,
