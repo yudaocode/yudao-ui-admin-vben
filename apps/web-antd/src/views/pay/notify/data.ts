@@ -63,6 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+// TODO @xingyu：缺少 placeholder
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [

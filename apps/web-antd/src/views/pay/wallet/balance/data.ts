@@ -5,6 +5,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
+// TODO @xingyu：少了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {

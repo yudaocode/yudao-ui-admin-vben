@@ -56,6 +56,6 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="钱包交易记录" />
+    <Grid />
   </Page>
 </template>

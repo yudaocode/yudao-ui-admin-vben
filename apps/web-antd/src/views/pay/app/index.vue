@@ -180,6 +180,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #alipayAppConfig="{ row }">
+        <!-- TODO @xingyu：channelCodes 爆红 -->
         <TableAction
           :actions="[
             {

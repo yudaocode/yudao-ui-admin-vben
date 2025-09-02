@@ -47,6 +47,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
+// TODO @xingyu：少了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {

@@ -5,6 +5,7 @@ import { getAppList } from '#/api/pay/app';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
+// TODO @霖：缺少 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
