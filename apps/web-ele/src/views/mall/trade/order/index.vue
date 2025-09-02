@@ -29,7 +29,6 @@ function onRefresh() {
   gridApi.query();
 }
 const { push } = useRouter();
-// TODO xingyu：貌似详情，还点不进去哇？
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });
@@ -113,6 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <DeleveryFormModal @success="onRefresh" />
     <Grid table-title="订单列表">
+      <!-- TODO @霖：列表有点丑 -->
       <template #expand_content="{ row }">
         <div class="order-items">
           <div v-for="item in row.items" :key="item.id" class="order-item">

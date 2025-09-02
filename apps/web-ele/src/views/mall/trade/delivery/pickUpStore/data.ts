@@ -62,6 +62,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '详细地址',
       rules: 'required',
     },
+    // TODO @霖：时间类型不对
     {
       component: 'TimePicker',
       fieldName: 'openingTime',
@@ -86,6 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '纬度',
       rules: 'required',
     },
+    // TODO @霖：缺少地图
     {
       component: 'Input',
       fieldName: 'getGeo',

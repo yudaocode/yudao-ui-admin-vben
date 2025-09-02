@@ -18,6 +18,7 @@ import { useBindFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryPickUpStoreApi.PickUpStore>();
+// TODO @xingyu：店员是多选；
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['绑定店员'])

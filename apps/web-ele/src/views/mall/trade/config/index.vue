@@ -86,6 +86,7 @@ const [Form, formApi] = useVbenForm({
       <ElTabs v-model="activeKey" @tab-change="handleTabChange">
         <ElTabPane label="售后" name="afterSale" :force-render="true" />
         <ElTabPane label="配送" name="delivery" :force-render="true" />
+        <!-- TODO @霖：tooltip 有点丑； -->
         <ElTabPane label="分销" name="brokerage" :force-render="true" />
       </ElTabs>
       <Form class="w-3/5" />

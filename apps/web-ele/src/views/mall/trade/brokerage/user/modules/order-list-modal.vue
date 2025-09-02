@@ -50,6 +50,7 @@ function useFormSchema(): VbenFormSchema[] {
       fieldName: 'sourceUserLevel',
       label: '用户类型',
       component: 'RadioGroup',
+      // TODO @霖：这里会折行
       componentProps: {
         options: [
           { label: '全部', value: 0 },
