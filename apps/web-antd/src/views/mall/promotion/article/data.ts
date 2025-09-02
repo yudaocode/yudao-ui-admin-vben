@@ -75,7 +75,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      // TODO: 商品关联
+      // TODO: @xingyu：商品关联
       fieldName: 'spuId',
       label: '商品关联',
       component: 'Input',

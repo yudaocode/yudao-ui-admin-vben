@@ -74,8 +74,8 @@ export function useFormSchema(): VbenFormSchema[] {
         optionType: 'button',
       },
     },
+    // TODO: @霖：商品关联
     {
-      // TODO: 商品关联
       fieldName: 'spuId',
       label: '商品关联',
       component: 'Input',

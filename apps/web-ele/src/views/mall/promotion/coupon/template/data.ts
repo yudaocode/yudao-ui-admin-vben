@@ -43,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '优惠券描述',
       component: 'Textarea',
     },
-    // TODO
+    // TODO @霖：不同的优惠，不同的选择
     {
       fieldName: 'productScope',
       label: '优惠类型',
@@ -63,6 +63,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @xingu：不同的有效期，不同的类型
     {
       fieldName: 'validityType',
       label: '有效期类型',
