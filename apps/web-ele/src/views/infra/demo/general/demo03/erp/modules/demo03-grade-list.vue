@@ -91,7 +91,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Grade[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const loading = ref(true); // 列表的加载中

@@ -35,16 +35,6 @@ function onRefresh() {
   gridApi.query();
 }
 
-// TODO @nehc handleRowCheckboxChange 放的位置；
-const checkedIds = ref<number[]>([]);
-function handleRowCheckboxChange({
-  records,
-}: {
-  records: ErpPurchaseOrderApi.PurchaseOrder[];
-}) {
-  checkedIds.value = records.map((item) => item.id);
-}
-
 /** 详情 */
 function handleDetail(row: ErpPurchaseOrderApi.PurchaseOrder) {
   formModalApi.setData({ type: 'detail', id: row.id }).open();
@@ -102,6 +92,16 @@ async function handleBatchDelete() {
   } finally {
     hideLoading();
   }
+}
+
+// TODO @Xuzhiqiang：批量删除待实现
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: ErpPurchaseOrderApi.PurchaseOrder[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 审批/反审批操作 */

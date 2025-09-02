@@ -78,7 +78,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemDictDataApi.DictData[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除字典数据 */

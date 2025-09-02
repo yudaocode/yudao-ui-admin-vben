@@ -59,15 +59,6 @@ async function handleDelete(row: SystemNoticeApi.Notice) {
   }
 }
 
-const checkedIds = ref<number[]>([]);
-function handleRowCheckboxChange({
-  records,
-}: {
-  records: SystemNoticeApi.Notice[];
-}) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
 /** 批量删除公告 */
 async function handleDeleteBatch() {
   const hideLoading = message.loading({
@@ -83,6 +74,15 @@ async function handleDeleteBatch() {
   } finally {
     hideLoading();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNoticeApi.Notice[];
+}) {
+  checkedIds.value = records.map((item) => item.id as number);
 }
 
 /** 推送公告 */

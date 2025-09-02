@@ -59,7 +59,7 @@ async function onDeleteBatch() {
   await deleteDataSourceConfigList(checkedIds.value);
   checkedIds.value = [];
   ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+  await onRefresh();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -68,7 +68,7 @@ function handleRowCheckboxChange({
 }: {
   records: InfraDataSourceConfigApi.DataSourceConfig[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 表格操作按钮的回调函数 */

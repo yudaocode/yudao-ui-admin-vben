@@ -94,7 +94,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemRoleApi.Role[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 分配角色的数据权限 */

@@ -63,7 +63,7 @@ function handleRowCheckboxChange({
 }: {
   records: MallCouponTemplateApi.CouponTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 优惠券模板状态修改 */

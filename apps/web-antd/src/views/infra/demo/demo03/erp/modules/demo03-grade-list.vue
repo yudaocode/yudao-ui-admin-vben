@@ -77,7 +77,7 @@ async function onDeleteBatch() {
     await deleteDemo03GradeList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    await onRefresh();
   } finally {
     hideLoading();
   }
@@ -89,7 +89,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Grade[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 表格操作按钮的回调函数 */

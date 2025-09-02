@@ -118,7 +118,7 @@ async function handleDelete(row: InfraJobApi.Job) {
 
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除任务 */

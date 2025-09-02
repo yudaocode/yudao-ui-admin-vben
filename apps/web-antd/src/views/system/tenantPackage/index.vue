@@ -64,7 +64,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemTenantPackageApi.TenantPackage[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除租户套餐 */

@@ -106,7 +106,7 @@ function handleRowCheckboxChange({
 }: {
   records: InfraFileConfigApi.FileConfig[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除文件配置 */

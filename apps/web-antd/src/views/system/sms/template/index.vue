@@ -82,7 +82,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemSmsTemplateApi.SmsTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除短信模板 */

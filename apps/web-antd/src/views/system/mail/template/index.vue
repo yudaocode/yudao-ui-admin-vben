@@ -76,7 +76,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemMailTemplateApi.MailTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除邮件模板 */

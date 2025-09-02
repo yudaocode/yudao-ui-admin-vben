@@ -111,7 +111,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemUserApi.User[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 重置密码 */

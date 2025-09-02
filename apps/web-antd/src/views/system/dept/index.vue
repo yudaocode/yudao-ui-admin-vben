@@ -81,7 +81,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemDeptApi.Dept[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除部门 */

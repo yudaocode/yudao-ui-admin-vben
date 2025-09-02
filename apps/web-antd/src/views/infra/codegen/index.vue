@@ -90,7 +90,7 @@ function handleRowCheckboxChange({
 }: {
   records: InfraCodegenApi.CodegenTable[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除代码生成配置 */

@@ -80,7 +80,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemSmsChannelApi.SmsChannel[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 表格操作按钮的回调函数 */

@@ -34,6 +34,7 @@ function onRefresh() {
   gridApi.query();
 }
 
+// TODO @Xuzhiqiang：批量删除待实现
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,

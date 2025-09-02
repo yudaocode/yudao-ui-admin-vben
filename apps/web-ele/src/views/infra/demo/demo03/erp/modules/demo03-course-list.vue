@@ -83,7 +83,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Course[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -129,7 +129,7 @@ async function onDeleteBatch() {
 
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 表格操作按钮的回调函数 */

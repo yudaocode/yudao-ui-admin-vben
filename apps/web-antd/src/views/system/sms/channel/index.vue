@@ -65,14 +65,13 @@ async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
   }
 }
 
-// 选中的短信渠道ID
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
   records: SystemSmsChannelApi.SmsChannel[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 批量删除处理 */

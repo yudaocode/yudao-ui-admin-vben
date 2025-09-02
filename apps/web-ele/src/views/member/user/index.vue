@@ -47,7 +47,7 @@ function onRefresh() {
 /** 设置选中 ID */
 const checkedIds = ref<number[]>([]);
 function setCheckedIds({ records }: { records: MemberUserApi.User[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 发送优惠券 */

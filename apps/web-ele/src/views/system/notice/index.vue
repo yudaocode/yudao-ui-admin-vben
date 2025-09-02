@@ -35,6 +35,7 @@ function onRefresh() {
 }
 
 /** 创建公告 */
+// TODO @霖：【规范讨论】方法名，要不要都换成 handleXXX 开头，和 ep 保持一致；
 function onCreate() {
   formModalApi.setData(null).open();
 }
@@ -74,7 +75,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemNoticeApi.Notice[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 推送公告 */
@@ -173,6 +174,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
+      <!-- TODO @霖：【规范讨论】要不要类似 antd 一样，改成 TableAction；可见 /apps/web-ele/src/views/system/notice/index.vue 的 167 到 195 -->
     </Grid>
   </Page>
 </template>

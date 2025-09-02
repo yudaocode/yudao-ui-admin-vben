@@ -89,7 +89,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Course[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 表格操作按钮的回调函数 */

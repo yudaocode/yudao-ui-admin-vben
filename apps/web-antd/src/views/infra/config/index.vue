@@ -66,15 +66,6 @@ async function handleDelete(row: InfraConfigApi.Config) {
   }
 }
 
-const checkedIds = ref<number[]>([]);
-function handleRowCheckboxChange({
-  records,
-}: {
-  records: InfraConfigApi.Config[];
-}) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
 /** 批量删除参数 */
 async function handleDeleteBatch() {
   const hideLoading = message.loading({
@@ -90,6 +81,15 @@ async function handleDeleteBatch() {
   } finally {
     hideLoading();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraConfigApi.Config[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
