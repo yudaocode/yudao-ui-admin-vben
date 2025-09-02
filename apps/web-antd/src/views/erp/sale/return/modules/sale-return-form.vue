@@ -1,21 +1,17 @@
 <script lang="ts" setup>
-import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
-import type { ErpSaleReturnApi } from '#/api/erp/sale/return';
+import type {ErpSaleOrderApi} from '#/api/erp/sale/order';
+import type {ErpSaleReturnApi} from '#/api/erp/sale/return';
+import {createSaleReturn, getSaleReturn, updateSaleReturn} from '#/api/erp/sale/return';
 
-import { computed, nextTick, ref, watch } from 'vue';
+import {computed, nextTick, ref, watch} from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import {useVbenModal} from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import {message} from 'ant-design-vue';
 
-import { useVbenForm } from '#/adapter/form';
-import {
-  createSaleReturn,
-  getSaleReturn,
-  updateSaleReturn,
-} from '#/api/erp/sale/return';
+import {useVbenForm} from '#/adapter/form';
 
-import { useFormSchema } from '../data';
+import {useFormSchema} from '../data';
 import SaleReturnItemForm from './sale-return-item-form.vue';
 import SelectSaleOrderForm from './select-sale-order-form.vue';
 
@@ -78,16 +74,16 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-// 更新销售退货项
+/** 更新销售退货项 */
 const handleUpdateItems = async (items: ErpSaleReturnApi.SaleReturnItem[]) => {
   if (formData.value) {
     const data = await formApi.getValues();
     formData.value = { ...data, items };
-    formApi.setValues(formData.value, false);
+    await formApi.setValues(formData.value, false);
   }
 };
 
-// 选择采购订单
+/** 选择采购订单 */
 const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formData.value = {
     ...formData.value,
@@ -125,10 +121,9 @@ watch(
         item.totalPrice = (item.totalProductPrice || 0) + (item.taxPrice || 0);
       });
       // 计算总价
-      const totalPrice = newItems.reduce((sum, item) => {
+      formData.value.totalPrice = newItems.reduce((sum, item) => {
         return sum + (item.totalProductPrice || 0) + (item.taxPrice || 0);
       }, 0);
-      formData.value.totalPrice = totalPrice;
     } else {
       formData.value.totalPrice = 0;
     }
@@ -221,7 +216,7 @@ const [Modal, modalApi] = useVbenModal({
         otherPrice: 0,
         items: [],
       };
-      formApi.setValues(formData.value, false);
+      await formApi.setValues(formData.value, false);
       return;
     }
     // 加载数据

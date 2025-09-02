@@ -24,8 +24,9 @@ const emit = defineEmits<{
 }>();
 const order = ref<ErpSaleOrderApi.SaleOrder>();
 const open = ref<boolean>(false);
-const handleSelectOrder = (selectorder: ErpSaleOrderApi.SaleOrder) => {
-  order.value = selectorder;
+
+const handleSelectOrder = (selectOrder: ErpSaleOrderApi.SaleOrder) => {
+  order.value = selectOrder;
 };
 
 const handleOk = () => {

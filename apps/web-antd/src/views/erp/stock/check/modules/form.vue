@@ -49,9 +49,7 @@ const handleUpdateItems = (items: ErpStockCheckApi.StockCheckItem[]) => {
   }
 };
 
-/**
- * 创建或更新库存盘点单
- */
+/** 创建或更新库存盘点单 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

@@ -92,7 +92,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,
@@ -122,7 +122,8 @@ function handleAdd() {
   tableData.value.push(newRow);
   gridApi.grid.insertAt(newRow, -1);
   emit('update:items', [...tableData.value]);
-  // 触发表格重新渲染以更新cellClassName
+  // 触发表格重新渲染以更新 cellClassName
+  // TODO @XuZhiqiang：使用 await 风格哈；
   nextTick(() => {
     gridApi.grid.refreshColumn();
   });

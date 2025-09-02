@@ -8,6 +8,7 @@ import { getSaleOrderPage } from '#/api/erp/sale/order';
 import { useOrderGridColumns, useOrderGridFormSchema } from '../data';
 
 const emit = defineEmits(['selectRow']);
+
 const [Grid] = useVbenVxeGrid({
   formOptions: {
     schema: useOrderGridFormSchema(),

@@ -24,7 +24,6 @@ export namespace ErpSaleOrderApi {
     depositPrice?: number; // 定金金额，单位：元
     items?: SaleOrderItem[]; // 销售订单产品明细列表
   }
-  /** ERP 销售订单产品明细 */
   export interface SaleOrderItem {
     id?: number; // 订单项编号
     orderId?: number; // 采购订单编号

@@ -71,10 +71,7 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
-// TODO @nehc：这里的注释使用 /** */ 和别的模块一致哈；
-/**
- * 创建或更新采购订单
- */
+/** 创建或更新采购订单 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

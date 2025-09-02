@@ -78,12 +78,13 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
+// TODO @XuZhiqiang 注释风格：使用 /** */
 // 更新采购入库项
 const handleUpdateItems = async (items: ErpPurchaseInApi.PurchaseInItem[]) => {
   if (formData.value) {
     const data = await formApi.getValues();
     formData.value = { ...data, items };
-    formApi.setValues(formData.value, false);
+    await formApi.setValues(formData.value, false);
   }
 };
 
@@ -125,10 +126,9 @@ watch(
         item.totalPrice = (item.totalProductPrice || 0) + (item.taxPrice || 0);
       });
       // 计算总价
-      const totalPrice = newItems.reduce((sum, item) => {
+      formData.value.totalPrice = newItems.reduce((sum, item) => {
         return sum + (item.totalProductPrice || 0) + (item.taxPrice || 0);
       }, 0);
-      formData.value.totalPrice = totalPrice;
     } else {
       formData.value.totalPrice = 0;
     }
@@ -149,9 +149,7 @@ watch(
   { immediate: true },
 );
 
-/**
- * 创建或更新采购入库
- */
+/** 创建或更新采购入库 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -221,7 +219,7 @@ const [Modal, modalApi] = useVbenModal({
         otherPrice: 0,
         items: [],
       };
-      formApi.setValues(formData.value, false);
+      await formApi.setValues(formData.value, false);
       return;
     }
     // 加载数据
