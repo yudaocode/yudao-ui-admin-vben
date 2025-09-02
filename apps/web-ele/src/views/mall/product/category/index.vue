@@ -166,7 +166,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.VIEW,
               auth: ['product:category:update'],
               ifShow: row.parentId !== undefined && row.parentId > 0,
-              onClick: handleViewSpu.bind(null, row.id || 0),
+              onClick: handleViewSpu.bind(null, row.id!),
             },
             {
               label: $t('common.delete'),

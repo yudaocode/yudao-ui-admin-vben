@@ -1,3 +1,6 @@
 <script lang="ts" setup></script>
 
-<template>detail</template>
+<template>
+  detail
+  <!-- TODO @xingyu：待开发 -->
+</template>

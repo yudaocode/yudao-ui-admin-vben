@@ -143,6 +143,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- TODO @霖：样式有点丑，要不照 vue3 + element-plus 在优化下？ -->
   <Page :auto-content-height="true">
     <ElTabs v-model="activeTab">
       <ElTabPane label="基础设置" name="info">

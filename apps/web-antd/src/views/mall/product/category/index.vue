@@ -44,6 +44,7 @@ function handleEdit(row: MallCategoryApi.Category) {
 /** 查看商品操作 */
 const router = useRouter(); // 路由
 const handleViewSpu = (id: number) => {
+  // TODO @xingyu：貌似跳转不到详情；
   router.push({
     name: 'ProductSpu',
     query: { categoryId: id },
@@ -165,8 +166,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['product:category:update'],
-              ifShow: row.parentId > 0,
-              onClick: handleViewSpu.bind(null, row),
+              ifShow: row.parentId !== undefined && row.parentId > 0,
+              onClick: handleViewSpu.bind(null, row.id!),
             },
             {
               label: $t('common.delete'),
