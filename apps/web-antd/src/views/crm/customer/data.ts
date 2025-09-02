@@ -7,6 +7,8 @@ import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
+// TODO @xingyu：缺少 placeholder
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   const userStore = useUserStore();
