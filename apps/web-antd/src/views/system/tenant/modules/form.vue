@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { OrgApi } from '#/api/system/org';
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { computed, ref } from 'vue';
@@ -8,6 +9,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getOrgListForSaveTenant } from '#/api/system/org';
 import { createTenant, getTenant, updateTenant } from '#/api/system/tenant';
 import { $t } from '#/locales';
 
@@ -20,7 +22,7 @@ const getTitle = computed(() => {
     ? $t('ui.actionTitle.edit', ['租户'])
     : $t('ui.actionTitle.create', ['租户']);
 });
-
+const orgList = ref<OrgApi.Org[]>([]);
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -32,6 +34,15 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
+  handleValuesChange(values: Record<string, any>, fieldsChanged: string[]) {
+    if (fieldsChanged.includes('orgId') && values.orgId) {
+      orgList.value
+        .filter((org) => org.id === values.orgId)
+        .forEach((org) => {
+          formApi.setFieldValue('name', org.abbreviation);
+        });
+    }
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -69,6 +80,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<SystemTenantApi.Tenant>();
+    orgList.value = await getOrgListForSaveTenant(data.id);
+    formApi.updateSchema(useFormSchema(orgList.value));
     if (!data || !data.id) {
       return;
     }
@@ -91,7 +104,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 <template>
-  <Modal :title="getTitle" class="w-1/2">
+  <Modal :title="getTitle" class="w-2/3">
     <Form class="mx-4" />
   </Modal>
 </template>
