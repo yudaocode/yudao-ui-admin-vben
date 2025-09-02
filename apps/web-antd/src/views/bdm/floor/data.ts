@@ -72,6 +72,11 @@ export function useGridColumns(): VxeTableGridOptions<FloorApi.Floor>['columns']
       minWidth: 120,
     },
     {
+      field: 'areaName',
+      title: '所属地区',
+      minWidth: 120,
+    },
+    {
       field: 'zoneName',
       title: '所属区域',
       minWidth: 120,

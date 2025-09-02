@@ -157,6 +157,11 @@ export function useGridColumns(): VxeTableGridOptions<ZoneApi.Zone>['columns'] {
       },
     },
     {
+      field: 'areaName',
+      title: '所属地区',
+      minWidth: 120,
+    },
+    {
       field: 'name',
       title: '区域名称',
       minWidth: 120,

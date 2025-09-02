@@ -27,6 +27,30 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'longitude',
+      label: '经度',
+      rules: 'required',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        controlsPosition: 'right',
+        placeholder: '请输入经度',
+      },
+      defaultValue: 0,
+    },
+    {
+      fieldName: 'latitude',
+      label: '纬度',
+      rules: 'required',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        controlsPosition: 'right',
+        placeholder: '请输入纬度',
+      },
+      defaultValue: 0,
+    },
+    {
       fieldName: 'sort',
       label: '显示顺序',
       rules: 'required',
@@ -63,6 +87,11 @@ export function useGridColumns(): VxeTableGridOptions<BuildingApi.Building>['col
     {
       field: 'id',
       title: '楼栋编号',
+      minWidth: 120,
+    },
+    {
+      field: 'areaName',
+      title: '所属地区',
       minWidth: 120,
     },
     {

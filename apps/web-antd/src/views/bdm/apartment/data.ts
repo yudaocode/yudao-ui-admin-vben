@@ -24,23 +24,6 @@ export function useFormSchema(): VbenFormSchema[] {
     buildingIdField,
     floorIdField,
     {
-      fieldName: 'floorId',
-      label: '所属楼层',
-      rules: 'required',
-      component: 'ApiSelect',
-      componentProps: {
-        options: [],
-        fieldNames: { label: 'name', value: 'id' },
-        placeholder: '请选择所属楼层',
-      },
-      dependencies: {
-        triggerFields: ['buildingId'],
-        componentProps: async (values) => ({
-          options: await getFloorOptions(values.buildingId),
-        }),
-      },
-    },
-    {
       fieldName: 'name',
       label: '房屋名称',
       rules: 'required',
@@ -90,7 +73,11 @@ export function useGridColumns(): VxeTableGridOptions<ApartmentApi.Apartment>['c
       title: '房屋编号',
       minWidth: 120,
     },
-
+    {
+      field: 'areaName',
+      title: '所属地区',
+      minWidth: 120,
+    },
     {
       field: 'zoneName',
       title: '所属区域',
