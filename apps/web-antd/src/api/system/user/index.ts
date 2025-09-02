@@ -25,14 +25,14 @@ export namespace SystemUserApi {
 /** 查询用户管理列表 */
 export function getUserPage(params: PageParam) {
   return requestClient.get<PageResult<SystemUserApi.User>>(
-    '/system/user/page',
+    '/system/user-ext/page',
     { params },
   );
 }
 
 /** 查询用户详情 */
 export function getUser(id: number) {
-  return requestClient.get<SystemUserApi.User>(`/system/user/get?id=${id}`);
+  return requestClient.get<SystemUserApi.User>(`/system/user-ext/get?id=${id}`);
 }
 
 /** 新增用户 */
@@ -85,5 +85,7 @@ export function updateUserStatus(id: number, status: number) {
 
 /** 获取用户精简信息列表 */
 export function getSimpleUserList() {
-  return requestClient.get<SystemUserApi.User[]>('/system/user/simple-list');
+  return requestClient.get<SystemUserApi.User[]>(
+    '/system/user-ext/simple-list',
+  );
 }

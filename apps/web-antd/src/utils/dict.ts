@@ -288,6 +288,7 @@ enum DICT_TYPE {
   PROMOTION_DISCOUNT_TYPE = 'promotion_discount_type', // 优惠类型
   PROMOTION_PRODUCT_SCOPE = 'promotion_product_scope', // 营销的商品范围
   SYSTEM_DATA_SCOPE = 'system_data_scope',
+  SYSTEM_DOCUMENT_TYPE = 'system_document_type',
   SYSTEM_LOGIN_RESULT = 'system_login_result',
 
   SYSTEM_LOGIN_TYPE = 'system_login_type',

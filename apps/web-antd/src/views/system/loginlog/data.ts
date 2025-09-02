@@ -14,11 +14,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'username',
-      label: '用户名称',
+      label: '用户账号',
       component: 'Input',
       componentProps: {
         allowClear: true,
-        placeholder: '请输入用户名称',
+        placeholder: '请输入用户账号',
       },
     },
     {
@@ -59,7 +59,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'username',
-      title: '用户名称',
+      title: '用户账号',
     },
     {
       field: 'userIp',
@@ -110,7 +110,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'username',
-      label: '用户名称',
+      label: '用户账号',
     },
     {
       field: 'userIp',

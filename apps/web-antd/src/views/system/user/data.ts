@@ -8,12 +8,7 @@ import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -28,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'username',
-      label: '用户名称',
+      label: '用户账号',
       component: 'Input',
       rules: 'required',
     },
@@ -43,10 +38,30 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'name',
+      label: '用户姓名',
+      component: 'Input',
+      rules: 'required',
+    },
+    {
       fieldName: 'nickname',
       label: '用户昵称',
       component: 'Input',
       rules: 'required',
+    },
+    {
+      fieldName: 'documentType',
+      label: '证件类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.SYSTEM_DOCUMENT_TYPE, 'string'),
+        class: 'w-full',
+      },
+    },
+    {
+      fieldName: 'idNumber',
+      label: '证件号码',
+      component: 'Input',
     },
     {
       fieldName: 'deptId',
@@ -113,6 +128,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      formItemClass: 'col-span-2',
+      componentProps: {
+        rows: 3,
+      },
     },
   ];
 }
@@ -171,7 +190,15 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'username',
-      label: '用户名称',
+      label: '用户账号',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '用户姓名',
       component: 'Input',
       componentProps: {
         disabled: true,
@@ -228,11 +255,11 @@ export function useImportFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'username',
-      label: '用户名称',
+      fieldName: 'name',
+      label: '用户姓名',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入用户名称',
+        placeholder: '请输入用户账号',
         allowClear: true,
       },
     },
@@ -242,15 +269,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号码',
-        allowClear: true,
-      },
-    },
-    {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },
@@ -272,7 +290,11 @@ export function useGridColumns<T = SystemUserApi.User>(
     },
     {
       field: 'username',
-      title: '用户名称',
+      title: '用户账号',
+    },
+    {
+      field: 'name',
+      title: '用户姓名',
     },
     {
       field: 'nickname',
@@ -281,6 +303,10 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'deptName',
       title: '部门',
+    },
+    {
+      field: 'orgName',
+      title: '组织',
     },
     {
       field: 'mobile',
@@ -298,11 +324,6 @@ export function useGridColumns<T = SystemUserApi.User>(
           unCheckedValue: CommonStatusEnum.DISABLE,
         },
       },
-    },
-    {
-      field: 'createTime',
-      title: '创建时间',
-      formatter: 'formatDateTime',
     },
     {
       title: '操作',
