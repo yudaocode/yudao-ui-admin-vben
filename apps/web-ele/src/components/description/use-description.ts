@@ -2,7 +2,7 @@ import type { DescriptionsOptions } from './typing';
 
 import { defineComponent, h, isReactive, reactive, watch } from 'vue';
 
-import { Description } from './index';
+import Description from './description.vue';
 
 /** 描述列表 api 定义 */
 class DescriptionApi {
