@@ -1,73 +1,74 @@
-<script setup lang="ts">
-import type { Item } from './ui/typing';
+<script lang="ts" setup>
+import { ref } from 'vue';
 
-import { onMounted, onUnmounted, ref } from 'vue';
+import { Tinyflow } from '@tinyflow-ai/vue';
 
-import { Tinyflow as TinyflowNative } from './ui/index';
+import '@tinyflow-ai/vue/dist/index.css';
 
-import './ui/index.css';
-
-const props = defineProps<{
-  className?: string;
-  data?: Record<string, any>;
-  provider?: {
-    internal?: () => Item[] | Promise<Item[]>;
-    knowledge?: () => Item[] | Promise<Item[]>;
-    llm?: () => Item[] | Promise<Item[]>;
-  };
-  style?: Record<string, string>;
+defineProps<{
+  data: any;
+  provider: any;
 }>();
 
-const divRef = ref<HTMLDivElement | null>(null);
-let tinyflow: null | TinyflowNative = null;
-// 定义默认的 provider 方法
-const defaultProvider = {
-  llm: () => [] as Item[],
-  knowledge: () => [] as Item[],
-  internal: () => [] as Item[],
-};
-
-onMounted(() => {
-  if (divRef.value) {
-    // 合并默认 provider 和传入的 props.provider
-    const mergedProvider = {
-      ...defaultProvider,
-      ...props.provider,
-    };
-    tinyflow = new TinyflowNative({
-      element: divRef.value as Element,
-      data: props.data || {},
-      provider: mergedProvider,
-    });
-  }
-});
-
-onUnmounted(() => {
-  if (tinyflow) {
-    tinyflow.destroy();
-    tinyflow = null;
-  }
-});
-
-const getData = () => {
-  if (tinyflow) {
-    return tinyflow.getData();
-  }
-  console.warn('Tinyflow instance is not initialized');
-  return null;
-};
+const tinyflowRef = ref<InstanceType<typeof Tinyflow> | null>(null);
 
 defineExpose({
-  getData,
+  getData: () => tinyflowRef.value?.getData(),
 });
 </script>
-
 <template>
-  <div
-    ref="divRef"
-    class="tinyflow"
-    :class="[className]"
-    :style="style"
-    style="height: 100%"
-  ></div>
+  <Tinyflow
+    ref="tinyflowRef"
+    class-name="custom-class"
+    :data="data"
+    :provider="provider"
+  />
 </template>
+<style scoped>
+:deep(.custom-tinyflow) {
+  select {
+    appearance: auto !important;
+  }
+
+  /* 如果使用checkbox需要添加 */
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    margin: 0 4px;
+    border: 1px solid #ccc;
+  }
+}
+
+input[type='checkbox'] {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin: 0 8px 0 0;
+  cursor: pointer;
+  border: 2px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+
+  &:checked {
+    background-color: #1890ff;
+    border-color: #1890ff;
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 12px;
+      content: '';
+      border: 2px solid #fff;
+      border-top: 0;
+      border-left: 0;
+      transform: translate(-50%, -60%) rotate(45deg);
+    }
+  }
+
+  &:hover {
+    border-color: #40a9ff;
+  }
+}
+</style>
