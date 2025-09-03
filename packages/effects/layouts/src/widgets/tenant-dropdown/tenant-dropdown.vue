@@ -21,7 +21,7 @@ interface Tenant {
   contactMobile: string;
   accountCount: number;
   expireTime: Date;
-  website: string;
+  websites: string[];
   status: number;
 }
 
