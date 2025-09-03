@@ -14,7 +14,8 @@ import {
 
 import { $t } from '@vben/locales';
 
-import { aesEncrypt } from './utils/ase';
+import { AES } from '@vben-core/shared/utils';
+
 import { resetSize } from './utils/util';
 
 /**
@@ -137,7 +138,7 @@ function canvasClick(e: any) {
       // var flag = this.comparePos(this.fontPos, this.checkPosArr);
       // 发送后端请求
       const captchaVerification = secretKey.value
-        ? aesEncrypt(
+        ? AES.encrypt(
             `${backToken.value}---${JSON.stringify(checkPosArr)}`,
             secretKey.value,
           )
@@ -145,7 +146,7 @@ function canvasClick(e: any) {
       const data = {
         captchaType: captchaType.value,
         pointJson: secretKey.value
-          ? aesEncrypt(JSON.stringify(checkPosArr), secretKey.value)
+          ? AES.encrypt(JSON.stringify(checkPosArr), secretKey.value)
           : JSON.stringify(checkPosArr),
         token: backToken.value,
       };

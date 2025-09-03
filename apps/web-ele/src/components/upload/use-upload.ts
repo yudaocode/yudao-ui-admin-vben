@@ -7,7 +7,6 @@ import { computed, unref } from 'vue';
 import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-// import CryptoJS from 'crypto-js';
 import { createFile, getFilePresignedUrl, uploadFile } from '#/api/infra/file';
 import { baseRequestClient } from '#/api/request';
 
