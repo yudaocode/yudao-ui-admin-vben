@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { $t } from '@vben/locales';
-import { fenToYuan } from '@vben/utils';
+import { DeliveryTypeEnum, fenToYuan } from '@vben/utils';
 
 import { ElImage, ElTag } from 'element-plus';
 
@@ -16,12 +16,7 @@ import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express'
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import * as OrderApi from '#/api/mall/trade/order/index';
 import { DictTag } from '#/components/dict-tag';
-import {
-  DeliveryTypeEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/mall/trade/order/data';
 
 const props = defineProps<{
@@ -200,12 +195,10 @@ const [Grid] = useVbenVxeGrid({
               </ElTag>
             </div>
             <div class="order-item-info">
-              <span
-                >原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
+              <span>原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
                   item.count
                 }}
-                个</span
-              >
+                个</span>
               <DictTag
                 :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
                 :value="item.afterSaleStatus"

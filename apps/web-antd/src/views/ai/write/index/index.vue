@@ -4,9 +4,9 @@ import type { AiWriteApi } from '#/api/ai/write';
 import { nextTick, ref } from 'vue';
 
 import { alert, Page } from '@vben/common-ui';
+import { WriteExample } from '@vben/utils';
 
 import { writeStream } from '#/api/ai/write';
-import { WriteExample } from '#/utils';
 
 import Left from './components/Left.vue';
 import Right from './components/Right.vue';

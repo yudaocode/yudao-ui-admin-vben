@@ -4,13 +4,12 @@ import type { InfraJobLogApi } from '#/api/infra/job-log';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { DICT_TYPE, formatDateTime } from '@vben/utils';
 
 import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 import { getJobLog } from '#/api/infra/job-log';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 const formData = ref<InfraJobLogApi.JobLog>();
 

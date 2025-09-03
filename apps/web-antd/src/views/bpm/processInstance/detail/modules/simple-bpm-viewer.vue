@@ -3,8 +3,9 @@ import type { SimpleFlowNode } from '#/components/simple-process-design';
 
 import { ref, watch } from 'vue';
 
+import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '@vben/utils';
+
 import { SimpleProcessViewer } from '#/components/simple-process-design';
-import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '#/utils';
 
 defineOptions({ name: 'BpmProcessInstanceSimpleViewer' });
 

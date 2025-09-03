@@ -10,6 +10,7 @@ import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,
@@ -22,8 +23,6 @@ import {
   Tooltip,
   TypographyText,
 } from 'ant-design-vue';
-
-import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
 import { FieldPermissionType, START_USER_BUTTON_SETTING } from '../../consts';
 import {

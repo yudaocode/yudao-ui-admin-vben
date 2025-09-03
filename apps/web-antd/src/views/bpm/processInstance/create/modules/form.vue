@@ -6,6 +6,13 @@ import { computed, nextTick, ref, watch } from 'vue';
 
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import {
+  BpmCandidateStrategyEnum,
+  BpmFieldPermissionType,
+  BpmModelFormType,
+  BpmModelType,
+  BpmNodeIdEnum,
+} from '@vben/utils';
 
 import formCreate from '@form-create/ant-design-vue';
 import { Button, Card, Col, message, Row, Space, Tabs } from 'ant-design-vue';
@@ -16,15 +23,7 @@ import {
   getApprovalDetail as getApprovalDetailApi,
 } from '#/api/bpm/processInstance';
 import { router } from '#/router';
-import {
-  BpmCandidateStrategyEnum,
-  BpmFieldPermissionType,
-  BpmModelFormType,
-  BpmModelType,
-  BpmNodeIdEnum,
-  decodeFields,
-  setConfAndFields2,
-} from '#/utils';
+import { decodeFields, setConfAndFields2 } from '#/utils';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
 

@@ -4,11 +4,9 @@ import type { SimpleFlowNode } from '../consts';
 import { onMounted, provide, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlob, isString } from '@vben/utils';
+import { BpmNodeTypeEnum, downloadFileFromBlob, isString } from '@vben/utils';
 
 import { Button, ButtonGroup, Modal, Row } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import { NODE_DEFAULT_TEXT } from '../consts';
 import { useWatchNode } from '../helpers';

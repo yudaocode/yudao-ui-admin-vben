@@ -6,7 +6,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  InfraJobStatusEnum,
+  isEmpty,
+} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -20,7 +24,6 @@ import {
   updateJobStatus,
 } from '#/api/infra/job';
 import { $t } from '#/locales';
-import { InfraJobStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

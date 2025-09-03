@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { DICT_TYPE, formatDateTime } from '@vben/utils';
 
 import {
   ElDescriptions,
@@ -14,7 +14,6 @@ import {
 
 import { getNotifyTaskDetail } from '#/api/pay/notify';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 import { detailColumns } from '../data';
 

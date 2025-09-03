@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SimpleFlowNode } from '../consts';
 
-import { BpmNodeTypeEnum } from '#/utils';
+import { BpmNodeTypeEnum } from '@vben/utils';
 
 import { useWatchNode } from '../helpers';
 import ChildProcessNode from './nodes/child-process-node.vue';

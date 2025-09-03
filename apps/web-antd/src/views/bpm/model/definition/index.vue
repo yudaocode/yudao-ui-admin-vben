@@ -5,12 +5,12 @@ import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BpmModelFormType } from '@vben/utils';
 
 import { Button, Tooltip } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';
-import { BpmModelFormType } from '#/utils';
 
 // 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';

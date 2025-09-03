@@ -12,6 +12,11 @@ import { confirm, Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import {
+  BpmAutoApproveType,
+  BpmModelFormType,
+  BpmModelType,
+} from '@vben/utils';
 
 import { Button, Card, message } from 'ant-design-vue';
 
@@ -26,7 +31,6 @@ import {
 } from '#/api/bpm/model';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { BpmAutoApproveType, BpmModelFormType, BpmModelType } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import ExtraSetting from './modules/extra-setting.vue';

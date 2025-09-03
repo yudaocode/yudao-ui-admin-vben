@@ -6,7 +6,11 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
-import { floatToFixed2 } from '@vben/utils';
+import {
+  CouponTemplateTakeTypeEnum,
+  floatToFixed2,
+  PromotionDiscountTypeEnum,
+} from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -23,10 +27,6 @@ import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 import ColorInput from '#/components/color-input/index.vue';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-import {
-  CouponTemplateTakeTypeEnum,
-  PromotionDiscountTypeEnum,
-} from '#/utils/constants';
 import CouponSelect from '#/views/mall/promotion/coupon/components/coupon-select.vue';
 
 // 优惠券卡片属性面板

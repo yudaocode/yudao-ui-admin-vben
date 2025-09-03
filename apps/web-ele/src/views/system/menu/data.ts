@@ -8,18 +8,13 @@ import { h } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
-import { handleTree, isHttpUrl } from '@vben/utils';
+import { handleTree, isHttpUrl, SystemMenuTypeEnum } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  SystemMenuTypeEnum,
-} from '#/utils';
+import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

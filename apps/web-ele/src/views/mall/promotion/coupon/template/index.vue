@@ -6,6 +6,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { CommonStatusEnum } from '@vben/utils';
 
 import { ElLoading, ElMessage, ElSwitch } from 'element-plus';
 
@@ -15,7 +16,6 @@ import {
   getCouponTemplatePage,
   updateCouponTemplateStatus,
 } from '#/api/mall/promotion/coupon/couponTemplate';
-import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

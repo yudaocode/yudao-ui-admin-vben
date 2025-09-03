@@ -1,4 +1,4 @@
-import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '#/utils';
+import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '@vben/utils';
 
 interface DictDataType {
   label: string;

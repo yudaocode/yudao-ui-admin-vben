@@ -7,6 +7,7 @@ import { reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,
@@ -21,8 +22,6 @@ import {
   Select,
   SelectOption,
 } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import {
   DELAY_TYPE,

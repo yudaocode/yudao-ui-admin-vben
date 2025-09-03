@@ -6,6 +6,7 @@ import type { BpmFormApi } from '#/api/bpm/form';
 import { ref, watch } from 'vue';
 
 import { CircleHelp } from '@vben/icons';
+import { BpmModelFormType } from '@vben/utils';
 
 import FormCreate from '@form-create/ant-design-vue';
 import {
@@ -20,12 +21,7 @@ import {
 } from 'ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
-import {
-  BpmModelFormType,
-  DICT_TYPE,
-  getDictOptions,
-  setConfAndFields2,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, setConfAndFields2 } from '#/utils';
 
 const props = defineProps({
   formList: {

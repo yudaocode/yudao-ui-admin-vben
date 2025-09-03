@@ -7,12 +7,11 @@ import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { fenToYuan } from '@vben/utils';
+import { BrokerageRecordBizTypeEnum, fenToYuan } from '@vben/utils';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-import { BrokerageRecordBizTypeEnum } from '#/utils/constants';
 
 /** 推广订单列表 */
 defineOptions({ name: 'BrokerageOrderListModal' });

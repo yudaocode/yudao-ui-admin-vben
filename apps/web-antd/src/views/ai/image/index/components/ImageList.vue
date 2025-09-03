@@ -5,7 +5,7 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, useVbenDrawer } from '@vben/common-ui';
-import { downloadFileFromImageUrl } from '@vben/utils';
+import { AiImageStatusEnum, downloadFileFromImageUrl } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
 import { Button, Card, message, Pagination } from 'ant-design-vue';
@@ -16,7 +16,6 @@ import {
   getImagePageMy,
   midjourneyAction,
 } from '#/api/ai/image';
-import { AiImageStatusEnum } from '#/utils';
 
 import ImageCard from './ImageCard.vue';
 import ImageDetail from './ImageDetail.vue';

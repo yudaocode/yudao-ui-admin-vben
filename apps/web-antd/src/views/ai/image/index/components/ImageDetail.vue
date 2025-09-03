@@ -3,18 +3,18 @@ import type { AiImageApi } from '#/api/ai/image';
 
 import { ref, toRefs, watch } from 'vue';
 
-import { formatDate } from '@vben/utils';
+import {
+  AiPlatformEnum,
+  Dall3StyleList,
+  formatDate,
+  StableDiffusionClipGuidancePresets,
+  StableDiffusionSamplers,
+  StableDiffusionStylePresets,
+} from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 
 import { getImageMy } from '#/api/ai/image';
-import {
-  AiPlatformEnum,
-  Dall3StyleList,
-  StableDiffusionClipGuidancePresets,
-  StableDiffusionSamplers,
-  StableDiffusionStylePresets,
-} from '#/utils';
 
 // 图片详细信息
 const props = defineProps({

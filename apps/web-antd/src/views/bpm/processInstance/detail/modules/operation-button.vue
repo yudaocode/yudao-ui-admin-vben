@@ -10,7 +10,16 @@ import { useRouter } from 'vue-router';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
-import { isEmpty } from '@vben/utils';
+import {
+  BpmCandidateStrategyEnum,
+  BpmModelFormType,
+  BpmNodeTypeEnum,
+  BpmProcessInstanceStatus,
+  BpmTaskOperationButtonTypeEnum,
+  BpmTaskStatusEnum,
+  isEmpty,
+  OPERATION_BUTTON_NAME,
+} from '@vben/utils';
 
 import FormCreate from '@form-create/ant-design-vue';
 import {
@@ -34,16 +43,7 @@ import {
 } from '#/api/bpm/processInstance';
 import * as TaskApi from '#/api/bpm/task';
 import * as UserApi from '#/api/system/user';
-import {
-  BpmCandidateStrategyEnum,
-  BpmModelFormType,
-  BpmNodeTypeEnum,
-  BpmProcessInstanceStatus,
-  BpmTaskOperationButtonTypeEnum,
-  BpmTaskStatusEnum,
-  OPERATION_BUTTON_NAME,
-  setConfAndFields2,
-} from '#/utils';
+import { setConfAndFields2 } from '#/utils';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';

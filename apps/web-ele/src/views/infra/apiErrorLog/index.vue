@@ -7,7 +7,10 @@ import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { Download } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  InfraApiErrorLogProcessStatusEnum,
+} from '@vben/utils';
 
 import { ElButton, ElMessage } from 'element-plus';
 
@@ -18,7 +21,6 @@ import {
   updateApiErrorLogStatus,
 } from '#/api/infra/api-error-log';
 import { $t } from '#/locales';
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

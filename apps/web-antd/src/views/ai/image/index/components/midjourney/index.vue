@@ -1,12 +1,21 @@
 <!-- dall3 -->
 <script setup lang="ts">
+import type { ImageModel, ImageSize } from '@vben/utils';
+
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModel, ImageSize } from '#/utils';
 
 import { ref } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import {
+  AiPlatformEnum,
+  ImageHotWords,
+  MidjourneyModels,
+  MidjourneySizeList,
+  MidjourneyVersions,
+  NijiVersionList,
+} from '@vben/utils';
 
 import {
   Button,
@@ -19,14 +28,6 @@ import {
 
 import { midjourneyImagine } from '#/api/ai/image';
 import { ImageUpload } from '#/components/upload';
-import {
-  AiPlatformEnum,
-  ImageHotWords,
-  MidjourneyModels,
-  MidjourneySizeList,
-  MidjourneyVersions,
-  NijiVersionList,
-} from '#/utils';
 
 // 消息弹窗
 

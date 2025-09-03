@@ -6,6 +6,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { AiMusicStatusEnum } from '@vben/utils';
 
 import { Button, message, Switch } from 'ant-design-vue';
 
@@ -13,7 +14,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
-import { AiMusicStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

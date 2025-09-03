@@ -7,7 +7,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { handleTree, SystemMenuTypeEnum } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
 
@@ -15,7 +15,6 @@ import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';
-import { SystemMenuTypeEnum } from '#/utils';
 
 import { useAssignMenuFormSchema } from '../data';
 

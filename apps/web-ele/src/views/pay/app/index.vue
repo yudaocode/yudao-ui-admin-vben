@@ -3,13 +3,13 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app/index';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum, PayChannelEnum } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app/index';
 import { $t } from '#/locales';
-import { CommonStatusEnum, PayChannelEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import appFrom from './modules/app-form.vue';

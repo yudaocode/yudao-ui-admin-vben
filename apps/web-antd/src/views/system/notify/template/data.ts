@@ -1,6 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { UserTypeEnum } from '@vben/utils';
+
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
 import {
@@ -8,9 +10,7 @@ import {
   DICT_TYPE,
   getDictOptions,
   getRangePickerDefaultProps,
-  UserTypeEnum,
 } from '#/utils';
-
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [

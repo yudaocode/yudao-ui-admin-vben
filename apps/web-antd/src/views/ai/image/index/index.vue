@@ -5,11 +5,11 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { nextTick, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { AiModelTypeEnum, AiPlatformEnum } from '@vben/utils';
 
 import { Segmented } from 'ant-design-vue';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
-import { AiModelTypeEnum, AiPlatformEnum } from '#/utils';
 
 import Common from './components/common/index.vue';
 import Dall3 from './components/dall3/index.vue';

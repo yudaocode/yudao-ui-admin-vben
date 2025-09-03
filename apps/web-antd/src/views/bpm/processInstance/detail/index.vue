@@ -6,7 +6,12 @@ import type { SystemUserApi } from '#/api/system/user';
 import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import {
+  BpmModelFormType,
+  BpmModelType,
+  BpmTaskStatusEnum,
+  formatDateTime,
+} from '@vben/utils';
 
 import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'ant-design-vue';
 
@@ -16,14 +21,7 @@ import {
 } from '#/api/bpm/processInstance';
 import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
-import {
-  BpmModelFormType,
-  BpmModelType,
-  BpmTaskStatusEnum,
-  DICT_TYPE,
-  registerComponent,
-  setConfAndFields2,
-} from '#/utils';
+import { DICT_TYPE, registerComponent, setConfAndFields2 } from '#/utils';
 import {
   SvgBpmApproveIcon,
   SvgBpmCancelIcon,

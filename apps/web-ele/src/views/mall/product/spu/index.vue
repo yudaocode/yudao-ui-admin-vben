@@ -10,6 +10,7 @@ import {
   downloadFileFromBlobPart,
   fenToYuan,
   handleTree,
+  ProductSpuStatusEnum,
   treeToString,
 } from '@vben/utils';
 
@@ -25,7 +26,6 @@ import {
   updateStatus,
 } from '#/api/mall/product/spu';
 import { $t } from '#/locales';
-import { ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

@@ -11,6 +11,7 @@ import {
   downloadFileFromBlobPart,
   fenToYuan,
   handleTree,
+  ProductSpuStatusEnum,
   treeToString,
 } from '@vben/utils';
 
@@ -26,7 +27,6 @@ import {
   updateStatus,
 } from '#/api/mall/product/spu';
 import { $t } from '#/locales';
-import { ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -278,20 +278,20 @@ onMounted(async () => {
           :content-style="{ width: '100px', fontSize: '14px' }"
         >
           <Descriptions.Item label="商品分类">
-            {{ treeToString(categoryList, row.categoryId) }}
+            {{ treeToString(categoryList, row.categoryId as string) }}
           </Descriptions.Item>
           <Descriptions.Item label="商品名称">
             {{ row.name }}
           </Descriptions.Item>
 
           <Descriptions.Item label="市场价">
-            {{ fenToYuan(row.marketPrice) }} 元
+            {{ fenToYuan(row.marketPrice as number) }} 元
           </Descriptions.Item>
           <Descriptions.Item label="成本价">
-            {{ fenToYuan(row.costPrice) }} 元
+            {{ fenToYuan(row.costPrice as number) }} 元
           </Descriptions.Item>
           <Descriptions.Item label="浏览量">
-            {{ row.browseCount }}
+            {{ row.browseCount as number }}
           </Descriptions.Item>
           <Descriptions.Item label="虚拟销量">
             {{ row.virtualSalesCount }}

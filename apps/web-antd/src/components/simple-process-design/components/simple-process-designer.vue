@@ -12,7 +12,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { inject, onMounted, provide, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { BpmModelFormType, BpmNodeTypeEnum, handleTree } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 
@@ -22,7 +22,6 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { getSimpleUserList } from '#/api/system/user';
-import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
 import { NODE_DEFAULT_TEXT, NodeId } from '../consts';
 import SimpleProcessModel from './simple-process-model.vue';

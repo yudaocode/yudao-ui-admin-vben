@@ -5,6 +5,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { h } from 'vue';
 
 import { DocAlert, Page, prompt } from '@vben/common-ui';
+import { BpmProcessInstanceStatus } from '@vben/utils';
 
 import { message, Textarea } from 'ant-design-vue';
 
@@ -15,7 +16,6 @@ import {
 } from '#/api/bpm/processInstance';
 import { $t } from '#/locales';
 import { router } from '#/router';
-import { BpmProcessInstanceStatus } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

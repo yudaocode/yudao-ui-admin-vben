@@ -5,13 +5,13 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
+import { AiModelTypeEnum, CommonStatusEnum } from '@vben/utils';
 
 import { Button, Card, message } from 'ant-design-vue';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { createWorkflow, getWorkflow, updateWorkflow } from '#/api/ai/workflow';
 import { createModel, deployModel, updateModel } from '#/api/bpm/model';
-import { AiModelTypeEnum, CommonStatusEnum } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import WorkflowDesign from './modules/workflow-design.vue';

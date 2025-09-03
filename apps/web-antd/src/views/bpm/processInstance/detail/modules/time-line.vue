@@ -7,16 +7,17 @@ import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDateTime, isEmpty } from '@vben/utils';
-
-import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
-
-import { UserSelectModal } from '#/components/select-modal';
 import {
   BpmCandidateStrategyEnum,
   BpmNodeTypeEnum,
   BpmTaskStatusEnum,
-} from '#/utils';
+  formatDateTime,
+  isEmpty,
+} from '@vben/utils';
+
+import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
+
+import { UserSelectModal } from '#/components/select-modal';
 
 defineOptions({ name: 'BpmProcessInstanceTimeline' });
 

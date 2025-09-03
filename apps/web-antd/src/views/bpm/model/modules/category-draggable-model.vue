@@ -9,7 +9,12 @@ import { useAccess } from '@vben/access';
 import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
-import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
+import {
+  BpmModelFormType,
+  cloneDeep,
+  formatDateTime,
+  isEqual,
+} from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
 import { useSortable } from '@vueuse/integrations/useSortable';
@@ -34,7 +39,6 @@ import {
   updateModelState,
 } from '#/api/bpm/model';
 import { $t } from '#/locales';
-import { BpmModelFormType } from '#/utils';
 
 // 导入重命名表单
 import CategoryRenameForm from '../../category/modules/rename-form.vue';

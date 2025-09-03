@@ -2,10 +2,9 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { formatDateTime } from '@vben/utils';
+import { DICT_TYPE, formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 /** 详情头部的配置 */
 export function useDetailSchema(): DescriptionItemSchema[] {

@@ -6,11 +6,11 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { ref, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { AiPlatformEnum, ImageHotWords, OtherPlatformEnum } from '@vben/utils';
 
 import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
-import { AiPlatformEnum, ImageHotWords, OtherPlatformEnum } from '#/utils';
 
 // 消息弹窗
 

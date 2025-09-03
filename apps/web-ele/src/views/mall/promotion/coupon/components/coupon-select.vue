@@ -3,8 +3,9 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { reactive, ref } from 'vue';
 
+import { CouponTemplateTakeTypeEnum } from '@vben/utils';
+
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
-import { CouponTemplateTakeTypeEnum } from '#/utils/constants';
 import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 import {
   discountFormat,

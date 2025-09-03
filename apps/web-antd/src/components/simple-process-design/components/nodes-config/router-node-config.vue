@@ -7,6 +7,7 @@ import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Button,
@@ -20,8 +21,6 @@ import {
   Select,
   SelectOption,
 } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import { ConditionType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';

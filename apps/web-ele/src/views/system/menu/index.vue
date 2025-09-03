@@ -9,13 +9,13 @@ import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
+import { SystemMenuTypeEnum } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
-import { SystemMenuTypeEnum } from '#/utils';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';

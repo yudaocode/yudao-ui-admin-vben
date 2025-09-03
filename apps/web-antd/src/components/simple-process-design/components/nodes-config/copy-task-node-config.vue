@@ -10,6 +10,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,
@@ -26,8 +27,6 @@ import {
   Textarea,
   TreeSelect,
 } from 'ant-design-vue';
-
-import { BpmModelFormType, BpmNodeTypeEnum } from '#/utils';
 
 import {
   CANDIDATE_STRATEGY,

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 
+import { DeliveryTypeEnum } from '@vben/utils';
+
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import * as ExpressTemplateApi from '#/api/mall/trade/delivery/expressTemplate';
-import { DeliveryTypeEnum, DICT_TYPE, getIntDictOptions } from '#/utils';
+import { DICT_TYPE, getIntDictOptions } from '#/utils';
 
 const props = defineProps<{
   propFormData: Object;

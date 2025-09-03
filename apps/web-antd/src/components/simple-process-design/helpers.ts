@@ -18,7 +18,7 @@ import {
   BpmNodeTypeEnum,
   BpmTaskStatusEnum,
   ProcessVariableEnum,
-} from '#/utils';
+} from '@vben/utils';
 
 import {
   ApproveMethodType,

@@ -1,11 +1,11 @@
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import { floatToFixed2, formatDate } from '@vben/utils';
-
 import {
   CouponTemplateValidityTypeEnum,
+  floatToFixed2,
+  formatDate,
   PromotionDiscountTypeEnum,
-} from '#/utils';
+} from '@vben/utils';
 
 // 格式化【优惠金额/折扣】
 export function discountFormat(row: MallCouponTemplateApi.CouponTemplate) {

@@ -5,16 +5,12 @@ import type { AiWriteApi } from '#/api/ai/write';
 import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { AiWriteTypeEnum, WriteExample } from '@vben/utils';
 
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
 
-import {
-  AiWriteTypeEnum,
-  DICT_TYPE,
-  getDictOptions,
-  WriteExample,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Tag from './Tag.vue';
 

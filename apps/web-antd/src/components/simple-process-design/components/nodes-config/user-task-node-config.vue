@@ -10,7 +10,12 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { cloneDeep } from '@vben/utils';
+import {
+  BpmModelFormType,
+  BpmNodeTypeEnum,
+  cloneDeep,
+  ProcessVariableEnum,
+} from '@vben/utils';
 
 import {
   Button,
@@ -33,12 +38,6 @@ import {
   TreeSelect,
   TypographyText,
 } from 'ant-design-vue';
-
-import {
-  BpmModelFormType,
-  BpmNodeTypeEnum,
-  ProcessVariableEnum,
-} from '#/utils';
 
 import {
   APPROVE_METHODS,

@@ -4,7 +4,7 @@ import type { InfraJobApi } from '#/api/infra/job';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { DICT_TYPE, formatDateTime } from '@vben/utils';
 
 import {
   ElDescriptions,
@@ -15,7 +15,6 @@ import {
 
 import { getJob, getJobNextTimes } from '#/api/infra/job';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 const formData = ref<InfraJobApi.Job>(); // 任务详情
 const nextTimes = ref<Date[]>([]); // 下一次执行时间

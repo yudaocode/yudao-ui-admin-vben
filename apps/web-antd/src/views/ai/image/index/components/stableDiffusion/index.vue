@@ -6,6 +6,13 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { ref } from 'vue';
 
 import { alert, confirm } from '@vben/common-ui';
+import {
+  AiPlatformEnum,
+  ImageHotEnglishWords,
+  StableDiffusionClipGuidancePresets,
+  StableDiffusionSamplers,
+  StableDiffusionStylePresets,
+} from '@vben/utils';
 
 import {
   Button,
@@ -17,13 +24,6 @@ import {
 } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
-import {
-  AiPlatformEnum,
-  ImageHotEnglishWords,
-  StableDiffusionClipGuidancePresets,
-  StableDiffusionSamplers,
-  StableDiffusionStylePresets,
-} from '#/utils';
 
 // 接收父组件传入的模型列表
 const props = defineProps({

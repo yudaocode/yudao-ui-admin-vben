@@ -3,7 +3,10 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  InfraApiErrorLogProcessStatusEnum,
+} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -14,7 +17,6 @@ import {
   updateApiErrorLogStatus,
 } from '#/api/infra/api-error-log';
 import { $t } from '#/locales';
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

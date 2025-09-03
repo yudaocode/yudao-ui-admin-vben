@@ -6,7 +6,13 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { fenToYuan, formatDate } from '@vben/utils';
+import {
+  fenToYuan,
+  formatDate,
+  PayChannelEnum,
+  PayDisplayModeEnum,
+  PayOrderStatusEnum,
+} from '@vben/utils';
 
 import {
   Button,
@@ -18,11 +24,6 @@ import {
 } from 'ant-design-vue';
 
 import { getOrder, submitOrder } from '#/api/pay/order';
-import {
-  PayChannelEnum,
-  PayDisplayModeEnum,
-  PayOrderStatusEnum,
-} from '#/utils';
 
 import { channelsAlipay, channelsMock, channelsWechat } from './data';
 

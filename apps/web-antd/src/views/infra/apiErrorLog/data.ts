@@ -5,17 +5,12 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { formatDateTime, InfraApiErrorLogProcessStatusEnum } from '@vben/utils';
 
 import { Textarea } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
-import {
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-  InfraApiErrorLogProcessStatusEnum,
-} from '#/utils';
+import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

@@ -6,7 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
-import { getUrlValue } from '@vben/utils';
+import { getUrlValue, SystemUserSocialTypeEnum } from '@vben/utils';
 
 import { ElButton, ElCard, ElImage, ElMessage } from 'element-plus';
 
@@ -18,7 +18,7 @@ import {
   socialUnbind,
 } from '#/api/system/social/user';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel, SystemUserSocialTypeEnum } from '#/utils';
+import { DICT_TYPE, getDictLabel } from '#/utils';
 
 const emit = defineEmits<{
   (e: 'update:activeName', v: string): void;

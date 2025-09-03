@@ -7,10 +7,9 @@ import { onMounted, ref, toRefs, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { AiImageStatusEnum } from '@vben/utils';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
-
-import { AiImageStatusEnum } from '#/utils';
 
 // 消息
 

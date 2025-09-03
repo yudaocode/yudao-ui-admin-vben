@@ -4,12 +4,11 @@ import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { DICT_TYPE, formatDateTime } from '@vben/utils';
 
 import { ElDescriptions, ElDescriptionsItem, ElInput } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 const formData = ref<InfraApiErrorLogApi.ApiErrorLog>();
 

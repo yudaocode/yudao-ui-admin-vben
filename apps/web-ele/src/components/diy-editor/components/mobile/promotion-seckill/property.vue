@@ -6,6 +6,7 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 import { onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { CommonStatusEnum } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -23,7 +24,6 @@ import {
 import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
 import ColorInput from '#/components/color-input/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { CommonStatusEnum } from '#/utils/constants';
 import SeckillShowcase from '#/views/mall/promotion/seckill/components/seckill-showcase.vue';
 
 // 秒杀属性面板

@@ -5,12 +5,12 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { CommonStatusEnum } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createChannel, getChannel, updateChannel } from '#/api/pay/channel';
-import { CommonStatusEnum } from '#/utils';
 
 import { channelSchema } from './data';
 

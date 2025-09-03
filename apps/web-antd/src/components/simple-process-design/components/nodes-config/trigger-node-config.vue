@@ -12,7 +12,7 @@ import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { cloneDeep } from '@vben/utils';
+import { BpmNodeTypeEnum, cloneDeep } from '@vben/utils';
 
 import {
   Button,
@@ -28,8 +28,6 @@ import {
   SelectOption,
   Tag,
 } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import {
   DEFAULT_CONDITION_GROUP_VALUE,

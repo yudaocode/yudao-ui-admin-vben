@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 
 import { computed, inject, nextTick, ref } from 'vue';
 
-import { BpmModelType } from '#/utils';
+import { BpmModelType } from '@vben/utils';
 
 // TODO BPM 流程模型设计器 BpmModelEditor 待整合
 import SimpleModelDesign from './simple-model-design.vue';

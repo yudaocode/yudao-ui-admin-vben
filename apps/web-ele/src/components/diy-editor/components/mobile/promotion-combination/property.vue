@@ -6,6 +6,7 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 import { onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { CommonStatusEnum } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -21,7 +22,6 @@ import {
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
 import ColorInput from '#/components/color-input/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { CommonStatusEnum } from '#/utils';
 import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
 
 // 拼团属性面板

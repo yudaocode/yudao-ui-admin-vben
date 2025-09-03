@@ -1,6 +1,5 @@
 import type { PageParam, PageResult } from '@vben/request';
-
-import type { AiWriteTypeEnum } from '#/utils';
+import type { AiWriteTypeEnum } from '@vben/utils';
 
 import { useAppConfig } from '@vben/hooks';
 import { fetchEventSource } from '@vben/request';
