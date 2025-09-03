@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @gjd：应该是 modules 模块，然后小写
 import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
