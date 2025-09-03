@@ -5,6 +5,7 @@ import type { BpmTaskApi } from '#/api/bpm/task';
 import { h } from 'vue';
 
 import { DocAlert, Page, prompt } from '@vben/common-ui';
+import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/utils';
 
 import { Button, message, Textarea } from 'ant-design-vue';
 
@@ -15,7 +16,6 @@ import {
 } from '#/api/bpm/processInstance';
 import { DictTag } from '#/components/dict-tag';
 import { router } from '#/router';
-import { BpmProcessInstanceStatus, DICT_TYPE } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

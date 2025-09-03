@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import { PREDEFINE_COLORS } from '@vben/utils';
+
 // TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import { useVModels } from '@vueuse/core';
 import { ElColorPicker, ElInput } from 'element-plus';
-
-import { PREDEFINE_COLORS } from '#/utils/constants';
 
 /**
  * 带颜色选择器输入框
