@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 
-import { Button, Textarea } from 'ant-design-vue';
+import { MindMapContentExample } from '@vben/utils';
 
-import { MindMapContentExample } from '#/utils';
+import { Button, Textarea } from 'ant-design-vue';
 
 defineProps<{
   isGenerating: boolean;
