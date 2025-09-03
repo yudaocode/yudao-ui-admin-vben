@@ -195,10 +195,9 @@ const [Grid] = useVbenVxeGrid({
               </ElTag>
             </div>
             <div class="order-item-info">
-              <span>原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
-                  item.count
-                }}
-                个</span>
+              <span>
+                原价：{{ fenToYuan(item.price) }} 元 / 数量：{{ item.count }} 个
+              </span>
               <DictTag
                 :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
                 :value="item.afterSaleStatus"
