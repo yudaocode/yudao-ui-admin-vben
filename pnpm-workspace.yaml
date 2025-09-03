@@ -41,6 +41,7 @@ catalog:
   '@tanstack/vue-query': ^5.81.5
   '@tanstack/vue-store': ^0.7.1
   '@tinymce/tinymce-vue': ^6.1.0
+  '@tinyflow-ai/vue': ^1.1.1
   '@form-create/ant-design-vue': ^3.2.27
   '@form-create/antd-designer': ^3.3.0
   '@form-create/designer': ^3.3.0

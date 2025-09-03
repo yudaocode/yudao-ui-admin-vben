@@ -5,12 +5,12 @@ import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { Tinyflow } from '@vben/plugins/tinyflow';
 import { isNumber } from '@vben/utils';
 
 import { Button, Input, Select } from 'ant-design-vue';
 
 import { testWorkflow } from '#/api/ai/workflow';
-import { Tinyflow } from '#/components/tinyflow';
 
 defineProps<{
   provider: any;

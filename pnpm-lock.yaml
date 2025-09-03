@@ -93,6 +93,9 @@ catalogs:
     '@tanstack/vue-store':
       specifier: ^0.7.1
       version: 0.7.3
+    '@tinyflow-ai/vue':
+      specifier: ^1.1.1
+      version: 1.1.1
     '@tinymce/tinymce-vue':
       specifier: ^6.1.0
       version: 6.3.0
@@ -725,9 +728,6 @@ importers:
       '@form-create/antd-designer':
         specifier: 'catalog:'
         version: 3.3.0(vue@3.5.18(typescript@5.9.2))
-      '@tinyflow-ai/vue':
-        specifier: 1.1.1
-        version: 1.1.1(svelte@5.38.6)(vue@3.5.18(typescript@5.9.2))
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.3.0(tinymce@7.9.1)(vue@3.5.18(typescript@5.9.2))
@@ -1813,6 +1813,9 @@ importers:
 
   packages/effects/plugins:
     dependencies:
+      '@tinyflow-ai/vue':
+        specifier: 'catalog:'
+        version: 1.1.1(svelte@5.38.6)(vue@3.5.18(typescript@5.9.2))
       '@vben-core/form-ui':
         specifier: workspace:*
         version: link:../../@core/ui-kit/form-ui

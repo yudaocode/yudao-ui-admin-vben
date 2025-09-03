@@ -28,7 +28,6 @@
   "dependencies": {
     "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
-    "@tinyflow-ai/vue": "1.1.1",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
