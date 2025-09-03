@@ -2,8 +2,6 @@
 import type { IPropTypes } from '@tinymce/tinymce-vue/lib/cjs/main/ts/components/EditorPropTypes';
 import type { Editor as EditorType } from 'tinymce/tinymce';
 
-import type { PropType } from 'vue';
-
 import {
   computed,
   nextTick,
@@ -35,36 +33,25 @@ type InitOptions = IPropTypes['init'];
 
 defineOptions({ name: 'Tinymce', inheritAttrs: false });
 
-const props = defineProps({
-  options: {
-    type: Object as PropType<Partial<InitOptions>>,
-    default: () => ({}),
-  },
-  toolbar: {
-    type: String,
-    default: defaultToolbar,
-  },
-  plugins: {
-    type: String,
-    default: defaultPlugins,
-  },
-  height: {
-    type: [Number, String] as PropType<number | string>,
-    required: false,
-    default: 400,
-  },
-  width: {
-    type: [Number, String] as PropType<number | string>,
-    required: false,
-    default: 'auto',
-  },
-  showImageUpload: {
-    type: Boolean,
-    default: true,
-  },
+const props = withDefaults(defineProps<TinymacProps>(), {
+  height: 400,
+  width: 'auto',
+  options: () => ({}),
+  plugins: defaultPlugins,
+  toolbar: defaultToolbar,
+  showImageUpload: true,
 });
 
 const emit = defineEmits(['change']);
+
+interface TinymacProps {
+  options?: Partial<InitOptions>;
+  toolbar?: string;
+  plugins?: string;
+  height?: number | string;
+  width?: number | string;
+  showImageUpload?: boolean;
+}
 
 /** 外部使用 v-model 绑定值 */
 const modelValue = defineModel('modelValue', { default: '', type: String });
@@ -151,7 +138,7 @@ const initOptions = computed((): InitOptions => {
       'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
     toolbar_mode: 'sliding',
     ...options,
-    images_upload_handler: (blobInfo) => {
+    images_upload_handler: (blobInfo: any) => {
       return new Promise((resolve, reject) => {
         const file = blobInfo.blob() as File;
         const { httpRequest } = useUpload();
@@ -165,9 +152,9 @@ const initOptions = computed((): InitOptions => {
           });
       });
     },
-    setup: (editor) => {
+    setup: (editor: EditorType) => {
       editorRef.value = editor;
-      editor.on('init', (e) => initSetup(e));
+      editor.on('init', (e: any) => initSetup(e));
     },
   };
 });

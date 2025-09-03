@@ -182,6 +182,7 @@ catalog:
   tailwindcss-animate: ^1.0.7
   theme-colors: ^0.1.0
   tippy.js: ^6.3.7
+  tinymce: ^7.3.0
   turbo: ^2.5.4
   typescript: ^5.8.3
   unbuild: ^3.6.1
