@@ -24,7 +24,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formConfig.value = await getFormDetail(data.id as number);
+      formConfig.value = await getFormDetail(data.id);
       setConfAndFields2(
         formConfig.value,
         formConfig.value.conf,

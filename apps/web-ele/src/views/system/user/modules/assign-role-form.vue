@@ -58,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      const roleIds = await getUserRoleList(data.id as number);
+      const roleIds = await getUserRoleList(data.id);
       // 设置到 values
       await formApi.setValues({
         ...data,

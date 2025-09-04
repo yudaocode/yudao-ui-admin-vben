@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      const user = await getUser(data.id as number);
+      const user = await getUser(data.id);
       if (!user || !user.id) {
         return;
       }

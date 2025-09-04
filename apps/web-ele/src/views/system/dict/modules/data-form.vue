@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     if (data && 'id' in data && data.id) {
       modalApi.lock();
       try {
-        formData.value = await getDictData(data.id as number);
+        formData.value = await getDictData(data.id);
         // 设置到 values
         if (formData.value) {
           await formApi.setValues(formData.value);

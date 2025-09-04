@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
     if (data.id) {
       modalApi.lock();
       try {
-        data = await getMenu(data.id as number);
+        data = await getMenu(data.id);
       } finally {
         modalApi.unlock();
       }
