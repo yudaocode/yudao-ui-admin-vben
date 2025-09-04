@@ -89,7 +89,7 @@ catalog:
   commitlint-plugin-function-rules: ^4.0.2
   consola: ^3.4.2
   cross-env: ^7.0.3
-  cropperjs: ^1.6.2
+  cropperjs: ^2.0.1
   crypto-js: ^4.2.0
   cspell: ^8.19.4
   jsencrypt: ^3.3.2
