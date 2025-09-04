@@ -30,6 +30,7 @@ function handleEdit(row: any) {
     name: 'AiWorkflowCreate',
     query: {
       id: row.id,
+      type: 'update',
     },
   });
 }

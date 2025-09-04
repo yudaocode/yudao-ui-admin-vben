@@ -22,6 +22,9 @@ const router = useRouter();
 
 const route = useRoute();
 
+const workflowId = ref<string>('');
+const actionType = ref<string>('');
+
 // 基础信息组件引用
 const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
 // 工作流设计组件引用
@@ -56,11 +59,10 @@ const formData: any = ref({
 
 const llmProvider = ref<any>([]);
 const workflowData = ref<any>({});
-const workflowId = ref<string>('');
 provide('workflowData', workflowData);
 
 async function initData() {
-  if (workflowId.value) {
+  if (actionType.value === 'update' && workflowId.value) {
     formData.value = await getWorkflow(workflowId.value);
     workflowData.value = JSON.parse(formData.value.graph);
   }
@@ -110,7 +112,9 @@ async function handleSave() {
       ...formData.value,
       graph: JSON.stringify(workflowData.value),
     };
-    await (workflowId.value ? updateWorkflow(data) : createWorkflow(data));
+    await (actionType.value === 'update'
+      ? updateWorkflow(data)
+      : createWorkflow(data));
 
     // 保存成功，提示并跳转到列表页
     message.success('保存成功');
@@ -187,6 +191,7 @@ function handleBack() {
 /** 初始化 */
 onMounted(async () => {
   workflowId.value = route.query.id as string;
+  actionType.value = route.query.type as string;
   await initData();
 });
 
@@ -252,11 +257,15 @@ onBeforeUnmount(() => {
 
         <!-- 右侧按钮 -->
         <div class="flex w-48 items-center justify-end gap-2">
-          <Button v-if="workflowId" type="primary" @click="handleDeploy">
+          <Button
+            v-if="actionType === 'update'"
+            type="primary"
+            @click="handleDeploy"
+          >
             发 布
           </Button>
           <Button type="primary" @click="handleSave">
-            <span v-if="workflowId">恢 复</span>
+            <span v-if="actionType === 'definition'">恢 复</span>
             <span v-else>保 存</span>
           </Button>
         </div>
