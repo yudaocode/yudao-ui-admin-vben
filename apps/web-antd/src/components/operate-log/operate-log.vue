@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { OperateLogProps } from './typing';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel, getDictObj } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { Tag, Timeline } from 'ant-design-vue';
-
-import { DICT_TYPE, getDictLabel, getDictObj } from '#/utils';
 
 defineOptions({ name: 'OperateLogV2' });
 

@@ -8,13 +8,14 @@ import type { BpmTaskApi } from '#/api/bpm/task';
 import { nextTick, onMounted, ref, shallowRef } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
-import { DICT_TYPE, setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/utils';
 
 defineOptions({
   name: 'BpmProcessInstanceTaskList',

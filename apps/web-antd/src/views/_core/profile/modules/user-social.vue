@@ -6,7 +6,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
-import { SystemUserSocialTypeEnum } from '@vben/constants';
+import { DICT_TYPE, SystemUserSocialTypeEnum } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { getUrlValue } from '@vben/utils';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
@@ -19,7 +20,6 @@ import {
   socialUnbind,
 } from '#/api/system/social/user';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel } from '#/utils';
 
 const emit = defineEmits<{
   (e: 'update:activeName', v: string): void;
