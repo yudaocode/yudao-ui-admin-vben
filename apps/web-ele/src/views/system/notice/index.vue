@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
 import { ref } from 'vue';
@@ -35,21 +32,19 @@ function onRefresh() {
 }
 
 /** 创建公告 */
-// TODO @霖：【规范讨论】方法名，要不要都换成 handleXXX 开头，和 ep 保持一致；
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑公告 */
-function onEdit(row: SystemNoticeApi.Notice) {
+function handleEdit(row: SystemNoticeApi.Notice) {
   formModalApi.setData(row).open();
 }
 
 /** 删除公告 */
-async function onDelete(row: SystemNoticeApi.Notice) {
+async function handleDelete(row: SystemNoticeApi.Notice) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.title]),
-    fullscreen: true,
   });
   try {
     await deleteNotice(row.id as number);
@@ -61,12 +56,19 @@ async function onDelete(row: SystemNoticeApi.Notice) {
 }
 
 /** 批量删除公告 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该公告吗？');
-  await deleteNoticeList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteNoticeList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    onRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -79,39 +81,15 @@ function handleRowCheckboxChange({
 }
 
 /** 推送公告 */
-async function onPush(row: SystemNoticeApi.Notice) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.processing', ['推送']),
-    type: 'info',
-    duration: 0,
+async function handlePush(row: SystemNoticeApi.Notice) {
+  const loadingInstance = ElLoading.service({
+    text: '正在推送中...',
   });
   try {
     await pushNotice(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     loadingInstance.close();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNoticeApi.Notice>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'push': {
-      onPush(row);
-      break;
-    }
   }
 }
 
@@ -120,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -136,6 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -161,20 +140,52 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:notice:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
-              disabled: isEmpty(checkedIds),
               auth: ['system:notice:delete'],
-              onClick: onDeleteBatch,
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
             },
           ]"
         />
       </template>
-      <!-- TODO @霖：【规范讨论】要不要类似 antd 一样，改成 TableAction；可见 /apps/web-ele/src/views/system/notice/index.vue 的 167 到 195 -->
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:notice:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '推送',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notice:update'],
+              onClick: handlePush.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notice:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.title]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
     </Grid>
   </Page>
 </template>
