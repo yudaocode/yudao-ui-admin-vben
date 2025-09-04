@@ -5,7 +5,7 @@ import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { BpmModelFormType } from '@vben/utils';
+import { BpmModelFormType } from '@vben/constants';
 
 import { Button, Tooltip } from 'ant-design-vue';
 

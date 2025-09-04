@@ -2,7 +2,7 @@
 // TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import { computed } from 'vue';
 
-import { PREDEFINE_COLORS } from '@vben/utils';
+import { PREDEFINE_COLORS } from '@vben/constants';
 
 // 颜色输入框
 defineOptions({ name: 'ColorInput' });

@@ -5,7 +5,8 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, useVbenDrawer } from '@vben/common-ui';
-import { AiImageStatusEnum, downloadFileFromImageUrl } from '@vben/utils';
+import { AiImageStatusEnum } from '@vben/constants';
+import { downloadFileFromImageUrl } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
 import { Button, Card, message, Pagination } from 'ant-design-vue';

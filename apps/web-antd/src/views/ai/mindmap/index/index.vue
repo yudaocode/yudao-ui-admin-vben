@@ -4,7 +4,7 @@ import type { AiMindmapApi } from '#/api/ai/mindmap';
 import { nextTick, onMounted, ref } from 'vue';
 
 import { alert, Page } from '@vben/common-ui';
-import { MindMapContentExample } from '@vben/utils';
+import { MindMapContentExample } from '@vben/constants';
 
 import { generateMindMap } from '#/api/ai/mindmap';
 

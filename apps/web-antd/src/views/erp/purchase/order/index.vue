@@ -115,7 +115,7 @@ function handleUpdateStatus(
     duration: 0,
     key: 'action_process_msg',
   });
-  updatePurchaseOrderStatus(row.id, status)
+  updatePurchaseOrderStatus(row.id!, status)
     .then(() => {
       message.success({
         content: `${status === 20 ? '审批' : '反审批'}成功`,

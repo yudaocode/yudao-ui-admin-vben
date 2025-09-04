@@ -9,8 +9,8 @@ import type { SystemUserApi } from '#/api/system/user';
 import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,

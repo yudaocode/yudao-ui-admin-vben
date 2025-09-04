@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/utils';
+import { CommonStatusEnum } from '@vben/constants';
 
 import { message, Switch } from 'ant-design-vue';
 

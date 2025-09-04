@@ -4,8 +4,8 @@ import type { PayChannelApi } from '#/api/pay/channel';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
-import { CommonStatusEnum } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
 

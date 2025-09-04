@@ -3,12 +3,9 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';
 
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import {
-  BpmNodeTypeEnum,
-  cloneDeep,
-  buildShortUUID as generateUUID,
-} from '@vben/utils';
+import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
 
 import { message, Popover } from 'ant-design-vue';
 

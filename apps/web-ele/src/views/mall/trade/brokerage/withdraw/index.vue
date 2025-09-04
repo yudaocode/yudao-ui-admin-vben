@@ -9,8 +9,8 @@ import {
   BrokerageWithdrawStatusEnum,
   BrokerageWithdrawTypeEnum,
   DICT_TYPE,
-  formatDateTime,
-} from '@vben/utils';
+} from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
 import { ElInput, ElMessage } from 'element-plus';
 

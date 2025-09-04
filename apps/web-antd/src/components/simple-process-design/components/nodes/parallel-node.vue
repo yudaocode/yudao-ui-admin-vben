@@ -3,8 +3,9 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { inject, nextTick, ref, watch } from 'vue';
 
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmNodeTypeEnum, buildShortUUID as generateUUID } from '@vben/utils';
+import { buildShortUUID as generateUUID } from '@vben/utils';
 
 import { Button, Input } from 'ant-design-vue';
 

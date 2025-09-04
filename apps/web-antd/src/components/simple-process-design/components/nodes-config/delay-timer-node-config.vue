@@ -6,8 +6,8 @@ import type { SimpleFlowNode } from '../../consts';
 import { reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,

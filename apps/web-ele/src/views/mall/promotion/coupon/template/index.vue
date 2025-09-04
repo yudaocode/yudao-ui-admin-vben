@@ -5,8 +5,8 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
-import { CommonStatusEnum } from '@vben/utils';
 
 import { ElLoading, ElMessage, ElSwitch } from 'element-plus';
 

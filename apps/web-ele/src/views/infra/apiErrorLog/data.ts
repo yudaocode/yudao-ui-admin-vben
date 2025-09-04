@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { useAccess } from '@vben/access';
-import { InfraApiErrorLogProcessStatusEnum } from '@vben/utils';
+import { InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
 
 import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
 

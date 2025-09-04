@@ -6,7 +6,11 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { ref, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
-import { AiPlatformEnum, ImageHotWords, OtherPlatformEnum } from '@vben/utils';
+import {
+  AiPlatformEnum,
+  ImageHotWords,
+  OtherPlatformEnum,
+} from '@vben/constants';
 
 import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
 

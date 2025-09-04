@@ -5,7 +5,8 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
-import { formatDateTime, InfraApiErrorLogProcessStatusEnum } from '@vben/utils';
+import { InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
 import { Textarea } from 'ant-design-vue';
 

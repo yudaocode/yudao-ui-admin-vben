@@ -7,12 +7,8 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import {
-  DeliveryTypeEnum,
-  fenToYuan,
-  formatDate,
-  TradeOrderStatusEnum,
-} from '@vben/utils';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
+import { fenToYuan, formatDate } from '@vben/utils';
 
 import {
   ElDescriptions,

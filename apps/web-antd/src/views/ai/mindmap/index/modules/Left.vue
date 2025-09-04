@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 
-import { MindMapContentExample } from '@vben/utils';
+import { MindMapContentExample } from '@vben/constants';
 
 import { Button, Textarea } from 'ant-design-vue';
 

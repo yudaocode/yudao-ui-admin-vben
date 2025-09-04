@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, PayChannelEnum } from '@vben/utils';
+import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 

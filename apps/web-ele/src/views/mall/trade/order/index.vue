@@ -9,9 +9,9 @@ import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 import {
   DeliveryTypeEnum,
   DICT_TYPE,
-  fenToYuan,
   TradeOrderStatusEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { fenToYuan } from '@vben/utils';
 
 import { ElImage, ElInput, ElTag } from 'element-plus';
 
@@ -119,7 +119,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <!-- TODO @霖：列表有点丑 -->
       <template #expand_content="{ row }">
         <div class="order-items">
-          <div v-for="item in row.items" :key="item.id" class="order-item">
+          <div
+            v-for="(item, index) in row.items"
+            :key="index"
+            class="order-item"
+          >
             <div class="order-item-image">
               <ElImage :src="item.picUrl" class="h-40 w-40" />
             </div>

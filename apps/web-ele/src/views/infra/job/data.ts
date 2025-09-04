@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
 import { useAccess } from '@vben/access';
-import { InfraJobStatusEnum } from '@vben/utils';
+import { InfraJobStatusEnum } from '@vben/constants';
 
 import { DICT_TYPE, getDictOptions } from '#/utils';
 

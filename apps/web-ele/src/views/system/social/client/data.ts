@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
 import { useAccess } from '@vben/access';
-import { SystemUserSocialTypeEnum } from '@vben/utils';
+import { SystemUserSocialTypeEnum } from '@vben/constants';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';

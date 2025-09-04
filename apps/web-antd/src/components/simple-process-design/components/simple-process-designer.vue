@@ -12,7 +12,8 @@ import type { SystemUserApi } from '#/api/system/user';
 import { inject, onMounted, provide, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { BpmModelFormType, BpmNodeTypeEnum, handleTree } from '@vben/utils';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
+import { handleTree } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 

@@ -8,8 +8,6 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
-import { useUserStore } from '@vben/stores';
 import {
   BpmCandidateStrategyEnum,
   BpmModelFormType,
@@ -17,9 +15,11 @@ import {
   BpmProcessInstanceStatus,
   BpmTaskOperationButtonTypeEnum,
   BpmTaskStatusEnum,
-  isEmpty,
   OPERATION_BUTTON_NAME,
-} from '@vben/utils';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
+import { isEmpty } from '@vben/utils';
 
 import FormCreate from '@form-create/ant-design-vue';
 import {

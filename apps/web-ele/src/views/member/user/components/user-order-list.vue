@@ -6,8 +6,9 @@ import type { MallOrderApi } from '#/api/mall/trade/order/index';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { DeliveryTypeEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
-import { DeliveryTypeEnum, fenToYuan } from '@vben/utils';
+import { fenToYuan } from '@vben/utils';
 
 import { ElImage, ElTag } from 'element-plus';
 
@@ -179,7 +180,7 @@ const [Grid] = useVbenVxeGrid({
   <Grid table-title="订单列表">
     <template #expand_content="{ row }">
       <div class="order-items">
-        <div v-for="item in row.items" :key="item.id" class="order-item">
+        <div v-for="(item, index) in row.items" :key="index" class="order-item">
           <div class="order-item-image">
             <ElImage :src="item.picUrl" :width="40" :height="40" />
           </div>

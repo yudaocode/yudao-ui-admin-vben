@@ -5,8 +5,8 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { computed, onMounted, ref, watch } from 'vue';
 
 import { confirm, Page, useVbenForm } from '@vben/common-ui';
+import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/utils';
 
 import { Button, Card, message, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';

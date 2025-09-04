@@ -5,12 +5,12 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { ref, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import {
   CouponTemplateTakeTypeEnum,
-  floatToFixed2,
   PromotionDiscountTypeEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+import { floatToFixed2 } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {

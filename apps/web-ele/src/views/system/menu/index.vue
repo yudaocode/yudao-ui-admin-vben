@@ -8,8 +8,8 @@ import type { SystemMenuApi } from '#/api/system/menu';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon, Plus } from '@vben/icons';
-import { SystemMenuTypeEnum } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 

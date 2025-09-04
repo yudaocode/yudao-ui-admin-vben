@@ -7,7 +7,8 @@ import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { BrokerageRecordBizTypeEnum, fenToYuan } from '@vben/utils';
+import { BrokerageRecordBizTypeEnum } from '@vben/constants';
+import { fenToYuan } from '@vben/utils';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';

@@ -4,7 +4,8 @@ import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE, formatDateTime } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
 import { ElDescriptions, ElDescriptionsItem, ElInput } from 'element-plus';
 

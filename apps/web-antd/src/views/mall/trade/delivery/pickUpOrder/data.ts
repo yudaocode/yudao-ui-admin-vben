@@ -4,10 +4,10 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { ref } from 'vue';
 
-import { DeliveryTypeEnum } from '@vben/utils';
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
-import { DICT_TYPE, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
 

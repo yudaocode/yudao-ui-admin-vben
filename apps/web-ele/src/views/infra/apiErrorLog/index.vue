@@ -6,11 +6,9 @@ import type {
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
 import { Download } from '@vben/icons';
-import {
-  downloadFileFromBlobPart,
-  InfraApiErrorLogProcessStatusEnum,
-} from '@vben/utils';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElMessage } from 'element-plus';
 

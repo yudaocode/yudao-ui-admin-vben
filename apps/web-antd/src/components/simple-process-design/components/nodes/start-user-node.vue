@@ -7,8 +7,8 @@ import type { SimpleFlowNode } from '../../consts';
 import { inject, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmNodeTypeEnum } from '@vben/utils';
 
 import { Input } from 'ant-design-vue';
 

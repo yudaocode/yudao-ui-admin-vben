@@ -5,7 +5,8 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
-import { handleTree, SystemDataScopeEnum } from '@vben/utils';
+import { SystemDataScopeEnum } from '@vben/constants';
+import { handleTree } from '@vben/utils';
 
 import { ElCheckbox, ElMessage } from 'element-plus';
 

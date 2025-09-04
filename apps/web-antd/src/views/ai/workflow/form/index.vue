@@ -3,9 +3,9 @@ import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
+import { AiModelTypeEnum, CommonStatusEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
-import { AiModelTypeEnum, CommonStatusEnum } from '@vben/utils';
 
 import { Button, Card, message } from 'ant-design-vue';
 

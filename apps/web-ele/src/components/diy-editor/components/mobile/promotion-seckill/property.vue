@@ -5,8 +5,8 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 
 import { onMounted, ref } from 'vue';
 
+import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { CommonStatusEnum } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {

@@ -9,13 +9,13 @@ import type { UserTaskFormType } from '../../helpers';
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
 import {
   BpmModelFormType,
   BpmNodeTypeEnum,
-  cloneDeep,
   ProcessVariableEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import {
   Button,

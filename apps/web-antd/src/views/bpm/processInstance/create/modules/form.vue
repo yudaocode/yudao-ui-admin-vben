@@ -4,15 +4,15 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
-import { useTabs } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 import {
   BpmCandidateStrategyEnum,
   BpmFieldPermissionType,
   BpmModelFormType,
   BpmModelType,
   BpmNodeIdEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { useTabs } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
 
 import formCreate from '@form-create/ant-design-vue';
 import { Button, Card, Col, message, Row, Space, Tabs } from 'ant-design-vue';

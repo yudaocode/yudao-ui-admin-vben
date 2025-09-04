@@ -6,11 +6,11 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { ProductSpuStatusEnum } from '@vben/constants';
 import {
   downloadFileFromBlobPart,
   fenToYuan,
   handleTree,
-  ProductSpuStatusEnum,
   treeToString,
 } from '@vben/utils';
 

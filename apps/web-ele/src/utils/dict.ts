@@ -1,7 +1,7 @@
 // TODO @芋艿：后续再优化
 // TODO @芋艿：可以共享么？
 
-import { DICT_TYPE, isObject } from '@vben/utils';
+import { isObject } from '@vben/utils';
 
 import { useDictStore } from '#/store';
 
@@ -140,4 +140,6 @@ export const getBoolDictOptions = (dictType: string) => {
   return dictOption;
 };
 
-export { DICT_TYPE, getDictLabel, getDictObj, getDictOptions };
+export { getDictLabel, getDictObj, getDictOptions };
+
+export { DICT_TYPE } from '@vben/constants';

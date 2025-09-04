@@ -9,11 +9,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import {
-  downloadFileFromBlobPart,
-  InfraJobStatusEnum,
-  isEmpty,
-} from '@vben/utils';
+import { InfraJobStatusEnum } from '@vben/constants';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 

@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app/index';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, PayChannelEnum } from '@vben/utils';
+import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -34,11 +34,11 @@ function handleCreate() {
   appFormModalApi.setData(null).open();
 }
 
-function handleEdit(row: Required<PayAppApi.App>) {
+function handleEdit(row: PayAppApi.App) {
   appFormModalApi.setData({ id: row.id }).open();
 }
 
-async function handleDelete(row: Required<PayAppApi.App>) {
+async function handleDelete(row: PayAppApi.App) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
     fullscreen: true,

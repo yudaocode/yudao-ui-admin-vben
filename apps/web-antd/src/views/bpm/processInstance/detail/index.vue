@@ -10,8 +10,8 @@ import {
   BpmModelFormType,
   BpmModelType,
   BpmTaskStatusEnum,
-  formatDateTime,
-} from '@vben/utils';
+} from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
 import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'ant-design-vue';
 

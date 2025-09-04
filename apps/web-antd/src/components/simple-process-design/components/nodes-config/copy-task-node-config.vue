@@ -9,8 +9,8 @@ import type { CopyTaskFormType } from '../../helpers';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/utils';
 
 import {
   Col,

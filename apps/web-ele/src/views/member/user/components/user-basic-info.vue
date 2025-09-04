@@ -3,7 +3,8 @@ import type { MemberUserApi } from '#/api/member/user';
 
 import { h } from 'vue';
 
-import { DICT_TYPE, formatDate } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { formatDate } from '@vben/utils';
 
 import { ElAvatar, ElCard, ElCol, ElRow } from 'element-plus';
 

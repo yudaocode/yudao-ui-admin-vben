@@ -1,6 +1,6 @@
 <!-- dall3 -->
 <script setup lang="ts">
-import type { ImageModel, ImageSize } from '@vben/utils';
+import type { ImageModel, ImageSize } from '@vben/constants';
 
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
@@ -14,7 +14,7 @@ import {
   Dall3SizeList,
   Dall3StyleList,
   ImageHotWords,
-} from '@vben/utils';
+} from '@vben/constants';
 
 import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
 

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 
-import { CircleHelp } from '@vben/icons';
 import {
   BpmAutoApproveType,
   BpmModelFormType,
   ProcessVariableEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { CircleHelp } from '@vben/icons';
 
 import {
   Checkbox,

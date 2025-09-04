@@ -7,7 +7,8 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
-import { handleTree, SystemMenuTypeEnum } from '@vben/utils';
+import { SystemMenuTypeEnum } from '@vben/constants';
+import { handleTree } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
 

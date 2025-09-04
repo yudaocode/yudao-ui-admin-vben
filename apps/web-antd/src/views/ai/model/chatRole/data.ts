@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { AiModelTypeEnum } from '@vben/utils';
+import { AiModelTypeEnum } from '@vben/constants';
 
 import { z } from '#/adapter/form';
 import { getSimpleKnowledgeList } from '#/api/ai/knowledge/knowledge';

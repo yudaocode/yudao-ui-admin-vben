@@ -9,14 +9,14 @@ import { onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
-import { useTabs } from '@vben/hooks';
-import { ArrowLeft } from '@vben/icons';
-import { useUserStore } from '@vben/stores';
 import {
   BpmAutoApproveType,
   BpmModelFormType,
   BpmModelType,
-} from '@vben/utils';
+} from '@vben/constants';
+import { useTabs } from '@vben/hooks';
+import { ArrowLeft } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
 import { Button, Card, message } from 'ant-design-vue';
 

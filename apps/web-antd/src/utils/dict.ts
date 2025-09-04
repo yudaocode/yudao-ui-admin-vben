@@ -3,7 +3,7 @@
 
 import type { DictItem } from '#/store';
 
-import { DICT_TYPE, isObject } from '@vben/utils';
+import { isObject } from '@vben/utils';
 
 import { useDictStore } from '#/store';
 
@@ -183,9 +183,10 @@ export const deleteDictCache = (dictType: string): void => {
 
 export {
   type ColorType,
-  DICT_TYPE,
   type DictValueType,
   getDictLabel,
   getDictObj,
   getDictOptions,
 };
+
+export { DICT_TYPE } from '@vben/constants';

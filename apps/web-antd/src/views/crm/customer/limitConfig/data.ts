@@ -2,7 +2,8 @@ import type { VbenFormSchema } from '@vben/common-ui';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE, handleTree } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { handleTree } from '@vben/utils';
 
 import { LimitConfType } from '#/api/crm/customer/limitConfig';
 import { getSimpleDeptList } from '#/api/system/dept';

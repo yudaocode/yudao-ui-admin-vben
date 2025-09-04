@@ -6,8 +6,9 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
+import { SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { handleTree, isHttpUrl, SystemMenuTypeEnum } from '@vben/utils';
+import { handleTree, isHttpUrl } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';

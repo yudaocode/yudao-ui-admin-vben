@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 
-import { DeliveryTypeEnum } from '@vben/utils';
+import { DeliveryTypeEnum } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 

@@ -6,11 +6,11 @@ import { ref, toRefs, watch } from 'vue';
 import {
   AiPlatformEnum,
   Dall3StyleList,
-  formatDate,
   StableDiffusionClipGuidancePresets,
   StableDiffusionSamplers,
   StableDiffusionStylePresets,
-} from '@vben/utils';
+} from '@vben/constants';
+import { formatDate } from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 

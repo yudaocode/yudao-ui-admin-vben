@@ -1,6 +1,6 @@
 <!-- dall3 -->
 <script setup lang="ts">
-import type { ImageModel, ImageSize } from '@vben/utils';
+import type { ImageModel, ImageSize } from '@vben/constants';
 
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
@@ -15,7 +15,7 @@ import {
   MidjourneySizeList,
   MidjourneyVersions,
   NijiVersionList,
-} from '@vben/utils';
+} from '@vben/constants';
 
 import {
   Button,

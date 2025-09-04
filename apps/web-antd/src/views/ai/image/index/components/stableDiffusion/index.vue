@@ -12,7 +12,7 @@ import {
   StableDiffusionClipGuidancePresets,
   StableDiffusionSamplers,
   StableDiffusionStylePresets,
-} from '@vben/utils';
+} from '@vben/constants';
 
 import {
   Button,

@@ -9,9 +9,9 @@ import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 import {
   DeliveryTypeEnum,
   DICT_TYPE,
-  fenToYuan,
   TradeOrderStatusEnum,
-} from '@vben/utils';
+} from '@vben/constants';
+import { fenToYuan } from '@vben/utils';
 
 import { Image, List, Tag, Textarea } from 'ant-design-vue';
 

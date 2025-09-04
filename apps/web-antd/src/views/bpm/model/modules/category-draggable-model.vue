@@ -7,14 +7,10 @@ import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, EllipsisText, useVbenModal } from '@vben/common-ui';
+import { BpmModelFormType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
-import {
-  BpmModelFormType,
-  cloneDeep,
-  formatDateTime,
-  isEqual,
-} from '@vben/utils';
+import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
 import { useSortable } from '@vueuse/integrations/useSortable';

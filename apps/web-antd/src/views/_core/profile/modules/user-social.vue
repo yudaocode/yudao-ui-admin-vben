@@ -6,7 +6,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
-import { getUrlValue, SystemUserSocialTypeEnum } from '@vben/utils';
+import { SystemUserSocialTypeEnum } from '@vben/constants';
+import { getUrlValue } from '@vben/utils';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
 

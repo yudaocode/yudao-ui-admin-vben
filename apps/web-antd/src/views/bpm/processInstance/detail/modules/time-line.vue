@@ -6,14 +6,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
 import {
   BpmCandidateStrategyEnum,
   BpmNodeTypeEnum,
   BpmTaskStatusEnum,
-  formatDateTime,
-  isEmpty,
-} from '@vben/utils';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+import { formatDateTime, isEmpty } from '@vben/utils';
 
 import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
 

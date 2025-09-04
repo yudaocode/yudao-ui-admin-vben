@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-import * as DateUtil from '@vben/utils';
+import {
+  getDateRange,
+  getDayRange,
+  getLast1Year,
+  getLast7Days,
+  getLast30Days,
+} from '@vben/utils';
 
 import dayjs from 'dayjs';
 
@@ -19,11 +25,11 @@ defineExpose({ times }); // 暴露时间范围参数
 const shortcuts = [
   {
     text: '昨天',
-    value: () => DateUtil.getDayRange(new Date(), -1),
+    value: () => getDayRange(new Date(), -1),
   },
   {
     text: '最近7天',
-    value: () => DateUtil.getLast7Days(),
+    value: () => getLast7Days(),
   },
   {
     text: '本月',
@@ -31,11 +37,11 @@ const shortcuts = [
   },
   {
     text: '最近30天',
-    value: () => DateUtil.getLast30Days(),
+    value: () => getLast30Days(),
   },
   {
     text: '最近1年',
-    value: () => DateUtil.getLast1Year(),
+    value: () => getLast1Year(),
   },
 ];
 
@@ -43,7 +49,7 @@ const shortcuts = [
 function setTimes() {
   const beginDate = dayjs().subtract(shortcutDays.value, 'd');
   const yesterday = dayjs().subtract(1, 'd');
-  times.value = DateUtil.getDateRange(beginDate, yesterday);
+  times.value = getDateRange(beginDate, yesterday);
 }
 
 /** 快捷日期单选按钮选中 */

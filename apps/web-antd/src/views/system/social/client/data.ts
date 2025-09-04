@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { SystemUserSocialTypeEnum } from '@vben/utils';
+import { SystemUserSocialTypeEnum } from '@vben/constants';
 
 import { z } from '#/adapter/form';
 import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';

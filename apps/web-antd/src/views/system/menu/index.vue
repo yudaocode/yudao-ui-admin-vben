@@ -5,8 +5,8 @@ import type { SystemMenuApi } from '#/api/system/menu';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { SystemMenuTypeEnum } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 

@@ -5,8 +5,9 @@ import type { Ref } from 'vue';
 
 import { computed, inject, reactive, ref } from 'vue';
 
+import { BpmModelFormType } from '@vben/constants';
 import { IconifyIcon, Plus, Trash2 } from '@vben/icons';
-import { BpmModelFormType, cloneDeep } from '@vben/utils';
+import { cloneDeep } from '@vben/utils';
 
 import {
   Card,

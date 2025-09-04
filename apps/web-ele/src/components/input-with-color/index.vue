@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PREDEFINE_COLORS } from '@vben/utils';
+import { PREDEFINE_COLORS } from '@vben/constants';
 
 // TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import { useVModels } from '@vueuse/core';

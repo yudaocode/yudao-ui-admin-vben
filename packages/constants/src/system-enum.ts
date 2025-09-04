@@ -30,9 +30,9 @@ export const AiModelTypeEnum = {
   RERANK: 6, // 重排
 };
 export interface ImageModel {
+  image?: string;
   key: string;
   name: string;
-  image?: string;
 }
 export const OtherPlatformEnum: ImageModel[] = [
   {
@@ -330,11 +330,11 @@ export const InfraApiErrorLogProcessStatusEnum = {
   IGNORE: 2, // 已忽略
 };
 export interface ImageSize {
+  height: string;
   key: string;
   name?: string;
   style: string;
   width: string;
-  height: string;
 }
 export const Dall3SizeList: ImageSize[] = [
   {

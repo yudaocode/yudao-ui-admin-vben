@@ -5,7 +5,8 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { h, onMounted, ref } from 'vue';
 
 import { Page, prompt } from '@vben/common-ui';
-import { DeliveryTypeEnum, fenToYuan, TradeOrderStatusEnum } from '@vben/utils';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
+import { fenToYuan } from '@vben/utils';
 
 import { Card, Input, message } from 'ant-design-vue';
 
