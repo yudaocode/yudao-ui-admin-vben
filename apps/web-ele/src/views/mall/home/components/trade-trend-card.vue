@@ -4,8 +4,9 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 import { onMounted, reactive, ref } from 'vue';
 
 import { AnalysisChartCard } from '@vben/common-ui';
+import { TimeRangeTypeEnum } from '@vben/constants';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { fenToYuan, formatDate, TimeRangeTypeEnum } from '@vben/utils';
+import { fenToYuan, formatDate } from '@vben/utils';
 
 import dayjs, { Dayjs } from 'dayjs';
 

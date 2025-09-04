@@ -4,8 +4,8 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
 
+import { AiWriteTypeEnum, WriteExample } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { AiWriteTypeEnum, WriteExample } from '@vben/utils';
 
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';

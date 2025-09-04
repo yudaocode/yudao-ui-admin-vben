@@ -5,8 +5,8 @@ import type { BpmFormApi } from '#/api/bpm/form';
 
 import { ref, watch } from 'vue';
 
+import { BpmModelFormType } from '@vben/constants';
 import { CircleHelp } from '@vben/icons';
-import { BpmModelFormType } from '@vben/utils';
 
 import FormCreate from '@form-create/ant-design-vue';
 import {
