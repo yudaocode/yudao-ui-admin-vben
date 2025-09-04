@@ -217,8 +217,8 @@ catalogs:
       specifier: ^3.4.2
       version: 3.4.2
     cropperjs:
-      specifier: ^1.6.2
-      version: 1.6.2
+      specifier: ^2.0.1
+      version: 2.0.1
     cross-env:
       specifier: ^7.0.3
       version: 7.0.3
@@ -778,7 +778,7 @@ importers:
         version: 4.2.6(vue@3.5.18(typescript@5.9.2))
       cropperjs:
         specifier: 'catalog:'
-        version: 1.6.2
+        version: 2.0.1
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -863,7 +863,7 @@ importers:
         version: 13.7.0(vue@3.5.18(typescript@5.9.2))
       cropperjs:
         specifier: 'catalog:'
-        version: 1.6.2
+        version: 2.0.1
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -948,7 +948,7 @@ importers:
         version: 13.7.0(vue@3.5.18(typescript@5.9.2))
       cropperjs:
         specifier: 'catalog:'
-        version: 1.6.2
+        version: 2.0.1
       crypto-js:
         specifier: 'catalog:'
         version: 4.2.0
@@ -2962,6 +2962,39 @@ packages:
   '@commitlint/types@19.8.1':
     resolution: {integrity: sha512-/yCrWGCoA1SVKOks25EGadP9Pnj0oAIHGpl2wH2M2Y46dPM2ueb8wyCVOD7O3WCTkaJ0IkKvzhl1JY7+uCT2Dw==}
     engines: {node: '>=v18'}
+
+  '@cropper/element-canvas@2.0.1':
+    resolution: {integrity: sha512-OKxq/O0HL9W2JegOsc2zh1NRpERZcLM5+M8aQ/eXdmMcfi1lzosPftag3Irp6pTsVpwV6B6ypIxKESzJ4ci9Fw==}
+
+  '@cropper/element-crosshair@2.0.1':
+    resolution: {integrity: sha512-bS5msU9cTU/jf1/kDw+QJmEM9/rw8IgOdpolR85iMVUCR8sRcLa0wgom42MBHcpBYB6hvL5YfiOeXZ7lHIYMpw==}
+
+  '@cropper/element-grid@2.0.1':
+    resolution: {integrity: sha512-ayqCvYQJ+GVT31HhFpttzHabW1T/LsIwLJY5PLTMG0cEZLw/E8ihg8mxctjZbo852D7oEePbz6/2SeuCb1018Q==}
+
+  '@cropper/element-handle@2.0.1':
+    resolution: {integrity: sha512-fdifyyPIaR9S2eQ7qPHuM8fX8uToAfBsi8vQlR9EM+oJkDNil0uO4rWyArLWEtlr0/q7U0OvsufcuJ7ffqfmpg==}
+
+  '@cropper/element-image@2.0.1':
+    resolution: {integrity: sha512-gPj5Sl2T8Cno198Cz3F3TDfcYoALW3yJ3fV6PHXmhMnX8sBkL7J441do7Vwkg0mEd2CogCtTLAf+p7ljdV0kgA==}
+
+  '@cropper/element-selection@2.0.1':
+    resolution: {integrity: sha512-atv+Aeq2N2eWawelIRPGh1kYFdNrpb0QkUPPheGxz1ImfxpLdcHO9gb9T5noQijizUW2G0pNvts4ZaITQ0I71Q==}
+
+  '@cropper/element-shade@2.0.1':
+    resolution: {integrity: sha512-YIYgJ690NdFQ6wJLRFh/EySNVxGFKArncQ4FrsJ3yHU+ShgtOKz4FpjFLpqJRJB9swoVbD3WKTimGyzXrwjZrQ==}
+
+  '@cropper/element-viewer@2.0.1':
+    resolution: {integrity: sha512-HDj25l08pWi/AO6El/OqfQHBpBC4Lh5NEnQN1SOldsmxEwt27Ubv6ndDsF8LkTK7XPwjjZRpyQPyfig4w8L2JQ==}
+
+  '@cropper/element@2.0.1':
+    resolution: {integrity: sha512-Jn1hR7XWzWQM/QfXRGMGzdkJ2gG/UcLdQPZQ7OKs0JiFfRzKpzu4u/nYrXHeH3MM2iOslLqh2kqYju6mjZLMJQ==}
+
+  '@cropper/elements@2.0.1':
+    resolution: {integrity: sha512-paFbBLXTKXNngn1yDi2ZIf+FO1pIEQXyBntmqOjuxqtG73KuEKv633wsJPFpj958bgcfSakgBbF80j+3nHbPug==}
+
+  '@cropper/utils@2.0.1':
+    resolution: {integrity: sha512-A9RnAFmgNF5aZk5q2VZnFnHtXWu1kPyEN0LVsX8wJ2LBRu2nyETKwz+ZXVsVWliktToCaYojHKrS+6/HODyEZA==}
 
   '@cspell/cspell-bundled-dicts@8.19.4':
     resolution: {integrity: sha512-2ZRcZP/ncJ5q953o8i+R0fb8+14PDt5UefUNMrFZZHvfTI0jukAASOQeLY+WT6ASZv6CgbPrApAdbppy9FaXYQ==}
@@ -6134,8 +6167,8 @@ packages:
     resolution: {integrity: sha512-p9nwwR4qyT5W996vBZhdvBCnMhicY5ytZkR4D1Xj0wuTDEiMnjwR57Q3RXYY/s0EpX6Ay3vgIcfaR+ewGHsi+g==}
     engines: {node: '>=18.0'}
 
-  cropperjs@1.6.2:
-    resolution: {integrity: sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==}
+  cropperjs@2.0.1:
+    resolution: {integrity: sha512-hiJwk2SCPZqxMA7aR3byzLpYUqOrQo+ihMk8k/WRm/xe/LX8wNzAIzMwEB/NEGJYA6sbewxW9TUlrRUYi/2Ipg==}
 
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -10382,6 +10415,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -12941,6 +12975,72 @@ snapshots:
     dependencies:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.6.0
+
+  '@cropper/element-canvas@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-crosshair@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-grid@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-handle@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-image@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/element-canvas': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-selection@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/element-canvas': 2.0.1
+      '@cropper/element-image': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-shade@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/element-canvas': 2.0.1
+      '@cropper/element-selection': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element-viewer@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/element-canvas': 2.0.1
+      '@cropper/element-image': 2.0.1
+      '@cropper/element-selection': 2.0.1
+      '@cropper/utils': 2.0.1
+
+  '@cropper/element@2.0.1':
+    dependencies:
+      '@cropper/utils': 2.0.1
+
+  '@cropper/elements@2.0.1':
+    dependencies:
+      '@cropper/element': 2.0.1
+      '@cropper/element-canvas': 2.0.1
+      '@cropper/element-crosshair': 2.0.1
+      '@cropper/element-grid': 2.0.1
+      '@cropper/element-handle': 2.0.1
+      '@cropper/element-image': 2.0.1
+      '@cropper/element-selection': 2.0.1
+      '@cropper/element-shade': 2.0.1
+      '@cropper/element-viewer': 2.0.1
+
+  '@cropper/utils@2.0.1': {}
 
   '@cspell/cspell-bundled-dicts@8.19.4':
     dependencies:
@@ -16416,7 +16516,10 @@ snapshots:
 
   croner@9.1.0: {}
 
-  cropperjs@1.6.2: {}
+  cropperjs@2.0.1:
+    dependencies:
+      '@cropper/elements': 2.0.1
+      '@cropper/utils': 2.0.1
 
   cross-env@7.0.3:
     dependencies:
