@@ -1,11 +1,10 @@
 // TODO @芋艿：后续再优化
 // TODO @芋艿：可以共享么？
 
-import type { DictItem } from '#/store';
+import type { DictItem } from '@vben/stores';
 
+import { useDictStore } from '@vben/stores';
 import { isObject } from '@vben/utils';
-
-import { useDictStore } from '#/store';
 
 // TODO @dhb52：top-level 调用 导致："getActivePinia()" was called but there was no active Pinia
 // 先临时移入到方法中
