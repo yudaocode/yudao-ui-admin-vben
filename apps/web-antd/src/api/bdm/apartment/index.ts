@@ -20,6 +20,13 @@ export function getApartmentPage(params: PageParam) {
   );
 }
 
+/** 根据楼层编号查询房屋列表 */
+export function getApartmentListByFloorId(floorId: number) {
+  return requestClient.get<ApartmentApi.Apartment[]>(
+    `/bdm/apartment/list-by-floor-id?floorId=${floorId}`,
+  );
+}
+
 /** 查询房屋详情 */
 export function getApartment(id: number) {
   return requestClient.get<ApartmentApi.Apartment>(
