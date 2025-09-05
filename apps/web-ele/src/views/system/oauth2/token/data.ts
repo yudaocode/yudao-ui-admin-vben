@@ -3,8 +3,8 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
 import { useAccess } from '@vben/access';
-
-import { DICT_TYPE, getDictOptions } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 const { hasAccessByCodes } = useAccess();
 

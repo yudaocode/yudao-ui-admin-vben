@@ -3,9 +3,10 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
 import { useAccess } from '@vben/access';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

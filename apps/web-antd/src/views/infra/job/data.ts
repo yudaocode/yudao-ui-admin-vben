@@ -4,13 +4,14 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h, markRaw } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { Timeline } from 'ant-design-vue';
 
 import { CronTab } from '#/components/cron-tab';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

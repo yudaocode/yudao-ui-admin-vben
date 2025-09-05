@@ -1,10 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { SystemUserSocialTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemUserSocialTypeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

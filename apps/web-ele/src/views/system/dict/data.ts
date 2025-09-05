@@ -4,10 +4,11 @@ import type { SystemDictDataApi } from '#/api/system/dict/data';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
+import type { DictDataType } from '@vben/hooks';
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
-import type { DictDataType } from '#/utils/dict';
 
 import { onMounted, reactive, ref } from 'vue';
 
 import { AnalysisChartCard } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
-import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 
 /** 会员终端卡片 */
 defineOptions({ name: 'MemberTerminalCard' });
@@ -49,7 +50,7 @@ const terminalChartOptions = reactive({
 const getMemberTerminalStatisticsList = async () => {
   loading.value = true;
   const list = await MemberStatisticsApi.getMemberTerminalStatisticsList();
-  const dictDataList = getIntDictOptions(DICT_TYPE.TERMINAL);
+  const dictDataList = getDictOptions(DICT_TYPE.TERMINAL, 'number');
   if (terminalChartOptions.series && terminalChartOptions.series.length > 0) {
     (terminalChartOptions.series[0] as any).data = dictDataList.map(
       (dictData: DictDataType) => {

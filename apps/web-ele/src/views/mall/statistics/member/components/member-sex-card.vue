@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import type { DictDataType } from '@vben/hooks';
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
-import type { DictDataType } from '#/utils/dict';
 
 import { onMounted, reactive, ref } from 'vue';
 
 import { AnalysisChartCard } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
-import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
@@ -43,7 +44,7 @@ const sexChartOptions = reactive({
 /** 按照性别，查询会员统计列表 */
 const getMemberSexStatisticsList = async () => {
   const list = await MemberStatisticsApi.getMemberSexStatisticsList();
-  const dictDataList = getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX);
+  const dictDataList = getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number');
   dictDataList.push({ label: '未知', value: null } as any);
   (sexChartOptions.series[0] as any).data = dictDataList.map(
     (dictData: DictDataType) => {

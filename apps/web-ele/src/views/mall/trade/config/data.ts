@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
-import { DICT_TYPE, getDictOptions } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 /** 售后表单 */
 export function useFormSchema(): VbenFormSchema[] {
