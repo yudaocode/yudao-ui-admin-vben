@@ -1,10 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { getAppList } from '#/api/pay/app';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { getAppList } from '#/api/pay/app';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -33,12 +33,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_TYPE, 'number'),
+        placeholder: '请选择通知类型',
       },
     },
     {
       fieldName: 'dataId',
       label: '关联编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入关联编号',
+      },
     },
     {
       fieldName: 'status',
@@ -47,12 +51,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_STATUS, 'number'),
+        placeholder: '请选择通知状态',
       },
     },
     {
       fieldName: 'merchantOrderId',
       label: '商户订单编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入商户订单编号',
+      },
     },
     {
       fieldName: 'createTime',
@@ -61,12 +69,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         ...getRangePickerDefaultProps(),
         allowClear: true,
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];
 }
 
-// TODO @xingyu：缺少 placeholder
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [

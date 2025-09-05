@@ -263,7 +263,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 }
 
 /** 修改用户等级 */
-export function useLeavelFormSchema(): VbenFormSchema[] {
+export function useLevelFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',

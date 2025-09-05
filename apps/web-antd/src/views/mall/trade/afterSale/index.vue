@@ -31,7 +31,6 @@ function openAfterSaleDetail(row: MallAfterSaleApi.AfterSale) {
   push({ name: 'TradeAfterSaleDetail', params: { id: row.id } });
 }
 
-// TODO @xingyu：缺详情页
 /** 查看订单详情 */
 function openOrderDetail(row: MallAfterSaleApi.AfterSale) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });

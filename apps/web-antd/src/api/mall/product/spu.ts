@@ -113,6 +113,8 @@ export namespace MallSpuApi {
     createTime?: Date;
     /** 商品状态 */
     status?: number;
+    /** 浏览量 */
+    browseCount?: number;
   }
 
   /** 商品状态更新 */

@@ -43,13 +43,12 @@ function handleEdit(row: MallCategoryApi.Category) {
 
 /** 查看商品操作 */
 const router = useRouter(); // 路由
-const handleViewSpu = (id: number) => {
-  // TODO @xingyu：貌似跳转不到详情；
+function handleViewSpu(id: number) {
   router.push({
     name: 'ProductSpu',
     query: { categoryId: id },
   });
-};
+}
 
 /** 删除分类 */
 async function handleDelete(row: MallCategoryApi.Category) {

@@ -58,18 +58,22 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '详细地址',
       rules: 'required',
     },
-    // TODO @xingyu：时间类型不对
     {
-      component: 'TimePicker',
-      fieldName: 'openingTime',
-      label: '营业开始时间',
+      component: 'TimeRangePicker',
+      fieldName: 'rangeTime',
+      label: '营业时间',
       rules: 'required',
-    },
-    {
-      component: 'TimePicker',
-      fieldName: 'closingTime',
-      label: '营业结束时间',
-      rules: 'required',
+      componentProps: {
+        format: 'HH:mm',
+        minuteStep: 15,
+        disabledTime: () => {
+          return {
+            disabledHours: () => {
+              return [0, 1, 2, 3, 4, 5, 6, 7];
+            },
+          };
+        },
+      },
     },
     {
       component: 'Input',

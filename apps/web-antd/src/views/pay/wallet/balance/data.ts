@@ -8,13 +8,15 @@ import { getDictOptions } from '@vben/hooks';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
-// TODO @xingyu：少了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'userId',
       label: '用户编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户编号',
+      },
     },
     {
       fieldName: 'userType',
@@ -22,6 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
+        placeholder: '请选择用户类型',
       },
     },
     {
@@ -31,6 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         ...getRangePickerDefaultProps(),
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];

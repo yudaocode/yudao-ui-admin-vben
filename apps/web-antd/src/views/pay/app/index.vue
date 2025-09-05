@@ -34,20 +34,18 @@ function handleCreate() {
   appFormModalApi.setData(null).open();
 }
 
-function handleEdit(row: Required<PayAppApi.App>) {
+function handleEdit(row: PayAppApi.App) {
   appFormModalApi.setData({ id: row.id }).open();
 }
 
-async function handleDelete(row: Required<PayAppApi.App>) {
+async function handleDelete(row: PayAppApi.App) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
   });
   try {
     await deleteApp(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -180,7 +178,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #alipayAppConfig="{ row }">
-        <!-- TODO @xingyu：channelCodes 爆红 -->
         <TableAction
           :actions="[
             {

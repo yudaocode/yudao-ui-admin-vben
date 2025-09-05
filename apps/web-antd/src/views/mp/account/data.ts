@@ -80,13 +80,15 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 搜索表单配置 */
-// TODO @xingyu：缺了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
       label: '名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入名称',
+      },
     },
   ];
 }

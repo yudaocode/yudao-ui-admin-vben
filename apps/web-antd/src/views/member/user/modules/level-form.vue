@@ -11,7 +11,7 @@ import { useVbenForm } from '#/adapter/form';
 import { getUser, updateUser } from '#/api/member/user';
 import { $t } from '#/locales';
 
-import { useLeavelFormSchema } from '../data';
+import { useLevelFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MemberUserApi.User>();
@@ -25,7 +25,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 80,
   },
   layout: 'horizontal',
-  schema: useLeavelFormSchema(),
+  schema: useLevelFormSchema(),
   showDefaultActions: false,
 });
 

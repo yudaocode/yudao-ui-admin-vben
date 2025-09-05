@@ -14,6 +14,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '套餐名',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入套餐名称',
+      },
     },
     {
       fieldName: 'payPrice',
@@ -24,6 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
+        placeholder: '请输入支付金额',
       },
     },
     {
@@ -35,6 +39,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
+        placeholder: '请输入赠送金额',
       },
     },
     {
@@ -44,19 +49,22 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择开启状态',
       },
     },
   ];
 }
 
 /** 列表的搜索表单 */
-// TODO @xingyu：少了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
       label: '套餐名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入套餐名称',
+      },
     },
     {
       fieldName: 'status',
@@ -65,6 +73,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择状态',
       },
     },
     {
@@ -74,6 +83,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         ...getRangePickerDefaultProps(),
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];

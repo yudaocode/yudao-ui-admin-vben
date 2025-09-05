@@ -269,7 +269,7 @@ onMounted(async () => {
         <!-- TODO @xingyu：展开的样子，有点丑 -->
         <Descriptions
           :column="4"
-          class="mt-4"
+          class="m-4"
           :label-style="{
             width: '100px',
             fontWeight: 'bold',
@@ -278,7 +278,7 @@ onMounted(async () => {
           :content-style="{ width: '100px', fontSize: '14px' }"
         >
           <Descriptions.Item label="商品分类">
-            {{ treeToString(categoryList, row.categoryId as string) }}
+            {{ treeToString(categoryList, row.categoryId!) }}
           </Descriptions.Item>
           <Descriptions.Item label="商品名称">
             {{ row.name }}
@@ -291,7 +291,7 @@ onMounted(async () => {
             {{ fenToYuan(row.costPrice as number) }} 元
           </Descriptions.Item>
           <Descriptions.Item label="浏览量">
-            {{ row.browseCount as number }}
+            {{ row.browseCount }}
           </Descriptions.Item>
           <Descriptions.Item label="虚拟销量">
             {{ row.virtualSalesCount }}
@@ -320,7 +320,7 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => row.type === 4,
+              ifShow: () => tabType === 4,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -331,7 +331,6 @@ onMounted(async () => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type === 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,
@@ -343,7 +342,6 @@ onMounted(async () => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type !== 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,
