@@ -53,7 +53,6 @@ async function onMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     onRefresh();
   } catch {

@@ -81,7 +81,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       if (data.id) {
-        data = await getCustomerLimitConfig(data.id as number);
+        data = await getCustomerLimitConfig(data.id);
       }
       formData.value = data;
       // 设置到 values

@@ -70,7 +70,6 @@ async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   });
   try {
     await deleteNotifyTemplate(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     onRefresh();
   } finally {
@@ -88,7 +87,6 @@ async function onDeleteBatch() {
   try {
     await deleteNotifyTemplateList(checkedIds.value);
     checkedIds.value = [];
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     onRefresh();
   } finally {

@@ -74,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTenant(data.id as number);
+      formData.value = await getTenant(data.id);
       // 将数组转换为换行符分隔的字符串
       const formValues = {
         ...formData.value,

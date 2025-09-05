@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTenantPackage(data.id as number);
+      formData.value = await getTenantPackage(data.id);
       await formApi.setValues(data);
     } finally {
       modalApi.unlock();

@@ -24,7 +24,9 @@
   },
   "actionMessage": {
     "deleteConfirm": "Are you sure to delete {0}?",
+    "deleteBatchConfirm": "Are you sure to delete selected items?",
     "deleting": "Deleting {0} ...",
+    "deletingBatch": "Deleting selected ...",
     "deleteSuccess": "{0} deleted successfully",
     "deleteFailed": "{0} deleted failed",
     "operationSuccess": "Operation succeeded",
