@@ -102,15 +102,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(getLeaderName),
     height: 'auto',
+    pagerConfig: {
+      enabled: false,
+    },
     proxyConfig: {
       ajax: {
         query: async () => {
           return await getDeptList();
         },
       },
-    },
-    pagerConfig: {
-      enabled: false,
     },
     rowConfig: {
       keyField: 'id',
