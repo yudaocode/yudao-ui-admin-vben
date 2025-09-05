@@ -121,9 +121,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     treeConfig: {
-      transform: true,
-      rowField: 'id',
       parentField: 'parentId',
+      rowField: 'id',
+      transform: true,
       expandAll: true,
       reserve: true,
     },
