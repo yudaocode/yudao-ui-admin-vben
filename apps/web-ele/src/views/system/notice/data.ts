@@ -1,14 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { z } from '#/adapter/form';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps, } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -24,43 +21,37 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'title',
       label: '公告标题',
+      rules: 'required',
       component: 'Input',
-      rules: 'required',
-    },
-    {
-      fieldName: 'type',
-      label: '公告类型',
-      component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.SYSTEM_NOTICE_TYPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        placeholder: '请输入公告标题',
       },
-      rules: 'required',
     },
     {
       fieldName: 'content',
       label: '公告内容',
-      component: 'RichTextarea',
       rules: 'required',
+      component: 'RichTextarea',
+    },
+    {
+      fieldName: 'type',
+      label: '公告类型（1通知 2公告）',
+      rules: 'required',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.SYSTEM_NOTICE_TYPE, 'number'),
+        placeholder: '请选择公告类型（1通知 2公告）',
+      },
     },
     {
       fieldName: 'status',
-      label: '公告状态',
+      label: '公告状态（0正常 1关闭）',
+      rules: 'required',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        options: [],
         buttonStyle: 'solid',
         optionType: 'button',
-      },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
-    },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
       },
     },
   ];
@@ -74,17 +65,45 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '公告标题',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入公告标题',
         allowClear: true,
+        placeholder: '请输入公告标题',
+      },
+    },
+    {
+      fieldName: 'content',
+      label: '公告内容',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入公告内容',
+      },
+    },
+    {
+      fieldName: 'type',
+      label: '公告类型（1通知 2公告）',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.SYSTEM_NOTICE_TYPE, 'number'),
+        placeholder: '请选择公告类型（1通知 2公告）',
       },
     },
     {
       fieldName: 'status',
-      label: '公告状态',
+      label: '公告状态（0正常 1关闭）',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        placeholder: '请选择公告状态',
+        allowClear: true,
+        options: [],
+        placeholder: '请选择公告状态（0正常 1关闭）',
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },
@@ -92,28 +111,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNoticeApi.Notice>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemNoticeApi.Notice>['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
-      title: '公告编号',
-      minWidth: 100,
+      title: '公告ID',
+      minWidth: 120,
     },
     {
       field: 'title',
       title: '公告标题',
-      minWidth: 200,
+      minWidth: 120,
+    },
+    {
+      field: 'content',
+      title: '公告内容',
+      minWidth: 120,
     },
     {
       field: 'type',
-      title: '公告类型',
-      minWidth: 100,
+      title: '公告类型（1通知 2公告）',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTICE_TYPE },
@@ -121,48 +140,20 @@ export function useGridColumns<T = SystemNoticeApi.Notice>(
     },
     {
       field: 'status',
-      title: '公告状态',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
-      },
+      title: '公告状态（0正常 1关闭）',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
+      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 200,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'title',
-          nameTitle: '公告',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:notice:update']),
-          },
-          {
-            code: 'push',
-            text: '推送',
-            show: hasAccessByCodes(['system:notice:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:notice:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

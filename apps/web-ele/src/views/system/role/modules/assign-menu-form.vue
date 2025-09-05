@@ -72,7 +72,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 加载角色菜单
-      const menuIds = await getRoleMenuList(data.id as number);
+      const menuIds = await getRoleMenuList(data.id);
       await formApi.setFieldValue('menuIds', menuIds);
 
       await formApi.setValues(data);

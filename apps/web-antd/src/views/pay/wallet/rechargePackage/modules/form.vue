@@ -74,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getPackage(data.id as number);
+      formData.value = await getPackage(data.id);
       // 转换金额单位
       formData.value.payPrice = Number.parseFloat(
         fenToYuan(formData.value.payPrice),
