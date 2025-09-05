@@ -47,7 +47,6 @@ function onEdit(row: SystemMailAccountApi.MailAccount) {
 async function onDelete(row: SystemMailAccountApi.MailAccount) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.mail]),
-    fullscreen: true,
   });
   try {
     await deleteMailAccount(row.id as number);

@@ -107,18 +107,22 @@ export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '字典编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '字典名称',
+      minWidth: 200,
     },
     {
       field: 'type',
       title: '字典类型',
+      minWidth: 220,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -127,15 +131,17 @@ export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'remark',
       title: '备注',
+      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 160,
+      minWidth: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -295,22 +301,27 @@ export function useDataGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '字典编码',
+      minWidth: 100,
     },
     {
       field: 'label',
       title: '字典标签',
+      minWidth: 180,
     },
     {
       field: 'value',
       title: '字典键值',
+      minWidth: 100,
     },
     {
       field: 'sort',
       title: '字典排序',
+      minWidth: 100,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -319,21 +330,24 @@ export function useDataGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'colorType',
       title: '颜色类型',
+      minWidth: 120,
       slots: { default: 'colorType' },
     },
     {
       field: 'cssClass',
       title: 'CSS Class',
+      minWidth: 120,
       slots: { default: 'cssClass' },
     },
     {
       title: '创建时间',
       field: 'createTime',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 160,
+      minWidth: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },

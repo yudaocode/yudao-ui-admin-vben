@@ -62,7 +62,6 @@ function openUrl(url?: string) {
 async function onDelete(row: InfraFileApi.File) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name || row.path]),
-    fullscreen: true,
   });
   try {
     await deleteFile(row.id as number);

@@ -8,7 +8,7 @@ import TypeGrid from './modules/type-grid.vue';
 
 const searchDictType = ref<string>(); // 搜索的字典类型
 
-function onDictTypeSelect(dictType: string) {
+function handleDictTypeSelect(dictType: string) {
   searchDictType.value = dictType;
 }
 </script>
@@ -22,7 +22,7 @@ function onDictTypeSelect(dictType: string) {
     <div class="flex h-full">
       <!-- 左侧字典类型列表 -->
       <div class="w-1/2 pr-3">
-        <TypeGrid @select="onDictTypeSelect" />
+        <TypeGrid @select="handleDictTypeSelect" />
       </div>
       <!-- 右侧字典数据列表 -->
       <div class="w-1/2">

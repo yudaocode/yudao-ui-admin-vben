@@ -54,7 +54,6 @@ function onEdit(row: SystemPostApi.Post) {
 async function onDelete(row: SystemPostApi.Post) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deletePost(row.id as number);

@@ -47,7 +47,6 @@ function onEdit(row: SystemSocialClientApi.SocialClient) {
 async function onDelete(row: SystemSocialClientApi.SocialClient) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSocialClient(row.id as number);

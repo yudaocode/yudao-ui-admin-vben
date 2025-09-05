@@ -39,7 +39,6 @@ function handleEdit(row: any) {
 async function handleDelete(row: any) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deletePackage(row.id as number);

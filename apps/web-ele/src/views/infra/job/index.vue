@@ -107,7 +107,6 @@ function onLog(row?: InfraJobApi.Job) {
 async function onDelete(row: InfraJobApi.Job) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteJob(row.id as number);

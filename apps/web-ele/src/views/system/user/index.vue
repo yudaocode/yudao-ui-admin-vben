@@ -86,7 +86,6 @@ function onEdit(row: SystemUserApi.User) {
 async function onDelete(row: SystemUserApi.User) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.username]),
-    fullscreen: true,
   });
   try {
     await deleteUser(row.id as number);

@@ -54,7 +54,6 @@ function onEdit(row: SystemSmsChannelApi.SmsChannel) {
 async function onDelete(row: SystemSmsChannelApi.SmsChannel) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.signature]),
-    fullscreen: true,
   });
   try {
     await deleteSmsChannel(row.id as number);

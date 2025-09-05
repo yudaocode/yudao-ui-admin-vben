@@ -47,7 +47,6 @@ function onEdit(row: SystemTenantPackageApi.TenantPackage) {
 async function onDelete(row: SystemTenantPackageApi.TenantPackage) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteTenantPackage(row.id as number);

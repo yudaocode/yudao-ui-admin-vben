@@ -65,7 +65,6 @@ function onSend(row: SystemSmsTemplateApi.SmsTemplate) {
 async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSmsTemplate(row.id as number);

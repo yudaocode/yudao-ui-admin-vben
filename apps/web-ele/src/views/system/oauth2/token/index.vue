@@ -27,7 +27,6 @@ function onRefresh() {
 async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.accessToken]),
-    fullscreen: true,
   });
   try {
     await deleteOAuth2Token(row.accessToken);

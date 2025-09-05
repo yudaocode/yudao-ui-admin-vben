@@ -47,7 +47,6 @@ function onEdit(row: SystemOAuth2ClientApi.OAuth2Client) {
 async function onDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteOAuth2Client(row.id as number);

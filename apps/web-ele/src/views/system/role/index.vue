@@ -68,7 +68,6 @@ function onCreate() {
 async function onDelete(row: SystemRoleApi.Role) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteRole(row.id as number);

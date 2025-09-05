@@ -49,7 +49,6 @@ function onEdit(row: InfraFileConfigApi.FileConfig) {
 async function onMaster(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.updating', [row.name]),
-    fullscreen: true,
   });
   try {
     await updateFileConfigMaster(row.id as number);
@@ -64,7 +63,6 @@ async function onMaster(row: InfraFileConfigApi.FileConfig) {
 async function onTest(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: '测试上传中...',
-    fullscreen: true,
   });
   try {
     const response = await testFileConfig(row.id as number);
@@ -87,7 +85,6 @@ async function onTest(row: InfraFileConfigApi.FileConfig) {
 async function onDelete(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteFileConfig(row.id as number);

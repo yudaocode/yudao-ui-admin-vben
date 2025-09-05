@@ -41,7 +41,6 @@ function handleEdit(row: MallSeckillConfigApi.SeckillConfig) {
 async function handleDelete(row: MallSeckillConfigApi.SeckillConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSeckillConfig(row.id as number);

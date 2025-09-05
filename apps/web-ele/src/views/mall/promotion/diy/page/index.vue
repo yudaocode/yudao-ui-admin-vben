@@ -49,7 +49,6 @@ function handleDecorate(row: MallDiyPageApi.DiyPage) {
 async function handleDelete(row: MallDiyPageApi.DiyPage) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDiyPage(row.id as number);

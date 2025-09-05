@@ -67,7 +67,6 @@ function onSend(row: SystemMailTemplateApi.MailTemplate) {
 async function onDelete(row: SystemMailTemplateApi.MailTemplate) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteMailTemplate(row.id as number);

@@ -61,7 +61,6 @@ const submitForm = async () => {
   // 提交表单
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.updating'),
-    fullscreen: true,
   });
   try {
     // 拼接相关信息

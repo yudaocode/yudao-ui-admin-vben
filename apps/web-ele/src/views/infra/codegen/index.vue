@@ -75,7 +75,6 @@ function onEdit(row: InfraCodegenApi.CodegenTable) {
 async function onDelete(row: InfraCodegenApi.CodegenTable) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.tableName]),
-    fullscreen: true,
   });
   try {
     await deleteCodegenTable(row.id);
@@ -107,7 +106,6 @@ async function onSync(row: InfraCodegenApi.CodegenTable) {
 async function onGenerate(row: InfraCodegenApi.CodegenTable) {
   const loadingInstance = ElLoading.service({
     text: '正在生成代码...',
-    fullscreen: true,
   });
   try {
     const res = await downloadCodegen(row.id);

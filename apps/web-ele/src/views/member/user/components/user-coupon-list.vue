@@ -27,7 +27,6 @@ const activeStatus = ref<number | string>('all');
 const handleDelete = async (row: MallCouponApi.Coupon) => {
   const hideLoading = ElLoading.service({
     text: '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
-    fullscreen: true,
   });
   try {
     await deleteCoupon(row.id as number);

@@ -54,7 +54,6 @@ function onEdit(row: InfraConfigApi.Config) {
 async function onDelete(row: InfraConfigApi.Config) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteConfig(row.id as number);

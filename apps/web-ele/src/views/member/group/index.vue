@@ -37,7 +37,6 @@ function handleEdit(row: MemberGroupApi.Group) {
 async function handleDelete(row: MemberGroupApi.Group) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteGroup(row.id as number);

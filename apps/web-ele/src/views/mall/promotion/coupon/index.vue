@@ -26,7 +26,6 @@ const statusTabs = ref(getStatusTabs());
 async function handleDelete(row: MallCouponApi.Coupon) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCoupon(row.id as number);

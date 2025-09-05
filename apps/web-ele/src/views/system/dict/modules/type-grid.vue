@@ -56,7 +56,6 @@ function onEdit(row: any) {
 async function onDelete(row: SystemDictTypeApi.DictType) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDictType(row.id as number);

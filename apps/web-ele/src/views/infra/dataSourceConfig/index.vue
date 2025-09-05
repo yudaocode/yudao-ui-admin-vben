@@ -42,7 +42,6 @@ function onEdit(row: InfraDataSourceConfigApi.DataSourceConfig) {
 async function onDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDataSourceConfig(row.id as number);

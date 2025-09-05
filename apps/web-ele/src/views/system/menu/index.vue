@@ -49,7 +49,6 @@ function onEdit(row: SystemMenuApi.Menu) {
 async function onDelete(row: SystemMenuApi.Menu) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteMenu(row.id as number);
