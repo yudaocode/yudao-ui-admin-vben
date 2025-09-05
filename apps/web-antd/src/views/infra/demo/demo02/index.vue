@@ -53,7 +53,7 @@ function handleEdit(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData(row).open();
 }
 
-/** 新增下级示例分类 */
+/** 添加下级示例分类 */
 function handleAppend(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData({ parentId: row.id }).open();
 }
