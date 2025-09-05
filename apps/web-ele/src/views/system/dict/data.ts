@@ -292,9 +292,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/**
- * 字典数据表格列
- */
+/** 字典数据表格列 */
 export function useDataGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
