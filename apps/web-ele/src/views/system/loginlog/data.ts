@@ -3,8 +3,9 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
 import { useAccess } from '@vben/access';
+import { DICT_TYPE } from '@vben/constants';
 
-import { DICT_TYPE, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 
