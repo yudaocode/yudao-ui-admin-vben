@@ -125,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       rowField: 'id',
       parentField: 'parentId',
       expandAll: true,
-      accordion: false,
+      reserve: true,
     },
   } as VxeTableGridOptions<SystemDeptApi.Dept>,
   gridEvents: {
