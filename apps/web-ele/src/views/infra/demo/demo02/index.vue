@@ -119,16 +119,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: isExpanded ? '收缩' : '展开',
-              type: 'primary',
-              onClick: toggleExpand,
-            },
-            {
               label: $t('ui.actionTitle.create', ['示例分类']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['infra:demo02-category:create'],
               onClick: handleCreate,
+            },
+            {
+              label: isExpanded ? '收缩' : '展开',
+              type: 'primary',
+              onClick: toggleExpand,
             },
             {
               label: $t('ui.actionTitle.export'),

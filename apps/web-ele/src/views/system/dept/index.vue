@@ -30,16 +30,16 @@ function getLeaderName(userId: number) {
   return userList.value.find((user) => user.id === userId)?.nickname;
 }
 
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
 function toggleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
+}
+
+/** 刷新表格 */
+function onRefresh() {
+  gridApi.query();
 }
 
 /** 创建部门 */
