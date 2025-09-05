@@ -46,6 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择负责人',
+        allowClear: true,
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -164,13 +165,16 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-// TODO @xingyu：缺少 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'no',
       label: '回款编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入回款编号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'customerId',
@@ -183,6 +187,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
+        allowClear: true,
       },
     },
   ];

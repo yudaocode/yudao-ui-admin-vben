@@ -149,7 +149,6 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-// TODO @xingyu：缺少 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -163,6 +162,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
+        allowClear: true,
       },
     },
     {
@@ -171,6 +171,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入合同编号',
+        allowClear: true,
       },
     },
   ];
