@@ -1,8 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
@@ -10,8 +9,6 @@ import { handleTree } from '@vben/utils';
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -114,10 +111,10 @@ export function useFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 export function useGridColumns(
-  onActionClick?: OnActionClickFn<SystemDeptApi.Dept>,
   getLeaderName?: (userId: number) => string | undefined,
 ): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '部门名称',
@@ -130,9 +127,7 @@ export function useGridColumns(
       field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
-      formatter: (row) => {
-        return getLeaderName?.(row.cellValue) || '-';
-      },
+      formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
     },
     {
       field: 'sort',
@@ -155,39 +150,10 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
-      align: 'right',
+      width: 220,
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '部门',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['system:dept:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:dept:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:dept:delete']),
-            disabled: (row: SystemDeptApi.Dept) => {
-              return !!(row.children && row.children.length > 0);
-            },
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
