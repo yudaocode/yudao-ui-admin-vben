@@ -3,13 +3,13 @@ import type { MemberUserApi } from '#/api/member/user';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
 import { Avatar, Card, Col, Row } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 withDefaults(
   defineProps<{ mode?: 'kefu' | 'member'; user: MemberUserApi.User }>(),

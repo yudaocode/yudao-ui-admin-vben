@@ -6,6 +6,8 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   DatePicker,
@@ -24,7 +26,6 @@ import {
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { ImageUpload } from '#/components/upload';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 

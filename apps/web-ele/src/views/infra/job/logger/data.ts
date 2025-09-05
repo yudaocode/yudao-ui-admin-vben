@@ -3,11 +3,11 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
 import { useAccess } from '@vben/access';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import dayjs from 'dayjs';
-
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const { hasAccessByCodes } = useAccess();
 

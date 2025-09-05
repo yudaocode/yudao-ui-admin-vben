@@ -1,8 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 export const EVENT_EXECUTION_OPTIONS = [
   {

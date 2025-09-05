@@ -2,7 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 export function useGridFormSchema(): VbenFormSchema[] {
   return [

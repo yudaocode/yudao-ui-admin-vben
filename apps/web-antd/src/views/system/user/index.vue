@@ -6,6 +6,8 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Card, message } from 'ant-design-vue';
@@ -19,7 +21,6 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';

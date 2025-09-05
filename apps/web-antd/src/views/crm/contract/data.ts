@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 import { erpPriceInputFormatter, erpPriceMultiply } from '@vben/utils';
 
@@ -9,7 +10,6 @@ import { getSimpleBusinessList } from '#/api/crm/business';
 import { getSimpleContactList } from '#/api/crm/contact';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '@vben/constants';
 
 /** 表单配置 */
 export function useFormSchema(): VbenFormSchema[] {

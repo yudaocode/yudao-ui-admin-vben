@@ -6,6 +6,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 import { computed, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   ElDatePicker,
@@ -26,7 +28,6 @@ import {
 } from '#/api/infra/demo/demo03/normal';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Demo03CourseForm from './demo03-course-form.vue';
 import Demo03GradeForm from './demo03-grade-form.vue';
@@ -84,8 +85,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = formData.value as Demo03StudentApi.Demo03Student;
     // 拼接子表的数据
-    data.demo03Courses = demo03CourseFormRef.value?.getData();
-    data.demo03Grade = demo03GradeFormRef.value?.getValues();
+    data.demo03courses = demo03CourseFormRef.value?.getData();
+    data.demo03grade =
+      demo03GradeFormRef.value?.getValues() as Demo03StudentApi.Demo03Grade;
     try {
       await (formData.value?.id
         ? updateDemo03Student(data)
@@ -136,8 +138,11 @@ const [Modal, modalApi] = useVbenModal({
       <ElFormItem label="性别" prop="sex">
         <ElRadioGroup v-model="formData.sex">
           <ElRadio
-            v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
-            :key="dict.value"
+            v-for="(dict, index) in getDictOptions(
+              DICT_TYPE.SYSTEM_USER_SEX,
+              'number',
+            )"
+            :key="index"
             :label="dict.value"
           >
             {{ dict.label }}

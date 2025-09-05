@@ -1,4 +1,5 @@
-import { DICT_TYPE, getDictLabel } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 
 function areaReplace(areaName: string) {
   if (!areaName) {

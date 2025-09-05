@@ -5,12 +5,13 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { ElTag } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

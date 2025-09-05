@@ -4,6 +4,8 @@ import type { DictSelectProps } from '../typing';
 
 import { computed, useAttrs } from 'vue';
 
+import { getDictOptions } from '@vben/hooks';
+
 import {
   ElCheckbox,
   ElCheckboxGroup,
@@ -12,8 +14,6 @@ import {
   ElRadioGroup,
   ElSelect,
 } from 'element-plus';
-
-import { getDictObj, getIntDictOptions, getStrDictOptions } from '#/utils';
 
 defineOptions({ name: 'DictSelect' });
 
@@ -25,17 +25,16 @@ const props = withDefaults(defineProps<DictSelectProps>(), {
 const attrs = useAttrs();
 
 // 获得字典配置
-// TODO @dhb：可以使用 getDictOptions 替代么？
-const getDictOptions = computed(() => {
+const dictOptions = computed(() => {
   switch (props.valueType) {
     case 'bool': {
-      return getDictObj(props.dictType, 'bool');
+      return getDictOptions(props.dictType, 'boolean');
     }
     case 'int': {
-      return getIntDictOptions(props.dictType);
+      return getDictOptions(props.dictType);
     }
     case 'str': {
-      return getStrDictOptions(props.dictType);
+      return getDictOptions(props.dictType);
     }
     default: {
       return [];
@@ -47,7 +46,7 @@ const getDictOptions = computed(() => {
 <template>
   <ElSelect v-if="selectType === 'select'" class="w-1/1" v-bind="attrs">
     <ElOption
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in dictOptions"
       :key="index"
       :value="dict.value"
       :label="dict.label"
@@ -55,7 +54,7 @@ const getDictOptions = computed(() => {
   </ElSelect>
   <ElRadioGroup v-if="selectType === 'radio'" class="w-1/1" v-bind="attrs">
     <ElRadio
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in dictOptions"
       :key="index"
       :label="dict.value"
     >
@@ -68,7 +67,7 @@ const getDictOptions = computed(() => {
     v-bind="attrs"
   >
     <ElCheckbox
-      v-for="(dict, index) in getDictOptions"
+      v-for="(dict, index) in dictOptions"
       :key="index"
       :label="dict.value"
     >

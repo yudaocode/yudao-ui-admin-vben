@@ -4,6 +4,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
 import {
   cloneDeep,
@@ -34,7 +36,7 @@ import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
 import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 import Demo03StudentForm from './modules/form.vue';
 

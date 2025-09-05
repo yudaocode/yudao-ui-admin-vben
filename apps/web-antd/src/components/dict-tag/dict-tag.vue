@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { getDictObj } from '@vben/hooks';
 import { isValidColor, TinyColor } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
-
-import { getDictObj } from '#/utils';
 
 interface DictTagProps {
   /**

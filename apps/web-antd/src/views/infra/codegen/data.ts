@@ -7,13 +7,15 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 导入数据库表的表单 */
 export function useImportTableFormSchema(): VbenFormSchema[] {

@@ -4,13 +4,12 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
 
-import { AiWriteTypeEnum, WriteExample } from '@vben/constants';
+import { AiWriteTypeEnum, DICT_TYPE, WriteExample } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
-
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Tag from './Tag.vue';
 

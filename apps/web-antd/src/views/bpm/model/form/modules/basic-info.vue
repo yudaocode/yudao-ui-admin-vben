@@ -11,6 +11,8 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -25,7 +27,6 @@ import {
 
 import { DeptSelectModal, UserSelectModal } from '#/components/select-modal';
 import { ImageUpload } from '#/components/upload';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const props = defineProps({
   categoryList: {

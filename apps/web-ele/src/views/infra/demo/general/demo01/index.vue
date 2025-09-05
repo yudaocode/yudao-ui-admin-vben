@@ -4,6 +4,8 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
 import {
   cloneDeep,
@@ -37,7 +39,6 @@ import { DictTag } from '#/components/dict-tag';
 import { TableToolbar } from '#/components/table-toolbar';
 import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Demo01ContactForm from './modules/form.vue';
 
@@ -180,11 +181,11 @@ onMounted(() => {
             class="!w-[240px]"
           >
             <ElOption
-              v-for="dict in getDictOptions(
+              v-for="(dict, index) in getDictOptions(
                 DICT_TYPE.SYSTEM_USER_SEX,
                 'number',
               )"
-              :key="dict.value"
+              :key="index"
               :value="dict.value"
               :label="dict.label"
             />

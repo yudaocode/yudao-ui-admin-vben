@@ -4,6 +4,8 @@ import type { CrmFollowUpApi } from '#/api/crm/followup';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
 
@@ -12,7 +14,6 @@ import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { getContactPageByCustomer } from '#/api/crm/contact';
 import { createFollowUpRecord } from '#/api/crm/followup';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 

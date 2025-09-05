@@ -10,6 +10,7 @@ import {
   BpmModelFormType,
   BpmModelType,
   BpmTaskStatusEnum,
+  DICT_TYPE,
 } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
@@ -21,7 +22,7 @@ import {
 } from '#/api/bpm/processInstance';
 import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
-import { DICT_TYPE, registerComponent, setConfAndFields2 } from '#/utils';
+import { registerComponent, setConfAndFields2 } from '#/utils';
 import {
   SvgBpmApproveIcon,
   SvgBpmCancelIcon,

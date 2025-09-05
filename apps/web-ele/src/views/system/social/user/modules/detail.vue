@@ -4,13 +4,13 @@ import type { SystemSocialUserApi } from '#/api/system/social/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
 import { ElDescriptions, ElDescriptionsItem, ElImage } from 'element-plus';
 
 import { getSocialUser } from '#/api/system/social/user';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils';
 
 const formData = ref<SystemSocialUserApi.SocialUser>();
 

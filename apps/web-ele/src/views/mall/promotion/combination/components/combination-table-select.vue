@@ -3,6 +3,8 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import {
   dateFormatter,
   fenToYuan,
@@ -15,7 +17,6 @@ import { CHANGE_EVENT } from 'element-plus';
 
 import * as ProductCategoryApi from '#/api/mall/product/category';
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
-import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 
 /**
  * 活动表格选择对话框
@@ -270,7 +271,7 @@ onMounted(async () => {
             class="!w-240px"
           >
             <el-option
-              v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+              v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"

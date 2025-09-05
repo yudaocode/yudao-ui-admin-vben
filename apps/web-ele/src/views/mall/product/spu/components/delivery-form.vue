@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 
-import { DeliveryTypeEnum } from '@vben/constants';
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import * as ExpressTemplateApi from '#/api/mall/trade/delivery/expressTemplate';
-import { DICT_TYPE, getIntDictOptions } from '#/utils';
 
 const props = defineProps<{
   propFormData: Object;
@@ -57,7 +57,7 @@ const [Form, formApi] = useVbenForm({
       label: '配送方式',
       component: 'CheckboxGroup',
       componentProps: {
-        options: getIntDictOptions(DICT_TYPE.TRADE_DELIVERY_TYPE),
+        options: getDictOptions(DICT_TYPE.TRADE_DELIVERY_TYPE, 'number'),
       },
       rules: 'required',
     },
