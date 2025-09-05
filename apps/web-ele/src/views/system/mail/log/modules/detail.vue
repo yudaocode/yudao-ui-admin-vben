@@ -4,12 +4,12 @@ import type { SystemMailLogApi } from '#/api/system/mail/log';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 const formData = ref<SystemMailLogApi.MailLog>();
 

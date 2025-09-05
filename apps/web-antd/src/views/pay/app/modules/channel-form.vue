@@ -4,13 +4,13 @@ import type { PayChannelApi } from '#/api/pay/channel';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createChannel, getChannel, updateChannel } from '#/api/pay/channel';
-import { CommonStatusEnum } from '#/utils';
 
 import { channelSchema } from './data';
 
