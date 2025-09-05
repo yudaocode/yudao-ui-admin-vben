@@ -2,11 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Search } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAreaTree } from '#/api/system/area';
 
 import { useGridColumns } from './data';
@@ -65,10 +62,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid table-title="地区列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="handleQueryIp">
-          <Search class="size-5" />
-          IP 查询
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: 'IP 查询',
+              type: 'primary',
+              icon: ACTION_ICON.SEARCH,
+              onClick: handleQueryIp,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

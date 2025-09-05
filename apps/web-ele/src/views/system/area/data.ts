@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemAreaApi } from '#/api/system/area';
 
+import { z } from '#/adapter/form';
+
 /** 查询 IP 的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -12,7 +14,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入 IP 地址',
       },
-      rules: 'required',
+      rules: z.string().ip({ message: '请输入正确的 IP 地址' }),
     },
     {
       fieldName: 'result',
