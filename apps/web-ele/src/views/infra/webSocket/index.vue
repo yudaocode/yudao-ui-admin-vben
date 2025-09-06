@@ -99,8 +99,8 @@ watchEffect(() => {
 
 /** 发送消息 */
 const sendText = ref(''); // 发送内容
-const sendUserId = ref(''); // 发送人
-const handlerSend = () => {
+const sendUserId = ref('all'); // 发送人
+function handlerSend() {
   if (!sendText.value.trim()) {
     ElMessage.warning('消息内容不能为空');
     return;
@@ -109,7 +109,7 @@ const handlerSend = () => {
   // 1.1 先 JSON 化 message 消息内容
   const messageContent = JSON.stringify({
     text: sendText.value,
-    toUserId: sendUserId.value,
+    toUserId: sendUserId.value === 'all' ? undefined : sendUserId.value,
   });
   // 1.2 再 JSON 化整个消息
   const jsonMessage = JSON.stringify({
@@ -119,19 +119,19 @@ const handlerSend = () => {
   // 2. 最后发送消息
   send(jsonMessage);
   sendText.value = '';
-};
+}
 
 /** 切换 websocket 连接状态 */
-const toggleConnectStatus = () => {
+function toggleConnectStatus() {
   if (getIsOpen.value) {
     close();
   } else {
     open();
   }
-};
+}
 
 /** 获取消息类型的徽标颜色 */
-const getMessageBadgeType = (type?: string) => {
+function getMessageBadgeType(type?: string) {
   switch (type) {
     case 'group': {
       return 'success';
@@ -146,10 +146,10 @@ const getMessageBadgeType = (type?: string) => {
       return 'info';
     }
   }
-};
+}
 
 /** 获取消息类型的文本 */
-const getMessageTypeText = (type?: string) => {
+function getMessageTypeText(type?: string) {
   switch (type) {
     case 'group': {
       return '群发';
@@ -164,7 +164,7 @@ const getMessageTypeText = (type?: string) => {
       return '未知';
     }
   }
-};
+}
 
 /** 初始化 */
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表
@@ -227,8 +227,7 @@ onMounted(async () => {
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
         >
-          <!-- TODO @puhui999：所有人，选择不上 -->
-          <ElOption key="" value="" label="所有人">
+          <ElOption key="" value="all" label="所有人">
             <div class="flex items-center">
               <ElAvatar size="small">全</ElAvatar>
               <span class="ml-2">所有人</span>
@@ -295,9 +294,7 @@ onMounted(async () => {
             >
               <div class="mb-1 flex items-center justify-between">
                 <div class="flex items-center">
-                  <div>
-                    <ElBadge :type="getMessageBadgeType(msg.type)" dot />
-                  </div>
+                  <ElBadge :type="getMessageBadgeType(msg.type)" is-dot />
                   <span class="ml-1 font-medium text-gray-600">
                     {{ getMessageTypeText(msg.type) }}
                   </span>
