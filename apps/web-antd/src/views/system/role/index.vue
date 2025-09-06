@@ -4,7 +4,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -40,7 +40,7 @@ const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -50,29 +50,43 @@ async function handleExport() {
   downloadFileFromBlobPart({ fileName: '角色.xls', source: data });
 }
 
-/** 编辑角色 */
-function handleEdit(row: SystemRoleApi.Role) {
-  formModalApi.setData(row).open();
-}
-
 /** 创建角色 */
 function handleCreate() {
   formModalApi.setData(null).open();
+}
+
+/** 编辑角色 */
+function handleEdit(row: SystemRoleApi.Role) {
+  formModalApi.setData(row).open();
 }
 
 /** 删除角色 */
 async function handleDelete(row: SystemRoleApi.Role) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteRole(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除角色 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteRoleList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -85,23 +99,6 @@ function handleRowCheckboxChange({
   records: SystemRoleApi.Role[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 批量删除角色 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteRoleList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
 }
 
 /** 分配角色的数据权限 */
@@ -159,9 +156,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <AssignDataPermissionFormModel @success="onRefresh" />
-    <AssignMenuFormModel @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <AssignDataPermissionFormModel @success="handleRefresh" />
+    <AssignMenuFormModel @success="handleRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
         <TableAction
@@ -181,11 +178,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleExport,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['system:role:delete'],
               onClick: handleDeleteBatch,
             },

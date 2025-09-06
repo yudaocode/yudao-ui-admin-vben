@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteRole,
   deleteRoleList,
@@ -44,47 +40,54 @@ const [AssignMenuFormModel, assignMenuFormApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportRole(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '角色.xls', source: data });
 }
 
-/** 编辑角色 */
-function onEdit(row: SystemRoleApi.Role) {
-  formModalApi.setData(row).open();
-}
-
 /** 创建角色 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+/** 编辑角色 */
+function handleEdit(row: SystemRoleApi.Role) {
+  formModalApi.setData(row).open();
+}
+
 /** 删除角色 */
-async function onDelete(row: SystemRoleApi.Role) {
+async function handleDelete(row: SystemRoleApi.Role) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteRole(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除角色 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该角色吗？');
-  await deleteRoleList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteRoleList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -97,35 +100,13 @@ function handleRowCheckboxChange({
 }
 
 /** 分配角色的数据权限 */
-function onAssignDataPermission(row: SystemRoleApi.Role) {
+function handleAssignDataPermission(row: SystemRoleApi.Role) {
   assignDataPermissionFormApi.setData(row).open();
 }
 
 /** 分配角色的菜单权限 */
-function onAssignMenu(row: SystemRoleApi.Role) {
+function handleAssignMenu(row: SystemRoleApi.Role) {
   assignMenuFormApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemRoleApi.Role>) {
-  switch (code) {
-    case 'assign-data-permission': {
-      onAssignDataPermission(row);
-      break;
-    }
-    case 'assign-menu': {
-      onAssignMenu(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -133,14 +114,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
           return await getRolePage({
-            page: page.currentPage,
+            pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
@@ -149,6 +130,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -172,38 +154,78 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="数据权限" url="https://doc.iocoder.cn/data-permission" />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <AssignDataPermissionFormModel @success="onRefresh" />
-    <AssignMenuFormModel @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <AssignDataPermissionFormModel @success="handleRefresh" />
+    <AssignMenuFormModel @success="handleRefresh" />
     <Grid table-title="角色列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:role:create']"
-        >
-          <Plus class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.create', ['角色']) }}
-        </ElButton>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:role:export']"
-        >
-          <Download class="mr-2 size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
-        <ElButton
-          type="danger"
-          class="ml-2"
-          @click="onDeleteBatch"
-          v-access:code="['system:role:delete']"
-          :disabled="isEmpty(checkedIds)"
-        >
-          <i class="fa-solid fa-trash-can mr-2"></i>
-          {{ $t('ui.actionTitle.deleteBatch') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['角色']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:role:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:role:export'],
+              onClick: handleExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:role:delete'],
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:role:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:role:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: '数据权限',
+              type: 'primary',
+              link: true,
+              auth: ['system:permission:assign-role-data-scope'],
+              onClick: handleAssignDataPermission.bind(null, row),
+            },
+            {
+              label: '菜单权限',
+              type: 'primary',
+              link: true,
+              auth: ['system:permission:assign-role-menu'],
+              onClick: handleAssignMenu.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

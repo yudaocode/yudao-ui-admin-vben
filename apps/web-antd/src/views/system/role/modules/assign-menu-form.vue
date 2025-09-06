@@ -4,7 +4,7 @@ import type { Recordable } from '@vben/types';
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { ref } from 'vue';
+import {nextTick, ref} from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
@@ -80,6 +80,7 @@ const [Modal, modalApi] = useVbenModal({
 
       await formApi.setValues(data);
     } finally {
+      await nextTick(); // 菜单过多，渲染较慢，需要等下一次事件循环
       modalApi.unlock();
     }
   },
@@ -97,7 +98,7 @@ async function loadMenuTree() {
 }
 
 /** 全选/全不选 */
-function toggleSelectAll() {
+function handleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
   if (isAllSelected.value) {
     const allIds = getAllNodeIds(menuTree.value);
@@ -108,9 +109,8 @@ function toggleSelectAll() {
 }
 
 /** 展开/折叠所有节点 */
-function toggleExpandAll() {
+function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  // 获取所有节点的 ID
   expandedKeys.value = isExpanded.value ? getAllNodeIds(menuTree.value) : [];
 }
 
@@ -158,10 +158,10 @@ function getNodeClass(node: Recordable<any>) {
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Checkbox :checked="isAllSelected" @change="toggleSelectAll">
+        <Checkbox :checked="isAllSelected" @change="handleSelectAll">
           全选
         </Checkbox>
-        <Checkbox :checked="isExpanded" @change="toggleExpandAll">
+        <Checkbox :checked="isExpanded" @change="handleExpandAll">
           全部展开
         </Checkbox>
       </div>
