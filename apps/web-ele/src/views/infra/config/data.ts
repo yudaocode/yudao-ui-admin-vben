@@ -109,7 +109,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_CONFIG_TYPE, 'number'),
         placeholder: '请选择系统内置',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -118,7 +118,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

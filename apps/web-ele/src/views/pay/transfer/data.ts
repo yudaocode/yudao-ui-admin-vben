@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '转账单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入转账单号',
       },
     },
@@ -32,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择支付渠道',
       },
     },
@@ -41,7 +41,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商户单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商户单号',
       },
     },
@@ -51,7 +51,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PAY_TRANSFER_TYPE),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择类型',
       },
     },
@@ -61,7 +61,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PAY_TRANSFER_STATUS),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择转账状态',
       },
     },
@@ -70,7 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '收款人姓名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入收款人姓名',
       },
     },
@@ -79,7 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '收款人账号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入收款人账号',
       },
     },
@@ -88,7 +88,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '渠道单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入渠道单号',
       },
     },
@@ -98,7 +98,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -32,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '通知类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_TYPE, 'number'),
       },
     },
@@ -46,7 +46,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '通知状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_STATUS, 'number'),
       },
     },
@@ -61,7 +61,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

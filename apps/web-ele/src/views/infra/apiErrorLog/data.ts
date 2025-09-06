@@ -20,7 +20,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -30,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择用户类型',
       },
     },
@@ -39,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用名',
       },
     },
@@ -49,7 +49,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -61,7 +61,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS,
           'number',
         ),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择处理状态',
       },
       defaultValue: InfraApiErrorLogProcessStatusEnum.INIT,

@@ -225,7 +225,7 @@ defineExpose({ settingValues });
       <Select
         v-model:value="selectVersion"
         class="!w-80"
-        clearable
+        allow-clear
         placeholder="请选择版本"
       >
         <Select.Option

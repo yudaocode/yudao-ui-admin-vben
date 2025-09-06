@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择是否已读',
       },
     },
@@ -30,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         ...getRangePickerDefaultProps(),
       },
     },

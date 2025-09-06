@@ -161,7 +161,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择开启状态',
       },
     },
@@ -170,7 +170,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编码',
       },
     },
@@ -179,7 +179,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板名称',
       },
     },
@@ -191,7 +191,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: async () => await getSimpleMailAccountList(),
         labelField: 'mail',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择邮箱账号',
       },
     },
@@ -201,7 +201,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

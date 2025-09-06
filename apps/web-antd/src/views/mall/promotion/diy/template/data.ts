@@ -53,7 +53,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模板名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         placeholder: ['开始时间', '结束时间'],
-        clearable: true,
+        allowClear: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
       },
     },

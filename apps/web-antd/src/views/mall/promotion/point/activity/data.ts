@@ -54,7 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择活动状态',
-        clearable: true,
+        allowClear: true,
         dictType: DICT_TYPE.COMMON_STATUS,
       },
     },

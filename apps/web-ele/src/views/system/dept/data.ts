@@ -26,7 +26,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级部门',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getDeptList();
           data.unshift({
@@ -72,7 +72,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       rules: z.number().optional(),
     },

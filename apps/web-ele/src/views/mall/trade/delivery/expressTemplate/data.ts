@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '计费方式',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.EXPRESS_CHARGE_MODE, 'number'),
       },
     },

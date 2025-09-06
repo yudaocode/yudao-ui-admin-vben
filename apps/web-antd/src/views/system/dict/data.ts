@@ -75,7 +75,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -84,7 +84,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典类型',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -94,7 +94,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
       },
     },
   ];
@@ -276,7 +276,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典标签',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -286,7 +286,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

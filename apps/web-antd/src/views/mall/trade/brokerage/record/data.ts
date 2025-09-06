@@ -17,7 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -26,7 +26,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择业务类型',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_RECORD_BIZ_TYPE, 'number'),
       },
     },
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_RECORD_STATUS, 'number'),
       },
     },
@@ -46,7 +46,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

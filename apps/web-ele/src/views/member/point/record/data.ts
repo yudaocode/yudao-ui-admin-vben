@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '业务类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.MEMBER_POINT_BIZ_TYPE, 'number'),
       },
     },
@@ -38,7 +38,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

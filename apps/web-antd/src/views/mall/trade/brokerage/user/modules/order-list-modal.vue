@@ -66,7 +66,7 @@ function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_RECORD_STATUS, 'number'),
       },
     },
@@ -76,7 +76,7 @@ function useFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

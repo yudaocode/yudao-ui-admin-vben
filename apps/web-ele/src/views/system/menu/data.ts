@@ -39,7 +39,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级菜单',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getMenuList();
           data.unshift({
@@ -170,7 +170,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '组件名称',
       component: 'AutoComplete',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         filterOption(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },

@@ -25,7 +25,7 @@ const [Grid] = useVbenVxeGrid({
         label: '业务类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(
             DICT_TYPE.MEMBER_EXPERIENCE_BIZ_TYPE,
             'number',
@@ -43,7 +43,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
     ],

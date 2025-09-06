@@ -20,7 +20,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SOCIAL_TYPE, 'number'),
         placeholder: '请选择社交平台',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -29,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户昵称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -38,7 +38,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入社交 openid',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -47,7 +47,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -47,7 +47,7 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
     component: () => {
       return h(ElInput, {
         placeholder: '请输入驳回原因',
-        allowClear: true,
+        clearable: true,
         rules: [{ required: true, message: '请输入驳回原因' }],
       });
     },

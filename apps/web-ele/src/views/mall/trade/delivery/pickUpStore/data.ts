@@ -135,7 +135,7 @@ export function useBindFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         mode: 'tags',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -176,7 +176,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '门店状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -186,7 +186,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

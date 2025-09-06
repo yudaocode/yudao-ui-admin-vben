@@ -85,7 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -94,7 +94,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数键名',
-        clearable: true,
+        allowClear: true,
       },
     },
     {

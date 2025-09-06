@@ -13,7 +13,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入活动名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择活动状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },

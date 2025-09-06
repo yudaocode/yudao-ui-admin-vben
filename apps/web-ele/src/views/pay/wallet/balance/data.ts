@@ -29,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         ...getRangePickerDefaultProps(),
       },
     },

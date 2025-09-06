@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           label: 'nickname',
           value: 'id',
         },
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择操作人员',
       },
     },
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '操作模块',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入操作模块',
       },
     },
@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '操作名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入操作名',
       },
     },
@@ -49,7 +49,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '操作内容',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入操作内容',
       },
     },
@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -67,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '业务编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入业务编号',
       },
     },

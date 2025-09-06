@@ -112,7 +112,7 @@ defineExpose({ validate });
       name="formId"
       class="mb-5"
     >
-      <Select v-model:value="modelData.formId" clearable>
+      <Select v-model:value="modelData.formId" allow-clear>
         <SelectOption
           v-for="form in props.formList"
           :key="form.id"

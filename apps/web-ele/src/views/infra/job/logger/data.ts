@@ -19,7 +19,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '处理器的名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入处理器的名字',
       },
     },
@@ -28,7 +28,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '开始执行时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '选择开始执行时间',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
         showTime: {
@@ -42,7 +42,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '结束执行时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '选择结束执行时间',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
         showTime: {
@@ -57,7 +57,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_JOB_LOG_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择任务状态',
       },
     },

@@ -13,7 +13,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户名称',
       },
     },
@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '登录地址',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入登录地址',
       },
     },
@@ -32,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

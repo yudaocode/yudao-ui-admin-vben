@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择砍价状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(
           DICT_TYPE.PROMOTION_BARGAIN_RECORD_STATUS,
           'number',
@@ -28,7 +28,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

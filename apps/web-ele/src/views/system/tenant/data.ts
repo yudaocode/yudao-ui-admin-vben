@@ -97,7 +97,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入绑定域名，多个域名请换行分隔',
         rows: 3,
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -122,7 +122,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '租户名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -130,7 +130,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '联系人',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -138,7 +138,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '联系手机',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -146,7 +146,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -156,7 +156,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

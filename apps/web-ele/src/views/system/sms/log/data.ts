@@ -19,7 +19,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '手机号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入手机号',
       },
     },
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: async () => await getSimpleSmsChannelList(),
         labelField: 'signature',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择短信渠道',
       },
     },
@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编号',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_SEND_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择发送状态',
       },
     },
@@ -60,7 +60,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -69,7 +69,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择接收状态',
       },
     },
@@ -79,7 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
