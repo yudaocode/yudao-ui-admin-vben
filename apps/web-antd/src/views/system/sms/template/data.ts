@@ -204,10 +204,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'type',
       title: '短信类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE },
@@ -216,10 +218,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '模板名称',
+      minWidth: 120,
     },
     {
       field: 'code',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       field: 'content',
@@ -229,6 +233,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '开启状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -237,10 +242,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'apiTemplateId',
       title: '短信 API 的模板编号',
+      minWidth: 180,
     },
     {
       field: 'channelCode',
       title: '短信渠道',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
@@ -249,11 +256,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'remark',
       title: '备注',
+      minWidth: 120,
     },
     {
       title: '操作',

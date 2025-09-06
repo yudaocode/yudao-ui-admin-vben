@@ -42,7 +42,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemSmsTemplateApi.SmsSendReq = {
+    const data: SystemSmsTemplateApi.SmsSendReqVO = {
       mobile: values.mobile,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 动态构建表单 schema */
-const buildFormSchema = () => {
+function buildFormSchema() {
   const schema = useSendSmsFormSchema();
   if (formData.value?.params) {
     formData.value.params.forEach((param) => {
@@ -99,7 +99,7 @@ const buildFormSchema = () => {
     });
   }
   return schema;
-};
+}
 </script>
 
 <template>
