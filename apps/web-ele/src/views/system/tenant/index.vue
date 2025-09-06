@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
@@ -42,47 +39,54 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportTenant(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '租户.xls', source: data });
 }
 
 /** 创建租户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑租户 */
-function onEdit(row: SystemTenantApi.Tenant) {
+function handleEdit(row: SystemTenantApi.Tenant) {
   formModalApi.setData(row).open();
 }
 
 /** 删除租户 */
-async function onDelete(row: SystemTenantApi.Tenant) {
+async function handleDelete(row: SystemTenantApi.Tenant) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteTenant(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除租户 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该租户吗？');
-  await deleteTenantList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteTenantList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -94,29 +98,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemTenantApi.Tenant>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, getPackageName),
+    columns: useGridColumns(getPackageName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -132,6 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -155,7 +143,7 @@ onMounted(async () => {
       <DocAlert title="SaaS 多租户" url="https://doc.iocoder.cn/saas-tenant/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="租户列表">
       <template #toolbar-tools>
         <TableAction
@@ -165,14 +153,14 @@ onMounted(async () => {
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:tenant:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:tenant:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -180,7 +168,32 @@ onMounted(async () => {
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['system:tenant:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:tenant:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:tenant:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

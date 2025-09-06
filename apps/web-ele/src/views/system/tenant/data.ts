@@ -1,16 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemTenantApi } from '#/api/system/tenant';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -93,11 +89,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       label: '绑定域名',
       fieldName: 'websites',
-      component: 'Textarea',
+      component: 'InputTag',
       componentProps: {
-        placeholder: '请输入绑定域名，多个域名请换行分隔',
-        rows: 3,
-        clearable: true,
+        placeholder: '请输入绑定域名',
       },
     },
     {
@@ -122,6 +116,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '租户名',
       component: 'Input',
       componentProps: {
+        placeholder: '请输入租户名',
         clearable: true,
       },
     },
@@ -130,6 +125,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '联系人',
       component: 'Input',
       componentProps: {
+        placeholder: '请输入联系人',
         clearable: true,
       },
     },
@@ -138,6 +134,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '联系手机',
       component: 'Input',
       componentProps: {
+        placeholder: '请输入联系手机',
         clearable: true,
       },
     },
@@ -146,6 +143,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择状态',
         clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
@@ -163,15 +161,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemTenantApi.Tenant>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   getPackageName?: (packageId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '租户编号',
@@ -232,29 +226,10 @@ export function useGridColumns<T = SystemTenantApi.Tenant>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '租户',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:tenant:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:tenant:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
