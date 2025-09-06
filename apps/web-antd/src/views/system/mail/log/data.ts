@@ -4,13 +4,12 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -84,22 +83,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'sendTime',
       title: '发送时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'userType',
       title: '接收用户',
-      width: 150,
+      minWidth: 150,
       slots: { default: 'userInfo' },
     },
     {
       field: 'toMails',
       title: '接收信息',
-      width: 300,
+      minWidth: 300,
       formatter: ({ row }) => {
         const lines: string[] = [];
         if (row.toMails && row.toMails.length > 0) {
@@ -117,18 +118,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateTitle',
       title: '邮件标题',
+      minWidth: 120,
     },
     {
       field: 'templateContent',
       title: '邮件内容',
+      minWidth: 300,
     },
     {
       field: 'fromMail',
       title: '发送邮箱',
+      minWidth: 120,
     },
     {
       field: 'sendStatus',
       title: '发送状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS },
@@ -137,6 +142,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateCode',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       title: '操作',

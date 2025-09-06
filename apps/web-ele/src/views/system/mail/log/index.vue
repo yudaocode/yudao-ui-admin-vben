@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMailLogPage } from '#/api/system/mail/log';
 import { DictTag } from '#/components/dict-tag';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -21,26 +19,13 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 查看邮件日志 */
-function onDetail(row: SystemMailLogApi.MailLog) {
+function handleDetail(row: SystemMailLogApi.MailLog) {
   detailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemMailLogApi.MailLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -48,7 +33,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -64,6 +49,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -78,7 +64,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="邮件日志列表">
       <template #userInfo="{ row }">
         <div v-if="row.userType && row.userId" class="flex items-center gap-1">
@@ -87,7 +73,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
         </div>
         <div v-else>-</div>
       </template>
-      <template #toolbar-tools> </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:mail-log:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
     </Grid>
   </Page>
 </template>
