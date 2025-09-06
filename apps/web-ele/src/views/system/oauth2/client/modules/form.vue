@@ -30,9 +30,9 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 140,
   },
+  wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle">
+  <Modal class="w-1/2" :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>
