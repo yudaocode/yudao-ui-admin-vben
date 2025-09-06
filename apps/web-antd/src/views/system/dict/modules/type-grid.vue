@@ -32,7 +32,7 @@ const [TypeFormModal, typeFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -59,9 +59,9 @@ async function handleDelete(row: SystemDictTypeApi.DictType) {
     duration: 0,
   });
   try {
-    await deleteDictType(row.id);
+    await deleteDictType(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -78,7 +78,7 @@ async function handleDeleteBatch() {
     await deleteDictTypeList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -134,7 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div class="h-full">
-    <TypeFormModal @success="onRefresh" />
+    <TypeFormModal @success="handleRefresh" />
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
         <TableAction

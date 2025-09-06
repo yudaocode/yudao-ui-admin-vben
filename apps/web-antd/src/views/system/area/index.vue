@@ -15,7 +15,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -60,7 +60,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="地区 & IP" url="https://doc.iocoder.cn/area-and-ip/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="地区列表">
       <template #toolbar-tools>
         <TableAction

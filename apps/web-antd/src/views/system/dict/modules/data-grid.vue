@@ -34,7 +34,7 @@ const [DataFormModal, dataFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -61,9 +61,9 @@ async function handleDelete(row: SystemDictDataApi.DictData) {
     duration: 0,
   });
   try {
-    await deleteDictData(row.id);
+    await deleteDictData(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.label]));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -80,7 +80,7 @@ async function handleDeleteBatch() {
     await deleteDictDataList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -135,7 +135,7 @@ watch(
   () => props.dictType,
   () => {
     if (props.dictType) {
-      onRefresh();
+      handleRefresh();
     }
   },
 );
@@ -143,7 +143,7 @@ watch(
 
 <template>
   <div class="flex h-full flex-col">
-    <DataFormModal @success="onRefresh" />
+    <DataFormModal @success="handleRefresh" />
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>

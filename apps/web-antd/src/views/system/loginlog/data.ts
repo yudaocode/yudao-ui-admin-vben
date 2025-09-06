@@ -49,10 +49,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 100,
     },
     {
       field: 'logType',
       title: '操作类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_LOGIN_TYPE },
@@ -61,18 +63,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'username',
       title: '用户名称',
+      minWidth: 180,
     },
     {
       field: 'userIp',
       title: '登录地址',
+      minWidth: 180,
     },
     {
       field: 'userAgent',
       title: '浏览器',
+      minWidth: 200,
     },
     {
       field: 'result',
       title: '登录结果',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_LOGIN_RESULT },
@@ -81,11 +87,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '登录日期',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },

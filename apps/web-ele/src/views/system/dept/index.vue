@@ -32,13 +32,13 @@ function getLeaderName(userId: number) {
 
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
-function toggleExpand() {
+function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -65,7 +65,7 @@ async function handleDelete(row: SystemDeptApi.Dept) {
   try {
     await deleteDept(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -81,7 +81,7 @@ async function handleDeleteBatch() {
     await deleteDeptList(checkedIds.value);
     checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -140,7 +140,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
         <TableAction
@@ -155,7 +155,7 @@ onMounted(async () => {
             {
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
-              onClick: toggleExpand,
+              onClick: handleExpand,
             },
             {
               label: '批量删除',
