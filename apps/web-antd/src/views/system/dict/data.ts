@@ -105,6 +105,7 @@ export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '字典编号',
+      width: 80,
     },
     {
       field: 'name',
@@ -121,19 +122,11 @@ export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-    },
-    {
-      field: 'remark',
-      title: '备注',
-    },
-    {
-      field: 'createTime',
-      title: '创建时间',
-      formatter: 'formatDateTime',
+      width: 60,
     },
     {
       title: '操作',
-      width: 160,
+      width: 124,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -272,6 +265,15 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'value',
+      label: '字典键值',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入字典键值',
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'Select',
@@ -293,6 +295,7 @@ export function useDataGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '字典编码',
+      width: 80,
     },
     {
       field: 'label',
@@ -313,25 +316,11 @@ export function useDataGridColumns(): VxeTableGridOptions['columns'] {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-    },
-    {
-      field: 'colorType',
-      title: '颜色类型',
-      slots: { default: 'colorType' },
-    },
-    {
-      field: 'cssClass',
-      title: 'CSS Class',
-      slots: { default: 'cssClass' },
-    },
-    {
-      title: '创建时间',
-      field: 'createTime',
-      formatter: 'formatDateTime',
+      width: 60,
     },
     {
       title: '操作',
-      width: 160,
+      width: 124,
       fixed: 'right',
       slots: { default: 'actions' },
     },
