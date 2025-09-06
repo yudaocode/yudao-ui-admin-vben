@@ -1,16 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE, UserTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -181,7 +177,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'userId',
-      label: '接收人ID',
+      label: '接收人 ID',
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
@@ -225,14 +221,9 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -288,34 +279,10 @@ export function useGridColumns<T = SystemNotifyTemplateApi.NotifyTemplate>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '站内信模板',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:notify-template:update']),
-          },
-          {
-            code: 'send',
-            text: '测试',
-            show: hasAccessByCodes(['system:notify-template:send-notify']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:notify-template:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

@@ -22,7 +22,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
   showDefaultActions: false,
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const data: SystemNotifyTemplateApi.NotifySendReq = {
+    const data: SystemNotifyTemplateApi.NotifySendReqVO = {
       userId: values.userId,
       userType: values.userType,
       templateCode: formData.value?.code || '',

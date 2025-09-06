@@ -4,7 +4,7 @@ import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -33,7 +33,7 @@ const [SendModal, sendModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -62,15 +62,29 @@ function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
 async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteNotifyTemplate(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除站内信模板 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteNotifyTemplateList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -83,23 +97,6 @@ function handleRowCheckboxChange({
   records: SystemNotifyTemplateApi.NotifyTemplate[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 批量删除站内信模板 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteNotifyTemplateList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -140,10 +137,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
+      <DocAlert title="站内信" url="https://doc.iocoder.cn/notify/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
@@ -164,11 +161,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleExport,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['system:notify-template:delete'],
               onClick: handleDeleteBatch,
             },
@@ -188,7 +185,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '测试',
               type: 'link',
-              icon: ACTION_ICON.ADD,
+              icon: ACTION_ICON.VIEW,
               auth: ['system:notify-template:send-notify'],
               onClick: handleSend.bind(null, row),
             },
