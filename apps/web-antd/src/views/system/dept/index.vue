@@ -23,9 +23,8 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const userList = ref<SystemUserApi.User[]>([]);
-
 /** 获取负责人名称 */
+const userList = ref<SystemUserApi.User[]>([]);
 function getLeaderName(userId: number) {
   return userList.value.find((user) => user.id === userId)?.nickname;
 }

@@ -69,11 +69,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入模板内容',
-        height: 300,
-      },
+      component: 'RichTextarea',
       rules: 'required',
     },
     {
@@ -113,9 +109,11 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
+      component: 'RichTextarea',
       componentProps: {
-        disabled: true,
+        options: {
+          readonly: true,
+        },
       },
     },
     {
@@ -212,31 +210,38 @@ export function useGridColumns(
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'code',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       field: 'name',
       title: '模板名称',
+      minWidth: 120,
     },
     {
       field: 'title',
       title: '模板标题',
+      minWidth: 120,
     },
     {
       field: 'accountId',
       title: '邮箱账号',
+      minWidth: 120,
       formatter: ({ cellValue }) => getAccountMail?.(cellValue) || '-',
     },
     {
       field: 'nickname',
       title: '发送人名称',
+      minWidth: 120,
     },
     {
       field: 'status',
       title: '开启状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -245,6 +250,7 @@ export function useGridColumns(
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

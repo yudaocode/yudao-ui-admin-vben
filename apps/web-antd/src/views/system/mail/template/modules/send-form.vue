@@ -49,7 +49,7 @@ const [Modal, modalApi] = useVbenModal({
         .map((email) => email.trim())
         .filter((email) => email.length > 0);
     };
-    const data: SystemMailTemplateApi.MailSendReq = {
+    const data: SystemMailTemplateApi.MailSendReqVO = {
       toMails: parseEmails(values.toMails || ''),
       ccMails: parseEmails(values.ccMails || ''),
       bccMails: parseEmails(values.bccMails || ''),
@@ -112,7 +112,7 @@ function buildFormSchema() {
 </script>
 
 <template>
-  <Modal title="测试发送邮件">
+  <Modal title="测试发送邮件" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>

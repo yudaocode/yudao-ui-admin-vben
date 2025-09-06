@@ -1,16 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMailTemplateApi } from '#/api/system/mail/template';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -73,11 +69,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入模板内容',
-        height: 300,
-      },
+      component: 'RichTextarea',
       rules: 'required',
     },
     {
@@ -117,9 +109,11 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Textarea',
+      component: 'RichTextarea',
       componentProps: {
-        disabled: true,
+        options: {
+          readonly: true,
+        },
       },
     },
     {
@@ -208,15 +202,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   getAccountMail?: (accountId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -241,7 +231,7 @@ export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,
-      formatter: (row) => getAccountMail?.(row.cellValue) || '-',
+      formatter: ({ cellValue }) => getAccountMail?.(cellValue) || '-',
     },
     {
       field: 'nickname',
@@ -264,34 +254,10 @@ export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 150,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '邮件模板',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:mail-template:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:mail-template:delete']),
-          },
-          {
-            code: 'send',
-            text: '测试',
-            show: hasAccessByCodes(['system:mail-template:send-mail']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
