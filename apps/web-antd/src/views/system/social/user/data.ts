@@ -55,6 +55,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'type',
       title: '社交平台',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
@@ -63,14 +64,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'openid',
       title: '社交 openid',
+      minWidth: 180,
     },
     {
       field: 'nickname',
       title: '用户昵称',
+      minWidth: 120,
     },
     {
       field: 'avatar',
       title: '用户头像',
+      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -78,16 +82,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },

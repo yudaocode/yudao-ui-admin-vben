@@ -1,14 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSocialUserApi } from '#/api/system/social/user';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -54,14 +50,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSocialUserApi.SocialUser>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'type',
       title: '社交平台',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
@@ -80,7 +74,7 @@ export function useGridColumns<T = SystemSocialUserApi.SocialUser>(
     {
       field: 'avatar',
       title: '用户头像',
-      minWidth: 80,
+      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -98,26 +92,10 @@ export function useGridColumns<T = SystemSocialUserApi.SocialUser>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 100,
-      align: 'center',
+      width: 120,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'nickname',
-          nameTitle: '社交用户',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:social-user:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

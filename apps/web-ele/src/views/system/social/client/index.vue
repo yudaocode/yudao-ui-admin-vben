@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
 import { ref } from 'vue';
@@ -29,41 +26,48 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 创建社交客户端 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑社交客户端 */
-function onEdit(row: SystemSocialClientApi.SocialClient) {
+function handleEdit(row: SystemSocialClientApi.SocialClient) {
   formModalApi.setData(row).open();
 }
 
 /** 删除社交客户端 */
-async function onDelete(row: SystemSocialClientApi.SocialClient) {
-  const loadingInstance = ElLoading.service({
+async function handleDelete(row: SystemSocialClientApi.SocialClient) {
+  const hideLoading = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteSocialClient(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
-    loadingInstance.close();
+    hideLoading.close();
   }
 }
 
 /** 批量删除社交客户端 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该社交客户端吗？');
-  await deleteSocialClientList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteSocialClientList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -75,29 +79,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemSocialClientApi.SocialClient>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -113,6 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -132,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="三方登录" url="https://doc.iocoder.cn/social-user/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="社交客户端列表">
       <template #toolbar-tools>
         <TableAction
@@ -142,15 +130,40 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:social-client:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
-              disabled: isEmpty(checkedIds),
               auth: ['system:social-client:delete'],
-              onClick: onDeleteBatch,
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:social-client:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:social-client:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />
