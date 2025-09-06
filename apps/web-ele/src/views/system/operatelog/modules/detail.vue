@@ -57,10 +57,10 @@ const [Modal, modalApi] = useVbenModal({
       <ElDescriptionsItem label="操作人名字">
         {{ formData?.userName }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="操作人IP">
+      <ElDescriptionsItem label="操作人 IP">
         {{ formData?.userIp }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="操作人UA">
+      <ElDescriptionsItem label="操作人 UA">
         {{ formData?.userAgent }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="操作模块">
@@ -75,7 +75,7 @@ const [Modal, modalApi] = useVbenModal({
       <ElDescriptionsItem v-if="formData?.extra" label="操作拓展参数">
         {{ formData?.extra }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="请求URL">
+      <ElDescriptionsItem label="请求 URL">
         {{ formData?.requestMethod }} {{ formData?.requestUrl }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="操作时间">

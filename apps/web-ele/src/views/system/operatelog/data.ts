@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemOperateLogApi } from '#/api/system/operate-log';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -75,9 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemOperateLogApi.OperateLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -117,30 +110,14 @@ export function useGridColumns<T = SystemOperateLogApi.OperateLog>(
     },
     {
       field: 'userIp',
-      title: '操作IP',
+      title: '操作 IP',
       minWidth: 120,
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 120,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'action',
-          nameTitle: '操作日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:operate-log:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
