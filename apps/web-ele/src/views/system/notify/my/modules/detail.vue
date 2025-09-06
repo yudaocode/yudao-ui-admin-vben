@@ -1,26 +1,22 @@
 <script lang="ts" setup>
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
-// TODO puhui999: 下次提交
-// import { useDescription } from '#/components/description';
+import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
-// import { useDetailSchema } from '../data';
-//
-// const [Description, descApi] = useDescription({
-//   componentProps: {
-//     bordered: true,
-//     column: 1,
-//     size: 'middle',
-//     class: 'mx-4',
-//   },
-//   schema: useDetailSchema(),
-// });
+import { DictTag } from '#/components/dict-tag';
+
+const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
@@ -30,7 +26,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      // descApi.setState({ data });
+      formData.value = data;
     } finally {
       modalApi.unlock();
     }
@@ -40,10 +36,36 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal
-    title="消息详情"
+    title="站内信详情"
+    class="w-1/3"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <!--    <Description />-->
+    <ElDescriptions border :column="1" size="default" class="mx-4">
+      <ElDescriptionsItem label="发送人">
+        {{ formData?.templateNickname }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="发送时间">
+        {{ formatDateTime(formData?.createTime || '') }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="消息类型">
+        <DictTag
+          :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE"
+          :value="formData?.templateType"
+        />
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="是否已读">
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="formData?.readStatus"
+        />
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="阅读时间">
+        {{ formatDateTime(formData?.readTime || '') }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="消息内容">
+        {{ formData?.templateContent }}
+      </ElDescriptionsItem>
+    </ElDescriptions>
   </Modal>
 </template>

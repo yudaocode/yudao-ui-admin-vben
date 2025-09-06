@@ -1,6 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -38,9 +37,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       title: '',
@@ -88,31 +85,10 @@ export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '站内信',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '查看',
-            show: (row: any) => row.readStatus,
-          },
-          {
-            code: 'read',
-            text: '已读',
-            show: (row: any) => !row.readStatus,
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
