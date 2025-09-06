@@ -1,14 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemPostApi } from '#/api/system/post';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -68,33 +64,37 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '岗位名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入岗位名称',
+        clearable: true,
+      },
     },
     {
       fieldName: 'code',
       label: '岗位编码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入岗位编码',
+        clearable: true,
+      },
     },
     {
       fieldName: 'status',
       label: '岗位状态',
       component: 'Select',
       componentProps: {
-        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择岗位状态',
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemPostApi.Post>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '岗位编号',
@@ -136,29 +136,10 @@ export function useGridColumns<T = SystemPostApi.Post>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '岗位',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:post:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:post:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
