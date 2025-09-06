@@ -4,12 +4,11 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -74,10 +73,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -86,22 +87,27 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userId',
       title: '用户编号',
+      minWidth: 100,
     },
     {
       field: 'templateCode',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       field: 'templateNickname',
       title: '发送人名称',
+      minWidth: 180,
     },
     {
       field: 'templateContent',
       title: '模版内容',
+      minWidth: 200,
     },
     {
       field: 'templateParams',
       title: '模版参数',
+      minWidth: 180,
       formatter: ({ cellValue }) => {
         try {
           return JSON.stringify(cellValue);
@@ -113,6 +119,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateType',
       title: '模版类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
@@ -121,6 +128,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readStatus',
       title: '是否已读',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -129,11 +137,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readTime',
       title: '阅读时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

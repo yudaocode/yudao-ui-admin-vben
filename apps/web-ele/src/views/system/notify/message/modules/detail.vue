@@ -37,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal
     title="站内信详情"
-    class="w-1/2"
+    class="w-1/3"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
