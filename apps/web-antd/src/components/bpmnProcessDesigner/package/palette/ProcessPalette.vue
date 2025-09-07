@@ -1,23 +1,14 @@
-<template>
-  <div class="my-process-palette">
-    <div class="test-button" @click="addTask" @mousedown="addTask">
-      测试任务
-    </div>
-    <div class="test-container" id="palette-container">1</div>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { Button } from 'ant-design-vue';
 import { assign } from 'min-dash';
 
 defineOptions({ name: 'MyProcessPalette' });
 
-const bpmnInstances = () => (window as any).bpmnInstances;
-const addTask = (event, options: any = {}) => {
+const bpmnInstances = () =>
+  (window as typeof window & { bpmnInstances?: any }).bpmnInstances;
+const addTask = (event: MouseEvent, options: any = {}) => {
   const ElementFactory = bpmnInstances().elementFactory;
   const create = bpmnInstances().modeler.get('create');
-
-  console.log(ElementFactory, create);
 
   const shape = ElementFactory.createShape(
     assign({ type: 'bpmn:UserTask' }, options),
@@ -26,24 +17,21 @@ const addTask = (event, options: any = {}) => {
   if (options) {
     shape.businessObject.di.isExpanded = options.isExpanded;
   }
-
-  console.log(event, 'event');
-  console.log(shape, 'shape');
   create.start(event, shape);
 };
 </script>
 
-<style scoped lang="scss">
-.my-process-palette {
-  box-sizing: border-box;
-  padding: 80px 20px 20px;
+<template>
+  <div class="my-process-palette p-20 pt-80">
+    <Button type="primary" @click="addTask" @mousedown="addTask">
+      测试任务
+    </Button>
+    <div class="test-container" id="palette-container">1</div>
+  </div>
+</template>
 
-  .test-button {
-    box-sizing: border-box;
-    padding: 8px 16px;
-    cursor: pointer;
-    border: 1px solid rgb(24 144 255 / 80%);
-    border-radius: 4px;
-  }
+<style scoped>
+.test-container {
+  margin-top: 16px;
 }
 </style>
