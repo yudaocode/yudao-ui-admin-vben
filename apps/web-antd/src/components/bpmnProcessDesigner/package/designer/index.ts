@@ -1,6 +1,6 @@
 import MyProcessDesigner from './ProcessDesigner.vue';
 
-MyProcessDesigner.install = function (Vue) {
+MyProcessDesigner.install = function (Vue: any) {
   Vue.component(MyProcessDesigner.name, MyProcessDesigner);
 };
 

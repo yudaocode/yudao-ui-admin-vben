@@ -55,6 +55,7 @@
     "diagram-js": "^12.8.1",
     "fast-xml-parser": "^4.5.3",
     "highlight.js": "catalog:",
+    "min-dash": "^4.2.3",
     "pinia": "catalog:",
     "steady-xml": "^0.1.0",
     "tinymce": "catalog:",

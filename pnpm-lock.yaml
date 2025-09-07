@@ -809,6 +809,9 @@ importers:
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
+      min-dash:
+        specifier: ^4.2.3
+        version: 4.2.3
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))

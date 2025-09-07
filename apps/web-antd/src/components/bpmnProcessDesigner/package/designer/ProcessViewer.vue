@@ -1,184 +1,18 @@
-<template>
-  <div class="process-viewer">
-    <div style="height: 100%" ref="processCanvas" v-show="!isLoading"></div>
-    <!-- 自定义箭头样式，用于已完成状态下流程连线箭头 -->
-    <defs ref="customDefs">
-      <marker
-        id="sequenceflow-end-white-success"
-        viewBox="0 0 20 20"
-        refX="11"
-        refY="10"
-        markerWidth="10"
-        markerHeight="10"
-        orient="auto"
-      >
-        <path
-          class="success-arrow"
-          d="M 1 5 L 11 10 L 1 15 Z"
-          style="
-            stroke-width: 1px;
-            stroke-linecap: round;
-            stroke-dasharray: 10000, 1;
-          "
-        />
-      </marker>
-      <marker
-        id="conditional-flow-marker-white-success"
-        viewBox="0 0 20 20"
-        refX="-1"
-        refY="10"
-        markerWidth="10"
-        markerHeight="10"
-        orient="auto"
-      >
-        <path
-          class="success-conditional"
-          d="M 0 10 L 8 6 L 16 10 L 8 14 Z"
-          style="
-            stroke-width: 1px;
-            stroke-linecap: round;
-            stroke-dasharray: 10000, 1;
-          "
-        />
-      </marker>
-    </defs>
-
-    <!-- 审批记录 -->
-    <el-dialog
-      :title="dialogTitle || '审批记录'"
-      v-model="dialogVisible"
-      width="1000px"
-    >
-      <el-row>
-        <el-table
-          :data="selectTasks"
-          size="small"
-          border
-          header-cell-class-name="table-header-gray"
-        >
-          <el-table-column
-            label="序号"
-            header-align="center"
-            align="center"
-            type="index"
-            width="50"
-          />
-          <el-table-column
-            label="审批人"
-            min-width="100"
-            align="center"
-            v-if="selectActivityType === 'bpmn:UserTask'"
-          >
-            <template #default="scope">
-              {{
-                scope.row.assigneeUser?.nickname ||
-                scope.row.ownerUser?.nickname
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="发起人"
-            prop="assigneeUser.nickname"
-            min-width="100"
-            align="center"
-            v-else
-          />
-          <el-table-column label="部门" min-width="100" align="center">
-            <template #default="scope">
-              {{
-                scope.row.assigneeUser?.deptName ||
-                scope.row.ownerUser?.deptName
-              }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            :formatter="dateFormatter"
-            align="center"
-            label="开始时间"
-            prop="createTime"
-            min-width="140"
-          />
-          <el-table-column
-            :formatter="dateFormatter"
-            align="center"
-            label="结束时间"
-            prop="endTime"
-            min-width="140"
-          />
-          <el-table-column
-            align="center"
-            label="审批状态"
-            prop="status"
-            min-width="90"
-          >
-            <template #default="scope">
-              <dict-tag
-                :type="DICT_TYPE.BPM_TASK_STATUS"
-                :value="scope.row.status"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="审批建议"
-            prop="reason"
-            min-width="120"
-            v-if="selectActivityType === 'bpmn:UserTask'"
-          />
-          <el-table-column
-            align="center"
-            label="耗时"
-            prop="durationInMillis"
-            width="100"
-          >
-            <template #default="scope">
-              {{ formatPast2(scope.row.durationInMillis) }}
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-row>
-    </el-dialog>
-
-    <!-- Zoom：放大、缩小 -->
-    <div style="position: absolute; top: 0; left: 0; width: 100%">
-      <el-row type="flex" justify="end">
-        <el-button-group key="scale-control" size="default">
-          <el-button
-            size="default"
-            :plain="true"
-            :disabled="defaultZoom <= 0.3"
-            :icon="ZoomOut"
-            @click="processZoomOut()"
-          />
-          <el-button size="default" style="width: 90px">
-            {{ Math.floor(defaultZoom * 10 * 10) + '%' }}
-          </el-button>
-          <el-button
-            size="default"
-            :plain="true"
-            :disabled="defaultZoom >= 3.9"
-            :icon="ZoomIn"
-            @click="processZoomIn()"
-          />
-          <el-button
-            size="default"
-            :icon="ScaleToOriginal"
-            @click="processReZoom()"
-          />
-        </el-button-group>
-      </el-row>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import '../theme/index.scss';
+import { defineProps, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+
+import { BpmProcessInstanceStatus } from '@vben/constants';
+import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
+import { dateFormatter, formatPast2 } from '@vben/utils';
+
+import { Button, ButtonGroup, Modal, Row, Table } from 'ant-design-vue';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
-import { ZoomOut, ZoomIn, ScaleToOriginal } from '@element-plus/icons-vue';
-import { DICT_TYPE } from '@/utils/dict';
-import { dateFormatter, formatPast2 } from '@/utils/formatTime';
-import { BpmProcessInstanceStatus } from '@/utils/constants';
+
+import { DictTag } from '#/components/dict-tag';
+import { DICT_TYPE } from '#/utils/dict';
+
+import '../theme/index.scss';
 
 const props = defineProps({
   xml: {
@@ -188,11 +22,12 @@ const props = defineProps({
   view: {
     type: Object,
     require: true,
+    default: () => ({}),
   },
 });
 
 const processCanvas = ref();
-const bpmnViewer = ref<BpmnViewer | null>(null);
+const bpmnViewer = ref<any | BpmnViewer>(null);
 const customDefs = ref();
 const defaultZoom = ref(1); // 默认缩放比例
 const isLoading = ref(false); // 是否加载中
@@ -213,7 +48,7 @@ const processReZoom = () => {
 
 /** Zoom：放大 */
 const processZoomIn = (zoomStep = 0.1) => {
-  let newZoom = Math.floor(defaultZoom.value * 100 + zoomStep * 100) / 100;
+  const newZoom = Math.floor(defaultZoom.value * 100 + zoomStep * 100) / 100;
   if (newZoom > 4) {
     throw new Error(
       '[Process Designer Warn ]: The zoom ratio cannot be greater than 4',
@@ -225,7 +60,7 @@ const processZoomIn = (zoomStep = 0.1) => {
 
 /** Zoom：缩小 */
 const processZoomOut = (zoomStep = 0.1) => {
-  let newZoom = Math.floor(defaultZoom.value * 100 - zoomStep * 100) / 100;
+  const newZoom = Math.floor(defaultZoom.value * 100 - zoomStep * 100) / 100;
   if (newZoom < 0.2) {
     throw new Error(
       '[Process Designer Warn ]: The zoom ratio cannot be less than 0.2',
@@ -254,7 +89,7 @@ const addCustomDefs = () => {
   }
   const canvas = bpmnViewer.value?.get('canvas');
   const svg = canvas?._svg;
-  svg.appendChild(customDefs.value);
+  svg.append(customDefs.value);
 };
 
 /** 节点选中 */
@@ -301,14 +136,14 @@ const importXML = async (xml: string) => {
   clearViewer();
 
   // 初始化流程图
-  if (xml != null && xml !== '') {
+  if (xml !== null && xml !== '') {
     try {
       bpmnViewer.value = new BpmnViewer({
         additionalModules: [MoveCanvasModule],
         container: processCanvas.value,
       });
       // 增加点击事件
-      bpmnViewer.value.on('element.click', ({ element }) => {
+      bpmnViewer.value.on('element.click', ({ element }: { element: any }) => {
         onSelectElement(element);
       });
 
@@ -317,7 +152,7 @@ const importXML = async (xml: string) => {
       await bpmnViewer.value.importXML(xml);
       // 自定义成功的箭头
       addCustomDefs();
-    } catch (e) {
+    } catch {
       clearViewer();
     } finally {
       isLoading.value = false;
@@ -344,13 +179,13 @@ const setProcessStatus = (view: any) => {
     finishedSequenceFlowActivityIds,
     rejectedTaskActivityIds,
   } = view;
-  const canvas = bpmnViewer.value.get('canvas');
-  const elementRegistry = bpmnViewer.value.get('elementRegistry');
+  const canvas: any = bpmnViewer.value.get('canvas');
+  const elementRegistry: any = bpmnViewer.value.get('elementRegistry');
 
   // 已完成节点
   if (Array.isArray(finishedSequenceFlowActivityIds)) {
     finishedSequenceFlowActivityIds.forEach((item: any) => {
-      if (item != null) {
+      if (item !== null) {
         canvas.addMarker(item, 'success');
         const element = elementRegistry.get(item);
         const conditionExpression = element.businessObject.conditionExpression;
@@ -376,7 +211,7 @@ const setProcessStatus = (view: any) => {
   // 被拒绝节点
   if (Array.isArray(rejectedTaskActivityIds)) {
     rejectedTaskActivityIds.forEach((item: any) => {
-      if (item != null) {
+      if (item !== null) {
         canvas.addMarker(item, 'danger');
       }
     });
@@ -429,3 +264,155 @@ onBeforeUnmount(() => {
   clearViewer();
 });
 </script>
+
+<template>
+  <div class="process-viewer">
+    <div style="height: 100%" ref="processCanvas" v-show="!isLoading"></div>
+    <!-- 自定义箭头样式，用于已完成状态下流程连线箭头 -->
+    <defs ref="customDefs">
+      <marker
+        id="sequenceflow-end-white-success"
+        viewBox="0 0 20 20"
+        refX="11"
+        refY="10"
+        markerWidth="10"
+        markerHeight="10"
+        orient="auto"
+      >
+        <path
+          class="success-arrow"
+          d="M 1 5 L 11 10 L 1 15 Z"
+          style="
+            stroke-width: 1px;
+            stroke-linecap: round;
+            stroke-dasharray: 10000, 1;
+          "
+        />
+      </marker>
+      <marker
+        id="conditional-flow-marker-white-success"
+        viewBox="0 0 20 20"
+        refX="-1"
+        refY="10"
+        markerWidth="10"
+        markerHeight="10"
+        orient="auto"
+      >
+        <path
+          class="success-conditional"
+          d="M 0 10 L 8 6 L 16 10 L 8 14 Z"
+          style="
+            stroke-width: 1px;
+            stroke-linecap: round;
+            stroke-dasharray: 10000, 1;
+          "
+        />
+      </marker>
+    </defs>
+
+    <!-- 审批记录 -->
+    <Modal
+      :title="dialogTitle || '审批记录'"
+      v-model:open="dialogVisible"
+      :width="1000"
+    >
+      <Row>
+        <Table :data-source="selectTasks" size="small" :bordered="true">
+          <Table.Column title="序号" align="center" width="50">
+            <template #default="{ index }">
+              {{ index + 1 }}
+            </template>
+          </Table.Column>
+          <Table.Column
+            title="审批人"
+            width="100"
+            align="center"
+            v-if="selectActivityType === 'bpmn:UserTask'"
+          >
+            <template #default="{ record }">
+              {{ record.assigneeUser?.nickname || record.ownerUser?.nickname }}
+            </template>
+          </Table.Column>
+          <Table.Column
+            title="发起人"
+            data-index="assigneeUser.nickname"
+            width="100"
+            align="center"
+            v-else
+          />
+          <Table.Column title="部门" width="100" align="center">
+            <template #default="{ record }">
+              {{ record.assigneeUser?.deptName || record.ownerUser?.deptName }}
+            </template>
+          </Table.Column>
+          <Table.Column
+            :custom-render="({ text }) => dateFormatter(text)"
+            align="center"
+            title="开始时间"
+            data-index="createTime"
+            width="140"
+          />
+          <Table.Column
+            :custom-render="({ text }) => dateFormatter(text)"
+            align="center"
+            title="结束时间"
+            data-index="endTime"
+            width="140"
+          />
+          <Table.Column
+            align="center"
+            title="审批状态"
+            data-index="status"
+            width="90"
+          >
+            <template #default="{ record }">
+              <DictTag
+                :type="DICT_TYPE.BPM_TASK_STATUS"
+                :value="record.status"
+              />
+            </template>
+          </Table.Column>
+          <Table.Column
+            align="center"
+            title="审批建议"
+            data-index="reason"
+            width="120"
+            v-if="selectActivityType === 'bpmn:UserTask'"
+          />
+          <Table.Column
+            align="center"
+            title="耗时"
+            data-index="durationInMillis"
+            width="100"
+          >
+            <template #default="{ record }">
+              {{ formatPast2(record.durationInMillis) }}
+            </template>
+          </Table.Column>
+        </Table>
+      </Row>
+    </Modal>
+
+    <!-- Zoom：放大、缩小 -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%">
+      <Row justify="end">
+        <ButtonGroup key="scale-control">
+          <Button
+            :disabled="defaultZoom <= 0.3"
+            :icon="ZoomOutOutlined"
+            @click="processZoomOut()"
+          />
+          <Button style="width: 90px">
+            {{ `${Math.floor(defaultZoom * 10 * 10)}%` }}
+          </Button>
+          <Button
+            :disabled="defaultZoom >= 3.9"
+            :icon="ZoomInOutlined"
+            @click="processZoomIn()"
+          />
+          <Button :icon="UndoOutlined" @click="processReZoom()" />
+        </ButtonGroup>
+      </Row>
+    </div>
+  </div>
+</template>

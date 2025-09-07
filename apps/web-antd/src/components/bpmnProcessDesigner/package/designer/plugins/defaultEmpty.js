@@ -6,7 +6,7 @@ export default (key, name, type) => {
     flowable: 'http://flowable.org/bpmn',
   };
   return `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions 
+<bpmn2:definitions
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"

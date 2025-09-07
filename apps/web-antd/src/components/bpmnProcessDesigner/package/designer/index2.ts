@@ -1,6 +1,6 @@
 import MyProcessViewer from './ProcessViewer.vue';
 
-MyProcessViewer.install = function (Vue) {
+MyProcessViewer.install = function (Vue: any) {
   Vue.component(MyProcessViewer.name, MyProcessViewer);
 };
 
