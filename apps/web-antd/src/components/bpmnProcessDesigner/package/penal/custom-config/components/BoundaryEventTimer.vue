@@ -1,115 +1,62 @@
-<template>
-  <div>
-    <el-divider content-position="left">审批人超时未处理时</el-divider>
-    <el-form-item label="启用开关" prop="timeoutHandlerEnable">
-      <el-switch
-        v-model="timeoutHandlerEnable"
-        active-text="开启"
-        inactive-text="关闭"
-        @change="timeoutHandlerChange"
-      />
-    </el-form-item>
-    <el-form-item
-      label="执行动作"
-      prop="timeoutHandlerType"
-      v-if="timeoutHandlerEnable"
-    >
-      <el-radio-group
-        v-model="timeoutHandlerType.value"
-        @change="onTimeoutHandlerTypeChanged"
-      >
-        <el-radio-button
-          v-for="item in TIMEOUT_HANDLER_TYPES"
-          :key="item.value"
-          :value="item.value"
-          :label="item.label"
-        />
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item label="超时时间设置" v-if="timeoutHandlerEnable">
-      <span class="mr-2">当超过</span>
-      <el-form-item prop="timeDuration">
-        <el-input-number
-          class="mr-2"
-          :style="{ width: '100px' }"
-          v-model="timeDuration"
-          :min="1"
-          controls-position="right"
-          @change="
-            () => {
-              updateTimeModdle();
-              updateElementExtensions();
-            }
-          "
-        />
-      </el-form-item>
-      <el-select
-        v-model="timeUnit"
-        class="mr-2"
-        :style="{ width: '100px' }"
-        @change="onTimeUnitChange"
-      >
-        <el-option
-          v-for="item in TIME_UNIT_TYPES"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      未处理
-    </el-form-item>
-    <el-form-item
-      label="最大提醒次数"
-      prop="maxRemindCount"
-      v-if="timeoutHandlerEnable && timeoutHandlerType.value === 1"
-    >
-      <el-input-number
-        v-model="maxRemindCount"
-        :min="1"
-        :max="10"
-        @change="
-          () => {
-            updateTimeModdle();
-            updateElementExtensions();
-          }
-        "
-      />
-    </el-form-item>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import {
-  TimeUnitType,
+  defineOptions,
+  defineProps,
+  inject,
+  nextTick,
+  ref,
+  toRaw,
+  watch,
+} from 'vue';
+
+import {
+  Divider,
+  Form,
+  InputNumber,
+  Radio,
+  Select,
+  Switch,
+} from 'ant-design-vue';
+
+import { convertTimeUnit } from '#/components/simple-process-design/components/nodes-config/utils';
+import {
   TIME_UNIT_TYPES,
   TIMEOUT_HANDLER_TYPES,
-} from '@/components/SimpleProcessDesignerV2/src/consts';
-import { convertTimeUnit } from '@/components/SimpleProcessDesignerV2/src/utils';
+  TimeUnitType,
+} from '#/components/simple-process-design/consts';
 
 defineOptions({ name: 'ElementCustomConfig4BoundaryEventTimer' });
 const props = defineProps({
-  id: String,
-  type: String,
+  id: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
 });
 const prefix = inject('prefix');
 
-const bpmnElement = ref();
-const bpmnInstances = () => (window as any)?.bpmnInstances;
+const bpmnElement = ref<any>();
+const bpmnInstances = () => (window as Record<string, any>)?.bpmnInstances;
 
 const timeoutHandlerEnable = ref(false);
-const boundaryEventType = ref();
-const timeoutHandlerType = ref({
+const boundaryEventType = ref<any>();
+const timeoutHandlerType = ref<{
+  value: number | undefined;
+}>({
   value: undefined,
 });
-const timeModdle = ref();
+const timeModdle = ref<any>();
 const timeDuration = ref(6);
 const timeUnit = ref(TimeUnitType.HOUR);
 const maxRemindCount = ref(1);
 
-const elExtensionElements = ref();
-const otherExtensions = ref();
-const configExtensions = ref([]);
-const eventDefinition = ref();
+const elExtensionElements = ref<any>();
+const otherExtensions = ref<any[]>();
+const configExtensions = ref<any[]>([]);
+const eventDefinition = ref<any>();
 
 const resetElement = () => {
   bpmnElement.value = bpmnInstances().bpmnElement;
@@ -122,7 +69,7 @@ const resetElement = () => {
 
   // 是否开启自定义用户任务超时处理
   boundaryEventType.value = elExtensionElements.value.values?.filter(
-    (ex) => ex.$type === `${prefix}:BoundaryEventType`,
+    (ex: any) => ex.$type === `${prefix}:BoundaryEventType`,
   )?.[0];
   if (boundaryEventType.value && boundaryEventType.value.value === 1) {
     timeoutHandlerEnable.value = true;
@@ -131,7 +78,7 @@ const resetElement = () => {
 
   // 执行动作
   timeoutHandlerType.value = elExtensionElements.value.values?.filter(
-    (ex) => ex.$type === `${prefix}:TimeoutHandlerType`,
+    (ex: any) => ex.$type === `${prefix}:TimeoutHandlerType`,
   )?.[0];
   if (timeoutHandlerType.value) {
     configExtensions.value.push(timeoutHandlerType.value);
@@ -139,24 +86,15 @@ const resetElement = () => {
       const timeStr = eventDefinition.value.timeCycle.body;
       const maxRemindCountStr = timeStr.split('/')[0];
       const timeDurationStr = timeStr.split('/')[1];
-      console.log(maxRemindCountStr);
-      maxRemindCount.value = parseInt(maxRemindCountStr.slice(1));
-      timeDuration.value = parseInt(
-        timeDurationStr.slice(2, timeDurationStr.length - 1),
-      );
-      timeUnit.value = convertTimeUnit(
-        timeDurationStr.slice(timeDurationStr.length - 1),
-      );
+      maxRemindCount.value = Number.parseInt(maxRemindCountStr.slice(1));
+      timeDuration.value = Number.parseInt(timeDurationStr.slice(2, -1));
+      timeUnit.value = convertTimeUnit(timeDurationStr.slice(-1));
       timeModdle.value = eventDefinition.value.timeCycle;
     }
     if (eventDefinition.value.timeDuration) {
       const timeDurationStr = eventDefinition.value.timeDuration.body;
-      timeDuration.value = parseInt(
-        timeDurationStr.slice(2, timeDurationStr.length - 1),
-      );
-      timeUnit.value = convertTimeUnit(
-        timeDurationStr.slice(timeDurationStr.length - 1),
-      );
+      timeDuration.value = Number.parseInt(timeDurationStr.slice(2, -1));
+      timeUnit.value = convertTimeUnit(timeDurationStr.slice(-1));
       timeModdle.value = eventDefinition.value.timeDuration;
     }
   }
@@ -164,15 +102,15 @@ const resetElement = () => {
   // 保留剩余扩展元素，便于后面更新该元素对应属性
   otherExtensions.value =
     elExtensionElements.value.values?.filter(
-      (ex) =>
+      (ex: any) =>
         ex.$type !== `${prefix}:BoundaryEventType` &&
         ex.$type !== `${prefix}:TimeoutHandlerType`,
     ) ?? [];
 };
 
-const timeoutHandlerChange = (val) => {
-  timeoutHandlerEnable.value = val;
-  if (val) {
+const timeoutHandlerChange = (checked: any) => {
+  timeoutHandlerEnable.value = checked;
+  if (checked) {
     // 启用自定义用户任务超时处理
     // 边界事件类型 --- 超时
     boundaryEventType.value = bpmnInstances().moddle.create(
@@ -232,8 +170,7 @@ const onTimeUnitChange = () => {
 
 const updateTimeModdle = () => {
   if (maxRemindCount.value > 1) {
-    timeModdle.value.body =
-      'R' + maxRemindCount.value + '/' + isoTimeDuration();
+    timeModdle.value.body = `R${maxRemindCount.value}/${isoTimeDuration()}`;
     if (!eventDefinition.value.timeCycle) {
       delete eventDefinition.value.timeDuration;
       eventDefinition.value.timeCycle = timeModdle.value;
@@ -250,20 +187,20 @@ const updateTimeModdle = () => {
 const isoTimeDuration = () => {
   let strTimeDuration = 'PT';
   if (timeUnit.value === TimeUnitType.MINUTE) {
-    strTimeDuration += timeDuration.value + 'M';
+    strTimeDuration += `${timeDuration.value}M`;
   }
   if (timeUnit.value === TimeUnitType.HOUR) {
-    strTimeDuration += timeDuration.value + 'H';
+    strTimeDuration += `${timeDuration.value}H`;
   }
   if (timeUnit.value === TimeUnitType.DAY) {
-    strTimeDuration += timeDuration.value + 'D';
+    strTimeDuration += `${timeDuration.value}D`;
   }
   return strTimeDuration;
 };
 
 const updateElementExtensions = () => {
   const extensions = bpmnInstances().moddle.create('bpmn:ExtensionElements', {
-    values: [...otherExtensions.value, ...configExtensions.value],
+    values: [...(otherExtensions.value || []), ...configExtensions.value],
   });
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
     extensionElements: extensions,
@@ -274,7 +211,7 @@ watch(
   () => props.id,
   (val) => {
     val &&
-      val.length &&
+      val.length > 0 &&
       nextTick(() => {
         resetElement();
       });
@@ -282,5 +219,87 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div>
+    <Divider orientation="left">审批人超时未处理时</Divider>
+    <Form.Item label="启用开关" name="timeoutHandlerEnable">
+      <Switch
+        v-model:checked="timeoutHandlerEnable"
+        checked-children="开启"
+        un-checked-children="关闭"
+        @change="timeoutHandlerChange"
+      />
+    </Form.Item>
+    <Form.Item
+      label="执行动作"
+      name="timeoutHandlerType"
+      v-if="timeoutHandlerEnable"
+    >
+      <Radio.Group
+        v-model:value="timeoutHandlerType.value"
+        @change="onTimeoutHandlerTypeChanged"
+      >
+        <Radio.Button
+          v-for="item in TIMEOUT_HANDLER_TYPES"
+          :key="item.value"
+          :value="item.value"
+        >
+          {{ item.label }}
+        </Radio.Button>
+      </Radio.Group>
+    </Form.Item>
+    <Form.Item label="超时时间设置" v-if="timeoutHandlerEnable">
+      <span class="mr-2">当超过</span>
+      <Form.Item name="timeDuration">
+        <InputNumber
+          class="mr-2"
+          :style="{ width: '100px' }"
+          v-model:value="timeDuration"
+          :min="1"
+          :controls="true"
+          @change="
+            () => {
+              updateTimeModdle();
+              updateElementExtensions();
+            }
+          "
+        />
+      </Form.Item>
+      <Select
+        v-model:value="timeUnit"
+        class="mr-2"
+        :style="{ width: '100px' }"
+        @change="onTimeUnitChange"
+      >
+        <Select.Option
+          v-for="item in TIME_UNIT_TYPES"
+          :key="item.value"
+          :value="item.value"
+        >
+          {{ item.label }}
+        </Select.Option>
+      </Select>
+      未处理
+    </Form.Item>
+    <Form.Item
+      label="最大提醒次数"
+      name="maxRemindCount"
+      v-if="timeoutHandlerEnable && timeoutHandlerType.value === 1"
+    >
+      <InputNumber
+        v-model:value="maxRemindCount"
+        :min="1"
+        :max="10"
+        @change="
+          () => {
+            updateTimeModdle();
+            updateElementExtensions();
+          }
+        "
+      />
+    </Form.Item>
+  </div>
+</template>
 
 <style lang="scss" scoped></style>
