@@ -1,15 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -46,7 +41,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'beginTime',
       label: '请求时间',
       component: 'RangePicker',
-      // TODO @puhui999：时间范围不太对。结束时间不是 23:59:59 这种哈
       componentProps: {
         ...getRangePickerDefaultProps(),
         clearable: true,
@@ -74,9 +68,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraApiAccessLogApi.ApiAccessLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -152,26 +144,10 @@ export function useGridColumns<T = InfraApiAccessLogApi.ApiAccessLog>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 80,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: 'API访问日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['infra:api-access-log:query']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
