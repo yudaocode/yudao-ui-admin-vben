@@ -77,14 +77,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 100,
     },
     {
       field: 'userId',
       title: '用户编号',
+      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -93,27 +96,33 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'applicationName',
       title: '应用名',
+      minWidth: 150,
     },
     {
       field: 'requestMethod',
       title: '请求方法',
+      minWidth: 80,
     },
     {
       field: 'requestUrl',
       title: '请求地址',
+      minWidth: 200,
     },
     {
       field: 'exceptionTime',
       title: '异常发生时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'exceptionName',
       title: '异常名',
+      minWidth: 180,
     },
     {
       field: 'processStatus',
       title: '处理状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS },
@@ -121,7 +130,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 200,
+      minWidth: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },
