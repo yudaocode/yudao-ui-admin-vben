@@ -50,59 +50,66 @@ const [ImportModal, importModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportUser(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '用户.xls', source: data });
 }
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function onDeptSelect(dept: SystemDeptApi.Dept) {
+async function handleDeptSelect(dept: SystemDeptApi.Dept) {
   searchDeptId.value = dept.id;
-  onRefresh();
+  handleRefresh();
 }
 
 /** 创建用户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 导入用户 */
-function onImport() {
+function handleImport() {
   importModalApi.open();
 }
 
 /** 编辑用户 */
-function onEdit(row: SystemUserApi.User) {
+function handleEdit(row: SystemUserApi.User) {
   formModalApi.setData(row).open();
 }
 
 /** 删除用户 */
-async function onDelete(row: SystemUserApi.User) {
+async function handleDelete(row: SystemUserApi.User) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.username]),
   });
   try {
     await deleteUser(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.username]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除用户 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该用户吗？');
-  await deleteUserList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteUserList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -115,17 +122,17 @@ function handleRowCheckboxChange({
 }
 
 /** 重置密码 */
-function onResetPassword(row: SystemUserApi.User) {
+function handleResetPassword(row: SystemUserApi.User) {
   resetPasswordModalApi.setData(row).open();
 }
 
 /** 分配角色 */
-function onAssignRole(row: SystemUserApi.User) {
+function handleAssignRole(row: SystemUserApi.User) {
   assignRoleModalApi.setData(row).open();
 }
 
 /** 更新用户状态 */
-async function onStatusChange(
+async function handleStatusChange(
   newStatus: number,
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
@@ -155,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onStatusChange),
+    columns: useGridColumns(handleStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -172,6 +179,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -196,15 +204,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <ResetPasswordModal @success="onRefresh" />
-    <AssignRoleModal @success="onRefresh" />
-    <ImportModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <ResetPasswordModal @success="handleRefresh" />
+    <AssignRoleModal @success="handleRefresh" />
+    <ImportModal @success="handleRefresh" />
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
       <div class="h-full w-1/6 pr-4">
-        <DeptTree @select="onDeptSelect" />
+        <DeptTree @select="handleDeptSelect" />
       </div>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">
@@ -217,21 +225,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   type: 'primary',
                   icon: ACTION_ICON.ADD,
                   auth: ['system:user:create'],
-                  onClick: onCreate,
+                  onClick: handleCreate,
                 },
                 {
                   label: $t('ui.actionTitle.export'),
                   type: 'primary',
                   icon: ACTION_ICON.DOWNLOAD,
                   auth: ['system:user:export'],
-                  onClick: onExport,
+                  onClick: handleExport,
                 },
                 {
                   label: $t('ui.actionTitle.import', ['用户']),
                   type: 'primary',
                   icon: ACTION_ICON.UPLOAD,
                   auth: ['system:user:import'],
-                  onClick: onImport,
+                  onClick: handleImport,
                 },
                 {
                   label: $t('ui.actionTitle.deleteBatch'),
@@ -239,7 +247,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   icon: ACTION_ICON.DELETE,
                   disabled: isEmpty(checkedIds),
                   auth: ['system:user:delete'],
-                  onClick: onDeleteBatch,
+                  onClick: handleDeleteBatch,
                 },
               ]"
             />
@@ -249,35 +257,38 @@ const [Grid, gridApi] = useVbenVxeGrid({
               :actions="[
                 {
                   label: $t('common.edit'),
-                  type: 'text',
+                  type: 'primary',
+                  link: true,
                   icon: ACTION_ICON.EDIT,
                   auth: ['system:user:update'],
-                  onClick: onEdit.bind(null, row),
+                  onClick: handleEdit.bind(null, row),
                 },
                 {
                   label: $t('common.delete'),
                   type: 'danger',
-                  text: true,
+                  link: true,
                   icon: ACTION_ICON.DELETE,
                   auth: ['system:user:delete'],
                   popConfirm: {
                     title: $t('ui.actionMessage.deleteConfirm', [row.username]),
-                    confirm: onDelete.bind(null, row),
+                    confirm: handleDelete.bind(null, row),
                   },
                 },
               ]"
               :drop-down-actions="[
                 {
                   label: '分配角色',
-                  type: 'text',
+                  type: 'primary',
+                  link: true,
                   auth: ['system:permission:assign-user-role'],
-                  onClick: onAssignRole.bind(null, row),
+                  onClick: handleAssignRole.bind(null, row),
                 },
                 {
                   label: '重置密码',
-                  type: 'text',
+                  type: 'primary',
+                  link: true,
                   auth: ['system:user:update-password'],
-                  onClick: onResetPassword.bind(null, row),
+                  onClick: handleResetPassword.bind(null, row),
                 },
               ]"
             />

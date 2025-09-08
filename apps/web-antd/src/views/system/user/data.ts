@@ -4,6 +4,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { $t } from '@vben/locales';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
@@ -45,6 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
     },
+    // TODO @xingyu：【重要】这个字段出不来
     {
       fieldName: 'deptId',
       label: '归属部门',
@@ -126,31 +128,50 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'newPassword',
-      label: '新密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
+        passwordStrength: true,
         placeholder: '请输入新密码',
       },
+      dependencies: {
+        rules(values) {
+          return z
+            .string({ message: '请输入新密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value !== values.oldPassword,
+              '新旧密码不能相同',
+            );
+        },
+        triggerFields: ['newPassword', 'oldPassword'],
+      },
+      fieldName: 'newPassword',
+      label: '新密码',
       rules: 'required',
     },
     {
-      fieldName: 'confirmPassword',
-      label: '确认密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
-        placeholder: '请再次输入新密码',
+        passwordStrength: true,
+        placeholder: $t('authentication.confirmPassword'),
       },
       dependencies: {
-        rules(values: Record<string, any>) {
-          const { newPassword } = values;
+        rules(values) {
           return z
-            .string()
-            .nonempty('确认密码不能为空')
-            .refine((value) => value === newPassword, '两次输入的密码不一致');
+            .string({ message: '请输入确认密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value === values.newPassword,
+              '新密码和确认密码不一致',
+            );
         },
-        triggerFields: ['newPassword'],
+        triggerFields: ['newPassword', 'confirmPassword'],
       },
+      fieldName: 'confirmPassword',
+      label: '确认密码',
+      rules: 'required',
     },
   ];
 }
@@ -207,6 +228,7 @@ export function useImportFormSchema(): VbenFormSchema[] {
       rules: 'required',
       help: '仅允许导入 xls、xlsx 格式文件',
     },
+    // TODO @xingyu：【重要】看不到 switch 这个按钮
     {
       fieldName: 'updateSupport',
       label: '是否覆盖',
@@ -266,26 +288,32 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'id',
       title: '用户编号',
+      minWidth: 100,
     },
     {
       field: 'username',
       title: '用户名称',
+      minWidth: 120,
     },
     {
       field: 'nickname',
       title: '用户昵称',
+      minWidth: 120,
     },
     {
       field: 'deptName',
       title: '部门',
+      minWidth: 120,
     },
     {
       field: 'mobile',
       title: '手机号码',
+      minWidth: 120,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       align: 'center',
       cellRender: {
         attrs: { beforeChange: onStatusChange },
@@ -299,6 +327,7 @@ export function useGridColumns<T = SystemUserApi.User>(
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
