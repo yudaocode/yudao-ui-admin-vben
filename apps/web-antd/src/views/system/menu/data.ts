@@ -271,6 +271,7 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
     {
       field: 'name',
       title: '菜单名称',
+      minWidth: 250,
       align: 'left',
       fixed: 'left',
       slots: { default: 'name' },
@@ -279,6 +280,7 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
     {
       field: 'type',
       title: '菜单类型',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_MENU_TYPE },
@@ -287,22 +289,27 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
     {
       field: 'sort',
       title: '显示排序',
+      minWidth: 100,
     },
     {
       field: 'permission',
       title: '权限标识',
+      minWidth: 200,
     },
     {
       field: 'path',
       title: '组件路径',
+      minWidth: 200,
     },
     {
       field: 'componentName',
       title: '组件名称',
+      minWidth: 200,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },

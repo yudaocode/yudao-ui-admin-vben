@@ -46,7 +46,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
     },
-    // TODO @xingyu：【重要】这个字段出不来
     {
       fieldName: 'deptId',
       label: '归属部门',
@@ -228,7 +227,6 @@ export function useImportFormSchema(): VbenFormSchema[] {
       rules: 'required',
       help: '仅允许导入 xls、xlsx 格式文件',
     },
-    // TODO @xingyu：【重要】看不到 switch 这个按钮
     {
       fieldName: 'updateSupport',
       label: '是否覆盖',

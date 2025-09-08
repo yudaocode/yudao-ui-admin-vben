@@ -4,15 +4,14 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { ref } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMenu, deleteMenuList, getMenuList } from '#/api/system/menu';
+import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -30,7 +29,7 @@ function handleRefresh() {
 
 /** 创建菜单 */
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({}).open();
 }
 
 /** 添加下级菜单 */
@@ -55,31 +54,6 @@ async function handleDelete(row: SystemMenuApi.Menu) {
   } finally {
     loadingInstance.close();
   }
-}
-
-/** 批量删除菜单 */
-async function handleDeleteBatch() {
-  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deletingBatch'),
-  });
-  try {
-    await deleteMenuList(checkedIds.value);
-    checkedIds.value = [];
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    handleRefresh();
-  } finally {
-    loadingInstance.close();
-  }
-}
-
-const checkedIds = ref<number[]>([]);
-function handleRowCheckboxChange({
-  records,
-}: {
-  records: SystemMenuApi.Menu[];
-}) {
-  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 切换树形展开/收缩状态 */
@@ -110,7 +84,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
     treeConfig: {
       parentField: 'parentId',
@@ -119,10 +92,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
   } as VxeTableGridOptions<SystemMenuApi.Menu>,
-  gridEvents: {
-    checkboxAll: handleRowCheckboxChange,
-    checkboxChange: handleRowCheckboxChange,
-  },
 });
 </script>
 
@@ -152,14 +121,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
               onClick: handleExpand,
-            },
-            {
-              label: $t('ui.actionTitle.deleteBatch'),
-              type: 'danger',
-              icon: ACTION_ICON.DELETE,
-              auth: ['system:menu:delete'],
-              disabled: isEmpty(checkedIds),
-              onClick: handleDeleteBatch,
             },
           ]"
         />

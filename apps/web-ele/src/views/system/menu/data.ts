@@ -45,7 +45,6 @@ export function useFormSchema(): VbenFormSchema[] {
           } as SystemMenuApi.Menu);
           return handleTree(data);
         },
-        checkStrictly: true,
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -271,7 +270,6 @@ export function useFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '菜单名称',
