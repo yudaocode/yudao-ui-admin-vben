@@ -94,7 +94,7 @@ function renderMemoryChart() {
         detail: {
           show: true,
           offsetCenter: [0, '50%'],
-          color: 'inherit',
+          color: 'auto',
           fontSize: 30,
           formatter: usedMemory,
         },
