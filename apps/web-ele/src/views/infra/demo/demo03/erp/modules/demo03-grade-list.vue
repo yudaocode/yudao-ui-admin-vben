@@ -174,7 +174,8 @@ watch(
         :actions="[
           {
             label: $t('common.edit'),
-            type: 'text',
+            type: 'primary',
+            link: true,
             icon: ACTION_ICON.EDIT,
             auth: ['infra:demo03-student:update'],
             onClick: handleEdit.bind(null, row),

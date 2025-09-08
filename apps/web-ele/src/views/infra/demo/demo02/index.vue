@@ -145,14 +145,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '新增下级',
-              type: 'text',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.ADD,
               auth: ['infra:demo02-category:create'],
               onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),
-              type: 'text',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['infra:demo02-category:update'],
               onClick: handleEdit.bind(null, row),
