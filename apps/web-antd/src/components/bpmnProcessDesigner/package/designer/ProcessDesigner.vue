@@ -16,20 +16,20 @@ import {
 } from 'vue';
 
 import {
-  FolderOpenOutlined,
+  AlignLeftOutlined,
+  ApiOutlined,
   DownloadOutlined,
   EyeOutlined,
-  ApiOutlined,
-  ZoomInOutlined,
-  ZoomOutOutlined,
-  UndoOutlined,
+  FolderOpenOutlined,
   RedoOutlined,
   ReloadOutlined,
-  AlignLeftOutlined,
+  UndoOutlined,
   WarningOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined,
 } from '@vben/icons';
 
-import { Button, ButtonGroup, Tooltip, Modal, message } from 'ant-design-vue';
+import { Button, ButtonGroup, message, Modal, Tooltip } from 'ant-design-vue';
 // 模拟流转流程
 // @ts-ignore
 import tokenSimulation from 'bpmn-js-token-simulation';
@@ -65,30 +65,16 @@ import flowableModdleExtension from './plugins/extension-moddle/flowable';
 import customTranslate from './plugins/translate/customTranslate';
 import translationsCN from './plugins/translate/zh';
 
-import 'highlight.js/styles/github.css'; // 导入代码高亮样式
+import 'highlight.js/styles/github.css';
 
 defineOptions({ name: 'MyProcessDesigner' });
 
-const bpmnCanvas = ref();
-const refFile = ref();
-const emit = defineEmits([
-  'destroy',
-  'init-finished',
-  'save',
-  'commandStack-changed',
-  'input',
-  'change',
-  'canvas-viewbox-changed',
-  // eventName.name
-  'element-click',
-]);
-
 const props = defineProps({
-  value: String, // xml 字符串
+  value: { type: String, default: '' }, // xml 字符串
   // valueWatch: true, // xml 字符串的 watch 状态
-  processId: String, // 流程 key 标识
-  processName: String, // 流程 name 名字
-  formId: Number, // 流程 form 表单编号
+  processId: { type: String, default: '' }, // 流程 key 标识
+  processName: { type: String, default: '' }, // 流程 name 名字
+  formId: { type: Number, default: undefined }, // 流程 form 表单编号
   translations: {
     // 自定义的翻译文件
     type: Object,
@@ -129,17 +115,34 @@ const props = defineProps({
     type: String,
     default: 'small',
     validator: (value: string) =>
-      ['default', 'medium', 'small', 'mini'].indexOf(value) !== -1,
+      ['default', 'medium', 'mini', 'small'].includes(value),
   },
   headerButtonType: {
     type: String,
     default: 'primary',
     validator: (value: string) =>
-      ['default', 'primary', 'success', 'warning', 'danger', 'info'].indexOf(
+      ['danger', 'default', 'info', 'primary', 'success', 'warning'].includes(
         value,
-      ) !== -1,
+      ),
   },
 });
+
+// 导入代码高亮样式
+
+const emit = defineEmits([
+  'destroy',
+  'init-finished',
+  'save',
+  'commandStack-changed',
+  'input',
+  'change',
+  'canvas-viewbox-changed',
+  // eventName.name
+  'element-click',
+]);
+
+const bpmnCanvas = ref();
+const refFile = ref();
 
 /**
  * 代码高亮
@@ -166,12 +169,12 @@ const previewType = ref('xml');
 const recoverable = ref(false);
 const revocable = ref(false);
 const additionalModules = computed(() => {
-  console.log(props.additionalModel, 'additionalModel');
+  // console.log(props.additionalModel, 'additionalModel');
   const Modules: any[] = [];
   // 仅保留用户自定义扩展模块
   if (props.onlyCustomizeAddi) {
     if (
-      Object.prototype.toString.call(props.additionalModel) == '[object Array]'
+      Object.prototype.toString.call(props.additionalModel) === '[object Array]'
     ) {
       return props.additionalModel || [];
     }
@@ -202,7 +205,7 @@ const additionalModules = computed(() => {
   // if (this.prefix === "bpmn") {
   //   Modules.push(bpmnModdleExtension);
   // }
-  console.log(props.prefix, 'props.prefix ');
+  // console.log(props.prefix, 'props.prefix ');
   if (props.prefix === 'camunda') {
     Modules.push(camundaModdleExtension);
   }
@@ -216,9 +219,9 @@ const additionalModules = computed(() => {
   return Modules;
 });
 const moddleExtensions = computed(() => {
-  console.log(props.onlyCustomizeModdle, 'props.onlyCustomizeModdle');
-  console.log(props.moddleExtension, 'props.moddleExtension');
-  console.log(props.prefix, 'props.prefix');
+  // console.log(props.onlyCustomizeModdle, 'props.onlyCustomizeModdle');
+  // console.log(props.moddleExtension, 'props.moddleExtension');
+  // console.log(props.prefix, 'props.prefix');
   const Extensions: any = {};
   // 仅使用用户自定义模块
   if (props.onlyCustomizeModdle) {
@@ -227,7 +230,7 @@ const moddleExtensions = computed(() => {
 
   // 插入用户自定义模块
   if (props.moddleExtension) {
-    for (let key in props.moddleExtension) {
+    for (const key in props.moddleExtension) {
       Extensions[key] = props.moddleExtension[key];
     }
   }
@@ -244,15 +247,15 @@ const moddleExtensions = computed(() => {
   }
   return Extensions;
 });
-console.log(additionalModules, 'additionalModules()');
-console.log(moddleExtensions, 'moddleExtensions()');
+// console.log(additionalModules, 'additionalModules()');
+// console.log(moddleExtensions, 'moddleExtensions()');
 const initBpmnModeler = () => {
   if (bpmnModeler) return;
   const data: any = document.querySelector('#bpmnCanvas');
-  console.log(data, 'data');
-  console.log(props.keyboard, 'props.keyboard');
-  console.log(additionalModules, 'additionalModules()');
-  console.log(moddleExtensions, 'moddleExtensions()');
+  // console.log(data, 'data');
+  // console.log(props.keyboard, 'props.keyboard');
+  // console.log(additionalModules, 'additionalModules()');
+  // console.log(moddleExtensions, 'moddleExtensions()');
 
   bpmnModeler = new BpmnModeler({
     // container: this.$refs['bpmn-canvas'],
@@ -289,15 +292,16 @@ const initBpmnModeler = () => {
 
 const initModelListeners = () => {
   const EventBus = bpmnModeler.get('eventBus');
-  console.log(EventBus, 'EventBus');
+  // console.log(EventBus, 'EventBus');
   // 注册需要的监听事件, 将. 替换为 - , 避免解析异常
   props.events.forEach((event: any) => {
     EventBus.on(event, (eventObj: any) => {
-      const eventName = event.replaceAll('.', '-');
+      // const eventName = event.replaceAll('.', '-');
       // eventName.name = eventName
       const element = eventObj ? eventObj.element : null;
-      console.log(eventName, 'eventName');
-      console.log(element, 'element');
+      // console.log(eventName, 'eventName');
+      // console.log(element, 'element');
+      // eslint-disable-next-line vue/custom-event-name-casing
       emit('element-click', element, eventObj);
       // emit(eventName, element, eventObj)
     });
@@ -313,8 +317,8 @@ const initModelListeners = () => {
       emit('input', xml);
       emit('change', xml);
       emit('save', xml);
-    } catch (e: any) {
-      console.error(`[Process Designer Warn]: ${e.message || e}`);
+    } catch {
+      // console.error(`[Process Designer Warn]: ${e.message || e}`);
     }
   });
   // 监听视图缩放变化
@@ -327,21 +331,21 @@ const initModelListeners = () => {
 };
 /* 创建新的流程图 */
 const createNewDiagram = async (xml: any) => {
-  console.log(xml, 'xml');
+  // console.log(xml, 'xml');
   // 将字符串转换成图显示出来
   const newId = props.processId || `Process_${Date.now()}`;
   const newName = props.processName || `业务流程_${Date.now()}`;
-  let xmlString = xml || DefaultEmptyXML(newId, newName, props.prefix);
+  const xmlString = xml || DefaultEmptyXML(newId, newName, props.prefix);
   try {
     // console.log(xmlString, 'xmlString')
     // console.log(this.bpmnModeler.importXML);
     const { warnings } = await bpmnModeler.importXML(xmlString);
-    console.log(warnings, 'warnings');
-    if (warnings && warnings.length) {
-      warnings.forEach((warn: any) => console.warn(warn));
+    // console.log(warnings, 'warnings');
+    if (warnings && warnings.length > 0) {
+      // warnings.forEach((warn: any) => console.warn(warn));
     }
-  } catch (e: any) {
-    console.error(`[Process Designer Warn]: ${e.message || e}`);
+  } catch {
+    // console.error(`[Process Designer Warn]: ${e.message || e}`);
   }
 };
 
@@ -353,27 +357,27 @@ const downloadProcess = async (type: string) => {
       const { err, xml } = await bpmnModeler.saveXML();
       // 读取异常时抛出异常
       if (err) {
-        console.error(`[Process Designer Warn ]: ${err.message || err}`);
+        // console.error(`[Process Designer Warn ]: ${err.message || err}`);
       }
-      let { href, filename } = setEncoded(type.toUpperCase(), xml);
+      const { href, filename } = setEncoded(type.toUpperCase(), xml);
       downloadFunc(href, filename);
     } else {
       const { err, svg } = await bpmnModeler.saveSVG();
       // 读取异常时抛出异常
       if (err) {
-        return console.error(err);
+        // return console.error(err);
       }
-      let { href, filename } = setEncoded('SVG', svg);
+      const { href, filename } = setEncoded('SVG', svg);
       downloadFunc(href, filename);
     }
-  } catch (e: any) {
-    console.error(`[Process Designer Warn ]: ${e.message || e}`);
+  } catch (error: any) {
+    console.error(`[Process Designer Warn ]: ${error.message || error}`);
   }
   // 文件下载方法
   function downloadFunc(href: string, filename: string) {
     if (href && filename) {
-      let a = document.createElement('a');
-      a.download = filename; //指定下载的文件名
+      const a = document.createElement('a');
+      a.download = filename; // 指定下载的文件名
       a.href = href; //  URL对象
       a.click(); // 模拟点击
       URL.revokeObjectURL(a.href); // 释放URL 对象
@@ -390,7 +394,7 @@ const setEncoded = (type: string, data: string) => {
     href: `data:application/${
       type === 'svg' ? 'text/xml' : 'bpmn20-xml'
     };charset=UTF-8,${encodedData}`,
-    data: data,
+    data,
   };
 };
 
@@ -398,12 +402,13 @@ const setEncoded = (type: string, data: string) => {
 const importLocalFile = () => {
   const file = refFile.value.files[0];
   const reader = new FileReader();
+  // eslint-disable-next-line unicorn/prefer-blob-reading-methods
   reader.readAsText(file);
-  reader.onload = function () {
-    let xmlStr = this.result;
+  reader.addEventListener('load', function () {
+    const xmlStr = this.result;
     createNewDiagram(xmlStr);
     emit('save', xmlStr);
-  };
+  });
 };
 /* ------------------------------------------------ refs methods ------------------------------------------------------ */
 const downloadProcessAsXml = () => {
@@ -417,10 +422,10 @@ const downloadProcessAsSvg = () => {
 };
 const processSimulation = () => {
   simulationStatus.value = !simulationStatus.value;
-  console.log(
-    bpmnModeler.get('toggleMode', 'strict'),
-    "bpmnModeler.get('toggleMode')",
-  );
+  // console.log(
+  //   bpmnModeler.get('toggleMode', 'strict'),
+  //   "bpmnModeler.get('toggleMode')",
+  // );
   props.simulation && bpmnModeler.get('toggleMode', 'strict').toggleMode();
 };
 const processRedo = () => {
@@ -430,7 +435,7 @@ const processUndo = () => {
   bpmnModeler.get('commandStack').undo();
 };
 const processZoomIn = (zoomStep = 0.1) => {
-  let newZoom = Math.floor(defaultZoom.value * 100 + zoomStep * 100) / 100;
+  const newZoom = Math.floor(defaultZoom.value * 100 + zoomStep * 100) / 100;
   if (newZoom > 4) {
     throw new Error(
       '[Process Designer Warn ]: The zoom ratio cannot be greater than 4',
@@ -440,7 +445,7 @@ const processZoomIn = (zoomStep = 0.1) => {
   bpmnModeler.get('canvas').zoom(defaultZoom.value);
 };
 const processZoomOut = (zoomStep = 0.1) => {
-  let newZoom = Math.floor(defaultZoom.value * 100 - zoomStep * 100) / 100;
+  const newZoom = Math.floor(defaultZoom.value * 100 - zoomStep * 100) / 100;
   if (newZoom < 0.2) {
     throw new Error(
       '[Process Designer Warn ]: The zoom ratio cannot be less than 0.2',
@@ -478,9 +483,9 @@ const elementsAlign = (align: string) => {
     },
   });
 };
-/*-----------------------------    方法结束     ---------------------------------*/
+/* -----------------------------    方法结束     ---------------------------------*/
 const previewProcessXML = () => {
-  console.log(bpmnModeler.saveXML, 'bpmnModeler');
+  // console.log(bpmnModeler.saveXML, 'bpmnModeler');
   bpmnModeler.saveXML({ format: true }).then(({ xml }: { xml: string }) => {
     // console.log(xml, 'xml111111')
     previewResult.value = xml;
@@ -612,7 +617,7 @@ onBeforeUnmount(() => {
               :disabled="defaultZoom < 0.2"
             />
           </Tooltip>
-          <Button>{{ Math.floor(defaultZoom * 10 * 10) + '%' }}</Button>
+          <Button>{{ `${Math.floor(defaultZoom * 10 * 10)}%` }}</Button>
           <Tooltip title="放大视图">
             <Button
               :icon="ZoomInOutlined"
