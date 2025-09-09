@@ -28,7 +28,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -47,12 +47,11 @@ async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await updateFileConfigMaster(row.id as number);
+    await updateFileConfigMaster(row.id!);
     message.success($t('ui.actionMessage.updateSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -63,11 +62,9 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: '测试上传中...',
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    const response = await testFileConfig(row.id as number);
-    hideLoading();
+    const response = await testFileConfig(row.id!);
     // 确认是否访问该文件
     confirm({
       title: '测试上传成功',
@@ -86,15 +83,28 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
 async function handleDelete(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
   });
   try {
     await deleteFileConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除文件配置 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteFileConfigList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -107,23 +117,6 @@ function handleRowCheckboxChange({
   records: InfraFileConfigApi.FileConfig[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 批量删除文件配置 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteFileConfigList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -163,7 +156,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="文件配置列表">
       <template #toolbar-tools>
         <TableAction
@@ -176,11 +169,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleCreate,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['infra:file-config:delete'],
               onClick: handleDeleteBatch,
             },
@@ -204,12 +197,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['infra:file-config:update'],
               onClick: handleTest.bind(null, row),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '主配置',
               type: 'link',
+              icon: ACTION_ICON.ADD,
               auth: ['infra:file-config:update'],
+              disabled: row.master,
               popConfirm: {
                 title: `是否要将${row.name}设为主配置？`,
                 confirm: handleMaster.bind(null, row),
@@ -219,6 +212,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
+              icon: ACTION_ICON.DELETE,
               auth: ['infra:file-config:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
