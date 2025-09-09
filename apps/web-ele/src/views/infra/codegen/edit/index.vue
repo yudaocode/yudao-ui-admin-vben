@@ -31,7 +31,7 @@ const columnInfoRef = ref<InstanceType<typeof ColumnInfo>>();
 const generateInfoRef = ref<InstanceType<typeof GenerationInfo>>();
 
 /** 获取详情数据 */
-const getDetail = async () => {
+async function getDetail() {
   const id = route.query.id as any;
   if (!id) {
     return;
@@ -42,10 +42,10 @@ const getDetail = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 提交表单 */
-const submitForm = async () => {
+async function submitForm() {
   // 表单验证
   const basicInfoValid = await basicInfoRef.value?.validate();
   if (!basicInfoValid) {
@@ -79,25 +79,26 @@ const submitForm = async () => {
   } finally {
     loadingInstance.close();
   }
-};
-const tabs = useTabs();
+}
+
 /** 返回列表 */
-const close = () => {
+const tabs = useTabs();
+function close() {
   tabs.closeCurrentTab();
   router.push('/infra/codegen');
-};
+}
 
 /** 下一步 */
-const nextStep = async () => {
+function nextStep() {
   currentStep.value += 1;
-};
+}
 
 /** 上一步 */
-const prevStep = () => {
+function prevStep() {
   if (currentStep.value > 0) {
     currentStep.value -= 1;
   }
-};
+}
 
 /** 步骤配置 */
 const steps = [
@@ -118,14 +119,8 @@ getDetail();
 
 <template>
   <Page auto-content-height v-loading="loading">
-    <div
-      class="flex h-[95%] flex-col rounded-md bg-white p-4 dark:bg-[#1f1f1f] dark:text-gray-300"
-    >
-      <ElSteps
-        :active="currentStep"
-        class="mb-8 rounded shadow-sm dark:bg-[#141414]"
-        simple
-      >
+    <div class="bg-card flex h-[95%] flex-col rounded-md p-4">
+      <ElSteps :active="currentStep" class="mb-8 rounded shadow-sm" simple>
         <ElStep
           v-for="(step, index) in steps"
           :key="index"

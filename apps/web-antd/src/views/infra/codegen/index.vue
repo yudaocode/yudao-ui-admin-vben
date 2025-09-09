@@ -73,7 +73,6 @@ async function handleDelete(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.tableName]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteCodegenTable(row.id);
@@ -98,7 +97,6 @@ async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteCodegenTableList(checkedIds.value);
@@ -114,14 +112,11 @@ async function handleDeleteBatch() {
 async function handleSync(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating', [row.tableName]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await syncCodegenFromDB(row.id);
-    message.success({
-      content: $t('ui.actionMessage.updateSuccess', [row.tableName]),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
     onRefresh();
   } finally {
     hideLoading();
@@ -132,7 +127,7 @@ async function handleSync(row: InfraCodegenApi.CodegenTable) {
 async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: '正在生成代码...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     const res = await downloadCodegen(row.id);
@@ -143,10 +138,7 @@ async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
     link.download = `codegen-${row.className}.zip`;
     link.click();
     window.URL.revokeObjectURL(url);
-    message.success({
-      content: '代码生成成功',
-      key: 'action_key_msg',
-    });
+    message.success('代码生成成功');
   } finally {
     hideLoading();
   }
@@ -187,6 +179,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 获取数据源配置列表 */
+// TODO @芋艿：这种场景的最佳实践；
 async function initDataSourceConfig() {
   try {
     dataSourceConfigList.value = await getDataSourceConfigList();
