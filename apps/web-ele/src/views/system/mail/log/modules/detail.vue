@@ -11,7 +11,7 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<SystemMailLogApi.MailLog>();
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     border: true,
     column: 2,
@@ -51,6 +51,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Description :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>
