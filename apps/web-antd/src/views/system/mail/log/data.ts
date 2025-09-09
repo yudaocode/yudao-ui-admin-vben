@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMailLogApi } from '#/api/system/mail/log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -163,7 +164,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'fromMail',
@@ -172,7 +175,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userId',
       label: '接收用户',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         if (data?.userType && data?.userId) {
           return h('div', [
             h(DictTag, {
@@ -188,7 +191,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'toMails',
       label: '接收信息',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         const lines: string[] = [];
         if (data?.toMails && data.toMails.length > 0) {
           lines.push(`收件：${data.toMails.join('、')}`);
@@ -223,8 +226,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateContent',
       label: '邮件内容',
-      content: (data) => {
-        // 渲染HTML内容
+      span: 2,
+      content: (data: SystemMailLogApi.MailLog) => {
         return h('div', {
           innerHTML: data?.templateContent || '',
         });
@@ -233,7 +236,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendStatus',
       label: '发送状态',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS,
           value: data?.sendStatus,
@@ -243,7 +246,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.sendTime || '') as string,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
     },
     {
       field: 'sendMessageId',

@@ -11,7 +11,7 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<SystemSmsLogApi.SmsLog>();
 
-const [Descriptions] = useDescription({
+const [Description] = useDescription({
   componentProps: {
     bordered: true,
     column: 2,
@@ -44,10 +44,10 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal
     title="短信日志详情"
-    class="w-1/2"
+    class="w-[1280px]"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Descriptions :data="formData" />
+    <Description :data="formData" />
   </Modal>
 </template>

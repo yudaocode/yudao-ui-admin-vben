@@ -1,10 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMailLogApi } from '#/api/system/mail/log';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
+import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -144,6 +150,113 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '编号',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
+    },
+    {
+      field: 'fromMail',
+      label: '发送邮箱',
+    },
+    {
+      field: 'userId',
+      label: '接收用户',
+      content: (data: SystemMailLogApi.MailLog) => {
+        if (data?.userType && data?.userId) {
+          return h('div', [
+            h(DictTag, {
+              type: DICT_TYPE.USER_TYPE,
+              value: data.userType,
+            }),
+            ` (${data.userId})`,
+          ]);
+        }
+        return '无';
+      },
+    },
+    {
+      field: 'toMails',
+      label: '接收信息',
+      content: (data: SystemMailLogApi.MailLog) => {
+        const lines: string[] = [];
+        if (data?.toMails && data.toMails.length > 0) {
+          lines.push(`收件：${data.toMails.join('、')}`);
+        }
+        if (data?.ccMails && data.ccMails.length > 0) {
+          lines.push(`抄送：${data.ccMails.join('、')}`);
+        }
+        if (data?.bccMails && data.bccMails.length > 0) {
+          lines.push(`密送：${data.bccMails.join('、')}`);
+        }
+        return h(
+          'div',
+          {
+            style: { whiteSpace: 'pre-line' },
+          },
+          lines.join('\n'),
+        );
+      },
+    },
+    {
+      field: 'templateId',
+      label: '模板编号',
+    },
+    {
+      field: 'templateCode',
+      label: '模板编码',
+    },
+    {
+      field: 'templateTitle',
+      label: '邮件标题',
+    },
+    {
+      field: 'templateContent',
+      label: '邮件内容',
+      span: 2,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return h('div', {
+          innerHTML: data?.templateContent || '',
+        });
+      },
+    },
+    {
+      field: 'sendStatus',
+      label: '发送状态',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS,
+          value: data?.sendStatus,
+        });
+      },
+    },
+    {
+      field: 'sendTime',
+      label: '发送时间',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
+    },
+    {
+      field: 'sendMessageId',
+      label: '发送消息编号',
+    },
+    {
+      field: 'sendException',
+      label: '发送异常',
     },
   ];
 }

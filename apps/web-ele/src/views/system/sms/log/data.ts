@@ -1,15 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsLogApi } from '#/api/system/sms/log';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
+import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -86,9 +88,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -165,26 +165,108 @@ export function useGridColumns<T = SystemSmsLogApi.SmsLog>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 120,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'mobile',
-          nameTitle: '短信日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:sms-log:query']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.createTime || '') as string;
       },
+    },
+    {
+      field: 'mobile',
+      label: '手机号',
+    },
+    {
+      field: 'channelCode',
+      label: '短信渠道',
+    },
+    {
+      field: 'templateId',
+      label: '模板编号',
+    },
+    {
+      field: 'templateType',
+      label: '模板类型',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE,
+          value: data?.templateType,
+        });
+      },
+    },
+    {
+      field: 'templateContent',
+      label: '短信内容',
+    },
+    {
+      field: 'sendStatus',
+      label: '发送状态',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_SMS_SEND_STATUS,
+          value: data?.sendStatus,
+        });
+      },
+    },
+    {
+      field: 'sendTime',
+      label: '发送时间',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
+    },
+    {
+      field: 'apiSendCode',
+      label: 'API 发送编码',
+    },
+    {
+      field: 'apiSendMsg',
+      label: 'API 发送消息',
+    },
+    {
+      field: 'receiveStatus',
+      label: '接收状态',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS,
+          value: data?.receiveStatus,
+        });
+      },
+    },
+    {
+      field: 'receiveTime',
+      label: '接收时间',
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.receiveTime || '') as string;
+      },
+    },
+    {
+      field: 'apiReceiveCode',
+      label: 'API 接收编码',
+    },
+    {
+      field: 'apiReceiveMsg',
+      label: 'API 接收消息',
+      span: 2,
+    },
+    {
+      field: 'apiRequestId',
+      label: 'API 请求 ID',
+    },
+    {
+      field: 'apiSerialNo',
+      label: 'API 序列号',
     },
   ];
 }
