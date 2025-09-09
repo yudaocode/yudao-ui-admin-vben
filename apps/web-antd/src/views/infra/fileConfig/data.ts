@@ -40,6 +40,14 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (formValues) => !formValues.id,
       },
     },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
     // DB / Local / FTP / SFTP
     {
       fieldName: 'config.basePath',
@@ -236,14 +244,6 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (formValues) => !!formValues.storage,
       },
     },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
   ];
 }
 
@@ -288,14 +288,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '配置名',
+      minWidth: 120,
     },
     {
       field: 'storage',
       title: '存储器',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_FILE_STORAGE },
@@ -304,10 +307,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'remark',
       title: '备注',
+      minWidth: 150,
     },
     {
       field: 'master',
       title: '主配置',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -316,6 +321,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
