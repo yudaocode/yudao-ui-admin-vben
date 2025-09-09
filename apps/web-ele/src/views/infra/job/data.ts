@@ -1,12 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraJobApi } from '#/api/infra/job';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
-import { DICT_TYPE, InfraJobStatusEnum } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -34,10 +30,12 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入处理器的名字',
-        // readonly: ({ values }) => !!values.id,
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
       },
       rules: 'required',
-      // TODO @芋艿：在修改场景下，禁止调整
     },
     {
       fieldName: 'handlerParam',
@@ -124,9 +122,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = InfraJobApi.Job>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -164,59 +160,10 @@ export function useGridColumns<T = InfraJobApi.Job>(
       minWidth: 120,
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '任务',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:job:update']),
-          },
-          {
-            code: 'update-status',
-            text: '开启',
-            show: (row: any) =>
-              hasAccessByCodes(['infra:job:update']) &&
-              row.status === InfraJobStatusEnum.STOP,
-          },
-          {
-            code: 'update-status',
-            text: '暂停',
-            show: (row: any) =>
-              hasAccessByCodes(['infra:job:update']) &&
-              row.status === InfraJobStatusEnum.NORMAL,
-          },
-          {
-            code: 'trigger',
-            text: '执行',
-            show: hasAccessByCodes(['infra:job:trigger']),
-          },
-          // TODO @芋艿：增加一个“更多”选项
-          {
-            code: 'detail',
-            text: '详细',
-            show: hasAccessByCodes(['infra:job:query']),
-          },
-          {
-            code: 'log',
-            text: '日志',
-            show: hasAccessByCodes(['infra:job:query']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:job:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
