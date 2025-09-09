@@ -366,8 +366,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
         placeholder: '请输入表名称',
+        allowClear: true,
       },
     },
     {
@@ -375,8 +375,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        allowClear: true,
         placeholder: '请输入表描述',
+        allowClear: true,
       },
     },
     {
@@ -400,28 +400,34 @@ export function useGridColumns(
     {
       field: 'dataSourceConfigId',
       title: '数据源',
+      minWidth: 120,
       formatter: ({ cellValue }) => getDataSourceConfigName?.(cellValue) || '-',
     },
     {
       field: 'tableName',
       title: '表名称',
+      minWidth: 200,
     },
     {
       field: 'tableComment',
       title: '表描述',
+      minWidth: 200,
     },
     {
       field: 'className',
       title: '实体',
+      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
