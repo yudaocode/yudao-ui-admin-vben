@@ -7,286 +7,79 @@
      6. 审批类型
      7. 是否需要签名
 -->
-<template>
-  <div>
-    <el-divider content-position="left">审批类型</el-divider>
-    <el-form-item prop="approveType">
-      <el-radio-group v-model="approveType.value">
-        <el-radio
-          v-for="(item, index) in APPROVE_TYPE"
-          :key="index"
-          :value="item.value"
-          :label="item.value"
-        >
-          {{ item.label }}
-        </el-radio>
-      </el-radio-group>
-    </el-form-item>
-
-    <el-divider content-position="left">审批人拒绝时</el-divider>
-    <el-form-item prop="rejectHandlerType">
-      <el-radio-group
-        v-model="rejectHandlerType"
-        :disabled="returnTaskList.length === 0"
-        @change="updateRejectHandlerType"
-      >
-        <div class="flex-col">
-          <div v-for="(item, index) in REJECT_HANDLER_TYPES" :key="index">
-            <el-radio
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
-            />
-          </div>
-        </div>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item
-      v-if="rejectHandlerType == RejectHandlerType.RETURN_USER_TASK"
-      label="驳回节点"
-      prop="returnNodeId"
-    >
-      <el-select
-        v-model="returnNodeId"
-        clearable
-        style="width: 100%"
-        @change="updateReturnNodeId"
-      >
-        <el-option
-          v-for="item in returnTaskList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-divider content-position="left">审批人为空时</el-divider>
-    <el-form-item prop="assignEmptyHandlerType">
-      <el-radio-group
-        v-model="assignEmptyHandlerType"
-        @change="updateAssignEmptyHandlerType"
-      >
-        <div class="flex-col">
-          <div v-for="(item, index) in ASSIGN_EMPTY_HANDLER_TYPES" :key="index">
-            <el-radio
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
-            />
-          </div>
-        </div>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item
-      v-if="assignEmptyHandlerType == AssignEmptyHandlerType.ASSIGN_USER"
-      label="指定用户"
-      prop="assignEmptyHandlerUserIds"
-      span="24"
-    >
-      <el-select
-        v-model="assignEmptyUserIds"
-        clearable
-        multiple
-        style="width: 100%"
-        @change="updateAssignEmptyUserIds"
-      >
-        <el-option
-          v-for="item in userOptions"
-          :key="item.id"
-          :label="item.nickname"
-          :value="item.id"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-divider content-position="left">审批人与提交人为同一人时</el-divider>
-    <el-radio-group
-      v-model="assignStartUserHandlerType"
-      @change="updateAssignStartUserHandlerType"
-    >
-      <div class="flex-col">
-        <div
-          v-for="(item, index) in ASSIGN_START_USER_HANDLER_TYPES"
-          :key="index"
-        >
-          <el-radio :key="item.value" :value="item.value" :label="item.label" />
-        </div>
-      </div>
-    </el-radio-group>
-
-    <el-divider content-position="left">操作按钮</el-divider>
-    <div class="button-setting-pane">
-      <div class="button-setting-title">
-        <div class="button-title-label">操作按钮</div>
-        <div class="button-title-label pl-4">显示名称</div>
-        <div class="button-title-label">启用</div>
-      </div>
-      <div
-        class="button-setting-item"
-        v-for="(item, index) in buttonsSettingEl"
-        :key="index"
-      >
-        <div class="button-setting-item-label">
-          {{ OPERATION_BUTTON_NAME.get(item.id) }}
-        </div>
-        <div class="button-setting-item-label">
-          <input
-            type="text"
-            class="editable-title-input"
-            @blur="btnDisplayNameBlurEvent(index)"
-            v-mountedFocus
-            v-model="item.displayName"
-            :placeholder="item.displayName"
-            v-if="btnDisplayNameEdit[index]"
-          />
-          <el-button v-else text @click="changeBtnDisplayName(index)"
-            >{{ item.displayName }} &nbsp;<Icon icon="ep:edit"
-          /></el-button>
-        </div>
-        <div class="button-setting-item-label">
-          <el-switch v-model="item.enable" />
-        </div>
-      </div>
-    </div>
-
-    <el-divider content-position="left">字段权限</el-divider>
-    <div class="field-setting-pane" v-if="formType === BpmModelFormType.NORMAL">
-      <div class="field-permit-title">
-        <div class="setting-title-label first-title">字段名称</div>
-        <div class="other-titles">
-          <span
-            class="setting-title-label cursor-pointer"
-            @click="updatePermission('READ')"
-            >只读</span
-          >
-          <span
-            class="setting-title-label cursor-pointer"
-            @click="updatePermission('WRITE')"
-            >可编辑</span
-          >
-          <span
-            class="setting-title-label cursor-pointer"
-            @click="updatePermission('NONE')"
-            >隐藏</span
-          >
-        </div>
-      </div>
-      <div
-        class="field-setting-item"
-        v-for="(item, index) in fieldsPermissionEl"
-        :key="index"
-      >
-        <div class="field-setting-item-label">{{ item.title }}</div>
-        <el-radio-group
-          class="field-setting-item-group"
-          v-model="item.permission"
-        >
-          <div class="item-radio-wrap">
-            <el-radio
-              :value="FieldPermissionType.READ"
-              size="large"
-              :label="FieldPermissionType.READ"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </el-radio>
-          </div>
-          <div class="item-radio-wrap">
-            <el-radio
-              :value="FieldPermissionType.WRITE"
-              size="large"
-              :label="FieldPermissionType.WRITE"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </el-radio>
-          </div>
-          <div class="item-radio-wrap">
-            <el-radio
-              :value="FieldPermissionType.NONE"
-              size="large"
-              :label="FieldPermissionType.NONE"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </el-radio>
-          </div>
-        </el-radio-group>
-      </div>
-    </div>
-
-    <el-divider content-position="left">是否需要签名</el-divider>
-    <el-form-item prop="signEnable">
-      <el-switch
-        v-model="signEnable.value"
-        active-text="是"
-        inactive-text="否"
-        @change="updateElementExtensions"
-      />
-    </el-form-item>
-
-    <el-divider content-position="left">审批意见</el-divider>
-    <el-form-item prop="reasonRequire">
-      <el-switch
-        v-model="reasonRequire.value"
-        active-text="必填"
-        inactive-text="非必填"
-        @change="updateElementExtensions"
-      />
-    </el-form-item>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import type { SystemUserApi } from '#/api/system/user';
+import type { ButtonSetting } from '#/components/simple-process-design/consts';
+
+import { inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
+
+import { BpmModelFormType } from '@vben/constants';
+
 import {
-  ASSIGN_START_USER_HANDLER_TYPES,
-  RejectHandlerType,
-  REJECT_HANDLER_TYPES,
-  ASSIGN_EMPTY_HANDLER_TYPES,
-  AssignEmptyHandlerType,
-  OPERATION_BUTTON_NAME,
-  DEFAULT_BUTTON_SETTING,
-  FieldPermissionType,
+  Button,
+  Divider,
+  Form,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectOption,
+  Switch,
+} from 'ant-design-vue';
+
+import { getSimpleUserList } from '#/api/system/user';
+import {
   APPROVE_TYPE,
   ApproveType,
-  ButtonSetting,
-} from '@/components/SimpleProcessDesignerV2/src/consts';
-import * as UserApi from '@/api/system/user';
-import { useFormFieldsPermission } from '@/components/SimpleProcessDesignerV2/src/node';
-import { BpmModelFormType } from '@/utils/constants';
+  ASSIGN_EMPTY_HANDLER_TYPES,
+  ASSIGN_START_USER_HANDLER_TYPES,
+  AssignEmptyHandlerType,
+  DEFAULT_BUTTON_SETTING,
+  FieldPermissionType,
+  OPERATION_BUTTON_NAME,
+  REJECT_HANDLER_TYPES,
+  RejectHandlerType,
+} from '#/components/simple-process-design/consts';
+import { useFormFieldsPermission } from '#/components/simple-process-design/helpers';
 
 defineOptions({ name: 'ElementCustomConfig4UserTask' });
 const props = defineProps({
-  id: String,
-  type: String,
+  id: {
+    type: String,
+    required: false,
+    default: '',
+  },
+  type: {
+    type: String,
+    required: false,
+    default: '',
+  },
 });
 const prefix = inject('prefix');
 
 // 审批人与提交人为同一人时
-const assignStartUserHandlerTypeEl = ref();
-const assignStartUserHandlerType = ref();
+const assignStartUserHandlerTypeEl = ref<any>();
+const assignStartUserHandlerType = ref<any>();
 
 // 审批人拒绝时
-const rejectHandlerTypeEl = ref();
-const rejectHandlerType = ref();
-const returnNodeIdEl = ref();
-const returnNodeId = ref();
-const returnTaskList = ref([]);
+const rejectHandlerTypeEl = ref<any>();
+const rejectHandlerType = ref<any>();
+const returnNodeIdEl = ref<any>();
+const returnNodeId = ref<any>();
+const returnTaskList = ref<any[]>([]);
 
 // 审批人为空时
-const assignEmptyHandlerTypeEl = ref();
-const assignEmptyHandlerType = ref();
-const assignEmptyUserIdsEl = ref();
-const assignEmptyUserIds = ref();
+const assignEmptyHandlerTypeEl = ref<any>();
+const assignEmptyHandlerType = ref<any>();
+const assignEmptyUserIdsEl = ref<any>();
+const assignEmptyUserIds = ref<any>();
 
 // 操作按钮
-const buttonsSettingEl = ref();
+const buttonsSettingEl = ref<any>();
 const { btnDisplayNameEdit, changeBtnDisplayName, btnDisplayNameBlurEvent } =
   useButtonsSetting();
 
 // 字段权限
-const fieldsPermissionEl = ref([]);
+const fieldsPermissionEl = ref<any[]>([]);
 const { formType, fieldsPermissionConfig, getNodeConfigFormFields } =
   useFormFieldsPermission(FieldPermissionType.READ);
 
@@ -299,9 +92,9 @@ const signEnable = ref({ value: false });
 // 审批意见
 const reasonRequire = ref({ value: false });
 
-const elExtensionElements = ref();
-const otherExtensions = ref();
-const bpmnElement = ref();
+const elExtensionElements = ref<any>();
+const otherExtensions = ref<any>();
+const bpmnElement = ref<any>();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetCustomConfigList = () => {
@@ -320,7 +113,7 @@ const resetCustomConfigList = () => {
   // 审批类型
   approveType.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:ApproveType`,
+      (ex: any) => ex.$type === `${prefix}:ApproveType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:ApproveType`, {
       value: ApproveType.USER,
@@ -329,7 +122,7 @@ const resetCustomConfigList = () => {
   // 审批人与提交人为同一人时
   assignStartUserHandlerTypeEl.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:AssignStartUserHandlerType`,
+      (ex: any) => ex.$type === `${prefix}:AssignStartUserHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignStartUserHandlerType`, {
       value: 1,
@@ -339,13 +132,13 @@ const resetCustomConfigList = () => {
   // 审批人拒绝时
   rejectHandlerTypeEl.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:RejectHandlerType`,
+      (ex: any) => ex.$type === `${prefix}:RejectHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:RejectHandlerType`, { value: 1 });
   rejectHandlerType.value = rejectHandlerTypeEl.value.value;
   returnNodeIdEl.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:RejectReturnTaskId`,
+      (ex: any) => ex.$type === `${prefix}:RejectReturnTaskId`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:RejectReturnTaskId`, {
       value: '',
@@ -355,7 +148,7 @@ const resetCustomConfigList = () => {
   // 审批人为空时
   assignEmptyHandlerTypeEl.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:AssignEmptyHandlerType`,
+      (ex: any) => ex.$type === `${prefix}:AssignEmptyHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyHandlerType`, {
       value: 1,
@@ -363,16 +156,16 @@ const resetCustomConfigList = () => {
   assignEmptyHandlerType.value = assignEmptyHandlerTypeEl.value.value;
   assignEmptyUserIdsEl.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:AssignEmptyUserIds`,
+      (ex: any) => ex.$type === `${prefix}:AssignEmptyUserIds`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyUserIds`, {
       value: '',
     });
   assignEmptyUserIds.value = assignEmptyUserIdsEl.value.value
     ?.split(',')
-    .map((item) => {
+    .map((item: string) => {
       // 如果数字超出了最大安全整数范围，则将其作为字符串处理
-      let num = Number(item);
+      const num = Number(item);
       return num > Number.MAX_SAFE_INTEGER || num < -Number.MAX_SAFE_INTEGER
         ? item
         : num;
@@ -380,7 +173,7 @@ const resetCustomConfigList = () => {
 
   // 操作按钮
   buttonsSettingEl.value = elExtensionElements.value.values?.filter(
-    (ex) => ex.$type === `${prefix}:ButtonsSetting`,
+    (ex: any) => ex.$type === `${prefix}:ButtonsSetting`,
   );
   if (buttonsSettingEl.value.length === 0) {
     DEFAULT_BUTTON_SETTING.forEach((item) => {
@@ -397,14 +190,13 @@ const resetCustomConfigList = () => {
   // 字段权限
   if (formType.value === BpmModelFormType.NORMAL) {
     const fieldsPermissionList = elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:FieldsPermission`,
+      (ex: any) => ex.$type === `${prefix}:FieldsPermission`,
     );
     fieldsPermissionEl.value = [];
     getNodeConfigFormFields();
-    fieldsPermissionConfig.value = fieldsPermissionConfig.value;
-    fieldsPermissionConfig.value.forEach((element) => {
+    fieldsPermissionConfig.value.forEach((element: any) => {
       element.permission =
-        fieldsPermissionList?.find((obj) => obj.field === element.field)
+        fieldsPermissionList?.find((obj: any) => obj.field === element.field)
           ?.permission ?? '1';
       fieldsPermissionEl.value.push(
         bpmnInstances().moddle.create(`${prefix}:FieldsPermission`, element),
@@ -415,21 +207,21 @@ const resetCustomConfigList = () => {
   // 是否需要签名
   signEnable.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:SignEnable`,
+      (ex: any) => ex.$type === `${prefix}:SignEnable`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:SignEnable`, { value: false });
 
   // 审批意见
   reasonRequire.value =
     elExtensionElements.value.values?.filter(
-      (ex) => ex.$type === `${prefix}:ReasonRequire`,
+      (ex: any) => ex.$type === `${prefix}:ReasonRequire`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:ReasonRequire`, { value: false });
 
   // 保留剩余扩展元素，便于后面更新该元素对应属性
   otherExtensions.value =
     elExtensionElements.value.values?.filter(
-      (ex) =>
+      (ex: any) =>
         ex.$type !== `${prefix}:AssignStartUserHandlerType` &&
         ex.$type !== `${prefix}:RejectHandlerType` &&
         ex.$type !== `${prefix}:RejectReturnTaskId` &&
@@ -455,7 +247,7 @@ const updateAssignStartUserHandlerType = () => {
 const updateRejectHandlerType = () => {
   rejectHandlerTypeEl.value.value = rejectHandlerType.value;
 
-  returnNodeId.value = returnTaskList.value[0].id;
+  returnNodeId.value = returnTaskList.value[0]?.id;
   returnNodeIdEl.value.value = returnNodeId.value;
 
   updateElementExtensions();
@@ -504,7 +296,7 @@ watch(
   () => props.id,
   (val) => {
     val &&
-      val.length &&
+      val.length > 0 &&
       nextTick(() => {
         resetCustomConfigList();
       });
@@ -512,20 +304,20 @@ watch(
   { immediate: true },
 );
 
-function findAllPredecessorsExcludingStart(elementId, modeler) {
+function findAllPredecessorsExcludingStart(elementId: string, modeler: any) {
   const elementRegistry = modeler.get('elementRegistry');
   const allConnections = elementRegistry.filter(
-    (element) => element.type === 'bpmn:SequenceFlow',
+    (element: any) => element.type === 'bpmn:SequenceFlow',
   );
   const predecessors = new Set(); // 使用 Set 来避免重复节点
   const visited = new Set(); // 用于记录已访问的节点
 
   // 检查是否是开始事件节点
-  function isStartEvent(element) {
+  function isStartEvent(element: any) {
     return element.type === 'bpmn:StartEvent';
   }
 
-  function findPredecessorsRecursively(element) {
+  function findPredecessorsRecursively(element: any) {
     // 如果该节点已经访问过，直接返回，避免循环
     if (visited.has(element)) {
       return;
@@ -536,10 +328,10 @@ function findAllPredecessorsExcludingStart(elementId, modeler) {
 
     // 获取与当前节点相连的所有连接
     const incomingConnections = allConnections.filter(
-      (connection) => connection.target === element,
+      (connection: any) => connection.target === element,
     );
 
-    incomingConnections.forEach((connection) => {
+    incomingConnections.forEach((connection: any) => {
       const source = connection.source; // 获取前置节点
 
       // 只添加不是开始事件的前置节点
@@ -556,7 +348,7 @@ function findAllPredecessorsExcludingStart(elementId, modeler) {
     findPredecessorsRecursively(targetElement);
   }
 
-  return Array.from(predecessors); // 返回前置节点数组
+  return [...predecessors]; // 返回前置节点数组
 }
 
 function useButtonsSetting() {
@@ -568,9 +360,11 @@ function useButtonsSetting() {
   };
   const btnDisplayNameBlurEvent = (index: number) => {
     btnDisplayNameEdit.value[index] = false;
-    const buttonItem = buttonsSetting.value![index];
-    buttonItem.displayName =
-      buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+    const buttonItem = buttonsSetting.value?.[index];
+    if (buttonItem) {
+      buttonItem.displayName =
+        buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+    }
   };
   return {
     buttonsSetting,
@@ -583,22 +377,250 @@ function useButtonsSetting() {
 /** 批量更新权限 */
 // TODO @lesan：这个页面，有一些 idea 红色报错，咱要不要 fix 下！
 const updatePermission = (type: string) => {
-  fieldsPermissionEl.value.forEach((field) => {
-    field.permission =
-      type === 'READ'
-        ? FieldPermissionType.READ
-        : type === 'WRITE'
-          ? FieldPermissionType.WRITE
-          : FieldPermissionType.NONE;
+  fieldsPermissionEl.value.forEach((field: any) => {
+    if (type === 'READ') {
+      field.permission = FieldPermissionType.READ;
+    } else if (type === 'WRITE') {
+      field.permission = FieldPermissionType.WRITE;
+    } else {
+      field.permission = FieldPermissionType.NONE;
+    }
   });
 };
 
-const userOptions = ref<UserApi.UserVO[]>([]); // 用户列表
+const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 onMounted(async () => {
   // 获得用户列表
-  userOptions.value = await UserApi.getSimpleUserList();
+  userOptions.value = await getSimpleUserList();
 });
 </script>
+
+<template>
+  <div>
+    <Divider orientation="left">审批类型</Divider>
+    <Form.Item prop="approveType">
+      <RadioGroup v-model:value="approveType.value">
+        <Radio
+          v-for="(item, index) in APPROVE_TYPE"
+          :key="index"
+          :value="item.value"
+        >
+          {{ item.label }}
+        </Radio>
+      </RadioGroup>
+    </Form.Item>
+
+    <Divider orientation="left">审批人拒绝时</Divider>
+    <Form.Item prop="rejectHandlerType">
+      <RadioGroup
+        v-model:value="rejectHandlerType"
+        :disabled="returnTaskList.length === 0"
+        @change="updateRejectHandlerType"
+      >
+        <div class="flex-col">
+          <div v-for="(item, index) in REJECT_HANDLER_TYPES" :key="index">
+            <Radio :key="item.value" :value="item.value">
+              {{ item.label }}
+            </Radio>
+          </div>
+        </div>
+      </RadioGroup>
+    </Form.Item>
+    <Form.Item
+      v-if="rejectHandlerType === RejectHandlerType.RETURN_USER_TASK"
+      label="驳回节点"
+      prop="returnNodeId"
+    >
+      <Select
+        v-model:value="returnNodeId"
+        allow-clear
+        style="width: 100%"
+        @change="updateReturnNodeId"
+      >
+        <SelectOption
+          v-for="item in returnTaskList"
+          :key="item.id"
+          :value="item.id"
+        >
+          {{ item.name }}
+        </SelectOption>
+      </Select>
+    </Form.Item>
+
+    <Divider orientation="left">审批人为空时</Divider>
+    <Form.Item prop="assignEmptyHandlerType">
+      <RadioGroup
+        v-model:value="assignEmptyHandlerType"
+        @change="updateAssignEmptyHandlerType"
+      >
+        <div class="flex-col">
+          <div v-for="(item, index) in ASSIGN_EMPTY_HANDLER_TYPES" :key="index">
+            <Radio :key="item.value" :value="item.value">
+              {{ item.label }}
+            </Radio>
+          </div>
+        </div>
+      </RadioGroup>
+    </Form.Item>
+    <Form.Item
+      v-if="assignEmptyHandlerType === AssignEmptyHandlerType.ASSIGN_USER"
+      label="指定用户"
+      prop="assignEmptyHandlerUserIds"
+    >
+      <Select
+        v-model:value="assignEmptyUserIds"
+        allow-clear
+        mode="multiple"
+        style="width: 100%"
+        @change="updateAssignEmptyUserIds"
+      >
+        <SelectOption
+          v-for="item in userOptions"
+          :key="item.id"
+          :value="item.id"
+        >
+          {{ item.nickname }}
+        </SelectOption>
+      </Select>
+    </Form.Item>
+
+    <Divider orientation="left">审批人与提交人为同一人时</Divider>
+    <RadioGroup
+      v-model:value="assignStartUserHandlerType"
+      @change="updateAssignStartUserHandlerType"
+    >
+      <div class="flex-col">
+        <div
+          v-for="(item, index) in ASSIGN_START_USER_HANDLER_TYPES"
+          :key="index"
+        >
+          <Radio :key="item.value" :value="item.value">
+            {{ item.label }}
+          </Radio>
+        </div>
+      </div>
+    </RadioGroup>
+
+    <Divider orientation="left">操作按钮</Divider>
+    <div class="button-setting-pane">
+      <div class="button-setting-title">
+        <div class="button-title-label">操作按钮</div>
+        <div class="button-title-label pl-4">显示名称</div>
+        <div class="button-title-label">启用</div>
+      </div>
+      <div
+        class="button-setting-item"
+        v-for="(item, index) in buttonsSettingEl"
+        :key="index"
+      >
+        <div class="button-setting-item-label">
+          {{ OPERATION_BUTTON_NAME.get(item.id) }}
+        </div>
+        <div class="button-setting-item-label">
+          <input
+            type="text"
+            class="editable-title-input"
+            @blur="btnDisplayNameBlurEvent(index)"
+            v-mounted-focus
+            v-model="item.displayName"
+            :placeholder="item.displayName"
+            v-if="btnDisplayNameEdit[index]"
+          />
+          <Button v-else type="text" @click="changeBtnDisplayName(index)">
+            {{ item.displayName }}
+          </Button>
+        </div>
+        <div class="button-setting-item-label">
+          <Switch v-model:checked="item.enable" />
+        </div>
+      </div>
+    </div>
+
+    <Divider orientation="left">字段权限</Divider>
+    <div class="field-setting-pane" v-if="formType === BpmModelFormType.NORMAL">
+      <div class="field-permit-title">
+        <div class="setting-title-label first-title">字段名称</div>
+        <div class="other-titles">
+          <span
+            class="setting-title-label cursor-pointer"
+            @click="updatePermission('READ')"
+            >只读
+          </span>
+          <span
+            class="setting-title-label cursor-pointer"
+            @click="updatePermission('WRITE')"
+          >
+            可编辑
+          </span>
+          <span
+            class="setting-title-label cursor-pointer"
+            @click="updatePermission('NONE')"
+            >隐藏
+          </span>
+        </div>
+      </div>
+      <div
+        class="field-setting-item"
+        v-for="(item, index) in fieldsPermissionEl"
+        :key="index"
+      >
+        <div class="field-setting-item-label">{{ item.title }}</div>
+        <RadioGroup
+          class="field-setting-item-group"
+          v-model:value="item.permission"
+        >
+          <div class="item-radio-wrap">
+            <Radio
+              :value="FieldPermissionType.READ"
+              size="large"
+              @change="updateElementExtensions"
+            >
+              <span></span>
+            </Radio>
+          </div>
+          <div class="item-radio-wrap">
+            <Radio
+              :value="FieldPermissionType.WRITE"
+              size="large"
+              @change="updateElementExtensions"
+            >
+              <span></span>
+            </Radio>
+          </div>
+          <div class="item-radio-wrap">
+            <Radio
+              :value="FieldPermissionType.NONE"
+              size="large"
+              @change="updateElementExtensions"
+            >
+              <span></span>
+            </Radio>
+          </div>
+        </RadioGroup>
+      </div>
+    </div>
+
+    <Divider orientation="left">是否需要签名</Divider>
+    <Form.Item prop="signEnable">
+      <Switch
+        v-model:checked="signEnable.value"
+        checked-children="是"
+        un-checked-children="否"
+        @change="updateElementExtensions"
+      />
+    </Form.Item>
+
+    <Divider orientation="left">审批意见</Divider>
+    <Form.Item prop="reasonRequire">
+      <Switch
+        v-model:checked="reasonRequire.value"
+        checked-children="必填"
+        un-checked-children="非必填"
+        @change="updateElementExtensions"
+      />
+    </Form.Item>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .button-setting-pane {
