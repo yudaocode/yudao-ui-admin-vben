@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileApi } from '#/api/infra/file';
 
 import { ref } from 'vue';
@@ -26,18 +23,18 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 上传文件 */
-function onUpload() {
+function handleUpload() {
   formModalApi.setData(null).open();
 }
 
 /** 复制链接到剪贴板 */
 const { copy } = useClipboard({ legacy: true });
-async function onCopyUrl(row: InfraFileApi.File) {
+async function handleCopyUrl(row: InfraFileApi.File) {
   if (!row.url) {
     ElMessage.error('文件 URL 为空');
     return;
@@ -51,15 +48,8 @@ async function onCopyUrl(row: InfraFileApi.File) {
   }
 }
 
-/** 打开 URL */
-function openUrl(url?: string) {
-  if (url) {
-    openWindow(url);
-  }
-}
-
 /** 删除文件 */
-async function onDelete(row: InfraFileApi.File) {
+async function handleDelete(row: InfraFileApi.File) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name || row.path]),
   });
@@ -68,19 +58,26 @@ async function onDelete(row: InfraFileApi.File) {
     ElMessage.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除文件 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该文件吗？');
-  await deleteFileList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteFileList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -92,26 +89,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<InfraFileApi.File>) {
-  switch (code) {
-    case 'copyUrl': {
-      onCopyUrl(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -127,6 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -142,16 +126,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="文件列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: '上传图片',
+              label: '上传文件',
               type: 'primary',
               icon: ACTION_ICON.UPLOAD,
-              onClick: onUpload,
+              onClick: handleUpload,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -159,7 +143,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['infra:file:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
             },
           ]"
         />
@@ -170,13 +154,42 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-else-if="row.type && row.type.includes('pdf')"
           type="primary"
           link
-          @click="() => openUrl(row.url)"
+          @click="() => openWindow(row.url!)"
         >
           预览
         </ElButton>
-        <ElButton v-else type="primary" link @click="() => openUrl(row.url)">
+        <ElButton
+          v-else
+          type="primary"
+          link
+          @click="() => openWindow(row.url!)"
+        >
           下载
         </ElButton>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '复制链接',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.COPY,
+              onClick: handleCopyUrl.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:file:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

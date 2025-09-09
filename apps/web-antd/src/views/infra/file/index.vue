@@ -4,7 +4,7 @@ import type { InfraFileApi } from '#/api/infra/file';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
@@ -23,7 +23,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -53,14 +53,30 @@ async function handleDelete(row: InfraFileApi.File) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name || row.path]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteFile(row.id as number);
     message.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
-    onRefresh();
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除文件 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteFileList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -73,23 +89,6 @@ function handleRowCheckboxChange({
   records: InfraFileApi.File[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 批量删除文件 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteFileList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -129,24 +128,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="文件列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: '上传图片',
+              label: '上传文件',
               type: 'primary',
               icon: ACTION_ICON.UPLOAD,
-              auth: ['infra:file:create'],
               onClick: handleUpload,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['infra:file:delete'],
               onClick: handleDeleteBatch,
             },
@@ -172,8 +170,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              auth: ['infra:file:delete'],
               icon: ACTION_ICON.DELETE,
+              auth: ['infra:file:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

@@ -27,7 +27,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入文件路径',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入文件类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -45,7 +45,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -58,22 +58,26 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'name',
       title: '文件名',
+      minWidth: 150,
     },
     {
       field: 'path',
       title: '文件路径',
+      minWidth: 200,
       showOverflow: true,
     },
     {
       field: 'url',
       title: 'URL',
+      minWidth: 200,
       showOverflow: true,
     },
     {
       field: 'size',
       title: '文件大小',
+      minWidth: 80,
       formatter: ({ cellValue }) => {
-        // TODO @芋艿：后续优化下
+        // TODO @xingyu：【优先级：中】要不要搞到一个方法里？
         if (!cellValue) return '0 B';
         const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         const index = Math.floor(Math.log(cellValue) / Math.log(1024));
@@ -85,15 +89,20 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'type',
       title: '文件类型',
+      minWidth: 120,
     },
     {
       field: 'file-content',
       title: '文件内容',
-      slots: { default: 'file-content' },
+      minWidth: 120,
+      slots: {
+        default: 'file-content',
+      },
     },
     {
       field: 'createTime',
       title: '上传时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

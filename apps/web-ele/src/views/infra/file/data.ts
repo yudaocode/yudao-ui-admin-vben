@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraFileApi } from '#/api/infra/file';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 表单的字段 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -57,9 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraFileApi.File>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -84,7 +77,7 @@ export function useGridColumns<T = InfraFileApi.File>(
       title: '文件大小',
       minWidth: 80,
       formatter: ({ cellValue }) => {
-        // TODO @芋艿：后续优化下
+        // TODO @xingyu：【优先级：中】要不要搞到一个方法里？
         if (!cellValue) return '0 B';
         const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         const index = Math.floor(Math.log(cellValue) / Math.log(1024));
@@ -113,29 +106,10 @@ export function useGridColumns<T = InfraFileApi.File>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
       width: 160,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '文件',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'copyUrl',
-            text: '复制链接',
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:file:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
