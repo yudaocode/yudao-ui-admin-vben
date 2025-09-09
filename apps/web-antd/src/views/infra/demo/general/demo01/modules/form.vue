@@ -51,7 +51,7 @@ const getTitle = computed(() => {
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     name: undefined,
@@ -61,7 +61,7 @@ const resetForm = () => {
     avatar: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

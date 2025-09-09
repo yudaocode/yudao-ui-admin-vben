@@ -58,7 +58,7 @@ const demo03CourseFormRef = ref<InstanceType<typeof Demo03CourseForm>>();
 const demo03GradeFormRef = ref<InstanceType<typeof Demo03GradeForm>>();
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     name: undefined,
@@ -67,7 +67,7 @@ const resetForm = () => {
     description: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

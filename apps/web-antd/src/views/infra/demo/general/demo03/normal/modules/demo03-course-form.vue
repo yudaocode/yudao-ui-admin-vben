@@ -19,14 +19,14 @@ const props = defineProps<{
 const list = ref<Demo03StudentApi.Demo03Course[]>([]); // 列表的数据
 const tableRef = ref<VxeTableInstance>();
 /** 添加学生课程 */
-const onAdd = async () => {
+async function onAdd() {
   await tableRef.value?.insertAt({} as Demo03StudentApi.Demo03Course, -1);
-};
+}
 
 /** 删除学生课程 */
-const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
+async function onDelete(row: Demo03StudentApi.Demo03Course) {
   await tableRef.value?.remove(row);
-};
+}
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
@@ -73,7 +73,7 @@ watch(
           size="small"
           type="link"
           danger
-          @click="onDelete(row as any)"
+          @click="onDelete(row)"
           v-access:code="['infra:demo03-student:delete']"
         >
           {{ $t('ui.actionTitle.delete') }}

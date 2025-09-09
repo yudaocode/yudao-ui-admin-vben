@@ -7,6 +7,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
+import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
   cloneDeep,
   downloadFileFromBlobPart,
@@ -33,8 +34,6 @@ import {
 } from '#/api/infra/demo/demo01';
 import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
-import { TableToolbar } from '#/components/table-toolbar';
-import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -55,7 +54,7 @@ const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const params = cloneDeep(queryParams) as any;
@@ -68,19 +67,19 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-};
+}
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Demo01ContactForm,
@@ -214,7 +213,7 @@ onMounted(() => {
     <!-- 列表 -->
     <ContentWrap title="示例联系人">
       <template #extra>
-        <TableToolbar
+        <VbenVxeTableToolbar
           ref="tableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
@@ -248,7 +247,7 @@ onMounted(() => {
           >
             批量删除
           </Button>
-        </TableToolbar>
+        </VbenVxeTableToolbar>
       </template>
       <VxeTable
         ref="tableRef"
@@ -283,7 +282,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="handleEdit(row as any)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo01-contact:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -293,7 +292,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="handleDelete(row as any)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo01-contact:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

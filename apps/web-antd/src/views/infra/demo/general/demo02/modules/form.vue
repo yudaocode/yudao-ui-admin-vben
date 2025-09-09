@@ -38,17 +38,17 @@ const getTitle = computed(() => {
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     name: undefined,
     parentId: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 
 /** 获得示例分类树 */
-const getDemo02CategoryTree = async () => {
+async function getDemo02CategoryTree() {
   demo02CategoryTree.value = [];
   const data = await getDemo02CategoryList({});
   data.unshift({
@@ -56,7 +56,7 @@ const getDemo02CategoryTree = async () => {
     name: '顶级示例分类',
   });
   demo02CategoryTree.value = handleTree(data);
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
