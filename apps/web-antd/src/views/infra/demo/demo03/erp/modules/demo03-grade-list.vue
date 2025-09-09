@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { h, nextTick, ref, watch } from 'vue';
@@ -13,7 +10,7 @@ import { isEmpty } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Grade,
   deleteDemo03GradeList,
@@ -92,29 +89,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<Demo03StudentApi.Demo03Grade>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useDemo03GradeGridFormSchema(),
   },
   gridOptions: {
-    columns: useDemo03GradeGridColumns(onActionClick),
+    columns: useDemo03GradeGridColumns(),
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -191,6 +171,30 @@ watch(
       >
         批量删除
       </Button>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        :actions="[
+          {
+            label: $t('common.edit'),
+            type: 'link',
+            icon: ACTION_ICON.EDIT,
+            auth: ['infra:demo03-student:update'],
+            onClick: onEdit.bind(null, row),
+          },
+          {
+            label: $t('common.delete'),
+            danger: true,
+            type: 'link',
+            icon: ACTION_ICON.DELETE,
+            auth: ['infra:demo03-student:delete'],
+            popConfirm: {
+              title: $t('ui.actionMessage.deleteConfirm', [row.id]),
+              confirm: onDelete.bind(null, row),
+            },
+          },
+        ]"
+      />
     </template>
   </Grid>
 </template>

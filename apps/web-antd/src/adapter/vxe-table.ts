@@ -6,7 +6,8 @@ import { h } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
-  AsyncComponents,
+  AsyncVxeColumn,
+  AsyncVxeTable,
   createRequiredValidation,
   setupVbenVxeTable,
   useVbenVxeGrid,
@@ -33,8 +34,6 @@ import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
-
-import '#/adapter/style.css';
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -357,16 +356,8 @@ setupVbenVxeTable({
 
 export { createRequiredValidation, useVbenVxeGrid };
 
-const [VxeTable, VxeColumn, VxeToolbar] = AsyncComponents;
-export { VxeColumn, VxeTable, VxeToolbar };
+export const [VxeTable, VxeColumn] = [AsyncVxeTable, AsyncVxeColumn];
 
-// add by 芋艿：from https://github.com/vbenjs/vue-vben-admin/blob/main/playground/src/adapter/vxe-table.ts#L264-L270
-export type OnActionClickParams<T = Recordable<any>> = {
-  code: string;
-  row: T;
-};
-export type OnActionClickFn<T = Recordable<any>> = (
-  params: OnActionClickParams<T>,
-) => void;
 export * from '#/components/table-action';
+
 export type * from '@vben/plugins/vxe-table';
