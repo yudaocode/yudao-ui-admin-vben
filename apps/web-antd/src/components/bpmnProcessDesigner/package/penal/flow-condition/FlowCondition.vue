@@ -1,98 +1,28 @@
-<template>
-  <div class="panel-tab__content">
-    <el-form :model="flowConditionForm" label-width="90px" size="small">
-      <el-form-item label="流转类型">
-        <el-select v-model="flowConditionForm.type" @change="updateFlowType">
-          <el-option label="普通流转路径" value="normal" />
-          <el-option label="默认流转路径" value="default" />
-          <el-option label="条件流转路径" value="condition" />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="条件格式"
-        v-if="flowConditionForm.type === 'condition'"
-        key="condition"
-      >
-        <el-select v-model="flowConditionForm.conditionType">
-          <el-option label="表达式" value="expression" />
-          <el-option label="脚本" value="script" />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="表达式"
-        v-if="
-          flowConditionForm.conditionType &&
-          flowConditionForm.conditionType === 'expression'
-        "
-        key="express"
-      >
-        <el-input
-          v-model="flowConditionForm.body"
-          style="width: 192px"
-          clearable
-          @change="updateFlowCondition"
-        />
-      </el-form-item>
-      <template
-        v-if="
-          flowConditionForm.conditionType &&
-          flowConditionForm.conditionType === 'script'
-        "
-      >
-        <el-form-item label="脚本语言" key="language">
-          <el-input
-            v-model="flowConditionForm.language"
-            clearable
-            @change="updateFlowCondition"
-          />
-        </el-form-item>
-        <el-form-item label="脚本类型" key="scriptType">
-          <el-select v-model="flowConditionForm.scriptType">
-            <el-option label="内联脚本" value="inlineScript" />
-            <el-option label="外部脚本" value="externalScript" />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          label="脚本"
-          v-if="flowConditionForm.scriptType === 'inlineScript'"
-          key="body"
-        >
-          <el-input
-            v-model="flowConditionForm.body"
-            type="textarea"
-            clearable
-            @change="updateFlowCondition"
-          />
-        </el-form-item>
-        <el-form-item
-          label="资源地址"
-          v-if="flowConditionForm.scriptType === 'externalScript'"
-          key="resource"
-        >
-          <el-input
-            v-model="flowConditionForm.resource"
-            clearable
-            @change="updateFlowCondition"
-          />
-        </el-form-item>
-      </template>
-    </el-form>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
+
+import { Form, Input, Select } from 'ant-design-vue';
+
 defineOptions({ name: 'FlowCondition' });
 
 const props = defineProps({
-  businessObject: Object,
-  type: String,
+  businessObject: {
+    type: Object,
+    default: () => ({}),
+  },
+  type: {
+    type: String,
+    default: '',
+  },
 });
+
 const flowConditionForm = ref<any>({});
 const bpmnElement = ref();
 const bpmnElementSource = ref();
 const bpmnElementSourceRef = ref();
 const flowConditionRef = ref();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
+
 const resetFlowCondition = () => {
   bpmnElement.value = bpmnInstances().bpmnElement;
   bpmnElementSource.value = bpmnElement.value.source;
@@ -105,10 +35,7 @@ const resetFlowCondition = () => {
     bpmnElementSourceRef.value.default.id === bpmnElement.value.id
   ) {
     flowConditionForm.value = { type: 'default' };
-  } else if (!bpmnElement.value.businessObject.conditionExpression) {
-    // 普通
-    flowConditionForm.value = { type: 'normal' };
-  } else {
+  } else if (bpmnElement.value.businessObject.conditionExpression) {
     // 带条件
     const conditionExpression =
       bpmnElement.value.businessObject.conditionExpression;
@@ -117,23 +44,27 @@ const resetFlowCondition = () => {
     if (flowConditionForm.value.resource) {
       // this.$set(this.flowConditionForm, "conditionType", "script");
       // this.$set(this.flowConditionForm, "scriptType", "externalScript");
-      flowConditionForm.value['conditionType'] = 'script';
-      flowConditionForm.value['scriptType'] = 'externalScript';
+      flowConditionForm.value.conditionType = 'script';
+      flowConditionForm.value.scriptType = 'externalScript';
       return;
     }
     if (conditionExpression.language) {
       // this.$set(this.flowConditionForm, "conditionType", "script");
       // this.$set(this.flowConditionForm, "scriptType", "inlineScript");
-      flowConditionForm.value['conditionType'] = 'script';
-      flowConditionForm.value['scriptType'] = 'inlineScript';
+      flowConditionForm.value.conditionType = 'script';
+      flowConditionForm.value.scriptType = 'inlineScript';
 
       return;
     }
     // this.$set(this.flowConditionForm, "conditionType", "expression");
-    flowConditionForm.value['conditionType'] = 'expression';
+    flowConditionForm.value.conditionType = 'expression';
+  } else {
+    // 普通
+    flowConditionForm.value = { type: 'normal' };
   }
 };
-const updateFlowType = (flowType) => {
+
+const updateFlowType = (flowType: any) => {
   // 正常条件类
   if (flowType === 'condition') {
     flowConditionRef.value = bpmnInstances().moddle.create(
@@ -167,8 +98,9 @@ const updateFlowType = (flowType) => {
     conditionExpression: null,
   });
 };
+
 const updateFlowCondition = () => {
-  let { conditionType, scriptType, body, resource, language } =
+  const { conditionType, scriptType, body, resource, language } =
     flowConditionForm.value;
   let condition;
   if (conditionType === 'expression') {
@@ -182,10 +114,10 @@ const updateFlowCondition = () => {
         language,
       });
       // this.$set(this.flowConditionForm, "resource", "");
-      flowConditionForm.value['resource'] = '';
+      flowConditionForm.value.resource = '';
     } else {
       // this.$set(this.flowConditionForm, "body", "");
-      flowConditionForm.value['body'] = '';
+      flowConditionForm.value.body = '';
       condition = bpmnInstances().moddle.create('bpmn:FormalExpression', {
         resource,
         language,
@@ -205,8 +137,8 @@ onBeforeUnmount(() => {
 
 watch(
   () => props.businessObject,
-  (val) => {
-    console.log(val, 'val');
+  (_) => {
+    // console.log(val, 'val');
     nextTick(() => {
       resetFlowCondition();
     });
@@ -216,3 +148,89 @@ watch(
   },
 );
 </script>
+
+<template>
+  <div class="panel-tab__content">
+    <Form
+      :model="flowConditionForm"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+    >
+      <Form.Item label="流转类型">
+        <Select v-model:value="flowConditionForm.type" @change="updateFlowType">
+          <Select.Option value="normal">普通流转路径</Select.Option>
+          <Select.Option value="default">默认流转路径</Select.Option>
+          <Select.Option value="condition">条件流转路径</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label="条件格式"
+        v-if="flowConditionForm.type === 'condition'"
+        key="condition"
+      >
+        <Select v-model:value="flowConditionForm.conditionType">
+          <Select.Option value="expression">表达式</Select.Option>
+          <Select.Option value="script">脚本</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label="表达式"
+        v-if="
+          flowConditionForm.conditionType &&
+          flowConditionForm.conditionType === 'expression'
+        "
+        key="express"
+      >
+        <Input
+          v-model:value="flowConditionForm.body"
+          style="width: 192px"
+          allow-clear
+          @change="updateFlowCondition"
+        />
+      </Form.Item>
+      <template
+        v-if="
+          flowConditionForm.conditionType &&
+          flowConditionForm.conditionType === 'script'
+        "
+      >
+        <Form.Item label="脚本语言" key="language">
+          <Input
+            v-model:value="flowConditionForm.language"
+            allow-clear
+            @change="updateFlowCondition"
+          />
+        </Form.Item>
+        <Form.Item label="脚本类型" key="scriptType">
+          <Select v-model:value="flowConditionForm.scriptType">
+            <Select.Option value="inlineScript">内联脚本</Select.Option>
+            <Select.Option value="externalScript">外部脚本</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="脚本"
+          v-if="flowConditionForm.scriptType === 'inlineScript'"
+          key="body"
+        >
+          <Input
+            v-model:value="flowConditionForm.body"
+            :autosize="{ minRows: 2, maxRows: 6 }"
+            allow-clear
+            @change="updateFlowCondition"
+          />
+        </Form.Item>
+        <Form.Item
+          label="资源地址"
+          v-if="flowConditionForm.scriptType === 'externalScript'"
+          key="resource"
+        >
+          <Input
+            v-model:value="flowConditionForm.resource"
+            allow-clear
+            @change="updateFlowCondition"
+          />
+        </Form.Item>
+      </template>
+    </Form>
+  </div>
+</template>
