@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, IFrame, Page } from '@vben/common-ui';
 
 import { getConfigKey } from '#/api/infra/config';
-import { IFrame } from '#/components/iframe';
 
 const loading = ref(true); // 是否加载中
 const src = ref('http://skywalking.shop.iocoder.cn');

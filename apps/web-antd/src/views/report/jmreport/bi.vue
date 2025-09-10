@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, IFrame, Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
-
-import { IFrame } from '#/components/iframe';
 
 defineOptions({ name: 'JimuBI' });
 const accessStore = useAccessStore();
