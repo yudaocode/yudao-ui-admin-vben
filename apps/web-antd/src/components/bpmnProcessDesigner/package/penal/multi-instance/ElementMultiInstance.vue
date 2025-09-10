@@ -1,146 +1,45 @@
-<template>
-  <div class="panel-tab__content">
-    <el-radio-group
-      v-if="type === 'UserTask'"
-      v-model="approveMethod"
-      @change="onApproveMethodChange"
-    >
-      <div class="flex-col">
-        <div v-for="(item, index) in APPROVE_METHODS" :key="index">
-          <el-radio :value="item.value" :label="item.value">
-            {{ item.label }}
-          </el-radio>
-          <el-form-item prop="approveRatio">
-            <el-input-number
-              v-model="approveRatio"
-              :min="10"
-              :max="100"
-              :step="10"
-              size="small"
-              v-if="
-                item.value === ApproveMethodType.APPROVE_BY_RATIO &&
-                approveMethod === ApproveMethodType.APPROVE_BY_RATIO
-              "
-              @change="onApproveRatioChange"
-            />
-          </el-form-item>
-        </div>
-      </div>
-    </el-radio-group>
-    <div v-else>除了UserTask以外节点的多实例待实现</div>
-    <!-- 与Simple设计器配置合并，保留以前的代码 -->
-    <el-form label-width="90px" style="display: none">
-      <el-form-item label="快捷配置">
-        <el-button size="small" @click="changeConfig('依次审批')"
-          >依次审批</el-button
-        >
-        <el-button size="small" @click="changeConfig('会签')">会签</el-button>
-        <el-button size="small" @click="changeConfig('或签')">或签</el-button>
-      </el-form-item>
-      <el-form-item label="会签类型">
-        <el-select
-          v-model="loopCharacteristics"
-          @change="changeLoopCharacteristicsType"
-        >
-          <el-option label="并行多重事件" value="ParallelMultiInstance" />
-          <el-option label="时序多重事件" value="SequentialMultiInstance" />
-          <el-option label="无" value="Null" />
-        </el-select>
-      </el-form-item>
-      <template
-        v-if="
-          loopCharacteristics === 'ParallelMultiInstance' ||
-          loopCharacteristics === 'SequentialMultiInstance'
-        "
-      >
-        <el-form-item label="循环数量" key="loopCardinality">
-          <el-input
-            v-model="loopInstanceForm.loopCardinality"
-            clearable
-            @change="updateLoopCardinality"
-          />
-        </el-form-item>
-        <el-form-item label="集合" key="collection" v-show="false">
-          <el-input
-            v-model="loopInstanceForm.collection"
-            clearable
-            @change="updateLoopBase"
-          />
-        </el-form-item>
-        <!-- add by 芋艿：由于「元素变量」暂时用不到，所以这里 display 为 none -->
-        <el-form-item
-          label="元素变量"
-          key="elementVariable"
-          style="display: none"
-        >
-          <el-input
-            v-model="loopInstanceForm.elementVariable"
-            clearable
-            @change="updateLoopBase"
-          />
-        </el-form-item>
-        <el-form-item label="完成条件" key="completionCondition">
-          <el-input
-            v-model="loopInstanceForm.completionCondition"
-            clearable
-            @change="updateLoopCondition"
-          />
-        </el-form-item>
-        <!-- add by 芋艿：由于「异步状态」暂时用不到，所以这里 display 为 none -->
-        <el-form-item label="异步状态" key="async" style="display: none">
-          <el-checkbox
-            v-model="loopInstanceForm.asyncBefore"
-            label="异步前"
-            value="异步前"
-            @change="updateLoopAsync('asyncBefore')"
-          />
-          <el-checkbox
-            v-model="loopInstanceForm.asyncAfter"
-            label="异步后"
-            value="异步后"
-            @change="updateLoopAsync('asyncAfter')"
-          />
-          <el-checkbox
-            v-model="loopInstanceForm.exclusive"
-            v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
-            label="排除"
-            value="排除"
-            @change="updateLoopAsync('exclusive')"
-          />
-        </el-form-item>
-        <el-form-item
-          label="重试周期"
-          prop="timeCycle"
-          v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
-          key="timeCycle"
-        >
-          <el-input
-            v-model="loopInstanceForm.timeCycle"
-            clearable
-            @change="updateLoopTimeCycle"
-          />
-        </el-form-item>
-      </template>
-    </el-form>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { inject, nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
+
 import {
-  ApproveMethodType,
+  Button,
+  Checkbox,
+  Form,
+  FormItem,
+  Input,
+  InputNumber,
+  Radio,
+  RadioGroup,
+  Select,
+} from 'ant-design-vue';
+
+import {
   APPROVE_METHODS,
-} from '@/components/SimpleProcessDesignerV2/src/consts';
+  ApproveMethodType,
+} from '#/components/simple-process-design/consts';
 
 defineOptions({ name: 'ElementMultiInstance' });
 
 const props = defineProps({
-  businessObject: Object,
-  type: String,
-  id: String,
+  businessObject: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
+  type: {
+    type: String,
+    required: false,
+    default: '',
+  },
+  id: {
+    type: String,
+    required: false,
+    default: '',
+  },
 });
-const prefix = inject('prefix');
+const prefix = inject<string>('prefix');
 const loopCharacteristics = ref('');
-//默认配置，用来覆盖原始不存在的选项，避免报错
+// 默认配置，用来覆盖原始不存在的选项，避免报错
 const defaultLoopInstanceForm = ref({
   completionCondition: '',
   loopCardinality: '',
@@ -149,12 +48,30 @@ const defaultLoopInstanceForm = ref({
   asyncBefore: false,
   exclusive: false,
 });
-const loopInstanceForm = ref<any>({});
-const bpmnElement = ref(null);
-const multiLoopInstance = ref(null);
+interface LoopInstanceForm {
+  completionCondition?: string;
+  loopCardinality?: string;
+  extensionElements?: any[];
+  asyncAfter?: boolean;
+  asyncBefore?: boolean;
+  exclusive?: boolean;
+  collection?: string;
+  elementVariable?: string;
+  timeCycle?: string;
+}
+
+const loopInstanceForm = ref<LoopInstanceForm>({});
+const bpmnElement = ref<any>(null);
+const multiLoopInstance = ref<any>(null);
+declare global {
+  interface Window {
+    bpmnInstances?: () => any;
+  }
+}
+
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
-const getElementLoop = (businessObject) => {
+const getElementLoop = (businessObject: any): void => {
   if (!businessObject.loopCharacteristics) {
     loopCharacteristics.value = 'Null';
     loopInstanceForm.value = {};
@@ -168,11 +85,9 @@ const getElementLoop = (businessObject) => {
     loopInstanceForm.value = {};
     return;
   }
-  if (businessObject.loopCharacteristics.isSequential) {
-    loopCharacteristics.value = 'SequentialMultiInstance';
-  } else {
-    loopCharacteristics.value = 'ParallelMultiInstance';
-  }
+  loopCharacteristics.value = businessObject.loopCharacteristics.isSequential
+    ? 'SequentialMultiInstance'
+    : 'ParallelMultiInstance';
   // 合并配置
   loopInstanceForm.value = {
     ...defaultLoopInstanceForm.value,
@@ -189,14 +104,14 @@ const getElementLoop = (businessObject) => {
   if (
     businessObject.loopCharacteristics.extensionElements &&
     businessObject.loopCharacteristics.extensionElements.values &&
-    businessObject.loopCharacteristics.extensionElements.values.length
+    businessObject.loopCharacteristics.extensionElements.values.length > 0
   ) {
-    loopInstanceForm.value['timeCycle'] =
+    loopInstanceForm.value.timeCycle =
       businessObject.loopCharacteristics.extensionElements.values[0].body;
   }
 };
 
-const changeLoopCharacteristicsType = (type) => {
+const changeLoopCharacteristicsType = (type: any): void => {
   // this.loopInstanceForm = { ...this.defaultLoopInstanceForm }; // 切换类型取消原表单配置
   // 取消多实例配置
   if (type === 'Null') {
@@ -217,26 +132,24 @@ const changeLoopCharacteristicsType = (type) => {
     return;
   }
   // 时序
-  if (type === 'SequentialMultiInstance') {
-    multiLoopInstance.value = bpmnInstances().moddle.create(
-      'bpmn:MultiInstanceLoopCharacteristics',
-      { isSequential: true },
-    );
-  } else {
-    multiLoopInstance.value = bpmnInstances().moddle.create(
-      'bpmn:MultiInstanceLoopCharacteristics',
-      { collection: '${coll_userList}' },
-    );
-  }
+  multiLoopInstance.value =
+    type === 'SequentialMultiInstance'
+      ? bpmnInstances().moddle.create('bpmn:MultiInstanceLoopCharacteristics', {
+          isSequential: true,
+        })
+      : bpmnInstances().moddle.create('bpmn:MultiInstanceLoopCharacteristics', {
+          // eslint-disable-next-line no-template-curly-in-string
+          collection: '${coll_userList}',
+        });
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
     loopCharacteristics: toRaw(multiLoopInstance.value),
   });
 };
 
 // 循环基数
-const updateLoopCardinality = (cardinality) => {
+const updateLoopCardinality = (cardinality: string): void => {
   let loopCardinality = null;
-  if (cardinality && cardinality.length) {
+  if (cardinality && cardinality.length > 0) {
     loopCardinality = bpmnInstances().moddle.create('bpmn:FormalExpression', {
       body: cardinality,
     });
@@ -251,9 +164,9 @@ const updateLoopCardinality = (cardinality) => {
 };
 
 // 完成条件
-const updateLoopCondition = (condition) => {
+const updateLoopCondition = (condition: string): void => {
   let completionCondition = null;
-  if (condition && condition.length) {
+  if (condition && condition.length > 0) {
     completionCondition = bpmnInstances().moddle.create(
       'bpmn:FormalExpression',
       {
@@ -271,7 +184,7 @@ const updateLoopCondition = (condition) => {
 };
 
 // 重试周期
-const updateLoopTimeCycle = (timeCycle) => {
+const updateLoopTimeCycle = (timeCycle: string): void => {
   const extensionElements = bpmnInstances().moddle.create(
     'bpmn:ExtensionElements',
     {
@@ -292,7 +205,7 @@ const updateLoopTimeCycle = (timeCycle) => {
 };
 
 // 直接更新的基础信息
-const updateLoopBase = () => {
+const updateLoopBase = (): void => {
   bpmnInstances().modeling.updateModdleProperties(
     toRaw(bpmnElement.value),
     multiLoopInstance.value,
@@ -304,12 +217,12 @@ const updateLoopBase = () => {
 };
 
 // 各异步状态
-const updateLoopAsync = (key) => {
+const updateLoopAsync = (key: any): void => {
   const { asyncBefore, asyncAfter } = loopInstanceForm.value;
   let asyncAttr = Object.create(null);
   if (!asyncBefore && !asyncAfter) {
     // this.$set(this.loopInstanceForm, "exclusive", false);
-    loopInstanceForm.value['exclusive'] = false;
+    loopInstanceForm.value.exclusive = false;
     asyncAttr = {
       asyncBefore: false,
       asyncAfter: false,
@@ -317,6 +230,7 @@ const updateLoopAsync = (key) => {
       extensionElements: null,
     };
   } else {
+    // @ts-ignore
     asyncAttr[key] = loopInstanceForm.value[key];
   }
   bpmnInstances().modeling.updateModdleProperties(
@@ -326,38 +240,52 @@ const updateLoopAsync = (key) => {
   );
 };
 
-const changeConfig = (config) => {
-  if (config === '依次审批') {
-    changeLoopCharacteristicsType('SequentialMultiInstance');
-    updateLoopCardinality('1');
-    updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
-  } else if (config === '会签') {
-    changeLoopCharacteristicsType('ParallelMultiInstance');
-    updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
-  } else if (config === '或签') {
-    changeLoopCharacteristicsType('ParallelMultiInstance');
-    updateLoopCondition('${ nrOfCompletedInstances > 0 }');
+const changeConfig = (config: string): void => {
+  switch (config) {
+    case '会签': {
+      changeLoopCharacteristicsType('ParallelMultiInstance');
+      // eslint-disable-next-line no-template-curly-in-string
+      updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
+
+      break;
+    }
+    case '依次审批': {
+      changeLoopCharacteristicsType('SequentialMultiInstance');
+      updateLoopCardinality('1');
+      // eslint-disable-next-line no-template-curly-in-string
+      updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
+
+      break;
+    }
+    case '或签': {
+      changeLoopCharacteristicsType('ParallelMultiInstance');
+      // eslint-disable-next-line no-template-curly-in-string
+      updateLoopCondition('${ nrOfCompletedInstances > 0 }');
+
+      break;
+    }
+    // No default
   }
 };
 
 /**
  * -----新版本多实例-----
  */
-const approveMethod = ref();
-const approveRatio = ref(100);
-const otherExtensions = ref();
-const getElementLoopNew = () => {
+const approveMethod = ref<ApproveMethodType | undefined>();
+const approveRatio = ref<number>(100);
+const otherExtensions = ref<any[]>([]);
+const getElementLoopNew = (): void => {
   if (props.type === 'UserTask') {
     const extensionElements =
       bpmnElement.value.businessObject?.extensionElements ??
       bpmnInstances().moddle.create('bpmn:ExtensionElements', { values: [] });
-    approveMethod.value = extensionElements.values.filter(
-      (ex) => ex.$type === `${prefix}:ApproveMethod`,
-    )?.[0]?.value;
+    approveMethod.value = extensionElements.values.find(
+      (ex: any) => ex.$type === `${prefix}:ApproveMethod`,
+    )?.value;
 
     otherExtensions.value =
       extensionElements.values.filter(
-        (ex) => ex.$type !== `${prefix}:ApproveMethod`,
+        (ex: any) => ex.$type !== `${prefix}:ApproveMethod`,
       ) ?? [];
 
     if (!approveMethod.value) {
@@ -366,14 +294,14 @@ const getElementLoopNew = () => {
     }
   }
 };
-const onApproveMethodChange = () => {
+const onApproveMethodChange = (): void => {
   approveRatio.value = 100;
   updateLoopCharacteristics();
 };
-const onApproveRatioChange = () => {
+const onApproveRatioChange = (): void => {
   updateLoopCharacteristics();
 };
-const updateLoopCharacteristics = () => {
+const updateLoopCharacteristics = (): void => {
   // 根据ApproveMethod生成multiInstanceLoopCharacteristics节点
   if (approveMethod.value === ApproveMethodType.RANDOM_SELECT_ONE_APPROVE) {
     bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
@@ -383,29 +311,32 @@ const updateLoopCharacteristics = () => {
     if (approveMethod.value === ApproveMethodType.APPROVE_BY_RATIO) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
+        // eslint-disable-next-line no-template-curly-in-string
         { isSequential: false, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.completionCondition =
         bpmnInstances().moddle.create('bpmn:FormalExpression', {
-          body:
-            '${ nrOfCompletedInstances/nrOfInstances >= ' +
-            approveRatio.value / 100 +
-            '}',
+          body: `\${ nrOfCompletedInstances/nrOfInstances >= ${
+            approveRatio.value / 100
+          }}`,
         });
     }
     if (approveMethod.value === ApproveMethodType.ANY_APPROVE) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
+        // eslint-disable-next-line no-template-curly-in-string
         { isSequential: false, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.completionCondition =
         bpmnInstances().moddle.create('bpmn:FormalExpression', {
+          // eslint-disable-next-line no-template-curly-in-string
           body: '${ nrOfCompletedInstances > 0 }',
         });
     }
     if (approveMethod.value === ApproveMethodType.SEQUENTIAL_APPROVE) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
+        // eslint-disable-next-line no-template-curly-in-string
         { isSequential: true, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.loopCardinality = bpmnInstances().moddle.create(
@@ -416,6 +347,7 @@ const updateLoopCharacteristics = () => {
       );
       multiLoopInstance.value.completionCondition =
         bpmnInstances().moddle.create('bpmn:FormalExpression', {
+          // eslint-disable-next-line no-template-curly-in-string
           body: '${ nrOfCompletedInstances >= nrOfInstances }',
         });
     }
@@ -457,3 +389,138 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div class="panel-tab__content">
+    <RadioGroup
+      v-if="type === 'UserTask'"
+      v-model:value="approveMethod"
+      @change="onApproveMethodChange"
+    >
+      <div class="flex-col">
+        <div v-for="(item, index) in APPROVE_METHODS" :key="index">
+          <Radio :value="item.value">
+            {{ item.label }}
+          </Radio>
+          <FormItem prop="approveRatio">
+            <InputNumber
+              v-model:value="approveRatio"
+              :min="10"
+              :max="100"
+              :step="10"
+              size="small"
+              v-if="
+                item.value === ApproveMethodType.APPROVE_BY_RATIO &&
+                approveMethod === ApproveMethodType.APPROVE_BY_RATIO
+              "
+              @change="onApproveRatioChange"
+            />
+          </FormItem>
+        </div>
+      </div>
+    </RadioGroup>
+    <div v-else>除了UserTask以外节点的多实例待实现</div>
+    <!-- 与Simple设计器配置合并，保留以前的代码 -->
+    <Form :label-col="{ span: 6 }" style="display: none">
+      <FormItem label="快捷配置">
+        <Button size="small" @click="() => changeConfig('依次审批')">
+          依次审批
+        </Button>
+        <Button size="small" @click="() => changeConfig('会签')">会签</Button>
+        <Button size="small" @click="() => changeConfig('或签')">或签</Button>
+      </FormItem>
+      <FormItem label="会签类型">
+        <Select
+          v-model:value="loopCharacteristics"
+          @change="changeLoopCharacteristicsType"
+        >
+          <Select.Option value="ParallelMultiInstance">
+            并行多重事件
+          </Select.Option>
+          <Select.Option value="SequentialMultiInstance">
+            时序多重事件
+          </Select.Option>
+          <Select.Option value="Null">无</Select.Option>
+        </Select>
+      </FormItem>
+      <template
+        v-if="
+          loopCharacteristics === 'ParallelMultiInstance' ||
+          loopCharacteristics === 'SequentialMultiInstance'
+        "
+      >
+        <FormItem label="循环数量" key="loopCardinality">
+          <Input
+            v-model:value="loopInstanceForm.loopCardinality"
+            allow-clear
+            @change="
+              () =>
+                updateLoopCardinality(loopInstanceForm.loopCardinality || '')
+            "
+          />
+        </FormItem>
+        <FormItem label="集合" key="collection" v-show="false">
+          <Input
+            v-model:value="loopInstanceForm.collection"
+            allow-clear
+            @change="() => updateLoopBase()"
+          />
+        </FormItem>
+        <!-- add by 芋艿：由于「元素变量」暂时用不到，所以这里 display 为 none -->
+        <FormItem label="元素变量" key="elementVariable" style="display: none">
+          <Input
+            v-model:value="loopInstanceForm.elementVariable"
+            allow-clear
+            @change="() => updateLoopBase()"
+          />
+        </FormItem>
+        <FormItem label="完成条件" key="completionCondition">
+          <Input
+            v-model:value="loopInstanceForm.completionCondition"
+            allow-clear
+            @change="
+              () =>
+                updateLoopCondition(loopInstanceForm.completionCondition || '')
+            "
+          />
+        </FormItem>
+        <!-- add by 芋艿：由于「异步状态」暂时用不到，所以这里 display 为 none -->
+        <FormItem label="异步状态" key="async" style="display: none">
+          <Checkbox
+            v-model:checked="loopInstanceForm.asyncBefore"
+            @change="() => updateLoopAsync('asyncBefore')"
+          >
+            异步前
+          </Checkbox>
+          <Checkbox
+            v-model:checked="loopInstanceForm.asyncAfter"
+            @change="() => updateLoopAsync('asyncAfter')"
+          >
+            异步后
+          </Checkbox>
+          <Checkbox
+            v-model:checked="loopInstanceForm.exclusive"
+            v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
+            @change="() => updateLoopAsync('exclusive')"
+          >
+            排除
+          </Checkbox>
+        </FormItem>
+        <FormItem
+          label="重试周期"
+          prop="timeCycle"
+          v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
+          key="timeCycle"
+        >
+          <Input
+            v-model:value="loopInstanceForm.timeCycle"
+            allow-clear
+            @change="
+              () => updateLoopTimeCycle(loopInstanceForm.timeCycle || '')
+            "
+          />
+        </FormItem>
+      </template>
+    </Form>
+  </div>
+</template>
