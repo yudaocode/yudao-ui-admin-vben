@@ -15,6 +15,7 @@ export namespace InfraJobApi {
     retryInterval: number;
     monitorTimeout: number;
     createTime?: Date;
+    nextTimes?: Date[];
   }
 }
 

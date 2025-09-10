@@ -228,16 +228,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'nextTimes',
       label: '后续执行时间',
-      content: (data) => {
-        if (!data?.nextTimes) {
-          return '无后续执行时间';
-        }
-        if (data.nextTimes.length === 0) {
+      content: (data: InfraJobApi.Job) => {
+        if (!data?.nextTimes || data.nextTimes.length === 0) {
           return '无后续执行时间';
         }
         return h(Timeline, {}, () =>
-          data.nextTimes.map((time: any) =>
-            h(Timeline.Item, {}, () => formatDateTime(time)?.toString()),
+          data.nextTimes?.map((time: Date) =>
+            h(Timeline.Item, {}, () => formatDateTime(time)),
           ),
         );
       },

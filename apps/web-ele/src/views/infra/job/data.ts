@@ -9,6 +9,8 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
+import { ElTimeline, ElTimelineItem } from 'element-plus';
+
 import { DictTag } from '#/components/dict-tag';
 
 /** 新增/修改的表单 */
@@ -224,6 +226,20 @@ export function useDetailSchema(): DescriptionItemSchema[] {
         return data?.monitorTimeout && data.monitorTimeout > 0
           ? `${data.monitorTimeout} 毫秒`
           : '未开启';
+      },
+    },
+    {
+      field: 'nextTimes',
+      label: '后续执行时间',
+      content: (data: InfraJobApi.Job) => {
+        if (!data?.nextTimes || data.nextTimes.length === 0) {
+          return '无后续执行时间';
+        }
+        return h(ElTimeline, {}, () =>
+          data.nextTimes?.map((time: Date) =>
+            h(ElTimelineItem, {}, () => formatDateTime(time)),
+          ),
+        );
       },
     },
   ];
