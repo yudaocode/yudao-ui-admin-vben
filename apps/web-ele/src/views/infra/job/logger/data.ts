@@ -1,11 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraJobLogApi } from '#/api/infra/job-log';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import dayjs from 'dayjs';
+
+import { DictTag } from '#/components/dict-tag';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -118,6 +124,63 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'jobId',
+      label: '任务编号',
+    },
+    {
+      field: 'handlerName',
+      label: '处理器的名字',
+    },
+    {
+      field: 'handlerParam',
+      label: '处理器的参数',
+    },
+    {
+      field: 'executeIndex',
+      label: '第几次执行',
+    },
+    {
+      field: 'beginTime',
+      label: '执行时间',
+      content: (data: InfraJobLogApi.JobLog) => {
+        if (data?.beginTime && data?.endTime) {
+          return `${formatDateTime(data.beginTime)} ~ ${formatDateTime(data.endTime)}`;
+        }
+        return '';
+      },
+    },
+    {
+      field: 'duration',
+      label: '执行时长',
+      content: (data: InfraJobLogApi.JobLog) => {
+        return data?.duration ? `${data.duration} 毫秒` : '';
+      },
+    },
+    {
+      field: 'status',
+      label: '任务状态',
+      content: (data: InfraJobLogApi.JobLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_JOB_LOG_STATUS,
+          value: data?.status,
+        });
+      },
+    },
+    {
+      field: 'result',
+      label: '执行结果',
     },
   ];
 }

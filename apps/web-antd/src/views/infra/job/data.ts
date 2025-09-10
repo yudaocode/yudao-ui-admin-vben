@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraJobApi } from '#/api/infra/job';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h, markRaw } from 'vue';
@@ -173,7 +174,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 详情的配置 */
+/** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     {
@@ -187,11 +188,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'status',
       label: '任务状态',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: InfraJobApi.Job) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_JOB_STATUS,
           value: data?.status,
-        }),
+        });
+      },
     },
     {
       field: 'handlerName',
@@ -203,23 +205,25 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'cronExpression',
-      label: 'CRON 表达式',
+      label: 'Cron 表达式',
     },
     {
       field: 'retryCount',
       label: '重试次数',
     },
     {
-      field: 'retryInterval',
       label: '重试间隔',
+      content: (data: InfraJobApi.Job) => {
+        return data?.retryInterval ? `${data.retryInterval} 毫秒` : '无间隔';
+      },
     },
     {
-      field: 'monitorTimeout',
       label: '监控超时时间',
-      content: (data) =>
-        data?.monitorTimeout && data.monitorTimeout > 0
+      content: (data: InfraJobApi.Job) => {
+        return data?.monitorTimeout && data.monitorTimeout > 0
           ? `${data.monitorTimeout} 毫秒`
-          : '未开启',
+          : '未开启';
+      },
     },
     {
       field: 'nextTimes',

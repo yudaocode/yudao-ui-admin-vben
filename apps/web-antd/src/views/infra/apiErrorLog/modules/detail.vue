@@ -11,6 +11,15 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<InfraApiErrorLogApi.ApiErrorLog>();
 
+const [Descriptions] = useDescription({
+  componentProps: {
+    bordered: true,
+    column: 1,
+    class: 'mx-4',
+  },
+  schema: useDetailSchema(),
+});
+
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
@@ -30,24 +39,15 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-const [Description] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 1,
-    class: 'mx-4',
-  },
-  schema: useDetailSchema(),
-});
 </script>
 
 <template>
   <Modal
-    title="API错误日志详情"
+    title="API 错误日志详情"
     class="w-1/2"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Description :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

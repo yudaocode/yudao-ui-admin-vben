@@ -1,8 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraJobApi } from '#/api/infra/job';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
+
+import { DictTag } from '#/components/dict-tag';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -164,6 +171,60 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 240,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '任务编号',
+    },
+    {
+      field: 'name',
+      label: '任务名称',
+    },
+    {
+      field: 'status',
+      label: '任务状态',
+      content: (data: InfraJobApi.Job) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_JOB_STATUS,
+          value: data?.status,
+        });
+      },
+    },
+    {
+      field: 'handlerName',
+      label: '处理器的名字',
+    },
+    {
+      field: 'handlerParam',
+      label: '处理器的参数',
+    },
+    {
+      field: 'cronExpression',
+      label: 'Cron 表达式',
+    },
+    {
+      field: 'retryCount',
+      label: '重试次数',
+    },
+    {
+      label: '重试间隔',
+      content: (data: InfraJobApi.Job) => {
+        return data?.retryInterval ? `${data.retryInterval} 毫秒` : '无间隔';
+      },
+    },
+    {
+      label: '监控超时时间',
+      content: (data: InfraJobApi.Job) => {
+        return data?.monitorTimeout && data.monitorTimeout > 0
+          ? `${data.monitorTimeout} 毫秒`
+          : '未开启';
+      },
     },
   ];
 }

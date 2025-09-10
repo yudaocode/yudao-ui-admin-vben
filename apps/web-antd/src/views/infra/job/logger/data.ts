@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraJobLogApi } from '#/api/infra/job-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -127,7 +128,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 详情的配置 */
+/** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     {
@@ -153,23 +154,29 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'beginTime',
       label: '执行时间',
-    },
-    {
-      field: 'endTime',
-      label: '结束时间',
+      content: (data: InfraJobLogApi.JobLog) => {
+        if (data?.beginTime && data?.endTime) {
+          return `${formatDateTime(data.beginTime)} ~ ${formatDateTime(data.endTime)}`;
+        }
+        return '';
+      },
     },
     {
       field: 'duration',
       label: '执行时长',
+      content: (data: InfraJobLogApi.JobLog) => {
+        return data?.duration ? `${data.duration} 毫秒` : '';
+      },
     },
     {
       field: 'status',
       label: '任务状态',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: InfraJobLogApi.JobLog) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_JOB_LOG_STATUS,
           value: data?.status,
-        }),
+        });
+      },
     },
     {
       field: 'result',

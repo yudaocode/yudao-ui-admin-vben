@@ -1,24 +1,30 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { InfraJobApi } from '#/api/infra/job';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  ElDescriptions,
-  ElDescriptionsItem,
-  ElTimeline,
-  ElTimelineItem,
-} from 'element-plus';
-
 import { getJob, getJobNextTimes } from '#/api/infra/job';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
+
+import { useDetailSchema } from '../data';
 
 const formData = ref<InfraJobApi.Job>(); // 任务详情
 const nextTimes = ref<Date[]>([]); // 下一次执行时间
+
+const [Descriptions] = useDescription({
+  componentProps: {
+    border: true,
+    column: 1,
+    direction: 'horizontal',
+    title: '',
+    extra: '',
+    labelWidth: 140,
+  },
+  schema: useDetailSchema(),
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -50,57 +56,20 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions
-      :column="1"
-      border
-      size="default"
-      class="mx-4"
-      :label-width="140"
-    >
-      <ElDescriptionsItem label="任务编号">
-        {{ formData?.id }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="任务名称">
-        {{ formData?.name }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="任务状态">
-        <DictTag :type="DICT_TYPE.INFRA_JOB_STATUS" :value="formData?.status" />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="处理器的名字">
-        {{ formData?.handlerName }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="处理器的参数">
-        {{ formData?.handlerParam }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="Cron 表达式">
-        {{ formData?.cronExpression }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="重试次数">
-        {{ formData?.retryCount }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="重试间隔">
-        {{
-          formData?.retryInterval ? `${formData.retryInterval} 毫秒` : '无间隔'
-        }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="监控超时时间">
-        {{
-          formData?.monitorTimeout && formData.monitorTimeout > 0
-            ? `${formData.monitorTimeout} 毫秒`
-            : '未开启'
-        }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="后续执行时间">
-        <ElTimeline class="h-[180px]">
-          <ElTimelineItem
-            v-for="(nextTime, index) in nextTimes"
-            :key="index"
-            type="primary"
-          >
-            第 {{ index + 1 }} 次：{{ formatDateTime(nextTime.toString()) }}
-          </ElTimelineItem>
-        </ElTimeline>
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Descriptions :data="formData" />
+
+    <!-- 后续执行时间 -->
+    <div v-if="nextTimes.length > 0" class="mt-4">
+      <h4 class="mb-2 text-lg font-medium">后续执行时间</h4>
+      <div class="max-h-[200px] overflow-y-auto rounded border p-2">
+        <div
+          v-for="(nextTime, index) in nextTimes"
+          :key="index"
+          class="py-1 text-sm text-gray-600"
+        >
+          第 {{ index + 1 }} 次：{{ formatDateTime(nextTime.toString()) }}
+        </div>
+      </div>
+    </div>
   </Modal>
 </template>
