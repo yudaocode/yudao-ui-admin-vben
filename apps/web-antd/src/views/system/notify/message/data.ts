@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -165,7 +166,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userType',
       label: '用户类型',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.USER_TYPE,
           value: data?.userType,
@@ -195,7 +196,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateParams',
       label: '模版参数',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         try {
           return JSON.stringify(data?.templateParams);
         } catch {
@@ -206,7 +207,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateType',
       label: '模版类型',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           value: data?.templateType,
@@ -216,7 +217,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.INFRA_BOOLEAN_STRING,
           value: data?.readStatus,
@@ -226,12 +227,16 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readTime',
       label: '阅读时间',
-      content: (data) => formatDateTime(data?.readTime || '') as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
     },
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
   ];
 }

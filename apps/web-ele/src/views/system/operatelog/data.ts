@@ -1,5 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -118,6 +122,74 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'traceId',
+      label: '链路追踪',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.traceId,
+    },
+    {
+      field: 'userId',
+      label: '操作人编号',
+    },
+    {
+      field: 'userName',
+      label: '操作人名字',
+    },
+    {
+      field: 'userIp',
+      label: '操作人 IP',
+    },
+    {
+      field: 'userAgent',
+      label: '操作人 UA',
+    },
+    {
+      field: 'type',
+      label: '操作模块',
+    },
+    {
+      field: 'subType',
+      label: '操作名',
+    },
+    {
+      field: 'action',
+      label: '操作内容',
+    },
+    {
+      field: 'extra',
+      label: '操作拓展参数',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.extra,
+    },
+    {
+      label: '请求 URL',
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
+      },
+    },
+    {
+      field: 'createTime',
+      label: '操作时间',
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
+    },
+    {
+      field: 'bizId',
+      label: '业务编号',
     },
   ];
 }

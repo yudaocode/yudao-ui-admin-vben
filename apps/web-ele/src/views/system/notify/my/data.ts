@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -102,30 +103,36 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'templateType',
       label: '消息类型',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           value: data?.templateType,
-        }),
+        });
+      },
     },
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_BOOLEAN_STRING,
           value: data?.readStatus,
-        }),
+        });
+      },
     },
     {
       field: 'readTime',
       label: '阅读时间',
-      content: (data) => formatDateTime(data?.readTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
     },
     {
       field: 'templateContent',

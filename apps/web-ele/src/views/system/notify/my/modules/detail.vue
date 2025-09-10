@@ -1,17 +1,27 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
 
-import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
+import { useDescription } from '#/components/description';
 
-import { DictTag } from '#/components/dict-tag';
+import { useDetailSchema } from '../data';
 
 const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
+
+const [Descriptions] = useDescription({
+  componentProps: {
+    border: true,
+    column: 1,
+    direction: 'horizontal',
+    title: '',
+    extra: '',
+    labelWidth: 140,
+  },
+  schema: useDetailSchema(),
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -41,31 +51,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions border :column="1" size="default" class="mx-4">
-      <ElDescriptionsItem label="发送人">
-        {{ formData?.templateNickname }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="发送时间">
-        {{ formatDateTime(formData?.createTime || '') }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="消息类型">
-        <DictTag
-          :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE"
-          :value="formData?.templateType"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="是否已读">
-        <DictTag
-          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
-          :value="formData?.readStatus"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="阅读时间">
-        {{ formatDateTime(formData?.readTime || '') }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="消息内容">
-        {{ formData?.templateContent }}
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Descriptions :data="formData" />
   </Modal>
 </template>

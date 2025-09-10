@@ -1,18 +1,29 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-
-import { ElDescriptions, ElDescriptionsItem, ElImage } from 'element-plus';
 
 import { getSocialUser } from '#/api/system/social/user';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
 import { $t } from '#/locales';
 
+import { useDetailSchema } from '../data';
+
 const formData = ref<SystemSocialUserApi.SocialUser>();
+
+const [Descriptions] = useDescription({
+  componentProps: {
+    border: true,
+    column: 1,
+    direction: 'horizontal',
+    title: '',
+    extra: '',
+    labelWidth: 185,
+  },
+  schema: useDetailSchema(),
+});
 
 const [Modal, modalApi] = useVbenModal({
   title: $t('ui.actionTitle.detail'),
@@ -43,41 +54,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions
-      :column="1"
-      size="default"
-      border
-      class="mx-4"
-      :label-width="185"
-    >
-      <ElDescriptionsItem label="社交平台">
-        <DictTag :type="DICT_TYPE.SYSTEM_SOCIAL_TYPE" :value="formData?.type" />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="用户昵称">
-        {{ formData?.nickname }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="用户头像">
-        <ElImage
-          :src="formData?.avatar"
-          :preview-src-list="formData?.avatar ? [formData.avatar] : []"
-          style="width: 30px; height: 30px"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="社交 token">
-        {{ formData?.token }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="原始 Token 数据">
-        {{ formData?.rawTokenInfo }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="原始 User 数据">
-        {{ formData?.rawUserInfo }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="最后一次的认证 code">
-        {{ formData?.code }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="最后一次的认证 state">
-        {{ formData?.state }}
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Descriptions :data="formData" />
   </Modal>
 </template>

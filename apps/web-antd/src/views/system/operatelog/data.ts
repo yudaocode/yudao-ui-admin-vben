@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { formatDateTime } from '@vben/utils';
@@ -135,7 +136,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'traceId',
       label: '链路追踪',
-      content: (data) => data?.traceId || '',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.traceId,
     },
     {
       field: 'userId',
@@ -168,20 +169,23 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'extra',
       label: '操作拓展参数',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.extra,
     },
     {
-      field: 'requestUrl',
       label: '请求 URL',
-      content: (data) => {
-        const method = data?.requestMethod || '';
-        const url = data?.requestUrl || '';
-        return `${method} ${url}`.trim();
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
       },
     },
     {
       field: 'createTime',
       label: '操作时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'bizId',
