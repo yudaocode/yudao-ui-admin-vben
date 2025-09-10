@@ -1,5 +1,5 @@
 // 初始化表单数据
-export function initListenerForm(listener) {
+export function initListenerForm(listener: any) {
   let self = {
     ...listener,
   };
@@ -17,33 +17,33 @@ export function initListenerForm(listener) {
   ) {
     let k = '';
     for (const key in listener.eventDefinitions[0]) {
-      console.log(listener.eventDefinitions, key);
+      // console.log(listener.eventDefinitions, key);
       if (key.includes('time')) {
         k = key;
         self.eventDefinitionType = key.replace('time', '').toLowerCase();
       }
     }
-    console.log(k);
+    // console.log(k);
     self.eventTimeDefinitions = listener.eventDefinitions[0][k].body;
   }
   return self;
 }
 
-export function initListenerType(listener) {
+export function initListenerType(listener: any) {
   let listenerType;
   if (listener.class) listenerType = 'classListener';
   if (listener.expression) listenerType = 'expressionListener';
   if (listener.delegateExpression) listenerType = 'delegateExpressionListener';
   if (listener.script) listenerType = 'scriptListener';
   return {
-    ...JSON.parse(JSON.stringify(listener)),
+    ...structuredClone(listener),
     ...listener.script,
     listenerType,
   };
 }
 
 /** 将 ProcessListenerDO 转换成 initListenerForm 想同的 Form 对象 */
-export function initListenerForm2(processListener) {
+export function initListenerForm2(processListener: any) {
   switch (processListener.valueType) {
     case 'class': {
       return {

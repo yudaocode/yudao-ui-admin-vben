@@ -55,3 +55,9 @@ export const AlignLeftOutlined = createIconifyIcon(
 export const WarningOutlined = createIconifyIcon('ant-design:warning-outlined');
 
 export const RiDingding = createIconifyIcon('ri:dingding-fill');
+
+export const MenuOutlined = createIconifyIcon('ant-design:menu-outlined');
+
+export const PlusOutlined = createIconifyIcon('ant-design:plus-outlined');
+
+export const SelectOutlined = createIconifyIcon('ant-design:select-outlined');
