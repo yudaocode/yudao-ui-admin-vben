@@ -18,7 +18,7 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     class: 'mx-4',
@@ -85,12 +85,12 @@ const [Description] = useDescription({
         <Avatar :size="140" shape="square" :src="user.avatar" />
       </Col>
       <Col :span="20">
-        <Description :column="2" :data="user" />
+        <Descriptions :column="2" :data="user" />
       </Col>
     </Row>
     <template v-else-if="mode === 'kefu'">
       <Avatar :size="140" shape="square" :src="user.avatar" />
-      <Description :column="1" :data="user" />
+      <Descriptions :column="1" :data="user" />
     </template>
   </Card>
 </template>

@@ -29,8 +29,8 @@ const Description = defineComponent({
   },
 
   setup(props: DescriptionsOptions) {
-    // TODO @puhui999：每个 field 的 slot 的考虑
-    // TODO @puhui999：from 5.0：extra: () => getSlot(slots, 'extra')
+    // TODO @xingyu：每个 field 的 slot 的考虑
+    // TODO @xingyu：from 5.0：extra: () => getSlot(slots, 'extra')
     /** 过滤掉不需要展示的 */
     const shouldShowItem = (item: DescriptionItemSchema) => {
       if (item.hidden === undefined) return true;
@@ -75,6 +75,6 @@ const Description = defineComponent({
   },
 });
 
-// TODO @puhui999：from 5.0：emits: ['register'] 事件
+// TODO @xingyu：from 5.0：emits: ['register'] 事件
 export default Description;
 </script>

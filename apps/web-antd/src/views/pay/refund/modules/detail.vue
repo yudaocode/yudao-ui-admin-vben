@@ -14,7 +14,7 @@ import { useBaseDetailSchema, useChannelDetailSchema } from '../data';
 
 const formData = ref<PayRefundApi.Refund>();
 
-const [BaseDescription] = useDescription({
+const [BaseDescriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 2,
@@ -23,7 +23,7 @@ const [BaseDescription] = useDescription({
   schema: useBaseDetailSchema(),
 });
 
-const [ChannelDescription] = useDescription({
+const [ChannelDescriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 2,
@@ -60,8 +60,8 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <BaseDescription :data="formData" />
+    <BaseDescriptions :data="formData" />
     <Divider />
-    <ChannelDescription :data="formData" />
+    <ChannelDescriptions :data="formData" />
   </Modal>
 </template>
