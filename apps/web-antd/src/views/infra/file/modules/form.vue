@@ -50,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
 
 /** 上传前 */
 function beforeUpload(file: FileType) {
-  // TODO @puhui999：研究下，看看怎么类似 antd 可以前端直传哈；通过配置切换；
   formApi.setFieldValue('file', file);
   return false;
 }
@@ -62,7 +61,6 @@ function beforeUpload(file: FileType) {
       <template #file>
         <div class="w-full">
           <!-- 上传区域 -->
-          <!-- TODO @puhui999：1）上传图片，用不了；2）底部有点遮挡 -->
           <Upload.Dragger
             name="file"
             :max-count="1"

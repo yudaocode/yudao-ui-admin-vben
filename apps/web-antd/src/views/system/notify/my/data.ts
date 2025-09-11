@@ -1,13 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -18,8 +21,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        allowClear: true,
         placeholder: '请选择是否已读',
+        allowClear: true,
       },
     },
     {
@@ -27,8 +30,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
-        allowClear: true,
         ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];
@@ -45,15 +48,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateNickname',
       title: '发送人',
+      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '发送时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'templateType',
       title: '类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
@@ -62,10 +68,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateContent',
       title: '消息内容',
+      minWidth: 300,
     },
     {
       field: 'readStatus',
       title: '是否已读',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -74,6 +82,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readTime',
       title: '阅读时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -94,30 +103,36 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'templateType',
       label: '消息类型',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           value: data?.templateType,
-        }),
+        });
+      },
     },
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_BOOLEAN_STRING,
           value: data?.readStatus,
-        }),
+        });
+      },
     },
     {
       field: 'readTime',
       label: '阅读时间',
-      content: (data) => formatDateTime(data?.readTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
     },
     {
       field: 'templateContent',

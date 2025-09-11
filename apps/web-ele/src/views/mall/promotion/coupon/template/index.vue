@@ -5,6 +5,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 
 import { ElLoading, ElMessage, ElSwitch } from 'element-plus';
@@ -15,7 +16,6 @@ import {
   getCouponTemplatePage,
   updateCouponTemplateStatus,
 } from '#/api/mall/promotion/coupon/couponTemplate';
-import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -46,7 +46,6 @@ function handleCreate() {
 async function handleDelete(row: MallCouponTemplateApi.CouponTemplate) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCouponTemplate(row.id as number);
@@ -63,7 +62,7 @@ function handleRowCheckboxChange({
 }: {
   records: MallCouponTemplateApi.CouponTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 优惠券模板状态修改 */
@@ -71,7 +70,6 @@ async function handleStatusChange(row: MallCouponTemplateApi.CouponTemplate) {
   const text = row.status === CommonStatusEnum.ENABLE ? '启用' : '停用';
   const loadingInstance = ElLoading.service({
     text: `正在${text}优惠券模板...`,
-    fullscreen: true,
   });
   try {
     await updateCouponTemplateStatus(row.id as number, row.status as 0 | 1);

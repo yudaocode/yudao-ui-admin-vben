@@ -73,5 +73,6 @@ export function getRangePickerDefaultProps() {
     },
     format: 'YYYY-MM-DD HH:mm:ss',
     valueFormat: 'YYYY-MM-DD HH:mm:ss',
+    defaultTime: [new Date('1 00:00:00'), new Date('1 23:59:59')],
   };
 }

@@ -53,6 +53,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'name',
+      isHover: true,
     },
     toolbarConfig: {
       enabled: false,
@@ -96,7 +97,6 @@ const [Modal, modalApi] = useVbenModal({
     // 2. 提交请求
     const loadingInstance = ElLoading.service({
       text: '导入中...',
-      fullscreen: true,
     });
     try {
       await createCodegenList(formData);

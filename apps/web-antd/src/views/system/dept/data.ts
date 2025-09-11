@@ -2,12 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -92,7 +93,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入邮箱',
       },
-      rules: z.string().email('请输入正确的邮箱地址').optional(),
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
     },
     {
       fieldName: 'status',
@@ -117,6 +118,7 @@ export function useGridColumns(
     {
       field: 'name',
       title: '部门名称',
+      minWidth: 150,
       align: 'left',
       fixed: 'left',
       treeNode: true,
@@ -124,15 +126,18 @@ export function useGridColumns(
     {
       field: 'leaderUserId',
       title: '负责人',
+      minWidth: 150,
       formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
     },
     {
       field: 'sort',
       title: '显示顺序',
+      minWidth: 100,
     },
     {
       field: 'status',
       title: '部门状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -141,6 +146,7 @@ export function useGridColumns(
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

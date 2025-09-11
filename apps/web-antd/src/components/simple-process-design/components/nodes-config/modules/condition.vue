@@ -5,6 +5,7 @@ import type { Ref } from 'vue';
 
 import { computed, inject, reactive, ref } from 'vue';
 
+import { BpmModelFormType } from '@vben/constants';
 import { IconifyIcon, Plus, Trash2 } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
@@ -24,8 +25,6 @@ import {
   Textarea,
   Tooltip,
 } from 'ant-design-vue';
-
-import { BpmModelFormType } from '#/utils';
 
 import {
   COMPARISON_OPERATORS,

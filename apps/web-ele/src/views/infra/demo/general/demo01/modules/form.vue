@@ -6,6 +6,8 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 import { computed, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   ElDatePicker,
@@ -25,7 +27,6 @@ import {
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { ImageUpload } from '#/components/upload';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 
@@ -119,8 +120,11 @@ const [Modal, modalApi] = useVbenModal({
       <ElFormItem label="性别" prop="sex">
         <ElRadioGroup v-model="formData.sex">
           <ElRadio
-            v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
-            :key="dict.value"
+            v-for="(dict, index) in getDictOptions(
+              DICT_TYPE.SYSTEM_USER_SEX,
+              'number',
+            )"
+            :key="index"
             :label="dict.value"
           >
             {{ dict.label }}

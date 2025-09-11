@@ -41,15 +41,13 @@ function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'level',
       label: '用户类型',
-      component: 'RadioGroup',
+      component: 'Select',
       componentProps: {
         options: [
           { label: '全部', value: undefined },
           { label: '一级推广人', value: '1' },
           { label: '二级推广人', value: '2' },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
     },
     {
@@ -58,7 +56,7 @@ function useFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

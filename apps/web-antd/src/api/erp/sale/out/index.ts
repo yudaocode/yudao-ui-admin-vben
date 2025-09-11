@@ -2,17 +2,45 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpSaleOutApi {
+export namespace ErpSaleOutApi {
   /** 销售出库信息 */
   export interface SaleOut {
     id?: number; // 销售出库编号
-    no: string; // 销售出库号
-    customerId: number; // 客户编号
-    outTime: Date; // 出库时间
-    totalCount: number; // 合计数量
-    totalPrice: number; // 合计金额，单位：元
-    status: number; // 状态
-    remark: string; // 备注
+    no?: string; // 销售出库号
+    customerId?: number; // 客户编号
+    saleUserId?: number; // 客户编号
+    outTime?: Date; // 出库时间
+    totalCount?: number; // 合计数量
+    totalPrice?: number; // 合计金额，单位：元
+    status?: number; // 状态
+    remark?: string; // 备注
+    discountPercent?: number; // 折扣百分比
+    discountPrice?: number; // 折扣金额
+    otherPrice?: number; // 其他费用
+    totalProductPrice?: number; // 合计商品金额
+    taxPrice?: number; // 合计税额
+    totalTaxPrice?: number; // 合计税额
+    fileUrl?: string; // 附件地址
+    items?: SaleOutItem[];
+  }
+  export interface SaleOutItem {
+    count?: number;
+    id?: number;
+    orderItemId?: number;
+    productBarCode?: string;
+    productId?: number;
+    productName: string;
+    productPrice: number;
+    productUnitId?: number;
+    productUnitName?: string;
+    totalProductPrice?: number;
+    remark: string;
+    stockCount?: number;
+    taxPercent?: number;
+    taxPrice?: number;
+    totalPrice?: number;
+    warehouseId?: number;
+    outCount?: number;
   }
 
   /** 销售出库分页查询参数 */

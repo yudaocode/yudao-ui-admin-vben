@@ -33,14 +33,14 @@ export function convertToUploadStatus(
   status: UploadResultStatus,
 ): UploadStatus {
   switch (status) {
-    case UploadResultStatus.SUCCESS: {
-      return 'success';
-    }
     case UploadResultStatus.ERROR: {
       return 'fail';
     }
     case UploadResultStatus.REMOVED: {
       return 'removed';
+    }
+    case UploadResultStatus.SUCCESS: {
+      return 'success';
     }
     case UploadResultStatus.UPLOADING: {
       return 'uploading';

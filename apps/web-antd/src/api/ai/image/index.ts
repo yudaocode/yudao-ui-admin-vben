@@ -12,6 +12,7 @@ export namespace AiImageApi {
   // AI 绘图
   export interface Image {
     id: number; // 编号
+    userId: number;
     platform: string; // 平台
     model: string; // 模型
     prompt: string; // 提示词

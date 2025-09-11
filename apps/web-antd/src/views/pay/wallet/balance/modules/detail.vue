@@ -30,7 +30,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 <template>
   <Modal
-    title="消息详情"
+    title="钱包交易记录"
     class="w-2/5"
     :show-cancel-button="false"
     :show-confirm-button="false"

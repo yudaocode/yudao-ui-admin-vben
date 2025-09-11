@@ -155,6 +155,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '商机名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入商机名称',
+        allowClear: true,
+      },
     },
   ];
 }

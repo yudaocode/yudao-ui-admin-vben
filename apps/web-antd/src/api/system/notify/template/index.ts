@@ -17,7 +17,7 @@ export namespace SystemNotifyTemplateApi {
   }
 
   /** 发送站内信请求 */
-  export interface NotifySendReq {
+  export interface NotifySendReqVO {
     userId: number;
     userType: number;
     templateCode: string;
@@ -74,6 +74,6 @@ export function exportNotifyTemplate(params: any) {
 }
 
 /** 发送站内信 */
-export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReq) {
+export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReqVO) {
   return requestClient.post('/system/notify-template/send-notify', data);
 }

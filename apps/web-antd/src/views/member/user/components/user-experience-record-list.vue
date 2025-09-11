@@ -4,11 +4,14 @@ import type { MemberExperienceRecordApi } from '#/api/member/experience-record';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getExperienceRecordPage } from '#/api/member/experience-record';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const props = defineProps<{
   userId: number;

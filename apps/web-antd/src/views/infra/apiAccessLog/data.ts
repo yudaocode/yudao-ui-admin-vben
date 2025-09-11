@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -77,14 +80,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 100,
     },
     {
       field: 'userId',
       title: '用户编号',
+      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -93,28 +99,34 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'applicationName',
       title: '应用名',
+      minWidth: 150,
     },
     {
       field: 'requestMethod',
       title: '请求方法',
+      minWidth: 80,
     },
     {
       field: 'requestUrl',
       title: '请求地址',
+      minWidth: 300,
     },
     {
       field: 'beginTime',
       title: '请求时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'duration',
       title: '执行时长',
+      minWidth: 120,
       formatter: ({ cellValue }) => `${cellValue} ms`,
     },
     {
       field: 'resultCode',
       title: '操作结果',
+      minWidth: 150,
       formatter: ({ row }) => {
         return row.resultCode === 0 ? '成功' : `失败(${row.resultMsg})`;
       },
@@ -122,14 +134,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'operateModule',
       title: '操作模块',
+      minWidth: 150,
     },
     {
       field: 'operateName',
       title: '操作名',
+      minWidth: 220,
     },
     {
       field: 'operateType',
       title: '操作类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_OPERATE_TYPE },
@@ -166,7 +181,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userType',
       label: '用户类型',
-      content: (data) => {
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
         return h(DictTag, {
           type: DICT_TYPE.USER_TYPE,
           value: data.userType,
@@ -175,23 +190,25 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'userIp',
-      label: '用户IP',
+      label: '用户 IP',
     },
     {
       field: 'userAgent',
-      label: '用户UA',
+      label: '用户 UA',
     },
     {
-      field: 'requestMethod',
       label: '请求信息',
-      content: (data) => {
-        return `${data.requestMethod} ${data.requestUrl}`;
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
       },
     },
     {
       field: 'requestParams',
       label: '请求参数',
-      content: (data) => {
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
         if (data.requestParams) {
           return h(JsonViewer, {
             value: JSON.parse(data.requestParams),
@@ -206,23 +223,29 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       label: '请求结果',
     },
     {
-      field: 'beginTime',
       label: '请求时间',
-      content: (data) => {
-        return `${formatDateTime(data?.beginTime)} ~ ${formatDateTime(data?.endTime)}`;
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.beginTime && data?.endTime) {
+          return `${formatDateTime(data.beginTime)} ~ ${formatDateTime(data.endTime)}`;
+        }
+        return '';
       },
     },
     {
-      field: 'duration',
       label: '请求耗时',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        return data?.duration ? `${data.duration} ms` : '';
+      },
     },
     {
-      field: 'resultCode',
       label: '操作结果',
-      content: (data) => {
-        return data.resultCode === 0
-          ? '成功'
-          : `失败 | ${data.resultCode} | ${data.resultMsg}`;
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.resultCode === 0) {
+          return '正常';
+        } else if (data && data.resultCode > 0) {
+          return `失败 | ${data.resultCode} | ${data.resultMsg}`;
+        }
+        return '';
       },
     },
     {
@@ -236,11 +259,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'operateType',
       label: '操作类型',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_OPERATE_TYPE,
           value: data?.operateType,
-        }),
+        });
+      },
     },
   ];
 }

@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpStockCheckApi {
+export namespace ErpStockCheckApi {
   /** 库存盘点单信息 */
   export interface StockCheck {
     id?: number; // 盘点编号
@@ -12,6 +12,25 @@ namespace ErpStockCheckApi {
     totalPrice: number; // 合计金额，单位：元
     status: number; // 状态
     remark: string; // 备注
+    fileUrl?: string; // 附件
+    productNames?: string; // 产品信息
+    creatorName?: string; // 创建人
+    items?: StockCheckItem[]; // 盘点产品清单
+  }
+  export interface StockCheckItem {
+    id?: number; // 编号
+    warehouseId?: number; // 仓库编号
+    productId?: number; // 产品编号
+    productName?: string; // 产品名称
+    productUnitId?: number; // 产品单位编号
+    productUnitName?: string; // 产品单位名称
+    productBarCode?: string; // 产品条码
+    count?: number; // 盈亏数量
+    actualCount?: number; // 实际库存
+    productPrice?: number; // 产品单价
+    totalPrice?: number; // 总价
+    stockCount?: number; // 账面库存
+    remark?: string; // 备注
   }
 
   /** 库存盘点单分页查询参数 */

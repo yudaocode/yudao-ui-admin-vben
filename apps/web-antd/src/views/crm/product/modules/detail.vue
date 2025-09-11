@@ -30,7 +30,7 @@ const productId = ref(0);
 const product = ref<CrmProductApi.Product>({} as CrmProductApi.Product);
 const productLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 4,
@@ -73,7 +73,7 @@ onMounted(() => {
       </div>
     </template>
     <Card class="min-h-[10%]">
-      <Description :data="product" />
+      <Descriptions :data="product" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>

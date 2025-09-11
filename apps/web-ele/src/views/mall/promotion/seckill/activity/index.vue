@@ -55,7 +55,6 @@ async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
 async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSeckillActivity(row.id as number);

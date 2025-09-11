@@ -43,12 +43,12 @@ function handleEdit(row: MallCategoryApi.Category) {
 
 /** 查看商品操作 */
 const router = useRouter(); // 路由
-const handleViewSpu = (id: number) => {
+function handleViewSpu(id: number) {
   router.push({
     name: 'ProductSpu',
     query: { categoryId: id },
   });
-};
+}
 
 /** 删除分类 */
 async function handleDelete(row: MallCategoryApi.Category) {
@@ -165,8 +165,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['product:category:update'],
-              ifShow: row.parentId > 0,
-              onClick: handleViewSpu.bind(null, row),
+              ifShow: row.parentId !== undefined && row.parentId > 0,
+              onClick: handleViewSpu.bind(null, row.id!),
             },
             {
               label: $t('common.delete'),

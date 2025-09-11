@@ -1,17 +1,27 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
-import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
+import { useDescription } from '#/components/description';
 
-import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
+import { useDetailSchema } from '../data';
 
 const formData = ref<SystemLoginLogApi.LoginLog>();
+
+const [Descriptions] = useDescription({
+  componentProps: {
+    border: true,
+    column: 1,
+    direction: 'horizontal',
+    title: '',
+    extra: '',
+    labelWidth: 110,
+  },
+  schema: useDetailSchema(),
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -41,40 +51,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions
-      border
-      :column="1"
-      size="default"
-      class="mx-4"
-      :label-style="{ width: '110px' }"
-    >
-      <ElDescriptionsItem label="日志编号">
-        {{ formData?.id }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="操作类型">
-        <DictTag
-          :type="DICT_TYPE.SYSTEM_LOGIN_TYPE"
-          :value="formData?.logType"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="用户名称">
-        {{ formData?.username }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="登录地址">
-        {{ formData?.userIp }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="浏览器">
-        {{ formData?.userAgent }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="登录结果">
-        <DictTag
-          :type="DICT_TYPE.SYSTEM_LOGIN_RESULT"
-          :value="formData?.result"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="登录日期">
-        {{ formatDateTime(formData?.createTime || '') }}
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Descriptions :data="formData" />
   </Modal>
 </template>

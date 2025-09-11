@@ -2,12 +2,12 @@ import type { VbenFormSchema } from '@vben/common-ui';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
 import { LimitConfType } from '#/api/crm/customer/limitConfig';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {

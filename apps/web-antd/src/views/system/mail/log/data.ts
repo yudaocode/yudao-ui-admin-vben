@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemMailLogApi } from '#/api/system/mail/log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -81,22 +84,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'sendTime',
       title: '发送时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'userType',
       title: '接收用户',
-      width: 150,
+      minWidth: 150,
       slots: { default: 'userInfo' },
     },
     {
       field: 'toMails',
       title: '接收信息',
-      width: 300,
+      minWidth: 300,
       formatter: ({ row }) => {
         const lines: string[] = [];
         if (row.toMails && row.toMails.length > 0) {
@@ -114,18 +119,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateTitle',
       title: '邮件标题',
+      minWidth: 120,
     },
     {
       field: 'templateContent',
       title: '邮件内容',
+      minWidth: 300,
     },
     {
       field: 'fromMail',
       title: '发送邮箱',
+      minWidth: 120,
     },
     {
       field: 'sendStatus',
       title: '发送状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS },
@@ -134,6 +143,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateCode',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       title: '操作',
@@ -154,7 +164,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'fromMail',
@@ -163,7 +175,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userId',
       label: '接收用户',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         if (data?.userType && data?.userId) {
           return h('div', [
             h(DictTag, {
@@ -179,7 +191,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'toMails',
       label: '接收信息',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         const lines: string[] = [];
         if (data?.toMails && data.toMails.length > 0) {
           lines.push(`收件：${data.toMails.join('、')}`);
@@ -214,8 +226,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateContent',
       label: '邮件内容',
-      content: (data) => {
-        // 渲染HTML内容
+      span: 2,
+      content: (data: SystemMailLogApi.MailLog) => {
         return h('div', {
           innerHTML: data?.templateContent || '',
         });
@@ -224,7 +236,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendStatus',
       label: '发送状态',
-      content: (data) => {
+      content: (data: SystemMailLogApi.MailLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS,
           value: data?.sendStatus,
@@ -234,7 +246,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.sendTime || '') as string,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
     },
     {
       field: 'sendMessageId',

@@ -6,6 +6,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 import { computed, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   ElDatePicker,
@@ -24,7 +26,6 @@ import {
 } from '#/api/infra/demo/demo03/erp';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 

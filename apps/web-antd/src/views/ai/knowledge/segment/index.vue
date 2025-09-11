@@ -8,6 +8,7 @@ import { useRoute } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 
 import { message, Switch } from 'ant-design-vue';
 
@@ -18,7 +19,6 @@ import {
   updateKnowledgeSegmentStatus,
 } from '#/api/ai/knowledge/segment';
 import { $t } from '#/locales';
-import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

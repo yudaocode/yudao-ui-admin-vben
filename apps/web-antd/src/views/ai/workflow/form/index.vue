@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
+import { AiModelTypeEnum, CommonStatusEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 
@@ -11,7 +12,6 @@ import { Button, Card, message } from 'ant-design-vue';
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { createWorkflow, getWorkflow, updateWorkflow } from '#/api/ai/workflow';
 import { createModel, deployModel, updateModel } from '#/api/bpm/model';
-import { AiModelTypeEnum, CommonStatusEnum } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import WorkflowDesign from './modules/workflow-design.vue';
@@ -21,6 +21,9 @@ defineOptions({ name: 'AiWorkflowCreate' });
 const router = useRouter();
 
 const route = useRoute();
+
+const workflowId = ref<string>('');
+const actionType = ref<string>('');
 
 // 基础信息组件引用
 const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
@@ -58,13 +61,9 @@ const llmProvider = ref<any>([]);
 const workflowData = ref<any>({});
 provide('workflowData', workflowData);
 
-/** 初始化数据 */
-const actionType = route.params.type as string;
-
 async function initData() {
-  if (actionType === 'update') {
-    const workflowId = route.params.id as string;
-    formData.value = await getWorkflow(workflowId);
+  if (actionType.value === 'update' && workflowId.value) {
+    formData.value = await getWorkflow(workflowId.value);
     workflowData.value = JSON.parse(formData.value.graph);
   }
   const models = await getModelSimpleList(AiModelTypeEnum.CHAT);
@@ -113,7 +112,7 @@ async function handleSave() {
       ...formData.value,
       graph: JSON.stringify(workflowData.value),
     };
-    await (actionType === 'update'
+    await (actionType.value === 'update'
       ? updateWorkflow(data)
       : createWorkflow(data));
 
@@ -191,6 +190,8 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
+  workflowId.value = route.query.id as string;
+  actionType.value = route.query.type as string;
   await initData();
 });
 
@@ -247,9 +248,9 @@ onBeforeUnmount(() => {
               >
                 {{ index + 1 }}
               </div>
-              <span class="whitespace-nowrap text-base font-bold">{{
-                step.title
-              }}</span>
+              <span class="whitespace-nowrap text-base font-bold">
+                {{ step.title }}
+              </span>
             </div>
           </div>
         </div>
@@ -270,7 +271,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <!-- 主体内容 -->
-      <Card :body-style="{ padding: '10px' }" class="mb-4">
+      <Card class="mb-4 p-4">
         <div class="mt-12">
           <!-- 第一步：基本信息 -->
           <div v-if="currentStep === 0" class="mx-auto w-4/6">

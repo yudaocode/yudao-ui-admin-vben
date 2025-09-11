@@ -83,7 +83,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Student[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 导出表格 */
@@ -178,7 +178,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'text',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['infra:demo03-student:update'],
               onClick: handleEdit.bind(null, row),

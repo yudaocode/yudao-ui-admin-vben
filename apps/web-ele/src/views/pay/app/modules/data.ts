@@ -2,8 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { InputUpload } from '#/components/upload';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 export function channelSchema(formType: string): VbenFormSchema[] {
   if (formType.includes('alipay_')) {

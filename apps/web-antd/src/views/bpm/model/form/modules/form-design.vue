@@ -5,6 +5,8 @@ import type { BpmFormApi } from '#/api/bpm/form';
 
 import { ref, watch } from 'vue';
 
+import { BpmModelFormType, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { CircleHelp } from '@vben/icons';
 
 import FormCreate from '@form-create/ant-design-vue';
@@ -20,12 +22,7 @@ import {
 } from 'ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
-import {
-  BpmModelFormType,
-  DICT_TYPE,
-  getDictOptions,
-  setConfAndFields2,
-} from '#/utils';
+import { setConfAndFields2 } from '#/utils';
 
 const props = defineProps({
   formList: {
@@ -98,11 +95,11 @@ defineExpose({ validate });
     <FormItem label="表单类型" name="formType" class="mb-5">
       <RadioGroup v-model:value="modelData.formType">
         <Radio
-          v-for="dict in getDictOptions(
+          v-for="(dict, index) in getDictOptions(
             DICT_TYPE.BPM_MODEL_FORM_TYPE,
             'number',
           )"
-          :key="dict.value"
+          :key="index"
           :value="dict.value"
         >
           {{ dict.label }}
@@ -115,7 +112,7 @@ defineExpose({ validate });
       name="formId"
       class="mb-5"
     >
-      <Select v-model:value="modelData.formId" clearable>
+      <Select v-model:value="modelData.formId" allow-clear>
         <SelectOption
           v-for="form in props.formList"
           :key="form.id"

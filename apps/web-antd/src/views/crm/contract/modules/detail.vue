@@ -45,7 +45,7 @@ const validateOwnerUser = computed(
 );
 const validateWrite = computed(() => permissionListRef.value?.validateWrite);
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 4,
@@ -125,7 +125,7 @@ onMounted(() => {
       </div>
     </template>
     <Card class="min-h-[10%]">
-      <Description :data="contract" />
+      <Descriptions :data="contract" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>

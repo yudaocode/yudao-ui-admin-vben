@@ -1,18 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -99,7 +92,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '短信签名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入短信签名',
       },
     },
@@ -108,7 +101,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '渠道编码',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string'),
         placeholder: '请选择短信渠道',
       },
@@ -118,7 +111,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -128,21 +121,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -172,11 +160,6 @@ export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
       },
     },
     {
-      field: 'remark',
-      title: '备注',
-      minWidth: 120,
-    },
-    {
       field: 'apiKey',
       title: '短信 API 的账号',
       minWidth: 180,
@@ -198,29 +181,15 @@ export function useGridColumns<T = SystemSmsChannelApi.SmsChannel>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
+      field: 'remark',
+      title: '备注',
+      minWidth: 120,
+    },
+    {
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'signature',
-          nameTitle: '短信渠道',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:sms-channel:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:sms-channel:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

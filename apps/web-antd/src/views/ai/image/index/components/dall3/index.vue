@@ -1,23 +1,24 @@
 <!-- dall3 -->
 <script setup lang="ts">
+import type { ImageModel, ImageSize } from '@vben/constants';
+
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-import type { ImageModel, ImageSize } from '#/utils';
 
 import { ref } from 'vue';
 
 import { confirm } from '@vben/common-ui';
-
-import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
-
-import { drawImage } from '#/api/ai/image';
 import {
   AiPlatformEnum,
   Dall3Models,
   Dall3SizeList,
   Dall3StyleList,
   ImageHotWords,
-} from '#/utils';
+} from '@vben/constants';
+
+import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
+
+import { drawImage } from '#/api/ai/image';
 
 // 接收父组件传入的模型列表
 const props = defineProps({

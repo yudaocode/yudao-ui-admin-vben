@@ -133,7 +133,7 @@ async function handleNotificationMakeAll() {
 
 /** 清空通知 */
 async function handleNotificationClear() {
-  handleNotificationMakeAll();
+  await handleNotificationMakeAll();
 }
 
 /** 标记单个已读 */

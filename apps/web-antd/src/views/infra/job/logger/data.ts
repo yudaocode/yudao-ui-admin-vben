@@ -1,15 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { InfraJobLogApi } from '#/api/infra/job-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -70,26 +72,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 80,
     },
     {
       field: 'jobId',
       title: '任务编号',
+      minWidth: 80,
     },
     {
       field: 'handlerName',
       title: '处理器的名字',
+      minWidth: 180,
     },
     {
       field: 'handlerParam',
       title: '处理器的参数',
+      minWidth: 140,
     },
     {
       field: 'executeIndex',
       title: '第几次执行',
+      minWidth: 100,
     },
     {
       field: 'beginTime',
       title: '执行时间',
+      minWidth: 280,
       formatter: ({ row }) => {
         return `${formatDateTime(row.beginTime)} ~ ${formatDateTime(row.endTime)}`;
       },
@@ -97,11 +105,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'duration',
       title: '执行时长',
-      formatter: ({ cellValue }) => `${cellValue} 毫秒`,
+      minWidth: 120,
+      formatter: ({ row }) => {
+        return `${row.duration} 毫秒`;
+      },
     },
     {
       field: 'status',
       title: '任务状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_JOB_LOG_STATUS },
@@ -116,7 +128,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 详情的配置 */
+/** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     {
@@ -142,23 +154,29 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'beginTime',
       label: '执行时间',
-    },
-    {
-      field: 'endTime',
-      label: '结束时间',
+      content: (data: InfraJobLogApi.JobLog) => {
+        if (data?.beginTime && data?.endTime) {
+          return `${formatDateTime(data.beginTime)} ~ ${formatDateTime(data.endTime)}`;
+        }
+        return '';
+      },
     },
     {
       field: 'duration',
       label: '执行时长',
+      content: (data: InfraJobLogApi.JobLog) => {
+        return data?.duration ? `${data.duration} 毫秒` : '';
+      },
     },
     {
       field: 'status',
       label: '任务状态',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: InfraJobLogApi.JobLog) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_JOB_LOG_STATUS,
           value: data?.status,
-        }),
+        });
+      },
     },
     {
       field: 'result',

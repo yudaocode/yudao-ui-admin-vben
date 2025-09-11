@@ -83,7 +83,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Grade[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -174,7 +174,8 @@ watch(
         :actions="[
           {
             label: $t('common.edit'),
-            type: 'text',
+            type: 'primary',
+            link: true,
             icon: ACTION_ICON.EDIT,
             auth: ['infra:demo03-student:update'],
             onClick: handleEdit.bind(null, row),

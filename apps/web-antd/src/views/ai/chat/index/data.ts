@@ -1,7 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { AiModelTypeEnum } from '@vben/constants';
+
 import { getModelSimpleList } from '#/api/ai/model/model';
-import { AiModelTypeEnum } from '#/utils';
 
 export function useFormSchema(): VbenFormSchema[] {
   return [

@@ -26,9 +26,8 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    formItemClass: 'col-span-2',
-    labelWidth: 80,
   },
+  wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -42,16 +41,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const formValues = (await formApi.getValues()) as SystemTenantApi.Tenant & {
-      websites: string;
-    };
-    // 将换行符分隔的字符串转换为数组
-    const data: SystemTenantApi.Tenant = {
-      ...formValues,
-      websites: formValues.websites
-        ? formValues.websites.split('\n').filter((item) => item.trim())
-        : [],
-    };
+    const data = (await formApi.getValues()) as SystemTenantApi.Tenant;
     try {
       await (formData.value ? updateTenant(data) : createTenant(data));
       // 关闭并提示
@@ -74,16 +64,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTenant(data.id as number);
-      // 将数组转换为换行符分隔的字符串
-      const formValues = {
-        ...formData.value,
-        websites: Array.isArray(formData.value.websites)
-          ? formData.value.websites.join('\n')
-          : formData.value.websites || '',
-      };
+      formData.value = await getTenant(data.id);
       // 设置到 values
-      await formApi.setValues(formValues);
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }
@@ -91,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 <template>
-  <Modal :title="getTitle" class="w-1/2">
+  <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>

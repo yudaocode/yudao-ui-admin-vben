@@ -42,7 +42,6 @@ async function handleDelete(
 ) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDeliveryExpressTemplate(row.id as number);

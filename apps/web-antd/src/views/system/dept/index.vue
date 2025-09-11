@@ -5,7 +5,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -23,23 +23,22 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const userList = ref<SystemUserApi.User[]>([]);
-
 /** 获取负责人名称 */
+const userList = ref<SystemUserApi.User[]>([]);
 function getLeaderName(userId: number) {
   return userList.value.find((user) => user.id === userId)?.nickname;
 }
 
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
-function toggleExpand() {
+function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
+}
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
 }
 
 /** 创建部门 */
@@ -61,15 +60,29 @@ function handleEdit(row: SystemDeptApi.Dept) {
 async function handleDelete(row: SystemDeptApi.Dept) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteDept(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除部门 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteDeptList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -81,39 +94,22 @@ function handleRowCheckboxChange({
 }: {
   records: SystemDeptApi.Dept[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除部门 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteDeptList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(getLeaderName),
     height: 'auto',
+    pagerConfig: {
+      enabled: false,
+    },
     proxyConfig: {
       ajax: {
         query: async () => {
           return await getDeptList();
         },
       },
-    },
-    pagerConfig: {
-      enabled: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -124,11 +120,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     treeConfig: {
-      transform: true,
-      rowField: 'id',
       parentField: 'parentId',
+      rowField: 'id',
+      transform: true,
       expandAll: true,
-      accordion: false,
+      reserve: true,
     },
   } as VxeTableGridOptions<SystemDeptApi.Dept>,
   gridEvents: {
@@ -145,7 +141,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
         <TableAction
@@ -160,15 +156,15 @@ onMounted(async () => {
             {
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
-              onClick: toggleExpand,
+              onClick: handleExpand,
             },
             {
               label: '批量删除',
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['system:dept:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"
@@ -197,7 +193,7 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['system:dept:delete'],
-              disabled: !!(row.children && row.children.length > 0),
+              disabled: row.children && row.children.length > 0,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

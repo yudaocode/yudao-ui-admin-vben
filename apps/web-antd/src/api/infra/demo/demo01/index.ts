@@ -55,5 +55,7 @@ export function deleteDemo01ContactList(ids: number[]) {
 
 /** 导出示例联系人 */
 export function exportDemo01Contact(params: any) {
-  return requestClient.download('/infra/demo01-contact/export-excel', params);
+  return requestClient.download('/infra/demo01-contact/export-excel', {
+    params,
+  });
 }

@@ -4,8 +4,8 @@ import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -13,7 +13,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSmsChannel,
   deleteSmsChannelList,
-  exportSmsChannel,
   getSmsChannelPage,
 } from '#/api/system/sms/channel';
 import { $t } from '#/locales';
@@ -27,14 +26,8 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportSmsChannel(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '短信渠道.xls', source: data });
 }
 
 /** 创建短信渠道 */
@@ -51,52 +44,41 @@ function handleEdit(row: SystemSmsChannelApi.SmsChannel) {
 async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.signature]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteSmsChannel(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.signature]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-// 选中的短信渠道ID
+/** 批量删除短信渠道 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteSmsChannelList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
   records: SystemSmsChannelApi.SmsChannel[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除处理 */
-async function handleDeleteBatch() {
-  if (checkedIds.value.length === 0) {
-    message.warning('请至少选择一条数据');
-    return;
-  }
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', ['短信渠道']),
-    key: 'action_key_msg',
-  });
-  try {
-    await deleteSmsChannelList(checkedIds.value);
-    checkedIds.value = [];
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', ['短信渠道']),
-      key: 'action_key_msg',
-    });
-    checkedIds.value = [];
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -126,9 +108,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-    checkboxConfig: {
-      checkField: 'checked',
-    },
   } as VxeTableGridOptions<SystemSmsChannelApi.SmsChannel>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
@@ -143,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="短信渠道列表">
       <template #toolbar-tools>
         <TableAction
@@ -156,18 +135,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleCreate,
             },
             {
-              label: $t('ui.actionTitle.export'),
-              type: 'primary',
-              icon: ACTION_ICON.DOWNLOAD,
-              auth: ['system:sms-channel:export'],
-              onClick: handleExport,
-            },
-            {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['system:sms-channel:delete'],
               onClick: handleDeleteBatch,
             },

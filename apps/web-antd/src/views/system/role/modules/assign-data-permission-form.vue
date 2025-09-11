@@ -5,6 +5,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
@@ -14,7 +15,6 @@ import { getDeptList } from '#/api/system/dept';
 import { assignRoleDataScope } from '#/api/system/permission';
 import { getRole } from '#/api/system/role';
 import { $t } from '#/locales';
-import { SystemDataScopeEnum } from '#/utils';
 
 import { useAssignDataPermissionFormSchema } from '../data';
 
@@ -76,9 +76,9 @@ const [Modal, modalApi] = useVbenModal({
     try {
       // 加载部门列表
       await loadDeptTree();
-      toggleExpandAll();
-      // 设置表单值, 一定要在加载树之后
-      await formApi.setValues(await getRole(data.id as number));
+      handleExpandAll();
+      // 设置表单值，一定要在加载树之后
+      await formApi.setValues(await getRole(data.id));
     } finally {
       modalApi.unlock();
     }
@@ -97,7 +97,7 @@ async function loadDeptTree() {
 }
 
 /** 全选/全不选 */
-function toggleSelectAll() {
+function handleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
   if (isAllSelected.value) {
     const allIds = getAllNodeIds(deptTree.value);
@@ -108,14 +108,13 @@ function toggleSelectAll() {
 }
 
 /** 展开/折叠所有节点 */
-function toggleExpandAll() {
+function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  // 获取所有节点的 ID
   expandedKeys.value = isExpanded.value ? getAllNodeIds(deptTree.value) : [];
 }
 
 /** 切换父子联动 */
-function toggleCheckStrictly() {
+function handleCheckStrictly() {
   isCheckStrictly.value = !isCheckStrictly.value;
 }
 
@@ -151,13 +150,13 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Checkbox :checked="isAllSelected" @change="toggleSelectAll">
+        <Checkbox :checked="isAllSelected" @change="handleSelectAll">
           全选
         </Checkbox>
-        <Checkbox :checked="isExpanded" @change="toggleExpandAll">
+        <Checkbox :checked="isExpanded" @change="handleExpandAll">
           全部展开
         </Checkbox>
-        <Checkbox :checked="isCheckStrictly" @change="toggleCheckStrictly">
+        <Checkbox :checked="isCheckStrictly" @change="handleCheckStrictly">
           父子联动
         </Checkbox>
       </div>

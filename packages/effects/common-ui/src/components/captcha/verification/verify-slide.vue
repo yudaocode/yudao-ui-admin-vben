@@ -17,7 +17,8 @@ import {
 
 import { $t } from '@vben/locales';
 
-import { aesEncrypt } from './utils/ase';
+import { AES } from '@vben-core/shared/utils';
+
 import { resetSize } from './utils/util';
 
 const props = withDefaults(defineProps<VerificationProps>(), {
@@ -179,7 +180,7 @@ function end() {
     const data = {
       captchaType: captchaType.value,
       pointJson: secretKey.value
-        ? aesEncrypt(
+        ? AES.encrypt(
             JSON.stringify({ x: moveLeftDistance, y: 5 }),
             secretKey.value,
           )
@@ -205,7 +206,7 @@ function end() {
         tipWords.value = `${((endMovetime.value - startMoveTime.value) / 1000).toFixed(2)}s
             ${$t('ui.captcha.title')}`;
         const captchaVerification = secretKey.value
-          ? aesEncrypt(
+          ? AES.encrypt(
               `${backToken.value}---${JSON.stringify({ x: moveLeftDistance, y: 5 })}`,
               secretKey.value,
             )

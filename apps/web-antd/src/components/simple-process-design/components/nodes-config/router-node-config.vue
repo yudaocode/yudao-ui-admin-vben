@@ -6,6 +6,7 @@ import type { RouterSetting, SimpleFlowNode } from '../../consts';
 import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -20,8 +21,6 @@ import {
   Select,
   SelectOption,
 } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import { ConditionType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';

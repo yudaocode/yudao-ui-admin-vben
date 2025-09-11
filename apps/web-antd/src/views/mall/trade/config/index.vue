@@ -90,6 +90,7 @@ const [Form, formApi] = useVbenForm({
       <Tabs :active-key="activeKey" @change="handleTabChange">
         <Tabs.TabPane tab="售后" key="afterSale" :force-render="true" />
         <Tabs.TabPane tab="配送" key="delivery" :force-render="true" />
+        <!-- TODO @xingyu：tooltip 有点丑；要不要左对齐？（貌似都行） -->
         <Tabs.TabPane tab="分销" key="brokerage" :force-render="true" />
       </Tabs>
       <Form class="w-3/5" />

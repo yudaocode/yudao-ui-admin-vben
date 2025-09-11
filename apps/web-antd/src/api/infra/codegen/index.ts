@@ -71,7 +71,7 @@ export namespace InfraCodegenApi {
   }
 
   /** 创建代码生成请求 */
-  export interface CodegenCreateListReq {
+  export interface CodegenCreateListReqVO {
     dataSourceConfigId?: number;
     tableNames: string[];
   }
@@ -136,7 +136,7 @@ export function getSchemaTableList(params: any) {
 }
 
 /** 基于数据库的表结构，创建代码生成器的表定义 */
-export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReq) {
+export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReqVO) {
   return requestClient.post('/infra/codegen/create-list', data);
 }
 

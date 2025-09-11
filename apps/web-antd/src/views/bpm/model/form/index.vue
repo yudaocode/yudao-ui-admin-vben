@@ -9,6 +9,11 @@ import { onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
+import {
+  BpmAutoApproveType,
+  BpmModelFormType,
+  BpmModelType,
+} from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { ArrowLeft } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
@@ -26,7 +31,6 @@ import {
 } from '#/api/bpm/model';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { BpmAutoApproveType, BpmModelFormType, BpmModelType } from '#/utils';
 
 import BasicInfo from './modules/basic-info.vue';
 import ExtraSetting from './modules/extra-setting.vue';

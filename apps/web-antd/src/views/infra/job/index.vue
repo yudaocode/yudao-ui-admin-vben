@@ -6,6 +6,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { InfraJobStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -20,7 +21,6 @@ import {
   updateJobStatus,
 } from '#/api/infra/job';
 import { $t } from '#/locales';
-import { InfraJobStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -39,7 +39,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -72,24 +72,33 @@ async function handleUpdateStatus(row: InfraJobApi.Job) {
       : InfraJobStatusEnum.STOP;
   const statusText = status === InfraJobStatusEnum.NORMAL ? '启用' : '停用';
 
-  confirm({
-    content: `确定${statusText} ${row.name} 吗？`,
-  }).then(async () => {
-    await updateJobStatus(row.id as number, status);
-    // 提示成功
-    message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
+  await confirm(`确定${statusText} ${row.name} 吗？`);
+  const hideLoading = message.loading({
+    content: `正在${statusText}中...`,
+    duration: 0,
   });
+  try {
+    await updateJobStatus(row.id!, status);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 执行一次任务 */
 async function handleTrigger(row: InfraJobApi.Job) {
-  confirm({
-    content: `确定执行一次 ${row.name} 吗？`,
-  }).then(async () => {
-    await runJob(row.id as number);
-    message.success($t('ui.actionMessage.operationSuccess'));
+  await confirm(`确定执行一次 ${row.name} 吗？`);
+  const hideLoading = message.loading({
+    content: '正在执行中...',
+    duration: 0,
   });
+  try {
+    await runJob(row.id!);
+    message.success($t('ui.actionMessage.operationSuccess'));
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 跳转到任务日志 */
@@ -105,12 +114,28 @@ async function handleDelete(row: InfraJobApi.Job) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deleteJob(row.id as number);
+    await deleteJob(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除任务 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteJobList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -118,24 +143,7 @@ async function handleDelete(row: InfraJobApi.Job) {
 
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除任务 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteJobList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -181,7 +189,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="消息队列" url="https://doc.iocoder.cn/message-queue/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <DetailModal />
     <Grid table-title="定时任务列表">
       <template #toolbar-tools>
@@ -205,15 +213,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '执行日志',
               type: 'primary',
               icon: 'lucide:history',
-              auth: ['infra:job:export'],
-              onClick: handleLog,
+              auth: ['infra:job:query'],
+              onClick: () => handleLog(undefined),
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['infra:job:delete'],
               onClick: handleDeleteBatch,
             },

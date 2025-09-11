@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+// TODO @chihuo：这个合并到 mall.ts 里
 const routes: RouteRecordRaw[] = [
   {
     path: '/diy',

@@ -15,7 +15,7 @@ import {
 } from '#/api/erp/purchase/order';
 
 import { useFormSchema } from '../data';
-import PurchaseOrderItemForm from './PurchaseOrderItemForm.vue';
+import PurchaseOrderItemForm from './purchase-order-item-form.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>();
@@ -71,10 +71,7 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
-// TODO @nehc：这里的注释使用 /** */ 和别的模块一致哈；
-/**
- * 创建或更新采购订单
- */
+/** 创建或更新采购订单 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -94,8 +91,7 @@ const [Modal, modalApi] = useVbenModal({
           message.error('子表单验证失败');
           return;
         }
-      } catch (error) {
-        // TODO @nehc：这里的红色告警，看看怎么处理掉
+      } catch (error: any) {
         message.error(error.message || '子表单验证失败');
         return;
       }
@@ -164,17 +160,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getPurchaseOrder(data.id);
-      // 将字符串形式的文件 URL 转换为数组形式以适配 FileUpload 组件
-      // TODO @nehc：这里的 idea 会有黄色告警，看看是不是简化下？
-      // TODO @nehc：记忆中，好像不用数组的转换，可以在看看？
-      if (
-        formData.value.fileUrl &&
-        typeof formData.value.fileUrl === 'string'
-      ) {
-        formData.value.fileUrl = formData.value.fileUrl
-          ? [formData.value.fileUrl]
-          : [];
-      }
       // 设置到 values
       await formApi.setValues(formData.value);
       // 初始化子表单

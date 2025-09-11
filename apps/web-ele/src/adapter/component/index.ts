@@ -66,6 +66,12 @@ const ElInputNumber = defineAsyncComponent(() =>
     import('element-plus/es/components/input-number/style/css'),
   ]).then(([res]) => res.ElInputNumber),
 );
+const ElInputTag = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/input-tag/index'),
+    import('element-plus/es/components/input-tag/style/css'),
+  ]).then(([res]) => res.ElInputTag),
+);
 const ElRadio = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/radio/index'),
@@ -175,6 +181,7 @@ export type ComponentType =
   | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
+  | 'InputTag'
   | 'RadioGroup'
   | 'RangePicker'
   | 'RichTextarea'
@@ -222,6 +229,7 @@ async function initComponentAdapter() {
       'select',
       {
         component: ElTreeSelect,
+        // TODO @xingyu：这里要加 props: { label: 'label', children: 'children' }, vben 官方是有的
         nodeKey: 'value',
         loadingSlot: 'loading',
         optionsPropName: 'data',
@@ -250,6 +258,7 @@ async function initComponentAdapter() {
     },
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
+      // TODO @xingyu：, type: 'info' 要加么？vben5 是有的；
       return h(ElButton, { ...props, attrs }, slots);
     },
     // 自定义主要按钮
@@ -264,6 +273,7 @@ async function initComponentAdapter() {
     }),
     Input: withDefaultPlaceholder(ElInput, 'input'),
     InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+    InputTag: withDefaultPlaceholder(ElInputTag, 'input'),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {

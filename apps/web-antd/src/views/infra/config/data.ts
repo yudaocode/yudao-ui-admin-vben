@@ -1,7 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -82,7 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -91,7 +94,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数键名',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -123,26 +126,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '参数主键',
+      minWidth: 100,
     },
     {
       field: 'category',
       title: '参数分类',
+      minWidth: 120,
     },
     {
       field: 'name',
       title: '参数名称',
+      minWidth: 200,
     },
     {
       field: 'key',
       title: '参数键名',
+      minWidth: 200,
     },
     {
       field: 'value',
       title: '参数键值',
+      minWidth: 150,
     },
     {
       field: 'visible',
       title: '是否可见',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -151,6 +160,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'type',
       title: '系统内置',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_CONFIG_TYPE },
@@ -159,10 +169,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'remark',
       title: '备注',
+      minWidth: 150,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

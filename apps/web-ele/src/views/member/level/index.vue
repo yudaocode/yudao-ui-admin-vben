@@ -37,7 +37,6 @@ function handleEdit(row: MemberLevelApi.Level) {
 async function handleDelete(row: MemberLevelApi.Level) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteLevel(row.id as number);

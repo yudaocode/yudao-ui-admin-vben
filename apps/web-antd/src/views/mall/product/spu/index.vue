@@ -2,10 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
+// TODO @xingyu：所有 mall 的 search 少了，请输入 xxx；表单也是类似
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { ProductSpuStatusEnum } from '@vben/constants';
 import {
   downloadFileFromBlobPart,
   fenToYuan,
@@ -25,11 +27,11 @@ import {
   updateStatus,
 } from '#/api/mall/product/spu';
 import { $t } from '#/locales';
-import { ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
+const route = useRoute(); // 路由
 const tabType = ref(0);
 
 const categoryList = ref();
@@ -64,8 +66,9 @@ const tabsData = ref([
 ]);
 
 /** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
+async function onRefresh() {
+  await gridApi.query();
+  await getTabCount();
 }
 
 /** 获得每个 Tab 的数量 */
@@ -124,7 +127,7 @@ async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
     .then(async () => {
       await updateStatus({ id: row.id as number, status: newStatus });
       message.success(`${text}成功`);
-      onRefresh();
+      await onRefresh();
     })
     .catch(() => {
       message.error(`${text}失败`);
@@ -209,11 +212,16 @@ function onChangeTab(key: any) {
   gridApi.query();
 }
 
-onMounted(() => {
-  getTabCount();
-  getCategoryList({}).then((res) => {
-    categoryList.value = handleTree(res, 'id', 'parentId', 'children');
-  });
+onMounted(async () => {
+  // 解析路由的 categoryId
+  if (route.query.categoryId) {
+    await gridApi.formApi.setValues({
+      categoryId: Number(route.query.categoryId),
+    });
+  }
+  await getTabCount();
+  const categoryRes = await getCategoryList({});
+  categoryList.value = handleTree(categoryRes, 'id', 'parentId', 'children');
 });
 </script>
 
@@ -228,6 +236,7 @@ onMounted(() => {
 
     <Grid>
       <template #top>
+        <!-- TODO @xingyu：tabs 可以考虑往上以一些，和操作按钮在一排 -->
         <Tabs class="border-none" @change="onChangeTab">
           <Tabs.TabPane
             v-for="item in tabsData"
@@ -257,9 +266,10 @@ onMounted(() => {
         />
       </template>
       <template #expand_content="{ row }">
+        <!-- TODO @xingyu：展开的样子，有点丑 -->
         <Descriptions
           :column="4"
-          class="mt-4"
+          class="m-4"
           :label-style="{
             width: '100px',
             fontWeight: 'bold',
@@ -268,17 +278,17 @@ onMounted(() => {
           :content-style="{ width: '100px', fontSize: '14px' }"
         >
           <Descriptions.Item label="商品分类">
-            {{ treeToString(categoryList, row.categoryId) }}
+            {{ treeToString(categoryList, row.categoryId!) }}
           </Descriptions.Item>
           <Descriptions.Item label="商品名称">
             {{ row.name }}
           </Descriptions.Item>
 
           <Descriptions.Item label="市场价">
-            {{ fenToYuan(row.marketPrice) }} 元
+            {{ fenToYuan(row.marketPrice as number) }} 元
           </Descriptions.Item>
           <Descriptions.Item label="成本价">
-            {{ fenToYuan(row.costPrice) }} 元
+            {{ fenToYuan(row.costPrice as number) }} 元
           </Descriptions.Item>
           <Descriptions.Item label="浏览量">
             {{ row.browseCount }}
@@ -310,7 +320,7 @@ onMounted(() => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => row.type === 4,
+              ifShow: () => tabType === 4,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -321,7 +331,6 @@ onMounted(() => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type === 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,
@@ -333,7 +342,6 @@ onMounted(() => {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => row.type !== 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,

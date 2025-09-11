@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getKnowledgeSegment(data.id as number);
+      formData.value = await getKnowledgeSegment(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

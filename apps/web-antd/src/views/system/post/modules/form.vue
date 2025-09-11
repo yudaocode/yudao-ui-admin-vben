@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getPost(data.id as number);
+      formData.value = await getPost(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
@@ -76,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal class="w-[600px]" :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>

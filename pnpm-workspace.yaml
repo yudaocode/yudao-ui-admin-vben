@@ -41,6 +41,7 @@ catalog:
   '@tanstack/vue-query': ^5.81.5
   '@tanstack/vue-store': ^0.7.1
   '@tinymce/tinymce-vue': ^6.1.0
+  '@tinyflow-ai/vue': ^1.1.1
   '@form-create/ant-design-vue': ^3.2.27
   '@form-create/antd-designer': ^3.3.0
   '@form-create/designer': ^3.3.0
@@ -182,6 +183,7 @@ catalog:
   tailwindcss-animate: ^1.0.7
   theme-colors: ^0.1.0
   tippy.js: ^6.3.7
+  tinymce: ^7.3.0
   turbo: ^2.5.4
   typescript: ^5.8.3
   unbuild: ^3.6.1

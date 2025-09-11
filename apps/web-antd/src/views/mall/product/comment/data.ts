@@ -111,6 +111,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
+// TODO @xingyu：列表的宽度需要优化下，样式~
 export function useGridColumns<T = MallCommentApi.Comment>(
   onStatusChange?: (
     newStatus: boolean,

@@ -3,9 +3,10 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { reactive, ref } from 'vue';
 
+import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
-import { CouponTemplateTakeTypeEnum } from '#/utils/constants';
-import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 import {
   discountFormat,
   remainedCountFormat,
@@ -116,8 +117,9 @@ const submitForm = () => {
             placeholder="请选择优惠券类型"
           >
             <el-option
-              v-for="dict in getIntDictOptions(
+              v-for="dict in getDictOptions(
                 DICT_TYPE.PROMOTION_DISCOUNT_TYPE,
+                'number',
               )"
               :key="dict.value"
               :label="dict.label"

@@ -41,6 +41,7 @@ export namespace ErpPurchaseOrderApi {
     remark?: string; // 备注
     fileUrl?: string; // 附件地址
     inCount?: number; // 采购入库数量
+    count?: number; // 数量
     returnCount?: number; // 采购退货数量
     inStatus?: number; // 入库状态
     returnStatus?: number; // 退货状态

@@ -1,11 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 
 import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -24,6 +26,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入客户名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'source',
@@ -38,6 +44,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'mobile',
       label: '手机',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'ownerUserId',
@@ -49,6 +59,8 @@ export function useFormSchema(): VbenFormSchema[] {
           label: 'nickname',
           value: 'id',
         },
+        placeholder: '请选择负责人',
+        allowClear: true,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
@@ -57,21 +69,37 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'wechat',
       label: '微信',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入微信',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'qq',
       label: 'QQ',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入QQ',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'industryId',
@@ -79,6 +107,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
+        placeholder: '请选择客户行业',
+        allowClear: true,
       },
     },
     {
@@ -87,6 +117,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
+        placeholder: '请选择客户级别',
+        allowClear: true,
       },
     },
     {
@@ -96,12 +128,18 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         api: () => getAreaTree(),
         fieldNames: { label: 'name', value: 'id', children: 'children' },
+        placeholder: '请选择地址',
+        allowClear: true,
       },
     },
     {
       fieldName: 'detailAddress',
       label: '详细地址',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入详细地址',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'contactNextTime',
@@ -111,12 +149,18 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
+        placeholder: '请选择下次联系时间',
+        allowClear: true,
       },
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+        allowClear: true,
+      },
     },
   ];
 }
@@ -128,16 +172,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '客户名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入客户名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'createTime',
@@ -145,6 +201,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        placeholder: '请选择创建时间',
         allowClear: true,
       },
     },

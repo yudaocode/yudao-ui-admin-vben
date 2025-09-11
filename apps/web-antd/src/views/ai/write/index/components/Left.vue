@@ -1,19 +1,15 @@
 <script setup lang="ts">
+// TODO @gjd：应该是 modules 模块，然后小写
 import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
 
+import { AiWriteTypeEnum, DICT_TYPE, WriteExample } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
-
-import {
-  AiWriteTypeEnum,
-  DICT_TYPE,
-  getDictOptions,
-  WriteExample,
-} from '#/utils';
 
 import Tag from './Tag.vue';
 

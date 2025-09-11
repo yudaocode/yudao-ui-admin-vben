@@ -50,12 +50,10 @@
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
     "pinia": "catalog:",
+    "tinymce": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:",
     "vue3-signature": "catalog:"
-  },
-  "devDependencies": {
-    "@types/crypto-js": "catalog:"
   }
 }

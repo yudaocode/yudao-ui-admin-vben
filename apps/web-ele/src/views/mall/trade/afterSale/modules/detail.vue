@@ -6,6 +6,8 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel, getDictObj } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { fenToYuan, formatDate } from '@vben/utils';
 
@@ -21,7 +23,6 @@ import {
 import * as AfterSaleApi from '#/api/mall/trade/afterSale/index';
 import ContentWrap from '#/components/content-wrap/content-wrap.vue';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictLabel, getDictObj } from '#/utils/dict';
 
 import UpdateAuditReasonForm from './disagree-form.vue';
 

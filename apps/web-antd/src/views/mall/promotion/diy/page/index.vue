@@ -27,23 +27,23 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 创建DIY页面 */
+/** 创建 DIY 页面 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑DIY页面 */
+/** 编辑 DIY 页面 */
 function handleEdit(row: MallDiyPageApi.DiyPage) {
   formModalApi.setData(row).open();
 }
 
+// TODO @xingyu：装修未实现
 /** 装修页面 */
 function handleDecorate(row: MallDiyPageApi.DiyPage) {
-  // 跳转到装修页面
   push({ name: 'DiyPageDecorate', params: { id: row.id } });
 }
 
-/** 删除DIY页面 */
+/** 删除 DIY 页面 */
 async function handleDelete(row: MallDiyPageApi.DiyPage) {
   await deleteDiyPage(row.id as number);
   onRefresh();

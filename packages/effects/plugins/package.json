@@ -29,9 +29,14 @@
     "./markmap": {
       "types": "./src/markmap/index.ts",
       "default": "./src/markmap/index.ts"
+    },
+    "./tinyflow": {
+      "types": "./src/tinyflow/index.ts",
+      "default": "./src/tinyflow/index.ts"
     }
   },
   "dependencies": {
+    "@tinyflow-ai/vue": "catalog:",
     "@vben-core/form-ui": "workspace:*",
     "@vben-core/shadcn-ui": "workspace:*",
     "@vben-core/shared": "workspace:*",

@@ -6,6 +6,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   DatePicker,
@@ -24,7 +26,6 @@ import {
 } from '#/api/infra/demo/demo03/normal';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import Demo03CourseForm from './demo03-course-form.vue';
 import Demo03GradeForm from './demo03-grade-form.vue';
@@ -57,7 +58,7 @@ const demo03CourseFormRef = ref<InstanceType<typeof Demo03CourseForm>>();
 const demo03GradeFormRef = ref<InstanceType<typeof Demo03GradeForm>>();
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     name: undefined,
@@ -66,7 +67,7 @@ const resetForm = () => {
     description: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

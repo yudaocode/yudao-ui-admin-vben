@@ -51,7 +51,6 @@ function handleBind(row: MallDeliveryPickUpStoreApi.PickUpStore) {
 async function handleDelete(row: MallDeliveryPickUpStoreApi.PickUpStore) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDeliveryPickUpStore(row.id as number);

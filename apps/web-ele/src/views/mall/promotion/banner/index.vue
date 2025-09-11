@@ -37,7 +37,6 @@ function handleEdit(row: MallBannerApi.Banner) {
 async function handleDelete(row: MallBannerApi.Banner) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.title]),
-    fullscreen: true,
   });
   try {
     await deleteBanner(row.id as number);

@@ -39,7 +39,7 @@ const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队�
 // 校验编辑权限
 const validateWrite = computed(() => permissionListRef.value?.validateWrite);
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 4,
@@ -109,7 +109,7 @@ onMounted(() => {
       </div>
     </template>
     <Card class="min-h-[10%]">
-      <Description :data="receivablePlan" />
+      <Descriptions :data="receivablePlan" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>

@@ -6,6 +6,7 @@ import type { SimpleFlowNode } from '../../consts';
 import { reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -21,8 +22,6 @@ import {
   Select,
   SelectOption,
 } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import {
   DELAY_TYPE,

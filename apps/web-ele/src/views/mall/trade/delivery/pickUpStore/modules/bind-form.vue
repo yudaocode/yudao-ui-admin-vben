@@ -18,6 +18,7 @@ import { useBindFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryPickUpStoreApi.PickUpStore>();
+// TODO @霖：店员是多选；
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['绑定店员'])
@@ -70,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getDeliveryPickUpStore(data.id as number);
+      formData.value = await getDeliveryPickUpStore(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

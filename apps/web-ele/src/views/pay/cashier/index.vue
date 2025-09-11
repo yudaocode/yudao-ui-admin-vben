@@ -5,6 +5,11 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import {
+  PayChannelEnum,
+  PayDisplayModeEnum,
+  PayOrderStatusEnum,
+} from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { fenToYuan, formatDate } from '@vben/utils';
 
@@ -18,11 +23,6 @@ import {
 } from 'element-plus';
 
 import { getOrder, submitOrder } from '#/api/pay/order';
-import {
-  PayChannelEnum,
-  PayDisplayModeEnum,
-  PayOrderStatusEnum,
-} from '#/utils';
 
 import { channelsAlipay, channelsMock, channelsWechat } from './data';
 

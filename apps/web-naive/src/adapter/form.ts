@@ -7,8 +7,7 @@ import type { ComponentType } from './component';
 
 import { setupVbenForm, useVbenForm as useForm, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-
-const MOBILE_REGEX = /(?:0|86|\+86)?1[3-9]\d{9}/;
+import { isMobile } from '@vben/utils';
 
 async function initSetupVbenForm() {
   setupVbenForm<ComponentType>({
@@ -39,7 +38,7 @@ async function initSetupVbenForm() {
       mobile: (value, _params, ctx) => {
         if (value === undefined || value === null || value.length === 0) {
           return true;
-        } else if (!MOBILE_REGEX.test(value)) {
+        } else if (!isMobile(value)) {
           return $t('ui.formRules.mobile', [ctx.label]);
         }
         return true;
@@ -49,7 +48,7 @@ async function initSetupVbenForm() {
         if (value === undefined || value === null || value.length === 0) {
           return $t('ui.formRules.required', [ctx.label]);
         }
-        if (!MOBILE_REGEX.test(value)) {
+        if (!isMobile(value)) {
           return $t('ui.formRules.mobile', [ctx.label]);
         }
         return true;

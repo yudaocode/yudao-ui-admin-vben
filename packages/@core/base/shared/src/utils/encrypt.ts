@@ -21,9 +21,9 @@ export const AES = {
       if (!key) {
         throw new Error('AES 加密密钥不能为空');
       }
-      if (key.length !== 32) {
+      if (key.length !== 32 && key.length !== 16) {
         throw new Error(
-          `AES 加密密钥长度必须为 32 位，当前长度: ${key.length}`,
+          `AES 加密密钥长度必须为 32 位或 16 位，当前长度: ${key.length}`,
         );
       }
 

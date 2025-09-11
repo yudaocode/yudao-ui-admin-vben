@@ -86,19 +86,23 @@ async function copyCode() {
 
 /** 文件节点点击事件 */
 function handleNodeClick(_: any[], e: any) {
-  if (!e.node.isLeaf) return;
+  if (!e.node.isLeaf) {
+    return;
+  }
 
   activeKey.value = e.node.key;
   const file = previewFiles.value.find((item) => {
     const list = activeKey.value.split('.');
-    // 特殊处理-包合并
+    // 特殊处理 - 包合并
     if (list.length > 2) {
       const lang = list.pop();
       return item.filePath === `${list.join('/')}.${lang}`;
     }
     return item.filePath === activeKey.value;
   });
-  if (!file) return;
+  if (!file) {
+    return;
+  }
 
   const lang = file.filePath.split('.').pop() || '';
   setCodeMap(activeKey.value, lang, file.code);
@@ -119,7 +123,7 @@ function handleFiles(data: InfraCodegenApi.CodegenPreview[]): FileNode[] {
       const path = paths[cursor] || '';
       const oldFullPath = fullPath;
 
-      // 处理Java包路径特殊情况
+      // 处理 Java 包路径特殊情况
       if (path === 'java' && cursor + 1 < paths.length) {
         fullPath = fullPath ? `${fullPath}/${path}` : path;
         cursor++;
@@ -202,7 +206,9 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     const row = modalApi.getData<InfraCodegenApi.CodegenTable>();
-    if (!row) return;
+    if (!row) {
+      return;
+    }
 
     // 加载预览数据
     loading.value = true;

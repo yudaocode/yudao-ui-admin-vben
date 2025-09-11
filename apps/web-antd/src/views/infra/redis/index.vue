@@ -24,8 +24,8 @@ async function loadRedisData() {
   }
 }
 
-onMounted(async () => {
-  await loadRedisData();
+onMounted(() => {
+  loadRedisData();
 });
 </script>
 
@@ -36,11 +36,9 @@ onMounted(async () => {
       <DocAlert title="本地缓存" url="https://doc.iocoder.cn/local-cache/" />
     </template>
 
-    <div class="class=" mt-5>
-      <Card title="Redis 概览">
-        <Info :redis-data="redisData" />
-      </Card>
-    </div>
+    <Card title="Redis 概览">
+      <Info :redis-data="redisData" />
+    </Card>
 
     <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
       <Card title="内存使用">

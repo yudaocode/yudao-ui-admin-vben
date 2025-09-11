@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpStockMoveApi {
+export namespace ErpStockMoveApi {
   /** 库存调拨单信息 */
   export interface StockMove {
     id?: number; // 调拨编号
@@ -12,6 +12,29 @@ namespace ErpStockMoveApi {
     totalPrice: number; // 合计金额，单位：元
     status: number; // 状态
     remark: string; // 备注
+    fileUrl?: string; // 附件
+    fromWarehouseId?: number; // 来源仓库编号
+    createTime: Date; // 创建时间
+    creator: string; // 创建人
+    creatorName: string; // 创建人名称
+    productNames: string; // 产品名称
+    items?: StockMoveItem[]; // 子表信息
+  }
+
+  /** 库存调拨单子表信息 */
+  export interface StockMoveItem {
+    count: number; // 数量
+    fromWarehouseId?: number; // 来源仓库ID
+    id?: number; // ID
+    productBarCode: string; // 产品条形码
+    productId?: number; // 产品ID
+    productName?: string; // 产品名称
+    productPrice: number; // 产品单价
+    productUnitName?: string; // 产品单位
+    remark?: string; // 备注
+    stockCount: number; // 库存数量
+    toWarehouseId?: number; // 目标仓库ID
+    totalPrice?: number; // 总价
   }
 
   /** 库存调拨单分页查询参数 */
