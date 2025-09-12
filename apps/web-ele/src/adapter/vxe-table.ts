@@ -242,7 +242,7 @@ setupVbenVxeTable({
             {
               ...props,
               ...opt,
-              text: true,
+              link: true,
               icon: undefined,
               onClick: listen
                 ? () =>

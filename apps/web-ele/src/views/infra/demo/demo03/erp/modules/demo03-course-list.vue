@@ -183,7 +183,7 @@ watch(
           {
             label: $t('common.delete'),
             type: 'danger',
-            text: true,
+            link: true,
             icon: ACTION_ICON.DELETE,
             auth: ['infra:demo03-student:delete'],
             popConfirm: {
