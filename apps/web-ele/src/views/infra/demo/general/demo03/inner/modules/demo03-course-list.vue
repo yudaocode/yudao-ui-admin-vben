@@ -16,7 +16,7 @@ const props = defineProps<{
 const loading = ref(true); // 列表的加载中
 const list = ref<Demo03StudentApi.Demo03Course[]>([]); // 列表的数据
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     if (!props.studentId) {
@@ -26,7 +26,7 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
