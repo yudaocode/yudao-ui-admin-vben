@@ -10,7 +10,7 @@ import { handleTree } from '@vben/utils';
 import { NCheckbox } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
+import { getSimpleMenusList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';
 
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 async function loadMenuTree() {
   menuLoading.value = true;
   try {
-    const data = await getMenuList();
+    const data = await getSimpleMenusList();
     menuTree.value = handleTree(data) as SystemDeptApi.Dept[];
   } finally {
     menuLoading.value = false;
