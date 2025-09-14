@@ -1,13 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { AiModelTypeEnum } from '@vben/constants';
+import { AiModelTypeEnum, CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleKnowledgeList } from '#/api/ai/knowledge/knowledge';
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { getToolSimpleList } from '#/api/ai/model/tool';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [

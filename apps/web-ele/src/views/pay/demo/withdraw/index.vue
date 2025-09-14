@@ -36,7 +36,6 @@ function handleCreate() {
 async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
   const loadingInstance = ElLoading.service({
     text: '转账中，请稍后...',
-    fullscreen: true,
   });
   try {
     const payTransferId = await transferDemoWithdraw(row.id as number);

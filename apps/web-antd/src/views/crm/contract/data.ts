@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 import { erpPriceInputFormatter, erpPriceMultiply } from '@vben/utils';
 
@@ -9,7 +10,6 @@ import { getSimpleBusinessList } from '#/api/crm/business';
 import { getSimpleContactList } from '#/api/crm/contact';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -240,18 +240,25 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-// TODO @xingyu：缺少 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'no',
       label: '合同编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入合同编号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'name',
       label: '合同名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入合同名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'customerId',
@@ -264,6 +271,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
+        allowClear: true,
       },
     },
   ];

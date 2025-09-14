@@ -1,13 +1,17 @@
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
-import { useAccess } from '@vben/access';
-import { SystemMenuTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemMenuTypeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree, isHttpUrl } from '@vben/utils';
 
@@ -15,9 +19,6 @@ import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -35,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级菜单',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getMenuList();
           data.unshift({
@@ -44,7 +45,6 @@ export function useFormSchema(): VbenFormSchema[] {
           } as SystemMenuApi.Menu);
           return handleTree(data);
         },
-        checkStrictly: true,
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -59,6 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
         },
         showSearch: true,
         treeDefaultExpandedKeys: [0],
+        allowClear: true,
       },
       rules: 'selectRequired',
       renderComponentContent() {
@@ -166,6 +167,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '组件名称',
       component: 'AutoComplete',
       componentProps: {
+        clearable: true,
         allowClear: true,
         filterOption(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
@@ -266,9 +268,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick: OnActionClickFn<SystemMenuApi.Menu>,
-): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
   return [
     {
       field: 'name',
@@ -305,8 +305,8 @@ export function useGridColumns(
     },
     {
       field: 'componentName',
-      minWidth: 200,
       title: '组件名称',
+      minWidth: 200,
     },
     {
       field: 'status',
@@ -318,34 +318,10 @@ export function useGridColumns(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
+      width: 220,
       fixed: 'right',
-      align: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['system:menu:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:menu:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:menu:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

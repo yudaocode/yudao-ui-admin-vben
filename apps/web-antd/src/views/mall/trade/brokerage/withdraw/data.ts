@@ -1,7 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -12,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -21,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现类型',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_TYPE, 'number'),
       },
     },
@@ -31,7 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入账号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -40,7 +43,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入真实名字',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -49,7 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现银行',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_BANK_NAME, 'string'),
       },
     },
@@ -59,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_STATUS, 'number'),
       },
     },
@@ -69,7 +72,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

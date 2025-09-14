@@ -59,7 +59,6 @@ async function handleClose(row: MallPointActivityApi.PointActivity) {
 async function handleDelete(row: MallPointActivityApi.PointActivity) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.spuName]),
-    fullscreen: true,
   });
   try {
     await deletePointActivity(row.id);

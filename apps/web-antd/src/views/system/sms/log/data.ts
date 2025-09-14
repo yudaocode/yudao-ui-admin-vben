@@ -1,14 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemSmsLogApi } from '#/api/system/sms/log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -90,10 +93,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
     },
     {
       field: 'mobile',
       title: '手机号',
+      minWidth: 120,
     },
     {
       field: 'templateContent',
@@ -103,6 +114,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'sendStatus',
       title: '发送状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_SEND_STATUS },
@@ -111,11 +123,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'sendTime',
       title: '发送时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'receiveStatus',
       title: '接收状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS },
@@ -124,11 +138,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'receiveTime',
       title: '接收时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'channelCode',
       title: '短信渠道',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
@@ -137,10 +153,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateId',
       title: '模板编号',
+      minWidth: 100,
     },
     {
       field: 'templateType',
       title: '短信类型',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE },
@@ -149,6 +167,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -166,7 +185,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'mobile',
@@ -183,7 +204,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateType',
       label: '模板类型',
-      content: (data) => {
+      content: (data: SystemSmsLogApi.SmsLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE,
           value: data?.templateType,
@@ -197,7 +218,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendStatus',
       label: '发送状态',
-      content: (data) => {
+      content: (data: SystemSmsLogApi.SmsLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_SMS_SEND_STATUS,
           value: data?.sendStatus,
@@ -207,7 +228,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.sendTime || '') as string,
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
     },
     {
       field: 'apiSendCode',
@@ -220,7 +243,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'receiveStatus',
       label: '接收状态',
-      content: (data) => {
+      content: (data: SystemSmsLogApi.SmsLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_SMS_RECEIVE_STATUS,
           value: data?.receiveStatus,
@@ -230,7 +253,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'receiveTime',
       label: '接收时间',
-      content: (data) => formatDateTime(data?.receiveTime || '') as string,
+      content: (data: SystemSmsLogApi.SmsLog) => {
+        return formatDateTime(data?.receiveTime || '') as string;
+      },
     },
     {
       field: 'apiReceiveCode',
@@ -239,6 +264,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'apiReceiveMsg',
       label: 'API 接收消息',
+      span: 2,
     },
     {
       field: 'apiRequestId',

@@ -5,6 +5,7 @@ export * from './count-to';
 export * from './doc-alert';
 export * from './ellipsis-text';
 export * from './icon-picker';
+export * from './iframe';
 export * from './json-viewer';
 export * from './loading';
 export * from './page';

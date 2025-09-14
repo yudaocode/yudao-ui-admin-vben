@@ -2,7 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 
+import { ref } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -22,7 +25,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -33,22 +36,19 @@ function handleDetail(row: SystemNotifyMessageApi.NotifyMessage) {
 
 /** 标记一条站内信已读 */
 async function handleRead(row: SystemNotifyMessageApi.NotifyMessage) {
-  message.loading({
+  const hideLoading = message.loading({
     content: '正在标记已读...',
     duration: 0,
-    key: 'action_process_msg',
   });
-  // 执行标记已读操作
-  await updateNotifyMessageRead([row.id]);
-  // 提示成功
-  message.success({
-    content: '标记已读成功',
-    key: 'action_process_msg',
-  });
-  onRefresh();
-
-  // 打开详情
-  handleDetail(row);
+  try {
+    await updateNotifyMessageRead([row.id]);
+    message.success('标记已读成功');
+    handleRefresh();
+    // 打开详情
+    handleDetail(row);
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 标记选中的站内信为已读 */
@@ -62,39 +62,40 @@ async function handleMarkRead() {
   const ids = rows.map((row: SystemNotifyMessageApi.NotifyMessage) => row.id);
   const hideLoading = message.loading({
     content: '正在标记已读...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    // 执行标记已读操作
     await updateNotifyMessageRead(ids);
-    // 提示成功
-    message.success({
-      content: '标记已读成功',
-      key: 'action_key_msg',
-    });
+    checkedIds.value = [];
+    message.success('标记已读成功');
     await gridApi.grid.setAllCheckboxRow(false);
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNotifyMessageApi.NotifyMessage[];
+}) {
+  checkedIds.value = records.map((item) => item.id);
 }
 
 /** 标记所有站内信为已读 */
 async function handleMarkAllRead() {
   const hideLoading = message.loading({
     content: '正在标记全部已读...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    // 执行标记已读操作
     await updateAllNotifyMessageRead();
-    // 提示成功
-    message.success({
-      content: '全部标记已读成功',
-      key: 'action_key_msg',
-    });
+    message.success('全部标记已读成功');
+    checkedIds.value = [];
     await gridApi.grid.setAllCheckboxRow(false);
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -121,6 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -132,6 +134,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       highlight: true,
     },
   } as VxeTableGridOptions<SystemNotifyMessageApi.NotifyMessage>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 <template>
@@ -140,7 +146,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="站内信配置" url="https://doc.iocoder.cn/notify/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="我的站内信">
       <template #toolbar-tools>
         <TableAction
@@ -148,13 +154,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '标记已读',
               type: 'primary',
-              icon: 'mdi:checkbox-marked-circle-outline',
+              icon: ACTION_ICON.ADD,
+              disabled: isEmpty(checkedIds),
               onClick: handleMarkRead,
             },
             {
               label: '全部已读',
               type: 'primary',
-              icon: 'mdi:checkbox-marked-circle-outline',
+              icon: ACTION_ICON.ADD,
               onClick: handleMarkAllRead,
             },
           ]"
@@ -174,7 +181,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '已读',
               type: 'link',
               ifShow: !row.readStatus,
-              icon: ACTION_ICON.DELETE,
+              icon: ACTION_ICON.ADD,
               onClick: handleRead.bind(null, row),
             },
           ]"

@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { ref, watch } from 'vue';
@@ -37,48 +34,54 @@ const [DataFormModal, dataFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportDictData(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '字典数据.xls', source: data });
 }
 
 /** 创建字典数据 */
-function onCreate() {
+function handleCreate() {
   dataFormModalApi.setData({ dictType: props.dictType }).open();
 }
 
 /** 编辑字典数据 */
-function onEdit(row: any) {
+function handleEdit(row: SystemDictDataApi.DictData) {
   dataFormModalApi.setData(row).open();
 }
 
 /** 删除字典数据 */
-async function onDelete(row: any) {
+async function handleDelete(row: SystemDictDataApi.DictData) {
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
+    text: $t('ui.actionMessage.deleting', [row.label]),
   });
   try {
-    await deleteDictData(row.id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    await deleteDictData(row.id!);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.label]));
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除字典数据 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该字典数据吗？');
-  await deleteDictDataList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteDictDataList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -90,26 +93,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮回调 */
-function onActionClick({ code, row }: OnActionClickParams) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useDataGridFormSchema(),
   },
   gridOptions: {
-    columns: useDataGridColumns(onActionClick),
+    columns: useDataGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -126,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -143,7 +133,7 @@ watch(
   () => props.dictType,
   () => {
     if (props.dictType) {
-      onRefresh();
+      handleRefresh();
     }
   },
 );
@@ -151,7 +141,7 @@ watch(
 
 <template>
   <div class="flex h-full flex-col">
-    <DataFormModal @success="onRefresh" />
+    <DataFormModal @success="handleRefresh" />
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
@@ -162,14 +152,14 @@ watch(
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:dict:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:dict:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -177,7 +167,32 @@ watch(
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['system:dict:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:dict:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:dict:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.label]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

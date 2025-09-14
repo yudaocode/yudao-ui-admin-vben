@@ -1,12 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
 
-import { DICT_TYPE, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
-const { hasAccessByCodes } = useAccess();
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -16,7 +19,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户名称',
       },
     },
@@ -25,7 +28,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '登录地址',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入登录地址',
       },
     },
@@ -35,16 +38,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemLoginLogApi.LoginLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -91,25 +92,58 @@ export function useGridColumns<T = SystemLoginLogApi.LoginLog>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 120,
-      align: 'center',
+      width: 120,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'username',
-          nameTitle: '登录日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:login-log:query']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'logType',
+      label: '操作类型',
+      content: (data: SystemLoginLogApi.LoginLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_LOGIN_TYPE,
+          value: data?.logType,
+        });
+      },
+    },
+    {
+      field: 'username',
+      label: '用户名称',
+    },
+    {
+      field: 'userIp',
+      label: '登录地址',
+    },
+    {
+      field: 'userAgent',
+      label: '浏览器',
+    },
+    {
+      field: 'result',
+      label: '登录结果',
+      content: (data: SystemLoginLogApi.LoginLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_LOGIN_RESULT,
+          value: data?.result,
+        });
+      },
+    },
+    {
+      field: 'createTime',
+      label: '登录日期',
+      content: (data: SystemLoginLogApi.LoginLog) => {
+        return formatDateTime(data?.createTime || '') as string;
       },
     },
   ];

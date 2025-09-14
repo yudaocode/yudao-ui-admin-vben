@@ -5,13 +5,14 @@ import type { SystemUserProfileApi } from '#/api/system/user/profile';
 
 import { watch } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { updateUserProfile } from '#/api/system/user/profile';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const props = defineProps<{
   profile?: SystemUserProfileApi.UserProfileRespVO;

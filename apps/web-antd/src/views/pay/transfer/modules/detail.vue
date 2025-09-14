@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     title: '基本信息',
     bordered: false,
@@ -50,6 +50,6 @@ const [Description] = useDescription({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Description :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

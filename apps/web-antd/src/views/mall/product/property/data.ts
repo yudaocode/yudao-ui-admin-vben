@@ -45,7 +45,7 @@ export function usePropertyGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入名称',
-        clearable: true,
+        allowClear: true,
       },
     },
   ];
@@ -138,7 +138,7 @@ export function useValueGridFormSchema(): VbenFormSchema[] {
       label: '名称',
       component: 'Input',
       componentProps: {
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

@@ -7,13 +7,15 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
 import { getDataSourceConfigList } from '#/api/infra/data-source-config';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 导入数据库表的表单 */
 export function useImportTableFormSchema(): VbenFormSchema[] {
@@ -364,8 +366,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
         placeholder: '请输入表名称',
+        allowClear: true,
       },
     },
     {
@@ -373,8 +375,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        allowClear: true,
         placeholder: '请输入表描述',
+        allowClear: true,
       },
     },
     {
@@ -398,28 +400,34 @@ export function useGridColumns(
     {
       field: 'dataSourceConfigId',
       title: '数据源',
+      minWidth: 120,
       formatter: ({ cellValue }) => getDataSourceConfigName?.(cellValue) || '-',
     },
     {
       field: 'tableName',
       title: '表名称',
+      minWidth: 200,
     },
     {
       field: 'tableComment',
       title: '表描述',
+      minWidth: 200,
     },
     {
       field: 'className',
       title: '实体',
+      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'updateTime',
       title: '更新时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

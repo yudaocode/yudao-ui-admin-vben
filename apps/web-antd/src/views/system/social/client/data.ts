@@ -1,10 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { SystemUserSocialTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemUserSocialTypeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -100,6 +104,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
+        allowClear: true,
       },
     },
     {
@@ -128,6 +133,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户端编号',
+        allowClear: true,
       },
     },
     {
@@ -146,17 +152,21 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '应用名',
+      minWidth: 120,
     },
     {
       field: 'socialType',
       title: '社交平台',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
@@ -165,6 +175,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userType',
       title: '用户类型',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -173,10 +184,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'clientId',
       title: '客户端编号',
+      minWidth: 180,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -185,11 +198,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 130,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },

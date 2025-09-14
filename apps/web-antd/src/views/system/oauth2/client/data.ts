@@ -1,8 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -107,6 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入授权范围',
         mode: 'tags',
+        allowClear: true,
       },
     },
     {
@@ -177,6 +180,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
+        allowClear: true,
       },
     },
     {
@@ -195,21 +199,26 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'clientId',
       title: '客户端编号',
+      minWidth: 120,
     },
     {
       field: 'secret',
       title: '客户端密钥',
+      minWidth: 120,
     },
     {
       field: 'name',
       title: '应用名',
+      minWidth: 120,
     },
     {
       field: 'logo',
       title: '应用图标',
+      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -217,6 +226,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '状态',
+      minWidth: 80,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -225,20 +235,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'accessTokenValiditySeconds',
       title: '访问令牌的有效期',
+      minWidth: 150,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'refreshTokenValiditySeconds',
       title: '刷新令牌的有效期',
+      minWidth: 150,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'authorizedGrantTypes',
       title: '授权类型',
+      minWidth: 100,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

@@ -53,19 +53,17 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="mb-2">
-      <Input
-        placeholder="搜索部门"
-        allow-clear
-        v-model:value="searchValue"
-        @change="handleSearch"
-        class="w-full"
-      >
-        <template #prefix>
-          <Search class="size-4" />
-        </template>
-      </Input>
-    </div>
+    <Input
+      placeholder="搜索部门"
+      allow-clear
+      v-model:value="searchValue"
+      @change="handleSearch"
+      class="w-full"
+    >
+      <template #prefix>
+        <Search class="size-4" />
+      </template>
+    </Input>
     <Tree
       :spinning="loading"
       class="pt-2"

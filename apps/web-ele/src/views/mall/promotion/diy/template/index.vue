@@ -62,7 +62,6 @@ async function handleUse(row: MallDiyTemplateApi.DiyTemplate) {
 async function handleDelete(row: MallDiyTemplateApi.DiyTemplate) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDiyTemplate(row.id as number);

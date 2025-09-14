@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 
 import { ref } from 'vue';
@@ -42,61 +39,68 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportJob(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '定时任务.xls', source: data });
 }
 
 /** 创建任务 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑任务 */
-function onEdit(row: InfraJobApi.Job) {
+function handleEdit(row: InfraJobApi.Job) {
   formModalApi.setData(row).open();
 }
 
 /** 查看任务详情 */
-function onDetail(row: InfraJobApi.Job) {
+function handleDetail(row: InfraJobApi.Job) {
   detailModalApi.setData({ id: row.id }).open();
 }
 
 /** 更新任务状态 */
-async function onUpdateStatus(row: InfraJobApi.Job) {
+async function handleUpdateStatus(row: InfraJobApi.Job) {
   const status =
     row.status === InfraJobStatusEnum.STOP
       ? InfraJobStatusEnum.NORMAL
       : InfraJobStatusEnum.STOP;
   const statusText = status === InfraJobStatusEnum.NORMAL ? '启用' : '停用';
 
-  confirm({
-    content: `确定${statusText} ${row.name} 吗？`,
-  }).then(async () => {
-    await updateJobStatus(row.id as number, status);
-    // 提示成功
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
+  await confirm(`确定${statusText} ${row.name} 吗？`);
+  const loadingInstance = ElLoading.service({
+    text: `正在${statusText}中...`,
   });
+  try {
+    await updateJobStatus(row.id!, status);
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 执行一次任务 */
-async function onTrigger(row: InfraJobApi.Job) {
-  confirm({
-    content: `确定执行一次 ${row.name} 吗？`,
-  }).then(async () => {
-    await runJob(row.id as number);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+async function handleTrigger(row: InfraJobApi.Job) {
+  await confirm(`确定执行一次 ${row.name} 吗？`);
+  const loadingInstance = ElLoading.service({
+    text: '正在执行中...',
   });
+  try {
+    await runJob(row.id!);
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 跳转到任务日志 */
-function onLog(row?: InfraJobApi.Job) {
+function handleLog(row?: InfraJobApi.Job) {
   push({
     name: 'InfraJobLog',
     query: row?.id ? { id: row.id } : {},
@@ -104,27 +108,33 @@ function onLog(row?: InfraJobApi.Job) {
 }
 
 /** 删除任务 */
-async function onDelete(row: InfraJobApi.Job) {
+async function handleDelete(row: InfraJobApi.Job) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
-    await deleteJob(row.id as number);
+    await deleteJob(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除任务 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该任务吗？');
-  await deleteJobList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteJobList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -132,42 +142,12 @@ function handleRowCheckboxChange({ records }: { records: InfraJobApi.Job[] }) {
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<InfraJobApi.Job>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'log': {
-      onLog(row);
-      break;
-    }
-    case 'trigger': {
-      onTrigger(row);
-      break;
-    }
-    case 'update-status': {
-      onUpdateStatus(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -183,6 +163,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -204,7 +185,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="消息队列" url="https://doc.iocoder.cn/message-queue/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <DetailModal />
     <Grid table-title="定时任务列表">
       <template #toolbar-tools>
@@ -215,21 +196,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['infra:job:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['infra:job:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
             {
               label: '执行日志',
               type: 'primary',
-              icon: ACTION_ICON.MORE,
+              icon: 'lucide:history',
               auth: ['infra:job:query'],
-              onClick: () => onLog(undefined),
+              onClick: () => handleLog(undefined),
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -237,7 +218,73 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['infra:job:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['infra:job:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '开启',
+              type: 'primary',
+              link: true,
+              icon: 'lucide:circle-play',
+              auth: ['infra:job:update'],
+              ifShow: () => row.status === InfraJobStatusEnum.STOP,
+              onClick: handleUpdateStatus.bind(null, row),
+            },
+            {
+              label: '暂停',
+              type: 'primary',
+              link: true,
+              icon: 'lucide:circle-pause',
+              auth: ['infra:job:update'],
+              ifShow: () => row.status === InfraJobStatusEnum.NORMAL,
+              onClick: handleUpdateStatus.bind(null, row),
+            },
+            {
+              label: '执行',
+              type: 'primary',
+              link: true,
+              icon: 'lucide:clock-plus',
+              auth: ['infra:job:trigger'],
+              onClick: handleTrigger.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.detail'),
+              type: 'primary',
+              link: true,
+              auth: ['infra:job:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: '日志',
+              type: 'primary',
+              link: true,
+              auth: ['infra:job:query'],
+              onClick: handleLog.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              auth: ['infra:job:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

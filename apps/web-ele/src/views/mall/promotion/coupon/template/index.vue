@@ -46,7 +46,6 @@ function handleCreate() {
 async function handleDelete(row: MallCouponTemplateApi.CouponTemplate) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCouponTemplate(row.id as number);
@@ -71,7 +70,6 @@ async function handleStatusChange(row: MallCouponTemplateApi.CouponTemplate) {
   const text = row.status === CommonStatusEnum.ENABLE ? '启用' : '停用';
   const loadingInstance = ElLoading.service({
     text: `正在${text}优惠券模板...`,
-    fullscreen: true,
   });
   try {
     await updateCouponTemplateStatus(row.id as number, row.status as 0 | 1);

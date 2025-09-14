@@ -1,5 +1,3 @@
-import type { Dayjs } from 'dayjs';
-
 import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
@@ -26,7 +24,7 @@ export namespace Demo03StudentApi {
     id: number; // 编号
     name?: string; // 名字
     sex?: number; // 性别
-    birthday?: Dayjs | string; // 出生日期
+    birthday?: Date | string; // 出生日期
     description?: string; // 简介
   }
 }

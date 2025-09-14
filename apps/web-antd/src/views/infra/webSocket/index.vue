@@ -99,7 +99,7 @@ watchEffect(() => {
 
 /** 发送消息 */
 const sendText = ref(''); // 发送内容
-const sendUserId = ref(''); // 发送人
+const sendUserId = ref('all'); // 发送人
 function handlerSend() {
   if (!sendText.value.trim()) {
     message.warning('消息内容不能为空');
@@ -109,7 +109,7 @@ function handlerSend() {
   // 1.1 先 JSON 化 message 消息内容
   const messageContent = JSON.stringify({
     text: sendText.value,
-    toUserId: sendUserId.value,
+    toUserId: sendUserId.value === 'all' ? undefined : sendUserId.value,
   });
   // 1.2 再 JSON 化整个消息
   const jsonMessage = JSON.stringify({

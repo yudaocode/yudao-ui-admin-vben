@@ -16,11 +16,8 @@ const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    componentProps: {
-      class: 'w-full',
-    },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
   schema: useImportFormSchema(),
@@ -55,7 +52,7 @@ function beforeUpload(file: UploadRawFile) {
 }
 
 /** 下载模版 */
-async function onDownload() {
+async function handleDownload() {
   const data = await importUserTemplate();
   downloadFileFromBlobPart({ fileName: '用户导入模板.xls', source: data });
 }
@@ -79,7 +76,7 @@ async function onDownload() {
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <ElButton @click="onDownload"> 下载导入模板 </ElButton>
+        <ElButton @click="handleDownload"> 下载导入模板 </ElButton>
       </div>
     </template>
   </Modal>

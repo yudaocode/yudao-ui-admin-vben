@@ -12,7 +12,7 @@ defineProps<{
   contact: CrmContactApi.Contact; // 联系人信息
 }>();
 
-const [BaseDescription] = useDescription({
+const [BaseDescriptions] = useDescription({
   componentProps: {
     title: '基本信息',
     bordered: false,
@@ -22,7 +22,7 @@ const [BaseDescription] = useDescription({
   schema: useDetailBaseSchema(),
 });
 
-const [SystemDescription] = useDescription({
+const [SystemDescriptions] = useDescription({
   componentProps: {
     title: '系统信息',
     bordered: false,
@@ -35,8 +35,8 @@ const [SystemDescription] = useDescription({
 
 <template>
   <div class="p-4">
-    <BaseDescription :data="contact" />
+    <BaseDescriptions :data="contact" />
     <Divider />
-    <SystemDescription :data="contact" />
+    <SystemDescriptions :data="contact" />
   </div>
 </template>

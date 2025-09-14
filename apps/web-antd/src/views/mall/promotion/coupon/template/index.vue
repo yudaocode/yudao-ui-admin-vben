@@ -5,6 +5,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 
 import { message, Switch } from 'ant-design-vue';
@@ -15,7 +16,6 @@ import {
   getCouponTemplatePage,
   updateCouponTemplateStatus,
 } from '#/api/mall/promotion/coupon/couponTemplate';
-import { CommonStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -77,7 +77,7 @@ async function handleStatusChange(row: MallCouponTemplateApi.CouponTemplate) {
     key: 'status_key_msg',
   });
   try {
-    await updateCouponTemplateStatus(row.id as number, row.status as number);
+    await updateCouponTemplateStatus(row.id, row.status as 0 | 1);
     message.success({
       content: `${text}成功`,
       key: 'status_key_msg',

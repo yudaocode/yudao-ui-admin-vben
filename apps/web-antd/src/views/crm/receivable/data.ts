@@ -1,6 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 
 import { getContractSimpleList } from '#/api/crm/contract';
@@ -10,7 +12,6 @@ import {
   getReceivablePlanSimpleList,
 } from '#/api/crm/receivable/plan';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -45,6 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择负责人',
+        allowClear: true,
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -163,13 +165,16 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-// TODO @xingyu：缺少 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'no',
       label: '回款编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入回款编号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'customerId',
@@ -182,6 +187,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
+        allowClear: true,
       },
     },
   ];

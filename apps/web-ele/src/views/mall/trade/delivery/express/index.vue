@@ -48,7 +48,6 @@ function handleEdit(row: MallDeliveryExpressApi.DeliveryExpress) {
 async function handleDelete(row: MallDeliveryExpressApi.DeliveryExpress) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteDeliveryExpress(row.id as number);

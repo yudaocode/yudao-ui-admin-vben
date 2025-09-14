@@ -2,11 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Search } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAreaTree } from '#/api/system/area';
 
 import { useGridColumns } from './data';
@@ -18,7 +15,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -44,6 +41,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -62,13 +60,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="地区 & IP" url="https://doc.iocoder.cn/area-and-ip/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="地区列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="handleQueryIp">
-          <Search class="size-5" />
-          IP 查询
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: 'IP 查询',
+              type: 'primary',
+              icon: ACTION_ICON.SEARCH,
+              onClick: handleQueryIp,
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import type { DictDataType } from '@vben/hooks';
+
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { floatToFixed2 } from '@vben/utils';
 
@@ -25,7 +29,6 @@ import {
 import * as ProductBrandApi from '#/api/mall/product/brand';
 import * as ProductCategoryApi from '#/api/mall/product/category';
 import * as ProductSpuApi from '#/api/mall/product/spu';
-import { DICT_TYPE, getIntDictOptions } from '#/utils/dict';
 
 interface Category {
   id: number;
@@ -38,13 +41,6 @@ interface Brand {
   name: string;
 }
 
-interface DictData {
-  value: number | string;
-  label: string;
-  colorType?: string;
-  cssClass?: string;
-}
-
 const { push } = useRouter(); // 路由
 const { params } = useRoute(); // 查询参数
 
@@ -52,7 +48,7 @@ const formLoading = ref(false); // 表单的加载中：1）修改时的数据�
 const activeTab = ref('basic'); // 当前激活的标签页
 const categoryList = ref<Category[]>([]); // 商品分类列表
 const brandList = ref<Brand[]>([]); // 商品品牌列表
-const deliveryTypeDict = ref<DictData[]>([]); // 配送方式字典
+const deliveryTypeDict = ref<DictDataType[]>([]); // 配送方式字典
 
 // SPU 表单数据
 const formData = ref<MallSpuApi.Spu>({
@@ -90,8 +86,13 @@ const formData = ref<MallSpuApi.Spu>({
 /** 获取配送方式字典 */
 const getDeliveryTypeDict = async () => {
   try {
-    deliveryTypeDict.value = await getIntDictOptions(
+    deliveryTypeDict.value = await getDictOptions(
       DICT_TYPE.TRADE_DELIVERY_TYPE,
+      'number',
+    );
+    deliveryTypeDict.value = await getDictOptions(
+      DICT_TYPE.TRADE_DELIVERY_TYPE,
+      'number',
     );
   } catch (error) {
     console.error('获取配送方式字典失败', error);

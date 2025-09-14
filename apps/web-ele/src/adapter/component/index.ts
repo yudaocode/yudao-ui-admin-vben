@@ -66,6 +66,12 @@ const ElInputNumber = defineAsyncComponent(() =>
     import('element-plus/es/components/input-number/style/css'),
   ]).then(([res]) => res.ElInputNumber),
 );
+const ElInputTag = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/input-tag/index'),
+    import('element-plus/es/components/input-tag/style/css'),
+  ]).then(([res]) => res.ElInputTag),
+);
 const ElRadio = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/radio/index'),
@@ -175,6 +181,7 @@ export type ComponentType =
   | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
+  | 'InputTag'
   | 'RadioGroup'
   | 'RangePicker'
   | 'RichTextarea'
@@ -266,6 +273,7 @@ async function initComponentAdapter() {
     }),
     Input: withDefaultPlaceholder(ElInput, 'input'),
     InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+    InputTag: withDefaultPlaceholder(ElInputTag, 'input'),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {

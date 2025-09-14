@@ -6,7 +6,7 @@ import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -49,7 +49,7 @@ const [PreviewModal, previewModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -73,12 +73,28 @@ async function handleDelete(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.tableName]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteCodegenTable(row.id);
     message.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
-    onRefresh();
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除代码生成配置 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteCodegenTableList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -93,36 +109,16 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 批量删除代码生成配置 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteCodegenTableList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
 /** 同步数据库 */
 async function handleSync(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating', [row.tableName]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await syncCodegenFromDB(row.id);
-    message.success({
-      content: $t('ui.actionMessage.updateSuccess', [row.tableName]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -132,7 +128,7 @@ async function handleSync(row: InfraCodegenApi.CodegenTable) {
 async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
   const hideLoading = message.loading({
     content: '正在生成代码...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     const res = await downloadCodegen(row.id);
@@ -143,10 +139,7 @@ async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
     link.download = `codegen-${row.className}.zip`;
     link.click();
     window.URL.revokeObjectURL(url);
-    message.success({
-      content: '代码生成成功',
-      key: 'action_key_msg',
-    });
+    message.success('代码生成成功');
   } finally {
     hideLoading();
   }
@@ -187,6 +180,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 获取数据源配置列表 */
+// TODO @芋艿：这种场景的最佳实践；
 async function initDataSourceConfig() {
   try {
     dataSourceConfigList.value = await getDataSourceConfigList();
@@ -216,7 +210,7 @@ initDataSourceConfig();
       <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
     </template>
 
-    <ImportModal @success="onRefresh" />
+    <ImportModal @success="handleRefresh" />
     <PreviewModal />
     <Grid table-title="代码生成列表">
       <template #toolbar-tools>
@@ -230,11 +224,11 @@ initDataSourceConfig();
               onClick: handleImport,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['infra:codegen:delete'],
               onClick: handleDeleteBatch,
             },

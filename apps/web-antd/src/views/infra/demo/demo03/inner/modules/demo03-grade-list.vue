@@ -31,11 +31,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 刷新表格 */
-const onRefresh = async () => {
+async function onRefresh() {
   await gridApi.grid.loadData([
     await getDemo03GradeByStudentId(props.studentId!),
   ]);
-};
+}
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(

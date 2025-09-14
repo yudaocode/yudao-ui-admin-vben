@@ -33,7 +33,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 90,
   },
   layout: 'horizontal',
   schema: useDataFormSchema(),
@@ -65,27 +65,21 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<
-      SystemDictDataApi.DictData | { dictType?: string }
-    >();
-
-    // 如果有ID，表示是编辑
-    if (data && 'id' in data && data.id) {
-      modalApi.lock();
-      try {
-        formData.value = await getDictData(data.id);
-        // 设置到 values
-        if (formData.value) {
-          await formApi.setValues(formData.value);
-        }
-      } finally {
-        modalApi.unlock();
+    const data = modalApi.getData<SystemDictDataApi.DictData>();
+    if (!data || !data.id) {
+      // 设置 dictType
+      await formApi.setValues(data);
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getDictData(data.id);
+      // 设置到 values
+      if (formData.value) {
+        await formApi.setValues(formData.value);
       }
-    } else if (data && 'dictType' in data && data.dictType) {
-      // 新增时，如果传入了dictType，则需要设置
-      await formApi.setValues({
-        dictType: data.dictType,
-      });
+    } finally {
+      modalApi.unlock();
     }
   },
 });

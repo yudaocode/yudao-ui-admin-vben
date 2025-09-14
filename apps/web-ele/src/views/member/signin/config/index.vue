@@ -40,7 +40,6 @@ function handleEdit(row: MemberSignInConfigApi.SignInConfig) {
 async function handleDelete(row: MemberSignInConfigApi.SignInConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    fullscreen: true,
   });
   try {
     await deleteSignInConfig(row.id as number);

@@ -16,13 +16,13 @@ import Memory from './modules/memory.vue';
 const redisData = ref<InfraRedisApi.RedisMonitorInfo>();
 
 /** 统一加载 Redis 数据 */
-const loadRedisData = async () => {
+async function loadRedisData() {
   try {
     redisData.value = await getRedisMonitorInfo();
   } catch (error) {
     console.error('加载 Redis 数据失败', error);
   }
-};
+}
 
 onMounted(() => {
   loadRedisData();

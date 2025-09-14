@@ -34,6 +34,7 @@ export function useGridColumns(): VxeTableGridOptions<SystemAreaApi.Area>['colum
     {
       field: 'id',
       title: '地区编码',
+      minWidth: 120,
       align: 'left',
       fixed: 'left',
       treeNode: true,
@@ -41,6 +42,7 @@ export function useGridColumns(): VxeTableGridOptions<SystemAreaApi.Area>['colum
     {
       field: 'name',
       title: '地区名称',
+      minWidth: 200,
     },
   ];
 }

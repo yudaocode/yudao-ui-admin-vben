@@ -61,7 +61,7 @@ async function submitForm() {
   // 提交表单
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.updating'),
-    key: 'action_process_msg',
+    duration: 0,
   });
   try {
     // 拼接相关信息
@@ -73,10 +73,7 @@ async function submitForm() {
       columns,
     });
     // 关闭并提示
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
     close();
   } catch (error) {
     console.error('保存失败', error);
@@ -84,8 +81,9 @@ async function submitForm() {
     hideLoading();
   }
 }
-const tabs = useTabs();
+
 /** 返回列表 */
+const tabs = useTabs();
 function close() {
   tabs.closeCurrentTab();
   router.push('/infra/codegen');

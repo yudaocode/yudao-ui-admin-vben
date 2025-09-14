@@ -54,7 +54,6 @@ const handleViewSpu = (id: number) => {
 async function handleDelete(row: MallCategoryApi.Category) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCategory(row.id as number);

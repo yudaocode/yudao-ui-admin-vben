@@ -48,6 +48,7 @@ export function getRangePickerDefaultProps() {
       format: 'HH:mm:ss',
     },
     transformDateFunc: (dates: any) => {
+      // TODO @xingyu：貌似这个没用？？？
       if (dates && dates.length === 2) {
         // 格式化为后台支持的时间格式
         return [dates.createTime[0], dates.createTime[1]].join(',');

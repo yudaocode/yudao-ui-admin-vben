@@ -1,11 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, UserTypeEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, UserTypeEnum } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -175,7 +177,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'userId',
-      label: '接收人ID',
+      label: '接收人 ID',
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
@@ -225,26 +227,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '模板名称',
+      minWidth: 120,
     },
     {
       field: 'code',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       field: 'nickname',
       title: '发送人名称',
+      minWidth: 120,
     },
     {
       field: 'content',
       title: '模板内容',
+      minWidth: 200,
     },
     {
       field: 'type',
       title: '模板类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
@@ -253,6 +261,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -261,10 +270,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'remark',
       title: '备注',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

@@ -18,7 +18,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,6 +54,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -69,7 +70,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="操作日志列表">
       <template #toolbar-tools>
         <TableAction

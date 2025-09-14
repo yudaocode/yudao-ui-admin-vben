@@ -41,7 +41,6 @@ function handleEdit(row: PayAppApi.App) {
 async function handleDelete(row: PayAppApi.App) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteApp(row.id as number);

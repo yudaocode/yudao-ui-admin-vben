@@ -12,7 +12,7 @@ import { useDetailSchema } from '../data';
 
 const detailData = ref<PayOrderApi.Order>();
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 2,
@@ -48,6 +48,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Description :data="detailData" />
+    <Descriptions :data="detailData" />
   </Modal>
 </template>

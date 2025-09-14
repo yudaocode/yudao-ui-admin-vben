@@ -12,7 +12,7 @@ defineProps<{
   clue: CrmClueApi.Clue; // 线索信息
 }>();
 
-const [BaseDescription] = useDescription({
+const [BaseDescriptions] = useDescription({
   componentProps: {
     title: '基本信息',
     bordered: false,
@@ -22,7 +22,7 @@ const [BaseDescription] = useDescription({
   schema: useDetailBaseSchema(),
 });
 
-const [SystemDescription] = useDescription({
+const [SystemDescriptions] = useDescription({
   componentProps: {
     title: '系统信息',
     bordered: false,
@@ -35,8 +35,8 @@ const [SystemDescription] = useDescription({
 
 <template>
   <div class="p-4">
-    <BaseDescription :data="clue" />
+    <BaseDescriptions :data="clue" />
     <Divider />
-    <SystemDescription :data="clue" />
+    <SystemDescriptions :data="clue" />
   </div>
 </template>

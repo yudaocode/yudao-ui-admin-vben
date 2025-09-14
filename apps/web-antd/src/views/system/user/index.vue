@@ -6,6 +6,8 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { Card, message } from 'ant-design-vue';
@@ -19,7 +21,6 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';
@@ -49,7 +50,7 @@ const [ImportModal, importModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -61,10 +62,9 @@ async function handleExport() {
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-
 async function handleDeptSelect(dept: SystemDeptApi.Dept) {
   searchDeptId.value = dept.id;
-  onRefresh();
+  handleRefresh();
 }
 
 /** 创建用户 */
@@ -86,15 +86,29 @@ function handleEdit(row: SystemUserApi.User) {
 async function handleDelete(row: SystemUserApi.User) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.username]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteUser(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.username]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.username]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除用户 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteUserList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -107,23 +121,6 @@ function handleRowCheckboxChange({
   records: SystemUserApi.User[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 批量删除用户 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteUserList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
 }
 
 /** 重置密码 */
@@ -209,10 +206,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <ResetPasswordModal @success="onRefresh" />
-    <AssignRoleModal @success="onRefresh" />
-    <ImportModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <ResetPasswordModal @success="handleRefresh" />
+    <AssignRoleModal @success="handleRefresh" />
+    <ImportModal @success="handleRefresh" />
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
@@ -247,11 +244,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   onClick: handleImport,
                 },
                 {
-                  label: '批量删除',
+                  label: $t('ui.actionTitle.deleteBatch'),
                   type: 'primary',
                   danger: true,
-                  disabled: isEmpty(checkedIds),
                   icon: ACTION_ICON.DELETE,
+                  disabled: isEmpty(checkedIds),
                   auth: ['system:user:delete'],
                   onClick: handleDeleteBatch,
                 },

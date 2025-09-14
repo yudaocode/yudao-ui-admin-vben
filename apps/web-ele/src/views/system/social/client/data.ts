@@ -1,14 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemSocialClientApi } from '#/api/system/social/client';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
-import { SystemUserSocialTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemUserSocialTypeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -104,6 +104,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
+        clearable: true,
       },
     },
     {
@@ -113,7 +114,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SOCIAL_TYPE, 'number'),
         placeholder: '请选择社交平台',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -123,7 +124,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
         placeholder: '请选择用户类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -132,6 +133,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户端编号',
+        clearable: true,
       },
     },
     {
@@ -141,25 +143,20 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
-      minWidth: 80,
+      minWidth: 100,
     },
     {
       field: 'name',
@@ -169,7 +166,7 @@ export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
     {
       field: 'socialType',
       title: '社交平台',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_SOCIAL_TYPE },
@@ -178,7 +175,7 @@ export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
     {
       field: 'userType',
       title: '用户类型',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -192,7 +189,7 @@ export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
     {
       field: 'status',
       title: '状态',
-      minWidth: 80,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -205,29 +202,10 @@ export function useGridColumns<T = SystemSocialClientApi.SocialClient>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '社交客户端',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:social-client:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:social-client:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

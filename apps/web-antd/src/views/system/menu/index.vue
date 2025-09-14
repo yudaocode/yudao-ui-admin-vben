@@ -23,7 +23,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -34,7 +34,7 @@ function handleCreate() {
 
 /** 添加下级菜单 */
 function handleAppend(row: SystemMenuApi.Menu) {
-  formModalApi.setData({ pid: row.id }).open();
+  formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 编辑菜单 */
@@ -46,15 +46,12 @@ function handleEdit(row: SystemMenuApi.Menu) {
 async function handleDelete(row: SystemMenuApi.Menu) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteMenu(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -62,7 +59,7 @@ async function handleDelete(row: SystemMenuApi.Menu) {
 
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(false);
-function toggleExpand() {
+function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
@@ -84,6 +81,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -94,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       transform: true,
       reserve: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<SystemMenuApi.Menu>,
 });
 </script>
 
@@ -108,8 +106,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="菜单路由" url="https://doc.iocoder.cn/vue3/route/" />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <Grid>
+    <FormModal @success="handleRefresh" />
+    <Grid table-title="菜单列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -123,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
-              onClick: toggleExpand,
+              onClick: handleExpand,
             },
           ]"
         />

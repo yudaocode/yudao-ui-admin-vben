@@ -1,13 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemLoginLogApi } from '#/api/system/login-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -48,10 +50,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 100,
     },
     {
       field: 'logType',
       title: '操作类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_LOGIN_TYPE },
@@ -60,18 +64,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'username',
       title: '用户名称',
+      minWidth: 180,
     },
     {
       field: 'userIp',
       title: '登录地址',
+      minWidth: 180,
     },
     {
       field: 'userAgent',
       title: '浏览器',
+      minWidth: 200,
     },
     {
       field: 'result',
       title: '登录结果',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_LOGIN_RESULT },
@@ -80,11 +88,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '登录日期',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -101,7 +110,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'logType',
       label: '操作类型',
-      content: (data) => {
+      content: (data: SystemLoginLogApi.LoginLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_LOGIN_TYPE,
           value: data?.logType,
@@ -123,7 +132,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'result',
       label: '登录结果',
-      content: (data) => {
+      content: (data: SystemLoginLogApi.LoginLog) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_LOGIN_RESULT,
           value: data?.result,
@@ -133,7 +142,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '登录日期',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemLoginLogApi.LoginLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
   ];
 }

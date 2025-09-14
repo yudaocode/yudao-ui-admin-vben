@@ -6,6 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -33,6 +34,7 @@ const [Form, formApi] = useVbenForm({
     formItemClass: 'col-span-2',
     labelWidth: 120,
   },
+  fieldMappingTime: [['rangeTime', ['openingTime', 'closingTime'], 'HH:mm']],
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -73,6 +75,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getDeliveryPickUpStore(data.id);
+      formData.value.rangeTime = [
+        dayjs(formData.value.openingTime, 'HH:mm'),
+        dayjs(formData.value.closingTime, 'HH:mm'),
+      ];
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

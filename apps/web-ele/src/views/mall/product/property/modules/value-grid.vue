@@ -49,7 +49,6 @@ function handleEdit(row: MallPropertyApi.PropertyValue) {
 async function handleDelete(row: MallPropertyApi.PropertyValue) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deletePropertyValue(row.id as number);

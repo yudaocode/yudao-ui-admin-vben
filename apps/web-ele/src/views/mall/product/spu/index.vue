@@ -100,7 +100,6 @@ function handleEdit(row: MallSpuApi.Spu) {
 async function handleDelete(row: MallSpuApi.Spu) {
   const hideLoading = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSpu(row.id as number);

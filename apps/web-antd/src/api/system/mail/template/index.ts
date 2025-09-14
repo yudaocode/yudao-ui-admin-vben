@@ -19,7 +19,7 @@ export namespace SystemMailTemplateApi {
   }
 
   /** 邮件发送信息 */
-  export interface MailSendReq {
+  export interface MailSendReqVO {
     toMails: string[];
     ccMails?: string[];
     bccMails?: string[];
@@ -66,6 +66,6 @@ export function deleteMailTemplateList(ids: number[]) {
 }
 
 /** 发送邮件 */
-export function sendMail(data: SystemMailTemplateApi.MailSendReq) {
+export function sendMail(data: SystemMailTemplateApi.MailSendReqVO) {
   return requestClient.post('/system/mail-template/send-mail', data);
 }

@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraFileConfigApi } from '#/api/infra/file-config';
 
 import { ref } from 'vue';
@@ -31,40 +28,38 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 创建文件配置 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑文件配置 */
-function onEdit(row: InfraFileConfigApi.FileConfig) {
+function handleEdit(row: InfraFileConfigApi.FileConfig) {
   formModalApi.setData(row).open();
 }
 
 /** 设为主配置 */
-async function onMaster(row: InfraFileConfigApi.FileConfig) {
+async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.updating', [row.name]),
-    fullscreen: true,
   });
   try {
     await updateFileConfigMaster(row.id as number);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
+    handleRefresh();
   } catch {
     loadingInstance.close();
   }
 }
 
 /** 测试文件配置 */
-async function onTest(row: InfraFileConfigApi.FileConfig) {
+async function handleTest(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: '测试上传中...',
-    fullscreen: true,
   });
   try {
     const response = await testFileConfig(row.id as number);
@@ -84,27 +79,33 @@ async function onTest(row: InfraFileConfigApi.FileConfig) {
 }
 
 /** 删除文件配置 */
-async function onDelete(row: InfraFileConfigApi.FileConfig) {
+async function handleDelete(row: InfraFileConfigApi.FileConfig) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteFileConfig(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除文件配置 */
-async function onDeleteBatch() {
-  await confirm('确定要批量删除该文件配置吗？');
-  await deleteFileConfigList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  onRefresh();
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteFileConfigList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -116,37 +117,12 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraFileConfigApi.FileConfig>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'master': {
-      onMaster(row);
-      break;
-    }
-    case 'test': {
-      onTest(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -162,6 +138,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -177,7 +154,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="文件配置列表">
       <template #toolbar-tools>
         <TableAction
@@ -187,7 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['infra:file-config:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -195,7 +172,52 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['infra:file-config:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['infra:file-config:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '测试',
+              type: 'primary',
+              link: true,
+              icon: 'lucide:test-tube-diagonal',
+              auth: ['infra:file-config:update'],
+              onClick: handleTest.bind(null, row),
+            },
+            {
+              label: '主配置',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:file-config:update'],
+              disabled: row.master,
+              popConfirm: {
+                title: `是否要将${row.name}设为主配置？`,
+                confirm: handleMaster.bind(null, row),
+              },
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:file-config:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

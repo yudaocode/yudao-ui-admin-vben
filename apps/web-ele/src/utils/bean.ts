@@ -10,6 +10,7 @@ export const copyValueToTarget = (target: any, source: any) => {
   Object.keys(newObj).forEach((key) => {
     // 如果不是target中的属性则删除
     if (!Object.keys(target).includes(key)) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete newObj[key];
     }
   });

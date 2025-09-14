@@ -1,18 +1,28 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
-
-import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 import { getJobLog } from '#/api/infra/job-log';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
+
+import { useDetailSchema } from '../data';
 
 const formData = ref<InfraJobLogApi.JobLog>();
+
+const [Descriptions] = useDescription({
+  componentProps: {
+    border: true,
+    column: 1,
+    direction: 'horizontal',
+    title: '',
+    extra: '',
+    labelWidth: 140,
+  },
+  schema: useDetailSchema(),
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -42,44 +52,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions
-      :column="1"
-      border
-      size="default"
-      class="mx-4"
-      :label-width="140"
-    >
-      <ElDescriptionsItem label="日志编号">
-        {{ formData?.id }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="任务编号">
-        {{ formData?.jobId }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="处理器的名字">
-        {{ formData?.handlerName }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="处理器的参数">
-        {{ formData?.handlerParam }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="第几次执行">
-        {{ formData?.executeIndex }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="执行时间">
-        {{ formData?.beginTime ? formatDateTime(formData.beginTime) : '' }} ~
-        {{ formData?.endTime ? formatDateTime(formData.endTime) : '' }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="执行时长">
-        {{ formData?.duration ? `${formData.duration} 毫秒` : '' }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="任务状态">
-        <DictTag
-          :type="DICT_TYPE.INFRA_JOB_LOG_STATUS"
-          :value="formData?.status"
-        />
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="执行结果">
-        {{ formData?.result }}
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Descriptions :data="formData" />
   </Modal>
 </template>

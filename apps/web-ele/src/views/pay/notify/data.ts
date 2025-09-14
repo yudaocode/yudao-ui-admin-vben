@@ -2,7 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getAppList } from '#/api/pay/app';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 // TODO @霖：缺少 placeholder
@@ -29,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '通知类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_TYPE, 'number'),
       },
     },
@@ -43,7 +46,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '通知状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_NOTIFY_STATUS, 'number'),
       },
     },
@@ -58,7 +61,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

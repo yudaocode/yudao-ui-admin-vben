@@ -1,14 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemRoleApi } from '#/api/system/role';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
-import { CommonStatusEnum, SystemDataScopeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemDataScopeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -156,19 +157,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '角色名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入角色名称',
+        clearable: true,
+      },
     },
     {
       fieldName: 'code',
       label: '角色标识',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入角色标识',
+        clearable: true,
+      },
     },
     {
       fieldName: 'status',
       label: '角色状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择角色状态',
+        clearable: true,
       },
     },
     {
@@ -177,25 +187,20 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemRoleApi.Role>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '角色编号',
-      minWidth: 200,
+      minWidth: 100,
     },
     {
       field: 'name',
@@ -242,41 +247,10 @@ export function useGridColumns<T = SystemRoleApi.Role>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
       width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '角色',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:role:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:role:delete']),
-          },
-          {
-            code: 'assign-data-permission',
-            text: '数据权限',
-            show: hasAccessByCodes([
-              'system:permission:assign-role-data-scope',
-            ]),
-          },
-          {
-            code: 'assign-menu',
-            text: '菜单权限',
-            show: hasAccessByCodes(['system:permission:assign-role-menu']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

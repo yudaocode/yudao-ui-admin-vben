@@ -8,7 +8,10 @@ import { ElTag } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getExperienceRecordPage } from '#/api/member/experience-record';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 const props = defineProps<{
   userId: number;
@@ -22,7 +25,7 @@ const [Grid] = useVbenVxeGrid({
         label: '业务类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(
             DICT_TYPE.MEMBER_EXPERIENCE_BIZ_TYPE,
             'number',
@@ -40,7 +43,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
     ],
