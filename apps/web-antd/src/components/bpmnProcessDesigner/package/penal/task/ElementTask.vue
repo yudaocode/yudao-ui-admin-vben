@@ -1,15 +1,21 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-import { Form } from 'ant-design-vue';
+import { Checkbox, Form, FormItem } from 'ant-design-vue';
 
 import { installedComponent } from './data';
 
 defineOptions({ name: 'ElementTaskConfig' });
 
 const props = defineProps({
-  id: String,
-  type: String,
+  id: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
 });
 const taskConfigForm = ref({
   asyncAfter: false,
@@ -47,6 +53,7 @@ watch(
   () => props.type,
   () => {
     if (props.type) {
+      // @ts-ignore
       witchTaskComponent.value = installedComponent[props.type].component;
     }
   },
@@ -58,7 +65,7 @@ watch(
   <div class="panel-tab__content">
     <Form :label-col="{ span: 9 }" :wrapper-col="{ span: 15 }">
       <!-- add by 芋艿：由于「异步延续」暂时用不到，所以这里 display 为 none -->
-      <Form.Item label="异步延续" style="display: none">
+      <FormItem label="异步延续" style="display: none">
         <Checkbox
           v-model:checked="taskConfigForm.asyncBefore"
           @change="changeTaskAsync"
@@ -78,7 +85,7 @@ watch(
         >
           排除
         </Checkbox>
-      </Form.Item>
+      </FormItem>
       <component :is="witchTaskComponent" v-bind="$props" />
     </Form>
   </div>
