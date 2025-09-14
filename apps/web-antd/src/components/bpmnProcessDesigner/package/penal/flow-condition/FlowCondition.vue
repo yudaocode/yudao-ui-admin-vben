@@ -2,7 +2,6 @@
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
 import { Form, Input, Select } from 'ant-design-vue';
-const { TextArea } = Input;
 
 defineOptions({ name: 'FlowCondition' });
 
@@ -16,6 +15,8 @@ const props = defineProps({
     default: '',
   },
 });
+
+const { TextArea } = Input;
 
 const flowConditionForm = ref<any>({});
 const bpmnElement = ref();

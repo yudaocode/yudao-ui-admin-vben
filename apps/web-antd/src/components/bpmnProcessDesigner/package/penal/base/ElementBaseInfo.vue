@@ -2,7 +2,6 @@
 import { onBeforeUnmount, reactive, ref, toRaw, watch } from 'vue';
 
 import { Form, FormItem, Input } from 'ant-design-vue';
-import type { FormInstance, Rule } from 'ant-design-vue';
 
 defineOptions({ name: 'ElementBaseInfo' });
 
@@ -24,7 +23,6 @@ interface Model {
   [key: string]: any;
 }
 
-const formRef = ref<FormInstance>();
 const needProps = ref<Record<string, any>>({});
 const bpmnElement = ref<any>();
 const elementBaseInfo = ref<BusinessObject>({} as any);

@@ -1,12 +1,7 @@
 <script lang="ts" setup>
 import { inject, nextTick, ref, watch } from 'vue';
 
-import {
-  IconifyIcon,
-  MenuOutlined,
-  PlusOutlined,
-  SelectOutlined,
-} from '@vben/icons';
+import { IconifyIcon, PlusOutlined } from '@vben/icons';
 
 import {
   Button,

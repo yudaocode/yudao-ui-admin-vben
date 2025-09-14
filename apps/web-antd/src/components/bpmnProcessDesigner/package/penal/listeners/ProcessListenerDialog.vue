@@ -71,8 +71,8 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
         :pagination="false"
         :scroll="{ x: 'max-content' }"
       >
-        <Table.Column title="名字" align="center" dataIndex="name" />
-        <Table.Column title="类型" align="center" dataIndex="type">
+        <Table.Column title="名字" align="center" data-index="name" />
+        <Table.Column title="类型" align="center" data-index="type">
           <template #default="{ record }">
             <DictTag
               :type="DICT_TYPE.BPM_PROCESS_LISTENER_TYPE"
@@ -80,8 +80,8 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
             />
           </template>
         </Table.Column>
-        <Table.Column title="事件" align="center" dataIndex="event" />
-        <Table.Column title="值类型" align="center" dataIndex="valueType">
+        <Table.Column title="事件" align="center" data-index="event" />
+        <Table.Column title="值类型" align="center" data-index="valueType">
           <template #default="{ record }">
             <DictTag
               :type="DICT_TYPE.BPM_PROCESS_LISTENER_VALUE_TYPE"
@@ -89,7 +89,7 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
             />
           </template>
         </Table.Column>
-        <Table.Column title="值" align="center" dataIndex="value" />
+        <Table.Column title="值" align="center" data-index="value" />
         <Table.Column title="操作" align="center">
           <template #default="{ record }">
             <Button type="primary" @click="select(record)"> 选择 </Button>
