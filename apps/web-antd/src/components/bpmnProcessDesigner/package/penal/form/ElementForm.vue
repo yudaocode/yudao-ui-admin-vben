@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
-import { Form, FormItem, Select } from 'ant-design-vue';
+import { Form, FormItem, Select, Table, TableColumn, Button, Divider, Drawer, Input, Modal } from 'ant-design-vue';
 
 import { getFormSimpleList } from '#/api/bpm/form';
 
@@ -313,12 +313,16 @@ watch(
           :options="formOptions"
         />
       </FormItem>
-      <!--      <FormItem label="业务标识">-->
-      <!--        <Select v-model:value="businessKey" @change="updateElementBusinessKey">-->
-      <!--          <SelectOption v-for="i in fieldList" :key="i.id" :value="i.id">{{ i.label }}</SelectOption>-->
-      <!--          <SelectOption value="">无</SelectOption>-->
-      <!--        </Select>-->
-      <!--      </FormItem>-->
+      <FormItem label="业务标识">
+        <Select
+          v-model:value="businessKey"
+          @change="_updateElementBusinessKey"
+          allow-clear
+        >
+          <Select.Option v-for="i in fieldList" :key="i.id" :value="i.id">{{ i.label }}</Select.Option>
+          <Select.Option value="">无</Select.Option>
+        </Select>
+      </FormItem>
     </Form>
 
     <!--字段列表-->

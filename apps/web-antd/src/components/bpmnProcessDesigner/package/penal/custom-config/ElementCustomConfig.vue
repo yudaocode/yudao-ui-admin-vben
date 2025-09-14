@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { defineOptions, defineProps, ref, watch } from 'vue';
+import type { Component } from 'vue';
 
 import { CustomConfigMap } from './data';
 
@@ -26,7 +27,7 @@ interface BusinessObject {
 }
 
 // const bpmnInstances = () => (window as any)?.bpmnInstances;
-const customConfigComponent = ref<any>(null);
+const customConfigComponent = ref<Component | null>(null);
 
 watch(
   () => props.businessObject,
@@ -37,7 +38,7 @@ watch(
         val +=
           props.businessObject.eventDefinitions[0]?.$type.split(':')[1] || '';
       }
-      customConfigComponent.value = (CustomConfigMap as any)[val]?.component;
+      customConfigComponent.value = (CustomConfigMap as Record<string, { component: Component }>)[val]?.component;
     }
   },
   { immediate: true },

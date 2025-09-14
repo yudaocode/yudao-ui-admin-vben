@@ -1,46 +1,24 @@
 <!-- 表达式选择 -->
-<template>
-  <Dialog title="请选择表达式" v-model="dialogVisible" width="1024px">
-    <ContentWrap>
-      <el-table
-        v-loading="loading"
-        :data="list"
-        :stripe="true"
-        :show-overflow-tooltip="true"
-      >
-        <el-table-column label="名字" align="center" prop="name" />
-        <el-table-column label="表达式" align="center" prop="expression" />
-        <el-table-column label="操作" align="center">
-          <template #default="scope">
-            <el-button link type="primary" @click="select(scope.row)">
-              选择
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 分页 -->
-      <Pagination
-        :total="total"
-        v-model:page="queryParams.pageNo"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </ContentWrap>
-  </Dialog>
-</template>
 <script setup lang="ts">
-import { CommonStatusEnum } from '@/utils/constants';
-import {
-  ProcessExpressionApi,
-  ProcessExpressionVO,
-} from '@/api/bpm/processExpression';
+import type { BpmProcessExpressionApi } from '#/api/bpm/processExpression';
+
+import { reactive, ref } from 'vue';
+
+import { CommonStatusEnum } from '@vben/constants';
+
+import { Button, Modal, Pagination, Table, TableColumn } from 'ant-design-vue';
+
+import { getProcessExpressionPage } from '#/api/bpm/processExpression';
+import { ContentWrap } from '#/components/content-wrap';
 
 /** BPM 流程 表单 */
 defineOptions({ name: 'ProcessExpressionDialog' });
 
+/** 提交表单 */
+const emit = defineEmits(['select']);
 const dialogVisible = ref(false); // 弹窗的是否展示
 const loading = ref(true); // 列表的加载中
-const list = ref<ProcessExpressionVO[]>([]); // 列表的数据
+const list = ref<BpmProcessExpressionApi.ProcessExpression[]>([]); // 列表的数据
 const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -62,8 +40,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 const getList = async () => {
   loading.value = true;
   try {
-    const data =
-      await ProcessExpressionApi.getProcessExpressionPage(queryParams);
+    const data = await getProcessExpressionPage(queryParams);
     list.value = data.list;
     total.value = data.total;
   } finally {
@@ -71,11 +48,49 @@ const getList = async () => {
   }
 };
 
-/** 提交表单 */
-const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
-const select = async (row) => {
+// 定义 select 事件，用于操作成功后的回调
+const select = async (row: BpmProcessExpressionApi.ProcessExpression) => {
   dialogVisible.value = false;
   // 发送操作成功的事件
   emit('select', row);
 };
+
+// const handleCancel = () => {
+//   dialogVisible.value = false;
+// };
 </script>
+<template>
+  <Modal
+    title="请选择表达式"
+    v-model:open="dialogVisible"
+    width="1024px"
+    :footer="null"
+  >
+    <ContentWrap>
+      <Table
+        :loading="loading"
+        :data-source="list"
+        :pagination="false"
+        :scroll="{ x: 'max-content' }"
+      >
+        <TableColumn title="名字" align="center" data-index="name" />
+        <TableColumn title="表达式" align="center" data-index="expression" />
+        <TableColumn title="操作" align="center">
+          <template #default="{ record }">
+            <Button type="primary" @click="select(record)"> 选择 </Button>
+          </template>
+        </TableColumn>
+      </Table>
+      <!-- 分页 -->
+      <div class="mt-4 flex justify-end">
+        <Pagination
+          :total="total"
+          v-model:current="queryParams.pageNo"
+          v-model:page-size="queryParams.pageSize"
+          show-size-changer
+          @change="getList"
+        />
+      </div>
+    </ContentWrap>
+  </Modal>
+</template>

@@ -1,56 +1,12 @@
-<template>
-  <div>
-    <el-form-item label="执行类型" key="executeType">
-      <el-select v-model="serviceTaskForm.executeType">
-        <el-option label="Java类" value="class" />
-        <el-option label="表达式" value="expression" />
-        <el-option label="代理表达式" value="delegateExpression" />
-      </el-select>
-    </el-form-item>
-    <el-form-item
-      v-if="serviceTaskForm.executeType === 'class'"
-      label="Java类"
-      prop="class"
-      key="execute-class"
-    >
-      <el-input
-        v-model="serviceTaskForm.class"
-        clearable
-        @change="updateElementTask"
-      />
-    </el-form-item>
-    <el-form-item
-      v-if="serviceTaskForm.executeType === 'expression'"
-      label="表达式"
-      prop="expression"
-      key="execute-expression"
-    >
-      <el-input
-        v-model="serviceTaskForm.expression"
-        clearable
-        @change="updateElementTask"
-      />
-    </el-form-item>
-    <el-form-item
-      v-if="serviceTaskForm.executeType === 'delegateExpression'"
-      label="代理表达式"
-      prop="delegateExpression"
-      key="execute-delegate"
-    >
-      <el-input
-        v-model="serviceTaskForm.delegateExpression"
-        clearable
-        @change="updateElementTask"
-      />
-    </el-form-item>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
+
+import { FormItem, Input, Select } from 'ant-design-vue';
+
 defineOptions({ name: 'ServiceTask' });
 const props = defineProps({
-  id: String,
-  type: String,
+  id: { type: String, default: '' },
+  type: { type: String, default: '' },
 });
 
 const defaultTaskForm = ref({
@@ -66,8 +22,9 @@ const bpmnElement = ref();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetTaskForm = () => {
-  for (let key in defaultTaskForm.value) {
-    let value =
+  for (const key in defaultTaskForm.value) {
+    const value =
+      // @ts-ignore
       bpmnElement.value?.businessObject[key] || defaultTaskForm.value[key];
     serviceTaskForm.value[key] = value;
     if (value) {
@@ -77,9 +34,9 @@ const resetTaskForm = () => {
 };
 
 const updateElementTask = () => {
-  let taskAttr = Object.create(null);
+  const taskAttr = Object.create(null);
   const type = serviceTaskForm.value.executeType;
-  for (let key in serviceTaskForm.value) {
+  for (const key in serviceTaskForm.value) {
     if (key !== 'executeType' && key !== type) taskAttr[key] = null;
   }
   taskAttr[type] = serviceTaskForm.value[type] || '';
@@ -101,3 +58,54 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div>
+    <FormItem label="执行类型" key="executeType">
+      <Select
+        v-model:value="serviceTaskForm.executeType"
+        :options="[
+          { label: 'Java类', value: 'class' },
+          { label: '表达式', value: 'expression' },
+          { label: '代理表达式', value: 'delegateExpression' },
+        ]"
+      />
+    </FormItem>
+    <FormItem
+      v-if="serviceTaskForm.executeType === 'class'"
+      label="Java类"
+      name="class"
+      key="execute-class"
+    >
+      <Input
+        v-model:value="serviceTaskForm.class"
+        allow-clear
+        @change="updateElementTask"
+      />
+    </FormItem>
+    <FormItem
+      v-if="serviceTaskForm.executeType === 'expression'"
+      label="表达式"
+      name="expression"
+      key="execute-expression"
+    >
+      <Input
+        v-model:value="serviceTaskForm.expression"
+        allow-clear
+        @change="updateElementTask"
+      />
+    </FormItem>
+    <FormItem
+      v-if="serviceTaskForm.executeType === 'delegateExpression'"
+      label="代理表达式"
+      name="delegateExpression"
+      key="execute-delegate"
+    >
+      <Input
+        v-model:value="serviceTaskForm.delegateExpression"
+        allow-clear
+        @change="updateElementTask"
+      />
+    </FormItem>
+  </div>
+</template>

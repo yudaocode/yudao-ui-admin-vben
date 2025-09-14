@@ -6,7 +6,7 @@ import { reactive, ref } from 'vue';
 
 import { CommonStatusEnum } from '@vben/constants';
 
-import { Button, Modal, Pagination, Table, TableColumn } from 'ant-design-vue';
+import { Button, Modal, Pagination, Table } from 'ant-design-vue';
 
 import { getProcessListenerPage } from '#/api/bpm/processListener';
 import { ContentWrap } from '#/components/content-wrap';
@@ -71,30 +71,30 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
         :pagination="false"
         :scroll="{ x: 'max-content' }"
       >
-        <TableColumn title="名字" align="center" data-index="name" />
-        <TableColumn title="类型" align="center" data-index="type">
+        <Table.Column title="名字" align="center" dataIndex="name" />
+        <Table.Column title="类型" align="center" dataIndex="type">
           <template #default="{ record }">
             <DictTag
               :type="DICT_TYPE.BPM_PROCESS_LISTENER_TYPE"
               :value="record.type"
             />
           </template>
-        </TableColumn>
-        <TableColumn title="事件" align="center" data-index="event" />
-        <TableColumn title="值类型" align="center" data-index="valueType">
+        </Table.Column>
+        <Table.Column title="事件" align="center" dataIndex="event" />
+        <Table.Column title="值类型" align="center" dataIndex="valueType">
           <template #default="{ record }">
             <DictTag
               :type="DICT_TYPE.BPM_PROCESS_LISTENER_VALUE_TYPE"
               :value="record.valueType"
             />
           </template>
-        </TableColumn>
-        <TableColumn title="值" align="center" data-index="value" />
-        <TableColumn title="操作" align="center">
+        </Table.Column>
+        <Table.Column title="值" align="center" dataIndex="value" />
+        <Table.Column title="操作" align="center">
           <template #default="{ record }">
             <Button type="primary" @click="select(record)"> 选择 </Button>
           </template>
-        </TableColumn>
+        </Table.Column>
       </Table>
       <!-- 分页 -->
       <div class="mt-4 flex justify-end">

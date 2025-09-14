@@ -1,33 +1,14 @@
-<template>
-  <div>
-    <div style="margin-bottom: 10px">
-      当前选择：<el-input v-model="isoString" readonly style="width: 300px" />
-    </div>
-    <div v-for="unit in units" :key="unit.key" style="margin-bottom: 8px">
-      <span>{{ unit.label }}：</span>
-      <el-button-group>
-        <el-button
-          v-for="val in unit.presets"
-          :key="val"
-          size="mini"
-          @click="setUnit(unit.key, val)"
-          >{{ val }}</el-button
-        >
-        <el-input
-          v-model.number="custom[unit.key]"
-          size="mini"
-          style="width: 60px; margin-left: 8px"
-          placeholder="自定义"
-          @change="setUnit(unit.key, custom[unit.key])"
-        />
-      </el-button-group>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ref, watch, computed } from 'vue';
-const props = defineProps({ value: String });
+import { ref, watch } from 'vue';
+
+import { Button, Input } from 'ant-design-vue';
+
+const props = defineProps({
+  value: {
+    type: String,
+    default: '',
+  },
+});
 const emit = defineEmits(['change']);
 
 const units = [
@@ -42,7 +23,7 @@ const custom = ref({ Y: '', M: '', D: '', H: '', m: '', S: '' });
 const isoString = ref('');
 
 function setUnit(key, val) {
-  if (!val || isNaN(val)) {
+  if (!val || Number.isNaN(val)) {
     custom.value[key] = '';
     return;
   }
@@ -52,13 +33,13 @@ function setUnit(key, val) {
 
 function updateIsoString() {
   let str = 'P';
-  if (custom.value.Y) str += custom.value.Y + 'Y';
-  if (custom.value.M) str += custom.value.M + 'M';
-  if (custom.value.D) str += custom.value.D + 'D';
+  if (custom.value.Y) str += `${custom.value.Y}Y`;
+  if (custom.value.M) str += `${custom.value.M}M`;
+  if (custom.value.D) str += `${custom.value.D}D`;
   if (custom.value.H || custom.value.m || custom.value.S) str += 'T';
-  if (custom.value.H) str += custom.value.H + 'H';
-  if (custom.value.m) str += custom.value.m + 'M';
-  if (custom.value.S) str += custom.value.S + 'S';
+  if (custom.value.H) str += `${custom.value.H}H`;
+  if (custom.value.m) str += `${custom.value.m}M`;
+  if (custom.value.S) str += `${custom.value.S}S`;
   isoString.value = str === 'P' ? '' : str;
   emit('change', isoString.value);
 }
@@ -84,3 +65,35 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div>
+    <div style="margin-bottom: 10px">
+      当前选择：<Input
+        v-model:value="isoString"
+        readonly
+        style="width: 300px"
+      />
+    </div>
+    <div v-for="unit in units" :key="unit.key" style="margin-bottom: 8px">
+      <span>{{ unit.label }}：</span>
+      <Button.Group>
+        <Button
+          v-for="val in unit.presets"
+          :key="val"
+          size="small"
+          @click="setUnit(unit.key, val)"
+        >
+          {{ val }}
+        </Button>
+        <Input
+          v-model:value="custom[unit.key]"
+          size="small"
+          style="width: 60px; margin-left: 8px"
+          placeholder="自定义"
+          @change="setUnit(unit.key, custom[unit.key])"
+        />
+      </Button.Group>
+    </div>
+  </div>
+</template>

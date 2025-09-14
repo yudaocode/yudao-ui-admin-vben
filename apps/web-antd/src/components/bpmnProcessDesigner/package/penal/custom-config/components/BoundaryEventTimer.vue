@@ -12,9 +12,13 @@ import {
 import {
   Divider,
   Form,
+  FormItem,
   InputNumber,
   Radio,
+  RadioGroup,
+  RadioButton,
   Select,
+  SelectOption,
   Switch,
 } from 'ant-design-vue';
 
@@ -223,35 +227,35 @@ watch(
 <template>
   <div>
     <Divider orientation="left">审批人超时未处理时</Divider>
-    <Form.Item label="启用开关" name="timeoutHandlerEnable">
+    <FormItem label="启用开关" name="timeoutHandlerEnable">
       <Switch
         v-model:checked="timeoutHandlerEnable"
         checked-children="开启"
         un-checked-children="关闭"
         @change="timeoutHandlerChange"
       />
-    </Form.Item>
-    <Form.Item
+    </FormItem>
+    <FormItem
       label="执行动作"
       name="timeoutHandlerType"
       v-if="timeoutHandlerEnable"
     >
-      <Radio.Group
+      <RadioGroup
         v-model:value="timeoutHandlerType.value"
         @change="onTimeoutHandlerTypeChanged"
       >
-        <Radio.Button
+        <RadioButton
           v-for="item in TIMEOUT_HANDLER_TYPES"
           :key="item.value"
           :value="item.value"
         >
           {{ item.label }}
-        </Radio.Button>
-      </Radio.Group>
-    </Form.Item>
-    <Form.Item label="超时时间设置" v-if="timeoutHandlerEnable">
+        </RadioButton>
+      </RadioGroup>
+    </FormItem>
+    <FormItem label="超时时间设置" v-if="timeoutHandlerEnable">
       <span class="mr-2">当超过</span>
-      <Form.Item name="timeDuration">
+      <FormItem name="timeDuration">
         <InputNumber
           class="mr-2"
           :style="{ width: '100px' }"
@@ -265,24 +269,24 @@ watch(
             }
           "
         />
-      </Form.Item>
+      </FormItem>
       <Select
         v-model:value="timeUnit"
         class="mr-2"
         :style="{ width: '100px' }"
         @change="onTimeUnitChange"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in TIME_UNIT_TYPES"
           :key="item.value"
           :value="item.value"
         >
           {{ item.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
       未处理
-    </Form.Item>
-    <Form.Item
+    </FormItem>
+    <FormItem
       label="最大提醒次数"
       name="maxRemindCount"
       v-if="timeoutHandlerEnable && timeoutHandlerType.value === 1"
@@ -298,7 +302,7 @@ watch(
           }
         "
       />
-    </Form.Item>
+    </FormItem>
   </div>
 </template>
 

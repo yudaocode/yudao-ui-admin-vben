@@ -1,189 +1,38 @@
-<template>
-  <div>
-    <el-form label-width="100px">
-      <el-form-item label="实例名称" prop="processInstanceName">
-        <el-input
-          v-model="formData.processInstanceName"
-          clearable
-          placeholder="请输入实例名称"
-          @change="updateCallActivityAttr('processInstanceName')"
-        />
-      </el-form-item>
-
-      <!-- TODO 需要可选择已存在的流程 -->
-      <el-form-item label="被调用流程" prop="calledElement">
-        <el-input
-          v-model="formData.calledElement"
-          clearable
-          placeholder="请输入被调用流程"
-          @change="updateCallActivityAttr('calledElement')"
-        />
-      </el-form-item>
-
-      <el-form-item label="继承变量" prop="inheritVariables">
-        <el-switch
-          v-model="formData.inheritVariables"
-          @change="updateCallActivityAttr('inheritVariables')"
-        />
-      </el-form-item>
-
-      <el-form-item label="继承业务键" prop="inheritBusinessKey">
-        <el-switch
-          v-model="formData.inheritBusinessKey"
-          @change="updateCallActivityAttr('inheritBusinessKey')"
-        />
-      </el-form-item>
-
-      <el-form-item
-        v-if="!formData.inheritBusinessKey"
-        label="业务键表达式"
-        prop="businessKey"
-      >
-        <el-input
-          v-model="formData.businessKey"
-          clearable
-          placeholder="请输入业务键表达式"
-          @change="updateCallActivityAttr('businessKey')"
-        />
-      </el-form-item>
-
-      <el-divider />
-      <div>
-        <div class="mb-10px flex">
-          <el-text>输入参数</el-text>
-          <XButton
-            class="ml-auto"
-            type="primary"
-            preIcon="ep:plus"
-            title="添加参数"
-            size="small"
-            @click="openVariableForm('in', null, -1)"
-          />
-        </div>
-        <el-table :data="inVariableList" max-height="240" fit border>
-          <el-table-column
-            label="源"
-            prop="source"
-            min-width="100px"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            label="目标"
-            prop="target"
-            min-width="100px"
-            show-overflow-tooltip
-          />
-          <el-table-column label="操作" width="110px">
-            <template #default="scope">
-              <el-button
-                link
-                @click="openVariableForm('in', scope.row, scope.$index)"
-                size="small"
-              >
-                编辑
-              </el-button>
-              <el-divider direction="vertical" />
-              <el-button
-                link
-                size="small"
-                style="color: #ff4d4f"
-                @click="removeVariable('in', scope.$index)"
-              >
-                移除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-
-      <el-divider />
-      <div>
-        <div class="mb-10px flex">
-          <el-text>输出参数</el-text>
-          <XButton
-            class="ml-auto"
-            type="primary"
-            preIcon="ep:plus"
-            title="添加参数"
-            size="small"
-            @click="openVariableForm('out', null, -1)"
-          />
-        </div>
-        <el-table :data="outVariableList" max-height="240" fit border>
-          <el-table-column
-            label="源"
-            prop="source"
-            min-width="100px"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            label="目标"
-            prop="target"
-            min-width="100px"
-            show-overflow-tooltip
-          />
-          <el-table-column label="操作" width="110px">
-            <template #default="scope">
-              <el-button
-                link
-                @click="openVariableForm('out', scope.row, scope.$index)"
-                size="small"
-              >
-                编辑
-              </el-button>
-              <el-divider direction="vertical" />
-              <el-button
-                link
-                size="small"
-                style="color: #ff4d4f"
-                @click="removeVariable('out', scope.$index)"
-              >
-                移除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-form>
-
-    <!-- 添加或修改参数 -->
-    <el-dialog
-      v-model="variableDialogVisible"
-      title="参数配置"
-      width="600px"
-      append-to-body
-      destroy-on-close
-    >
-      <el-form
-        :model="varialbeFormData"
-        label-width="80px"
-        ref="varialbeFormRef"
-      >
-        <el-form-item label="源：" prop="source">
-          <el-input v-model="varialbeFormData.source" clearable />
-        </el-form-item>
-        <el-form-item label="目标：" prop="target">
-          <el-input v-model="varialbeFormData.target" clearable />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="variableDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveVariable">确 定</el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { inject, nextTick, ref, toRaw, watch } from 'vue';
+
+import { alert } from '@vben/common-ui';
+import { PlusOutlined } from '@vben/icons';
+
+import {
+  Button,
+  Divider,
+  Form,
+  FormItem,
+  Input,
+  Modal,
+  Switch,
+  Table,
+  TableColumn,
+} from 'ant-design-vue';
+
+interface FormData {
+  processInstanceName: string;
+  calledElement: string;
+  inheritVariables: boolean;
+  businessKey: string;
+  inheritBusinessKey: boolean;
+  calledElementType: string;
+}
+
 defineOptions({ name: 'CallActivity' });
 const props = defineProps({
-  id: String,
-  type: String,
+  id: { type: String, default: '' },
+  type: { type: String, default: '' },
 });
 const prefix = inject('prefix');
-const message = useMessage();
 
-const formData = ref({
+const formData = ref<FormData>({
   processInstanceName: '',
   calledElement: '',
   inheritVariables: false,
@@ -191,44 +40,51 @@ const formData = ref({
   inheritBusinessKey: false,
   calledElementType: 'key',
 });
-const inVariableList = ref();
-const outVariableList = ref();
-const variableType = ref(); // 参数类型
-const editingVariableIndex = ref(-1); // 编辑参数下标
-const variableDialogVisible = ref(false);
-const varialbeFormRef = ref();
-const varialbeFormData = ref({
+const inVariableList = ref<any[]>([]);
+const outVariableList = ref<any[]>([]);
+const variableType = ref<string>(); // 参数类型
+const editingVariableIndex = ref<number>(-1); // 编辑参数下标
+const variableDialogVisible = ref<boolean>(false);
+const varialbeFormRef = ref<any>();
+const varialbeFormData = ref<{
+  source: string;
+  target: string;
+}>({
   source: '',
   target: '',
 });
 
 const bpmnInstances = () => (window as any)?.bpmnInstances;
-const bpmnElement = ref();
-const otherExtensionList = ref();
+const bpmnElement = ref<any>();
+const otherExtensionList = ref<any[]>([]);
 
 const initCallActivity = () => {
   bpmnElement.value = bpmnInstances().bpmnElement;
-  console.log(bpmnElement.value.businessObject, 'callActivity');
+  // console.log(bpmnElement.value.businessObject, 'callActivity');
 
   // 初始化所有配置项
-  Object.keys(formData.value).forEach((key) => {
+  Object.keys(formData.value).forEach((key: string) => {
+    // @ts-ignore
     formData.value[key] =
-      bpmnElement.value.businessObject[key] ?? formData.value[key];
+      bpmnElement.value.businessObject[key] ??
+      formData.value[key as keyof FormData];
   });
 
   otherExtensionList.value = []; // 其他扩展配置
-  inVariableList.value = [];
-  outVariableList.value = [];
+  inVariableList.value.length = 0;
+  outVariableList.value.length = 0;
   // 初始化输入参数
-  bpmnElement.value.businessObject?.extensionElements?.values?.forEach((ex) => {
-    if (ex.$type === `${prefix}:In`) {
-      inVariableList.value.push(ex);
-    } else if (ex.$type === `${prefix}:Out`) {
-      outVariableList.value.push(ex);
-    } else {
-      otherExtensionList.value.push(ex);
-    }
-  });
+  bpmnElement.value.businessObject?.extensionElements?.values?.forEach(
+    (ex: any) => {
+      if (ex.$type === `${prefix}:In`) {
+        inVariableList.value.push(ex);
+      } else if (ex.$type === `${prefix}:Out`) {
+        outVariableList.value.push(ex);
+      } else {
+        otherExtensionList.value.push(ex);
+      }
+    },
+  );
 
   // 默认添加
   // bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
@@ -236,22 +92,22 @@ const initCallActivity = () => {
   // })
 };
 
-const updateCallActivityAttr = (attr) => {
+const updateCallActivityAttr = (attr: keyof FormData) => {
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
     [attr]: formData.value[attr],
   });
 };
 
-const openVariableForm = (type, data, index) => {
+const openVariableForm = (type: string, data: any, index: number) => {
   editingVariableIndex.value = index;
   variableType.value = type;
   varialbeFormData.value = index === -1 ? {} : { ...data };
   variableDialogVisible.value = true;
 };
 
-const removeVariable = async (type, index) => {
+const removeVariable = async (type: string, index: number) => {
   try {
-    await message.delConfirm();
+    await alert('是否确认删除？');
     if (type === 'in') {
       inVariableList.value.splice(index, 1);
     }
@@ -313,7 +169,7 @@ watch(
   () => props.id,
   (val) => {
     val &&
-      val.length &&
+      val.length > 0 &&
       nextTick(() => {
         initCallActivity();
       });
@@ -321,5 +177,185 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div>
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <FormItem label="实例名称">
+        <Input
+          v-model:value="formData.processInstanceName"
+          allow-clear
+          placeholder="请输入实例名称"
+          @change="updateCallActivityAttr('processInstanceName')"
+        />
+      </FormItem>
+
+      <!-- TODO 需要可选择已存在的流程 -->
+      <FormItem label="被调用流程">
+        <Input
+          v-model:value="formData.calledElement"
+          allow-clear
+          placeholder="请输入被调用流程"
+          @change="updateCallActivityAttr('calledElement')"
+        />
+      </FormItem>
+
+      <FormItem label="继承变量">
+        <Switch
+          v-model:checked="formData.inheritVariables"
+          @change="updateCallActivityAttr('inheritVariables')"
+        />
+      </FormItem>
+
+      <FormItem label="继承业务键">
+        <Switch
+          v-model:checked="formData.inheritBusinessKey"
+          @change="updateCallActivityAttr('inheritBusinessKey')"
+        />
+      </FormItem>
+
+      <FormItem v-if="!formData.inheritBusinessKey" label="业务键表达式">
+        <Input
+          v-model:value="formData.businessKey"
+          allow-clear
+          placeholder="请输入业务键表达式"
+          @change="updateCallActivityAttr('businessKey')"
+        />
+      </FormItem>
+
+      <Divider />
+      <div>
+        <div class="mb-10px flex">
+          <span>输入参数</span>
+          <Button
+            class="ml-auto"
+            type="primary"
+            :icon="PlusOutlined"
+            title="添加参数"
+            size="small"
+            @click="openVariableForm('in', null, -1)"
+          />
+        </div>
+        <Table
+          :data-source="inVariableList"
+          :scroll="{ y: 240 }"
+          bordered
+          :pagination="false"
+        >
+          <TableColumn
+            title="源"
+            data-index="source"
+            :min-width="100"
+            :ellipsis="true"
+          />
+          <TableColumn
+            title="目标"
+            data-index="target"
+            :min-width="100"
+            :ellipsis="true"
+          />
+          <TableColumn title="操作" :width="110">
+            <template #default="{ record, index }">
+              <Button
+                type="link"
+                @click="openVariableForm('in', record, index)"
+                size="small"
+              >
+                编辑
+              </Button>
+              <Divider type="vertical" />
+              <Button
+                type="link"
+                size="small"
+                danger
+                @click="removeVariable('in', index)"
+              >
+                移除
+              </Button>
+            </template>
+          </TableColumn>
+        </Table>
+      </div>
+
+      <Divider />
+      <div>
+        <div class="mb-10px flex">
+          <span>输出参数</span>
+          <Button
+            class="ml-auto"
+            type="primary"
+            :icon="PlusOutlined"
+            title="添加参数"
+            size="small"
+            @click="openVariableForm('out', null, -1)"
+          />
+        </div>
+        <Table
+          :data-source="outVariableList"
+          :scroll="{ y: 240 }"
+          bordered
+          :pagination="false"
+        >
+          <TableColumn
+            title="源"
+            data-index="source"
+            :min-width="100"
+            :ellipsis="true"
+          />
+          <TableColumn
+            title="目标"
+            data-index="target"
+            :min-width="100"
+            :ellipsis="true"
+          />
+          <TableColumn title="操作" :width="110">
+            <template #default="{ record, index }">
+              <Button
+                type="link"
+                @click="openVariableForm('out', record, index)"
+                size="small"
+              >
+                编辑
+              </Button>
+              <Divider type="vertical" />
+              <Button
+                type="link"
+                size="small"
+                danger
+                @click="removeVariable('out', index)"
+              >
+                移除
+              </Button>
+            </template>
+          </TableColumn>
+        </Table>
+      </div>
+    </Form>
+
+    <!-- 添加或修改参数 -->
+    <Modal
+      v-model:open="variableDialogVisible"
+      title="参数配置"
+      :width="600"
+      :destroy-on-close="true"
+      @ok="saveVariable"
+      @cancel="variableDialogVisible = false"
+    >
+      <Form
+        :model="varialbeFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+        ref="varialbeFormRef"
+      >
+        <FormItem label="源：" name="source">
+          <Input v-model:value="varialbeFormData.source" allow-clear />
+        </FormItem>
+        <FormItem label="目标：" name="target">
+          <Input v-model:value="varialbeFormData.target" allow-clear />
+        </FormItem>
+      </Form>
+    </Modal>
+  </div>
+</template>
 
 <style lang="scss" scoped></style>

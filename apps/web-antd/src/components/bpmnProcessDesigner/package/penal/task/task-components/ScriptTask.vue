@@ -1,57 +1,32 @@
-<template>
-  <div style="margin-top: 16px">
-    <el-form-item label="脚本格式">
-      <el-input
-        v-model="scriptTaskForm.scriptFormat"
-        clearable
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </el-form-item>
-    <el-form-item label="脚本类型">
-      <el-select v-model="scriptTaskForm.scriptType">
-        <el-option label="内联脚本" value="inline" />
-        <el-option label="外部资源" value="external" />
-      </el-select>
-    </el-form-item>
-    <el-form-item label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
-      <el-input
-        v-model="scriptTaskForm.script"
-        type="textarea"
-        resize="vertical"
-        :autosize="{ minRows: 2, maxRows: 4 }"
-        clearable
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </el-form-item>
-    <el-form-item
-      label="资源地址"
-      v-show="scriptTaskForm.scriptType === 'external'"
-    >
-      <el-input
-        v-model="scriptTaskForm.resource"
-        clearable
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </el-form-item>
-    <el-form-item label="结果变量">
-      <el-input
-        v-model="scriptTaskForm.resultVariable"
-        clearable
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </el-form-item>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import {
+  defineOptions,
+  defineProps,
+  nextTick,
+  onBeforeUnmount,
+  ref,
+  toRaw,
+  watch,
+} from 'vue';
+
+import {
+  FormItem,
+  Input,
+  Select,
+  SelectOption,
+  Textarea,
+} from 'ant-design-vue';
+
 defineOptions({ name: 'ScriptTask' });
 const props = defineProps({
-  id: String,
-  type: String,
+  id: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
 });
 const defaultTaskForm = ref({
   scriptFormat: '',
@@ -65,17 +40,19 @@ const bpmnElement = ref();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetTaskForm = () => {
-  for (let key in defaultTaskForm.value) {
-    let value =
-      bpmnElement.value?.businessObject[key] || defaultTaskForm.value[key];
-    scriptTaskForm.value[key] = value;
+  for (const key in defaultTaskForm.value) {
+    // @ts-ignore
+    scriptTaskForm.value[key] =
+      bpmnElement.value?.businessObject[
+        key as keyof typeof defaultTaskForm.value
+      ] || defaultTaskForm.value[key as keyof typeof defaultTaskForm.value];
   }
   scriptTaskForm.value.scriptType = scriptTaskForm.value.script
     ? 'inline'
     : 'external';
 };
 const updateElementTask = () => {
-  let taskAttr = Object.create(null);
+  const taskAttr = Object.create(null);
   taskAttr.scriptFormat = scriptTaskForm.value.scriptFormat || null;
   taskAttr.resultVariable = scriptTaskForm.value.resultVariable || null;
   if (scriptTaskForm.value.scriptType === 'inline') {
@@ -103,3 +80,50 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div class="mt-4">
+    <FormItem label="脚本格式">
+      <Input
+        v-model:value="scriptTaskForm.scriptFormat"
+        allow-clear
+        @input="updateElementTask()"
+        @change="updateElementTask()"
+      />
+    </FormItem>
+    <FormItem label="脚本类型">
+      <Select v-model:value="scriptTaskForm.scriptType">
+        <SelectOption value="inline">内联脚本</SelectOption>
+        <SelectOption value="external">外部资源</SelectOption>
+      </Select>
+    </FormItem>
+    <FormItem label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
+      <Textarea
+        v-model:value="scriptTaskForm.script"
+        :auto-size="{ minRows: 2, maxRows: 4 }"
+        allow-clear
+        @input="updateElementTask()"
+        @change="updateElementTask()"
+      />
+    </FormItem>
+    <FormItem
+      label="资源地址"
+      v-show="scriptTaskForm.scriptType === 'external'"
+    >
+      <Input
+        v-model:value="scriptTaskForm.resource"
+        allow-clear
+        @input="updateElementTask()"
+        @change="updateElementTask()"
+      />
+    </FormItem>
+    <FormItem label="结果变量">
+      <Input
+        v-model:value="scriptTaskForm.resultVariable"
+        allow-clear
+        @input="updateElementTask()"
+        @change="updateElementTask()"
+      />
+    </FormItem>
+  </div>
+</template>

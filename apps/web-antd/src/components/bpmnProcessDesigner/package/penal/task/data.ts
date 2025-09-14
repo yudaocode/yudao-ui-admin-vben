@@ -27,10 +27,14 @@ export const installedComponent = {
   },
 };
 
-export const getTaskCollapseItemName = (elementType) => {
+export const getTaskCollapseItemName = (
+  elementType: keyof typeof installedComponent,
+) => {
   return installedComponent[elementType].name;
 };
 
-export const isTaskCollapseItemShow = (elementType) => {
+export const isTaskCollapseItemShow = (
+  elementType: keyof typeof installedComponent,
+) => {
   return installedComponent[elementType];
 };

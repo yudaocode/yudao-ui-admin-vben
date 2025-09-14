@@ -3,112 +3,135 @@
     class="process-panel__container"
     :style="{ width: `${width}px`, maxHeight: '600px' }"
   >
-    <el-collapse v-model="activeTab" v-if="isReady">
-      <el-collapse-item name="base">
-        <!-- class="panel-tab__title" -->
+    <Collapse v-model:activeKey="activeTab" v-if="isReady">
+      <CollapsePanel key="base" header="常规">
         <template #title>
-          <Icon icon="ep:info-filled" />
-          常规</template
-        >
+          <Icon icon="ant-design:info-circle-filled" />
+          常规
+        </template>
         <ElementBaseInfo
           :id-edit-disabled="idEditDisabled"
           :business-object="elementBusinessObject"
           :type="elementType"
           :model="model"
         />
-      </el-collapse-item>
-      <el-collapse-item
-        name="condition"
-        v-if="elementType === 'Process'"
+      </CollapsePanel>
+      <CollapsePanel
         key="message"
+        v-if="elementType === 'Process'"
       >
-        <template #title><Icon icon="ep:comment" />消息与信号</template>
+        <template #title>
+          <Icon icon="ant-design:message-filled" />
+          消息与信号
+        </template>
         <signal-and-massage />
-      </el-collapse-item>
-      <el-collapse-item
-        name="condition"
-        v-if="conditionFormVisible"
+      </CollapsePanel>
+      <CollapsePanel
         key="condition"
+        v-if="conditionFormVisible"
       >
-        <template #title><Icon icon="ep:promotion" />流转条件</template>
+        <template #title>
+          <Icon icon="ant-design:swap-right" />
+          流转条件
+        </template>
         <flow-condition
           :business-object="elementBusinessObject"
           :type="elementType"
         />
-      </el-collapse-item>
-      <el-collapse-item name="condition" v-if="formVisible" key="form">
-        <template #title><Icon icon="ep:list" />表单</template>
+      </CollapsePanel>
+      <CollapsePanel key="form" v-if="formVisible">
+        <template #title>
+          <Icon icon="ant-design:unordered-list-outlined" />
+          表单
+        </template>
         <element-form :id="elementId" :type="elementType" />
-      </el-collapse-item>
-      <el-collapse-item
-        name="task"
-        v-if="isTaskCollapseItemShow(elementType)"
+      </CollapsePanel>
+      <CollapsePanel
         key="task"
+        v-if="isTaskCollapseItemShow(elementType)"
       >
-        <template #title
-          ><Icon icon="ep:checked" />{{
-            getTaskCollapseItemName(elementType)
-          }}</template
-        >
+        <template #title>
+          <Icon icon="ant-design:check-circle-filled" />
+          {{ getTaskCollapseItemName(elementType) }}
+        </template>
         <element-task :id="elementId" :type="elementType" />
-      </el-collapse-item>
-      <el-collapse-item
-        name="multiInstance"
-        v-if="elementType.indexOf('Task') !== -1"
+      </CollapsePanel>
+      <CollapsePanel
         key="multiInstance"
+        v-if="elementType.indexOf('Task') !== -1"
       >
-        <template #title><Icon icon="ep:help-filled" />多人审批方式</template>
+        <template #title>
+          <Icon icon="ant-design:question-circle-filled" />
+          多人审批方式
+        </template>
         <element-multi-instance
           :id="elementId"
           :business-object="elementBusinessObject"
           :type="elementType"
         />
-      </el-collapse-item>
-      <el-collapse-item name="listeners" key="listeners">
-        <template #title><Icon icon="ep:bell-filled" />执行监听器</template>
+      </CollapsePanel>
+      <CollapsePanel key="listeners">
+        <template #title>
+          <Icon icon="ant-design:bell-filled" />
+          执行监听器
+        </template>
         <element-listeners :id="elementId" :type="elementType" />
-      </el-collapse-item>
-      <el-collapse-item
-        name="taskListeners"
-        v-if="elementType === 'UserTask'"
+      </CollapsePanel>
+      <CollapsePanel
         key="taskListeners"
+        v-if="elementType === 'UserTask'"
       >
-        <template #title><Icon icon="ep:bell-filled" />任务监听器</template>
+        <template #title>
+          <Icon icon="ant-design:bell-filled" />
+          任务监听器
+        </template>
         <user-task-listeners :id="elementId" :type="elementType" />
-      </el-collapse-item>
-      <el-collapse-item name="extensions" key="extensions">
-        <template #title
-          ><Icon icon="ep:circle-plus-filled" />扩展属性</template
-        >
+      </CollapsePanel>
+      <CollapsePanel key="extensions">
+        <template #title>
+          <Icon icon="ant-design:plus-circle-filled" />
+          扩展属性
+        </template>
         <element-properties :id="elementId" :type="elementType" />
-      </el-collapse-item>
-      <el-collapse-item name="other" key="other">
-        <template #title><Icon icon="ep:promotion" />其他</template>
+      </CollapsePanel>
+      <CollapsePanel key="other">
+        <template #title>
+          <Icon icon="ant-design:swap-right" />
+          其他
+        </template>
         <element-other-config :id="elementId" />
-      </el-collapse-item>
-      <el-collapse-item name="customConfig" key="customConfig">
-        <template #title><Icon icon="ep:tools" />自定义配置</template>
+      </CollapsePanel>
+      <CollapsePanel key="customConfig">
+        <template #title>
+          <Icon icon="ant-design:tool-filled" />
+          自定义配置
+        </template>
         <element-custom-config
           :id="elementId"
           :type="elementType"
           :business-object="elementBusinessObject"
         />
-      </el-collapse-item>
+      </CollapsePanel>
       <!-- 新增的时间事件配置项 -->
-      <el-collapse-item
+      <CollapsePanel
+        key="timeEvent"
         v-if="elementType === 'IntermediateCatchEvent'"
-        name="timeEvent"
       >
-        <template #title><Icon icon="ep:timer" />时间事件</template>
+        <template #title>
+          <Icon icon="ant-design:clock-circle-filled" />
+          时间事件
+        </template>
         <TimeEventConfig
           :businessObject="bpmnElement.value?.businessObject"
           :key="elementId"
         />
-      </el-collapse-item>
-    </el-collapse>
+      </CollapsePanel>
+    </Collapse>
   </div>
 </template>
 <script lang="ts" setup>
+import { Collapse, CollapsePanel } from 'ant-design-vue';
+import { Icon } from '@vben/icons';
 import ElementBaseInfo from './base/ElementBaseInfo.vue';
 import ElementOtherConfig from './other/ElementOtherConfig.vue';
 import ElementTask from './task/ElementTask.vue';
@@ -121,7 +144,7 @@ import ElementProperties from './properties/ElementProperties.vue';
 import UserTaskListeners from './listeners/UserTaskListeners.vue';
 import { getTaskCollapseItemName, isTaskCollapseItemShow } from './task/data';
 import TimeEventConfig from './time-event-config/TimeEventConfig.vue';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount, provide, nextTick } from 'vue';
 
 defineOptions({ name: 'MyPropertiesPanel' });
 

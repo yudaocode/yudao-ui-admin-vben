@@ -1,178 +1,51 @@
-<template>
-  <div class="panel-tab__content">
-    <div style="margin-top: 10px">
-      <span>类型：</span>
-      <el-button-group>
-        <el-button
-          size="mini"
-          :type="type === 'time' ? 'primary' : ''"
-          @click="setType('time')"
-          >时间</el-button
-        >
-        <el-button
-          size="mini"
-          :type="type === 'duration' ? 'primary' : ''"
-          @click="setType('duration')"
-          >持续</el-button
-        >
-        <el-button
-          size="mini"
-          :type="type === 'cycle' ? 'primary' : ''"
-          @click="setType('cycle')"
-          >循环</el-button
-        >
-      </el-button-group>
-      <el-icon v-if="valid" color="green" style="margin-left: 8px"
-        ><CircleCheckFilled
-      /></el-icon>
-    </div>
-    <div style=" display: flex; align-items: center;margin-top: 10px">
-      <span>条件：</span>
-      <el-input
-        v-model="condition"
-        :placeholder="placeholder"
-        style="width: calc(100% - 100px)"
-        :readonly="type !== 'duration' && type !== 'cycle'"
-        @focus="handleInputFocus"
-        @blur="updateNode"
-      >
-        <template #suffix>
-          <el-tooltip v-if="!valid" content="格式错误" placement="top">
-            <el-icon color="orange"><WarningFilled /></el-icon>
-          </el-tooltip>
-          <el-tooltip :content="helpText" placement="top">
-            <el-icon
-              color="#409EFF"
-              style="cursor: pointer"
-              @click="showHelp = true"
-              ><QuestionFilled
-            /></el-icon>
-          </el-tooltip>
-          <el-button
-            v-if="type === 'time'"
-            @click="showDatePicker = true"
-            style="margin-left: 4px"
-            circle
-            size="small"
-          >
-            <Icon icon="ep:calendar" />
-          </el-button>
-          <el-button
-            v-if="type === 'duration'"
-            @click="showDurationDialog = true"
-            style="margin-left: 4px"
-            circle
-            size="small"
-          >
-            <Icon icon="ep:timer" />
-          </el-button>
-          <el-button
-            v-if="type === 'cycle'"
-            @click="showCycleDialog = true"
-            style="margin-left: 4px"
-            circle
-            size="small"
-          >
-            <Icon icon="ep:setting" />
-          </el-button>
-        </template>
-      </el-input>
-    </div>
-    <!-- 时间选择器 -->
-    <el-dialog
-      v-model="showDatePicker"
-      title="选择时间"
-      width="400px"
-      @close="showDatePicker = false"
-    >
-      <el-date-picker
-        v-model="dateValue"
-        type="datetime"
-        placeholder="选择日期时间"
-        style="width: 100%"
-        @change="onDateChange"
-      />
-      <template #footer>
-        <el-button @click="showDatePicker = false">取消</el-button>
-        <el-button type="primary" @click="onDateConfirm">确定</el-button>
-      </template>
-    </el-dialog>
-    <!-- 持续时长选择器 -->
-    <el-dialog
-      v-model="showDurationDialog"
-      title="时间配置"
-      width="600px"
-      @close="showDurationDialog = false"
-    >
-      <DurationConfig :value="condition" @change="onDurationChange" />
-      <template #footer>
-        <el-button @click="showDurationDialog = false">取消</el-button>
-        <el-button type="primary" @click="onDurationConfirm">确定</el-button>
-      </template>
-    </el-dialog>
-    <!-- 循环配置器 -->
-    <el-dialog
-      v-model="showCycleDialog"
-      title="时间配置"
-      width="800px"
-      @close="showCycleDialog = false"
-    >
-      <CycleConfig :value="condition" @change="onCycleChange" />
-      <template #footer>
-        <el-button @click="showCycleDialog = false">取消</el-button>
-        <el-button type="primary" @click="onCycleConfirm">确定</el-button>
-      </template>
-    </el-dialog>
-    <!-- 帮助说明 -->
-    <el-dialog
-      v-model="showHelp"
-      title="格式说明"
-      width="600px"
-      @close="showHelp = false"
-    >
-      <div v-html="helpHtml"></div>
-      <template #footer>
-        <el-button @click="showHelp = false">关闭</el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
-import {
-  CircleCheckFilled,
-  WarningFilled,
-  QuestionFilled,
-} from '@element-plus/icons-vue';
-import DurationConfig from './DurationConfig.vue';
-import CycleConfig from './CycleConfig.vue';
-import { createListenerObject, updateElementExtensions } from '../../utils';
-const bpmnInstances = () => (window as any).bpmnInstances;
-const props = defineProps({ businessObject: Object });
-const type = ref('time');
-const condition = ref('');
-const valid = ref(true);
-const showDatePicker = ref(false);
-const showDurationDialog = ref(false);
-const showCycleDialog = ref(false);
-const showHelp = ref(false);
-const dateValue = ref(null);
-const bpmnElement = ref(null);
+import type { Ref } from 'vue';
 
-const placeholder = computed(() => {
+import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue';
+
+import {
+  CheckCircleFilled,
+  ExclamationCircleFilled,
+  IconifyIcon,
+  QuestionCircleFilled,
+} from '@vben/icons';
+
+import { Button, DatePicker, Input, Modal, Tooltip } from 'ant-design-vue';
+
+import CycleConfig from './CycleConfig.vue';
+import DurationConfig from './DurationConfig.vue';
+
+const props = defineProps({
+  businessObject: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const bpmnInstances = () => (window as any).bpmnInstances;
+const type: Ref<string> = ref('time');
+const condition: Ref<string> = ref('');
+const valid: Ref<boolean> = ref(true);
+const showDatePicker: Ref<boolean> = ref(false);
+const showDurationDialog: Ref<boolean> = ref(false);
+const showCycleDialog: Ref<boolean> = ref(false);
+const showHelp: Ref<boolean> = ref(false);
+const dateValue: Ref<Date | null> = ref(null);
+// const bpmnElement = ref(null);
+
+const placeholder = computed<string>(() => {
   if (type.value === 'time') return '请输入时间';
   if (type.value === 'duration') return '请输入持续时长';
   if (type.value === 'cycle') return '请输入循环表达式';
   return '';
 });
-const helpText = computed(() => {
+const helpText = computed<string>(() => {
   if (type.value === 'time') return '选择具体时间';
   if (type.value === 'duration') return 'ISO 8601格式，如PT1H';
   if (type.value === 'cycle') return 'CRON表达式或ISO 8601周期';
   return '';
 });
-const helpHtml = computed(() => {
+const helpHtml = computed<string>(() => {
   if (type.value === 'duration') {
     return `指定定时器之前要等待多长时间。S表示秒，M表示分，D表示天；P表示时间段，T表示精确到时间的时间段。<br>
     时间格式依然为ISO 8601格式，一年两个月三天四小时五分六秒内，可以写成P1Y2M3DT4H5M6S。<br>
@@ -185,7 +58,7 @@ const helpHtml = computed(() => {
 });
 
 // 初始化和监听
-function syncFromBusinessObject() {
+function syncFromBusinessObject(): void {
   if (props.businessObject) {
     const timerDef = (props.businessObject.eventDefinitions || [])[0];
     if (timerDef) {
@@ -205,7 +78,7 @@ function syncFromBusinessObject() {
 onMounted(syncFromBusinessObject);
 
 // 切换类型
-function setType(t) {
+function setType(t: string) {
   type.value = t;
   condition.value = '';
   updateNode();
@@ -217,24 +90,24 @@ watch([type, condition], () => {
   // updateNode() // 可以注释掉，避免频繁触发
 });
 
-function validate() {
+function validate(): boolean {
   if (type.value === 'time') {
-    return !!condition.value && !isNaN(Date.parse(condition.value));
+    return !!condition.value && !Number.isNaN(Date.parse(condition.value));
   }
   if (type.value === 'duration') {
     return /^P.*$/.test(condition.value);
   }
   if (type.value === 'cycle') {
-    return /^([0-9*\/?, ]+|R\d*\/P.*)$/.test(condition.value);
+    return /^(?:[0-9*/?, ]+|R\d*\/P.*)$/.test(condition.value);
   }
   return true;
 }
 
 // 选择时间
-function onDateChange(val) {
+function onDateChange(val: any) {
   dateValue.value = val;
 }
-function onDateConfirm() {
+function onDateConfirm(): void {
   if (dateValue.value) {
     condition.value = new Date(dateValue.value).toISOString();
     showDatePicker.value = false;
@@ -243,35 +116,35 @@ function onDateConfirm() {
 }
 
 // 持续时长
-function onDurationChange(val) {
+function onDurationChange(val: string) {
   condition.value = val;
 }
-function onDurationConfirm() {
+function onDurationConfirm(): void {
   showDurationDialog.value = false;
   updateNode();
 }
 
 // 循环
-function onCycleChange(val) {
+function onCycleChange(val: string) {
   condition.value = val;
 }
-function onCycleConfirm() {
+function onCycleConfirm(): void {
   showCycleDialog.value = false;
   updateNode();
 }
 
 // 输入框聚焦时弹窗（可选）
-function handleInputFocus() {
+function handleInputFocus(): void {
   if (type.value === 'time') showDatePicker.value = true;
   if (type.value === 'duration') showDurationDialog.value = true;
   if (type.value === 'cycle') showCycleDialog.value = true;
 }
 
 // 同步到节点
-function updateNode() {
-  const moddle = window.bpmnInstances?.moddle;
-  const modeling = window.bpmnInstances?.modeling;
-  const elementRegistry = window.bpmnInstances?.elementRegistry;
+function updateNode(): void {
+  const moddle = (window.bpmnInstances as any)?.moddle;
+  const modeling = (window.bpmnInstances as any)?.modeling;
+  const elementRegistry = (window.bpmnInstances as any)?.elementRegistry;
   if (!moddle || !modeling || !elementRegistry) return;
 
   // 获取元素
@@ -339,6 +212,145 @@ watch(
   { immediate: true },
 );
 </script>
+
+<template>
+  <div class="panel-tab__content">
+    <div style="margin-top: 10px">
+      <span>类型：</span>
+      <Button.Group>
+        <Button
+          size="small"
+          :type="type === 'time' ? 'primary' : 'default'"
+          @click="setType('time')"
+        >
+          时间
+        </Button>
+        <Button
+          size="small"
+          :type="type === 'duration' ? 'primary' : 'default'"
+          @click="setType('duration')"
+        >
+          持续
+        </Button>
+        <Button
+          size="small"
+          :type="type === 'cycle' ? 'primary' : 'default'"
+          @click="setType('cycle')"
+        >
+          循环
+        </Button>
+      </Button.Group>
+      <CheckCircleFilled v-if="valid" style="color: green; margin-left: 8px" />
+    </div>
+    <div style="display: flex; align-items: center; margin-top: 10px">
+      <span>条件：</span>
+      <Input
+        v-model:value="condition"
+        :placeholder="placeholder"
+        style="width: calc(100% - 100px)"
+        :readonly="type !== 'duration' && type !== 'cycle'"
+        @focus="handleInputFocus"
+        @blur="updateNode"
+      >
+        <template #suffix>
+          <Tooltip v-if="!valid" title="格式错误" placement="top">
+            <ExclamationCircleFilled style="color: orange" />
+          </Tooltip>
+          <Tooltip :title="helpText" placement="top">
+            <QuestionCircleFilled
+              style="color: #409eff; cursor: pointer"
+              @click="showHelp = true"
+            />
+          </Tooltip>
+          <Button
+            v-if="type === 'time'"
+            @click="showDatePicker = true"
+            style="margin-left: 4px"
+            shape="circle"
+            size="small"
+          >
+            <IconifyIcon icon="ep:calendar" />
+          </Button>
+          <Button
+            v-if="type === 'duration'"
+            @click="showDurationDialog = true"
+            style="margin-left: 4px"
+            shape="circle"
+            size="small"
+          >
+            <IconifyIcon icon="ep:timer" />
+          </Button>
+          <Button
+            v-if="type === 'cycle'"
+            @click="showCycleDialog = true"
+            style="margin-left: 4px"
+            shape="circle"
+            size="small"
+          >
+            <IconifyIcon icon="ep:setting" />
+          </Button>
+        </template>
+      </Input>
+    </div>
+    <!-- 时间选择器 -->
+    <Modal
+      v-model:open="showDatePicker"
+      title="选择时间"
+      width="400px"
+      @cancel="showDatePicker = false"
+    >
+      <DatePicker
+        v-model:value="dateValue"
+        show-time
+        placeholder="选择日期时间"
+        style="width: 100%"
+        @change="onDateChange"
+      />
+      <template #footer>
+        <Button @click="showDatePicker = false">取消</Button>
+        <Button type="primary" @click="onDateConfirm">确定</Button>
+      </template>
+    </Modal>
+    <!-- 持续时长选择器 -->
+    <Modal
+      v-model:open="showDurationDialog"
+      title="时间配置"
+      width="600px"
+      @cancel="showDurationDialog = false"
+    >
+      <DurationConfig :value="condition" @change="onDurationChange" />
+      <template #footer>
+        <Button @click="showDurationDialog = false">取消</Button>
+        <Button type="primary" @click="onDurationConfirm">确定</Button>
+      </template>
+    </Modal>
+    <!-- 循环配置器 -->
+    <Modal
+      v-model:open="showCycleDialog"
+      title="时间配置"
+      width="800px"
+      @cancel="showCycleDialog = false"
+    >
+      <CycleConfig :value="condition" @change="onCycleChange" />
+      <template #footer>
+        <Button @click="showCycleDialog = false">取消</Button>
+        <Button type="primary" @click="onCycleConfirm">确定</Button>
+      </template>
+    </Modal>
+    <!-- 帮助说明 -->
+    <Modal
+      v-model:open="showHelp"
+      title="格式说明"
+      width="600px"
+      @cancel="showHelp = false"
+    >
+      <div v-html="helpHtml"></div>
+      <template #footer>
+        <Button @click="showHelp = false">关闭</Button>
+      </template>
+    </Modal>
+  </div>
+</template>
 
 <style scoped>
 /* 相关样式 */

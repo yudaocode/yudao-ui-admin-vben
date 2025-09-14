@@ -398,7 +398,7 @@ onMounted(async () => {
 <template>
   <div>
     <Divider orientation="left">审批类型</Divider>
-    <Form.Item prop="approveType">
+    <Form.Item name="approveType" label="审批类型">
       <RadioGroup v-model:value="approveType.value">
         <Radio
           v-for="(item, index) in APPROVE_TYPE"
@@ -411,7 +411,7 @@ onMounted(async () => {
     </Form.Item>
 
     <Divider orientation="left">审批人拒绝时</Divider>
-    <Form.Item prop="rejectHandlerType">
+    <Form.Item name="rejectHandlerType" label="处理方式">
       <RadioGroup
         v-model:value="rejectHandlerType"
         :disabled="returnTaskList.length === 0"
@@ -428,14 +428,15 @@ onMounted(async () => {
     </Form.Item>
     <Form.Item
       v-if="rejectHandlerType === RejectHandlerType.RETURN_USER_TASK"
+      name="returnNodeId"
       label="驳回节点"
-      prop="returnNodeId"
     >
       <Select
         v-model:value="returnNodeId"
         allow-clear
         style="width: 100%"
         @change="updateReturnNodeId"
+        placeholder="请选择驳回节点"
       >
         <SelectOption
           v-for="item in returnTaskList"

@@ -1,91 +1,44 @@
-<template>
-  <div class="panel-tab__content">
-    <el-table :data="elementPropertyList" max-height="240" fit border>
-      <el-table-column label="序号" width="50px" type="index" />
-      <el-table-column
-        label="属性名"
-        prop="name"
-        min-width="100px"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        label="属性值"
-        prop="value"
-        min-width="100px"
-        show-overflow-tooltip
-      />
-      <el-table-column label="操作" width="110px">
-        <template #default="scope">
-          <el-button
-            link
-            @click="openAttributesForm(scope.row, scope.$index)"
-            size="small"
-          >
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button
-            link
-            size="small"
-            style="color: #ff4d4f"
-            @click="removeAttributes(scope.row, scope.$index)"
-          >
-            移除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="element-drawer__button">
-      <XButton
-        type="primary"
-        preIcon="ep:plus"
-        title="添加属性"
-        @click="openAttributesForm(null, -1)"
-      />
-    </div>
-
-    <el-dialog
-      v-model="propertyFormModelVisible"
-      title="属性配置"
-      width="600px"
-      append-to-body
-      destroy-on-close
-    >
-      <el-form :model="propertyForm" label-width="80px" ref="attributeFormRef">
-        <el-form-item label="属性名：" prop="name">
-          <el-input v-model="propertyForm.name" clearable />
-        </el-form-item>
-        <el-form-item label="属性值：" prop="value">
-          <el-input v-model="propertyForm.value" clearable />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="propertyFormModelVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveAttribute">确 定</el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { ElMessageBox } from 'element-plus';
+import { inject, nextTick, ref, toRaw, watch } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+
+import {
+  Button,
+  Divider,
+  Form,
+  FormItem,
+  Input,
+  Modal,
+  Table,
+  TableColumn,
+} from 'ant-design-vue';
+
 defineOptions({ name: 'ElementProperties' });
+
 const props = defineProps({
-  id: String,
-  type: String,
+  id: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
 });
+
 const prefix = inject('prefix');
 // const width = inject('width')
 
-const elementPropertyList = ref<any[]>([]);
-const propertyForm = ref<any>({});
+const elementPropertyList = ref<Array<{ name: string; value: string }>>([]);
+const propertyForm = ref<{ name?: string; value?: string }>({});
 const editingPropertyIndex = ref(-1);
 const propertyFormModelVisible = ref(false);
-const bpmnElement = ref();
-const otherExtensionList = ref();
-const bpmnElementProperties = ref();
-const bpmnElementPropertyList = ref();
-const attributeFormRef = ref();
+const bpmnElement = ref<any>();
+const otherExtensionList = ref<any[]>([]);
+const bpmnElementProperties = ref<any[]>([]);
+const bpmnElementPropertyList = ref<any[]>([]);
+const attributeFormRef = ref<any>();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetAttributesList = () => {
@@ -94,7 +47,7 @@ const resetAttributesList = () => {
   bpmnElementProperties.value =
     // bpmnElement.value.businessObject?.extensionElements?.filter((ex) => {
     bpmnElement.value.businessObject?.extensionElements?.values?.filter(
-      (ex) => {
+      (ex: any) => {
         if (ex.$type !== `${prefix}:Properties`) {
           otherExtensionList.value.push(ex);
         }
@@ -103,30 +56,38 @@ const resetAttributesList = () => {
     ) ?? [];
 
   // 保存所有的 扩展属性字段
-  bpmnElementPropertyList.value = bpmnElementProperties.value.reduce(
-    (pre, current) => pre.concat(current.values),
-    [],
+  bpmnElementPropertyList.value = bpmnElementProperties.value.flatMap(
+    (current: any) => current.values,
   );
   // 复制 显示
-  elementPropertyList.value = JSON.parse(
-    JSON.stringify(bpmnElementPropertyList.value ?? []),
+  elementPropertyList.value = structuredClone(
+    bpmnElementPropertyList.value ?? [],
   );
 };
-const openAttributesForm = (attr, index) => {
+
+const openAttributesForm = (
+  attr: null | { name: string; value: string },
+  index: number,
+) => {
   editingPropertyIndex.value = index;
-  propertyForm.value = index === -1 ? {} : JSON.parse(JSON.stringify(attr));
+  // @ts-ignore
+  propertyForm.value = index === -1 ? {} : structuredClone(attr);
   propertyFormModelVisible.value = true;
   nextTick(() => {
     if (attributeFormRef.value) attributeFormRef.value.clearValidate();
   });
 };
-const removeAttributes = (attr, index) => {
-  console.log(attr, 'attr');
-  ElMessageBox.confirm('确认移除该属性吗？', '提示', {
-    confirmButtonText: '确 认',
-    cancelButtonText: '取 消',
-  })
-    .then(() => {
+
+const removeAttributes = (
+  _attr: { name: string; value: string },
+  index: number,
+) => {
+  Modal.confirm({
+    title: '提示',
+    content: '确认移除该属性吗？',
+    okText: '确 认',
+    cancelText: '取 消',
+    onOk() {
       elementPropertyList.value.splice(index, 1);
       bpmnElementPropertyList.value.splice(index, 1);
       // 新建一个属性字段的保存列表
@@ -138,22 +99,17 @@ const removeAttributes = (attr, index) => {
       );
       updateElementExtensions(propertiesObject);
       resetAttributesList();
-    })
-    .catch(() => console.info('操作取消'));
+    },
+    onCancel() {
+      // console.info('操作取消');
+    },
+  });
 };
+
 const saveAttribute = () => {
-  console.log(propertyForm.value, 'propertyForm.value');
+  // console.log(propertyForm.value, 'propertyForm.value');
   const { name, value } = propertyForm.value;
-  if (editingPropertyIndex.value !== -1) {
-    bpmnInstances().modeling.updateModdleProperties(
-      toRaw(bpmnElement.value),
-      toRaw(bpmnElementPropertyList.value)[toRaw(editingPropertyIndex.value)],
-      {
-        name,
-        value,
-      },
-    );
-  } else {
+  if (editingPropertyIndex.value === -1) {
     // 新建属性字段
     const newPropertyObject = bpmnInstances().moddle.create(
       `${prefix}:Property`,
@@ -166,17 +122,27 @@ const saveAttribute = () => {
     const propertiesObject = bpmnInstances().moddle.create(
       `${prefix}:Properties`,
       {
-        values: bpmnElementPropertyList.value.concat([newPropertyObject]),
+        values: [...bpmnElementPropertyList.value, newPropertyObject],
       },
     );
     updateElementExtensions(propertiesObject);
+  } else {
+    bpmnInstances().modeling.updateModdleProperties(
+      toRaw(bpmnElement.value),
+      toRaw(bpmnElementPropertyList.value)[toRaw(editingPropertyIndex.value)],
+      {
+        name,
+        value,
+      },
+    );
   }
   propertyFormModelVisible.value = false;
   resetAttributesList();
 };
-const updateElementExtensions = (properties) => {
+
+const updateElementExtensions = (properties: any) => {
   const extensions = bpmnInstances().moddle.create('bpmn:ExtensionElements', {
-    values: otherExtensionList.value.concat([properties]),
+    values: [...otherExtensionList.value, properties],
   });
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
     extensionElements: extensions,
@@ -187,9 +153,85 @@ watch(
   () => props.id,
   (val) => {
     if (val) {
-      val && val.length && resetAttributesList();
+      val && val.length > 0 && resetAttributesList();
     }
   },
   { immediate: true },
 );
 </script>
+
+<template>
+  <div class="panel-tab__content">
+    <Table :data="elementPropertyList" :scroll="{ y: 240 }" bordered>
+      <TableColumn title="序号" width="50">
+        <template #default="{ index }">
+          {{ index + 1 }}
+        </template>
+      </TableColumn>
+      <TableColumn
+        title="属性名"
+        data-index="name"
+        :min-width="100"
+        :ellipsis="{ showTitle: true }"
+      />
+      <TableColumn
+        title="属性值"
+        data-index="value"
+        :min-width="100"
+        :ellipsis="{ showTitle: true }"
+      />
+      <TableColumn title="操作" width="110">
+        <template #default="{ record, index }">
+          <Button
+            type="link"
+            @click="openAttributesForm(record, index)"
+            size="small"
+          >
+            编辑
+          </Button>
+          <Divider type="vertical" />
+          <Button
+            type="link"
+            size="small"
+            danger
+            @click="removeAttributes(record, index)"
+          >
+            移除
+          </Button>
+        </template>
+      </TableColumn>
+    </Table>
+    <div class="element-drawer__button">
+      <Button type="primary" @click="openAttributesForm(null, -1)">
+        <template #icon>
+          <IconifyIcon icon="ep:plus" />
+        </template>
+        添加属性
+      </Button>
+    </div>
+
+    <Modal
+      v-model:open="propertyFormModelVisible"
+      title="属性配置"
+      :width="600"
+      :destroy-on-close="true"
+    >
+      <Form
+        :model="propertyForm"
+        ref="attributeFormRef"
+        :label-col="{ span: 6 }"
+      >
+        <FormItem label="属性名：" name="name">
+          <Input v-model:value="propertyForm.name" allow-clear />
+        </FormItem>
+        <FormItem label="属性值：" name="value">
+          <Input v-model:value="propertyForm.value" allow-clear />
+        </FormItem>
+      </Form>
+      <template #footer>
+        <Button @click="propertyFormModelVisible = false">取 消</Button>
+        <Button type="primary" @click="saveAttribute">确 定</Button>
+      </template>
+    </Modal>
+  </div>
+</template>

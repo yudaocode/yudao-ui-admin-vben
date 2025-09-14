@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
 import { Form, Input, Select } from 'ant-design-vue';
+const { TextArea } = Input;
 
 defineOptions({ name: 'FlowCondition' });
 
@@ -212,9 +213,9 @@ watch(
           v-if="flowConditionForm.scriptType === 'inlineScript'"
           key="body"
         >
-          <Input
+          <TextArea
             v-model:value="flowConditionForm.body"
-            :autosize="{ minRows: 2, maxRows: 6 }"
+            :auto-size="{ minRows: 2, maxRows: 6 }"
             allow-clear
             @change="updateFlowCondition"
           />
