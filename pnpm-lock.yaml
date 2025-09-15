@@ -198,9 +198,21 @@ catalogs:
     axios-mock-adapter:
       specifier: ^2.1.0
       version: 2.1.0
+    bpmn-js:
+      specifier: ^17.11.1
+      version: 17.11.1
+    bpmn-js-properties-panel:
+      specifier: 5.23.0
+      version: 5.23.0
+    bpmn-js-token-simulation:
+      specifier: ^0.36.3
+      version: 0.36.3
     cac:
       specifier: ^6.7.14
       version: 6.7.14
+    camunda-bpmn-moddle:
+      specifier: ^7.0.1
+      version: 7.0.1
     chalk:
       specifier: ^5.4.1
       version: 5.6.0
@@ -249,6 +261,9 @@ catalogs:
     depcheck:
       specifier: ^1.4.7
       version: 1.4.7
+    diagram-js:
+      specifier: ^12.8.1
+      version: 12.8.1
     dotenv:
       specifier: ^16.6.1
       version: 16.6.1
@@ -309,6 +324,9 @@ catalogs:
     execa:
       specifier: ^9.6.0
       version: 9.6.0
+    fast-xml-parser:
+      specifier: ^4.5.3
+      version: 4.5.3
     find-up:
       specifier: ^7.0.0
       version: 7.0.0
@@ -381,6 +399,9 @@ catalogs:
     medium-zoom:
       specifier: ^1.1.0
       version: 1.1.0
+    min-dash:
+      specifier: ^4.2.3
+      version: 4.2.3
     naive-ui:
       specifier: ^2.42.0
       version: 2.42.0
@@ -459,6 +480,9 @@ catalogs:
     sortablejs:
       specifier: ^1.15.6
       version: 1.15.6
+    steady-xml:
+      specifier: ^0.1.0
+      version: 0.1.0
     stylelint:
       specifier: ^16.21.0
       version: 16.24.0
@@ -783,16 +807,16 @@ importers:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.21(typescript@5.9.2))
       bpmn-js:
-        specifier: ^17.11.1
+        specifier: 'catalog:'
         version: 17.11.1
       bpmn-js-properties-panel:
-        specifier: 5.23.0
+        specifier: 'catalog:'
         version: 5.23.0(@bpmn-io/properties-panel@3.33.0)(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.11.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.11.0))(diagram-js@12.8.1)
       bpmn-js-token-simulation:
-        specifier: ^0.36.3
+        specifier: 'catalog:'
         version: 0.36.3
       camunda-bpmn-moddle:
-        specifier: ^7.0.1
+        specifier: 'catalog:'
         version: 7.0.1
       cropperjs:
         specifier: 'catalog:'
@@ -801,22 +825,22 @@ importers:
         specifier: 'catalog:'
         version: 1.11.18
       diagram-js:
-        specifier: ^12.8.1
+        specifier: 'catalog:'
         version: 12.8.1
       fast-xml-parser:
-        specifier: ^4.5.3
+        specifier: 'catalog:'
         version: 4.5.3
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
       min-dash:
-        specifier: ^4.2.3
+        specifier: 'catalog:'
         version: 4.2.3
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.21(typescript@5.9.2))
       steady-xml:
-        specifier: ^0.1.0
+        specifier: 'catalog:'
         version: 0.1.0
       tinymce:
         specifier: 'catalog:'
