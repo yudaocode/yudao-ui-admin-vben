@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, nextTick, ref, toRaw, watch } from 'vue';
+import { h, inject, nextTick, ref, toRaw, watch } from 'vue';
 
 import { alert } from '@vben/common-ui';
 import { PlusOutlined } from '@vben/icons';
@@ -230,7 +230,7 @@ watch(
           <Button
             class="ml-auto"
             type="primary"
-            :icon="PlusOutlined"
+            :icon="h(PlusOutlined)"
             title="添加参数"
             size="small"
             @click="openVariableForm('in', null, -1)"
@@ -284,7 +284,7 @@ watch(
           <Button
             class="ml-auto"
             type="primary"
-            :icon="PlusOutlined"
+            :icon="h(PlusOutlined)"
             title="添加参数"
             size="small"
             @click="openVariableForm('out', null, -1)"

@@ -56,10 +56,7 @@ const resetBaseInfo = () => {
   // elementBaseInfo.value = JSON.parse(JSON.stringify(bpmnElement.value.businessObject))
   // console.log(elementBaseInfo.value, 'elementBaseInfo22222222222')
 };
-const handleKeyUpdate = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const value = target.value;
-
+const handleKeyUpdate = (value: any) => {
   // 校验 value 的值，只有 XML NCName 通过的情况下，才进行赋值。否则，会导致流程图报错，无法绘制的问题
   if (!value) {
     return;
@@ -71,22 +68,23 @@ const handleKeyUpdate = (event: Event) => {
   // console.log('key 满足 XML NCName 规则，所以进行赋值');
 
   // 在 BPMN 的 XML 中，流程标识 key，其实对应的是 id 节点
-  elementBaseInfo.value.id = value;
+  if (elementBaseInfo.value) {
+    elementBaseInfo.value.id = value;
+  }
 
   setTimeout(() => {
     updateBaseInfo('id');
   }, 100);
 };
 
-const handleNameUpdate = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const value = target.value;
-
+const handleNameUpdate = (value: any) => {
   // console.log(elementBaseInfo, 'elementBaseInfo');
   if (!value) {
     return;
   }
-  elementBaseInfo.value.name = value;
+  if (elementBaseInfo.value) {
+    elementBaseInfo.value.name = value;
+  }
 
   setTimeout(() => {
     updateBaseInfo('name');
@@ -101,6 +99,12 @@ const updateBaseInfo = (key: string) => {
   // console.log(key, 'key');
   // 触发 elementBaseInfo 对应的字段
   const attrObj: Record<string, any> = Object.create(null);
+
+  // 安全检查
+  if (!elementBaseInfo.value || !bpmnElement.value) {
+    return;
+  }
+
   // console.log(attrObj, 'attrObj')
   attrObj[key] = elementBaseInfo.value[key];
   // console.log(attrObj, 'attrObj111')

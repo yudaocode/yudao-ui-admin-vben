@@ -9,6 +9,7 @@ import {
   defineEmits,
   defineOptions,
   defineProps,
+  h,
   onBeforeUnmount,
   onMounted,
   provide,
@@ -524,7 +525,7 @@ onBeforeUnmount(() => {
       <template v-if="!$slots['control-header']">
         <ButtonGroup key="file-control">
           <Button
-            :icon="FolderOpenOutlined"
+            :icon="h(FolderOpenOutlined)"
             title="打开文件"
             @click="refFile.click()"
           />
@@ -544,7 +545,7 @@ onBeforeUnmount(() => {
                 </Button>
               </div>
             </template>
-            <Button :icon="DownloadOutlined" title="下载文件" />
+            <Button :icon="h(DownloadOutlined)" title="下载文件" />
           </Tooltip>
           <Tooltip>
             <template #title>
@@ -552,14 +553,14 @@ onBeforeUnmount(() => {
               <br />
               <Button type="link" @click="previewProcessJson">预览JSON</Button>
             </template>
-            <Button :icon="EyeOutlined" title="浏览" />
+            <Button :icon="h(EyeOutlined)" title="浏览" />
           </Tooltip>
           <Tooltip
             v-if="props.simulation"
             :title="simulationStatus ? '退出模拟' : '开启模拟'"
           >
             <Button
-              :icon="ApiOutlined"
+              :icon="h(ApiOutlined)"
               title="模拟"
               @click="processSimulation"
             />
@@ -568,42 +569,42 @@ onBeforeUnmount(() => {
         <ButtonGroup key="align-control">
           <Tooltip title="向左对齐">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-bottom"
               @click="elementsAlign('left')"
             />
           </Tooltip>
           <Tooltip title="向右对齐">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-top"
               @click="elementsAlign('right')"
             />
           </Tooltip>
           <Tooltip title="向上对齐">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-left"
               @click="elementsAlign('top')"
             />
           </Tooltip>
           <Tooltip title="向下对齐">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-right"
               @click="elementsAlign('bottom')"
             />
           </Tooltip>
           <Tooltip title="水平居中">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-center"
               @click="elementsAlign('center')"
             />
           </Tooltip>
           <Tooltip title="垂直居中">
             <Button
-              :icon="AlignLeftOutlined"
+              :icon="h(AlignLeftOutlined)"
               class="align align-middle"
               @click="elementsAlign('middle')"
             />
@@ -612,7 +613,7 @@ onBeforeUnmount(() => {
         <ButtonGroup key="scale-control">
           <Tooltip title="缩小视图">
             <Button
-              :icon="ZoomOutOutlined"
+              :icon="h(ZoomOutOutlined)"
               @click="processZoomOut()"
               :disabled="defaultZoom < 0.2"
             />
@@ -620,32 +621,32 @@ onBeforeUnmount(() => {
           <Button>{{ `${Math.floor(defaultZoom * 10 * 10)}%` }}</Button>
           <Tooltip title="放大视图">
             <Button
-              :icon="ZoomInOutlined"
+              :icon="h(ZoomInOutlined)"
               @click="processZoomIn()"
               :disabled="defaultZoom > 4"
             />
           </Tooltip>
           <Tooltip title="重置视图并居中">
-            <Button :icon="ReloadOutlined" @click="processReZoom()" />
+            <Button :icon="h(ReloadOutlined)" @click="processReZoom()" />
           </Tooltip>
         </ButtonGroup>
         <ButtonGroup key="stack-control">
           <Tooltip title="撤销">
             <Button
-              :icon="UndoOutlined"
+              :icon="h(UndoOutlined)"
               @click="processUndo()"
               :disabled="!revocable"
             />
           </Tooltip>
           <Tooltip title="恢复">
             <Button
-              :icon="RedoOutlined"
+              :icon="h(RedoOutlined)"
               @click="processRedo()"
               :disabled="!recoverable"
             />
           </Tooltip>
           <Tooltip title="重新绘制">
-            <Button :icon="ReloadOutlined" @click="processRestart()" />
+            <Button :icon="h(ReloadOutlined)" @click="processRestart()" />
           </Tooltip>
         </ButtonGroup>
       </template>

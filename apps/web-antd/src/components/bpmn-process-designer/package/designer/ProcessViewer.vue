@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { defineProps, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
@@ -398,7 +398,7 @@ onBeforeUnmount(() => {
         <ButtonGroup key="scale-control">
           <Button
             :disabled="defaultZoom <= 0.3"
-            :icon="ZoomOutOutlined"
+            :icon="h(ZoomOutOutlined)"
             @click="processZoomOut()"
           />
           <Button style="width: 90px">
@@ -406,10 +406,10 @@ onBeforeUnmount(() => {
           </Button>
           <Button
             :disabled="defaultZoom >= 3.9"
-            :icon="ZoomInOutlined"
+            :icon="h(ZoomInOutlined)"
             @click="processZoomIn()"
           />
-          <Button :icon="UndoOutlined" @click="processReZoom()" />
+          <Button :icon="h(UndoOutlined)" @click="processReZoom()" />
         </ButtonGroup>
       </Row>
     </div>
