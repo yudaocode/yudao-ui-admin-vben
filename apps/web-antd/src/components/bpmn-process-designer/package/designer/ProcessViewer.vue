@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { defineProps, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { defineProps, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-import { BpmProcessInstanceStatus } from '@vben/constants';
+import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
 import { dateFormatter, formatPast2 } from '@vben/utils';
 
@@ -10,7 +10,6 @@ import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
 
 import '../theme/index.scss';
 
@@ -399,7 +398,7 @@ onBeforeUnmount(() => {
         <ButtonGroup key="scale-control">
           <Button
             :disabled="defaultZoom <= 0.3"
-            :icon="ZoomOutOutlined"
+            :icon="h(ZoomOutOutlined)"
             @click="processZoomOut()"
           />
           <Button style="width: 90px">
@@ -407,10 +406,10 @@ onBeforeUnmount(() => {
           </Button>
           <Button
             :disabled="defaultZoom >= 3.9"
-            :icon="ZoomInOutlined"
+            :icon="h(ZoomInOutlined)"
             @click="processZoomIn()"
           />
-          <Button :icon="UndoOutlined" @click="processReZoom()" />
+          <Button :icon="h(UndoOutlined)" @click="processReZoom()" />
         </ButtonGroup>
       </Row>
     </div>

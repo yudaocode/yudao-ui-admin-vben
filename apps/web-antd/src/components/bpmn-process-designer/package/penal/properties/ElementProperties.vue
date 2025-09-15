@@ -2,6 +2,7 @@
 import { inject, nextTick, ref, toRaw, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import {
   Button,
@@ -60,9 +61,7 @@ const resetAttributesList = () => {
     (current: any) => current.values,
   );
   // 复制 显示
-  elementPropertyList.value = structuredClone(
-    bpmnElementPropertyList.value ?? [],
-  );
+  elementPropertyList.value = cloneDeep(bpmnElementPropertyList.value ?? []);
 };
 
 const openAttributesForm = (
@@ -71,7 +70,7 @@ const openAttributesForm = (
 ) => {
   editingPropertyIndex.value = index;
   // @ts-ignore
-  propertyForm.value = index === -1 ? {} : structuredClone(attr);
+  propertyForm.value = index === -1 ? {} : cloneDeep(attr);
   propertyFormModelVisible.value = true;
   nextTick(() => {
     if (attributeFormRef.value) attributeFormRef.value.clearValidate();

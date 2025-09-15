@@ -4,14 +4,13 @@ import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 
 import { reactive, ref } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 
 import { Button, Modal, Pagination, Table } from 'ant-design-vue';
 
 import { getProcessListenerPage } from '#/api/bpm/processListener';
 import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
 
 /** BPM 流程 表单 */
 defineOptions({ name: 'ProcessListenerDialog' });

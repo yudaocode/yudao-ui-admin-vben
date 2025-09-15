@@ -2,11 +2,12 @@
 import { nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import { Collapse } from 'ant-design-vue';
 
-import ElementCustomConfig from '#/components/bpmnProcessDesigner/package/penal/custom-config/ElementCustomConfig.vue';
-import ElementForm from '#/components/bpmnProcessDesigner/package/penal/form/ElementForm.vue';
+import ElementCustomConfig from '#/components/bpmn-process-designer/package/penal/custom-config/ElementCustomConfig.vue';
+import ElementForm from '#/components/bpmn-process-designer/package/penal/form/ElementForm.vue';
 
 import ElementBaseInfo from './base/ElementBaseInfo.vue';
 import FlowCondition from './flow-condition/FlowCondition.vue';
@@ -186,9 +187,7 @@ const initFormOnChanged = (element: any) => {
     bpmnElement.value = activatedElement;
     elementId.value = activatedElement.id;
     elementType.value = activatedElement.type.split(':')[1] || '';
-    elementBusinessObject.value = structuredClone(
-      activatedElement.businessObject,
-    );
+    elementBusinessObject.value = cloneDeep(activatedElement.businessObject);
     conditionFormVisible.value =
       elementType.value === 'SequenceFlow' &&
       activatedElement.source &&

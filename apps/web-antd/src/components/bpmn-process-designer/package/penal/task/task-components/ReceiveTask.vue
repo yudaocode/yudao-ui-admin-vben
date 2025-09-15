@@ -57,7 +57,9 @@ const createNewMessage = () => {
   bpmnRootElements.value.push(newMessage);
   messageMap.value[newMessageForm.value.id] = newMessageForm.value.name;
   // @ts-ignore
-  bpmnMessageRefsMap.value?.[newMessageForm.value.id] = newMessage;
+  if (bpmnMessageRefsMap.value) {
+    bpmnMessageRefsMap.value[newMessageForm.value.id] = newMessage;
+  }
   messageModelVisible.value = false;
 };
 const updateTaskMessage = (messageId: string) => {
@@ -80,7 +82,9 @@ onMounted(() => {
     .filter((el: any) => el.$type === 'bpmn:Message')
     .forEach((m: any) => {
       // @ts-ignore
-      bpmnMessageRefsMap.value?.[m.id] = m;
+      if (bpmnMessageRefsMap.value) {
+        bpmnMessageRefsMap.value[m.id] = m;
+      }
       messageMap.value[m.id] = m.name;
     });
   messageMap.value['-1'] = '无';
@@ -119,9 +123,10 @@ watch(
           <SelectOption
             v-for="key in Object.keys(messageMap)"
             :value="key"
-            :label="messageMap[key]"
             :key="key"
-          />
+          >
+            {{ messageMap[key] }}
+          </SelectOption>
         </Select>
         <Button
           type="primary"
