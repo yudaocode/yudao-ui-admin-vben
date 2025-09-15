@@ -3,6 +3,7 @@
   "extends": "@vben/tsconfig/web-app.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
     "paths": {
       "#/*": ["./src/*"]
     }
