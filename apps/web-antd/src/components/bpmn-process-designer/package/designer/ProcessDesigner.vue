@@ -478,7 +478,7 @@ const elementsAlign = (align: string) => {
     content: '自动对齐可能造成图形变形，是否继续？',
     okText: '确定',
     cancelText: '取消',
-    icon: WarningOutlined as any,
+    icon: h(WarningOutlined) as any,
     onOk() {
       Align.trigger(SelectedElements, align);
     },

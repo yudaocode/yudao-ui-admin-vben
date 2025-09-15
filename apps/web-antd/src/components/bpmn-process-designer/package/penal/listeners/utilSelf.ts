@@ -1,4 +1,6 @@
 // 初始化表单数据
+import { cloneDeep } from '@vben/utils';
+
 export function initListenerForm(listener: any) {
   let self = {
     ...listener,
@@ -36,7 +38,7 @@ export function initListenerType(listener: any) {
   if (listener.delegateExpression) listenerType = 'delegateExpressionListener';
   if (listener.script) listenerType = 'scriptListener';
   return {
-    ...structuredClone(listener),
+    ...cloneDeep(listener),
     ...listener.script,
     listenerType,
   };

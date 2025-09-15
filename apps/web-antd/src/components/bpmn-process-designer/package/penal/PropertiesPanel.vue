@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import { Collapse } from 'ant-design-vue';
 
@@ -186,9 +187,7 @@ const initFormOnChanged = (element: any) => {
     bpmnElement.value = activatedElement;
     elementId.value = activatedElement.id;
     elementType.value = activatedElement.type.split(':')[1] || '';
-    elementBusinessObject.value = structuredClone(
-      activatedElement.businessObject,
-    );
+    elementBusinessObject.value = cloneDeep(activatedElement.businessObject);
     conditionFormVisible.value =
       elementType.value === 'SequenceFlow' &&
       activatedElement.source &&

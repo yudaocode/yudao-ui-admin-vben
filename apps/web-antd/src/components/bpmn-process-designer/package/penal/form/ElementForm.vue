@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
+import { cloneDeep } from '@vben/utils';
+
 import { Form, FormItem, Select } from 'ant-design-vue';
 
 import { getFormSimpleList } from '#/api/bpm/form';
@@ -72,7 +74,7 @@ const resetFormList = () => {
   );
 
   // 复制原始值，填充表格
-  fieldList.value = structuredClone(formData.value.fields || []);
+  fieldList.value = cloneDeep(formData.value.fields || []);
 
   // 更新元素扩展属性，避免后续报错
   updateElementExtensions();
@@ -109,7 +111,7 @@ const _openFieldForm = (field: any, index: any) => {
     fieldPropertiesList.value = [];
   } else {
     const FieldObject = formData.value.fields[index];
-    formFieldForm.value = structuredClone(field);
+    formFieldForm.value = cloneDeep(field);
     // 设置自定义类型
     // this.$set(this.formFieldForm, "typeType", !this.fieldType[field.type] ? "custom" : field.type);
     formFieldForm.value.typeType = fieldType.value[
@@ -119,13 +121,13 @@ const _openFieldForm = (field: any, index: any) => {
       : 'custom';
     // 初始化枚举值列表
     field.type === 'enum' &&
-      (fieldEnumList.value = structuredClone(FieldObject?.values || []));
+      (fieldEnumList.value = cloneDeep(FieldObject?.values || []));
     // 初始化约束条件列表
-    fieldConstraintsList.value = structuredClone(
+    fieldConstraintsList.value = cloneDeep(
       FieldObject?.validation?.constraints || [],
     );
     // 初始化自定义属性列表
-    fieldPropertiesList.value = structuredClone(
+    fieldPropertiesList.value = cloneDeep(
       FieldObject?.properties?.values || [],
     );
   }
@@ -137,14 +139,14 @@ const _openFieldOptionForm = (option: any, index: any, type: any) => {
   fieldOptionType.value = type;
   formFieldOptionIndex.value = index;
   if (type === 'property') {
-    fieldOptionForm.value = option ? structuredClone(option) : {};
+    fieldOptionForm.value = option ? cloneDeep(option) : {};
     return (optionModelTitle.value = '属性配置');
   }
   if (type === 'enum') {
-    fieldOptionForm.value = option ? structuredClone(option) : {};
+    fieldOptionForm.value = option ? cloneDeep(option) : {};
     return (optionModelTitle.value = '枚举值配置');
   }
-  fieldOptionForm.value = option ? structuredClone(option) : {};
+  fieldOptionForm.value = option ? cloneDeep(option) : {};
   return (optionModelTitle.value = '约束条件配置');
 };
 

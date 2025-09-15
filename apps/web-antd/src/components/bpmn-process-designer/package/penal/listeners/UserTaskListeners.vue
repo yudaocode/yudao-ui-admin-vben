@@ -2,6 +2,7 @@
 import { inject, nextTick, ref, watch } from 'vue';
 
 import { MenuOutlined, PlusOutlined, SelectOutlined } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import {
   Button,
@@ -162,9 +163,10 @@ const saveListenerConfig = async () => {
   listenerFormModelVisible.value = false;
   listenerForm.value = {};
 };
+
 // 打开监听器字段编辑弹窗
 const openListenerFieldForm = (field: any, index?: number) => {
-  listenerFieldForm.value = field ? structuredClone(field) : {};
+  listenerFieldForm.value = field ? cloneDeep(field) : {};
   editingListenerFieldIndex.value = field ? index : -1;
   listenerFieldFormModelVisible.value = true;
   nextTick(() => {
