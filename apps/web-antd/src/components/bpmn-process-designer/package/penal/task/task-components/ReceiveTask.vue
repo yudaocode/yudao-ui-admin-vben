@@ -123,9 +123,10 @@ watch(
           <SelectOption
             v-for="key in Object.keys(messageMap)"
             :value="key"
-            :label="messageMap[key]"
             :key="key"
-          />
+          >
+            {{ messageMap[key] }}
+          </SelectOption>
         </Select>
         <Button
           type="primary"

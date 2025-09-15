@@ -355,9 +355,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="(dict, index) in CANDIDATE_STRATEGY"
           :key="index"
-          :label="dict.label"
           :value="dict.value"
-        />
+        >
+          {{ dict.label }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -375,9 +376,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="item in roleOptions"
           :key="item.id"
-          :label="item.name"
           :value="item.id"
-        />
+        >
+          {{ item.name }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -416,9 +418,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="item in postOptions"
           :key="item.id"
-          :label="item.name"
           :value="item.id"
-        />
+        >
+          {{ item.name }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -436,9 +439,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="item in userOptions"
           :key="item.id"
-          :label="item.nickname"
           :value="item.id"
-        />
+        >
+          {{ item.nickname }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -456,9 +460,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="item in userGroupOptions"
           :key="item.id"
-          :label="item.name"
           :value="item.id"
-        />
+        >
+          {{ item.name }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -475,10 +480,11 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="(item, idx) in userFieldOnFormOptions"
           :key="idx"
-          :label="item.title"
           :value="item.field"
           :disabled="!item.required"
-        />
+        >
+          {{ item.title }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -497,10 +503,11 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="(item, idx) in deptFieldOnFormOptions"
           :key="idx"
-          :label="item.title"
           :value="item.field"
           :disabled="!item.required"
-        />
+        >
+          {{ item.title }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
@@ -520,9 +527,10 @@ onBeforeUnmount(() => {
         <SelectOption
           v-for="(item, index) in MULTI_LEVEL_DEPT"
           :key="index"
-          :label="item.label"
           :value="item.value"
-        />
+        >
+          {{ item.label }}
+        </SelectOption>
       </Select>
     </FormItem>
     <FormItem
