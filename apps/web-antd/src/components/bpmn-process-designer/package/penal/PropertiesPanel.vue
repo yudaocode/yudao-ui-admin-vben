@@ -5,8 +5,8 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Collapse } from 'ant-design-vue';
 
-import ElementCustomConfig from '#/components/bpmnProcessDesigner/package/penal/custom-config/ElementCustomConfig.vue';
-import ElementForm from '#/components/bpmnProcessDesigner/package/penal/form/ElementForm.vue';
+import ElementCustomConfig from '#/components/bpmn-process-designer/package/penal/custom-config/ElementCustomConfig.vue';
+import ElementForm from '#/components/bpmn-process-designer/package/penal/form/ElementForm.vue';
 
 import ElementBaseInfo from './base/ElementBaseInfo.vue';
 import FlowCondition from './flow-condition/FlowCondition.vue';
