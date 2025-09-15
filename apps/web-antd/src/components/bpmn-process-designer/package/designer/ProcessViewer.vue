@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-import { BpmProcessInstanceStatus } from '@vben/constants';
+import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
 import { dateFormatter, formatPast2 } from '@vben/utils';
 
@@ -10,7 +10,6 @@ import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils/dict';
 
 import '../theme/index.scss';
 
