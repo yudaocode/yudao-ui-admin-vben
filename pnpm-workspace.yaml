@@ -217,8 +217,8 @@ catalog:
   vue-tsc: 2.2.10
   vue3-signature: ^0.2.4
   vuedraggable: ^4.1.0
-  vxe-pc-ui: ^4.7.12
-  vxe-table: ^4.14.4
+  vxe-pc-ui: ^4.9.29
+  vxe-table: ^4.16.11
   watermark-js-plus: ^1.6.2
   zod: ^3.25.67
   zod-defaults: ^0.1.3

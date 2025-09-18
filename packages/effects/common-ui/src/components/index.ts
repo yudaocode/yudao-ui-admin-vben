@@ -11,6 +11,7 @@ export * from './loading';
 export * from './page';
 export * from './resize';
 export * from './tippy';
+export * from './tree';
 export * from '@vben-core/form-ui';
 export * from '@vben-core/popup-ui';
 
@@ -29,7 +30,6 @@ export {
   VbenPinInput,
   VbenSelect,
   VbenSpinner,
-  VbenTree,
 } from '@vben-core/shadcn-ui';
 
 export type { FlattenedItem } from '@vben-core/shadcn-ui';
