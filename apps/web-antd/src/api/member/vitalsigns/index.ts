@@ -31,6 +31,13 @@ export function getVitalSigns(id: number) {
   );
 }
 
+/** 根据用户编号查询生命体征详情 */
+export function getVitalsignsByUserId(userId: number) {
+  return requestClient.get<VitalSignsApi.VitalSigns>(
+    `/member/vital-signs/get-by-user-id?userId=${userId}`,
+  );
+}
+
 /** 新增生命体征 */
 export function createVitalSigns(data: VitalSignsApi.VitalSigns) {
   return requestClient.post('/member/vital-signs/create', data);

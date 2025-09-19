@@ -2,25 +2,24 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BedApi } from '#/api/bdm/bed';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { message,Tabs } from 'ant-design-vue';
-import Form from './modules/form.vue';
-
-
-import { ref, computed } from 'vue';
-import { $t } from '#/locales';
-import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBedPage, deleteBed, deleteBedList, exportBed } from '#/api/bdm/bed';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { message } from 'ant-design-vue';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteBed, deleteBedList, exportBed, getBedPage } from '#/api/bdm/bed';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
-  destroyOnClose: true
+  destroyOnClose: true,
 });
-
 
 /** 刷新表格 */
 function onRefresh() {
@@ -37,12 +36,11 @@ function handleEdit(row: BedApi.Bed) {
   formModalApi.setData(row).open();
 }
 
-
 /** 删除床位 */
 async function handleDelete(row: BedApi.Bed) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg'
+    key: 'action_key_msg',
   });
   try {
     await deleteBed(row.id as number);
@@ -60,7 +58,7 @@ async function handleDelete(row: BedApi.Bed) {
 async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
-    key: 'action_key_msg'
+    key: 'action_key_msg',
   });
   try {
     await deleteBedList(checkedIds.value);
@@ -75,12 +73,8 @@ async function handleDeleteBatch() {
   }
 }
 
-const checkedIds = ref<number[]>([])
-function handleRowCheckboxChange({
-  records
-}: {
-  records: BedApi.Bed[];
-}) {
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({ records }: { records: BedApi.Bed[] }) {
   checkedIds.value = records.map((item) => item.id);
 }
 
@@ -92,7 +86,7 @@ async function handleExport() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -118,12 +112,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: true,
       search: true,
-    }
+    },
   } as VxeTableGridOptions<BedApi.Bed>,
-  gridEvents:{
-      checkboxAll: handleRowCheckboxChange,
-      checkboxChange: handleRowCheckboxChange
-  }
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -186,6 +180,5 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
     </Grid>
-
   </Page>
 </template>

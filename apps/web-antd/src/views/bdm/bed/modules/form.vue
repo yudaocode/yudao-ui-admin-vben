@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { BedApi } from '#/api/bdm/bed';
 
-import { useVbenModal } from '@vben/common-ui';
-import { message, Tabs, Checkbox, Input, Textarea, Select,RadioGroup,CheckboxGroup, DatePicker } from 'ant-design-vue';
-
 import { computed, ref } from 'vue';
-import { $t } from '#/locales';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
 import { useVbenForm } from '#/adapter/form';
-import { getBed, createBed, updateBed } from '#/api/bdm/bed';
+import { createBed, getBed, updateBed } from '#/api/bdm/bed';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
@@ -19,18 +21,17 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['床位']);
 });
 
-
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false
+  showDefaultActions: false,
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -39,15 +40,15 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-        modalApi.lock();
+    modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as BedApi.Bed;
-        try {
+    try {
       await (formData.value?.id ? updateBed(data) : createBed(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success( $t('ui.actionMessage.operationSuccess') );
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -73,12 +74,12 @@ const [Modal, modalApi] = useVbenModal({
     // 设置到 values
     formData.value = data;
     await formApi.setValues(formData.value);
-  }
+  },
 });
 </script>
 
 <template>
   <Modal :title="getTitle">
     <Form class="mx-4" />
-      </Modal>
+  </Modal>
 </template>
