@@ -4,7 +4,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { computed, ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
@@ -134,7 +134,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <VbenTree
+        <Tree
           class="max-h-96 overflow-y-auto"
           :loading="menuLoading"
           :tree-data="menuTree"

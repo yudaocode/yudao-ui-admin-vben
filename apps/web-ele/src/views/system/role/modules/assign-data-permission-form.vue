@@ -4,7 +4,7 @@ import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
@@ -134,7 +134,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <VbenTree
+        <Tree
           :tree-data="deptTree"
           multiple
           bordered

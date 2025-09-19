@@ -4,9 +4,9 @@ import type { Recordable } from '@vben/types';
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { SystemRoleApi } from '#/api/system/role';
 
-import {nextTick, ref} from 'vue';
+import { nextTick, ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
@@ -142,7 +142,7 @@ function getNodeClass(node: Recordable<any>) {
   <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <VbenTree
+        <Tree
           :spinning="menuLoading"
           :tree-data="menuTree"
           multiple
