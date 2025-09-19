@@ -63,7 +63,9 @@ export function deleteDemo03Student(id: number) {
 
 /** 导出学生 */
 export function exportDemo03Student(params: any) {
-  return requestClient.download('/infra/demo03-student/export-excel', params);
+  return requestClient.download('/infra/demo03-student/export-excel', {
+    params,
+  });
 }
 
 // ==================== 子表（学生课程） ====================

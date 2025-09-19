@@ -4,14 +4,14 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { ref } from 'vue';
 
+import { DeliveryTypeEnum } from '@vben/constants';
+
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
-import {
-  DeliveryTypeEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
 

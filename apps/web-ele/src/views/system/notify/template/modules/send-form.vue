@@ -22,7 +22,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
   showDefaultActions: false,
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 动态构建表单 schema */
-const buildFormSchema = () => {
+function buildFormSchema() {
   const schema = useSendNotifyFormSchema();
   if (formData.value?.params) {
     formData.value.params.forEach((param: string) => {
@@ -102,7 +102,7 @@ const buildFormSchema = () => {
     });
   }
   return schema;
-};
+}
 </script>
 
 <template>

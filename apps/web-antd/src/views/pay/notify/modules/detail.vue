@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { Descriptions, Divider, Table, Tag } from 'ant-design-vue';
 
 import { getNotifyTaskDetail } from '#/api/pay/notify';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 import { detailColumns } from '../data';
 

@@ -6,6 +6,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order/index';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { DeliveryTypeEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
@@ -16,12 +17,10 @@ import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express'
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import * as OrderApi from '#/api/mall/trade/order/index';
 import { DictTag } from '#/components/dict-tag';
-import {
-  DeliveryTypeEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/mall/trade/order/data';
 
 const props = defineProps<{
@@ -47,7 +46,7 @@ const [Grid] = useVbenVxeGrid({
         label: '订单状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.TRADE_ORDER_STATUS, 'number'),
           placeholder: '全部',
         },
@@ -57,7 +56,7 @@ const [Grid] = useVbenVxeGrid({
         label: '支付方式',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'number'),
           placeholder: '全部',
         },
@@ -68,7 +67,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
       {
@@ -76,7 +75,7 @@ const [Grid] = useVbenVxeGrid({
         label: '订单来源',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.TERMINAL, 'number'),
           placeholder: '全部',
         },
@@ -86,7 +85,7 @@ const [Grid] = useVbenVxeGrid({
         label: '订单类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.TRADE_ORDER_TYPE, 'number'),
           placeholder: '全部',
         },
@@ -96,7 +95,7 @@ const [Grid] = useVbenVxeGrid({
         label: '配送方式',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.TRADE_DELIVERY_TYPE, 'number'),
           placeholder: '全部',
         },
@@ -106,7 +105,7 @@ const [Grid] = useVbenVxeGrid({
         label: '快递公司',
         component: 'ApiSelect',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           api: getSimpleDeliveryExpressList,
           labelField: 'name',
           valueField: 'id',
@@ -184,7 +183,7 @@ const [Grid] = useVbenVxeGrid({
   <Grid table-title="订单列表">
     <template #expand_content="{ row }">
       <div class="order-items">
-        <div v-for="item in row.items" :key="item.id" class="order-item">
+        <div v-for="(item, index) in row.items" :key="index" class="order-item">
           <div class="order-item-image">
             <ElImage :src="item.picUrl" :width="40" :height="40" />
           </div>
@@ -200,12 +199,9 @@ const [Grid] = useVbenVxeGrid({
               </ElTag>
             </div>
             <div class="order-item-info">
-              <span
-                >原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
-                  item.count
-                }}
-                个</span
-              >
+              <span>
+                原价：{{ fenToYuan(item.price) }} 元 / 数量：{{ item.count }} 个
+              </span>
               <DictTag
                 :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
                 :value="item.afterSaleStatus"

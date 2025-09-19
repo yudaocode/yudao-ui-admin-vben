@@ -21,7 +21,7 @@ const emit = defineEmits<{
   (e: 'success'): void;
 }>();
 
-const formData = reactive<InfraCodegenApi.CodegenCreateListReq>({
+const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
   dataSourceConfigId: 0,
   tableNames: [], // 已选择的表列表
 });
@@ -53,6 +53,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'name',
+      isHover: true,
     },
     toolbarConfig: {
       enabled: false,
@@ -96,17 +97,14 @@ const [Modal, modalApi] = useVbenModal({
     // 2. 提交请求
     const hideLoading = message.loading({
       content: '导入中...',
-      key: 'action_key_msg',
+      duration: 0,
     });
     try {
       await createCodegenList(formData);
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success({
-        content: $t('ui.actionMessage.operationSuccess'),
-        key: 'action_key_msg',
-      });
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       hideLoading();
       modalApi.unlock();

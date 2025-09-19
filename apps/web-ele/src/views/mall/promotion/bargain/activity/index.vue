@@ -51,7 +51,6 @@ async function handleClose(row: MallBargainActivityApi.BargainActivity) {
 async function handleDelete(row: MallBargainActivityApi.BargainActivity) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteBargainActivity(row.id as number);

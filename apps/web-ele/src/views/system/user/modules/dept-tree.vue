@@ -52,19 +52,17 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="mb-2">
-      <ElInput
-        placeholder="搜索部门"
-        clearable
-        v-model="searchValue"
-        @input="handleSearch"
-        class="w-full"
-      >
-        <template #prefix>
-          <Search class="size-4" />
-        </template>
-      </ElInput>
-    </div>
+    <ElInput
+      placeholder="搜索部门"
+      clearable
+      v-model="searchValue"
+      @input="handleSearch"
+      class="w-full"
+    >
+      <template #prefix>
+        <Search class="size-4" />
+      </template>
+    </ElInput>
     <div v-loading="loading">
       <ElTree
         class="pt-2"

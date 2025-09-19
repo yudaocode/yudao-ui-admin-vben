@@ -17,7 +17,6 @@ export namespace ErpStockCheckApi {
     creatorName?: string; // 创建人
     items?: StockCheckItem[]; // 盘点产品清单
   }
-  // 库存盘点单产品信息
   export interface StockCheckItem {
     id?: number; // 编号
     warehouseId?: number; // 仓库编号
@@ -33,6 +32,7 @@ export namespace ErpStockCheckApi {
     stockCount?: number; // 账面库存
     remark?: string; // 备注
   }
+
   /** 库存盘点单分页查询参数 */
   export interface StockCheckPageParams extends PageParam {
     no?: string;

@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { formatDateTime } from '@vben/utils';
@@ -78,35 +79,43 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '日志编号',
+      minWidth: 100,
     },
     {
       field: 'userName',
       title: '操作人',
+      minWidth: 120,
     },
     {
       field: 'type',
       title: '操作模块',
+      minWidth: 120,
     },
     {
       field: 'subType',
       title: '操作名',
+      minWidth: 160,
     },
     {
       field: 'action',
       title: '操作内容',
+      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '操作时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'bizId',
       title: '业务编号',
+      minWidth: 120,
     },
     {
       field: 'userIp',
-      title: '操作IP',
+      title: '操作 IP',
+      minWidth: 120,
     },
     {
       title: '操作',
@@ -127,7 +136,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'traceId',
       label: '链路追踪',
-      content: (data) => data?.traceId || '',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.traceId,
     },
     {
       field: 'userId',
@@ -139,11 +148,11 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'userIp',
-      label: '操作人IP',
+      label: '操作人 IP',
     },
     {
       field: 'userAgent',
-      label: '操作人UA',
+      label: '操作人 UA',
     },
     {
       field: 'type',
@@ -160,20 +169,23 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'extra',
       label: '操作拓展参数',
+      hidden: (data: SystemOperateLogApi.OperateLog) => !data?.extra,
     },
     {
-      field: 'requestUrl',
-      label: '请求URL',
-      content: (data) => {
-        const method = data?.requestMethod || '';
-        const url = data?.requestUrl || '';
-        return `${method} ${url}`.trim();
+      label: '请求 URL',
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
       },
     },
     {
       field: 'createTime',
       label: '操作时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemOperateLogApi.OperateLog) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'bizId',

@@ -84,7 +84,7 @@ const [Modal, modalApi] = useVbenModal({
         };
         addStatus();
       } else {
-        formData.value = await getBusinessStatus(data.id as number);
+        formData.value = await getBusinessStatus(data.id);
         if (
           !formData.value?.statuses?.length ||
           formData.value?.statuses?.length === 0

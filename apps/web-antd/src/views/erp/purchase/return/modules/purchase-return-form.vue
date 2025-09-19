@@ -77,6 +77,7 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
+// TODO @XuZhiqiang：注释风格 /** */
 // 更新采购退货项
 const handleUpdateItems = async (
   items: ErpPurchaseReturnApi.PurchaseReturnItem[],
@@ -85,7 +86,7 @@ const handleUpdateItems = async (
     const data =
       (await formApi.getValues()) as ErpPurchaseReturnApi.PurchaseReturn;
     formData.value = { ...data, items };
-    formApi.setValues(formData.value, false);
+    await formApi.setValues(formData.value, false);
   }
 };
 
@@ -127,10 +128,9 @@ watch(
         item.totalPrice = (item.totalProductPrice || 0) + (item.taxPrice || 0);
       });
       // 计算总价
-      const totalPrice = newItems.reduce((sum, item) => {
+      formData.value.totalPrice = newItems.reduce((sum, item) => {
         return sum + (item.totalProductPrice || 0) + (item.taxPrice || 0);
       }, 0);
-      formData.value.totalPrice = totalPrice;
     } else {
       formData.value.totalPrice = 0;
     }
@@ -151,9 +151,7 @@ watch(
   { immediate: true },
 );
 
-/**
- * 创建或更新采购退货
- */
+/** 创建或更新采购退货 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

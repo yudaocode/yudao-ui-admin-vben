@@ -4,12 +4,10 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { ref } from 'vue';
 
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
+
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
-import {
-  DeliveryTypeEnum,
-  DICT_TYPE,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
 
@@ -26,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {

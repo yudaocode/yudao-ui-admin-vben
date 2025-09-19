@@ -7,6 +7,12 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import {
+  DeliveryTypeEnum,
+  DICT_TYPE,
+  TradeOrderStatusEnum,
+} from '@vben/constants';
+import { getDictLabel, getDictObj } from '@vben/hooks';
 import { fenToYuan, formatDate } from '@vben/utils';
 
 import {
@@ -22,8 +28,6 @@ import * as DeliveryPickUpStoreApi from '#/api/mall/trade/delivery/pickUpStore';
 import * as TradeOrderApi from '#/api/mall/trade/order';
 import ContentWrap from '#/components/content-wrap/content-wrap.vue';
 import { DictTag } from '#/components/dict-tag';
-import { DeliveryTypeEnum, TradeOrderStatusEnum } from '#/utils/constants';
-import { DICT_TYPE, getDictLabel, getDictObj } from '#/utils/dict';
 
 import OrderDeliveryForm from './delevery-form.vue';
 import OrderUpdateAddressForm from './update-address-form.vue';

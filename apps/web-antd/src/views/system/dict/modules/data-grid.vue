@@ -4,7 +4,7 @@ import type { SystemDictDataApi } from '#/api/system/dict/data';
 
 import { ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message, Tag } from 'ant-design-vue';
@@ -34,7 +34,7 @@ const [DataFormModal, dataFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -58,15 +58,29 @@ function handleEdit(row: SystemDictDataApi.DictData) {
 async function handleDelete(row: SystemDictDataApi.DictData) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.label]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await deleteDictData(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.label]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    await deleteDictData(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.label]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除字典数据 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+  });
+  try {
+    await deleteDictDataList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -78,24 +92,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemDictDataApi.DictData[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除字典数据 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteDictDataList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -138,7 +135,7 @@ watch(
   () => props.dictType,
   () => {
     if (props.dictType) {
-      onRefresh();
+      handleRefresh();
     }
   },
 );
@@ -146,7 +143,7 @@ watch(
 
 <template>
   <div class="flex h-full flex-col">
-    <DataFormModal @success="onRefresh" />
+    <DataFormModal @success="handleRefresh" />
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>
@@ -167,11 +164,11 @@ watch(
               onClick: handleExport,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
               auth: ['system:dict:delete'],
               onClick: handleDeleteBatch,
             },

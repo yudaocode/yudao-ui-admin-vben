@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import type { Point, Rect } from './util';
 
 import { ref, watch } from 'vue';

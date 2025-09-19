@@ -44,7 +44,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal
     title="短信日志详情"
-    class="w-1/2"
+    class="w-[1280px]"
     :show-cancel-button="false"
     :show-confirm-button="false"
   >

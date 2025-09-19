@@ -5,18 +5,18 @@ import { inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { Tinyflow } from '@vben/plugins/tinyflow';
 import { isNumber } from '@vben/utils';
 
 import { Button, Input, Select } from 'ant-design-vue';
 
 import { testWorkflow } from '#/api/ai/workflow';
-import { Tinyflow } from '#/components/tinyflow';
 
 defineProps<{
   provider: any;
 }>();
 
-const tinyflowRef = ref();
+const tinyflowRef = ref<InstanceType<typeof Tinyflow> | null>(null);
 const workflowData = inject('workflowData') as Ref;
 const params4Test = ref<any[]>([]);
 const paramsOfStartNode = ref<any>({});
@@ -35,7 +35,7 @@ function testWorkflowModel() {
   const startNode = getStartNode();
 
   // 获取参数定义
-  const parameters = startNode.data?.parameters || [];
+  const parameters: any[] = (startNode.data?.parameters as any[]) || [];
   const paramDefinitions: Record<string, any> = {};
 
   // 加入参数选项方便用户添加非必须参数
@@ -70,7 +70,7 @@ function testWorkflowModel() {
 /** 运行流程 */
 async function goRun() {
   try {
-    const val = tinyflowRef.value.getData();
+    const val = tinyflowRef.value?.getData();
     loading.value = true;
     error.value = null;
     testResult.value = null;
@@ -78,7 +78,7 @@ async function goRun() {
     const startNode = getStartNode();
 
     // 获取参数定义
-    const parameters = startNode.data?.parameters || [];
+    const parameters: any[] = (startNode.data?.parameters as any[]) || [];
     const paramDefinitions: Record<string, any> = {};
     parameters.forEach((param: any) => {
       paramDefinitions[param.name] = param.dataType;
@@ -119,12 +119,15 @@ async function goRun() {
 
 /** 获取开始节点 */
 function getStartNode() {
-  const val = tinyflowRef.value.getData();
-  const startNode = val.nodes.find((node: any) => node.type === 'startNode');
-  if (!startNode) {
-    throw new Error('流程缺少开始节点');
+  if (tinyflowRef.value) {
+    const val = tinyflowRef.value.getData();
+    const startNode = val!.nodes.find((node: any) => node.type === 'startNode');
+    if (!startNode) {
+      throw new Error('流程缺少开始节点');
+    }
+    return startNode;
   }
-  return startNode;
+  throw new Error('请设计流程');
 }
 
 /** 添加参数项 */
@@ -171,7 +174,7 @@ function convertParamValue(value: string, dataType: string) {
 /** 表单校验 */
 async function validate() {
   // 获取最新的流程数据
-  if (!workflowData.value) {
+  if (!workflowData.value || !tinyflowRef.value) {
     throw new Error('请设计流程');
   }
   workflowData.value = tinyflowRef.value.getData();
@@ -182,7 +185,7 @@ defineExpose({ validate });
 </script>
 
 <template>
-  <div class="relative h-[700px] w-full">
+  <div class="relative h-[800px] w-full">
     <Tinyflow
       v-if="workflowData"
       ref="tinyflowRef"

@@ -3,13 +3,13 @@ import type { MemberUserApi } from '#/api/member/user';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
 import { Avatar, Card, Col, Row } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '#/utils';
 
 withDefaults(
   defineProps<{ mode?: 'kefu' | 'member'; user: MemberUserApi.User }>(),
@@ -18,7 +18,7 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     class: 'mx-4',
@@ -85,12 +85,12 @@ const [Description] = useDescription({
         <Avatar :size="140" shape="square" :src="user.avatar" />
       </Col>
       <Col :span="20">
-        <Description :column="2" :data="user" />
+        <Descriptions :column="2" :data="user" />
       </Col>
     </Row>
     <template v-else-if="mode === 'kefu'">
       <Avatar :size="140" shape="square" :src="user.avatar" />
-      <Description :column="1" :data="user" />
+      <Descriptions :column="1" :data="user" />
     </template>
   </Card>
 </template>

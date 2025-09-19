@@ -1,9 +1,12 @@
+import type {
+  BpmCandidateStrategyEnum,
+  BpmNodeTypeEnum,
+} from '@vben/constants';
 import type { PageParam, PageResult } from '@vben/request';
 
 import type { BpmTaskApi } from '../task';
 
 import type { BpmModelApi } from '#/api/bpm/model';
-import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '#/utils';
 
 import { requestClient } from '#/api/request';
 

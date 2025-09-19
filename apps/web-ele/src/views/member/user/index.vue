@@ -34,6 +34,7 @@ const [BalanceFormModal, balanceFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+// TODO @霖：拼写错误；
 const [LeavelFormModal, leavelFormModalApi] = useVbenModal({
   connectedComponent: LeavelForm,
   destroyOnClose: true,
@@ -47,10 +48,11 @@ function onRefresh() {
 /** 设置选中 ID */
 const checkedIds = ref<number[]>([]);
 function setCheckedIds({ records }: { records: MemberUserApi.User[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 发送优惠券 */
+// TODO @霖：这个功能没开发对，是发送优惠劵哈；
 function handleSendCoupon() {
   formModalApi.setData(null).open();
 }

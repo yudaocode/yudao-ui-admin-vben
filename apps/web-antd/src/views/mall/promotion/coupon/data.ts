@@ -1,7 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 import { discountFormat } from './formatter';
 
@@ -14,7 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入会员昵称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -23,7 +26,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

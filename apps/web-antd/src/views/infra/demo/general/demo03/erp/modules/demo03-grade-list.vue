@@ -5,6 +5,7 @@ import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { Plus, Trash2 } from '@vben/icons';
+import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
 
 import {
@@ -23,8 +24,6 @@ import {
   getDemo03GradePage,
 } from '#/api/infra/demo/demo03/erp';
 import { ContentWrap } from '#/components/content-wrap';
-import { TableToolbar } from '#/components/table-toolbar';
-import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -95,7 +94,7 @@ function handleRowCheckboxChange({
 }: {
   records: Demo03StudentApi.Demo03Grade[];
 }) {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const loading = ref(true); // 列表的加载中
@@ -112,18 +111,18 @@ const queryParams = reactive({
 });
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-};
+}
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     if (!props.studentId) {
@@ -140,7 +139,7 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
@@ -214,7 +213,7 @@ onMounted(() => {
     <!-- 列表 -->
     <ContentWrap title="学生">
       <template #extra>
-        <TableToolbar
+        <VbenVxeTableToolbar
           ref="tableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
@@ -238,7 +237,7 @@ onMounted(() => {
           >
             批量删除
           </Button>
-        </TableToolbar>
+        </VbenVxeTableToolbar>
       </template>
       <VxeTable
         ref="tableRef"
@@ -263,7 +262,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row as any)"
+              @click="onEdit(row)"
               v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -273,7 +272,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="onDelete(row as any)"
+              @click="onDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

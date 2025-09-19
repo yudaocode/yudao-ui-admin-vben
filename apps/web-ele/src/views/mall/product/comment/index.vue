@@ -59,6 +59,7 @@ function handleReply(row: MallCommentApi.Comment) {
 }
 
 /** 更新状态 */
+// TODO @霖：貌似刷新后，就会触发
 async function handleStatusChange(
   newStatus: boolean,
   row: MallCommentApi.Comment,

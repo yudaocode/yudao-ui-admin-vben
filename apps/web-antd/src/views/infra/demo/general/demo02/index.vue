@@ -5,6 +5,7 @@ import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
   cloneDeep,
   downloadFileFromBlobPart,
@@ -21,8 +22,6 @@ import {
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
 import { ContentWrap } from '#/components/content-wrap';
-import { TableToolbar } from '#/components/table-toolbar';
-import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -40,7 +39,7 @@ const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const params = cloneDeep(queryParams) as any;
@@ -51,18 +50,18 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-};
+}
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Demo02CategoryForm,
@@ -171,7 +170,7 @@ onMounted(() => {
     <!-- 列表 -->
     <ContentWrap title="示例分类">
       <template #extra>
-        <TableToolbar
+        <VbenVxeTableToolbar
           ref="tableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
@@ -197,7 +196,7 @@ onMounted(() => {
           >
             {{ $t('ui.actionTitle.export') }}
           </Button>
-        </TableToolbar>
+        </VbenVxeTableToolbar>
       </template>
       <VxeTable
         ref="tableRef"
@@ -225,7 +224,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onAppend(row as any)"
+              @click="onAppend(row)"
               v-access:code="['infra:demo02-category:create']"
             >
               新增下级
@@ -233,7 +232,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row as any)"
+              @click="onEdit(row)"
               v-access:code="['infra:demo02-category:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -243,8 +242,8 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              :disabled="!isEmpty(row?.children)"
-              @click="onDelete(row as any)"
+              :disabled="!isEmpty(row.children)"
+              @click="onDelete(row)"
               v-access:code="['infra:demo02-category:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

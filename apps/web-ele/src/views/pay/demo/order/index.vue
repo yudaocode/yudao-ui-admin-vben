@@ -48,7 +48,6 @@ function handlePay(row: DemoOrderApi.Order) {
 async function handleRefund(row: DemoOrderApi.Order) {
   const loadingInstance = ElLoading.service({
     text: '退款中，请稍后...',
-    fullscreen: true,
   });
   try {
     await refundDemoOrder(row.id as number);

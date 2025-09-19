@@ -1,9 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

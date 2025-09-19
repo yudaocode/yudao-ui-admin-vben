@@ -37,7 +37,6 @@ function handleEdit(row: MallBrandApi.Brand) {
 async function handleDelete(row: MallBrandApi.Brand) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteBrand(row.id as number);

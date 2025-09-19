@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// TODO @gjd：https://t.zsxq.com/pmNb1 AI 对话、绘图底部没对齐
+// TODO @gjd：https://t.zsxq.com/pmNb1 AI 对话、绘图底部没对齐，特别是样式方面
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
@@ -490,6 +490,11 @@ onMounted(async () => {
   activeMessageListLoading.value = true;
   await getMessageList();
 });
+// TODO @芋艿：深度思考
+// TODO @芋艿：联网搜索
+// TODO @芋艿：附件支持
+// TODO @芋艿：mcp 相关
+// TODO @芋艿：异常消息的处理
 </script>
 
 <template>

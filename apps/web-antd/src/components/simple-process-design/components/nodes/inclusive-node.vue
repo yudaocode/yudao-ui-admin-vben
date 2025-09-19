@@ -3,12 +3,11 @@ import type { SimpleFlowNode } from '../../consts';
 
 import { getCurrentInstance, inject, nextTick, ref, watch } from 'vue';
 
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
 
 import { Button, Input } from 'ant-design-vue';
-
-import { BpmNodeTypeEnum } from '#/utils';
 
 import {
   ConditionType,

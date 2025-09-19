@@ -3,9 +3,9 @@ import type { Ref } from 'vue';
 
 import { computed, inject, nextTick, ref } from 'vue';
 
-import { BpmModelType } from '#/utils';
+import { BpmModelType } from '@vben/constants';
 
-// TODO BPM 流程模型设计器 BpmModelEditor 待整合
+import BpmModelEditor from './bpm-model-editor.vue';
 import SimpleModelDesign from './simple-model-design.vue';
 
 // 创建本地数据副本
@@ -56,7 +56,13 @@ defineExpose({ validate });
   <div class="h-full">
     <!-- BPMN设计器 -->
     <template v-if="modelData.type === BpmModelType.BPMN">
-      <!-- TODO BPMN 流程设计器 -->
+      <BpmModelEditor
+        v-if="showDesigner"
+        :model-id="modelData.id"
+        :model-key="modelData.key"
+        :model-name="modelData.name"
+        @success="handleDesignSuccess"
+      />
     </template>
     <!-- Simple设计器 -->
     <template v-else>

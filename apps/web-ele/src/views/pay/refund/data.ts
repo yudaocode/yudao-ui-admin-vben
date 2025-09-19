@@ -10,7 +10,10 @@ import { ElTag } from 'element-plus';
 
 import { getAppList } from '#/api/pay/app';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -36,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '退款渠道',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'string'),
       },
     },
@@ -65,7 +68,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '退款状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PAY_REFUND_STATUS, 'number'),
       },
     },
@@ -75,7 +78,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -1,15 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { z } from '#/adapter/form';
 import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -61,16 +59,21 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'TimePicker',
-      fieldName: 'openingTime',
-      label: '营业开始时间',
+      component: 'TimeRangePicker',
+      fieldName: 'rangeTime',
+      label: '营业时间',
       rules: 'required',
-    },
-    {
-      component: 'TimePicker',
-      fieldName: 'closingTime',
-      label: '营业结束时间',
-      rules: 'required',
+      componentProps: {
+        format: 'HH:mm',
+        minuteStep: 15,
+        disabledTime: () => {
+          return {
+            disabledHours: () => {
+              return [0, 1, 2, 3, 4, 5, 6, 7];
+            },
+          };
+        },
+      },
     },
     {
       component: 'Input',
@@ -84,6 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '纬度',
       rules: 'required',
     },
+    // TODO @xingyu：缺少地图
     {
       component: 'Input',
       fieldName: 'getGeo',

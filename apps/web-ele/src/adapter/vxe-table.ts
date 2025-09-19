@@ -6,7 +6,9 @@ import { h } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
-  AsyncComponents,
+  AsyncVxeColumn,
+  AsyncVxeTable,
+  createRequiredValidation,
   setupVbenVxeTable,
   useVbenVxeGrid,
 } from '@vben/plugins/vxe-table';
@@ -19,14 +21,12 @@ import {
   isString,
 } from '@vben/utils';
 
-import { ElButton, ElImage, ElPopconfirm, ElSwitch } from 'element-plus';
+import { ElButton, ElImage, ElPopconfirm, ElSwitch, ElTag } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
-
-import '#/adapter/style.css';
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -101,6 +101,35 @@ setupVbenVxeTable({
       },
     });
 
+    // 表格配置项可以用 cellRender: { name: 'CellTag' },
+    vxeUI.renderer.add('CellTag', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        return h(ElTag, { color: props?.color }, () => row[column.field]);
+      },
+    });
+
+    vxeUI.renderer.add('CellTags', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        if (!row[column.field] || row[column.field].length === 0) {
+          return '';
+        }
+        return h(
+          'div',
+          { class: 'flex items-center justify-center' },
+          {
+            default: () =>
+              row[column.field].map((item: any) =>
+                h(ElTag, { color: props?.color }, { default: () => item }),
+              ),
+          },
+        );
+      },
+    });
+
     // 表格配置项可以用 cellRender: { name: 'CellDict', props:{dictType: ''} },
     vxeUI.renderer.add('CellDict', {
       renderTableDefault(renderOpts, params) {
@@ -118,6 +147,7 @@ setupVbenVxeTable({
     });
 
     // 表格配置项可以用 cellRender: { name: 'CellSwitch', props: { beforeChange: () => {} } },
+    // add by 芋艿：from https://github.com/vbenjs/vue-vben-admin/blob/main/playground/src/adapter/vxe-table.ts#L97-L123
     vxeUI.renderer.add('CellSwitch', {
       renderTableDefault({ attrs, props }, { column, row }) {
         const loadingKey = `__loading_${column.field}`;
@@ -149,6 +179,7 @@ setupVbenVxeTable({
     });
 
     // 注册表格的操作按钮渲染器 cellRender: { name: 'CellOperation', options: ['edit', 'delete'] }
+    // add by 芋艿：from https://github.com/vbenjs/vue-vben-admin/blob/main/playground/src/adapter/vxe-table.ts#L125-L255
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
         const defaultProps = {
@@ -211,7 +242,7 @@ setupVbenVxeTable({
             {
               ...props,
               ...opt,
-              text: true,
+              link: true,
               icon: undefined,
               onClick: listen
                 ? () =>
@@ -278,8 +309,9 @@ setupVbenVxeTable({
       },
     });
 
-    // 添加数量格式化，例如金额
-    // TODO @xingyu：建议金额，和数量分开哈；原因是，有些团队希望金额，单独控制；
+    // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
+    // vxeUI.formats.add
+
     vxeUI.formats.add('formatPast2', {
       tableCellFormatMethod({ cellValue }) {
         return formatPast2(cellValue);
@@ -308,18 +340,10 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-export { useVbenVxeGrid };
+export { createRequiredValidation, useVbenVxeGrid };
 
-const [VxeTable, VxeColumn, VxeToolbar] = AsyncComponents;
-export { VxeColumn, VxeTable, VxeToolbar };
+export const [VxeTable, VxeColumn] = [AsyncVxeTable, AsyncVxeColumn];
 
-// 导出操作按钮的回调函数类型
-export type OnActionClickParams<T = Recordable<any>> = {
-  code: string;
-  row: T;
-};
-export type OnActionClickFn<T = Recordable<any>> = (
-  params: OnActionClickParams<T>,
-) => void;
 export * from '#/components/table-action';
+
 export type * from '@vben/plugins/vxe-table';

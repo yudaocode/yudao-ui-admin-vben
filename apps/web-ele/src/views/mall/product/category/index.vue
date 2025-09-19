@@ -54,7 +54,6 @@ const handleViewSpu = (id: number) => {
 async function handleDelete(row: MallCategoryApi.Category) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCategory(row.id as number);
@@ -166,7 +165,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.VIEW,
               auth: ['product:category:update'],
               ifShow: row.parentId !== undefined && row.parentId > 0,
-              onClick: handleViewSpu.bind(null, row.id || 0),
+              onClick: handleViewSpu.bind(null, row.id!),
             },
             {
               label: $t('common.delete'),

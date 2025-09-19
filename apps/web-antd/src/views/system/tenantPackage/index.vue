@@ -4,7 +4,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -26,7 +26,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -48,11 +48,25 @@ async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
   });
   try {
     await deleteTenantPackage(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除租户套餐 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteTenantPackageList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -64,24 +78,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemTenantPackageApi.TenantPackage[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除租户套餐 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteTenantPackageList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -125,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="SaaS 多租户" url="https://doc.iocoder.cn/saas-tenant/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="租户套餐列表">
       <template #toolbar-tools>
         <TableAction
@@ -138,12 +135,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleCreate,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['system:tenant-package:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"

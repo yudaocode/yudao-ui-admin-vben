@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 
+import {
+  BpmAutoApproveType,
+  BpmModelFormType,
+  ProcessVariableEnum,
+} from '@vben/constants';
 import { CircleHelp } from '@vben/icons';
 
 import {
@@ -26,11 +31,6 @@ import {
   HttpRequestSetting,
   parseFormFields,
 } from '#/components/simple-process-design';
-import {
-  BpmAutoApproveType,
-  BpmModelFormType,
-  ProcessVariableEnum,
-} from '#/utils';
 
 const modelData = defineModel<any>();
 

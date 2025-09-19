@@ -31,7 +31,6 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
   },
-  // 一共2列
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -69,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getProduct(data.id as number);
+      formData.value = await getProduct(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

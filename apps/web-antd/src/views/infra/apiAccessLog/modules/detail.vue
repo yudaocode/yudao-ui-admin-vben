@@ -11,6 +11,15 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<InfraApiAccessLogApi.ApiAccessLog>();
 
+const [Descriptions] = useDescription({
+  componentProps: {
+    bordered: true,
+    column: 1,
+    class: 'mx-4',
+  },
+  schema: useDetailSchema(),
+});
+
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
@@ -30,15 +39,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-const [Description] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 1,
-    class: 'mx-4',
-  },
-  schema: useDetailSchema(),
-});
 </script>
 
 <template>
@@ -48,6 +48,6 @@ const [Description] = useDescription({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Description :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

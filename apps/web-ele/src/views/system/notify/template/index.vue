@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -36,61 +33,56 @@ const [SendModal, sendModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportNotifyTemplate(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '站内信模板.xls', source: data });
 }
 
 /** 创建站内信模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑站内信模板 */
-function onEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleEdit(row: SystemNotifyTemplateApi.NotifyTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试站内信 */
-function onSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
+function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除站内信模板 */
-async function onDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.name]),
-    type: 'info',
-    duration: 0,
+async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteNotifyTemplate(row.id as number);
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 批量删除站内信模板 */
-async function onDeleteBatch() {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting'),
-    type: 'info',
-    duration: 0,
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
   });
   try {
     await deleteNotifyTemplateList(checkedIds.value);
     checkedIds.value = [];
-    loadingInstance.close();
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -102,28 +94,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemNotifyTemplateApi.NotifyTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNotifyTemplateApi.NotifyTemplate>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'send': {
-      onSend(row);
-      break;
-    }
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -131,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -147,6 +118,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -166,7 +138,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="站内信" url="https://doc.iocoder.cn/notify/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <SendModal />
     <Grid table-title="站内信模板列表">
       <template #toolbar-tools>
@@ -177,14 +149,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['system:notify-template:create'],
-              onClick: onCreate,
+              onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['system:notify-template:export'],
-              onClick: onExport,
+              onClick: handleExport,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
@@ -192,7 +164,40 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               disabled: isEmpty(checkedIds),
               auth: ['system:notify-template:delete'],
-              onClick: onDeleteBatch,
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:notify-template:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '测试',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:notify-template:send-notify'],
+              onClick: handleSend.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notify-template:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

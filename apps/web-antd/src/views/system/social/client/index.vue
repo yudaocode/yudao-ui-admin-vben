@@ -2,13 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSocialClient,
+  deleteSocialClientList,
   getSocialClientPage,
 } from '#/api/system/social/client';
 import { $t } from '#/locales';
@@ -22,7 +26,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -40,18 +44,41 @@ function handleEdit(row: SystemSocialClientApi.SocialClient) {
 async function handleDelete(row: SystemSocialClientApi.SocialClient) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteSocialClient(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
+}
+
+/** 批量删除社交客户端 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteSocialClientList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemSocialClientApi.SocialClient[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -75,12 +102,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemSocialClientApi.SocialClient>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -90,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="三方登录" url="https://doc.iocoder.cn/social-user/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="社交客户端列表">
       <template #toolbar-tools>
         <TableAction
@@ -101,6 +133,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['system:social-client:create'],
               onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'primary',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:social-client:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
             },
           ]"
         />

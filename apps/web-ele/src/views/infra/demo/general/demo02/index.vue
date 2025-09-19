@@ -5,6 +5,7 @@ import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
+import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
   cloneDeep,
   downloadFileFromBlobPart,
@@ -29,8 +30,6 @@ import {
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
 import { ContentWrap } from '#/components/content-wrap';
-import { TableToolbar } from '#/components/table-toolbar';
-import { useTableToolbar } from '#/hooks';
 import { $t } from '#/locales';
 
 import Demo02CategoryForm from './modules/form.vue';
@@ -47,7 +46,7 @@ const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const params = cloneDeep(queryParams) as any;
@@ -58,18 +57,18 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-};
+}
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Demo02CategoryForm,
@@ -86,7 +85,7 @@ function handleEdit(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData(row).open();
 }
 
-/** 新增下级示例分类 */
+/** 添加下级示例分类 */
 function handleAppend(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData({ parentId: row.id }).open();
 }
@@ -107,7 +106,7 @@ async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo02Category(queryParams);
@@ -179,7 +178,7 @@ onMounted(() => {
     <!-- 列表 -->
     <ContentWrap title="示例分类">
       <template #extra>
-        <TableToolbar
+        <VbenVxeTableToolbar
           ref="tableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
@@ -200,12 +199,12 @@ onMounted(() => {
             type="primary"
             class="ml-2"
             :loading="exportLoading"
-            @click="onExport"
+            @click="handleExport"
             v-access:code="['infra:demo02-category:export']"
           >
             {{ $t('ui.actionTitle.export') }}
           </ElButton>
-        </TableToolbar>
+        </VbenVxeTableToolbar>
       </template>
       <VxeTable
         ref="tableRef"

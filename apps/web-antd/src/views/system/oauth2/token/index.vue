@@ -2,7 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -16,7 +19,7 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -24,18 +27,41 @@ function onRefresh() {
 async function handleDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', ['令牌']),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteOAuth2Token(row.accessToken);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', ['令牌']),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', ['令牌']));
+    handleRefresh();
   } finally {
     hideLoading();
   }
+}
+
+/** 批量删除 OAuth2 令牌 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteOAuth2Token(checkedIds.value.join(','));
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<string[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemOAuth2TokenApi.OAuth2Token[];
+}) {
+  checkedIds.value = records.map((item) => item.accessToken);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -58,13 +84,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
     rowConfig: {
-      keyField: 'id',
+      keyField: 'accessToken',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemOAuth2TokenApi.OAuth2Token>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -78,17 +109,32 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <Grid table-title="令牌列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'primary',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:oauth2-token:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
-              label: '强退',
+              label: $t('common.delete'),
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['system:oauth2-token:delete'],
               popConfirm: {
-                title: `确定要强退令牌吗？`,
+                title: $t('ui.actionMessage.deleteConfirm', ['令牌']),
                 confirm: handleDelete.bind(null, row),
               },
             },

@@ -71,9 +71,7 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   }
 };
 
-/**
- * 创建或更新销售订单
- */
+/** 创建或更新销售订单 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

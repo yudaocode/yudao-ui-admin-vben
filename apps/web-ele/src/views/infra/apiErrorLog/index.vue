@@ -1,24 +1,20 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
+import { InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   exportApiErrorLog,
   getApiErrorLogPage,
   updateApiErrorLogStatus,
 } from '#/api/infra/api-error-log';
 import { $t } from '#/locales';
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -29,51 +25,35 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportApiErrorLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: 'API 错误日志.xls', source: data });
 }
 
 /** 查看 API 错误日志详情 */
-function onDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
+function handleDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
   detailModalApi.setData(row).open();
 }
 
 /** 处理已处理 / 已忽略的操作 */
-async function onProcess(id: number, processStatus: number) {
-  confirm({
+async function handleProcess(id: number, processStatus: number) {
+  await confirm({
     content: `确认标记为${InfraApiErrorLogProcessStatusEnum.DONE ? '已处理' : '已忽略'}?`,
-  }).then(async () => {
-    await updateApiErrorLogStatus(id, processStatus);
-    // 关闭并提示
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
   });
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraApiErrorLogApi.ApiErrorLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-    case 'done': {
-      onProcess(row.id, InfraApiErrorLogProcessStatusEnum.DONE);
-      break;
-    }
-    case 'ignore': {
-      onProcess(row.id, InfraApiErrorLogProcessStatusEnum.IGNORE);
-      break;
-    }
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
+  });
+  try {
+    await updateApiErrorLogStatus(id, processStatus);
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
   }
 }
 
@@ -82,7 +62,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -98,6 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -113,18 +94,62 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="API 错误日志列表">
       <template #toolbar-tools>
-        <ElButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:api-error-log:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:api-error-log:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:api-error-log:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
+              label: '已处理',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:api-error-log:update-status'],
+              ifShow:
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
+              onClick: handleProcess.bind(
+                null,
+                row.id,
+                InfraApiErrorLogProcessStatusEnum.DONE,
+              ),
+            },
+            {
+              label: '已忽略',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['infra:api-error-log:update-status'],
+              ifShow:
+                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
+              onClick: handleProcess.bind(
+                null,
+                row.id,
+                InfraApiErrorLogProcessStatusEnum.IGNORE,
+              ),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

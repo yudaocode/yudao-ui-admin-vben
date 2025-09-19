@@ -3,9 +3,10 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import { ref } from 'vue';
 
-import { Form, Input, Select } from 'ant-design-vue';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
-import { DICT_TYPE, getDictOptions } from '#/utils';
+import { Form, Input, Select } from 'ant-design-vue';
 
 // 创建本地数据副本
 const modelData = defineModel<any>();

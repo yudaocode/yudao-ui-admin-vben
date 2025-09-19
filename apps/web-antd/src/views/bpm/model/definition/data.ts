@@ -1,7 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 
-import { DICT_TYPE } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
 
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<BpmProcessDefinitionApi.ProcessDefinition>['columns'] {

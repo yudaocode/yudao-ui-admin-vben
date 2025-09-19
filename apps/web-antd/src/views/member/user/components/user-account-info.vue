@@ -19,7 +19,7 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     class: 'mx-4',
@@ -72,7 +72,7 @@ const [Description] = useDescription({
     <template #extra>
       <slot name="extra"></slot>
     </template>
-    <Description
+    <Descriptions
       :column="mode === 'member' ? 2 : 1"
       :data="{
         ...user,

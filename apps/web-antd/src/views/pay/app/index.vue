@@ -3,13 +3,13 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayAppApi } from '#/api/pay/app';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app';
 import { $t } from '#/locales';
-import { CommonStatusEnum, PayChannelEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import appFrom from './modules/app-form.vue';
@@ -34,20 +34,18 @@ function handleCreate() {
   appFormModalApi.setData(null).open();
 }
 
-function handleEdit(row: Required<PayAppApi.App>) {
+function handleEdit(row: PayAppApi.App) {
   appFormModalApi.setData({ id: row.id }).open();
 }
 
-async function handleDelete(row: Required<PayAppApi.App>) {
+async function handleDelete(row: PayAppApi.App) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
   });
   try {
     await deleteApp(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

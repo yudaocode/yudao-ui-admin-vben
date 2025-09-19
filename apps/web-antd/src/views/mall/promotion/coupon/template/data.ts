@@ -1,14 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 // 格式化函数移到组件内部实现
 import { z } from '#/adapter/form';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 import {
   discountFormat,
@@ -43,7 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '优惠券描述',
       component: 'Textarea',
     },
-    // TODO
+    // TODO @xingyu：不同的优惠，不同的选择
     {
       fieldName: 'productScope',
       label: '优惠类型',
@@ -63,6 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @xingu：不同的有效期，不同的类型
     {
       fieldName: 'validityType',
       label: '有效期类型',
@@ -119,7 +118,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入优惠券名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -128,7 +127,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择优惠类型',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.PROMOTION_DISCOUNT_TYPE, 'number'),
       },
     },
@@ -138,7 +137,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择优惠券状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -148,7 +147,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

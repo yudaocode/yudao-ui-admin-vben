@@ -72,8 +72,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
-    // TODO @nehc：这里，是不是直接 await 下？
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,
@@ -249,6 +248,7 @@ const init = (
           return newItem;
         })
       : [];
+  // TODO @XuZhiqiang: await 风格；
   nextTick(() => {
     gridApi.grid.reloadData(tableData.value);
   });

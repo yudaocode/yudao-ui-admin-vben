@@ -3,11 +3,11 @@ import type { InfraCodegenApi } from '#/api/infra/codegen';
 
 import { computed, ref, watch } from 'vue';
 
+import { InfraCodegenTemplateTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVbenForm } from '#/adapter/form';
 import { getCodegenTableList } from '#/api/infra/codegen';
-import { InfraCodegenTemplateTypeEnum } from '#/utils';
 
 import {
   useGenerationInfoBaseFormSchema,

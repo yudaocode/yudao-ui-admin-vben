@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { ProductSpuStatusEnum } from '@vben/constants';
 import {
   downloadFileFromBlobPart,
   fenToYuan,
@@ -25,7 +26,6 @@ import {
   updateStatus,
 } from '#/api/mall/product/spu';
 import { $t } from '#/locales';
-import { ProductSpuStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -65,7 +65,7 @@ const tabsData = ref([
 
 /** 刷新表格 */
 async function onRefresh() {
-  gridApi.query();
+  await gridApi.query();
   await getTabCount();
 }
 
@@ -100,12 +100,11 @@ function handleEdit(row: MallSpuApi.Spu) {
 async function handleDelete(row: MallSpuApi.Spu) {
   const hideLoading = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteSpu(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    await onRefresh();
   } finally {
     hideLoading.close();
   }
@@ -121,7 +120,7 @@ async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
   await confirm(`确认要"${row.name}"${text}吗？`);
   await updateStatus({ id: row.id as number, status: newStatus });
   ElMessage.success(`${text}成功`);
-  onRefresh();
+  await onRefresh();
 }
 
 /** 更新状态 */
@@ -205,13 +204,13 @@ function onChangeTab(key: any) {
 onMounted(async () => {
   // 解析路由的 categoryId
   if (route.query.categoryId) {
-    gridApi.formApi.setValues({
+    await gridApi.formApi.setValues({
       categoryId: Number(route.query.categoryId),
     });
   }
   await getTabCount();
-  const res = await getCategoryList({});
-  categoryList.value = handleTree(res, 'id', 'parentId', 'children');
+  const categoryRes = await getCategoryList({});
+  categoryList.value = handleTree(categoryRes, 'id', 'parentId', 'children');
 });
 </script>
 
@@ -226,6 +225,7 @@ onMounted(async () => {
 
     <Grid>
       <template #top>
+        <!-- TODO @xingyu：tabs 可以考虑往上以一些，和操作按钮在一排 -->
         <ElTabs class="border-none" @tab-change="onChangeTab">
           <ElTabs.TabPane
             v-for="item in tabsData"
@@ -255,6 +255,7 @@ onMounted(async () => {
           ]"
         />
       </template>
+      <!-- TODO @霖：展开的样子，不展示信息 -->
       <template #expand_content="{ row }">
         <ElDescriptions
           :column="4"

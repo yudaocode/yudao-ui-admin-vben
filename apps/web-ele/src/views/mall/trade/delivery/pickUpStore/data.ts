@@ -1,15 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { z } from '#/adapter/form';
 import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -62,6 +60,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '详细地址',
       rules: 'required',
     },
+    // TODO @霖：时间类型不对
     {
       component: 'TimePicker',
       fieldName: 'openingTime',
@@ -86,6 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '纬度',
       rules: 'required',
     },
+    // TODO @霖：缺少地图
     {
       component: 'Input',
       fieldName: 'getGeo',
@@ -135,7 +135,7 @@ export function useBindFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         mode: 'tags',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -176,7 +176,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '门店状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -186,7 +186,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

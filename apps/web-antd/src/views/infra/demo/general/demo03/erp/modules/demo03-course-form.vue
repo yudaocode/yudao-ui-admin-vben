@@ -80,7 +80,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     studentId: undefined,
@@ -88,7 +88,7 @@ const resetForm = () => {
     score: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 </script>
 
 <template>

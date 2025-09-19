@@ -33,19 +33,19 @@ function onRefresh() {
   gridApi.query();
 }
 
-/** 创建DIY模板 */
+/** 创建 DIY 模板 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑DIY模板 */
+/** 编辑 DIY 模板 */
 function handleEdit(row: MallDiyTemplateApi.DiyTemplate) {
   formModalApi.setData(row).open();
 }
 
+// TODO @xingyu：装修未实现
 /** 装修模板 */
 function handleDecorate(row: MallDiyTemplateApi.DiyTemplate) {
-  // 跳转到装修页面
   router.push({ name: 'DiyTemplateDecorate', params: { id: row.id } });
 }
 

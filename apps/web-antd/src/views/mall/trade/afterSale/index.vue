@@ -6,12 +6,13 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { Button, Tabs } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -30,7 +31,6 @@ function openAfterSaleDetail(row: MallAfterSaleApi.AfterSale) {
   push({ name: 'TradeAfterSaleDetail', params: { id: row.id } });
 }
 
-// TODO @xingyu：缺详情页
 /** 查看订单详情 */
 function openOrderDetail(row: MallAfterSaleApi.AfterSale) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });

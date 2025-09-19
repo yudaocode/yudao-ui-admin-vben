@@ -3,10 +3,15 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
 
 // TODO @jason：业务表单审批时，读取不到界面，参见 https://t.zsxq.com/eif2e
-
 import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  BpmModelFormType,
+  BpmModelType,
+  BpmTaskStatusEnum,
+  DICT_TYPE,
+} from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'ant-design-vue';
@@ -17,14 +22,7 @@ import {
 } from '#/api/bpm/processInstance';
 import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
-import {
-  BpmModelFormType,
-  BpmModelType,
-  BpmTaskStatusEnum,
-  DICT_TYPE,
-  registerComponent,
-  setConfAndFields2,
-} from '#/utils';
+import { registerComponent, setConfAndFields2 } from '#/utils';
 import {
   SvgBpmApproveIcon,
   SvgBpmCancelIcon,

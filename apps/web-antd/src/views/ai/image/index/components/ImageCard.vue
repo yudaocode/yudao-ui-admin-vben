@@ -6,11 +6,10 @@ import type { AiImageApi } from '#/api/ai/image';
 import { onMounted, ref, toRefs, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { AiImageStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
-
-import { AiImageStatusEnum } from '#/utils';
 
 // 消息
 

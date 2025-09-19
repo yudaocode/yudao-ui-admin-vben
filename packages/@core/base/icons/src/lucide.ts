@@ -35,6 +35,7 @@ export {
   GripVertical,
   History,
   Menu as IconDefault,
+  Inbox,
   Info,
   InspectionPanel,
   Languages,

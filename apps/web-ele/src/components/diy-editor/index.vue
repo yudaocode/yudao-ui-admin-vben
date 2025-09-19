@@ -3,6 +3,7 @@ import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { inject, onMounted, ref, unref, watch } from 'vue';
 
+import { IFrame } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 

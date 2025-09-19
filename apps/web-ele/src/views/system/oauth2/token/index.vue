@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemOAuth2TokenApi } from '#/api/system/oauth2/token';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteOAuth2Token,
   getOAuth2TokenPage,
@@ -19,36 +19,47 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 删除 OAuth2 令牌 */
-async function onDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
+async function handleDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [row.accessToken]),
-    fullscreen: true,
+    text: $t('ui.actionMessage.deleting', ['令牌']),
   });
   try {
     await deleteOAuth2Token(row.accessToken);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.accessToken]));
-    onRefresh();
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', ['令牌']));
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemOAuth2TokenApi.OAuth2Token>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
+/** 批量删除 OAuth2 令牌 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteOAuth2Token(checkedIds.value.join(','));
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
   }
+}
+
+const checkedIds = ref<string[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemOAuth2TokenApi.OAuth2Token[];
+}) {
+  checkedIds.value = records.map((item) => item.accessToken);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -56,7 +67,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -71,13 +82,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
     rowConfig: {
-      keyField: 'id',
+      keyField: 'accessToken',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemOAuth2TokenApi.OAuth2Token>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -90,6 +106,38 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <Grid table-title="令牌列表" />
+    <Grid table-title="令牌列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:oauth2-token:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:oauth2-token:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', ['令牌']),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

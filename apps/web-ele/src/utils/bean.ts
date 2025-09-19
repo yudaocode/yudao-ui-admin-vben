@@ -1,3 +1,4 @@
+// TODO @xingyu：要不要抽到 package 里？
 /**
  * 将值复制到目标对象，且以目标对象属性为准，例：target: {a:1} source:{a:2,b:3} 结果为：{a:2}
  * @param target 目标对象
@@ -8,7 +9,8 @@ export const copyValueToTarget = (target: any, source: any) => {
   // 删除多余属性
   Object.keys(newObj).forEach((key) => {
     // 如果不是target中的属性则删除
-    if (Object.keys(target).indexOf(key) === -1) {
+    if (!Object.keys(target).includes(key)) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete newObj[key];
     }
   });

@@ -9,7 +9,7 @@ defineProps<{
   product: CrmProductApi.Product; // 产品信息
 }>();
 
-const [ProductDescription] = useDescription({
+const [ProductDescriptions] = useDescription({
   componentProps: {
     title: '基本信息',
     bordered: false,
@@ -22,6 +22,6 @@ const [ProductDescription] = useDescription({
 
 <template>
   <div class="p-4">
-    <ProductDescription :data="product" />
+    <ProductDescriptions :data="product" />
   </div>
 </template>

@@ -2,7 +2,7 @@ import type { DescriptionsOptions } from './typing';
 
 import { defineComponent, h, isReactive, reactive, watch } from 'vue';
 
-import { Description } from './index';
+import Description from './description.vue';
 
 /** 描述列表 api 定义 */
 class DescriptionApi {
@@ -16,7 +16,7 @@ class DescriptionApi {
     return this.state as DescriptionsOptions;
   }
 
-  // TODO @puhui999：【setState】纠结下：1）vben2.0 是 data https://doc.vvbin.cn/components/desc.html#usage；
+  // TODO @xingyu：【setState】纠结下：1）vben2.0 是 data https://doc.vvbin.cn/components/desc.html#usage；
   setState(newState: Partial<DescriptionsOptions>) {
     this.state = { ...this.state, ...newState };
   }
@@ -27,7 +27,7 @@ export type ExtendedDescriptionApi = DescriptionApi;
 export function useDescription(options: DescriptionsOptions) {
   const IS_REACTIVE = isReactive(options);
   const api = new DescriptionApi(options);
-  // 扩展API
+  // 扩展 API
   const extendedApi: ExtendedDescriptionApi = api as never;
   const Desc = defineComponent({
     name: 'UseDescription',

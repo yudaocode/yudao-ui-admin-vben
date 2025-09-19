@@ -2,9 +2,8 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { defineComponent } from 'vue';
 
+import { PromotionDiscountTypeEnum } from '@vben/constants';
 import { floatToFixed2 } from '@vben/utils';
-
-import { PromotionDiscountTypeEnum } from '#/utils/constants';
 
 // 优惠描述
 export const CouponDiscountDesc = defineComponent({

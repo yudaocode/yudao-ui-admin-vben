@@ -4,7 +4,10 @@ import type { MemberPointRecordApi } from '#/api/member/point/record';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRecordPage } from '#/api/member/point/record';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/member/point/record/data';
 
 const props = defineProps<{
@@ -19,7 +22,7 @@ const [Grid] = useVbenVxeGrid({
         label: '业务类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(DICT_TYPE.MEMBER_POINT_BIZ_TYPE, 'number'),
         },
       },
@@ -34,7 +37,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
     ],

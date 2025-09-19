@@ -47,7 +47,7 @@ function handleEdit(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData(row).open();
 }
 
-/** 新增下级示例分类 */
+/** 添加下级示例分类 */
 function handleAppend(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData({ parentId: row.id }).open();
 }
@@ -119,16 +119,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: isExpanded ? '收缩' : '展开',
-              type: 'primary',
-              onClick: toggleExpand,
-            },
-            {
               label: $t('ui.actionTitle.create', ['示例分类']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['infra:demo02-category:create'],
               onClick: handleCreate,
+            },
+            {
+              label: isExpanded ? '收缩' : '展开',
+              type: 'primary',
+              onClick: toggleExpand,
             },
             {
               label: $t('ui.actionTitle.export'),
@@ -145,14 +145,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '新增下级',
-              type: 'text',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.ADD,
               auth: ['infra:demo02-category:create'],
               onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),
-              type: 'text',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['infra:demo02-category:update'],
               onClick: handleEdit.bind(null, row),
@@ -160,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.delete'),
               type: 'danger',
-              text: true,
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo02-category:delete'],
               popConfirm: {

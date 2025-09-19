@@ -1,8 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -104,7 +106,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入邮箱',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -113,7 +115,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户名',
-        clearable: true,
+        allowClear: true,
       },
     },
   ];
@@ -126,26 +128,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'mail',
       title: '邮箱',
+      minWidth: 160,
     },
     {
       field: 'username',
       title: '用户名',
+      minWidth: 160,
     },
     {
       field: 'host',
       title: 'SMTP 服务器域名',
+      minWidth: 150,
     },
     {
       field: 'port',
       title: 'SMTP 服务器端口',
+      minWidth: 130,
     },
     {
       field: 'sslEnable',
       title: '是否开启 SSL',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -154,6 +162,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'starttlsEnable',
       title: '是否开启 STARTTLS',
+      minWidth: 145,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -162,6 +171,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

@@ -1,12 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { JsonViewer } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
-const { hasAccessByCodes } = useAccess();
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -16,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -26,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择用户类型',
       },
     },
@@ -35,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用名',
       },
     },
@@ -43,10 +48,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'beginTime',
       label: '请求时间',
       component: 'RangePicker',
-      // TODO @puhui999：时间范围不太对。结束时间不是 23:59:59 这种哈
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -54,7 +58,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '执行时长',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入执行时长',
       },
     },
@@ -63,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '结果码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入结果码',
       },
     },
@@ -71,9 +75,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraApiAccessLogApi.ApiAccessLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -149,25 +151,119 @@ export function useGridColumns<T = InfraApiAccessLogApi.ApiAccessLog>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 80,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: 'API访问日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['infra:api-access-log:query']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'traceId',
+      label: '链路追踪',
+    },
+    {
+      field: 'applicationName',
+      label: '应用名',
+    },
+    {
+      field: 'userId',
+      label: '用户Id',
+    },
+    {
+      field: 'userType',
+      label: '用户类型',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.USER_TYPE,
+          value: data.userType,
+        });
+      },
+    },
+    {
+      field: 'userIp',
+      label: '用户 IP',
+    },
+    {
+      field: 'userAgent',
+      label: '用户 UA',
+    },
+    {
+      label: '请求信息',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
+      },
+    },
+    {
+      field: 'requestParams',
+      label: '请求参数',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data.requestParams) {
+          return h(JsonViewer, {
+            value: JSON.parse(data.requestParams),
+            previewMode: true,
+          });
+        }
+        return '';
+      },
+    },
+    {
+      field: 'responseBody',
+      label: '请求结果',
+    },
+    {
+      label: '请求时间',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.beginTime && data?.endTime) {
+          return `${formatDateTime(data.beginTime)} ~ ${formatDateTime(data.endTime)}`;
+        }
+        return '';
+      },
+    },
+    {
+      label: '请求耗时',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        return data?.duration ? `${data.duration} ms` : '';
+      },
+    },
+    {
+      label: '操作结果',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        if (data?.resultCode === 0) {
+          return '正常';
+        } else if (data && data.resultCode > 0) {
+          return `失败 | ${data.resultCode} | ${data.resultMsg}`;
+        }
+        return '';
+      },
+    },
+    {
+      field: 'operateModule',
+      label: '操作模块',
+    },
+    {
+      field: 'operateName',
+      label: '操作名',
+    },
+    {
+      field: 'operateType',
+      label: '操作类型',
+      content: (data: InfraApiAccessLogApi.ApiAccessLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_OPERATE_TYPE,
+          value: data?.operateType,
+        });
       },
     },
   ];

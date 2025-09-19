@@ -5,6 +5,11 @@ import type { MallBrokerageWithdrawApi } from '#/api/mall/trade/brokerage/withdr
 import { h } from 'vue';
 
 import { confirm, Page, prompt } from '@vben/common-ui';
+import {
+  BrokerageWithdrawStatusEnum,
+  BrokerageWithdrawTypeEnum,
+  DICT_TYPE,
+} from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { Input, message } from 'ant-design-vue';
@@ -17,11 +22,6 @@ import {
 } from '#/api/mall/trade/brokerage/withdraw';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import {
-  BrokerageWithdrawStatusEnum,
-  BrokerageWithdrawTypeEnum,
-  DICT_TYPE,
-} from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

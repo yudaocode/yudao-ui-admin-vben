@@ -2,9 +2,8 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { defineComponent } from 'vue';
 
+import { CouponTemplateValidityTypeEnum } from '@vben/constants';
 import { formatDate } from '@vben/utils';
-
-import { CouponTemplateValidityTypeEnum } from '#/utils/constants';
 
 // 有效期
 export const CouponValidTerm = defineComponent({

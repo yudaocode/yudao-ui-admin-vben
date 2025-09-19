@@ -4,6 +4,13 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
+import {
+  BpmCandidateStrategyEnum,
+  BpmFieldPermissionType,
+  BpmModelFormType,
+  BpmModelType,
+  BpmNodeIdEnum,
+} from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
@@ -16,15 +23,7 @@ import {
   getApprovalDetail as getApprovalDetailApi,
 } from '#/api/bpm/processInstance';
 import { router } from '#/router';
-import {
-  BpmCandidateStrategyEnum,
-  BpmFieldPermissionType,
-  BpmModelFormType,
-  BpmModelType,
-  BpmNodeIdEnum,
-  decodeFields,
-  setConfAndFields2,
-} from '#/utils';
+import { decodeFields, setConfAndFields2 } from '#/utils';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
 

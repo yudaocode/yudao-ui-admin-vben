@@ -95,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = data.id ? await getBusiness(data.id as number) : data;
+      formData.value = data.id ? await getBusiness(data.id) : data;
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

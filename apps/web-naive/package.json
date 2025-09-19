@@ -44,15 +44,11 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "cropperjs": "catalog:",
-    "crypto-js": "catalog:",
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
     "naive-ui": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
-  },
-  "devDependencies": {
-    "@types/crypto-js": "catalog:"
   }
 }

@@ -6,6 +6,7 @@ import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -16,7 +17,6 @@ import {
 } from '#/api/crm/followup';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { DICT_TYPE } from '#/utils';
 
 import FollowUpRecordForm from './modules/form.vue';
 

@@ -1,12 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraFileConfigApi } from '#/api/infra/file-config';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -258,7 +256,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入配置名',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -268,7 +266,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE, 'number'),
         placeholder: '请选择存储器',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -284,15 +282,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
-      width: 100,
+      minWidth: 100,
     },
     {
       field: 'name',
@@ -302,7 +298,7 @@ export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
     {
       field: 'storage',
       title: '存储器',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_FILE_STORAGE },
@@ -316,7 +312,7 @@ export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
     {
       field: 'master',
       title: '主配置',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -325,43 +321,14 @@ export function useGridColumns<T = InfraFileConfigApi.FileConfig>(
     {
       field: 'createTime',
       title: '创建时间',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '文件配置',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:file-config:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:file-config:delete']),
-          },
-          {
-            code: 'master',
-            text: '主配置',
-            disabled: (row: any) => row.master,
-            show: (_row: any) => hasAccessByCodes(['infra:file-config:update']),
-          },
-          {
-            code: 'test',
-            text: '测试',
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

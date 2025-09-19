@@ -5,6 +5,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { h, onMounted, ref } from 'vue';
 
 import { Page, prompt } from '@vben/common-ui';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { Card, Input, message } from 'ant-design-vue';
@@ -16,7 +17,6 @@ import {
   getOrderSummary,
 } from '#/api/mall/trade/order';
 import { SummaryCard } from '#/components/summary-card';
-import { DeliveryTypeEnum, TradeOrderStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -175,6 +175,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <!-- TODO @xingyu：高度不对 -->
     <Card class="mb-4 h-[10%]">
       <div class="flex flex-row gap-4">
         <SummaryCard

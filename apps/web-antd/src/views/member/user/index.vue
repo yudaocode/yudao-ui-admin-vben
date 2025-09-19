@@ -14,7 +14,7 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';
-import LeavelForm from './modules/leavel-form.vue';
+import LevelForm from './modules/level-form.vue';
 import PointForm from './modules/point-form.vue';
 
 const router = useRouter();
@@ -34,8 +34,8 @@ const [BalanceFormModal, balanceFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [LeavelFormModal, leavelFormModalApi] = useVbenModal({
-  connectedComponent: LeavelForm,
+const [LevelFormModal, levelFormModalApi] = useVbenModal({
+  connectedComponent: LevelForm,
   destroyOnClose: true,
 });
 
@@ -47,10 +47,11 @@ function onRefresh() {
 /** 设置选中 ID */
 const checkedIds = ref<number[]>([]);
 function setCheckedIds({ records }: { records: MemberUserApi.User[] }) {
-  checkedIds.value = records.map((item) => item.id as number);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 发送优惠券 */
+// TODO @xingyu：这个功能没开发对，是发送优惠劵哈；
 function handleSendCoupon() {
   formModalApi.setData(null).open();
 }
@@ -62,7 +63,7 @@ function handleEdit(row: MemberUserApi.User) {
 
 /** 修改会员等级 */
 function handleUpdateLevel(row: MemberUserApi.User) {
-  leavelFormModalApi.setData(row).open();
+  levelFormModalApi.setData(row).open();
 }
 
 /** 修改会员积分 */
@@ -136,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <PointFormModal @success="onRefresh" />
     <BalanceFormModal @success="onRefresh" />
-    <LeavelFormModal @success="onRefresh" />
+    <LevelFormModal @success="onRefresh" />
     <Grid table-title="会员列表">
       <template #toolbar-tools>
         <TableAction

@@ -7,12 +7,13 @@ import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BrokerageRecordBizTypeEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { fenToYuan } from '@vben/utils';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBrokerageRecordPage } from '#/api/mall/trade/brokerage/record';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-import { BrokerageRecordBizTypeEnum } from '#/utils/constants';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 推广订单列表 */
 defineOptions({ name: 'BrokerageOrderListModal' });
@@ -49,15 +50,13 @@ function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'sourceUserLevel',
       label: '用户类型',
-      component: 'RadioGroup',
+      component: 'Select',
       componentProps: {
         options: [
           { label: '全部', value: 0 },
           { label: '一级推广人', value: 1 },
           { label: '二级推广人', value: 2 },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       defaultValue: 0,
     },

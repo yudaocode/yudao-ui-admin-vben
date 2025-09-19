@@ -4,7 +4,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { computed, ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox, message } from 'ant-design-vue';
@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTenantPackage(data.id as number);
+      formData.value = await getTenantPackage(data.id);
       await formApi.setValues(data);
     } finally {
       modalApi.unlock();
@@ -102,7 +102,7 @@ async function loadMenuTree() {
 }
 
 /** 全选/全不选 */
-function toggleSelectAll() {
+function handleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
   if (isAllSelected.value) {
     const allIds = getAllNodeIds(menuTree.value);
@@ -113,7 +113,7 @@ function toggleSelectAll() {
 }
 
 /** 展开/折叠所有节点 */
-function toggleExpandAll() {
+function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
   expandedKeys.value = isExpanded.value ? getAllNodeIds(menuTree.value) : [];
 }
@@ -134,7 +134,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <VbenTree
+        <Tree
           class="max-h-96 overflow-y-auto"
           :loading="menuLoading"
           :tree-data="menuTree"
@@ -149,10 +149,10 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Checkbox :checked="isAllSelected" @change="toggleSelectAll">
+        <Checkbox :checked="isAllSelected" @change="handleSelectAll">
           全选
         </Checkbox>
-        <Checkbox :checked="isExpanded" @change="toggleExpandAll">
+        <Checkbox :checked="isExpanded" @change="handleExpandAll">
           全部展开
         </Checkbox>
       </div>

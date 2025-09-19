@@ -46,7 +46,7 @@ const activeKey = ref<string>('');
 
 /** 代码地图 */
 const codeMap = ref<Map<string, string>>(new Map<string, string>());
-const setCodeMap = (key: string, lang: string, code: string) => {
+function setCodeMap(key: string, lang: string, code: string) {
   // 处理可能的缩进问题，特别是对Java文件
   const trimmedCode = code.trimStart();
   // 如果已有缓存则不重新构建
@@ -61,8 +61,10 @@ const setCodeMap = (key: string, lang: string, code: string) => {
   } catch {
     codeMap.value.set(key, trimmedCode);
   }
-};
-const removeCodeMapKey = (targetKey: any) => {
+}
+
+/** 删除代码地图 */
+function removeCodeMapKey(targetKey: any) {
   // 只有一个代码视图时不允许删除
   if (codeMap.value.size === 1) {
     return;
@@ -70,26 +72,10 @@ const removeCodeMapKey = (targetKey: any) => {
   if (codeMap.value.has(targetKey)) {
     codeMap.value.delete(targetKey);
   }
-};
-const handleTabsEdit = (
-  targetName: TabPaneName | undefined,
-  action: 'add' | 'remove',
-) => {
-  switch (action) {
-    case 'add': {
-      // el-tab 原生添加的位置用来放复制图标了，所以添加就是复制
-      copyCode();
-      break;
-    }
-    case 'remove': {
-      removeCodeMapKey(targetName);
-      break;
-    }
-  }
-};
+}
 
 /** 复制代码 */
-const copyCode = async () => {
+async function copyCode() {
   const { copy } = useClipboard();
   const file = previewFiles.value.find(
     (item) => item.filePath === activeKey.value,
@@ -98,30 +84,34 @@ const copyCode = async () => {
     await copy(file.code);
     ElMessage.success('复制成功');
   }
-};
+}
 
 /** 文件节点点击事件 */
-const handleNodeClick = (node: FileNode) => {
-  if (!node.isLeaf) return;
+function handleNodeClick(node: FileNode) {
+  if (!node.isLeaf) {
+    return;
+  }
 
   activeKey.value = node.key;
   const file = previewFiles.value.find((item) => {
     const list = activeKey.value.split('.');
-    // 特殊处理-包合并
+    // 特殊处理 - 包合并
     if (list.length > 2) {
       const lang = list.pop();
       return item.filePath === `${list.join('/')}.${lang}`;
     }
     return item.filePath === activeKey.value;
   });
-  if (!file) return;
+  if (!file) {
+    return;
+  }
 
   const lang = file.filePath.split('.').pop() || '';
   setCodeMap(activeKey.value, lang, file.code);
-};
+}
 
 /** 处理文件树 */
-const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
+function handleFiles(data: InfraCodegenApi.CodegenPreview[]): FileNode[] {
   const exists: Record<string, boolean> = {};
   const files: FileNode[] = [];
 
@@ -135,7 +125,7 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
       const path = paths[cursor] || '';
       const oldFullPath = fullPath;
 
-      // 处理Java包路径特殊情况
+      // 处理 Java 包路径特殊情况
       if (path === 'java' && cursor + 1 < paths.length) {
         fullPath = fullPath ? `${fullPath}/${path}` : path;
         cursor++;
@@ -194,17 +184,35 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   }
 
   /** 构建树形结构 */
-  const buildTree = (parentKey: string): FileNode[] => {
+  function buildTree(parentKey: string): FileNode[] {
     return files
       .filter((file) => file.parentKey === parentKey)
       .map((file) => ({
         ...file,
         children: buildTree(file.key),
       }));
-  };
+  }
 
   return buildTree('/');
-};
+}
+
+/** 处理标签页编辑事件 */
+function handleTabsEdit(
+  targetName: TabPaneName | undefined,
+  action: 'add' | 'remove',
+) {
+  switch (action) {
+    case 'add': {
+      // el-tab 原生添加的位置用来放复制图标了，所以添加就是复制
+      copyCode();
+      break;
+    }
+    case 'remove': {
+      removeCodeMapKey(targetName);
+      break;
+    }
+  }
+}
 
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({
@@ -218,7 +226,9 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     const row = modalApi.getData<InfraCodegenApi.CodegenTable>();
-    if (!row) return;
+    if (!row) {
+      return;
+    }
 
     // 加载预览数据
     loading.value = true;
@@ -273,6 +283,7 @@ const [Modal, modalApi] = useVbenModal({
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
+              <!-- eslint-disable-next-line vue/no-v-html -->
               <code
                 v-html="codeMap.get(activeKey)"
                 class="code-highlight"
@@ -280,6 +291,7 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </ElTabPane>
           <template #add-icon>
+            <!-- TODO @芋艿：这里会报错； -->
             <Copy />
           </template>
         </ElTabs>

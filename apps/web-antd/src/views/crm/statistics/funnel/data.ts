@@ -1,12 +1,14 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 import { beginOfDay, endOfDay, formatDateTime, handleTree } from '@vben/utils';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const userStore = useUserStore();
 

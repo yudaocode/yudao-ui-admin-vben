@@ -66,7 +66,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,
@@ -185,6 +185,7 @@ const init = (
           return newItem;
         })
       : [];
+  // TODO @XuZhiqiang: await 风格；
   nextTick(() => {
     gridApi.grid.reloadData(tableData.value);
   });

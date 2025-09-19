@@ -1,13 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -71,10 +74,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'userType',
       title: '用户类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.USER_TYPE },
@@ -83,22 +88,27 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userId',
       title: '用户编号',
+      minWidth: 100,
     },
     {
       field: 'templateCode',
       title: '模板编码',
+      minWidth: 120,
     },
     {
       field: 'templateNickname',
       title: '发送人名称',
+      minWidth: 180,
     },
     {
       field: 'templateContent',
       title: '模版内容',
+      minWidth: 200,
     },
     {
       field: 'templateParams',
       title: '模版参数',
+      minWidth: 180,
       formatter: ({ cellValue }) => {
         try {
           return JSON.stringify(cellValue);
@@ -110,6 +120,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'templateType',
       title: '模版类型',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE },
@@ -118,6 +129,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readStatus',
       title: '是否已读',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
@@ -126,11 +138,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'readTime',
       title: '阅读时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
@@ -152,7 +166,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userType',
       label: '用户类型',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.USER_TYPE,
           value: data?.userType,
@@ -182,7 +196,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateParams',
       label: '模版参数',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         try {
           return JSON.stringify(data?.templateParams);
         } catch {
@@ -193,7 +207,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'templateType',
       label: '模版类型',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           value: data?.templateType,
@@ -203,7 +217,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) => {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
         return h(DictTag, {
           type: DICT_TYPE.INFRA_BOOLEAN_STRING,
           value: data?.readStatus,
@@ -213,12 +227,16 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readTime',
       label: '阅读时间',
-      content: (data) => formatDateTime(data?.readTime || '') as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
     },
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime || '') as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
   ];
 }

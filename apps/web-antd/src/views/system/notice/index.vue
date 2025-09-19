@@ -4,7 +4,7 @@ import type { SystemNoticeApi } from '#/api/system/notice';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -27,7 +27,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -45,15 +45,29 @@ function handleEdit(row: SystemNoticeApi.Notice) {
 async function handleDelete(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteNotice(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除公告 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteNoticeList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -65,38 +79,17 @@ function handleRowCheckboxChange({
 }: {
   records: SystemNoticeApi.Notice[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除公告 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteNoticeList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 推送公告 */
 async function handlePush(row: SystemNoticeApi.Notice) {
   const hideLoading = message.loading({
-    content: '正在推送中',
-    key: 'action_process_msg',
+    content: '正在推送中...',
   });
   try {
     await pushNotice(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_key_msg',
-    });
+    message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     hideLoading();
   }
@@ -139,7 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="公告列表">
       <template #toolbar-tools>
         <TableAction
@@ -152,12 +145,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleCreate,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['system:notice:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"

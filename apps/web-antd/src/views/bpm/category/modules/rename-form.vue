@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 获取流程分类数据
-      formData.value = await getCategory(data.id as number);
+      formData.value = await getCategory(data.id);
       // 仅设置 name 字段
       await formApi.setValues({
         name: formData.value.name,

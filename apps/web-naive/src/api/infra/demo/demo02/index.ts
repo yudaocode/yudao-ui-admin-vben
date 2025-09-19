@@ -42,5 +42,7 @@ export function deleteDemo02Category(id: number) {
 
 /** 导出示例分类 */
 export function exportDemo02Category(params: any) {
-  return requestClient.download('/infra/demo02-category/export-excel', params);
+  return requestClient.download('/infra/demo02-category/export-excel', {
+    params,
+  });
 }

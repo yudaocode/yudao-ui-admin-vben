@@ -81,7 +81,6 @@ async function handleBrokerageEnabledChange(
   const text = row.brokerageEnabled ? '开通' : '关闭';
   const loadingInstance = ElLoading.service({
     text: `正在${text}"${row.nickname}"的推广资格...`,
-    fullscreen: true,
   });
   try {
     await updateBrokerageEnabled({

@@ -1,18 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -64,7 +57,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '套餐名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入套餐名称',
       },
     },
@@ -74,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择状态',
       },
     },
@@ -84,21 +77,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemTenantPackageApi.TenantPackage>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'checkbox',
-      width: 40,
-    },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '套餐编号',
@@ -130,29 +118,10 @@ export function useGridColumns<T = SystemTenantPackageApi.TenantPackage>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '套餐',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:tenant-package:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:tenant-package:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

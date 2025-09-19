@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 /**
  * 垂直按钮组
  * Element官方的按钮组只支持水平显示，通过重写样式实现垂直布局

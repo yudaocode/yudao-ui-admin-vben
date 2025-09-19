@@ -5,6 +5,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { computed, onMounted, ref, watch } from 'vue';
 
 import { confirm, Page, useVbenForm } from '@vben/common-ui';
+import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, message, Space } from 'ant-design-vue';
@@ -15,7 +16,6 @@ import { createLeave, updateLeave } from '#/api/bpm/oa/leave';
 import { getApprovalDetail as getApprovalDetailApi } from '#/api/bpm/processInstance';
 import { $t } from '#/locales';
 import { router } from '#/router';
-import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '#/utils';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
 
 import { useFormSchema } from './data';
@@ -171,7 +171,7 @@ function selectUserConfirm(id: string, userList: any[]) {
 
 /** 审批相关：预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次, formData.value可改成实际业务中的特定字段 */
 watch(
-  formData.value,
+  formData.value as object,
   (newValue, oldValue) => {
     if (!oldValue) {
       return;

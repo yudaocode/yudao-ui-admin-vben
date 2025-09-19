@@ -2,7 +2,10 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { VbenFormSchema } from '#/adapter/form';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -11,6 +14,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'userId',
       label: '用户编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户编号',
+      },
     },
     {
       fieldName: 'userType',
@@ -18,6 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
+        placeholder: '请选择用户类型',
       },
     },
     {
@@ -27,6 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         ...getRangePickerDefaultProps(),
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];

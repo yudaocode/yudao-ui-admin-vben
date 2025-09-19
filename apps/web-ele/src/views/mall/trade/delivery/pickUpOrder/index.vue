@@ -5,6 +5,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { h, onMounted, ref } from 'vue';
 
 import { Page, prompt } from '@vben/common-ui';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { ElCard, ElInput, ElMessage } from 'element-plus';
@@ -16,7 +17,6 @@ import {
   getOrderSummary,
 } from '#/api/mall/trade/order';
 import { SummaryCard } from '#/components/summary-card';
-import { DeliveryTypeEnum, TradeOrderStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -176,6 +176,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <ElCard class="mb-4 h-[10%]">
+      <!-- TODO @霖：高度不对 -->
       <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"
@@ -215,6 +216,7 @@ onMounted(() => {
         />
       </div>
     </ElCard>
+    <!-- TODO @霖：核销订单，点出的弹窗，无法输入内容； -->
     <Grid class="h-4/5" table-title="核销订单">
       <template #toolbar-tools>
         <TableAction

@@ -1,11 +1,11 @@
 <script setup lang="ts">
+// TODO @gjd：应该是 modules 模块，然后小写
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
 import { Button, Card, message, Textarea } from 'ant-design-vue';
-// 粘贴板
 
 const props = defineProps({
   content: {

@@ -67,13 +67,13 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     let data = modalApi.getData<CrmProductCategoryApi.ProductCategory>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
       if (data.id) {
-        data = await getProductCategory(data.id as number);
+        data = await getProductCategory(data.id);
       }
       // 设置到 values
       formData.value = data;

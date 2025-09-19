@@ -2,9 +2,13 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { VbenFormSchema } from '#/adapter/form';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
+// TODO @霖：少了 placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -25,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         ...getRangePickerDefaultProps(),
       },
     },

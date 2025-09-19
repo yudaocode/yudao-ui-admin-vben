@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '#/utils/dict';
+import { DICT_TYPE } from '@vben/constants';
 
 /** 表单配置 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -53,7 +53,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模板名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         placeholder: ['开始时间', '结束时间'],
-        clearable: true,
+        allowClear: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
       },
     },

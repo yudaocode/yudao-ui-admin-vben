@@ -37,7 +37,6 @@ function handleEdit(row: MemberTagApi.Tag) {
 async function handleDelete(row: MemberTagApi.Tag) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteMemberTag(row.id as number);

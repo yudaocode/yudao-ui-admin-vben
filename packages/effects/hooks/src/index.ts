@@ -1,6 +1,7 @@
 export * from './use-app-config';
 export * from './use-content-maximize';
 export * from './use-design-tokens';
+export * from './use-dict';
 export * from './use-hover-toggle';
 export * from './use-pagination';
 export * from './use-refresh';

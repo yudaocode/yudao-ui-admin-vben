@@ -103,6 +103,7 @@ async function handleGetUser(id: any, userType: string) {
 
 <template>
   <Modal title="创建分销员" class="w-2/5">
+    <!-- TODO @霖：宽度不够，label 会折行 -->
     <div class="mr-2 flex items-center">
       分销员编号：
       <ElInput

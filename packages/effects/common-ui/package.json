@@ -40,7 +40,6 @@
     "@vben/types": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
-    "crypto-js": "catalog:",
     "json-bigint": "catalog:",
     "qrcode": "catalog:",
     "tippy.js": "catalog:",
@@ -50,7 +49,6 @@
     "vue-tippy": "catalog:"
   },
   "devDependencies": {
-    "@types/crypto-js": "catalog:",
     "@types/qrcode": "catalog:"
   }
 }

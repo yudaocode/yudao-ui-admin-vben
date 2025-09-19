@@ -6,6 +6,7 @@ import type { IOParameter, SimpleFlowNode } from '../../consts';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -28,7 +29,6 @@ import {
 
 import { getFormDetail } from '#/api/bpm/form';
 import { getModelList } from '#/api/bpm/model';
-import { BpmNodeTypeEnum } from '#/utils';
 
 import {
   CHILD_PROCESS_MULTI_INSTANCE_SOURCE_TYPE,

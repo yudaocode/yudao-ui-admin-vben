@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -14,7 +15,6 @@ import {
   updateApiErrorLogStatus,
 } from '#/api/infra/api-error-log';
 import { $t } from '#/locales';
-import { InfraApiErrorLogProcessStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -25,7 +25,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -42,14 +42,20 @@ function handleDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
 
 /** 处理已处理 / 已忽略的操作 */
 async function handleProcess(id: number, processStatus: number) {
-  confirm({
+  await confirm({
     content: `确认标记为${InfraApiErrorLogProcessStatusEnum.DONE ? '已处理' : '已忽略'}?`,
-  }).then(async () => {
-    await updateApiErrorLogStatus(id, processStatus);
-    // 关闭并提示
-    message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
   });
+  const hideLoading = message.loading({
+    content: '正在处理中...',
+    duration: 0,
+  });
+  try {
+    await updateApiErrorLogStatus(id, processStatus);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -73,6 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -88,7 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="API 错误日志列表">
       <template #toolbar-tools>
         <TableAction
@@ -116,6 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '已处理',
               type: 'link',
+              icon: ACTION_ICON.ADD,
               auth: ['infra:api-error-log:update-status'],
               ifShow:
                 row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,
@@ -128,6 +136,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '已忽略',
               type: 'link',
+              icon: ACTION_ICON.DELETE,
               auth: ['infra:api-error-log:update-status'],
               ifShow:
                 row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT,

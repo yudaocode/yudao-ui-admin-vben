@@ -8,6 +8,15 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  BpmCandidateStrategyEnum,
+  BpmModelFormType,
+  BpmNodeTypeEnum,
+  BpmProcessInstanceStatus,
+  BpmTaskOperationButtonTypeEnum,
+  BpmTaskStatusEnum,
+  OPERATION_BUTTON_NAME,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
@@ -34,16 +43,7 @@ import {
 } from '#/api/bpm/processInstance';
 import * as TaskApi from '#/api/bpm/task';
 import * as UserApi from '#/api/system/user';
-import {
-  BpmCandidateStrategyEnum,
-  BpmModelFormType,
-  BpmNodeTypeEnum,
-  BpmProcessInstanceStatus,
-  BpmTaskOperationButtonTypeEnum,
-  BpmTaskStatusEnum,
-  OPERATION_BUTTON_NAME,
-  setConfAndFields2,
-} from '#/utils';
+import { setConfAndFields2 } from '#/utils';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
@@ -991,7 +991,7 @@ defineExpose({ loadTodoTask });
               <FormItem label="审批意见" name="reason">
                 <Textarea
                   v-model:value="transferForm.reason"
-                  clearable
+                  allow-clear
                   placeholder="请输入审批意见"
                   :rows="3"
                 />
@@ -1064,7 +1064,7 @@ defineExpose({ loadTodoTask });
               <FormItem label="审批意见" name="reason">
                 <Textarea
                   v-model:value="delegateForm.reason"
-                  clearable
+                  allow-clear
                   placeholder="请输入审批意见"
                   :rows="3"
                 />
@@ -1138,7 +1138,7 @@ defineExpose({ loadTodoTask });
               <FormItem label="审批意见" name="reason">
                 <Textarea
                   v-model:value="addSignForm.reason"
-                  clearable
+                  allow-clear
                   placeholder="请输入审批意见"
                   :rows="3"
                 />
@@ -1217,7 +1217,7 @@ defineExpose({ loadTodoTask });
               <FormItem label="审批意见" name="reason">
                 <Textarea
                   v-model:value="deleteSignForm.reason"
-                  clearable
+                  allow-clear
                   placeholder="请输入审批意见"
                   :rows="3"
                 />
@@ -1288,7 +1288,7 @@ defineExpose({ loadTodoTask });
               <FormItem label="退回理由" name="returnReason">
                 <Textarea
                   v-model:value="returnForm.returnReason"
-                  clearable
+                  allow-clear
                   placeholder="请输入退回理由"
                   :rows="3"
                 />
@@ -1354,7 +1354,7 @@ defineExpose({ loadTodoTask });
                 />
                 <Textarea
                   v-model:value="cancelForm.cancelReason"
-                  clearable
+                  allow-clear
                   placeholder="请输入取消理由"
                   :rows="3"
                 />

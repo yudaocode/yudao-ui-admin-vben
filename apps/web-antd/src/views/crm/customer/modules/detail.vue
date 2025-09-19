@@ -51,7 +51,7 @@ const customer = ref<CrmCustomerApi.Customer>({} as CrmCustomerApi.Customer);
 const customerLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     bordered: false,
     column: 4,
@@ -269,7 +269,7 @@ onMounted(() => {
       />
     </template>
     <Card class="min-h-[10%]">
-      <Description :data="customer" />
+      <Descriptions :data="customer" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>

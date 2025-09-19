@@ -27,6 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @霖：用户头像，有点丑，多了一层
     {
       fieldName: 'userAvatar',
       label: '用户头像',
@@ -45,6 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       rules: 'required',
     },
+    // TODO @霖：星级缺了；
     {
       fieldName: 'descriptionScores',
       label: '描述星级',
@@ -57,6 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Rate',
       rules: 'required',
     },
+    // TODO @霖：评价图片，有点丑，多了一层
     {
       fieldName: 'picUrls',
       label: '评论图片',
@@ -104,13 +107,14 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 表格列配置 */
+// TODO @霖：列表的宽度需要优化下，样式~
 export function useGridColumns<T = MallCommentApi.Comment>(
   onStatusChange?: (
     newStatus: boolean,

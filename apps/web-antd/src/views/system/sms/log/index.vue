@@ -18,7 +18,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,6 +54,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -69,7 +70,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="短信日志列表">
       <template #toolbar-tools>
         <TableAction

@@ -5,7 +5,7 @@ import type { SystemMailTemplateApi } from '#/api/system/mail/template';
 
 import { onMounted, ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -23,8 +23,6 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import SendForm from './modules/send-form.vue';
 
-const accountList = ref<SystemMailAccountApi.MailAccount[]>([]);
-
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -35,8 +33,14 @@ const [SendModal, sendModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 获取邮箱账号 */
+const accountList = ref<SystemMailAccountApi.MailAccount[]>([]);
+function getAccountMail(accountId: number) {
+  return accountList.value.find((account) => account.id === accountId)?.mail;
+}
+
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -57,17 +61,34 @@ function handleSend(row: SystemMailTemplateApi.MailTemplate) {
 
 /** 删除邮件模板 */
 async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
-  message.loading({
+  const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
-  await deleteMailTemplate(row.id as number);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    key: 'action_key_msg',
+  try {
+    await deleteMailTemplate(row.id as number);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量删除邮件模板 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
   });
-  onRefresh();
+  try {
+    await deleteMailTemplateList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const checkedIds = ref<number[]>([]);
@@ -76,29 +97,7 @@ function handleRowCheckboxChange({
 }: {
   records: SystemMailTemplateApi.MailTemplate[];
 }) {
-  checkedIds.value = records.map((item) => item.id as number);
-}
-
-/** 批量删除邮件模板 */
-async function handleDeleteBatch() {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteMailTemplateList(checkedIds.value);
-    checkedIds.value = [];
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 获取邮箱账号 */
-function getAccountMail(accountId: number) {
-  return accountList.value.find((account) => account.id === accountId)?.mail;
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -146,7 +145,7 @@ onMounted(async () => {
       <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <SendModal />
     <Grid table-title="邮件模板列表">
       <template #toolbar-tools>
@@ -160,12 +159,12 @@ onMounted(async () => {
               onClick: handleCreate,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
-              disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['system:mail-template:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"
@@ -184,7 +183,7 @@ onMounted(async () => {
             {
               label: '测试',
               type: 'link',
-              icon: ACTION_ICON.EDIT,
+              icon: ACTION_ICON.VIEW,
               auth: ['system:mail-template:send-mail'],
               onClick: handleSend.bind(null, row),
             },

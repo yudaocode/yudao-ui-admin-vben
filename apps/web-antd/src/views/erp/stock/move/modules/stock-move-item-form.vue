@@ -92,7 +92,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,

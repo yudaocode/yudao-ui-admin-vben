@@ -8,7 +8,10 @@ import { ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/mall/trade/order/data';
 
 const props = defineProps<{
@@ -66,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
     ],

@@ -1,14 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -19,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择是否已读',
       },
     },
@@ -28,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         ...getRangePickerDefaultProps(),
       },
     },
@@ -36,9 +38,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       title: '',
@@ -86,31 +86,10 @@ export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '站内信',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '查看',
-            show: (row: any) => row.readStatus,
-          },
-          {
-            code: 'read',
-            text: '已读',
-            show: (row: any) => !row.readStatus,
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }
@@ -124,30 +103,36 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '发送时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
+      },
     },
     {
       field: 'templateType',
       label: '消息类型',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           value: data?.templateType,
-        }),
+        });
+      },
     },
     {
       field: 'readStatus',
       label: '是否已读',
-      content: (data) =>
-        h(DictTag, {
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
           type: DICT_TYPE.INFRA_BOOLEAN_STRING,
           value: data?.readStatus,
-        }),
+        });
+      },
     },
     {
       field: 'readTime',
       label: '阅读时间',
-      content: (data) => formatDateTime(data?.readTime) as string,
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
     },
     {
       field: 'templateContent',

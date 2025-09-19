@@ -14,7 +14,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入推广员编号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择推广资格',
-        clearable: true,
+        allowClear: true,
         options: [
           { label: '有', value: true },
           { label: '无', value: false },
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

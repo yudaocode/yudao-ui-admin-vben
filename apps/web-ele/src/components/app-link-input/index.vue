@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import { ref, watch } from 'vue';
 
 import AppLinkSelectDialog from './app-link-select-dialog.vue';

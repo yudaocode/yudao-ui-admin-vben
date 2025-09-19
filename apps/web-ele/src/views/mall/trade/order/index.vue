@@ -6,6 +6,11 @@ import { h } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
+import {
+  DeliveryTypeEnum,
+  DICT_TYPE,
+  TradeOrderStatusEnum,
+} from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { ElImage, ElInput, ElTag } from 'element-plus';
@@ -14,7 +19,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage, updateOrderRemark } from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { DeliveryTypeEnum, DICT_TYPE, TradeOrderStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import DeleveryForm from './modules/delevery-form.vue';
@@ -29,7 +33,6 @@ function onRefresh() {
   gridApi.query();
 }
 const { push } = useRouter();
-// TODO xingyu：貌似详情，还点不进去哇？
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });
@@ -113,9 +116,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <DeleveryFormModal @success="onRefresh" />
     <Grid table-title="订单列表">
+      <!-- TODO @霖：列表有点丑 -->
       <template #expand_content="{ row }">
         <div class="order-items">
-          <div v-for="item in row.items" :key="item.id" class="order-item">
+          <div
+            v-for="(item, index) in row.items"
+            :key="index"
+            class="order-item"
+          >
             <div class="order-item-image">
               <ElImage :src="item.picUrl" class="h-40 w-40" />
             </div>

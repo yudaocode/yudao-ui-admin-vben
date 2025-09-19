@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-// OA请假相关路由配置
+// OA 请假相关路由配置
 const routes: RouteRecordRaw[] = [
   {
     path: '/bpm/oa',

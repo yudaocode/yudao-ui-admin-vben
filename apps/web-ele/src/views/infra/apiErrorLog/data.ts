@@ -1,17 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiErrorLogApi } from '#/api/infra/api-error-log';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
 
-import {
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-  InfraApiErrorLogProcessStatusEnum,
-} from '#/utils';
+import { JsonViewer } from '@vben/common-ui';
+import { DICT_TYPE, InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
-const { hasAccessByCodes } = useAccess();
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择用户类型',
       },
     },
@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用名',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS,
           'number',
         ),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择处理状态',
       },
       defaultValue: InfraApiErrorLogProcessStatusEnum.INIT,
@@ -71,9 +71,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraApiErrorLogApi.ApiErrorLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -130,45 +128,123 @@ export function useGridColumns<T = InfraApiErrorLogApi.ApiErrorLog>(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
-      align: 'center',
+      minWidth: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: 'API错误日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['infra:api-error-log:query']),
-          },
-          {
-            code: 'done',
-            text: '已处理',
-            show: (row: InfraApiErrorLogApi.ApiErrorLog) => {
-              return (
-                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
-                hasAccessByCodes(['infra:api-error-log:update-status'])
-              );
-            },
-          },
-          {
-            code: 'ignore',
-            text: '已忽略',
-            show: (row: InfraApiErrorLogApi.ApiErrorLog) => {
-              return (
-                row.processStatus === InfraApiErrorLogProcessStatusEnum.INIT &&
-                hasAccessByCodes(['infra:api-error-log:update-status'])
-              );
-            },
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '日志编号',
+    },
+    {
+      field: 'traceId',
+      label: '链路追踪',
+    },
+    {
+      field: 'applicationName',
+      label: '应用名',
+    },
+    {
+      field: 'userId',
+      label: '用户Id',
+    },
+    {
+      field: 'userType',
+      label: '用户类型',
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.USER_TYPE,
+          value: data.userType,
+        });
+      },
+    },
+    {
+      field: 'userIp',
+      label: '用户 IP',
+    },
+    {
+      field: 'userAgent',
+      label: '用户 UA',
+    },
+    {
+      field: 'requestMethod',
+      label: '请求信息',
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        if (data?.requestMethod && data?.requestUrl) {
+          return `${data.requestMethod} ${data.requestUrl}`;
+        }
+        return '';
+      },
+    },
+    {
+      field: 'requestParams',
+      label: '请求参数',
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        if (data.requestParams) {
+          return h(JsonViewer, {
+            value: JSON.parse(data.requestParams),
+            previewMode: true,
+          });
+        }
+        return '';
+      },
+    },
+    {
+      field: 'exceptionTime',
+      label: '异常时间',
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        return formatDateTime(data?.exceptionTime || '') as string;
+      },
+    },
+    {
+      field: 'exceptionName',
+      label: '异常名',
+    },
+    {
+      field: 'exceptionStackTrace',
+      label: '异常堆栈',
+      hidden: (data: InfraApiErrorLogApi.ApiErrorLog) =>
+        !data?.exceptionStackTrace,
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        if (data?.exceptionStackTrace) {
+          return h('textarea', {
+            value: data.exceptionStackTrace,
+            style:
+              'width: 100%; min-height: 200px; max-height: 400px; resize: vertical;',
+            readonly: true,
+          });
+        }
+        return '';
+      },
+    },
+    {
+      field: 'processStatus',
+      label: '处理状态',
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_API_ERROR_LOG_PROCESS_STATUS,
+          value: data?.processStatus,
+        });
+      },
+    },
+    {
+      field: 'processUserId',
+      label: '处理人',
+      hidden: (data: InfraApiErrorLogApi.ApiErrorLog) => !data?.processUserId,
+    },
+    {
+      field: 'processTime',
+      label: '处理时间',
+      hidden: (data: InfraApiErrorLogApi.ApiErrorLog) => !data?.processTime,
+      content: (data: InfraApiErrorLogApi.ApiErrorLog) => {
+        return formatDateTime(data?.processTime || '') as string;
       },
     },
   ];

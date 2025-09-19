@@ -6,6 +6,8 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import {
   DatePicker,
@@ -23,7 +25,6 @@ import {
 } from '#/api/infra/demo/demo03/erp';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictOptions } from '#/utils';
 
 const emit = defineEmits(['success']);
 
@@ -48,7 +49,7 @@ const getTitle = computed(() => {
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     name: undefined,
@@ -57,7 +58,7 @@ const resetForm = () => {
     description: undefined,
   };
   formRef.value?.resetFields();
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

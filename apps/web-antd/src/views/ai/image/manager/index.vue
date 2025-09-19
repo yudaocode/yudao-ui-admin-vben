@@ -6,6 +6,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { AiImageStatusEnum } from '@vben/constants';
 
 import { Image, message, Switch } from 'ant-design-vue';
 
@@ -13,7 +14,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteImage, getImagePage, updateImage } from '#/api/ai/image';
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
-import { AiImageStatusEnum } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

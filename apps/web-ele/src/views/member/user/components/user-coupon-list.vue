@@ -11,7 +11,10 @@ import {
   deleteCoupon,
   getCouponPage,
 } from '#/api/mall/promotion/coupon/coupon';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { getRangePickerDefaultProps } from '#/utils';
 
 const props = defineProps<{
   userId: number;
@@ -24,7 +27,6 @@ const activeStatus = ref<number | string>('all');
 const handleDelete = async (row: MallCouponApi.Coupon) => {
   const hideLoading = ElLoading.service({
     text: '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
-    fullscreen: true,
   });
   try {
     await deleteCoupon(row.id as number);
@@ -45,7 +47,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         component: 'RangePicker',
         componentProps: {
           ...getRangePickerDefaultProps(),
-          allowClear: true,
+          clearable: true,
         },
       },
     ],

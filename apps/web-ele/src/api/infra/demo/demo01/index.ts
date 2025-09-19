@@ -1,5 +1,3 @@
-import type { Dayjs } from 'dayjs';
-
 import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
@@ -10,7 +8,7 @@ export namespace Demo01ContactApi {
     id: number; // 编号
     name?: string; // 名字
     sex?: number; // 性别
-    birthday?: Dayjs | string; // 出生年
+    birthday?: Date | string; // 出生年
     description?: string; // 简介
     avatar: string; // 头像
   }
@@ -55,5 +53,7 @@ export function deleteDemo01ContactList(ids: number[]) {
 
 /** 导出示例联系人 */
 export function exportDemo01Contact(params: any) {
-  return requestClient.download('/infra/demo01-contact/export-excel', params);
+  return requestClient.download('/infra/demo01-contact/export-excel', {
+    params,
+  });
 }

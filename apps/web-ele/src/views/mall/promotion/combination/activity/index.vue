@@ -55,7 +55,6 @@ async function handleDelete(
 ) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    fullscreen: true,
   });
   try {
     await deleteCombinationActivity(row.id as number);
