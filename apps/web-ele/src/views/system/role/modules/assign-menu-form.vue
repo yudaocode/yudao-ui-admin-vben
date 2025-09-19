@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben-core/typings';
+import type { Recordable } from '@vben/types';
 
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { SystemRoleApi } from '#/api/system/role';
@@ -139,7 +139,7 @@ function getNodeClass(node: Recordable<any>) {
 </script>
 
 <template>
-  <Modal title="数据权限" class="w-2/5">
+  <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
         <Tree
@@ -152,7 +152,6 @@ function getNodeClass(node: Recordable<any>) {
           v-bind="slotProps"
           value-field="id"
           label-field="name"
-          icon-field="meta.icon"
         />
       </template>
     </Form>
