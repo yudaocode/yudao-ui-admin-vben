@@ -136,7 +136,9 @@ export function getSchemaTableList(params: any) {
 }
 
 /** 基于数据库的表结构，创建代码生成器的表定义 */
-export function createCodegenList(data: InfraCodegenApi.CodegenCreateListReqVO) {
+export function createCodegenList(
+  data: InfraCodegenApi.CodegenCreateListReqVO,
+) {
   return requestClient.post('/infra/codegen/create-list', data);
 }
 
