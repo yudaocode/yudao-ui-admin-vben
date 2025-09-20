@@ -39,6 +39,7 @@ export const useDictSelectRule = () => {
         title: label,
         info: '',
         $required: false,
+        modelField: 'value',
       };
     },
     props(_: any, { t }: any) {
