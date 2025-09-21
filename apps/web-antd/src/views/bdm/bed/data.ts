@@ -21,6 +21,10 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
+    ...zoneIdCompositeField,
+    buildingIdField,
+    floorIdField,
+    apartmentIdField,
     {
       fieldName: 'name',
       label: '床位名称',
@@ -30,10 +34,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入床位名称',
       },
     },
-    ...zoneIdCompositeField,
-    buildingIdField,
-    floorIdField,
-    apartmentIdField,
     {
       fieldName: 'sort',
       label: '显示顺序',
