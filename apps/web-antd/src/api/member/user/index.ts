@@ -42,7 +42,7 @@ export namespace MemberUserApi {
 /** 查询会员用户列表 */
 export function getUserPage(params: PageParam) {
   return requestClient.get<PageResult<MemberUserApi.User>>(
-    '/member/user/page',
+    '/member/user-ext/page',
     {
       params,
     },
@@ -51,7 +51,7 @@ export function getUserPage(params: PageParam) {
 
 /** 查询会员用户详情 */
 export function getUser(id: number) {
-  return requestClient.get<MemberUserApi.User>(`/member/user/get?id=${id}`);
+  return requestClient.get<MemberUserApi.User>(`/member/user-ext/get?id=${id}`);
 }
 
 /** 修改会员用户 */
