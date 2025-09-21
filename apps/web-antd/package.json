@@ -50,6 +50,7 @@
     "dayjs": "catalog:",
     "highlight.js": "catalog:",
     "pinia": "catalog:",
+    "pinyin-pro": "^3.27.0",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:",

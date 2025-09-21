@@ -788,6 +788,9 @@ importers:
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      pinyin-pro:
+        specifier: ^3.27.0
+        version: 3.27.0
       vue:
         specifier: ^3.5.17
         version: 3.5.18(typescript@5.9.2)
@@ -9226,6 +9229,9 @@ packages:
       typescript:
         optional: true
 
+  pinyin-pro@3.27.0:
+    resolution: {integrity: sha512-Osdgjwe7Rm17N2paDMM47yW+jUIUH3+0RGo8QP39ZTLpTaJVDK0T58hOLaMQJbcMmAebVuK2ePunTEVEx1clNQ==}
+
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
@@ -10382,6 +10388,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -19781,6 +19788,8 @@ snapshots:
       vue: 3.5.18(typescript@5.9.2)
     optionalDependencies:
       typescript: 5.9.2
+
+  pinyin-pro@3.27.0: {}
 
   pirates@4.0.7: {}
 

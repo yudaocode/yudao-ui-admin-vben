@@ -11,6 +11,16 @@ const routes: RouteRecordRaw[] = [
       hideInMenu: true,
     },
   },
+  {
+    path: '/member/contact',
+    component: () => import('#/views/member/contact/index.vue'),
+    name: 'MemberContact',
+    meta: {
+      title: '联系人',
+      icon: 'carbon:notebook-reference',
+      hideInMenu: true,
+    },
+  },
 ];
 
 export default routes;

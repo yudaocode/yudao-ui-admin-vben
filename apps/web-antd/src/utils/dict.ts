@@ -194,6 +194,7 @@ enum DICT_TYPE {
   AI_WRITE_LENGTH = 'ai_write_length', // AI 写作长度
   AI_WRITE_TONE = 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE = 'ai_write_type', // AI 写作类型
+  ALPHABETICAL_INDEX = 'alphabetical_index', // 字母索引
   BPM_MODEL_FORM_TYPE = 'bpm_model_form_type',
   // ========== BPM 模块 ==========
   BPM_MODEL_TYPE = 'bpm_model_type',
@@ -259,12 +260,13 @@ enum DICT_TYPE {
   IOT_RW_TYPE = 'iot_rw_type', // IOT 读写类型
   IOT_UNIT_TYPE = 'iot_unit_type', // IOT 单位类型
   IOT_VALIDATE_TYPE = 'iot_validate_type', // IOT 数据校验级别
+  MEMBER_CONTACT_RELATIONSHIP = 'member_contact_relationship', // 与本人关系
   MEMBER_EXPERIENCE_BIZ_TYPE = 'member_experience_biz_type', // 会员经验业务类型
   // ========== Member 会员模块 ==========
   MEMBER_POINT_BIZ_TYPE = 'member_point_biz_type', // 积分的业务类型
+
   // ========== MP 模块 ==========
   MP_AUTO_REPLY_REQUEST_MATCH = 'mp_auto_reply_request_match', // 自动回复请求匹配类型
-
   MP_MESSAGE_TYPE = 'mp_message_type', // 消息类型
   // ========== PAY 模块 ==========
   PAY_CHANNEL_CODE = 'pay_channel_code', // 支付渠道编码类型
@@ -274,9 +276,9 @@ enum DICT_TYPE {
   PAY_REFUND_STATUS = 'pay_refund_status', // 退款订单状态
   PAY_TRANSFER_STATUS = 'pay_transfer_status', // 转账订单状态
   PAY_TRANSFER_TYPE = 'pay_transfer_type', // 转账订单状态
+
   // ========== MALL - 商品模块 ==========
   PRODUCT_SPU_STATUS = 'product_spu_status', // 商品状态
-
   PROMOTION_BANNER_POSITION = 'promotion_banner_position', // banner 定位
   PROMOTION_BARGAIN_RECORD_STATUS = 'promotion_bargain_record_status', // 砍价记录的状态
   PROMOTION_COMBINATION_RECORD_STATUS = 'promotion_combination_record_status', // 拼团记录的状态
@@ -289,11 +291,11 @@ enum DICT_TYPE {
   PROMOTION_PRODUCT_SCOPE = 'promotion_product_scope', // 营销的商品范围
   SYSTEM_DATA_SCOPE = 'system_data_scope',
   SYSTEM_DOCUMENT_TYPE = 'system_document_type',
+
   SYSTEM_LOGIN_RESULT = 'system_login_result',
-
   SYSTEM_LOGIN_TYPE = 'system_login_type',
-  SYSTEM_MAIL_SEND_STATUS = 'system_mail_send_status',
 
+  SYSTEM_MAIL_SEND_STATUS = 'system_mail_send_status',
   SYSTEM_MENU_TYPE = 'system_menu_type',
   SYSTEM_NOTICE_TYPE = 'system_notice_type',
   SYSTEM_NOTIFY_TEMPLATE_TYPE = 'system_notify_template_type',
@@ -302,8 +304,8 @@ enum DICT_TYPE {
   SYSTEM_SMS_CHANNEL_CODE = 'system_sms_channel_code',
   SYSTEM_SMS_RECEIVE_STATUS = 'system_sms_receive_status',
   SYSTEM_SMS_SEND_STATUS = 'system_sms_send_status',
-  SYSTEM_SMS_TEMPLATE_TYPE = 'system_sms_template_type',
 
+  SYSTEM_SMS_TEMPLATE_TYPE = 'system_sms_template_type',
   SYSTEM_SOCIAL_TYPE = 'system_social_type',
   // ========== SYSTEM 模块 ==========
   SYSTEM_USER_SEX = 'system_user_sex',
@@ -315,6 +317,7 @@ enum DICT_TYPE {
   TRADE_ORDER_ITEM_AFTER_SALE_STATUS = 'trade_order_item_after_sale_status', // 订单项 - 售后状态
   TRADE_ORDER_STATUS = 'trade_order_status', // 订单 - 状态
   TRADE_ORDER_TYPE = 'trade_order_type', // 订单 - 类型
+
   USER_TYPE = 'user_type',
 }
 
