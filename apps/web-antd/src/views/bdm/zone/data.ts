@@ -32,16 +32,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入区域简称',
       },
     },
-    {
-      fieldName: 'areaId',
-      label: '所属地区',
-      rules: 'required',
-      component: 'ApiTreeSelect',
-      componentProps: {
-        api: () => getAreaTree(),
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-      },
-    },
+    areaIdField,
     {
       fieldName: 'address',
       label: '详细地址',
@@ -108,17 +99,7 @@ export function useFormSchema(): VbenFormSchema[] {
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
-    {
-      fieldName: 'areaId',
-      label: '所属地区',
-      component: 'ApiTreeSelect',
-      componentProps: {
-        allowClear: true,
-        api: () => getAreaTree(),
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择所属地区',
-      },
-    },
+    areaIdFilterField,
     {
       fieldName: 'name',
       label: '区域名称',
