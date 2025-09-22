@@ -8,9 +8,8 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { getRangePickerDefaultProps } from '#/utils';
-
 import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -126,9 +125,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'avatar',
       label: '用户头像',
+      // TODO @芋艿：使用 antd 的 Image 组件
       content: (data: SystemSocialUserApi.SocialUser) => {
         if (data?.avatar) {
-          // TODO @芋艿：使用 antd 的 Image 组件
           return h('img', {
             src: data.avatar,
             style: 'width: 30px; height: 30px; cursor: pointer;',

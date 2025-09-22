@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  VxeGridListeners,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { ref } from 'vue';
