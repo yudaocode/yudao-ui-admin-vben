@@ -2,15 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDataSourceConfig,
+  deleteDataSourceConfigList,
   getDataSourceConfigList,
 } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
@@ -52,6 +54,32 @@ async function handleDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   }
 }
 
+/** 批量删除数据源 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteDataSourceConfigList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    await handleLoadData();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraDataSourceConfigApi.DataSourceConfig[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -59,6 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -69,6 +98,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
   } as VxeTableGridOptions<InfraDataSourceConfigApi.DataSourceConfig>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 加载数据 */
@@ -95,6 +128,15 @@ onMounted(() => {
               icon: ACTION_ICON.ADD,
               auth: ['infra:data-source-config:create'],
               onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'primary',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:data-source-config:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

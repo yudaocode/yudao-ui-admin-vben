@@ -55,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 50 },
     {
       field: 'id',
       title: '主键编号',
