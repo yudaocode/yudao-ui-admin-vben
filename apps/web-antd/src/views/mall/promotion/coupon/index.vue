@@ -26,13 +26,12 @@ const statusTabs = ref(getStatusTabs());
 async function handleDelete(row: MallCouponApi.Coupon) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteCoupon(row.id as number);
     message.success({
       content: '回收成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

@@ -37,13 +37,12 @@ function handleEdit(row: MallBannerApi.Banner) {
 async function handleDelete(row: MallBannerApi.Banner) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteBanner(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

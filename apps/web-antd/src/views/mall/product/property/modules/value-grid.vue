@@ -49,13 +49,12 @@ function handleEdit(row: MallPropertyApi.PropertyValue) {
 async function handleDelete(row: MallPropertyApi.PropertyValue) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deletePropertyValue(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

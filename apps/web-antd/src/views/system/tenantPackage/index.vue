@@ -44,7 +44,7 @@ function handleEdit(row: SystemTenantPackageApi.TenantPackage) {
 async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteTenantPackage(row.id as number);

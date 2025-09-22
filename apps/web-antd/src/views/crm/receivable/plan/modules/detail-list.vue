@@ -62,13 +62,12 @@ function handleEdit(row: CrmReceivableApi.Receivable) {
 async function handleDelete(row: CrmReceivablePlanApi.Plan) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.period]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteReceivablePlan(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.period]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

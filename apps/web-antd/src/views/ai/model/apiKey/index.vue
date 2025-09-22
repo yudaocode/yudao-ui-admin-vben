@@ -37,13 +37,12 @@ function handleEdit(row: AiModelApiKeyApi.ApiKey) {
 async function handleDelete(row: AiModelApiKeyApi.ApiKey) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteApiKey(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

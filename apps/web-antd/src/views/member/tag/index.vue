@@ -37,13 +37,12 @@ function handleEdit(row: MemberTagApi.Tag) {
 async function handleDelete(row: MemberTagApi.Tag) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteMemberTag(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

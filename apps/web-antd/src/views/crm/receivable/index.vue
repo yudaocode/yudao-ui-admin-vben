@@ -55,13 +55,12 @@ function handleEdit(row: CrmReceivableApi.Receivable) {
 async function handleDelete(row: CrmReceivableApi.Receivable) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.no]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteReceivable(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.no]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -73,13 +72,12 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
 async function handleSubmit(row: CrmReceivableApi.Receivable) {
   const hideLoading = message.loading({
     content: '提交审核中...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await submitReceivable(row.id as number);
     message.success({
       content: '提交审核成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

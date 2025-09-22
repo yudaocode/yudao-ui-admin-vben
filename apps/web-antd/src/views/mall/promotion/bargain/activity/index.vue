@@ -51,13 +51,12 @@ async function handleClose(row: MallBargainActivityApi.BargainActivity) {
 
   const hideLoading = message.loading({
     content: '确认关闭该砍价活动吗？',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await closeBargainActivity(row.id as number);
     message.success({
       content: '关闭成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -69,13 +68,12 @@ async function handleClose(row: MallBargainActivityApi.BargainActivity) {
 async function handleDelete(row: MallBargainActivityApi.BargainActivity) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteBargainActivity(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

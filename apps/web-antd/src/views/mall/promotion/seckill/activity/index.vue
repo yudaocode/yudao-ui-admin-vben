@@ -47,13 +47,12 @@ function handleCreate() {
 async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.closing', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await closeSeckillActivity(row.id as number);
     message.success({
       content: '关闭成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -65,13 +64,12 @@ async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
 async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteSeckillActivity(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

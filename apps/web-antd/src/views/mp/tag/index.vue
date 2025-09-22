@@ -79,13 +79,12 @@ function handleEdit(row: MpTagApi.Tag) {
 async function handleDelete(row: MpTagApi.Tag) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteTag(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -96,13 +95,12 @@ async function handleDelete(row: MpTagApi.Tag) {
 async function handleSync() {
   const hideLoading = message.loading({
     content: '是否确认同步标签？',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await syncTag(accountId.value);
     message.success({
       content: '同步标签成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

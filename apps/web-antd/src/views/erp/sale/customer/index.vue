@@ -48,13 +48,12 @@ function handleEdit(row: ErpCustomerApi.Customer) {
 async function handleDelete(row: ErpCustomerApi.Customer) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteCustomer(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

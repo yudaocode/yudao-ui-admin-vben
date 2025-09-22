@@ -48,13 +48,12 @@ function handlePay(row: DemoOrderApi.Order) {
 async function handleRefund(row: DemoOrderApi.Order) {
   const hideLoading = message.loading({
     content: '退款中，请稍后...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await refundDemoOrder(row.id as number);
     message.success({
       content: '退款成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

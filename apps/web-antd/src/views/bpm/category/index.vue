@@ -37,13 +37,12 @@ function handleEdit(row: BpmCategoryApi.Category) {
 async function handleDelete(row: BpmCategoryApi.Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.code]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteCategory(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.code]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } catch {

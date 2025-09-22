@@ -48,13 +48,12 @@ function handleEdit(row: ErpProductUnitApi.ProductUnit) {
 async function handleDelete(row: ErpProductUnitApi.ProductUnit) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteProductUnit(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
