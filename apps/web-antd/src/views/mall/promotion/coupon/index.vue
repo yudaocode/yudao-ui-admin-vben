@@ -45,7 +45,7 @@ function onRefresh() {
 }
 
 /** Tab切换 */
-function onTabChange(tabName: string) {
+function onTabChange(tabName: any) {
   activeTab.value = tabName;
   // 设置状态查询参数
   const formValues = gridApi.formApi.getValues();
@@ -98,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <Grid table-title="优惠券列表">
+    <Grid table-title="领取记录">
       <template #top>
         <Tabs v-model:active-key="activeTab" type="card" @change="onTabChange">
           <TabPane
