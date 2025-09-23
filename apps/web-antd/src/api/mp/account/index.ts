@@ -62,7 +62,7 @@ export function deleteAccount(id: number) {
 
 /** 生成公众号账号二维码 */
 export function generateAccountQrCode(id: number) {
-  return requestClient.post(`/mp/account/generate-qr-code?id=${id}`);
+  return requestClient.put(`/mp/account/generate-qr-code?id=${id}`);
 }
 
 /** 清空公众号账号 API 配额 */
