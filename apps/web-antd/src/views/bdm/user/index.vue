@@ -60,6 +60,7 @@ function handleViewContact(row: MemberUserApi.User) {
 // 表格实例
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    collapsed: true,
     schema: useGridFormSchema(),
   },
   gridOptions: {

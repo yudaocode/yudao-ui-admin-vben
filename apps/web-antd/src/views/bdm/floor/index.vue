@@ -80,6 +80,7 @@ function handleRowCheckboxChange({ records }: { records: FloorApi.Floor[] }) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    collapsed: true,
     schema: useGridFormSchema(),
   },
   gridOptions: {
