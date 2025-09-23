@@ -185,7 +185,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '测试',
               type: 'link',
-              icon: ACTION_ICON.ADD,
+              icon: ACTION_ICON.VIEW,
               auth: ['system:sms-template:send-sms'],
               onClick: handleSend.bind(null, row),
             },

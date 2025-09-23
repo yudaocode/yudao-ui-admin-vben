@@ -157,7 +157,7 @@ onMounted(async () => {
               onClick: handleExpand,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
               auth: ['system:dept:delete'],

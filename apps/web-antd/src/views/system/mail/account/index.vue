@@ -44,6 +44,7 @@ function handleEdit(row: SystemMailAccountApi.MailAccount) {
 async function handleDelete(row: SystemMailAccountApi.MailAccount) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.mail]),
+    duration: 0,
   });
   try {
     await deleteMailAccount(row.id as number);

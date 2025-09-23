@@ -75,10 +75,17 @@ async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
 /** 批量删除短信模板 */
 async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteBatchConfirm'));
-  await deleteSmsTemplateList(checkedIds.value);
-  checkedIds.value = [];
-  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-  handleRefresh();
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteSmsTemplateList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const checkedIds = ref<number[]>([]);

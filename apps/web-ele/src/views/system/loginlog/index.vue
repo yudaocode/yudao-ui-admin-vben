@@ -3,11 +3,11 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { $t } from '@vben/locales';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportLoginLog, getLoginLogPage } from '#/api/system/login-log';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';

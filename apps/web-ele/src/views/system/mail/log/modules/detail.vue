@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { SystemMailLogApi } from '#/api/system/mail/log';
 
 import { ref } from 'vue';
@@ -16,9 +16,9 @@ const [Descriptions] = useDescription({
     border: true,
     column: 2,
     direction: 'horizontal',
+    labelWidth: 140,
     title: '',
     extra: '',
-    labelWidth: 140,
   },
   schema: useDetailSchema(),
 });

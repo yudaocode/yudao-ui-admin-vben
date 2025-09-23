@@ -55,7 +55,7 @@ async function handleDelete(row: SystemDictTypeApi.DictType) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteDictType(row.id as number);
+    await deleteDictType(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

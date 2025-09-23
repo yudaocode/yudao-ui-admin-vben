@@ -42,8 +42,8 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入表名称',
         clearable: true,
+        placeholder: '请输入表名称',
       },
     },
     {
@@ -51,8 +51,8 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入表描述',
         clearable: true,
+        placeholder: '请输入表描述',
       },
     },
   ];
@@ -366,8 +366,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入表名称',
         clearable: true,
+        placeholder: '请输入表名称',
       },
     },
     {
@@ -375,8 +375,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入表描述',
         clearable: true,
+        placeholder: '请输入表描述',
       },
     },
     {

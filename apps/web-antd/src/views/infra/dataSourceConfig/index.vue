@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
@@ -25,6 +25,11 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
 /** 创建数据源 */
 function handleCreate() {
   formModalApi.setData(null).open();
@@ -43,10 +48,8 @@ async function handleDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   });
   try {
     await deleteDataSourceConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    await handleLoadData();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -63,7 +66,7 @@ async function handleDeleteBatch() {
     await deleteDataSourceConfigList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    await handleLoadData();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -101,21 +104,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxChange: handleRowCheckboxChange,
   },
 });
-
-/** 加载数据 */
-async function handleLoadData() {
-  await gridApi.query();
-}
-
-/** 初始化 */
-onMounted(() => {
-  handleLoadData();
-});
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="handleLoadData" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="数据源列表">
       <template #toolbar-tools>
         <TableAction

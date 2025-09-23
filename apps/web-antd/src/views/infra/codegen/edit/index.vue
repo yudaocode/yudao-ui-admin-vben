@@ -154,8 +154,8 @@ getDetail();
       </div>
 
       <div class="mt-4 flex justify-end space-x-2">
-        <Button v-show="currentStep > 0" @click="prevStep">上一步</Button>
-        <Button v-show="currentStep < steps.length - 1" @click="nextStep">
+        <Button :disabled="currentStep === 0" @click="prevStep">上一步</Button>
+        <Button :disabled="currentStep === steps.length - 1" @click="nextStep">
           下一步
         </Button>
         <Button type="primary" :loading="loading" @click="submitForm">

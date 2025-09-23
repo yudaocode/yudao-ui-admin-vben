@@ -135,8 +135,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
-              disabled: isEmpty(checkedIds),
               auth: ['system:mail-account:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"

@@ -47,7 +47,7 @@ async function handleDelete(row: SystemSocialClientApi.SocialClient) {
     duration: 0,
   });
   try {
-    await deleteSocialClient(row.id as number);
+    await deleteSocialClient(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
