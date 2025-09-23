@@ -182,17 +182,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   </Page>
 </template>
 <style scoped>
-:deep(.clue-tabs) {
-  position: relative;
-  z-index: 2;
-  margin-top: -16px;
-  margin-bottom: 12px;
-}
-
-:deep(.clue-tabs .ant-tabs-nav::before) {
-  border: none;
-}
-
 :deep(.vxe-toolbar div) {
   z-index: 1;
 }
