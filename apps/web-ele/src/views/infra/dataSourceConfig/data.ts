@@ -1,10 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
-
-import { useAccess } from '@vben/access';
-
-const { hasAccessByCodes } = useAccess();
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -58,9 +53,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = InfraDataSourceConfigApi.DataSourceConfig>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -90,31 +83,10 @@ export function useGridColumns<T = InfraDataSourceConfigApi.DataSourceConfig>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 160,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '数据源',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['infra:data-source-config:update']),
-            disabled: (row: any) => row.id === 0,
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['infra:data-source-config:delete']),
-            disabled: (row: any) => row.id === 0,
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

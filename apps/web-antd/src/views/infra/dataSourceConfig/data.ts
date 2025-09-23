@@ -55,26 +55,31 @@ export function useFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '主键编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '数据源名称',
+      minWidth: 150,
     },
     {
       field: 'url',
       title: '数据源连接',
+      minWidth: 300,
     },
     {
       field: 'username',
       title: '用户名',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
