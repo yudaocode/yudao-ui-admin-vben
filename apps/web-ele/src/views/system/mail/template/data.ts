@@ -119,28 +119,25 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'toMails',
       label: '收件邮箱',
-      component: 'Textarea',
+      component: 'InputTag',
       componentProps: {
-        placeholder: '请输入收件邮箱，每行一个邮箱地址',
-        rows: 3,
+        placeholder: '请输入收件邮箱，按 Enter 添加',
       },
     },
     {
       fieldName: 'ccMails',
       label: '抄送邮箱',
-      component: 'Textarea',
+      component: 'InputTag',
       componentProps: {
-        placeholder: '请输入抄送邮箱，每行一个邮箱地址',
-        rows: 2,
+        placeholder: '请输入抄送邮箱，按 Enter 添加',
       },
     },
     {
       fieldName: 'bccMails',
       label: '密送邮箱',
-      component: 'Textarea',
+      component: 'InputTag',
       componentProps: {
-        placeholder: '请输入密送邮箱，每行一个邮箱地址',
-        rows: 2,
+        placeholder: '请输入密送邮箱，按 Enter 添加',
       },
     },
   ];
