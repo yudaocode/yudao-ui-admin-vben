@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { ArrowLeft } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, message, Tabs } from 'ant-design-vue';
 
@@ -15,14 +15,15 @@ import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
+// TODO @芋艿：要不要 AsyncOperateLog 风格？
 import { AsyncOperateLog } from '#/components/operate-log';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import { useDetailSchema } from './detail-data';
-import ClueForm from './form.vue';
+import ClueForm from '../modules/form.vue';
+import { useDetailSchema } from './data';
 
-const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
+const ClueInfo = defineAsyncComponent(() => import('./modules/info.vue'));
 
 const loading = ref(false);
 
@@ -30,13 +31,12 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const clueId = ref(0);
-
-const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue);
-const clueLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
+const clueId = ref(0); // 线索编号
+const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue); // 线索详情
+const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
 
-// 校验负责人权限和编辑权限
+/** 校验负责人权限和编辑权限 */
 const validateOwnerUser = computed(
   () => permissionListRef.value?.validateOwnerUser,
 );
@@ -62,17 +62,19 @@ const [TransferModal, transferModalApi] = useVbenModal({
 });
 
 /** 加载线索详情 */
-async function loadClueDetail() {
+async function getClueDetail() {
   loading.value = true;
-  const data = await getClue(clueId.value);
-  clue.value = data;
-  // 操作日志
-  const logList = await getOperateLogPage({
-    bizType: BizTypeEnum.CRM_CLUE,
-    bizId: clueId.value,
-  });
-  clueLogList.value = logList.list;
-  loading.value = false;
+  try {
+    clue.value = await getClue(clueId.value);
+    // 操作日志
+    const res = await getOperateLogPage({
+      bizType: BizTypeEnum.CRM_CLUE,
+      bizId: clueId.value,
+    });
+    logList.value = res.list;
+  } finally {
+    loading.value = false;
+  }
 }
 
 /** 返回列表页 */
@@ -100,7 +102,6 @@ async function handleTransform(): Promise<boolean | undefined> {
       .then(async () => {
         const res = await transformClue(clueId.value);
         if (res) {
-          // 提示并返回成功
           message.success('转化客户成功');
           resolve(true);
         } else {
@@ -113,21 +114,21 @@ async function handleTransform(): Promise<boolean | undefined> {
   });
 }
 
-// 加载数据
+/** 加载数据 */
 onMounted(() => {
-  clueId.value = Number(route.params.id);
-  loadClueDetail();
+  clueId.value = route.params.id as number;
+  getClueDetail();
 });
 </script>
 
 <template>
   <Page auto-content-height :title="clue?.name" :loading="loading">
-    <FormModal @success="loadClueDetail" />
-    <TransferModal @success="loadClueDetail" />
+    <FormModal @success="getClueDetail" />
+    <TransferModal @success="getClueDetail" />
     <template #extra>
       <div class="flex items-center gap-2">
         <Button @click="handleBack">
-          <ArrowLeft class="size-5" />
+          <IconifyIcon icon="lucide:arrow-left" />
           返回
         </Button>
         <Button
@@ -154,12 +155,12 @@ onMounted(() => {
       <Descriptions :data="clue" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
-      <Tabs>
-        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
-          <ClueDetailsInfo :clue="clue" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="线索跟进" key="2" :force-render="true">
+      <Tabs class="tabs-tight" :tab-bar-gutter="16">
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
+          <ClueInfo :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
@@ -171,7 +172,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
-          <AsyncOperateLog :log-list="clueLogList" />
+          <AsyncOperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

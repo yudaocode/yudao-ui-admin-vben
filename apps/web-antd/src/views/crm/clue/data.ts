@@ -140,6 +140,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           { label: '已转化', value: true },
         ],
       },
+      defaultValue: false,
     },
     {
       fieldName: 'mobile',
@@ -170,7 +171,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'name',
       title: '线索名称',
       fixed: 'left',
-      minWidth: 240,
+      minWidth: 160,
       slots: {
         default: 'name',
       },
@@ -178,7 +179,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'source',
       title: '线索来源',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -192,22 +193,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 120,
+      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'detailAddress',
       title: '地址',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'industryId',
       title: '客户行业',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -216,21 +217,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'level',
       title: '客户级别',
-      minWidth: 120,
+      minWidth: 135,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
       },
-    },
-    {
-      field: 'ownerUserName',
-      title: '负责人',
-      minWidth: 120,
-    },
-    {
-      field: 'ownerUserDeptName',
-      title: '所属部门',
-      minWidth: 120,
     },
     {
       field: 'contactNextTime',
@@ -239,10 +230,30 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
+    },
+    {
       field: 'contactLastTime',
       title: '最后跟进时间',
       formatter: 'formatDateTime',
       minWidth: 180,
+    },
+    {
+      field: 'contactLastContent',
+      title: '最后跟进记录',
+      minWidth: 200,
+    },
+    {
+      field: 'ownerUserName',
+      title: '负责人',
+      minWidth: 100,
+    },
+    {
+      field: 'ownerUserDeptName',
+      title: '所属部门',
+      minWidth: 100,
     },
     {
       field: 'updateTime',
@@ -254,12 +265,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
-      minWidth: 120,
-    },
-    {
-      field: 'creatorName',
-      title: '创建人',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       title: '操作',

@@ -6,10 +6,10 @@ import { Divider } from 'ant-design-vue';
 import { useDescription } from '#/components/description';
 import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
-import { useDetailBaseSchema } from './detail-data';
+import { useDetailBaseSchema } from '../data';
 
 defineProps<{
-  clue: CrmClueApi.Clue; // 线索信息
+  clue: CrmClueApi.Clue;
 }>();
 
 const [BaseDescriptions] = useDescription({
@@ -34,6 +34,7 @@ const [SystemDescriptions] = useDescription({
 </script>
 
 <template>
+  <!-- TODO @芋艿：为什么 p-4？ -->
   <div class="p-4">
     <BaseDescriptions :data="clue" />
     <Divider />
