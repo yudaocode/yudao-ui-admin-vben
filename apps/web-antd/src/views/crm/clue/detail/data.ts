@@ -67,8 +67,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
       field: 'areaName',
       label: '地址',
       content: (data) => {
-        const areaName =
-          typeof data?.areaName === 'string' ? data.areaName : '';
+        const areaName = data.areaName ?? '';
         const detailAddress = data?.detailAddress ?? '';
         return [areaName, detailAddress].filter((item) => !!item).join(' ');
       },

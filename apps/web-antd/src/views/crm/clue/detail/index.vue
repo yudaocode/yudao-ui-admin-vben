@@ -7,8 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-// TODO @芋艿：这里要不要改成 icon 组件？
-import { ArrowLeft } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, message, Tabs } from 'ant-design-vue';
 
@@ -21,12 +20,10 @@ import { AsyncOperateLog } from '#/components/operate-log';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-// TODO @芋艿：待讨论，要不要独立一个 detail/index.vue
-import { useDetailSchema } from './detail-data';
-import ClueForm from './form.vue';
+import ClueForm from '../modules/form.vue';
+import { useDetailSchema } from './data';
 
-// TODO @芋艿：待讨论
-const ClueDetailsInfo = defineAsyncComponent(() => import('./detail-info.vue'));
+const ClueInfo = defineAsyncComponent(() => import('./modules/info.vue'));
 
 const loading = ref(false);
 
@@ -70,11 +67,11 @@ async function getClueDetail() {
   try {
     clue.value = await getClue(clueId.value);
     // 操作日志
-    const logList = await getOperateLogPage({
+    const res = await getOperateLogPage({
       bizType: BizTypeEnum.CRM_CLUE,
       bizId: clueId.value,
     });
-    logList.value = logList.list;
+    logList.value = res.list;
   } finally {
     loading.value = false;
   }
@@ -105,7 +102,6 @@ async function handleTransform(): Promise<boolean | undefined> {
       .then(async () => {
         const res = await transformClue(clueId.value);
         if (res) {
-          // 提示并返回成功
           message.success('转化客户成功');
           resolve(true);
         } else {
@@ -132,7 +128,7 @@ onMounted(() => {
     <template #extra>
       <div class="flex items-center gap-2">
         <Button @click="handleBack">
-          <ArrowLeft class="size-5" />
+          <IconifyIcon icon="lucide:arrow-left" />
           返回
         </Button>
         <Button
@@ -164,7 +160,7 @@ onMounted(() => {
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
-          <ClueDetailsInfo :clue="clue" />
+          <ClueInfo :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList

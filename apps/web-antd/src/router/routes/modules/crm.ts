@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
           title: '线索详情',
           activePath: '/crm/clue',
         },
-        component: () => import('#/views/crm/clue/modules/detail.vue'),
+        component: () => import('#/views/crm/clue/detail/index.vue'),
       },
       {
         path: 'customer/detail/:id',
