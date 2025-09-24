@@ -6,7 +6,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import {
   DeliveryTypeEnum,
   DICT_TYPE,
@@ -26,7 +26,6 @@ import {
 import * as DeliveryExpressApi from '#/api/mall/trade/delivery/express';
 import * as DeliveryPickUpStoreApi from '#/api/mall/trade/delivery/pickUpStore';
 import * as TradeOrderApi from '#/api/mall/trade/order';
-import ContentWrap from '#/components/content-wrap/content-wrap.vue';
 import { DictTag } from '#/components/dict-tag';
 
 import OrderDeliveryForm from './delevery-form.vue';

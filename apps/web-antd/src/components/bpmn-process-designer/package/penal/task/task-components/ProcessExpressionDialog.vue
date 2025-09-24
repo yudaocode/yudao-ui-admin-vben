@@ -4,12 +4,12 @@ import type { BpmProcessExpressionApi } from '#/api/bpm/processExpression';
 
 import { reactive, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 
 import { Button, Modal, Pagination, Table, TableColumn } from 'ant-design-vue';
 
 import { getProcessExpressionPage } from '#/api/bpm/processExpression';
-import { ContentWrap } from '#/components/content-wrap';
 
 /** BPM 流程 表单 */
 defineOptions({ name: 'ProcessExpressionDialog' });

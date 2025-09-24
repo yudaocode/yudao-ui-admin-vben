@@ -3,7 +3,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -33,7 +33,6 @@ import {
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/normal';
-import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';

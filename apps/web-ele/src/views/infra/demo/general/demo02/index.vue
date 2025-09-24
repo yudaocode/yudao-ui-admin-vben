@@ -3,7 +3,7 @@ import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
@@ -29,7 +29,6 @@ import {
   exportDemo02Category,
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
-import { ContentWrap } from '#/components/content-wrap';
 import { $t } from '#/locales';
 
 import Demo02CategoryForm from './modules/form.vue';

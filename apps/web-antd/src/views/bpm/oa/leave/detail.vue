@@ -4,8 +4,9 @@ import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { ContentWrap } from '@vben/common-ui';
+
 import { getLeave } from '#/api/bpm/oa/leave';
-import { ContentWrap } from '#/components/content-wrap';
 import { Description } from '#/components/description';
 
 import { useDetailFormSchema } from './data';

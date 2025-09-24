@@ -4,12 +4,12 @@ import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 
 import { reactive, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 
 import { Button, Modal, Pagination, Table } from 'ant-design-vue';
 
 import { getProcessListenerPage } from '#/api/bpm/processListener';
-import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 
 /** BPM 流程 表单 */

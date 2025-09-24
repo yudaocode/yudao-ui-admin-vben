@@ -4,6 +4,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { onMounted, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import {
@@ -24,7 +25,6 @@ import {
 
 import * as ProductCategoryApi from '#/api/mall/product/category';
 import * as ProductSpuApi from '#/api/mall/product/spu';
-
 /**
  * 商品表格选择对话框
  * 1. 单选模式：

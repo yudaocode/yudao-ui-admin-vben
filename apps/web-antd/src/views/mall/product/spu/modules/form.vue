@@ -4,14 +4,13 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { ContentWrap, Page } from '@vben/common-ui';
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { Button, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';
-import { ContentWrap } from '#/components/content-wrap';
 
 import {
   useDeliveryFormSchema,

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import ContentWrap from '#/components/content-wrap/content-wrap.vue';
+import { ContentWrap } from '@vben/common-ui';
+
 import { SimpleProcessDesigner } from '#/components/simple-process-design';
 
 defineOptions({ name: 'SimpleModelDesign' });
@@ -30,7 +31,7 @@ async function validateConfig() {
 defineExpose({ validateConfig });
 </script>
 <template>
-  <ContentWrap :body-style="{ padding: '20px 16px' }">
+  <ContentWrap class="px-4 py-5">
     <SimpleProcessDesigner
       :model-form-id="modelFormId"
       :model-name="modelName"
