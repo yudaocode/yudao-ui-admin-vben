@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';

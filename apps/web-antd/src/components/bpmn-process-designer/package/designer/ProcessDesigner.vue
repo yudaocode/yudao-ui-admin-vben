@@ -4,17 +4,7 @@
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css'
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
 // import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css' // 右侧框样式
-import {
-  computed,
-  defineEmits,
-  defineOptions,
-  defineProps,
-  h,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-} from 'vue';
+import { computed, h, onBeforeUnmount, onMounted, provide, ref } from 'vue';
 
 import {
   AlignLeftOutlined,
