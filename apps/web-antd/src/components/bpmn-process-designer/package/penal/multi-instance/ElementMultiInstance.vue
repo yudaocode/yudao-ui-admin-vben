@@ -421,7 +421,7 @@ watch(
     </RadioGroup>
     <div v-else>除了UserTask以外节点的多实例待实现</div>
     <!-- 与Simple设计器配置合并，保留以前的代码 -->
-    <Form :label-col="{ span: 6 }" style="display: none">
+    <Form style="display: none">
       <FormItem label="快捷配置">
         <Button size="small" @click="() => changeConfig('依次审批')">
           依次审批

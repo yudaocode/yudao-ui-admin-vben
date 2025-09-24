@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject, nextTick, ref, watch } from 'vue';
 
-import { MenuOutlined, PlusOutlined, SelectOutlined } from '@vben/icons';
+import { IconifyIcon, PlusOutlined, SelectOutlined } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import {
@@ -316,12 +316,7 @@ watch(
       :width="width"
       :destroy-on-close="true"
     >
-      <Form
-        :model="listenerForm"
-        :label-col="{ span: 8 }"
-        :wrapper-col="{ span: 16 }"
-        ref="listenerFormRef"
-      >
+      <Form :model="listenerForm" ref="listenerFormRef">
         <FormItem
           label="事件类型"
           name="event"
@@ -458,16 +453,22 @@ watch(
       </Form>
 
       <Divider />
-      <p class="listener-filed__title">
-        <span><MenuOutlined />注入字段：</span>
+      <div class="mb-2 flex justify-between">
+        <span class="flex items-center">
+          <IconifyIcon icon="ep:menu" class="mr-2 text-gray-600" />
+          注入字段
+        </span>
         <Button
-          size="small"
           type="primary"
+          title="添加字段"
           @click="openListenerFieldForm(null)"
         >
+          <template #icon>
+            <IconifyIcon icon="ep:plus" />
+          </template>
           添加字段
         </Button>
-      </p>
+      </div>
       <Table
         :data="fieldsListOfListener"
         size="small"
@@ -533,13 +534,7 @@ watch(
       :width="600"
       :destroy-on-close="true"
     >
-      <Form
-        :model="listenerFieldForm"
-        :label-col="{ span: 8 }"
-        :wrapper-col="{ span: 16 }"
-        ref="listenerFieldFormRef"
-        style="height: 136px"
-      >
+      <Form :model="listenerFieldForm" ref="listenerFieldFormRef">
         <FormItem
           label="字段名称："
           name="name"

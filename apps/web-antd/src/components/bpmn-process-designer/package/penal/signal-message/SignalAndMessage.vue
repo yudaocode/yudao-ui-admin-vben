@@ -84,8 +84,8 @@ onMounted(() => {
 <template>
   <div class="panel-tab__content">
     <div class="panel-tab__content--title">
-      <span>
-        <IconifyIcon icon="ep:menu" style="margin-right: 8px; color: #555" />
+      <span class="flex items-center">
+        <IconifyIcon icon="ep:menu" class="mr-2 text-gray-600" />
         消息列表
       </span>
       <Button type="primary" title="创建新消息" @click="openModel('message')">
@@ -95,33 +95,19 @@ onMounted(() => {
         创建新消息
       </Button>
     </div>
-    <Table :data-source="messageList" :bordered="true" :pagination="false">
+    <Table :data-source="messageList" size="small" bordered>
       <TableColumn title="序号" width="60px">
         <template #default="{ index }">
           {{ index + 1 }}
         </template>
       </TableColumn>
-      <TableColumn
-        title="消息ID"
-        data-index="id"
-        :width="300"
-        :ellipsis="{ showTitle: true }"
-      />
-      <TableColumn
-        title="消息名称"
-        data-index="name"
-        :width="300"
-        :ellipsis="{ showTitle: true }"
-      />
+      <TableColumn title="消息ID" data-index="id" />
+      <TableColumn title="消息名称" data-index="name" />
     </Table>
-    <div
-      class="panel-tab__content--title"
-      style="padding-top: 8px; margin-top: 8px; border-top: 1px solid #eee"
-    >
-      <span>
-        <IconifyIcon icon="ep:menu" style="margin-right: 8px; color: #555">
-          信号列表
-        </IconifyIcon>
+    <div class="panel-tab__content--title mt-2 border-t border-gray-200 pt-2">
+      <span class="flex items-center">
+        <IconifyIcon icon="ep:menu" class="mr-2 text-gray-600" />
+        信号列表
       </span>
       <Button type="primary" title="创建新信号" @click="openModel('signal')">
         <template #icon>
@@ -130,24 +116,14 @@ onMounted(() => {
         创建新信号
       </Button>
     </div>
-    <Table :data-source="signalList" :bordered="true" :pagination="false">
+    <Table :data-source="signalList" size="small" bordered>
       <TableColumn title="序号" width="60px">
         <template #default="{ index }">
           {{ index + 1 }}
         </template>
       </TableColumn>
-      <TableColumn
-        title="信号ID"
-        data-index="id"
-        :width="300"
-        :ellipsis="{ showTitle: true }"
-      />
-      <TableColumn
-        title="信号名称"
-        data-index="name"
-        :width="300"
-        :ellipsis="{ showTitle: true }"
-      />
+      <TableColumn title="信号ID" data-index="id" />
+      <TableColumn title="信号名称" data-index="name" />
     </Table>
 
     <Modal
@@ -157,11 +133,7 @@ onMounted(() => {
       width="400px"
       :destroy-on-close="true"
     >
-      <Form
-        :model="modelObjectForm"
-        :label-col="{ span: 9 }"
-        :wrapper-col="{ span: 15 }"
-      >
+      <Form :model="modelObjectForm">
         <FormItem :label="modelConfig.idLabel">
           <Input v-model:value="modelObjectForm.id" allow-clear />
         </FormItem>
