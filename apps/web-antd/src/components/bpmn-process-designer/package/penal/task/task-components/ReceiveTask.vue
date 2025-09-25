@@ -143,7 +143,7 @@ watch(
       width="400px"
       :destroy-on-close="true"
     >
-      <Form :model="newMessageForm" size="small" :label-col="{ span: 6 }">
+      <Form :model="newMessageForm" size="small">
         <Form.Item label="消息ID">
           <Input v-model:value="newMessageForm.id" allow-clear />
         </Form.Item>

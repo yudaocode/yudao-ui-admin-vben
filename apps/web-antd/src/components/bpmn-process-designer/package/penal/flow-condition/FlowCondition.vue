@@ -153,11 +153,7 @@ watch(
 
 <template>
   <div class="panel-tab__content">
-    <Form
-      :model="flowConditionForm"
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 18 }"
-    >
+    <Form :model="flowConditionForm">
       <Form.Item label="流转类型">
         <Select v-model:value="flowConditionForm.type" @change="updateFlowType">
           <Select.Option value="normal">普通流转路径</Select.Option>

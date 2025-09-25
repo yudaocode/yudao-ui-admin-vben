@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Component } from 'vue';
 
-import { defineOptions, defineProps, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { CustomConfigMap } from './data';
 

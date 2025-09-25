@@ -89,7 +89,7 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
           </template>
         </Table.Column>
         <Table.Column title="值" align="center" data-index="value" />
-        <Table.Column title="操作" align="center">
+        <Table.Column title="操作" align="center" fixed="right">
           <template #default="{ record }">
             <Button type="primary" @click="select(record)"> 选择 </Button>
           </template>

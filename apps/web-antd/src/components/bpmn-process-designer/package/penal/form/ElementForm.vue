@@ -305,7 +305,7 @@ watch(
 
 <template>
   <div class="panel-tab__content">
-    <Form :label-col="{ style: { width: '80px' } }">
+    <Form>
       <FormItem label="流程表单">
         <!--        <Input v-model:value="formKey" @change="updateElementFormKey" />-->
         <Select
