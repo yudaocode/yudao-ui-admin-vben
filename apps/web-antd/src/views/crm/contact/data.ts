@@ -204,15 +204,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'customerName' },
     },
     {
-      field: 'sex',
-      title: '性别',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_USER_SEX },
-      },
-    },
-    {
       field: 'mobile',
       title: '手机',
       minWidth: 120,
@@ -220,12 +211,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 120,
+      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'post',
@@ -233,9 +224,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
     },
     {
-      field: 'detailAddress',
+      field: 'areaName',
       title: '地址',
       minWidth: 120,
+    },
+    {
+      field: 'detailAddress',
+      title: '详细地址',
+      minWidth: 180,
     },
     {
       field: 'master',
@@ -253,6 +249,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'parentId' },
     },
     {
+      field: 'contactNextTime',
+      title: '下次联系时间',
+      formatter: 'formatDateTime',
+      minWidth: 180,
+    },
+    {
+      field: 'sex',
+      title: '性别',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_USER_SEX },
+      },
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
+    },
+    {
+      field: 'contactLastTime',
+      title: '最后跟进时间',
+      formatter: 'formatDateTime',
+      minWidth: 180,
+    },
+    {
       field: 'ownerUserName',
       title: '负责人',
       minWidth: 120,
@@ -263,15 +285,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
     },
     {
-      field: 'contactNextTime',
-      title: '下次联系时间',
+      field: 'updateTime',
+      title: '更新时间',
       formatter: 'formatDateTime',
       minWidth: 180,
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 200,
     },
     {
       field: 'createTime',
@@ -280,10 +297,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
     },
     {
-      field: 'updateTime',
-      title: '更新时间',
-      formatter: 'formatDateTime',
-      minWidth: 180,
+      field: 'creatorName',
+      title: '创建人',
+      minWidth: 120,
     },
     {
       title: '操作',
