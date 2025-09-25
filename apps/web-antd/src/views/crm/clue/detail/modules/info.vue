@@ -34,7 +34,6 @@ const [SystemDescriptions] = useDescription({
 </script>
 
 <template>
-  <!-- TODO @芋艿：为什么 p-4？ -->
   <div class="p-4">
     <BaseDescriptions :data="clue" />
     <Divider />
