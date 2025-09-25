@@ -344,7 +344,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+  <Form>
     <FormItem label="规则类型" name="candidateStrategy">
       <Select
         v-model:value="userTaskForm.candidateStrategy"

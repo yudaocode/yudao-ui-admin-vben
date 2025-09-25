@@ -61,15 +61,3 @@ export const MenuOutlined = createIconifyIcon('ant-design:menu-outlined');
 export const PlusOutlined = createIconifyIcon('ant-design:plus-outlined');
 
 export const SelectOutlined = createIconifyIcon('ant-design:select-outlined');
-
-export const CheckCircleFilled = createIconifyIcon(
-  'ant-design:check-circle-filled',
-);
-
-export const ExclamationCircleFilled = createIconifyIcon(
-  'ant-design:exclamation-circle-filled',
-);
-
-export const QuestionCircleFilled = createIconifyIcon(
-  'ant-design:question-circle-filled',
-);

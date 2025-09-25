@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineOptions,
-  defineProps,
-  inject,
-  nextTick,
-  ref,
-  toRaw,
-  watch,
-} from 'vue';
+import { inject, nextTick, ref, toRaw, watch } from 'vue';
 
 import {
   Divider,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject, nextTick, ref, watch } from 'vue';
 
-import { IconifyIcon, PlusOutlined } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import {
@@ -290,7 +290,7 @@ watch(
     <div class="element-drawer__button">
       <Button type="primary" size="small" @click="openListenerForm(null, -1)">
         <template #icon>
-          <PlusOutlined />
+          <IconifyIcon icon="ep:plus" />
         </template>
         添加监听器
       </Button>
@@ -309,12 +309,7 @@ watch(
       :width="width as any"
       :destroy-on-close="true"
     >
-      <Form
-        :model="listenerForm"
-        ref="listenerFormRef"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 18 }"
-      >
+      <Form :model="listenerForm" ref="listenerFormRef">
         <FormItem
           label="事件类型"
           name="event"
@@ -462,20 +457,23 @@ watch(
         </template>
       </Form>
       <Divider />
-      <p class="listener-filed__title">
-        <span><IconifyIcon icon="ep:menu" />注入字段：</span>
-        <Button type="primary" @click="openListenerFieldForm(null, -1)">
+      <div class="mb-2 flex justify-between">
+        <span class="flex items-center">
+          <IconifyIcon icon="ep:menu" class="mr-2 text-gray-600" />
+          注入字段
+        </span>
+        <Button
+          type="primary"
+          title="添加字段"
+          @click="openListenerFieldForm(null, -1)"
+        >
+          <template #icon>
+            <IconifyIcon icon="ep:plus" />
+          </template>
           添加字段
         </Button>
-      </p>
-      <Table
-        :data-source="fieldsListOfListener"
-        size="small"
-        :scroll="{ y: 240 }"
-        :pagination="false"
-        bordered
-        style="flex: none"
-      >
+      </div>
+      <Table :data-source="fieldsListOfListener" size="small" bordered>
         <TableColumn title="序号" width="50px">
           <template #default="{ index }">
             {{ index + 1 }}
@@ -492,12 +490,12 @@ watch(
         />
         <TableColumn
           title="字段值/表达式"
-          width="100px"
+          width="120px"
           :custom-render="
             ({ record }: any) => record.string || record.expression
           "
         />
-        <TableColumn title="操作" width="130px">
+        <TableColumn title="操作" width="80px" fixed="right">
           <template #default="{ record, index }">
             <Button
               size="small"
@@ -532,13 +530,7 @@ watch(
       width="600px"
       :destroy-on-close="true"
     >
-      <Form
-        :model="listenerFieldForm"
-        ref="listenerFieldFormRef"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 18 }"
-        style="height: 136px"
-      >
+      <Form :model="listenerFieldForm" ref="listenerFieldFormRef">
         <FormItem
           label="字段名称："
           name="name"

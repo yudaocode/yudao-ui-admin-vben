@@ -180,7 +180,7 @@ watch(
 
 <template>
   <div>
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <Form>
       <FormItem label="实例名称">
         <Input
           v-model:value="formData.processInstanceName"
@@ -341,12 +341,7 @@ watch(
       @ok="saveVariable"
       @cancel="variableDialogVisible = false"
     >
-      <Form
-        :model="varialbeFormData"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 18 }"
-        ref="varialbeFormRef"
-      >
+      <Form :model="varialbeFormData" ref="varialbeFormRef">
         <FormItem label="源：" name="source">
           <Input v-model:value="varialbeFormData.source" allow-clear />
         </FormItem>
