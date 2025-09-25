@@ -2,7 +2,7 @@
 import type { CrmClueApi } from '#/api/crm/clue';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
@@ -15,22 +15,19 @@ import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
-// TODO @芋艿：要不要 AsyncOperateLog 风格？
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import ClueForm from '../modules/form.vue';
+import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
-
-const ClueInfo = defineAsyncComponent(() => import('./modules/info.vue'));
-
-const loading = ref(false);
+import Info from './modules/info.vue';
 
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
+const loading = ref(false); // 加载中
 const clueId = ref(0); // 线索编号
 const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue); // 线索详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
@@ -52,7 +49,7 @@ const [Descriptions] = useDescription({
 });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: ClueForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -155,12 +152,12 @@ onMounted(() => {
       <Descriptions :data="clue" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
-      <Tabs class="tabs-tight" :tab-bar-gutter="16">
+      <Tabs :tab-bar-gutter="16">
         <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
-          <ClueInfo :clue="clue" />
+          <Info :clue="clue" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
@@ -172,7 +169,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
-          <AsyncOperateLog :log-list="logList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
