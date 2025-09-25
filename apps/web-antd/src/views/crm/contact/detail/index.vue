@@ -20,7 +20,7 @@ import { ContactDetailsInfo, ContactForm } from '#/views/crm/contact';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
-import { useDetailSchema } from './detail-data';
+import { useDetailSchema } from './data';
 
 const loading = ref(false);
 

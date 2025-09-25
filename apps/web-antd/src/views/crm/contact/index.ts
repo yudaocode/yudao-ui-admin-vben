@@ -1,7 +1,7 @@
 import { defineAsyncComponent } from 'vue';
 
 export const ContactDetailsInfo = defineAsyncComponent(
-  () => import('./modules/detail-info.vue'),
+  () => import('./detail/modules/detail-info.vue'),
 );
 
 export const ContactForm = defineAsyncComponent(
@@ -9,9 +9,9 @@ export const ContactForm = defineAsyncComponent(
 );
 
 export const ContactDetails = defineAsyncComponent(
-  () => import('./modules/detail.vue'),
+  () => import('./detail/index.vue'),
 );
 
 export const ContactDetailsList = defineAsyncComponent(
-  () => import('./modules/detail-list.vue'),
+  () => import('./detail/modules/detail-list.vue'),
 );

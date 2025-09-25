@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
           title: '联系人详情',
           activePath: '/crm/contact',
         },
-        component: () => import('#/views/crm/contact/modules/detail.vue'),
+        component: () => import('#/views/crm/contact/detail/index.vue'),
       },
       {
         path: 'product/detail/:id',
