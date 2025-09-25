@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject, nextTick, ref, watch } from 'vue';
 
-import { IconifyIcon, PlusOutlined, SelectOutlined } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import {
@@ -300,11 +300,11 @@ watch(
     </Table>
     <div class="element-drawer__button">
       <Button size="small" type="primary" @click="openListenerForm(null)">
-        <template #icon><PlusOutlined /></template>
+        <template #icon> <IconifyIcon icon="ep:plus" /></template>
         添加监听器
       </Button>
       <Button size="small" @click="openProcessListenerDialog">
-        <template #icon><SelectOutlined /></template>
+        <template #icon> <IconifyIcon icon="ep:select" /></template>
         选择监听器
       </Button>
     </div>

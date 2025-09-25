@@ -65,7 +65,7 @@ watch(
   <div class="panel-tab__content">
     <Form>
       <!-- add by 芋艿：由于「异步延续」暂时用不到，所以这里 display 为 none -->
-      <FormItem label="异步延续" style="display: none">
+      <FormItem label="异步延续" class="hidden">
         <Checkbox
           v-model:checked="taskConfigForm.asyncBefore"
           @change="changeTaskAsync"

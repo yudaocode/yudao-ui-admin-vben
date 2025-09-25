@@ -421,7 +421,7 @@ watch(
     </RadioGroup>
     <div v-else>除了UserTask以外节点的多实例待实现</div>
     <!-- 与Simple设计器配置合并，保留以前的代码 -->
-    <Form style="display: none">
+    <Form class="hidden">
       <FormItem label="快捷配置">
         <Button size="small" @click="() => changeConfig('依次审批')">
           依次审批
@@ -467,7 +467,7 @@ watch(
           />
         </FormItem>
         <!-- add by 芋艿：由于「元素变量」暂时用不到，所以这里 display 为 none -->
-        <FormItem label="元素变量" key="elementVariable" style="display: none">
+        <FormItem label="元素变量" key="elementVariable" class="hidden">
           <Input
             v-model:value="loopInstanceForm.elementVariable"
             allow-clear
@@ -485,7 +485,7 @@ watch(
           />
         </FormItem>
         <!-- add by 芋艿：由于「异步状态」暂时用不到，所以这里 display 为 none -->
-        <FormItem label="异步状态" key="async" style="display: none">
+        <FormItem label="异步状态" key="async" class="hidden">
           <Checkbox
             v-model:checked="loopInstanceForm.asyncBefore"
             @change="() => updateLoopAsync('asyncBefore')"

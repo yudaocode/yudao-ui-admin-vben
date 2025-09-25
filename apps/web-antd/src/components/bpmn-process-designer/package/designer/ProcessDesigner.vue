@@ -645,7 +645,7 @@ onBeforeUnmount(() => {
         type="file"
         id="files"
         ref="refFile"
-        style="display: none"
+        class="hidden"
         accept=".xml, .bpmn"
         @change="importLocalFile"
       />
