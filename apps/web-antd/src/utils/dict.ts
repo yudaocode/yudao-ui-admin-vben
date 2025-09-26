@@ -194,6 +194,11 @@ enum DICT_TYPE {
   AI_WRITE_LENGTH = 'ai_write_length', // AI 写作长度
   AI_WRITE_TONE = 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE = 'ai_write_type', // AI 写作类型
+  ALARM_LEVEL = 'alarm_level', // 报警级别
+  ALARM_SOURCE_TYPE = 'alarm_source_type', // 报警来源
+  ALARM_STATUS = 'alarm_status', // 报警记录状态
+  ALARM_TARGET_TYPE = 'alarm_target_type', // 报警目标类型
+  ALARM_TYPE = 'alarm_type', // 报警类型
   ALPHABETICAL_INDEX = 'alphabetical_index', // 字母索引
   BPM_MODEL_FORM_TYPE = 'bpm_model_form_type',
   // ========== BPM 模块 ==========
