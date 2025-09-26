@@ -27,17 +27,22 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '联系人姓名',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入联系人姓名',
+      },
     },
     {
       fieldName: 'ownerUserId',
       label: '负责人',
       component: 'ApiSelect',
+      rules: 'required',
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
           label: 'nickname',
           value: 'id',
         },
+        placeholder: '请选择负责人',
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -45,51 +50,75 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'customerId',
       label: '客户名称',
       component: 'ApiSelect',
+      rules: 'required',
       componentProps: {
         api: () => getCustomerSimpleList(),
         fieldNames: {
           label: 'name',
           value: 'id',
         },
+        placeholder: '请选择客户',
       },
     },
     {
       fieldName: 'mobile',
       label: '手机',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+      },
     },
     {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+      },
     },
     {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
     },
     {
       fieldName: 'wechat',
       label: '微信',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入微信',
+      },
     },
     {
       fieldName: 'qq',
       label: 'QQ',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入QQ',
+      },
     },
     {
       fieldName: 'post',
       label: '职位',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入职位',
+      },
     },
     {
       fieldName: 'master',
       label: '关键决策人',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+        placeholder: '请选择是否关键决策人',
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
+      defaultValue: false,
     },
     {
       fieldName: 'sex',
@@ -97,6 +126,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
+        placeholder: '请选择性别',
       },
     },
     {
@@ -109,6 +139,7 @@ export function useFormSchema(): VbenFormSchema[] {
           label: 'name',
           value: 'id',
         },
+        placeholder: '请选择直属上级',
       },
     },
     {
@@ -118,12 +149,16 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         api: () => getAreaTree(),
         fieldNames: { label: 'name', value: 'id', children: 'children' },
+        placeholder: '请选择地址',
       },
     },
     {
       fieldName: 'detailAddress',
       label: '详细地址',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入详细地址',
+      },
     },
     {
       fieldName: 'contactNextTime',
@@ -133,12 +168,16 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
+        placeholder: '请选择下次联系时间',
       },
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
     },
   ];
 }
@@ -147,7 +186,7 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'name',
+      fieldName: 'customerId',
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
@@ -156,32 +195,54 @@ export function useGridFormSchema(): VbenFormSchema[] {
           label: 'name',
           value: 'id',
         },
+        placeholder: '请选择客户',
+        allowClear: true,
       },
     },
     {
       fieldName: 'name',
       label: '姓名',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入联系人姓名',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'wechat',
       label: '微信',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入微信',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'email',
       label: '电子邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电子邮箱',
+        allowClear: true,
+      },
     },
   ];
 }

@@ -19,9 +19,9 @@ import {
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from '../data';
 import ListModal from '../../modules/detail-list-modal.vue';
 import Form from '../../modules/form.vue';
+import { useDetailListColumns } from '../data';
 
 const props = defineProps<{
   bizId: number; // 业务编号
