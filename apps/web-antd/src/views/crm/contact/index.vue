@@ -30,13 +30,17 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportContact(await gridApi.formApi.getValues());
+  const formValues = await gridApi.formApi.getValues();
+  const data = await exportContact({
+    sceneType: sceneType.value,
+    ...formValues,
+  });
   downloadFileFromBlobPart({ fileName: '联系人.xls', source: data });
 }
 
@@ -58,10 +62,8 @@ async function handleDelete(row: CrmContactApi.Contact) {
   });
   try {
     await deleteContact(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -75,6 +77,12 @@ function handleDetail(row: CrmContactApi.Contact) {
 /** 查看客户详情 */
 function handleCustomerDetail(row: CrmContactApi.Contact) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
+}
+
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
+  gridApi.query();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -99,6 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -106,11 +115,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<CrmContactApi.Contact>,
 });
-
-function onChangeSceneType(key: number | string) {
-  sceneType.value = key.toString();
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -126,10 +130,10 @@ function onChangeSceneType(key: number | string) {
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #top>
-        <Tabs class="border-none" @change="onChangeSceneType">
+        <Tabs class="-mt-11" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />
@@ -167,7 +171,7 @@ function onChangeSceneType(key: number | string) {
       </template>
       <template #parentId="{ row }">
         <Button type="link" @click="handleDetail(row)">
-          {{ row.parentId }}
+          {{ row.parentName }}
         </Button>
       </template>
       <template #actions="{ row }">
@@ -179,12 +183,6 @@ function onChangeSceneType(key: number | string) {
               icon: ACTION_ICON.EDIT,
               auth: ['crm:contact:update'],
               onClick: handleEdit.bind(null, row),
-            },
-            {
-              label: $t('common.detail'),
-              type: 'link',
-              icon: ACTION_ICON.VIEW,
-              onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -203,3 +201,8 @@ function onChangeSceneType(key: number | string) {
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>

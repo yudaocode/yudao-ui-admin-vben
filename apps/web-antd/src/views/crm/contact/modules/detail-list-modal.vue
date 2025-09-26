@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @芋艿：放在 modules 里，还是放在哪里？
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmContactApi } from '#/api/crm/contact';
 
@@ -13,7 +14,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getContactPageByCustomer } from '#/api/crm/contact';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './detail-data';
+import { useDetailListColumns } from '../detail/data';
 import Form from './form.vue';
 
 const props = defineProps<{

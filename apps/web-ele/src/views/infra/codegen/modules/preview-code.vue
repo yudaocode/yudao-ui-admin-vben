@@ -7,7 +7,7 @@ import type { InfraCodegenApi } from '#/api/infra/codegen';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
 import { ElMessage, ElTabPane, ElTabs, ElTree } from 'element-plus';
@@ -291,8 +291,7 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </ElTabPane>
           <template #add-icon>
-            <!-- TODO @芋艿：这里会报错； -->
-            <Copy />
+            <IconifyIcon icon="ant-design:copy-twotone" />
           </template>
         </ElTabs>
       </div>
