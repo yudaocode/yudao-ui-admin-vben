@@ -46,7 +46,7 @@ function handleCreate() {
 /** 关闭活动 */
 async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.closing', [row.name]),
+    content: '活动关闭中...',
     duration: 0,
   });
   try {
