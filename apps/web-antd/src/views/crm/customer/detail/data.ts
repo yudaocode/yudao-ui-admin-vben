@@ -1,11 +1,43 @@
+import type { VbenFormSchema } from '#/adapter/form';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { useUserStore } from '@vben/stores';
 import { formatDateTime } from '@vben/utils';
 
+import { getSimpleUserList } from '#/api/system/user';
 import { DictTag } from '#/components/dict-tag';
+
+/** 分配客户表单 */
+export function useDistributeFormSchema(): VbenFormSchema[] {
+  const userStore = useUserStore();
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+      defaultValue: userStore.userInfo?.id,
+      rules: 'required',
+    },
+  ];
+}
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {

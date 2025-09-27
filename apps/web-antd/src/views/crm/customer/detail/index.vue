@@ -25,7 +25,6 @@ import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { BusinessDetailsList } from '#/views/crm/business';
 import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract';
-import { DistributeForm } from '#/views/crm/customer';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 import {
@@ -35,6 +34,7 @@ import {
 
 import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
+import DistributeForm from './modules/distribute-form.vue';
 import Info from './modules/info.vue';
 
 const route = useRoute();
