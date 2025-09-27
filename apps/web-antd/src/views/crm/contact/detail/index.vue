@@ -8,13 +8,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, Tabs } from 'ant-design-vue';
+import { Card, Tabs } from 'ant-design-vue';
 
 import { getContact } from '#/api/crm/contact';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { OperateLog } from '#/components/operate-log';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { BusinessDetailsList } from '#/views/crm/business';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
@@ -96,26 +97,30 @@ onMounted(() => {
     <FormModal @success="getContactDetail" />
     <TransferModal @success="getContactDetail" />
     <template #extra>
-      <div class="flex items-center gap-2">
-        <Button @click="handleBack">
-          <IconifyIcon icon="lucide:arrow-left" />
-          返回
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateWrite"
-          type="primary"
-          @click="handleEdit"
-        >
-          {{ $t('ui.actionTitle.edit') }}
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateOwnerUser"
-          type="primary"
-          @click="handleTransfer"
-        >
-          转移
-        </Button>
-      </div>
+      <TableAction
+        :actions="[
+          {
+            label: '返回',
+            type: 'default',
+            icon: 'lucide:arrow-left',
+            onClick: handleBack,
+          },
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            icon: ACTION_ICON.EDIT,
+            auth: ['crm:contact:update'],
+            ifShow: permissionListRef?.validateWrite,
+            onClick: handleEdit,
+          },
+          {
+            label: '转移',
+            type: 'primary',
+            ifShow: permissionListRef?.validateOwnerUser,
+            onClick: handleTransfer,
+          },
+        ]"
+      />
     </template>
     <Card class="min-h-[10%]">
       <Descriptions :data="contact" />

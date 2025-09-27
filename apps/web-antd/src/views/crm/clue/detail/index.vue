@@ -7,15 +7,15 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, message, Tabs } from 'ant-design-vue';
+import { Card, message, Tabs } from 'ant-design-vue';
 
 import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { OperateLog } from '#/components/operate-log';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
@@ -117,34 +117,37 @@ onMounted(() => {
     <FormModal @success="getClueDetail" />
     <TransferModal @success="getClueDetail" />
     <template #extra>
-      <div class="flex items-center gap-2">
-        <Button @click="handleBack">
-          <IconifyIcon icon="lucide:arrow-left" />
-          返回
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateWrite"
-          type="primary"
-          @click="handleEdit"
-          v-access:code="['crm:clue:update']"
-        >
-          {{ $t('ui.actionTitle.edit') }}
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateOwnerUser"
-          type="primary"
-          @click="handleTransfer"
-        >
-          转移
-        </Button>
-        <Button
-          v-if="permissionListRef?.validateOwnerUser && !clue?.transformStatus"
-          type="primary"
-          @click="handleTransform"
-        >
-          转化为客户
-        </Button>
-      </div>
+      <TableAction
+        :actions="[
+          {
+            label: '返回',
+            type: 'default',
+            icon: 'lucide:arrow-left',
+            onClick: handleBack,
+          },
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            icon: ACTION_ICON.EDIT,
+            auth: ['crm:clue:update'],
+            ifShow: permissionListRef?.validateWrite,
+            onClick: handleEdit,
+          },
+          {
+            label: '转移',
+            type: 'primary',
+            ifShow: permissionListRef?.validateOwnerUser,
+            onClick: handleTransfer,
+          },
+          {
+            label: '转化为客户',
+            type: 'primary',
+            ifShow:
+              permissionListRef?.validateOwnerUser && !clue?.transformStatus,
+            onClick: handleTransform,
+          },
+        ]"
+      />
     </template>
     <Card class="min-h-[10%]">
       <Descriptions :data="clue" />
