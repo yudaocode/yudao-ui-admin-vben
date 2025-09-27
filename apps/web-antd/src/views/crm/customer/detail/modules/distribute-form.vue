@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
-import { useUserStore } from '@vben/stores';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { distributeCustomer } from '#/api/crm/customer';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
-const emit = defineEmits(['success']);
+import { useDistributeFormSchema } from '../data';
 
-const userStore = useUserStore();
+const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -22,30 +20,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      fieldName: 'ownerUserId',
-      label: '负责人',
-      component: 'ApiSelect',
-      componentProps: {
-        api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-      },
-      defaultValue: userStore.userInfo?.id,
-      rules: 'required',
-    },
-  ],
+  schema: useDistributeFormSchema(),
   showDefaultActions: false,
 });
 
