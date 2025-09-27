@@ -35,9 +35,19 @@ function onRefresh() {
   gridApi.query();
 }
 
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
+  gridApi.query();
+}
+
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportContract(await gridApi.formApi.getValues());
+  const formValues = await gridApi.formApi.getValues();
+  const data = await exportContract({
+    sceneType: sceneType.value,
+    ...formValues,
+  });
   downloadFileFromBlobPart({ fileName: '合同.xls', source: data });
 }
 
@@ -142,11 +152,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<CrmContractApi.Contract>,
 });
-
-function onChangeSceneType(key: number | string) {
-  sceneType.value = key.toString();
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -165,7 +170,7 @@ function onChangeSceneType(key: number | string) {
     <FormModal @success="onRefresh" />
     <Grid>
       <template #top>
-        <Tabs class="border-none" @change="onChangeSceneType">
+        <Tabs class="border-none" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />

@@ -34,6 +34,12 @@ function handleRefresh() {
   gridApi.query();
 }
 
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
+  gridApi.query();
+}
+
 /** 导出表格 */
 async function handleExport() {
   const formValues = await gridApi.formApi.getValues();
@@ -77,12 +83,6 @@ function handleDetail(row: CrmContactApi.Contact) {
 /** 查看客户详情 */
 function handleCustomerDetail(row: CrmContactApi.Contact) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
-}
-
-/** 处理场景类型的切换 */
-function handleChangeSceneType(key: number | string) {
-  sceneType.value = key.toString();
-  gridApi.query();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
           title: '客户详情',
           activePath: '/crm/customer',
         },
-        component: () => import('#/views/crm/customer/modules/detail.vue'),
+        component: () => import('#/views/crm/customer/detail/index.vue'),
       },
       {
         path: 'business/detail/:id',
