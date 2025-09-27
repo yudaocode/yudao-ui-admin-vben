@@ -20,7 +20,7 @@ import {
   BusinessForm,
   UpStatusForm,
 } from '#/views/crm/business';
-import { ContactDetailsList } from '#/views/crm/contact';
+import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
