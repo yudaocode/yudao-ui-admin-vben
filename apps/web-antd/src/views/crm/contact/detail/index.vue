@@ -14,24 +14,23 @@ import { getContact } from '#/api/crm/contact';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
 import { BusinessDetailsList } from '#/views/crm/business';
-import { ContactDetailsInfo, ContactForm } from '#/views/crm/contact';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 
+import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
-
-const loading = ref(false);
+import Info from './modules/info.vue';
 
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const contactId = ref(0);
-
-const contact = ref<CrmContactApi.Contact>({} as CrmContactApi.Contact);
-const contactLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
+const loading = ref(false); // 加载中
+const contactId = ref(0); // 联系人编号
+const contact = ref<CrmContactApi.Contact>({} as CrmContactApi.Contact); // 联系人详情
+const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
 
 const [Descriptions] = useDescription({
@@ -44,7 +43,7 @@ const [Descriptions] = useDescription({
 });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: ContactForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -53,18 +52,20 @@ const [TransferModal, transferModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 加载详情 */
-async function loadContactDetail() {
+/** 加载联系人详情 */
+async function getContactDetail() {
   loading.value = true;
-  contactId.value = Number(route.params.id);
-  const data = await getContact(contactId.value);
-  const logList = await getOperateLogPage({
-    bizType: BizTypeEnum.CRM_CONTACT,
-    bizId: contactId.value,
-  });
-  contactLogList.value = logList.list;
-  contact.value = data;
-  loading.value = false;
+  try {
+    contact.value = await getContact(contactId.value);
+    // 操作日志
+    const res = await getOperateLogPage({
+      bizType: BizTypeEnum.CRM_CONTACT,
+      bizId: contactId.value,
+    });
+    logList.value = res.list;
+  } finally {
+    loading.value = false;
+  }
 }
 
 /** 返回列表页 */
@@ -73,29 +74,33 @@ function handleBack() {
   router.push('/crm/contact');
 }
 
-/** 编辑 */
+/** 编辑联系人 */
 function handleEdit() {
   formModalApi.setData({ id: contactId.value }).open();
 }
 
-/** 转移线索 */
+/** 转移联系人 */
 function handleTransfer() {
   transferModalApi.setData({ id: contactId.value }).open();
 }
 
-// 加载数据
+/** 加载数据 */
 onMounted(() => {
-  contactId.value = Number(route.params.id);
-  loadContactDetail();
+  contactId.value = route.params.id as number;
+  getContactDetail();
 });
 </script>
 
 <template>
   <Page auto-content-height :title="contact?.name" :loading="loading">
-    <FormModal @success="loadContactDetail" />
-    <TransferModal @success="loadContactDetail" />
+    <FormModal @success="getContactDetail" />
+    <TransferModal @success="getContactDetail" />
     <template #extra>
       <div class="flex items-center gap-2">
+        <Button @click="handleBack">
+          <IconifyIcon icon="lucide:arrow-left" />
+          返回
+        </Button>
         <Button
           v-if="permissionListRef?.validateWrite"
           type="primary"
@@ -117,11 +122,11 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
-          <ContactDetailsInfo :contact="contact" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="跟进记录" key="2" :force-render="true">
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="contactId" :biz-type="BizTypeEnum.CRM_CONTACT" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="详细资料" key="2" :force-render="true">
+          <Info :contact="contact" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
@@ -141,7 +146,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="5" :force-render="true">
-          <AsyncOperateLog :log-list="contactLogList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

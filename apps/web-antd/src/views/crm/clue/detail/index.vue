@@ -2,7 +2,7 @@
 import type { CrmClueApi } from '#/api/crm/clue';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
@@ -32,12 +32,6 @@ const clueId = ref(0); // 线索编号
 const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue); // 线索详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
-
-/** 校验负责人权限和编辑权限 */
-const validateOwnerUser = computed(
-  () => permissionListRef.value?.validateOwnerUser,
-);
-const validateWrite = computed(() => permissionListRef.value?.validateWrite);
 
 const [Descriptions] = useDescription({
   componentProps: {
@@ -129,18 +123,22 @@ onMounted(() => {
           返回
         </Button>
         <Button
-          v-if="validateWrite"
+          v-if="permissionListRef?.validateWrite"
           type="primary"
           @click="handleEdit"
           v-access:code="['crm:clue:update']"
         >
           {{ $t('ui.actionTitle.edit') }}
         </Button>
-        <Button v-if="validateOwnerUser" type="primary" @click="handleTransfer">
+        <Button
+          v-if="permissionListRef?.validateOwnerUser"
+          type="primary"
+          @click="handleTransfer"
+        >
           转移
         </Button>
         <Button
-          v-if="validateOwnerUser && !clue?.transformStatus"
+          v-if="permissionListRef?.validateOwnerUser && !clue?.transformStatus"
           type="primary"
           @click="handleTransform"
         >

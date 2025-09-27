@@ -60,7 +60,7 @@ const [Form, formApi] = useVbenForm({
       label: '下次联系时间',
       component: 'DatePicker',
       componentProps: {
-        showTime: false,
+        showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
       },

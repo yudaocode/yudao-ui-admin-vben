@@ -9,7 +9,7 @@ import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 import { useDetailBaseSchema } from '../data';
 
 defineProps<{
-  contact: CrmContactApi.Contact; // 联系人信息
+  contact: CrmContactApi.Contact;
 }>();
 
 const [BaseDescriptions] = useDescription({
