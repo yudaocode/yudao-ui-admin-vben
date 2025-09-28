@@ -65,13 +65,12 @@ async function handleDelete(row: CrmBusinessApi.Business) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteBusiness(row.id as number);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

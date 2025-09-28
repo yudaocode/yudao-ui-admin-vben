@@ -1,3 +1,4 @@
+<!-- 商机选择对话框：用于联系人详情中关联已有商机 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
@@ -13,8 +14,8 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from '../detail/data';
-import Form from './form.vue';
+import Form from '../modules/form.vue';
+import { useBusinessDetailListColumns } from './data';
 
 const props = defineProps<{
   customerId?: number; // 关联联系人与商机时，需要传入 customerId 进行筛选
@@ -29,13 +30,14 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 已选择的商机 */
 const checkedRows = ref<CrmBusinessApi.Business[]>([]);
 function setCheckedRows({ records }: { records: CrmBusinessApi.Business[] }) {
   checkedRows.value = records;
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,6 +56,7 @@ function handleCustomerDetail(row: CrmBusinessApi.Business) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
 }
 
+/** 商机关联弹窗 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (checkedRows.value.length === 0) {
@@ -71,25 +74,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      return;
-    }
-    // 加载数据
-    const data = modalApi.getData<any>();
-    if (!data) {
-      return;
-    }
-    modalApi.lock();
-    try {
-      // 设置到 values
-      // await formApi.setValues(formData.value);
-    } finally {
-      modalApi.unlock();
-    }
-  },
 });
 
+/** 商机选择表格 */
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: [
@@ -101,7 +88,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     ],
   },
   gridOptions: {
-    columns: useDetailListColumns(),
+    columns: useBusinessDetailListColumns(),
     height: 600,
     keepSource: true,
     proxyConfig: {
@@ -133,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Modal title="关联商机" class="w-2/5">
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction

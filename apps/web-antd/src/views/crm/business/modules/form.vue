@@ -56,7 +56,6 @@ const [Form, formApi] = useVbenForm({
     },
     labelWidth: 120,
   },
-  // 一共3列
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
   schema: useFormSchema(),
@@ -90,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<CrmBusinessApi.Business>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();

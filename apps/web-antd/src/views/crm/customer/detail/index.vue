@@ -23,7 +23,7 @@ import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
-import { BusinessDetailsList } from '#/views/crm/business';
+import { BusinessDetailsList } from '#/views/crm/business/components';
 import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract';
 import { FollowUp } from '#/views/crm/followup';

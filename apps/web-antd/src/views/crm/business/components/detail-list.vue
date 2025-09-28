@@ -1,3 +1,4 @@
+<!-- 商机列表：用于【客户】【联系人】详情中，展示其关联的商机列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
@@ -22,9 +23,9 @@ import {
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from '../detail/data';
+import Form from '../modules/form.vue';
+import { useBusinessDetailListColumns } from './data';
 import ListModal from './detail-list-modal.vue';
-import Form from './form.vue';
 
 const props = defineProps<{
   bizId: number; // 业务编号
@@ -45,13 +46,14 @@ const [DetailListModal, detailListModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 已选择的商机 */
 const checkedRows = ref<CrmBusinessApi.Business[]>([]);
 function setCheckedRows({ records }: { records: CrmBusinessApi.Business[] }) {
   checkedRows.value = records;
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -62,10 +64,12 @@ function handleCreate() {
     .open();
 }
 
+/** 关联商机 */
 function handleCreateBusiness() {
   detailListModalApi.setData({ customerId: props.customerId }).open();
 }
 
+/** 解除商机关联 */
 async function handleDeleteContactBusinessList() {
   if (checkedRows.value.length === 0) {
     message.error('请先选择商机后操作！');
@@ -83,7 +87,7 @@ async function handleDeleteContactBusinessList() {
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));
-          onRefresh();
+          handleRefresh();
           resolve(true);
         } else {
           reject(new Error($t('ui.actionMessage.operationFailed')));
@@ -105,18 +109,20 @@ function handleCustomerDetail(row: CrmBusinessApi.Business) {
   push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
 }
 
+/** 创建联系人关联的商机 */
 async function handleCreateContactBusinessList(businessIds: number[]) {
   const data = {
     contactId: props.bizId,
     businessIds,
   } as CrmContactApi.ContactBusinessReq;
   await createContactBusinessList(data);
-  onRefresh();
+  handleRefresh();
 }
 
+/** 商机关联表格 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useDetailListColumns(),
+    columns: useBusinessDetailListColumns(),
     height: 600,
     keepSource: true,
     proxyConfig: {
@@ -144,6 +150,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -159,7 +166,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <DetailListModal
       :customer-id="customerId"
       @success="handleCreateContactBusinessList"
