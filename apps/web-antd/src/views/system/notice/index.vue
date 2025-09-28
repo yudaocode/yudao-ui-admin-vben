@@ -48,7 +48,7 @@ async function handleDelete(row: SystemNoticeApi.Notice) {
     duration: 0,
   });
   try {
-    await deleteNotice(row.id as number);
+    await deleteNotice(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     handleRefresh();
   } finally {
@@ -88,7 +88,7 @@ async function handlePush(row: SystemNoticeApi.Notice) {
     content: '正在推送中...',
   });
   try {
-    await pushNotice(row.id as number);
+    await pushNotice(row.id!);
     message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     hideLoading();

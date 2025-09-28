@@ -89,7 +89,7 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
     duration: 0,
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo02Category(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
     });

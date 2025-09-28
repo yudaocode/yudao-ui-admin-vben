@@ -46,7 +46,7 @@ async function handleDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteDataSourceConfig(row.id as number);
+    await deleteDataSourceConfig(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

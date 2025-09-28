@@ -54,7 +54,7 @@ async function handleDelete(row: InfraFileApi.File) {
     text: $t('ui.actionMessage.deleting', [row.name || row.path]),
   });
   try {
-    await deleteFile(row.id as number);
+    await deleteFile(row.id!);
     ElMessage.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );

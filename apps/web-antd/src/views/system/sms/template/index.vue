@@ -65,7 +65,7 @@ async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
     duration: 0,
   });
   try {
-    await deleteSmsTemplate(row.id as number);
+    await deleteSmsTemplate(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

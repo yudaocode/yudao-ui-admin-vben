@@ -55,7 +55,7 @@ async function handleDelete(row: InfraFileApi.File) {
     duration: 0,
   });
   try {
-    await deleteFile(row.id as number);
+    await deleteFile(row.id!);
     message.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );

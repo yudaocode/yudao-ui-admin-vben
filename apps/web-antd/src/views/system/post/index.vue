@@ -54,7 +54,7 @@ async function handleDelete(row: SystemPostApi.Post) {
     duration: 0,
   });
   try {
-    await deletePost(row.id as number);
+    await deletePost(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

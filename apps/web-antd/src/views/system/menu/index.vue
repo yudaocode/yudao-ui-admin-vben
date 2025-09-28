@@ -49,7 +49,7 @@ async function handleDelete(row: SystemMenuApi.Menu) {
     duration: 0,
   });
   try {
-    await deleteMenu(row.id as number);
+    await deleteMenu(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

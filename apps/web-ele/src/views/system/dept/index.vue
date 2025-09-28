@@ -62,7 +62,7 @@ async function handleDelete(row: SystemDeptApi.Dept) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteDept(row.id as number);
+    await deleteDept(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

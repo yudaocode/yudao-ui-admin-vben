@@ -54,7 +54,7 @@ async function handleDelete(row: InfraConfigApi.Config) {
     duration: 0,
   });
   try {
-    await deleteConfig(row.id as number);
+    await deleteConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

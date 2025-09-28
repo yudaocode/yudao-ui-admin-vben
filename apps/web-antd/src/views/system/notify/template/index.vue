@@ -65,7 +65,7 @@ async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
     duration: 0,
   });
   try {
-    await deleteNotifyTemplate(row.id as number);
+    await deleteNotifyTemplate(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

@@ -46,7 +46,7 @@ async function handleDelete(row: SystemMailAccountApi.MailAccount) {
     text: $t('ui.actionMessage.deleting', [row.mail]),
   });
   try {
-    await deleteMailAccount(row.id as number);
+    await deleteMailAccount(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
     handleRefresh();
   } finally {

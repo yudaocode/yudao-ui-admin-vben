@@ -48,7 +48,7 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Student(row.id as number);
+    await deleteDemo03Student(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {

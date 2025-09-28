@@ -64,7 +64,7 @@ async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteNotifyTemplate(row.id as number);
+    await deleteNotifyTemplate(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

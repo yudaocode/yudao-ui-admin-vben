@@ -89,7 +89,7 @@ async function handleDelete(row: SystemUserApi.User) {
     duration: 0,
   });
   try {
-    await deleteUser(row.id as number);
+    await deleteUser(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.username]));
     handleRefresh();
   } finally {
@@ -144,7 +144,7 @@ async function handleStatusChange(
     })
       .then(async () => {
         // 更新用户状态
-        const res = await updateUserStatus(row.id as number, newStatus);
+        const res = await updateUserStatus(row.id!, newStatus);
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));

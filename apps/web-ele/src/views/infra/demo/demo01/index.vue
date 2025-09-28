@@ -48,7 +48,7 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo01Contact(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {

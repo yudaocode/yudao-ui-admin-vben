@@ -65,7 +65,7 @@ async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteMailTemplate(row.id as number);
+    await deleteMailTemplate(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

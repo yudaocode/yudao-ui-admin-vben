@@ -47,7 +47,7 @@ async function handleDelete(row: SystemMailAccountApi.MailAccount) {
     duration: 0,
   });
   try {
-    await deleteMailAccount(row.id as number);
+    await deleteMailAccount(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
     handleRefresh();
   } finally {

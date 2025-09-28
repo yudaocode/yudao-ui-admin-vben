@@ -65,7 +65,7 @@ async function handleDelete(row: SystemTenantApi.Tenant) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteTenant(row.id as number);
+    await deleteTenant(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

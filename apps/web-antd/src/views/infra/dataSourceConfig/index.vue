@@ -47,7 +47,7 @@ async function handleDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
     duration: 0,
   });
   try {
-    await deleteDataSourceConfig(row.id as number);
+    await deleteDataSourceConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

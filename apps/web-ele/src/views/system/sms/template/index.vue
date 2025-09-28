@@ -64,7 +64,7 @@ async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteSmsTemplate(row.id as number);
+    await deleteSmsTemplate(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

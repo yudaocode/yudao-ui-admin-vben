@@ -53,7 +53,7 @@ async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Grade(row.id as number);
+    await deleteDemo03Grade(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {

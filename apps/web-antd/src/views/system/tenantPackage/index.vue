@@ -47,7 +47,7 @@ async function handleDelete(row: SystemTenantPackageApi.TenantPackage) {
     duration: 0,
   });
   try {
-    await deleteTenantPackage(row.id as number);
+    await deleteTenantPackage(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
