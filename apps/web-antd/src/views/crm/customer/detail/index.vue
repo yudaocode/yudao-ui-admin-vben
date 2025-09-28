@@ -22,6 +22,7 @@ import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
+import { $t } from '#/locales';
 import { BusinessDetailsList } from '#/views/crm/business';
 import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract';
@@ -77,11 +78,11 @@ async function loadCustomerDetail() {
   try {
     customer.value = await getCustomer(customerId.value);
     // 操作日志
-    const logList = await getOperateLogPage({
+    const res = await getOperateLogPage({
       bizType: BizTypeEnum.CRM_CUSTOMER,
       bizId: customerId.value,
     });
-    logList.value = logList.list;
+    logList.value = res.list;
   } finally {
     loading.value = false;
   }
@@ -198,7 +199,7 @@ async function handleUpdateDealStatus(): Promise<boolean | undefined> {
 
 /** 加载数据 */
 onMounted(() => {
-  customerId.value = route.params.id as number;
+  customerId.value = Number(route.params.id);
   loadCustomerDetail();
 });
 </script>

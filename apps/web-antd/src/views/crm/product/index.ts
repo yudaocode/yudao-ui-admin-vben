@@ -1,15 +1,7 @@
 import { defineAsyncComponent } from 'vue';
 
 export const ProductDetailsInfo = defineAsyncComponent(
-  () => import('./modules/detail-info.vue'),
-);
-
-export const ProductForm = defineAsyncComponent(
-  () => import('./modules/form.vue'),
-);
-
-export const ProductDetails = defineAsyncComponent(
-  () => import('./modules/detail.vue'),
+  () => import('./detail/modules/info.vue'),
 );
 
 export const ProductDetailsList = defineAsyncComponent(

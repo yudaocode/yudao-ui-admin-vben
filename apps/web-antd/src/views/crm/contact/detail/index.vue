@@ -16,6 +16,7 @@ import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { OperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
+import { $t } from '#/locales';
 import { BusinessDetailsList } from '#/views/crm/business';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
@@ -87,7 +88,7 @@ function handleTransfer() {
 
 /** 加载数据 */
 onMounted(() => {
-  contactId.value = route.params.id as number;
+  contactId.value = Number(route.params.id);
   getContactDetail();
 });
 </script>

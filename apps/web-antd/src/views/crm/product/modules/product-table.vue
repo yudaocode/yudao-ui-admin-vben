@@ -112,7 +112,7 @@ watch(
         item.sellingPrice = item.contractPrice;
       });
     }
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,

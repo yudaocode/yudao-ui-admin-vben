@@ -11,7 +11,7 @@ import { getBusiness } from '#/api/crm/business';
 import { getContract } from '#/api/crm/contract';
 import { BizTypeEnum } from '#/api/crm/permission';
 
-import { useDetailListColumns } from './detail-data';
+import { useDetailListColumns } from '../detail/data';
 
 const props = defineProps<{
   bizId: number;

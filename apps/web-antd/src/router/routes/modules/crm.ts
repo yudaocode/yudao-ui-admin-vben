@@ -82,7 +82,7 @@ const routes: RouteRecordRaw[] = [
           title: '产品详情',
           activePath: '/crm/product',
         },
-        component: () => import('#/views/crm/product/modules/detail.vue'),
+        component: () => import('#/views/crm/product/detail/index.vue'),
       },
     ],
   },

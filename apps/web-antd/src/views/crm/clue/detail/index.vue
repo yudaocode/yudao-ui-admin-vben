@@ -107,7 +107,7 @@ async function handleTransform(): Promise<boolean | undefined> {
 
 /** 加载数据 */
 onMounted(() => {
-  clueId.value = route.params.id as number;
+  clueId.value = Number(route.params.id);
   getClueDetail();
 });
 </script>

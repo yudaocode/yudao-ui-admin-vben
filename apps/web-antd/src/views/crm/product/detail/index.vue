@@ -17,18 +17,16 @@ import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
 import { ProductDetailsInfo } from '#/views/crm/product';
 
-import { useDetailSchema } from './detail-data';
-
-const loading = ref(false);
+import { useDetailSchema } from './data';
 
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const productId = ref(0);
-
-const product = ref<CrmProductApi.Product>({} as CrmProductApi.Product);
-const productLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
+const loading = ref(false); // 加载中
+const productId = ref(0); // 产品编号
+const product = ref<CrmProductApi.Product>({} as CrmProductApi.Product); // 产品详情
+const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 
 const [Descriptions] = useDescription({
   componentProps: {
@@ -40,15 +38,19 @@ const [Descriptions] = useDescription({
 });
 
 /** 加载详情 */
-async function loadProductDetail() {
+async function getProductDetail() {
   loading.value = true;
-  const data = await getProduct(productId.value);
-  const logList = await getOperateLogPage({
-    bizType: BizTypeEnum.CRM_PRODUCT,
-    bizId: productId.value,
-  });
-  productLogList.value = logList.list;
-  product.value = data;
+  try {
+    product.value = await getProduct(productId.value);
+    // 操作日志
+    const res = await getOperateLogPage({
+      bizType: BizTypeEnum.CRM_PRODUCT,
+      bizId: productId.value,
+    });
+    logList.value = res.list;
+  } finally {
+    loading.value = false;
+  }
   loading.value = false;
 }
 
@@ -58,10 +60,10 @@ function handleBack() {
   router.push('/crm/product');
 }
 
-// 加载数据
+/** 加载数据 */
 onMounted(() => {
   productId.value = Number(route.params.id);
-  loadProductDetail();
+  getProductDetail();
 });
 </script>
 
@@ -81,7 +83,7 @@ onMounted(() => {
           <ProductDetailsInfo :product="product" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
-          <AsyncOperateLog :log-list="productLogList" />
+          <AsyncOperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
