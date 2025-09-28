@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './detail-data';
+import { useDetailListColumns } from '../detail/data';
 import Form from './form.vue';
 
 const props = defineProps<{
