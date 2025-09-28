@@ -21,6 +21,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '状态组名',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入状态组名',
+      },
     },
     {
       fieldName: 'deptIds',
@@ -72,6 +75,36 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       width: 160,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 商机状态阶段列表列配置 */
+export function useFormColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'defaultStatus',
+      title: '阶段',
+      minWidth: 100,
+      slots: { default: 'defaultStatus' },
+    },
+    {
+      field: 'name',
+      title: '阶段名称',
+      minWidth: 100,
+      slots: { default: 'name' },
+    },
+    {
+      field: 'percent',
+      title: '赢单率（%）',
+      minWidth: 100,
+      slots: { default: 'percent' },
+    },
+    {
+      title: '操作',
+      width: 130,
       fixed: 'right',
       slots: { default: 'actions' },
     },

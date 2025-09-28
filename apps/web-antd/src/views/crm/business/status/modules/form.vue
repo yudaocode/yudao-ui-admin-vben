@@ -17,7 +17,7 @@ import {
 } from '#/api/crm/business/status';
 import { $t } from '#/locales';
 
-import { useFormSchema } from '../data';
+import { useFormColumns, useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmBusinessStatusApi.BusinessStatus>();
@@ -72,7 +72,6 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<CrmBusinessStatusApi.BusinessStatus>();
-
     modalApi.lock();
     try {
       if (!data || !data.id) {
@@ -82,20 +81,19 @@ const [Modal, modalApi] = useVbenModal({
           deptIds: [],
           statuses: [],
         };
-        addStatus();
+        await handleAddStatus();
       } else {
         formData.value = await getBusinessStatus(data.id);
         if (
           !formData.value?.statuses?.length ||
           formData.value?.statuses?.length === 0
         ) {
-          addStatus();
+          await handleAddStatus();
         }
       }
       // 设置到 values
-
       await formApi.setValues(formData.value as any);
-      gridApi.grid.reloadData(
+      await gridApi.grid.reloadData(
         (formData.value!.statuses =
           formData.value?.statuses?.concat(DEFAULT_STATUSES)) as any,
       );
@@ -106,20 +104,20 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 添加状态 */
-async function addStatus() {
+async function handleAddStatus() {
   formData.value!.statuses!.unshift({
     name: '',
     percent: undefined,
   } as any);
   await nextTick();
-  gridApi.grid.reloadData(formData.value!.statuses as any);
+  await gridApi.grid.reloadData(formData.value!.statuses as any);
 }
 
 /** 删除状态 */
 async function deleteStatusArea(row: any, rowIndex: number) {
-  gridApi.grid.remove(row);
+  await gridApi.grid.remove(row);
   formData.value!.statuses!.splice(rowIndex, 1);
-  gridApi.grid.reloadData(formData.value!.statuses as any);
+  await gridApi.grid.reloadData(formData.value!.statuses as any);
 }
 
 /** 表格配置 */
@@ -129,32 +127,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'click',
       mode: 'cell',
     },
-    columns: [
-      {
-        field: 'defaultStatus',
-        title: '阶段',
-        minWidth: 100,
-        slots: { default: 'defaultStatus' },
-      },
-      {
-        field: 'name',
-        title: '阶段名称',
-        minWidth: 100,
-        slots: { default: 'name' },
-      },
-      {
-        field: 'percent',
-        title: '赢单率（%）',
-        minWidth: 100,
-        slots: { default: 'percent' },
-      },
-      {
-        title: '操作',
-        width: 130,
-        fixed: 'right',
-        slots: { default: 'actions' },
-      },
-    ],
+    columns: useFormColumns(),
     data: formData.value?.statuses?.concat(DEFAULT_STATUSES),
     border: true,
     showOverflow: true,
@@ -162,6 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'row_id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -184,7 +158,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
             </span>
           </template>
           <template #name="{ row }">
-            <Input v-if="!row.endStatus" v-model:value="row.name" />
+            <Input
+              v-if="!row.endStatus"
+              v-model:value="row.name"
+              placeholder="请输入状态名"
+            />
             <span v-else>{{ row.name }}</span>
           </template>
           <template #percent="{ row }">
@@ -194,6 +172,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               :min="0"
               :max="100"
               :precision="2"
+              placeholder="请输入赢单率"
             />
             <span v-else>{{ row.percent }}</span>
           </template>
@@ -204,7 +183,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                   label: $t('ui.actionTitle.create'),
                   type: 'link',
                   ifShow: () => !row.endStatus,
-                  onClick: addStatus,
+                  onClick: handleAddStatus,
                 },
                 {
                   label: $t('common.delete'),

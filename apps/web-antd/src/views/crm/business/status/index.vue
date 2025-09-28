@@ -31,12 +31,16 @@ function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+/** 编辑商机状态 */
+function handleEdit(row: CrmBusinessStatusApi.BusinessStatus) {
+  formModalApi.setData(row).open();
+}
+
 /** 删除商机状态 */
 async function handleDelete(row: CrmBusinessStatusApi.BusinessStatus) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteBusinessStatus(row.id as number);
@@ -45,11 +49,6 @@ async function handleDelete(row: CrmBusinessStatusApi.BusinessStatus) {
   } catch {
     hideLoading();
   }
-}
-
-/** 编辑商机状态 */
-function handleEdit(row: CrmBusinessStatusApi.BusinessStatus) {
-  formModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -70,6 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
