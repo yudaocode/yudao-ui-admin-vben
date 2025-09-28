@@ -12,8 +12,9 @@ import { InputNumber, Select } from 'ant-design-vue';
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getProductSimpleList } from '#/api/crm/product';
+import { $t } from '#/locales';
 
-import { useProductEditTableColumns } from '../data';
+import { useProductEditTableColumns } from './data';
 
 const props = defineProps<{
   bizType: BizTypeEnum;
@@ -24,16 +25,20 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:products']);
 
+/** 表格内部数据 */
 const tableData = ref<any[]>([]);
 
+/** 添加产品行 */
 function handleAdd() {
   gridApi.grid.insertAt(null, -1);
 }
 
+/** 删除产品行 */
 function handleDelete(row: CrmProductApi.Product) {
   gridApi.grid.remove(row);
 }
 
+/** 切换产品时同步基础信息 */
 function handleProductChange(productId: any, row: any) {
   const product = productOptions.value.find((p) => p.id === productId);
   if (!product) {
@@ -48,11 +53,13 @@ function handleProductChange(productId: any, row: any) {
   handleUpdateValue(row);
 }
 
+/** 金额变动时重新计算合计 */
 function handlePriceChange(row: any) {
   row.totalPrice = erpPriceMultiply(row.sellingPrice, row.count) ?? 0;
   handleUpdateValue(row);
 }
 
+/** 将最新数据写回并通知父组件 */
 function handleUpdateValue(row: any) {
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (props.bizType === BizTypeEnum.CRM_BUSINESS) {
@@ -69,7 +76,6 @@ function handleUpdateValue(row: any) {
   emit('update:products', [...tableData.value]);
 }
 
-/** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     editConfig: {
@@ -84,6 +90,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -119,8 +126,10 @@ watch(
   },
 );
 
-/** 初始化 */
+/** 产品下拉选项 */
 const productOptions = ref<CrmProductApi.Product[]>([]);
+
+/** 初始化 */
 onMounted(async () => {
   productOptions.value = await getProductSimpleList();
 });
@@ -133,7 +142,7 @@ onMounted(async () => {
         v-model:value="row.productId"
         :options="productOptions"
         :field-names="{ label: 'name', value: 'id' }"
-        style="width: 100%"
+        class="w-full"
         @change="handleProductChange($event, row)"
       />
     </template>

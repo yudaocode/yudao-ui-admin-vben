@@ -19,7 +19,7 @@ import { AsyncOperateLog } from '#/components/operate-log';
 import { ContractDetailsInfo, ContractForm } from '#/views/crm/contract';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
-import { ProductDetailsList } from '#/views/crm/product';
+import { ProductDetailsList } from '#/views/crm/product/components';
 import {
   ReceivableDetailsList,
   ReceivablePlanDetailsList,

@@ -15,7 +15,7 @@ import {
 } from '#/api/crm/contract';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
-import { ProductEditTable } from '#/views/crm/product';
+import { ProductEditTable } from '#/views/crm/product/components';
 
 import { useFormSchema } from '../data';
 

@@ -1,4 +1,4 @@
-<!-- 联系人列表：用于【联系人】【商机】详情种，展示它们关联的联系人列表 -->
+<!-- 联系人列表：用于【联系人】【商机】详情中，展示它们关联的联系人列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmContactApi } from '#/api/crm/contact';

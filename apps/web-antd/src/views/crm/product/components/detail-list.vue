@@ -1,3 +1,4 @@
+<!-- 产品列表：用于【商机】【合同】详情中，展示它们关联的产品列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmProductApi } from '#/api/crm/product';
@@ -11,16 +12,20 @@ import { getBusiness } from '#/api/crm/business';
 import { getContract } from '#/api/crm/contract';
 import { BizTypeEnum } from '#/api/crm/permission';
 
-import { useDetailListColumns } from '../detail/data';
+import { useDetailListColumns } from './data';
 
+/** 组件入参 */
 const props = defineProps<{
   bizId: number;
   bizType: BizTypeEnum;
 }>();
 
+/** 整单折扣 */
 const discountPercent = ref(0);
+/** 产品总金额 */
 const totalProductPrice = ref(0);
 
+/** 构建产品列表表格 */
 const [Grid] = useVbenVxeGrid({
   gridOptions: {
     columns: useDetailListColumns(props.bizType === BizTypeEnum.CRM_BUSINESS),
@@ -48,6 +53,7 @@ const [Grid] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
   } as VxeTableGridOptions<CrmProductApi.Product>,
 });

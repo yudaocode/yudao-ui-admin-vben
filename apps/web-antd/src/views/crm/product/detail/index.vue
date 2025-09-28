@@ -15,9 +15,9 @@ import { BizTypeEnum } from '#/api/crm/permission';
 import { getProduct } from '#/api/crm/product';
 import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
-import { ProductDetailsInfo } from '#/views/crm/product';
 
 import { useDetailSchema } from './data';
+import Info from './modules/info.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -80,7 +80,7 @@ onMounted(() => {
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
         <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
-          <ProductDetailsInfo :product="product" />
+          <Info :product="product" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
           <AsyncOperateLog :log-list="logList" />

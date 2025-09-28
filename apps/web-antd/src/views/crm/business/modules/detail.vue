@@ -24,7 +24,7 @@ import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
-import { ProductDetailsList } from '#/views/crm/product';
+import { ProductDetailsList } from '#/views/crm/product/components';
 
 import { useDetailSchema } from './detail-data';
 
