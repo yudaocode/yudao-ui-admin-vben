@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
           title: '商机详情',
           activePath: '/crm/business',
         },
-        component: () => import('#/views/crm/business/modules/detail.vue'),
+        component: () => import('#/views/crm/business/detail/index.vue'),
       },
       {
         path: 'contract/detail/:id',
