@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmBusinessApi } from '#/api/crm/business';
 import type { CrmContractApi } from '#/api/crm/contract';
 
 import { ref } from 'vue';
@@ -18,8 +17,8 @@ import {
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './detail-data';
-import Form from './form.vue';
+import { useDetailListColumns } from './data';
+import Form from '../modules/form.vue';
 
 const props = defineProps<{
   bizId: number; // 业务编号
@@ -33,7 +32,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const checkedRows = ref<CrmContractApi.Contract[]>([]);
+const checkedRows = ref<CrmContractApi.Contract[]>();
 function setCheckedRows({ records }: { records: CrmContractApi.Contract[] }) {
   checkedRows.value = records;
 }
@@ -96,7 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<CrmBusinessApi.Business>,
+  } as VxeTableGridOptions<CrmContractApi.Contract>,
   gridEvents: {
     checkboxAll: setCheckedRows,
     checkboxChange: setCheckedRows,

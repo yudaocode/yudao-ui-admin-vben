@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
           title: '合同详情',
           activePath: '/crm/contract',
         },
-        component: () => import('#/views/crm/contract/modules/detail.vue'),
+        component: () => import('#/views/crm/contract/detail/index.vue'),
       },
       {
         path: 'receivable-plan/detail/:id',

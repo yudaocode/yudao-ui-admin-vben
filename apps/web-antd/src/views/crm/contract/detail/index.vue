@@ -16,7 +16,8 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
-import { ContractDetailsInfo, ContractForm } from '#/views/crm/contract';
+import ContractDetailsInfo from './modules/info.vue';
+import ContractForm from '../modules/form.vue';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 import { ProductDetailsList } from '#/views/crm/product/components';
@@ -25,7 +26,7 @@ import {
   ReceivablePlanDetailsList,
 } from '#/views/crm/receivable';
 
-import { useDetailSchema } from './detail-data';
+import { useDetailSchema } from './data';
 
 const loading = ref(false);
 

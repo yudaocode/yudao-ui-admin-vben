@@ -170,7 +170,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="onRefresh" />
     <Grid>
       <template #top>
-        <Tabs class="border-none" @change="handleChangeSceneType">
+        <Tabs class="-mt-11" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />
@@ -265,3 +265,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>
