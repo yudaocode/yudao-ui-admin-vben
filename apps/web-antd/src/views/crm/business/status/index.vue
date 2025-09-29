@@ -43,7 +43,7 @@ async function handleDelete(row: CrmBusinessStatusApi.BusinessStatus) {
     duration: 0,
   });
   try {
-    await deleteBusinessStatus(row.id as number);
+    await deleteBusinessStatus(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } catch {

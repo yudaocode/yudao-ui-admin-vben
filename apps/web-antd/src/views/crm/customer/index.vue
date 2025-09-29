@@ -78,7 +78,7 @@ async function handleDelete(row: CrmCustomerApi.Customer) {
     duration: 0,
   });
   try {
-    await deleteCustomer(row.id as number);
+    await deleteCustomer(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

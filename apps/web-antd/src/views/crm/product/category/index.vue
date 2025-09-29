@@ -57,7 +57,7 @@ async function handleDelete(row: CrmProductCategoryApi.ProductCategory) {
     duration: 0,
   });
   try {
-    await deleteProductCategory(row.id as number);
+    await deleteProductCategory(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

@@ -56,7 +56,7 @@ async function handleDelete(row: CrmClueApi.Clue) {
     duration: 0,
   });
   try {
-    await deleteClue(row.id as number);
+    await deleteClue(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } catch {

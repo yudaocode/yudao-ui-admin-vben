@@ -1,3 +1,4 @@
+<!-- 合同列表：用于【客户】【商机】【联系人】详情中，展示它们关联的合同列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmContractApi } from '#/api/crm/contract';
@@ -17,8 +18,8 @@ import {
 import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './data';
 import Form from '../modules/form.vue';
+import { useDetailListColumns } from './data';
 
 const props = defineProps<{
   bizId: number; // 业务编号
@@ -32,6 +33,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 已选择的合同 */
 const checkedRows = ref<CrmContractApi.Contract[]>();
 function setCheckedRows({ records }: { records: CrmContractApi.Contract[] }) {
   checkedRows.value = records;
@@ -90,6 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

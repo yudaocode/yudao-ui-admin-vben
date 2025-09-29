@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       if (receivable) {
-        formData.value = await getReceivable(receivable.id as number);
+        formData.value = await getReceivable(receivable.id!);
       } else if (plan) {
         formData.value = plan.id
           ? {

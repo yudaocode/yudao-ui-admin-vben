@@ -31,7 +31,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -68,11 +68,9 @@ async function handleDelete(row: CrmContractApi.Contract) {
     duration: 0,
   });
   try {
-    await deleteContract(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    await deleteContract(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -85,11 +83,9 @@ async function handleSubmit(row: CrmContractApi.Contract) {
     duration: 0,
   });
   try {
-    await submitContract(row.id as number);
-    message.success({
-      content: '提交审核成功',
-    });
-    onRefresh();
+    await submitContract(row.id!);
+    message.success('提交审核成功');
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -145,6 +141,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -167,7 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #top>
         <Tabs class="-mt-11" @change="handleChangeSceneType">
@@ -227,8 +224,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleEdit.bind(null, row),
               ifShow: row.auditStatus === 0,
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '提交审核',
               type: 'link',
@@ -242,12 +237,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['crm:contract:update'],
               onClick: handleProcessDetail.bind(null, row),
               ifShow: row.auditStatus !== 0,
-            },
-            {
-              label: $t('common.detail'),
-              type: 'link',
-              auth: ['crm:contract:query'],
-              onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.delete'),

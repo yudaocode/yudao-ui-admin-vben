@@ -62,7 +62,7 @@ async function handleDelete(
     duration: 0,
   });
   try {
-    await deleteCustomerLimitConfig(row.id as number);
+    await deleteCustomerLimitConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

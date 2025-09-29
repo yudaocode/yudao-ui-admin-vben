@@ -58,7 +58,7 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
     duration: 0,
   });
   try {
-    await deleteReceivable(row.id as number);
+    await deleteReceivable(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.no]),
     });
@@ -75,7 +75,7 @@ async function handleSubmit(row: CrmReceivableApi.Receivable) {
     duration: 0,
   });
   try {
-    await submitReceivable(row.id as number);
+    await submitReceivable(row.id!);
     message.success({
       content: '提交审核成功',
     });

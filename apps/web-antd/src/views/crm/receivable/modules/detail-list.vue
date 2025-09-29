@@ -53,7 +53,7 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
     duration: 0,
   });
   try {
-    await deleteReceivable(row.id as number);
+    await deleteReceivable(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.no]),
     });

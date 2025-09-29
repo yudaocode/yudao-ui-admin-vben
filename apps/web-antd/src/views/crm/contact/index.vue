@@ -67,7 +67,7 @@ async function handleDelete(row: CrmContactApi.Contact) {
     duration: 0,
   });
   try {
-    await deleteContact(row.id as number);
+    await deleteContact(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

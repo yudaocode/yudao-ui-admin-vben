@@ -60,7 +60,7 @@ async function handleDelete(row: CrmProductApi.Product) {
     duration: 0,
   });
   try {
-    await deleteProduct(row.id as number);
+    await deleteProduct(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

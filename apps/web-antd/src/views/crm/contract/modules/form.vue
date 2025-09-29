@@ -27,6 +27,7 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['合同']);
 });
 
+/** 更新产品列表 */
 function handleUpdateProducts(products: any) {
   formData.value = modalApi.getData<CrmContractApi.Contract>();
   formData.value!.products = products;
@@ -89,8 +90,6 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<CrmContractApi.Contract>();
     if (!data || !data.id) {
-      // 设置到 values
-      await formApi.setValues(data);
       return;
     }
     modalApi.lock();

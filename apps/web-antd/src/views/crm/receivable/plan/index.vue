@@ -63,7 +63,7 @@ async function handleDelete(row: CrmReceivablePlanApi.Plan) {
     duration: 0,
   });
   try {
-    await deleteReceivablePlan(row.id as number);
+    await deleteReceivablePlan(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.period]),
     });

@@ -25,7 +25,7 @@ import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { BusinessDetailsList } from '#/views/crm/business/components';
 import { ContactDetailsList } from '#/views/crm/contact/components';
-import { ContractDetailsList } from '#/views/crm/contract';
+import { ContractDetailsList } from '#/views/crm/contract/components';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 import {
