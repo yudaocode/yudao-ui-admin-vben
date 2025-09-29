@@ -15,8 +15,8 @@ import {
 import { $t } from '#/locales';
 
 import ReceivableForm from '../../modules/form.vue';
-import { useDetailListColumns } from './detail-data';
-import Form from './form.vue';
+import Form from '../modules/form.vue';
+import { useDetailListColumns } from './data';
 
 const props = defineProps<{
   contractId?: number; // 合同编号

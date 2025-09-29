@@ -5,9 +5,9 @@ export const ReceivableDetailsList = defineAsyncComponent(
 );
 
 export const ReceivablePlanDetailsInfo = defineAsyncComponent(
-  () => import('./plan/modules/detail-info.vue'),
+  () => import('./plan/detail/modules/info.vue'),
 );
 
 export const ReceivablePlanDetailsList = defineAsyncComponent(
-  () => import('./plan/modules/detail-list.vue'),
+  () => import('./plan/components/detail-list.vue'),
 );

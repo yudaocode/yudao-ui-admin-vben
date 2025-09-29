@@ -19,8 +19,8 @@ import { AsyncOperateLog } from '#/components/operate-log';
 import { PermissionList } from '#/views/crm/permission';
 import { ReceivablePlanDetailsInfo } from '#/views/crm/receivable';
 
-import { useDetailSchema } from './detail-data';
-import ReceivablePlanForm from './form.vue';
+import { useDetailSchema } from './data';
+import ReceivablePlanForm from '../modules/form.vue';
 
 const loading = ref(false);
 

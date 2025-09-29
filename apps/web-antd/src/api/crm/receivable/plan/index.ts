@@ -98,7 +98,7 @@ export function deleteReceivablePlan(id: number) {
 }
 
 /** 导出回款计划 Excel */
-export function exportReceivablePlan(params: PageParam) {
+export function exportReceivablePlan(params: any) {
   return requestClient.download('/crm/receivable-plan/export-excel', {
     params,
   });

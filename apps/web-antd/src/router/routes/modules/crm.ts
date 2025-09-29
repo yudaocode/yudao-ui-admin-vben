@@ -54,8 +54,7 @@ const routes: RouteRecordRaw[] = [
           title: '回款计划详情',
           activePath: '/crm/receivable-plan',
         },
-        component: () =>
-          import('#/views/crm/receivable/plan/modules/detail.vue'),
+        component: () => import('#/views/crm/receivable/plan/detail/index.vue'),
       },
       {
         path: 'receivable/detail/:id',
