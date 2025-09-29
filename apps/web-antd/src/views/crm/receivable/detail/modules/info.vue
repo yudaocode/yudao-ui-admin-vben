@@ -6,7 +6,7 @@ import { Divider } from 'ant-design-vue';
 import { useDescription } from '#/components/description';
 import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
-import { useDetailBaseSchema } from './detail-data';
+import { useDetailBaseSchema } from '../data';
 
 defineProps<{
   receivable: CrmReceivableApi.Receivable; // 收款信息

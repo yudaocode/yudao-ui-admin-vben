@@ -17,10 +17,10 @@ import { getReceivable } from '#/api/crm/receivable';
 import { useDescription } from '#/components/description';
 import { AsyncOperateLog } from '#/components/operate-log';
 import { PermissionList } from '#/views/crm/permission';
-import { ReceivableDetailsInfo } from '#/views/crm/receivable';
 
-import { useDetailSchema } from './detail-data';
-import ReceivableForm from './form.vue';
+import ReceivableForm from '../modules/form.vue';
+import { useDetailSchema } from './data';
+import Info from './modules/info.vue';
 
 const loading = ref(false);
 
@@ -110,7 +110,7 @@ onMounted(() => {
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
         <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
-          <ReceivableDetailsInfo :receivable="receivable" />
+          <Info :receivable="receivable" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="团队成员" key="2" :force-render="true">
           <PermissionList

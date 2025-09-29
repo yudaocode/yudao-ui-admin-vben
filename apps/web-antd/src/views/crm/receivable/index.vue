@@ -31,12 +31,19 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
   gridApi.query();
 }
 
 /** 导出表格 */
 async function handleExport() {
+  // TODO @AI：缺少了 sceneType 参考，参考下别的模块？
   const data = await exportReceivable(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '回款.xls', source: data });
 }
@@ -59,10 +66,8 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
   });
   try {
     await deleteReceivable(row.id!);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.no]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.no]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -76,10 +81,8 @@ async function handleSubmit(row: CrmReceivableApi.Receivable) {
   });
   try {
     await submitReceivable(row.id!);
-    message.success({
-      content: '提交审核成功',
-    });
-    onRefresh();
+    message.success('提交审核成功');
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -130,6 +133,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -137,11 +141,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<CrmReceivableApi.Receivable>,
 });
-
-function onChangeSceneType(key: number | string) {
-  sceneType.value = key.toString();
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -157,10 +156,10 @@ function onChangeSceneType(key: number | string) {
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #top>
-        <Tabs class="border-none" @change="onChangeSceneType">
+        <Tabs class="-mt-11" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />
@@ -217,8 +216,6 @@ function onChangeSceneType(key: number | string) {
               onClick: handleEdit.bind(null, row),
               ifShow: row.auditStatus === 0,
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '提交审核',
               type: 'link',
@@ -250,3 +247,8 @@ function onChangeSceneType(key: number | string) {
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>

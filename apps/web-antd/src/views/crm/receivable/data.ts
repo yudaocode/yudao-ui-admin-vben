@@ -198,7 +198,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '回款编号',
       field: 'no',
-      minWidth: 150,
+      minWidth: 160,
       fixed: 'left',
       slots: { default: 'no' },
     },
@@ -211,7 +211,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '合同编号',
       field: 'contract',
-      minWidth: 150,
+      minWidth: 160,
       slots: { default: 'contractNo' },
     },
     {
@@ -286,7 +286,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       field: 'actions',
-      width: 130,
+      minWidth: 130,
       fixed: 'right',
       slots: { default: 'actions' },
     },

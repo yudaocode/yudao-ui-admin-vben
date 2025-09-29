@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
           title: '回款详情',
           activePath: '/crm/receivable',
         },
-        component: () => import('#/views/crm/receivable/modules/detail.vue'),
+        component: () => import('#/views/crm/receivable/detail/index.vue'),
       },
       {
         path: 'contact/detail/:id',

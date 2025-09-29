@@ -13,8 +13,8 @@ import {
 } from '#/api/crm/receivable';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './detail-data';
-import Form from './form.vue';
+import { useDetailListColumns } from './data';
+import Form from '../modules/form.vue';
 
 const props = defineProps<{
   contractId?: number; // 合同编号
