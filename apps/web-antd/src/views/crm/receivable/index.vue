@@ -43,8 +43,11 @@ function handleChangeSceneType(key: number | string) {
 
 /** 导出表格 */
 async function handleExport() {
-  // TODO @AI：缺少了 sceneType 参考，参考下别的模块？
-  const data = await exportReceivable(await gridApi.formApi.getValues());
+  const formValues = await gridApi.formApi.getValues();
+  const data = await exportReceivable({
+    sceneType: sceneType.value,
+    ...formValues,
+  });
   downloadFileFromBlobPart({ fileName: '回款.xls', source: data });
 }
 

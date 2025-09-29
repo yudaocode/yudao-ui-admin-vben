@@ -20,7 +20,7 @@ import {
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { useDescription } from '#/components/description';
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { BusinessDetailsList } from '#/views/crm/business/components';
@@ -318,7 +318,7 @@ onMounted(() => {
           <ReceivableDetailsList :customer-id="customerId" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
-          <AsyncOperateLog :log-list="logList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

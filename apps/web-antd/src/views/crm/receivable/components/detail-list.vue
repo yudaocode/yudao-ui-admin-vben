@@ -1,3 +1,4 @@
+<!-- 回款列表：用于【客户】【合同】详情中，展示它们关联的回款列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmReceivableApi } from '#/api/crm/receivable';
@@ -13,8 +14,8 @@ import {
 } from '#/api/crm/receivable';
 import { $t } from '#/locales';
 
-import { useDetailListColumns } from './data';
 import Form from '../modules/form.vue';
+import { useDetailListColumns } from './data';
 
 const props = defineProps<{
   contractId?: number; // 合同编号
@@ -27,7 +28,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,10 +55,8 @@ async function handleDelete(row: CrmReceivableApi.Receivable) {
   });
   try {
     await deleteReceivable(row.id!);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.no]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.no]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -88,6 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -99,7 +99,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction

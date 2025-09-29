@@ -2,42 +2,38 @@
 import type { CrmReceivableApi } from '#/api/crm/receivable';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { ArrowLeft } from '@vben/icons';
 
-import { Button, Card, Tabs } from 'ant-design-vue';
+import { Card, Tabs } from 'ant-design-vue';
 
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getReceivable } from '#/api/crm/receivable';
 import { useDescription } from '#/components/description';
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
+import { ACTION_ICON, TableAction } from '#/components/table-action';
+import { $t } from '#/locales';
 import { PermissionList } from '#/views/crm/permission';
 
 import ReceivableForm from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import Info from './modules/info.vue';
 
-const loading = ref(false);
-
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const receivableId = ref(0);
-
+const loading = ref(false); // 加载中
+const receivableId = ref(0); // 回款编号
 const receivable = ref<CrmReceivableApi.Receivable>(
   {} as CrmReceivableApi.Receivable,
-);
-const receivableLogList = ref<SystemOperateLogApi.OperateLog[]>([]);
+); // 回款详情
+const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
-
-// 校验编辑权限
-const validateWrite = computed(() => permissionListRef.value?.validateWrite);
 
 const [Descriptions] = useDescription({
   componentProps: {
@@ -56,15 +52,17 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 加载回款详情 */
 async function loadReceivableDetail() {
   loading.value = true;
-  const data = await getReceivable(receivableId.value);
-  receivable.value = data;
-  // 操作日志
-  const logList = await getOperateLogPage({
-    bizType: BizTypeEnum.CRM_RECEIVABLE,
-    bizId: receivableId.value,
-  });
-  receivableLogList.value = logList.list;
-  loading.value = false;
+  try {
+    receivable.value = await getReceivable(receivableId.value);
+    // 操作日志
+    const res = await getOperateLogPage({
+      bizType: BizTypeEnum.CRM_RECEIVABLE,
+      bizId: receivableId.value,
+    });
+    logList.value = res.list;
+  } finally {
+    loading.value = false;
+  }
 }
 
 /** 返回列表页 */
@@ -78,7 +76,7 @@ function handleEdit() {
   formModalApi.setData({ id: receivableId.value }).open();
 }
 
-// 加载数据
+/** 加载数据 */
 onMounted(() => {
   receivableId.value = Number(route.params.id);
   loadReceivableDetail();
@@ -89,20 +87,24 @@ onMounted(() => {
   <Page auto-content-height :title="receivable?.no" :loading="loading">
     <FormModal @success="loadReceivableDetail" />
     <template #extra>
-      <div class="flex items-center gap-2">
-        <Button @click="handleBack">
-          <ArrowLeft class="size-5" />
-          返回
-        </Button>
-        <Button
-          v-if="validateWrite"
-          type="primary"
-          @click="handleEdit"
-          v-access:code="['crm:receivable:update']"
-        >
-          {{ $t('ui.actionTitle.edit') }}
-        </Button>
-      </div>
+      <TableAction
+        :actions="[
+          {
+            label: '返回',
+            type: 'default',
+            icon: 'lucide:arrow-left',
+            onClick: handleBack,
+          },
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            icon: ACTION_ICON.EDIT,
+            auth: ['crm:receivable:update'],
+            ifShow: permissionListRef?.validateWrite,
+            onClick: handleEdit,
+          },
+        ]"
+      />
     </template>
     <Card class="min-h-[10%]">
       <Descriptions :data="receivable" />
@@ -122,7 +124,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
-          <AsyncOperateLog :log-list="receivableLogList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

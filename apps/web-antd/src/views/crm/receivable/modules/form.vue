@@ -65,8 +65,6 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData();
     if (!data) {
-      // 设置到 values
-      await formApi.setValues(data);
       return;
     }
     const { receivable, plan } = data;
