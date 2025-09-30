@@ -1,3 +1,1 @@
-import { defineAsyncComponent } from 'vue';
-
-export const FollowUp = defineAsyncComponent(() => import('./index.vue'));
+export { default as FollowUp } from './index.vue';

@@ -1,9 +1,2 @@
-import { defineAsyncComponent } from 'vue';
-
-export const ReceivablePlanDetailsInfo = defineAsyncComponent(
-  () => import('../detail/modules/info.vue'),
-);
-
-export const ReceivablePlanDetailsList = defineAsyncComponent(
-  () => import('./detail-list.vue'),
-);
+export { default as ReceivablePlanDetailsInfo } from '../detail/modules/info.vue';
+export { default as ReceivablePlanDetailsList } from './detail-list.vue';
