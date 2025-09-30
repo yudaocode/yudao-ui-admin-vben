@@ -67,8 +67,11 @@ export function useFormSchema(): VbenFormSchema[] {
         },
         placeholder: '请选择客户',
       },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
     },
-    // TODO @AI：这里的合同名称不对；
     {
       fieldName: 'contractId',
       label: '合同名称',
@@ -76,16 +79,18 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['customerId'],
-        disabled: (values) => !values.customerId,
+        disabled: (values) => !values.customerId || values.id,
         async componentProps(values) {
           if (values.customerId) {
-            values.contractId = undefined;
+            if (!values.id) {
+              // 特殊：只有在【新增】时，才清空合同编号
+              values.contractId = undefined;
+            }
             const contracts = await getContractSimpleList(values.customerId);
             return {
               options: contracts.map((item) => ({
                 label: item.name,
                 value: item.id,
-                disabled: item.auditStatus !== 20,
               })),
               placeholder: '请选择合同',
             } as any;
@@ -292,7 +297,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       field: 'actions',
-      minWidth: 130,
+      minWidth: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },

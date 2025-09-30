@@ -75,7 +75,7 @@ function handleBack() {
 
 /** 编辑收款 */
 function handleEdit() {
-  formModalApi.setData({ id: receivableId.value }).open();
+  formModalApi.setData({ receivable: { id: receivableId.value } }).open();
 }
 
 /** 加载数据 */

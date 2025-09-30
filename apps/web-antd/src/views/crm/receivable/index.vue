@@ -217,7 +217,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.EDIT,
               auth: ['crm:receivable:update'],
               onClick: handleEdit.bind(null, row),
-              ifShow: row.auditStatus === 0,
             },
             {
               label: '提交审核',
