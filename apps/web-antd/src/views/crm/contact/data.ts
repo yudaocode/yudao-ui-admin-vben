@@ -29,7 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入联系人姓名',
-                      },
+      },
     },
     {
       fieldName: 'ownerUserId',
@@ -66,7 +66,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号',
-                      },
+      },
     },
     {
       fieldName: 'telephone',
@@ -74,7 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入电话',
-                      },
+      },
     },
     {
       fieldName: 'email',
@@ -82,7 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入邮箱',
-                      },
+      },
     },
     {
       fieldName: 'wechat',
@@ -90,7 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入微信',
-                      },
+      },
     },
     {
       fieldName: 'qq',
@@ -98,7 +98,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入QQ',
-                      },
+      },
     },
     {
       fieldName: 'post',
@@ -106,7 +106,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入职位',
-                      },
+      },
     },
     {
       fieldName: 'master',
@@ -115,7 +115,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
         placeholder: '请选择是否关键决策人',
-                        buttonStyle: 'solid',
+        buttonStyle: 'solid',
         optionType: 'button',
       },
       defaultValue: false,
@@ -127,7 +127,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
         placeholder: '请选择性别',
-                      },
+      },
     },
     {
       fieldName: 'parentId',
@@ -158,7 +158,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入详细地址',
-                      },
+      },
     },
     {
       fieldName: 'contactNextTime',
@@ -169,7 +169,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
-                      },
+      },
     },
     {
       fieldName: 'remark',
@@ -177,7 +177,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-                      },
+      },
     },
   ];
 }
@@ -196,7 +196,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
-              },
+      },
     },
     {
       fieldName: 'name',
@@ -205,7 +205,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入联系人姓名',
         allowClear: true,
-              },
+      },
     },
     {
       fieldName: 'mobile',
@@ -214,7 +214,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入手机号',
         allowClear: true,
-              },
+      },
     },
     {
       fieldName: 'telephone',
@@ -223,7 +223,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入电话',
         allowClear: true,
-              },
+      },
     },
     {
       fieldName: 'wechat',
@@ -232,7 +232,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入微信',
         allowClear: true,
-              },
+      },
     },
     {
       fieldName: 'email',
@@ -241,7 +241,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入电子邮箱',
         allowClear: true,
-              },
+      },
     },
   ];
 }

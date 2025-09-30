@@ -165,7 +165,10 @@ onMounted(() => {
             :biz-type="BizTypeEnum.CRM_BUSINESS"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="6" :force-render="true">
+        <Tabs.TabPane tab="操作日志" key="6" :force-render="true">
+          <OperateLog :log-list="logList" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="7" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="businessId"
@@ -173,9 +176,6 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="7" :force-render="true">
-          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

@@ -279,7 +279,7 @@ onMounted(() => {
         <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="详细资料" key="2" :force-render="true">
+        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
           <Info :customer="customer" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="联系人" key="3" :force-render="true">

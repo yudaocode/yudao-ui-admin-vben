@@ -98,7 +98,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'dealTime',
       label: '预计成交日期',
       component: 'DatePicker',
-      rules: 'required',
       componentProps: {
         showTime: false,
         format: 'YYYY-MM-DD HH:mm:ss',
@@ -123,6 +122,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        disabled: true,
         placeholder: '请输入产品总金额',
       },
       rules: z.number().min(0).optional().default(0),

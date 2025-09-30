@@ -16,8 +16,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'totalPrice',
-      label: '合同金额',
-      content: (data) => erpPriceInputFormatter(data.totalPrice),
+      label: '合同金额（元）',
+      content: (data) =>
+        erpPriceInputFormatter(data?.contract?.totalPrice ?? data.totalPrice),
     },
     {
       field: 'returnTime',
@@ -26,7 +27,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'price',
-      label: '回款金额',
+      label: '回款金额（元）',
       content: (data) => erpPriceInputFormatter(data.price),
     },
     {
@@ -74,6 +75,30 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'remark',
       label: '备注',
+    },
+  ];
+}
+
+/** 系统信息字段 */
+export function useDetailSystemSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'ownerUserName',
+      label: '负责人',
+    },
+    {
+      field: 'creatorName',
+      label: '创建人',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+    {
+      field: 'updateTime',
+      label: '更新时间',
+      content: (data) => formatDateTime(data?.updateTime) as string,
     },
   ];
 }

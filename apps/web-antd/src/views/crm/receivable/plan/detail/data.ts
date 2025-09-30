@@ -15,23 +15,24 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       label: '客户名称',
     },
     {
-      field: 'totalPrice',
-      label: '合同金额',
-      content: (data) => erpPriceInputFormatter(data.totalPrice),
-    },
-    {
-      field: 'returnTime',
-      label: '回款日期',
-      content: (data) => formatDateTime(data?.returnTime) as string,
+      field: 'contractNo',
+      label: '合同编号',
     },
     {
       field: 'price',
-      label: '回款金额',
+      label: '计划回款金额',
       content: (data) => erpPriceInputFormatter(data.price),
     },
     {
-      field: 'ownerUserName',
-      label: '负责人',
+      field: 'returnTime',
+      label: '计划回款日期',
+      content: (data) => formatDateTime(data?.returnTime) as string,
+    },
+    {
+      field: 'receivable',
+      label: '实际回款金额',
+      content: (data) =>
+        erpPriceInputFormatter(data?.receivable?.price ?? 0),
     },
   ];
 }
@@ -40,31 +41,30 @@ export function useDetailSchema(): DescriptionItemSchema[] {
 export function useDetailBaseSchema(): DescriptionItemSchema[] {
   return [
     {
-      field: 'no',
-      label: '回款编号',
+      field: 'period',
+      label: '期数',
     },
     {
       field: 'customerName',
       label: '客户名称',
     },
     {
-      field: 'contract',
+      field: 'contractNo',
       label: '合同编号',
-      content: (data) => data?.contract?.no,
     },
     {
       field: 'returnTime',
-      label: '回款日期',
+      label: '计划回款日期',
       content: (data) => formatDateTime(data?.returnTime) as string,
     },
     {
       field: 'price',
-      label: '回款金额',
+      label: '计划回款金额',
       content: (data) => erpPriceInputFormatter(data.price),
     },
     {
       field: 'returnType',
-      label: '回款方式',
+      label: '计划回款方式',
       content: (data) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE,
@@ -72,8 +72,56 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
         }),
     },
     {
+      field: 'remindDays',
+      label: '提前几天提醒',
+    },
+    {
+      field: 'receivable',
+      label: '实际回款金额',
+      content: (data) =>
+        erpPriceInputFormatter(data?.receivable?.price ?? 0),
+    },
+    {
+      field: 'receivableRemain',
+      label: '未回款金额',
+      content: (data) => {
+        const paid = data?.receivable?.price ?? 0;
+        return erpPriceInputFormatter(Math.max(data.price - paid, 0));
+      },
+    },
+    {
+      field: 'receivable.returnTime',
+      label: '实际回款日期',
+      content: (data) =>
+        formatDateTime(data?.receivable?.returnTime) as string,
+    },
+    {
       field: 'remark',
       label: '备注',
+    },
+  ];
+}
+
+/** 系统信息字段 */
+export function useDetailSystemSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'ownerUserName',
+      label: '负责人',
+    },
+    {
+      field: 'creatorName',
+      label: '创建人',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data) => formatDateTime(data?.createTime) as string,
+    },
+    {
+      field: 'updateTime',
+      label: '更新时间',
+      content: (data) => formatDateTime(data?.updateTime) as string,
     },
   ];
 }

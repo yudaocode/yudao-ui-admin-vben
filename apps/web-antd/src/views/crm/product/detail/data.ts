@@ -22,7 +22,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'price',
-      label: '产品价格',
+      label: '产品价格（元）',
       content: (data) => erpPriceInputFormatter(data.price),
     },
     {

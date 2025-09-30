@@ -64,6 +64,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择客户',
       },
     },
+    // TODO @AI：这里的合同名称不对；
     {
       fieldName: 'contractId',
       label: '合同名称',
@@ -121,14 +122,12 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'returnTime',
-      label: '回款日期',
-      component: 'DatePicker',
+      fieldName: 'returnType',
+      label: '回款方式',
+      component: 'Select',
       componentProps: {
-        placeholder: '请选择回款日期',
-        showTime: false,
-        valueFormat: 'x',
-        format: 'YYYY-MM-DD',
+        options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
+        placeholder: '请选择回款方式',
       },
     },
     {
@@ -143,13 +142,15 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'returnType',
-      label: '回款方式',
-      component: 'Select',
+      fieldName: 'returnTime',
+      label: '回款日期',
+      component: 'DatePicker',
       rules: 'required',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
-        placeholder: '请选择回款方式',
+        placeholder: '请选择回款日期',
+        showTime: false,
+        valueFormat: 'x',
+        format: 'YYYY-MM-DD',
       },
     },
     {
@@ -160,6 +161,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 4,
       },
+      formItemClass: 'md:col-span-2',
     },
   ];
 }

@@ -121,7 +121,10 @@ onMounted(() => {
         <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
           <ReceivablePlanDetailsInfo :receivable-plan="receivablePlan" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="2" :force-render="true">
+        <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
+          <OperateLog :log-list="logList" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="receivablePlanId"
@@ -129,9 +132,6 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
-          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
