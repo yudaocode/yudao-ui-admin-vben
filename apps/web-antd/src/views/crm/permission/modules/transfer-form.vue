@@ -99,7 +99,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formApi.resetForm();
+      await formApi.resetForm();
       return;
     }
     // 加载数据
@@ -108,7 +108,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     bizType.value = data.bizType;
-    formApi.setFieldValue('id', data.bizType);
+    await formApi.setFieldValue('id', data.bizType);
   },
 });
 </script>

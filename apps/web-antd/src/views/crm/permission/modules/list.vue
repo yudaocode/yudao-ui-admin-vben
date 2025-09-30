@@ -19,7 +19,7 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
-import Form from './permission-form.vue';
+import Form from './form.vue';
 
 const props = defineProps<{
   bizId: number; // 模块数据编号
@@ -38,13 +38,14 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// 校验负责人权限和编辑权限
-const validateOwnerUser = ref(false);
-const validateWrite = ref(false);
-const isPool = ref(false);
+const userStore = useUserStore();
+
+const validateOwnerUser = ref(false); // 负责人权限
+const validateWrite = ref(false); // 编辑权限
+const isPool = ref(false); // 是否是公海
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -62,6 +63,7 @@ function setCheckedRows({
   checkedRows.value = records;
 }
 
+/** 新建团队成员 */
 function handleCreate() {
   formModalApi
     .setData({
@@ -71,6 +73,7 @@ function handleCreate() {
     .open();
 }
 
+/** 编辑团队成员 */
 function handleEdit() {
   if (checkedRows.value.length === 0) {
     message.error('请先选择团队成员后操作！');
@@ -90,6 +93,7 @@ function handleEdit() {
     .open();
 }
 
+/** 删除团队成员 */
 function handleDelete() {
   if (checkedRows.value.length === 0) {
     message.error('请先选择团队成员后操作！');
@@ -106,7 +110,7 @@ function handleDelete() {
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));
-          onRefresh();
+          handleRefresh();
           resolve(true);
         } else {
           reject(new Error('移出失败'));
@@ -118,8 +122,7 @@ function handleDelete() {
   });
 }
 
-const userStore = useUserStore();
-
+/** 退出团队 */
 async function handleQuit() {
   const permission = gridApi.grid
     .getData()
@@ -208,6 +211,7 @@ watch(
           }
         });
     } else {
+      // 特殊：没有成员的情况下，说明没有负责人，是公海
       isPool.value = true;
     }
   },
@@ -219,7 +223,7 @@ watch(
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -237,6 +241,7 @@ watch(
               icon: ACTION_ICON.EDIT,
               ifShow: validateOwnerUser,
               onClick: handleEdit,
+              disabled: checkedRows.length === 0,
             },
             {
               label: $t('common.delete'),
@@ -245,6 +250,7 @@ watch(
               icon: ACTION_ICON.DELETE,
               ifShow: validateOwnerUser,
               onClick: handleDelete,
+              disabled: checkedRows.length === 0,
             },
             {
               label: '退出团队',
