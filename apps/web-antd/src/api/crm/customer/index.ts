@@ -37,6 +37,7 @@ export namespace CrmCustomerApi {
     updateTime: Date; // 更新时间
     poolDay?: number; // 距离进入公海天数
   }
+
   export interface CustomerImport {
     ownerUserId: number;
     file: File;

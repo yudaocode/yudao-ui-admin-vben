@@ -31,7 +31,7 @@ const props = defineProps<{
 const { push } = useRouter();
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -48,10 +48,8 @@ async function handleDelete(row: CrmFollowUpApi.FollowUpRecord) {
   });
   try {
     await deleteFollowUpRecord(row.id);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    handleRefresh();
   } catch {
     hideLoading();
   }
@@ -129,6 +127,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -146,7 +145,7 @@ watch(
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction

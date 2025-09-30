@@ -13,6 +13,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户名称',
+        allowClear: true,
       },
     },
     {
@@ -21,6 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机',
+        allowClear: true,
       },
     },
     {
@@ -30,6 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
         placeholder: '请选择所属行业',
+        allowClear: true,
       },
     },
     {
@@ -39,6 +42,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
         placeholder: '请选择客户级别',
+        allowClear: true,
       },
     },
     {
@@ -48,6 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
         placeholder: '请选择客户来源',
+        allowClear: true,
       },
     },
   ];

@@ -15,7 +15,7 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getReceivablePlan } from '#/api/crm/receivable/plan';
 import { useDescription } from '#/components/description';
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
 import { $t } from '#/locales';
 import { PermissionList } from '#/views/crm/permission';
 import { ReceivablePlanDetailsInfo } from '#/views/crm/receivable/plan/components';
@@ -131,7 +131,7 @@ onMounted(() => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
-          <AsyncOperateLog :log-list="logList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

@@ -14,7 +14,7 @@ import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getProduct } from '#/api/crm/product';
 import { useDescription } from '#/components/description';
-import { AsyncOperateLog } from '#/components/operate-log';
+import { OperateLog } from '#/components/operate-log';
 
 import { useDetailSchema } from './data';
 import Info from './modules/info.vue';
@@ -83,7 +83,7 @@ onMounted(() => {
           <Info :product="product" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
-          <AsyncOperateLog :log-list="logList" />
+          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>
