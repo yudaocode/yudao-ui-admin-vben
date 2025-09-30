@@ -28,7 +28,6 @@ const [Form, formApi] = useVbenForm({
     },
     labelWidth: 100,
   },
-  // 一共3列
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),

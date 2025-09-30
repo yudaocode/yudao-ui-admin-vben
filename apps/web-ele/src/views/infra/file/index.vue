@@ -54,7 +54,7 @@ async function handleDelete(row: InfraFileApi.File) {
     text: $t('ui.actionMessage.deleting', [row.name || row.path]),
   });
   try {
-    await deleteFile(row.id as number);
+    await deleteFile(row.id!);
     ElMessage.success(
       $t('ui.actionMessage.deleteSuccess', [row.name || row.path]),
     );
@@ -150,21 +150,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #file-content="{ row }">
         <ElImage v-if="row.type && row.type.includes('image')" :src="row.url" />
-        <ElButton
-          v-else-if="row.type && row.type.includes('pdf')"
-          type="primary"
-          link
-          @click="() => openWindow(row.url!)"
-        >
-          预览
-        </ElButton>
-        <ElButton
-          v-else
-          type="primary"
-          link
-          @click="() => openWindow(row.url!)"
-        >
-          下载
+        <ElButton type="primary" link @click="() => openWindow(row.url!)">
+          {{ row.type && row.type.includes('pdf') ? '预览' : '下载' }}
         </ElButton>
       </template>
       <template #actions="{ row }">

@@ -3,11 +3,11 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { nextTick, ref, watch } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/inner';
-import { ContentWrap } from '#/components/content-wrap';
 
 const props = defineProps<{
   studentId?: number; // 学生编号（主表的关联字段）
@@ -16,7 +16,7 @@ const props = defineProps<{
 const loading = ref(true); // 列表的加载中
 const list = ref<Demo03StudentApi.Demo03Grade[]>([]); // 列表的数据
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     if (!props.studentId) {
@@ -26,7 +26,7 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(

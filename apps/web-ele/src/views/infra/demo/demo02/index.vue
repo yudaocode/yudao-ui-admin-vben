@@ -59,7 +59,7 @@ async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo02Category(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {
@@ -162,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.delete'),
               type: 'danger',
-              text: true,
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo02-category:delete'],
               popConfirm: {

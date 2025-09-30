@@ -23,8 +23,15 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 切换树形展开/收缩状态 */
+const isExpanded = ref(false);
+function handleExpand() {
+  isExpanded.value = !isExpanded.value;
+  gridApi.grid.setAllTreeExpand(isExpanded.value);
+}
+
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -47,25 +54,15 @@ function handleEdit(row: CrmProductCategoryApi.ProductCategory) {
 async function handleDelete(row: CrmProductCategoryApi.ProductCategory) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await deleteProductCategory(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    await deleteProductCategory(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
-}
-
-/** 切换树形展开/收缩状态 */
-const isExpanded = ref(false);
-function toggleExpand() {
-  isExpanded.value = !isExpanded.value;
-  gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -88,14 +85,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
+      search: true,
     },
     treeConfig: {
       parentField: 'parentId',
       rowField: 'id',
       transform: true,
+      expandAll: true,
       reserve: true,
     },
   } as VxeTableGridOptions<CrmProductCategoryApi.ProductCategory>,
@@ -111,7 +111,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -126,15 +126,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
-              onClick: toggleExpand,
+              onClick: handleExpand,
             },
           ]"
         />
-      </template>
-      <template #name="{ row }">
-        <div class="flex w-full items-center gap-1">
-          <span class="flex-auto">{{ row.name }}</span>
-        </div>
       </template>
       <template #actions="{ row }">
         <TableAction

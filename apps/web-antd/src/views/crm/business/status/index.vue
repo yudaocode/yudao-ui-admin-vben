@@ -22,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -31,25 +31,24 @@ function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+/** 编辑商机状态 */
+function handleEdit(row: CrmBusinessStatusApi.BusinessStatus) {
+  formModalApi.setData(row).open();
+}
+
 /** 删除商机状态 */
 async function handleDelete(row: CrmBusinessStatusApi.BusinessStatus) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deleteBusinessStatus(row.id as number);
+    await deleteBusinessStatus(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } catch {
     hideLoading();
   }
-}
-
-/** 编辑商机状态 */
-function handleEdit(row: CrmBusinessStatusApi.BusinessStatus) {
-  formModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -70,6 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -92,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="商机状态列表">
       <template #toolbar-tools>
         <TableAction

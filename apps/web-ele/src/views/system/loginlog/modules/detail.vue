@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { SystemLoginLogApi } from '#/api/system/login-log';
 
 import { ref } from 'vue';
@@ -16,9 +16,9 @@ const [Descriptions] = useDescription({
     border: true,
     column: 1,
     direction: 'horizontal',
+    labelWidth: 110,
     title: '',
     extra: '',
-    labelWidth: 110,
   },
   schema: useDetailSchema(),
 });

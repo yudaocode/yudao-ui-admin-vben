@@ -44,3 +44,10 @@ export function updateDataSourceConfig(
 export function deleteDataSourceConfig(id: number) {
   return requestClient.delete(`/infra/data-source-config/delete?id=${id}`);
 }
+
+/** 批量删除数据源配置 */
+export function deleteDataSourceConfigList(ids: number[]) {
+  return requestClient.delete(
+    `/infra/data-source-config/delete-list?ids=${ids.join(',')}`,
+  );
+}

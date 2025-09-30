@@ -53,7 +53,7 @@ async function handleDelete(row: SystemPostApi.Post) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deletePost(row.id as number);
+    await deletePost(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

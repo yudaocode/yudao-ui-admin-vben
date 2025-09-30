@@ -51,13 +51,12 @@ function handleBind(row: MallDeliveryPickUpStoreApi.PickUpStore) {
 async function handleDelete(row: MallDeliveryPickUpStoreApi.PickUpStore) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteDeliveryPickUpStore(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

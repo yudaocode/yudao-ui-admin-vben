@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         name: 'ProductSpuAdd',
         meta: {
           title: '商品添加',
-          activeMenu: '/mall/product/spu',
+          activePath: '/mall/product/spu',
         },
         component: () => import('#/views/mall/product/spu/modules/form.vue'),
       },
@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
         name: 'ProductSpuEdit',
         meta: {
           title: '商品编辑',
-          activeMenu: '/mall/product/spu',
+          activePath: '/mall/product/spu',
         },
         component: () => import('#/views/mall/product/spu/modules/form.vue'),
       },
@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         name: 'ProductSpuDetail',
         meta: {
           title: '商品详情',
-          activeMenu: '/crm/business',
+          activePath: '/crm/business',
         },
         component: () => import('#/views/mall/product/spu/modules/detail.vue'),
       },
@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
         name: 'TradeOrderDetail',
         meta: {
           title: '订单详情',
-          activeMenu: '/mall/trade/order',
+          activePath: '/mall/trade/order',
         },
         component: () => import('#/views/mall/trade/order/modules/detail.vue'),
       },
@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
         name: 'TradeAfterSaleDetail',
         meta: {
           title: '退款详情',
-          activeMenu: '/mall/trade/after-sale',
+          activePath: '/mall/trade/after-sale',
         },
         component: () =>
           import('#/views/mall/trade/afterSale/modules/detail.vue'),

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PayOrderApi } from '#/api/pay/order';
 
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -293,6 +293,10 @@ function goReturnUrl(payResult: string) {
 
 onMounted(async () => {
   await getDetail();
+});
+
+onBeforeUnmount(() => {
+  clearQueryInterval();
 });
 </script>
 <template>

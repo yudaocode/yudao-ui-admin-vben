@@ -48,7 +48,7 @@ async function handleDelete(row: SystemMenuApi.Menu) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteMenu(row.id as number);
+    await deleteMenu(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

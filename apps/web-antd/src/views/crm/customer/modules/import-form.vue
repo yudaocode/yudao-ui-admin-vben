@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import type { FileType } from 'ant-design-vue/es/upload/interface';
 
-import { useVbenModal, z } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { importCustomer, importCustomerTemplate } from '#/api/crm/customer';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
+
+import { useImportFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
@@ -19,40 +20,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      fieldName: 'ownerUserId',
-      label: '负责人',
-      component: 'ApiSelect',
-      componentProps: {
-        api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-        class: 'w-full',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'file',
-      label: '用户数据',
-      component: 'Upload',
-      rules: 'required',
-      help: '仅允许导入 xls、xlsx 格式文件',
-    },
-    {
-      fieldName: 'updateSupport',
-      label: '是否覆盖',
-      component: 'Switch',
-      componentProps: {
-        checkedChildren: '是',
-        unCheckedChildren: '否',
-      },
-      rules: z.boolean().default(false),
-      help: '是否更新已经存在的用户数据',
-    },
-  ],
+  schema: useImportFormSchema(),
   showDefaultActions: false,
 });
 

@@ -30,8 +30,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '发送时间',
       component: 'RangePicker',
       componentProps: {
-        clearable: true,
         ...getRangePickerDefaultProps(),
+        clearable: true,
       },
     },
   ];

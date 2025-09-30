@@ -66,7 +66,7 @@ async function handleDelete(row: SystemRoleApi.Role) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteRole(row.id as number);
+    await deleteRole(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

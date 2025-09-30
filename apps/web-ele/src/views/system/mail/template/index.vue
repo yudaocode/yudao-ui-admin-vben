@@ -65,7 +65,7 @@ async function handleDelete(row: SystemMailTemplateApi.MailTemplate) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteMailTemplate(row.id as number);
+    await deleteMailTemplate(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -160,8 +160,8 @@ onMounted(async () => {
               label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
-              disabled: isEmpty(checkedIds),
               auth: ['system:mail-template:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"

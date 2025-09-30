@@ -314,12 +314,10 @@ defineExpose({ validate });
       </Form.Item>
       <Form.Item label="流程类型" name="type" class="mb-5">
         <Radio.Group v-model:value="modelData.type">
-          <!-- TODO BPMN 流程类型需要整合，暂时禁用 -->
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.BPM_MODEL_TYPE, 'number')"
-            :key="dict.value"
+            :key="dict.value as number"
             :value="dict.value"
-            :disabled="dict.value === 10"
           >
             {{ dict.label }}
           </Radio>

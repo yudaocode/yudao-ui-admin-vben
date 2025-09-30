@@ -36,13 +36,12 @@ function handleCreate() {
 async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
   const hideLoading = message.loading({
     content: '转账中，请稍后...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     const payTransferId = await transferDemoWithdraw(row.id as number);
     message.success({
       content: `转账提交成功，转账单号：${payTransferId}`,
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

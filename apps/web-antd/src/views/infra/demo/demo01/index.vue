@@ -49,7 +49,7 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo01Contact(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {

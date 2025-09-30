@@ -46,7 +46,7 @@ async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
     text: $t('ui.actionMessage.deleting', [row.signature]),
   });
   try {
-    await deleteSmsChannel(row.id as number);
+    await deleteSmsChannel(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
     handleRefresh();
   } finally {

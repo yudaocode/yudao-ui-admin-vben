@@ -47,7 +47,7 @@ async function handleDelete(row: SystemNoticeApi.Notice) {
     text: $t('ui.actionMessage.deleting', [row.title]),
   });
   try {
-    await deleteNotice(row.id as number);
+    await deleteNotice(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     handleRefresh();
   } finally {
@@ -86,7 +86,7 @@ async function handlePush(row: SystemNoticeApi.Notice) {
     text: '正在推送中...',
   });
   try {
-    await pushNotice(row.id as number);
+    await pushNotice(row.id!);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     loadingInstance.close();

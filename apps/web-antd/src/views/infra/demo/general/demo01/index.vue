@@ -3,7 +3,7 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -32,7 +32,6 @@ import {
   exportDemo01Contact,
   getDemo01ContactPage,
 } from '#/api/infra/demo/demo01';
-import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -104,7 +103,7 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
     key: 'action_process_msg',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo01Contact(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
       key: 'action_process_msg',

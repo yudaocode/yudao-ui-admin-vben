@@ -2,15 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
-import { onMounted } from 'vue';
+import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDataSourceConfig,
+  deleteDataSourceConfigList,
   getDataSourceConfigList,
 } from '#/api/infra/data-source-config';
 import { $t } from '#/locales';
@@ -22,6 +24,11 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
 
 /** 创建数据源 */
 function handleCreate() {
@@ -38,18 +45,40 @@ async function handleDelete(row: InfraDataSourceConfigApi.DataSourceConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_key_msg',
   });
   try {
-    await deleteDataSourceConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    await handleLoadData();
+    await deleteDataSourceConfig(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
+}
+
+/** 批量删除数据源 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deletingBatch'),
+    duration: 0,
+  });
+  try {
+    await deleteDataSourceConfigList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraDataSourceConfigApi.DataSourceConfig[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -59,6 +88,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -69,22 +99,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
   } as VxeTableGridOptions<InfraDataSourceConfigApi.DataSourceConfig>,
-});
-
-/** 加载数据 */
-async function handleLoadData() {
-  await gridApi.query();
-}
-
-/** 初始化 */
-onMounted(() => {
-  handleLoadData();
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="handleLoadData" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="数据源列表">
       <template #toolbar-tools>
         <TableAction
@@ -95,6 +119,15 @@ onMounted(() => {
               icon: ACTION_ICON.ADD,
               auth: ['infra:data-source-config:create'],
               onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'primary',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:data-source-config:delete'],
+              onClick: handleDeleteBatch,
             },
           ]"
         />

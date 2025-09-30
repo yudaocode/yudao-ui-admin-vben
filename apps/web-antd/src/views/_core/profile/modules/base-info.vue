@@ -15,7 +15,7 @@ import { useVbenForm, z } from '#/adapter/form';
 import { updateUserProfile } from '#/api/system/user/profile';
 
 const props = defineProps<{
-  profile?: SystemUserProfileApi.UserProfileResp;
+  profile?: SystemUserProfileApi.UserProfileRespVO;
 }>();
 const emit = defineEmits<{
   (e: 'success'): void;
@@ -78,7 +78,7 @@ async function handleSubmit(values: Recordable<any>) {
   try {
     formApi.setLoading(true);
     // 提交表单
-    await updateUserProfile(values as SystemUserProfileApi.UpdateProfileReq);
+    await updateUserProfile(values as SystemUserProfileApi.UpdateProfileReqVO);
     // 关闭并提示
     emit('success');
     message.success($t('ui.actionMessage.operationSuccess'));

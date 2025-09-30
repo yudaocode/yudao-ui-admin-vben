@@ -101,7 +101,7 @@ function handleDelete() {
     })
       .then(async () => {
         const res = await deletePermissionBatch(
-          checkedRows.value.map((item) => item.id as number),
+          checkedRows.value.map((item) => item.id!),
         );
         if (res) {
           // 提示并返回成功
@@ -140,7 +140,7 @@ async function handleQuit() {
     message.warning('你不是团队成员！');
     return;
   }
-  await deleteSelfPermission(userPermission.id as number);
+  await deleteSelfPermission(userPermission.id!);
   message.success('退出团队成员成功！');
   emits('quitTeam');
 }

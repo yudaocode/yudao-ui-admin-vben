@@ -62,13 +62,12 @@ function handleAppend(row: Demo02CategoryApi.Demo02Category) {
 async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo02Category(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

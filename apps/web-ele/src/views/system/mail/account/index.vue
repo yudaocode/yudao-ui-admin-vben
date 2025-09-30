@@ -46,7 +46,7 @@ async function handleDelete(row: SystemMailAccountApi.MailAccount) {
     text: $t('ui.actionMessage.deleting', [row.mail]),
   });
   try {
-    await deleteMailAccount(row.id as number);
+    await deleteMailAccount(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
     handleRefresh();
   } finally {
@@ -135,8 +135,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.deleteBatch'),
               type: 'danger',
               icon: ACTION_ICON.DELETE,
-              disabled: isEmpty(checkedIds),
               auth: ['system:mail-account:delete'],
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"

@@ -4,13 +4,13 @@ import type { SystemRoleApi } from '#/api/system/role';
 
 import { ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { NCheckbox } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
+import { getSimpleMenusList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';
 
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 async function loadMenuTree() {
   menuLoading.value = true;
   try {
-    const data = await getMenuList();
+    const data = await getSimpleMenusList();
     menuTree.value = handleTree(data) as SystemDeptApi.Dept[];
   } finally {
     menuLoading.value = false;
@@ -127,9 +127,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal title="数据权限" class="w-[40%]">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <!-- <Spin :spinning="menuLoading" class="w-full"> -->
-        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
-        <VbenTree
+        <Tree
           :tree-data="menuTree"
           multiple
           bordered
@@ -138,7 +136,6 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
           value-field="id"
           label-field="name"
         />
-        <!-- </Spin> -->
       </template>
     </Form>
     <template #prepend-footer>

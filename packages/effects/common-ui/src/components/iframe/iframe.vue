@@ -6,7 +6,7 @@ interface IFrameProps {
   src: string;
 }
 
-const props = defineProps<IFrameProps>();
+defineProps<IFrameProps>();
 
 const loading = ref(true);
 const height = ref('');
@@ -22,15 +22,14 @@ onMounted(() => {
     init();
   }, 300);
 });
-// TODO @芋艿：优化：未来使用 vben 自带的内链实现
 </script>
 
 <template>
   <div v-loading="loading" :style="`height:${height}`">
     <iframe
       ref="frameRef"
-      :src="props.src"
-      style="width: 100%; height: 100%"
+      :src="src"
+      class="h-full w-full"
       frameborder="no"
       scrolling="auto"
     ></iframe>

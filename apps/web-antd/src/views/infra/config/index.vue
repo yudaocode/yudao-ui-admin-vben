@@ -27,7 +27,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,9 +54,9 @@ async function handleDelete(row: InfraConfigApi.Config) {
     duration: 0,
   });
   try {
-    await deleteConfig(row.id as number);
+    await deleteConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -73,7 +73,7 @@ async function handleDeleteBatch() {
     await deleteConfigList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -125,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="参数列表">
       <template #toolbar-tools>
         <TableAction

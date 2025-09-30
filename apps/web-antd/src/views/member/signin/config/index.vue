@@ -40,13 +40,12 @@ function handleEdit(row: MemberSignInConfigApi.SignInConfig) {
 async function handleDelete(row: MemberSignInConfigApi.SignInConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteSignInConfig(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -114,7 +113,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['point:sign-in-config:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.day]),
                 confirm: handleDelete.bind(null, row),
               },
             },

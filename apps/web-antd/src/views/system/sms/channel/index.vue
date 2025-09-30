@@ -47,7 +47,7 @@ async function handleDelete(row: SystemSmsChannelApi.SmsChannel) {
     duration: 0,
   });
   try {
-    await deleteSmsChannel(row.id as number);
+    await deleteSmsChannel(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.signature]));
     handleRefresh();
   } finally {

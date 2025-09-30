@@ -85,7 +85,7 @@ async function handleDelete(row: InfraFileConfigApi.FileConfig) {
     content: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteFileConfig(row.id as number);
+    await deleteFileConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

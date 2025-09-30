@@ -87,6 +87,7 @@ function showTemplate() {
   formData.value = makeTemplate();
 }
 
+/** 生成组件 */
 function makeTemplate() {
   const rule = designer.value.getRule();
   const opt = designer.value.getOption();

@@ -42,13 +42,12 @@ function handleEdit(row: MpAccountApi.Account) {
 async function handleDelete(row: MpAccountApi.Account) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteAccount(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -60,13 +59,12 @@ async function handleDelete(row: MpAccountApi.Account) {
 async function handleGenerateQrCode(row: MpAccountApi.Account) {
   const hideLoading = message.loading({
     content: '生成二维码',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await generateAccountQrCode(row.id as number);
     message.success({
       content: '生成二维码成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -77,14 +75,13 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
 /** 清空 API 配额 */
 async function handleCleanQuota(row: MpAccountApi.Account) {
   const hideLoading = message.loading({
-    content: '清空 API 配额',
-    key: 'action_key_msg',
+    content: '正在清空 API 配额',
+    duration: 0,
   });
   try {
     await clearAccountQuota(row.id as number);
     message.success({
       content: '清空 API 配额成功',
-      key: 'action_key_msg',
     });
   } finally {
     hideLoading();

@@ -4,7 +4,7 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { computed, ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { NCheckbox } from 'naive-ui';
@@ -135,8 +135,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal :title="getTitle" class="w-[40%]">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <!-- TODO @芋艿：可优化，使用 antd 的 tree？原因是，更原生 -->
-        <VbenTree
+        <Tree
           class="max-h-[400px] overflow-y-auto"
           :loading="menuLoading"
           :tree-data="menuTree"

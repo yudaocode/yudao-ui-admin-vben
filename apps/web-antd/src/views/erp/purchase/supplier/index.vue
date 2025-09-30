@@ -40,13 +40,12 @@ function handleEdit(row: ErpSupplierApi.Supplier) {
 async function handleDelete(row: ErpSupplierApi.Supplier) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteSupplier(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } catch {

@@ -5,7 +5,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, ContentWrap, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictObj } from '@vben/hooks';
 import { $t } from '@vben/locales';
@@ -21,7 +21,6 @@ import {
 } from 'element-plus';
 
 import * as AfterSaleApi from '#/api/mall/trade/afterSale/index';
-import ContentWrap from '#/components/content-wrap/content-wrap.vue';
 import { DictTag } from '#/components/dict-tag';
 
 import UpdateAuditReasonForm from './disagree-form.vue';

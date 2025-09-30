@@ -44,13 +44,12 @@ function handleCreate() {
 async function handleDelete(row: CrmFollowUpApi.FollowUpRecord) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteFollowUpRecord(row.id);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } catch {
@@ -163,12 +162,12 @@ watch(
       </template>
       <template #contacts="{ row }">
         <Button type="link" @click="openContactDetail(row.id)">
-          {{ row.name }}
+          {{ row.contacts }}
         </Button>
       </template>
       <template #businesses="{ row }">
         <Button type="link" @click="openBusinessDetail(row.id)">
-          {{ row.name }}
+          {{ row.businesses }}
         </Button>
       </template>
       <template #actions="{ row }">
@@ -180,7 +179,7 @@ watch(
               danger: true,
               icon: ACTION_ICON.DELETE,
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
                 confirm: handleDelete.bind(null, row),
               },
             },

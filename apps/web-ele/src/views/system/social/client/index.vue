@@ -42,22 +42,22 @@ function handleEdit(row: SystemSocialClientApi.SocialClient) {
 
 /** 删除社交客户端 */
 async function handleDelete(row: SystemSocialClientApi.SocialClient) {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteSocialClient(row.id as number);
+    await deleteSocialClient(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 
 /** 批量删除社交客户端 */
 async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteBatchConfirm'));
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deletingBatch'),
   });
   try {
@@ -66,7 +66,7 @@ async function handleDeleteBatch() {
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 

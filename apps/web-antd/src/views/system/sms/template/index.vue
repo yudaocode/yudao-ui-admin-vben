@@ -65,7 +65,7 @@ async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
     duration: 0,
   });
   try {
-    await deleteSmsTemplate(row.id as number);
+    await deleteSmsTemplate(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -185,7 +185,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '测试',
               type: 'link',
-              icon: ACTION_ICON.ADD,
+              icon: ACTION_ICON.VIEW,
               auth: ['system:sms-template:send-sms'],
               onClick: handleSend.bind(null, row),
             },

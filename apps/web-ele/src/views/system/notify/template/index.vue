@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import {ElLoading, ElMessage} from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -64,7 +64,7 @@ async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteNotifyTemplate(row.id as number);
+    await deleteNotifyTemplate(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

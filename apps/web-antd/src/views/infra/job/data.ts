@@ -59,6 +59,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'cronExpression',
       label: 'CRON 表达式',
       component: markRaw(CronTab),
+      componentProps: {
+        placeholder: '请输入 CRON 表达式',
+      },
       rules: 'required',
     },
     {

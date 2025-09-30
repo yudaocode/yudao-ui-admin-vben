@@ -47,7 +47,7 @@ async function handleDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
     duration: 0,
   });
   try {
-    await deleteOAuth2Client(row.id as number);
+    await deleteOAuth2Client(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

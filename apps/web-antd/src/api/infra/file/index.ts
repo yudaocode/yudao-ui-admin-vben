@@ -19,7 +19,7 @@ export namespace InfraFileApi {
   }
 
   /** 文件预签名地址 */
-  export interface FilePresignedUrlResp {
+  export interface FilePresignedUrlRespVO {
     configId: number; // 文件配置编号
     uploadUrl: string; // 文件上传 URL
     url: string; // 文件 URL
@@ -27,7 +27,7 @@ export namespace InfraFileApi {
   }
 
   /** 上传文件 */
-  export interface FileUploadReq {
+  export interface FileUploadReqVO {
     file: globalThis.File;
     directory?: string;
   }
@@ -52,7 +52,7 @@ export function deleteFileList(ids: number[]) {
 
 /** 获取文件预签名地址 */
 export function getFilePresignedUrl(name: string, directory?: string) {
-  return requestClient.get<InfraFileApi.FilePresignedUrlResp>(
+  return requestClient.get<InfraFileApi.FilePresignedUrlRespVO>(
     '/infra/file/presigned-url',
     {
       params: { name, directory },
@@ -67,7 +67,7 @@ export function createFile(data: InfraFileApi.File) {
 
 /** 上传文件 */
 export function uploadFile(
-  data: InfraFileApi.FileUploadReq,
+  data: InfraFileApi.FileUploadReqVO,
   onUploadProgress?: AxiosProgressEvent,
 ) {
   // 特殊：由于 upload 内部封装，即使 directory 为 undefined，也会传递给后端

@@ -26,13 +26,12 @@ const statusTabs = ref(getStatusTabs());
 async function handleDelete(row: MallCouponApi.Coupon) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteCoupon(row.id as number);
     message.success({
       content: '回收成功',
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {
@@ -46,7 +45,7 @@ function onRefresh() {
 }
 
 /** Tab切换 */
-function onTabChange(tabName: string) {
+function onTabChange(tabName: any) {
   activeTab.value = tabName;
   // 设置状态查询参数
   const formValues = gridApi.formApi.getValues();
@@ -99,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <Grid table-title="优惠券列表">
+    <Grid table-title="领取记录">
       <template #top>
         <Tabs v-model:active-key="activeTab" type="card" @change="onTabChange">
           <TabPane

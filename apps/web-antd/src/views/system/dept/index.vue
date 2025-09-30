@@ -63,7 +63,7 @@ async function handleDelete(row: SystemDeptApi.Dept) {
     duration: 0,
   });
   try {
-    await deleteDept(row.id as number);
+    await deleteDept(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -159,7 +159,7 @@ onMounted(async () => {
               onClick: handleExpand,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
               icon: ACTION_ICON.DELETE,

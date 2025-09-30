@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben-core/typings';
+import type { Recordable } from '@vben/types';
 
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { SystemRoleApi } from '#/api/system/role';
 
-import {nextTick, ref} from 'vue';
+import { nextTick, ref } from 'vue';
 
-import { useVbenModal, VbenTree } from '@vben/common-ui';
+import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
 import { ElCheckbox, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
+import { getSimpleMenusList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';
 
@@ -90,7 +90,7 @@ const [Modal, modalApi] = useVbenModal({
 async function loadMenuTree() {
   menuLoading.value = true;
   try {
-    const data = await getMenuList();
+    const data = await getSimpleMenusList();
     menuTree.value = handleTree(data) as SystemMenuApi.Menu[];
   } finally {
     menuLoading.value = false;
@@ -139,10 +139,10 @@ function getNodeClass(node: Recordable<any>) {
 </script>
 
 <template>
-  <Modal title="数据权限" class="w-2/5">
+  <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <VbenTree
+        <Tree
           :spinning="menuLoading"
           :tree-data="menuTree"
           multiple
@@ -152,7 +152,6 @@ function getNodeClass(node: Recordable<any>) {
           v-bind="slotProps"
           value-field="id"
           label-field="name"
-          icon-field="meta.icon"
         />
       </template>
     </Form>

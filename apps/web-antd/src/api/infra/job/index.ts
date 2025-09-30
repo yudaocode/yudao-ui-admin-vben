@@ -58,11 +58,12 @@ export function exportJob(params: any) {
 
 /** 任务状态修改 */
 export function updateJobStatus(id: number, status: number) {
-  const params = {
-    id,
-    status,
-  };
-  return requestClient.put('/infra/job/update-status', {}, { params });
+  return requestClient.put('/infra/job/update-status', undefined, {
+    params: {
+      id,
+      status,
+    },
+  });
 }
 
 /** 定时任务立即执行一次 */

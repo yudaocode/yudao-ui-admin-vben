@@ -48,7 +48,7 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Student(row.id as number);
+    await deleteDemo03Student(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     onRefresh();
   } finally {
@@ -171,7 +171,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.delete'),
               type: 'danger',
-              text: true,
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo03-student:delete'],
               popConfirm: {
