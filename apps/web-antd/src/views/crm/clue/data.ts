@@ -61,6 +61,10 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
     },
     {
       fieldName: 'telephone',

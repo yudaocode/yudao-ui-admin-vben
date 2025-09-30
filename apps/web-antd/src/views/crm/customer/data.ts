@@ -55,6 +55,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'ownerUserId',
       label: '负责人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
@@ -226,6 +230,10 @@ export function useImportFormSchema(): VbenFormSchema[] {
         placeholder: '请选择负责人',
         allowClear: true,
         class: 'w-full',
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
       },
       rules: 'required',
     },

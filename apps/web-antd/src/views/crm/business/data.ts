@@ -35,6 +35,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'ownerUserId',
       label: '负责人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {

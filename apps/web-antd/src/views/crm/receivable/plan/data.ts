@@ -36,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['id'],
-        disabled: (values) => !values.id,
+        disabled: (values) => values.id,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
