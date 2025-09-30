@@ -78,12 +78,12 @@ async function getCount() {
 }
 
 /** 激活时 */
-onActivated(async () => {
+onActivated(() => {
   getCount();
 });
 
 /** 初始化 */
-onMounted(async () => {
+onMounted(() => {
   getCount();
 });
 </script>
@@ -104,9 +104,9 @@ onMounted(async () => {
               </List.Item.Meta>
               <template #extra>
                 <Badge
+                  v-if="item.count.value > 0"
                   :color="item.menu === leftMenu ? 'blue' : 'red'"
                   :count="item.count.value"
-                  :show-zero="true"
                 />
               </template>
             </List.Item>

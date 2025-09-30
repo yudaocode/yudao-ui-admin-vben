@@ -27,6 +27,7 @@ function handleProcessDetail(row: CrmContractApi.Contract) {
 function handleContractDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmContractDetail', params: { id: row.id } });
 }
+
 /** 打开客户详情 */
 function handleCustomerDetail(row: CrmContractApi.Contract) {
   push({ name: 'CrmCustomerDetail', params: { id: row.id } });
@@ -53,7 +54,7 @@ const [Grid] = useVbenVxeGrid({
           allowClear: true,
           options: CONTRACT_EXPIRY_TYPE,
         },
-        defaultValue: 1,
+        defaultValue: CONTRACT_EXPIRY_TYPE[0]!.value,
       },
     ],
   },
@@ -75,6 +76,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
