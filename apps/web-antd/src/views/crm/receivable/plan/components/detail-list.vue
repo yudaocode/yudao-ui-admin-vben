@@ -55,7 +55,9 @@ async function handleDelete(row: CrmReceivablePlanApi.Plan) {
   });
   try {
     await deleteReceivablePlan(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [`第${row.period}期`]));
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [`第${row.period}期`]),
+    );
     handleRefresh();
   } finally {
     hideLoading();
@@ -131,7 +133,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['crm:receivable-plan:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [`第${row.period}期`]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  `第${row.period}期`,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
             },

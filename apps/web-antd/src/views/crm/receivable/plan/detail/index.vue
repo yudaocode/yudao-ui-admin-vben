@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import type {CrmReceivablePlanApi} from '#/api/crm/receivable/plan';
-import {getReceivablePlan} from '#/api/crm/receivable/plan';
-import type {SystemOperateLogApi} from '#/api/system/operate-log';
+import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
+import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import {onMounted, ref} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import {Page, useVbenModal} from '@vben/common-ui';
-import {useTabs} from '@vben/hooks';
+import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
 
-import { Card, Tabs} from 'ant-design-vue';
+import { Card, Tabs } from 'ant-design-vue';
 
-import {ACTION_ICON, TableAction} from '#/adapter/vxe-table';
-
-import {getOperateLogPage} from '#/api/crm/operateLog';
-import {BizTypeEnum} from '#/api/crm/permission';
-import {useDescription} from '#/components/description';
-import {AsyncOperateLog} from '#/components/operate-log';
-import {PermissionList} from '#/views/crm/permission';
-import { ReceivablePlanDetailsInfo} from '#/views/crm/receivable';
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
+import { getOperateLogPage } from '#/api/crm/operateLog';
+import { BizTypeEnum } from '#/api/crm/permission';
+import { getReceivablePlan } from '#/api/crm/receivable/plan';
+import { useDescription } from '#/components/description';
+import { AsyncOperateLog } from '#/components/operate-log';
 import { $t } from '#/locales';
+import { PermissionList } from '#/views/crm/permission';
+import { ReceivablePlanDetailsInfo } from '#/views/crm/receivable/plan/components';
 
-import {useDetailSchema} from './data';
 import ReceivablePlanForm from '../modules/form.vue';
+import { useDetailSchema } from './data';
 
 const route = useRoute();
 const router = useRouter();

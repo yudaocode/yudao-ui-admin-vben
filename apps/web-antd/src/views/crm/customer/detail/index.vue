@@ -28,10 +28,8 @@ import { ContactDetailsList } from '#/views/crm/contact/components';
 import { ContractDetailsList } from '#/views/crm/contract/components';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
-import {
-  ReceivableDetailsList,
-  ReceivablePlanDetailsList,
-} from '#/views/crm/receivable';
+import { ReceivableDetailsList } from '#/views/crm/receivable/components';
+import { ReceivablePlanDetailsList } from '#/views/crm/receivable/plan/components';
 
 import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';

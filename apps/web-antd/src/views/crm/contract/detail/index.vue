@@ -20,10 +20,8 @@ import { $t } from '#/locales';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 import { ProductDetailsList } from '#/views/crm/product/components';
-import {
-  ReceivableDetailsList,
-  ReceivablePlanDetailsList,
-} from '#/views/crm/receivable';
+import { ReceivableDetailsList } from '#/views/crm/receivable/components';
+import { ReceivablePlanDetailsList } from '#/views/crm/receivable/plan/components';
 
 import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
