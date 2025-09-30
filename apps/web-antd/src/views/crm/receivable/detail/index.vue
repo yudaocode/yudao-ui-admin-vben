@@ -23,6 +23,8 @@ import ReceivableForm from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import Info from './modules/info.vue';
 
+const props = defineProps<{ id?: number }>();
+
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
@@ -78,7 +80,7 @@ function handleEdit() {
 
 /** 加载数据 */
 onMounted(() => {
-  receivableId.value = Number(route.params.id);
+  receivableId.value = Number(props.id || route.params.id);
   loadReceivableDetail();
 });
 </script>

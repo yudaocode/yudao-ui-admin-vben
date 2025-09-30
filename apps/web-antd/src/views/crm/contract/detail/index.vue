@@ -27,6 +27,8 @@ import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import ContractDetailsInfo from './modules/info.vue';
 
+const props = defineProps<{ id?: number }>();
+
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
@@ -90,7 +92,7 @@ function handleTransfer() {
 
 /** 加载数据 */
 onMounted(() => {
-  contractId.value = Number(route.params.id);
+  contractId.value = Number(props.id || route.params.id);
   loadContractDetail();
 });
 </script>
