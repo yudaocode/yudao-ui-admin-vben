@@ -4,7 +4,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -27,8 +27,14 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
+}
+
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportDemo03Student(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
 }
 
 /** 创建学生 */
@@ -49,7 +55,7 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   try {
     await deleteDemo03Student(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -57,14 +63,15 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
 
 /** 批量删除学生 */
 async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
+    text: $t('ui.actionMessage.deletingBatch'),
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);
     checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -77,12 +84,6 @@ function handleRowCheckboxChange({
   records: Demo03StudentApi.Demo03Student[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportDemo03Student(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -124,8 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
-
+    <FormModal @success="handleRefresh" />
     <Grid table-title="学生列表">
       <template #toolbar-tools>
         <TableAction
