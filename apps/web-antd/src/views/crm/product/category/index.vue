@@ -37,7 +37,7 @@ function handleRefresh() {
 
 /** 创建分类 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 添加下级分类 */

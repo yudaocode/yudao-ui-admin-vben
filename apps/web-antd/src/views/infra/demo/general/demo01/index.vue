@@ -87,7 +87,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例联系人 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例联系人 */

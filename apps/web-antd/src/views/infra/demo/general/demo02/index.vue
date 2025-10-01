@@ -69,7 +69,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例分类 */
 function onCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例分类 */

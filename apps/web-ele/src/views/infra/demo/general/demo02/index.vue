@@ -76,7 +76,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例分类 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例分类 */
@@ -93,7 +93,6 @@ function handleAppend(row: Demo02CategoryApi.Demo02Category) {
 async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo02Category(row.id!);

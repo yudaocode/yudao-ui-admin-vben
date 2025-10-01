@@ -65,21 +65,20 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    let data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
-    if (!data) {
+    const data = modalApi.getData<Demo01ContactApi.Demo01Contact>();
+    if (!data || !data.id) {
       return;
     }
-    if (data.id) {
-      modalApi.lock();
-      try {
-        data = await getDemo01Contact(data.id);
-      } finally {
-        modalApi.unlock();
+    modalApi.lock();
+    try {
+      formData.value = await getDemo01Contact(data.id);
+      // 设置到 values
+      if (formData.value) {
+        await formApi.setValues(formData.value);
       }
+    } finally {
+      modalApi.unlock();
     }
-    // 设置到 values
-    formData.value = data;
-    await formApi.setValues(formData.value);
   },
 });
 </script>

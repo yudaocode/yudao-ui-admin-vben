@@ -39,7 +39,7 @@ function onRefresh() {
 
 /** 创建学生 */
 function onCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑学生 */

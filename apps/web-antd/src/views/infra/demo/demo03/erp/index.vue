@@ -2,13 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, Trash2 } from '@vben/icons';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { Button, message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -34,48 +33,53 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportDemo03Student(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
+}
+
 /** 创建学生 */
-function onCreate() {
-  formModalApi.setData({}).open();
+function handleCreate() {
+  formModalApi.setData(null).open();
 }
 
 /** 编辑学生 */
-function onEdit(row: Demo03StudentApi.Demo03Student) {
+function handleEdit(row: Demo03StudentApi.Demo03Student) {
   formModalApi.setData(row).open();
 }
 
 /** 删除学生 */
-async function onDelete(row: Demo03StudentApi.Demo03Student) {
+async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteDemo03Student(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
 /** 批量删除学生 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
+    content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -85,15 +89,9 @@ const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
-  records: Demo03StudentApi.Demo03Grade[];
+  records: Demo03StudentApi.Demo03Student[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 导出表格 */
-async function onExport() {
-  const data = await exportDemo03Student(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '学生.xls', source: data });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -139,39 +137,37 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
-
+    <FormModal @success="handleRefresh" />
     <div>
       <Grid table-title="学生列表">
         <template #toolbar-tools>
-          <Button
-            :icon="h(Plus)"
-            type="primary"
-            @click="onCreate"
-            v-access:code="['infra:demo03-student:create']"
-          >
-            {{ $t('ui.actionTitle.create', ['学生']) }}
-          </Button>
-          <Button
-            :icon="h(Download)"
-            type="primary"
-            class="ml-2"
-            @click="onExport"
-            v-access:code="['infra:demo03-student:export']"
-          >
-            {{ $t('ui.actionTitle.export') }}
-          </Button>
-          <Button
-            :icon="h(Trash2)"
-            type="primary"
-            danger
-            class="ml-2"
-            :disabled="isEmpty(checkedIds)"
-            @click="onDeleteBatch"
-            v-access:code="['infra:demo03-student:delete']"
-          >
-            批量删除
-          </Button>
+          <TableAction
+            :actions="[
+              {
+                label: $t('ui.actionTitle.create', ['学生']),
+                type: 'primary',
+                icon: ACTION_ICON.ADD,
+                auth: ['infra:demo03-student:create'],
+                onClick: handleCreate,
+              },
+              {
+                label: $t('ui.actionTitle.export'),
+                type: 'primary',
+                icon: ACTION_ICON.DOWNLOAD,
+                auth: ['infra:demo03-student:export'],
+                onClick: handleExport,
+              },
+              {
+                label: $t('ui.actionTitle.deleteBatch'),
+                type: 'primary',
+                danger: true,
+                icon: ACTION_ICON.DELETE,
+                disabled: isEmpty(checkedIds),
+                auth: ['infra:demo03-student:delete'],
+                onClick: handleDeleteBatch,
+              },
+            ]"
+          />
         </template>
         <template #actions="{ row }">
           <TableAction
@@ -181,17 +177,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 type: 'link',
                 icon: ACTION_ICON.EDIT,
                 auth: ['infra:demo03-student:update'],
-                onClick: onEdit.bind(null, row),
+                onClick: handleEdit.bind(null, row),
               },
               {
                 label: $t('common.delete'),
-                danger: true,
                 type: 'link',
+                danger: true,
                 icon: ACTION_ICON.DELETE,
                 auth: ['infra:demo03-student:delete'],
                 popConfirm: {
                   title: $t('ui.actionMessage.deleteConfirm', [row.id]),
-                  confirm: onDelete.bind(null, row),
+                  confirm: handleDelete.bind(null, row),
                 },
               },
             ]"

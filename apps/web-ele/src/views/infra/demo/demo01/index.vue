@@ -39,7 +39,7 @@ async function handleExport() {
 
 /** 创建示例联系人 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例联系人 */

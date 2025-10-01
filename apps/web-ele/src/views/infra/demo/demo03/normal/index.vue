@@ -33,7 +33,7 @@ function onRefresh() {
 
 /** 创建学生 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑学生 */
@@ -45,7 +45,6 @@ function handleEdit(row: Demo03StudentApi.Demo03Student) {
 async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03Student(row.id!);
@@ -60,7 +59,6 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
 async function handleDeleteBatch() {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);
