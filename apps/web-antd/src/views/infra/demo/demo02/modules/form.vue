@@ -19,14 +19,9 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<Demo02CategoryApi.Demo02Category>();
-const parentId = ref<number>(); // 新增下级时的父级 ID
-
 const getTitle = computed(() => {
-  if (formData.value?.id) {
-    return $t('ui.actionTitle.edit', ['示例分类']);
-  }
-  return parentId.value
-    ? $t('ui.actionTitle.create', ['下级示例分类'])
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['示例分类'])
     : $t('ui.actionTitle.create', ['示例分类']);
 });
 
@@ -36,7 +31,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -70,25 +65,23 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-
     // 加载数据
-    let data = modalApi.getData<Demo02CategoryApi.Demo02Category>();
-    if (!data) {
+    const data = modalApi.getData<Demo02CategoryApi.Demo02Category>();
+    if (!data || !data.id) {
+      // 设置上级
+      await formApi.setValues(data);
       return;
     }
-
-    if (data.id) {
-      // 编辑
-      modalApi.lock();
-      try {
-        data = await getDemo02Category(data.id);
-      } finally {
-        modalApi.unlock();
+    modalApi.lock();
+    try {
+      formData.value = await getDemo02Category(data.id);
+      // 设置到 values
+      if (formData.value) {
+        await formApi.setValues(formData.value);
       }
+    } finally {
+      modalApi.unlock();
     }
-    // 设置到 values
-    formData.value = data;
-    await formApi.setValues(formData.value);
   },
 });
 </script>
