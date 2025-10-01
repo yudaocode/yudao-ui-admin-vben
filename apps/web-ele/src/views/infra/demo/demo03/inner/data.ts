@@ -144,7 +144,7 @@ export function useGridColumns(): VxeTableGridOptions<Demo03StudentApi.Demo03Stu
     },
     {
       title: '操作',
-      width: 200,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -170,7 +170,7 @@ export function useDemo03CourseGridEditColumns(): VxeTableGridOptions<Demo03Stud
     },
     {
       title: '操作',
-      width: 200,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -208,6 +208,7 @@ export function useDemo03CourseGridColumns(): VxeTableGridOptions<Demo03StudentA
     },
   ];
 }
+
 // ==================== 子表（学生班级） ====================
 
 /** 新增/修改的表单 */

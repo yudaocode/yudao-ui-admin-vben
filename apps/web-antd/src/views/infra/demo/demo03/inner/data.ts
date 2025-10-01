@@ -143,7 +143,6 @@ export function useGridColumns(): VxeTableGridOptions<Demo03StudentApi.Demo03Stu
       formatter: 'formatDateTime',
     },
     {
-      field: 'actions',
       title: '操作',
       width: 280,
       fixed: 'right',
@@ -170,7 +169,6 @@ export function useDemo03CourseGridEditColumns(): VxeTableGridOptions<Demo03Stud
       slots: { default: 'score' },
     },
     {
-      field: 'actions',
       title: '操作',
       width: 280,
       fixed: 'right',

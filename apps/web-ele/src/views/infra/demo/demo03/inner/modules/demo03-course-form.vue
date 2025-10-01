@@ -26,6 +26,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
