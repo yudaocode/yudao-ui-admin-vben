@@ -151,8 +151,13 @@ getDetail();
       </div>
 
       <div class="mt-4 flex justify-end space-x-2">
-        <ElButton v-show="currentStep > 0" @click="prevStep">上一步</ElButton>
-        <ElButton v-show="currentStep < steps.length - 1" @click="nextStep">
+        <ElButton :disabled="currentStep === 0" @click="prevStep">
+          上一步
+        </ElButton>
+        <ElButton
+          :disabled="currentStep === steps.length - 1"
+          @click="nextStep"
+        >
           下一步
         </ElButton>
         <ElButton type="primary" :loading="loading" @click="submitForm">

@@ -49,13 +49,12 @@ function handleEdit(row: AiKnowledgeKnowledgeApi.Knowledge) {
 async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteKnowledgeSegment(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

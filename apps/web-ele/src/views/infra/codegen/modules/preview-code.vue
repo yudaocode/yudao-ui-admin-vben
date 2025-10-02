@@ -7,7 +7,7 @@ import type { InfraCodegenApi } from '#/api/infra/codegen';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
 import { ElMessage, ElTabPane, ElTabs, ElTree } from 'element-plus';
@@ -280,6 +280,7 @@ const [Modal, modalApi] = useVbenModal({
             :label="key.split('/').pop()"
             :name="key"
           >
+            <!-- TODO @puhui999：这里好像会有左右的滚动条？和 antd 不太一样 -->
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
@@ -291,8 +292,8 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </ElTabPane>
           <template #add-icon>
-            <!-- TODO @芋艿：这里会报错； -->
-            <Copy />
+            <!-- TODO @puhui999：这了有没办法加个复制按钮哈？和 antd 类似 -->
+            <IconifyIcon icon="ant-design:copy-twotone" />
           </template>
         </ElTabs>
       </div>

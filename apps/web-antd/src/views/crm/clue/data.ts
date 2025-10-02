@@ -26,6 +26,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '线索名称',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入线索名称',
+      },
     },
     {
       fieldName: 'source',
@@ -33,6 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
+        placeholder: '请选择客户来源',
       },
       rules: 'required',
     },
@@ -40,6 +44,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'mobile',
       label: '手机',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+      },
     },
     {
       fieldName: 'ownerUserId',
@@ -50,29 +57,46 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         allowClear: true,
+        placeholder: '请选择负责人',
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
     },
     {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+      },
     },
     {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
     },
     {
       fieldName: 'wechat',
       label: '微信',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入微信',
+      },
     },
     {
       fieldName: 'qq',
       label: 'QQ',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入 QQ',
+      },
     },
     {
       fieldName: 'industryId',
@@ -80,6 +104,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
+        placeholder: '请选择客户行业',
       },
     },
     {
@@ -88,6 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
+        placeholder: '请选择客户级别',
       },
     },
     {
@@ -97,12 +123,16 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         api: () => getAreaTree(),
         fieldNames: { label: 'name', value: 'id', children: 'children' },
+        placeholder: '请选择地址',
       },
     },
     {
       fieldName: 'detailAddress',
       label: '详细地址',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入详细地址',
+      },
     },
     {
       fieldName: 'contactNextTime',
@@ -112,12 +142,16 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
+        placeholder: '请选择下次联系时间',
       },
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
     },
   ];
 }
@@ -129,6 +163,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '线索名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入线索名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'transformStatus',
@@ -139,17 +177,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
           { label: '未转化', value: false },
           { label: '已转化', value: true },
         ],
+        placeholder: '请选择转化状态',
+        allowClear: true,
       },
+      defaultValue: false,
     },
     {
       fieldName: 'mobile',
       label: '手机号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'telephone',
       label: '电话',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入电话',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'createTime',
@@ -158,6 +207,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         ...getRangePickerDefaultProps(),
         allowClear: true,
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];
@@ -170,7 +220,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'name',
       title: '线索名称',
       fixed: 'left',
-      minWidth: 240,
+      minWidth: 160,
       slots: {
         default: 'name',
       },
@@ -178,7 +228,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'source',
       title: '线索来源',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_SOURCE },
@@ -192,22 +242,22 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'telephone',
       title: '电话',
-      minWidth: 120,
+      minWidth: 130,
     },
     {
       field: 'email',
       title: '邮箱',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'detailAddress',
       title: '地址',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'industryId',
       title: '客户行业',
-      minWidth: 120,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY },
@@ -216,21 +266,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'level',
       title: '客户级别',
-      minWidth: 120,
+      minWidth: 135,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.CRM_CUSTOMER_LEVEL },
       },
-    },
-    {
-      field: 'ownerUserName',
-      title: '负责人',
-      minWidth: 120,
-    },
-    {
-      field: 'ownerUserDeptName',
-      title: '所属部门',
-      minWidth: 120,
     },
     {
       field: 'contactNextTime',
@@ -239,10 +279,30 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
+    },
+    {
       field: 'contactLastTime',
       title: '最后跟进时间',
       formatter: 'formatDateTime',
       minWidth: 180,
+    },
+    {
+      field: 'contactLastContent',
+      title: '最后跟进记录',
+      minWidth: 200,
+    },
+    {
+      field: 'ownerUserName',
+      title: '负责人',
+      minWidth: 100,
+    },
+    {
+      field: 'ownerUserDeptName',
+      title: '所属部门',
+      minWidth: 100,
     },
     {
       field: 'updateTime',
@@ -254,12 +314,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       title: '创建时间',
       formatter: 'formatDateTime',
-      minWidth: 120,
-    },
-    {
-      field: 'creatorName',
-      title: '创建人',
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       title: '操作',

@@ -21,10 +21,12 @@ export interface FileUploadProps {
   // 上传的目录
   directory?: string;
   disabled?: boolean;
+  drag?: boolean; // 是否支持拖拽上传
   helpText?: string;
   listType?: UploadListType;
   // 最大数量的文件，Infinity不限制
   maxNumber?: number;
+  modelValue?: string | string[]; // v-model 支持
   // 文件最大多少MB
   maxSize?: number;
   // 是否支持多选

@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraJobApi } from '#/api/infra/job';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -11,6 +11,7 @@ import { formatDateTime } from '@vben/utils';
 
 import { ElTimeline, ElTimelineItem } from 'element-plus';
 
+import { CronTab } from '#/components/cron-tab';
 import { DictTag } from '#/components/dict-tag';
 
 /** 新增/修改的表单 */
@@ -57,12 +58,11 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'cronExpression',
       label: 'CRON 表达式',
-      component: 'Input',
+      component: markRaw(CronTab),
       componentProps: {
         placeholder: '请输入 CRON 表达式',
       },
       rules: 'required',
-      // TODO @芋艿：未来支持动态的 CRON 表达式选择
     },
     {
       fieldName: 'retryCount',
@@ -71,6 +71,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入重试次数。设置为 0 时，不进行重试',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -81,6 +83,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入重试间隔，单位：毫秒。设置为 0 时，无需间隔',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -91,6 +95,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入监控超时时间，单位：毫秒',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
   ];

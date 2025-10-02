@@ -88,7 +88,7 @@ async function handleDelete(row: SystemUserApi.User) {
     text: $t('ui.actionMessage.deleting', [row.username]),
   });
   try {
-    await deleteUser(row.id as number);
+    await deleteUser(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.username]));
     handleRefresh();
   } finally {
@@ -142,7 +142,7 @@ async function handleStatusChange(
     })
       .then(async () => {
         // 更新用户状态
-        const res = await updateUserStatus(row.id as number, newStatus);
+        const res = await updateUserStatus(row.id!, newStatus);
         if (res) {
           // 提示并返回成功
           ElMessage.success($t('ui.actionMessage.operationSuccess'));

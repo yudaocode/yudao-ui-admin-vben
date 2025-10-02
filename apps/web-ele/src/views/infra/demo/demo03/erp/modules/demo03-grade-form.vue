@@ -44,7 +44,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as Demo03StudentApi.Demo03Grade;
@@ -66,7 +65,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-
     // 加载数据
     let data = modalApi.getData<Demo03StudentApi.Demo03Grade>();
     if (!data) {

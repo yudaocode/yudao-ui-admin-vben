@@ -4,12 +4,12 @@ import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 
 import { reactive, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 
 import { Button, Modal, Pagination, Table } from 'ant-design-vue';
 
 import { getProcessListenerPage } from '#/api/bpm/processListener';
-import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 
 /** BPM 流程 表单 */
@@ -89,7 +89,7 @@ const select = async (row: BpmProcessListenerApi.ProcessListener) => {
           </template>
         </Table.Column>
         <Table.Column title="值" align="center" data-index="value" />
-        <Table.Column title="操作" align="center">
+        <Table.Column title="操作" align="center" fixed="right">
           <template #default="{ record }">
             <Button type="primary" @click="select(record)"> 选择 </Button>
           </template>

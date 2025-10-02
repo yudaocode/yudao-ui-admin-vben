@@ -6,7 +6,6 @@ import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -15,9 +14,9 @@ import {
   deleteFollowUpRecord,
   getFollowUpRecordPage,
 } from '#/api/crm/followup';
-import { BizTypeEnum } from '#/api/crm/permission';
 import { $t } from '#/locales';
 
+import { useGridColumns } from './data';
 import FollowUpRecordForm from './modules/form.vue';
 
 /** 跟进记录列表 */
@@ -31,7 +30,7 @@ const props = defineProps<{
 const { push } = useRouter();
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -44,16 +43,13 @@ function handleCreate() {
 async function handleDelete(row: CrmFollowUpApi.FollowUpRecord) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteFollowUpRecord(row.id);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
-  } catch {
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    handleRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -75,45 +71,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: [
-      {
-        field: 'createTime',
-        title: '创建时间',
-        formatter: 'formatDateTime',
-      },
-      { field: 'creatorName', title: '跟进人' },
-      {
-        field: 'type',
-        title: '跟进类型',
-        cellRender: {
-          name: 'CellDict',
-          props: { type: DICT_TYPE.CRM_FOLLOW_UP_TYPE },
-        },
-      },
-      { field: 'content', title: '跟进内容' },
-      {
-        field: 'nextTime',
-        title: '下次联系时间',
-        formatter: 'formatDateTime',
-      },
-      {
-        field: 'contacts',
-        title: '关联联系人',
-        visible: props.bizType === BizTypeEnum.CRM_CUSTOMER,
-        slots: { default: 'contacts' },
-      },
-      {
-        field: 'businesses',
-        title: '关联商机',
-        visible: props.bizType === BizTypeEnum.CRM_CUSTOMER,
-        slots: { default: 'businesses' },
-      },
-      {
-        field: 'actions',
-        title: '操作',
-        slots: { default: 'actions' },
-      },
-    ],
+    columns: useGridColumns(props.bizType),
     height: 600,
     keepSource: true,
     proxyConfig: {
@@ -130,6 +88,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -137,6 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<CrmFollowUpApi.FollowUpRecord>,
 });
 
+/** 监听业务 ID 变化 */
 watch(
   () => props.bizId,
   () => {
@@ -147,7 +107,7 @@ watch(
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -162,13 +122,25 @@ watch(
         />
       </template>
       <template #contacts="{ row }">
-        <Button type="link" @click="openContactDetail(row.id)">
-          {{ row.name }}
+        <Button
+          v-for="contact in row.contacts || []"
+          :key="`contact-${contact.id}`"
+          type="link"
+          class="ml-2"
+          @click="openContactDetail(contact.id)"
+        >
+          {{ contact.name }}
         </Button>
       </template>
       <template #businesses="{ row }">
-        <Button type="link" @click="openBusinessDetail(row.id)">
-          {{ row.name }}
+        <Button
+          v-for="business in row.businesses || []"
+          :key="`business-${business.id}`"
+          type="link"
+          class="ml-2"
+          @click="openBusinessDetail(business.id)"
+        >
+          {{ business.name }}
         </Button>
       </template>
       <template #actions="{ row }">
@@ -180,7 +152,7 @@ watch(
               danger: true,
               icon: ACTION_ICON.DELETE,
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
                 confirm: handleDelete.bind(null, row),
               },
             },

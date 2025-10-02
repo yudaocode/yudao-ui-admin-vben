@@ -3,7 +3,7 @@ import { requestClient } from '#/api/request';
 /** OAuth2.0 授权信息响应 */
 export namespace SystemOAuth2ClientApi {
   /** 授权信息 */
-  export interface AuthorizeInfoResp {
+  export interface AuthorizeInfoRespVO {
     client: {
       logo: string;
       name: string;
@@ -17,7 +17,7 @@ export namespace SystemOAuth2ClientApi {
 
 /** 获得授权信息 */
 export function getAuthorize(clientId: string) {
-  return requestClient.get<SystemOAuth2ClientApi.AuthorizeInfoResp>(
+  return requestClient.get<SystemOAuth2ClientApi.AuthorizeInfoRespVO>(
     `/system/oauth2/authorize?clientId=${clientId}`,
   );
 }

@@ -4,7 +4,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { nextTick, ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -50,12 +50,11 @@ function handleEdit(row: Demo03StudentApi.Demo03Grade) {
 async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Grade(row.id as number);
+    await deleteDemo03Grade(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    onRefresh();
+    await handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -63,15 +62,15 @@ async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
 
 /** 批量删除学生班级 */
 async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
+    text: $t('ui.actionMessage.deletingBatch'),
   });
   try {
     await deleteDemo03GradeList(checkedIds.value);
     checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    await handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -127,7 +126,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 刷新表格 */
-async function onRefresh() {
+async function handleRefresh() {
   await gridApi.query();
 }
 
@@ -139,20 +138,20 @@ watch(
       return;
     }
     await nextTick();
-    await onRefresh();
+    await handleRefresh();
   },
   { immediate: true },
 );
 </script>
 
 <template>
-  <FormModal @success="onRefresh" />
+  <FormModal @success="handleRefresh" />
   <Grid table-title="学生班级列表">
     <template #toolbar-tools>
       <TableAction
         :actions="[
           {
-            label: $t('ui.actionTitle.create', ['学生']),
+            label: $t('ui.actionTitle.create', ['学生班级']),
             type: 'primary',
             icon: ACTION_ICON.ADD,
             auth: ['infra:demo03-student:create'],

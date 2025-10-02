@@ -161,25 +161,15 @@ watch(
 
 <template>
   <div class="panel-tab__content">
-    <Table :data="elementPropertyList" :scroll="{ y: 240 }" bordered>
+    <Table :data="elementPropertyList" size="small" bordered>
       <TableColumn title="序号" width="50">
         <template #default="{ index }">
           {{ index + 1 }}
         </template>
       </TableColumn>
-      <TableColumn
-        title="属性名"
-        data-index="name"
-        :min-width="100"
-        :ellipsis="{ showTitle: true }"
-      />
-      <TableColumn
-        title="属性值"
-        data-index="value"
-        :min-width="100"
-        :ellipsis="{ showTitle: true }"
-      />
-      <TableColumn title="操作" width="110">
+      <TableColumn title="属性名" data-index="name" />
+      <TableColumn title="属性值" data-index="value" />
+      <TableColumn title="操作">
         <template #default="{ record, index }">
           <Button
             type="link"
@@ -215,11 +205,7 @@ watch(
       :width="600"
       :destroy-on-close="true"
     >
-      <Form
-        :model="propertyForm"
-        ref="attributeFormRef"
-        :label-col="{ span: 6 }"
-      >
+      <Form :model="propertyForm" ref="attributeFormRef">
         <FormItem label="属性名：" name="name">
           <Input v-model:value="propertyForm.name" allow-clear />
         </FormItem>

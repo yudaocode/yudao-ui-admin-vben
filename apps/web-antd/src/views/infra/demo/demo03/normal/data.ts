@@ -108,14 +108,17 @@ export function useGridColumns(): VxeTableGridOptions<Demo03StudentApi.Demo03Stu
     {
       field: 'id',
       title: '编号',
+      minWidth: 120,
     },
     {
       field: 'name',
       title: '名字',
+      minWidth: 120,
     },
     {
       field: 'sex',
       title: '性别',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.SYSTEM_USER_SEX },
@@ -124,21 +127,23 @@ export function useGridColumns(): VxeTableGridOptions<Demo03StudentApi.Demo03Stu
     {
       field: 'birthday',
       title: '出生日期',
+      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
       field: 'description',
       title: '简介',
+      minWidth: 120,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 120,
       formatter: 'formatDateTime',
     },
     {
-      field: 'actions',
       title: '操作',
-      width: 280,
+      width: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -153,17 +158,18 @@ export function useDemo03CourseGridEditColumns(): VxeTableGridOptions<Demo03Stud
     {
       field: 'name',
       title: '名字',
+      minWidth: 120,
       slots: { default: 'name' },
     },
     {
       field: 'score',
       title: '分数',
+      minWidth: 120,
       slots: { default: 'score' },
     },
     {
-      field: 'actions',
       title: '操作',
-      width: 280,
+      width: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },

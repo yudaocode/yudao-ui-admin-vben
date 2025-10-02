@@ -48,7 +48,7 @@ async function handleMaster(row: InfraFileConfigApi.FileConfig) {
     text: $t('ui.actionMessage.updating', [row.name]),
   });
   try {
-    await updateFileConfigMaster(row.id as number);
+    await updateFileConfigMaster(row.id!);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     handleRefresh();
   } catch {
@@ -62,7 +62,7 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
     text: '测试上传中...',
   });
   try {
-    const response = await testFileConfig(row.id as number);
+    const response = await testFileConfig(row.id!);
     loadingInstance.close();
     // 确认是否访问该文件
     confirm({
@@ -84,7 +84,7 @@ async function handleDelete(row: InfraFileConfigApi.FileConfig) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteFileConfig(row.id as number);
+    await deleteFileConfig(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

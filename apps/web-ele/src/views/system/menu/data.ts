@@ -59,7 +59,6 @@ export function useFormSchema(): VbenFormSchema[] {
         },
         showSearch: true,
         treeDefaultExpandedKeys: [0],
-        allowClear: true,
       },
       rules: 'selectRequired',
       renderComponentContent() {
@@ -168,7 +167,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'AutoComplete',
       componentProps: {
         clearable: true,
-        allowClear: true,
         filterOption(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },

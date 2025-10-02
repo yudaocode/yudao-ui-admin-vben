@@ -6,7 +6,7 @@ import type { FileUploadProps } from './typing';
 
 import type { AxiosProgressEvent } from '#/api/infra/file';
 
-import { ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 
 import { CloudUpload } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -22,8 +22,10 @@ defineOptions({ name: 'FileUpload', inheritAttrs: false });
 
 const props = withDefaults(defineProps<FileUploadProps>(), {
   value: () => [],
+  modelValue: undefined,
   directory: undefined,
   disabled: false,
+  drag: false,
   helpText: '',
   maxSize: 2,
   maxNumber: 1,
@@ -33,7 +35,14 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   resultField: '',
   showDescription: false,
 });
-const emit = defineEmits(['change', 'update:value', 'delete', 'returnText']);
+const emit = defineEmits([
+  'change',
+  'update:value',
+  'update:modelValue',
+  'delete',
+  'returnText',
+  'preview',
+]);
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
@@ -43,13 +52,25 @@ const { getStringAccept } = useUploadType({
   maxSizeRef: maxSize,
 });
 
+// 计算当前绑定的值，优先使用 modelValue
+const currentValue = computed(() => {
+  return props.modelValue === undefined ? props.value : props.modelValue;
+});
+
+// 判断是否使用 modelValue
+const isUsingModelValue = computed(() => {
+  return props.modelValue !== undefined;
+});
+
 const fileList = ref<UploadProps['fileList']>([]);
 const isLtMsg = ref<boolean>(true); // 文件大小错误提示
 const isActMsg = ref<boolean>(true); // 文件类型错误提示
 const isFirstRender = ref<boolean>(true); // 是否第一次渲染
+const uploadNumber = ref<number>(0); // 上传文件计数器
+const uploadList = ref<any[]>([]); // 临时上传列表
 
 watch(
-  () => props.value,
+  currentValue,
   (v) => {
     if (isInnerOperate.value) {
       isInnerOperate.value = false;
@@ -94,14 +115,39 @@ async function handleRemove(file: UploadFile) {
     const value = getValue();
     isInnerOperate.value = true;
     emit('update:value', value);
+    emit('update:modelValue', value);
     emit('change', value);
     emit('delete', file);
   }
 }
 
+// 处理文件预览
+function handlePreview(file: UploadFile) {
+  emit('preview', file);
+}
+
+// 处理文件数量超限
+function handleExceed() {
+  message.error($t('ui.upload.maxNumber', [maxNumber.value]));
+}
+
+// 处理上传错误
+function handleUploadError(error: any) {
+  console.error('上传错误:', error);
+  message.error($t('ui.upload.uploadError'));
+  // 上传失败时减少计数器
+  uploadNumber.value = Math.max(0, uploadNumber.value - 1);
+}
+
 async function beforeUpload(file: File) {
   const fileContent = await file.text();
   emit('returnText', fileContent);
+
+  // 检查文件数量限制
+  if (fileList.value!.length >= props.maxNumber) {
+    message.error($t('ui.upload.maxNumber', [props.maxNumber]));
+    return Upload.LIST_IGNORE;
+  }
 
   const { maxSize, accept } = props;
   const isAct = checkFileType(file, accept);
@@ -110,6 +156,7 @@ async function beforeUpload(file: File) {
     isActMsg.value = false;
     // 防止弹出多个错误提示
     setTimeout(() => (isActMsg.value = true), 1000);
+    return Upload.LIST_IGNORE;
   }
   const isLt = file.size / 1024 / 1024 > maxSize;
   if (isLt) {
@@ -117,8 +164,12 @@ async function beforeUpload(file: File) {
     isLtMsg.value = false;
     // 防止弹出多个错误提示
     setTimeout(() => (isLtMsg.value = true), 1000);
+    return Upload.LIST_IGNORE;
   }
-  return (isAct && !isLt) || Upload.LIST_IGNORE;
+
+  // 只有在验证通过后才增加计数器
+  uploadNumber.value++;
+  return true;
 }
 
 async function customRequest(info: UploadRequestOption<any>) {
@@ -133,17 +184,48 @@ async function customRequest(info: UploadRequestOption<any>) {
       info.onProgress!({ percent });
     };
     const res = await api?.(info.file as File, progressEvent);
+
+    // 处理上传成功后的逻辑
+    handleUploadSuccess(res, info.file as File);
+
     info.onSuccess!(res);
     message.success($t('ui.upload.uploadSuccess'));
-
-    // 更新文件
-    const value = getValue();
-    isInnerOperate.value = true;
-    emit('update:value', value);
-    emit('change', value);
   } catch (error: any) {
     console.error(error);
     info.onError!(error);
+    handleUploadError(error);
+  }
+}
+
+// 处理上传成功
+function handleUploadSuccess(res: any, file: File) {
+  // 删除临时文件
+  const index = fileList.value?.findIndex((item) => item.name === file.name);
+  if (index !== -1) {
+    fileList.value?.splice(index!, 1);
+  }
+
+  // 添加到临时上传列表
+  const fileUrl = res?.url || res?.data || res;
+  uploadList.value.push({
+    name: file.name,
+    url: fileUrl,
+    status: UploadResultStatus.DONE,
+    uid: file.name + Date.now(),
+  });
+
+  // 检查是否所有文件都上传完成
+  if (uploadList.value.length >= uploadNumber.value) {
+    fileList.value?.push(...uploadList.value);
+    uploadList.value = [];
+    uploadNumber.value = 0;
+
+    // 更新值
+    const value = getValue();
+    isInnerOperate.value = true;
+    emit('update:value', value);
+    emit('update:modelValue', value);
+    emit('change', value);
   }
 }
 
@@ -156,11 +238,26 @@ function getValue() {
       }
       return item?.url || item?.response?.url || item?.response;
     });
-  // add by 芋艿：【特殊】单个文件的情况，获取首个元素，保证返回的是 String 类型
+
+  // 单个文件的情况，根据输入参数类型决定返回格式
   if (props.maxNumber === 1) {
-    return list.length > 0 ? list[0] : '';
+    const singleValue = list.length > 0 ? list[0] : '';
+    // 如果原始值是字符串或 modelValue 是字符串，返回字符串
+    if (
+      isString(props.value) ||
+      (isUsingModelValue.value && isString(props.modelValue))
+    ) {
+      return singleValue;
+    }
+    return singleValue;
   }
-  return list;
+
+  // 多文件情况，根据输入参数类型决定返回格式
+  if (isUsingModelValue.value) {
+    return Array.isArray(props.modelValue) ? list : list.join(',');
+  }
+
+  return Array.isArray(props.value) ? list : list.join(',');
 }
 </script>
 
@@ -177,15 +274,34 @@ function getValue() {
       :multiple="multiple"
       list-type="text"
       :progress="{ showInfo: true }"
+      :show-upload-list="{
+        showPreviewIcon: true,
+        showRemoveIcon: true,
+        showDownloadIcon: true,
+      }"
       @remove="handleRemove"
+      @preview="handlePreview"
+      @reject="handleExceed"
     >
-      <div v-if="fileList && fileList.length < maxNumber">
+      <div v-if="drag" class="upload-drag-area">
+        <p class="ant-upload-drag-icon">
+          <CloudUpload />
+        </p>
+        <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
+        <p class="ant-upload-hint">
+          支持{{ accept.join('/') }}格式文件，不超过{{ maxSize }}MB
+        </p>
+      </div>
+      <div v-else-if="fileList && fileList.length < maxNumber">
         <Button>
           <CloudUpload />
           {{ $t('ui.upload.upload') }}
         </Button>
       </div>
-      <div v-if="showDescription" class="mt-2 flex flex-wrap items-center">
+      <div
+        v-if="showDescription && !drag"
+        class="mt-2 flex flex-wrap items-center"
+      >
         请上传不超过
         <div class="text-primary mx-1 font-bold">{{ maxSize }}MB</div>
         的
@@ -195,3 +311,35 @@ function getValue() {
     </Upload>
   </div>
 </template>
+
+<style scoped>
+.upload-drag-area {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+}
+
+.upload-drag-area:hover {
+  border-color: #1890ff;
+}
+
+.ant-upload-drag-icon {
+  font-size: 48px;
+  color: #d9d9d9;
+  margin-bottom: 16px;
+}
+
+.ant-upload-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.ant-upload-hint {
+  font-size: 14px;
+  color: #999;
+}
+</style>

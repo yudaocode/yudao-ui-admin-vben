@@ -50,6 +50,7 @@ export namespace CrmContractApi {
     creatorName: string;
     updateTime?: Date;
     products?: ContractProduct[];
+    contactName?: string;
   }
 }
 

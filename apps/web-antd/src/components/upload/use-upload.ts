@@ -135,7 +135,7 @@ export function getUploadUrl(): string {
  * @param file 文件
  */
 function createFile0(
-  vo: InfraFileApi.FilePresignedUrlResp,
+  vo: InfraFileApi.FilePresignedUrlRespVO,
   file: File,
 ): InfraFileApi.File {
   const fileVO = {

@@ -4,7 +4,7 @@ import type { Demo01ContactApi } from '#/api/infra/demo/demo01';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -27,13 +27,19 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
+}
+
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '示例联系人.xls', source: data });
 }
 
 /** 创建示例联系人 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例联系人 */
@@ -45,12 +51,11 @@ function handleEdit(row: Demo01ContactApi.Demo01Contact) {
 async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo01Contact(row.id as number);
+    await deleteDemo01Contact(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -58,15 +63,15 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
 
 /** 批量删除示例联系人 */
 async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
+    text: $t('ui.actionMessage.deletingBatch'),
   });
   try {
     await deleteDemo01ContactList(checkedIds.value);
     checkedIds.value = [];
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -79,12 +84,6 @@ function handleRowCheckboxChange({
   records: Demo01ContactApi.Demo01Contact[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportDemo01Contact(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '示例联系人.xls', source: data });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -126,8 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
-
+    <FormModal @success="handleRefresh" />
     <Grid table-title="示例联系人列表">
       <template #toolbar-tools>
         <TableAction
@@ -175,7 +173,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['infra:demo01-contact:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
               },
             },

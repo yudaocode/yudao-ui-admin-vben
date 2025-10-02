@@ -58,7 +58,7 @@ export function deleteMailTemplate(id: number) {
   return requestClient.delete(`/system/mail-template/delete?id=${id}`);
 }
 
-/** 批量删除邮件模板 */
+/** 批量删除邮件模版 */
 export function deleteMailTemplateList(ids: number[]) {
   return requestClient.delete(
     `/system/mail-template/delete-list?ids=${ids.join(',')}`,

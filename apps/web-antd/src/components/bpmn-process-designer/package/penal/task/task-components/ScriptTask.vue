@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineOptions,
-  defineProps,
-  nextTick,
-  onBeforeUnmount,
-  ref,
-  toRaw,
-  watch,
-} from 'vue';
+import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
 import {
   FormItem,

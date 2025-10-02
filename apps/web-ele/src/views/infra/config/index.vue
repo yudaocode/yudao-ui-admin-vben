@@ -53,7 +53,7 @@ async function handleDelete(row: InfraConfigApi.Config) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteConfig(row.id as number);
+    await deleteConfig(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

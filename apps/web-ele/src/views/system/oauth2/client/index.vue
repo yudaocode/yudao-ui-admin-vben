@@ -46,7 +46,7 @@ async function handleDelete(row: SystemOAuth2ClientApi.OAuth2Client) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteOAuth2Client(row.id as number);
+    await deleteOAuth2Client(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

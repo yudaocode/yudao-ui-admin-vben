@@ -16,6 +16,7 @@ export namespace CrmCustomerApi {
     ownerUserId: number; // 负责人的用户编号
     ownerUserName?: string; // 负责人的用户名称
     ownerUserDept?: string; // 负责人的部门名称
+    ownerUserDeptName?: string; // 负责人的部门名称
     lockStatus?: boolean;
     dealStatus?: boolean;
     mobile: string; // 手机号
@@ -34,7 +35,9 @@ export namespace CrmCustomerApi {
     creatorName?: string; // 创建人名称
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
+    poolDay?: number; // 距离进入公海天数
   }
+
   export interface CustomerImport {
     ownerUserId: number;
     file: File;

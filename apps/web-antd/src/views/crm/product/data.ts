@@ -27,18 +27,28 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '产品名称',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入产品名称',
+        allowClear: true,
+      },
     },
     {
       component: 'ApiSelect',
       fieldName: 'ownerUserId',
       label: '负责人',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
           label: 'nickname',
           value: 'id',
         },
+        placeholder: '请选择负责人',
+        allowClear: true,
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -47,6 +57,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'no',
       label: '产品编码',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入产品编码',
+        allowClear: true,
+      },
     },
     {
       component: 'ApiTreeSelect',
@@ -59,6 +73,8 @@ export function useFormSchema(): VbenFormSchema[] {
           return handleTree(data);
         },
         fieldNames: { label: 'name', value: 'id', children: 'children' },
+        placeholder: '请选择产品类型',
+        allowClear: true,
       },
     },
     {
@@ -67,6 +83,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_PRODUCT_UNIT, 'number'),
+        placeholder: '请选择产品单位',
+        allowClear: true,
       },
       rules: 'required',
     },
@@ -79,12 +97,17 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.1,
+        placeholder: '请输入产品价格',
       },
     },
     {
       component: 'Textarea',
       fieldName: 'description',
       label: '产品描述',
+      componentProps: {
+        placeholder: '请输入产品描述',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
@@ -107,6 +130,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '产品名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入产品名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
@@ -114,6 +141,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
+        placeholder: '请选择上架状态',
         options: getDictOptions(DICT_TYPE.CRM_PRODUCT_STATUS, 'number'),
       },
     },
@@ -198,63 +226,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       width: 160,
-      fixed: 'right',
-      slots: { default: 'actions' },
-    },
-  ];
-}
-
-/** 代码生成表格列定义 */
-export function useProductEditTableColumns(): VxeTableGridOptions['columns'] {
-  return [
-    { type: 'seq', title: '序号', minWidth: 50 },
-    {
-      field: 'productId',
-      title: '产品名称',
-      minWidth: 100,
-      slots: { default: 'productId' },
-    },
-    {
-      field: 'productNo',
-      title: '条码',
-      minWidth: 150,
-    },
-    {
-      field: 'productUnit',
-      title: '单位',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.CRM_PRODUCT_UNIT },
-      },
-    },
-    {
-      field: 'productPrice',
-      title: '价格（元）',
-      minWidth: 100,
-      formatter: 'formatAmount2',
-    },
-    {
-      field: 'sellingPrice',
-      title: '售价（元）',
-      minWidth: 100,
-      slots: { default: 'sellingPrice' },
-    },
-    {
-      field: 'count',
-      title: '数量',
-      minWidth: 100,
-      slots: { default: 'count' },
-    },
-    {
-      field: 'totalPrice',
-      title: '合计',
-      minWidth: 100,
-      formatter: 'formatAmount2',
-    },
-    {
-      title: '操作',
-      width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
     },

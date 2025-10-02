@@ -3,6 +3,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { reactive, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 

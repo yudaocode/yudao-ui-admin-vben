@@ -2,13 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { h, nextTick, ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
-import { Plus, Trash2 } from '@vben/icons';
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -34,7 +33,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建学生班级 */
-function onCreate() {
+function handleCreate() {
   if (!props.studentId) {
     message.warning('请先选择一个学生!');
     return;
@@ -43,38 +42,37 @@ function onCreate() {
 }
 
 /** 编辑学生班级 */
-function onEdit(row: Demo03StudentApi.Demo03Grade) {
+function handleEdit(row: Demo03StudentApi.Demo03Grade) {
   formModalApi.setData(row).open();
 }
 
 /** 删除学生班级 */
-async function onDelete(row: Demo03StudentApi.Demo03Grade) {
+async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deleteDemo03Grade(row.id as number);
+    await deleteDemo03Grade(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
-    onRefresh();
+    await handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
 /** 批量删除学生班级 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
+    content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteDemo03GradeList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    await onRefresh();
+    await handleRefresh();
   } finally {
     hideLoading();
   }
@@ -130,9 +128,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 刷新表格 */
-const onRefresh = async () => {
+async function handleRefresh() {
   await gridApi.query();
-};
+}
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
@@ -142,35 +140,36 @@ watch(
       return;
     }
     await nextTick();
-    await onRefresh();
+    await handleRefresh();
   },
   { immediate: true },
 );
 </script>
 
 <template>
-  <FormModal @success="onRefresh" />
+  <FormModal @success="handleRefresh" />
   <Grid table-title="学生班级列表">
     <template #toolbar-tools>
-      <Button
-        :icon="h(Plus)"
-        type="primary"
-        @click="onCreate"
-        v-access:code="['infra:demo03-student:create']"
-      >
-        {{ $t('ui.actionTitle.create', ['学生班级']) }}
-      </Button>
-      <Button
-        :icon="h(Trash2)"
-        type="primary"
-        danger
-        class="ml-2"
-        :disabled="isEmpty(checkedIds)"
-        @click="onDeleteBatch"
-        v-access:code="['infra:demo03-student:delete']"
-      >
-        批量删除
-      </Button>
+      <TableAction
+        :actions="[
+          {
+            label: $t('ui.actionTitle.create', ['学生班级']),
+            type: 'primary',
+            icon: ACTION_ICON.ADD,
+            auth: ['infra:demo03-student:create'],
+            onClick: handleCreate,
+          },
+          {
+            label: $t('ui.actionTitle.deleteBatch'),
+            type: 'primary',
+            danger: true,
+            icon: ACTION_ICON.DELETE,
+            auth: ['infra:demo03-student:delete'],
+            disabled: isEmpty(checkedIds),
+            onClick: handleDeleteBatch,
+          },
+        ]"
+      />
     </template>
     <template #actions="{ row }">
       <TableAction
@@ -180,7 +179,7 @@ watch(
             type: 'link',
             icon: ACTION_ICON.EDIT,
             auth: ['infra:demo03-student:update'],
-            onClick: onEdit.bind(null, row),
+            onClick: handleEdit.bind(null, row),
           },
           {
             label: $t('common.delete'),
@@ -190,7 +189,7 @@ watch(
             auth: ['infra:demo03-student:delete'],
             popConfirm: {
               title: $t('ui.actionMessage.deleteConfirm', [row.id]),
-              confirm: onDelete.bind(null, row),
+              confirm: handleDelete.bind(null, row),
             },
           },
         ]"

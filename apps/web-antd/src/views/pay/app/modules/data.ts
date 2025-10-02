@@ -454,7 +454,6 @@ export function channelSchema(formType: string): VbenFormSchema[] {
             accept: ['pem'],
           },
         }),
-        rules: 'required',
         dependencies: {
           show(values) {
             return values?.config?.apiVersion === 'v3';

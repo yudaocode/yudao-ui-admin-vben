@@ -3,6 +3,7 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { dateFormatter, fenToYuanFormat } from '@vben/utils';

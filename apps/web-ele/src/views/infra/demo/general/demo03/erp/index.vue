@@ -3,7 +3,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { Download, Plus, Trash2 } from '@vben/icons';
@@ -37,7 +37,6 @@ import {
   exportDemo03Student,
   getDemo03StudentPage,
 } from '#/api/infra/demo/demo03/erp';
-import { ContentWrap } from '#/components/content-wrap';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
@@ -102,7 +101,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建学生 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑学生 */
@@ -114,10 +113,9 @@ function handleEdit(row: Demo03StudentApi.Demo03Student) {
 async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Student(row.id as number);
+    await deleteDemo03Student(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     await getList();
   } finally {
@@ -129,7 +127,6 @@ async function handleDelete(row: Demo03StudentApi.Demo03Student) {
 async function handleDeleteBatch() {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03StudentList(checkedIds.value);

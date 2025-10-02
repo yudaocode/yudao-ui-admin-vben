@@ -3,7 +3,7 @@ import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
@@ -29,7 +29,6 @@ import {
   exportDemo02Category,
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
-import { ContentWrap } from '#/components/content-wrap';
 import { $t } from '#/locales';
 
 import Demo02CategoryForm from './modules/form.vue';
@@ -77,7 +76,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例分类 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例分类 */
@@ -94,10 +93,9 @@ function handleAppend(row: Demo02CategoryApi.Demo02Category) {
 async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo02Category(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     await getList();
   } finally {

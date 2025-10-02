@@ -50,7 +50,7 @@ async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id!);
-    message.success($t('ui.actionMessage.updateSuccess', [row.name]));
+    message.success($t('ui.actionMessage.updateSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -85,7 +85,7 @@ async function handleDelete(row: InfraFileConfigApi.FileConfig) {
     content: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteFileConfig(row.id as number);
+    await deleteFileConfig(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

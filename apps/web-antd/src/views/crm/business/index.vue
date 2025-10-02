@@ -2,12 +2,13 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmBusinessApi } from '#/api/crm/business';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, message, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -21,6 +22,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const { push } = useRouter();
+const sceneType = ref('1');
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -28,13 +30,23 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
   gridApi.query();
 }
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportBusiness(await gridApi.formApi.getValues());
+  const formValues = await gridApi.formApi.getValues();
+  const data = await exportBusiness({
+    sceneType: sceneType.value,
+    ...formValues,
+  });
   downloadFileFromBlobPart({ fileName: '商机.xls', source: data });
 }
 
@@ -53,13 +65,12 @@ async function handleDelete(row: CrmBusinessApi.Business) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deleteBusiness(row.id as number);
+    await deleteBusiness(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
+    handleRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -88,6 +99,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getBusinessPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
+            sceneType: sceneType.value,
             ...formValues,
           });
         },
@@ -95,6 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -117,8 +130,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <Grid table-title="商机列表">
+    <FormModal @success="handleRefresh" />
+    <Grid>
+      <template #top>
+        <Tabs class="-mt-11" @change="handleChangeSceneType">
+          <Tabs.TabPane tab="我负责的" key="1" />
+          <Tabs.TabPane tab="我参与的" key="2" />
+          <Tabs.TabPane tab="下属负责的" key="3" />
+        </Tabs>
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -176,3 +196,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>

@@ -3,6 +3,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { nextTick, ref, watch } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';

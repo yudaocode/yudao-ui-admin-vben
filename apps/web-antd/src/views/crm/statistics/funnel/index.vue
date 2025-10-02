@@ -38,10 +38,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           const res = await getChartDatas(activeTabName.value, formValues);
-          renderEcharts(
+          await renderEcharts(
             getChartOptions(activeTabName.value, active.value, res),
           );
-          return await getDatas(activeTabName.value, {
+          return getDatas(activeTabName.value, {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -59,6 +59,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<CrmStatisticsFunnelApi.BusinessSummaryByDate>,
 });
 
+/** tab 切换 */
 async function handleTabChange(key: any) {
   activeTabName.value = key;
   gridApi.setGridOptions({
@@ -67,9 +68,10 @@ async function handleTabChange(key: any) {
       enabled: activeTabName.value !== 'funnelRef',
     },
   });
-  gridApi.reload();
+  await gridApi.reload();
 }
 
+/** 视角切换 */
 function handleActive(value: boolean) {
   active.value = value;
   renderEcharts(

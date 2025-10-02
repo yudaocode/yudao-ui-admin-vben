@@ -104,7 +104,7 @@ const routes: RouteRecordRaw[] = [
         name: 'BpmProcessInstanceReport',
         meta: {
           title: '数据报表',
-          activeMenu: '/bpm/manager/model',
+          activePath: '/bpm/manager/model',
           icon: 'carbon:data-2',
           hideInMenu: true,
           keepAlive: true,

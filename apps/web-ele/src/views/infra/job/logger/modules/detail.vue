@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { InfraJobLogApi } from '#/api/infra/job-log';
 
 import { ref } from 'vue';
@@ -17,9 +17,9 @@ const [Descriptions] = useDescription({
     border: true,
     column: 1,
     direction: 'horizontal',
+    labelWidth: 140,
     title: '',
     extra: '',
-    labelWidth: 140,
   },
   schema: useDetailSchema(),
 });

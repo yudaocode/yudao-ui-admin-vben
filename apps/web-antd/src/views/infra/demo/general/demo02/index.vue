@@ -3,7 +3,7 @@ import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { h, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { Download, Plus } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
@@ -21,7 +21,6 @@ import {
   exportDemo02Category,
   getDemo02CategoryList,
 } from '#/api/infra/demo/demo02';
-import { ContentWrap } from '#/components/content-wrap';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -70,7 +69,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例分类 */
 function onCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例分类 */
@@ -87,13 +86,12 @@ function onAppend(row: Demo02CategoryApi.Demo02Category) {
 async function onDelete(row: Demo02CategoryApi.Demo02Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await deleteDemo02Category(row.id as number);
+    await deleteDemo02Category(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_key_msg',
     });
     await getList();
   } finally {

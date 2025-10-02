@@ -28,7 +28,7 @@ function onRefresh() {
 
 /** 创建分类 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 添加下级分类 */
@@ -54,13 +54,12 @@ function handleViewSpu(id: number) {
 async function handleDelete(row: MallCategoryApi.Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteCategory(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

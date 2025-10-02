@@ -32,13 +32,12 @@ function onRefresh() {
 async function handleDelete(row: AiChatConversationApi.ChatConversation) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
     await deleteChatConversationByAdmin(row.id as number);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-      key: 'action_key_msg',
     });
     onRefresh();
   } finally {

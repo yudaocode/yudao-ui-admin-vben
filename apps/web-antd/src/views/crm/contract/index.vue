@@ -31,13 +31,23 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 处理场景类型的切换 */
+function handleChangeSceneType(key: number | string) {
+  sceneType.value = key.toString();
   gridApi.query();
 }
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportContract(await gridApi.formApi.getValues());
+  const formValues = await gridApi.formApi.getValues();
+  const data = await exportContract({
+    sceneType: sceneType.value,
+    ...formValues,
+  });
   downloadFileFromBlobPart({ fileName: '合同.xls', source: data });
 }
 
@@ -55,15 +65,12 @@ function handleEdit(row: CrmContractApi.Contract) {
 async function handleDelete(row: CrmContractApi.Contract) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await deleteContract(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    await deleteContract(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -73,15 +80,12 @@ async function handleDelete(row: CrmContractApi.Contract) {
 async function handleSubmit(row: CrmContractApi.Contract) {
   const hideLoading = message.loading({
     content: '提交审核中...',
-    key: 'action_key_msg',
+    duration: 0,
   });
   try {
-    await submitContract(row.id as number);
-    message.success({
-      content: '提交审核成功',
-      key: 'action_key_msg',
-    });
-    onRefresh();
+    await submitContract(row.id!);
+    message.success('提交审核成功');
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -137,6 +141,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -144,11 +149,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<CrmContractApi.Contract>,
 });
-
-function onChangeSceneType(key: number | string) {
-  sceneType.value = key.toString();
-  gridApi.query();
-}
 </script>
 
 <template>
@@ -164,10 +164,10 @@ function onChangeSceneType(key: number | string) {
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #top>
-        <Tabs class="border-none" @change="onChangeSceneType">
+        <Tabs class="-mt-11" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />
@@ -224,8 +224,6 @@ function onChangeSceneType(key: number | string) {
               onClick: handleEdit.bind(null, row),
               ifShow: row.auditStatus === 0,
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '提交审核',
               type: 'link',
@@ -239,12 +237,6 @@ function onChangeSceneType(key: number | string) {
               auth: ['crm:contract:update'],
               onClick: handleProcessDetail.bind(null, row),
               ifShow: row.auditStatus !== 0,
-            },
-            {
-              label: $t('common.detail'),
-              type: 'link',
-              auth: ['crm:contract:query'],
-              onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -262,3 +254,8 @@ function onChangeSceneType(key: number | string) {
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>

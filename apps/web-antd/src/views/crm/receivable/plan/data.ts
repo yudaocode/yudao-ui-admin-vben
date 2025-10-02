@@ -15,6 +15,33 @@ export function useFormSchema(): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
     {
+      fieldName: 'period',
+      label: '期数',
+      component: 'Input',
+      componentProps: {
+        placeholder: '保存时自动生成',
+        disabled: true,
+      },
+    },
+    {
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleUserList(),
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
+      defaultValue: userStore.userInfo?.id,
+      rules: 'required',
+    },
+    {
       fieldName: 'customerId',
       label: '客户',
       component: 'ApiSelect',
@@ -66,33 +93,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'period',
-      label: '期数',
-      component: 'Input',
-      componentProps: {
-        placeholder: '保存时自动生成',
-        disabled: true,
-      },
-    },
-    {
-      fieldName: 'ownerUserId',
-      label: '负责人',
-      component: 'ApiSelect',
-      componentProps: {
-        api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-      },
-      dependencies: {
-        triggerFields: ['id'],
-        disabled: (values) => !values.id,
-      },
-      defaultValue: userStore.userInfo?.id,
-      rules: 'required',
-    },
-    {
       fieldName: 'price',
       label: '计划回款金额',
       component: 'InputNumber',
@@ -120,7 +120,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remindDays',
       label: '提前几天提醒',
       component: 'InputNumber',
-      rules: 'required',
       componentProps: {
         placeholder: '请输入提前几天提醒',
         min: 0,
@@ -130,7 +129,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'returnType',
       label: '回款方式',
       component: 'Select',
-      rules: 'required',
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
         placeholder: '请选择回款方式',
@@ -144,6 +142,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 4,
       },
+      formItemClass: 'md:col-span-2',
     },
   ];
 }

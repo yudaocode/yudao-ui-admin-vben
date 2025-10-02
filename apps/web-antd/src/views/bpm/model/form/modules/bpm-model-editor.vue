@@ -5,6 +5,7 @@ import type { BpmModelApi } from '#/api/bpm/model';
 
 import { inject, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { BpmModelFormType } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
@@ -18,7 +19,6 @@ import {
 import CustomContentPadProvider from '#/components/bpmn-process-designer/package/designer/plugins/content-pad';
 // 自定义左侧菜单（修改 默认任务 为 用户任务）
 import CustomPaletteProvider from '#/components/bpmn-process-designer/package/designer/plugins/palette';
-import { ContentWrap } from '#/components/content-wrap';
 
 defineOptions({ name: 'BpmModelEditor' });
 

@@ -3,7 +3,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { ContentWrap, useVbenModal } from '@vben/common-ui';
 import { Plus, Trash2 } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
@@ -25,7 +25,6 @@ import {
   deleteDemo03CourseList,
   getDemo03CoursePage,
 } from '#/api/infra/demo/demo03/erp';
-import { ContentWrap } from '#/components/content-wrap';
 import { $t } from '#/locales';
 
 import Demo03CourseForm from './demo03-course-form.vue';
@@ -57,10 +56,9 @@ function handleEdit(row: Demo03StudentApi.Demo03Course) {
 async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
-    await deleteDemo03Course(row.id as number);
+    await deleteDemo03Course(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     await getList();
   } finally {
@@ -72,7 +70,6 @@ async function handleDelete(row: Demo03StudentApi.Demo03Course) {
 async function handleDeleteBatch() {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03CourseList(checkedIds.value);

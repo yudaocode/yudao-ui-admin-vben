@@ -20,14 +20,14 @@ export namespace SystemSocialUserApi {
   }
 
   /** 社交绑定请求 */
-  export interface SocialUserBindReq {
+  export interface SocialUserBindReqVO {
     type: number;
     code: string;
     state: string;
   }
 
   /** 取消社交绑定请求 */
-  export interface SocialUserUnbindReq {
+  export interface SocialUserUnbindReqVO {
     type: number;
     openid: string;
   }
@@ -49,12 +49,12 @@ export function getSocialUser(id: number) {
 }
 
 /** 社交绑定，使用 code 授权码 */
-export function socialBind(data: SystemSocialUserApi.SocialUserBindReq) {
+export function socialBind(data: SystemSocialUserApi.SocialUserBindReqVO) {
   return requestClient.post<boolean>('/system/social-user/bind', data);
 }
 
 /** 取消社交绑定 */
-export function socialUnbind(data: SystemSocialUserApi.SocialUserUnbindReq) {
+export function socialUnbind(data: SystemSocialUserApi.SocialUserUnbindReqVO) {
   return requestClient.delete<boolean>('/system/social-user/unbind', { data });
 }
 

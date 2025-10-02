@@ -26,6 +26,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -37,14 +38,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 添加学生课程 */
-const onAdd = async () => {
+async function handleAdd() {
   await gridApi.grid.insertAt({} as Demo03StudentApi.Demo03Course, -1);
-};
+}
 
 /** 删除学生课程 */
-const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
+async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   await gridApi.grid.remove(row);
-};
+}
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
@@ -98,7 +99,7 @@ watch(
             auth: ['infra:demo03-student:delete'],
             popConfirm: {
               title: $t('ui.actionMessage.deleteConfirm', [row.id]),
-              confirm: onDelete.bind(null, row),
+              confirm: handleDelete.bind(null, row),
             },
           },
         ]"
@@ -110,7 +111,7 @@ watch(
       :icon="h(Plus)"
       type="primary"
       ghost
-      @click="onAdd"
+      @click="handleAdd"
       v-access:code="['infra:demo03-student:create']"
     >
       {{ $t('ui.actionTitle.create', ['学生课程']) }}

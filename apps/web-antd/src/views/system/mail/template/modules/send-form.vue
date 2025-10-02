@@ -42,17 +42,10 @@ const [Modal, modalApi] = useVbenModal({
         paramsObj[param] = values[`param_${param}`];
       });
     }
-    const parseEmails = (text: string): string[] => {
-      if (!text) return [];
-      return text
-        .split('\n')
-        .map((email) => email.trim())
-        .filter((email) => email.length > 0);
-    };
     const data: SystemMailTemplateApi.MailSendReqVO = {
-      toMails: parseEmails(values.toMails || ''),
-      ccMails: parseEmails(values.ccMails || ''),
-      bccMails: parseEmails(values.bccMails || ''),
+      toMails: values.toMails,
+      ccMails: values.ccMails,
+      bccMails: values.bccMails,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
@@ -64,8 +57,6 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
       message.success('邮件发送成功');
-    } catch (error) {
-      console.error('发送邮件失败', error);
     } finally {
       modalApi.unlock();
     }
