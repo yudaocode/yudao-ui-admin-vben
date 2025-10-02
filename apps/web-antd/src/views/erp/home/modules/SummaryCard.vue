@@ -32,7 +32,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /** 概览数据 */
-// TODO @nehc：应该是有 8 个小卡片，少了 4 个？
 const overviewItems = computed<AnalysisOverviewItem[]>(() => [
   {
     icon: SvgCardIcon,

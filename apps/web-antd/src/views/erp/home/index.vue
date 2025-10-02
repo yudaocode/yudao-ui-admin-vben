@@ -5,8 +5,8 @@ import { DocAlert, Page } from '@vben/common-ui';
 
 import { Col, Row, Spin } from 'ant-design-vue';
 
-import SummaryCard from './components/SummaryCard.vue';
-import TimeSummaryChart from './components/TimeSummaryChart.vue';
+import SummaryCard from './modules/SummaryCard.vue';
+import TimeSummaryChart from './modules/TimeSummaryChart.vue';
 
 /** ERP首页 */
 defineOptions({ name: 'ErpHome' });

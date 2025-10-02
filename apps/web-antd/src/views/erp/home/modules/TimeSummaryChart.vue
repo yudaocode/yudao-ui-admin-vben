@@ -123,11 +123,9 @@ watch(
     if (!val || val.length === 0) {
       return;
     }
-
     // 更新图表数据
     const xAxisData = val.map((item) => item.time);
     const seriesData = val.map((item) => item.price);
-
     const options = {
       ...lineChartOptions,
       xAxis: {
@@ -141,7 +139,6 @@ watch(
         },
       ],
     };
-
     renderEcharts(options);
   },
   { immediate: true },
@@ -150,14 +147,6 @@ watch(
 /** 组件挂载时初始化数据 */
 onMounted(() => {
   initData();
-});
-
-/** 暴露数据给父组件使用 */
-defineExpose({
-  saleSummary,
-  purchaseSummary,
-  saleTimeSummaryList,
-  purchaseTimeSummaryList,
 });
 </script>
 
