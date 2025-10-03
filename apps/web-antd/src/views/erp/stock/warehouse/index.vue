@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -23,18 +23,24 @@ import WarehouseForm from './modules/form.vue';
 defineOptions({ name: 'ErpWarehouse' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 添加仓库 */
+/** 导出仓库 */
+async function handleExport() {
+  const data = await exportWarehouse(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '仓库.xls', source: data });
+}
+
+/** 创建仓库 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑仓库 */
 function handleEdit(row: ErpWarehouseApi.Warehouse) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData(row).open();
 }
 
 /** 删除仓库 */
@@ -45,11 +51,9 @@ async function handleDelete(row: ErpWarehouseApi.Warehouse) {
   });
   try {
     await deleteWarehouse(row.id!);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
-  } catch {
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
     hideLoading();
   }
 }
@@ -60,27 +64,20 @@ async function handleDefaultStatusChange(
   row: ErpWarehouseApi.Warehouse,
 ): Promise<boolean | undefined> {
   return new Promise((resolve, reject) => {
-    const text = newStatus ? '开启' : '取消';
-
+    const text = newStatus ? '设置' : '取消';
     confirm({
       content: `确认要${text}"${row.name}"默认吗?`,
     })
       .then(async () => {
         // 更新默认状态
         await updateWarehouseDefaultStatus(row.id!, newStatus);
-        message.success(`${text}默认状态成功`);
+        message.success(`${text}默认成功`);
         resolve(true);
       })
       .catch(() => {
         reject(new Error('取消操作'));
       });
   });
-}
-
-/** 导出仓库 */
-async function handleExport() {
-  const data = await exportWarehouse(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '仓库.xls', source: data });
 }
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -109,6 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -127,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="仓库列表">
       <template #toolbar-tools>
         <TableAction
@@ -154,14 +152,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: '编辑',
+              label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['erp:warehouse:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
-              label: '删除',
+              label: $t('common.delete'),
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
