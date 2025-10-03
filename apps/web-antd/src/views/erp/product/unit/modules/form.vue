@@ -73,7 +73,9 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getProductUnit(data.id);
       // 设置到 values
-      await formApi.setValues(formData.value);
+      if (formData.value) {
+        await formApi.setValues(formData.value);
+      }
     } finally {
       modalApi.unlock();
     }
@@ -82,7 +84,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
   </Modal>
 </template>
