@@ -12,7 +12,7 @@ import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getStockCount } from '#/api/erp/stock/stock';
 
-import { useSaleOrderItemTableColumns } from '../data';
+import { useFormItemColumns } from '../data';
 
 interface Props {
   items?: ErpSaleOrderApi.SaleOrderItem[];
@@ -42,7 +42,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'click',
       mode: 'cell',
     },
-    columns: useSaleOrderItemTableColumns(),
+    columns: useFormItemColumns(),
     data: tableData.value,
     border: true,
     showOverflow: true,

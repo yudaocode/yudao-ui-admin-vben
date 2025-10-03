@@ -181,8 +181,8 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 采购订单项表格列定义 */
-export function useSaleOrderItemTableColumns(): VxeTableGridOptions['columns'] {
+/** 表单的明细表格列 */
+export function useFormItemColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
