@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { ErpProductApi } from '#/api/erp/product/product';
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { erpPriceMultiply } from '@vben/utils';
 
@@ -12,6 +13,12 @@ import { getProductSimpleList } from '#/api/erp/product/product';
 import { getStockCount } from '#/api/erp/stock/stock';
 
 import { useSaleOrderItemTableColumns } from '../data';
+
+interface Props {
+  items?: ErpSaleOrderApi.SaleOrderItem[];
+  disabled?: boolean;
+  discountPercent?: number;
+}
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
@@ -25,14 +32,8 @@ const emit = defineEmits([
   'update:total-price',
 ]);
 
-interface Props {
-  items?: ErpSaleOrderApi.SaleOrderItem[];
-  disabled?: boolean;
-  discountPercent?: number;
-}
-
-const tableData = ref<ErpSaleOrderApi.SaleOrderItem[]>([]);
-const productOptions = ref<any[]>([]);
+const tableData = ref<ErpSaleOrderApi.SaleOrderItem[]>([]); // 表格数据
+const productOptions = ref<ErpProductApi.Product[]>([]); // 产品下拉选项
 
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -50,6 +51,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'row_id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -67,9 +69,7 @@ watch(
     if (!items) {
       return;
     }
-    await nextTick();
     tableData.value = [...items];
-    await nextTick();
     await gridApi.grid.reloadData(tableData.value);
   },
   {
@@ -93,8 +93,7 @@ watch(
         ? 0
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
     const finalTotalPrice = totalPrice - discountPrice!;
-
-    // 发送计算结果给父组件
+    // 通知父组件更新
     emit('update:discount-price', discountPrice);
     emit('update:total-price', finalTotalPrice);
   },
@@ -106,6 +105,7 @@ onMounted(async () => {
   productOptions.value = await getProductSimpleList();
 });
 
+/** 处理新增 */
 function handleAdd() {
   const newRow = {
     productId: undefined,
@@ -124,38 +124,39 @@ function handleAdd() {
   };
   tableData.value.push(newRow);
   gridApi.grid.insertAt(newRow, -1);
+  // 通知父组件更新
   emit('update:items', [...tableData.value]);
 }
 
+/** 处理删除 */
 function handleDelete(row: ErpSaleOrderApi.SaleOrderItem) {
   gridApi.grid.remove(row);
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index !== -1) {
     tableData.value.splice(index, 1);
   }
+  // 通知父组件更新
   emit('update:items', [...tableData.value]);
 }
 
+/** 处理产品变更 */
 async function handleProductChange(productId: any, row: any) {
   const product = productOptions.value.find((p) => p.id === productId);
   if (!product) {
     return;
   }
-
-  const stockCount = await getStockCount(productId);
-
   row.productId = productId;
   row.productUnitId = product.unitId;
   row.productBarCode = product.barCode;
   row.productUnitName = product.unitName;
   row.productName = product.name;
-  row.stockCount = stockCount || 0;
+  row.stockCount = (await getStockCount(productId)) || 0;
   row.productPrice = product.salePrice || 0;
   row.count = row.count || 1;
-
   handlePriceChange(row);
 }
 
+/** 处理价格变更 */
 function handlePriceChange(row: any) {
   if (row.productPrice && row.count) {
     row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
@@ -166,6 +167,7 @@ function handlePriceChange(row: any) {
   handleUpdateValue(row);
 }
 
+/** 更新行数据 */
 function handleUpdateValue(row: any) {
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index === -1) {
@@ -176,13 +178,14 @@ function handleUpdateValue(row: any) {
   emit('update:items', [...tableData.value]);
 }
 
-const getSummaries = (): {
+/** 获取表格合计数据 */
+function getSummaries(): {
   count: number;
   productName: string;
   taxPrice: number;
   totalPrice: number;
   totalProductPrice: number;
-} => {
+} {
   return {
     productName: '合计',
     count: tableData.value.reduce((sum, item) => sum + (item.count || 0), 0),
@@ -199,30 +202,25 @@ const getSummaries = (): {
       0,
     ),
   };
-};
+}
 
-const validate = async (): Promise<boolean> => {
-  try {
-    for (let i = 0; i < tableData.value.length; i++) {
-      const item = tableData.value[i];
-      if (item) {
-        if (!item.productId) {
-          throw new Error(`第 ${i + 1} 行：产品不能为空`);
-        }
-        if (!item.count || item.count <= 0) {
-          throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
-        }
-        if (!item.productPrice || item.productPrice <= 0) {
-          throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
-        }
+/** 表单校验 */
+function validate() {
+  for (let i = 0; i < tableData.value.length; i++) {
+    const item = tableData.value[i];
+    if (item) {
+      if (!item.productId) {
+        throw new Error(`第 ${i + 1} 行：产品不能为空`);
+      }
+      if (!item.count || item.count <= 0) {
+        throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
+      }
+      if (!item.productPrice || item.productPrice <= 0) {
+        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
       }
     }
-    return true;
-  } catch (error) {
-    console.error('验证失败:', error);
-    throw error;
   }
-};
+}
 
 defineExpose({
   validate,
@@ -244,7 +242,6 @@ defineExpose({
       />
       <span v-else>{{ row.productName || '-' }}</span>
     </template>
-
     <template #count="{ row }">
       <InputNumber
         v-if="!disabled"

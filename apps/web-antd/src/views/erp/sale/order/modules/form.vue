@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -16,18 +16,18 @@ import {
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
-import SaleOrderItemForm from './sale-order-item-form.vue';
+import ItemForm from './item-form.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpSaleOrderApi.SaleOrder>();
-const formType = ref(''); // 表单类型：'create' | 'update' | 'detail'
-const itemFormRef = ref<InstanceType<typeof SaleOrderItemForm>>();
+const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
+const itemFormRef = ref<InstanceType<typeof ItemForm>>();
 
 /* eslint-disable unicorn/no-nested-ternary */
 const getTitle = computed(() =>
   formType.value === 'create'
     ? $t('ui.actionTitle.create', ['销售订单'])
-    : formType.value === 'update'
+    : formType.value === 'edit'
       ? $t('ui.actionTitle.edit', ['销售订单'])
       : '销售订单详情',
 );
@@ -38,7 +38,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     labelWidth: 120,
-    // disabled: !['create', 'update'].includes(formType.value), // TODO @芋艿：这里晚点处理下；
+    // disabled: !['create', 'edit'].includes(formType.value), // TODO @芋艿：这里晚点处理下；
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
@@ -51,6 +51,7 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
+/** 更新商品项 */
 const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
   formData.value = modalApi.getData<ErpSaleOrderApi.SaleOrder>();
   if (formData.value) {
@@ -58,6 +59,7 @@ const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
   }
 };
 
+/** 更新优惠金额 */
 const handleUpdateDiscountPrice = (discountPrice: number) => {
   if (formData.value) {
     formData.value.discountPrice = discountPrice;
@@ -67,6 +69,7 @@ const handleUpdateDiscountPrice = (discountPrice: number) => {
   }
 };
 
+/** 更新总金额 */
 const handleUpdateTotalPrice = (totalPrice: number) => {
   if (formData.value) {
     formData.value.totalPrice = totalPrice;
@@ -87,10 +90,7 @@ const [Modal, modalApi] = useVbenModal({
       ? itemFormRef.value[0]
       : itemFormRef.value;
     try {
-      const isValid = await itemFormInstance.validate();
-      if (!isValid) {
-        return;
-      }
+      itemFormInstance.validate();
     } catch (error: any) {
       message.error(error.message || '子表单验证失败');
       return;
@@ -140,14 +140,14 @@ const [Modal, modalApi] = useVbenModal({
   <Modal
     v-bind="$attrs"
     :title="getTitle"
-    class="w-1/2"
+    class="w-3/4"
     :closable="true"
     :mask-closable="true"
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
       <template #product="slotProps">
-        <SaleOrderItemForm
+        <ItemForm
           v-bind="slotProps"
           ref="itemFormRef"
           class="w-full"
