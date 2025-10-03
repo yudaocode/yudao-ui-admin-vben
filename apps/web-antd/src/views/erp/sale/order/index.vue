@@ -66,20 +66,21 @@ async function handleDelete(ids: number[]) {
 }
 
 /** 审批/反审批操作 */
-function handleUpdateStatus(row: ErpSaleOrderApi.SaleOrder, status: number) {
+async function handleUpdateStatus(
+  row: ErpSaleOrderApi.SaleOrder,
+  status: number,
+) {
   const hideLoading = message.loading({
     content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
     duration: 0,
   });
-  // TODO @AI：改成 await 写法
-  updateSaleOrderStatus(row.id!, status)
-    .then(() => {
-      message.success(`${status === 20 ? '审批' : '反审批'}成功`);
-      handleRefresh();
-    })
-    .finally(() => {
-      hideLoading();
-    });
+  try {
+    await updateSaleOrderStatus(row.id!, status);
+    message.success(`${status === 20 ? '审批' : '反审批'}成功`);
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const checkedIds = ref<number[]>([]);

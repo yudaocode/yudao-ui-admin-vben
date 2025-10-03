@@ -17,6 +17,7 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 import ItemForm from './item-form.vue';
+import {getAccountSimpleList} from '#/api/erp/finance/account';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpSaleOrderApi.SaleOrder>();
@@ -38,7 +39,6 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     labelWidth: 120,
-    // disabled: !['create', 'edit'].includes(formType.value), // TODO @芋艿：这里晚点处理下；
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
@@ -116,7 +116,14 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<{ id?: number; type: string }>();
     formType.value = data.type;
+    formApi.setDisabled(formType.value === 'detail');
     if (!data || !data.id) {
+      // 新增时，默认选中账户
+      const accountList = await getAccountSimpleList();
+      const defaultAccount = accountList.find((item) => item.defaultStatus);
+      if (defaultAccount) {
+        await formApi.setValues({ accountId: defaultAccount.id });
+      }
       return;
     }
     modalApi.lock();
@@ -124,7 +131,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getSaleOrder(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
-      // TODO @AI：默认账户；缺少；
     } finally {
       modalApi.unlock();
     }
@@ -134,19 +140,14 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal
-    v-bind="$attrs"
     :title="getTitle"
     class="w-3/4"
-    :closable="true"
-    :mask-closable="true"
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
-      <template #items="slotProps">
+      <template #items>
         <ItemForm
-          v-bind="slotProps"
           ref="itemFormRef"
-          class="w-full"
           :items="formData?.items ?? []"
           :disabled="formType === 'detail'"
           :discount-percent="formData?.discountPercent ?? 0"

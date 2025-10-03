@@ -2,9 +2,13 @@
 import type { ErpProductApi } from '#/api/erp/product/product';
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
-import { erpPriceMultiply } from '@vben/utils';
+import {
+  erpCountInputFormatter,
+  erpPriceInputFormatter,
+  erpPriceMultiply,
+} from '@vben/utils';
 
 import { Input, InputNumber, Select } from 'ant-design-vue';
 
@@ -84,6 +88,7 @@ watch(
     }
     items.forEach((item) => initRow(item));
     tableData.value = [...items];
+    await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
   },
   {
@@ -274,10 +279,14 @@ onMounted(async () => {
         <div class="text-muted-foreground flex justify-between text-sm">
           <span class="text-foreground font-medium">合计：</span>
           <div class="flex space-x-4">
-            <span>数量：{{ summaries.count }}</span>
-            <span>金额：{{ summaries.totalProductPrice }}</span>
-            <span>税额：{{ summaries.taxPrice }}</span>
-            <span>税额合计：{{ summaries.totalPrice }}</span>
+            <span>数量：{{ erpCountInputFormatter(summaries.count) }}</span>
+            <span>
+              金额：{{ erpPriceInputFormatter(summaries.totalProductPrice) }}
+            </span>
+            <span>税额：{{ erpPriceInputFormatter(summaries.taxPrice) }}</span>
+            <span>
+              税额合计：{{ erpPriceInputFormatter(summaries.totalPrice) }}
+            </span>
           </div>
         </div>
       </div>

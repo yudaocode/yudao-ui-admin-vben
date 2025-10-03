@@ -330,7 +330,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // TODO @AI：备注缺少；/Users/yunai/Java/yudao-ui-admin-vue3/src/views/erp/sale/order/index.vue
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入备注',
+        allowClear: true,
+      },
+    },
     {
       fieldName: 'outStatus',
       label: '出库状态',
