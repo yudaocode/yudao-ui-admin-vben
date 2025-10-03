@@ -15,38 +15,37 @@ import { getSimpleUserList } from '#/api/system/user';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
-      componentProps: {
-        style: { display: 'none' },
-      },
       fieldName: 'id',
-      label: 'ID',
-      hideLabel: true,
-      formItemClass: 'hidden',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
+      fieldName: 'no',
+      label: '订单单号',
       component: 'Input',
       componentProps: {
         placeholder: '系统自动生成',
         disabled: true,
       },
-      fieldName: 'no',
-      label: '订单单号',
     },
     {
+      fieldName: 'orderTime',
+      label: '订单时间',
       component: 'DatePicker',
       componentProps: {
         placeholder: '选择订单时间',
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
-        style: { width: '100%' },
       },
-      fieldName: 'orderTime',
-      label: '订单时间',
       rules: 'required',
     },
     {
+      label: '客户',
+      fieldName: 'customerId',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择客户',
@@ -58,8 +57,6 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'customerId',
-      label: '客户',
       rules: 'required',
     },
     {
@@ -78,15 +75,18 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'remark',
+      label: '备注',
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
         autoSize: { minRows: 1, maxRows: 1 },
       },
-      fieldName: 'remark',
-      label: '备注',
+      formItemClass: 'col-span-2',
     },
     {
+      fieldName: 'fileUrl',
+      label: '附件',
       component: 'FileUpload',
       componentProps: {
         maxNumber: 1,
@@ -104,54 +104,51 @@ export function useFormSchema(): VbenFormSchema[] {
         ],
         showDescription: true,
       },
-      fieldName: 'fileUrl',
-      label: '附件',
       formItemClass: 'col-span-3',
     },
     {
-      fieldName: 'product',
+      fieldName: 'items',
       label: '产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
     {
+      fieldName: 'discountPercent',
+      label: '优惠率(%)',
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入优惠率',
         min: 0,
         max: 100,
         precision: 2,
-        style: { width: '100%' },
       },
-      fieldName: 'discountPercent',
-      label: '优惠率(%)',
       rules: z.number().min(0).optional(),
     },
     {
+      fieldName: 'discountPrice',
+      label: '付款优惠',
       component: 'InputNumber',
       componentProps: {
         placeholder: '收款优惠',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'discountPrice',
-      label: '付款优惠',
     },
     {
+      fieldName: 'totalPrice',
+      label: '优惠后金额',
       component: 'InputNumber',
       componentProps: {
         placeholder: '优惠后金额',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'totalPrice',
-      label: '优惠后金额',
     },
     {
+      fieldName: 'accountId',
+      label: '结算账户',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择结算账户',
@@ -163,8 +160,6 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'accountId',
-      label: '结算账户',
     },
     {
       component: 'InputNumber',

@@ -2,7 +2,7 @@
 import type { ErpProductApi } from '#/api/erp/product/product';
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { erpPriceMultiply } from '@vben/utils';
 
@@ -35,20 +35,33 @@ const emit = defineEmits([
 const tableData = ref<ErpSaleOrderApi.SaleOrderItem[]>([]); // 表格数据
 const productOptions = ref<ErpProductApi.Product[]>([]); // 产品下拉选项
 
+/** 获取表格合计数据 */
+const summaries = computed(() => {
+  return {
+    count: tableData.value.reduce((sum, item) => sum + (item.count || 0), 0),
+    totalProductPrice: tableData.value.reduce(
+      (sum, item) => sum + (item.totalProductPrice || 0),
+      0,
+    ),
+    taxPrice: tableData.value.reduce(
+      (sum, item) => sum + (item.taxPrice || 0),
+      0,
+    ),
+    totalPrice: tableData.value.reduce(
+      (sum, item) => sum + (item.totalPrice || 0),
+      0,
+    ),
+  };
+});
+
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    editConfig: {
-      trigger: 'click',
-      mode: 'cell',
-    },
     columns: useFormItemColumns(),
     data: tableData.value,
-    border: true,
-    showOverflow: true,
-    autoResize: true,
     minHeight: 250,
-    keepSource: true,
+    autoResize: true,
+    border: true,
     rowConfig: {
       keyField: 'row_id',
       isHover: true,
@@ -118,14 +131,12 @@ function handleAdd() {
     remark: undefined,
   };
   tableData.value.push(newRow);
-  gridApi.grid.insertAt(newRow, -1);
   // 通知父组件更新
   emit('update:items', [...tableData.value]);
 }
 
 /** 处理删除 */
 function handleDelete(row: ErpSaleOrderApi.SaleOrderItem) {
-  gridApi.grid.remove(row);
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index !== -1) {
     tableData.value.splice(index, 1);
@@ -171,32 +182,6 @@ const initRow = (row: ErpSaleOrderApi.SaleOrderItem): void => {
     row.totalPrice = row.totalProductPrice + row.taxPrice;
   }
 };
-
-/** 获取表格合计数据 */
-function getSummaries(): {
-  count: number;
-  productName: string;
-  taxPrice: number;
-  totalPrice: number;
-  totalProductPrice: number;
-} {
-  return {
-    productName: '合计',
-    count: tableData.value.reduce((sum, item) => sum + (item.count || 0), 0),
-    totalProductPrice: tableData.value.reduce(
-      (sum, item) => sum + (item.totalProductPrice || 0),
-      0,
-    ),
-    taxPrice: tableData.value.reduce(
-      (sum, item) => sum + (item.taxPrice || 0),
-      0,
-    ),
-    totalPrice: tableData.value.reduce(
-      (sum, item) => sum + (item.totalPrice || 0),
-      0,
-    ),
-  };
-}
 
 /** 表单校验 */
 function validate() {
@@ -289,10 +274,10 @@ onMounted(async () => {
         <div class="text-muted-foreground flex justify-between text-sm">
           <span class="text-foreground font-medium">合计：</span>
           <div class="flex space-x-4">
-            <span>数量：{{ getSummaries().count }}</span>
-            <span>金额：{{ getSummaries().totalProductPrice }}</span>
-            <span>税额：{{ getSummaries().taxPrice }}</span>
-            <span>税额合计：{{ getSummaries().totalPrice }}</span>
+            <span>数量：{{ summaries.count }}</span>
+            <span>金额：{{ summaries.totalProductPrice }}</span>
+            <span>税额：{{ summaries.taxPrice }}</span>
+            <span>税额合计：{{ summaries.totalPrice }}</span>
           </div>
         </div>
       </div>

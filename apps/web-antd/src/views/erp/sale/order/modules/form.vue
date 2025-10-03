@@ -45,6 +45,7 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
+    // 目的：同步到 item-form 组件，触发整体的价格计算
     if (formData.value && changedFields.includes('discountPercent')) {
       formData.value.discountPercent = values.discountPercent;
     }
@@ -54,9 +55,10 @@ const [Form, formApi] = useVbenForm({
 /** 更新商品项 */
 const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
   formData.value = modalApi.getData<ErpSaleOrderApi.SaleOrder>();
-  if (formData.value) {
-    formData.value.items = items;
-  }
+  formData.value.items = items;
+  formApi.setValues({
+    items,
+  });
 };
 
 /** 更新优惠金额 */
@@ -140,7 +142,7 @@ const [Modal, modalApi] = useVbenModal({
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
-      <template #product="slotProps">
+      <template #items="slotProps">
         <ItemForm
           v-bind="slotProps"
           ref="itemFormRef"
