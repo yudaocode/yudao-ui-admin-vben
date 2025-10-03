@@ -22,18 +22,18 @@ import SupplierForm from './modules/form.vue';
 defineOptions({ name: 'ErpSupplier' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 添加供应商 */
+/** 创建供应商 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑供应商 */
 function handleEdit(row: ErpSupplierApi.Supplier) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData(row).open();
 }
 
 /** 删除供应商 */
@@ -44,10 +44,8 @@ async function handleDelete(row: ErpSupplierApi.Supplier) {
   });
   try {
     await deleteSupplier(row.id!);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } catch {
     hideLoading();
   }
@@ -85,6 +83,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -103,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="供应商列表">
       <template #toolbar-tools>
         <TableAction
@@ -130,14 +129,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: '编辑',
+              label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['erp:supplier:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
-              label: '删除',
+              label: $t('common.delete'),
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
