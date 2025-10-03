@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+/* eslint-disable unicorn/no-nested-ternary */
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
 import { computed, nextTick, ref } from 'vue';
@@ -13,6 +14,7 @@ import {
   getSaleOrder,
   updateSaleOrder,
 } from '#/api/erp/sale/order';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 import SaleOrderItemForm from './sale-order-item-form.vue';
@@ -22,11 +24,13 @@ const formData = ref<ErpSaleOrderApi.SaleOrder>();
 const formType = ref('');
 const itemFormRef = ref();
 
-const getTitle = computed(() => {
-  if (formType.value === 'create') return '添加销售订单';
-  if (formType.value === 'update') return '编辑销售订单';
-  return '销售订单详情';
-});
+const getTitle = computed(() =>
+  formType.value === 'create'
+    ? $t('ui.actionTitle.create', ['销售订单'])
+    : formType.value === 'update'
+      ? $t('ui.actionTitle.edit', ['销售订单'])
+      : '销售订单详情',
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -34,6 +38,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     labelWidth: 120,
+    disabled: !['create', 'update'].includes(formType.value),
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
@@ -124,7 +129,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success(formType.value === 'create' ? '新增成功' : '更新成功');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -172,8 +177,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-defineExpose({ modalApi });
 </script>
 
 <template>

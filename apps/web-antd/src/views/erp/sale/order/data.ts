@@ -24,7 +24,6 @@ export function useFormSchema(): VbenFormSchema[] {
       hideLabel: true,
       formItemClass: 'hidden',
     },
-
     {
       component: 'Input',
       componentProps: {
@@ -336,6 +335,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
+    // TODO @AI：备注缺少；/Users/yunai/Java/yudao-ui-admin-vue3/src/views/erp/sale/order/index.vue
     {
       fieldName: 'outStatus',
       label: '出库状态',
