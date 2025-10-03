@@ -61,22 +61,16 @@ const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
 
 /** 更新优惠金额 */
 const handleUpdateDiscountPrice = (discountPrice: number) => {
-  if (formData.value) {
-    formData.value.discountPrice = discountPrice;
-    formApi.setValues({
-      discountPrice: formData.value.discountPrice,
-    });
-  }
+  formApi.setValues({
+    discountPrice,
+  });
 };
 
 /** 更新总金额 */
 const handleUpdateTotalPrice = (totalPrice: number) => {
-  if (formData.value) {
-    formData.value.totalPrice = totalPrice;
-    formApi.setValues({
-      totalPrice: formData.value.totalPrice,
-    });
-  }
+  formApi.setValues({
+    totalPrice,
+  });
 };
 
 /** 创建或更新销售订单 */

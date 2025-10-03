@@ -227,7 +227,7 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'taxPercent',
       title: '税率(%)',
-      minWidth: 100,
+      minWidth: 105,
       slots: { default: 'taxPercent' },
     },
     {

@@ -69,6 +69,7 @@ watch(
     if (!items) {
       return;
     }
+    items.forEach((item) => initRow(item));
     tableData.value = [...items];
     await gridApi.grid.reloadData(tableData.value);
   },
@@ -100,27 +101,21 @@ watch(
   { deep: true },
 );
 
-/** 初始化 */
-onMounted(async () => {
-  productOptions.value = await getProductSimpleList();
-});
-
 /** 处理新增 */
 function handleAdd() {
   const newRow = {
+    id: undefined,
     productId: undefined,
-    productName: '',
-    productUnitId: undefined,
-    productUnitName: '',
-    productBarCode: '',
+    productUnitName: undefined, // 产品单位
+    productBarCode: undefined, // 产品条码
+    productPrice: undefined,
+    stockCount: undefined,
     count: 1,
-    productPrice: 0,
-    totalProductPrice: 0,
+    totalProductPrice: undefined,
     taxPercent: 0,
-    taxPrice: 0,
-    totalPrice: 0,
-    stockCount: 0,
-    remark: '',
+    taxPrice: undefined,
+    totalPrice: undefined,
+    remark: undefined,
   };
   tableData.value.push(newRow);
   gridApi.grid.insertAt(newRow, -1);
@@ -153,22 +148,11 @@ async function handleProductChange(productId: any, row: any) {
   row.stockCount = (await getStockCount(productId)) || 0;
   row.productPrice = product.salePrice || 0;
   row.count = row.count || 1;
-  handlePriceChange(row);
+  handleRowChange(row);
 }
 
-/** 处理价格变更 */
-function handlePriceChange(row: any) {
-  if (row.productPrice && row.count) {
-    row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-    row.taxPrice =
-      erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
-    row.totalPrice = row.totalProductPrice + row.taxPrice;
-  }
-  handleUpdateValue(row);
-}
-
-/** 更新行数据 */
-function handleUpdateValue(row: any) {
+/** 处理行数据变更 */
+function handleRowChange(row: any) {
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index === -1) {
     tableData.value.push(row);
@@ -177,6 +161,16 @@ function handleUpdateValue(row: any) {
   }
   emit('update:items', [...tableData.value]);
 }
+
+/** 初始化行数据 */
+const initRow = (row: ErpSaleOrderApi.SaleOrderItem): void => {
+  if (row.productPrice && row.count) {
+    row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
+    row.taxPrice =
+      erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
+    row.totalPrice = row.totalProductPrice + row.taxPrice;
+  }
+};
 
 /** 获取表格合计数据 */
 function getSummaries(): {
@@ -225,6 +219,15 @@ function validate() {
 defineExpose({
   validate,
 });
+
+/** 初始化 */
+onMounted(async () => {
+  productOptions.value = await getProductSimpleList();
+  // 目的：新增时，默认添加一行
+  if (tableData.value.length === 0) {
+    handleAdd();
+  }
+});
 </script>
 
 <template>
@@ -248,7 +251,7 @@ defineExpose({
         v-model:value="row.count"
         :min="0"
         :precision="2"
-        @change="handlePriceChange(row)"
+        @change="handleRowChange(row)"
       />
       <span v-else>{{ row.count || '-' }}</span>
     </template>
@@ -259,7 +262,7 @@ defineExpose({
         v-model:value="row.productPrice"
         :min="0"
         :precision="2"
-        @change="handlePriceChange(row)"
+        @change="handleRowChange(row)"
       />
       <span v-else>{{ row.productPrice || '-' }}</span>
     </template>
@@ -271,7 +274,7 @@ defineExpose({
         :min="0"
         :max="100"
         :precision="2"
-        @change="handlePriceChange(row)"
+        @change="handleRowChange(row)"
       />
       <span v-else>{{ row.taxPercent || '-' }}</span>
     </template>
