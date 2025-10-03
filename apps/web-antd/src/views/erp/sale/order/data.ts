@@ -10,6 +10,7 @@ import { getAccountSimpleList } from '#/api/erp/finance/account';
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getCustomerSimpleList } from '#/api/erp/sale/customer';
 import { getSimpleUserList } from '#/api/system/user';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单的配置项 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -166,7 +167,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入收取订金',
         precision: 2,
-        style: { width: '100%' },
         min: 0,
       },
       fieldName: 'depositPrice',
@@ -284,10 +284,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '订单时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
     {

@@ -228,7 +228,7 @@ onMounted(async () => {
         v-model:value="row.productId"
         :options="productOptions"
         :field-names="{ label: 'name', value: 'id' }"
-        style="width: 100%"
+        class="w-full"
         placeholder="请选择产品"
         show-search
         @change="handleProductChange($event, row)"
@@ -240,12 +240,11 @@ onMounted(async () => {
         v-if="!disabled"
         v-model:value="row.count"
         :min="0"
-        :precision="2"
+        :precision="3"
         @change="handleRowChange(row)"
       />
       <span v-else>{{ row.count || '-' }}</span>
     </template>
-
     <template #productPrice="{ row }">
       <InputNumber
         v-if="!disabled"
@@ -256,7 +255,6 @@ onMounted(async () => {
       />
       <span v-else>{{ row.productPrice || '-' }}</span>
     </template>
-
     <template #taxPercent="{ row }">
       <InputNumber
         v-if="!disabled"
@@ -268,10 +266,25 @@ onMounted(async () => {
       />
       <span v-else>{{ row.taxPercent || '-' }}</span>
     </template>
-
     <template #remark="{ row }">
       <Input v-if="!disabled" v-model:value="row.remark" class="w-full" />
       <span v-else>{{ row.remark || '-' }}</span>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        v-if="!disabled"
+        :actions="[
+          {
+            label: '删除',
+            type: 'link',
+            danger: true,
+            popConfirm: {
+              title: '确认删除该产品吗？',
+              confirm: handleDelete.bind(null, row),
+            },
+          },
+        ]"
+      />
     </template>
 
     <template #bottom>
@@ -290,32 +303,14 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-
       <TableAction
         v-if="!disabled"
-        class="mt-4 flex justify-center"
+        class="mt-2 flex justify-center"
         :actions="[
           {
             label: '添加产品',
             type: 'default',
             onClick: handleAdd,
-          },
-        ]"
-      />
-    </template>
-
-    <template #actions="{ row }">
-      <TableAction
-        v-if="!disabled"
-        :actions="[
-          {
-            label: '删除',
-            type: 'link',
-            danger: true,
-            popConfirm: {
-              title: '确认删除该产品吗？',
-              confirm: handleDelete.bind(null, row),
-            },
           },
         ]"
       />

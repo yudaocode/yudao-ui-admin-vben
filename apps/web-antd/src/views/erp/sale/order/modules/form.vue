@@ -8,6 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getAccountSimpleList } from '#/api/erp/finance/account';
 import {
   createSaleOrder,
   getSaleOrder,
@@ -17,7 +18,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 import ItemForm from './item-form.vue';
-import {getAccountSimpleList} from '#/api/erp/finance/account';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpSaleOrderApi.SaleOrder>();
