@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-/* eslint-disable unicorn/no-nested-ternary */
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 
 import { computed, nextTick, ref } from 'vue';
@@ -21,9 +20,10 @@ import SaleOrderItemForm from './sale-order-item-form.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpSaleOrderApi.SaleOrder>();
-const formType = ref('');
-const itemFormRef = ref();
+const formType = ref(''); // 表单类型：'create' | 'update' | 'detail'
+const itemFormRef = ref<InstanceType<typeof SaleOrderItemForm>>();
 
+/* eslint-disable unicorn/no-nested-ternary */
 const getTitle = computed(() =>
   formType.value === 'create'
     ? $t('ui.actionTitle.create', ['销售订单'])
@@ -38,7 +38,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     labelWidth: 120,
-    disabled: !['create', 'update'].includes(formType.value),
+    // disabled: !['create', 'update'].includes(formType.value), // TODO @芋艿：这里晚点处理下；
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
@@ -83,45 +83,23 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    await nextTick();
-
     const itemFormInstance = Array.isArray(itemFormRef.value)
       ? itemFormRef.value[0]
       : itemFormRef.value;
-    if (itemFormInstance && typeof itemFormInstance.validate === 'function') {
-      try {
-        const isValid = await itemFormInstance.validate();
-        if (!isValid) {
-          message.error('子表单验证失败');
-          return;
-        }
-      } catch (error: any) {
-        message.error(error.message || '子表单验证失败');
+    try {
+      const isValid = await itemFormInstance.validate();
+      if (!isValid) {
         return;
       }
-    } else {
-      message.error('子表单验证方法不存在');
-      return;
-    }
-
-    // 验证产品清单不能为空
-    if (!formData.value?.items || formData.value.items.length === 0) {
-      message.error('产品清单不能为空，请至少添加一个产品');
+    } catch (error: any) {
+      message.error(error.message || '子表单验证失败');
       return;
     }
 
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as ErpSaleOrderApi.SaleOrder;
-    data.items = formData.value?.items?.map((item) => ({
-      ...item,
-      // 解决新增销售订单报错
-      id: undefined,
-    }));
-    // 将文件数组转换为字符串
-    if (data.fileUrl && Array.isArray(data.fileUrl)) {
-      data.fileUrl = data.fileUrl.length > 0 ? data.fileUrl[0] : '';
-    }
+    data.items = formData.value?.items;
     try {
       await (formType.value === 'create'
         ? createSaleOrder(data)
@@ -141,37 +119,16 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<{ id?: number; type: string }>();
-    if (!data) {
-      return;
-    }
     formType.value = data.type;
-
-    if (!data.id) {
-      // 初始化空的表单数据
-      formData.value = { items: [] } as unknown as ErpSaleOrderApi.SaleOrder;
-      await nextTick();
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init([]);
-      }
+    if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getSaleOrder(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
-      // 初始化子表单
-      await nextTick();
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init(formData.value.items || []);
-      }
+      // TODO @AI：默认账户；缺少；
     } finally {
       modalApi.unlock();
     }

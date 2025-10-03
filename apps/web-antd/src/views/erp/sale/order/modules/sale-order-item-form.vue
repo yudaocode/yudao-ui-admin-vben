@@ -49,7 +49,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     minHeight: 250,
     keepSource: true,
     rowConfig: {
-      keyField: 'id',
+      keyField: 'row_id',
     },
     pagerConfig: {
       enabled: false,
@@ -70,7 +70,7 @@ watch(
     await nextTick();
     tableData.value = [...items];
     await nextTick();
-    gridApi.grid.reloadData(tableData.value);
+    await gridApi.grid.reloadData(tableData.value);
   },
   {
     immediate: true,
@@ -224,35 +224,8 @@ const validate = async (): Promise<boolean> => {
   }
 };
 
-const getData = (): ErpSaleOrderApi.SaleOrderItem[] => tableData.value;
-const init = (items: ErpSaleOrderApi.SaleOrderItem[] | undefined): void => {
-  tableData.value =
-    items && items.length > 0
-      ? items.map((item) => {
-          const newItem = { ...item };
-          if (newItem.productPrice && newItem.count) {
-            newItem.totalProductPrice =
-              erpPriceMultiply(newItem.productPrice, newItem.count) ?? 0;
-            newItem.taxPrice =
-              erpPriceMultiply(
-                newItem.totalProductPrice,
-                (newItem.taxPercent || 0) / 100,
-              ) ?? 0;
-            newItem.totalPrice = newItem.totalProductPrice + newItem.taxPrice;
-          }
-          return newItem;
-        })
-      : [];
-  // TODO @XuZhiqiang：使用 await 风格哈；
-  nextTick(() => {
-    gridApi.grid.reloadData(tableData.value);
-  });
-};
-
 defineExpose({
   validate,
-  getData,
-  init,
 });
 </script>
 
