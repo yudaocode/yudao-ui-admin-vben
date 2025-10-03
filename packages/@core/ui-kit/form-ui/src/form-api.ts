@@ -289,6 +289,18 @@ export class FormApi {
     }
   }
 
+  /**
+   * 设置表单禁用状态：用于非 Modal 中使用 Form 时，需要 Form 自己控制禁用状态
+   * @author 芋道源码
+   * @param disabled 是否禁用
+   */
+  setDisabled(disabled: boolean) {
+    this.setState((prev) => ({
+      ...prev,
+      commonConfig: { ...prev.commonConfig, disabled },
+    }));
+  }
+
   async setFieldValue(field: string, value: any, shouldValidate?: boolean) {
     const form = await this.getForm();
     form.setFieldValue(field, value, shouldValidate);
