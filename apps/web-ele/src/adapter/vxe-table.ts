@@ -321,19 +321,22 @@ setupVbenVxeTable({
     // add by 星语：数量格式化，例如说：金额
     vxeUI.formats.add('formatNumber', {
       tableCellFormatMethod({ cellValue }) {
+        if (cellValue === null || cellValue === undefined) {
+          return '';
+        }
         return erpCountInputFormatter(cellValue);
       },
     });
 
     vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
-        return `${erpNumberFormatter(cellValue, digits)}元`;
+        return `${erpNumberFormatter(cellValue, digits)}`;
       },
     });
 
     vxeUI.formats.add('formatFenToYuanAmount', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
-        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}元`;
+        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}`;
       },
     });
   },
