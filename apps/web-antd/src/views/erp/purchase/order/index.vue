@@ -64,8 +64,6 @@ async function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch {
-    // 处理错误
   } finally {
     hideLoading();
   }
@@ -87,8 +85,6 @@ async function handleBatchDelete() {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch {
-    // 处理错误
   } finally {
     hideLoading();
   }

@@ -46,7 +46,7 @@ async function handleDelete(row: ErpSupplierApi.Supplier) {
     await deleteSupplier(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
-  } catch {
+  } finally {
     hideLoading();
   }
 }

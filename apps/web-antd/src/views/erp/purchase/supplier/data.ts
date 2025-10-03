@@ -75,8 +75,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: 'required',
-      defaultValue: CommonStatusEnum.ENABLE,
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'sort',

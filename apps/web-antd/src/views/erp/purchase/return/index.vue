@@ -66,8 +66,6 @@ async function handleDelete(ids: number[]) {
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch {
-    // 处理错误
   } finally {
     hideLoading();
   }
@@ -90,8 +88,6 @@ async function handleUpdateStatus(
       key: 'action_process_msg',
     });
     onRefresh();
-  } catch {
-    // 处理错误
   } finally {
     hideLoading();
   }
