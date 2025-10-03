@@ -1,5 +1,4 @@
 import { requestClient } from '#/api/request';
-import type {PageParam} from '@vben/request';
 
 export namespace ErpProductCategoryApi {
   /** ERP 产品分类信息 */
@@ -15,7 +14,7 @@ export namespace ErpProductCategoryApi {
 }
 
 /** 查询产品分类列表 */
-export function getProductCategoryList(params: any) {
+export function getProductCategoryList(params?: any) {
   return requestClient.get<ErpProductCategoryApi.ProductCategory[]>(
     '/erp/product-category/list',
     { params },
