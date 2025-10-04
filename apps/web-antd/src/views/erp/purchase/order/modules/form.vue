@@ -150,7 +150,6 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal
-    v-bind="$attrs"
     :title="getTitle"
     class="w-3/4"
     :show-confirm-button="formType !== 'detail'"

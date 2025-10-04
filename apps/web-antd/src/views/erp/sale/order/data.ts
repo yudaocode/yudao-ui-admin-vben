@@ -62,10 +62,10 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'saleUserId',
-      label: '创建人',
+      label: '销售人员',
       component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择创建人',
+        placeholder: '请选择销售人员',
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,

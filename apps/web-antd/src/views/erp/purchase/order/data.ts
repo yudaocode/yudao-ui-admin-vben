@@ -61,21 +61,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'purchaseUserId',
-      label: '创建人',
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择创建人',
-        allowClear: true,
-        showSearch: true,
-        api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-      },
-    },
-    {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
