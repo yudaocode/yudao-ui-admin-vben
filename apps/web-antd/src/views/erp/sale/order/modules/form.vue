@@ -52,7 +52,7 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-/** 更新商品项 */
+/** 更新销售订单项 */
 const handleUpdateItems = (items: ErpSaleOrderApi.SaleOrderItem[]) => {
   formData.value = modalApi.getData<ErpSaleOrderApi.SaleOrder>();
   formData.value.items = items;

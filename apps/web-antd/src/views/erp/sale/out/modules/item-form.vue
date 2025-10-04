@@ -17,14 +17,23 @@ import { useFormItemColumns } from '../data';
 interface Props {
   items?: ErpSaleOutApi.SaleOutItem[];
   disabled?: boolean;
+  discountPercent?: number;
+  otherPrice?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   disabled: false,
+  discountPercent: 0,
+  otherPrice: 0,
 });
 
-const emit = defineEmits(['update:items', 'update:totalPrice']);
+const emit = defineEmits([
+  'update:items',
+  'update:discount-price',
+  'update:other-price',
+  'update:total-price',
+]);
 
 const tableData = ref<ErpSaleOutApi.SaleOutItem[]>([]);
 const productOptions = ref<any[]>([]);
@@ -71,6 +80,32 @@ watch(
   {
     immediate: true,
   },
+);
+
+/** 计算 discountPrice、totalPrice 价格 */
+watch(
+  () => [tableData.value, props.discountPercent, props.otherPrice],
+  () => {
+    if (!tableData.value || tableData.value.length === 0) {
+      return;
+    }
+    const totalPrice = tableData.value.reduce(
+      (prev, curr) => prev + (curr.totalPrice || 0),
+      0,
+    );
+    const discountPrice =
+      props.discountPercent === null
+        ? 0
+        : erpPriceMultiply(totalPrice, props.discountPercent / 100);
+    const discountedPrice = totalPrice - discountPrice!;
+    const finalTotalPrice = discountedPrice + (props.otherPrice || 0);
+
+    // 通知父组件更新
+    emit('update:discount-price', discountPrice);
+    emit('update:other-price', props.otherPrice || 0);
+    emit('update:total-price', finalTotalPrice);
+  },
+  { deep: true },
 );
 
 /** 初始化 */

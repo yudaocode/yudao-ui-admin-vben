@@ -2,7 +2,7 @@
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 import type { ErpSaleOutApi } from '#/api/erp/sale/out';
 
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -67,25 +67,46 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(formType.value),
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
-    if (formData.value && changedFields.includes('otherPrice')) {
-      formData.value.otherPrice = values.otherPrice;
-      formData.value.totalPrice =
-        (formData.value.discountedPrice || 0) +
-        (formData.value.otherPrice || 0);
-      // TODO @芋艿：是否需要，去掉？
-      formApi.setValues(formData.value, false);
+    // 目的：同步到 item-form 组件，触发整体的价格计算
+    if (formData.value) {
+      if (changedFields.includes('otherPrice')) {
+        formData.value.otherPrice = values.otherPrice;
+      }
+      if (changedFields.includes('discountPercent')) {
+        formData.value.discountPercent = values.discountPercent;
+      }
     }
   },
 });
 
 /** 更新销售出库项 */
-const handleUpdateItems = async (items: ErpSaleOutApi.SaleOutItem[]) => {
-  if (formData.value) {
-    const data = await formApi.getValues();
-    formData.value = { ...data, items };
-    // TODO @芋艿：是否需要，去掉？
-    await formApi.setValues(formData.value, false);
-  }
+const handleUpdateItems = (items: ErpSaleOutApi.SaleOutItem[]) => {
+  formData.value.items = items;
+  formApi.setValues({
+    items,
+  });
+};
+
+/** 更新其他费用 */
+const handleUpdateOtherPrice = (otherPrice: number) => {
+  formApi.setValues({
+    otherPrice,
+  });
+};
+
+/** 更新优惠金额 */
+const handleUpdateDiscountPrice = (discountPrice: number) => {
+  formApi.setValues({
+    discountPrice,
+  });
+};
+
+/** 更新总金额 */
+const handleUpdateTotalPrice = (totalPrice: number) => {
+  formApi.setValues({
+    totalPrice,
+  });
+  formData.value.totalPrice = totalPrice;
 };
 
 /** 选择销售订单 */
@@ -115,42 +136,6 @@ const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formApi.setValues(formData.value, false);
 };
 
-// TODO @AI：不确定
-// watch(
-//   () => formData.value.items!,
-//   (newItems: ErpSaleOutApi.SaleOutItem[]) => {
-//     if (newItems && newItems.length > 0) {
-//       // 计算每个产品的总价、税额和总价
-//       newItems.forEach((item) => {
-//         item.totalProductPrice = (item.productPrice || 0) * (item.count || 0);
-//         item.taxPrice =
-//           (item.totalProductPrice || 0) * ((item.taxPercent || 0) / 100);
-//         item.totalPrice = (item.totalProductPrice || 0) + (item.taxPrice || 0);
-//       });
-//       // 计算总价
-//       formData.value.totalPrice = newItems.reduce((sum, item) => {
-//         return sum + (item.totalProductPrice || 0) + (item.taxPrice || 0);
-//       }, 0);
-//     } else {
-//       formData.value.totalPrice = 0;
-//     }
-//     // 优惠金额
-//     formData.value.discountPrice =
-//       ((formData.value.totalPrice || 0) *
-//         (formData.value.discountPercent || 0)) /
-//       100;
-//     // 优惠后价格
-//     formData.value.discountedPrice =
-//       formData.value.totalPrice - formData.value.discountPrice;
-//
-//     // 计算最终价格(包含其他费用)
-//     formData.value.totalPrice =
-//       formData.value.discountedPrice + (formData.value.otherPrice || 0);
-//     formApi.setValues(formData.value, false);
-//   },
-//   { immediate: true },
-// );
-
 /** 创建或更新销售出库 */
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -168,21 +153,9 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
-    // 验证产品清单不能为空
-    // TODO @芋艿：需要校验么？
-    if (!formData.value?.items || formData.value.items.length === 0) {
-      message.error('产品清单不能为空，请至少添加一个产品');
-      return;
-    }
-
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as ErpSaleOutApi.SaleOut;
-    data.items = formData.value?.items?.map((item) => ({
-      ...item,
-      // 解决新增销售出库报错
-      id: undefined,
-    }));
     try {
       await (formType.value === 'create'
         ? createSaleOut(data)
@@ -211,7 +184,7 @@ const [Modal, modalApi] = useVbenModal({
         otherPrice: 0,
         items: [],
       };
-      await formApi.setValues(formData.value, false);
+      // await formApi.setValues(formData.value, false);
       return;
     }
     // 加载数据
@@ -283,7 +256,12 @@ defineExpose({ modalApi });
           ref="itemFormRef"
           :items="formData?.items ?? []"
           :disabled="formType === 'detail'"
+          :discount-percent="formData?.discountPercent ?? 0"
+          :other-price="formData?.otherPrice ?? 0"
           @update:items="handleUpdateItems"
+          @update:discount-price="handleUpdateDiscountPrice"
+          @update:other-price="handleUpdateOtherPrice"
+          @update:total-price="handleUpdateTotalPrice"
         />
       </template>
       <template #orderNo>
