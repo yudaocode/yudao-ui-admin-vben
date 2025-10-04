@@ -366,7 +366,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',
-        filterOption: false,
       },
     },
     {

@@ -193,7 +193,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getSupplierSimpleList,
         labelField: 'name',
         valueField: 'id',
-        filterOption: false,
       },
     },
     {
@@ -237,7 +236,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
-        filterOption: false,
       },
     },
   ];
