@@ -12,7 +12,7 @@ import { useVbenForm } from '#/adapter/form';
 import { createSaleOut, getSaleOut, updateSaleOut } from '#/api/erp/sale/out';
 
 import { useFormSchema } from '../data';
-import SaleOutItemForm from './sale-out-item-form.vue';
+import ItemForm from './item-form.vue';
 import SelectSaleOrderForm from './select-sale-order-form.vue';
 
 const emit = defineEmits(['success']);
@@ -42,8 +42,8 @@ const formData = ref<
   discountedPrice: 0,
   items: [],
 });
-const formType = ref('');
-const itemFormRef = ref();
+const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
+const itemFormRef = ref<InstanceType<typeof ItemForm>>();
 
 const getTitle = computed(() => {
   if (formType.value === 'create') return '添加销售出库';
@@ -74,7 +74,7 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-// 更新销售出库项
+/** 更新销售出库项 */
 const handleUpdateItems = async (items: ErpSaleOutApi.SaleOutItem[]) => {
   if (formData.value) {
     const data = await formApi.getValues();
@@ -83,7 +83,7 @@ const handleUpdateItems = async (items: ErpSaleOutApi.SaleOutItem[]) => {
   }
 };
 
-// 选择采购订单
+/** 选择销售订单 */
 const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formData.value = {
     ...formData.value,
@@ -95,7 +95,7 @@ const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
     discountPercent: order.discountPercent!,
     fileUrl: order.fileUrl!,
   };
-  // 将订单项设置到入库单项
+  // 将订单项设置到出库单项
   order.items!.forEach((item: any) => {
     item.totalCount = item.count;
     item.count = item.totalCount - item.outCount;
@@ -286,8 +286,8 @@ defineExpose({ modalApi });
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
-      <template #product="slotProps">
-        <SaleOutItemForm
+      <template #items="slotProps">
+        <ItemForm
           v-bind="slotProps"
           ref="itemFormRef"
           class="w-full"

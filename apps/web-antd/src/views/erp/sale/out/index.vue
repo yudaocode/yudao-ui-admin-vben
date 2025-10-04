@@ -19,7 +19,7 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import SaleOutForm from './modules/sale-out-form.vue';
+import SaleOutForm from './modules/form.vue';
 
 /** ERP 销售出库列表 */
 defineOptions({ name: 'ErpSaleOut' });
@@ -30,11 +30,56 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-// TODO @Xuzhiqiang：批量删除待实现
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportSaleOut(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '销售出库.xls', source: data });
+}
+
+/** 新增销售出库 */
+function handleCreate() {
+  formModalApi.setData({ type: 'create' }).open();
+}
+
+/** 编辑销售出库 */
+function handleEdit(row: ErpSaleOutApi.SaleOut) {
+  formModalApi.setData({ type: 'edit', id: row.id }).open();
+}
+
+/** 删除销售出库 */
+async function handleDelete(ids: number[]) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting'),
+    duration: 0,
+  });
+  try {
+    await deleteSaleOut(ids);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 审批/反审批操作 */
+async function handleUpdateStatus(row: ErpSaleOutApi.SaleOut, status: number) {
+  const hideLoading = message.loading({
+    content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
+    duration: 0,
+  });
+  try {
+    await updateSaleOutStatus(row.id!, status);
+    message.success(`${status === 20 ? '审批' : '反审批'}成功`);
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
@@ -44,67 +89,9 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 详情 */
+/** 查看详情 */
 function handleDetail(row: ErpSaleOutApi.SaleOut) {
   formModalApi.setData({ type: 'detail', id: row.id }).open();
-}
-
-/** 新增 */
-function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
-}
-
-/** 编辑 */
-function handleEdit(row: ErpSaleOutApi.SaleOut) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
-}
-
-/** 删除 */
-async function handleDelete(ids: number[]) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  try {
-    await deleteSaleOut(ids);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_process_msg',
-    });
-    onRefresh();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 审批/反审批操作 */
-function handleUpdateStatus(row: ErpSaleOutApi.SaleOut, status: number) {
-  const hideLoading = message.loading({
-    content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  updateSaleOutStatus({ id: row.id!, status })
-    .then(() => {
-      message.success({
-        content: `${status === 20 ? '审批' : '反审批'}成功`,
-        key: 'action_process_msg',
-      });
-      onRefresh();
-    })
-    .catch(() => {
-      // 处理错误
-    })
-    .finally(() => {
-      hideLoading();
-    });
-}
-
-/** 导出 */
-async function handleExport() {
-  const data = await exportSaleOut(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '销售出库.xls', source: data });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -150,8 +137,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/erp/sale/"
       />
     </template>
-    <FormModal @success="onRefresh" />
 
+    <FormModal @success="handleRefresh" />
     <Grid table-title="销售出库列表">
       <template #toolbar-tools>
         <TableAction
@@ -178,11 +165,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['erp:sale-out:delete'],
               popConfirm: {
-                disabled: isEmpty(checkedIds),
                 title: `是否删除所选中数据？`,
-                confirm: () => {
-                  handleDelete(checkedIds);
-                },
+                confirm: handleDelete.bind(null, checkedIds),
               },
             },
           ]"
@@ -227,7 +211,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['erp:sale-out:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.no]),
-                confirm: () => handleDelete([row.id!]),
+                confirm: handleDelete.bind(null, [row.id!]),
               },
             },
           ]"

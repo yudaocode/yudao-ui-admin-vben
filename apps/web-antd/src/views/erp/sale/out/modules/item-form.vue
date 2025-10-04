@@ -12,7 +12,12 @@ import { getProductSimpleList } from '#/api/erp/product/product';
 import { getWarehouseStockCount } from '#/api/erp/stock/stock';
 import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
 
-import { useSaleOutItemTableColumns } from '../data';
+import { useFormItemColumns } from '../data';
+
+interface Props {
+  items?: ErpSaleOutApi.SaleOutItem[];
+  disabled?: boolean;
+}
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
@@ -20,11 +25,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['update:items', 'update:totalPrice']);
-
-interface Props {
-  items?: ErpSaleOutApi.SaleOutItem[];
-  disabled?: boolean;
-}
 
 const tableData = ref<ErpSaleOutApi.SaleOutItem[]>([]);
 const productOptions = ref<any[]>([]);
@@ -37,7 +37,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'click',
       mode: 'cell',
     },
-    columns: useSaleOutItemTableColumns(),
+    columns: useFormItemColumns(),
     data: tableData.value,
     border: true,
     showOverflow: true,
