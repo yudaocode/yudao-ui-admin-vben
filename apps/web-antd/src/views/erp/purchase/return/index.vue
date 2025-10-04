@@ -19,53 +19,55 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import PurchaseInForm from './modules/purchase-return-form.vue';
+import Form from './modules/form.vue';
 
-/** ERP 采购入库列表 */
-defineOptions({ name: 'ErpPurchaseIn' });
+/** ERP 采购退货列表 */
+defineOptions({ name: 'ErpPurchaseReturn' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: PurchaseInForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-// TODO @Xuzhiqiang：批量删除待实现
 const checkedIds = ref<number[]>([]);
-
-/** 详情 */
-function handleDetail(row: ErpPurchaseReturnApi.PurchaseReturn) {
-  formModalApi.setData({ type: 'detail', id: row.id }).open();
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: ErpPurchaseReturnApi.PurchaseReturn[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 新增 */
+/** 新增采购退货 */
 function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-/** 编辑 */
+/** 编辑采购退货 */
 function handleEdit(row: ErpPurchaseReturnApi.PurchaseReturn) {
   formModalApi.setData({ type: 'edit', id: row.id }).open();
 }
 
-/** 删除 */
+/** 查看详情 */
+function handleDetail(row: ErpPurchaseReturnApi.PurchaseReturn) {
+  formModalApi.setData({ type: 'detail', id: row.id }).open();
+}
+
+/** 删除采购退货 */
 async function handleDelete(ids: number[]) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deletePurchaseReturn(ids);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_process_msg',
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -79,21 +81,17 @@ async function handleUpdateStatus(
   const hideLoading = message.loading({
     content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await updatePurchaseReturnStatus({ id: row.id!, status });
-    message.success({
-      content: `${status === 20 ? '审批' : '反审批'}成功`,
-      key: 'action_process_msg',
-    });
-    onRefresh();
+    await updatePurchaseReturnStatus(row.id!, status);
+    message.success(`${status === 20 ? '审批' : '反审批'}成功`);
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-/** 导出 */
+/** 导出表格 */
 async function handleExport() {
   const data = await exportPurchaseReturn(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '采购退货.xls', source: data });
@@ -127,6 +125,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<ErpPurchaseReturnApi.PurchaseReturn>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -138,7 +140,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/erp/purchase/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="采购退货列表">
       <template #toolbar-tools>
@@ -167,14 +169,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['erp:purchase-return:delete'],
               popConfirm: {
                 title: `是否删除所选中数据？`,
-                confirm: () => {
-                  const checkboxRecords = gridApi.grid.getCheckboxRecords();
-                  if (checkboxRecords.length === 0) {
-                    message.warning('请选择要删除的数据');
-                    return;
-                  }
-                  handleDelete(checkboxRecords.map((item) => item.id!));
-                },
+                confirm: handleDelete.bind(null, checkedIds),
               },
             },
           ]"
