@@ -4,33 +4,47 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { createRequiredValidation } from '#/adapter/vxe-table';
+import { getProductSimpleList } from '#/api/erp/product/product';
 import { getSupplierSimpleList } from '#/api/erp/purchase/supplier';
+import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
 import { getSimpleUserList } from '#/api/system/user';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单的配置项 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(formType: string): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
-      componentProps: {
-        style: { display: 'none' },
-      },
       fieldName: 'id',
-      label: 'ID',
-      hideLabel: true,
-      formItemClass: 'hidden',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
+      fieldName: 'no',
+      label: '入库单号',
       component: 'Input',
       componentProps: {
         placeholder: '系统自动生成',
         disabled: true,
       },
-      fieldName: 'no',
-      label: '入库单号',
     },
     {
+      fieldName: 'inTime',
+      label: '入库时间',
+      component: 'DatePicker',
+      componentProps: {
+        placeholder: '选择入库时间',
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
+      },
+      rules: 'required',
+    },
+    {
+      label: '供应商',
+      fieldName: 'supplierId',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择供应商',
@@ -42,34 +56,22 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'supplierId',
-      label: '供应商',
-    },
-    {
-      component: 'DatePicker',
-      componentProps: {
-        placeholder: '选择入库时间',
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-        style: { width: '100%' },
-      },
-      fieldName: 'inTime',
-      label: '入库时间',
       rules: 'required',
     },
     {
+      fieldName: 'remark',
+      label: '备注',
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        autoSize: { minRows: 2, maxRows: 4 },
-        class: 'w-full',
+        autoSize: { minRows: 1, maxRows: 1 },
+        disabled: formType === 'detail',
       },
-      fieldName: 'remark',
-      label: '备注',
-      formItemClass: 'col-span-3',
+      formItemClass: 'col-span-2',
     },
     {
+      fieldName: 'fileUrl',
+      label: '附件',
       component: 'FileUpload',
       componentProps: {
         maxNumber: 1,
@@ -85,25 +87,22 @@ export function useFormSchema(): VbenFormSchema[] {
           'jpeg',
           'png',
         ],
-        showDescription: true,
+        showDescription: formType !== 'detail',
+        disabled: formType === 'detail',
       },
-      fieldName: 'fileUrl',
-      label: '附件',
       formItemClass: 'col-span-3',
     },
     {
-      fieldName: 'product',
-      label: '产品清单',
+      fieldName: 'items',
+      label: '入库产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
   ];
 }
 
-/** 入库产品清单表格列定义 */
-export function useStockInItemTableColumns(
-  isValidating?: any,
-): VxeTableGridOptions['columns'] {
+/** 表单的明细表格列 */
+export function useFormItemColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
@@ -111,19 +110,17 @@ export function useStockInItemTableColumns(
       title: '仓库名称',
       minWidth: 150,
       slots: { default: 'warehouseId' },
-      className: createRequiredValidation(isValidating, 'warehouseId'),
     },
     {
       field: 'productId',
       title: '产品名称',
       minWidth: 200,
       slots: { default: 'productId' },
-      className: createRequiredValidation(isValidating, 'productId'),
     },
     {
       field: 'stockCount',
       title: '库存',
-      minWidth: 100,
+      minWidth: 80,
     },
     {
       field: 'productBarCode',
@@ -136,30 +133,31 @@ export function useStockInItemTableColumns(
       minWidth: 80,
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
+    },
+    {
       field: 'count',
       title: '数量',
       minWidth: 120,
+      fixed: 'right',
       slots: { default: 'count' },
-      className: createRequiredValidation(isValidating, 'count'),
-      formatter: 'formatAmount3',
     },
     {
       field: 'productPrice',
       title: '产品单价',
       minWidth: 120,
+      fixed: 'right',
       slots: { default: 'productPrice' },
     },
     {
       field: 'totalPrice',
       title: '金额',
       minWidth: 120,
+      fixed: 'right',
       formatter: 'formatAmount2',
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 150,
-      slots: { default: 'remark' },
     },
     {
       title: '操作',
@@ -183,6 +181,30 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'productId',
+      label: '产品',
+      component: 'ApiSelect',
+      componentProps: {
+        placeholder: '请选择产品',
+        allowClear: true,
+        showSearch: true,
+        api: getProductSimpleList,
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'inTime',
+      label: '入库时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
+    {
       fieldName: 'supplierId',
       label: '供应商',
       component: 'ApiSelect',
@@ -191,38 +213,25 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getSupplierSimpleList,
-        labelField: 'name',
-        valueField: 'id',
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
       },
     },
     {
-      fieldName: 'inTime',
-      label: '入库时间',
-      component: 'RangePicker',
+      fieldName: 'warehouseId',
+      label: '仓库',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: ['开始日期', '结束日期'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
-      },
-    },
-    {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择状态',
+        placeholder: '请选择仓库',
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
-      },
-    },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入备注',
-        allowClear: true,
+        showSearch: true,
+        api: getWarehouseSimpleList,
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
       },
     },
     {
@@ -234,8 +243,29 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,
-        labelField: 'nickname',
-        valueField: 'id',
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
+        placeholder: '请选择状态',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入备注',
+        allowClear: true,
       },
     },
   ];
@@ -252,13 +282,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'no',
       title: '入库单号',
-      minWidth: 180,
+      width: 200,
+      fixed: 'left',
     },
     {
       field: 'productNames',
       title: '产品信息',
-      minWidth: 200,
       showOverflow: 'tooltip',
+      minWidth: 120,
     },
     {
       field: 'supplierName',
@@ -268,21 +299,30 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'inTime',
       title: '入库时间',
-      minWidth: 180,
-      cellRender: {
-        name: 'CellDateTime',
-      },
+      width: 160,
+      formatter: 'formatDate',
     },
     {
       field: 'creatorName',
       title: '创建人',
-      minWidth: 100,
+      minWidth: 120,
+    },
+    {
+      field: 'totalCount',
+      title: '总数量',
+      formatter: 'formatAmount3',
+      minWidth: 120,
+    },
+    {
+      field: 'totalPrice',
+      title: '总金额',
+      formatter: 'formatAmount2',
+      minWidth: 120,
     },
     {
       field: 'status',
       title: '状态',
-      minWidth: 90,
-      fixed: 'right',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.ERP_AUDIT_STATUS },
@@ -290,7 +330,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 300,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },
