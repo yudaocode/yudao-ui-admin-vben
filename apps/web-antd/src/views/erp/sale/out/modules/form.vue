@@ -14,7 +14,7 @@ import { createSaleOut, getSaleOut, updateSaleOut } from '#/api/erp/sale/out';
 
 import { useFormSchema } from '../data';
 import ItemForm from './item-form.vue';
-import SelectSaleOrderForm from './select-sale-order-form.vue';
+import SaleOrderSelect from './sale-order-select.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<
@@ -106,7 +106,6 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
   formApi.setValues({
     totalPrice,
   });
-  formData.value.totalPrice = totalPrice;
 };
 
 /** 选择销售订单 */
@@ -131,6 +130,7 @@ const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formData.value.items = order.items!.filter(
     (item) => item.count && item.count > 0,
   ) as ErpSaleOutApi.SaleOutItem[];
+  formApi.setValues(formData.value, false);
 };
 
 /** 创建或更新销售出库 */
@@ -224,7 +224,7 @@ const [Modal, modalApi] = useVbenModal({
         />
       </template>
       <template #orderNo>
-        <SelectSaleOrderForm
+        <SaleOrderSelect
           :order-no="formData?.orderNo"
           @update:order="handleUpdateOrder"
         />
