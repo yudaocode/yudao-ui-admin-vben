@@ -94,6 +94,9 @@ watch(
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
+    // 更新表格列配置（目的：原数量、已出库动态列）
+    const columns = useFormItemColumns(tableData.value);
+    await gridApi.grid.reloadColumn(columns);
   },
   {
     immediate: true,

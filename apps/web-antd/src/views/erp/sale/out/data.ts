@@ -214,7 +214,9 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
 }
 
 /** 表单的明细表格列 */
-export function useFormItemColumns(): VxeTableGridOptions['columns'] {
+export function useFormItemColumns(
+  formData?: any[],
+): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
@@ -249,6 +251,22 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       title: '备注',
       minWidth: 150,
       slots: { default: 'remark' },
+    },
+    {
+      field: 'totalCount',
+      title: '原数量',
+      formatter: 'formatAmount3',
+      minWidth: 120,
+      fixed: 'right',
+      visible: formData && formData[0]?.outCount !== undefined,
+    },
+    {
+      field: 'outCount',
+      title: '已出库',
+      formatter: 'formatAmount3',
+      minWidth: 120,
+      fixed: 'right',
+      visible: formData && formData[0]?.returnCount !== undefined,
     },
     {
       field: 'count',
