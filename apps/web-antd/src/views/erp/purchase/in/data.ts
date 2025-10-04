@@ -189,7 +189,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择结算账户',
-        disabled: true,
         allowClear: true,
         showSearch: true,
         api: getAccountSimpleList,
@@ -412,6 +411,21 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入关联订单号',
         allowClear: true,
+      },
+    },
+    {
+      fieldName: 'accountId',
+      label: '结算账户',
+      component: 'ApiSelect',
+      componentProps: {
+        placeholder: '请选择结算账户',
+        allowClear: true,
+        showSearch: true,
+        api: getAccountSimpleList,
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
       },
     },
     {

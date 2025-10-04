@@ -66,7 +66,10 @@ async function handleDelete(ids: number[]) {
 }
 
 /** 审批/反审批操作 */
-async function handleUpdateStatus(row: ErpPurchaseInApi.PurchaseIn, status: number) {
+async function handleUpdateStatus(
+  row: ErpPurchaseInApi.PurchaseIn,
+  status: number,
+) {
   const hideLoading = message.loading({
     content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
     duration: 0,
