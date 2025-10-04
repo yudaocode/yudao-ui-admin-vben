@@ -7,7 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input, message, Modal } from 'ant-design-vue';
 
-import SelectPurchaseOrderGrid from './select-purchase-order-grid.vue';
+import SelectPurchaseOrderGrid from './purchase-order-select-grid.vue';
 
 const props = defineProps({
   orderNo: {
