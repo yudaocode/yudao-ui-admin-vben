@@ -2,7 +2,7 @@
 import type { ErpSaleOrderApi } from '#/api/erp/sale/order';
 import type { ErpSaleOutApi } from '#/api/erp/sale/out';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -110,7 +110,6 @@ const handleUpdateTotalPrice = (totalPrice: number) => {
 };
 
 /** 选择销售订单 */
-// TODO @AI：不确定
 const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formData.value = {
     ...formData.value,
@@ -132,8 +131,6 @@ const handleUpdateOrder = (order: ErpSaleOrderApi.SaleOrder) => {
   formData.value.items = order.items!.filter(
     (item) => item.count && item.count > 0,
   ) as ErpSaleOutApi.SaleOutItem[];
-
-  formApi.setValues(formData.value, false);
 };
 
 /** 创建或更新销售出库 */
@@ -184,64 +181,26 @@ const [Modal, modalApi] = useVbenModal({
         otherPrice: 0,
         items: [],
       };
-      // await formApi.setValues(formData.value, false);
       return;
     }
     // 加载数据
     const data = modalApi.getData<{ id?: number; type: string }>();
-    if (!data) {
-      return;
-    }
     formType.value = data.type;
+    formApi.setDisabled(formType.value === 'detail');
     formApi.updateSchema(useFormSchema(formType.value));
-
-    if (!data.id) {
-      // 初始化空的表单数据
-      formData.value = {
-        id: undefined,
-        no: undefined,
-        accountId: undefined,
-        outTime: undefined,
-        remark: undefined,
-        fileUrl: undefined,
-        discountPercent: 0,
-        customerId: undefined,
-        discountPrice: 0,
-        totalPrice: 0,
-        otherPrice: 0,
-        items: [],
-      } as unknown as ErpSaleOutApi.SaleOut;
-      await nextTick();
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init([]);
-      }
+    if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getSaleOut(data.id);
-
       // 设置到 values
       await formApi.setValues(formData.value, false);
-      // 初始化子表单
-      await nextTick();
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init(formData.value.items || []);
-      }
     } finally {
       modalApi.unlock();
     }
   },
 });
-
-defineExpose({ modalApi });
 </script>
 
 <template>
