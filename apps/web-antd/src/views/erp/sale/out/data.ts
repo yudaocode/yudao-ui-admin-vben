@@ -34,6 +34,30 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'outTime',
+      label: '出库时间',
+      component: 'DatePicker',
+      componentProps: {
+        disabled: formType === 'detail',
+        placeholder: '选择出库时间',
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'orderNo',
+      label: '关联订单',
+      component: 'Input',
+      formItemClass: 'col-span-1',
+      rules: 'required',
+      componentProps: {
+        placeholder: '请选择关联订单',
+        disabled: formType === 'detail',
+      },
+    },
+    {
       fieldName: 'customerId',
       label: '客户',
       component: 'ApiSelect',
@@ -51,28 +75,19 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'orderNo',
-      label: '关联订单',
-      component: 'Input',
-      formItemClass: 'col-span-1',
-      rules: 'required',
+      fieldName: 'saleUserId',
+      label: '销售人员',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择关联订单',
-        disabled: formType === 'detail',
+        placeholder: '请选择销售人员',
+        allowClear: true,
+        showSearch: true,
+        api: getSimpleUserList,
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
       },
-    },
-    {
-      fieldName: 'outTime',
-      label: '出库时间',
-      component: 'DatePicker',
-      componentProps: {
-        disabled: formType === 'detail',
-        placeholder: '选择出库时间',
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-      },
-      rules: 'required',
     },
     {
       fieldName: 'remark',
@@ -128,7 +143,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'discountPrice',
-      label: '付款优惠',
+      label: '收款优惠',
       component: 'InputNumber',
       componentProps: {
         placeholder: '付款优惠',
@@ -182,6 +197,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       componentProps: {
         precision: 2,
         min: 0,
+        disabled: true
       },
       rules: z.number().min(0).optional(),
     },
@@ -220,14 +236,10 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       minWidth: 80,
     },
     {
-      field: 'totalCount',
-      title: '原数量',
-      minWidth: 120,
-    },
-    {
-      field: 'outCount',
-      title: '已出库数量',
-      minWidth: 120,
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
     },
     {
       field: 'count',
@@ -254,7 +266,8 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       fixed: 'right',
       field: 'taxPercent',
       title: '税率(%)',
-      minWidth: 100,
+      minWidth: 105,
+      slots: { default: 'taxPercent' },
     },
     {
       fixed: 'right',
@@ -269,6 +282,12 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       title: '合计金额',
       minWidth: 120,
       formatter: 'formatAmount2',
+    },
+    {
+      title: '操作',
+      width: 50,
+      fixed: 'right',
+      slots: { default: 'actions' },
     },
   ];
 }

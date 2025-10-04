@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import type { ErpSaleOutApi } from '#/api/erp/sale/out';
+import type {ErpSaleOutApi, SaleOutItem} from '#/api/erp/sale/out';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
 import { erpPriceMultiply } from '@vben/utils';
 
-import { InputNumber, Select } from 'ant-design-vue';
+import {Input, InputNumber, Select} from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {TableAction, useVbenVxeGrid} from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getWarehouseStockCount } from '#/api/erp/stock/stock';
 import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
@@ -186,6 +186,16 @@ const init = (items: ErpSaleOutApi.SaleOutItem[] | undefined): void => {
   });
 };
 
+/** 处理删除 */
+function handleDelete(row: ErpSaleOutApi.SaleOutItem) {
+  const index = tableData.value.findIndex((item) => item.id === row.id);
+  if (index !== -1) {
+    tableData.value.splice(index, 1);
+  }
+  // 通知父组件更新
+  emit('update:items', [...tableData.value]);
+}
+
 defineExpose({
   validate,
   getData,
@@ -218,7 +228,6 @@ defineExpose({
         show-search
       />
     </template>
-
     <template #count="{ row }">
       <InputNumber
         v-if="!disabled"
@@ -236,6 +245,37 @@ defineExpose({
         :min="0"
         :precision="2"
         @change="handlePriceChange(row)"
+      />
+    </template>
+    <template #remark="{ row }">
+      <Input v-if="!disabled" v-model:value="row.remark" class="w-full" />
+      <span v-else>{{ row.remark || '-' }}</span>
+    </template>
+    <template #taxPercent="{ row }">
+      <InputNumber
+        v-if="!disabled"
+        v-model:value="row.taxPercent"
+        :min="0"
+        :max="100"
+        :precision="2"
+        @change="handlePriceChange(row)"
+      />
+      <span v-else>{{ row.taxPercent || '-' }}</span>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        v-if="!disabled"
+        :actions="[
+          {
+            label: '删除',
+            type: 'link',
+            danger: true,
+            popConfirm: {
+              title: '确认删除该产品吗？',
+              confirm: handleDelete.bind(null, row),
+            },
+          },
+        ]"
       />
     </template>
 

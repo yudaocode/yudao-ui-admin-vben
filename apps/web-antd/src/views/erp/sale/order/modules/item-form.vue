@@ -255,6 +255,10 @@ onMounted(async () => {
       />
       <span v-else>{{ row.productPrice || '-' }}</span>
     </template>
+    <template #remark="{ row }">
+      <Input v-if="!disabled" v-model:value="row.remark" class="w-full" />
+      <span v-else>{{ row.remark || '-' }}</span>
+    </template>
     <template #taxPercent="{ row }">
       <InputNumber
         v-if="!disabled"
@@ -265,10 +269,6 @@ onMounted(async () => {
         @change="handleRowChange(row)"
       />
       <span v-else>{{ row.taxPercent || '-' }}</span>
-    </template>
-    <template #remark="{ row }">
-      <Input v-if="!disabled" v-model:value="row.remark" class="w-full" />
-      <span v-else>{{ row.remark || '-' }}</span>
     </template>
     <template #actions="{ row }">
       <TableAction

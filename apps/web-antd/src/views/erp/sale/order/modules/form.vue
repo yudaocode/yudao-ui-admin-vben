@@ -42,7 +42,7 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema(formType.value),
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
     // 目的：同步到 item-form 组件，触发整体的价格计算
@@ -95,7 +95,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as ErpSaleOrderApi.SaleOrder;
-    data.items = formData.value?.items;
     try {
       await (formType.value === 'create'
         ? createSaleOrder(data)
