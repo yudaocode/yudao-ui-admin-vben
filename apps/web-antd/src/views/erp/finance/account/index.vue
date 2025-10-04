@@ -24,7 +24,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -52,10 +52,8 @@ async function handleDelete(row: ErpAccountApi.Account) {
   });
   try {
     await deleteAccount(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -100,7 +98,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/sale/finance-payment-receipt/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="结算账户列表">
       <template #toolbar-tools>
         <TableAction
