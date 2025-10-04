@@ -11,44 +11,39 @@ import { getProductSimpleList } from '#/api/erp/product/product';
 import { getCustomerSimpleList } from '#/api/erp/sale/customer';
 import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
 import { getSimpleUserList } from '#/api/system/user';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单的配置项 */
 export function useFormSchema(formType: string): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
-      componentProps: {
-        style: { display: 'none' },
-      },
       fieldName: 'id',
-      label: 'ID',
-      hideLabel: true,
-      formItemClass: 'hidden',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
+      fieldName: 'no',
+      label: '退货单号',
       component: 'Input',
       componentProps: {
         placeholder: '系统自动生成',
         disabled: true,
       },
-      fieldName: 'no',
-      label: '退货单号',
     },
     {
-      component: 'ApiSelect',
+      fieldName: 'returnTime',
+      label: '退货时间',
+      component: 'DatePicker',
       componentProps: {
-        disabled: true,
-        placeholder: '请选择客户',
-        allowClear: true,
-        showSearch: true,
-        api: getCustomerSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        disabled: formType === 'detail',
+        placeholder: '选择退货时间',
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
       },
-      fieldName: 'customerId',
-      label: '客户',
       rules: 'required',
     },
     {
@@ -63,35 +58,53 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       },
     },
     {
-      component: 'DatePicker',
+      fieldName: 'customerId',
+      label: '客户',
+      component: 'ApiSelect',
       componentProps: {
-        disabled: formType === 'detail',
-        placeholder: '选择退货时间',
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-        style: { width: '100%' },
+        disabled: true,
+        placeholder: '请选择客户',
+        allowClear: true,
+        showSearch: true,
+        api: getCustomerSimpleList,
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
       },
-      fieldName: 'returnTime',
-      label: '退货时间',
       rules: 'required',
     },
     {
+      fieldName: 'saleUserId',
+      label: '销售人员',
+      component: 'ApiSelect',
+      componentProps: {
+        placeholder: '请选择销售人员',
+        allowClear: true,
+        showSearch: true,
+        api: getSimpleUserList,
+        fieldNames: {
+          label: 'nickname',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        disabled: formType === 'detail',
         autoSize: { minRows: 1, maxRows: 1 },
-        class: 'w-full',
+        disabled: formType === 'detail',
       },
-      fieldName: 'remark',
       formItemClass: 'col-span-2',
-      label: '备注',
     },
     {
+      fieldName: 'fileUrl',
+      label: '附件',
       component: 'FileUpload',
       componentProps: {
-        disabled: formType === 'detail',
         maxNumber: 1,
         maxSize: 10,
         accept: [
@@ -105,69 +118,65 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
           'jpeg',
           'png',
         ],
-        showDescription: true,
+        showDescription: formType !== 'detail',
+        disabled: formType === 'detail',
       },
-      fieldName: 'fileUrl',
-      label: '附件',
       formItemClass: 'col-span-3',
     },
     {
-      fieldName: 'product',
+      fieldName: 'items',
       label: '产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
     {
-      component: 'InputNumber',
       fieldName: 'discountPercent',
+      label: '优惠率(%)',
+      component: 'InputNumber',
       componentProps: {
-        placeholder: '优惠率',
+        placeholder: '请输入优惠率',
         min: 0,
         max: 100,
-        disabled: true,
         precision: 2,
-        style: { width: '100%' },
       },
-
-      label: '优惠率(%)',
+      rules: z.number().min(0).optional(),
     },
     {
+      fieldName: 'discountPrice',
+      label: '收款优惠',
       component: 'InputNumber',
       componentProps: {
         placeholder: '付款优惠',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'discountPrice',
-      label: '付款优惠',
     },
     {
+      fieldName: 'discountedPrice',
+      label: '优惠后金额',
       component: 'InputNumber',
       componentProps: {
         placeholder: '优惠后金额',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'discountedPrice',
-      label: '优惠后金额',
     },
     {
+      fieldName: 'otherPrice',
+      label: '其他费用',
       component: 'InputNumber',
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '请输入其他费用',
         precision: 2,
         formatter: erpPriceInputFormatter,
-        style: { width: '100%' },
       },
-      fieldName: 'otherPrice',
-      label: '其他费用',
     },
     {
+      fieldName: 'accountId',
+      label: '结算账户',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择结算账户',
@@ -180,26 +189,23 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'accountId',
-      label: '结算账户',
     },
     {
+      fieldName: 'totalPrice',
+      label: '应收金额',
       component: 'InputNumber',
       componentProps: {
         precision: 2,
-        style: { width: '100%' },
-        disabled: true,
         min: 0,
+        disabled: true,
       },
-      fieldName: 'totalPrice',
-      label: '应退金额',
       rules: z.number().min(0).optional(),
     },
   ];
 }
 
-/** 采购订单项表格列定义 */
-export function useSaleReturnItemTableColumns(): VxeTableGridOptions['columns'] {
+/** 表单的明细表格列 */
+export function useFormItemColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
@@ -216,7 +222,7 @@ export function useSaleReturnItemTableColumns(): VxeTableGridOptions['columns'] 
     },
     {
       field: 'stockCount',
-      title: '仓库库存',
+      title: '库存',
       minWidth: 80,
     },
     {
@@ -228,6 +234,12 @@ export function useSaleReturnItemTableColumns(): VxeTableGridOptions['columns'] 
       field: 'productUnitName',
       title: '单位',
       minWidth: 80,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
     },
     {
       field: 'totalCount',
@@ -266,7 +278,8 @@ export function useSaleReturnItemTableColumns(): VxeTableGridOptions['columns'] 
       fixed: 'right',
       field: 'taxPercent',
       title: '税率(%)',
-      minWidth: 100,
+      minWidth: 105,
+      slots: { default: 'taxPercent' },
     },
     {
       fixed: 'right',
@@ -281,6 +294,12 @@ export function useSaleReturnItemTableColumns(): VxeTableGridOptions['columns'] 
       title: '合计金额',
       minWidth: 120,
       formatter: 'formatAmount2',
+    },
+    {
+      title: '操作',
+      width: 50,
+      fixed: 'right',
+      slots: { default: 'actions' },
     },
   ];
 }
@@ -317,10 +336,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '退货时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
     {
@@ -378,26 +395,26 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'refundStatus',
-      label: '退货状态',
+      label: '退款状态',
       component: 'Select',
       componentProps: {
         options: [
-          { label: '未退货', value: 0 },
-          { label: '部分退货', value: 1 },
-          { label: '全部退货', value: 2 },
+          { label: '未退款', value: 0 },
+          { label: '部分退款', value: 1 },
+          { label: '全部退款', value: 2 },
         ],
-        placeholder: '请选择退货状态',
+        placeholder: '请选择退款状态',
         allowClear: true,
       },
     },
     {
       fieldName: 'status',
-      label: '状态',
+      label: '审批状态',
       component: 'Select',
       componentProps: {
-        placeholder: '请选择状态',
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
+        placeholder: '请选择审批状态',
+        allowClear: true,
       },
     },
     {
@@ -456,7 +473,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'totalPrice',
-      title: '应退金额',
+      title: '应收金额',
       formatter: 'formatAmount2',
       minWidth: 120,
     },
@@ -476,7 +493,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'status',
-      title: '状态',
+      title: '审批状态',
       minWidth: 120,
       cellRender: {
         name: 'CellDict',
@@ -485,12 +502,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      minWidth: 250,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },
   ];
 }
+
 /** 列表的搜索表单 */
 export function useOrderGridFormSchema(): VbenFormSchema[] {
   return [
@@ -501,7 +519,6 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入订单单号',
         allowClear: true,
-        disabled: true,
       },
     },
     {
@@ -524,10 +541,8 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       label: '订单时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];
