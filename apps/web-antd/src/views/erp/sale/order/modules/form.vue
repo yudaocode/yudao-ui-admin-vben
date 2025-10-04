@@ -117,6 +117,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{ id?: number; type: string }>();
     formType.value = data.type;
     formApi.setDisabled(formType.value === 'detail');
+    formApi.updateSchema(useFormSchema(formType.value));
     if (!data || !data.id) {
       // 新增时，默认选中账户
       const accountList = await getAccountSimpleList();

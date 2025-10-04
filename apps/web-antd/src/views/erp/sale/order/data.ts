@@ -13,7 +13,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单的配置项 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(formType: string): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -82,6 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入备注',
         autoSize: { minRows: 1, maxRows: 1 },
+        disabled: formType === 'detail',
       },
       formItemClass: 'col-span-2',
     },
@@ -103,7 +104,8 @@ export function useFormSchema(): VbenFormSchema[] {
           'jpeg',
           'png',
         ],
-        showDescription: true,
+        showDescription: formType !== 'detail',
+        disabled: formType === 'detail',
       },
       formItemClass: 'col-span-3',
     },

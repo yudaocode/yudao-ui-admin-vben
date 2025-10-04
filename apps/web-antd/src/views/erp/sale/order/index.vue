@@ -140,8 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/erp/sale/"
       />
     </template>
-    <FormModal @success="handleRefresh" />
 
+    <FormModal @success="handleRefresh" />
     <Grid table-title="销售订单列表">
       <template #toolbar-tools>
         <TableAction
