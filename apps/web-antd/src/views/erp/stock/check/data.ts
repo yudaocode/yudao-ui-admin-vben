@@ -288,11 +288,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '数量',
+      formatter: 'formatAmount3',
       minWidth: 100,
     },
     {
       field: 'totalPrice',
       title: '金额',
+      formatter: 'formatAmount2',
       minWidth: 100,
     },
     {

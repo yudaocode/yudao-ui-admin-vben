@@ -318,8 +318,8 @@ setupVbenVxeTable({
       },
     });
 
-    // add by 星语：数量格式化，例如说：金额
-    vxeUI.formats.add('formatNumber', {
+    // add by 星语：数量格式化，保留 3 位
+    vxeUI.formats.add('formatAmount3', {
       tableCellFormatMethod({ cellValue }) {
         if (cellValue === null || cellValue === undefined) {
           return '';
@@ -327,7 +327,7 @@ setupVbenVxeTable({
         return erpCountInputFormatter(cellValue);
       },
     });
-
+    // add by 星语：数量格式化，保留 2 位
     vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
         return `${erpNumberFormatter(cellValue, digits)}`;

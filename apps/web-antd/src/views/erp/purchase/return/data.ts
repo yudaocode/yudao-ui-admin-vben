@@ -452,6 +452,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '总数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
@@ -572,28 +573,31 @@ export function useOrderGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '总数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'inCount',
       title: '入库数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'returnCount',
       title: '退货数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'totalProductPrice',
       title: '金额合计',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
       field: 'totalPrice',
       title: '含税金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
   ];

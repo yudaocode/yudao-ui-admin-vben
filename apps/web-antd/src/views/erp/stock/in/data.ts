@@ -141,6 +141,7 @@ export function useStockInItemTableColumns(
       minWidth: 120,
       slots: { default: 'count' },
       className: createRequiredValidation(isValidating, 'count'),
+      formatter: 'formatAmount3',
     },
     {
       field: 'productPrice',

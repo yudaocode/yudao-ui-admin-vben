@@ -197,7 +197,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       componentProps: {
         precision: 2,
         min: 0,
-        disabled: true
+        disabled: true,
       },
       rules: z.number().min(0).optional(),
     },
@@ -456,18 +456,19 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '总数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'totalPrice',
       title: '应收金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
       field: 'receiptPrice',
       title: '已收金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
@@ -505,7 +506,6 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入订单单号',
         allowClear: true,
-        disabled: true,
       },
     },
     {
@@ -528,10 +528,8 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       label: '订单时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];
@@ -576,23 +574,25 @@ export function useOrderGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '总数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'outCount',
       title: '出库数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'totalProductPrice',
       title: '金额合计',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
       field: 'totalPrice',
       title: '含税金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
   ];

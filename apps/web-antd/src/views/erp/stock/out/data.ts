@@ -149,6 +149,7 @@ export function useStockInItemTableColumns(
       minWidth: 120,
       slots: { default: 'count' },
       className: createRequiredValidation(isValidating, 'count'),
+      formatter: 'formatAmount3',
     },
     {
       field: 'productPrice',
@@ -304,11 +305,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '数量',
+      formatter: 'formatAmount3',
       minWidth: 100,
     },
     {
       field: 'totalPrice',
       title: '价格',
+      formatter: 'formatAmount2',
       minWidth: 100,
     },
     {

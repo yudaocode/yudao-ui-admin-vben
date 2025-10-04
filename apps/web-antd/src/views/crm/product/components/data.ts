@@ -43,7 +43,7 @@ export function useDetailListColumns(
     {
       field: 'count',
       title: '数量',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount3',
     },
     {
       field: 'totalPrice',
