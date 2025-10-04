@@ -12,7 +12,6 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deletePurchaseOrder,
-  deletePurchaseOrderList,
   exportPurchaseOrder,
   getPurchaseOrderPage,
   updatePurchaseOrderStatus,
@@ -20,77 +19,70 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import PurchaseOrderForm from './modules/form.vue';
+import Form from './modules/form.vue';
 
 /** ERP 采购订单列表 */
 defineOptions({ name: 'ErpPurchaseOrder' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: PurchaseOrderForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 详情 */
-function handleDetail(row: ErpPurchaseOrderApi.PurchaseOrder) {
-  formModalApi.setData({ type: 'detail', id: row.id }).open();
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportPurchaseOrder(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '采购订单.xls', source: data });
 }
 
-/** 新增 */
+/** 新增采购订单 */
 function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-/** 编辑 */
+/** 编辑采购订单 */
 function handleEdit(row: ErpPurchaseOrderApi.PurchaseOrder) {
   formModalApi.setData({ type: 'edit', id: row.id }).open();
 }
 
-/** 删除 */
-async function handleDelete(row: ErpPurchaseOrderApi.PurchaseOrder) {
+/** 删除采购订单 */
+async function handleDelete(ids: number[]) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    if (row.id) await deletePurchaseOrder(row.id);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_process_msg',
-    });
-    onRefresh();
+    await deletePurchaseOrder(ids);
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-/** 批量删除 */
-// TODO @nehc handleBatchDelete 是不是和别的模块，一个风格
-async function handleBatchDelete() {
+/** 审批/反审批操作 */
+async function handleUpdateStatus(
+  row: ErpPurchaseOrderApi.PurchaseOrder,
+  status: number,
+) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
+    content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deletePurchaseOrderList(checkedIds.value);
-    checkedIds.value = [];
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-      key: 'action_process_msg',
-    });
-    onRefresh();
+    await updatePurchaseOrderStatus(row.id!, status);
+    message.success(`${status === 20 ? '审批' : '反审批'}成功`);
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-// TODO @Xuzhiqiang：批量删除待实现
 const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
@@ -100,37 +92,9 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-/** 审批/反审批操作 */
-function handleUpdateStatus(
-  row: ErpPurchaseOrderApi.PurchaseOrder,
-  status: number,
-) {
-  // TODO @nehc 是不是和别的模块，类似的 status 处理一个风格
-  const hideLoading = message.loading({
-    content: `确定${status === 20 ? '审批' : '反审批'}该订单吗？`,
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  updatePurchaseOrderStatus(row.id!, status)
-    .then(() => {
-      message.success({
-        content: `${status === 20 ? '审批' : '反审批'}成功`,
-        key: 'action_process_msg',
-      });
-      onRefresh();
-    })
-    .catch(() => {
-      // 处理错误
-    })
-    .finally(() => {
-      hideLoading();
-    });
-}
-
-/** 导出 */
-async function handleExport() {
-  const data = await exportPurchaseOrder(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '采购订单.xls', source: data });
+/** 查看详情 */
+function handleDetail(row: ErpPurchaseOrderApi.PurchaseOrder) {
+  formModalApi.setData({ type: 'detail', id: row.id }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -177,8 +141,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-
+    <FormModal @success="handleRefresh" />
     <Grid table-title="采购订单列表">
       <template #toolbar-tools>
         <TableAction
@@ -206,7 +169,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['erp:purchase-order:delete'],
               popConfirm: {
                 title: `是否删除所选中数据？`,
-                confirm: handleBatchDelete,
+                confirm: handleDelete.bind(null, checkedIds),
               },
             },
           ]"
@@ -230,8 +193,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               ifShow: () => row.status !== 20,
               onClick: handleEdit.bind(null, row),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: row.status === 10 ? '审批' : '反审批',
               type: 'link',
@@ -251,10 +212,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               color: 'error',
               auth: ['erp:purchase-order:delete'],
-              onClick: handleDelete.bind(null, row),
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.no]),
-                confirm: handleDelete.bind(null, row),
+                confirm: handleDelete.bind(null, [row.id!]),
               },
             },
           ]"
