@@ -162,6 +162,15 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         formatter: erpPriceInputFormatter,
         disabled: true,
       },
+      dependencies: {
+        triggerFields: ['totalPrice', 'otherPrice'],
+        componentProps: (values) => {
+          const totalPrice = values.totalPrice || 0;
+          const otherPrice = values.otherPrice || 0;
+          values.discountedPrice = totalPrice - otherPrice;
+          return {};
+        },
+      },
     },
     {
       fieldName: 'otherPrice',

@@ -21,7 +21,6 @@ const formData = ref<
   ErpSaleOutApi.SaleOut & {
     accountId?: number;
     customerId?: number;
-    discountedPrice?: number;
     discountPercent?: number;
     fileUrl?: string;
     order?: ErpSaleOrderApi.SaleOrder;
@@ -40,7 +39,6 @@ const formData = ref<
   discountPrice: 0,
   totalPrice: 0,
   otherPrice: 0,
-  discountedPrice: 0,
   items: [],
 });
 const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
@@ -167,20 +165,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = {
-        id: undefined,
-        no: undefined,
-        accountId: undefined,
-        outTime: undefined,
-        remark: undefined,
-        fileUrl: undefined,
-        discountPercent: 0,
-        customerId: undefined,
-        discountPrice: 0,
-        totalPrice: 0,
-        otherPrice: 0,
-        items: [],
-      };
+      formData.value = undefined;
       return;
     }
     // 加载数据
