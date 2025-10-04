@@ -224,7 +224,6 @@ onMounted(async () => {
   <Grid class="w-full">
     <template #productId="{ row }">
       <Select
-        v-if="!disabled"
         v-model:value="row.productId"
         :options="productOptions"
         :field-names="{ label: 'name', value: 'id' }"
@@ -233,7 +232,6 @@ onMounted(async () => {
         show-search
         @change="handleProductChange($event, row)"
       />
-      <span v-else>{{ row.productName || '-' }}</span>
     </template>
     <template #count="{ row }">
       <InputNumber
