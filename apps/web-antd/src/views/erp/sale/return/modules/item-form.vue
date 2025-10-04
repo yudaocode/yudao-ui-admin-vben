@@ -197,16 +197,15 @@ onMounted(async () => {
   <Grid class="w-full">
     <template #warehouseId="{ row }">
       <Select
-        v-if="!disabled"
         v-model:value="row.warehouseId"
         :options="warehouseOptions"
         :field-names="{ label: 'name', value: 'id' }"
-        class="w-full"
         placeholder="请选择仓库"
+        :disabled="disabled"
         show-search
+        class="w-full"
         @change="handleWarehouseChange(row)"
       />
-      <span v-else>{{ row.warehouseName || '-' }}</span>
     </template>
     <template #productId="{ row }">
       <Select

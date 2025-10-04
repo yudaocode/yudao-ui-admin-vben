@@ -19,13 +19,13 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import SaleOutForm from './modules/form.vue';
+import Form from './modules/form.vue';
 
 /** ERP 销售出库列表 */
 defineOptions({ name: 'ErpSaleOut' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: SaleOutForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 

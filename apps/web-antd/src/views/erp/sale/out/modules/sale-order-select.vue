@@ -72,15 +72,15 @@ const [Grid] = useVbenVxeGrid({
   },
 });
 
-/** 选择采购订单 */
+/** 选择销售订单 */
 function handleSelectOrder(selectOrder: ErpSaleOrderApi.SaleOrder) {
   order.value = selectOrder;
 }
 
-/** 确认选择采购订单 */
+/** 确认选择销售订单 */
 const handleOk = () => {
   if (!order.value) {
-    message.warning('请选择一个采购订单');
+    message.warning('请选择一个销售订单');
     return;
   }
   emit('update:order', order.value);

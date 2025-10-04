@@ -125,7 +125,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'items',
-      label: '产品清单',
+      label: '退货产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
@@ -143,10 +143,9 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'discountPrice',
-      label: '收款优惠',
+      label: '退款优惠',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '付款优惠',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
@@ -241,17 +240,21 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       minWidth: 150,
       slots: { default: 'remark' },
     },
+    // TODO @AI：formData[0]?.outCount != null
     {
       field: 'totalCount',
-      title: '原数量',
+      title: '已出库',
       formatter: 'formatAmount3',
       minWidth: 120,
+      fixed: 'right',
     },
+    // TODO @AI：formData[0]?.returnCount != null
     {
       field: 'returnCount',
-      title: '已退货数量',
+      title: '已退货',
       formatter: 'formatAmount3',
       minWidth: 120,
+      fixed: 'right',
     },
     {
       field: 'count',
@@ -444,7 +447,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'productNames',
-      title: '产品信息',
+      title: '退货产品信息',
       showOverflow: 'tooltip',
       minWidth: 120,
     },

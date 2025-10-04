@@ -308,7 +308,7 @@ onMounted(async () => {
         class="mt-2 flex justify-center"
         :actions="[
           {
-            label: '添加产品',
+            label: '添加销售产品',
             type: 'default',
             onClick: handleAdd,
           },

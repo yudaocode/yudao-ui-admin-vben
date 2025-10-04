@@ -111,7 +111,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'items',
-      label: '产品清单',
+      label: '销售产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },

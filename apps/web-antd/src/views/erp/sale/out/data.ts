@@ -125,7 +125,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
     },
     {
       fieldName: 'items',
-      label: '产品清单',
+      label: '出库产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
@@ -495,6 +495,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
+
 /** 列表的搜索表单 */
 export function useOrderGridFormSchema(): VbenFormSchema[] {
   return [

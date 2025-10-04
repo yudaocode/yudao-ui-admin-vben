@@ -19,13 +19,13 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import SaleReturnForm from './modules/form.vue';
+import Form from './modules/form.vue';
 
 /** ERP 销售退货列表 */
 defineOptions({ name: 'ErpSaleReturn' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: SaleReturnForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 

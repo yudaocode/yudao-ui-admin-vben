@@ -39,7 +39,7 @@ const emit = defineEmits([
   'update:total-price',
 ]);
 
-const tableData = ref<ErpSaleOutApi.SaleOutItem[]>([]);
+const tableData = ref<ErpSaleOutApi.SaleOutItem[]>([]); // 表格数据
 const productOptions = ref<any[]>([]); // 产品下拉选项
 const warehouseOptions = ref<any[]>([]); // 仓库下拉选项
 
