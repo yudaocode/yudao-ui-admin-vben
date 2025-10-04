@@ -75,21 +75,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'purchaseUserId',
-      label: '采购人员',
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择采购人员',
-        allowClear: true,
-        showSearch: true,
-        api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-      },
-    },
-    {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
@@ -318,13 +303,6 @@ export function useFormItemColumns(
   ];
 }
 
-/** 采购订单项表格列（兼容旧代码） */
-export function usePurchaseOrderItemTableColumns(
-  formData?: any[],
-): VxeTableGridOptions['columns'] {
-  return useFormItemColumns(formData);
-}
-
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -543,6 +521,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
+
 /** 列表的搜索表单 */
 export function useOrderGridFormSchema(): VbenFormSchema[] {
   return [

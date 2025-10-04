@@ -46,7 +46,7 @@ const [Grid] = useVbenVxeGrid({
           return await getPurchaseOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            returnEnable: true,
+            inEnable: true,
             ...formValues,
           });
         },

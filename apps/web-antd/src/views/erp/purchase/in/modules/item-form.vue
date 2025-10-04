@@ -65,7 +65,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(),
+    columns: useFormItemColumns(tableData.value),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
