@@ -75,21 +75,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'purchaseUserId',
-      label: '采购人员',
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择采购人员',
-        allowClear: true,
-        showSearch: true,
-        api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
-      },
-    },
-    {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
@@ -188,7 +173,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择结算账户',
-        disabled: true,
         allowClear: true,
         showSearch: true,
         api: getAccountSimpleList,

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
 import { ref } from 'vue';
@@ -7,9 +8,12 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input, message, Modal } from 'ant-design-vue';
 
-import PurchaseOrderGrid from './purchase-order-grid.vue';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getPurchaseOrderPage } from '#/api/erp/purchase/order';
 
-const props = defineProps({
+import { useOrderGridColumns, useOrderGridFormSchema } from '../data';
+
+defineProps({
   orderNo: {
     type: String,
     default: () => undefined,
@@ -19,16 +23,61 @@ const props = defineProps({
     default: false,
   },
 });
+
 const emit = defineEmits<{
   'update:order': [order: ErpPurchaseOrderApi.PurchaseOrder];
 }>();
-const order = ref<ErpPurchaseOrderApi.PurchaseOrder>();
-const open = ref<boolean>(false);
 
-const handleSelectOrder = (selectOrder: ErpPurchaseOrderApi.PurchaseOrder) => {
+const order = ref<ErpPurchaseOrderApi.PurchaseOrder>(); // 选择的采购订单
+const open = ref<boolean>(false); // 选择采购订单弹窗是否打开
+
+/** 表格配置 */
+const [Grid] = useVbenVxeGrid({
+  formOptions: {
+    schema: useOrderGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useOrderGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getPurchaseOrderPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            returnEnable: true,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    radioConfig: {
+      trigger: 'row',
+      highlight: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<ErpPurchaseOrderApi.PurchaseOrder>,
+  gridEvents: {
+    radioChange: ({ row }: { row: ErpPurchaseOrderApi.PurchaseOrder }) => {
+      handleSelectOrder(row);
+    },
+  },
+});
+
+/** 选择采购订单 */
+function handleSelectOrder(selectOrder: ErpPurchaseOrderApi.PurchaseOrder) {
   order.value = selectOrder;
-};
+}
 
+/** 确认选择采购订单 */
 const handleOk = () => {
   if (!order.value) {
     message.warning('请选择一个采购订单');
@@ -41,7 +90,6 @@ const handleOk = () => {
 
 <template>
   <Input
-    v-bind="$attrs"
     readonly
     :value="orderNo"
     :disabled="disabled"
@@ -52,19 +100,18 @@ const handleOk = () => {
         <IconifyIcon
           class="h-full w-6 cursor-pointer"
           icon="ant-design:setting-outlined"
-          :style="{ cursor: props.disabled ? 'not-allowed' : 'pointer' }"
-          @click="() => !props.disabled && (open = true)"
+          :style="{ cursor: disabled ? 'not-allowed' : 'pointer' }"
+          @click="() => !disabled && (open = true)"
         />
       </div>
     </template>
   </Input>
   <Modal
+    class="!w-[50vw]"
     v-model:open="open"
     title="选择关联订单"
-    class="!w-[50vw]"
-    :show-confirm-button="true"
     @ok="handleOk"
   >
-    <PurchaseOrderGrid @select-row="handleSelectOrder" />
+    <Grid class="max-h-[600px]" table-title="采购订单列表(仅展示可退货)" />
   </Modal>
 </template>
