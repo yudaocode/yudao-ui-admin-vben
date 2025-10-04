@@ -10,6 +10,7 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getAccountSimpleList } from '#/api/erp/finance/account';
 import {
   createSaleReturn,
   getSaleReturn,
@@ -178,6 +179,12 @@ const [Modal, modalApi] = useVbenModal({
     formApi.setDisabled(formType.value === 'detail');
     formApi.updateSchema(useFormSchema(formType.value));
     if (!data || !data.id) {
+      // 新增时，默认选中账户
+      const accountList = await getAccountSimpleList();
+      const defaultAccount = accountList.find((item) => item.defaultStatus);
+      if (defaultAccount) {
+        await formApi.setValues({ accountId: defaultAccount.id });
+      }
       return;
     }
     modalApi.lock();
