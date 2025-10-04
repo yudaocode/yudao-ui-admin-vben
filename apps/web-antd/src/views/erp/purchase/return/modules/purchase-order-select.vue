@@ -7,7 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Input, message, Modal } from 'ant-design-vue';
 
-import SelectPurchaseOrderGrid from './select-purchase-order-grid.vue';
+import PurchaseOrderGrid from './purchase-order-grid.vue';
 
 const props = defineProps({
   orderNo: {
@@ -65,6 +65,6 @@ const handleOk = () => {
     :show-confirm-button="true"
     @ok="handleOk"
   >
-    <SelectPurchaseOrderGrid @select-row="handleSelectOrder" />
+    <PurchaseOrderGrid @select-row="handleSelectOrder" />
   </Modal>
 </template>
