@@ -204,6 +204,12 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       minWidth: 80,
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
+    },
+    {
       field: 'count',
       title: '数量',
       minWidth: 120,
@@ -238,12 +244,6 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       title: '税额合计',
       minWidth: 120,
       formatter: 'formatAmount2',
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 150,
-      slots: { default: 'remark' },
     },
     {
       title: '操作',

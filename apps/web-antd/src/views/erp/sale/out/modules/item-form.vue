@@ -213,7 +213,7 @@ onMounted(async () => {
         v-model:value="row.productId"
         :options="productOptions"
         :field-names="{ label: 'name', value: 'id' }"
-        style="width: 100%"
+        class="w-full"
         placeholder="请选择产品"
         show-search
       />
