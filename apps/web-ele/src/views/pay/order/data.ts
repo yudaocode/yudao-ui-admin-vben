@@ -257,7 +257,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'channelOrderNo',
       label: '渠道单号',
       content: (data: PayOrderApi.Order) =>
-        h(ElTag, { color: 'green' }, () => data?.channelOrderNo || ''),
+        data?.channelOrderNo
+          ? h(ElTag, { color: 'green' }, () => data.channelOrderNo)
+          : '',
     },
     {
       field: 'channelUserId',

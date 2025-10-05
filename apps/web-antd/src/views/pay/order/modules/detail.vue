@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { getOrder } from '#/api/pay/order';
+import { getOrderDetail } from '#/api/pay/order';
 import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../data';
@@ -34,7 +34,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getOrder(data.id);
+      formData.value = await getOrderDetail(data.id);
     } finally {
       modalApi.unlock();
     }
