@@ -63,15 +63,19 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(formType.value),
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
-    // 目的：同步到 item-form 组件，触发整体的价格计算
-    if (formData.value && changedFields.includes('discountPrice')) {
-      formData.value.discountPrice = values.discountPrice;
-      // 重新计算实际付款
-      formData.value.paymentPrice =
-        formData.value.totalPrice - values.discountPrice;
-      formApi.setValues({
-        paymentPrice: formData.value.paymentPrice,
-      });
+    if (formData.value) {
+      if (changedFields.includes('supplierId')) {
+        formData.value.supplierId = values.supplierId;
+      }
+      // 目的：同步到 item-form 组件，触发整体的价格计算
+      if (changedFields.includes('discountPrice')) {
+        formData.value.discountPrice = values.discountPrice;
+        formData.value.paymentPrice =
+          formData.value.totalPrice - values.discountPrice;
+        formApi.setValues({
+          paymentPrice: formData.value.paymentPrice,
+        });
+      }
     }
   },
 });
@@ -164,15 +168,13 @@ const [Modal, modalApi] = useVbenModal({
   >
     <Form class="mx-3">
       <template #items>
-        <div class="space-y-4">
-          <ItemForm
-            ref="itemFormRef"
-            :items="formData?.items ?? []"
-            :supplier-id="formData?.supplierId"
-            :disabled="formType === 'detail'"
-            @update:items="handleUpdateItems"
-          />
-        </div>
+        <ItemForm
+          ref="itemFormRef"
+          :items="formData?.items ?? []"
+          :supplier-id="formData?.supplierId"
+          :disabled="formType === 'detail'"
+          @update:items="handleUpdateItems"
+        />
       </template>
     </Form>
   </Modal>

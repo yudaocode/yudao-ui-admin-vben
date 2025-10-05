@@ -13,6 +13,8 @@ import { Input, InputNumber, message } from 'ant-design-vue';
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { useFormItemColumns } from '../data';
+import PurchaseInSelect from './purchase-in-select.vue';
+import SaleReturnSelect from './sale-return-select.vue';
 
 interface Props {
   items?: ErpFinancePaymentApi.FinancePaymentItem[];
@@ -22,6 +24,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
+  supplierId: undefined,
   disabled: false,
 });
 
@@ -52,10 +55,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useFormItemColumns(tableData.value),
     data: tableData.value,
-    minHeight: 200,
+    minHeight: 250,
     autoResize: true,
     border: true,
-    showOverflow: true,
     rowConfig: {
       keyField: 'row_id',
       isHover: true,
@@ -65,16 +67,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       enabled: false,
-    },
-    editConfig: {
-      trigger: 'click',
-      mode: 'cell',
-    },
-    editRules: {
-      paymentPrice: [
-        { required: true, message: '本次付款不能为空' },
-        { type: 'number', min: 0, message: '本次付款不能小于0' },
-      ],
     },
   },
 });
@@ -90,16 +82,14 @@ watch(
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
+    // 更新表格列配置
+    const columns = useFormItemColumns(tableData.value);
+    await gridApi.grid.reloadColumn(columns);
   },
-  { immediate: true, deep: true },
+  {
+    immediate: true,
+  },
 );
-
-/** 初始化行数据 */
-const initRow = (item: any) => {
-  if (!item.row_id) {
-    item.row_id = Date.now() + Math.random();
-  }
-};
 
 /** 添加采购入库单 */
 const purchaseInSelectRef = ref();
@@ -114,14 +104,13 @@ const handleOpenPurchaseIn = () => {
 const handleAddPurchaseIn = (rows: ErpPurchaseInApi.PurchaseIn[]) => {
   rows.forEach((row) => {
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      row_id: Date.now() + Math.random(),
       bizId: row.id,
       bizType: ErpBizType.PURCHASE_IN,
       bizNo: row.no,
       totalPrice: row.totalPrice,
       paidPrice: row.paymentPrice,
       paymentPrice: row.totalPrice - row.paymentPrice,
-      remark: '',
+      remark: undefined,
     };
     tableData.value.push(newItem);
   });
@@ -141,14 +130,13 @@ const handleOpenSaleReturn = () => {
 const handleAddSaleReturn = (rows: ErpPurchaseReturnApi.PurchaseReturn[]) => {
   rows.forEach((row) => {
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      row_id: Date.now() + Math.random(),
       bizId: row.id,
       bizType: ErpBizType.PURCHASE_RETURN,
       bizNo: row.no,
       totalPrice: -row.totalPrice,
       paidPrice: -row.refundPrice,
       paymentPrice: -row.totalPrice + row.refundPrice,
-      remark: '',
+      remark: undefined,
     };
     tableData.value.push(newItem);
   });
@@ -157,7 +145,9 @@ const handleAddSaleReturn = (rows: ErpPurchaseReturnApi.PurchaseReturn[]) => {
 
 /** 删除行 */
 const handleDelete = async (row: any) => {
-  const index = tableData.value.findIndex((item) => item.row_id === row.row_id);
+  const index = tableData.value.findIndex(
+    (item) => item.bizId === row.bizId && item.bizType === row.bizType,
+  );
   if (index !== -1) {
     tableData.value.splice(index, 1);
     emitUpdate();
@@ -169,23 +159,18 @@ const emitUpdate = () => {
   emit('update:items', [...tableData.value]);
 };
 
-/** 单元格编辑完成事件 */
-const handleEditClosed = async ({ row, column }: any) => {
-  if (column.property === 'paymentPrice') {
-    // 重新计算价格
-    emitUpdate();
+// TODO @AI：增加一个 handleRowChange 方法；
+
+// TODO @芋艿：待定！
+/** 初始化行数据 */
+const initRow = (item: any) => {
+  if (!item.row_id) {
+    item.row_id = Date.now() + Math.random();
   }
 };
 
-/** 表格事件 */
-const gridEvents = {
-  editClosed: handleEditClosed,
-  cellClick: ({ column }: any) => {
-    if (column.title === '操作') {}
-  },
-};
-
 /** 校验表单 */
+// TODO @AI：一条有问题，就直接 throw
 const validate = async () => {
   const errors: string[] = [];
 
@@ -253,16 +238,20 @@ defineExpose({ validate });
         <div class="text-muted-foreground flex justify-between text-sm">
           <span class="text-foreground font-medium">合计：</span>
           <div class="flex space-x-4">
-            <span>合计付款:
-              {{ erpPriceInputFormatter(summaries.totalPrice) }}</span>
-            <span>已付金额: {{ erpPriceInputFormatter(summaries.paidPrice) }}</span>
-            <span>本次付款:
-              {{ erpPriceInputFormatter(summaries.paymentPrice) }}</span>
+            <span>
+              合计付款：{{ erpPriceInputFormatter(summaries.totalPrice) }}
+            </span>
+            <span>
+              已付金额：{{ erpPriceInputFormatter(summaries.paidPrice) }}
+            </span>
+            <span>
+              本次付款：
+              {{ erpPriceInputFormatter(summaries.paymentPrice) }}
+            </span>
           </div>
         </div>
       </div>
-
-      <!-- 添加按钮放在底部 -->
+      <!-- TODO @AI：换成 TableAction -->
       <div v-if="!disabled" class="mt-4 flex justify-center space-x-2">
         <a-button type="primary" @click="handleOpenPurchaseIn">
           + 添加采购入库单

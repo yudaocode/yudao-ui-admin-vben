@@ -94,6 +94,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       {
         field: 'unPaymentPrice',
         title: '未付金额',
+        // TODO @AI：芋艿，后续统一改；
         formatter: ({ row }) => {
           const unPaymentPrice = row.totalPrice - row.paymentPrice;
           return `${unPaymentPrice?.toFixed(2) || '0.00'}元`;
@@ -154,43 +155,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 打开弹窗 */
 const openModal = (id: number) => {
+  // 重置数据
   supplierId.value = id;
   open.value = true;
   selectedRows.value = [];
-  // 重置表单并设置供应商ID
+  // 查询列表
   gridApi.formApi?.resetForm();
   gridApi.formApi?.setValues({ supplierId: id });
-  // 延迟查询，确保表单值已设置
-  setTimeout(() => {
-    gridApi.query();
-  }, 100);
+  gridApi.query();
 };
 
-/** 确认选择 */
+/** 确认选择采购入库单 */
 const handleOk = () => {
   if (selectedRows.value.length === 0) {
     message.warning('请选择要添加的采购入库单');
     return;
   }
-
-  // 过滤已全部付款的单据
-  const validRows = selectedRows.value.filter((row) => {
-    const unPaymentPrice = row.totalPrice - row.paymentPrice;
-    return unPaymentPrice > 0;
-  });
-
-  if (validRows.length === 0) {
-    message.warning('所选的入库单已全部付款，无需再付款');
-    return;
-  }
-
-  if (validRows.length < selectedRows.value.length) {
-    message.warning(
-      `已过滤${selectedRows.value.length - validRows.length}个已全部付款的入库单`,
-    );
-  }
-
-  emit('success', validRows);
+  emit('success', selectedRows.value);
   open.value = false;
 };
 
@@ -199,14 +180,13 @@ defineExpose({ open: openModal });
 
 <template>
   <Modal
-    class="!w-[70vw]"
+    class="!w-[50vw]"
     v-model:open="open"
     title="选择采购入库单"
     @ok="handleOk"
-    :width="1000"
   >
     <Grid
-      class="max-h-[500px]"
+      class="max-h-[600px]"
       table-title="采购入库单列表(仅展示可付款的单据)"
     />
   </Modal>
