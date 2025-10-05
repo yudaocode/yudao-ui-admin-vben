@@ -114,7 +114,7 @@ const handleAddPurchaseIn = (rows: ErpPurchaseInApi.PurchaseIn[]) => {
     };
     tableData.value.push(newItem);
   });
-  emitUpdate();
+  emit('update:items', [...tableData.value]);
 };
 
 /** 添加采购退货单 */
@@ -140,7 +140,7 @@ const handleAddSaleReturn = (rows: ErpPurchaseReturnApi.PurchaseReturn[]) => {
     };
     tableData.value.push(newItem);
   });
-  emitUpdate();
+  emit('update:items', [...tableData.value]);
 };
 
 /** 删除行 */
@@ -150,46 +150,41 @@ const handleDelete = async (row: any) => {
   );
   if (index !== -1) {
     tableData.value.splice(index, 1);
-    emitUpdate();
   }
-};
-
-/** 发送更新事件 */
-const emitUpdate = () => {
+  // 通知父组件更新
   emit('update:items', [...tableData.value]);
 };
 
-// TODO @AI：增加一个 handleRowChange 方法；
-
-// TODO @芋艿：待定！
-/** 初始化行数据 */
-const initRow = (item: any) => {
-  if (!item.row_id) {
-    item.row_id = Date.now() + Math.random();
+/** 处理行数据变更 */
+const handleRowChange = (row: any) => {
+  const index = tableData.value.findIndex(
+    (item) => item.bizId === row.bizId && item.bizType === row.bizType,
+  );
+  if (index === -1) {
+    tableData.value.push(row);
+  } else {
+    tableData.value[index] = row;
   }
+  emit('update:items', [...tableData.value]);
 };
 
-/** 校验表单 */
-// TODO @AI：一条有问题，就直接 throw
-const validate = async () => {
-  const errors: string[] = [];
+/** 初始化行数据 */
+const initRow = (item: any) => {
+  // 不需要特殊初始化
+};
 
+/** 表单校验 */
+const validate = () => {
   // 检查是否有明细
   if (tableData.value.length === 0) {
-    errors.push('请添加付款明细');
-    return errors;
+    throw new Error('请添加付款明细');
   }
-
   // 检查每行的付款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
     if (!item.paymentPrice || item.paymentPrice <= 0) {
-      errors.push(`第${i + 1}行的本次付款必须大于0`);
+      throw new Error(`第 ${i + 1} 行：本次付款必须大于0`);
     }
-  }
-
-  if (errors.length > 0) {
-    throw new Error(errors.join('；'));
   }
 };
 
@@ -205,7 +200,7 @@ defineExpose({ validate });
         :disabled="disabled"
         :formatter="erpPriceInputFormatter"
         placeholder="请输入本次付款"
-        @change="emitUpdate"
+        @change="handleRowChange(row)"
       />
     </template>
     <template #remark="{ row }">
@@ -213,7 +208,7 @@ defineExpose({ validate });
         v-model:value="row.remark"
         :disabled="disabled"
         placeholder="请输入备注"
-        @change="emitUpdate"
+        @change="handleRowChange(row)"
       />
     </template>
     <template #actions="{ row }">
@@ -251,15 +246,22 @@ defineExpose({ validate });
           </div>
         </div>
       </div>
-      <!-- TODO @AI：换成 TableAction -->
-      <div v-if="!disabled" class="mt-4 flex justify-center space-x-2">
-        <a-button type="primary" @click="handleOpenPurchaseIn">
-          + 添加采购入库单
-        </a-button>
-        <a-button type="primary" @click="handleOpenSaleReturn">
-          + 添加采购退货单
-        </a-button>
-      </div>
+      <TableAction
+        v-if="!disabled"
+        class="mt-2 flex justify-center"
+        :actions="[
+          {
+            label: '添加采购入库单',
+            type: 'default',
+            onClick: handleOpenPurchaseIn,
+          },
+          {
+            label: '添加采购退货单',
+            type: 'default',
+            onClick: handleOpenSaleReturn,
+          },
+        ]"
+      />
     </template>
   </Grid>
 

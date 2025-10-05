@@ -86,9 +86,16 @@ const handleUpdateItems = (
 ) => {
   formData.value.items = items;
   // 重新计算合计付款
-  const totalPrice = items.reduce((prev, curr) => prev + curr.paymentPrice, 0);
+  const totalPrice = items.reduce(
+    (prev, curr) => prev + (curr.totalPrice || 0),
+    0,
+  );
+  const paymentPrice = items.reduce(
+    (prev, curr) => prev + (curr.paymentPrice || 0),
+    0,
+  );
   formData.value.totalPrice = totalPrice;
-  formData.value.paymentPrice = totalPrice - formData.value.discountPrice;
+  formData.value.paymentPrice = paymentPrice - formData.value.discountPrice;
   formApi.setValues({
     items,
     totalPrice: formData.value.totalPrice,
