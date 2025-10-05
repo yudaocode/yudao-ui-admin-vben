@@ -12,11 +12,10 @@ import { message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import { createChannel, getChannel, updateChannel } from '#/api/pay/channel';
 
-import { channelSchema } from './data';
+import { useChannelFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<any>();
-const formType = ref<string>('');
 const title = computed(() => {
   return formData.value?.id === 0
     ? $t('ui.actionTitle.create', '应用')
@@ -44,17 +43,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as PayChannelApi.Channel;
-    // 只保留表单中实际存在的字段，且值不为 undefined
-    const data2 = Object.fromEntries(
-      Object.entries(data).filter(([key, value]) => {
-        // 检查字段是否在表单中存在，且值不为 undefined
-        return key in data && value !== undefined;
-      }),
-    );
-    const data3 = { ...formData.value, ...data2 };
-    data3.config = JSON.stringify(data3.config);
+    data.config = JSON.stringify(data.config);
     try {
-      await (data3.id ? updateChannel(data3) : createChannel(data3));
+      await (data.id ? updateChannel(data) : createChannel(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -69,88 +60,69 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const { id, payCode } = modalApi.getData() as {
-      id?: number;
-      payCode?: string;
+    const { appId, code } = modalApi.getData() as {
+      appId?: number;
+      code?: string;
     };
-    if (!id || !payCode) {
+    if (!appId || !code) {
       return;
     }
     modalApi.lock();
-    formType.value = payCode;
-    if (payCode.includes('alipay_')) {
-      formData.value = {
-        appId: id,
-        code: payCode,
-        status: CommonStatusEnum.ENABLE,
-        remark: '',
-        feeRate: null,
+    formData.value = {
+      appId,
+      code,
+      status: CommonStatusEnum.ENABLE,
+      remark: '',
+      feeRate: 0,
+      config: {},
+    };
+    if (code.includes('alipay_')) {
+      formData.value.config = {
+        appId: undefined,
+        serverUrl: undefined,
+        signType: 'RSA2',
+        mode: undefined,
+        privateKey: undefined,
+        alipayPublicKey: undefined,
+        appCertContent: undefined,
+        alipayPublicCertContent: undefined,
+        rootCertContent: undefined,
+        encryptType: undefined,
+        encryptKey: undefined,
+      };
+    } else if (code.includes('mock')) {
+      formData.value.config = {
+        name: 'mock-conf',
+      };
+    } else if (code.includes('wallet')) {
+      formData.value.config = {
         config: {
-          appId: '',
-          serverUrl: null,
-          signType: 'RSA2',
-          mode: null,
-          privateKey: '',
-          alipayPublicKey: '',
-          appCertContent: '',
-          alipayPublicCertContent: '',
-          rootCertContent: '',
-          encryptType: '',
-          encryptKey: '',
+          name: 'wallet-conf',
         },
       };
-    } else if (payCode.includes('mock')) {
-      formData.value = {
-        appId: id,
-        code: payCode,
-        status: CommonStatusEnum.ENABLE,
-        remark: '',
-        feeRate: 0,
-        config: {
-          name: 'mock-conf',
-        },
-      };
-    } else if (payCode.includes('wallet')) {
-      formData.value = {
-        appId: id,
-        code: payCode,
-        status: CommonStatusEnum.ENABLE,
-        remark: '',
-        feeRate: 0,
-        config: {
-          name: 'mock-conf',
-        },
-      };
-    } else if (payCode.includes('wx')) {
-      formData.value = {
-        appId: id,
-        code: payCode,
-        status: CommonStatusEnum.ENABLE,
-        feeRate: undefined,
-        remark: '',
-        config: {
-          appId: '',
-          mchId: '',
-          apiVersion: '',
-          mchKey: '',
-          keyContent: '',
-          privateKeyContent: '',
-          certSerialNo: '',
-          apiV3Key: '',
-          publicKeyContent: '',
-          publicKeyId: '',
-        },
+    } else if (code.includes('wx')) {
+      formData.value.config = {
+        appId: undefined,
+        mchId: undefined,
+        apiVersion: undefined,
+        mchKey: undefined,
+        keyContent: undefined,
+        privateKeyContent: undefined,
+        certSerialNo: undefined,
+        apiV3Key: undefined,
+        publicKeyContent: undefined,
+        publicKeyId: undefined,
       };
     }
 
     try {
-      const res = await getChannel(id, payCode);
-      formData.value = {
-        ...res,
-        config: {
-          ...JSON.parse(res.config),
-        },
-      };
+      const res = await getChannel(appId, code);
+      if (res) {
+        formData.value = {
+          ...res,
+          config: JSON.parse(res.config),
+        };
+      }
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
@@ -161,7 +133,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :close-on-click-modal="false" :title="title" class="w-2/5">
-    <Form :schema="channelSchema(formType)" />
+  <Modal :title="title" class="w-2/5">
+    <Form :schema="useChannelFormSchema(formData?.code)" />
   </Modal>
 </template>

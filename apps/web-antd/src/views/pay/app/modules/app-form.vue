@@ -11,7 +11,7 @@ import { message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import { createApp, getApp, updateApp } from '#/api/pay/app';
 
-import { useFormSchema } from '../data';
+import { useAppFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<PayAppApi.App>();
@@ -30,7 +30,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 160,
   },
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: useAppFormSchema(),
   showDefaultActions: false,
 });
 
@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange: async (isOpen) => {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       return;

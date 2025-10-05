@@ -60,7 +60,7 @@ export function updateApp(data: PayAppApi.App) {
 }
 
 /** 修改支付应用状态 */
-export function changeAppStatus(data: PayAppApi.UpdateStatusReq) {
+export function updateAppStatus(data: PayAppApi.UpdateStatusReq) {
   return requestClient.put('/pay/app/update-status', data);
 }
 

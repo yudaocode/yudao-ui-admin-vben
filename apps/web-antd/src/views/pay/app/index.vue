@@ -8,52 +8,59 @@ import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app';
+import { deleteApp, getAppPage, updateAppStatus } from '#/api/pay/app';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import appFrom from './modules/app-form.vue';
-import channelFrom from './modules/channel-form.vue';
+import AppForm from './modules/app-form.vue';
+import ChannelForm from './modules/channel-form.vue';
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 const [AppFormModal, appFormModalApi] = useVbenModal({
-  connectedComponent: appFrom,
+  connectedComponent: AppForm,
   destroyOnClose: true,
 });
 
 const [ChannelFormModal, channelFormModalApi] = useVbenModal({
-  connectedComponent: channelFrom,
+  connectedComponent: ChannelForm,
   destroyOnClose: true,
 });
 
+/** 创建应用 */
 function handleCreate() {
   appFormModalApi.setData(null).open();
 }
 
+/** 编辑应用 */
 function handleEdit(row: PayAppApi.App) {
   appFormModalApi.setData({ id: row.id }).open();
 }
 
+/** 创建/编辑渠道 */
+async function handleChannelForm(row: PayAppApi.App, payCode: string) {
+  channelFormModalApi.setData({ appId: row.id, code: payCode }).open();
+}
+
+/** 删除应用 */
 async function handleDelete(row: PayAppApi.App) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
   });
   try {
-    await deleteApp(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    await deleteApp(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-/** 更新状态 */
+/** 更新应用状态 */
 async function handleStatusChange(
   newStatus: number,
   row: PayAppApi.App,
@@ -65,8 +72,8 @@ async function handleStatusChange(
     })
       .then(async () => {
         // 更新状态
-        const res = await changeAppStatus({
-          id: row.id as number,
+        const res = await updateAppStatus({
+          id: row.id!,
           status: newStatus,
         });
         if (res) {
@@ -83,21 +90,9 @@ async function handleStatusChange(
   });
 }
 
-/**
- * 根据渠道编码判断渠道列表中是否存在
- *
- * @param channels 渠道列表
- * @param channelCode 渠道编码
- */
+/** 根据渠道编码判断渠道列表中是否存在 */
 function isChannelExists(channels: string[], channelCode: string) {
-  if (!channels) {
-    return false;
-  }
-  return channels.includes(channelCode);
-}
-
-async function openChannelForm(row: PayAppApi.App, payCode: string) {
-  channelFormModalApi.setData({ id: row.id, payCode }).open();
+  return channels?.includes(channelCode);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -121,6 +116,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -136,10 +132,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <AppFormModal @success="onRefresh" />
-    <ChannelFormModal @success="onRefresh" />
+    <AppFormModal @success="handleRefresh" />
+    <ChannelFormModal @success="handleRefresh" />
 
-    <Grid>
+    <Grid table-title="应用列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -177,6 +173,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
+      <!-- TODO @AI：有没办法简化 -->
       <template #alipayAppConfig="{ row }">
         <TableAction
           :actions="[
@@ -194,7 +191,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.ALIPAY_APP.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.ALIPAY_APP.code,
@@ -220,7 +217,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.ALIPAY_PC.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.ALIPAY_PC.code,
@@ -246,7 +243,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.ALIPAY_WAP.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.ALIPAY_WAP.code,
@@ -272,7 +269,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.ALIPAY_QR.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.ALIPAY_QR.code,
@@ -298,7 +295,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.ALIPAY_BAR.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.ALIPAY_BAR.code,
@@ -324,7 +321,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_LITE.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_LITE.code,
@@ -350,7 +347,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_PUB.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_PUB.code,
@@ -376,7 +373,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_APP.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_APP.code,
@@ -402,7 +399,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_NATIVE.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_NATIVE.code,
@@ -428,7 +425,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_WAP.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_WAP.code,
@@ -454,7 +451,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WX_BAR.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WX_BAR.code,
@@ -480,7 +477,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.WALLET.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.WALLET.code,
@@ -503,7 +500,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 PayChannelEnum.MOCK.code,
               ),
               shape: 'circle',
-              onClick: openChannelForm.bind(
+              onClick: handleChannelForm.bind(
                 null,
                 row,
                 PayChannelEnum.MOCK.code,
