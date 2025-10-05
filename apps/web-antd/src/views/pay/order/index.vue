@@ -8,6 +8,7 @@ import { Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage } from '#/api/pay/order';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
@@ -18,7 +19,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -30,11 +31,11 @@ function handleDetail(row: PayOrderApi.Order) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    collapsed: false,
   },
   gridOptions: {
     cellConfig: {
       height: 80,
+
     },
     columns: useGridColumns(),
     height: 'auto',
@@ -52,9 +53,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
-      isCurrent: true,
       isHover: true,
-      resizable: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -80,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/pay/wx-lite-pay-demo/"
       />
     </template>
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="支付订单列表">
       <template #actions="{ row }">
         <TableAction
