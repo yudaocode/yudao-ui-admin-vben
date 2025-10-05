@@ -1,35 +1,31 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayRefundApi } from '#/api/pay/refund';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+
+import { Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as RefundApi from '#/api/pay/refund';
+import { getRefundPage } from '#/api/pay/refund';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Detail from './modules/detail.vue';
 
-const [RefundDetailModal, refundDetailModalApi] = useVbenModal({
+const [DetailModal, detailModalApi] = useVbenModal({
   connectedComponent: Detail,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 导出表格 */
-async function handleExport() {
-  const data = await RefundApi.exportRefund(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '支付退款.xls', source: data });
-}
-
 /** 查看详情 */
-function handleDetail(row: any) {
-  refundDetailModalApi.setData(row).open();
+function handleDetail(row: PayRefundApi.Refund) {
+  detailModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -37,13 +33,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
+    cellConfig: {
+      height: 80,
+    },
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await RefundApi.getRefundPage({
+          return await getRefundPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -53,12 +52,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<PayRefundApi.Refund>,
 });
 </script>
 <template>
@@ -69,21 +69,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/pay/refund-demo/"
       />
     </template>
-    <RefundDetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="支付退款列表">
-      <template #toolbar-tools>
-        <TableAction
-          :actions="[
-            {
-              label: $t('ui.actionTitle.export'),
-              type: 'primary',
-              icon: ACTION_ICON.DOWNLOAD,
-              auth: ['pay:refund:query'],
-              onClick: handleExport,
-            },
-          ]"
-        />
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -96,6 +83,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+      <template #no="{ row }">
+        <div class="flex flex-col gap-1 text-left">
+          <p class="text-sm">
+            <Tag size="small" color="blue"> 商户</Tag> {{ row.merchantOrderId }}
+          </p>
+          <p class="text-sm" v-if="row.merchantRefundId">
+            <Tag size="small" color="orange">退款</Tag>
+            {{ row.merchantRefundId }}
+          </p>
+          <p class="text-sm" v-if="row.channelRefundNo">
+            <Tag size="small" color="green">渠道</Tag>
+            {{ row.channelRefundNo }}
+          </p>
+        </div>
       </template>
     </Grid>
   </Page>

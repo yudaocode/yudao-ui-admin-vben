@@ -5,31 +5,20 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Divider } from 'ant-design-vue';
-
 import { getRefund } from '#/api/pay/refund';
 import { useDescription } from '#/components/description';
 
-import { useBaseDetailSchema, useChannelDetailSchema } from '../data';
+import { useDetailSchema } from '../data';
 
 const formData = ref<PayRefundApi.Refund>();
 
-const [BaseDescriptions] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
-    bordered: false,
+    bordered: true,
     column: 2,
     class: 'mx-4',
   },
-  schema: useBaseDetailSchema(),
-});
-
-const [ChannelDescriptions] = useDescription({
-  componentProps: {
-    bordered: false,
-    column: 2,
-    class: 'mx-4',
-  },
-  schema: useChannelDetailSchema(),
+  schema: useDetailSchema(),
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -52,7 +41,6 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 </script>
-
 <template>
   <Modal
     title="退款详情"
@@ -60,8 +48,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <BaseDescriptions :data="formData" />
-    <Divider />
-    <ChannelDescriptions :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

@@ -14,9 +14,12 @@ export namespace PayRefundApi {
     tradeNo: string;
     merchantOrderId: string;
     merchantRefundNo: string;
+    merchantRefundId: string;
     notifyUrl: string;
     notifyStatus: number;
     status: number;
+    payPrice: number;
+    refundPrice: number;
     type: number;
     payAmount: number;
     refundAmount: number;

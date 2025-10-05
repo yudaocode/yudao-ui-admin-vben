@@ -1,18 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayRefundApi } from '#/api/pay/refund';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { fenToYuan, formatDateTime } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
-import { getAppList } from '#/api/pay/app';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -21,17 +20,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'appId',
       label: '应用编号',
-      component: 'ApiSelect',
+      component: 'Input',
       componentProps: {
-        api: async () => {
-          const data = await getAppList();
-          return data.map((item) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        },
-        autoSelect: 'first',
-        placeholder: '请选择数据源',
+        allowClear: true,
+        placeholder: '请输入应用编号',
       },
     },
     {
@@ -40,28 +32,45 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
+        placeholder: '请选择退款渠道',
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'string'),
       },
     },
     {
       fieldName: 'merchantOrderId',
-      label: '商户支付单号',
+      label: '商户单号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入商户单号',
+      },
     },
     {
       fieldName: 'merchantRefundId',
-      label: '商户退款单号',
+      label: '退款单号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入退款单号',
+      },
     },
     {
       fieldName: 'channelOrderNo',
-      label: '渠道支付单号',
+      label: '渠道单号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入渠道单号',
+      },
     },
     {
       fieldName: 'channelRefundNo',
       label: '渠道退款单号',
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入渠道退款单号',
+      },
     },
     {
       fieldName: 'status',
@@ -69,6 +78,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
+        placeholder: '请选择退款状态',
         options: getDictOptions(DICT_TYPE.PAY_REFUND_STATUS, 'number'),
       },
     },
@@ -90,81 +100,99 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
-    },
-    {
-      field: 'merchantRefundId',
-      title: '退款订单号',
-    },
-    {
-      field: 'channelRefundNo',
-      title: '渠道退款单号',
+      minWidth: 100,
     },
     {
       field: 'payPrice',
       title: '支付金额',
+      minWidth: 120,
       formatter: 'formatAmount2',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
+      minWidth: 120,
       formatter: 'formatAmount2',
+    },
+    {
+      field: 'merchantRefundId',
+      title: '退款单号',
+      minWidth: 240,
+      slots: {
+        default: 'no',
+      },
     },
     {
       field: 'status',
       title: '退款状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_REFUND_STATUS },
       },
     },
     {
-      field: 'createTime',
-      title: '创建时间',
+      field: 'channelCode',
+      title: '退款渠道',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PAY_CHANNEL_CODE },
+      },
+    },
+    {
+      field: 'successTime',
+      title: '退款时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
+      field: 'createTime',
+      title: '创建时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'reason',
+      title: '退款原因',
+      minWidth: 200,
+    },
+    {
       title: '操作',
-      width: 100,
+      width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
     },
   ];
 }
 
-/** 详情页的字段 */
-export function useBaseDetailSchema(): DescriptionItemSchema[] {
+/** 详情的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
   return [
+    // 基本信息部分
     {
       field: 'merchantRefundId',
       label: '商户退款单号',
-      content: (data) =>
-        h(Tag, {}, () => {
-          return data?.merchantRefundId || '-';
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, {}, () => data?.merchantRefundId || '-'),
     },
     {
       field: 'channelRefundNo',
       label: '渠道退款单号',
-      content: (data) =>
-        h(Tag, {}, () => {
-          return data?.channelRefundNo || '-';
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, { color: 'success' }, () => data?.channelRefundNo || '-'),
     },
     {
       field: 'merchantOrderId',
       label: '商户支付单号',
-      content: (data) =>
-        h(Tag, {}, () => {
-          return data?.merchantOrderId || '-';
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, {}, () => data?.merchantOrderId || '-'),
     },
     {
       field: 'channelOrderNo',
       label: '渠道支付单号',
-      content: (data) =>
-        h(Tag, {}, () => {
-          return data?.channelOrderNo || '-';
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, { color: 'success' }, () => data?.channelOrderNo || '-'),
     },
     {
       field: 'appId',
@@ -177,23 +205,23 @@ export function useBaseDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'payPrice',
       label: '支付金额',
-      content: (data) =>
-        h(Tag, { color: 'success' }, () => {
-          return fenToYuan(data.payPrice || 0);
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, { color: 'success' }, () =>
+          `￥${erpPriceInputFormatter(data?.payPrice || 0)}`
+        ),
     },
     {
       field: 'refundPrice',
       label: '退款金额',
-      content: (data) =>
-        h(Tag, { color: 'red' }, () => {
-          return fenToYuan(data.refundPrice || 0);
-        }),
+      content: (data: PayRefundApi.Refund) =>
+        h(Tag, { color: 'danger' }, () =>
+          `￥${erpPriceInputFormatter(data?.refundPrice || 0)}`
+        ),
     },
     {
       field: 'status',
       label: '退款状态',
-      content: (data) =>
+      content: (data: any) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_REFUND_STATUS,
           value: data?.status,
@@ -202,28 +230,26 @@ export function useBaseDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'successTime',
       label: '退款时间',
-      content: (data) => formatDateTime(data.successTime) as string,
+      content: (data: PayRefundApi.Refund) =>
+        formatDateTime(data?.successTime) as string,
     },
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data.createTime) as string,
+      content: (data: PayRefundApi.Refund) =>
+        formatDateTime(data?.createTime) as string,
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      content: (data) => formatDateTime(data.updateTime) as string,
+      content: (data: PayRefundApi.Refund) =>
+        formatDateTime(data?.updateTime) as string,
     },
-  ];
-}
-
-/** 详情页的字段 */
-export function useChannelDetailSchema(): DescriptionItemSchema[] {
-  return [
+    // 渠道信息部分
     {
       field: 'channelCode',
       label: '退款渠道',
-      content: (data) =>
+      content: (data: PayRefundApi.Refund) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_CHANNEL_CODE,
           value: data?.channelCode,
@@ -241,6 +267,7 @@ export function useChannelDetailSchema(): DescriptionItemSchema[] {
       field: 'notifyUrl',
       label: '通知 URL',
     },
+    // 错误信息部分
     {
       field: 'channelErrorCode',
       label: '渠道错误码',
