@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ErpProductApi } from '#/api/erp/product/product';
-import type { ErpStockOutApi } from '#/api/erp/stock/out';
+import type { ErpStockMoveApi } from '#/api/erp/stock/move';
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
@@ -20,7 +20,7 @@ import { getWarehouseSimpleList } from '#/api/erp/stock/warehouse';
 import { useFormItemColumns } from '../data';
 
 interface Props {
-  items?: ErpStockOutApi.StockOutItem[];
+  items?: ErpStockMoveApi.StockMoveItem[];
   disabled?: boolean;
 }
 
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:items']);
 
-const tableData = ref<ErpStockOutApi.StockOutItem[]>([]); // 表格数据
+const tableData = ref<ErpStockMoveApi.StockMoveItem[]>([]); // 表格数据
 const productOptions = ref<ErpProductApi.Product[]>([]); // 产品下拉选项
 const warehouseOptions = ref<any[]>([]); // 仓库下拉选项
 
@@ -88,7 +88,8 @@ watch(
 function handleAdd() {
   const newRow = {
     id: undefined,
-    warehouseId: undefined,
+    fromWarehouseId: undefined,
+    toWarehouseId: undefined,
     productId: undefined,
     productUnitName: undefined, // 产品单位
     productBarCode: undefined, // 产品条码
@@ -104,7 +105,7 @@ function handleAdd() {
 }
 
 /** 处理删除 */
-function handleDelete(row: ErpStockOutApi.StockOutItem) {
+function handleDelete(row: ErpStockMoveApi.StockMoveItem) {
   const index = tableData.value.findIndex((item) => item.id === row.id);
   if (index !== -1) {
     tableData.value.splice(index, 1);
@@ -113,17 +114,27 @@ function handleDelete(row: ErpStockOutApi.StockOutItem) {
   emit('update:items', [...tableData.value]);
 }
 
-/** 处理仓库变更 */
-async function handleWarehouseChange(warehouseId: any, row: any) {
+/** 处理调出仓库变更 */
+async function handleFromWarehouseChange(warehouseId: any, row: any) {
   const warehouse = warehouseOptions.value.find((w) => w.id === warehouseId);
   if (!warehouse) {
     return;
   }
-  row.warehouseId = warehouseId;
+  row.fromWarehouseId = warehouseId;
   // 如果已选择产品，重新获取库存
   if (row.productId) {
     row.stockCount = (await getStockCount(row.productId, warehouseId)) || 0;
   }
+  handleRowChange(row);
+}
+
+/** 处理调入仓库变更 */
+async function handleToWarehouseChange(warehouseId: any, row: any) {
+  const warehouse = warehouseOptions.value.find((w) => w.id === warehouseId);
+  if (!warehouse) {
+    return;
+  }
+  row.toWarehouseId = warehouseId;
   handleRowChange(row);
 }
 
@@ -138,8 +149,8 @@ async function handleProductChange(productId: any, row: any) {
   row.productBarCode = product.barCode;
   row.productUnitName = product.unitName;
   row.productName = product.name;
-  row.stockCount = row.warehouseId
-    ? (await getStockCount(productId, row.warehouseId)) || 0
+  row.stockCount = row.fromWarehouseId
+    ? (await getStockCount(productId, row.fromWarehouseId)) || 0
     : (await getStockCount(productId)) || 0;
   row.productPrice = product.purchasePrice || 0;
   row.count = row.count || 1;
@@ -158,7 +169,7 @@ function handleRowChange(row: any) {
 }
 
 /** 初始化行数据 */
-const initRow = (row: ErpStockOutApi.StockOutItem): void => {
+const initRow = (row: ErpStockMoveApi.StockMoveItem): void => {
   if (row.productPrice && row.count) {
     row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
   }
@@ -169,17 +180,17 @@ function validate() {
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
     if (item) {
-      if (!item.warehouseId) {
-        throw new Error(`第 ${i + 1} 行：仓库不能为空`);
+      if (!item.fromWarehouseId) {
+        throw new Error(`第 ${i + 1} 行：调出仓库不能为空`);
+      }
+      if (!item.toWarehouseId) {
+        throw new Error(`第 ${i + 1} 行：调入仓库不能为空`);
       }
       if (!item.productId) {
         throw new Error(`第 ${i + 1} 行：产品不能为空`);
       }
       if (!item.count || item.count <= 0) {
         throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
-      }
-      if (!item.productPrice || item.productPrice <= 0) {
-        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
       }
     }
   }
@@ -202,16 +213,28 @@ onMounted(async () => {
 
 <template>
   <Grid class="w-full">
-    <template #warehouseId="{ row }">
+    <template #fromWarehouseId="{ row }">
       <Select
-        v-model:value="row.warehouseId"
+        v-model:value="row.fromWarehouseId"
         :options="warehouseOptions"
         :field-names="{ label: 'name', value: 'id' }"
         class="w-full"
-        placeholder="请选择仓库"
+        placeholder="请选择调出仓库"
         show-search
         :disabled="disabled"
-        @change="handleWarehouseChange($event, row)"
+        @change="handleFromWarehouseChange($event, row)"
+      />
+    </template>
+    <template #toWarehouseId="{ row }">
+      <Select
+        v-model:value="row.toWarehouseId"
+        :options="warehouseOptions"
+        :field-names="{ label: 'name', value: 'id' }"
+        class="w-full"
+        placeholder="请选择调入仓库"
+        show-search
+        :disabled="disabled"
+        @change="handleToWarehouseChange($event, row)"
       />
     </template>
     <template #productId="{ row }">
@@ -284,7 +307,7 @@ onMounted(async () => {
         class="mt-2 flex justify-center"
         :actions="[
           {
-            label: '添加出库产品',
+            label: '添加调拨产品',
             type: 'default',
             onClick: handleAdd,
           },
