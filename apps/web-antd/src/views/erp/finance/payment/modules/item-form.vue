@@ -65,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     autoResize: true,
     border: true,
     rowConfig: {
-      keyField: 'row_id',
+      keyField: 'seq',
       isHover: true,
     },
     pagerConfig: {

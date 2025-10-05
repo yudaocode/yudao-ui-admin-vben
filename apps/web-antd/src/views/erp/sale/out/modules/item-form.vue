@@ -71,7 +71,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     autoResize: true,
     border: true,
     rowConfig: {
-      keyField: 'row_id',
+      keyField: 'seq',
       isHover: true,
     },
     pagerConfig: {
@@ -131,7 +131,7 @@ watch(
 
 /** 处理删除 */
 function handleDelete(row: ErpSaleOutApi.SaleOutItem) {
-  const index = tableData.value.findIndex((item) => item.id === row.id);
+  const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index !== -1) {
     tableData.value.splice(index, 1);
   }
@@ -151,7 +151,7 @@ const handleWarehouseChange = async (row: ErpSaleOutApi.SaleOutItem) => {
 
 /** 处理行数据变更 */
 function handleRowChange(row: any) {
-  const index = tableData.value.findIndex((item) => item.id === row.id);
+  const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index === -1) {
     tableData.value.push(row);
   } else {
