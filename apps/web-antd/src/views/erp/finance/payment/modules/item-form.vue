@@ -59,7 +59,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(tableData.value),
+    columns: useFormItemColumns(),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
@@ -87,9 +87,6 @@ watch(
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
-    // 更新表格列配置
-    const columns = useFormItemColumns(tableData.value);
-    await gridApi.grid.reloadColumn(columns);
   },
   {
     immediate: true,
