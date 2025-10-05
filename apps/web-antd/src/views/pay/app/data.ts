@@ -258,38 +258,61 @@ export function useAppFormSchema(): VbenFormSchema[] {
 
 /** 渠道新增/修改的表单 */
 export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
-  // TODO @AI：id、appId、feeRate、code、备注，这几个整合起来（放最前面）。然后差异化的去 push
-  // TODO @AI：radiogroup 都改成 buttonStyle、optionType
+  const schema: VbenFormSchema[] = [];
+  // 添加通用字段
+  schema.push(
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      label: '应用编号',
+      fieldName: 'appId',
+      component: 'Input',
+      dependencies: {
+        show: () => false,
+        triggerFields: [''],
+      },
+    },
+    {
+      label: '渠道编码',
+      fieldName: 'code',
+      component: 'Input',
+      dependencies: {
+        show: () => false,
+        triggerFields: [''],
+      },
+    },
+    {
+      label: '渠道费率',
+      fieldName: 'feeRate',
+      component: 'InputNumber',
+      rules: 'required',
+      componentProps: {
+        placeholder: '请输入渠道费率',
+        addonAfter: '%',
+      },
+      defaultValue: 0,
+    },
+    {
+      label: '渠道状态',
+      fieldName: 'status',
+      component: 'RadioGroup',
+      rules: z.number().default(CommonStatusEnum.ENABLE),
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+    },
+  );
+  // 根据类型添加特定字段
   if (formType.includes('alipay_')) {
-    return [
-      {
-        component: 'Input',
-        fieldName: 'id',
-        dependencies: {
-          triggerFields: [''],
-          show: () => false,
-        },
-      },
-      {
-        label: '应用编号',
-        fieldName: 'appId',
-        component: 'Input',
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '渠道费率',
-        fieldName: 'feeRate',
-        component: 'InputNumber',
-        rules: 'required',
-        componentProps: {
-          placeholder: '请输入渠道费率',
-          addonAfter: '%',
-        },
-        defaultValue: 0,
-      },
+    schema.push(
       {
         label: '开放平台 APPID',
         fieldName: 'config.appId',
@@ -298,16 +321,6 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         componentProps: {
           placeholder: '请输入开放平台 APPID',
         },
-      },
-      {
-        label: '渠道状态',
-        fieldName: 'status',
-        component: 'RadioGroup',
-        rules: 'required',
-        componentProps: {
-          options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        },
-        defaultValue: 0,
       },
       {
         label: '网关地址',
@@ -325,6 +338,8 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
               label: '沙箱环境',
             },
           ],
+          buttonStyle: 'solid',
+          optionType: 'button',
         },
       },
       {
@@ -339,6 +354,8 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
               label: 'RSA2',
             },
           ],
+          buttonStyle: 'solid',
+          optionType: 'button',
         },
         defaultValue: 'RSA2',
       },
@@ -358,6 +375,8 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
               label: '证书模式',
             },
           ],
+          buttonStyle: 'solid',
+          optionType: 'button',
         },
       },
       {
@@ -380,7 +399,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           rows: 3,
         },
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.mode === 1;
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -398,7 +417,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         }),
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.mode === 2;
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -416,7 +435,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         }),
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.mode === 2;
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -434,7 +453,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         }),
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.mode === 2;
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -456,6 +475,8 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
               label: 'AES',
             },
           ],
+          buttonStyle: 'solid',
+          optionType: 'button',
         },
         defaultValue: 'NONE',
       },
@@ -465,122 +486,15 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         component: 'Input',
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.encryptType === 'AES';
           },
           triggerFields: ['config.encryptType', 'encryptType', 'config'],
         },
       },
-      {
-        label: '备注',
-        fieldName: 'remark',
-        component: 'Input',
-        componentProps: {
-          placeholder: '请输入备注',
-        },
-      },
-    ];
-  } else if (formType.includes('mock') || formType.includes('wallet')) {
-    return [
-      {
-        component: 'Input',
-        fieldName: 'id',
-        dependencies: {
-          triggerFields: [''],
-          show: () => false,
-        },
-      },
-      {
-        label: '应用编号',
-        fieldName: 'appId',
-        component: 'Input',
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '渠道状态',
-        fieldName: 'status',
-        component: 'RadioGroup',
-        rules: 'required',
-        componentProps: {
-          options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        },
-        defaultValue: 0,
-      },
-      {
-        label: '渠道编码',
-        fieldName: 'code',
-        component: 'Input',
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '渠道费率',
-        fieldName: 'feeRate',
-        component: 'InputNumber',
-        rules: 'required',
-        componentProps: {
-          placeholder: '请输入渠道费率',
-          addonAfter: '%',
-        },
-        defaultValue: 0,
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '备注',
-        fieldName: 'remark',
-        component: 'Input',
-        componentProps: {
-          placeholder: '请输入备注',
-        },
-      },
-    ];
-  } else if (formType.includes('wx')) {
-    return [
-      {
-        component: 'Input',
-        fieldName: 'id',
-        dependencies: {
-          triggerFields: [''],
-          show: () => false,
-        },
-      },
-      {
-        label: '应用编号',
-        fieldName: 'appId',
-        component: 'Input',
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '渠道编码',
-        fieldName: 'code',
-        component: 'Input',
-        dependencies: {
-          show: () => false,
-          triggerFields: [''],
-        },
-      },
-      {
-        label: '渠道费率',
-        fieldName: 'feeRate',
-        component: 'InputNumber',
-        rules: 'required',
-        componentProps: {
-          placeholder: '请输入渠道费率',
-          addonAfter: '%',
-        },
-        defaultValue: 0,
-      },
+    );
+  } else if (formType.includes('wx_')) {
+    schema.push(
       {
         label: '微信 APPID',
         fieldName: 'config.appId',
@@ -602,16 +516,6 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         },
       },
       {
-        label: '渠道状态',
-        fieldName: 'status',
-        component: 'RadioGroup',
-        rules: 'required',
-        componentProps: {
-          options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        },
-        defaultValue: 0,
-      },
-      {
         label: 'API 版本',
         fieldName: 'config.apiVersion',
         component: 'RadioGroup',
@@ -627,6 +531,8 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
               value: 'v3',
             },
           ],
+          buttonStyle: 'solid',
+          optionType: 'button',
         },
       },
       {
@@ -638,7 +544,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           placeholder: '请输入商户密钥',
         },
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -659,7 +565,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         }),
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -674,7 +580,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           placeholder: '请输入 API V3 密钥',
         },
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -695,7 +601,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         }),
         rules: 'required',
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -711,7 +617,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           placeholder: '请输入证书序列号',
         },
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -731,7 +637,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           },
         }),
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
@@ -747,22 +653,22 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           placeholder: '请输入公钥 ID',
         },
         dependencies: {
-          show(values) {
+          show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
           triggerFields: ['config.mode', 'mode', 'config'],
         },
       },
-      {
-        label: '备注',
-        fieldName: 'remark',
-        component: 'Input',
-        componentProps: {
-          placeholder: '请输入备注',
-        },
-      },
-    ];
-  } else {
-    return [];
+    );
   }
+  // 添加备注字段（所有类型都有）
+  schema.push({
+    label: '备注',
+    fieldName: 'remark',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入备注',
+    },
+  });
+  return schema;
 }
