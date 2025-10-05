@@ -152,8 +152,9 @@ setupVbenVxeTable({
       renderTableDefault({ attrs, props }, { column, row }) {
         const loadingKey = `__loading_${column.field}`;
         const finallyProps = {
-          activeText: $t('common.enabled'),
-          inactiveText: $t('common.disabled'),
+          // 注释 by 芋艿：如果添加了 activeText、inactiveText 属性，会默认展示对应的文案。注释后，和 antd 保持一致
+          // activeText: $t('common.enabled'),
+          // inactiveText: $t('common.disabled'),
           activeValue: 1,
           inactiveValue: 0,
           ...props,
