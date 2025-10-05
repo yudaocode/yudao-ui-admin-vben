@@ -49,13 +49,6 @@ export namespace ErpPurchaseInApi {
     supplierId?: number;
     status?: number;
   }
-
-  // TODO @nehc：updatePurchaseInStatus 是不是需要？
-  /** 采购入库状态更新参数 */
-  export interface PurchaseInStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
 /**

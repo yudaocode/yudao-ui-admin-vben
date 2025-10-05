@@ -39,6 +39,7 @@ export namespace ErpStockOutApi {
     customerId?: number;
     status?: number;
   }
+}
 
 /**
  * 查询其它出库单分页

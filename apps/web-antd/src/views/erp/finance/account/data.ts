@@ -1,12 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
-
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-
-import { Tag } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 
@@ -127,7 +123,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns<T = ErpAccountApi.Account>(
+  onDefaultStatusChange?: (
+    newStatus: boolean,
+    row: T,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
@@ -163,16 +164,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'defaultStatus',
       title: '是否默认',
       minWidth: 100,
-      slots: {
-        default: ({ row }) => {
-          return h(
-            Tag,
-            {
-              class: 'mr-1',
-              color: row.defaultStatus ? 'blue' : 'red',
-            },
-            () => (row.defaultStatus ? '是' : '否'),
-          );
+      cellRender: {
+        attrs: { beforeChange: onDefaultStatusChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: true,
+          unCheckedValue: false,
         },
       },
     },
