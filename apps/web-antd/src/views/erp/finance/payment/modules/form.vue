@@ -85,20 +85,23 @@ const handleUpdateItems = (
   items: ErpFinancePaymentApi.FinancePaymentItem[],
 ) => {
   formData.value.items = items;
-  // 重新计算合计付款
-  const totalPrice = items.reduce(
-    (prev, curr) => prev + (curr.totalPrice || 0),
-    0,
-  );
-  const paymentPrice = items.reduce(
-    (prev, curr) => prev + (curr.paymentPrice || 0),
-    0,
-  );
-  formData.value.totalPrice = totalPrice;
-  formData.value.paymentPrice = paymentPrice - formData.value.discountPrice;
   formApi.setValues({
     items,
+  });
+};
+
+/** 更新总金额 */
+const handleUpdateTotalPrice = (totalPrice: number) => {
+  formData.value.totalPrice = totalPrice;
+  formApi.setValues({
     totalPrice: formData.value.totalPrice,
+  });
+};
+
+/** 更新付款金额 */
+const handleUpdatePaymentPrice = (paymentPrice: number) => {
+  formData.value.paymentPrice = paymentPrice;
+  formApi.setValues({
     paymentPrice: formData.value.paymentPrice,
   });
 };
@@ -180,7 +183,10 @@ const [Modal, modalApi] = useVbenModal({
           :items="formData?.items ?? []"
           :supplier-id="formData?.supplierId"
           :disabled="formType === 'detail'"
+          :discount-price="formData?.discountPrice ?? 0"
           @update:items="handleUpdateItems"
+          @update:total-price="handleUpdateTotalPrice"
+          @update:payment-price="handleUpdatePaymentPrice"
         />
       </template>
     </Form>

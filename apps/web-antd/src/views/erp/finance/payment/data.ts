@@ -407,3 +407,193 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
+
+4; /** 采购入库单选择表单的配置项 */
+export function usePurchaseInGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'no',
+      label: '入库单号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入入库单号',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'supplierId',
+      label: '供应商',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+        placeholder: '已自动选择供应商',
+      },
+    },
+    {
+      fieldName: 'paymentStatus',
+      label: '付款状态',
+      component: 'Select',
+      componentProps: {
+        options: [
+          { label: '未付款', value: 0 },
+          { label: '部分付款', value: 1 },
+          { label: '全部付款', value: 2 },
+        ],
+        placeholder: '请选择付款状态',
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+/** 采购入库单选择列表的字段 */
+export function usePurchaseInGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      type: 'checkbox',
+      width: 50,
+      fixed: 'left',
+    },
+    {
+      field: 'no',
+      title: '入库单号',
+      width: 200,
+      fixed: 'left',
+    },
+    {
+      field: 'supplierName',
+      title: '供应商',
+      minWidth: 120,
+    },
+    {
+      field: 'inTime',
+      title: '入库时间',
+      width: 160,
+      formatter: 'formatDate',
+    },
+    {
+      field: 'totalPrice',
+      title: '应付金额',
+      formatter: 'formatAmount2',
+      minWidth: 120,
+    },
+    {
+      field: 'paymentPrice',
+      title: '已付金额',
+      formatter: 'formatAmount2',
+      minWidth: 120,
+    },
+    {
+      field: 'unPaymentPrice',
+      title: '未付金额',
+      formatter: ({ row }) => {
+        return erpPriceInputFormatter(row.totalPrice - row.paymentPrice || 0);
+      },
+      minWidth: 120,
+    },
+    {
+      field: 'status',
+      title: '状态',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.ERP_AUDIT_STATUS },
+      },
+    },
+  ];
+}
+
+/** 采购退货单选择表单的配置项 */
+export function useSaleReturnGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'no',
+      label: '退货单号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入退货单号',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'supplierId',
+      label: '供应商',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+        placeholder: '已自动选择供应商',
+      },
+    },
+    {
+      fieldName: 'refundStatus',
+      label: '退款状态',
+      component: 'Select',
+      componentProps: {
+        options: [
+          { label: '未退款', value: 0 },
+          { label: '部分退款', value: 1 },
+          { label: '全部退款', value: 2 },
+        ],
+        placeholder: '请选择退款状态',
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+/** 采购退货单选择列表的字段 */
+export function useSaleReturnGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      type: 'checkbox',
+      width: 50,
+      fixed: 'left',
+    },
+    {
+      field: 'no',
+      title: '退货单号',
+      width: 200,
+      fixed: 'left',
+    },
+    {
+      field: 'supplierName',
+      title: '供应商',
+      minWidth: 120,
+    },
+    {
+      field: 'returnTime',
+      title: '退货时间',
+      width: 160,
+      formatter: 'formatDate',
+    },
+    {
+      field: 'totalPrice',
+      title: '应退金额',
+      formatter: 'formatAmount2',
+      minWidth: 120,
+    },
+    {
+      field: 'refundPrice',
+      title: '已退金额',
+      formatter: 'formatAmount2',
+      minWidth: 120,
+    },
+    {
+      field: 'unRefundPrice',
+      title: '未退金额',
+      formatter: ({ row }) => {
+        return erpPriceInputFormatter(row.totalPrice - row.refundPrice || 0);
+      },
+      minWidth: 120,
+    },
+    {
+      field: 'status',
+      title: '状态',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.ERP_AUDIT_STATUS },
+      },
+    },
+  ];
+}

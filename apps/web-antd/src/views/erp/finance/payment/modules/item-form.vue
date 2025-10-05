@@ -20,15 +20,21 @@ interface Props {
   items?: ErpFinancePaymentApi.FinancePaymentItem[];
   supplierId?: number;
   disabled?: boolean;
+  discountPrice?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   supplierId: undefined,
   disabled: false,
+  discountPrice: 0,
 });
 
-const emit = defineEmits(['update:items']);
+const emit = defineEmits([
+  'update:items',
+  'update:total-price',
+  'update:payment-price',
+]);
 
 const tableData = ref<ErpFinancePaymentApi.FinancePaymentItem[]>([]); // 表格数据
 
@@ -78,7 +84,6 @@ watch(
     if (!items) {
       return;
     }
-    items.forEach((item) => initRow(item));
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
@@ -89,6 +94,29 @@ watch(
   {
     immediate: true,
   },
+);
+
+/** 计算 totalPrice、paymentPrice 价格 */
+watch(
+  () => [tableData.value, props.discountPrice],
+  () => {
+    if (!tableData.value || tableData.value.length === 0) {
+      return;
+    }
+    const totalPrice = tableData.value.reduce(
+      (prev, curr) => prev + (curr.totalPrice || 0),
+      0,
+    );
+    const paymentPrice = tableData.value.reduce(
+      (prev, curr) => prev + (curr.paymentPrice || 0),
+      0,
+    );
+    const finalPaymentPrice = paymentPrice - (props.discountPrice || 0);
+    // 通知父组件更新
+    emit('update:total-price', totalPrice);
+    emit('update:payment-price', finalPaymentPrice);
+  },
+  { deep: true },
 );
 
 /** 添加采购入库单 */
@@ -166,11 +194,6 @@ const handleRowChange = (row: any) => {
     tableData.value[index] = row;
   }
   emit('update:items', [...tableData.value]);
-};
-
-/** 初始化行数据 */
-const initRow = (item: any) => {
-  // 不需要特殊初始化
 };
 
 /** 表单校验 */
