@@ -17,6 +17,7 @@ export namespace ErpStockCheckApi {
     creatorName?: string; // 创建人
     items?: StockCheckItem[]; // 盘点产品清单
   }
+
   export interface StockCheckItem {
     id?: number; // 编号
     warehouseId?: number; // 仓库编号
@@ -37,12 +38,6 @@ export namespace ErpStockCheckApi {
   export interface StockCheckPageParams extends PageParam {
     no?: string;
     status?: number;
-  }
-
-  /** 库存盘点单状态更新参数 */
-  export interface StockCheckStatusParams {
-    id: number;
-    status: number;
   }
 }
 
@@ -86,11 +81,9 @@ export function updateStockCheck(data: ErpStockCheckApi.StockCheck) {
 /**
  * 更新库存盘点单的状态
  */
-export function updateStockCheckStatus(
-  params: ErpStockCheckApi.StockCheckStatusParams,
-) {
+export function updateStockCheckStatus(id: number, status: number) {
   return requestClient.put('/erp/stock-check/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 

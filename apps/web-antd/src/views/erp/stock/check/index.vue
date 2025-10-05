@@ -75,7 +75,7 @@ async function handleUpdateStatus(
     duration: 0,
   });
   try {
-    await updateStockCheckStatus({ id: row.id!, status });
+    await updateStockCheckStatus(row.id!, status);
     message.success(`${status === 20 ? '审批' : '反审批'}成功`);
     handleRefresh();
   } finally {

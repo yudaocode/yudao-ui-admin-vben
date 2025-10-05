@@ -43,13 +43,6 @@ export namespace ErpStockMoveApi {
     status?: number;
   }
 
-  /** 库存调拨单状态更新参数 */
-  export interface StockMoveStatusParams {
-    id: number;
-    status: number;
-  }
-}
-
 /**
  * 查询库存调拨单分页
  */
@@ -88,11 +81,9 @@ export function updateStockMove(data: ErpStockMoveApi.StockMove) {
 /**
  * 更新库存调拨单的状态
  */
-export function updateStockMoveStatus(
-  params: ErpStockMoveApi.StockMoveStatusParams,
-) {
+export function updateStockMoveStatus(id: number, status: number) {
   return requestClient.put('/erp/stock-move/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 

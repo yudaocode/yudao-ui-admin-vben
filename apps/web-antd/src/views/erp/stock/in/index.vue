@@ -72,7 +72,7 @@ async function handleUpdateStatus(row: ErpStockInApi.StockIn, status: number) {
     duration: 0,
   });
   try {
-    await updateStockInStatus({ id: row.id!, status });
+    await updateStockInStatus(row.id!, status);
     message.success(`${status === 20 ? '审批' : '反审批'}成功`);
     handleRefresh();
   } finally {

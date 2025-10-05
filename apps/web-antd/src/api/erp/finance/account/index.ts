@@ -51,6 +51,7 @@ export function updateAccount(data: ErpAccountApi.Account) {
 }
 
 /** 修改结算账户默认状态 */
+// TODO @芋艿：这里有少迁移的
 export function updateAccountDefaultStatus(id: number, defaultStatus: boolean) {
   return requestClient.put('/erp/account/update-default-status', null, {
     params: { id, defaultStatus },

@@ -51,17 +51,9 @@ namespace ErpFinancePaymentApi {
     remark?: string;
     bizNo?: string;
   }
-
-  /** 付款单状态更新参数 */
-  export interface FinancePaymentStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
-/**
- * 查询付款单分页
- */
+/** 查询付款单分页 */
 export function getFinancePaymentPage(
   params: ErpFinancePaymentApi.FinancePaymentPageParams,
 ) {
@@ -73,47 +65,35 @@ export function getFinancePaymentPage(
   );
 }
 
-/**
- * 查询付款单详情
- */
+/** 查询付款单详情 */
 export function getFinancePayment(id: number) {
   return requestClient.get<ErpFinancePaymentApi.FinancePayment>(
     `/erp/finance-payment/get?id=${id}`,
   );
 }
 
-/**
- * 新增付款单
- */
+/** 新增付款单 */
 export function createFinancePayment(
   data: ErpFinancePaymentApi.FinancePayment,
 ) {
   return requestClient.post('/erp/finance-payment/create', data);
 }
 
-/**
- * 修改付款单
- */
+/** 修改付款单 */
 export function updateFinancePayment(
   data: ErpFinancePaymentApi.FinancePayment,
 ) {
   return requestClient.put('/erp/finance-payment/update', data);
 }
 
-/**
- * 更新付款单的状态
- */
-export function updateFinancePaymentStatus(
-  params: ErpFinancePaymentApi.FinancePaymentStatusParams,
-) {
+/** 更新付款单的状态 */
+export function updateFinancePaymentStatus(id: number, status: number) {
   return requestClient.put('/erp/finance-payment/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 
-/**
- * 删除付款单
- */
+/** 删除付款单 */
 export function deleteFinancePayment(ids: number[]) {
   return requestClient.delete('/erp/finance-payment/delete', {
     params: {
@@ -122,9 +102,7 @@ export function deleteFinancePayment(ids: number[]) {
   });
 }
 
-/**
- * 导出付款单 Excel
- */
+/** 导出付款单 Excel */
 export function exportFinancePayment(
   params: ErpFinancePaymentApi.FinancePaymentPageParams,
 ) {
