@@ -5,37 +5,23 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElDivider } from 'element-plus';
-
 import { getRefund } from '#/api/pay/refund';
 import { useDescription } from '#/components/description';
 
-import { useBaseDetailSchema, useChannelDetailSchema } from '../data';
+import { useDetailSchema } from '../data';
 
 const formData = ref<PayRefundApi.Refund>();
 
-const [BaseDescription] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
-    border: false,
+    border: true,
     column: 2,
     direction: 'horizontal',
+    labelWidth: 140,
     title: '',
-    labelWidth: 200,
     extra: '',
   },
-  schema: useBaseDetailSchema(),
-});
-
-const [ChannelDescription] = useDescription({
-  componentProps: {
-    border: false,
-    column: 2,
-    direction: 'horizontal',
-    title: '',
-    labelWidth: 200,
-    extra: '',
-  },
-  schema: useChannelDetailSchema(),
+  schema: useDetailSchema(),
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -66,8 +52,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <BaseDescription :data="formData" />
-    <ElDivider />
-    <ChannelDescription :data="formData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

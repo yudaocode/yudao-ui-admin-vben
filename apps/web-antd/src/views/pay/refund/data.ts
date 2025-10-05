@@ -206,16 +206,20 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'payPrice',
       label: '支付金额',
       content: (data: PayRefundApi.Refund) =>
-        h(Tag, { color: 'success' }, () =>
-          `￥${erpPriceInputFormatter(data?.payPrice || 0)}`
+        h(
+          Tag,
+          { color: 'success' },
+          () => `￥${erpPriceInputFormatter(data?.payPrice || 0)}`,
         ),
     },
     {
       field: 'refundPrice',
       label: '退款金额',
       content: (data: PayRefundApi.Refund) =>
-        h(Tag, { color: 'danger' }, () =>
-          `￥${erpPriceInputFormatter(data?.refundPrice || 0)}`
+        h(
+          Tag,
+          { color: 'danger' },
+          () => `￥${erpPriceInputFormatter(data?.refundPrice || 0)}`,
         ),
     },
     {
