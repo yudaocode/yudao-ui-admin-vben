@@ -18,8 +18,8 @@ const emit = defineEmits(['success']);
 const formData = ref<any>();
 const title = computed(() => {
   return formData.value?.id === 0
-    ? $t('ui.actionTitle.create', '应用')
-    : $t('ui.actionTitle.edit', '应用');
+    ? $t('ui.actionTitle.create', ['渠道'])
+    : $t('ui.actionTitle.edit', ['渠道']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange: async (isOpen) => {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       return;

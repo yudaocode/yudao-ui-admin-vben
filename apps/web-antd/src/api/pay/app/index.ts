@@ -16,7 +16,7 @@ export namespace PayAppApi {
     merchantId: number;
     merchantName: string;
     createTime?: Date;
-    channelCodes: string[];
+    channelCodes?: string[];
   }
 
   /** 更新状态请求 */

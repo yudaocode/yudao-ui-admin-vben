@@ -17,8 +17,8 @@ const emit = defineEmits(['success']);
 const formData = ref<PayAppApi.App>();
 const title = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', '应用')
-    : $t('ui.actionTitle.create', '应用');
+    ? $t('ui.actionTitle.edit', ['应用'])
+    : $t('ui.actionTitle.create', ['应用']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -77,7 +77,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 <template>
-  <Modal :close-on-click-modal="false" :title="title" class="w-2/5">
+  <Modal :title="title" class="w-2/5">
     <Form />
   </Modal>
 </template>
