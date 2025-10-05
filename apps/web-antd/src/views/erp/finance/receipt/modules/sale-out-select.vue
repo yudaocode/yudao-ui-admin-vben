@@ -55,11 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<ErpSaleOutApi.SaleOut>,
   gridEvents: {
-    checkboxChange: ({
-      records,
-    }: {
-      records: ErpSaleOutApi.SaleOut[];
-    }) => {
+    checkboxChange: ({ records }: { records: ErpSaleOutApi.SaleOut[] }) => {
       selectedRows.value = records;
     },
     checkboxAll: ({ records }: { records: ErpSaleOutApi.SaleOut[] }) => {

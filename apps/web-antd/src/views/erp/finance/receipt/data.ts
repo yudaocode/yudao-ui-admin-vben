@@ -176,9 +176,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
 }
 
 /** 表单的明细表格列 */
-export function useFormItemColumns(
-  formData?: any[],
-): VxeTableGridOptions['columns'] {
+export function useFormItemColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
