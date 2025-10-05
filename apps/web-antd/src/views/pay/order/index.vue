@@ -35,7 +35,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     cellConfig: {
       height: 80,
-
     },
     columns: useGridColumns(),
     height: 'auto',
