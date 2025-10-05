@@ -34,8 +34,7 @@ const [Modal, modalApi] = useVbenModal({
 
 const [Descriptions] = useDescription({
   componentProps: {
-    title: '基本信息',
-    bordered: false,
+    bordered: true,
     column: 2,
     class: 'mx-4',
   },

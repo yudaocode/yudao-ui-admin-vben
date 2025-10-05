@@ -6,31 +6,41 @@ export namespace PayTransferApi {
   /** 转账单信息 */
   export interface Transfer {
     id: number;
+    no: string;
     appId: number;
+    appName: string;
     channelId: number;
     channelCode: string;
     merchantTransferId: string;
-    type: number;
+    channelTransferNo: string;
     price: number;
     subject: string;
     userName: string;
-    alipayLogonId: string;
-    openid: string;
+    userAccount: string;
+    userIp: string;
     status: number;
+    successTime: Date;
     createTime: Date;
+    updateTime: Date;
+    notifyUrl: string;
+    channelNotifyData: string;
   }
 
   /** 转账单分页请求 */
   export interface TransferPageReq extends PageParam {
+    no?: string;
     appId?: number;
     channelId?: number;
     channelCode?: string;
     merchantTransferId?: string;
+    channelTransferNo?: string;
     type?: number;
     price?: number;
     subject?: string;
     userName?: string;
+    userAccount?: string;
     status?: number;
+    successTime?: Date[];
     createTime?: Date[];
   }
 }
