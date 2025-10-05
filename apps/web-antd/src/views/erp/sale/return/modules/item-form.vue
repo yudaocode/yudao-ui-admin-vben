@@ -229,16 +229,17 @@ onMounted(async () => {
         :precision="2"
         @change="handleRowChange(row)"
       />
-      <span v-else>{{ row.count || '-' }}</span>
+      <span v-else>{{ erpCountInputFormatter(row.count) || '-' }}</span>
     </template>
     <template #productPrice="{ row }">
       <InputNumber
-        disabled
+        v-if="!disabled"
         v-model:value="row.productPrice"
         :min="0"
         :precision="2"
         @change="handleRowChange(row)"
       />
+      <span v-else>{{ erpPriceInputFormatter(row.productPrice) || '-' }}</span>
     </template>
     <template #remark="{ row }">
       <Input v-if="!disabled" v-model:value="row.remark" class="w-full" />

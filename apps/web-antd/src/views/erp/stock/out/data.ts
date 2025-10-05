@@ -121,6 +121,7 @@ export function useFormItemColumns(): VxeTableGridOptions['columns'] {
       field: 'stockCount',
       title: '库存',
       minWidth: 80,
+      formatter: 'formatAmount3',
     },
     {
       field: 'productBarCode',

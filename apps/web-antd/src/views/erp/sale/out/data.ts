@@ -235,6 +235,7 @@ export function useFormItemColumns(
       field: 'stockCount',
       title: '库存',
       minWidth: 80,
+      formatter: 'formatAmount3',
     },
     {
       field: 'productBarCode',
