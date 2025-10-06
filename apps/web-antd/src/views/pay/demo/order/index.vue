@@ -5,7 +5,6 @@ import type { DemoOrderApi } from '#/api/pay/demo/order';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -24,7 +23,7 @@ const [FormModal, formModalApi] = useVbenModal({
 const router = useRouter();
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -52,14 +51,13 @@ async function handleRefund(row: DemoOrderApi.Order) {
   });
   try {
     await refundDemoOrder(row.id as number);
-    message.success({
-      content: '退款成功',
-    });
-    onRefresh();
+    message.success('发起退款成功！');
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
+
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -79,13 +77,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<DemoOrderApi.Order>,
-});
+  });
 </script>
 
 <template>
@@ -109,13 +107,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="示例订单列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['示例订单']),
+              label: '发起订单',
               type: 'primary',
               icon: ACTION_ICON.ADD,
               onClick: handleCreate,
@@ -123,16 +121,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <template #refundTime="{ row }">
-        <span v-if="row.refundTime">{{ formatDateTime(row.refundTime) }}</span>
-        <span v-else-if="row.payRefundId">退款中，等待退款结果</span>
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: '前往支付',
               type: 'link',
+              icon: ACTION_ICON.VIEW,
               ifShow: !row.payStatus,
               onClick: handlePay.bind(null, row),
             },
@@ -140,9 +135,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '发起退款',
               type: 'link',
               danger: true,
+              icon: ACTION_ICON.REFUND,
               ifShow: row.payStatus && !row.payRefundId,
               popConfirm: {
-                title: '确定发起退款吗？',
+                title: `是否确认退款编号为"${row.id}"的示例订单?`,
                 confirm: handleRefund.bind(null, row),
               },
             },

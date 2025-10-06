@@ -40,7 +40,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      message.success($t('common.createSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -49,7 +49,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="$t('ui.actionTitle.create', ['退款订单'])">
+  <Modal class="w-2/5" title="发起订单">
     <Form class="mx-4" />
   </Modal>
 </template>
