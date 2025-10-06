@@ -40,60 +40,19 @@ export namespace PayOrderApi {
   }
 
   /** 支付订单分页请求 */
-  export interface OrderPageReq extends PageParam {
-    merchantId?: number;
+  export interface OrderPageReqVO extends PageParam {
     appId?: number;
-    channelId?: number;
     channelCode?: string;
     merchantOrderId?: string;
-    subject?: string;
-    body?: string;
-    notifyUrl?: string;
-    notifyStatus?: number;
-    amount?: number;
-    channelFeeRate?: number;
-    channelFeeAmount?: number;
-    status?: number;
-    expireTime?: Date[];
-    successTime?: Date[];
-    notifyTime?: Date[];
-    successExtensionId?: number;
-    refundStatus?: number;
-    refundTimes?: number;
-    channelUserId?: string;
     channelOrderNo?: string;
-    createTime?: Date[];
-  }
-
-  /** 支付订单导出请求 */
-  export interface OrderExportReq {
-    merchantId?: number;
-    appId?: number;
-    channelId?: number;
-    channelCode?: string;
-    merchantOrderId?: string;
-    subject?: string;
-    body?: string;
-    notifyUrl?: string;
-    notifyStatus?: number;
-    amount?: number;
-    channelFeeRate?: number;
-    channelFeeAmount?: number;
+    no?: string;
     status?: number;
-    expireTime?: Date[];
-    successTime?: Date[];
-    notifyTime?: Date[];
-    successExtensionId?: number;
-    refundStatus?: number;
-    refundTimes?: number;
-    channelUserId?: string;
-    channelOrderNo?: string;
     createTime?: Date[];
   }
 }
 
 /** 查询支付订单列表 */
-export function getOrderPage(params: PayOrderApi.OrderPageReq) {
+export function getOrderPage(params: PayOrderApi.OrderPageReqVO) {
   return requestClient.get<PageResult<PayOrderApi.Order>>('/pay/order/page', {
     params,
   });
@@ -120,6 +79,6 @@ export function submitOrder(data: any) {
 }
 
 /** 导出支付订单 */
-export function exportOrder(params: PayOrderApi.OrderExportReq) {
+export function exportOrder(params: any) {
   return requestClient.download('/pay/order/export-excel', { params });
 }

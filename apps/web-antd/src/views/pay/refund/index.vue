@@ -3,11 +3,12 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayRefundApi } from '#/api/pay/refund';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getRefundPage } from '#/api/pay/refund';
+import { exportRefund, getRefundPage } from '#/api/pay/refund';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -21,6 +22,12 @@ const [DetailModal, detailModalApi] = useVbenModal({
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 导出退款订单 */
+async function handleExport() {
+  const data = await exportRefund(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '退款订单.xls', source: data });
 }
 
 /** 查看详情 */
@@ -71,6 +78,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <DetailModal @success="handleRefresh" />
     <Grid table-title="支付退款列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export', ['退款订单']),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['pay:refund:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

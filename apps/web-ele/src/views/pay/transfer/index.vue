@@ -3,11 +3,12 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayTransferApi } from '#/api/pay/transfer';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getTransferPage } from '#/api/pay/transfer';
+import { exportTransfer, getTransferPage } from '#/api/pay/transfer';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -21,6 +22,12 @@ const [DetailModal, detailModalApi] = useVbenModal({
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 导出转账单 */
+async function handleExport() {
+  const data = await exportTransfer(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '转账单.xls', source: data });
 }
 
 /** 查看转账详情 */
@@ -70,6 +77,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <DetailModal @success="handleRefresh" />
     <Grid table-title="转账单列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export', ['转账单']),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['pay:transfer:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

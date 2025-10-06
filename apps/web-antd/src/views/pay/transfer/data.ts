@@ -192,13 +192,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'merchantTransferId',
       label: '商户单号',
       content: (data: PayTransferApi.Transfer) =>
-        h(Tag, {}, () => data?.merchantTransferId || '-'),
+        h(Tag, {}, () => data?.merchantTransferId),
     },
     {
       field: 'no',
       label: '转账单号',
       content: (data: PayTransferApi.Transfer) =>
-        h(Tag, { color: 'orange' }, () => data?.no || '-'),
+        h(Tag, { color: 'orange' }, () => data?.no),
     },
     {
       field: 'appId',
