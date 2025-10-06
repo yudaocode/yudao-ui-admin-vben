@@ -93,7 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: '发起提现',
+              label: $t('ui.actionTitle.create', ['示例提现单']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               onClick: handleCreate,

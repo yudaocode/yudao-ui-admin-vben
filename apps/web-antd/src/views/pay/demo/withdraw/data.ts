@@ -2,7 +2,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -20,6 +19,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '提现标题',
       component: 'Input',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入提现标题',
+      },
     },
     {
       fieldName: 'price',
@@ -30,6 +32,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 1,
         precision: 2,
         step: 0.01,
+        placeholder: '请输入提现金额',
       },
     },
     {
@@ -43,19 +46,46 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '微信余额', value: 2 },
           { label: '钱包余额', value: 3 },
         ],
+        placeholder: '请选择提现类型',
       },
-    },
-    {
-      fieldName: 'userName',
-      label: '收款人姓名',
-      component: 'Input',
-      rules: 'required',
     },
     {
       fieldName: 'userAccount',
       label: '收款人账号',
       component: 'Input',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['type'],
+        componentProps: (values) => {
+          const type = values.type;
+          let placeholder = '请输入收款人账号';
+          switch (type) {
+            case 1: {
+              placeholder = '请输入支付宝账号';
+              break;
+            }
+            case 2: {
+              placeholder = '请输入微信 openid';
+              break;
+            }
+            case 3: {
+              placeholder = '请输入钱包编号';
+              break;
+            }
+          }
+          return {
+            placeholder,
+          };
+        },
+      },
+    },
+    {
+      fieldName: 'userName',
+      label: '收款人姓名',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入收款人姓名',
+      },
     },
   ];
 }
@@ -109,7 +139,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'transferChannelCode',
       title: '转账渠道',
-      minWidth: 120,
+      minWidth: 130,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_CHANNEL_CODE },
