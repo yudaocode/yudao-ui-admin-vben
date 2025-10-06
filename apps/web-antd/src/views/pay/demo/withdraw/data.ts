@@ -2,28 +2,29 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
+import { formatDateTime } from '@vben/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'subject',
       label: '提现标题',
+      component: 'Input',
       rules: 'required',
     },
     {
-      component: 'InputNumber',
       fieldName: 'price',
       label: '提现金额',
+      component: 'InputNumber',
       rules: 'required',
       componentProps: {
         min: 1,
@@ -32,9 +33,9 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Select',
       fieldName: 'type',
       label: '提现类型',
+      component: 'Select',
       rules: 'required',
       componentProps: {
         options: [
@@ -45,15 +46,15 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Input',
       fieldName: 'userName',
       label: '收款人姓名',
+      component: 'Input',
       rules: 'required',
     },
     {
-      component: 'Input',
       fieldName: 'userAccount',
       label: '收款人账号',
+      component: 'Input',
       rules: 'required',
     },
   ];
@@ -65,41 +66,50 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '提现单编号',
+      minWidth: 100,
     },
     {
       field: 'subject',
       title: '提现标题',
+      minWidth: 150,
     },
     {
       field: 'type',
       title: '提现类型',
+      minWidth: 100,
       slots: { default: 'type' },
     },
     {
       field: 'price',
       title: '提现金额',
+      minWidth: 100,
       formatter: 'formatAmount2',
     },
     {
       field: 'userName',
       title: '收款人姓名',
+      minWidth: 120,
     },
     {
       field: 'userAccount',
       title: '收款人账号',
+      minWidth: 150,
     },
     {
       field: 'status',
       title: '提现状态',
+      minWidth: 100,
       slots: { default: 'status' },
     },
     {
       field: 'payTransferId',
       title: '转账单号',
+      minWidth: 120,
     },
     {
       field: 'transferChannelCode',
       title: '转账渠道',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_CHANNEL_CODE },
@@ -108,15 +118,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'transferTime',
       title: '转账时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'transferErrorMsg',
       title: '转账失败原因',
+      minWidth: 150,
     },
     {
       title: '操作',
-      width: 130,
+      width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },
