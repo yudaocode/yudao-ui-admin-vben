@@ -3,9 +3,8 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace WalletRechargePackageApi {
-// TODO @AI：改成 WalletRecharge；相关方法也是！
   /** 充值套餐信息 */
-  export interface Package {
+  export interface WalletRechargePackage {
     id?: number;
     name: string;
     payPrice: number;
@@ -15,33 +14,36 @@ export namespace WalletRechargePackageApi {
 }
 
 /** 查询充值套餐列表 */
-export function getPackagePage(params: PageParam) {
-  return requestClient.get<PageResult<WalletRechargePackageApi.Package>>(
-    '/pay/wallet-recharge-package/page',
-    {
-      params,
-    },
-  );
+export function getWalletRechargePackagePage(params: PageParam) {
+  return requestClient.get<
+    PageResult<WalletRechargePackageApi.WalletRechargePackage>
+  >('/pay/wallet-recharge-package/page', {
+    params,
+  });
 }
 
 /** 查询充值套餐详情 */
-export function getPackage(id: number) {
-  return requestClient.get<WalletRechargePackageApi.Package>(
+export function getWalletRechargePackage(id: number) {
+  return requestClient.get<WalletRechargePackageApi.WalletRechargePackage>(
     `/pay/wallet-recharge-package/get?id=${id}`,
   );
 }
 
 /** 新增充值套餐 */
-export function createPackage(data: WalletRechargePackageApi.Package) {
+export function createWalletRechargePackage(
+  data: WalletRechargePackageApi.WalletRechargePackage,
+) {
   return requestClient.post('/pay/wallet-recharge-package/create', data);
 }
 
 /** 修改充值套餐 */
-export function updatePackage(data: WalletRechargePackageApi.Package) {
+export function updateWalletRechargePackage(
+  data: WalletRechargePackageApi.WalletRechargePackage,
+) {
   return requestClient.put('/pay/wallet-recharge-package/update', data);
 }
 
 /** 删除充值套餐 */
-export function deletePackage(id: number) {
+export function deleteWalletRechargePackage(id: number) {
   return requestClient.delete(`/pay/wallet-recharge-package/delete?id=${id}`);
 }
