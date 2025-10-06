@@ -20,7 +20,7 @@ export namespace DemoOrderApi {
     createTime?: Date;
   }
 
-  export interface OrderPageReq extends PageParam {
+  export interface OrderPageReqVO extends PageParam {
     spuId?: number;
     createTime?: Date[];
   }
@@ -32,7 +32,7 @@ export function createDemoOrder(data: DemoOrderApi.Order) {
 }
 
 /** 获得示例订单分页 */
-export function getDemoOrderPage(params: DemoOrderApi.OrderPageReq) {
+export function getDemoOrderPage(params: DemoOrderApi.OrderPageReqVO) {
   return requestClient.get<PageResult<DemoOrderApi.Order>>(
     '/pay/demo-order/page',
     {
