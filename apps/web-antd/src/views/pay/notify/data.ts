@@ -161,13 +161,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'notifyTimes',
       title: '通知次数',
       minWidth: 120,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'success',
-          content: '{notifyTimes} / {maxNotifyTimes}',
-        },
-      },
+      formatter: ({ row }) => `${row.notifyTimes} / ${row.maxNotifyTimes}`,
     },
     {
       title: '操作',
