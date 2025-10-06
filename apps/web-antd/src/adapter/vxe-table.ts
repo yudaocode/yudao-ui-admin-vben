@@ -162,6 +162,38 @@ setupVbenVxeTable({
       },
     });
 
+    // 表格配置项可以用 cellRender: { name: 'CellDicts', props:{dictType: ''} },
+    vxeUI.renderer.add('CellDicts', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        if (!props) {
+          return '';
+        }
+        // 使用 DictTag 组件替代原来的实现
+        return row[column.field].map((item: any) =>
+          h(DictTag, {
+            type: props.type,
+            value: item,
+          }),
+        );
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'CellBool', props:{dictType: ''} },
+    vxeUI.renderer.add('CellBool', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        // 使用 DictTag 组件替代原来的实现
+        let color = row[column.field] ? 'processing' : 'error';
+        if (props?.colors) {
+          color = props.colors[row[column.field]];
+        }
+        return h(Tag, { color }, () => (row[column.field] ? '是' : '否'));
+      },
+    });
+
     // 表格配置项可以用 cellRender: { name: 'CellSwitch', props: { beforeChange: () => {} } },
     // add by 芋艿：from https://github.com/vbenjs/vue-vben-admin/blob/main/playground/src/adapter/vxe-table.ts#L97-L123
     vxeUI.renderer.add('CellSwitch', {
