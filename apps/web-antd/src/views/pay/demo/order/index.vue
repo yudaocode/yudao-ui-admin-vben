@@ -10,7 +10,6 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemoOrderPage, refundDemoOrder } from '#/api/pay/demo/order';
-import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';
@@ -58,7 +57,6 @@ async function handleRefund(row: DemoOrderApi.Order) {
   }
 }
 
-
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -83,7 +81,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
     },
   } as VxeTableGridOptions<DemoOrderApi.Order>,
-  });
+});
 </script>
 
 <template>
@@ -127,7 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '前往支付',
               type: 'link',
-              icon: ACTION_ICON.VIEW,
+              icon: ACTION_ICON.ADD,
               ifShow: !row.payStatus,
               onClick: handlePay.bind(null, row),
             },
@@ -135,10 +133,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '发起退款',
               type: 'link',
               danger: true,
-              icon: ACTION_ICON.REFUND,
+              icon: ACTION_ICON.EDIT,
               ifShow: row.payStatus && !row.payRefundId,
               popConfirm: {
-                title: `是否确认退款编号为"${row.id}"的示例订单?`,
+                title: '确定发起退款吗？',
                 confirm: handleRefund.bind(null, row),
               },
             },
