@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace WalletRechargePackageApi {
+// TODO @AI：改成 WalletRecharge；相关方法也是！
   /** 充值套餐信息 */
   export interface Package {
     id?: number;
