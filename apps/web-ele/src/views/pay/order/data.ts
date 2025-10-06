@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用编号',
       },
     },
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '支付渠道',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择支付渠道',
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'string'),
       },
@@ -41,7 +41,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商户单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商户单号',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '支付单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入支付单号',
       },
     },
@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '渠道单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入渠道单号',
       },
     },
@@ -68,7 +68,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '支付状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择支付状态',
         options: getDictOptions(DICT_TYPE.PAY_ORDER_STATUS, 'number'),
       },
@@ -79,7 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

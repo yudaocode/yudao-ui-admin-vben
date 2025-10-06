@@ -22,7 +22,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用编号',
       },
     },
@@ -41,7 +41,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商户单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商户单号',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '退款单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入退款单号',
       },
     },
@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '渠道单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入渠道单号',
       },
     },
@@ -68,7 +68,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '渠道退款单号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入渠道退款单号',
       },
     },
@@ -77,7 +77,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '退款状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择退款状态',
         options: getDictOptions(DICT_TYPE.PAY_REFUND_STATUS, 'number'),
       },
@@ -88,7 +88,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
