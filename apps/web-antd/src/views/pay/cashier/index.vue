@@ -28,21 +28,20 @@ import { channelsAlipay, channelsMock, channelsWechat } from './data';
 
 defineOptions({ name: 'PayCashier' });
 
-const [Modal, modalApi] = useVbenModal({
-  showConfirmButton: false,
-  destroyOnClose: true,
-});
-
 const route = useRoute();
-const { push } = useRouter(); // 路由
+const { push } = useRouter();
 const { closeCurrentTab } = useTabs();
 
 const id = ref(); // 支付单号
 const title = ref('支付订单');
 const returnUrl = ref<string>(); // 支付完的回调地址
-
 const payOrder = ref<PayOrderApi.Order>();
 const interval = ref<any>(undefined); // 定时任务，轮询是否完成支付
+
+const [Modal, modalApi] = useVbenModal({
+  showConfirmButton: false,
+  destroyOnClose: true,
+});
 
 /** 展示形式：二维码 */
 const qrCode = ref({
@@ -87,9 +86,11 @@ async function getDetail() {
     goReturnUrl('close');
     return;
   }
+  // 2. 正常展示支付信息
   payOrder.value = res;
 }
 
+/** 处理支付 */
 function handlePay(channelCode: string) {
   switch (channelCode) {
     // 条形码支付，需要特殊处理
@@ -129,6 +130,7 @@ function handlePay(channelCode: string) {
   }
 }
 
+/** 提交支付 */
 async function submit(channelCode: string) {
   try {
     const submitParam = {
@@ -165,9 +167,7 @@ async function submit(channelCode: string) {
 
     // 打开轮询任务
     createQueryInterval();
-  } finally {
-    // message.success('支付成功！')
-  }
+  } finally {}
 }
 
 /** 构建提交支付的额外参数 */
@@ -291,10 +291,12 @@ function goReturnUrl(payResult: string) {
   }
 }
 
+/** 页面加载时，获取支付信息 */
 onMounted(async () => {
   await getDetail();
 });
 
+/** 页面卸载时，清理定时任务 */
 onBeforeUnmount(() => {
   clearQueryInterval();
 });

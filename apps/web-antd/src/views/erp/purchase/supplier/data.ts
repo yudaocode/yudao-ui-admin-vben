@@ -1,8 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+
+import { z } from '#/adapter/form';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -19,10 +21,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '供应商名称',
       component: 'Input',
+      rules: 'required',
       componentProps: {
         placeholder: '请输入供应商名称',
       },
-      rules: 'required',
     },
     {
       fieldName: 'contact',
@@ -70,9 +72,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
-      rules: 'required',
-      defaultValue: 0,
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'sort',
@@ -80,11 +83,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入排序',
-        precision: 0,
-        class: 'w-full',
       },
       rules: 'required',
-      defaultValue: 0,
     },
     {
       fieldName: 'taxNo',
@@ -102,7 +102,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入税率',
         min: 0,
         precision: 2,
-        class: 'w-full',
       },
     },
     {
@@ -206,7 +205,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'status',
       title: '状态',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -215,7 +214,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'sort',
       title: '排序',
-      width: 80,
+      minWidth: 80,
     },
     {
       field: 'remark',
@@ -224,10 +223,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       showOverflow: 'tooltip',
     },
     {
-      field: 'actions',
       title: '操作',
+      width: 130,
       fixed: 'right',
-      width: 160,
       slots: { default: 'actions' },
     },
   ];

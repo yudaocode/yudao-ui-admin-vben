@@ -23,6 +23,7 @@ export namespace ErpSaleOutApi {
     fileUrl?: string; // 附件地址
     items?: SaleOutItem[];
   }
+
   export interface SaleOutItem {
     count?: number;
     id?: number;
@@ -49,17 +50,9 @@ export namespace ErpSaleOutApi {
     customerId?: number;
     status?: number;
   }
-
-  /** 销售出库状态更新参数 */
-  export interface SaleOutStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
-/**
- * 查询销售出库分页
- */
+/** 查询销售出库分页 */
 export function getSaleOutPage(params: ErpSaleOutApi.SaleOutPageParams) {
   return requestClient.get<PageResult<ErpSaleOutApi.SaleOut>>(
     '/erp/sale-out/page',
@@ -69,39 +62,29 @@ export function getSaleOutPage(params: ErpSaleOutApi.SaleOutPageParams) {
   );
 }
 
-/**
- * 查询销售出库详情
- */
+/** 查询销售出库详情 */
 export function getSaleOut(id: number) {
   return requestClient.get<ErpSaleOutApi.SaleOut>(`/erp/sale-out/get?id=${id}`);
 }
 
-/**
- * 新增销售出库
- */
+/** 新增销售出库 */
 export function createSaleOut(data: ErpSaleOutApi.SaleOut) {
   return requestClient.post('/erp/sale-out/create', data);
 }
 
-/**
- * 修改销售出库
- */
+/** 修改销售出库 */
 export function updateSaleOut(data: ErpSaleOutApi.SaleOut) {
   return requestClient.put('/erp/sale-out/update', data);
 }
 
-/**
- * 更新销售出库的状态
- */
-export function updateSaleOutStatus(params: ErpSaleOutApi.SaleOutStatusParams) {
+/** 更新销售出库的状态 */
+export function updateSaleOutStatus(id: number, status: number) {
   return requestClient.put('/erp/sale-out/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 
-/**
- * 删除销售出库
- */
+/** 删除销售出库 */
 export function deleteSaleOut(ids: number[]) {
   return requestClient.delete('/erp/sale-out/delete', {
     params: {
@@ -110,9 +93,7 @@ export function deleteSaleOut(ids: number[]) {
   });
 }
 
-/**
- * 导出销售出库 Excel
- */
+/** 导出销售出库 Excel */
 export function exportSaleOut(params: ErpSaleOutApi.SaleOutPageParams) {
   return requestClient.download('/erp/sale-out/export-excel', {
     params,

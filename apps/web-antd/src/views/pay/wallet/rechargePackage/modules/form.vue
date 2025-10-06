@@ -10,16 +10,16 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createPackage,
-  getPackage,
-  updatePackage,
+  createWalletRechargePackage,
+  getWalletRechargePackage,
+  updateWalletRechargePackage,
 } from '#/api/pay/wallet/rechargePackage';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<WalletRechargePackageApi.Package>();
+const formData = ref<WalletRechargePackageApi.WalletRechargePackage>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['充值套餐'])
@@ -32,7 +32,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 120,
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -48,12 +48,14 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as WalletRechargePackageApi.Package;
+      (await formApi.getValues()) as WalletRechargePackageApi.WalletRechargePackage;
     try {
       // 转换金额单位
       data.payPrice = yuanToFen(data.payPrice);
       data.bonusPrice = yuanToFen(data.bonusPrice);
-      await (formData.value?.id ? updatePackage(data) : createPackage(data));
+      await (formData.value?.id
+        ? updateWalletRechargePackage(data)
+        : createWalletRechargePackage(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -68,13 +70,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<WalletRechargePackageApi.Package>();
+    const data =
+      modalApi.getData<WalletRechargePackageApi.WalletRechargePackage>();
     if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getPackage(data.id);
+      formData.value = await getWalletRechargePackage(data.id);
       // 转换金额单位
       formData.value.payPrice = Number.parseFloat(
         fenToYuan(formData.value.payPrice),
@@ -92,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle" class="w-1/4">
     <Form class="mx-4" />
   </Modal>
 </template>

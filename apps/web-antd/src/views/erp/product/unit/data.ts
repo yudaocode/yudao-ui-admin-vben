@@ -22,6 +22,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '单位名称',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入单位名称',
+      },
     },
     {
       fieldName: 'status',
@@ -44,12 +47,17 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '单位名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入单位名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
       label: '单位状态',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择单位状态',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
@@ -63,14 +71,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '单位编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '单位名称',
+      minWidth: 200,
     },
     {
       field: 'status',
       title: '单位状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -79,6 +90,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

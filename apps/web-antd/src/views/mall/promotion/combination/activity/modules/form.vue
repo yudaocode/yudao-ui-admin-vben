@@ -76,9 +76,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getCombinationActivity(data.id);
       // 设置到 values
-      if (formData.value) {
-        await formApi.setValues(formData.value);
-      }
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }

@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayOrderApi } from '#/api/pay/order';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -11,66 +12,74 @@ import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 import { Tag } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'appId',
       label: '应用编号',
+      component: 'Input',
       componentProps: {
+        allowClear: true,
         placeholder: '请输入应用编号',
       },
     },
     {
-      component: 'Select',
       fieldName: 'channelCode',
       label: '支付渠道',
+      component: 'Select',
       componentProps: {
-        placeholder: '请选择开启状态',
+        allowClear: true,
+        placeholder: '请选择支付渠道',
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'string'),
       },
     },
     {
-      component: 'Input',
       fieldName: 'merchantOrderId',
       label: '商户单号',
+      component: 'Input',
       componentProps: {
+        allowClear: true,
         placeholder: '请输入商户单号',
       },
     },
     {
-      component: 'Input',
       fieldName: 'no',
       label: '支付单号',
+      component: 'Input',
       componentProps: {
+        allowClear: true,
         placeholder: '请输入支付单号',
       },
     },
     {
-      component: 'Input',
       fieldName: 'channelOrderNo',
       label: '渠道单号',
+      component: 'Input',
       componentProps: {
+        allowClear: true,
         placeholder: '请输入渠道单号',
       },
     },
     {
-      component: 'Select',
       fieldName: 'status',
       label: '支付状态',
+      component: 'Select',
       componentProps: {
+        allowClear: true,
         placeholder: '请选择支付状态',
         options: getDictOptions(DICT_TYPE.PAY_ORDER_STATUS, 'number'),
       },
     },
     {
-      component: 'RangePicker',
       fieldName: 'createTime',
       label: '创建时间',
+      component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始日期', '结束日期'],
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];
@@ -79,65 +88,74 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 60 },
     {
-      title: '编号',
       field: 'id',
+      title: '编号',
+      minWidth: 100,
     },
     {
-      title: '支付金额',
       field: 'price',
+      title: '支付金额',
+      minWidth: 120,
       formatter: 'formatAmount2',
     },
     {
-      title: '退款金额',
       field: 'refundPrice',
+      title: '退款金额',
+      minWidth: 120,
       formatter: 'formatAmount2',
     },
     {
-      title: '手续金额',
       field: 'channelFeePrice',
+      title: '手续金额',
+      minWidth: 120,
       formatter: 'formatAmount2',
     },
     {
-      title: '订单号',
       field: 'no',
+      title: '订单号',
+      minWidth: 240,
       slots: {
         default: 'no',
       },
     },
     {
-      title: '支付状态',
       field: 'status',
+      title: '支付状态',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_ORDER_STATUS },
       },
     },
     {
-      title: '支付渠道',
       field: 'channelCode',
+      title: '支付渠道',
+      minWidth: 120,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PAY_CHANNEL_CODE },
       },
     },
     {
-      title: '支付时间',
       field: 'successTime',
+      title: '支付时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
-      title: '支付应用',
       field: 'appName',
+      title: '支付应用',
+      minWidth: 150,
     },
     {
-      title: '商品标题',
       field: 'subject',
+      title: '商品标题',
+      minWidth: 200,
     },
     {
       title: '操作',
-      width: 100,
+      width: 80,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -166,7 +184,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'status',
       label: '支付状态',
-      content: (data) =>
+      content: (data: any) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_ORDER_STATUS,
           value: data?.status,
@@ -175,37 +193,44 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'price',
       label: '支付金额',
-      content: (data) => `￥${erpPriceInputFormatter(data?.price)}`,
+      content: (data: PayOrderApi.Order) =>
+        `￥${erpPriceInputFormatter(data?.price)}`,
     },
     {
       field: 'channelFeePrice',
       label: '手续费',
-      content: (data) => `￥${erpPriceInputFormatter(data?.channelFeePrice)}`,
+      content: (data: PayOrderApi.Order) =>
+        `￥${erpPriceInputFormatter(data?.channelFeePrice)}`,
     },
     {
       field: 'channelFeeRate',
       label: '手续费比例',
-      content: (data) => `${erpPriceInputFormatter(data?.channelFeeRate)}%`,
+      content: (data: PayOrderApi.Order) =>
+        `${erpPriceInputFormatter(data?.channelFeeRate)}%`,
     },
     {
       field: 'successTime',
       label: '支付时间',
-      content: (data) => formatDateTime(data?.successTime) as string,
+      content: (data: PayOrderApi.Order) =>
+        formatDateTime(data?.successTime) as string,
     },
     {
       field: 'expireTime',
       label: '失效时间',
-      content: (data) => formatDateTime(data?.expireTime) as string,
+      content: (data: PayOrderApi.Order) =>
+        formatDateTime(data?.expireTime) as string,
     },
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      content: (data: PayOrderApi.Order) =>
+        formatDateTime(data?.createTime) as string,
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
+      content: (data: PayOrderApi.Order) =>
+        formatDateTime(data?.updateTime) as string,
     },
     {
       field: 'subject',
@@ -218,7 +243,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'channelCode',
       label: '支付渠道',
-      content: (data) =>
+      content: (data: PayOrderApi.Order) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_CHANNEL_CODE,
           value: data?.channelCode,
@@ -231,8 +256,10 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'channelOrderNo',
       label: '渠道单号',
-      content: (data) =>
-        h(Tag, { color: 'green' }, () => data?.channelOrderNo || ''),
+      content: (data: PayOrderApi.Order) =>
+        data?.channelOrderNo
+          ? h(Tag, { color: 'green' }, () => data.channelOrderNo)
+          : '',
     },
     {
       field: 'channelUserId',
@@ -241,7 +268,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'refundPrice',
       label: '退款金额',
-      content: (data) => `￥${erpPriceInputFormatter(data?.refundPrice)}`,
+      content: (data: PayOrderApi.Order) =>
+        `￥${erpPriceInputFormatter(data?.refundPrice)}`,
     },
     {
       field: 'notifyUrl',

@@ -20,10 +20,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'name',
-      label: '名称',
+      label: '客户名称',
       rules: 'required',
       componentProps: {
-        placeholder: '请输入名称',
+        placeholder: '请输入客户名称',
       },
     },
     {
@@ -84,10 +84,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入排序',
         precision: 0,
-        class: 'w-full',
       },
       rules: 'required',
-      defaultValue: 0,
     },
     {
       fieldName: 'taxNo',
@@ -103,11 +101,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入税率',
-        precision: 0,
-        class: 'w-full',
+        precision: 2,
       },
-      rules: z.number().min(0).max(100).default(0).optional(),
-      defaultValue: 0,
+      rules: z.number().min(0).max(100).optional(),
     },
     {
       fieldName: 'bankName',
@@ -139,30 +135,42 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        rows: 1,
+        rows: 3,
       },
+      formItemClass: 'col-span-2',
     },
   ];
 }
 
 /** 列表的搜索表单 */
-// TODO @XuZhiqiang：placeholder
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
-      label: '名称',
+      label: '客户名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入客户名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'email',
       label: '邮箱',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+        allowClear: true,
+      },
     },
   ];
 }
@@ -172,39 +180,53 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'name',
-      title: '名称',
+      title: '客户名称',
+      minWidth: 150,
     },
     {
       field: 'contact',
       title: '联系人',
+      minWidth: 120,
     },
     {
       field: 'mobile',
       title: '手机号码',
+      minWidth: 130,
     },
     {
       field: 'telephone',
       title: '联系电话',
+      minWidth: 130,
     },
     {
       field: 'email',
-      title: '邮箱',
-    },
-    {
-      field: 'taxNo',
-      title: '纳税人识别号',
+      title: '电子邮箱',
+      minWidth: 180,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
+      field: 'sort',
+      title: '排序',
+      minWidth: 80,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      showOverflow: 'tooltip',
+    },
+    {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

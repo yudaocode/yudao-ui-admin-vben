@@ -66,21 +66,20 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    let data = modalApi.getData<ErpProductCategoryApi.ProductCategory>();
-    if (!data) {
+    const data = modalApi.getData<ErpProductCategoryApi.ProductCategory>();
+    if (!data || !data.id) {
+      // 设置上级
+      await formApi.setValues(data);
       return;
     }
-    if (data.id) {
-      modalApi.lock();
-      try {
-        data = await getProductCategory(data.id);
-      } finally {
-        modalApi.unlock();
-      }
+    modalApi.lock();
+    try {
+      formData.value = await getProductCategory(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
-    // 设置到 values
-    formData.value = data;
-    await formApi.setValues(formData.value);
   },
 });
 </script>

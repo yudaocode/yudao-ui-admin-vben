@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ErpSupplierApi } from '#/api/erp/purchase/supplier';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -18,9 +18,12 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-
-const formType = ref<'create' | 'update'>('create');
-const supplierId = ref<number>();
+const formData = ref<ErpSupplierApi.Supplier>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['供应商'])
+    : $t('ui.actionTitle.create', ['供应商']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -45,39 +48,30 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as ErpSupplierApi.Supplier;
     try {
-      if (formType.value === 'create') {
-        await createSupplier(data);
-        message.success($t('ui.actionMessage.createSuccess'));
-      } else {
-        await updateSupplier(data);
-        message.success($t('ui.actionMessage.updateSuccess'));
-      }
+      await (formData.value?.id ? updateSupplier(data) : createSupplier(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
-    if (!data) {
+    const data = modalApi.getData<ErpSupplierApi.Supplier>();
+    if (!data || !data.id) {
       return;
     }
-    formType.value = data.type;
-    supplierId.value = data.id;
-
     modalApi.lock();
     try {
-      if (data.type === 'update' && data.id) {
-        // 编辑模式，加载数据
-        const supplierData = await getSupplier(data.id);
-        await formApi.setValues(supplierData);
-      }
+      formData.value = await getSupplier(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }
@@ -90,10 +84,7 @@ defineExpose({
 </script>
 
 <template>
-  <Modal
-    :title="formType === 'create' ? '新增供应商' : '编辑供应商'"
-    class="w-3/5"
-  >
+  <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
   </Modal>
 </template>

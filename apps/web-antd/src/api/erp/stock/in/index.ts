@@ -42,12 +42,6 @@ export namespace ErpStockInApi {
     supplierId?: number;
     status?: number;
   }
-
-  /** 其它入库单状态更新参数 */
-  export interface StockInStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
 /**
@@ -86,9 +80,9 @@ export function updateStockIn(data: ErpStockInApi.StockIn) {
 /**
  * 更新其它入库单的状态
  */
-export function updateStockInStatus(params: ErpStockInApi.StockInStatusParams) {
+export function updateStockInStatus(id: number, status: number) {
   return requestClient.put('/erp/stock-in/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 

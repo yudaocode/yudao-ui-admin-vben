@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -18,9 +18,12 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-
-const formType = ref<'create' | 'update'>('create');
-const warehouseId = ref<number>();
+const formData = ref<ErpWarehouseApi.Warehouse>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['仓库'])
+    : $t('ui.actionTitle.create', ['仓库']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -45,51 +48,41 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as ErpWarehouseApi.Warehouse;
     try {
-      if (formType.value === 'create') {
-        await createWarehouse(data);
-        message.success($t('ui.actionMessage.createSuccess'));
-      } else {
-        await updateWarehouse(data);
-        message.success($t('ui.actionMessage.updateSuccess'));
-      }
+      await (formData.value?.id
+        ? updateWarehouse(data)
+        : createWarehouse(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
-    if (!data) {
+    const data = modalApi.getData<ErpWarehouseApi.Warehouse>();
+    if (!data || !data.id) {
       return;
     }
-    formType.value = data.type;
-    warehouseId.value = data.id;
-
     modalApi.lock();
     try {
-      if (data.type === 'update' && data.id) {
-        const warehouseData = await getWarehouse(data.id);
-        await formApi.setValues(warehouseData);
-      }
+      formData.value = await getWarehouse(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }
   },
 });
-
-defineExpose({
-  modalApi,
-});
 </script>
 
 <template>
-  <Modal :title="formType === 'create' ? '新增仓库' : '编辑仓库'" class="w-3/5">
+  <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -1,32 +1,37 @@
 <script lang="ts" setup>
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getAccountSimpleList } from '#/api/erp/finance/account';
 import {
   createPurchaseOrder,
   getPurchaseOrder,
   updatePurchaseOrder,
 } from '#/api/erp/purchase/order';
+import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
-import PurchaseOrderItemForm from './purchase-order-item-form.vue';
+import PurchaseOrderItemForm from './item-form.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>();
-const formType = ref('');
-const itemFormRef = ref();
+const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
+const itemFormRef = ref<InstanceType<typeof PurchaseOrderItemForm>>();
 
-const getTitle = computed(() => {
-  if (formType.value === 'create') return '添加采购订单';
-  if (formType.value === 'update') return '编辑采购订单';
-  return '采购订单详情';
-});
+/* eslint-disable unicorn/no-nested-ternary */
+const getTitle = computed(() =>
+  formType.value === 'create'
+    ? $t('ui.actionTitle.create', ['采购订单'])
+    : formType.value === 'update'
+      ? $t('ui.actionTitle.edit', ['采购订单'])
+      : '采购订单详情',
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -37,38 +42,37 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema(formType.value),
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
+    // 目的：同步到 item-form 组件，触发整体的价格计算
     if (formData.value && changedFields.includes('discountPercent')) {
       formData.value.discountPercent = values.discountPercent;
     }
   },
 });
 
+/** 更新采购订单项 */
 const handleUpdateItems = (items: ErpPurchaseOrderApi.PurchaseOrderItem[]) => {
   formData.value = modalApi.getData<ErpPurchaseOrderApi.PurchaseOrder>();
-  if (formData.value) {
-    formData.value.items = items;
-  }
+  formData.value.items = items;
+  formApi.setValues({
+    items,
+  });
 };
 
+/** 更新优惠金额 */
 const handleUpdateDiscountPrice = (discountPrice: number) => {
-  if (formData.value) {
-    formData.value.discountPrice = discountPrice;
-    formApi.setValues({
-      discountPrice: formData.value.discountPrice,
-    });
-  }
+  formApi.setValues({
+    discountPrice,
+  });
 };
 
+/** 更新总金额 */
 const handleUpdateTotalPrice = (totalPrice: number) => {
-  if (formData.value) {
-    formData.value.totalPrice = totalPrice;
-    formApi.setValues({
-      totalPrice: formData.value.totalPrice,
-    });
-  }
+  formApi.setValues({
+    totalPrice,
+  });
 };
 
 /** 创建或更新采购订单 */
@@ -78,31 +82,13 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    await nextTick();
-
-    // TODO @nehc：应该不会不存在，直接校验，简洁一点！另外，可以看看别的模块，主子表的处理哈；
     const itemFormInstance = Array.isArray(itemFormRef.value)
       ? itemFormRef.value[0]
       : itemFormRef.value;
-    if (itemFormInstance && typeof itemFormInstance.validate === 'function') {
-      try {
-        const isValid = await itemFormInstance.validate();
-        if (!isValid) {
-          message.error('子表单验证失败');
-          return;
-        }
-      } catch (error: any) {
-        message.error(error.message || '子表单验证失败');
-        return;
-      }
-    } else {
-      message.error('子表单验证方法不存在');
-      return;
-    }
-
-    // 验证产品清单不能为空
-    if (!formData.value?.items || formData.value.items.length === 0) {
-      message.error('产品清单不能为空，请至少添加一个产品');
+    try {
+      itemFormInstance.validate();
+    } catch (error: any) {
+      message.error(error.message || '子表单验证失败');
       return;
     }
 
@@ -126,7 +112,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success(formType.value === 'create' ? '新增成功' : '更新成功');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -138,62 +124,40 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<{ id?: number; type: string }>();
-    if (!data) {
-      return;
-    }
     formType.value = data.type;
-
-    if (!data.id) {
-      // 初始化空的表单数据
-      formData.value = { items: [] } as ErpPurchaseOrderApi.PurchaseOrder;
-      await nextTick();
-      // TODO @nehc：看看有没办法简化
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init([]);
+    formApi.setDisabled(formType.value === 'detail');
+    formApi.updateSchema(useFormSchema(formType.value));
+    if (!data || !data.id) {
+      // 新增时，默认选中账户
+      const accountList = await getAccountSimpleList();
+      const defaultAccount = accountList.find((item) => item.defaultStatus);
+      if (defaultAccount) {
+        await formApi.setValues({ accountId: defaultAccount.id });
       }
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getPurchaseOrder(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
-      // 初始化子表单
-      await nextTick();
-      const itemFormInstance = Array.isArray(itemFormRef.value)
-        ? itemFormRef.value[0]
-        : itemFormRef.value;
-      if (itemFormInstance && typeof itemFormInstance.init === 'function') {
-        itemFormInstance.init(formData.value.items || []);
-      }
     } finally {
       modalApi.unlock();
     }
   },
 });
-
-defineExpose({ modalApi });
 </script>
 
 <template>
   <Modal
-    v-bind="$attrs"
     :title="getTitle"
-    class="w-1/2"
-    :closable="true"
-    :mask-closable="true"
+    class="w-3/4"
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
-      <template #product="slotProps">
+      <template #items>
         <PurchaseOrderItemForm
-          v-bind="slotProps"
           ref="itemFormRef"
-          class="w-full"
           :items="formData?.items ?? []"
           :disabled="formType === 'detail'"
           :discount-percent="formData?.discountPercent ?? 0"

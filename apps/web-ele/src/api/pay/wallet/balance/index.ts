@@ -20,7 +20,7 @@ export namespace PayWalletApi {
   }
 
   /** 钱包分页请求 */
-  export interface WalletPageReq extends PageParam {
+  export interface WalletPageReqVO extends PageParam {
     userId?: number;
     userType?: number;
     balance?: number;
@@ -38,7 +38,7 @@ export function getWallet(params: PayWalletApi.PayWalletUserReq) {
 }
 
 /** 查询会员钱包列表 */
-export function getWalletPage(params: PayWalletApi.WalletPageReq) {
+export function getWalletPage(params: PayWalletApi.WalletPageReqVO) {
   return requestClient.get<PageResult<PayWalletApi.Wallet>>(
     '/pay/wallet/page',
     {

@@ -1,24 +1,51 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayNotifyApi } from '#/api/pay/notify';
+
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
 
-import {
-  ElDescriptions,
-  ElDescriptionsItem,
-  ElDivider,
-  ElTable,
-  ElTag,
-} from 'element-plus';
+import { ElDivider } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyTaskDetail } from '#/api/pay/notify';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
 
-import { detailColumns } from '../data';
+import { useDetailLogColumns, useDetailSchema } from '../data';
 
-const formData = ref();
+const formData = ref<PayNotifyApi.NotifyTask>();
+
+const [Description] = useDescription({
+  componentProps: {
+    border: true,
+    column: 2,
+    direction: 'horizontal',
+    labelWidth: 140,
+    title: '',
+    extra: '',
+  },
+  schema: useDetailSchema(),
+});
+
+const [LogGrid, logGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useDetailLogColumns(),
+    height: 'auto',
+    keepSource: true,
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      enabled: true,
+      refresh: true,
+    },
+  } as VxeTableGridOptions,
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -27,13 +54,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData();
+    const data = modalApi.getData<PayNotifyApi.NotifyTask>();
     if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
       formData.value = await getNotifyTaskDetail(data.id);
+      logGridApi.grid?.reloadData(formData.value?.logs || []);
     } finally {
       modalApi.unlock();
     }
@@ -48,60 +76,10 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <ElDescriptions border :column="2" class="mx-4">
-      <ElDescriptionsItem label="商户订单编号">
-        <ElTag>{{ formData?.merchantOrderId }}</ElTag>
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="通知状态">
-        <DictTag
-          :type="DICT_TYPE.PAY_NOTIFY_STATUS"
-          :value="formData?.status"
-        />
-      </ElDescriptionsItem>
-
-      <ElDescriptionsItem label="应用编号">
-        {{ formData?.appId }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="应用名称">
-        {{ formData?.appName }}
-      </ElDescriptionsItem>
-
-      <ElDescriptionsItem label="关联编号">
-        {{ formData?.dataId }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="通知类型">
-        <DictTag :type="DICT_TYPE.PAY_NOTIFY_TYPE" :value="formData?.type" />
-      </ElDescriptionsItem>
-
-      <ElDescriptionsItem label="通知次数">
-        {{ formData?.notifyTimes }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="最大通知次数">
-        {{ formData?.maxNotifyTimes }}
-      </ElDescriptionsItem>
-
-      <ElDescriptionsItem label="最后通知时间">
-        {{ formatDateTime(formData?.lastExecuteTime || '') }}
-      </ElDescriptionsItem>
-
-      <ElDescriptionsItem label="创建时间">
-        {{ formatDateTime(formData?.createTime || '') }}
-      </ElDescriptionsItem>
-      <ElDescriptionsItem label="更新时间">
-        {{ formatDateTime(formData?.updateTime || '') }}
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <Description :data="formData" />
 
     <ElDivider />
 
-    <ElDescriptions border :column="1" class="mx-4">
-      <ElDescriptionsItem label="回调日志">
-        <ElTable
-          v-if="formData"
-          :data-source="formData.logs"
-          :columns="detailColumns"
-        />
-      </ElDescriptionsItem>
-    </ElDescriptions>
+    <LogGrid table-title="支付通知列表" />
   </Modal>
 </template>

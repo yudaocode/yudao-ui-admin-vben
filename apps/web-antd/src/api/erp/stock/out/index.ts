@@ -39,12 +39,6 @@ export namespace ErpStockOutApi {
     customerId?: number;
     status?: number;
   }
-
-  /** 其它出库单状态更新参数 */
-  export interface StockOutStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
 /**
@@ -85,11 +79,9 @@ export function updateStockOut(data: ErpStockOutApi.StockOut) {
 /**
  * 更新其它出库单的状态
  */
-export function updateStockOutStatus(
-  params: ErpStockOutApi.StockOutStatusParams,
-) {
+export function updateStockOutStatus(id: number, status: number) {
   return requestClient.put('/erp/stock-out/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 
