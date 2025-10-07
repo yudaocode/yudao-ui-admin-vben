@@ -19,7 +19,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -39,9 +39,9 @@ async function handleDelete(row: MemberGroupApi.Group) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteGroup(row.id as number);
+    await deleteGroup(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -68,6 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -79,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="分组列表">
       <template #toolbar-tools>
         <TableAction
@@ -99,16 +100,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'primary',
-              link: true,
+              type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['member:group:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'danger',
-              link: true,
+              type: 'link',
+              danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['member:group:delete'],
               popConfirm: {
