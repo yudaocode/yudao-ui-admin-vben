@@ -17,8 +17,8 @@ const emit = defineEmits(['success']);
 const formData = ref<MemberGroupApi.Group>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['会员分组'])
-    : $t('ui.actionTitle.create', ['会员分组']);
+    ? $t('ui.actionTitle.edit', ['分组'])
+    : $t('ui.actionTitle.create', ['分组']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -76,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
   </Modal>
 </template>
