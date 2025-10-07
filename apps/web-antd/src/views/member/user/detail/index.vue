@@ -14,14 +14,14 @@ import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
-import UserAccountInfo from '../components/user-account-info.vue';
-import UserAddressList from '../components/user-address-list.vue';
-import UserBalanceList from '../components/user-balance-list.vue';
-import UserBasicInfo from '../components/user-basic-info.vue';
-import UserExperienceRecordList from '../components/user-experience-record-list.vue';
-import UserPointList from '../components/user-point-list.vue';
-import UserSignList from '../components/user-sign-list.vue';
-import Form from './form.vue';
+import Form from '../modules/form.vue';
+import UserAccountInfo from './modules/user-account-info.vue';
+import UserAddressList from './modules/user-address-list.vue';
+import UserBalanceList from './modules/user-balance-list.vue';
+import UserBasicInfo from './modules/user-basic-info.vue';
+import UserExperienceRecordList from './modules/user-experience-record-list.vue';
+import UserPointList from './modules/user-point-list.vue';
+import UserSignList from './modules/user-sign-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
