@@ -6,11 +6,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage } from '#/api/member/user';
 import { $t } from '#/locales';
 
+import CouponSendForm from '../../mall/promotion/coupon/components/CouponSendForm.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';
@@ -36,6 +38,11 @@ const [BalanceFormModal, balanceFormModalApi] = useVbenModal({
 
 const [LevelFormModal, levelFormModalApi] = useVbenModal({
   connectedComponent: LevelForm,
+  destroyOnClose: true,
+});
+
+const [CouponSendFormModal, couponSendFormModalApi] = useVbenModal({
+  connectedComponent: CouponSendForm,
   destroyOnClose: true,
 });
 
@@ -65,9 +72,12 @@ function handleUpdateBalance(row: MemberUserApi.User) {
 }
 
 /** 发送优惠券 */
-// TODO @xingyu：这个功能没开发对，是发送优惠劵哈；
-function handleSendCoupon() {
-  formModalApi.setData(null).open();
+async function handleSendCoupon() {
+  couponSendFormModalApi
+    .setData({
+      userIds: checkedIds.value,
+    })
+    .open();
 }
 
 const checkedIds = ref<number[]>([]);
@@ -137,6 +147,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <PointFormModal @success="handleRefresh" />
     <BalanceFormModal @success="handleRefresh" />
     <LevelFormModal @success="handleRefresh" />
+    <CouponSendFormModal />
     <Grid table-title="会员列表">
       <template #toolbar-tools>
         <TableAction
@@ -145,6 +156,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '发送优惠券',
               type: 'primary',
               icon: 'lucide:mouse-pointer-2',
+              disabled: isEmpty(checkedIds),
               auth: ['promotion:coupon:send'],
               onClick: handleSendCoupon,
             },
