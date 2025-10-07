@@ -76,7 +76,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入访问令牌的有效期，单位：秒',
         min: 0,
-        controlsPosition: 'right',
       },
       rules: 'required',
     },
@@ -87,7 +86,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入刷新令牌的有效期，单位：秒',
         min: 0,
-        controlsPosition: 'right',
       },
       rules: 'required',
     },
