@@ -44,9 +44,7 @@ async function handleDelete(row: MemberSignInConfigApi.SignInConfig) {
   });
   try {
     await deleteSignInConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();

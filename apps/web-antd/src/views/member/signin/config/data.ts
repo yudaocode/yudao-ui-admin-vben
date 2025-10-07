@@ -6,16 +6,6 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
-/** 奖励验证函数 */
-const awardValidator = (value: number, formData: any, field: string) => {
-  const point = formData.point || 0;
-  const experience = formData.experience || 0;
-  if (point === 0 && experience === 0) {
-    return '奖励积分与奖励经验至少配置一个';
-  }
-  return true;
-};
-
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -38,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 0,
         placeholder: '请输入签到天数',
       },
-      rules: z.number().min(1).max(7, '签到天数必须在1-7之间'),
+      rules: z.number().min(1).max(7, '签到天数必须在 1-7 之间'),
     },
     {
       component: 'InputNumber',
@@ -49,9 +39,7 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 0,
         placeholder: '请输入获得积分',
       },
-      rules: z.number().min(0, '获得积分不能小于0').refine(awardValidator, {
-        message: '奖励积分与奖励经验至少配置一个',
-      }),
+      rules: z.number().min(0, '获得积分不能小于 0'),
     },
     {
       component: 'InputNumber',
@@ -62,9 +50,7 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 0,
         placeholder: '请输入奖励经验',
       },
-      rules: z.number().min(0, '奖励经验不能小于0').refine(awardValidator, {
-        message: '奖励积分与奖励经验至少配置一个',
-      }),
+      rules: z.number().min(0, '奖励经验不能小于 0'),
     },
     {
       fieldName: 'status',
