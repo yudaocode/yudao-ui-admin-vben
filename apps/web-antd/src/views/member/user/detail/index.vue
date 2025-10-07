@@ -14,14 +14,14 @@ import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
-import UserAccountInfo from '../components/user-account-info.vue';
-import UserAddressList from '../components/user-address-list.vue';
-import UserBalanceList from '../components/user-balance-list.vue';
-import UserBasicInfo from '../components/user-basic-info.vue';
-import UserExperienceRecordList from '../components/user-experience-record-list.vue';
-import UserPointList from '../components/user-point-list.vue';
-import UserSignList from '../components/user-sign-list.vue';
-import Form from './form.vue';
+import Form from '../modules/form.vue';
+import AccountInfo from './modules/account-info.vue';
+import AddressList from './modules/address-list.vue';
+import BalanceList from './modules/balance-list.vue';
+import BasicInfo from './modules/basic-info.vue';
+import ExperienceRecordList from './modules/experience-record-list.vue';
+import PointList from './modules/point-list.vue';
+import SignList from './modules/sign-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
@@ -34,27 +34,28 @@ const [FormModal, formModalApi] = useVbenModal({
 const userId = Number(route.query.id);
 const user = ref<MemberUserApi.User>();
 const wallet = ref<PayWalletApi.Wallet>();
-/* 钱包初始化数据 */
-const WALLET_INIT_DATA = {
-  balance: 0,
-  totalExpense: 0,
-  totalRecharge: 0,
-} as PayWalletApi.Wallet;
 
+/** 获取会员详情 */
 async function getUserDetail() {
   if (!userId) {
     message.error('参数错误，会员编号不能为空！');
-    closeCurrentTab();
+    await closeCurrentTab();
     return;
   }
   user.value = await getUser(userId);
-  wallet.value = (await getWallet({ userId })) || WALLET_INIT_DATA;
+  wallet.value = (await getWallet({ userId })) || {
+    balance: 0,
+    totalExpense: 0,
+    totalRecharge: 0,
+  };
 }
 
+/** 编辑会员 */
 function handleEdit() {
   formModalApi.setData(user.value).open();
 }
 
+/** 初始化 */
 onMounted(async () => {
   await getUserDetail();
 });
@@ -63,66 +64,66 @@ onMounted(async () => {
   <Page auto-content-height>
     <FormModal @success="refreshTab" />
     <div class="flex">
-      <UserBasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
+      <BasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
         <template #title> 基本信息 </template>
         <template #extra>
           <Button type="primary" @click="handleEdit">
             {{ $t('common.edit') }}
           </Button>
         </template>
-      </UserBasicInfo>
-      <UserAccountInfo
+      </BasicInfo>
+      <AccountInfo
         v-if="user && wallet"
         class="ml-4 w-2/5"
         :user="user"
         :wallet="wallet"
       >
         <template #title> 账户信息 </template>
-      </UserAccountInfo>
+      </AccountInfo>
     </div>
     <div class="mt-4">
       <Card title="账户明细">
         <Tabs>
-          <TabPane tab="积分" key="UserPointList">
-            <UserPointList class="h-full" :user-id="userId" />
+          <TabPane tab="积分" key="PointList">
+            <PointList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="签到" key="UserSignList">
-            <UserSignList class="h-full" :user-id="userId" />
+          <TabPane tab="签到" key="SignList">
+            <SignList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="成长值" key="UserExperienceRecordList">
-            <UserExperienceRecordList class="h-full" :user-id="userId" />
+          <TabPane tab="成长值" key="ExperienceRecordList">
+            <ExperienceRecordList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="余额" key="UserBalanceList">
-            <UserBalanceList class="h-full" :wallet-id="wallet?.id" />
+          <TabPane tab="余额" key="BalanceList">
+            <BalanceList class="h-full" :wallet-id="wallet?.id" />
           </TabPane>
-          <TabPane tab="收货地址" key="UserAddressList">
-            <UserAddressList class="h-full" :user-id="userId" />
+          <TabPane tab="收货地址" key="AddressList">
+            <AddressList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="订单管理" key="UserOrderList">
+          <TabPane tab="订单管理" key="OrderList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>订单管理</h1>
             </div>
           </TabPane>
-          <TabPane tab="售后管理" key="UserAfterSaleList">
+          <TabPane tab="售后管理" key="AfterSaleList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>售后管理</h1>
             </div>
           </TabPane>
-          <TabPane tab="收藏记录" key="UserFavoriteList">
+          <TabPane tab="收藏记录" key="FavoriteList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>收藏记录</h1>
             </div>
           </TabPane>
-          <TabPane tab="优惠劵" key="UserCouponList">
+          <TabPane tab="优惠劵" key="CouponList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>优惠劵</h1>
             </div>
           </TabPane>
-          <TabPane tab="推广用户" key="UserBrokerageList">
+          <TabPane tab="推广用户" key="BrokerageList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>推广用户</h1>

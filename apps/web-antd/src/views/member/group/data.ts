@@ -10,17 +10,18 @@ import { z } from '#/adapter/form';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
     {
-      component: 'Input',
       fieldName: 'name',
       label: '分组名称',
+      component: 'Input',
+      rules: 'required',
     },
     {
       fieldName: 'status',
@@ -33,6 +34,14 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
   ];
 }
 
@@ -43,14 +52,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '分组名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入分组名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择状态',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        placeholder: ['开始日期', '结束日期'],
+        allowClear: true,
       },
     },
   ];
@@ -62,14 +85,23 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '分组名称',
+      minWidth: 150,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
+      showOverflow: 'tooltip',
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -78,6 +110,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {

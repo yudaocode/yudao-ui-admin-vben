@@ -6,7 +6,7 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
-import { ElAvatar, ElCard, ElCol, ElRow } from 'element-plus';
+import { Avatar, Card, Col, Row } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
@@ -18,15 +18,7 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
-  componentProps: {
-    border: false,
-    column: 2,
-    direction: 'horizontal',
-    labelWidth: 100,
-    title: '',
-    extra: '',
-  },
+const [Descriptions] = useDescription({
   schema: [
     {
       field: 'name',
@@ -60,41 +52,41 @@ const [Description] = useDescription({
     {
       field: 'birthday',
       label: '生日',
-      content: (data) => formatDate(data.birthday)?.toString() || '空',
+      content: (data) => formatDate(data.birthday)?.toString() || '-',
     },
     {
       field: 'createTime',
       label: '注册时间',
-      content: (data) => formatDate(data.createTime)?.toString() || '空',
+      content: (data) => formatDate(data.createTime)?.toString() || '-',
     },
     {
       field: 'loginDate',
       label: '最后登录时间',
-      content: (data) => formatDate(data.loginDate)?.toString() || '空',
+      content: (data) => formatDate(data.loginDate)?.toString() || '-',
     },
   ],
 });
 </script>
 
 <template>
-  <ElCard>
+  <Card>
     <template #title>
       <slot name="title"></slot>
     </template>
     <template #extra>
       <slot name="extra"></slot>
     </template>
-    <ElRow v-if="mode === 'member'" :gutter="24">
-      <ElCol :span="4">
-        <ElAvatar :size="140" shape="square" :src="user.avatar" />
-      </ElCol>
-      <ElCol :span="20">
-        <Description :column="2" :data="user" />
-      </ElCol>
-    </ElRow>
+    <Row v-if="mode === 'member'" :gutter="24">
+      <Col :span="6">
+        <Avatar :size="180" shape="square" :src="user.avatar" />
+      </Col>
+      <Col :span="18">
+        <Descriptions :column="2" :data="user" />
+      </Col>
+    </Row>
     <template v-else-if="mode === 'kefu'">
-      <ElAvatar :size="140" shape="square" :src="user.avatar" />
-      <Description :column="1" :data="user" />
+      <Avatar :size="140" shape="square" :src="user.avatar" />
+      <Descriptions :column="1" :data="user" />
     </template>
-  </ElCard>
+  </Card>
 </template>

@@ -60,7 +60,6 @@ onMounted(() => {
 
 const [Form, formApi] = useVbenForm({
   wrapperClass: 'grid-cols-1',
-  actionWrapperClass: 'text-center',
   handleSubmit: onSubmit,
   layout: 'horizontal',
   resetButtonOptions: {

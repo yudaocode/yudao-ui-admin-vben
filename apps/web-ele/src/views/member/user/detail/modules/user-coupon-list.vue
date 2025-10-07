@@ -4,6 +4,9 @@ import type { MallCouponApi } from '#/api/mall/promotion/coupon/coupon';
 
 import { ref, watch } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { ElLoading, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -11,9 +14,6 @@ import {
   deleteCoupon,
   getCouponPage,
 } from '#/api/mall/promotion/coupon/coupon';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
 const props = defineProps<{

@@ -20,15 +20,11 @@ withDefaults(
 );
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    bordered: false,
-    class: 'mx-4',
-  },
   schema: [
     {
       field: 'levelName',
       label: '等级',
-      content: (data) => data.levelName || '无',
+      content: (data) => data.levelName || '-',
     },
     {
       field: 'experience',

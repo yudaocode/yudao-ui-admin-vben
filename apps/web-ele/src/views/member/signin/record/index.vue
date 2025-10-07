@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MemberSignInRecordApi } from '#/api/member/signin/record';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSignInRecordPage } from '#/api/member/signin/record';
@@ -30,6 +30,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -41,6 +42,12 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="会员等级、积分、签到"
+        url="https://doc.iocoder.cn/member/level/"
+      />
+    </template>
     <Grid table-title="签到记录列表" />
   </Page>
 </template>

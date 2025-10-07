@@ -83,8 +83,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入主机端口',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
       dependencies: {

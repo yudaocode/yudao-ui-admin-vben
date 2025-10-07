@@ -28,6 +28,12 @@ export namespace PayWalletApi {
     totalRecharge?: number;
     freezePrice?: number;
   }
+
+  /** 钱包修改余额 */
+  export interface PayWalletUpdateBalanceReqVO {
+    userId: number;
+    balance: number;
+  }
 }
 
 /** 查询用户钱包详情 */
@@ -48,6 +54,8 @@ export function getWalletPage(params: PayWalletApi.WalletPageReqVO) {
 }
 
 /** 修改会员钱包余额 */
-export function updateWalletBalance(data: PayWalletApi.Wallet) {
+export function updateWalletBalance(
+  data: PayWalletApi.PayWalletUpdateBalanceReqVO,
+) {
   return requestClient.put('/pay/wallet/update-balance', data);
 }

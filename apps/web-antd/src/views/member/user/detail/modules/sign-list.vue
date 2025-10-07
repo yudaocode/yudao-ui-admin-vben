@@ -18,6 +18,10 @@ const [Grid] = useVbenVxeGrid({
         fieldName: 'day',
         label: '签到天数',
         component: 'Input',
+        componentProps: {
+          placeholder: '请输入签到天数',
+          allowClear: true,
+        },
       },
       {
         fieldName: 'createTime',
@@ -33,9 +37,6 @@ const [Grid] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     keepSource: true,
-    pagerConfig: {
-      pageSize: 10,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -50,6 +51,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

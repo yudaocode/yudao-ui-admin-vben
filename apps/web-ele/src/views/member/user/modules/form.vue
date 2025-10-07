@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MemberUserApi } from '#/api/member/user';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -15,6 +15,11 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MemberUserApi.User>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['会员'])
+    : $t('ui.actionTitle.create', ['会员']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -71,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="$t('ui.actionTitle.edit', ['会员'])">
+  <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
   </Modal>
 </template>

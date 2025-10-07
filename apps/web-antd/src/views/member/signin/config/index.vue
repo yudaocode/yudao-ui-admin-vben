@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MemberSignInConfigApi } from '#/api/member/signin/config';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -22,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -44,10 +44,8 @@ async function handleDelete(row: MemberSignInConfigApi.SignInConfig) {
   });
   try {
     await deleteSignInConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess'),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -70,6 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -81,7 +80,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <template #doc>
+      <DocAlert
+        title="会员等级、积分、签到"
+        url="https://doc.iocoder.cn/member/level/"
+      />
+    </template>
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="签到配置列表">
       <template #toolbar-tools>
         <TableAction

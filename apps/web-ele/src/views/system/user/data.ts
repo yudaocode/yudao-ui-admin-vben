@@ -73,7 +73,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimplePostList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请选择岗位',
       },
     },
@@ -82,11 +82,17 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '邮箱',
       component: 'Input',
       rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+      },
     },
     {
       fieldName: 'sex',
@@ -213,7 +219,7 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
         api: getSimpleRoleList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请选择角色',
       },
     },

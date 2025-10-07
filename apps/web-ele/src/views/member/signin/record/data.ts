@@ -14,11 +14,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'nickname',
       label: '签到用户',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入签到用户',
+        clearable: true,
+      },
     },
     {
       fieldName: 'day',
       label: '签到天数',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入签到天数',
+        clearable: true,
+      },
     },
     {
       fieldName: 'createTime',
@@ -38,26 +46,29 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'nickname',
       title: '签到用户',
+      minWidth: 150,
     },
     {
       field: 'day',
       title: '签到天数',
+      minWidth: 120,
       formatter: ({ cellValue }) => ['第', cellValue, '天'].join(' '),
     },
     {
       field: 'point',
       title: '获得积分',
+      minWidth: 120,
       slots: {
         default: ({ row }) => {
           return h(
             ElTag,
             {
-              class: 'mr-5px',
-              color: row.point > 0 ? 'blue' : 'red',
+              type: row.point > 0 ? 'primary' : 'danger',
             },
             () => (row.point > 0 ? `+${row.point}` : row.point),
           );
@@ -67,6 +78,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'createTime',
       title: '签到时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
   ];

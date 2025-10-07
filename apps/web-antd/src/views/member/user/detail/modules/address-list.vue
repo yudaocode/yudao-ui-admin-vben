@@ -19,26 +19,32 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'id',
         title: '地址编号',
+        minWidth: 100,
       },
       {
         field: 'name',
         title: '收件人名称',
+        minWidth: 120,
       },
       {
         field: 'mobile',
         title: '手机号',
+        minWidth: 130,
       },
       {
         field: 'areaId',
         title: '地区编码',
+        minWidth: 120,
       },
       {
         field: 'detailAddress',
         title: '收件详细地址',
+        minWidth: 200,
       },
       {
         field: 'defaultStatus',
         title: '是否默认',
+        minWidth: 100,
         slots: {
           default: ({ row }) => {
             return h(
@@ -55,6 +61,7 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'createTime',
         title: '创建时间',
+        minWidth: 180,
         formatter: 'formatDateTime',
       },
     ],
@@ -73,6 +80,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
