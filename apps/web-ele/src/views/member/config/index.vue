@@ -4,6 +4,7 @@ import type { MemberConfigApi } from '#/api/member/config';
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { fenToYuan, yuanToFen } from '@vben/utils';
 
 import { ElCard, ElMessage } from 'element-plus';
 
@@ -11,94 +12,47 @@ import { useVbenForm } from '#/adapter/form';
 import { getConfig, saveConfig } from '#/api/member/config';
 import { $t } from '#/locales';
 
-const emit = defineEmits(['success']);
+import { schema } from './data';
+
 const formData = ref<MemberConfigApi.Config>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
-    labelClass: 'w-2/6',
+    labelWidth: 120,
   },
   layout: 'horizontal',
-  wrapperClass: 'grid-cols-1',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      component: 'Switch',
-      fieldName: 'pointTradeDeductEnable',
-      label: '积分抵扣',
-      help: '开启后，用户可以积分抵扣',
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'pointTradeDeductUnitPrice',
-      label: '积分抵扣单价',
-      help: '用户每消费1元，可以抵扣多少积分',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        class: 'w-full',
-      },
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'pointTradeDeductMaxPrice',
-      label: '积分抵扣最大值',
-      help: '单次下单积分使用上限，0 不限制',
-      componentProps: {
-        min: 0,
-        class: 'w-full',
-      },
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'pointTradeGivePoint',
-      label: '1 元赠送多少分',
-      help: '下单支付金额按比例赠送积分（实际支付 1 元赠送多少积分）',
-      componentProps: {
-        min: 0,
-        class: 'w-full',
-      },
-    },
-  ],
-  // 提交函数
-  handleSubmit: onSubmit,
+  schema,
+  handleSubmit,
 });
 
-async function onSubmit() {
+/** 提交表单 */
+async function handleSubmit() {
   const { valid } = await formApi.validate();
   if (!valid) {
     return;
   }
   // 提交表单
   const data = (await formApi.getValues()) as MemberConfigApi.Config;
-  formApi.setState({ commonConfig: { disabled: true } });
-  try {
-    await saveConfig(data);
-    // 关闭并提示
-    emit('success');
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  } finally {
-    formApi.setState({ commonConfig: { disabled: false } });
-  }
+  // 转换金额单位
+  data.pointTradeDeductUnitPrice = yuanToFen(data.pointTradeDeductUnitPrice);
+  await saveConfig(data);
+  // 关闭并提示
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
 }
 
+/** 获取配置 */
 async function getConfigInfo() {
-  try {
-    const res = await getConfig();
-    formData.value = res;
-  } catch (error) {
-    console.error(error);
-  }
+  const res = await getConfig();
+  formData.value = res;
+  // 转换金额单位
+  res.pointTradeDeductUnitPrice = Number.parseFloat(
+    fenToYuan(res.pointTradeDeductUnitPrice),
+  );
+  // 设置到 values
+  await formApi.setValues(res);
 }
 
+/** 初始化 */
 onMounted(() => {
   getConfigInfo();
 });
