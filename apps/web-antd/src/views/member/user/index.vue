@@ -12,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage } from '#/api/member/user';
 import { $t } from '#/locales';
 
-import CouponSendForm from '../../mall/promotion/coupon/components/CouponSendForm.vue';
+import { CouponSendForm } from '../../mall/promotion/coupon/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';

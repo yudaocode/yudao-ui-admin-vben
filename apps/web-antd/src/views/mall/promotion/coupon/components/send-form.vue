@@ -11,12 +11,7 @@ import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { sendCoupon } from '#/api/mall/promotion/coupon/coupon';
 import { getCouponTemplatePage } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import {
-  discountFormat,
-  remainedCountFormat,
-  usePriceFormat,
-  validityTypeFormat,
-} from '../formatter';
+import { useFormSchema, useGridColumns } from './data';
 
 /** 发送优惠券 */
 async function handleSendCoupon(row: MallCouponTemplateApi.CouponTemplate) {
@@ -35,57 +30,10 @@ async function handleSendCoupon(row: MallCouponTemplateApi.CouponTemplate) {
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
-    // TODO @AI：挪到 data.ts
-    schema: [
-      {
-        component: 'Input',
-        fieldName: 'name',
-        label: '优惠券名称',
-        componentProps: {
-          placeholder: '请输入优惠券名称',
-          allowClear: true,
-        },
-      },
-    ],
+    schema: useFormSchema(),
   },
   gridOptions: {
-    // TODO @AI：挪到 data.ts
-    columns: [
-      {
-        title: '优惠券名称',
-        field: 'name',
-        minWidth: 120,
-      },
-      {
-        title: '优惠金额 / 折扣',
-        field: 'discount',
-        minWidth: 120,
-        formatter: ({ row }) => discountFormat(row),
-      },
-      {
-        title: '最低消费',
-        field: 'usePrice',
-        minWidth: 100,
-        formatter: ({ row }) => usePriceFormat(row),
-      },
-      {
-        title: '有效期限',
-        field: 'validityType',
-        minWidth: 140,
-        formatter: ({ row }) => validityTypeFormat(row),
-      },
-      {
-        title: '剩余数量',
-        minWidth: 100,
-        formatter: ({ row }) => remainedCountFormat(row),
-      },
-      {
-        title: '操作',
-        width: 100,
-        fixed: 'right',
-        slots: { default: 'actions' },
-      },
-    ],
+    columns: useGridColumns(),
     height: 500,
     keepSource: true,
     proxyConfig: {
@@ -111,7 +59,10 @@ const [Grid] = useVbenVxeGrid({
   } as VxeGridProps<MallCouponTemplateApi.CouponTemplate>,
 });
 
-const [Modal, modalApi] = useVbenModal({});
+const [Modal, modalApi] = useVbenModal({
+  showCancelButton: false,
+  showConfirmButton: false,
+});
 </script>
 
 <template>
