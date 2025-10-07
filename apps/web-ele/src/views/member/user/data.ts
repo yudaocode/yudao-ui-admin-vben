@@ -178,7 +178,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: () => getSimpleTagList(),
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请选择用户标签',
         clearable: true,
       },
