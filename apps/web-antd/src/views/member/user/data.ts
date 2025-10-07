@@ -318,15 +318,15 @@ export function useLevelFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'point',
+      fieldName: 'levelId',
       label: '用户等级',
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
         fieldNames: { label: 'name', value: 'id' },
         placeholder: '请选择用户等级',
+        allowClear: true,
       },
-      rules: 'required',
     },
     {
       fieldName: 'reason',
