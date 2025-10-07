@@ -6,6 +6,16 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
+/** 奖励验证函数 */
+const awardValidator = (value: number, formData: any, field: string) => {
+  const point = formData.point || 0;
+  const experience = formData.experience || 0;
+  if (point === 0 && experience === 0) {
+    return '奖励积分与奖励经验至少配置一个';
+  }
+  return true;
+};
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -26,7 +36,9 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 1,
         max: 7,
         precision: 0,
+        placeholder: '请输入签到天数',
       },
+      rules: z.number().min(1).max(7, '签到天数必须在1-7之间'),
     },
     {
       component: 'InputNumber',
@@ -35,7 +47,11 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 0,
+        placeholder: '请输入获得积分',
       },
+      rules: z.number().min(0, '获得积分不能小于0').refine(awardValidator, {
+        message: '奖励积分与奖励经验至少配置一个',
+      }),
     },
     {
       component: 'InputNumber',
@@ -44,7 +60,11 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 0,
+        placeholder: '请输入奖励经验',
       },
+      rules: z.number().min(0, '奖励经验不能小于0').refine(awardValidator, {
+        message: '奖励积分与奖励经验至少配置一个',
+      }),
     },
     {
       fieldName: 'status',
@@ -64,38 +84,33 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'id',
-      title: '编号',
-    },
-    {
       field: 'day',
       title: '签到天数',
+      minWidth: 120,
       formatter: ({ cellValue }) => ['第', cellValue, '天'].join(' '),
     },
     {
       field: 'point',
       title: '获得积分',
+      minWidth: 120,
     },
     {
       field: 'experience',
       title: '奖励经验',
+      minWidth: 120,
     },
     {
       field: 'status',
       title: '状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
-      field: 'createTime',
-      title: '创建时间',
-      formatter: 'formatDateTime',
-    },
-    {
       title: '操作',
-      width: 130,
+      width: 150,
       fixed: 'right',
       slots: { default: 'actions' },
     },
