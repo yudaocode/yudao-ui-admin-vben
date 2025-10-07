@@ -399,7 +399,7 @@ export function useBalanceFormSchema(): VbenFormSchema[] {
       label: '变动后余额(元)',
       component: 'Input',
       dependencies: {
-        triggerFields: ['changeBalance', 'changeType'],
+        triggerFields: ['balance', 'changeBalance', 'changeType'],
         disabled: true,
         trigger(values, form) {
           form.setFieldValue(

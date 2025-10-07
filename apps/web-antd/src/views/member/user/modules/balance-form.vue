@@ -4,13 +4,13 @@ import type { MemberUserApi } from '#/api/member/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { formatToFraction } from '@vben/utils';
+import { fenToYuan, yuanToFen } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getUser, updateUser } from '#/api/member/user';
-import { getWallet } from '#/api/pay/wallet/balance';
+import { getUser } from '#/api/member/user';
+import { getWallet, updateWalletBalance } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
 import { useBalanceFormSchema } from '../data';
@@ -45,9 +45,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MemberUserApi.User;
+    const data = await formApi.getValues();
     try {
-      await updateUser(data);
+      await updateWalletBalance({
+        userId: data.id,
+        balance: yuanToFen(data.changeBalance) * data.changeType,
+      });
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -74,9 +77,9 @@ const [Modal, modalApi] = useVbenModal({
       const wallet = await getWallet({ userId: user.id });
       formData.value.id = user.id;
       formData.value.nickname = user.nickname || '';
-      formData.value.balance = formatToFraction(wallet.balance);
+      formData.value.balance = fenToYuan(wallet.balance);
       formData.value.changeType = 1; // 默认增加余额
-      formData.value.changeBalance = 0; // 变动余额默认0
+      formData.value.changeBalance = 0; // 变动余额默认 0
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
