@@ -18,6 +18,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       fieldName: 'name',
       label: '标签名称',
+      componentProps: {
+        placeholder: '请输入标签名称',
+      },
       rules: 'required',
     },
   ];
@@ -30,6 +33,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '标签名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入标签名称',
+        clearable: true,
+      },
     },
     {
       fieldName: 'createTime',
@@ -37,6 +44,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        placeholder: ['开始日期', '结束日期'],
       },
     },
   ];
@@ -48,14 +56,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'id',
       title: '编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '标签名称',
+      minWidth: 200,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
