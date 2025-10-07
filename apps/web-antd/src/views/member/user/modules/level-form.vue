@@ -40,10 +40,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as MemberUserApi.UserLevelUpdateReqVO;
+    const data = (await formApi.getValues()) as any;
     try {
-      await updateUserLevel(data);
+      // 按照Vue3版本的API调用方式
+      await updateUserLevel({
+        id: data.id,
+        levelId: data.levelId,
+        reason: data.reason,
+      });
       // 关闭并提示
       await modalApi.close();
       emit('success');

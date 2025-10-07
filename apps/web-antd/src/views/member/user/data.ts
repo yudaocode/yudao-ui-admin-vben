@@ -466,14 +466,16 @@ export function usePointFormSchema(): VbenFormSchema[] {
         precision: 0,
         placeholder: '请输入变动积分',
       },
-      defaultValue: 0,
     },
     {
       fieldName: 'pointResult',
       label: '变动后积分',
       component: 'Input',
+      componentProps: {
+        placeholder: '',
+      },
       dependencies: {
-        triggerFields: ['changePoint', 'changeType'],
+        triggerFields: ['point', 'changePoint', 'changeType'],
         disabled: true,
         trigger(values, form) {
           form.setFieldValue(
