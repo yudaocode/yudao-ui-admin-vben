@@ -21,7 +21,6 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   wrapperClass: 'grid-cols-1',
-  actionWrapperClass: 'text-center',
   schema: [
     {
       component: 'Input',

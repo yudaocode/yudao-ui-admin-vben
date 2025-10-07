@@ -64,7 +64,6 @@ const [Form, formApi] = useVbenForm({
     labelClass: 'w-2/6',
   },
   wrapperClass: 'grid-cols-1',
-  actionWrapperClass: 'text-center',
   handleSubmit: onSubmit,
   layout: 'horizontal',
   resetButtonOptions: {
