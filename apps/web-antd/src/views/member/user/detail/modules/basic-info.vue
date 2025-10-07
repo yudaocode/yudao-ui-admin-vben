@@ -20,7 +20,6 @@ withDefaults(
 
 const [Descriptions] = useDescription({
   componentProps: {
-    bordered: false,
     class: 'mx-4',
   },
   schema: [
@@ -56,17 +55,17 @@ const [Descriptions] = useDescription({
     {
       field: 'birthday',
       label: '生日',
-      content: (data) => formatDate(data.birthday)?.toString() || '空',
+      content: (data) => formatDate(data.birthday)?.toString() || '-',
     },
     {
       field: 'createTime',
       label: '注册时间',
-      content: (data) => formatDate(data.createTime)?.toString() || '空',
+      content: (data) => formatDate(data.createTime)?.toString() || '-',
     },
     {
       field: 'loginDate',
       label: '最后登录时间',
-      content: (data) => formatDate(data.loginDate)?.toString() || '空',
+      content: (data) => formatDate(data.loginDate)?.toString() || '-',
     },
   ],
 });
@@ -81,10 +80,10 @@ const [Descriptions] = useDescription({
       <slot name="extra"></slot>
     </template>
     <Row v-if="mode === 'member'" :gutter="24">
-      <Col :span="4">
-        <Avatar :size="140" shape="square" :src="user.avatar" />
+      <Col :span="6">
+        <Avatar :size="180" shape="square" :src="user.avatar" />
       </Col>
-      <Col :span="20">
+      <Col :span="18">
         <Descriptions :column="2" :data="user" />
       </Col>
     </Row>

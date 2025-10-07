@@ -15,31 +15,33 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'id',
         title: '编号',
+        minWidth: 100,
       },
       {
         field: 'title',
         title: '关联业务标题',
+        minWidth: 200,
       },
       {
         field: 'price',
         title: '交易金额',
-        formatter: 'formatAmount2',
+        minWidth: 120,
+        formatter: 'formatFenToYuanAmount',
       },
       {
         field: 'balance',
         title: '钱包余额',
-        formatter: 'formatAmount2',
+        minWidth: 120,
+        formatter: 'formatFenToYuanAmount',
       },
       {
         field: 'createTime',
         title: '交易时间',
+        minWidth: 180,
         formatter: 'formatDateTime',
       },
     ],
     keepSource: true,
-    pagerConfig: {
-      pageSize: 10,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -54,6 +56,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

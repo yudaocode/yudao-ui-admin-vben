@@ -25,17 +25,22 @@ const [Grid] = useVbenVxeGrid({
         label: '业务类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
           options: getDictOptions(
             DICT_TYPE.MEMBER_EXPERIENCE_BIZ_TYPE,
             'number',
           ),
+          placeholder: '请选择业务类型',
+          allowClear: true,
         },
       },
       {
         fieldName: 'title',
         label: '标题',
         component: 'Input',
+        componentProps: {
+          placeholder: '请输入标题',
+          allowClear: true,
+        },
       },
       {
         fieldName: 'createDate',
@@ -53,15 +58,18 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'id',
         title: '编号',
+        minWidth: 100,
       },
       {
         field: 'createTime',
         title: '获得时间',
+        minWidth: 180,
         formatter: 'formatDateTime',
       },
       {
         field: 'experience',
         title: '经验',
+        minWidth: 100,
         slots: {
           default: ({ row }) => {
             return h(
@@ -79,22 +87,27 @@ const [Grid] = useVbenVxeGrid({
       {
         field: 'totalExperience',
         title: '总经验',
+        minWidth: 100,
       },
       {
         field: 'title',
         title: '标题',
+        minWidth: 200,
       },
       {
         field: 'description',
         title: '描述',
+        minWidth: 250,
       },
       {
         field: 'bizId',
         title: '业务编号',
+        minWidth: 120,
       },
       {
         field: 'bizType',
         title: '业务类型',
+        minWidth: 120,
         cellRender: {
           name: 'CellDict',
           props: { type: DICT_TYPE.MEMBER_EXPERIENCE_BIZ_TYPE },
@@ -102,9 +115,6 @@ const [Grid] = useVbenVxeGrid({
       },
     ],
     keepSource: true,
-    pagerConfig: {
-      pageSize: 10,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -119,6 +129,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

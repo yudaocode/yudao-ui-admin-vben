@@ -15,13 +15,13 @@ import { getWallet } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
 import Form from '../modules/form.vue';
-import UserAccountInfo from './modules/user-account-info.vue';
-import UserAddressList from './modules/user-address-list.vue';
-import UserBalanceList from './modules/user-balance-list.vue';
-import UserBasicInfo from './modules/user-basic-info.vue';
-import UserExperienceRecordList from './modules/user-experience-record-list.vue';
-import UserPointList from './modules/user-point-list.vue';
-import UserSignList from './modules/user-sign-list.vue';
+import AccountInfo from './modules/account-info.vue';
+import AddressList from './modules/address-list.vue';
+import BalanceList from './modules/balance-list.vue';
+import BasicInfo from './modules/basic-info.vue';
+import ExperienceRecordList from './modules/experience-record-list.vue';
+import PointList from './modules/point-list.vue';
+import SignList from './modules/sign-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
@@ -34,27 +34,28 @@ const [FormModal, formModalApi] = useVbenModal({
 const userId = Number(route.query.id);
 const user = ref<MemberUserApi.User>();
 const wallet = ref<PayWalletApi.Wallet>();
-/* 钱包初始化数据 */
-const WALLET_INIT_DATA = {
-  balance: 0,
-  totalExpense: 0,
-  totalRecharge: 0,
-} as PayWalletApi.Wallet;
 
+/** 获取会员详情 */
 async function getUserDetail() {
   if (!userId) {
     message.error('参数错误，会员编号不能为空！');
-    closeCurrentTab();
+    await closeCurrentTab();
     return;
   }
   user.value = await getUser(userId);
-  wallet.value = (await getWallet({ userId })) || WALLET_INIT_DATA;
+  wallet.value = (await getWallet({ userId })) || {
+    balance: 0,
+    totalExpense: 0,
+    totalRecharge: 0,
+  };
 }
 
+/** 编辑会员 */
 function handleEdit() {
   formModalApi.setData(user.value).open();
 }
 
+/** 初始化 */
 onMounted(async () => {
   await getUserDetail();
 });
@@ -63,40 +64,40 @@ onMounted(async () => {
   <Page auto-content-height>
     <FormModal @success="refreshTab" />
     <div class="flex">
-      <UserBasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
+      <BasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
         <template #title> 基本信息 </template>
         <template #extra>
           <Button type="primary" @click="handleEdit">
             {{ $t('common.edit') }}
           </Button>
         </template>
-      </UserBasicInfo>
-      <UserAccountInfo
+      </BasicInfo>
+      <AccountInfo
         v-if="user && wallet"
         class="ml-4 w-2/5"
         :user="user"
         :wallet="wallet"
       >
         <template #title> 账户信息 </template>
-      </UserAccountInfo>
+      </AccountInfo>
     </div>
     <div class="mt-4">
       <Card title="账户明细">
         <Tabs>
           <TabPane tab="积分" key="UserPointList">
-            <UserPointList class="h-full" :user-id="userId" />
+            <PointList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="签到" key="UserSignList">
-            <UserSignList class="h-full" :user-id="userId" />
+            <SignList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="成长值" key="UserExperienceRecordList">
-            <UserExperienceRecordList class="h-full" :user-id="userId" />
+            <ExperienceRecordList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="余额" key="UserBalanceList">
-            <UserBalanceList class="h-full" :wallet-id="wallet?.id" />
+            <BalanceList class="h-full" :wallet-id="wallet?.id" />
           </TabPane>
           <TabPane tab="收货地址" key="UserAddressList">
-            <UserAddressList class="h-full" :user-id="userId" />
+            <AddressList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="订单管理" key="UserOrderList">
             <!-- Todo: 商城模块 -->

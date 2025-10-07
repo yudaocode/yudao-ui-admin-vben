@@ -2,11 +2,11 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MemberPointRecordApi } from '#/api/member/point/record';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getRecordPage } from '#/api/member/point/record';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getRecordPage } from '#/api/member/point/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/member/point/record/data';
 
@@ -22,14 +22,19 @@ const [Grid] = useVbenVxeGrid({
         label: '业务类型',
         component: 'Select',
         componentProps: {
-          allowClear: true,
           options: getDictOptions(DICT_TYPE.MEMBER_POINT_BIZ_TYPE, 'number'),
+          placeholder: '请选择业务类型',
+          allowClear: true,
         },
       },
       {
         fieldName: 'title',
         label: '积分标题',
         component: 'Input',
+        componentProps: {
+          placeholder: '请输入积分标题',
+          allowClear: true,
+        },
       },
       {
         fieldName: 'createDate',
@@ -45,9 +50,6 @@ const [Grid] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     keepSource: true,
-    pagerConfig: {
-      pageSize: 10,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -62,6 +64,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

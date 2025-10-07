@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '会员详情',
       icon: 'lucide:user',
+      activePath: '/member/user',
       hideInMenu: true,
     },
   },
