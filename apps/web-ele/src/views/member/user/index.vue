@@ -12,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage } from '#/api/member/user';
 import { $t } from '#/locales';
 
-// import { CouponSendForm } from '../../mall/promotion/coupon/components/CouponSendForm.vue';
+import { CouponSendForm } from '../../mall/promotion/coupon/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';
@@ -42,7 +42,7 @@ const [LevelFormModal, levelFormModalApi] = useVbenModal({
 });
 
 const [CouponSendFormModal, couponSendFormModalApi] = useVbenModal({
-  // connectedComponent: CouponSendForm,
+  connectedComponent: CouponSendForm,
   destroyOnClose: true,
 });
 
@@ -99,17 +99,12 @@ function handleViewDetail(row: MemberUserApi.User) {
   });
 }
 
-// 表格实例
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
-    checkboxConfig: {
-      highlight: true,
-      labelField: 'checkbox',
-    },
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -125,6 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
