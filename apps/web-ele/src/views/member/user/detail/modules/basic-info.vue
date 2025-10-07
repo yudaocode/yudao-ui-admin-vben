@@ -18,12 +18,12 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     border: false,
     column: 2,
     direction: 'horizontal',
-    labelWidth: 100,
+    labelWidth: 140,
     title: '',
     extra: '',
   },
@@ -60,17 +60,17 @@ const [Description] = useDescription({
     {
       field: 'birthday',
       label: '生日',
-      content: (data) => formatDate(data.birthday)?.toString() || '空',
+      content: (data) => formatDate(data.birthday)?.toString() || '-',
     },
     {
       field: 'createTime',
       label: '注册时间',
-      content: (data) => formatDate(data.createTime)?.toString() || '空',
+      content: (data) => formatDate(data.createTime)?.toString() || '-',
     },
     {
       field: 'loginDate',
       label: '最后登录时间',
-      content: (data) => formatDate(data.loginDate)?.toString() || '空',
+      content: (data) => formatDate(data.loginDate)?.toString() || '-',
     },
   ],
 });
@@ -85,16 +85,16 @@ const [Description] = useDescription({
       <slot name="extra"></slot>
     </template>
     <ElRow v-if="mode === 'member'" :gutter="24">
-      <ElCol :span="4">
-        <ElAvatar :size="140" shape="square" :src="user.avatar" />
+      <ElCol :span="6">
+        <ElAvatar :size="180" shape="square" :src="user.avatar" />
       </ElCol>
-      <ElCol :span="20">
-        <Description :column="2" :data="user" />
+      <ElCol :span="18">
+        <Descriptions :column="2" :data="user" />
       </ElCol>
     </ElRow>
     <template v-else-if="mode === 'kefu'">
       <ElAvatar :size="140" shape="square" :src="user.avatar" />
-      <Description :column="1" :data="user" />
+      <Descriptions :column="1" :data="user" />
     </template>
   </ElCard>
 </template>

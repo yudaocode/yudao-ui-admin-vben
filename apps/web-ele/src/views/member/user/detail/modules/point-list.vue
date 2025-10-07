@@ -23,6 +23,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'Select',
         componentProps: {
           clearable: true,
+          placeholder: '请选择业务类型',
           options: getDictOptions(DICT_TYPE.MEMBER_POINT_BIZ_TYPE, 'number'),
         },
       },

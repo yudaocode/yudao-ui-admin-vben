@@ -19,12 +19,12 @@ withDefaults(
   },
 );
 
-const [Description] = useDescription({
+const [Descriptions] = useDescription({
   componentProps: {
     border: false,
     column: 2,
     direction: 'horizontal',
-    labelWidth: 100,
+    labelWidth: 140,
     title: '',
     extra: '',
   },
@@ -32,7 +32,7 @@ const [Description] = useDescription({
     {
       field: 'levelName',
       label: '等级',
-      content: (data) => data.levelName || '无',
+      content: (data) => data.levelName || '-',
     },
     {
       field: 'experience',
@@ -76,7 +76,7 @@ const [Description] = useDescription({
     <template #extra>
       <slot name="extra"></slot>
     </template>
-    <Description
+    <Descriptions
       :column="mode === 'member' ? 2 : 1"
       :data="{
         ...user,

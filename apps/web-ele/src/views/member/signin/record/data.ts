@@ -68,8 +68,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
           return h(
             ElTag,
             {
-              class: 'mr-5px',
-              color: row.point > 0 ? 'blue' : 'red',
+              type: row.point > 0 ? 'primary' : 'danger',
             },
             () => (row.point > 0 ? `+${row.point}` : row.point),
           );

@@ -84,46 +84,46 @@ onMounted(async () => {
     <div class="mt-4">
       <Card title="账户明细">
         <Tabs>
-          <TabPane tab="积分" key="UserPointList">
+          <TabPane tab="积分" key="PointList">
             <PointList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="签到" key="UserSignList">
+          <TabPane tab="签到" key="SignList">
             <SignList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="成长值" key="UserExperienceRecordList">
+          <TabPane tab="成长值" key="ExperienceRecordList">
             <ExperienceRecordList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="余额" key="UserBalanceList">
+          <TabPane tab="余额" key="BalanceList">
             <BalanceList class="h-full" :wallet-id="wallet?.id" />
           </TabPane>
-          <TabPane tab="收货地址" key="UserAddressList">
+          <TabPane tab="收货地址" key="AddressList">
             <AddressList class="h-full" :user-id="userId" />
           </TabPane>
-          <TabPane tab="订单管理" key="UserOrderList">
+          <TabPane tab="订单管理" key="OrderList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>订单管理</h1>
             </div>
           </TabPane>
-          <TabPane tab="售后管理" key="UserAfterSaleList">
+          <TabPane tab="售后管理" key="AfterSaleList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>售后管理</h1>
             </div>
           </TabPane>
-          <TabPane tab="收藏记录" key="UserFavoriteList">
+          <TabPane tab="收藏记录" key="FavoriteList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>收藏记录</h1>
             </div>
           </TabPane>
-          <TabPane tab="优惠劵" key="UserCouponList">
+          <TabPane tab="优惠劵" key="CouponList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>优惠劵</h1>
             </div>
           </TabPane>
-          <TabPane tab="推广用户" key="UserBrokerageList">
+          <TabPane tab="推广用户" key="BrokerageList">
             <!-- Todo: 商城模块 -->
             <div class="h-full">
               <h1>推广用户</h1>

@@ -19,9 +19,6 @@ withDefaults(
 );
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    class: 'mx-4',
-  },
   schema: [
     {
       field: 'name',
