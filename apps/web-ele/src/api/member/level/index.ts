@@ -11,6 +11,7 @@ export namespace MemberLevelApi {
     icon: string;
     bgUrl: string;
     status: number;
+    createTime?: Date;
   }
 }
 

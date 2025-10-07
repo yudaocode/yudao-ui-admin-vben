@@ -71,7 +71,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'backgroundUrl',
-      label: '背景图',
+      label: '等级背景图',
       component: 'ImageUpload',
     },
     {
