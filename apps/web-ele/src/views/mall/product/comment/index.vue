@@ -25,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -40,6 +40,7 @@ function handleReply(row: MallCommentApi.Comment) {
     component: () => {
       return h(ElInput, {
         type: 'textarea',
+        placeholder: '请输入回复内容',
       });
     },
     content: row.content
@@ -50,16 +51,15 @@ function handleReply(row: MallCommentApi.Comment) {
   }).then(async (val) => {
     if (val) {
       await replyComment({
-        id: row.id as number,
+        id: row.id!,
         replyContent: val,
       });
-      onRefresh();
+      handleRefresh();
     }
   });
 }
 
 /** 更新状态 */
-// TODO @霖：貌似刷新后，就会触发
 async function handleStatusChange(
   newStatus: boolean,
   row: MallCommentApi.Comment,
@@ -67,12 +67,12 @@ async function handleStatusChange(
   return new Promise((resolve, reject) => {
     const text = newStatus ? '展示' : '隐藏';
     confirm({
-      content: `确认要${text + row.id}评论吗?`,
+      content: `确认要${text}该评论吗？`,
     })
       .then(async () => {
         // 更新状态
         const res = await updateCommentVisible({
-          id: row.id as number,
+          id: row.id!,
           visible: newStatus,
         });
         if (res) {
@@ -110,6 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -127,7 +128,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/product-comment/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="评论列表">
       <template #toolbar-tools>
         <TableAction
