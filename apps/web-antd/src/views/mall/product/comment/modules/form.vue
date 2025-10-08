@@ -18,8 +18,8 @@ const emit = defineEmits(['success']);
 const formData = ref<MallCommentApi.Comment>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['商品品牌'])
-    : $t('ui.actionTitle.create', ['商品品牌']);
+    ? $t('ui.actionTitle.edit', ['虚拟评论'])
+    : $t('ui.actionTitle.create', ['虚拟评论']);
 });
 
 const [Form, formApi] = useVbenForm({
