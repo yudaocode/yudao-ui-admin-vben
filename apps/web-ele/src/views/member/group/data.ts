@@ -54,7 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入分组名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -64,7 +64,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -73,7 +73,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         placeholder: ['开始日期', '结束日期'],
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

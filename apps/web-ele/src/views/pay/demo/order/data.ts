@@ -28,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '蔚来汽车 --- 200000.00元', value: 5 },
         ],
         placeholder: '请选择下单商品',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },

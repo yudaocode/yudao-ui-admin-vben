@@ -95,7 +95,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入分类名称',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
