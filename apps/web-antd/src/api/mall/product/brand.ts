@@ -5,18 +5,12 @@ import { requestClient } from '#/api/request';
 export namespace MallBrandApi {
   /** 商品品牌 */
   export interface Brand {
-    /** 品牌编号 */
-    id?: number;
-    /** 品牌名称 */
-    name: string;
-    /** 品牌图片 */
-    picUrl: string;
-    /** 品牌排序 */
-    sort?: number;
-    /** 品牌描述 */
-    description?: string;
-    /** 开启状态 */
-    status: number;
+    id?: number; // 品牌编号
+    name: string; // 品牌名称
+    picUrl: string; // 品牌图片
+    sort?: number; // 品牌排序
+    description?: string; // 品牌描述
+    status: number; // 开启状态
   }
 }
 
