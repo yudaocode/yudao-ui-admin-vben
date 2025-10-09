@@ -1,11 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ZoneApi } from '#/api/bdm/zone';
+import type { OrgApi } from '#/api/system/org';
 
 import { getAreaTree } from '#/api/system/area';
 
 /** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(orgList: OrgApi.Org[] = []): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -30,6 +31,34 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入区域简称',
+      },
+    },
+    {
+      fieldName: 'maintenanceUnitId',
+      label: '维护单位',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请选择维护单位',
+        options: orgList,
+        fieldNames: {
+          label: 'abbreviation',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'aidUnitId',
+      label: '救助单位',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请选救助单位',
+        options: orgList,
+        fieldNames: {
+          label: 'abbreviation',
+          value: 'id',
+        },
       },
     },
     areaIdField,
@@ -97,7 +126,9 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-export function useGridFormSchema(): VbenFormSchema[] {
+export function useGridFormSchema(
+  orgList: OrgApi.Org[] = [],
+): VbenFormSchema[] {
   return [
     areaIdFilterField,
     {
@@ -118,6 +149,34 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请输入区域简称',
       },
     },
+    {
+      fieldName: 'maintenanceUnitId',
+      label: '维护单位',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请选择维护单位',
+        options: orgList,
+        fieldNames: {
+          label: 'abbreviation',
+          value: 'id',
+        },
+      },
+    },
+    {
+      fieldName: 'aidUnitId',
+      label: '救助单位',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请选救助单位',
+        options: orgList,
+        fieldNames: {
+          label: 'abbreviation',
+          value: 'id',
+        },
+      },
+    },
   ];
 }
 
@@ -136,6 +195,7 @@ export function useGridColumns(): VxeTableGridOptions<ZoneApi.Zone>['columns'] {
       cellRender: {
         name: 'CellImage',
       },
+      width: 80,
     },
     {
       field: 'areaName',
@@ -155,6 +215,16 @@ export function useGridColumns(): VxeTableGridOptions<ZoneApi.Zone>['columns'] {
     {
       field: 'address',
       title: '详细地址',
+      minWidth: 120,
+    },
+    {
+      field: 'maintenanceUnitName',
+      title: '维护单位',
+      minWidth: 120,
+    },
+    {
+      field: 'aidUnitName',
+      title: '援助单位',
       minWidth: 120,
     },
     {
