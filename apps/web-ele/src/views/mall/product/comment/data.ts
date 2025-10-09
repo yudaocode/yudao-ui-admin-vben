@@ -58,23 +58,16 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：无法使用 Rate 组件，会报 TypeError: Cannot read properties of undefined (reading 'prefixCls')
     {
       fieldName: 'descriptionScores',
       label: '描述星级',
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请选择描述星级',
-      },
+      component: 'Rate',
       rules: z.number().min(1).max(5).default(5),
     },
     {
       fieldName: 'benefitScores',
       label: '服务星级',
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请选择服务星级',
-      },
+      component: 'Rate',
       rules: z.number().min(1).max(5).default(5),
     },
     {
@@ -192,12 +185,18 @@ export function useGridColumns<T = MallCommentApi.Comment>(
     {
       field: 'descriptionScores',
       title: '商品评分',
-      minWidth: 90,
+      minWidth: 150,
+      slots: {
+        default: 'descriptionScores',
+      },
     },
     {
       field: 'benefitScores',
       title: '服务评分',
-      minWidth: 90,
+      minWidth: 150,
+      slots: {
+        default: 'benefitScores',
+      },
     },
     {
       field: 'content',
