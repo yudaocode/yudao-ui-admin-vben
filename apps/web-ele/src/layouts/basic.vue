@@ -13,7 +13,7 @@ import {
   AntdProfileOutlined,
   BookOpenText,
   CircleHelp,
-  MdiGithub,
+  SvgGithubIcon,
 } from '@vben/icons';
 import {
   BasicLayout,
@@ -79,7 +79,7 @@ const menus = computed(() => [
         target: '_blank',
       });
     },
-    icon: MdiGithub,
+    icon: SvgGithubIcon,
     text: 'GitHub',
   },
   {
@@ -202,11 +202,16 @@ onMounted(() => {
 });
 
 watch(
-  () => preferences.app.watermark,
-  async (enable) => {
+  () => ({
+    enable: preferences.app.watermark,
+    content: preferences.app.watermarkContent,
+  }),
+  async ({ enable, content }) => {
     if (enable) {
       await updateWatermark({
-        content: `${userStore.userInfo?.id} - ${userStore.userInfo?.nickname}`,
+        content:
+          content ||
+          `${userStore.userInfo?.id} - ${userStore.userInfo?.nickname}`,
       });
     } else {
       destroyWatermark();
