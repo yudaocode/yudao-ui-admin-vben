@@ -135,12 +135,12 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
     <Form class="mx-6">
       <template #menuIds="slotProps">
         <Tree
+          v-loading="menuLoading"
           class="max-h-96 overflow-y-auto"
-          :loading="menuLoading"
           :tree-data="menuTree"
           multiple
           bordered
-          :expanded="expandedKeys"
+          :default-expanded-keys="expandedKeys"
           v-bind="slotProps"
           value-field="id"
           label-field="name"

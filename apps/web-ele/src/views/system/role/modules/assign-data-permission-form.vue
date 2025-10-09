@@ -135,16 +135,15 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
         <Tree
+          v-loading="deptLoading"
           :tree-data="deptTree"
           multiple
           bordered
-          :spinning="deptLoading"
-          :expanded="expandedKeys"
+          :default-expanded-keys="expandedKeys"
           v-bind="slotProps"
+          :check-strictly="!isCheckStrictly"
           value-field="id"
           label-field="name"
-          :auto-check-parent="false"
-          :check-strictly="!isCheckStrictly"
         />
       </template>
     </Form>

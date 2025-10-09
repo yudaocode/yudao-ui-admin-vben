@@ -10,7 +10,7 @@ import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getSimpleMenusList } from '#/api/system/menu';
@@ -142,17 +142,18 @@ function getNodeClass(node: Recordable<any>) {
   <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <Tree
-          :spinning="menuLoading"
-          :tree-data="menuTree"
-          multiple
-          bordered
-          :expanded="expandedKeys"
-          :get-node-class="getNodeClass"
-          v-bind="slotProps"
-          value-field="id"
-          label-field="name"
-        />
+        <Spin :spinning="menuLoading" wrapper-class-name="w-full">
+          <Tree
+            :tree-data="menuTree"
+            multiple
+            bordered
+            :default-expanded-keys="expandedKeys"
+            :get-node-class="getNodeClass"
+            v-bind="slotProps"
+            value-field="id"
+            label-field="name"
+          />
+        </Spin>
       </template>
     </Form>
     <template #prepend-footer>
