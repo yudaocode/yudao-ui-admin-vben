@@ -150,3 +150,21 @@ export function useGridColumns<T = MallBrokerageUserApi.BrokerageUser>(
     },
   ];
 }
+
+/** 创建分销员表单配置 */
+export function useCreateFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'userId',
+      label: '分销员编号',
+      component: 'InputSearch',
+      rules: 'required',
+    },
+    {
+      fieldName: 'bindUserId',
+      label: '上级推广员编号',
+      component: 'InputSearch',
+      rules: 'required',
+    },
+  ];
+}

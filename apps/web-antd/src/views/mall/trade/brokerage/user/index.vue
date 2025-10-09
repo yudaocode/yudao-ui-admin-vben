@@ -15,32 +15,46 @@ import {
 } from '#/api/mall/trade/brokerage/user';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import CreateForm from './modules/create-form.vue';
 import BrokerageOrderListModal from './modules/order-list-modal.vue';
-import BrokerageUserCreateForm from './modules/user-create-form.vue';
 import BrokerageUserListModal from './modules/user-list-modal.vue';
 import BrokerageUserUpdateForm from './modules/user-update-form.vue';
 
 defineOptions({ name: 'TradeBrokerageUser' });
 
-const [OrderListModal, orderListModalApi] = useVbenModal({
-  connectedComponent: BrokerageOrderListModal,
-});
-
-const [UserCreateModal, userCreateModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserCreateForm,
-});
-
-const [UserListModal, userListModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserListModal,
+const [CreateFormModal, createFormModalApi] = useVbenModal({
+  connectedComponent: CreateForm,
+  destroyOnClose: true,
 });
 
 const [UserUpdateModal, userUpdateModalApi] = useVbenModal({
   connectedComponent: BrokerageUserUpdateForm,
+  destroyOnClose: true,
+});
+
+const [OrderListModal, orderListModalApi] = useVbenModal({
+  connectedComponent: BrokerageOrderListModal,
+  destroyOnClose: true,
+});
+
+const [UserListModal, userListModalApi] = useVbenModal({
+  connectedComponent: BrokerageUserListModal,
+  destroyOnClose: true,
 });
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 创建分销员 */
+function handleCreate() {
+  createFormModalApi.open();
+}
+
+/** 修改分销员 */
+function handleOpenUpdateForm(row: MallBrokerageUserApi.BrokerageUser) {
+  userUpdateModalApi.setData(row).open();
 }
 
 /** 打开推广人列表 */
@@ -51,16 +65,6 @@ function handleOpenUserList(row: MallBrokerageUserApi.BrokerageUser) {
 /** 打开推广订单列表 */
 function handleOpenOrderList(row: MallBrokerageUserApi.BrokerageUser) {
   orderListModalApi.setData(row).open();
-}
-
-/** 打开表单：修改上级推广人 */
-function handleOpenUpdateForm(row: MallBrokerageUserApi.BrokerageUser) {
-  userUpdateModalApi.setData(row).open();
-}
-
-/** 创建分销员 */
-function handleCreate() {
-  userCreateModalApi.open();
 }
 
 /** 清除上级推广人 */
@@ -149,6 +153,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
+    <!-- 创建分销员 -->
+    <CreateFormModal @success="handleRefresh" />
+    <!-- 修改分销员 -->
+    <UserUpdateModal @success="handleRefresh" />
+    <!-- 推广人列表 -->
+    <UserListModal />
+    <!-- 推广订单列表 -->
+    <OrderListModal />
     <Grid table-title="分销用户列表">
       <template #toolbar-tools>
         <TableAction
@@ -195,14 +207,5 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
     </Grid>
-
-    <!-- 修改上级推广人表单 -->
-    <UserUpdateModal @success="handleRefresh" />
-    <!-- 推广人列表 -->
-    <UserListModal />
-    <!-- 推广订单列表 -->
-    <OrderListModal />
-    <!-- 创建分销员 -->
-    <UserCreateModal @success="handleRefresh" />
   </Page>
 </template>
