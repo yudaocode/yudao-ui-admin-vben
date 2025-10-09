@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
-import { message, Textarea } from 'ant-design-vue';
+import { message, Rate, Textarea } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -129,6 +129,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="评论列表">
+      <template #descriptionScores="{ row }">
+        <Rate v-model:value="row.descriptionScores" :disabled="true" />
+      </template>
+      <template #benefitScores="{ row }">
+        <Rate v-model:value="row.benefitScores" :disabled="true" />
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[
