@@ -74,6 +74,9 @@ onMounted(() => {
           <div v-if="title" class="mb-2 flex text-lg font-semibold">
             {{ title }}
           </div>
+          <div v-if="$slots.extra" class="flex justify-end">
+            <slot name="extra"></slot>
+          </div>
         </slot>
 
         <slot name="description">
@@ -81,10 +84,6 @@ onMounted(() => {
             {{ description }}
           </p>
         </slot>
-      </div>
-
-      <div v-if="$slots.extra">
-        <slot name="extra"></slot>
       </div>
     </div>
 
