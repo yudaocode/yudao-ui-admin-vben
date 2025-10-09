@@ -123,6 +123,7 @@ const zoneIdFilterField = {
   label: '所属区域',
   component: 'ApiSelect',
   componentProps: {
+    allowClear: true,
     showSearch: true,
     filterOption: (input: string, option: any) =>
       option.value.toLowerCase().includes(input.toLowerCase()),
