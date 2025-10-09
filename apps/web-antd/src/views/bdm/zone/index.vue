@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ZoneApi } from '#/api/bdm/zone';
+import type { OrgApi } from '#/api/system/org';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
@@ -16,10 +17,13 @@ import {
   exportZone,
   getZonePage,
 } from '#/api/bdm/zone';
+import { getOrgList } from '#/api/system/org';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+
+const orgList = ref<OrgApi.Org[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -124,6 +128,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,
   },
+});
+
+onMounted(async () => {
+  orgList.value = await getOrgList({});
+  gridApi.formApi.updateSchema(useGridFormSchema(orgList.value));
 });
 </script>
 

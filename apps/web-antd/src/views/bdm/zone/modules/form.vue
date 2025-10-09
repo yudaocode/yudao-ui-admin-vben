@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ZoneApi } from '#/api/bdm/zone';
+import type { OrgApi } from '#/api/system/org';
 
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -9,11 +10,15 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createZone, getZone, updateZone } from '#/api/bdm/zone';
+import { getOrgList } from '#/api/system/org';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+
+const orgList = ref<OrgApi.Org[]>([]);
+
 const formData = ref<ZoneApi.Zone>();
 const getTitle = computed(() => {
   return formData.value?.id
@@ -75,6 +80,11 @@ const [Modal, modalApi] = useVbenModal({
     formData.value = data;
     await formApi.setValues(formData.value);
   },
+});
+
+onMounted(async () => {
+  orgList.value = await getOrgList({});
+  formApi.updateSchema(useFormSchema(orgList.value));
 });
 </script>
 
