@@ -17,8 +17,8 @@ import {
 import { useGridColumns, useGridFormSchema } from './data';
 import CreateForm from './modules/create-form.vue';
 import BrokerageOrderListModal from './modules/order-list-modal.vue';
+import UpdateForm from './modules/update-form.vue';
 import BrokerageUserListModal from './modules/user-list-modal.vue';
-import BrokerageUserUpdateForm from './modules/user-update-form.vue';
 
 defineOptions({ name: 'TradeBrokerageUser' });
 
@@ -27,8 +27,8 @@ const [CreateFormModal, createFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [UserUpdateModal, userUpdateModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserUpdateForm,
+const [UpdateFormModal, updateModalApi] = useVbenModal({
+  connectedComponent: UpdateForm,
   destroyOnClose: true,
 });
 
@@ -53,8 +53,8 @@ function handleCreate() {
 }
 
 /** 修改分销员 */
-function handleOpenUpdateForm(row: MallBrokerageUserApi.BrokerageUser) {
-  userUpdateModalApi.setData(row).open();
+function handleUpdateForm(row: MallBrokerageUserApi.BrokerageUser) {
+  updateModalApi.setData(row).open();
 }
 
 /** 打开推广人列表 */
@@ -156,7 +156,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <!-- 创建分销员 -->
     <CreateFormModal @success="handleRefresh" />
     <!-- 修改分销员 -->
-    <UserUpdateModal @success="handleRefresh" />
+    <UpdateFormModal @success="handleRefresh" />
     <!-- 推广人列表 -->
     <UserListModal />
     <!-- 推广订单列表 -->
@@ -194,7 +194,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '修改上级推广人',
               type: 'link',
               auth: ['trade:brokerage-user:update-bind-user'],
-              onClick: handleOpenUpdateForm.bind(null, row),
+              onClick: handleUpdateForm.bind(null, row),
             },
             {
               label: '清除上级推广人',

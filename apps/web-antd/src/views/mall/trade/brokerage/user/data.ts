@@ -168,3 +168,15 @@ export function useCreateFormSchema(): VbenFormSchema[] {
     },
   ];
 }
+
+/** 修改分销用户表单配置 */
+export function useUpdateFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'bindUserId',
+      label: '上级推广员编号',
+      component: 'InputSearch',
+      rules: 'required',
+    },
+  ];
+}
