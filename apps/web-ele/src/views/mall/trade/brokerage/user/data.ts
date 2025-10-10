@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -31,6 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           { label: '无', value: false },
         ],
       },
+      defaultValue: true,
     },
     {
       fieldName: 'createTime',
@@ -45,7 +47,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  onBrokerageEnabledChange?: (
+    newEnabled: boolean,
+    row: MallBrokerageUserApi.BrokerageUser,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -58,11 +65,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 70,
       cellRender: {
         name: 'CellImage',
-        props: {
-          width: 24,
-          height: 24,
-          shape: 'circle',
-        },
       },
     },
     {
@@ -113,7 +115,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'brokerageEnabled',
       title: '推广资格',
       minWidth: 80,
-      slots: { default: 'brokerageEnabled' },
+      align: 'center',
+      cellRender: {
+        attrs: { beforeChange: onBrokerageEnabledChange },
+        name: 'CellSwitch',
+        props: {
+          activeValue: true,
+          inactiveValue: false,
+          activeText: '有',
+          inactiveText: '无',
+        },
+      },
     },
     {
       field: 'brokerageTime',
@@ -147,16 +159,14 @@ export function useUserListFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'level',
       label: '用户类型',
-      component: 'RadioGroup',
-      // TODO @霖：这里会折行
+      component: 'Select',
       componentProps: {
         options: [
           { label: '全部', value: undefined },
           { label: '一级推广人', value: '1' },
           { label: '二级推广人', value: '2' },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        clearable: true,
       },
     },
     {
@@ -211,7 +221,10 @@ export function useUserListColumns(): VxeTableGridOptions['columns'] {
       field: 'brokerageEnabled',
       title: '推广资格',
       minWidth: 80,
-      slots: { default: 'brokerageEnabled' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
+      },
     },
     {
       field: 'bindUserTime',
@@ -313,4 +326,3 @@ export function useOrderListColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
-

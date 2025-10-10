@@ -5,7 +5,7 @@ import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElMessage, ElSwitch } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -69,32 +69,47 @@ function handleOpenOrderList(row: MallBrokerageUserApi.BrokerageUser) {
 
 /** 清除上级推广人 */
 async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
-  await confirm(`确定清除"${row.nickname}"的上级推广人吗？`);
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.nickname]),
+  });
   try {
     await clearBindUser({ id: row.id as number });
-    ElMessage.success('清除成功');
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.nickname]));
     handleRefresh();
-  } catch {
-    // 清除失败时不做处理
+  } finally {
+    loadingInstance.close();
   }
 }
 
 /** 更新推广资格 */
 async function handleBrokerageEnabledChange(
+  newEnabled: boolean,
   row: MallBrokerageUserApi.BrokerageUser,
-) {
-  const text = row.brokerageEnabled ? '开通' : '关闭';
-  try {
-    await updateBrokerageEnabled({
-      id: row.id as number,
-      enabled: row.brokerageEnabled as boolean,
-    });
-    ElMessage.success(`${text}成功`);
-    handleRefresh();
-  } catch {
-    // 异常时，需要重置回之前的值
-    row.brokerageEnabled = !row.brokerageEnabled;
-  }
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    const text = newEnabled ? '开通' : '关闭';
+    confirm({
+      content: `你要将${row.nickname}的推广资格切换为【${text}】吗？`,
+    })
+      .then(async () => {
+        // 更新推广资格
+        const res = await updateBrokerageEnabled({
+          id: row.id!,
+          enabled: newEnabled,
+        });
+        if (res) {
+          // 提示并返回成功
+          ElMessage.success($t('ui.actionMessage.operationSuccess'));
+          handleRefresh();
+          resolve(true);
+        } else {
+          reject(new Error('更新失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -102,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleBrokerageEnabledChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -145,7 +160,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <UserListModal />
     <!-- 推广订单列表 -->
     <OrderListModal />
-    <Grid>
+    <Grid table-title="分销用户列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -159,16 +174,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-
-      <template #brokerageEnabled="{ row }">
-        <ElSwitch
-          v-model="row.brokerageEnabled"
-          checked-children="有"
-          un-checked-children="无"
-          @change="handleBrokerageEnabledChange(row)"
-        />
-      </template>
-
       <template #actions="{ row }">
         <TableAction
           :drop-down-actions="[
