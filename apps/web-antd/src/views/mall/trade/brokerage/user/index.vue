@@ -74,7 +74,7 @@ async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
     duration: 0,
   });
   try {
-    await clearBindUser({ id: row.id as number });
+    await clearBindUser({ id: row.id! });
     message.success($t('ui.actionMessage.deleteSuccess', [row.nickname]));
     handleRefresh();
   } finally {
