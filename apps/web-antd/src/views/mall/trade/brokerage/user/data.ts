@@ -47,10 +47,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = MallBrokerageUserApi.BrokerageUser>(
+export function useGridColumns(
   onBrokerageEnabledChange?: (
     newEnabled: boolean,
-    row: T,
+    row: MallBrokerageUserApi.BrokerageUser,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

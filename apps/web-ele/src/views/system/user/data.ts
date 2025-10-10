@@ -284,10 +284,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemUserApi.User>(
+export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: T,
+    row: SystemUserApi.User,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

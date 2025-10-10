@@ -91,10 +91,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns<T = MallSeckillConfigApi.SeckillConfig>(
+export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: T,
+    row: MallSeckillConfigApi.SeckillConfig,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

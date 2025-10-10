@@ -139,10 +139,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = MallCommentApi.Comment>(
+export function useGridColumns(
   onStatusChange?: (
     newStatus: boolean,
-    row: T,
+    row: MallCommentApi.Comment,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

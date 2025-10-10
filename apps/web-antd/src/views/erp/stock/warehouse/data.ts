@@ -121,10 +121,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
+export function useGridColumns(
   onDefaultStatusChange?: (
     newStatus: boolean,
-    row: T,
+    row: ErpWarehouseApi.Warehouse,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
