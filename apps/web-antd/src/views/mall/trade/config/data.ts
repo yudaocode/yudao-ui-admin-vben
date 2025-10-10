@@ -209,7 +209,7 @@ export const schema: VbenFormSchema[] = [
   },
   {
     fieldName: 'brokerageWithdrawFeePercent',
-    label: '提现手续费（元）',
+    label: '提现手续费（%）',
     component: 'InputNumber',
     componentProps: {
       min: 0,

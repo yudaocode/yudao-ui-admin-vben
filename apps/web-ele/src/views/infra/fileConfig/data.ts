@@ -37,7 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (formValues) => !formValues.id,
+        disabled: (formValues) => formValues.id,
       },
     },
     {
