@@ -14,8 +14,8 @@ import {
 import { getDataSinkSimpleList } from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
-import { useRuleFormSchema } from './data';
 import SourceConfigForm from './components/SourceConfigForm.vue';
+import { useRuleFormSchema } from './data';
 
 const emit = defineEmits(['success']);
 const formData = ref<any>();
@@ -49,7 +49,7 @@ const [Modal, modalApi] = useVbenModal({
 
     // 校验数据源配置
     await sourceConfigRef.value?.validate();
-    
+
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as any;
@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<any>();
-    
+
     // 加载数据目的列表
     const sinkList = await getDataSinkSimpleList();
     formApi.updateSchema([
@@ -110,7 +110,7 @@ const [Modal, modalApi] = useVbenModal({
   <Modal class="w-4/5" :title="getTitle">
     <Form class="mx-4" />
     <div class="mx-4 mt-4">
-      <div class="text-sm font-medium mb-2">数据源配置</div>
+      <div class="mb-2 text-sm font-medium">数据源配置</div>
       <SourceConfigForm ref="sourceConfigRef" />
     </div>
   </Modal>

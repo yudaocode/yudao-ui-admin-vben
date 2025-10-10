@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
+
 import { Button } from 'ant-design-vue';
 
 defineOptions({ name: 'IotRuleDataBridge' });
 </script>
 
 <template>
-  <Page
-    description="物聯網規則引擎 - 數據橋接"
-    title="數據橋接"
-  >
+  <Page description="物聯網規則引擎 - 數據橋接" title="數據橋接">
     <div class="p-4">
       <Button
         danger

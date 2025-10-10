@@ -48,19 +48,17 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    
+
     try {
       const values = await formApi.getValues();
-      
-      if (formData.value?.id) {
-        await updateDeviceGroup({
-          ...values,
-          id: formData.value.id,
-        } as IotDeviceGroupApi.DeviceGroup);
-      } else {
-        await createDeviceGroup(values as IotDeviceGroupApi.DeviceGroup);
-      }
-      
+
+      await (formData.value?.id
+        ? updateDeviceGroup({
+            ...values,
+            id: formData.value.id,
+          } as IotDeviceGroupApi.DeviceGroup)
+        : createDeviceGroup(values as IotDeviceGroupApi.DeviceGroup));
+
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -68,20 +66,20 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  
+
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       return;
     }
-    
+
     const data = modalApi.getData<IotDeviceGroupApi.DeviceGroup>();
     // 如果没有数据或没有 id，表示是新增
     if (!data || !data.id) {
       formData.value = undefined;
       return;
     }
-    
+
     // 编辑模式：加载数据
     modalApi.lock();
     try {

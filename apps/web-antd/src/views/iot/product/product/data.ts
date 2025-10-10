@@ -11,10 +11,10 @@ import { message } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
-import { 
-  deleteProduct, 
-  exportProduct, 
-  getProductPage 
+import {
+  deleteProduct,
+  exportProduct,
+  getProductPage,
 } from '#/api/iot/product/product';
 
 /** 新增/修改产品的表单 */

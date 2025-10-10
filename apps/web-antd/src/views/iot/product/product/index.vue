@@ -4,17 +4,15 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Button, Card, Image, Input, Space } from 'ant-design-vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+
+import { Button, Card, Image, Input, Space } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 
-import ProductForm from './modules/ProductForm.vue';
-// @ts-ignore
-import ProductCardView from './modules/ProductCardView.vue';
-import { 
+import {
   getCategoryName,
   handleDeleteProduct,
   handleExportProduct,
@@ -23,12 +21,15 @@ import {
   useGridColumns,
   useImagePreview,
 } from './data';
+// @ts-ignore
+import ProductCardView from './modules/ProductCardView.vue';
+import ProductForm from './modules/ProductForm.vue';
 
 defineOptions({ name: 'IoTProduct' });
 
 const router = useRouter();
 const categoryList = ref<any[]>([]);
-const viewMode = ref<'list' | 'card'>('card');
+const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 
 // 搜索参数
@@ -150,17 +151,17 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-    
+
     <!-- 统一搜索工具栏 -->
     <Card :body-style="{ padding: '16px' }" class="mb-4">
       <!-- 搜索表单 -->
-      <div class="flex items-center gap-3 mb-3">
+      <div class="mb-3 flex items-center gap-3">
         <Input
           v-model:value="searchParams.name"
           placeholder="请输入产品名称"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         >
           <template #prefix>
             <span class="text-gray-400">产品名称</span>
@@ -171,7 +172,7 @@ onMounted(() => {
           placeholder="请输入产品标识"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         >
           <template #prefix>
             <span class="text-gray-400">ProductKey</span>
@@ -199,7 +200,7 @@ onMounted(() => {
             导出
           </Button>
         </Space>
-        
+
         <!-- 视图切换 -->
         <Space :size="4">
           <Button

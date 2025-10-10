@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
+
+import { message } from 'ant-design-vue';
 
 import { importDeviceTemplate } from '#/api/iot/device/device';
-import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { useImportFormSchema } from '../data';
 
@@ -31,22 +32,22 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    
+
     const values = await formApi.getValues();
     const file = values.file;
-    
-    if (!file || !file.length) {
+
+    if (!file || file.length === 0) {
       message.error('请上传文件');
       return;
     }
-    
+
     modalApi.lock();
     try {
       // 构建表单数据
       const formData = new FormData();
       formData.append('file', file[0].originFileObj);
       formData.append('updateSupport', values.updateSupport ? 'true' : 'false');
-      
+
       // 使用 fetch 上传文件
       const accessToken = localStorage.getItem('accessToken') || '';
       const response = await fetch(
@@ -57,21 +58,21 @@ const [Modal, modalApi] = useVbenModal({
             Authorization: `Bearer ${accessToken}`,
           },
           body: formData,
-        }
+        },
       );
-      
+
       const result = await response.json();
-      
+
       if (result.code !== 0) {
         message.error(result.msg || '导入失败');
         return;
       }
-      
+
       // 拼接提示语
       const data = result.data;
       let text = `上传成功数量：${data.createDeviceNames?.length || 0};`;
       if (data.createDeviceNames) {
-        for (let deviceName of data.createDeviceNames) {
+        for (const deviceName of data.createDeviceNames) {
           text += `< ${deviceName} >`;
         }
       }
@@ -88,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
         }
       }
       message.info(text);
-      
+
       // 关闭并提示
       await modalApi.close();
       emit('success');

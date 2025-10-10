@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-import { useVbenModal } from '@vben/common-ui';
-import { Card, Col, Descriptions, Modal, Row, Table, Tabs, Tag, message } from 'ant-design-vue';
 import type { TableColumnsType } from 'ant-design-vue';
+
 import type { OtaTask } from '#/api/iot/ota/task';
-import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import type { OtaTaskRecord } from '#/api/iot/ota/task/record';
+
+import { computed, reactive, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { formatDate } from '@vben/utils';
+
+import {
+  Card,
+  Col,
+  Descriptions,
+  message,
+  Modal,
+  Row,
+  Table,
+  Tabs,
+  Tag,
+} from 'ant-design-vue';
+
+import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import * as IoTOtaTaskRecordApi from '#/api/iot/ota/task/record';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
-import { formatDate } from '@vben/utils';
 
 /** OTA 任务详情组件 */
 defineOptions({ name: 'OtaTaskDetail' });
@@ -117,10 +132,11 @@ const getStatistics = async () => {
   }
   taskStatisticsLoading.value = true;
   try {
-    taskStatistics.value = await IoTOtaTaskRecordApi.getOtaTaskRecordStatusStatistics(
-      undefined,
-      taskId.value,
-    );
+    taskStatistics.value =
+      await IoTOtaTaskRecordApi.getOtaTaskRecordStatusStatistics(
+        undefined,
+        taskId.value,
+      );
   } finally {
     taskStatisticsLoading.value = false;
   }
@@ -143,10 +159,11 @@ const getRecordList = async () => {
 };
 
 /** 切换标签 */
-const handleTabChange = (tabKey: string | number) => {
+const handleTabChange = (tabKey: number | string) => {
   activeTab.value = String(tabKey);
   queryParams.pageNo = 1;
-  queryParams.status = activeTab.value === '' ? undefined : parseInt(String(tabKey));
+  queryParams.status =
+    activeTab.value === '' ? undefined : Number.parseInt(String(tabKey));
   getRecordList();
 };
 
@@ -202,7 +219,9 @@ defineExpose({ open });
       <Card title="任务信息" class="mb-5" :loading="taskLoading">
         <Descriptions :column="3" bordered>
           <Descriptions.Item label="任务编号">{{ task.id }}</Descriptions.Item>
-          <Descriptions.Item label="任务名称">{{ task.name }}</Descriptions.Item>
+          <Descriptions.Item label="任务名称">
+            {{ task.name }}
+          </Descriptions.Item>
           <Descriptions.Item label="升级范围">
             <Tag v-if="task.deviceScope === 1" color="blue">全部设备</Tag>
             <Tag v-else-if="task.deviceScope === 2" color="green">指定设备</Tag>
@@ -216,7 +235,11 @@ defineExpose({ open });
             <Tag v-else>{{ task.status }}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
-            {{ task.createTime ? formatDate(task.createTime, 'YYYY-MM-DD HH:mm:ss') : '-' }}
+            {{
+              task.createTime
+                ? formatDate(task.createTime, 'YYYY-MM-DD HH:mm:ss')
+                : '-'
+            }}
           </Descriptions.Item>
           <Descriptions.Item label="任务描述" :span="3">
             {{ task.description }}
@@ -228,59 +251,89 @@ defineExpose({ open });
       <Card title="升级设备统计" class="mb-5" :loading="taskStatisticsLoading">
         <Row :gutter="20" class="py-5">
           <Col :span="6">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-blue-500">
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-blue-500">
                 {{
-                  Object.values(taskStatistics).reduce((sum, count) => sum + (count || 0), 0) || 0
+                  Object.values(taskStatistics).reduce(
+                    (sum, count) => sum + (count || 0),
+                    0,
+                  ) || 0
                 }}
               </div>
               <div class="text-sm text-gray-600">升级设备总数</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-gray-400">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.PENDING.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-gray-400">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.PENDING.value] || 0
+                }}
               </div>
               <div class="text-sm text-gray-600">待推送</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-blue-400">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.PUSHED.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-blue-400">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.PUSHED.value] || 0
+                }}
               </div>
               <div class="text-sm text-gray-600">已推送</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-yellow-500">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.UPGRADING.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-yellow-500">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.UPGRADING.value] ||
+                  0
+                }}
               </div>
               <div class="text-sm text-gray-600">正在升级</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-green-500">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.SUCCESS.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-green-500">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.SUCCESS.value] || 0
+                }}
               </div>
               <div class="text-sm text-gray-600">升级成功</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-red-500">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.FAILURE.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-red-500">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.FAILURE.value] || 0
+                }}
               </div>
               <div class="text-sm text-gray-600">升级失败</div>
             </div>
           </Col>
           <Col :span="3">
-            <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-              <div class="text-3xl font-bold mb-2 text-gray-400">
-                {{ taskStatistics[IoTOtaTaskRecordStatusEnum.CANCELED.value] || 0 }}
+            <div
+              class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            >
+              <div class="mb-2 text-3xl font-bold text-gray-400">
+                {{
+                  taskStatistics[IoTOtaTaskRecordStatusEnum.CANCELED.value] || 0
+                }}
               </div>
               <div class="text-sm text-gray-600">升级取消</div>
             </div>
@@ -290,8 +343,16 @@ defineExpose({ open });
 
       <!-- 设备管理 -->
       <Card title="升级设备记录">
-        <Tabs v-model:activeKey="activeTab" @change="handleTabChange" class="mb-4">
-          <Tabs.TabPane v-for="tab in statusTabs" :key="tab.key" :tab="tab.label" />
+        <Tabs
+          v-model:active-key="activeTab"
+          @change="handleTabChange"
+          class="mb-4"
+        >
+          <Tabs.TabPane
+            v-for="tab in statusTabs"
+            :key="tab.key"
+            :tab="tab.label"
+          />
         </Tabs>
 
         <Table
@@ -313,7 +374,9 @@ defineExpose({ open });
             <template v-if="column.key === 'status'">
               <Tag v-if="record.status === 0" color="default">待推送</Tag>
               <Tag v-else-if="record.status === 1" color="blue">已推送</Tag>
-              <Tag v-else-if="record.status === 2" color="processing">升级中</Tag>
+              <Tag v-else-if="record.status === 2" color="processing">
+                升级中
+              </Tag>
               <Tag v-else-if="record.status === 3" color="success">成功</Tag>
               <Tag v-else-if="record.status === 4" color="error">失败</Tag>
               <Tag v-else-if="record.status === 5" color="warning">已取消</Tag>

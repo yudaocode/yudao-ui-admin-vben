@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Input, Switch, FormItem } from 'ant-design-vue';
-import { useVModel } from '@vueuse/core';
 import { isEmpty } from '@vben/utils';
+
+import { useVModel } from '@vueuse/core';
+import { FormItem, Input, Switch } from 'ant-design-vue';
 
 defineOptions({ name: 'KafkaMQConfigForm' });
 

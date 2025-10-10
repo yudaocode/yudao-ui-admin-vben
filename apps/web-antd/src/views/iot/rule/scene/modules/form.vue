@@ -47,7 +47,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as RuleSceneApi.SceneRule;
     try {
-      await (formData.value?.id ? updateSceneRule(data) : createSceneRule(data));
+      await (formData.value?.id
+        ? updateSceneRule(data)
+        : createSceneRule(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -83,4 +85,3 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
   </Modal>
 </template>
-

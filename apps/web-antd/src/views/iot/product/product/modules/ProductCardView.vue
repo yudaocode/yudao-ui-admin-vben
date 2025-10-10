@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
+
 import {
   Button,
   Card,
@@ -12,13 +16,20 @@ import {
   Tag,
   Tooltip,
 } from 'ant-design-vue';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 
 import { getProductPage } from '#/api/iot/product/product';
 
 defineOptions({ name: 'ProductCardView' });
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  create: [];
+  delete: [row: any];
+  detail: [productId: number];
+  edit: [row: any];
+  thingModel: [productId: number];
+}>();
 
 interface Props {
   categoryList: any[];
@@ -27,16 +38,6 @@ interface Props {
     productKey: string;
   };
 }
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  create: [];
-  edit: [row: any];
-  delete: [row: any];
-  detail: [productId: number];
-  thingModel: [productId: number];
-}>();
 
 const loading = ref(false);
 const list = ref<any[]>([]);
@@ -88,7 +89,7 @@ onMounted(() => {
 });
 
 // 暴露方法供父组件调用
-defineExpose({ 
+defineExpose({
   reload: getList,
   search: () => {
     queryParams.value.pageNo = 1;
@@ -111,42 +112,57 @@ defineExpose({
           :lg="6"
           class="mb-4"
         >
-          <Card
-            :body-style="{ padding: '20px' }"
-            class="product-card h-full"
-          >
+          <Card :body-style="{ padding: '20px' }" class="product-card h-full">
             <!-- 顶部标题区域 -->
-            <div class="flex items-start mb-4">
+            <div class="mb-4 flex items-start">
               <div class="product-icon">
-                <IconifyIcon icon="ant-design:inbox-outlined" class="text-[32px]" />
+                <IconifyIcon
+                  icon="ant-design:inbox-outlined"
+                  class="text-[32px]"
+                />
               </div>
-              <div class="ml-3 flex-1 min-w-0">
+              <div class="ml-3 min-w-0 flex-1">
                 <div class="product-title">{{ item.name }}</div>
               </div>
             </div>
 
             <!-- 内容区域 -->
-            <div class="flex items-start mb-4">
-              <div class="flex-1 info-list">
+            <div class="mb-4 flex items-start">
+              <div class="info-list flex-1">
                 <div class="info-item">
                   <span class="info-label">产品分类</span>
-                  <span class="info-value text-primary">{{ getCategoryName(item.categoryId) }}</span>
+                  <span class="info-value text-primary">{{
+                    getCategoryName(item.categoryId)
+                  }}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品类型</span>
-                  <Tag :color="getDeviceTypeColor(item.deviceType)" class="m-0 info-tag">
-                    {{ getDictLabel(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, item.deviceType) }}
+                  <Tag
+                    :color="getDeviceTypeColor(item.deviceType)"
+                    class="info-tag m-0"
+                  >
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
+                        item.deviceType,
+                      )
+                    }}
                   </Tag>
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
                   <Tooltip :title="item.productKey || item.id" placement="top">
-                    <span class="info-value product-key">{{ item.productKey || item.id }}</span>
+                    <span class="info-value product-key">{{
+                      item.productKey || item.id
+                    }}</span>
                   </Tooltip>
                 </div>
               </div>
               <div class="product-3d-icon">
-                <IconifyIcon icon="ant-design:box-plot-outlined" class="text-[80px]" />
+                <IconifyIcon
+                  icon="ant-design:box-plot-outlined"
+                  class="text-[80px]"
+                />
               </div>
             </div>
 
@@ -173,7 +189,10 @@ defineExpose({
                 class="action-btn action-btn-model"
                 @click="emit('thingModel', item.id)"
               >
-                <IconifyIcon icon="ant-design:apartment-outlined" class="mr-1" />
+                <IconifyIcon
+                  icon="ant-design:apartment-outlined"
+                  class="mr-1"
+                />
                 物模型
               </Button>
               <Popconfirm
@@ -374,4 +393,3 @@ defineExpose({
   }
 }
 </style>
-

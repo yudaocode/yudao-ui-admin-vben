@@ -1,4 +1,31 @@
 <!-- dataType：array 数组类型 -->
+<script lang="ts" setup>
+import { useVModel } from '@vueuse/core';
+
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+} from '#/views/iot/utils/constants';
+
+import ThingModelStructDataSpecs from './ThingModelStructDataSpecs.vue';
+
+/** 数组型的 dataSpecs 配置组件 */
+defineOptions({ name: 'ThingModelArrayDataSpecs' });
+
+const props = defineProps<{ modelValue: any }>();
+const emits = defineEmits(['update:modelValue']);
+const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>;
+
+/** 元素类型改变时间。当值为 struct 时，对 dataSpecs 中的 dataSpecsList 进行初始化 */
+const handleChange = (val: string) => {
+  if (val !== IoTDataSpecsDataTypeEnum.STRUCT) {
+    return;
+  }
+
+  dataSpecs.value.dataSpecsList = [];
+};
+</script>
+
 <template>
   <el-form-item label="元素类型" prop="property.dataSpecs.childDataType">
     <el-radio-group v-model="dataSpecs.childDataType" @change="handleChange">
@@ -9,7 +36,7 @@
               [
                 IoTDataSpecsDataTypeEnum.ENUM,
                 IoTDataSpecsDataTypeEnum.ARRAY,
-                IoTDataSpecsDataTypeEnum.DATE
+                IoTDataSpecsDataTypeEnum.DATE,
               ] as any[]
             ).includes(item.value)
           "
@@ -30,27 +57,5 @@
     v-model="dataSpecs.dataSpecsList"
   />
 </template>
-
-<script lang="ts" setup>
-import { useVModel } from '@vueuse/core'
-import ThingModelStructDataSpecs from './ThingModelStructDataSpecs.vue'
-import { getDataTypeOptions, IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants'
-
-/** 数组型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelArrayDataSpecs' })
-
-const props = defineProps<{ modelValue: any }>()
-const emits = defineEmits(['update:modelValue'])
-const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>
-
-/** 元素类型改变时间。当值为 struct 时，对 dataSpecs 中的 dataSpecsList 进行初始化 */
-const handleChange = (val: string) => {
-  if (val !== IoTDataSpecsDataTypeEnum.STRUCT) {
-    return
-  }
-
-  dataSpecs.value.dataSpecsList = []
-}
-</script>
 
 <style lang="scss" scoped></style>

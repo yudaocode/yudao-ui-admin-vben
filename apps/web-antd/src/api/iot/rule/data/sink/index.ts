@@ -29,11 +29,11 @@ export interface DataSinkVO {
 /** IoT 数据目的类型枚举 */
 export enum IotDataSinkTypeEnum {
   HTTP = 'HTTP',
-  MQTT = 'MQTT',
   KAFKA = 'KAFKA',
+  MQTT = 'MQTT',
   RABBITMQ = 'RABBITMQ',
-  ROCKETMQ = 'ROCKETMQ',
   REDIS_STREAM = 'REDIS_STREAM',
+  ROCKETMQ = 'ROCKETMQ',
 }
 
 /** HTTP 配置 */
@@ -148,4 +148,3 @@ export function updateDataSinkStatus(id: number, status: number) {
 }
 
 export { DataSinkApi };
-

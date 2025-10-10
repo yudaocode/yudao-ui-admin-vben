@@ -49,4 +49,3 @@ export function getSimpleDeviceGroupList() {
     '/iot/device-group/simple-list',
   );
 }
-

@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
+
 import { Button } from 'ant-design-vue';
 
 defineOptions({ name: 'IotPlugin' });
 </script>
 
 <template>
-  <Page
-    description="物聯網插件管理"
-    title="插件管理"
-  >
+  <Page description="物聯網插件管理" title="插件管理">
     <div class="p-4">
       <Button
         danger

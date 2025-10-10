@@ -8,10 +8,10 @@ import { handleTree } from '@vben/utils';
 import { message } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
-import { 
-  deleteProductCategory, 
+import {
+  deleteProductCategory,
   getProductCategoryPage,
-  getSimpleProductCategoryList 
+  getSimpleProductCategoryList,
 } from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
@@ -162,7 +162,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 }
 
 /** 删除分类 */
-export async function handleDeleteCategory(row: IotProductCategoryApi.ProductCategory, onSuccess?: () => void) {
+export async function handleDeleteCategory(
+  row: IotProductCategoryApi.ProductCategory,
+  onSuccess?: () => void,
+) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,

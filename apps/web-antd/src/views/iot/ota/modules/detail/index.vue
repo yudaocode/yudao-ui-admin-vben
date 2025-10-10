@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import type { IoTOtaFirmware } from '#/api/iot/ota/firmware';
+
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { Card, Col, Descriptions, Row } from 'ant-design-vue';
+
 import { formatDate } from '@vben/utils';
-import type { IoTOtaFirmware } from '#/api/iot/ota/firmware';
+
+import { Card, Col, Descriptions, Row } from 'ant-design-vue';
+
 import * as IoTOtaFirmwareApi from '#/api/iot/ota/firmware';
 import * as IoTOtaTaskRecordApi from '#/api/iot/ota/task/record';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
+
 import OtaTaskList from '../task/OtaTaskList.vue';
 
 /** IoT OTA 固件详情 */
@@ -35,9 +40,10 @@ const getFirmwareInfo = async () => {
 const getStatistics = async () => {
   firmwareStatisticsLoading.value = true;
   try {
-    firmwareStatistics.value = await IoTOtaTaskRecordApi.getOtaTaskRecordStatusStatistics(
-      firmwareId.value,
-    );
+    firmwareStatistics.value =
+      await IoTOtaTaskRecordApi.getOtaTaskRecordStatusStatistics(
+        firmwareId.value,
+      );
   } finally {
     firmwareStatisticsLoading.value = false;
   }
@@ -65,7 +71,11 @@ onMounted(() => {
           {{ firmware?.version }}
         </Descriptions.Item>
         <Descriptions.Item label="创建时间">
-          {{ firmware?.createTime ? formatDate(firmware.createTime, 'YYYY-MM-DD HH:mm:ss') : '-' }}
+          {{
+            firmware?.createTime
+              ? formatDate(firmware.createTime, 'YYYY-MM-DD HH:mm:ss')
+              : '-'
+          }}
         </Descriptions.Item>
         <Descriptions.Item label="固件描述" :span="2">
           {{ firmware?.description }}
@@ -74,63 +84,101 @@ onMounted(() => {
     </Card>
 
     <!-- 升级设备统计 -->
-    <Card title="升级设备统计" class="mb-5" :loading="firmwareStatisticsLoading">
+    <Card
+      title="升级设备统计"
+      class="mb-5"
+      :loading="firmwareStatisticsLoading"
+    >
       <Row :gutter="20" class="py-5">
         <Col :span="6">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-blue-500">
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-blue-500">
               {{
-                Object.values(firmwareStatistics).reduce((sum: number, count) => sum + (count || 0), 0) ||
-                0
+                Object.values(firmwareStatistics).reduce(
+                  (sum: number, count) => sum + (count || 0),
+                  0,
+                ) || 0
               }}
             </div>
             <div class="text-sm text-gray-600">升级设备总数</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-gray-400">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.PENDING.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-gray-400">
+              {{
+                firmwareStatistics[IoTOtaTaskRecordStatusEnum.PENDING.value] ||
+                0
+              }}
             </div>
             <div class="text-sm text-gray-600">待推送</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-blue-400">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.PUSHED.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-blue-400">
+              {{
+                firmwareStatistics[IoTOtaTaskRecordStatusEnum.PUSHED.value] || 0
+              }}
             </div>
             <div class="text-sm text-gray-600">已推送</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-yellow-500">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.UPGRADING.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-yellow-500">
+              {{
+                firmwareStatistics[
+                  IoTOtaTaskRecordStatusEnum.UPGRADING.value
+                ] || 0
+              }}
             </div>
             <div class="text-sm text-gray-600">正在升级</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-green-500">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.SUCCESS.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-green-500">
+              {{
+                firmwareStatistics[IoTOtaTaskRecordStatusEnum.SUCCESS.value] ||
+                0
+              }}
             </div>
             <div class="text-sm text-gray-600">升级成功</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-red-500">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.FAILURE.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-red-500">
+              {{
+                firmwareStatistics[IoTOtaTaskRecordStatusEnum.FAILURE.value] ||
+                0
+              }}
             </div>
             <div class="text-sm text-gray-600">升级失败</div>
           </div>
         </Col>
         <Col :span="3">
-          <div class="text-center p-5 border border-solid border-gray-200 rounded bg-gray-50">
-            <div class="text-3xl font-bold mb-2 text-gray-400">
-              {{ firmwareStatistics[IoTOtaTaskRecordStatusEnum.CANCELED.value] || 0 }}
+          <div
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+          >
+            <div class="mb-2 text-3xl font-bold text-gray-400">
+              {{
+                firmwareStatistics[IoTOtaTaskRecordStatusEnum.CANCELED.value] ||
+                0
+              }}
             </div>
             <div class="text-sm text-gray-600">升级取消</div>
           </div>

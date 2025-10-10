@@ -1,4 +1,152 @@
 <!-- 值输入组件 -->
+<script setup lang="ts">
+import { useVModel } from '@vueuse/core';
+
+import {
+  IoTDataSpecsDataTypeEnum,
+  IotRuleSceneTriggerConditionParameterOperatorEnum,
+} from '#/views/iot/utils/constants';
+
+/** 值输入组件 */
+defineOptions({ name: 'ValueInput' });
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
+
+interface Props {
+  modelValue?: string;
+  propertyType?: string;
+  operator?: string;
+  propertyConfig?: any;
+}
+
+interface Emits {
+  (e: 'update:modelValue', value: string): void;
+}
+
+const localValue = useVModel(props, 'modelValue', emit, {
+  defaultValue: '',
+});
+
+const rangeStart = ref(''); // 范围开始值
+const rangeEnd = ref(''); // 范围结束值
+const dateValue = ref(''); // 日期值
+const numberValue = ref<number>(); // 数字值
+
+/** 计算属性：枚举选项 */
+const enumOptions = computed(() => {
+  if (props.propertyConfig?.enum) {
+    return props.propertyConfig.enum.map((item: any) => ({
+      label: item.name || item.label || item.value,
+      value: item.value,
+    }));
+  }
+  return [];
+});
+
+/** 计算属性：列表预览 */
+const listPreview = computed(() => {
+  if (
+    props.operator ===
+      IotRuleSceneTriggerConditionParameterOperatorEnum.IN.value &&
+    localValue.value
+  ) {
+    return localValue.value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+});
+
+/** 判断是否为数字类型 */
+const isNumericType = () => {
+  return [
+    IoTDataSpecsDataTypeEnum.DOUBLE,
+    IoTDataSpecsDataTypeEnum.FLOAT,
+    IoTDataSpecsDataTypeEnum.INT,
+  ].includes((props.propertyType || '') as any);
+};
+
+/** 获取输入框类型 */
+const getInputType = () => {
+  switch (props.propertyType) {
+    case IoTDataSpecsDataTypeEnum.DOUBLE:
+    case IoTDataSpecsDataTypeEnum.FLOAT:
+    case IoTDataSpecsDataTypeEnum.INT: {
+      return 'number';
+    }
+    default: {
+      return 'text';
+    }
+  }
+};
+
+/** 获取占位符文本 */
+const getPlaceholder = () => {
+  const typeMap = {
+    [IoTDataSpecsDataTypeEnum.TEXT]: '请输入字符串',
+    [IoTDataSpecsDataTypeEnum.INT]: '请输入整数',
+    [IoTDataSpecsDataTypeEnum.FLOAT]: '请输入浮点数',
+    [IoTDataSpecsDataTypeEnum.DOUBLE]: '请输入双精度数',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: '请输入 JSON 格式数据',
+    [IoTDataSpecsDataTypeEnum.ARRAY]: '请输入数组格式数据',
+  };
+  return typeMap[props.propertyType || ''] || '请输入值';
+};
+
+/** 获取数字精度 */
+const getPrecision = () => {
+  return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 0 : 2;
+};
+
+/** 获取数字步长 */
+const getStep = () => {
+  return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 1 : 0.1;
+};
+
+/** 获取最小值 */
+const getMin = () => {
+  return props.propertyConfig?.min || undefined;
+};
+
+/** 获取最大值 */
+const getMax = () => {
+  return props.propertyConfig?.max || undefined;
+};
+
+/** 处理范围变化事件 */
+const handleRangeChange = () => {
+  localValue.value =
+    rangeStart.value && rangeEnd.value
+      ? `${rangeStart.value},${rangeEnd.value}`
+      : '';
+};
+
+/** 处理日期变化事件 */
+const handleDateChange = (value: string) => {
+  localValue.value = value || '';
+};
+
+/** 处理数字变化事件 */
+const handleNumberChange = (value: number | undefined) => {
+  localValue.value = value?.toString() || '';
+};
+
+/** 监听操作符变化 */
+watch(
+  () => props.operator,
+  () => {
+    localValue.value = '';
+    rangeStart.value = '';
+    rangeEnd.value = '';
+    dateValue.value = '';
+    numberValue.value = undefined;
+  },
+);
+</script>
+
 <template>
   <div class="w-full min-w-0">
     <!-- 布尔值选择 -->
@@ -14,7 +162,9 @@
 
     <!-- 枚举值选择 -->
     <el-select
-      v-else-if="propertyType === IoTDataSpecsDataTypeEnum.ENUM && enumOptions.length > 0"
+      v-else-if="
+        propertyType === IoTDataSpecsDataTypeEnum.ENUM && enumOptions.length > 0
+      "
       v-model="localValue"
       placeholder="请选择枚举值"
       class="w-full!"
@@ -29,45 +179,64 @@
 
     <!-- 范围输入 (between 操作符) -->
     <div
-      v-else-if="operator === IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value"
-      class="w-full! flex items-center gap-8px"
+      v-else-if="
+        operator ===
+        IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value
+      "
+      class="w-full! gap-8px flex items-center"
     >
       <el-input
         v-model="rangeStart"
         :type="getInputType()"
         placeholder="最小值"
         @input="handleRangeChange"
-        class="flex-1 min-w-0"
+        class="min-w-0 flex-1"
         style="width: auto !important"
       />
-      <span class="text-12px text-[var(--el-text-color-secondary)] whitespace-nowrap">至</span>
+      <span
+        class="text-12px whitespace-nowrap text-[var(--el-text-color-secondary)]"
+        >至</span>
       <el-input
         v-model="rangeEnd"
         :type="getInputType()"
         placeholder="最大值"
         @input="handleRangeChange"
-        class="flex-1 min-w-0"
+        class="min-w-0 flex-1"
       />
     </div>
 
     <!-- 列表输入 (in 操作符) -->
     <div
-      v-else-if="operator === IotRuleSceneTriggerConditionParameterOperatorEnum.IN.value"
+      v-else-if="
+        operator === IotRuleSceneTriggerConditionParameterOperatorEnum.IN.value
+      "
       class="w-full!"
     >
-      <el-input v-model="localValue" placeholder="请输入值列表，用逗号分隔" class="w-full!">
+      <el-input
+        v-model="localValue"
+        placeholder="请输入值列表，用逗号分隔"
+        class="w-full!"
+      >
         <template #suffix>
           <el-tooltip content="多个值用逗号分隔，如：1,2,3" placement="top">
             <Icon
               icon="ep:question-filled"
-              class="text-[var(--el-text-color-placeholder)] cursor-help"
+              class="cursor-help text-[var(--el-text-color-placeholder)]"
             />
           </el-tooltip>
         </template>
       </el-input>
-      <div v-if="listPreview.length > 0" class="mt-8px flex items-center gap-6px flex-wrap">
+      <div
+        v-if="listPreview.length > 0"
+        class="mt-8px gap-6px flex flex-wrap items-center"
+      >
         <span class="text-12px text-[var(--el-text-color-secondary)]">解析结果：</span>
-        <el-tag v-for="(item, index) in listPreview" :key="index" size="small" class="m-0">
+        <el-tag
+          v-for="(item, index) in listPreview"
+          :key="index"
+          size="small"
+          class="m-0"
+        >
           {{ item }}
         </el-tag>
       </div>
@@ -112,7 +281,7 @@
           :content="`单位：${propertyConfig.unit}`"
           placement="top"
         >
-          <span class="text-12px text-[var(--el-text-color-secondary)] px-4px">
+          <span class="text-12px px-4px text-[var(--el-text-color-secondary)]">
             {{ propertyConfig.unit }}
           </span>
         </el-tooltip>
@@ -120,147 +289,3 @@
     </el-input>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useVModel } from '@vueuse/core'
-import {
-  IoTDataSpecsDataTypeEnum,
-  IotRuleSceneTriggerConditionParameterOperatorEnum
-} from '#/views/iot/utils/constants'
-
-/** 值输入组件 */
-defineOptions({ name: 'ValueInput' })
-
-interface Props {
-  modelValue?: string
-  propertyType?: string
-  operator?: string
-  propertyConfig?: any
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: string): void
-}
-
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
-
-const localValue = useVModel(props, 'modelValue', emit, {
-  defaultValue: ''
-})
-
-const rangeStart = ref('') // 范围开始值
-const rangeEnd = ref('') // 范围结束值
-const dateValue = ref('') // 日期值
-const numberValue = ref<number>() // 数字值
-
-/** 计算属性：枚举选项 */
-const enumOptions = computed(() => {
-  if (props.propertyConfig?.enum) {
-    return props.propertyConfig.enum.map((item: any) => ({
-      label: item.name || item.label || item.value,
-      value: item.value
-    }))
-  }
-  return []
-})
-
-/** 计算属性：列表预览 */
-const listPreview = computed(() => {
-  if (
-    props.operator === IotRuleSceneTriggerConditionParameterOperatorEnum.IN.value &&
-    localValue.value
-  ) {
-    return localValue.value
-      .split(',')
-      .map((item) => item.trim())
-      .filter((item) => item)
-  }
-  return []
-})
-
-/** 判断是否为数字类型 */
-const isNumericType = () => {
-  return [
-    IoTDataSpecsDataTypeEnum.INT,
-    IoTDataSpecsDataTypeEnum.FLOAT,
-    IoTDataSpecsDataTypeEnum.DOUBLE
-  ].includes((props.propertyType || '') as any)
-}
-
-/** 获取输入框类型 */
-const getInputType = () => {
-  switch (props.propertyType) {
-    case IoTDataSpecsDataTypeEnum.INT:
-    case IoTDataSpecsDataTypeEnum.FLOAT:
-    case IoTDataSpecsDataTypeEnum.DOUBLE:
-      return 'number'
-    default:
-      return 'text'
-  }
-}
-
-/** 获取占位符文本 */
-const getPlaceholder = () => {
-  const typeMap = {
-    [IoTDataSpecsDataTypeEnum.TEXT]: '请输入字符串',
-    [IoTDataSpecsDataTypeEnum.INT]: '请输入整数',
-    [IoTDataSpecsDataTypeEnum.FLOAT]: '请输入浮点数',
-    [IoTDataSpecsDataTypeEnum.DOUBLE]: '请输入双精度数',
-    [IoTDataSpecsDataTypeEnum.STRUCT]: '请输入 JSON 格式数据',
-    [IoTDataSpecsDataTypeEnum.ARRAY]: '请输入数组格式数据'
-  }
-  return typeMap[props.propertyType || ''] || '请输入值'
-}
-
-/** 获取数字精度 */
-const getPrecision = () => {
-  return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 0 : 2
-}
-
-/** 获取数字步长 */
-const getStep = () => {
-  return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 1 : 0.1
-}
-
-/** 获取最小值 */
-const getMin = () => {
-  return props.propertyConfig?.min || undefined
-}
-
-/** 获取最大值 */
-const getMax = () => {
-  return props.propertyConfig?.max || undefined
-}
-
-/** 处理范围变化事件 */
-const handleRangeChange = () => {
-  if (rangeStart.value && rangeEnd.value) {
-    localValue.value = `${rangeStart.value},${rangeEnd.value}`
-  } else {
-    localValue.value = ''
-  }
-}
-
-/** 处理日期变化事件 */
-const handleDateChange = (value: string) => {
-  localValue.value = value || ''
-}
-
-/** 处理数字变化事件 */
-const handleNumberChange = (value: number | undefined) => {
-  localValue.value = value?.toString() || ''
-}
-
-/** 监听操作符变化 */
-watch(
-  () => props.operator,
-  () => {
-    localValue.value = ''
-    rangeStart.value = ''
-    rangeEnd.value = ''
-    dateValue.value = ''
-    numberValue.value = undefined
-  }
-)
-</script>

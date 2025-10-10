@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import type { VxeGridInstance } from '#/adapter/vxe-table';
 
-import { message } from 'ant-design-vue';
 import { Page } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
 
-import { useGridColumns, useGridFormSchema } from './data';
 import { getDataTypeOptionsLabel } from '../utils/constants';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTThingModel' });
 
@@ -87,9 +88,7 @@ const getDataTypeLabel = (row: any) => {
           <Icon icon="ant-design:plus-outlined" class="mr-1" />
           添加功能
         </VbenButton>
-        <VbenButton type="success" @click="handleOpenTSL">
-          TSL
-        </VbenButton>
+        <VbenButton type="success" @click="handleOpenTSL"> TSL </VbenButton>
       </template>
 
       <!-- 数据类型列 -->

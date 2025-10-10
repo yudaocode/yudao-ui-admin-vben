@@ -55,4 +55,3 @@ export function getSimpleProductCategoryList() {
     '/iot/product-category/simple-list',
   );
 }
-

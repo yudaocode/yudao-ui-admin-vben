@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+import { ThingModelData } from '#/api/iot/thingmodel';
+import {
+  getEventTypeLabel,
+  getThingModelServiceCallTypeLabel,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelTypeEnum,
+} from '#/views/iot/utils/constants';
+
+/** 数据定义展示组件 */
+defineOptions({ name: 'DataDefinition' });
+
+defineProps<{ data: ThingModelData }>();
+</script>
+
 <template>
   <!-- 属性 -->
   <template v-if="data.type === IoTThingModelTypeEnum.PROPERTY">
@@ -7,11 +22,13 @@
         [
           IoTDataSpecsDataTypeEnum.INT,
           IoTDataSpecsDataTypeEnum.DOUBLE,
-          IoTDataSpecsDataTypeEnum.FLOAT
+          IoTDataSpecsDataTypeEnum.FLOAT,
         ].includes(data.property.dataType)
       "
     >
-      取值范围：{{ `${data.property.dataSpecs.min}~${data.property.dataSpecs.max}` }}
+      取值范围：{{
+        `${data.property.dataSpecs.min}~${data.property.dataSpecs.max}`
+      }}
     </div>
     <!-- 非列表型：文本 -->
     <div v-if="IoTDataSpecsDataTypeEnum.TEXT === data.property.dataType">
@@ -23,7 +40,7 @@
         [
           IoTDataSpecsDataTypeEnum.ARRAY,
           IoTDataSpecsDataTypeEnum.STRUCT,
-          IoTDataSpecsDataTypeEnum.DATE
+          IoTDataSpecsDataTypeEnum.DATE,
         ].includes(data.property.dataType)
       "
     >
@@ -33,12 +50,16 @@
     <div
       v-if="
         [IoTDataSpecsDataTypeEnum.BOOL, IoTDataSpecsDataTypeEnum.ENUM].includes(
-          data.property.dataType
+          data.property.dataType,
         )
       "
     >
       <div>
-        {{ IoTDataSpecsDataTypeEnum.BOOL === data.property.dataType ? '布尔值' : '枚举值' }}：
+        {{
+          IoTDataSpecsDataTypeEnum.BOOL === data.property.dataType
+            ? '布尔值'
+            : '枚举值'
+        }}：
       </div>
       <div v-for="item in data.property.dataSpecsList" :key="item.value">
         {{ `${item.name}-${item.value}` }}
@@ -54,20 +75,5 @@
     事件类型：{{ getEventTypeLabel(data.event!.type) }}
   </div>
 </template>
-
-<script lang="ts" setup>
-import { ThingModelData } from '#/api/iot/thingmodel'
-import {
-  getEventTypeLabel,
-  getThingModelServiceCallTypeLabel,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelTypeEnum
-} from '#/views/iot/utils/constants'
-
-/** 数据定义展示组件 */
-defineOptions({ name: 'DataDefinition' })
-
-defineProps<{ data: ThingModelData }>()
-</script>
 
 <style lang="scss" scoped></style>
