@@ -27,7 +27,7 @@ const hasData = computed(() => {
 });
 
 /** 初始化图表 */
-const initChart = () => {
+function initChart() {
   if (!hasData.value) return;
 
   nextTick(() => {
@@ -94,7 +94,7 @@ const initChart = () => {
       ],
     });
   });
-};
+}
 
 /** 监听数据变化 */
 watch(

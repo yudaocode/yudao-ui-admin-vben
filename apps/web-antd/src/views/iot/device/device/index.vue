@@ -345,7 +345,7 @@ onMounted(async () => {
           <Button
             type="primary"
             @click="handleCreate"
-            v-hasPermi="['iot:device:create']"
+            v-access:code="['iot:device:create']"
           >
             <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
             新增
@@ -353,19 +353,19 @@ onMounted(async () => {
           <Button
             type="primary"
             @click="handleExport"
-            v-hasPermi="['iot:device:export']"
+            v-access:code="['iot:device:export']"
           >
             <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
             导出
           </Button>
-          <Button @click="handleImport" v-hasPermi="['iot:device:import']">
+          <Button @click="handleImport" v-access:code="['iot:device:import']">
             <IconifyIcon icon="ant-design:upload-outlined" class="mr-1" />
             导入
           </Button>
           <Button
             v-show="viewMode === 'list'"
             @click="handleAddToGroup"
-            v-hasPermi="['iot:device:update']"
+            v-access:code="['iot:device:update']"
           >
             <IconifyIcon icon="ant-design:folder-add-outlined" class="mr-1" />
             添加到分组
@@ -374,7 +374,7 @@ onMounted(async () => {
             v-show="viewMode === 'list'"
             danger
             @click="handleDeleteBatch"
-            v-hasPermi="['iot:device:delete']"
+            v-access:code="['iot:device:delete']"
           >
             <IconifyIcon icon="ant-design:delete-outlined" class="mr-1" />
             批量删除

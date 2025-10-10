@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { Dayjs } from 'dayjs';
 
-import type {
-  IotStatisticsDeviceMessageReqVO,
-  IotStatisticsDeviceMessageSummaryByDateRespVO,
-} from '#/api/iot/statistics';
+import type { IotStatisticsApi } from '#/api/iot/statistics';
 
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
@@ -13,7 +10,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { Button, Card, DatePicker, Empty, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import { StatisticsApi } from '#/api/iot/statistics';
+import { getDeviceMessageSummaryByDate } from '#/api/iot/statistics';
 
 defineOptions({ name: 'MessageTrendCard' });
 
@@ -23,11 +20,11 @@ const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
 const loading = ref(false);
-const messageData = ref<IotStatisticsDeviceMessageSummaryByDateRespVO[]>([]);
+const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDate[]>([]);
 const activeTimeRange = ref('7d'); // 当前选中的时间范围
 const dateRange = ref<[Dayjs, Dayjs] | undefined>(undefined);
 
-const queryParams = reactive<IotStatisticsDeviceMessageReqVO>({
+const queryParams = reactive<IotStatisticsApi.DeviceMessageReq>({
   interval: 1, // 按天
   times: [],
 });
@@ -38,7 +35,7 @@ const hasData = computed(() => {
 });
 
 // 设置时间范围
-const setTimeRange = (range: string) => {
+function setTimeRange(range: string) {
   activeTimeRange.value = range;
   dateRange.value = undefined; // 清空自定义时间选择
 
@@ -73,10 +70,10 @@ const setTimeRange = (range: string) => {
   ];
 
   fetchMessageData();
-};
+}
 
 // 处理自定义日期选择
-const handleDateChange = () => {
+function handleDateChange() {
   if (dateRange.value && dateRange.value.length === 2) {
     activeTimeRange.value = ''; // 清空快捷选择
     queryParams.interval = 1; // 按天
@@ -86,16 +83,15 @@ const handleDateChange = () => {
     ];
     fetchMessageData();
   }
-};
+}
 
 // 获取消息统计数据
-const fetchMessageData = async () => {
+async function fetchMessageData() {
   if (!queryParams.times || queryParams.times.length !== 2) return;
 
   loading.value = true;
   try {
-    messageData.value =
-      await StatisticsApi.getDeviceMessageSummaryByDate(queryParams);
+    messageData.value = await getDeviceMessageSummaryByDate(queryParams);
     await nextTick();
     initChart();
   } catch (error) {
@@ -104,10 +100,10 @@ const fetchMessageData = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 // 初始化图表
-const initChart = () => {
+function initChart() {
   if (!hasData.value) return;
 
   const times = messageData.value.map((item) => item.time);
@@ -181,7 +177,7 @@ const initChart = () => {
       },
     ],
   });
-};
+}
 
 // 组件挂载时查询数据
 onMounted(() => {

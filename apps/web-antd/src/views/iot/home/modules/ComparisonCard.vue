@@ -32,9 +32,9 @@ const IconComponent = computed(() => iconMap[props.icon] || iconMap.menu);
     <div class="flex h-full flex-col">
       <div class="mb-4 flex items-start justify-between">
         <div class="flex flex-1 flex-col">
-          <span class="mb-2 text-sm font-medium text-gray-500">{{
-            title
-          }}</span>
+          <span class="mb-2 text-sm font-medium text-gray-500">
+            {{ title }}
+          </span>
           <span class="text-3xl font-bold text-gray-800">
             <span v-if="value === -1">--</span>
             <CountTo v-else :end-val="value" :duration="1000" />
@@ -49,9 +49,9 @@ const IconComponent = computed(() => iconMap[props.icon] || iconMap.menu);
         <div class="flex items-center justify-between text-sm">
           <span class="text-gray-400">今日新增</span>
           <span v-if="todayCount === -1" class="text-gray-400">--</span>
-          <span v-else class="font-medium text-green-500"
-            >+{{ todayCount }}</span
-          >
+          <span v-else class="font-medium text-green-500">
+            +{{ todayCount }}
+          </span>
         </div>
       </div>
     </div>
@@ -61,18 +61,18 @@ const IconComponent = computed(() => iconMap[props.icon] || iconMap.menu);
 <style scoped>
 .stat-card {
   height: 160px;
-  transition: all 0.3s ease;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .stat-card:hover {
+  box-shadow: 0 6px 20px rgb(0 0 0 / 8%);
   transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card :deep(.ant-card-body) {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 </style>

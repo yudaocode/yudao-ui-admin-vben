@@ -80,7 +80,7 @@ const getGaugeOption = (value: number, color: string, title: string): any => {
 };
 
 /** 初始化图表 */
-const initCharts = () => {
+function initCharts() {
   if (!hasData.value) return;
 
   nextTick(() => {
@@ -101,7 +101,7 @@ const initCharts = () => {
       ),
     );
   });
-};
+}
 
 /** 监听数据变化 */
 watch(

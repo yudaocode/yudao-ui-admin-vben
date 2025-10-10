@@ -60,7 +60,7 @@ function goToProductDetail(productId: number | undefined) {
         <!-- 右上：按钮 -->
         <Button
           v-if="product.status === 0"
-          v-hasPermi="['iot:device:update']"
+          v-access:code="['iot:device:update']"
           @click="openForm('update', device.id)"
         >
           编辑
