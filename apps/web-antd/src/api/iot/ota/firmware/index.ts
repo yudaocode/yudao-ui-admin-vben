@@ -39,7 +39,7 @@ export interface IoTOtaFirmware {
 /** 查询 OTA 固件分页 */
 export function getOtaFirmwarePage(params: PageParam) {
   return requestClient.get<PageResult<IoTOtaFirmwareApi.Firmware>>(
-    '/iot/ota-firmware/page',
+    '/iot/ota/firmware/page',
     { params },
   );
 }
@@ -47,35 +47,35 @@ export function getOtaFirmwarePage(params: PageParam) {
 /** 查询 OTA 固件详情 */
 export function getOtaFirmware(id: number) {
   return requestClient.get<IoTOtaFirmwareApi.Firmware>(
-    `/iot/ota-firmware/get?id=${id}`,
+    `/iot/ota/firmware/get?id=${id}`,
   );
 }
 
 /** 新增 OTA 固件 */
 export function createOtaFirmware(data: IoTOtaFirmware) {
-  return requestClient.post('/iot/ota-firmware/create', data);
+  return requestClient.post('/iot/ota/firmware/create', data);
 }
 
 /** 修改 OTA 固件 */
 export function updateOtaFirmware(data: IoTOtaFirmware) {
-  return requestClient.put('/iot/ota-firmware/update', data);
+  return requestClient.put('/iot/ota/firmware/update', data);
 }
 
 /** 删除 OTA 固件 */
 export function deleteOtaFirmware(id: number) {
-  return requestClient.delete(`/iot/ota-firmware/delete?id=${id}`);
+  return requestClient.delete(`/iot/ota/firmware/delete?id=${id}`);
 }
 
 /** 批量删除 OTA 固件 */
 export function deleteOtaFirmwareList(ids: number[]) {
-  return requestClient.delete('/iot/ota-firmware/delete-list', {
+  return requestClient.delete('/iot/ota/firmware/delete-list', {
     params: { ids: ids.join(',') },
   });
 }
 
 /** 更新 OTA 固件状态 */
 export function updateOtaFirmwareStatus(id: number, status: number) {
-  return requestClient.put(`/iot/ota-firmware/update-status`, {
+  return requestClient.put(`/iot/ota/firmware/update-status`, {
     id,
     status,
   });
@@ -84,7 +84,7 @@ export function updateOtaFirmwareStatus(id: number, status: number) {
 /** 根据产品 ID 查询固件列表 */
 export function getOtaFirmwareListByProductId(productId: number) {
   return requestClient.get<IoTOtaFirmwareApi.Firmware[]>(
-    '/iot/ota-firmware/list-by-product-id',
+    '/iot/ota/firmware/list-by-product-id',
     { params: { productId } },
   );
 }
