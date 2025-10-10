@@ -98,4 +98,3 @@ export function resumeOtaTask(id: number) {
 }
 
 export { IoTOtaTaskApi };
-

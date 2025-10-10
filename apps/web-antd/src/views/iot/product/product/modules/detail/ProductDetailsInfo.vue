@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { DICT_TYPE } from '@vben/constants';
 
-import { DictTag } from '#/components/dict-tag';
-import type { IotProductApi } from '#/api/iot/product/product';
 import { DeviceTypeEnum } from '#/api/iot/product/product';
+import { DictTag } from '#/components/dict-tag';
 
 interface Props {
   product: IotProductApi.Product;
@@ -28,7 +29,10 @@ const formatDate = (date?: Date | string) => {
         {{ product.categoryName || '-' }}
       </a-descriptions-item>
       <a-descriptions-item label="设备类型">
-        <DictTag :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE" :value="product.deviceType" />
+        <DictTag
+          :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
+          :value="product.deviceType"
+        />
       </a-descriptions-item>
       <a-descriptions-item label="定位类型">
         {{ product.locationType ?? '-' }}
@@ -43,7 +47,11 @@ const formatDate = (date?: Date | string) => {
         <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
       </a-descriptions-item>
       <a-descriptions-item
-        v-if="[DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(product.deviceType!)"
+        v-if="
+          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
+            product.deviceType!,
+          )
+        "
         label="联网方式"
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />

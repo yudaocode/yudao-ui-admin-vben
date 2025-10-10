@@ -30,15 +30,15 @@ export namespace IotProductApi {
 /** IOT 产品设备类型枚举类 */
 export enum DeviceTypeEnum {
   DEVICE = 0, // 直连设备
-  GATEWAY_SUB = 1, // 网关子设备
   GATEWAY = 2, // 网关设备
+  GATEWAY_SUB = 1, // 网关子设备
 }
 
 /** IOT 产品定位类型枚举类 */
 export enum LocationTypeEnum {
   IP = 1, // IP 定位
-  MODULE = 2, // 设备定位
   MANUAL = 3, // 手动定位
+  MODULE = 2, // 设备定位
 }
 
 /** IOT 数据格式（编解码器类型）枚举类 */

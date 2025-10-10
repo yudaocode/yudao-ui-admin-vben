@@ -1,11 +1,108 @@
 <!-- 产品的物模型表单（property 项） -->
+<script lang="ts" setup>
+import { isEmpty } from '@vben/utils';
+
+import { useVModel } from '@vueuse/core';
+
+import { ThingModelProperty, validateBoolName } from '#/api/iot/thingmodel';
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelAccessModeEnum,
+} from '#/views/iot/utils/constants';
+
+import {
+  ThingModelArrayDataSpecs,
+  ThingModelEnumDataSpecs,
+  ThingModelNumberDataSpecs,
+  ThingModelStructDataSpecs,
+} from './dataSpecs';
+
+/** IoT 物模型属性 */
+defineOptions({ name: 'ThingModelProperty' });
+
+const props = defineProps<{
+  isParams?: boolean;
+  isStructDataSpecs?: boolean;
+  modelValue: any;
+}>();
+const emits = defineEmits(['update:modelValue']);
+const property = useVModel(
+  props,
+  'modelValue',
+  emits,
+) as Ref<ThingModelProperty>;
+const getDataTypeOptions2 = computed(() => {
+  if (!props.isStructDataSpecs) {
+    return getDataTypeOptions();
+  }
+  const excludedTypes = new Set([
+    IoTDataSpecsDataTypeEnum.ARRAY,
+    IoTDataSpecsDataTypeEnum.STRUCT,
+  ]);
+  return getDataTypeOptions().filter(
+    (item: any) => !excludedTypes.has(item.value),
+  );
+}); // 获得数据类型列表
+
+/** 属性值的数据类型切换时初始化相关数据 */
+const handleChange = (dataType: any) => {
+  property.value.dataSpecs = {};
+  property.value.dataSpecsList = [];
+  // 不是列表型数据才设置 dataSpecs.dataType
+  ![
+    IoTDataSpecsDataTypeEnum.BOOL,
+    IoTDataSpecsDataTypeEnum.ENUM,
+    IoTDataSpecsDataTypeEnum.STRUCT,
+  ].includes(dataType) && (property.value.dataSpecs.dataType = dataType);
+  switch (dataType) {
+    case IoTDataSpecsDataTypeEnum.BOOL: {
+      for (let i = 0; i < 2; i++) {
+        property.value.dataSpecsList.push({
+          dataType: IoTDataSpecsDataTypeEnum.BOOL,
+          name: '', // 布尔值的名称
+          value: i, // 布尔值
+        });
+      }
+      break;
+    }
+    case IoTDataSpecsDataTypeEnum.ENUM: {
+      property.value.dataSpecsList.push({
+        dataType: IoTDataSpecsDataTypeEnum.ENUM,
+        name: '', // 枚举项的名称
+        value: undefined, // 枚举值
+      });
+      break;
+    }
+  }
+};
+
+/** 默认选中读写 */
+watch(
+  () => property.value.accessMode,
+  (val: string) => {
+    if (props.isStructDataSpecs || props.isParams) {
+      return;
+    }
+    isEmpty(val) &&
+      (property.value.accessMode =
+        IoTThingModelAccessModeEnum.READ_WRITE.value);
+  },
+  { immediate: true },
+);
+</script>
+
 <template>
   <el-form-item
     :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
     label="数据类型"
     prop="property.dataType"
   >
-    <el-select v-model="property.dataType" placeholder="请选择数据类型" @change="handleChange">
+    <el-select
+      v-model="property.dataType"
+      placeholder="请选择数据类型"
+      @change="handleChange"
+    >
       <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
       <el-option
         v-for="option in getDataTypeOptions2"
@@ -21,7 +118,7 @@
       [
         IoTDataSpecsDataTypeEnum.INT,
         IoTDataSpecsDataTypeEnum.DOUBLE,
-        IoTDataSpecsDataTypeEnum.FLOAT
+        IoTDataSpecsDataTypeEnum.FLOAT,
       ].includes(property.dataType || '')
     "
     v-model="property.dataSpecs"
@@ -32,18 +129,21 @@
     v-model="property.dataSpecsList"
   />
   <!-- 布尔型配置 -->
-  <el-form-item v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL" label="布尔值">
+  <el-form-item
+    v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
+    label="布尔值"
+  >
     <template v-for="(item, index) in property.dataSpecsList" :key="item.value">
-      <div class="flex items-center justify-start w-1/1 mb-5px">
+      <div class="w-1/1 mb-5px flex items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
         <el-form-item
           :prop="`property.dataSpecsList[${index}].name`"
           :rules="[
             { required: true, message: '枚举描述不能为空' },
-            { validator: validateBoolName, trigger: 'blur' }
+            { validator: validateBoolName, trigger: 'blur' },
           ]"
-          class="flex-1 mb-0"
+          class="mb-0 flex-1"
         >
           <el-input
             v-model="item.name"
@@ -60,7 +160,11 @@
     label="数据长度"
     prop="property.dataSpecs.length"
   >
-    <el-input v-model="property.dataSpecs.length" class="w-255px!" placeholder="请输入文本字节长度">
+    <el-input
+      v-model="property.dataSpecs.length"
+      class="w-255px!"
+      placeholder="请输入文本字节长度"
+    >
       <template #append>字节</template>
     </el-input>
   </el-form-item>
@@ -70,7 +174,11 @@
     label="时间格式"
     prop="date"
   >
-    <el-input class="w-255px!" disabled placeholder="String 类型的 UTC 时间戳（毫秒）" />
+    <el-input
+      class="w-255px!"
+      disabled
+      placeholder="String 类型的 UTC 时间戳（毫秒）"
+    />
   </el-form-item>
   <!-- 数组型配置-->
   <ThingModelArrayDataSpecs
@@ -82,7 +190,11 @@
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="property.dataSpecsList"
   />
-  <el-form-item v-if="!isStructDataSpecs && !isParams" label="读写类型" prop="property.accessMode">
+  <el-form-item
+    v-if="!isStructDataSpecs && !isParams"
+    label="读写类型"
+    prop="property.accessMode"
+  >
     <el-radio-group v-model="property.accessMode">
       <el-radio
         v-for="accessMode in Object.values(IoTThingModelAccessModeEnum)"
@@ -94,79 +206,6 @@
     </el-radio-group>
   </el-form-item>
 </template>
-
-<script lang="ts" setup>
-import { useVModel } from '@vueuse/core'
-import {
-  ThingModelArrayDataSpecs,
-  ThingModelEnumDataSpecs,
-  ThingModelNumberDataSpecs,
-  ThingModelStructDataSpecs
-} from './dataSpecs'
-import { ThingModelProperty, validateBoolName } from '#/api/iot/thingmodel'
-import { isEmpty } from '@vben/utils'
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelAccessModeEnum
-} from '#/views/iot/utils/constants'
-
-/** IoT 物模型属性 */
-defineOptions({ name: 'ThingModelProperty' })
-
-const props = defineProps<{ modelValue: any; isStructDataSpecs?: boolean; isParams?: boolean }>()
-const emits = defineEmits(['update:modelValue'])
-const property = useVModel(props, 'modelValue', emits) as Ref<ThingModelProperty>
-const getDataTypeOptions2 = computed(() => {
-  if (!props.isStructDataSpecs) {
-    return getDataTypeOptions()
-  }
-  const excludedTypes = [IoTDataSpecsDataTypeEnum.STRUCT, IoTDataSpecsDataTypeEnum.ARRAY]
-  return getDataTypeOptions().filter((item: any) => !excludedTypes.includes(item.value))
-}) // 获得数据类型列表
-
-/** 属性值的数据类型切换时初始化相关数据 */
-const handleChange = (dataType: any) => {
-  property.value.dataSpecs = {}
-  property.value.dataSpecsList = []
-  // 不是列表型数据才设置 dataSpecs.dataType
-  ![
-    IoTDataSpecsDataTypeEnum.ENUM,
-    IoTDataSpecsDataTypeEnum.BOOL,
-    IoTDataSpecsDataTypeEnum.STRUCT
-  ].includes(dataType) && (property.value.dataSpecs.dataType = dataType)
-  switch (dataType) {
-    case IoTDataSpecsDataTypeEnum.ENUM:
-      property.value.dataSpecsList.push({
-        dataType: IoTDataSpecsDataTypeEnum.ENUM,
-        name: '', // 枚举项的名称
-        value: undefined // 枚举值
-      })
-      break
-    case IoTDataSpecsDataTypeEnum.BOOL:
-      for (let i = 0; i < 2; i++) {
-        property.value.dataSpecsList.push({
-          dataType: IoTDataSpecsDataTypeEnum.BOOL,
-          name: '', // 布尔值的名称
-          value: i // 布尔值
-        })
-      }
-      break
-  }
-}
-
-/** 默认选中读写 */
-watch(
-  () => property.value.accessMode,
-  (val: string) => {
-    if (props.isStructDataSpecs || props.isParams) {
-      return
-    }
-    isEmpty(val) && (property.value.accessMode = IoTThingModelAccessModeEnum.READ_WRITE.value)
-  },
-  { immediate: true }
-)
-</script>
 
 <style lang="scss" scoped>
 :deep(.el-form-item) {

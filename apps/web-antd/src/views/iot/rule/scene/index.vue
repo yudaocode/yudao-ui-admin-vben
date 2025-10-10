@@ -129,7 +129,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: row.status === 0 ? '停用' : '启用',
               type: 'link',
-              icon: row.status === 0 ? 'ant-design:stop-outlined' : 'ant-design:check-circle-outlined',
+              icon:
+                row.status === 0
+                  ? 'ant-design:stop-outlined'
+                  : 'ant-design:check-circle-outlined',
               onClick: handleToggleStatus.bind(null, row),
             },
             {

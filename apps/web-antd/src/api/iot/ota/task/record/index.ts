@@ -101,4 +101,3 @@ export function getOtaTaskRecordStatusStatistics(
 }
 
 export { IoTOtaTaskRecordApi };
-

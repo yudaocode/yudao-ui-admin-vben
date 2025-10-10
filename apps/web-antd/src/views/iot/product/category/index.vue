@@ -7,11 +7,11 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 
-import { 
-  handleDeleteCategory, 
+import {
+  handleDeleteCategory,
   queryProductCategoryList,
-  useGridColumns, 
-  useGridFormSchema 
+  useGridColumns,
+  useGridFormSchema,
 } from './data';
 import Form from './modules/ProductCategoryForm.vue';
 
@@ -66,7 +66,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search:true,
+      search: true,
     },
     treeConfig: {
       parentField: 'parentId',
@@ -95,7 +95,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               onClick: handleCreate,
             },
-            
           ]"
         />
       </template>

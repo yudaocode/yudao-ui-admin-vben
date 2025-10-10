@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AlertRecord } from '#/api/iot/alert/record';
 
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { Modal, message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import type { AlertRecord } from '#/api/iot/alert/record';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
@@ -83,14 +83,16 @@ const handleProcess = async (row: AlertRecord) => {
       }),
     ]),
     async onOk() {
-      const textarea = document.getElementById('processRemark') as HTMLTextAreaElement;
+      const textarea = document.querySelector(
+        '#processRemark',
+      ) as HTMLTextAreaElement;
       const processRemark = textarea?.value || '';
-      
+
       if (!processRemark) {
         message.warning('请输入处理原因');
-        return Promise.reject();
+        throw undefined;
       }
-      
+
       const hideLoading = message.loading({
         content: '正在处理...',
         duration: 0,
@@ -125,7 +127,11 @@ const handleView = (row: AlertRecord) => {
       ]),
       h('div', [
         h('span', { class: 'font-semibold' }, '设备消息：'),
-        h('pre', { class: 'mt-1 text-xs bg-gray-50 p-2 rounded' }, row.deviceMessage || '-'),
+        h(
+          'pre',
+          { class: 'mt-1 text-xs bg-gray-50 p-2 rounded' },
+          row.deviceMessage || '-',
+        ),
       ]),
       h('div', [
         h('span', { class: 'font-semibold' }, '处理结果：'),
@@ -133,7 +139,12 @@ const handleView = (row: AlertRecord) => {
       ]),
       h('div', [
         h('span', { class: 'font-semibold' }, '处理时间：'),
-        h('span', row.processTime ? new Date(row.processTime).toLocaleString('zh-CN') : '-'),
+        h(
+          'span',
+          row.processTime
+            ? new Date(row.processTime).toLocaleString('zh-CN')
+            : '-',
+        ),
       ]),
     ]),
   });
@@ -200,7 +211,7 @@ onMounted(() => {
           v-if="row.deviceMessage"
           placement="topLeft"
           trigger="hover"
-          :overlayStyle="{ maxWidth: '600px' }"
+          :overlay-style="{ maxWidth: '600px' }"
         >
           <template #content>
             <pre class="text-xs">{{ row.deviceMessage }}</pre>

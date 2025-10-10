@@ -1,4 +1,118 @@
 <!-- 设备配置 -->
+<script lang="ts" setup>
+import type { DeviceVO } from '#/api/iot/device/device';
+
+import { ref, watchEffect } from 'vue';
+
+import { message } from 'ant-design-vue';
+
+import { DeviceApi } from '#/api/iot/device/device';
+import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
+
+defineOptions({ name: 'DeviceDetailConfig' });
+
+const props = defineProps<{
+  device: DeviceVO;
+}>();
+
+const emit = defineEmits<{
+  (e: 'success'): void; // 定义 success 事件，不需要参数
+}>();
+
+const loading = ref(false); // 加载中
+const pushLoading = ref(false); // 推送加载中
+const config = ref<any>({}); // 只存储 config 字段
+const hasJsonError = ref(false); // 是否有 JSON 格式错误
+
+/** 监听 props.device 的变化，只更新 config 字段 */
+watchEffect(() => {
+  try {
+    config.value = props.device.config ? JSON.parse(props.device.config) : {};
+  } catch {
+    config.value = {};
+  }
+});
+
+const isEditing = ref(false); // 编辑状态
+/** 启用编辑模式的函数 */
+const enableEdit = () => {
+  isEditing.value = true;
+  hasJsonError.value = false; // 重置错误状态
+};
+
+/** 取消编辑的函数 */
+const cancelEdit = () => {
+  try {
+    config.value = props.device.config ? JSON.parse(props.device.config) : {};
+  } catch {
+    config.value = {};
+  }
+  isEditing.value = false;
+  hasJsonError.value = false; // 重置错误状态
+};
+
+/** 保存配置的函数 */
+const saveConfig = async () => {
+  if (hasJsonError.value) {
+    message.error({ content: 'JSON格式错误，请修正后再提交！' });
+    return;
+  }
+  await updateDeviceConfig();
+  isEditing.value = false;
+};
+
+/** 配置推送处理函数 */
+const handleConfigPush = async () => {
+  try {
+    pushLoading.value = true;
+
+    // 调用配置推送接口
+    await DeviceApi.sendDeviceMessage({
+      deviceId: props.device.id!,
+      method: IotDeviceMessageMethodEnum.CONFIG_PUSH.method,
+      params: config.value,
+    });
+
+    message.success({ content: '配置推送成功！' });
+  } catch (error) {
+    if (error !== 'cancel') {
+      message.error({ content: '配置推送失败！' });
+      console.error('配置推送错误:', error);
+    }
+  } finally {
+    pushLoading.value = false;
+  }
+};
+
+/** 更新设备配置 */
+const updateDeviceConfig = async () => {
+  try {
+    // 提交请求
+    loading.value = true;
+    await DeviceApi.updateDevice({
+      id: props.device.id,
+      config: JSON.stringify(config.value),
+    } as DeviceVO);
+    message.success({ content: '更新成功！' });
+    // 触发 success 事件
+    emit('success');
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+/** 处理 JSON 编辑器错误的函数 */
+const onError = (errors: any) => {
+  if (!errors || (Array.isArray(errors) && errors.length === 0)) {
+    hasJsonError.value = false;
+    return;
+  }
+  hasJsonError.value = true;
+};
+</script>
+
 <template>
   <div>
     <a-alert
@@ -16,125 +130,23 @@
     />
     <div class="mt-5 text-center">
       <a-button v-if="isEditing" @click="cancelEdit">取消</a-button>
-      <a-button v-if="isEditing" type="primary" @click="saveConfig" :disabled="hasJsonError">
+      <a-button
+        v-if="isEditing"
+        type="primary"
+        @click="saveConfig"
+        :disabled="hasJsonError"
+      >
         保存
       </a-button>
       <a-button v-else @click="enableEdit">编辑</a-button>
-      <a-button v-if="!isEditing" type="primary" @click="handleConfigPush" :loading="pushLoading">
+      <a-button
+        v-if="!isEditing"
+        type="primary"
+        @click="handleConfigPush"
+        :loading="pushLoading"
+      >
         配置推送
       </a-button>
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { ref, watchEffect } from 'vue'
-import { message } from 'ant-design-vue'
-import { DeviceApi } from '#/api/iot/device/device'
-import type { DeviceVO } from '#/api/iot/device/device'
-import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants'
-
-defineOptions({ name: 'DeviceDetailConfig' })
-
-const props = defineProps<{
-  device: DeviceVO
-}>()
-
-const emit = defineEmits<{
-  (e: 'success'): void // 定义 success 事件，不需要参数
-}>()
-
-
-const loading = ref(false) // 加载中
-const pushLoading = ref(false) // 推送加载中
-const config = ref<any>({}) // 只存储 config 字段
-const hasJsonError = ref(false) // 是否有 JSON 格式错误
-
-/** 监听 props.device 的变化，只更新 config 字段 */
-watchEffect(() => {
-  try {
-    config.value = props.device.config ? JSON.parse(props.device.config) : {}
-  } catch (e) {
-    config.value = {}
-  }
-})
-
-const isEditing = ref(false) // 编辑状态
-/** 启用编辑模式的函数 */
-const enableEdit = () => {
-  isEditing.value = true
-  hasJsonError.value = false // 重置错误状态
-}
-
-/** 取消编辑的函数 */
-const cancelEdit = () => {
-  try {
-    config.value = props.device.config ? JSON.parse(props.device.config) : {}
-  } catch (e) {
-    config.value = {}
-  }
-  isEditing.value = false
-  hasJsonError.value = false // 重置错误状态
-}
-
-/** 保存配置的函数 */
-const saveConfig = async () => {
-  if (hasJsonError.value) {
-    message.error({ content: 'JSON格式错误，请修正后再提交！' })
-    return
-  }
-  await updateDeviceConfig()
-  isEditing.value = false
-}
-
-/** 配置推送处理函数 */
-const handleConfigPush = async () => {
-  try {
-    pushLoading.value = true
-
-    // 调用配置推送接口
-    await DeviceApi.sendDeviceMessage({
-      deviceId: props.device.id!,
-      method: IotDeviceMessageMethodEnum.CONFIG_PUSH.method,
-      params: config.value
-    })
-
-    message.success({ content: '配置推送成功！' })
-  } catch (error) {
-    if (error !== 'cancel') {
-      message.error({ content: '配置推送失败！' })
-      console.error('配置推送错误:', error)
-    }
-  } finally {
-    pushLoading.value = false
-  }
-}
-
-/** 更新设备配置 */
-const updateDeviceConfig = async () => {
-  try {
-    // 提交请求
-    loading.value = true
-    await DeviceApi.updateDevice({
-      id: props.device.id,
-      config: JSON.stringify(config.value)
-    } as DeviceVO)
-    message.success({ content: '更新成功！' })
-    // 触发 success 事件
-    emit('success')
-  } catch (error) {
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
-}
-
-/** 处理 JSON 编辑器错误的函数 */
-const onError = (errors: any) => {
-  if (!errors || (Array.isArray(errors) && errors.length === 0)) {
-    hasJsonError.value = false
-    return
-  }
-  hasJsonError.value = true
-}
-</script>

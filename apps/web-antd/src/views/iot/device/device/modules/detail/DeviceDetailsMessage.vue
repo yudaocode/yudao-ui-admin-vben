@@ -1,10 +1,178 @@
 <!-- 设备消息列表 -->
+<script setup lang="ts">
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue';
+
+import { DICT_TYPE } from '@vben/constants';
+import { formatDate } from '@vben/utils';
+
+import { DeviceApi } from '#/api/iot/device/device';
+import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
+
+const props = defineProps<{
+  deviceId: number;
+}>();
+
+// 查询参数
+const queryParams = reactive({
+  deviceId: props.deviceId,
+  method: undefined,
+  upstream: undefined,
+  pageNo: 1,
+  pageSize: 10,
+});
+
+// 列表数据
+const loading = ref(false);
+const total = ref(0);
+const list = ref<any[]>([]);
+const autoRefresh = ref(false); // 自动刷新开关
+let autoRefreshTimer: any = null; // 自动刷新定时器
+
+// 消息方法选项
+const methodOptions = computed(() => {
+  return Object.values(IotDeviceMessageMethodEnum).map((item) => ({
+    label: item.name,
+    value: item.method,
+  }));
+});
+
+// 表格列定义
+const columns = [
+  {
+    title: '时间',
+    dataIndex: 'ts',
+    key: 'ts',
+    align: 'center',
+    width: 180,
+  },
+  {
+    title: '上行/下行',
+    dataIndex: 'upstream',
+    key: 'upstream',
+    align: 'center',
+    width: 140,
+  },
+  {
+    title: '是否回复',
+    dataIndex: 'reply',
+    key: 'reply',
+    align: 'center',
+    width: 140,
+  },
+  {
+    title: '请求编号',
+    dataIndex: 'requestId',
+    key: 'requestId',
+    align: 'center',
+    width: 300,
+  },
+  {
+    title: '请求方法',
+    dataIndex: 'method',
+    key: 'method',
+    align: 'center',
+    width: 140,
+  },
+  {
+    title: '请求/响应数据',
+    dataIndex: 'params',
+    key: 'params',
+    align: 'center',
+    ellipsis: true,
+  },
+];
+
+/** 查询消息列表 */
+const getMessageList = async () => {
+  if (!props.deviceId) return;
+  loading.value = true;
+  try {
+    const data = await DeviceApi.getDeviceMessagePage(queryParams);
+    total.value = data.total;
+    list.value = data.list;
+  } finally {
+    loading.value = false;
+  }
+};
+
+/** 搜索操作 */
+const handleQuery = () => {
+  queryParams.pageNo = 1;
+  getMessageList();
+};
+
+/** 监听自动刷新 */
+watch(autoRefresh, (newValue) => {
+  if (newValue) {
+    autoRefreshTimer = setInterval(() => {
+      getMessageList();
+    }, 5000);
+  } else {
+    clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
+  }
+});
+
+/** 监听设备标识变化 */
+watch(
+  () => props.deviceId,
+  (newValue) => {
+    if (newValue) {
+      handleQuery();
+    }
+  },
+);
+
+/** 组件卸载时清除定时器 */
+onBeforeUnmount(() => {
+  if (autoRefreshTimer) {
+    clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
+  }
+});
+
+/** 初始化 */
+onMounted(() => {
+  if (props.deviceId) {
+    getMessageList();
+  }
+});
+
+/** 刷新消息列表 */
+const refresh = (delay = 0) => {
+  if (delay > 0) {
+    setTimeout(() => {
+      handleQuery();
+    }, delay);
+  } else {
+    handleQuery();
+  }
+};
+
+/** 暴露方法给父组件 */
+defineExpose({
+  refresh,
+});
+</script>
+
 <template>
   <ContentWrap>
     <!-- 搜索区域 -->
     <a-form :model="queryParams" layout="inline">
       <a-form-item>
-        <a-select v-model:value="queryParams.method" placeholder="所有方法" style="width: 160px" allow-clear>
+        <a-select
+          v-model:value="queryParams.method"
+          placeholder="所有方法"
+          style="width: 160px"
+          allow-clear
+        >
           <a-select-option
             v-for="item in methodOptions"
             :key="item.value"
@@ -40,7 +208,13 @@
     </a-form>
 
     <!-- 消息列表 -->
-    <a-table :loading="loading" :dataSource="list" :columns="columns" :pagination="false" class="whitespace-nowrap">
+    <a-table
+      :loading="loading"
+      :data-source="list"
+      :columns="columns"
+      :pagination="false"
+      class="whitespace-nowrap"
+    >
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'ts'">
           {{ formatDate(record.ts) }}
@@ -51,14 +225,21 @@
           </a-tag>
         </template>
         <template v-else-if="column.key === 'reply'">
-          <dict-tag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="record.reply" />
+          <dict-tag
+            :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+            :value="record.reply"
+          />
         </template>
         <template v-else-if="column.key === 'method'">
-          {{ methodOptions.find((item) => item.value === record.method)?.label }}
+          {{
+            methodOptions.find((item) => item.value === record.method)?.label
+          }}
         </template>
         <template v-else-if="column.key === 'params'">
           <span v-if="record.reply">
-            {{ `{"code":${record.code},"msg":"${record.msg}","data":${record.data}\}` }}
+            {{
+              `{"code":${record.code},"msg":"${record.msg}","data":${record.data}\}`
+            }}
           </span>
           <span v-else>{{ record.params }}</span>
         </template>
@@ -76,157 +257,3 @@
     </div>
   </ContentWrap>
 </template>
-
-<script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import { DICT_TYPE } from '@vben/constants'
-import { DeviceApi } from '#/api/iot/device/device'
-import { formatDate } from '@vben/utils'
-import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants'
-
-const props = defineProps<{
-  deviceId: number
-}>()
-
-// 查询参数
-const queryParams = reactive({
-  deviceId: props.deviceId,
-  method: undefined,
-  upstream: undefined,
-  pageNo: 1,
-  pageSize: 10
-})
-
-// 列表数据
-const loading = ref(false)
-const total = ref(0)
-const list = ref<any[]>([])
-const autoRefresh = ref(false) // 自动刷新开关
-let autoRefreshTimer: any = null // 自动刷新定时器
-
-// 消息方法选项
-const methodOptions = computed(() => {
-  return Object.values(IotDeviceMessageMethodEnum).map((item) => ({
-    label: item.name,
-    value: item.method
-  }))
-})
-
-// 表格列定义
-const columns = [
-  {
-    title: '时间',
-    dataIndex: 'ts',
-    key: 'ts',
-    align: 'center',
-    width: 180
-  },
-  {
-    title: '上行/下行',
-    dataIndex: 'upstream',
-    key: 'upstream',
-    align: 'center',
-    width: 140
-  },
-  {
-    title: '是否回复',
-    dataIndex: 'reply',
-    key: 'reply',
-    align: 'center',
-    width: 140
-  },
-  {
-    title: '请求编号',
-    dataIndex: 'requestId',
-    key: 'requestId',
-    align: 'center',
-    width: 300
-  },
-  {
-    title: '请求方法',
-    dataIndex: 'method',
-    key: 'method',
-    align: 'center',
-    width: 140
-  },
-  {
-    title: '请求/响应数据',
-    dataIndex: 'params',
-    key: 'params',
-    align: 'center',
-    ellipsis: true
-  }
-]
-
-/** 查询消息列表 */
-const getMessageList = async () => {
-  if (!props.deviceId) return
-  loading.value = true
-  try {
-    const data = await DeviceApi.getDeviceMessagePage(queryParams)
-    total.value = data.total
-    list.value = data.list
-  } finally {
-    loading.value = false
-  }
-}
-
-/** 搜索操作 */
-const handleQuery = () => {
-  queryParams.pageNo = 1
-  getMessageList()
-}
-
-/** 监听自动刷新 */
-watch(autoRefresh, (newValue) => {
-  if (newValue) {
-    autoRefreshTimer = setInterval(() => {
-      getMessageList()
-    }, 5000)
-  } else {
-    clearInterval(autoRefreshTimer)
-    autoRefreshTimer = null
-  }
-})
-
-/** 监听设备标识变化 */
-watch(
-  () => props.deviceId,
-  (newValue) => {
-    if (newValue) {
-      handleQuery()
-    }
-  }
-)
-
-/** 组件卸载时清除定时器 */
-onBeforeUnmount(() => {
-  if (autoRefreshTimer) {
-    clearInterval(autoRefreshTimer)
-    autoRefreshTimer = null
-  }
-})
-
-/** 初始化 */
-onMounted(() => {
-  if (props.deviceId) {
-    getMessageList()
-  }
-})
-
-/** 刷新消息列表 */
-const refresh = (delay = 0) => {
-  if (delay > 0) {
-    setTimeout(() => {
-      handleQuery()
-    }, delay)
-  } else {
-    handleQuery()
-  }
-}
-
-/** 暴露方法给父组件 */
-defineExpose({
-  refresh
-})
-</script>

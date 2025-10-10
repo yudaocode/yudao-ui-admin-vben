@@ -196,6 +196,7 @@ export function useUserListFormSchema(): VbenFormSchema[] {
           { label: '一级推广人', value: '1' },
           { label: '二级推广人', value: '2' },
         ],
+        allowClear: true,
       },
     },
     {

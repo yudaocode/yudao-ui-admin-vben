@@ -115,10 +115,10 @@ export interface ThingModelFormRules {
 
 /** 验证布尔型名称 */
 export const validateBoolName = (_rule: any, value: any, callback: any) => {
-  if (!value) {
-    callback(new Error('枚举描述不能为空'));
-  } else {
+  if (value) {
     callback();
+  } else {
+    callback(new Error('枚举描述不能为空'));
   }
 };
 

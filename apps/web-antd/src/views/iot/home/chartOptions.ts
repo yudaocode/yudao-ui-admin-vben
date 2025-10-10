@@ -1,9 +1,11 @@
 /**
  * 设备数量饼图配置
  */
-export function getDeviceCountChartOptions(productCategoryDeviceCounts: Record<string, number>): any {
+export function getDeviceCountChartOptions(
+  productCategoryDeviceCounts: Record<string, number>,
+): any {
   const data = Object.entries(productCategoryDeviceCounts).map(
-    ([name, value]) => ({ name, value })
+    ([name, value]) => ({ name, value }),
   );
 
   return {
@@ -22,7 +24,7 @@ export function getDeviceCountChartOptions(productCategoryDeviceCounts: Record<s
         type: 'pie',
         radius: ['50%', '80%'],
         center: ['30%', '50%'],
-        data: data,
+        data,
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -42,7 +44,12 @@ export function getDeviceCountChartOptions(productCategoryDeviceCounts: Record<s
 /**
  * 仪表盘图表配置
  */
-export function getGaugeChartOptions(value: number, max: number, color: string, title: string): any {
+export function getGaugeChartOptions(
+  value: number,
+  max: number,
+  color: string,
+  title: string,
+): any {
   return {
     series: [
       {
@@ -50,14 +57,14 @@ export function getGaugeChartOptions(value: number, max: number, color: string, 
         startAngle: 180,
         endAngle: 0,
         min: 0,
-        max: max,
+        max,
         center: ['50%', '70%'],
         radius: '120%',
         progress: {
           show: true,
           width: 12,
           itemStyle: {
-            color: color,
+            color,
           },
         },
         axisLine: {
@@ -74,7 +81,7 @@ export function getGaugeChartOptions(value: number, max: number, color: string, 
           valueAnimation: true,
           fontSize: 24,
           fontWeight: 'bold',
-          color: color,
+          color,
           offsetCenter: [0, '-20%'],
           formatter: '{value}',
         },
@@ -84,10 +91,8 @@ export function getGaugeChartOptions(value: number, max: number, color: string, 
           fontSize: 14,
           color: '#666',
         },
-        data: [{ value: value, name: title }],
+        data: [{ value, name: title }],
       },
     ],
   };
 }
-
-

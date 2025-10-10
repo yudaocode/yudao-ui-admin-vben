@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { computed, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
-import { createProduct, getProduct, updateProduct, type IotProductApi } from '#/api/iot/product/product';
+import { message } from 'ant-design-vue';
+
+import {
+  createProduct,
+  getProduct,
+  updateProduct,
+} from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

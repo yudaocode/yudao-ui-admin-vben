@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { message } from 'ant-design-vue';
 
 import { updateProductStatus } from '#/api/iot/product/product';
-import type { IotProductApi } from '#/api/iot/product/product';
 
 import ProductForm from '../ProductForm.vue';
 
@@ -37,7 +38,10 @@ const copyToClipboard = async (text: string) => {
 
 /** 跳转到设备管理 */
 const goToDeviceList = (productId: number) => {
-  router.push({ path: '/iot/device/device', query: { productId: String(productId) } });
+  router.push({
+    path: '/iot/device/device',
+    query: { productId: String(productId) },
+  });
 };
 
 /** 打开编辑表单 */
@@ -102,12 +106,18 @@ const confirmUnpublish = async (id: number) => {
       <a-descriptions :column="1">
         <a-descriptions-item label="ProductKey">
           {{ product.productKey }}
-          <a-button size="small" class="ml-2" @click="copyToClipboard(product.productKey || '')">
+          <a-button
+            size="small"
+            class="ml-2"
+            @click="copyToClipboard(product.productKey || '')"
+          >
             复制
           </a-button>
         </a-descriptions-item>
         <a-descriptions-item label="设备总数">
-          <span class="ml-5 mr-2">{{ product.deviceCount ?? '加载中...' }}</span>
+          <span class="ml-5 mr-2">{{
+            product.deviceCount ?? '加载中...'
+          }}</span>
           <a-button size="small" @click="goToDeviceList(product.id!)">
             前往管理
           </a-button>

@@ -153,6 +153,36 @@ export function useGridColumns(
   ];
 }
 
+/** 创建分销员表单配置 */
+export function useCreateFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'userId',
+      label: '分销员编号',
+      component: 'Input',
+      rules: 'required',
+    },
+    {
+      fieldName: 'bindUserId',
+      label: '上级推广员编号',
+      component: 'Input',
+      rules: 'required',
+    },
+  ];
+}
+
+/** 修改分销用户表单配置 */
+export function useUpdateFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'bindUserId',
+      label: '上级推广员编号',
+      component: 'Input',
+      rules: 'required',
+    },
+  ];
+}
+
 /** 用户列表弹窗搜索表单配置 */
 export function useUserListFormSchema(): VbenFormSchema[] {
   return [

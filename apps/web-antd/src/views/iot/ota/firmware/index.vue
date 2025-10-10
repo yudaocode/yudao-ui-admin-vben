@@ -6,12 +6,12 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 
+import Form from '../modules/OtaFirmwareForm.vue';
 import {
   handleDeleteFirmware,
   useGridFormSchema,
   useGridOptions,
 } from './data';
-import Form from '../modules/OtaFirmwareForm.vue';
 
 defineOptions({ name: 'IoTOtaFirmware' });
 

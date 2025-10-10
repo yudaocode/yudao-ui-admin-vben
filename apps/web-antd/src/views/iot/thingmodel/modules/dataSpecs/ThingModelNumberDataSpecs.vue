@@ -1,11 +1,90 @@
 <!-- dataType：number 数组类型 -->
+<script lang="ts" setup>
+import { DICT_TYPE, getStrDictOptions } from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+
+import { DataSpecsNumberData } from '#/api/iot/thingmodel';
+
+/** 数值型的 dataSpecs 配置组件 */
+defineOptions({ name: 'ThingModelNumberDataSpecs' });
+
+const props = defineProps<{ modelValue: any }>();
+const emits = defineEmits(['update:modelValue']);
+const dataSpecs = useVModel(
+  props,
+  'modelValue',
+  emits,
+) as Ref<DataSpecsNumberData>;
+
+/** 单位发生变化时触发 */
+const unitChange = (UnitSpecs: string) => {
+  const [unitName, unit] = UnitSpecs.split('-');
+  dataSpecs.value.unitName = unitName;
+  dataSpecs.value.unit = unit;
+};
+
+/** 校验最小值 */
+const validateMin = (_: any, __: any, callback: any) => {
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (isNaN(min)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (max !== undefined && !isNaN(max) && min >= max) {
+    callback(new Error('最小值必须小于最大值'));
+    return;
+  }
+
+  callback();
+};
+
+/** 校验最大值 */
+const validateMax = (_: any, __: any, callback: any) => {
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (isNaN(max)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (min !== undefined && !isNaN(min) && max <= min) {
+    callback(new Error('最大值必须大于最小值'));
+    return;
+  }
+
+  callback();
+};
+
+/** 校验步长 */
+const validateStep = (_: any, __: any, callback: any) => {
+  const step = Number(dataSpecs.value.step);
+  if (isNaN(step)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (step <= 0) {
+    callback(new Error('步长必须大于0'));
+    return;
+  }
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (!isNaN(min) && !isNaN(max) && step > max - min) {
+    callback(new Error('步长不能大于最大值和最小值的差值'));
+    return;
+  }
+
+  callback();
+};
+</script>
+
 <template>
   <el-form-item label="取值范围">
     <div class="flex items-center justify-between">
       <el-form-item
         :rules="[
           { required: true, message: '最小值不能为空' },
-          { validator: validateMin, trigger: 'blur' }
+          { validator: validateMin, trigger: 'blur' },
         ]"
         class="mb-0"
         prop="property.dataSpecs.min"
@@ -16,7 +95,7 @@
       <el-form-item
         :rules="[
           { required: true, message: '最大值不能为空' },
-          { validator: validateMax, trigger: 'blur' }
+          { validator: validateMax, trigger: 'blur' },
         ]"
         class="mb-0"
         prop="property.dataSpecs.max"
@@ -28,7 +107,7 @@
   <el-form-item
     :rules="[
       { required: true, message: '步长不能为空' },
-      { validator: validateStep, trigger: 'blur' }
+      { validator: validateStep, trigger: 'blur' },
     ]"
     label="步长"
     prop="property.dataSpecs.step"
@@ -41,94 +120,25 @@
     prop="property.dataSpecs.unit"
   >
     <el-select
-      :model-value="dataSpecs.unit ? dataSpecs.unitName + '-' + dataSpecs.unit : ''"
+      :model-value="
+        dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''
+      "
       filterable
       placeholder="请选择单位"
       class="w-1/1"
       @change="unitChange"
     >
       <el-option
-        v-for="(item, index) in getStrDictOptions(DICT_TYPE.IOT_THING_MODEL_UNIT)"
+        v-for="(item, index) in getStrDictOptions(
+          DICT_TYPE.IOT_THING_MODEL_UNIT,
+        )"
         :key="index"
-        :label="item.label + '-' + item.value"
-        :value="item.label + '-' + item.value"
+        :label="`${item.label}-${item.value}`"
+        :value="`${item.label}-${item.value}`"
       />
     </el-select>
   </el-form-item>
 </template>
-
-<script lang="ts" setup>
-import { useVModel } from '@vueuse/core'
-import { DICT_TYPE, getStrDictOptions } from '@vben/constants'
-import { DataSpecsNumberData } from '#/api/iot/thingmodel'
-
-/** 数值型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelNumberDataSpecs' })
-
-const props = defineProps<{ modelValue: any }>()
-const emits = defineEmits(['update:modelValue'])
-const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<DataSpecsNumberData>
-
-/** 单位发生变化时触发 */
-const unitChange = (UnitSpecs: string) => {
-  const [unitName, unit] = UnitSpecs.split('-')
-  dataSpecs.value.unitName = unitName
-  dataSpecs.value.unit = unit
-}
-
-/** 校验最小值 */
-const validateMin = (_: any, __: any, callback: any) => {
-  const min = Number(dataSpecs.value.min)
-  const max = Number(dataSpecs.value.max)
-  if (isNaN(min)) {
-    callback(new Error('请输入有效的数值'))
-    return
-  }
-  if (max !== undefined && !isNaN(max) && min >= max) {
-    callback(new Error('最小值必须小于最大值'))
-    return
-  }
-
-  callback()
-}
-
-/** 校验最大值 */
-const validateMax = (_: any, __: any, callback: any) => {
-  const min = Number(dataSpecs.value.min)
-  const max = Number(dataSpecs.value.max)
-  if (isNaN(max)) {
-    callback(new Error('请输入有效的数值'))
-    return
-  }
-  if (min !== undefined && !isNaN(min) && max <= min) {
-    callback(new Error('最大值必须大于最小值'))
-    return
-  }
-
-  callback()
-}
-
-/** 校验步长 */
-const validateStep = (_: any, __: any, callback: any) => {
-  const step = Number(dataSpecs.value.step)
-  if (isNaN(step)) {
-    callback(new Error('请输入有效的数值'))
-    return
-  }
-  if (step <= 0) {
-    callback(new Error('步长必须大于0'))
-    return
-  }
-  const min = Number(dataSpecs.value.min)
-  const max = Number(dataSpecs.value.max)
-  if (!isNaN(min) && !isNaN(max) && step > max - min) {
-    callback(new Error('步长不能大于最大值和最小值的差值'))
-    return
-  }
-
-  callback()
-}
-</script>
 
 <style lang="scss" scoped>
 :deep(.el-form-item) {

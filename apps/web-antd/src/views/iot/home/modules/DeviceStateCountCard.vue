@@ -1,36 +1,17 @@
-<template>
-  <Card title="设备状态统计" :loading="loading" class="chart-card">
-    <div v-if="loading && !hasData" class="h-[300px] flex justify-center items-center">
-      <Empty description="加载中..." />
-    </div>
-    <div v-else-if="!hasData" class="h-[300px] flex justify-center items-center">
-      <Empty description="暂无数据" />
-    </div>
-    <Row v-else class="h-[280px]">
-      <Col :span="8" class="flex items-center justify-center">
-        <EchartsUI ref="deviceOnlineChartRef" class="h-[250px] w-full" />
-      </Col>
-      <Col :span="8" class="flex items-center justify-center">
-        <EchartsUI ref="deviceOfflineChartRef" class="h-[250px] w-full" />
-      </Col>
-      <Col :span="8" class="flex items-center justify-center">
-        <EchartsUI ref="deviceInactiveChartRef" class="h-[250px] w-full" />
-      </Col>
-    </Row>
-  </Card>
-</template>
-
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
-import { Card, Empty, Row, Col } from 'ant-design-vue';
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import type { IotStatisticsApi } from '#/api/iot/statistics';
+
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+
+import { Card, Col, Empty, Row } from 'ant-design-vue';
 
 defineOptions({ name: 'DeviceStateCountCard' });
 
 const props = defineProps<{
-  statsData: IotStatisticsApi.StatisticsSummary;
   loading?: boolean;
+  statsData: IotStatisticsApi.StatisticsSummary;
 }>();
 
 const deviceOnlineChartRef = ref();
@@ -39,7 +20,9 @@ const deviceInactiveChartRef = ref();
 
 const { renderEcharts: renderOnlineChart } = useEcharts(deviceOnlineChartRef);
 const { renderEcharts: renderOfflineChart } = useEcharts(deviceOfflineChartRef);
-const { renderEcharts: renderInactiveChart } = useEcharts(deviceInactiveChartRef);
+const { renderEcharts: renderInactiveChart } = useEcharts(
+  deviceInactiveChartRef,
+);
 
 /** 是否有数据 */
 const hasData = computed(() => {
@@ -63,7 +46,7 @@ const getGaugeOption = (value: number, color: string, title: string): any => {
           show: true,
           width: 12,
           itemStyle: {
-            color: color,
+            color,
           },
         },
         axisLine: {
@@ -86,11 +69,11 @@ const getGaugeOption = (value: number, color: string, title: string): any => {
           valueAnimation: true,
           fontSize: 32,
           fontWeight: 'bold',
-          color: color,
+          color,
           offsetCenter: [0, '10%'],
           formatter: (val: number) => `${val} 个`,
         },
-        data: [{ value: value, name: title }],
+        data: [{ value, name: title }],
       },
     ],
   };
@@ -103,15 +86,19 @@ const initCharts = () => {
   nextTick(() => {
     // 在线设备
     renderOnlineChart(
-      getGaugeOption(props.statsData.deviceOnlineCount, '#52c41a', '在线设备')
+      getGaugeOption(props.statsData.deviceOnlineCount, '#52c41a', '在线设备'),
     );
     // 离线设备
     renderOfflineChart(
-      getGaugeOption(props.statsData.deviceOfflineCount, '#ff4d4f', '离线设备')
+      getGaugeOption(props.statsData.deviceOfflineCount, '#ff4d4f', '离线设备'),
     );
     // 待激活设备
     renderInactiveChart(
-      getGaugeOption(props.statsData.deviceInactiveCount, '#1890ff', '待激活设备')
+      getGaugeOption(
+        props.statsData.deviceInactiveCount,
+        '#1890ff',
+        '待激活设备',
+      ),
     );
   });
 };
@@ -122,7 +109,7 @@ watch(
   () => {
     initCharts();
   },
-  { deep: true }
+  { deep: true },
 );
 
 /** 组件挂载时初始化图表 */
@@ -130,6 +117,34 @@ onMounted(() => {
   initCharts();
 });
 </script>
+
+<template>
+  <Card title="设备状态统计" :loading="loading" class="chart-card">
+    <div
+      v-if="loading && !hasData"
+      class="flex h-[300px] items-center justify-center"
+    >
+      <Empty description="加载中..." />
+    </div>
+    <div
+      v-else-if="!hasData"
+      class="flex h-[300px] items-center justify-center"
+    >
+      <Empty description="暂无数据" />
+    </div>
+    <Row v-else class="h-[280px]">
+      <Col :span="8" class="flex items-center justify-center">
+        <EchartsUI ref="deviceOnlineChartRef" class="h-[250px] w-full" />
+      </Col>
+      <Col :span="8" class="flex items-center justify-center">
+        <EchartsUI ref="deviceOfflineChartRef" class="h-[250px] w-full" />
+      </Col>
+      <Col :span="8" class="flex items-center justify-center">
+        <EchartsUI ref="deviceInactiveChartRef" class="h-[250px] w-full" />
+      </Col>
+    </Row>
+  </Card>
+</template>
 
 <style scoped>
 .chart-card {

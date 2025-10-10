@@ -73,7 +73,7 @@ async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
     text: $t('ui.actionMessage.deleting', [row.nickname]),
   });
   try {
-    await clearBindUser({ id: row.id as number });
+    await clearBindUser({ id: row.id! });
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.nickname]));
     handleRefresh();
   } finally {
@@ -203,7 +203,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               link: true,
               auth: ['trade:brokerage-user:clear-bind-user'],
-              ifShow: !!row.bindUserId,
+              ifShow: row.bindUserId > 0,
               onClick: handleClearBindUser.bind(null, row),
             },
           ]"

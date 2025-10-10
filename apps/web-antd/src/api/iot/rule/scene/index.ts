@@ -156,8 +156,7 @@ export function getSimpleRuleSceneList() {
 
 // 别名导出（兼容旧代码）
 export {
-  getSceneRulePage as getRuleScenePage,
   deleteSceneRule as deleteRuleScene,
+  getSceneRulePage as getRuleScenePage,
   updateSceneRuleStatus as updateRuleSceneStatus,
 };
-

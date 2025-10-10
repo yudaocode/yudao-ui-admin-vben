@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { formatDate } from '@vben/utils';
+import type { TableColumnsType } from 'ant-design-vue';
+
 import type { OtaTask } from '#/api/iot/ota/task';
+
+import { onMounted, reactive, ref } from 'vue';
+
+import { VbenButton } from '@vben/common-ui';
+import { formatDate } from '@vben/utils';
+
+import { Card, Input, message, Modal, Space, Table, Tag } from 'ant-design-vue';
+
 import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
-import OtaTaskForm from './OtaTaskForm.vue';
+
 import OtaTaskDetail from './OtaTaskDetail.vue';
-import { Card, Input, Table, Space, Modal, message, Tag } from 'ant-design-vue';
-import type { TableColumnsType } from 'ant-design-vue';
-import { VbenButton } from '@vben/common-ui';
+import OtaTaskForm from './OtaTaskForm.vue';
 
 /** IoT OTA 任务列表 */
 defineOptions({ name: 'OtaTaskList' });
@@ -160,7 +166,7 @@ onMounted(() => {
 <template>
   <Card title="升级任务管理" class="mb-5">
     <!-- 搜索栏 -->
-    <div class="mb-4 flex justify-between items-center">
+    <div class="mb-4 flex items-center justify-between">
       <VbenButton type="primary" @click="openTaskForm">
         <Icon icon="ant-design:plus-outlined" class="mr-1" />
         新增

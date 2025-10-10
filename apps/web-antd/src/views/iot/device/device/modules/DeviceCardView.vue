@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
+
 import {
   Button,
   Card,
@@ -11,37 +15,34 @@ import {
   Row,
   Tag,
 } from 'ant-design-vue';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 
 import { DeviceStateEnum, getDevicePage } from '#/api/iot/device/device';
 
 defineOptions({ name: 'DeviceCardView' });
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  create: [];
+  delete: [row: any];
+  detail: [id: number];
+  edit: [row: any];
+  model: [id: number];
+  productDetail: [productId: number];
+}>();
 
 interface Props {
   products: any[];
   deviceGroups: any[];
   searchParams?: {
     deviceName: string;
+    deviceType?: number;
+    groupId?: number;
     nickname: string;
     productId?: number;
-    deviceType?: number;
     status?: number;
-    groupId?: number;
   };
 }
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  create: [];
-  edit: [row: any];
-  delete: [row: any];
-  detail: [id: number];
-  model: [id: number];
-  productDetail: [productId: number];
-}>();
 
 const loading = ref(false);
 const list = ref<any[]>([]);
@@ -111,7 +112,7 @@ onMounted(() => {
 });
 
 // 暴露方法供父组件调用
-defineExpose({ 
+defineExpose({
   reload: getList,
   search: () => {
     queryParams.value.pageNo = 1;
@@ -145,7 +146,7 @@ defineExpose({
                 <div class="device-icon">
                   <IconifyIcon icon="mdi:chip" />
                 </div>
-                <div 
+                <div
                   class="status-badge"
                   :style="{
                     color: getStatusInfo(item.state).color,
@@ -167,17 +168,30 @@ defineExpose({
               <div class="info-section">
                 <div class="info-item">
                   <span class="label">所属产品</span>
-                  <a 
+                  <a
                     class="value link"
-                    @click="(e: MouseEvent) => { e.stopPropagation(); emit('productDetail', item.productId); }"
+                    @click="
+                      (e: MouseEvent) => {
+                        e.stopPropagation();
+                        emit('productDetail', item.productId);
+                      }
+                    "
                   >
                     {{ getProductName(item.productId) }}
                   </a>
                 </div>
                 <div class="info-item">
                   <span class="label">设备类型</span>
-                  <Tag :color="getDeviceTypeColor(item.deviceType)" size="small">
-                    {{ getDictLabel(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, item.deviceType) }}
+                  <Tag
+                    :color="getDeviceTypeColor(item.deviceType)"
+                    size="small"
+                  >
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
+                        item.deviceType,
+                      )
+                    }}
                   </Tag>
                 </div>
                 <div class="info-item">
@@ -190,29 +204,44 @@ defineExpose({
 
               <!-- 操作按钮 -->
               <div class="action-bar">
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-edit"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('edit', item); }"
+                  @click="
+                    (e: MouseEvent) => {
+                      e.stopPropagation();
+                      emit('edit', item);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:note-pencil" />
                   编辑
                 </Button>
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-view"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('detail', item.id); }"
+                  @click="
+                    (e: MouseEvent) => {
+                      e.stopPropagation();
+                      emit('detail', item.id);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:eye" />
                   详情
                 </Button>
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-data"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('model', item.id); }"
+                  @click="
+                    (e: MouseEvent) => {
+                      e.stopPropagation();
+                      emit('model', item.id);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:database" />
                   数据
@@ -221,7 +250,7 @@ defineExpose({
                   title="确认删除该设备吗?"
                   @confirm="() => emit('delete', item)"
                 >
-                  <Button 
+                  <Button
                     type="default"
                     size="small"
                     class="action-btn btn-delete"
@@ -262,13 +291,19 @@ defineExpose({
     height: 100%;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    box-shadow:
+      0 1px 2px 0 rgba(0, 0, 0, 0.03),
+      0 1px 6px -1px rgba(0, 0, 0, 0.02),
+      0 2px 4px 0 rgba(0, 0, 0, 0.02);
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     border: 1px solid #f0f0f0;
     background: #fff;
 
     &:hover {
-      box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+      box-shadow:
+        0 1px 2px -2px rgba(0, 0, 0, 0.16),
+        0 3px 6px 0 rgba(0, 0, 0, 0.12),
+        0 5px 12px 4px rgba(0, 0, 0, 0.09);
       transform: translateY(-4px);
       border-color: #e6e6e6;
     }
@@ -379,7 +414,9 @@ defineExpose({
           }
 
           &.code {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+            font-family:
+              'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas',
+              monospace;
             font-size: 12px;
             color: #595959;
             font-weight: 500;

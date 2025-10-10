@@ -1,14 +1,168 @@
 <!-- 执行器配置组件 -->
+<script setup lang="ts">
+import type { Action } from '#/api/iot/rule/scene';
+
+import { useVModel } from '@vueuse/core';
+
+import {
+  getActionTypeLabel,
+  getActionTypeOptions,
+  IotRuleSceneActionTypeEnum,
+} from '#/views/iot/utils/constants';
+
+import AlertConfig from '../configs/AlertConfig.vue';
+import DeviceControlConfig from '../configs/DeviceControlConfig.vue';
+
+/** 执行器配置组件 */
+defineOptions({ name: 'ActionSection' });
+
+const props = defineProps<{
+  actions: Action[];
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:actions', value: Action[]): void;
+}>();
+
+const actions = useVModel(props, 'actions', emit);
+
+/** 获取执行器标签类型（用于 el-tag 的 type 属性） */
+const getActionTypeTag = (
+  type: number,
+): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
+  const actionTypeTags = {
+    [IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET]: 'primary',
+    [IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE]: 'success',
+    [IotRuleSceneActionTypeEnum.ALERT_TRIGGER]: 'danger',
+    [IotRuleSceneActionTypeEnum.ALERT_RECOVER]: 'warning',
+  } as const;
+  return actionTypeTags[type] || 'info';
+};
+
+/** 判断是否为设备执行器类型 */
+const isDeviceAction = (type: number): boolean => {
+  const deviceActionTypes = [
+    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET,
+    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE,
+  ] as number[];
+  return deviceActionTypes.includes(type);
+};
+
+/** 判断是否为告警执行器类型 */
+const isAlertAction = (type: number): boolean => {
+  const alertActionTypes = [
+    IotRuleSceneActionTypeEnum.ALERT_TRIGGER,
+    IotRuleSceneActionTypeEnum.ALERT_RECOVER,
+  ] as number[];
+  return alertActionTypes.includes(type);
+};
+
+/**
+ * 创建默认的执行器数据
+ * @returns 默认执行器对象
+ */
+const createDefaultActionData = (): Action => {
+  return {
+    type: IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET, // 默认为设备属性设置
+    productId: undefined,
+    deviceId: undefined,
+    identifier: undefined, // 物模型标识符（服务调用时使用）
+    params: undefined,
+    alertConfigId: undefined,
+  };
+};
+
+/**
+ * 添加执行器
+ */
+const addAction = () => {
+  const newAction = createDefaultActionData();
+  actions.value.push(newAction);
+};
+
+/**
+ * 删除执行器
+ * @param index 执行器索引
+ */
+const removeAction = (index: number) => {
+  actions.value.splice(index, 1);
+};
+
+/**
+ * 更新执行器类型
+ * @param index 执行器索引
+ * @param type 执行器类型
+ */
+const updateActionType = (index: number, type: number) => {
+  actions.value[index].type = type;
+  onActionTypeChange(actions.value[index], type);
+};
+
+/**
+ * 更新执行器
+ * @param index 执行器索引
+ * @param action 执行器对象
+ */
+const updateAction = (index: number, action: Action) => {
+  actions.value[index] = action;
+};
+
+/**
+ * 更新告警配置
+ * @param index 执行器索引
+ * @param alertConfigId 告警配置ID
+ */
+const updateActionAlertConfig = (index: number, alertConfigId?: number) => {
+  actions.value[index].alertConfigId = alertConfigId;
+};
+
+/**
+ * 监听执行器类型变化
+ * @param action 执行器对象
+ * @param type 执行器类型
+ */
+const onActionTypeChange = (action: Action, type: number) => {
+  // 清理不相关的配置，确保数据结构干净
+  if (isDeviceAction(type)) {
+    // 设备控制类型：清理告警配置，确保设备参数存在
+    action.alertConfigId = undefined;
+    if (!action.params) {
+      action.params = '';
+    }
+    // 如果从其他类型切换到设备控制类型，清空identifier（让用户重新选择）
+    if (action.identifier && type !== action.type) {
+      action.identifier = undefined;
+    }
+  } else if (isAlertAction(type)) {
+    action.productId = undefined;
+    action.deviceId = undefined;
+    action.identifier = undefined; // 清理服务标识符
+    action.params = undefined;
+    action.alertConfigId = undefined;
+  }
+};
+</script>
+
 <template>
-  <el-card class="border border-[var(--el-border-color-light)] rounded-8px" shadow="never">
+  <el-card
+    class="rounded-8px border border-[var(--el-border-color-light)]"
+    shadow="never"
+  >
     <template #header>
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-8px">
-          <Icon icon="ep:setting" class="text-[var(--el-color-primary)] text-18px" />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">执行器配置</span>
-          <el-tag size="small" type="info">{{ actions.length }} 个执行器</el-tag>
+        <div class="gap-8px flex items-center">
+          <Icon
+            icon="ep:setting"
+            class="text-18px text-[var(--el-color-primary)]"
+          />
+          <span class="text-16px font-600 text-[var(--el-text-color-primary)]"
+            >执行器配置</span
+          >
+          <el-tag size="small" type="info">
+            {{ actions.length }} 个执行器
+          </el-tag>
         </div>
-        <div class="flex items-center gap-8px">
+        <div class="gap-8px flex items-center">
           <el-button type="primary" size="small" @click="addAction">
             <Icon icon="ep:plus" />
             添加执行器
@@ -33,26 +187,32 @@
         <div
           v-for="(action, index) in actions"
           :key="`action-${index}`"
-          class="border-2 border-blue-200 rounded-8px bg-blue-50 shadow-sm hover:shadow-md transition-shadow"
+          class="rounded-8px border-2 border-blue-200 bg-blue-50 shadow-sm transition-shadow hover:shadow-md"
         >
           <!-- 执行器头部 - 蓝色主题 -->
           <div
-            class="flex items-center justify-between p-16px bg-gradient-to-r from-blue-50 to-sky-50 border-b border-blue-200 rounded-t-6px"
+            class="p-16px rounded-t-6px flex items-center justify-between border-b border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50"
           >
-            <div class="flex items-center gap-12px">
-              <div class="flex items-center gap-8px text-16px font-600 text-blue-700">
+            <div class="gap-12px flex items-center">
+              <div
+                class="gap-8px text-16px font-600 flex items-center text-blue-700"
+              >
                 <div
-                  class="w-24px h-24px bg-blue-500 text-white rounded-full flex items-center justify-center text-12px font-bold"
+                  class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-blue-500 font-bold text-white"
                 >
                   {{ index + 1 }}
                 </div>
                 <span>执行器 {{ index + 1 }}</span>
               </div>
-              <el-tag :type="getActionTypeTag(action.type)" size="small" class="font-500">
+              <el-tag
+                :type="getActionTypeTag(action.type)"
+                size="small"
+                class="font-500"
+              >
                 {{ getActionTypeLabel(action.type) }}
               </el-tag>
             </div>
-            <div class="flex items-center gap-8px">
+            <div class="gap-8px flex items-center">
               <el-button
                 v-if="actions.length > 1"
                 type="danger"
@@ -74,7 +234,9 @@
               <el-form-item label="执行类型" required>
                 <el-select
                   :model-value="action.type"
-                  @update:model-value="(value) => updateActionType(index, value)"
+                  @update:model-value="
+                    (value) => updateActionType(index, value)
+                  "
                   @change="(value) => onActionTypeChange(action, value)"
                   placeholder="请选择执行类型"
                   class="w-full"
@@ -100,21 +262,32 @@
             <AlertConfig
               v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_RECOVER"
               :model-value="action.alertConfigId"
-              @update:model-value="(value) => updateActionAlertConfig(index, value)"
+              @update:model-value="
+                (value) => updateActionAlertConfig(index, value)
+              "
             />
 
             <!-- 触发告警提示 - 触发告警时显示 -->
             <div
               v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER"
-              class="border border-[var(--el-border-color-light)] rounded-6px p-16px bg-[var(--el-fill-color-blank)]"
+              class="rounded-6px p-16px border border-[var(--el-border-color-light)] bg-[var(--el-fill-color-blank)]"
             >
-              <div class="flex items-center gap-8px mb-8px">
-                <Icon icon="ep:warning" class="text-[var(--el-color-warning)] text-16px" />
-                <span class="text-14px font-600 text-[var(--el-text-color-primary)]">触发告警</span>
+              <div class="gap-8px mb-8px flex items-center">
+                <Icon
+                  icon="ep:warning"
+                  class="text-16px text-[var(--el-color-warning)]"
+                />
+                <span
+                  class="text-14px font-600 text-[var(--el-text-color-primary)]"
+                  >触发告警</span
+                >
                 <el-tag size="small" type="warning">自动执行</el-tag>
               </div>
-              <div class="text-12px text-[var(--el-text-color-secondary)] leading-relaxed">
-                当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 -> 告警配置] 管理。
+              <div
+                class="text-12px leading-relaxed text-[var(--el-text-color-secondary)]"
+              >
+                当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
+                告警配置] 管理。
               </div>
             </div>
           </div>
@@ -122,7 +295,7 @@
       </div>
 
       <!-- 添加提示 -->
-      <div v-if="actions.length > 0" class="text-center py-16px">
+      <div v-if="actions.length > 0" class="py-16px text-center">
         <el-button type="primary" plain @click="addAction">
           <Icon icon="ep:plus" />
           继续添加执行器
@@ -131,142 +304,3 @@
     </div>
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { useVModel } from '@vueuse/core'
-import DeviceControlConfig from '../configs/DeviceControlConfig.vue'
-import AlertConfig from '../configs/AlertConfig.vue'
-import type { Action } from '#/api/iot/rule/scene'
-import {
-  getActionTypeLabel,
-  getActionTypeOptions,
-  IotRuleSceneActionTypeEnum
-} from '#/views/iot/utils/constants'
-
-/** 执行器配置组件 */
-defineOptions({ name: 'ActionSection' })
-
-const props = defineProps<{
-  actions: Action[]
-}>()
-
-const emit = defineEmits<{
-  (e: 'update:actions', value: Action[]): void
-}>()
-
-const actions = useVModel(props, 'actions', emit)
-
-/** 获取执行器标签类型（用于 el-tag 的 type 属性） */
-const getActionTypeTag = (type: number): 'primary' | 'success' | 'info' | 'warning' | 'danger' => {
-  const actionTypeTags = {
-    [IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET]: 'primary',
-    [IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE]: 'success',
-    [IotRuleSceneActionTypeEnum.ALERT_TRIGGER]: 'danger',
-    [IotRuleSceneActionTypeEnum.ALERT_RECOVER]: 'warning'
-  } as const
-  return actionTypeTags[type] || 'info'
-}
-
-/** 判断是否为设备执行器类型 */
-const isDeviceAction = (type: number): boolean => {
-  const deviceActionTypes = [
-    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET,
-    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE
-  ] as number[]
-  return deviceActionTypes.includes(type)
-}
-
-/** 判断是否为告警执行器类型 */
-const isAlertAction = (type: number): boolean => {
-  const alertActionTypes = [
-    IotRuleSceneActionTypeEnum.ALERT_TRIGGER,
-    IotRuleSceneActionTypeEnum.ALERT_RECOVER
-  ] as number[]
-  return alertActionTypes.includes(type)
-}
-
-/**
- * 创建默认的执行器数据
- * @returns 默认执行器对象
- */
-const createDefaultActionData = (): Action => {
-  return {
-    type: IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET, // 默认为设备属性设置
-    productId: undefined,
-    deviceId: undefined,
-    identifier: undefined, // 物模型标识符（服务调用时使用）
-    params: undefined,
-    alertConfigId: undefined
-  }
-}
-
-/**
- * 添加执行器
- */
-const addAction = () => {
-  const newAction = createDefaultActionData()
-  actions.value.push(newAction)
-}
-
-/**
- * 删除执行器
- * @param index 执行器索引
- */
-const removeAction = (index: number) => {
-  actions.value.splice(index, 1)
-}
-
-/**
- * 更新执行器类型
- * @param index 执行器索引
- * @param type 执行器类型
- */
-const updateActionType = (index: number, type: number) => {
-  actions.value[index].type = type
-  onActionTypeChange(actions.value[index], type)
-}
-
-/**
- * 更新执行器
- * @param index 执行器索引
- * @param action 执行器对象
- */
-const updateAction = (index: number, action: Action) => {
-  actions.value[index] = action
-}
-
-/**
- * 更新告警配置
- * @param index 执行器索引
- * @param alertConfigId 告警配置ID
- */
-const updateActionAlertConfig = (index: number, alertConfigId?: number) => {
-  actions.value[index].alertConfigId = alertConfigId
-}
-
-/**
- * 监听执行器类型变化
- * @param action 执行器对象
- * @param type 执行器类型
- */
-const onActionTypeChange = (action: Action, type: number) => {
-  // 清理不相关的配置，确保数据结构干净
-  if (isDeviceAction(type)) {
-    // 设备控制类型：清理告警配置，确保设备参数存在
-    action.alertConfigId = undefined
-    if (!action.params) {
-      action.params = ''
-    }
-    // 如果从其他类型切换到设备控制类型，清空identifier（让用户重新选择）
-    if (action.identifier && type !== action.type) {
-      action.identifier = undefined
-    }
-  } else if (isAlertAction(type)) {
-    action.productId = undefined
-    action.deviceId = undefined
-    action.identifier = undefined // 清理服务标识符
-    action.params = undefined
-    action.alertConfigId = undefined
-  }
-}
-</script>

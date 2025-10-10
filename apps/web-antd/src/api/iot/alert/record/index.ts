@@ -82,4 +82,3 @@ export function deleteAlertRecordList(ids: number[]) {
 }
 
 export { AlertRecordApi };
-

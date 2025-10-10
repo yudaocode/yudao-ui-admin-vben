@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 
-import { Table, Select, Button, Form, FormItem } from 'ant-design-vue';
+import { Button, Form, FormItem, Select, Table } from 'ant-design-vue';
 
-import { getSimpleProductList } from '#/api/iot/product/product';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
+import { getSimpleProductList } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
   IotDeviceMessageMethodEnum,
@@ -25,13 +25,17 @@ const formRef = ref(); // 表单 Ref
 
 // 获取上行消息方法列表
 const upstreamMethods = computed(() => {
-  return Object.values(IotDeviceMessageMethodEnum).filter((item) => item.upstream);
+  return Object.values(IotDeviceMessageMethodEnum).filter(
+    (item) => item.upstream,
+  );
 });
 
 /** 根据产品 ID 过滤设备 */
 const getFilteredDevices = (productId: number) => {
   if (!productId) return [];
-  return deviceList.value.filter((device: any) => device.productId === productId);
+  return deviceList.value.filter(
+    (device: any) => device.productId === productId,
+  );
 };
 
 /** 判断是否需要显示标识符选择器 */

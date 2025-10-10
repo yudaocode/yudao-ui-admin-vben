@@ -1,7 +1,417 @@
 <!-- JSON参数输入组件 - 通用版本 -->
+<script setup lang="ts">
+import type { JsonParamsInputType } from '#/views/iot/utils/constants';
+
+import { InfoFilled } from '@element-plus/icons-vue';
+import { useVModel } from '@vueuse/core';
+
+import {
+  IoTDataSpecsDataTypeEnum,
+  JSON_PARAMS_EXAMPLE_VALUES,
+  JSON_PARAMS_INPUT_CONSTANTS,
+  JSON_PARAMS_INPUT_ICONS,
+  JsonParamsInputTypeEnum,
+} from '#/views/iot/utils/constants';
+
+/** JSON参数输入组件 - 通用版本 */
+defineOptions({ name: 'JsonParamsInput' });
+
+const props = withDefaults(defineProps<Props>(), {
+  type: JsonParamsInputTypeEnum.SERVICE,
+  placeholder: JSON_PARAMS_INPUT_CONSTANTS.PLACEHOLDER,
+});
+
+const emit = defineEmits<Emits>();
+
+interface JsonParamsConfig {
+  // 服务配置
+  service?: {
+    inputParams?: any[];
+    name: string;
+  };
+  // 事件配置
+  event?: {
+    name: string;
+    outputParams?: any[];
+  };
+  // 属性配置
+  properties?: any[];
+  // 自定义配置
+  custom?: {
+    name: string;
+    params: any[];
+  };
+}
+
+interface Props {
+  modelValue?: string;
+  config?: JsonParamsConfig;
+  type?: JsonParamsInputType;
+  placeholder?: string;
+}
+
+interface Emits {
+  (e: 'update:modelValue', value: string): void;
+}
+
+const localValue = useVModel(props, 'modelValue', emit, {
+  defaultValue: '',
+});
+
+const paramsJson = ref(''); // JSON参数字符串
+const jsonError = ref(''); // JSON验证错误信息
+
+// 计算属性：参数列表
+const paramsList = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return props.config?.custom?.params || [];
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return props.config?.event?.outputParams || [];
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return props.config?.properties || [];
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return props.config?.service?.inputParams || [];
+    }
+    default: {
+      return [];
+    }
+  }
+});
+
+// 计算属性：标题
+const title = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.CUSTOM(
+        props.config?.custom?.name,
+      );
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.EVENT(
+        props.config?.event?.name,
+      );
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.SERVICE(
+        props.config?.service?.name,
+      );
+    }
+    default: {
+      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.DEFAULT;
+    }
+  }
+});
+
+// 计算属性：标题图标
+const titleIcon = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.CUSTOM;
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.EVENT;
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.SERVICE;
+    }
+    default: {
+      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.DEFAULT;
+    }
+  }
+});
+
+// 计算属性：参数图标
+const paramsIcon = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.CUSTOM;
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.EVENT;
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.SERVICE;
+    }
+    default: {
+      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.DEFAULT;
+    }
+  }
+});
+
+// 计算属性：参数标签
+const paramsLabel = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.CUSTOM;
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.EVENT;
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.SERVICE;
+    }
+    default: {
+      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.DEFAULT;
+    }
+  }
+});
+
+// 计算属性：空状态消息
+const emptyMessage = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.CUSTOM;
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.EVENT;
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.SERVICE;
+    }
+    default: {
+      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.DEFAULT;
+    }
+  }
+});
+
+// 计算属性：无配置消息
+const noConfigMessage = computed(() => {
+  switch (props.type) {
+    case JsonParamsInputTypeEnum.CUSTOM: {
+      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.CUSTOM;
+    }
+    case JsonParamsInputTypeEnum.EVENT: {
+      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.EVENT;
+    }
+    case JsonParamsInputTypeEnum.PROPERTY: {
+      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.PROPERTY;
+    }
+    case JsonParamsInputTypeEnum.SERVICE: {
+      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.SERVICE;
+    }
+    default: {
+      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.DEFAULT;
+    }
+  }
+});
+
+/**
+ * 处理参数变化事件
+ */
+const handleParamsChange = () => {
+  try {
+    jsonError.value = ''; // 清除之前的错误
+
+    if (paramsJson.value.trim()) {
+      const parsed = JSON.parse(paramsJson.value);
+      localValue.value = paramsJson.value;
+
+      // 额外的参数验证
+      if (typeof parsed !== 'object' || parsed === null) {
+        jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAMS_MUST_BE_OBJECT;
+        return;
+      }
+
+      // 验证必填参数
+      for (const param of paramsList.value) {
+        if (
+          param.required &&
+          (!parsed[param.identifier] || parsed[param.identifier] === '')
+        ) {
+          jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(
+            param.name,
+          );
+          return;
+        }
+      }
+    } else {
+      localValue.value = '';
+    }
+
+    // 验证通过
+    jsonError.value = '';
+  } catch (error) {
+    jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.JSON_FORMAT_ERROR(
+      error instanceof Error
+        ? error.message
+        : JSON_PARAMS_INPUT_CONSTANTS.UNKNOWN_ERROR,
+    );
+  }
+};
+
+/**
+ * 快速填充示例数据
+ */
+const fillExampleJson = () => {
+  paramsJson.value = generateExampleJson();
+  handleParamsChange();
+};
+
+/**
+ * 清空参数
+ */
+const clearParams = () => {
+  paramsJson.value = '';
+  localValue.value = '';
+  jsonError.value = '';
+};
+
+/**
+ * 获取参数类型名称
+ * @param dataType 数据类型
+ * @returns 类型名称
+ */
+const getParamTypeName = (dataType: string) => {
+  // 使用 constants.ts 中已有的 getDataTypeName 函数逻辑
+  const typeMap = {
+    [IoTDataSpecsDataTypeEnum.INT]: '整数',
+    [IoTDataSpecsDataTypeEnum.FLOAT]: '浮点数',
+    [IoTDataSpecsDataTypeEnum.DOUBLE]: '双精度',
+    [IoTDataSpecsDataTypeEnum.TEXT]: '字符串',
+    [IoTDataSpecsDataTypeEnum.BOOL]: '布尔值',
+    [IoTDataSpecsDataTypeEnum.ENUM]: '枚举',
+    [IoTDataSpecsDataTypeEnum.DATE]: '日期',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: '结构体',
+    [IoTDataSpecsDataTypeEnum.ARRAY]: '数组',
+  };
+  return typeMap[dataType] || dataType;
+};
+
+/**
+ * 获取参数类型标签样式
+ * @param dataType 数据类型
+ * @returns 标签样式
+ */
+const getParamTypeTag = (dataType: string) => {
+  const tagMap = {
+    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
+    [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
+    [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
+    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
+    [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
+    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
+    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
+    [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
+  };
+  return tagMap[dataType] || 'info';
+};
+
+/**
+ * 获取示例值
+ * @param param 参数对象
+ * @returns 示例值
+ */
+const getExampleValue = (param: any) => {
+  const exampleConfig =
+    JSON_PARAMS_EXAMPLE_VALUES[param.dataType] ||
+    JSON_PARAMS_EXAMPLE_VALUES.DEFAULT;
+  return exampleConfig.display;
+};
+
+/**
+ * 生成示例JSON
+ * @returns JSON字符串
+ */
+const generateExampleJson = () => {
+  if (paramsList.value.length === 0) {
+    return '{}';
+  }
+
+  const example = {};
+  paramsList.value.forEach((param) => {
+    const exampleConfig =
+      JSON_PARAMS_EXAMPLE_VALUES[param.dataType] ||
+      JSON_PARAMS_EXAMPLE_VALUES.DEFAULT;
+    example[param.identifier] = exampleConfig.value;
+  });
+
+  return JSON.stringify(example, null, 2);
+};
+
+/**
+ * 处理数据回显
+ * @param value 值字符串
+ */
+const handleDataDisplay = (value: string) => {
+  if (!value || !value.trim()) {
+    paramsJson.value = '';
+    jsonError.value = '';
+    return;
+  }
+
+  try {
+    // 尝试解析JSON，如果成功则格式化
+    const parsed = JSON.parse(value);
+    paramsJson.value = JSON.stringify(parsed, null, 2);
+    jsonError.value = '';
+  } catch {
+    // 如果不是有效的JSON，直接使用原字符串
+    paramsJson.value = value;
+    jsonError.value = '';
+  }
+};
+
+// 监听外部值变化（编辑模式数据回显）
+watch(
+  () => localValue.value,
+  async (newValue, oldValue) => {
+    // 避免循环更新
+    if (newValue === oldValue) return;
+
+    // 使用 nextTick 确保在下一个 tick 中处理数据
+    await nextTick();
+    handleDataDisplay(newValue || '');
+  },
+  { immediate: true },
+);
+
+// 组件挂载后也尝试处理一次数据回显
+onMounted(async () => {
+  await nextTick();
+  if (localValue.value) {
+    handleDataDisplay(localValue.value);
+  }
+});
+
+// 监听配置变化
+watch(
+  () => props.config,
+  (newConfig, oldConfig) => {
+    // 只有在配置真正变化时才清空数据
+    if (
+      JSON.stringify(newConfig) !== JSON.stringify(oldConfig) && // 如果没有外部传入的值，才清空数据
+      !localValue.value
+    ) {
+      paramsJson.value = '';
+      jsonError.value = '';
+    }
+  },
+);
+</script>
+
 <template>
   <!-- 参数配置 -->
-  <div class="w-full space-y-12px">
+  <div class="space-y-12px w-full">
     <!-- JSON 输入框 -->
     <div class="relative">
       <el-input
@@ -13,7 +423,7 @@
         :class="{ 'is-error': jsonError }"
       />
       <!-- 查看详细示例弹出层 -->
-      <div class="absolute top-8px right-8px">
+      <div class="top-8px right-8px absolute">
         <el-popover
           placement="left-start"
           :width="450"
@@ -34,9 +444,14 @@
 
           <!-- 弹出层内容 -->
           <div class="json-params-detail-content">
-            <div class="flex items-center gap-8px mb-16px">
-              <Icon :icon="titleIcon" class="text-[var(--el-color-primary)] text-18px" />
-              <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+            <div class="gap-8px mb-16px flex items-center">
+              <Icon
+                :icon="titleIcon"
+                class="text-18px text-[var(--el-color-primary)]"
+              />
+              <span
+                class="text-16px font-600 text-[var(--el-text-color-primary)]"
+              >
                 {{ title }}
               </span>
             </div>
@@ -44,9 +459,14 @@
             <div class="space-y-16px">
               <!-- 参数列表 -->
               <div v-if="paramsList.length > 0">
-                <div class="flex items-center gap-8px mb-8px">
-                  <Icon :icon="paramsIcon" class="text-[var(--el-color-primary)] text-14px" />
-                  <span class="text-14px font-500 text-[var(--el-text-color-primary)]">
+                <div class="gap-8px mb-8px flex items-center">
+                  <Icon
+                    :icon="paramsIcon"
+                    class="text-14px text-[var(--el-color-primary)]"
+                  />
+                  <span
+                    class="text-14px font-500 text-[var(--el-text-color-primary)]"
+                  >
                     {{ paramsLabel }}
                   </span>
                 </div>
@@ -54,24 +474,38 @@
                   <div
                     v-for="param in paramsList"
                     :key="param.identifier"
-                    class="flex items-center justify-between p-8px bg-[var(--el-fill-color-lighter)] rounded-4px"
+                    class="p-8px rounded-4px flex items-center justify-between bg-[var(--el-fill-color-lighter)]"
                   >
                     <div class="flex-1">
-                      <div class="text-12px font-500 text-[var(--el-text-color-primary)]">
+                      <div
+                        class="text-12px font-500 text-[var(--el-text-color-primary)]"
+                      >
                         {{ param.name }}
-                        <el-tag v-if="param.required" size="small" type="danger" class="ml-4px">
+                        <el-tag
+                          v-if="param.required"
+                          size="small"
+                          type="danger"
+                          class="ml-4px"
+                        >
                           {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
                         </el-tag>
                       </div>
-                      <div class="text-11px text-[var(--el-text-color-secondary)]">
+                      <div
+                        class="text-11px text-[var(--el-text-color-secondary)]"
+                      >
                         {{ param.identifier }}
                       </div>
                     </div>
-                    <div class="flex items-center gap-8px">
-                      <el-tag :type="getParamTypeTag(param.dataType)" size="small">
+                    <div class="gap-8px flex items-center">
+                      <el-tag
+                        :type="getParamTypeTag(param.dataType)"
+                        size="small"
+                      >
                         {{ getParamTypeName(param.dataType) }}
                       </el-tag>
-                      <span class="text-11px text-[var(--el-text-color-secondary)]">
+                      <span
+                        class="text-11px text-[var(--el-text-color-secondary)]"
+                      >
                         {{ getExampleValue(param) }}
                       </span>
                     </div>
@@ -79,11 +513,13 @@
                 </div>
 
                 <div class="mt-12px ml-22px">
-                  <div class="text-12px text-[var(--el-text-color-secondary)] mb-6px">
+                  <div
+                    class="text-12px mb-6px text-[var(--el-text-color-secondary)]"
+                  >
                     {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                   </div>
                   <pre
-                    class="p-12px bg-[var(--el-fill-color-light)] rounded-4px text-11px text-[var(--el-text-color-primary)] overflow-x-auto border-l-3px border-[var(--el-color-primary)]"
+                    class="p-12px rounded-4px text-11px border-l-3px overflow-x-auto border-[var(--el-color-primary)] bg-[var(--el-fill-color-light)] text-[var(--el-text-color-primary)]"
                   >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>
@@ -92,8 +528,10 @@
 
               <!-- 无参数提示 -->
               <div v-else>
-                <div class="text-center py-16px">
-                  <p class="text-14px text-[var(--el-text-color-secondary)]">{{ emptyMessage }}</p>
+                <div class="py-16px text-center">
+                  <p class="text-14px text-[var(--el-text-color-secondary)]">
+                    {{ emptyMessage }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -104,18 +542,26 @@
 
     <!-- 验证状态和错误提示 -->
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-8px">
+      <div class="gap-8px flex items-center">
         <Icon
           :icon="
             jsonError
               ? JSON_PARAMS_INPUT_ICONS.STATUS_ICONS.ERROR
               : JSON_PARAMS_INPUT_ICONS.STATUS_ICONS.SUCCESS
           "
-          :class="jsonError ? 'text-[var(--el-color-danger)]' : 'text-[var(--el-color-success)]'"
+          :class="
+            jsonError
+              ? 'text-[var(--el-color-danger)]'
+              : 'text-[var(--el-color-success)]'
+          "
           class="text-14px"
         />
         <span
-          :class="jsonError ? 'text-[var(--el-color-danger)]' : 'text-[var(--el-color-success)]'"
+          :class="
+            jsonError
+              ? 'text-[var(--el-color-danger)]'
+              : 'text-[var(--el-color-success)]'
+          "
           class="text-12px"
         >
           {{ jsonError || JSON_PARAMS_INPUT_CONSTANTS.JSON_FORMAT_CORRECT }}
@@ -123,378 +569,20 @@
       </div>
 
       <!-- 快速填充按钮 -->
-      <div v-if="paramsList.length > 0" class="flex items-center gap-8px">
+      <div v-if="paramsList.length > 0" class="gap-8px flex items-center">
         <span class="text-12px text-[var(--el-text-color-secondary)]">{{
           JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL
         }}</span>
         <el-button size="small" type="primary" plain @click="fillExampleJson">
           {{ JSON_PARAMS_INPUT_CONSTANTS.EXAMPLE_DATA_BUTTON }}
         </el-button>
-        <el-button size="small" type="danger" plain @click="clearParams">{{
-          JSON_PARAMS_INPUT_CONSTANTS.CLEAR_BUTTON
-        }}</el-button>
+        <el-button size="small" type="danger" plain @click="clearParams">
+          {{ JSON_PARAMS_INPUT_CONSTANTS.CLEAR_BUTTON }}
+        </el-button>
       </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useVModel } from '@vueuse/core'
-import { InfoFilled } from '@element-plus/icons-vue'
-import {
-  IoTDataSpecsDataTypeEnum,
-  JSON_PARAMS_INPUT_CONSTANTS,
-  JSON_PARAMS_INPUT_ICONS,
-  JSON_PARAMS_EXAMPLE_VALUES,
-  JsonParamsInputTypeEnum,
-  type JsonParamsInputType
-} from '#/views/iot/utils/constants'
-
-/** JSON参数输入组件 - 通用版本 */
-defineOptions({ name: 'JsonParamsInput' })
-
-interface JsonParamsConfig {
-  // 服务配置
-  service?: {
-    name: string
-    inputParams?: any[]
-  }
-  // 事件配置
-  event?: {
-    name: string
-    outputParams?: any[]
-  }
-  // 属性配置
-  properties?: any[]
-  // 自定义配置
-  custom?: {
-    name: string
-    params: any[]
-  }
-}
-
-interface Props {
-  modelValue?: string
-  config?: JsonParamsConfig
-  type?: JsonParamsInputType
-  placeholder?: string
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: string): void
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  type: JsonParamsInputTypeEnum.SERVICE,
-  placeholder: JSON_PARAMS_INPUT_CONSTANTS.PLACEHOLDER
-})
-
-const emit = defineEmits<Emits>()
-
-const localValue = useVModel(props, 'modelValue', emit, {
-  defaultValue: ''
-})
-
-const paramsJson = ref('') // JSON参数字符串
-const jsonError = ref('') // JSON验证错误信息
-
-// 计算属性：参数列表
-const paramsList = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return props.config?.service?.inputParams || []
-    case JsonParamsInputTypeEnum.EVENT:
-      return props.config?.event?.outputParams || []
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return props.config?.properties || []
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return props.config?.custom?.params || []
-    default:
-      return []
-  }
-})
-
-// 计算属性：标题
-const title = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.SERVICE(props.config?.service?.name)
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.EVENT(props.config?.event?.name)
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.CUSTOM(props.config?.custom?.name)
-    default:
-      return JSON_PARAMS_INPUT_CONSTANTS.TITLES.DEFAULT
-  }
-})
-
-// 计算属性：标题图标
-const titleIcon = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_ICONS.TITLE_ICONS.DEFAULT
-  }
-})
-
-// 计算属性：参数图标
-const paramsIcon = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_ICONS.PARAMS_ICONS.DEFAULT
-  }
-})
-
-// 计算属性：参数标签
-const paramsLabel = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_CONSTANTS.PARAMS_LABELS.DEFAULT
-  }
-})
-
-// 计算属性：空状态消息
-const emptyMessage = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_CONSTANTS.EMPTY_MESSAGES.DEFAULT
-  }
-})
-
-// 计算属性：无配置消息
-const noConfigMessage = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.DEFAULT
-  }
-})
-
-/**
- * 处理参数变化事件
- */
-const handleParamsChange = () => {
-  try {
-    jsonError.value = '' // 清除之前的错误
-
-    if (paramsJson.value.trim()) {
-      const parsed = JSON.parse(paramsJson.value)
-      localValue.value = paramsJson.value
-
-      // 额外的参数验证
-      if (typeof parsed !== 'object' || parsed === null) {
-        jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAMS_MUST_BE_OBJECT
-        return
-      }
-
-      // 验证必填参数
-      for (const param of paramsList.value) {
-        if (param.required && (!parsed[param.identifier] || parsed[param.identifier] === '')) {
-          jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(param.name)
-          return
-        }
-      }
-    } else {
-      localValue.value = ''
-    }
-
-    // 验证通过
-    jsonError.value = ''
-  } catch (error) {
-    jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.JSON_FORMAT_ERROR(
-      error instanceof Error ? error.message : JSON_PARAMS_INPUT_CONSTANTS.UNKNOWN_ERROR
-    )
-  }
-}
-
-/**
- * 快速填充示例数据
- */
-const fillExampleJson = () => {
-  paramsJson.value = generateExampleJson()
-  handleParamsChange()
-}
-
-/**
- * 清空参数
- */
-const clearParams = () => {
-  paramsJson.value = ''
-  localValue.value = ''
-  jsonError.value = ''
-}
-
-/**
- * 获取参数类型名称
- * @param dataType 数据类型
- * @returns 类型名称
- */
-const getParamTypeName = (dataType: string) => {
-  // 使用 constants.ts 中已有的 getDataTypeName 函数逻辑
-  const typeMap = {
-    [IoTDataSpecsDataTypeEnum.INT]: '整数',
-    [IoTDataSpecsDataTypeEnum.FLOAT]: '浮点数',
-    [IoTDataSpecsDataTypeEnum.DOUBLE]: '双精度',
-    [IoTDataSpecsDataTypeEnum.TEXT]: '字符串',
-    [IoTDataSpecsDataTypeEnum.BOOL]: '布尔值',
-    [IoTDataSpecsDataTypeEnum.ENUM]: '枚举',
-    [IoTDataSpecsDataTypeEnum.DATE]: '日期',
-    [IoTDataSpecsDataTypeEnum.STRUCT]: '结构体',
-    [IoTDataSpecsDataTypeEnum.ARRAY]: '数组'
-  }
-  return typeMap[dataType] || dataType
-}
-
-/**
- * 获取参数类型标签样式
- * @param dataType 数据类型
- * @returns 标签样式
- */
-const getParamTypeTag = (dataType: string) => {
-  const tagMap = {
-    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
-    [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
-    [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
-    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
-    [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
-    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
-    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
-    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
-    [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning'
-  }
-  return tagMap[dataType] || 'info'
-}
-
-/**
- * 获取示例值
- * @param param 参数对象
- * @returns 示例值
- */
-const getExampleValue = (param: any) => {
-  const exampleConfig =
-    JSON_PARAMS_EXAMPLE_VALUES[param.dataType] || JSON_PARAMS_EXAMPLE_VALUES.DEFAULT
-  return exampleConfig.display
-}
-
-/**
- * 生成示例JSON
- * @returns JSON字符串
- */
-const generateExampleJson = () => {
-  if (paramsList.value.length === 0) {
-    return '{}'
-  }
-
-  const example = {}
-  paramsList.value.forEach((param) => {
-    const exampleConfig =
-      JSON_PARAMS_EXAMPLE_VALUES[param.dataType] || JSON_PARAMS_EXAMPLE_VALUES.DEFAULT
-    example[param.identifier] = exampleConfig.value
-  })
-
-  return JSON.stringify(example, null, 2)
-}
-
-/**
- * 处理数据回显
- * @param value 值字符串
- */
-const handleDataDisplay = (value: string) => {
-  if (!value || !value.trim()) {
-    paramsJson.value = ''
-    jsonError.value = ''
-    return
-  }
-
-  try {
-    // 尝试解析JSON，如果成功则格式化
-    const parsed = JSON.parse(value)
-    paramsJson.value = JSON.stringify(parsed, null, 2)
-    jsonError.value = ''
-  } catch {
-    // 如果不是有效的JSON，直接使用原字符串
-    paramsJson.value = value
-    jsonError.value = ''
-  }
-}
-
-// 监听外部值变化（编辑模式数据回显）
-watch(
-  () => localValue.value,
-  async (newValue, oldValue) => {
-    // 避免循环更新
-    if (newValue === oldValue) return
-
-    // 使用 nextTick 确保在下一个 tick 中处理数据
-    await nextTick()
-    handleDataDisplay(newValue || '')
-  },
-  { immediate: true }
-)
-
-// 组件挂载后也尝试处理一次数据回显
-onMounted(async () => {
-  await nextTick()
-  if (localValue.value) {
-    handleDataDisplay(localValue.value)
-  }
-})
-
-// 监听配置变化
-watch(
-  () => props.config,
-  (newConfig, oldConfig) => {
-    // 只有在配置真正变化时才清空数据
-    if (JSON.stringify(newConfig) !== JSON.stringify(oldConfig)) {
-      // 如果没有外部传入的值，才清空数据
-      if (!localValue.value) {
-        paramsJson.value = ''
-        jsonError.value = ''
-      }
-    }
-  }
-)
-</script>
 
 <style scoped>
 /* 弹出层内容样式 */

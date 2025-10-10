@@ -1,19 +1,17 @@
 <!-- IoT 产品选择器，使用弹窗展示 -->
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { reactive, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductPage } from '#/api/iot/product/product';
-import type { IotProductApi } from '#/api/iot/product/product';
 
 defineOptions({ name: 'IoTProductTableSelect' });
-
-interface Props {
-  multiple?: boolean;
-}
 
 const props = withDefaults(defineProps<Props>(), {
   multiple: false,
@@ -22,6 +20,10 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   success: [product: IotProductApi.Product | IotProductApi.Product[]];
 }>();
+
+interface Props {
+  multiple?: boolean;
+}
 
 const [Modal, modalApi] = useVbenModal({
   title: '产品选择器',

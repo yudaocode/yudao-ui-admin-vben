@@ -1,69 +1,23 @@
-<template>
-  <Card class="chart-card" :loading="loading">
-    <template #title>
-      <div class="flex items-center justify-between flex-wrap gap-2">
-        <span class="text-base font-medium">上下行消息量统计</span>
-        <Space :size="8">
-          <Button 
-            :type="activeTimeRange === '1h' ? 'primary' : 'default'"
-            size="small"
-            @click="setTimeRange('1h')"
-          >
-            最近1小时
-          </Button>
-          <Button 
-            :type="activeTimeRange === '24h' ? 'primary' : 'default'"
-            size="small"
-            @click="setTimeRange('24h')"
-          >
-            最近24小时
-          </Button>
-          <Button 
-            :type="activeTimeRange === '7d' ? 'primary' : 'default'"
-            size="small"
-            @click="setTimeRange('7d')"
-          >
-            近一周
-          </Button>
-          <RangePicker
-            v-model:value="dateRange"
-            format="YYYY-MM-DD"
-            :placeholder="['开始时间', '结束时间']"
-            @change="handleDateChange"
-            size="small"
-            style="width: 240px"
-          />
-        </Space>
-      </div>
-    </template>
-    
-    <div v-if="loading" class="h-[350px] flex justify-center items-center">
-      <Empty description="加载中..." />
-    </div>
-    <div v-else-if="!hasData" class="h-[350px] flex justify-center items-center">
-      <Empty description="暂无数据" />
-    </div>
-    <div v-else>
-      <EchartsUI ref="messageChartRef" class="h-[350px] w-full" />
-    </div>
-  </Card>
-</template>
-
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, nextTick } from 'vue';
-import { Card, Empty, Space, DatePicker, Button } from 'ant-design-vue';
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
-import {
-  StatisticsApi,
-  type IotStatisticsDeviceMessageSummaryByDateRespVO,
-  type IotStatisticsDeviceMessageReqVO,
+
+import type {
+  IotStatisticsDeviceMessageReqVO,
+  IotStatisticsDeviceMessageSummaryByDateRespVO,
 } from '#/api/iot/statistics';
 
-const { RangePicker } = DatePicker;
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+
+import { Button, Card, DatePicker, Empty, Space } from 'ant-design-vue';
+import dayjs from 'dayjs';
+
+import { StatisticsApi } from '#/api/iot/statistics';
 
 defineOptions({ name: 'MessageTrendCard' });
+
+const { RangePicker } = DatePicker;
 
 const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
@@ -87,33 +41,37 @@ const hasData = computed(() => {
 const setTimeRange = (range: string) => {
   activeTimeRange.value = range;
   dateRange.value = undefined; // 清空自定义时间选择
-  
+
   let start: Dayjs;
-  let end = dayjs();
-  
+  const end = dayjs();
+
   switch (range) {
-    case '1h':
+    case '1h': {
       start = dayjs().subtract(1, 'hour');
       queryParams.interval = 1; // 按分钟
       break;
-    case '24h':
-      start = dayjs().subtract(24, 'hour');
-      queryParams.interval = 1; // 按小时
-      break;
-    case '7d':
+    }
+    case '7d': {
       start = dayjs().subtract(7, 'day');
       queryParams.interval = 1; // 按天
       break;
-    default:
+    }
+    case '24h': {
+      start = dayjs().subtract(24, 'hour');
+      queryParams.interval = 1; // 按小时
+      break;
+    }
+    default: {
       start = dayjs().subtract(7, 'day');
       queryParams.interval = 1;
+    }
   }
-  
+
   queryParams.times = [
     start.format('YYYY-MM-DD HH:mm:ss'),
     end.format('YYYY-MM-DD HH:mm:ss'),
   ];
-  
+
   fetchMessageData();
 };
 
@@ -133,10 +91,11 @@ const handleDateChange = () => {
 // 获取消息统计数据
 const fetchMessageData = async () => {
   if (!queryParams.times || queryParams.times.length !== 2) return;
-  
+
   loading.value = true;
   try {
-    messageData.value = await StatisticsApi.getDeviceMessageSummaryByDate(queryParams);
+    messageData.value =
+      await StatisticsApi.getDeviceMessageSummaryByDate(queryParams);
     await nextTick();
     initChart();
   } catch (error) {
@@ -229,6 +188,60 @@ onMounted(() => {
   setTimeRange('7d'); // 默认显示近一周数据
 });
 </script>
+
+<template>
+  <Card class="chart-card" :loading="loading">
+    <template #title>
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="text-base font-medium">上下行消息量统计</span>
+        <Space :size="8">
+          <Button
+            :type="activeTimeRange === '1h' ? 'primary' : 'default'"
+            size="small"
+            @click="setTimeRange('1h')"
+          >
+            最近1小时
+          </Button>
+          <Button
+            :type="activeTimeRange === '24h' ? 'primary' : 'default'"
+            size="small"
+            @click="setTimeRange('24h')"
+          >
+            最近24小时
+          </Button>
+          <Button
+            :type="activeTimeRange === '7d' ? 'primary' : 'default'"
+            size="small"
+            @click="setTimeRange('7d')"
+          >
+            近一周
+          </Button>
+          <RangePicker
+            v-model:value="dateRange"
+            format="YYYY-MM-DD"
+            :placeholder="['开始时间', '结束时间']"
+            @change="handleDateChange"
+            size="small"
+            style="width: 240px"
+          />
+        </Space>
+      </div>
+    </template>
+
+    <div v-if="loading" class="flex h-[350px] items-center justify-center">
+      <Empty description="加载中..." />
+    </div>
+    <div
+      v-else-if="!hasData"
+      class="flex h-[350px] items-center justify-center"
+    >
+      <Empty description="暂无数据" />
+    </div>
+    <div v-else>
+      <EchartsUI ref="messageChartRef" class="h-[350px] w-full" />
+    </div>
+  </Card>
+</template>
 
 <style scoped>
 .chart-card {

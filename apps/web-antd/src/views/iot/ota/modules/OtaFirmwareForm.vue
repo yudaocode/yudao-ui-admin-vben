@@ -52,7 +52,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as IoTOtaFirmwareApi.Firmware;
     try {
-      await (formData.value?.id ? updateOtaFirmware(data) : createOtaFirmware(data));
+      await (formData.value?.id
+        ? updateOtaFirmware(data)
+        : createOtaFirmware(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
