@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import { isValidColor, TinyColor } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag, Typography } from 'ant-design-vue';
 
 import { getDictObj } from '#/utils';
 
@@ -20,6 +20,10 @@ interface DictTagProps {
    * 图标
    */
   icon?: string;
+  /**
+   * 模式
+   */
+  mode?: 'tag' | 'text';
 }
 
 const props = defineProps<DictTagProps>();
@@ -73,9 +77,15 @@ const dictTag = computed(() => {
 
 <template>
   <Tag
-    v-if="dictTag"
+    v-if="dictTag && (!props.mode || props.mode === 'tag')"
     :color="dictTag.colorType ? dictTag.colorType : dictTag.cssClass"
   >
     {{ dictTag.label }}
   </Tag>
+  <Typography.Text
+    v-else-if="dictTag && props.mode === 'text'"
+    :type="dictTag.colorType === 'error' ? 'danger' : undefined"
+  >
+    {{ dictTag.label }}
+  </Typography.Text>
 </template>

@@ -157,6 +157,7 @@ setupVbenVxeTable({
         // 使用 DictTag 组件替代原来的实现
         return h(DictTag, {
           type: props.type,
+          mode: props.mode,
           value: row[column.field]?.toString(),
         });
       },
@@ -174,6 +175,7 @@ setupVbenVxeTable({
         return row[column.field].map((item: any) =>
           h(DictTag, {
             type: props.type,
+            mode: props.mode,
             value: item,
           }),
         );
