@@ -310,7 +310,7 @@ const loadOverview = () => {
           class="ml-4"
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['statistics:product:export']"
+          v-access:code="['statistics:product:export']"
         >
           <Icon icon="ep:download" class="mr-1" />导出
         </el-button>

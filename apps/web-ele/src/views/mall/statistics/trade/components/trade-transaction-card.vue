@@ -268,7 +268,7 @@ const lineChartOptions = reactive({
           class="ml-4"
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['statistics:trade:export']"
+          v-access:code="['statistics:trade:export']"
         >
           <Icon icon="ep:download" class="mr-1" />导出
         </el-button>
