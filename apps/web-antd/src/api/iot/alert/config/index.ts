@@ -92,5 +92,3 @@ export function getSimpleAlertConfigList() {
     '/iot/alert-config/simple-list',
   );
 }
-
-export { AlertConfigApi };
