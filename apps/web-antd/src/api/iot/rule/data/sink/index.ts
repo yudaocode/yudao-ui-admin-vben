@@ -146,5 +146,3 @@ export function updateDataSinkStatus(id: number, status: number) {
     status,
   });
 }
-
-export { DataSinkApi };

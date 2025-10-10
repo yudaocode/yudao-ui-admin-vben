@@ -1,14 +1,26 @@
 <!-- 模拟设备 -->
 <script lang="ts" setup>
-import type { DeviceVO } from '#/api/iot/device/device';
-import type { ProductVO } from '#/api/iot/product/product';
+import type { TableColumnType } from 'ant-design-vue';
+
+import type { IotDeviceApi } from '#/api/iot/device/device';
+import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  message,
+  Row,
+  Table,
+  Tabs,
+  Textarea,
+} from 'ant-design-vue';
 
-import { DeviceApi, DeviceStateEnum } from '#/api/iot/device/device';
+import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
@@ -17,8 +29,8 @@ import {
 import DeviceDetailsMessage from './DeviceDetailsMessage.vue';
 
 const props = defineProps<{
-  device: DeviceVO;
-  product: ProductVO;
+  device: IotDeviceApi.Device;
+  product: IotProductApi.Product;
   thingModelList: ThingModelData[];
 }>();
 
@@ -55,41 +67,36 @@ const serviceList = computed(() =>
 );
 
 // 属性表格列定义
-const propertyColumns = [
+const propertyColumns: TableColumnType[] = [
   {
     title: '功能名称',
     dataIndex: 'name',
     key: 'name',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '标识符',
     dataIndex: 'identifier',
     key: 'identifier',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '数据类型',
     key: 'dataType',
     width: 100,
-    align: 'center',
   },
   {
     title: '数据定义',
     key: 'dataDefinition',
     minWidth: 200,
-    align: 'left',
   },
   {
     title: '值',
     key: 'value',
     width: 150,
-    align: 'center',
-    fixed: 'right',
+    fixed: 'right' as any,
   },
 ];
 
@@ -100,41 +107,35 @@ const eventColumns = [
     dataIndex: 'name',
     key: 'name',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '标识符',
     dataIndex: 'identifier',
     key: 'identifier',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '数据类型',
     key: 'dataType',
     width: 100,
-    align: 'center',
   },
   {
     title: '数据定义',
     key: 'dataDefinition',
     minWidth: 200,
-    align: 'left',
   },
   {
     title: '值',
     key: 'value',
     width: 200,
-    align: 'center',
   },
   {
     title: '操作',
     key: 'action',
     width: 100,
-    align: 'center',
-    fixed: 'right',
+    fixed: 'right' as any,
   },
 ];
 
@@ -145,50 +146,45 @@ const serviceColumns = [
     dataIndex: 'name',
     key: 'name',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '标识符',
     dataIndex: 'identifier',
     key: 'identifier',
     width: 120,
-    align: 'center',
-    fixed: 'left',
+    fixed: 'left' as any,
   },
   {
     title: '输入参数',
     key: 'dataDefinition',
     minWidth: 200,
-    align: 'left',
   },
   {
     title: '参数值',
     key: 'value',
     width: 200,
-    align: 'center',
   },
   {
     title: '操作',
     key: 'action',
     width: 100,
-    align: 'center',
-    fixed: 'right',
+    fixed: 'right' as any,
   },
 ];
 
 // 获取表单值
-const getFormValue = (identifier: string) => {
+function getFormValue(identifier: string) {
   return formData.value[identifier] || '';
-};
+}
 
 // 设置表单值
-const setFormValue = (identifier: string, value: string) => {
+function setFormValue(identifier: string, value: string) {
   formData.value[identifier] = value;
-};
+}
 
 // 属性上报
-const handlePropertyPost = async () => {
+async function handlePropertyPost() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
@@ -203,7 +199,7 @@ const handlePropertyPost = async () => {
       return;
     }
 
-    await DeviceApi.sendDeviceMessage({
+    await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.PROPERTY_POST.method,
       params,
@@ -216,10 +212,10 @@ const handlePropertyPost = async () => {
     message.error({ content: '属性上报失败' });
     console.error(error);
   }
-};
+}
 
 // 事件上报
-const handleEventPost = async (row: ThingModelData) => {
+async function handleEventPost(row: ThingModelData) {
   try {
     const valueStr = formData.value[row.identifier!];
     let params: any = {};
@@ -233,7 +229,7 @@ const handleEventPost = async (row: ThingModelData) => {
       }
     }
 
-    await DeviceApi.sendDeviceMessage({
+    await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.EVENT_POST.method,
       params: {
@@ -249,12 +245,12 @@ const handleEventPost = async (row: ThingModelData) => {
     message.error({ content: '事件上报失败' });
     console.error(error);
   }
-};
+}
 
 // 状态变更
-const handleDeviceState = async (state: number) => {
+async function handleDeviceState(state: number) {
   try {
-    await DeviceApi.sendDeviceMessage({
+    await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.STATE_UPDATE.method,
       params: { state },
@@ -267,10 +263,10 @@ const handleDeviceState = async (state: number) => {
     message.error({ content: '状态变更失败' });
     console.error(error);
   }
-};
+}
 
 // 属性设置
-const handlePropertySet = async () => {
+async function handlePropertySet() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
@@ -285,7 +281,7 @@ const handlePropertySet = async () => {
       return;
     }
 
-    await DeviceApi.sendDeviceMessage({
+    await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.PROPERTY_SET.method,
       params,
@@ -298,10 +294,10 @@ const handlePropertySet = async () => {
     message.error({ content: '属性设置失败' });
     console.error(error);
   }
-};
+}
 
 // 服务调用
-const handleServiceInvoke = async (row: ThingModelData) => {
+async function handleServiceInvoke(row: ThingModelData) {
   try {
     const valueStr = formData.value[row.identifier!];
     let params: any = {};
@@ -315,7 +311,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
       }
     }
 
-    await DeviceApi.sendDeviceMessage({
+    await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.SERVICE_INVOKE.method,
       params: {
@@ -331,30 +327,31 @@ const handleServiceInvoke = async (row: ThingModelData) => {
     message.error({ content: '服务调用失败' });
     console.error(error);
   }
-};
+}
 </script>
 
 <template>
   <ContentWrap>
-    <a-row :gutter="20">
+    <Row :gutter="20">
       <!-- 左侧指令调试区域 -->
-      <a-col :span="12">
-        <a-card>
-          <a-tabs v-model:active-key="activeTab">
+      <Col :span="12">
+        <Card>
+          <Tabs v-model:active-key="activeTab">
             <!-- 上行指令调试 -->
-            <a-tab-pane key="upstream" tab="上行指令调试">
-              <a-tabs
+            <Tabs.Pane key="upstream" tab="上行指令调试">
+              <Tabs
                 v-if="activeTab === 'upstream'"
                 v-model:active-key="upstreamTab"
               >
                 <!-- 属性上报 -->
-                <a-tab-pane
+                <Tabs.Pane
                   :key="IotDeviceMessageMethodEnum.PROPERTY_POST.method"
                   tab="属性上报"
                 >
                   <ContentWrap>
-                    <a-table
+                    <Table
                       :data-source="propertyList"
+                      align="center"
                       :columns="propertyColumns"
                       :pagination="false"
                     >
@@ -366,7 +363,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           <DataDefinition :data="record" />
                         </template>
                         <template v-else-if="column.key === 'value'">
-                          <a-input
+                          <Input
                             :value="getFormValue(record.identifier)"
                             @update:value="
                               setFormValue(record.identifier, $event)
@@ -376,26 +373,27 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           />
                         </template>
                       </template>
-                    </a-table>
+                    </Table>
                     <div class="mt-4 flex items-center justify-between">
                       <span class="text-sm text-gray-600">
                         设置属性值后，点击「发送属性上报」按钮
                       </span>
-                      <a-button type="primary" @click="handlePropertyPost">
+                      <Button type="primary" @click="handlePropertyPost">
                         发送属性上报
-                      </a-button>
+                      </Button>
                     </div>
                   </ContentWrap>
-                </a-tab-pane>
+                </Tabs.Pane>
 
                 <!-- 事件上报 -->
-                <a-tab-pane
+                <Tabs.Pane
                   :key="IotDeviceMessageMethodEnum.EVENT_POST.method"
                   tab="事件上报"
                 >
                   <ContentWrap>
-                    <a-table
+                    <Table
                       :data-source="eventList"
+                      align="center"
                       :columns="eventColumns"
                       :pagination="false"
                     >
@@ -407,7 +405,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           <DataDefinition :data="record" />
                         </template>
                         <template v-else-if="column.key === 'value'">
-                          <a-textarea
+                          <Textarea
                             :value="getFormValue(record.identifier)"
                             @update:value="
                               setFormValue(record.identifier, $event)
@@ -418,58 +416,59 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           />
                         </template>
                         <template v-else-if="column.key === 'action'">
-                          <a-button
+                          <Button
                             type="primary"
                             size="small"
                             @click="handleEventPost(record)"
                           >
                             上报事件
-                          </a-button>
+                          </Button>
                         </template>
                       </template>
-                    </a-table>
+                    </Table>
                   </ContentWrap>
-                </a-tab-pane>
+                </Tabs.Pane>
 
                 <!-- 状态变更 -->
-                <a-tab-pane
+                <Tabs.Pane
                   :key="IotDeviceMessageMethodEnum.STATE_UPDATE.method"
                   tab="状态变更"
                 >
                   <ContentWrap>
                     <div class="flex gap-4">
-                      <a-button
+                      <Button
                         type="primary"
                         @click="handleDeviceState(DeviceStateEnum.ONLINE)"
                       >
                         设备上线
-                      </a-button>
-                      <a-button
+                      </Button>
+                      <Button
                         danger
                         @click="handleDeviceState(DeviceStateEnum.OFFLINE)"
                       >
                         设备下线
-                      </a-button>
+                      </Button>
                     </div>
                   </ContentWrap>
-                </a-tab-pane>
-              </a-tabs>
-            </a-tab-pane>
+                </Tabs.Pane>
+              </Tabs>
+            </Tabs.Pane>
 
             <!-- 下行指令调试 -->
-            <a-tab-pane key="downstream" tab="下行指令调试">
-              <a-tabs
+            <Tabs.Pane key="downstream" tab="下行指令调试">
+              <Tabs
                 v-if="activeTab === 'downstream'"
                 v-model:active-key="downstreamTab"
               >
                 <!-- 属性调试 -->
-                <a-tab-pane
+                <Tabs.Pane
                   :key="IotDeviceMessageMethodEnum.PROPERTY_SET.method"
                   tab="属性设置"
                 >
                   <ContentWrap>
-                    <a-table
+                    <Table
                       :data-source="propertyList"
+                      align="center"
                       :columns="propertyColumns"
                       :pagination="false"
                     >
@@ -481,7 +480,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           <DataDefinition :data="record" />
                         </template>
                         <template v-else-if="column.key === 'value'">
-                          <a-input
+                          <Input
                             :value="getFormValue(record.identifier)"
                             @update:value="
                               setFormValue(record.identifier, $event)
@@ -491,26 +490,27 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           />
                         </template>
                       </template>
-                    </a-table>
+                    </Table>
                     <div class="mt-4 flex items-center justify-between">
                       <span class="text-sm text-gray-600">
                         设置属性值后，点击「发送属性设置」按钮
                       </span>
-                      <a-button type="primary" @click="handlePropertySet">
+                      <Button type="primary" @click="handlePropertySet">
                         发送属性设置
-                      </a-button>
+                      </Button>
                     </div>
                   </ContentWrap>
-                </a-tab-pane>
+                </Tabs.Pane>
 
                 <!-- 服务调用 -->
-                <a-tab-pane
+                <Tabs.Pane
                   :key="IotDeviceMessageMethodEnum.SERVICE_INVOKE.method"
                   tab="设备服务调用"
                 >
                   <ContentWrap>
-                    <a-table
+                    <Table
                       :data-source="serviceList"
+                      align="center"
                       :columns="serviceColumns"
                       :pagination="false"
                     >
@@ -519,7 +519,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           <DataDefinition :data="record" />
                         </template>
                         <template v-else-if="column.key === 'value'">
-                          <a-textarea
+                          <Textarea
                             :value="getFormValue(record.identifier)"
                             @update:value="
                               setFormValue(record.identifier, $event)
@@ -530,26 +530,26 @@ const handleServiceInvoke = async (row: ThingModelData) => {
                           />
                         </template>
                         <template v-else-if="column.key === 'action'">
-                          <a-button
+                          <Button
                             type="primary"
                             size="small"
                             @click="handleServiceInvoke(record)"
                           >
                             服务调用
-                          </a-button>
+                          </Button>
                         </template>
                       </template>
-                    </a-table>
+                    </Table>
                   </ContentWrap>
-                </a-tab-pane>
-              </a-tabs>
-            </a-tab-pane>
-          </a-tabs>
-        </a-card>
-      </a-col>
+                </Tabs.Pane>
+              </Tabs>
+            </Tabs.Pane>
+          </Tabs>
+        </Card>
+      </Col>
 
       <!-- 右侧设备日志区域 -->
-      <a-col :span="12">
+      <Col :span="12">
         <ContentWrap title="设备消息">
           <DeviceDetailsMessage
             v-if="device.id"
@@ -557,7 +557,7 @@ const handleServiceInvoke = async (row: ThingModelData) => {
             :device-id="device.id"
           />
         </ContentWrap>
-      </a-col>
-    </a-row>
+      </Col>
+    </Row>
   </ContentWrap>
 </template>

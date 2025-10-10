@@ -8,9 +8,18 @@ import { ContentWrap } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { Pagination } from 'ant-design-vue';
+import {
+  Button,
+  Divider,
+  Form,
+  Pagination,
+  RangePicker,
+  Select,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
-import { DeviceApi } from '#/api/iot/device/device';
+import { getDeviceMessagePairPage } from '#/api/iot/device/device';
 import {
   getEventTypeLabel,
   IotDeviceMessageMethodEnum,
@@ -29,7 +38,7 @@ const queryParams = reactive({
   deviceId: props.deviceId,
   method: IotDeviceMessageMethodEnum.EVENT_POST.method, // 固定筛选事件消息
   identifier: '',
-  times: [] as any[],
+  times: undefined,
   pageNo: 1,
   pageSize: 10,
 });
@@ -44,53 +53,53 @@ const eventThingModels = computed(() => {
 });
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   if (!props.deviceId) return;
   loading.value = true;
   try {
-    const data = await DeviceApi.getDeviceMessagePairPage(queryParams);
+    const data = await getDeviceMessagePairPage(queryParams);
     list.value = data.list || [];
     total.value = data.total || 0;
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value?.resetFields();
   queryParams.identifier = '';
-  queryParams.times = [];
+  queryParams.times = undefined;
   handleQuery();
-};
+}
 
 /** 获取事件名称 */
-const getEventName = (identifier: string | undefined) => {
+function getEventName(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
     (item: ThingModelData) => item.identifier === identifier,
   );
   return event?.name || identifier;
-};
+}
 
 /** 获取事件类型 */
-const getEventType = (identifier: string | undefined) => {
+function getEventType(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
     (item: ThingModelData) => item.identifier === identifier,
   );
   if (!event?.event?.type) return '-';
   return getEventTypeLabel(event.event.type) || '-';
-};
+}
 
 /** 解析参数 */
-const parseParams = (params: string) => {
+function parseParams(params: string) {
   try {
     const parsed = JSON.parse(params);
     if (parsed.params) {
@@ -100,7 +109,7 @@ const parseParams = (params: string) => {
   } catch {
     return {};
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {
@@ -111,58 +120,58 @@ onMounted(() => {
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <a-form
+    <Form
       :model="queryParams"
       ref="queryFormRef"
       layout="inline"
       @submit.prevent
       style="margin-bottom: 16px"
     >
-      <a-form-item label="标识符" name="identifier">
-        <a-select
+      <Form.Item label="标识符" name="identifier">
+        <Select
           v-model:value="queryParams.identifier"
           placeholder="请选择事件标识符"
           allow-clear
           style="width: 240px"
         >
-          <a-select-option
+          <Select.Option
             v-for="event in eventThingModels"
             :key="event.identifier"
             :value="event.identifier!"
           >
             {{ event.name }}({{ event.identifier }})
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="时间范围" name="times">
-        <a-range-picker
+          </Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item label="时间范围" name="times">
+        <RangePicker
           v-model:value="queryParams.times"
           show-time
           format="YYYY-MM-DD HH:mm:ss"
           style="width: 360px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="handleQuery">
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" @click="handleQuery">
           <template #icon>
             <IconifyIcon icon="ep:search" />
           </template>
           搜索
-        </a-button>
-        <a-button @click="resetQuery" style="margin-left: 8px">
+        </Button>
+        <Button @click="resetQuery" style="margin-left: 8px">
           <template #icon>
             <IconifyIcon icon="ep:refresh" />
           </template>
           重置
-        </a-button>
-      </a-form-item>
-    </a-form>
+        </Button>
+      </Form.Item>
+    </Form>
 
-    <a-divider style="margin: 16px 0" />
+    <Divider style="margin: 16px 0" />
 
     <!-- 事件列表 -->
-    <a-table v-loading="loading" :data-source="list" :pagination="false">
-      <a-table-column
+    <Table v-loading="loading" :data-source="list" :pagination="false">
+      <Table.Column
         title="上报时间"
         align="center"
         data-index="reportTime"
@@ -175,20 +184,20 @@ onMounted(() => {
               : '-'
           }}
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="标识符"
         align="center"
         data-index="identifier"
         :width="160"
       >
         <template #default="{ record }">
-          <a-tag color="blue" size="small">
+          <Tag color="blue" size="small">
             {{ record.request?.identifier }}
-          </a-tag>
+          </Tag>
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="事件名称"
         align="center"
         data-index="eventName"
@@ -197,8 +206,8 @@ onMounted(() => {
         <template #default="{ record }">
           {{ getEventName(record.request?.identifier) }}
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="事件类型"
         align="center"
         data-index="eventType"
@@ -207,13 +216,13 @@ onMounted(() => {
         <template #default="{ record }">
           {{ getEventType(record.request?.identifier) }}
         </template>
-      </a-table-column>
-      <a-table-column title="输入参数" align="center" data-index="params">
+      </Table.Column>
+      <Table.Column title="输入参数" align="center" data-index="params">
         <template #default="{ record }">
           {{ parseParams(record.request.params) }}
         </template>
-      </a-table-column>
-    </a-table>
+      </Table.Column>
+    </Table>
 
     <!-- 分页 -->
     <Pagination

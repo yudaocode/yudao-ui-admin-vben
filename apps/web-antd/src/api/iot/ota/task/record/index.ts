@@ -99,5 +99,3 @@ export function getOtaTaskRecordStatusStatistics(
     { params: { firmwareId, taskId } },
   );
 }
-
-export { IoTOtaTaskRecordApi };

@@ -153,10 +153,3 @@ export function getSimpleRuleSceneList() {
     '/iot/scene-rule/simple-list',
   );
 }
-
-// 别名导出（兼容旧代码）
-export {
-  deleteSceneRule as deleteRuleScene,
-  getSceneRulePage as getRuleScenePage,
-  updateSceneRuleStatus as updateRuleSceneStatus,
-};

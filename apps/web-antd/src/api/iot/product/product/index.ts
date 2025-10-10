@@ -97,18 +97,3 @@ export function getProductByKey(productKey: string) {
     params: { productKey },
   });
 }
-
-// Export aliases for compatibility
-export const ProductApi = {
-  getProductPage,
-  getProduct,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  exportProduct,
-  updateProductStatus,
-  getSimpleProductList,
-  getProductByKey,
-};
-
-export type ProductVO = IotProductApi.Product;

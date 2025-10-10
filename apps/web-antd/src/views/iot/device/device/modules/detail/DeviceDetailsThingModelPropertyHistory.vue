@@ -4,17 +4,27 @@ import type { Dayjs } from 'dayjs';
 
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
-import type { IotDevicePropertyRespVO } from '#/api/iot/device/device';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { beginOfDay, endOfDay, formatDate } from '@vben/utils';
 
-import { Empty, message, Modal } from 'ant-design-vue';
+import {
+  Button,
+  Empty,
+  message,
+  Modal,
+  RangePicker,
+  Space,
+  Spin,
+  Tag,
+} from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import { DeviceApi } from '#/api/iot/device/device';
+import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 /** IoT 设备属性历史数据详情 */
@@ -26,7 +36,7 @@ const dialogVisible = ref(false); // 弹窗的是否展示
 const loading = ref(false);
 const exporting = ref(false);
 const viewMode = ref<'chart' | 'list'>('chart'); // 视图模式状态
-const list = ref<IotDevicePropertyRespVO[]>([]); // 列表的数据
+const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 列表的数据
 const total = ref(0); // 总数据量
 const thingModelDataType = ref<string>(''); // 物模型数据类型
 const propertyIdentifier = ref<string>(''); // 属性标识符
@@ -62,7 +72,7 @@ const maxValue = computed(() => {
   if (isComplexDataType.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !isNaN(v));
+    .filter((v) => !Number.isNaN(v));
   return values.length > 0 ? Math.max(...values).toFixed(2) : '-';
 });
 
@@ -70,7 +80,7 @@ const minValue = computed(() => {
   if (isComplexDataType.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !isNaN(v));
+    .filter((v) => !Number.isNaN(v));
   return values.length > 0 ? Math.min(...values).toFixed(2) : '-';
 });
 
@@ -78,7 +88,7 @@ const avgValue = computed(() => {
   if (isComplexDataType.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !isNaN(v));
+    .filter((v) => !Number.isNaN(v));
   if (values.length === 0) return '-';
   const sum = values.reduce((acc, val) => acc + val, 0);
   return (sum / values.length).toFixed(2);
@@ -120,11 +130,11 @@ const paginationConfig = computed(() => ({
 }));
 
 /** 获得设备历史数据 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
-    const data = await DeviceApi.getHistoryDevicePropertyList(queryParams);
-    list.value = data?.list || [];
+    const data = await getHistoryDevicePropertyList(queryParams);
+    list.value = (data?.list as IotDeviceApi.DevicePropertyDetail[]) || [];
     total.value = list.value.length;
 
     // 如果是图表模式且不是复杂数据类型，渲染图表
@@ -143,10 +153,10 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 渲染图表 */
-const renderChart = () => {
+function renderChart() {
   if (!list.value || list.value.length === 0) return;
 
   const chartData = list.value.map((item) => [item.updateTime, item.value]);
@@ -255,10 +265,10 @@ const renderChart = () => {
       },
     ],
   });
-};
+}
 
 /** 打开弹窗 */
-const open = async (deviceId: number, identifier: string, dataType: string) => {
+async function open(deviceId: number, identifier: string, dataType: string) {
   dialogVisible.value = true;
   queryParams.deviceId = deviceId;
   queryParams.identifier = identifier;
@@ -271,10 +281,10 @@ const open = async (deviceId: number, identifier: string, dataType: string) => {
   // 等待弹窗完全渲染后再获取数据
   await nextTick();
   await getList();
-};
+}
 
 /** 时间变化处理 */
-const handleTimeChange = () => {
+function handleTimeChange() {
   if (!dateRange.value || dateRange.value.length !== 2) {
     return;
   }
@@ -285,15 +295,15 @@ const handleTimeChange = () => {
   ];
 
   getList();
-};
+}
 
 /** 刷新数据 */
-const handleRefresh = () => {
+function handleRefresh() {
   getList();
-};
+}
 
 /** 导出数据 */
-const handleExport = async () => {
+async function handleExport() {
   if (list.value.length === 0) {
     message.warning('暂无数据可导出');
     return;
@@ -338,22 +348,22 @@ const handleExport = async () => {
   } finally {
     exporting.value = false;
   }
-};
+}
 
 /** 关闭弹窗 */
-const handleClose = () => {
+function handleClose() {
   dialogVisible.value = false;
   list.value = [];
   total.value = 0;
-};
+}
 
 /** 格式化复杂数据类型 */
-const formatComplexValue = (value: any) => {
+function formatComplexValue(value: any) {
   if (typeof value === 'object') {
     return JSON.stringify(value);
   }
   return String(value);
-};
+}
 
 /** 监听视图模式变化，重新渲染图表 */
 watch(viewMode, async (newMode) => {
@@ -380,78 +390,78 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
     <div class="property-history-container">
       <!-- 工具栏 -->
       <div class="toolbar-wrapper mb-4">
-        <a-space :size="12" class="w-full" wrap>
+        <Space :size="12" class="w-full" wrap>
           <!-- 时间选择 -->
-          <a-range-picker
+          <RangePicker
             v-model:value="dateRange"
             :show-time="{ format: 'HH:mm:ss' }"
             format="YYYY-MM-DD HH:mm:ss"
             :placeholder="['开始时间', '结束时间']"
             class="!w-[400px]"
-            @change="handleTimeChange"
+            @press-enter="handleTimeChange"
           />
 
           <!-- 刷新按钮 -->
-          <a-button @click="handleRefresh" :loading="loading">
+          <Button @click="handleRefresh" :loading="loading">
             <template #icon>
-              <Icon icon="ant-design:reload-outlined" />
+              <IconifyIcon icon="ant-design:reload-outlined" />
             </template>
             刷新
-          </a-button>
+          </Button>
 
           <!-- 导出按钮 -->
-          <a-button
+          <Button
             @click="handleExport"
             :loading="exporting"
             :disabled="list.length === 0"
           >
             <template #icon>
-              <Icon icon="ant-design:export-outlined" />
+              <IconifyIcon icon="ant-design:export-outlined" />
             </template>
             导出
-          </a-button>
+          </Button>
 
           <!-- 视图切换 -->
-          <a-button-group class="ml-auto">
-            <a-button
+          <Button.Group class="ml-auto">
+            <Button
               :type="viewMode === 'chart' ? 'primary' : 'default'"
               @click="viewMode = 'chart'"
               :disabled="isComplexDataType"
             >
               <template #icon>
-                <Icon icon="ant-design:line-chart-outlined" />
+                <IconifyIcon icon="ant-design:line-chart-outlined" />
               </template>
               图表
-            </a-button>
-            <a-button
+            </Button>
+            <Button
               :type="viewMode === 'list' ? 'primary' : 'default'"
               @click="viewMode = 'list'"
             >
               <template #icon>
-                <Icon icon="ant-design:table-outlined" />
+                <IconifyIcon icon="ant-design:table-outlined" />
               </template>
               列表
-            </a-button>
-          </a-button-group>
-        </a-space>
+            </Button>
+          </Button.Group>
+        </Space>
 
         <!-- 数据统计信息 -->
         <div v-if="list.length > 0" class="mt-3 text-sm text-gray-600">
-          <a-space :size="16">
+          <Space :size="16">
             <span>共 {{ total }} 条数据</span>
             <span v-if="viewMode === 'chart' && !isComplexDataType">
               最大值: {{ maxValue }} | 最小值: {{ minValue }} | 平均值:
               {{ avgValue }}
             </span>
-          </a-space>
+          </Space>
         </div>
       </div>
 
       <!-- 数据展示区域 -->
-      <a-spin :spinning="loading" :delay="200">
+      <Spin :spinning="loading" :delay="200">
         <!-- 图表模式 -->
         <div v-if="viewMode === 'chart'" class="chart-container">
-          <a-empty
+          <Empty
             v-if="list.length === 0"
             :image="Empty.PRESENTED_IMAGE_SIMPLE"
             description="暂无数据"
@@ -462,7 +472,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
         <!-- 表格模式 -->
         <div v-else class="table-container">
-          <a-table
+          <Table
             :data-source="list"
             :columns="tableColumns"
             :pagination="paginationConfig"
@@ -475,19 +485,19 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
                 {{ formatDate(new Date(record.updateTime)) }}
               </template>
               <template v-else-if="column.key === 'value'">
-                <a-tag v-if="isComplexDataType" color="processing">
+                <Tag v-if="isComplexDataType" color="processing">
                   {{ formatComplexValue(record.value) }}
-                </a-tag>
+                </Tag>
                 <span v-else class="font-medium">{{ record.value }}</span>
               </template>
             </template>
-          </a-table>
+          </Table>
         </div>
-      </a-spin>
+      </Spin>
     </div>
 
     <template #footer>
-      <a-button @click="handleClose">关闭</a-button>
+      <Button @click="handleClose">关闭</Button>
     </template>
   </Modal>
 </template>

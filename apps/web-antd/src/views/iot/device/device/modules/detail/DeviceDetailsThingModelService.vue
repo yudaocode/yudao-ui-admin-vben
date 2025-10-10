@@ -8,9 +8,17 @@ import { ContentWrap } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { Pagination } from 'ant-design-vue';
+import {
+  Button,
+  Divider,
+  Form,
+  Pagination,
+  Select,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
-import { DeviceApi } from '#/api/iot/device/device';
+import { getDeviceMessagePairPage } from '#/api/iot/device/device';
 import {
   getThingModelServiceCallTypeLabel,
   IotDeviceMessageMethodEnum,
@@ -48,8 +56,8 @@ const getList = async () => {
   if (!props.deviceId) return;
   loading.value = true;
   try {
-    const data = await DeviceApi.getDeviceMessagePairPage(queryParams);
-    list.value = data.list;
+    const data = await getDeviceMessagePairPage(queryParams);
+    list.value = data.list || [];
     total.value = data.total;
   } finally {
     loading.value = false;
@@ -112,58 +120,58 @@ onMounted(() => {
 <template>
   <ContentWrap>
     <!-- 搜索工作栏 -->
-    <a-form
+    <Form
       :model="queryParams"
       ref="queryFormRef"
       layout="inline"
       @submit.prevent
       style="margin-bottom: 16px"
     >
-      <a-form-item label="标识符" name="identifier">
-        <a-select
+      <Form.Item label="标识符" name="identifier">
+        <Select
           v-model:value="queryParams.identifier"
           placeholder="请选择服务标识符"
           allow-clear
           style="width: 240px"
         >
-          <a-select-option
+          <Select.Option
             v-for="service in serviceThingModels"
             :key="service.identifier"
             :value="service.identifier!"
           >
             {{ service.name }}({{ service.identifier }})
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="时间范围" name="times">
-        <a-range-picker
+          </Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item label="时间范围" name="times">
+        <RangePicker
           v-model:value="queryParams.times"
           show-time
           format="YYYY-MM-DD HH:mm:ss"
           style="width: 360px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="handleQuery">
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" @click="handleQuery">
           <template #icon>
             <IconifyIcon icon="ep:search" />
           </template>
           搜索
-        </a-button>
-        <a-button @click="resetQuery" style="margin-left: 8px">
+        </Button>
+        <Button @click="resetQuery" style="margin-left: 8px">
           <template #icon>
             <IconifyIcon icon="ep:refresh" />
           </template>
           重置
-        </a-button>
-      </a-form-item>
-    </a-form>
+        </Button>
+      </Form.Item>
+    </Form>
 
-    <a-divider style="margin: 16px 0" />
+    <Divider style="margin: 16px 0" />
 
     <!-- 服务调用列表 -->
-    <a-table v-loading="loading" :data-source="list" :pagination="false">
-      <a-table-column
+    <Table v-loading="loading" :data-source="list" :pagination="false">
+      <Table.Column
         title="调用时间"
         align="center"
         data-index="requestTime"
@@ -176,8 +184,8 @@ onMounted(() => {
               : '-'
           }}
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="响应时间"
         align="center"
         data-index="responseTime"
@@ -188,20 +196,20 @@ onMounted(() => {
             record.reply?.reportTime ? formatDate(record.reply.reportTime) : '-'
           }}
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="标识符"
         align="center"
         data-index="identifier"
         :width="160"
       >
         <template #default="{ record }">
-          <a-tag color="blue" size="small">
+          <Tag color="blue" size="small">
             {{ record.request?.identifier }}
-          </a-tag>
+          </Tag>
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="服务名称"
         align="center"
         data-index="serviceName"
@@ -210,8 +218,8 @@ onMounted(() => {
         <template #default="{ record }">
           {{ getServiceName(record.request?.identifier) }}
         </template>
-      </a-table-column>
-      <a-table-column
+      </Table.Column>
+      <Table.Column
         title="调用方式"
         align="center"
         data-index="callType"
@@ -220,13 +228,13 @@ onMounted(() => {
         <template #default="{ record }">
           {{ getCallType(record.request?.identifier) }}
         </template>
-      </a-table-column>
-      <a-table-column title="输入参数" align="center" data-index="inputParams">
+      </Table.Column>
+      <Table.Column title="输入参数" align="center" data-index="inputParams">
         <template #default="{ record }">
           {{ parseParams(record.request?.params) }}
         </template>
-      </a-table-column>
-      <a-table-column title="输出参数" align="center" data-index="outputParams">
+      </Table.Column>
+      <Table.Column title="输出参数" align="center" data-index="outputParams">
         <template #default="{ record }">
           <span v-if="record.reply">
             {{
@@ -235,8 +243,8 @@ onMounted(() => {
           </span>
           <span v-else>-</span>
         </template>
-      </a-table-column>
-    </a-table>
+      </Table.Column>
+    </Table>
 
     <!-- 分页 -->
     <Pagination

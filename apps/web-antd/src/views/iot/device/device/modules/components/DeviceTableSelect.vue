@@ -6,15 +6,29 @@ import type { IotProductApi } from '#/api/iot/product/product';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Radio,
+  Select,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
 import { getDevicePage } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
 import { getSimpleProductList } from '#/api/iot/product/product';
+import { DictTag } from '#/components/dict-tag';
 
 defineOptions({ name: 'IoTDeviceTableSelect' });
 
@@ -33,14 +47,14 @@ const props = defineProps({
 const emit = defineEmits(['success']);
 
 // 获取字典选项
-const getIntDictOptions = (dictType: string) => {
+function getIntDictOptions(dictType: string) {
   return getDictOptions(dictType, 'number');
-};
+}
 
 // 日期格式化
-const dateFormatter = (_row: any, _column: any, cellValue: any) => {
+function dateFormatter(_row: any, _column: any, cellValue: any) {
   return cellValue ? formatDate(cellValue, 'YYYY-MM-DD HH:mm:ss') : '';
-};
+}
 
 const dialogVisible = ref(false);
 const dialogTitle = ref('设备选择器');
@@ -73,38 +87,31 @@ const columns = computed(() => {
       title: 'DeviceName',
       dataIndex: 'deviceName',
       key: 'deviceName',
-      align: 'center',
     },
     {
       title: '备注名称',
       dataIndex: 'nickname',
       key: 'nickname',
-      align: 'center',
     },
     {
       title: '所属产品',
       key: 'productId',
-      align: 'center',
     },
     {
       title: '设备类型',
       key: 'deviceType',
-      align: 'center',
     },
     {
       title: '所属分组',
       key: 'groupIds',
-      align: 'center',
     },
     {
       title: '设备状态',
       key: 'status',
-      align: 'center',
     },
     {
       title: '最后上线时间',
       key: 'onlineTime',
-      align: 'center',
       width: 180,
     },
   ];
@@ -125,7 +132,7 @@ const columns = computed(() => {
 // 多选配置
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,
-  onChange: (keys: number[], rows: IotDeviceApi.Device[]) => {
+  onChange: (keys: any[], rows: IotDeviceApi.Device[]) => {
     selectedRowKeys.value = keys;
     selectedDevices.value = rows;
   },
@@ -176,20 +183,20 @@ defineExpose({ open });
 
 /** 处理行点击事件 */
 const tableRef = ref();
-const handleRowClick = (row: IotDeviceApi.Device) => {
+function handleRowClick(row: IotDeviceApi.Device) {
   if (!props.multiple) {
     selectedId.value = row.id;
     selectedDevices.value = [row];
   }
-};
+}
 
 /** 处理单选变更事件 */
-const handleRadioChange = (row: IotDeviceApi.Device) => {
+function handleRadioChange(row: IotDeviceApi.Device) {
   selectedId.value = row.id;
   selectedDevices.value = [row];
-};
+}
 
-const submitForm = async () => {
+async function submitForm() {
   if (selectedDevices.value.length === 0) {
     message.warning({
       content: props.multiple ? '请至少选择一个设备' : '请选择一个设备',
@@ -201,7 +208,7 @@ const submitForm = async () => {
     props.multiple ? selectedDevices.value : selectedDevices.value[0],
   );
   dialogVisible.value = false;
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -213,7 +220,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <a-modal
+  <Modal
     :title="dialogTitle"
     v-model:open="dialogVisible"
     width="60%"
@@ -221,54 +228,54 @@ onMounted(async () => {
   >
     <ContentWrap>
       <!-- 搜索工作栏 -->
-      <a-form
+      <Form
         ref="queryFormRef"
         layout="inline"
         :model="queryParams"
         class="-mb-15px"
       >
-        <a-form-item v-if="!props.productId" label="产品" name="productId">
-          <a-select
+        <Form.Item v-if="!props.productId" label="产品" name="productId">
+          <Select
             v-model:value="queryParams.productId"
             placeholder="请选择产品"
             allow-clear
             style="width: 240px"
           >
-            <a-select-option
+            <Select.Option
               v-for="product in products"
               :key="product.id"
               :value="product.id"
             >
               {{ product.name }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="DeviceName" name="deviceName">
-          <a-input
+            </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="DeviceName" name="deviceName">
+          <Input
             v-model:value="queryParams.deviceName"
             placeholder="请输入 DeviceName"
             allow-clear
             @press-enter="handleQuery"
             style="width: 240px"
           />
-        </a-form-item>
-        <a-form-item label="备注名称" name="nickname">
-          <a-input
+        </Form.Item>
+        <Form.Item label="备注名称" name="nickname">
+          <Input
             v-model:value="queryParams.nickname"
             placeholder="请输入备注名称"
             allow-clear
             @press-enter="handleQuery"
             style="width: 240px"
           />
-        </a-form-item>
-        <a-form-item label="设备类型" name="deviceType">
-          <a-select
+        </Form.Item>
+        <Form.Item label="设备类型" name="deviceType">
+          <Select
             v-model:value="queryParams.deviceType"
             placeholder="请选择设备类型"
             allow-clear
             style="width: 240px"
           >
-            <a-select-option
+            <Select.Option
               v-for="dict in getIntDictOptions(
                 DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
               )"
@@ -276,57 +283,57 @@ onMounted(async () => {
               :value="dict.value"
             >
               {{ dict.label }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="设备状态" name="status">
-          <a-select
+            </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="设备状态" name="status">
+          <Select
             v-model:value="queryParams.status"
             placeholder="请选择设备状态"
             allow-clear
             style="width: 240px"
           >
-            <a-select-option
+            <Select.Option
               v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATUS)"
               :key="dict.value"
               :value="dict.value"
             >
               {{ dict.label }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="设备分组" name="groupId">
-          <a-select
+            </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="设备分组" name="groupId">
+          <Select
             v-model:value="queryParams.groupId"
             placeholder="请选择设备分组"
             allow-clear
             style="width: 240px"
           >
-            <a-select-option
+            <Select.Option
               v-for="group in deviceGroups"
               :key="group.id"
               :value="group.id"
             >
               {{ group.name }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item>
-          <a-button @click="handleQuery">
-            <Icon class="mr-5px" icon="ep:search" />
+            </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item>
+          <Button @click="handleQuery">
+            <IconifyIcon class="mr-5px" icon="ep:search" />
             搜索
-          </a-button>
-          <a-button @click="resetQuery">
-            <Icon class="mr-5px" icon="ep:refresh" />
+          </Button>
+          <Button @click="resetQuery">
+            <IconifyIcon class="mr-5px" icon="ep:refresh" />
             重置
-          </a-button>
-        </a-form-item>
-      </a-form>
+          </Button>
+        </Form.Item>
+      </Form>
     </ContentWrap>
 
     <!-- 列表 -->
     <ContentWrap>
-      <a-table
+      <Table
         ref="tableRef"
         :loading="loading"
         :data-source="list"
@@ -334,38 +341,38 @@ onMounted(async () => {
         :pagination="false"
         :row-selection="multiple ? rowSelection : undefined"
         @row-click="handleRowClick"
-        :row-key="(record: IotDeviceApi.Device) => record.id"
+        :row-key="(record: IotDeviceApi.Device) => record.id?.toString() ?? ''"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'radio'">
-            <a-radio
+            <Radio
               :checked="selectedId === record.id"
-              @click="() => handleRadioChange(record)"
+              @click="() => handleRadioChange(record as IotDeviceApi.Device)"
             />
           </template>
           <template v-else-if="column.key === 'productId'">
             {{ products.find((p) => p.id === record.productId)?.name || '-' }}
           </template>
           <template v-else-if="column.key === 'deviceType'">
-            <dict-tag
+            <DictTag
               :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
               :value="record.deviceType"
             />
           </template>
           <template v-else-if="column.key === 'groupIds'">
             <template v-if="record.groupIds?.length">
-              <a-tag
+              <Tag
                 v-for="id in record.groupIds"
                 :key="id"
                 class="ml-5px"
                 size="small"
               >
                 {{ deviceGroups.find((g) => g.id === id)?.name }}
-              </a-tag>
+              </Tag>
             </template>
           </template>
           <template v-else-if="column.key === 'status'">
-            <dict-tag
+            <DictTag
               :type="DICT_TYPE.IOT_DEVICE_STATUS"
               :value="record.status"
             />
@@ -374,7 +381,7 @@ onMounted(async () => {
             {{ dateFormatter(null, null, record.onlineTime) }}
           </template>
         </template>
-      </a-table>
+      </Table>
 
       <!-- 分页 -->
       <Pagination
@@ -386,10 +393,10 @@ onMounted(async () => {
     </ContentWrap>
 
     <template #footer>
-      <a-button @click="submitForm" type="primary" :disabled="formLoading">
+      <Button @click="submitForm" type="primary" :disabled="formLoading">
         确 定
-      </a-button>
-      <a-button @click="dialogVisible = false">取 消</a-button>
+      </Button>
+      <Button @click="dialogVisible = false">取 消</Button>
     </template>
-  </a-modal>
+  </Modal>
 </template>

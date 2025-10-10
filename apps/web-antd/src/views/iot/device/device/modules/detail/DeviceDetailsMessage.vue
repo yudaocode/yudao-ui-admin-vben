@@ -9,10 +9,23 @@ import {
   watch,
 } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { DeviceApi } from '#/api/iot/device/device';
+import {
+  Button,
+  Form,
+  Pagination,
+  Select,
+  Switch,
+  Table,
+  Tag,
+} from 'ant-design-vue';
+
+import { getDeviceMessagePage } from '#/api/iot/device/device';
+import { DictTag } from '#/components/dict-tag';
 import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
 
 const props = defineProps<{
@@ -49,64 +62,58 @@ const columns = [
     title: '时间',
     dataIndex: 'ts',
     key: 'ts',
-    align: 'center',
     width: 180,
   },
   {
     title: '上行/下行',
     dataIndex: 'upstream',
     key: 'upstream',
-    align: 'center',
     width: 140,
   },
   {
     title: '是否回复',
     dataIndex: 'reply',
     key: 'reply',
-    align: 'center',
     width: 140,
   },
   {
     title: '请求编号',
     dataIndex: 'requestId',
     key: 'requestId',
-    align: 'center',
     width: 300,
   },
   {
     title: '请求方法',
     dataIndex: 'method',
     key: 'method',
-    align: 'center',
     width: 140,
   },
   {
     title: '请求/响应数据',
     dataIndex: 'params',
     key: 'params',
-    align: 'center',
     ellipsis: true,
   },
 ];
 
 /** 查询消息列表 */
-const getMessageList = async () => {
+async function getMessageList() {
   if (!props.deviceId) return;
   loading.value = true;
   try {
-    const data = await DeviceApi.getDeviceMessagePage(queryParams);
+    const data = await getDeviceMessagePage(queryParams);
     total.value = data.total;
     list.value = data.list;
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getMessageList();
-};
+}
 
 /** 监听自动刷新 */
 watch(autoRefresh, (newValue) => {
@@ -146,7 +153,7 @@ onMounted(() => {
 });
 
 /** 刷新消息列表 */
-const refresh = (delay = 0) => {
+function refresh(delay = 0) {
   if (delay > 0) {
     setTimeout(() => {
       handleQuery();
@@ -154,7 +161,7 @@ const refresh = (delay = 0) => {
   } else {
     handleQuery();
   }
-};
+}
 
 /** 暴露方法给父组件 */
 defineExpose({
@@ -165,54 +172,55 @@ defineExpose({
 <template>
   <ContentWrap>
     <!-- 搜索区域 -->
-    <a-form :model="queryParams" layout="inline">
-      <a-form-item>
-        <a-select
+    <Form :model="queryParams" layout="inline">
+      <Form.Item>
+        <Select
           v-model:value="queryParams.method"
           placeholder="所有方法"
           style="width: 160px"
           allow-clear
         >
-          <a-select-option
+          <Select.Option
             v-for="item in methodOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           >
             {{ item.label }}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item>
-        <a-select
+          </Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item>
+        <Select
           v-model:value="queryParams.upstream"
           placeholder="上行/下行"
           style="width: 160px"
           allow-clear
         >
-          <a-select-option label="上行" value="true">上行</a-select-option>
-          <a-select-option label="下行" value="false">下行</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px" /> 搜索
-        </a-button>
-        <a-switch
+          <Select.Option label="上行" value="true">上行</Select.Option>
+          <Select.Option label="下行" value="false">下行</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" @click="handleQuery">
+          <IconifyIcon icon="ep:search" class="mr-5px" /> 搜索
+        </Button>
+        <Switch
           v-model:checked="autoRefresh"
           class="ml-20px"
           checked-children="定时刷新"
           un-checked-children="定时刷新"
         />
-      </a-form-item>
-    </a-form>
+      </Form.Item>
+    </Form>
 
     <!-- 消息列表 -->
-    <a-table
+    <Table
       :loading="loading"
       :data-source="list"
       :columns="columns"
       :pagination="false"
+      align="center"
       class="whitespace-nowrap"
     >
       <template #bodyCell="{ column, record }">
@@ -220,12 +228,12 @@ defineExpose({
           {{ formatDate(record.ts) }}
         </template>
         <template v-else-if="column.key === 'upstream'">
-          <a-tag :color="record.upstream ? 'blue' : 'green'">
+          <Tag :color="record.upstream ? 'blue' : 'green'">
             {{ record.upstream ? '上行' : '下行' }}
-          </a-tag>
+          </Tag>
         </template>
         <template v-else-if="column.key === 'reply'">
-          <dict-tag
+          <DictTag
             :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
             :value="record.reply"
           />
@@ -244,7 +252,7 @@ defineExpose({
           <span v-else>{{ record.params }}</span>
         </template>
       </template>
-    </a-table>
+    </Table>
 
     <!-- 分页 -->
     <div class="mt-10px flex justify-end">

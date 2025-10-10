@@ -189,18 +189,3 @@ export function exportThingModelTSL(productId: number) {
     params: { productId },
   });
 }
-
-// Add a consolidated API object and getThingModelList alias
-export const ThingModelApi = {
-  getThingModelPage,
-  getThingModel,
-  getThingModelList: getThingModelListByProductId, // alias for compatibility
-  getThingModelListByProductId,
-  getThingModelListByProductKey,
-  createThingModel,
-  updateThingModel,
-  deleteThingModel,
-  deleteThingModelList,
-  importThingModelTSL,
-  exportThingModelTSL,
-};
