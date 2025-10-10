@@ -4,6 +4,7 @@ import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { formatDate, isEmpty } from '@vben/utils';
 
@@ -14,7 +15,6 @@ import {
   Divider,
   InputSearch,
   message,
-  Tag,
 } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
@@ -22,6 +22,7 @@ import {
   getBrokerageUser,
   updateBindUser,
 } from '#/api/mall/trade/brokerage/user';
+import { DictTag } from '#/components/dict-tag';
 
 import { useUpdateFormSchema } from '../data';
 
@@ -134,8 +135,10 @@ async function handleSearchUser(id: number, userType: string) {
         {{ bindUser?.nickname }}
       </DescriptionsItem>
       <DescriptionsItem label="分销资格">
-        <Tag v-if="bindUser?.brokerageEnabled" color="success"> 有 </Tag>
-        <Tag v-else>无</Tag>
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="bindUser?.brokerageEnabled"
+        />
       </DescriptionsItem>
       <DescriptionsItem label="成为分销员的时间">
         {{ formatDate(bindUser?.brokerageTime) }}

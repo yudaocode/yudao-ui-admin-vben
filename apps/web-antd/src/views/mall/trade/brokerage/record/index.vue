@@ -19,7 +19,6 @@ const [Grid] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
-    showOverflow: 'tooltip',
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {

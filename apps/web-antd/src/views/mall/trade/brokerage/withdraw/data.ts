@@ -88,12 +88,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'userId',
-      title: '用户编号：',
+      title: '用户编号',
       minWidth: 80,
     },
     {
       field: 'userNickname',
-      title: '用户昵称：',
+      title: '用户昵称',
       minWidth: 80,
     },
     {
