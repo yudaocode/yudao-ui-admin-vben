@@ -168,7 +168,7 @@ async function handleGetUser(id: any, userType: string) {
           {{ userInfo.bindUser?.nickname }}
         </ElDescriptionsItem>
         <ElDescriptionsItem label="推广资格">
-          <ElTag v-if="userInfo.bindUser?.brokerageEnabled" color="success">
+          <ElTag v-if="userInfo.bindUser?.brokerageEnabled" type="success">
             有
           </ElTag>
           <ElTag v-else>无</ElTag>

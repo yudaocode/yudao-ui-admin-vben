@@ -125,7 +125,7 @@ async function handleGetUser() {
         {{ bindUser.nickname }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="推广资格">
-        <ElTag v-if="bindUser.brokerageEnabled" color="success">有</ElTag>
+        <ElTag v-if="bindUser.brokerageEnabled" type="success">有</ElTag>
         <ElTag v-else>无</ElTag>
       </ElDescriptionsItem>
       <ElDescriptionsItem label="成为推广员的时间">

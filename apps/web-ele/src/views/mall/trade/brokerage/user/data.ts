@@ -1,6 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { fenToYuan } from '@vben/utils';
 
 import { getRangePickerDefaultProps } from '#/utils';
@@ -138,3 +140,177 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
+
+/** 用户列表弹窗搜索表单配置 */
+export function useUserListFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'level',
+      label: '用户类型',
+      component: 'RadioGroup',
+      // TODO @霖：这里会折行
+      componentProps: {
+        options: [
+          { label: '全部', value: undefined },
+          { label: '一级推广人', value: '1' },
+          { label: '二级推广人', value: '2' },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+    },
+    {
+      fieldName: 'bindUserTime',
+      label: '绑定时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        clearable: true,
+      },
+    },
+  ];
+}
+
+/** 用户列表弹窗表格列配置 */
+export function useUserListColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'id',
+      title: '用户编号',
+      minWidth: 80,
+    },
+    {
+      field: 'avatar',
+      title: '头像',
+      minWidth: 70,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+          shape: 'circle',
+        },
+      },
+    },
+    {
+      field: 'nickname',
+      title: '昵称',
+      minWidth: 80,
+    },
+    {
+      field: 'brokerageUserCount',
+      title: '推广人数',
+      minWidth: 80,
+    },
+    {
+      field: 'brokerageOrderCount',
+      title: '推广订单数量',
+      minWidth: 110,
+    },
+    {
+      field: 'brokerageEnabled',
+      title: '推广资格',
+      minWidth: 80,
+      slots: { default: 'brokerageEnabled' },
+    },
+    {
+      field: 'bindUserTime',
+      title: '绑定时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+  ];
+}
+
+/** 推广订单列表弹窗搜索表单配置 */
+export function useOrderListFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'sourceUserLevel',
+      label: '用户类型',
+      component: 'Select',
+      componentProps: {
+        options: [
+          { label: '全部', value: 0 },
+          { label: '一级推广人', value: 1 },
+          { label: '二级推广人', value: 2 },
+        ],
+      },
+      defaultValue: 0,
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择状态',
+        clearable: true,
+        options: getDictOptions(DICT_TYPE.BROKERAGE_RECORD_STATUS, 'number'),
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        clearable: true,
+      },
+    },
+  ];
+}
+
+/** 推广订单列表弹窗表格列配置 */
+export function useOrderListColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'bizId',
+      title: '订单编号',
+      minWidth: 80,
+    },
+    {
+      field: 'sourceUserId',
+      title: '用户编号',
+      minWidth: 80,
+    },
+    {
+      field: 'sourceUserAvatar',
+      title: '头像',
+      minWidth: 70,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 24,
+          height: 24,
+        },
+      },
+    },
+    {
+      field: 'sourceUserNickname',
+      title: '昵称',
+      minWidth: 80,
+    },
+    {
+      field: 'price',
+      title: '佣金',
+      minWidth: 100,
+      formatter: ({ row }) => `￥${fenToYuan(row.price)}`,
+    },
+    {
+      field: 'status',
+      title: '状态',
+      minWidth: 85,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.BROKERAGE_RECORD_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+  ];
+}
+

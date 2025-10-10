@@ -26,7 +26,6 @@ const [Grid] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // 处理全部的情况
           const params = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
