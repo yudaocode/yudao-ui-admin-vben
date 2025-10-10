@@ -97,7 +97,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
       formatter: ({ cellValue, row }) => {
         if (cellValue) {
-          return formatDateTime(cellValue);
+          return formatDateTime(cellValue) as string;
         }
         if (row.payRefundId) {
           return '退款中，等待退款结果';

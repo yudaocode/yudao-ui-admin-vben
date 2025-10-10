@@ -3,7 +3,7 @@ import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
-import { dateFormatter, formatPast2 } from '@vben/utils';
+import { formatDate, formatPast2 } from '@vben/utils';
 
 import { Button, ButtonGroup, Modal, Row, Table } from 'ant-design-vue';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
@@ -345,14 +345,14 @@ onBeforeUnmount(() => {
             </template>
           </Table.Column>
           <Table.Column
-            :custom-render="({ text }) => dateFormatter(text)"
+            :custom-render="({ text }) => formatDate(text)"
             align="center"
             title="开始时间"
             data-index="createTime"
             width="140"
           />
           <Table.Column
-            :custom-render="({ text }) => dateFormatter(text)"
+            :custom-render="({ text }) => formatDate(text)"
             align="center"
             title="结束时间"
             data-index="endTime"
