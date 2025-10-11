@@ -73,7 +73,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         ...getRangePickerDefaultProps(),
         allowClear: true,
-        placeholder: ['开始时间', '结束时间'],
       },
     },
   ];

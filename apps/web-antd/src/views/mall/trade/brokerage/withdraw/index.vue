@@ -65,7 +65,7 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
   }).then(async (val) => {
     if (val) {
       await rejectBrokerageWithdraw({
-        id: row.id as number,
+        id: row.id!,
         auditReason: val,
       });
       handleRefresh();
@@ -189,7 +189,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '通过',
-              type: 'link' as const,
+              type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['trade:brokerage-withdraw:audit'],
               ifShow:
@@ -199,7 +199,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '驳回',
-              type: 'link' as const,
+              type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['trade:brokerage-withdraw:audit'],
@@ -210,7 +210,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '重新转账',
-              type: 'link' as const,
+              type: 'link',
               icon: ACTION_ICON.REFRESH,
               auth: ['trade:brokerage-withdraw:audit'],
               ifShow:
