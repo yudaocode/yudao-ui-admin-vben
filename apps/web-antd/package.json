@@ -45,6 +45,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
+    "@vben-core/shadcn-ui": "workspace:*",
     "ant-design-vue": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
