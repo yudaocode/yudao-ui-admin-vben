@@ -42,7 +42,7 @@ export namespace ErpStockMoveApi {
     no?: string;
     status?: number;
   }
-
+}
 /**
  * 查询库存调拨单分页
  */
