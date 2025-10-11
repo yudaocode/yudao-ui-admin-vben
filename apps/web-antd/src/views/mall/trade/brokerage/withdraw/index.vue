@@ -29,19 +29,23 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'BrokerageWithdraw' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 审核通过 */
 async function handleApprove(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
+  await confirm('确定要审核通过吗？');
+  const hideLoading = message.loading({
+    content: '审核通过中 ...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要审核通过吗？');
     await approveBrokerageWithdraw(row.id);
     message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('审核失败:', error);
+    handleRefresh();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -64,7 +68,7 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
         id: row.id as number,
         auditReason: val,
       });
-      onRefresh();
+      handleRefresh();
     }
   });
 }
@@ -73,13 +77,17 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
 async function handleRetryTransfer(
   row: MallBrokerageWithdrawApi.BrokerageWithdraw,
 ) {
+  await confirm('确定要重新转账吗？');
+  const hideLoading = message.loading({
+    content: '审核通过中 ...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要重新转账吗？');
     await approveBrokerageWithdraw(row.id);
     message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('重新转账失败:', error);
+    handleRefresh();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -107,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -130,11 +139,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
           </template>
           <div v-if="row.qrCodeUrl" class="mt-2">
             <div>收款码：</div>
-            <img :src="row.qrCodeUrl" class="mt-1 h-10 w-10" />
+            <div>
+              <img :src="row.qrCodeUrl" class="mt-1 h-10 w-10" />
+            </div>
           </div>
         </div>
       </template>
-
       <template #status-info="{ row }">
         <div>
           <DictTag
@@ -152,11 +162,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           </div>
         </div>
       </template>
-
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            // 审核中状态且没有支付转账编号，显示通过和驳回按钮
             {
               label: '通过',
               type: 'link' as const,
