@@ -113,7 +113,7 @@ const columns: TableColumnsType = [
 const [ModalComponent, modalApi] = useVbenModal();
 
 /** 获取任务详情 */
-const getTaskInfo = async () => {
+async function getTaskInfo() {
   if (!taskId.value) {
     return;
   }
@@ -123,10 +123,10 @@ const getTaskInfo = async () => {
   } finally {
     taskLoading.value = false;
   }
-};
+}
 
 /** 获取统计数据 */
-const getStatistics = async () => {
+async function getStatistics() {
   if (!taskId.value) {
     return;
   }
@@ -140,10 +140,10 @@ const getStatistics = async () => {
   } finally {
     taskStatisticsLoading.value = false;
   }
-};
+}
 
 /** 获取升级记录列表 */
-const getRecordList = async () => {
+async function getRecordList() {
   if (!taskId.value) {
     return;
   }
@@ -156,26 +156,26 @@ const getRecordList = async () => {
   } finally {
     recordLoading.value = false;
   }
-};
+}
 
 /** 切换标签 */
-const handleTabChange = (tabKey: number | string) => {
+function handleTabChange(tabKey: number | string) {
   activeTab.value = String(tabKey);
   queryParams.pageNo = 1;
   queryParams.status =
     activeTab.value === '' ? undefined : Number.parseInt(String(tabKey));
   getRecordList();
-};
+}
 
 /** 分页变化 */
-const handleTableChange = (pagination: any) => {
+function handleTableChange(pagination: any) {
   queryParams.pageNo = pagination.current;
   queryParams.pageSize = pagination.pageSize;
   getRecordList();
-};
+}
 
 /** 取消升级 */
-const handleCancelUpgrade = async (record: OtaTaskRecord) => {
+async function handleCancelUpgrade(record: OtaTaskRecord) {
   Modal.confirm({
     title: '确认取消',
     content: '确认要取消该设备的升级任务吗？',
@@ -192,10 +192,10 @@ const handleCancelUpgrade = async (record: OtaTaskRecord) => {
       }
     },
   });
-};
+}
 
 /** 打开弹窗 */
-const open = (id: number) => {
+function open(id: number) {
   modalApi.open();
   taskId.value = id;
   activeTab.value = '';
@@ -206,7 +206,7 @@ const open = (id: number) => {
   getTaskInfo();
   getStatistics();
   getRecordList();
-};
+}
 
 /** 暴露方法 */
 defineExpose({ open });

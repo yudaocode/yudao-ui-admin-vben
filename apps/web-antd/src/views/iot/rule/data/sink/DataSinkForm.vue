@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -10,7 +10,7 @@ import {
   createDataSink,
   getDataSink,
   updateDataSink,
-} from '#/api/iot/rule/data';
+} from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
 import {
@@ -106,7 +106,7 @@ const [Modal, modalApi] = useVbenModal({
 
 // 监听类型变化，重置配置
 watch(
-  () => formApi.form.type,
+  () => formApi.getValues().then((values) => values.type),
   (newType) => {
     if (formData.value && newType !== formData.value.type) {
       formData.value.config = {};

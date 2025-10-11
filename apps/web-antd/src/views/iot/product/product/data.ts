@@ -5,17 +5,10 @@ import { ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { downloadFileFromBlobPart } from '@vben/utils';
-
-import { message } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
-import {
-  deleteProduct,
-  exportProduct,
-  getProductPage,
-} from '#/api/iot/product/product';
+import { getProductPage } from '#/api/iot/product/product';
 
 /** 新增/修改产品的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -206,38 +199,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'actions' },
     },
   ];
-}
-
-/** 加载产品分类列表 */
-export async function loadCategoryList() {
-  return await getSimpleProductCategoryList();
-}
-
-/** 获取分类名称 */
-export function getCategoryName(categoryList: any[], categoryId: number) {
-  const category = categoryList.find((c: any) => c.id === categoryId);
-  return category?.name || '未分类';
-}
-
-/** 删除产品 */
-export async function handleDeleteProduct(row: any, onSuccess?: () => void) {
-  const hideLoading = message.loading({
-    content: `正在删除 ${row.name}...`,
-    duration: 0,
-  });
-  try {
-    await deleteProduct(row.id);
-    message.success(`删除 ${row.name} 成功`);
-    onSuccess?.();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 导出产品 */
-export async function handleExportProduct(searchParams: any) {
-  const data = await exportProduct(searchParams);
-  downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
 }
 
 /** 查询产品列表 */

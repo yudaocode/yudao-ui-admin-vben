@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
+import { message } from 'ant-design-vue';
+
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
 import Form from '../modules/OtaFirmwareForm.vue';
-import {
-  handleDeleteFirmware,
-  useGridFormSchema,
-  useGridOptions,
-} from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTOtaFirmware' });
 
@@ -35,21 +35,56 @@ function handleEdit(row: IoTOtaFirmwareApi.Firmware) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-/** 删除固件 */
-async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
-  await handleDeleteFirmware(row, onRefresh);
-}
-
 /** 查看固件详情 */
 function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
   formModalApi.setData({ type: 'view', id: row.id }).open();
+}
+
+/** 删除固件 */
+async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
+  });
+  try {
+    await deleteOtaFirmware(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+    });
+    onRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
-  gridOptions: useGridOptions(),
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getOtaFirmwarePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<IoTOtaFirmwareApi.Firmware>,
 });
 </script>
 

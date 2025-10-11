@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 
-import { Button, Form, FormItem, Select, Table } from 'ant-design-vue';
+import { IconifyIcon } from '@vben/icons';
+
+import { Button, Form, Select, Table } from 'ant-design-vue';
 
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
@@ -31,23 +33,23 @@ const upstreamMethods = computed(() => {
 });
 
 /** 根据产品 ID 过滤设备 */
-const getFilteredDevices = (productId: number) => {
+function getFilteredDevices(productId: number) {
   if (!productId) return [];
   return deviceList.value.filter(
     (device: any) => device.productId === productId,
   );
-};
+}
 
 /** 判断是否需要显示标识符选择器 */
-const shouldShowIdentifierSelect = (row: any) => {
+function shouldShowIdentifierSelect(row: any) {
   return [
     IotDeviceMessageMethodEnum.EVENT_POST.method,
     IotDeviceMessageMethodEnum.PROPERTY_POST.method,
   ].includes(row.method);
-};
+}
 
 /** 获取物模型选项 */
-const getThingModelOptions = (row: any) => {
+function getThingModelOptions(row: any) {
   if (!row.productId || !shouldShowIdentifierSelect(row)) {
     return [];
   }
@@ -66,28 +68,28 @@ const getThingModelOptions = (row: any) => {
     label: `${item.name} (${item.identifier})`,
     value: item.identifier,
   }));
-};
+}
 
 /** 加载产品列表 */
-const loadProductList = async () => {
+async function loadProductList() {
   try {
     productList.value = await getSimpleProductList();
   } catch (error) {
     console.error('加载产品列表失败:', error);
   }
-};
+}
 
 /** 加载设备列表 */
-const loadDeviceList = async () => {
+async function loadDeviceList() {
   try {
     deviceList.value = await getSimpleDeviceList();
   } catch (error) {
     console.error('加载设备列表失败:', error);
   }
-};
+}
 
 /** 加载物模型数据 */
-const loadThingModel = async (productId: number) => {
+async function loadThingModel(productId: number) {
   // 已缓存，无需重复加载
   if (thingModelCache.value.has(productId)) {
     return;
@@ -98,18 +100,18 @@ const loadThingModel = async (productId: number) => {
   } catch (error) {
     console.error('加载物模型失败:', error);
   }
-};
+}
 
 /** 产品变化时处理 */
-const handleProductChange = async (row: any, _index: number) => {
+async function handleProductChange(row: any, _index: number) {
   row.deviceId = 0;
   row.method = undefined;
   row.identifier = undefined;
   row.identifierLoading = false;
-};
+}
 
 /** 消息方法变化时处理 */
-const handleMethodChange = async (row: any, _index: number) => {
+async function handleMethodChange(row: any, _index: number) {
   // 清空标识符
   row.identifier = undefined;
   // 如果需要加载物模型数据
@@ -118,10 +120,10 @@ const handleMethodChange = async (row: any, _index: number) => {
     await loadThingModel(row.productId);
     row.identifierLoading = false;
   }
-};
+}
 
 /** 新增按钮操作 */
-const handleAdd = () => {
+function handleAdd() {
   const row = {
     productId: undefined,
     deviceId: undefined,
@@ -130,25 +132,25 @@ const handleAdd = () => {
     identifierLoading: false,
   };
   formData.value.push(row);
-};
+}
 
 /** 删除按钮操作 */
-const handleDelete = (index: number) => {
+function handleDelete(index: number) {
   formData.value.splice(index, 1);
-};
+}
 
 /** 表单校验 */
-const validate = () => {
+function validate() {
   return formRef.value.validate();
-};
+}
 
 /** 表单值 */
-const getData = () => {
+function getData() {
   return formData.value;
-};
+}
 
 /** 设置表单值 */
-const setData = (data: any[]) => {
+function setData(data: any[]) {
   // 确保每个项都有必要的字段
   formData.value = (data || []).map((item) => ({
     ...item,
@@ -160,7 +162,7 @@ const setData = (data: any[]) => {
       await loadThingModel(item.productId);
     }
   });
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -209,7 +211,7 @@ defineExpose({ validate, getData, setData });
     >
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === 'productId'">
-          <FormItem
+          <Form.Item
             :name="['data', index, 'productId']"
             :rules="formRules.productId"
             class="mb-0"
@@ -227,10 +229,10 @@ defineExpose({ validate, getData, setData });
               "
               @change="() => handleProductChange(record, index)"
             />
-          </FormItem>
+          </Form.Item>
         </template>
         <template v-else-if="column.dataIndex === 'deviceId'">
-          <FormItem
+          <Form.Item
             :name="['data', index, 'deviceId']"
             :rules="formRules.deviceId"
             class="mb-0"
@@ -251,10 +253,10 @@ defineExpose({ validate, getData, setData });
                 })),
               ]"
             />
-          </FormItem>
+          </Form.Item>
         </template>
         <template v-else-if="column.dataIndex === 'method'">
-          <FormItem
+          <Form.Item
             :name="['data', index, 'method']"
             :rules="formRules.method"
             class="mb-0"
@@ -275,10 +277,10 @@ defineExpose({ validate, getData, setData });
               "
               @change="() => handleMethodChange(record, index)"
             />
-          </FormItem>
+          </Form.Item>
         </template>
         <template v-else-if="column.dataIndex === 'identifier'">
-          <FormItem :name="['data', index, 'identifier']" class="mb-0">
+          <Form.Item :name="['data', index, 'identifier']" class="mb-0">
             <Select
               v-if="shouldShowIdentifierSelect(record)"
               v-model:value="record.identifier"
@@ -291,7 +293,7 @@ defineExpose({ validate, getData, setData });
               "
               :options="getThingModelOptions(record)"
             />
-          </FormItem>
+          </Form.Item>
         </template>
         <template v-else-if="column.title === '操作'">
           <Button type="link" danger @click="handleDelete(index)">删除</Button>
@@ -300,7 +302,7 @@ defineExpose({ validate, getData, setData });
     </Table>
     <div class="mt-3 text-center">
       <Button type="primary" @click="handleAdd">
-        <Icon icon="ant-design:plus-outlined" class="mr-1" />
+        <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
         添加数据源
       </Button>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DeviceVO } from '#/api/iot/device/device';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { OtaTask } from '#/api/iot/ota/task';
 
 import { computed, ref } from 'vue';
@@ -57,7 +57,7 @@ const formRules = {
     },
   ],
 };
-const devices = ref<DeviceVO[]>([]);
+const devices = ref<IotDeviceApi.Device[]>([]);
 
 /** 设备选项 */
 const deviceOptions = computed(() => {
@@ -107,7 +107,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     name: '',
     deviceScope: IoTOtaTaskDeviceScopeEnum.ALL.value,
@@ -116,12 +116,12 @@ const resetForm = () => {
     deviceIds: [],
   };
   formRef.value?.resetFields();
-};
+}
 
 /** 打开弹窗 */
-const open = async () => {
+async function open() {
   await modalApi.open();
-};
+}
 
 defineExpose({ open });
 </script>

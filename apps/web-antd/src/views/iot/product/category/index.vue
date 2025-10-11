@@ -3,16 +3,18 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { handleTree } from '@vben/utils';
+
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteProductCategory,
+  getProductCategoryPage,
+} from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
-import {
-  handleDeleteCategory,
-  queryProductCategoryList,
-  useGridColumns,
-  useGridFormSchema,
-} from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/ProductCategoryForm.vue';
 
 defineOptions({ name: 'IoTProductCategory' });
@@ -39,7 +41,17 @@ function handleEdit(row: IotProductCategoryApi.ProductCategory) {
 
 /** 删除分类 */
 async function handleDelete(row: IotProductCategoryApi.ProductCategory) {
-  await handleDeleteCategory(row, handleRefresh);
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
+  });
+  try {
+    await deleteProductCategory(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -57,7 +69,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: queryProductCategoryList,
+        query: async ({ page }, formValues) => {
+          const data = await getProductCategoryPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+          // 转换为树形结构
+          return {
+            ...data,
+            list: handleTree(data.list, 'id', 'parentId'),
+          };
+        },
       },
     },
     rowConfig: {

@@ -102,7 +102,7 @@ export function useIotHome() {
 }
 
 /** 格式化数字 - 大数字显示为 K/M */
-export const formatNumber = (num: number): string => {
+export function formatNumber(num: number): string {
   if (num >= 1_000_000) {
     return `${(num / 1_000_000).toFixed(1)}M`;
   }
@@ -110,4 +110,4 @@ export const formatNumber = (num: number): string => {
     return `${(num / 1000).toFixed(1)}K`;
   }
   return num.toString();
-};
+}

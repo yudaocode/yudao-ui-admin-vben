@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed, onMounted, ref, watch } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
@@ -12,7 +14,7 @@ const props = defineProps<{
   modelValue: any;
 }>();
 const emit = defineEmits(['update:modelValue']);
-const config = useVModel(props, 'modelValue', emit) as Ref<any>;
+const config = useVModel(props, 'modelValue', emit) as any;
 
 // noinspection HttpUrlsUsage
 /** URL处理 */
