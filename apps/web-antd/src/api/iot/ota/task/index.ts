@@ -45,54 +45,54 @@ export interface OtaTask {
 /** 查询 OTA 升级任务分页 */
 export function getOtaTaskPage(params: PageParam) {
   return requestClient.get<PageResult<IoTOtaTaskApi.Task>>(
-    '/iot/ota-task/page',
+    '/iot/ota/task/page',
     { params },
   );
 }
 
 /** 查询 OTA 升级任务详情 */
 export function getOtaTask(id: number) {
-  return requestClient.get<IoTOtaTaskApi.Task>(`/iot/ota-task/get?id=${id}`);
+  return requestClient.get<IoTOtaTaskApi.Task>(`/iot/ota/task/get?id=${id}`);
 }
 
 /** 新增 OTA 升级任务 */
 export function createOtaTask(data: OtaTask) {
-  return requestClient.post('/iot/ota-task/create', data);
+  return requestClient.post('/iot/ota/task/create', data);
 }
 
 /** 修改 OTA 升级任务 */
 export function updateOtaTask(data: OtaTask) {
-  return requestClient.put('/iot/ota-task/update', data);
+  return requestClient.put('/iot/ota/task/update', data);
 }
 
 /** 删除 OTA 升级任务 */
 export function deleteOtaTask(id: number) {
-  return requestClient.delete(`/iot/ota-task/delete?id=${id}`);
+  return requestClient.delete(`/iot/ota/task/delete?id=${id}`);
 }
 
 /** 批量删除 OTA 升级任务 */
 export function deleteOtaTaskList(ids: number[]) {
-  return requestClient.delete('/iot/ota-task/delete-list', {
+  return requestClient.delete('/iot/ota/task/delete-list', {
     params: { ids: ids.join(',') },
   });
 }
 
 /** 取消 OTA 升级任务 */
 export function cancelOtaTask(id: number) {
-  return requestClient.put(`/iot/ota-task/cancel?id=${id}`);
+  return requestClient.put(`/iot/ota/task/cancel?id=${id}`);
 }
 
 /** 启动 OTA 升级任务 */
 export function startOtaTask(id: number) {
-  return requestClient.put(`/iot/ota-task/start?id=${id}`);
+  return requestClient.put(`/iot/ota/task/start?id=${id}`);
 }
 
 /** 暂停 OTA 升级任务 */
 export function pauseOtaTask(id: number) {
-  return requestClient.put(`/iot/ota-task/pause?id=${id}`);
+  return requestClient.put(`/iot/ota/task/pause?id=${id}`);
 }
 
 /** 恢复 OTA 升级任务 */
 export function resumeOtaTask(id: number) {
-  return requestClient.put(`/iot/ota-task/resume?id=${id}`);
+  return requestClient.put(`/iot/ota/task/resume?id=${id}`);
 }

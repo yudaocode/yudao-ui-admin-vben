@@ -43,7 +43,7 @@ export interface OtaTaskRecord {
 /** 查询 OTA 升级任务记录分页 */
 export function getOtaTaskRecordPage(params: PageParam) {
   return requestClient.get<PageResult<IoTOtaTaskRecordApi.TaskRecord>>(
-    '/iot/ota-task-record/page',
+    '/iot/ota/task/record/page',
     { params },
   );
 }
@@ -51,14 +51,14 @@ export function getOtaTaskRecordPage(params: PageParam) {
 /** 查询 OTA 升级任务记录详情 */
 export function getOtaTaskRecord(id: number) {
   return requestClient.get<IoTOtaTaskRecordApi.TaskRecord>(
-    `/iot/ota-task-record/get?id=${id}`,
+    `/iot/ota/task/record/get?id=${id}`,
   );
 }
 
 /** 根据任务 ID 查询记录列表 */
 export function getOtaTaskRecordListByTaskId(taskId: number) {
   return requestClient.get<IoTOtaTaskRecordApi.TaskRecord[]>(
-    '/iot/ota-task-record/list-by-task-id',
+    '/iot/ota/task/record/list-by-task-id',
     { params: { taskId } },
   );
 }
@@ -66,7 +66,7 @@ export function getOtaTaskRecordListByTaskId(taskId: number) {
 /** 根据设备 ID 查询记录列表 */
 export function getOtaTaskRecordListByDeviceId(deviceId: number) {
   return requestClient.get<IoTOtaTaskRecordApi.TaskRecord[]>(
-    '/iot/ota-task-record/list-by-device-id',
+    '/iot/ota/task/record/list-by-device-id',
     { params: { deviceId } },
   );
 }
@@ -74,19 +74,19 @@ export function getOtaTaskRecordListByDeviceId(deviceId: number) {
 /** 根据固件 ID 查询记录列表 */
 export function getOtaTaskRecordListByFirmwareId(firmwareId: number) {
   return requestClient.get<IoTOtaTaskRecordApi.TaskRecord[]>(
-    '/iot/ota-task-record/list-by-firmware-id',
+    '/iot/ota/task/record/list-by-firmware-id',
     { params: { firmwareId } },
   );
 }
 
 /** 重试升级任务记录 */
 export function retryOtaTaskRecord(id: number) {
-  return requestClient.put(`/iot/ota-task-record/retry?id=${id}`);
+  return requestClient.put(`/iot/ota/task/record/retry?id=${id}`);
 }
 
 /** 取消升级任务记录 */
 export function cancelOtaTaskRecord(id: number) {
-  return requestClient.put(`/iot/ota-task-record/cancel?id=${id}`);
+  return requestClient.put(`/iot/ota/task/record/cancel?id=${id}`);
 }
 
 /** 获取升级任务记录状态统计 */
@@ -95,7 +95,7 @@ export function getOtaTaskRecordStatusStatistics(
   taskId?: number,
 ) {
   return requestClient.get<Record<string, number>>(
-    '/iot/ota-task-record/status-statistics',
+    '/iot/ota/task/record/status-statistics',
     { params: { firmwareId, taskId } },
   );
 }
