@@ -40,7 +40,7 @@ const taskFormRef = ref(); // 任务表单引用
 const taskDetailRef = ref(); // 任务详情引用
 
 /** 获取任务列表 */
-const getTaskList = async () => {
+async function getTaskList() {
   taskLoading.value = true;
   try {
     const data = await IoTOtaTaskApi.getOtaTaskPage(queryParams);
@@ -49,32 +49,32 @@ const getTaskList = async () => {
   } finally {
     taskLoading.value = false;
   }
-};
+}
 
 /** 搜索 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getTaskList();
-};
+}
 
 /** 打开任务表单 */
-const openTaskForm = () => {
+function openTaskForm() {
   taskFormRef.value?.open();
-};
+}
 
 /** 处理任务创建成功 */
-const handleTaskCreateSuccess = () => {
+function handleTaskCreateSuccess() {
   getTaskList();
   emit('success');
-};
+}
 
 /** 查看任务详情 */
-const handleTaskDetail = (id: number) => {
+function handleTaskDetail(id: number) {
   taskDetailRef.value?.open(id);
-};
+}
 
 /** 取消任务 */
-const handleCancelTask = async (id: number) => {
+async function handleCancelTask(id: number) {
   Modal.confirm({
     title: '确认取消',
     content: '确认要取消该升级任务吗？',
@@ -88,20 +88,20 @@ const handleCancelTask = async (id: number) => {
       }
     },
   });
-};
+}
 
 /** 刷新数据 */
-const refresh = async () => {
+async function refresh() {
   await getTaskList();
   emit('success');
-};
+}
 
 /** 分页变化 */
-const handleTableChange = (pagination: any) => {
+function handleTableChange(pagination: any) {
   queryParams.pageNo = pagination.current;
   queryParams.pageSize = pagination.pageSize;
   getTaskList();
-};
+}
 
 /** 表格列配置 */
 const columns: TableColumnsType = [

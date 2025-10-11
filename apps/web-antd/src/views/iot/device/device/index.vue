@@ -154,7 +154,7 @@ async function handleDelete(row: any) {
   });
   try {
     await deleteDevice(row.id);
-    message.success($t('common.delSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -175,7 +175,7 @@ async function handleDeleteBatch() {
   try {
     const ids = checkedRows.map((row: any) => row.id);
     await deleteDeviceList(ids);
-    message.success($t('common.delSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();

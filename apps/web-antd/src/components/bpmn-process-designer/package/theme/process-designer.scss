@@ -18,23 +18,23 @@
     width: 100%;
     min-height: 36px;
 
-    .el-button {
+    .ant-button {
       text-align: center;
     }
 
-    .el-button-group {
+    .ant-button-group {
       margin: 4px;
     }
 
-    .el-tooltip__popper {
-      .el-button {
+    .ant-tooltip__popper {
+      .ant-button {
         width: 100%;
         padding-right: 8px;
         padding-left: 8px;
         text-align: left;
       }
 
-      .el-button:hover {
+      .ant-button:hover {
         color: #fff;
         background: rgb(64 158 255 / 80%);
       }
@@ -175,7 +175,6 @@ pre {
 }
 
 .hljs {
-  word-break: break-word;
   white-space: pre-wrap;
 }
 

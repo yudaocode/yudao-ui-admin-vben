@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message, Tabs } from 'ant-design-vue';
 
 import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
@@ -29,7 +29,7 @@ const activeTab = ref('info');
 provide('product', product);
 
 /** 获取产品详情 */
-const getProductData = async (productId: number) => {
+async function getProductData(productId: number) {
   loading.value = true;
   try {
     product.value = await getProduct(productId);
@@ -38,10 +38,10 @@ const getProductData = async (productId: number) => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 查询设备数量 */
-const getDeviceCountData = async (productId: number) => {
+async function getDeviceCountData(productId: number) {
   try {
     return await getDeviceCount(productId);
   } catch (error) {
@@ -53,7 +53,7 @@ const getDeviceCountData = async (productId: number) => {
     );
     return 0;
   }
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -86,16 +86,16 @@ onMounted(async () => {
       @refresh="() => getProductData(id)"
     />
 
-    <a-tabs v-model:active-key="activeTab" class="mt-4">
-      <a-tab-pane key="info" tab="产品信息">
+    <Tabs v-model:active-key="activeTab" class="mt-4">
+      <Tabs.TabPane key="info" tab="产品信息">
         <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
-      </a-tab-pane>
-      <a-tab-pane key="thingModel" tab="物模型（功能定义）">
+      </Tabs.TabPane>
+      <Tabs.TabPane key="thingModel" tab="物模型（功能定义）">
         <IoTProductThingModel
           v-if="activeTab === 'thingModel'"
           :product-id="id"
         />
-      </a-tab-pane>
-    </a-tabs>
+      </Tabs.TabPane>
+    </Tabs>
   </Page>
 </template>

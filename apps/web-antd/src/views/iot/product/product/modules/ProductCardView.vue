@@ -48,13 +48,13 @@ const queryParams = ref({
 });
 
 // 获取分类名称
-const getCategoryName = (categoryId: number) => {
+function getCategoryName(categoryId: number) {
   const category = props.categoryList.find((c: any) => c.id === categoryId);
   return category?.name || '未分类';
-};
+}
 
 // 获取产品列表
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await getProductPage({
@@ -66,23 +66,23 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 // 处理页码变化
-const handlePageChange = (page: number, pageSize: number) => {
+function handlePageChange(page: number, pageSize: number) {
   queryParams.value.pageNo = page;
   queryParams.value.pageSize = pageSize;
   getList();
-};
+}
 
 // 获取设备类型颜色
-const getDeviceTypeColor = (deviceType: number) => {
+function getDeviceTypeColor(deviceType: number) {
   const colors: Record<number, string> = {
     0: 'blue',
     1: 'green',
   };
   return colors[deviceType] || 'default';
-};
+}
 
 onMounted(() => {
   getList();
@@ -131,9 +131,9 @@ defineExpose({
               <div class="info-list flex-1">
                 <div class="info-item">
                   <span class="info-label">产品分类</span>
-                  <span class="info-value text-primary">{{
-                    getCategoryName(item.categoryId)
-                  }}</span>
+                  <span class="info-value text-primary">
+                    {{ getCategoryName(item.categoryId) }}
+                  </span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品类型</span>
@@ -152,9 +152,9 @@ defineExpose({
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
                   <Tooltip :title="item.productKey || item.id" placement="top">
-                    <span class="info-value product-key">{{
-                      item.productKey || item.id
-                    }}</span>
+                    <span class="info-value product-key">
+                      {{ item.productKey || item.id }}
+                    </span>
                   </Tooltip>
                 </div>
               </div>
@@ -236,44 +236,44 @@ defineExpose({
 .product-card-view {
   .product-card {
     height: 100%;
-    transition: all 0.3s ease;
+    overflow: hidden;
     border: 1px solid #e8e8e8;
     border-radius: 8px;
-    overflow: hidden;
+    transition: all 0.3s ease;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       border-color: #d9d9d9;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
       transform: translateY(-2px);
     }
 
     :deep(.ant-card-body) {
-      height: 100%;
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
 
     // 产品图标
     .product-icon {
-      width: 48px;
-      height: 48px;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: 48px;
+      height: 48px;
+      color: white;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 8px;
-      color: white;
-      flex-shrink: 0;
     }
 
     // 产品标题
     .product-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1f2937;
-      line-height: 1.5;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #1f2937;
       white-space: nowrap;
     }
 
@@ -290,16 +290,16 @@ defineExpose({
         }
 
         .info-label {
-          color: #6b7280;
-          margin-right: 8px;
           flex-shrink: 0;
+          margin-right: 8px;
+          color: #6b7280;
         }
 
         .info-value {
-          color: #1f2937;
-          font-weight: 500;
           overflow: hidden;
           text-overflow: ellipsis;
+          font-weight: 500;
+          color: #1f2937;
           white-space: nowrap;
 
           &.text-primary {
@@ -308,15 +308,15 @@ defineExpose({
         }
 
         .product-key {
-          font-family: 'Courier New', monospace;
-          font-size: 12px;
-          color: #374151;
           display: inline-block;
           max-width: 150px;
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
           vertical-align: middle;
+          color: #374151;
+          white-space: nowrap;
           cursor: help;
         }
 
@@ -328,15 +328,15 @@ defineExpose({
 
     // 3D 图标
     .product-3d-icon {
-      width: 100px;
-      height: 100px;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: 100px;
+      height: 100px;
+      color: #667eea;
       background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
       border-radius: 8px;
-      flex-shrink: 0;
-      color: #667eea;
     }
 
     // 按钮组
@@ -344,8 +344,8 @@ defineExpose({
       display: flex;
       gap: 8px;
       padding-top: 12px;
-      border-top: 1px solid #f0f0f0;
       margin-top: auto;
+      border-top: 1px solid #f0f0f0;
 
       .action-btn {
         flex: 1;
@@ -359,8 +359,8 @@ defineExpose({
           border-color: #1890ff;
 
           &:hover {
-            background: #1890ff;
             color: white;
+            background: #1890ff;
           }
         }
 
@@ -369,8 +369,8 @@ defineExpose({
           border-color: #52c41a;
 
           &:hover {
-            background: #52c41a;
             color: white;
+            background: #52c41a;
           }
         }
 
@@ -379,8 +379,8 @@ defineExpose({
           border-color: #722ed1;
 
           &:hover {
-            background: #722ed1;
             color: white;
+            background: #722ed1;
           }
         }
 

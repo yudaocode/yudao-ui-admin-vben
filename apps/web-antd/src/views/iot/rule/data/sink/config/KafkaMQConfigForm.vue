@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { onMounted } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
@@ -10,7 +12,7 @@ const props = defineProps<{
   modelValue: any;
 }>();
 const emit = defineEmits(['update:modelValue']);
-const config = useVModel(props, 'modelValue', emit) as Ref<any>;
+const config = useVModel(props, 'modelValue', emit) as any;
 
 /** 组件初始化 */
 onMounted(() => {

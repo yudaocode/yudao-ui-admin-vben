@@ -1,8 +1,11 @@
 <!-- 告警配置组件 -->
 <script setup lang="ts">
-import { useVModel } from '@vueuse/core';
+import { onMounted, ref } from 'vue';
 
-import { AlertConfigApi } from '#/api/iot/alert/config';
+import { useVModel } from '@vueuse/core';
+import { Form, Select, Tag } from 'ant-design-vue';
+
+import { getAlertConfigPage } from '#/api/iot/alert/config';
 
 /** 告警配置组件 */
 defineOptions({ name: 'AlertConfig' });
@@ -24,17 +27,17 @@ const alertConfigs = ref<any[]>([]); // 告警配置列表
  * 处理选择变化事件
  * @param value 选中的值
  */
-const handleChange = (value?: number) => {
+function handleChange(value?: any) {
   emit('update:modelValue', value);
-};
+}
 
 /**
  * 加载告警配置列表
  */
-const loadAlertConfigs = async () => {
+async function loadAlertConfigs() {
   loading.value = true;
   try {
-    const data = await AlertConfigApi.getAlertConfigPage({
+    const data = await getAlertConfigPage({
       pageNo: 1,
       pageSize: 100,
       enabled: true, // 只加载启用的配置
@@ -43,7 +46,7 @@ const loadAlertConfigs = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 // 组件挂载时加载数据
 onMounted(() => {
@@ -53,8 +56,8 @@ onMounted(() => {
 
 <template>
   <div class="w-full">
-    <el-form-item label="告警配置" required>
-      <el-select
+    <Form.Item label="告警配置" required>
+      <Select
         v-model="localValue"
         placeholder="请选择告警配置"
         filterable
@@ -63,7 +66,7 @@ onMounted(() => {
         class="w-full"
         :loading="loading"
       >
-        <el-option
+        <Select.Option
           v-for="config in alertConfigs"
           :key="config.id"
           :label="config.name"
@@ -71,12 +74,12 @@ onMounted(() => {
         >
           <div class="flex items-center justify-between">
             <span>{{ config.name }}</span>
-            <el-tag :type="config.enabled ? 'success' : 'danger'" size="small">
+            <Tag :type="config.enabled ? 'success' : 'danger'" size="small">
               {{ config.enabled ? '启用' : '禁用' }}
-            </el-tag>
+            </Tag>
           </div>
-        </el-option>
-      </el-select>
-    </el-form-item>
+        </Select.Option>
+      </Select>
+    </Form.Item>
   </div>
 </template>

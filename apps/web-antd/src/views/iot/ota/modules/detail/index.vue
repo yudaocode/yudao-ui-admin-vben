@@ -27,17 +27,17 @@ const firmwareStatisticsLoading = ref(false);
 const firmwareStatistics = ref<Record<string, number>>({});
 
 /** 获取固件信息 */
-const getFirmwareInfo = async () => {
+async function getFirmwareInfo() {
   firmwareLoading.value = true;
   try {
     firmware.value = await IoTOtaFirmwareApi.getOtaFirmware(firmwareId.value);
   } finally {
     firmwareLoading.value = false;
   }
-};
+}
 
 /** 获取升级统计 */
-const getStatistics = async () => {
+async function getStatistics() {
   firmwareStatisticsLoading.value = true;
   try {
     firmwareStatistics.value =
@@ -47,7 +47,7 @@ const getStatistics = async () => {
   } finally {
     firmwareStatisticsLoading.value = false;
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {

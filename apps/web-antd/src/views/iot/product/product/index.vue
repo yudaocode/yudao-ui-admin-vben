@@ -6,21 +6,20 @@ import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, Card, Image, Input, Space } from 'ant-design-vue';
+import { Button, Card, Image, Input, message, Space } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteProduct,
+  exportProduct,
+  getProductPage,
+} from '#/api/crm/product';
+import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
-import {
-  getCategoryName,
-  handleDeleteProduct,
-  handleExportProduct,
-  loadCategoryList,
-  queryProductList,
-  useGridColumns,
-  useImagePreview,
-} from './data';
+import { useGridColumns, useImagePreview } from './data';
 // @ts-ignore
 import ProductCardView from './modules/ProductCardView.vue';
 import ProductForm from './modules/ProductForm.vue';
@@ -47,14 +46,15 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 // 加载产品分类列表
-const loadCategories = async () => {
-  categoryList.value = await loadCategoryList();
-};
+async function loadCategories() {
+  categoryList.value = await getSimpleProductCategoryList();
+}
 
 // 获取分类名称
-const getCategoryNameByValue = (categoryId: number) => {
-  return getCategoryName(categoryList.value, categoryId);
-};
+function getCategoryNameByValue(categoryId: number) {
+  const category = categoryList.value.find((c: any) => c.id === categoryId);
+  return category?.name || '未分类';
+}
 
 /** 搜索 */
 function handleSearch() {
@@ -84,7 +84,8 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  await handleExportProduct(searchParams.value);
+  const data = await exportProduct(searchParams.value);
+  await downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
 }
 
 /** 打开产品详情 */
@@ -116,7 +117,17 @@ function handleEdit(row: any) {
 
 /** 删除产品 */
 async function handleDelete(row: any) {
-  await handleDeleteProduct(row, handleRefresh);
+  const hideLoading = message.loading({
+    content: `正在删除 ${row.name}...`,
+    duration: 0,
+  });
+  try {
+    await deleteProduct(row.id);
+    message.success(`删除 ${row.name} 成功`);
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -129,7 +140,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: ({ page }) => queryProductList({ page }, searchParams.value),
+        query: async ({ page }) => {
+          return await getProductPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...searchParams.value,
+          });
+        },
       },
     },
     rowConfig: {
@@ -336,6 +353,6 @@ onMounted(() => {
 }
 
 .ant-image-preview-operations {
-  background: rgba(0, 0, 0, 0.7) !important;
+  background: rgb(0 0 0 / 70%) !important;
 }
 </style>

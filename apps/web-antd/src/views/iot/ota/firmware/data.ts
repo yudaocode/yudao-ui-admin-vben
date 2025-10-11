@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
-import { message } from 'ant-design-vue';
-
-import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { getSimpleProductList } from '#/api/iot/product/product';
-import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改固件的表单 */
@@ -156,52 +151,4 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'actions' },
     },
   ];
-}
-
-/** Grid 配置项 */
-export function useGridOptions(): VxeTableGridOptions<IoTOtaFirmwareApi.Firmware> {
-  return {
-    columns: useGridColumns(),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          return await getOtaFirmwarePage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-        },
-      },
-    },
-    rowConfig: {
-      keyField: 'id',
-      isHover: true,
-    },
-    toolbarConfig: {
-      refresh: true,
-      search: true,
-    },
-  };
-}
-
-/** 删除固件 */
-export async function handleDeleteFirmware(
-  row: IoTOtaFirmwareApi.Firmware,
-  onSuccess: () => void,
-) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-  });
-  try {
-    await deleteOtaFirmware(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onSuccess();
-  } finally {
-    hideLoading();
-  }
 }

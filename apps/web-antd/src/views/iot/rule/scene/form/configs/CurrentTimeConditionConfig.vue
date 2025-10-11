@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import type { TriggerCondition } from '#/api/iot/rule/scene';
 
+import { computed } from 'vue';
+
 import { useVModel } from '@vueuse/core';
 
 import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
