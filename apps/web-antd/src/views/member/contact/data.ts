@@ -101,6 +101,18 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
+    {
+      fieldName: 'sort',
+      label: '显示顺序',
+      rules: 'required',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        controlsPosition: 'right',
+        placeholder: '请输入显示顺序',
+      },
+      defaultValue: 0,
+    },
   ];
 }
 
@@ -213,6 +225,11 @@ export function useGridColumns(): VxeTableGridOptions<ContactApi.Contact>['colum
         name: 'CellDict',
         props: { type: DICT_TYPE.MEMBER_CONTACT_RELATIONSHIP },
       },
+    },
+    {
+      field: 'sort',
+      title: '显示顺序',
+      minWidth: 120,
     },
     {
       title: '操作',
