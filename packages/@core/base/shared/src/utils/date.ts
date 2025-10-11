@@ -1,4 +1,9 @@
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export function formatDate(
   time: Date | number | string | undefined,
@@ -12,6 +17,7 @@ export function formatDate(
     if (!date.isValid()) {
       throw new Error('Invalid date');
     }
+    // console.log('formatDate',format,dayjs.utc(time).local().format('YYYY-MM-DD HH:mm:ss'));
     return date.format(format);
   } catch (error) {
     console.error(`Error formatting date: ${error}`);
