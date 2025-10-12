@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { MallDeliveryExpressTemplateApi } from '#/api/mall/trade/delivery/expressTemplate';
+import type { SystemAreaApi } from '#/api/system/area';
 
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { cloneDeep } from '@vben/utils';
+import { cloneDeep, fenToYuan, yuanToFen } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -14,6 +15,7 @@ import {
   getDeliveryExpressTemplate,
   updateDeliveryExpressTemplate,
 } from '#/api/mall/trade/delivery/expressTemplate';
+import { getAreaTree } from '#/api/system/area';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -24,6 +26,7 @@ const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryExpressTemplateApi.ExpressTemplate>();
 const chargeItemFormRef = ref<InstanceType<typeof ChargeItemForm>>();
 const freeItemFormRef = ref<InstanceType<typeof FreeItemForm>>();
+const areaTree = ref<SystemAreaApi.Area[]>([]);
 
 const getTitle = computed(() => {
   return formData.value?.id
@@ -38,28 +41,38 @@ const [Form, formApi] = useVbenForm({
     },
     labelWidth: 120,
   },
-  wrapperClass: 'grid-cols-1',
+  wrapperClass: 'grid-cols-3',
   layout: 'vertical',
   schema: useFormSchema(),
   showDefaultActions: false,
+  handleValuesChange: (values, changedFields) => {
+    // 目的：触发子表单的 columns 变化
+    if (changedFields.includes('chargeMode')) {
+      formData.value!.chargeMode = values.chargeMode;
+    }
+  },
 });
 
 /** 更新运费设置 */
-const handleUpdateCharges = (charges: any[]) => {
+const handleUpdateCharges = async (
+  charges: MallDeliveryExpressTemplateApi.TemplateCharge[],
+) => {
   formData.value =
-    formApi.getValues() as MallDeliveryExpressTemplateApi.ExpressTemplate;
+    await formApi.getValues<MallDeliveryExpressTemplateApi.ExpressTemplate>();
   formData.value.charges = charges;
-  formApi.setValues({
+  await formApi.setValues({
     charges,
   });
 };
 
 /** 更新包邮设置 */
-const handleUpdateFrees = (frees: any[]) => {
+const handleUpdateFrees = async (
+  frees: MallDeliveryExpressTemplateApi.TemplateFree[],
+) => {
   formData.value =
-    formApi.getValues() as MallDeliveryExpressTemplateApi.ExpressTemplate;
+    await formApi.getValues<MallDeliveryExpressTemplateApi.ExpressTemplate>();
   formData.value.frees = frees;
-  formApi.setValues({
+  await formApi.setValues({
     frees,
   });
 };
@@ -71,22 +84,15 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-
-    // 验证子表单
     const chargeFormInstance = Array.isArray(chargeItemFormRef.value)
       ? chargeItemFormRef.value[0]
       : chargeItemFormRef.value;
     const freeFormInstance = Array.isArray(freeItemFormRef.value)
       ? freeItemFormRef.value[0]
       : freeItemFormRef.value;
-
     try {
-      if (chargeFormInstance) {
-        chargeFormInstance.validate();
-      }
-      if (freeFormInstance) {
-        freeFormInstance.validate();
-      }
+      chargeFormInstance.validate();
+      freeFormInstance.validate();
     } catch (error: any) {
       message.error(error.message || '子表单验证失败');
       return;
@@ -98,19 +104,21 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.getValues(),
     ) as MallDeliveryExpressTemplateApi.ExpressTemplate;
     try {
-      // 前端价格以元展示，提交到后端用分计算
-      data.charges?.forEach((item: any) => {
-        item.startPrice = Math.round(item.startPrice * 100);
-        item.extraPrice = Math.round(item.extraPrice * 100);
-      });
-      data.frees?.forEach((item: any) => {
-        item.freePrice = Math.round(item.freePrice * 100);
-      });
-
+      // 转换金额单位
+      data.charges?.forEach(
+        (item: MallDeliveryExpressTemplateApi.TemplateCharge) => {
+          item.startPrice = yuanToFen(item.startPrice);
+          item.extraPrice = yuanToFen(item.extraPrice);
+        },
+      );
+      data.frees?.forEach(
+        (item: MallDeliveryExpressTemplateApi.TemplateFree) => {
+          item.freePrice = yuanToFen(item.freePrice);
+        },
+      );
       await (formData.value?.id
         ? updateDeliveryExpressTemplate(data)
         : createDeliveryExpressTemplate(data));
-
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -128,68 +136,55 @@ const [Modal, modalApi] = useVbenModal({
     const data =
       modalApi.getData<MallDeliveryExpressTemplateApi.ExpressTemplate>();
     if (!data || !data.id) {
-      resetFormData();
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getDeliveryExpressTemplate(data.id);
+      // 转换金额单位
+      formData.value.charges?.forEach(
+        (item: MallDeliveryExpressTemplateApi.TemplateCharge) => {
+          item.startPrice = Number.parseFloat(fenToYuan(item.startPrice));
+          item.extraPrice = Number.parseFloat(fenToYuan(item.extraPrice));
+        },
+      );
+      formData.value.frees?.forEach(
+        (item: MallDeliveryExpressTemplateApi.TemplateFree) => {
+          item.freePrice = Number.parseFloat(fenToYuan(item.freePrice));
+        },
+      );
+      // 设置到 values
       await formApi.setValues(formData.value);
-    } else {
-      await loadFormData(data.id);
+    } finally {
+      modalApi.unlock();
     }
   },
 });
 
-// 重置表单数据
-function resetFormData() {
-  formData.value = {
-    id: undefined,
-    name: '',
-    chargeMode: 1,
-    sort: 0,
-    charges: [],
-    frees: [],
-  };
-}
-
-// 加载表单数据
-async function loadFormData(id: number) {
-  modalApi.lock();
-  try {
-    const data = await getDeliveryExpressTemplate(id);
-    formData.value = data;
-
-    // 前端价格以元展示
-    formData.value.charges?.forEach((item: any, index: number) => {
-      item.seq = item.seq || Date.now() + index;
-      item.startPrice = item.startPrice / 100;
-      item.extraPrice = item.extraPrice / 100;
-    });
-    formData.value.frees?.forEach((item: any, index: number) => {
-      item.seq = item.seq || Date.now() + index;
-      item.freePrice = item.freePrice / 100;
-    });
-
-    // 设置到 values
-    await formApi.setValues(formData.value);
-  } finally {
-    modalApi.unlock();
-  }
-}
+/** 初始化 */
+onMounted(async () => {
+  areaTree.value = await getAreaTree();
+});
 </script>
 
 <template>
-  <Modal class="w-[80%]" :title="getTitle">
+  <Modal class="w-1/2" :title="getTitle">
     <Form class="mx-3">
       <template #charges>
         <ChargeItemForm
           ref="chargeItemFormRef"
-          :items="formData?.charges ?? []"
-          :charge-mode="formData?.chargeMode ?? 1"
+          :items="formData?.charges"
+          :charge-mode="formData?.chargeMode"
+          :area-tree="areaTree"
           @update:items="handleUpdateCharges"
         />
       </template>
       <template #frees>
         <FreeItemForm
           ref="freeItemFormRef"
-          :items="formData?.frees ?? []"
-          :charge-mode="formData?.chargeMode ?? 1"
+          :items="formData?.frees"
+          :charge-mode="formData?.chargeMode"
+          :area-tree="areaTree"
           @update:items="handleUpdateFrees"
         />
       </template>

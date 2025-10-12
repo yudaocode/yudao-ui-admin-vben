@@ -2,45 +2,35 @@
 import type { MallDeliveryExpressTemplateApi } from '#/api/mall/trade/delivery/expressTemplate';
 import type { SystemAreaApi } from '#/api/system/area';
 
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 import { InputNumber, TreeSelect } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getAreaTree } from '#/api/system/area';
 
-import { useChargesColumns } from '../data';
+import { CHARGE_MODE_TITLE_MAP, useChargesColumns } from '../data';
 
 interface Props {
   items?: MallDeliveryExpressTemplateApi.TemplateCharge[];
   chargeMode?: number;
+  areaTree?: SystemAreaApi.Area[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   chargeMode: 1,
+  areaTree: () => [],
 });
 
 const emit = defineEmits(['update:items']);
 
 const tableData = ref<any[]>([]);
-const areaTree = ref<SystemAreaApi.Area[]>([]);
-
-// TODO @AI：待优化；
-// 根据计费方式设置列标题
-const columnTitle = computed(() => {
-  const titleMap = {
-    1: { startCountTitle: '首件', extraCountTitle: '续件' },
-    2: { startCountTitle: '首件重量(kg)', extraCountTitle: '续件重量(kg)' },
-    3: { startCountTitle: '首件体积(m³)', extraCountTitle: '续件体积(m³)' },
-  };
-  return titleMap[props.chargeMode] || titleMap[1];
-});
+const columnTitle = computed(() => CHARGE_MODE_TITLE_MAP[props.chargeMode]);
 
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useChargesColumns(),
+    columns: useChargesColumns(props.chargeMode),
     data: tableData.value,
     minHeight: 200,
     autoResize: true,
@@ -68,7 +58,6 @@ watch(
     tableData.value = [...items];
     await nextTick();
     await gridApi.grid.reloadData(tableData.value);
-    updateColumnsTitle();
   },
   {
     immediate: true,
@@ -79,23 +68,12 @@ watch(
 watch(
   () => props.chargeMode,
   () => {
-    updateColumnsTitle();
+    const columns = useChargesColumns(props.chargeMode);
+    if (gridApi.grid && columns) {
+      gridApi.grid.reloadColumn(columns);
+    }
   },
 );
-
-/** 更新列标题 */
-function updateColumnsTitle() {
-  const columns = useChargesColumns();
-  const startCountCol = columns.find((col) => col.field === 'startCount');
-  const extraCountCol = columns.find((col) => col.field === 'extraCount');
-
-  if (startCountCol) startCountCol.title = columnTitle.value.startCountTitle;
-  if (extraCountCol) extraCountCol.title = columnTitle.value.extraCountTitle;
-
-  if (gridApi.grid) {
-    gridApi.grid.reloadColumn(columns);
-  }
-}
 
 /** 处理新增 */
 function handleAdd() {
@@ -139,7 +117,7 @@ function validate() {
     }
     if (!item.startCount || item.startCount <= 0) {
       throw new Error(
-        `运费设置第 ${i + 1} 行：${columnTitle.value.startCountTitle}必须大于 0`,
+        `运费设置第 ${i + 1} 行：${columnTitle.value?.startCountTitle}必须大于 0`,
       );
     }
     if (!item.startPrice || item.startPrice <= 0) {
@@ -147,7 +125,7 @@ function validate() {
     }
     if (!item.extraCount || item.extraCount <= 0) {
       throw new Error(
-        `运费设置第 ${i + 1} 行：${columnTitle.value.extraCountTitle}必须大于 0`,
+        `运费设置第 ${i + 1} 行：${columnTitle.value?.extraCountTitle}必须大于 0`,
       );
     }
     if (!item.extraPrice || item.extraPrice <= 0) {
@@ -159,16 +137,12 @@ function validate() {
 defineExpose({
   validate,
 });
-
-/** 初始化 */
-onMounted(async () => {
-  areaTree.value = await getAreaTree();
-});
 </script>
 
 <template>
   <Grid class="w-full">
     <template #areaIds="{ row }">
+      <!-- TODO 芋艿：可优化，使用 Cascade。不过貌似 antd 在 multiple 貌似有 bug！ -->
       <TreeSelect
         v-model:value="row.areaIds"
         :tree-data="areaTree"
@@ -181,8 +155,7 @@ onMounted(async () => {
         class="w-full"
         multiple
         tree-checkable
-        :show-checked-strategy="TreeSelect.SHOW_CHILD"
-        :max-tag-count="5"
+        :max-tag-count="1"
         @change="handleRowChange(row)"
       />
     </template>

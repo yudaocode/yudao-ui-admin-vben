@@ -6,10 +6,32 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
+/** 计费方式列标题映射 */
+export const CHARGE_MODE_TITLE_MAP: Record<
+  number,
+  {
+    extraCountTitle: string;
+    startCountTitle: string;
+  }
+> = {
+  1: { startCountTitle: '首件', extraCountTitle: '续件' },
+  2: { startCountTitle: '首件重量(kg)', extraCountTitle: '续件重量(kg)' },
+  3: { startCountTitle: '首件体积(m³)', extraCountTitle: '续件体积(m³)' },
+};
+
+/** 包邮方式列标题映射 */
+export const FREE_MODE_TITLE_MAP: Record<number, { freeCountTitle: string }> = {
+  1: { freeCountTitle: '包邮件数' },
+  2: { freeCountTitle: '包邮重量(kg)' },
+  3: { freeCountTitle: '包邮体积(m³)' },
+};
+
 /** 运费设置表格列 */
-export function useChargesColumns(): VxeTableGridOptions['columns'] {
+export function useChargesColumns(
+  chargeMode = 1,
+): VxeTableGridOptions['columns'] {
+  const chargeTitleMap = CHARGE_MODE_TITLE_MAP[chargeMode];
   return [
-    { type: 'seq', title: '序号', width: 50 },
     {
       field: 'areaIds',
       title: '区域',
@@ -18,7 +40,7 @@ export function useChargesColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'startCount',
-      title: '首件数',
+      title: chargeTitleMap?.startCountTitle,
       width: 120,
       slots: { default: 'startCount' },
     },
@@ -30,7 +52,7 @@ export function useChargesColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'extraCount',
-      title: '续件数',
+      title: chargeTitleMap?.extraCountTitle,
       width: 120,
       slots: { default: 'extraCount' },
     },
@@ -50,9 +72,11 @@ export function useChargesColumns(): VxeTableGridOptions['columns'] {
 }
 
 /** 包邮设置表格列 */
-export function useFreesColumns(): VxeTableGridOptions['columns'] {
+export function useFreesColumns(
+  chargeMode = 1,
+): VxeTableGridOptions['columns'] {
+  const freeTitleMap = FREE_MODE_TITLE_MAP[chargeMode];
   return [
-    { type: 'seq', title: '序号', width: 50 },
     {
       field: 'areaIds',
       title: '区域',
@@ -61,7 +85,7 @@ export function useFreesColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'freeCount',
-      title: '包邮件数',
+      title: freeTitleMap?.freeCountTitle,
       width: 120,
       slots: { default: 'freeCount' },
     },
@@ -99,7 +123,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入模板名称',
       },
       rules: 'required',
-      formItemClass: 'col-span-1',
     },
     {
       fieldName: 'chargeMode',
@@ -111,7 +134,6 @@ export function useFormSchema(): VbenFormSchema[] {
         optionType: 'button',
       },
       rules: z.number().default(1),
-      formItemClass: 'col-span-1',
     },
     {
       fieldName: 'sort',
@@ -122,25 +144,18 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
       },
       rules: 'required',
-      formItemClass: 'col-span-1',
     },
     {
       fieldName: 'charges',
       label: '运费设置',
+      component: 'Input',
       formItemClass: 'col-span-3',
-      dependencies: {
-        triggerFields: ['chargeMode'],
-        show: () => true,
-      },
     },
     {
       fieldName: 'frees',
       label: '包邮设置',
+      component: 'Input',
       formItemClass: 'col-span-3',
-      dependencies: {
-        triggerFields: [''],
-        show: () => true,
-      },
     },
   ];
 }
