@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
@@ -99,6 +99,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入模板名称',
       },
       rules: 'required',
+      formItemClass: 'col-span-1',
     },
     {
       fieldName: 'chargeMode',
@@ -109,7 +110,8 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
+      rules: z.number().default(1),
+      formItemClass: 'col-span-1',
     },
     {
       fieldName: 'sort',
@@ -120,6 +122,25 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
       },
       rules: 'required',
+      formItemClass: 'col-span-1',
+    },
+    {
+      fieldName: 'charges',
+      label: '运费设置',
+      formItemClass: 'col-span-3',
+      dependencies: {
+        triggerFields: ['chargeMode'],
+        show: () => true,
+      },
+    },
+    {
+      fieldName: 'frees',
+      label: '包邮设置',
+      formItemClass: 'col-span-3',
+      dependencies: {
+        triggerFields: [''],
+        show: () => true,
+      },
     },
   ];
 }
