@@ -18,11 +18,6 @@ import { useBindFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryPickUpStoreApi.PickUpStore>();
-const getTitle = computed(() => {
-  return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['绑定店员'])
-    : $t('ui.actionTitle.create', ['绑定店员']);
-});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -81,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal title="绑定店员" class="w-2/5">
     <Form class="mx-4" />
   </Modal>
 </template>

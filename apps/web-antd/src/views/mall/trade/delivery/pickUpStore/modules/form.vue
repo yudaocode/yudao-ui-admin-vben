@@ -22,8 +22,8 @@ const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryPickUpStoreApi.PickUpStore>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['自提订单'])
-    : $t('ui.actionTitle.create', ['自提订单']);
+    ? $t('ui.actionTitle.edit', ['门店'])
+    : $t('ui.actionTitle.create', ['门店']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -31,10 +31,10 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    formItemClass: 'col-span-2',
     labelWidth: 120,
   },
   fieldMappingTime: [['rangeTime', ['openingTime', 'closingTime'], 'HH:mm']],
+  wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-4" />
   </Modal>
 </template>
