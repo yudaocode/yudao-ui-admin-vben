@@ -146,6 +146,7 @@ defineExpose({
       <ElTreeSelect
         v-model="row.areaIds"
         :data="areaTree"
+        node-key="id"
         :props="{
           label: 'name',
           value: 'id',
