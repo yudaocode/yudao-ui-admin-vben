@@ -1,6 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCommentApi } from '#/api/mall/product/comment';
 
 import { z } from '#/adapter/form';

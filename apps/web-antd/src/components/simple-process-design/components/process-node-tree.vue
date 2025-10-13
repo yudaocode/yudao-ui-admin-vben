@@ -32,7 +32,7 @@ const props = defineProps({
 const emits = defineEmits<{
   recursiveFindParentNode: [
     nodeList: SimpleFlowNode[],
-    curentNode: SimpleFlowNode,
+    currentNode: SimpleFlowNode,
     nodeType: number,
   ];
   'update:flowNode': [node: SimpleFlowNode | undefined];

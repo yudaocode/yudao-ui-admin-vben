@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { VxeTableInstance } from '@vben/plugins/vxe-table';
-
+import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
-import { h, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-import { Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Input } from 'ant-design-vue';
 
@@ -84,12 +83,12 @@ watch(
   </VxeTable>
   <div class="mt-4 flex justify-center">
     <Button
-      :icon="h(Plus)"
       type="primary"
       ghost
       @click="onAdd"
       v-access:code="['infra:demo03-student:create']"
     >
+      <IconifyIcon icon="lucide:plus" />
       {{ $t('ui.actionTitle.create', ['学生课程']) }}
     </Button>
   </div>

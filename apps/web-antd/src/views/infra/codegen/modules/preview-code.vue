@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
@@ -249,7 +249,8 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </Tabs.TabPane>
           <template #rightExtra>
-            <Button type="primary" ghost @click="copyCode" :icon="h(Copy)">
+            <Button type="primary" ghost @click="copyCode">
+              <IconifyIcon icon="lucide:copy" />
               复制代码
             </Button>
           </template>

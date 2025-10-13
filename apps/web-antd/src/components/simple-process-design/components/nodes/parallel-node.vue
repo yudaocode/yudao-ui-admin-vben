@@ -28,7 +28,7 @@ const emits = defineEmits<{
   findParnetNode: [nodeList: SimpleFlowNode[], nodeType: number];
   recursiveFindParentNode: [
     nodeList: SimpleFlowNode[],
-    curentNode: SimpleFlowNode,
+    currentNode: SimpleFlowNode,
     nodeType: number,
   ];
   'update:modelValue': [node: SimpleFlowNode | undefined];

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
 import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
   cloneDeep,
@@ -177,21 +177,21 @@ onMounted(() => {
           </Button>
           <Button
             class="ml-2"
-            :icon="h(Plus)"
             type="primary"
             @click="onCreate"
             v-access:code="['infra:demo02-category:create']"
           >
+            <IconifyIcon icon="lucide:plus" />
             {{ $t('ui.actionTitle.create', ['示例分类']) }}
           </Button>
           <Button
-            :icon="h(Download)"
             type="primary"
             class="ml-2"
             :loading="exportLoading"
             @click="onExport"
             v-access:code="['infra:demo02-category:export']"
           >
+            <IconifyIcon icon="lucide:download" />
             {{ $t('ui.actionTitle.export') }}
           </Button>
         </VbenVxeTableToolbar>

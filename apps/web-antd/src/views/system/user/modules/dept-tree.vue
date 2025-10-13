@@ -3,7 +3,7 @@ import type { SystemDeptApi } from '#/api/system/dept';
 
 import { onMounted, ref } from 'vue';
 
-import { Search } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
 import { Input, Spin, Tree } from 'ant-design-vue';
@@ -61,7 +61,7 @@ onMounted(async () => {
       class="w-full"
     >
       <template #prefix>
-        <Search class="size-4" />
+        <IconifyIcon icon="lucide:search" class="size-4" />
       </template>
     </Input>
     <Spin :spinning="loading" wrapper-class-name="w-full">

@@ -1,5 +1,3 @@
-import type { VxeTableGridOptions as VxeTableGridOptionsLegacy } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
@@ -43,7 +41,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptionsLegacy['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       title: '编号',

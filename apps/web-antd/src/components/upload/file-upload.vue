@@ -8,7 +8,7 @@ import type { AxiosProgressEvent } from '#/api/infra/file';
 
 import { computed, ref, toRefs, watch } from 'vue';
 
-import { CloudUpload } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
 
@@ -285,7 +285,7 @@ function getValue() {
     >
       <div v-if="drag" class="upload-drag-area">
         <p class="ant-upload-drag-icon">
-          <CloudUpload />
+          <IconifyIcon icon="lucide:cloud-upload" />
         </p>
         <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
         <p class="ant-upload-hint">
@@ -294,7 +294,7 @@ function getValue() {
       </div>
       <div v-else-if="fileList && fileList.length < maxNumber">
         <Button>
-          <CloudUpload />
+          <IconifyIcon icon="lucide:cloud-upload" />
           {{ $t('ui.upload.upload') }}
         </Button>
       </div>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { ContentWrap, useVbenModal } from '@vben/common-ui';
-import { Plus, Trash2 } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
 
@@ -218,15 +218,14 @@ onMounted(() => {
         >
           <Button
             class="ml-2"
-            :icon="h(Plus)"
             type="primary"
             @click="onCreate"
             v-access:code="['infra:demo03-student:create']"
           >
+            <IconifyIcon icon="lucide:plus" />
             {{ $t('ui.actionTitle.create', ['学生']) }}
           </Button>
           <Button
-            :icon="h(Trash2)"
             type="primary"
             danger
             class="ml-2"
@@ -234,6 +233,7 @@ onMounted(() => {
             @click="onDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >
+            <IconifyIcon icon="lucide:trash-2" />
             批量删除
           </Button>
         </VbenVxeTableToolbar>

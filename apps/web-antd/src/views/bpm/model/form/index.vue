@@ -15,7 +15,7 @@ import {
   BpmModelType,
 } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
-import { ArrowLeft } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
 import { Button, Card, message } from 'ant-design-vue';
@@ -419,7 +419,8 @@ onBeforeUnmount(() => {
       >
         <!-- 左侧标题 -->
         <div class="flex w-48 items-center overflow-hidden">
-          <ArrowLeft
+          <IconifyIcon
+            icon="lucide:arrow-left"
             class="size-5 flex-shrink-0 cursor-pointer"
             @click="handleBack"
           />
