@@ -218,7 +218,7 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
             @click="handleCubeClick(row, col)"
             @mouseenter="handleCellHover(row, col)"
           >
-            <Icon icon="ep-plus" />
+            <IconifyIcon icon="ep-plus" />
           </td>
         </tr>
       </tbody>

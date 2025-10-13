@@ -1,10 +1,14 @@
 <!-- 产品的物模型表单（event、service 项里的参数） -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import { ref, unref } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Button, Divider, Form, Input, Modal } from 'ant-design-vue';
 
-import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 import ThingModelProperty from './ThingModelProperty.vue';
@@ -29,7 +33,7 @@ const formData = ref<any>({
 });
 
 /** 打开 param 表单 */
-const openParamForm = (val: any) => {
+function openParamForm(val: any) {
   dialogVisible.value = true;
   resetForm();
   if (isEmpty(val)) {
@@ -46,15 +50,15 @@ const openParamForm = (val: any) => {
       dataSpecsList: val.dataSpecsList,
     },
   };
-};
+}
 
 /** 删除 param 项 */
-const deleteParamItem = (index: number) => {
+function deleteParamItem(index: number) {
   thingModelParams.value.splice(index, 1);
-};
+}
 
 /** 添加参数 */
-const submitForm = async () => {
+async function submitForm() {
   // 初始化参数列表
   if (isEmpty(thingModelParams.value)) {
     thingModelParams.value = [];
@@ -93,10 +97,10 @@ const submitForm = async () => {
   } finally {
     dialogVisible.value = false;
   }
-};
+}
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     dataType: IoTDataSpecsDataTypeEnum.INT,
     property: {
@@ -107,59 +111,46 @@ const resetForm = () => {
     },
   };
   paramFormRef.value?.resetFields();
-};
+}
 </script>
 
 <template>
   <div
     v-for="(item, index) in thingModelParams"
     :key="index"
-    class="w-1/1 param-item px-10px mb-10px flex justify-between"
+    class="w-1/1 px-10px mb-10px flex justify-between bg-gray-100"
   >
     <span>参数名称：{{ item.name }}</span>
     <div class="btn">
-      <el-button link type="primary" @click="openParamForm(item)">
-        编辑
-      </el-button>
-      <el-divider direction="vertical" />
-      <el-button link type="danger" @click="deleteParamItem(index)">
-        删除
-      </el-button>
+      <Button link type="primary" @click="openParamForm(item)"> 编辑 </Button>
+      <Divider direction="vertical" />
+      <Button link danger @click="deleteParamItem(index)"> 删除 </Button>
     </div>
   </div>
-  <el-button link type="primary" @click="openParamForm(null)">
-    +新增参数
-  </el-button>
+  <Button link type="primary" @click="openParamForm(null)"> +新增参数 </Button>
 
   <!-- param 表单 -->
-  <Dialog v-model="dialogVisible" title="新增参数" append-to-body>
-    <el-form
+  <Modal v-model="dialogVisible" title="新增参数" append-to-body>
+    <Form
       ref="paramFormRef"
       v-loading="formLoading"
       :model="formData"
-      :rules="ThingModelFormRules"
       label-width="100px"
     >
-      <el-form-item label="参数名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入功能名称" />
-      </el-form-item>
-      <el-form-item label="标识符" prop="identifier">
-        <el-input v-model="formData.identifier" placeholder="请输入标识符" />
-      </el-form-item>
+      <Form.Item label="参数名称" prop="name">
+        <Input v-model="formData.name" placeholder="请输入功能名称" />
+      </Form.Item>
+      <Form.Item label="标识符" prop="identifier">
+        <Input v-model="formData.identifier" placeholder="请输入标识符" />
+      </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-params />
-    </el-form>
+    </Form>
     <template #footer>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm">
+      <Button :disabled="formLoading" type="primary" @click="submitForm">
         确 定
-      </el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      </Button>
+      <Button @click="dialogVisible = false">取 消</Button>
     </template>
-  </Dialog>
+  </Modal>
 </template>
-
-<style lang="scss" scoped>
-.param-item {
-  background-color: #e4f2fd;
-}
-</style>

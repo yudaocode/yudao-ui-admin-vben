@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'ant-design-vue';
 
@@ -119,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           download
           class="text-primary cursor-pointer hover:underline"
         >
-          <Icon icon="ant-design:download-outlined" class="mr-1" />
+          <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
           下载固件
         </a>
         <span v-else class="text-gray-400">无文件</span>

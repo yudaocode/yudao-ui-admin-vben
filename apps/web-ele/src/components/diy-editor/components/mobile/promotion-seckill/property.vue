@@ -70,7 +70,7 @@ onMounted(async () => {
             </ElTooltip>
             <!--<el-tooltip class="item" content="三列" placement="bottom">
               <el-radio-button value="threeCol">
-                <Icon icon="fluent:text-column-three-24-filled" />
+                <IconifyIcon icon="fluent:text-column-three-24-filled" />
               </el-radio-button>
             </ElTooltip>-->
           </ElRadioGroup>

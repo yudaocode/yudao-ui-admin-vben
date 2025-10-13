@@ -155,7 +155,6 @@ onMounted(async () => {
       ref="structFormRef"
       v-loading="formLoading"
       :model="formData"
-      :rules="ThingModelFormRules"
       label-width="100px"
     >
       <Form.Item label="参数名称" prop="name">

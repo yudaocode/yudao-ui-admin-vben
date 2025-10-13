@@ -1,10 +1,17 @@
 <!-- 产品的物模型表单（property 项） -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import type { ThingModelProperty } from '#/api/iot/thingmodel';
+
+import { computed, watch } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Form, Input, Radio, Select } from 'ant-design-vue';
 
-import { ThingModelProperty, validateBoolName } from '#/api/iot/thingmodel';
+import { validateBoolName } from '#/api/iot/thingmodel';
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
@@ -46,7 +53,7 @@ const getDataTypeOptions2 = computed(() => {
 }); // 获得数据类型列表
 
 /** 属性值的数据类型切换时初始化相关数据 */
-const handleChange = (dataType: any) => {
+function handleChange(dataType: any) {
   property.value.dataSpecs = {};
   property.value.dataSpecsList = [];
   // 不是列表型数据才设置 dataSpecs.dataType
@@ -75,12 +82,12 @@ const handleChange = (dataType: any) => {
       break;
     }
   }
-};
+}
 
 /** 默认选中读写 */
 watch(
   () => property.value.accessMode,
-  (val: string) => {
+  (val: string | undefined) => {
     if (props.isStructDataSpecs || props.isParams) {
       return;
     }
@@ -93,25 +100,25 @@ watch(
 </script>
 
 <template>
-  <el-form-item
+  <Form.Item
     :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
     label="数据类型"
     prop="property.dataType"
   >
-    <el-select
+    <Select
       v-model="property.dataType"
       placeholder="请选择数据类型"
       @change="handleChange"
     >
       <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
-      <el-option
+      <Select.Option
         v-for="option in getDataTypeOptions2"
         :key="option.value"
         :label="`${option.value}(${option.label})`"
         :value="option.value"
       />
-    </el-select>
-  </el-form-item>
+    </Select>
+  </Form.Item>
   <!-- 数值型配置 -->
   <ThingModelNumberDataSpecs
     v-if="
@@ -129,7 +136,7 @@ watch(
     v-model="property.dataSpecsList"
   />
   <!-- 布尔型配置 -->
-  <el-form-item
+  <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
@@ -137,7 +144,7 @@ watch(
       <div class="w-1/1 mb-5px flex items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
-        <el-form-item
+        <Form.Item
           :prop="`property.dataSpecsList[${index}].name`"
           :rules="[
             { required: true, message: '枚举描述不能为空' },
@@ -145,41 +152,41 @@ watch(
           ]"
           class="mb-0 flex-1"
         >
-          <el-input
+          <Input
             v-model="item.name"
             :placeholder="`如：${item.value === 0 ? '关' : '开'}`"
             class="w-255px!"
           />
-        </el-form-item>
+        </Form.Item>
       </div>
     </template>
-  </el-form-item>
+  </Form.Item>
   <!-- 文本型配置 -->
-  <el-form-item
+  <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
     label="数据长度"
     prop="property.dataSpecs.length"
   >
-    <el-input
+    <Input
       v-model="property.dataSpecs.length"
       class="w-255px!"
       placeholder="请输入文本字节长度"
     >
       <template #append>字节</template>
-    </el-input>
-  </el-form-item>
+    </Input>
+  </Form.Item>
   <!-- 时间型配置 -->
-  <el-form-item
+  <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.DATE"
     label="时间格式"
     prop="date"
   >
-    <el-input
+    <Input
       class="w-255px!"
       disabled
       placeholder="String 类型的 UTC 时间戳（毫秒）"
     />
-  </el-form-item>
+  </Form.Item>
   <!-- 数组型配置-->
   <ThingModelArrayDataSpecs
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.ARRAY"
@@ -190,26 +197,26 @@ watch(
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="property.dataSpecsList"
   />
-  <el-form-item
+  <Form.Item
     v-if="!isStructDataSpecs && !isParams"
     label="读写类型"
     prop="property.accessMode"
   >
-    <el-radio-group v-model="property.accessMode">
-      <el-radio
+    <Radio.Group v-model="property.accessMode">
+      <Radio
         v-for="accessMode in Object.values(IoTThingModelAccessModeEnum)"
         :key="accessMode.value"
         :label="accessMode.value"
       >
         {{ accessMode.label }}
-      </el-radio>
-    </el-radio-group>
-  </el-form-item>
+      </Radio>
+    </Radio.Group>
+  </Form.Item>
 </template>
 
 <style lang="scss" scoped>
-:deep(.el-form-item) {
-  .el-form-item {
+:deep(.ant-form-item) {
+  .ant-form-item {
     margin-bottom: 0;
   }
 }

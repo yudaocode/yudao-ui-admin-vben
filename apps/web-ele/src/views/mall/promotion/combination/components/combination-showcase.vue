@@ -3,6 +3,8 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 
 import { computed, ref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
 import CombinationTableSelect from '#/views/mall/promotion/combination/components/combination-table-select.vue';
 
@@ -125,7 +127,7 @@ const emitActivityChange = () => {
       <el-tooltip :content="combinationActivity.name">
         <div class="relative h-full w-full">
           <el-image :src="combinationActivity.picUrl" class="h-full w-full" />
-          <Icon
+          <IconifyIcon
             v-show="!disabled"
             class="del-icon"
             icon="ep:circle-close-filled"
@@ -136,7 +138,7 @@ const emitActivityChange = () => {
     </div>
     <el-tooltip content="选择活动" v-if="canAdd">
       <div class="select-box" @click="openCombinationActivityTableSelect">
-        <Icon icon="ep:plus" />
+        <IconifyIcon icon="ep:plus" />
       </div>
     </el-tooltip>
   </div>

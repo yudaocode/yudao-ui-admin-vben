@@ -87,7 +87,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
     <!-- 空状态 -->
     <div v-if="!subGroup || subGroup.length === 0" class="py-24px text-center">
       <div class="gap-12px flex flex-col items-center">
-        <Icon
+        <IconifyIcon
           icon="ep:plus"
           class="text-32px text-[var(--el-text-color-placeholder)]"
         />
@@ -96,7 +96,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
           <p class="text-12px">点击下方按钮添加第一个条件</p>
         </div>
         <Button type="primary" @click="addCondition">
-          <Icon icon="ep:plus" />
+          <IconifyIcon icon="ep:plus" />
           添加条件
         </Button>
       </div>

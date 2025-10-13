@@ -5,10 +5,19 @@ import type { OtaTask } from '#/api/iot/ota/task';
 
 import { onMounted, reactive, ref } from 'vue';
 
-import { VbenButton } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { Card, Input, message, Modal, Space, Table, Tag } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Input,
+  message,
+  Modal,
+  Space,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
 import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
@@ -167,10 +176,10 @@ onMounted(() => {
   <Card title="升级任务管理" class="mb-5">
     <!-- 搜索栏 -->
     <div class="mb-4 flex items-center justify-between">
-      <VbenButton type="primary" @click="openTaskForm">
-        <Icon icon="ant-design:plus-outlined" class="mr-1" />
+      <Button type="primary" @click="openTaskForm">
+        <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
         新增
-      </VbenButton>
+      </Button>
       <Input
         v-model:value="queryParams.name"
         placeholder="请输入任务名称"

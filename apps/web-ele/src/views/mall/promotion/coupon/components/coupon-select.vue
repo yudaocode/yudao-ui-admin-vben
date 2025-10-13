@@ -6,6 +6,7 @@ import { reactive, ref } from 'vue';
 import { ContentWrap } from '@vben/common-ui';
 import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
 
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 import {
@@ -130,11 +131,11 @@ const submitForm = () => {
         </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
-            <Icon class="mr-5px" icon="ep:search" />
+            <IconifyIcon class="mr-5px" icon="ep:search" />
             搜索
           </el-button>
           <el-button @click="resetQuery">
-            <Icon class="mr-5px" icon="ep:refresh" />
+            <IconifyIcon class="mr-5px" icon="ep:refresh" />
             重置
           </el-button>
         </el-form-item>
