@@ -45,7 +45,7 @@ async function getOrderSum() {
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
   // 如果没有传核销码，则弹窗输入
-  // TODO @AI：不太对
+  // TODO @xingyu：这个貌似不太行，帮忙看看~
   if (!pickUpVerifyCode) {
     await prompt({
       component: () => {
@@ -163,7 +163,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     cellConfig: {
-      height: 100,
+      height: 80,
     },
     columns: useGridColumns(),
     height: 'auto',
@@ -242,15 +242,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <div
             v-for="item in row.items"
             :key="item.id!"
-            class="flex items-start gap-2"
+            class="flex items-start gap-2 text-left"
           >
-            <!-- TODO @AI：长宽不太对 -->
             <ElImage
-              :src="item.picUrl || ''"
-              :alt="item.spuName || ''"
-              :width="30"
-              :height="30"
-              class="flex-shrink-0"
+              :src="item.picUrl"
+              :alt="item.spuName"
+              style="width: 60px; height: 60px"
               :preview-src-list="item.picUrl ? [item.picUrl] : []"
             />
             <div class="flex flex-1 flex-col gap-1">
@@ -266,7 +263,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 </ElTag>
               </div>
               <span class="text-xs text-gray-500">
-                {{ fenToYuan(item.price) }} 元 x {{ item.count || 0 }}
+                {{ fenToYuan(item.price!) }} 元 x {{ item.count }}
               </span>
             </div>
           </div>

@@ -157,7 +157,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     cellConfig: {
-      height: 100,
+      height: 80,
     },
     columns: useGridColumns(),
     height: 'auto',
@@ -236,14 +236,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <div
             v-for="item in row.items"
             :key="item.id!"
-            class="flex items-start gap-2"
+            class="flex items-start gap-2 text-left"
           >
             <Image
               :src="item.picUrl"
               :alt="item.spuName"
-              :width="30"
-              :height="30"
-              class="flex-shrink-0"
+              :width="60"
+              :height="60"
               :preview="{
                 src: item.picUrl,
               }"
