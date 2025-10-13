@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -10,7 +11,12 @@ import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 
-const userList = await getSimpleUserList();
+let userList: SystemUserApi.User[] = [];
+async function getUserData() {
+  userList = await getSimpleUserList();
+}
+
+getUserData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
