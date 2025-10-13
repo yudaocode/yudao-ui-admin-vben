@@ -38,9 +38,9 @@ export namespace MallDeliveryExpressTemplateApi {
     /** 排序 */
     sort: number;
     /** 计费区域列表 */
-    templateCharge: TemplateCharge[];
+    charges: TemplateCharge[];
     /** 包邮区域列表 */
-    templateFree: TemplateFree[];
+    frees: TemplateFree[];
   }
 
   /** 运费模板精简信息 */

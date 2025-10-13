@@ -23,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'ImageUpload',
       fieldName: 'logo',
-      label: '门店logo',
+      label: '门店 logo',
       rules: 'required',
     },
     {
@@ -201,7 +201,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'logo',
-      title: '门店logo',
+      title: '门店 logo',
       cellRender: {
         name: 'CellImage',
       },
