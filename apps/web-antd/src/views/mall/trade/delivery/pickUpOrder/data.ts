@@ -111,12 +111,8 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'spuName',
       title: '商品信息',
-      minWidth: 100,
-      formatter: ({ row }) => {
-        if (row.items.length > 1) {
-          return row.items.map((item: any) => item.spuName).join(',');
-        }
-      },
+      minWidth: 300,
+      slots: { default: 'spuName' },
     },
     {
       field: 'payPrice',
@@ -134,9 +130,10 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       title: '核销门店',
       minWidth: 160,
       formatter: ({ row }) => {
-        return pickUpStoreList.value.find(
-          (item) => item.id === row.pickUpStoreId,
-        )?.name;
+        return (
+          pickUpStoreList.value.find((item) => item.id === row.pickUpStoreId)
+            ?.name || ''
+        );
       },
     },
     {

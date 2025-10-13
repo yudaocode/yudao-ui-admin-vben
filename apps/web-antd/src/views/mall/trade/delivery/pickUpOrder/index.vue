@@ -9,7 +9,7 @@ import { DeliveryTypeEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
-import { Card, Input, message } from 'ant-design-vue';
+import { Card, Image, Input, message, Tag } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -156,6 +156,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
+    cellConfig: {
+      height: 100,
+    },
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
@@ -226,8 +229,43 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </div>
     </Card>
-    <!-- TODO @AI：商品信息的样式 -->
+
     <Grid class="h-4/5" table-title="核销订单">
+      <template #spuName="{ row }">
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="item in row.items"
+            :key="item.id!"
+            class="flex items-start gap-2"
+          >
+            <Image
+              :src="item.picUrl"
+              :alt="item.spuName"
+              :width="30"
+              :height="30"
+              class="flex-shrink-0"
+              :preview="{
+                src: item.picUrl,
+              }"
+            />
+            <div class="flex flex-1 flex-col gap-1">
+              <span class="text-sm">{{ item.spuName }}</span>
+              <div class="flex flex-wrap gap-1">
+                <Tag
+                  v-for="property in item.properties"
+                  :key="property.propertyId!"
+                  size="small"
+                >
+                  {{ property.propertyName }}: {{ property.valueName }}
+                </Tag>
+              </div>
+              <span class="text-xs text-gray-500">
+                {{ fenToYuan(item.price!) }} 元 x {{ item.count }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[

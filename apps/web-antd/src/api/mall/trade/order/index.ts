@@ -49,6 +49,7 @@ export namespace MallOrderApi {
     afterSaleStatus?: null | number;
     /** 属性数组 */
     properties?: ProductProperty[];
+    price?: number;
   }
 
   /** 订单日志 */
