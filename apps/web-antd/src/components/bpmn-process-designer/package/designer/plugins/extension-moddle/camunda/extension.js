@@ -1,4 +1,4 @@
-import { isFunction, isObject, some } from '@vben/utils';
+import { isFunction, isObject } from '@vben/utils';
 
 const WILDCARD = '*';
 
@@ -113,7 +113,7 @@ function is(element, type) {
 }
 
 function isAny(element, types) {
-  return some(types, (t) => {
+  return types.some((t) => {
     return is(element, t);
   });
 }
@@ -146,7 +146,7 @@ function isAllowedInParent(property, parent) {
   }
 
   // (2) check wether property has parent of allowed type
-  return some(allowedIn, (type) => {
+  return allowedIn.some((type) => {
     return getParent(parent, type);
   });
 }

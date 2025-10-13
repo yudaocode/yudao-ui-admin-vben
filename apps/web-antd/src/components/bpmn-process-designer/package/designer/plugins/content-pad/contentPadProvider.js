@@ -1,5 +1,3 @@
-import { forEach, isArray } from '@vben/utils';
-
 import { getChildLanes } from 'bpmn-js/lib/features/modeling/util/LaneUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import { isEventSubProcess, isExpanded } from 'bpmn-js/lib/util/DiUtil';
@@ -407,7 +405,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
   // delete element entry, only show if allowed by rules
   let deleteAllowed = rules.allowed('elements.delete', { elements: [element] });
 
-  if (isArray(deleteAllowed)) {
+  if (Array.isArray(deleteAllowed)) {
     // was the element returned as a deletion candidate?
     deleteAllowed = deleteAllowed[0] === element;
   }
@@ -435,7 +433,7 @@ function isEventType(eventBo, type, definition) {
   let isDefinition = false;
 
   const definitions = eventBo.eventDefinitions || [];
-  forEach(definitions, (def) => {
+  definitions.forEach((def) => {
     if (def.$type === definition) {
       isDefinition = true;
     }

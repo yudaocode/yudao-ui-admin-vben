@@ -1,5 +1,3 @@
-import { some } from '@vben/utils';
-
 const ALLOWED_TYPES = {
   FailedJobRetryTimeCycle: [
     'bpmn:StartEvent',
@@ -26,14 +24,14 @@ function exists(element) {
 function includesType(collection, type) {
   return (
     exists(collection) &&
-    some(collection, (element) => {
+    collection.some((element) => {
       return is(element, type);
     })
   );
 }
 
 function anyType(element, types) {
-  return some(types, (type) => {
+  return types.some((type) => {
     return is(element, type);
   });
 }
