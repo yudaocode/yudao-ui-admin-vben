@@ -119,16 +119,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入门店纬度',
       },
     },
-    // TODO @xingyu：缺少地图
-    {
-      component: 'Input',
-      fieldName: 'getGeo',
-      label: '获取经纬度',
-      formItemClass: 'col-span-2',
-      componentProps: {
-        placeholder: '点击获取经纬度',
-      },
-    },
   ];
 }
 
@@ -163,24 +153,6 @@ export function useBindFormSchema(): VbenFormSchema[] {
         mode: 'tags',
         allowClear: true,
         placeholder: '请选择门店店员',
-      },
-    },
-    {
-      component: 'Select',
-      fieldName: 'verifyUsers',
-      label: '店员列表',
-      rules: 'required',
-      componentProps: {
-        options: [],
-        mode: 'tags',
-        placeholder: '店员列表',
-      },
-      dependencies: {
-        triggerFields: ['verifyUserIds'],
-        trigger(values, form) {
-          form.setFieldValue('verifyUsers', values.verifyUserIds);
-        },
-        disabled: true,
       },
     },
   ];
