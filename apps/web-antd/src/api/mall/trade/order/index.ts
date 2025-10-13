@@ -239,7 +239,7 @@ export function getOrderPage(params: PageParam) {
 }
 
 /** 查询交易订单统计 */
-export function getOrderSummary(params: PageParam) {
+export function getOrderSummary(params: any) {
   return requestClient.get<MallOrderApi.OrderSummary>('/trade/order/summary', {
     params,
   });

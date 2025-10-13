@@ -22,14 +22,14 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const summary = ref<MallOrderApi.OrderSummary>();
 
+/** 获取订单统计数据 */
 async function getOrderSum() {
   const query = await gridApi.formApi.getValues();
   query.deliveryType = DeliveryTypeEnum.PICK_UP.type;
-  const res = await getOrderSummary(query as any);
-  summary.value = res;
+  summary.value = await getOrderSummary(query);
 }
 
-/** 核销 */
+/** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
   if (!pickUpVerifyCode) {
     await prompt({
@@ -64,6 +64,7 @@ const reader = ref('');
 const serialPort = ref(false); // 是否连接扫码枪
 
 /** 连接扫码枪 */
+// TODO @AI：晚点搞！
 async function connectToSerialPort() {
   try {
     // 判断浏览器支持串口通信
@@ -140,6 +141,8 @@ async function cutPort() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    // TODO @AI：需要移除自己不能门店自提的店铺；
+    // TODO @AI：默认选中第一个！
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -149,6 +152,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          // TODO @AI：有个“聚合搜索”，可以拆解成多个表单；
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -160,6 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -175,7 +180,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <Card class="m-4">
+    <Card class="mb-2">
       <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"
@@ -215,6 +220,7 @@ onMounted(() => {
         />
       </div>
     </Card>
+    <!-- TODO @AI：商品信息的样式 -->
     <Grid class="h-4/5" table-title="核销订单">
       <template #toolbar-tools>
         <TableAction
