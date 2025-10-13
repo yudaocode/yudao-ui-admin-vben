@@ -1,9 +1,10 @@
+import { assign, forEach, isArray } from '@vben/utils';
+
 import { getChildLanes } from 'bpmn-js/lib/features/modeling/util/LaneUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import { isEventSubProcess, isExpanded } from 'bpmn-js/lib/util/DiUtil';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { hasPrimaryModifier } from 'diagram-js/lib/util/Mouse';
-import { assign, forEach, isArray } from 'min-dash';
 
 /**
  * A provider for BPMN 2.0 elements context pad

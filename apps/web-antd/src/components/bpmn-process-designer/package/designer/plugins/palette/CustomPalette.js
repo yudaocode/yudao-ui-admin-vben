@@ -1,5 +1,6 @@
+import { assign } from '@vben/utils';
+
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import { assign } from 'min-dash';
 
 export default function CustomPalette(
   palette,

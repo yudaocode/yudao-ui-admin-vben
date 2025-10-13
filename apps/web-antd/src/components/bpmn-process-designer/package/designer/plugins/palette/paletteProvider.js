@@ -1,4 +1,4 @@
-import { assign } from 'min-dash';
+import { assign } from '@vben/utils';
 
 /**
  * A palette provider for BPMN 2.0 elements.

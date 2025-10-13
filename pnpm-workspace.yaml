@@ -150,7 +150,6 @@ catalog:
   markmap-toolbar: ^0.17.0
   markmap-view: ^0.16.0
   medium-zoom: ^1.1.0
-  min-dash: ^4.2.3
   naive-ui: ^2.42.0
   nitropack: ^2.11.13
   nprogress: ^0.2.0

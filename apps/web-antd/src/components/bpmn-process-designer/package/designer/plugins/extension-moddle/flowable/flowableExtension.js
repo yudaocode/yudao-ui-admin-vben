@@ -1,9 +1,4 @@
-'use strict';
-
-import { some } from 'min-dash';
-
-// const some = some
-// const some = require('min-dash').some
+import { some } from '@vben/utils';
 
 const ALLOWED_TYPES = {
   FailedJobRetryTimeCycle: [
@@ -25,7 +20,7 @@ function is(element, type) {
 }
 
 function exists(element) {
-  return element && element.length;
+  return element && element.length > 0;
 }
 
 function includesType(collection, type) {
