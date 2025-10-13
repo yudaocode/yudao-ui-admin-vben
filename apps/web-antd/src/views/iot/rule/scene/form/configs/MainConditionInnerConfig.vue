@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { Trigger } from '#/api/iot/rule/scene';
 
+import { computed, ref } from 'vue';
+
 import { useVModel } from '@vueuse/core';
+import { Col, Form, Row, Select } from 'ant-design-vue';
 
 import {
   getTriggerTypeLabel,
@@ -28,7 +31,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Trigger): void;
-  (e: 'trigger-type-change', value: number): void;
+  (e: 'triggerTypeChange', value: number): void;
 }>();
 
 /** 获取设备状态变更选项（用于触发器配置） */
@@ -123,36 +126,36 @@ const eventConfig = computed(() => {
  * @param field 字段名
  * @param value 字段值
  */
-const updateConditionField = (field: any, value: any) => {
-  condition.value[field] = value;
-};
+function updateConditionField(field: any, value: any) {
+  (condition.value as any)[field] = value;
+}
 
 /**
  * 处理触发器类型变化事件
  * @param type 触发器类型
  */
-const handleTriggerTypeChange = (type: number) => {
-  emit('trigger-type-change', type);
-};
+function handleTriggerTypeChange(type: number) {
+  emit('triggerTypeChange', type);
+}
 
 /** 处理产品变化事件 */
-const handleProductChange = () => {
+function handleProductChange() {
   // 产品变化时清空设备和属性
   condition.value.deviceId = undefined;
   condition.value.identifier = '';
-};
+}
 
 /** 处理设备变化事件 */
-const handleDeviceChange = () => {
+function handleDeviceChange() {
   // 设备变化时清空属性
   condition.value.identifier = '';
-};
+}
 
 /**
  * 处理属性变化事件
  * @param propertyInfo 属性信息对象
  */
-const handlePropertyChange = (propertyInfo: any) => {
+function handlePropertyChange(propertyInfo: any) {
   if (propertyInfo) {
     propertyType.value = propertyInfo.type;
     propertyConfig.value = propertyInfo.config;
@@ -166,34 +169,34 @@ const handlePropertyChange = (propertyInfo: any) => {
         IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value;
     }
   }
-};
+}
 </script>
 
 <template>
   <div class="space-y-16px">
     <!-- 触发事件类型选择 -->
-    <el-form-item label="触发事件类型" required>
-      <el-select
+    <Form.Item label="触发事件类型" required>
+      <Select
         :model-value="triggerType"
         @update:model-value="handleTriggerTypeChange"
         placeholder="请选择触发事件类型"
         class="w-full"
       >
-        <el-option
+        <Select.Option
           v-for="option in triggerTypeOptions"
           :key="option.value"
           :label="option.label"
           :value="option.value"
         />
-      </el-select>
-    </el-form-item>
+      </Select>
+    </Form.Item>
 
     <!-- 设备属性条件配置 -->
     <div v-if="isDevicePropertyTrigger" class="space-y-16px">
       <!-- 产品设备选择 -->
-      <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="产品" required>
+      <Row :gutter="16">
+        <Col :span="12">
+          <Form.Item label="产品" required>
             <ProductSelector
               :model-value="condition.productId"
               @update:model-value="
@@ -201,10 +204,10 @@ const handlePropertyChange = (propertyInfo: any) => {
               "
               @change="handleProductChange"
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="设备" required>
+          </Form.Item>
+        </Col>
+        <Col :span="12">
+          <Form.Item label="设备" required>
             <DeviceSelector
               :model-value="condition.deviceId"
               @update:model-value="
@@ -213,15 +216,15 @@ const handlePropertyChange = (propertyInfo: any) => {
               :product-id="condition.productId"
               @change="handleDeviceChange"
             />
-          </el-form-item>
-        </el-col>
-      </el-row>
+          </Form.Item>
+        </Col>
+      </Row>
 
       <!-- 属性配置 -->
-      <el-row :gutter="16">
+      <Row :gutter="16">
         <!-- 属性/事件/服务选择 -->
-        <el-col :span="6">
-          <el-form-item label="监控项" required>
+        <Col :span="6">
+          <Form.Item label="监控项" required>
             <PropertySelector
               :model-value="condition.identifier"
               @update:model-value="
@@ -232,12 +235,12 @@ const handlePropertyChange = (propertyInfo: any) => {
               :device-id="condition.deviceId"
               @change="handlePropertyChange"
             />
-          </el-form-item>
-        </el-col>
+          </Form.Item>
+        </Col>
 
         <!-- 操作符选择 - 服务调用和事件上报不需要操作符 -->
-        <el-col v-if="needsOperatorSelector" :span="6">
-          <el-form-item label="操作符" required>
+        <Col v-if="needsOperatorSelector" :span="6">
+          <Form.Item label="操作符" required>
             <OperatorSelector
               :model-value="condition.operator"
               @update:model-value="
@@ -245,12 +248,12 @@ const handlePropertyChange = (propertyInfo: any) => {
               "
               :property-type="propertyType"
             />
-          </el-form-item>
-        </el-col>
+          </Form.Item>
+        </Col>
 
         <!-- 值输入 -->
-        <el-col :span="isWideValueColumn ? 18 : 12">
-          <el-form-item :label="valueInputLabel" required>
+        <Col :span="isWideValueColumn ? 18 : 12">
+          <Form.Item :label="valueInputLabel" required>
             <!-- 服务调用参数配置 -->
             <JsonParamsInput
               v-if="
@@ -259,7 +262,7 @@ const handlePropertyChange = (propertyInfo: any) => {
               "
               v-model="condition.value"
               type="service"
-              :config="serviceConfig"
+              :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
             <!-- 事件上报参数配置 -->
@@ -269,7 +272,7 @@ const handlePropertyChange = (propertyInfo: any) => {
               "
               v-model="condition.value"
               type="event"
-              :config="eventConfig"
+              :config="eventConfig as any"
               placeholder="请输入 JSON 格式的事件参数"
             />
             <!-- 普通值输入 -->
@@ -283,17 +286,17 @@ const handlePropertyChange = (propertyInfo: any) => {
               :operator="condition.operator"
               :property-config="propertyConfig"
             />
-          </el-form-item>
-        </el-col>
-      </el-row>
+          </Form.Item>
+        </Col>
+      </Row>
     </div>
 
     <!-- 设备状态条件配置 -->
     <div v-else-if="isDeviceStatusTrigger" class="space-y-16px">
       <!-- 设备状态触发器使用简化的配置 -->
-      <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="产品" required>
+      <Row :gutter="16">
+        <Col :span="12">
+          <Form.Item label="产品" required>
             <ProductSelector
               :model-value="condition.productId"
               @update:model-value="
@@ -301,10 +304,10 @@ const handlePropertyChange = (propertyInfo: any) => {
               "
               @change="handleProductChange"
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="设备" required>
+          </Form.Item>
+        </Col>
+        <Col :span="12">
+          <Form.Item label="设备" required>
             <DeviceSelector
               :model-value="condition.deviceId"
               @update:model-value="
@@ -313,21 +316,21 @@ const handlePropertyChange = (propertyInfo: any) => {
               :product-id="condition.productId"
               @change="handleDeviceChange"
             />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="16">
-        <el-col :span="6">
-          <el-form-item label="操作符" required>
-            <el-select
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row :gutter="16">
+        <Col :span="6">
+          <Form.Item label="操作符" required>
+            <Select
               :model-value="condition.operator"
               @update:model-value="
-                (value) => updateConditionField('operator', value)
+                (value: any) => updateConditionField('operator', value)
               "
               placeholder="请选择操作符"
               class="w-full"
             >
-              <el-option
+              <Select.Option
                 :label="
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
                 "
@@ -335,29 +338,29 @@ const handlePropertyChange = (propertyInfo: any) => {
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
                 "
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="参数" required>
-            <el-select
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col :span="6">
+          <Form.Item label="参数" required>
+            <Select
               :model-value="condition.value"
               @update:model-value="
-                (value) => updateConditionField('value', value)
+                (value: any) => updateConditionField('value', value)
               "
               placeholder="请选择操作符"
               class="w-full"
             >
-              <el-option
+              <Select.Option
                 v-for="option in deviceStatusChangeOptions"
                 :key="option.value"
                 :label="option.label"
                 :value="option.value"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
     </div>
 
     <!-- 其他触发类型的提示 -->

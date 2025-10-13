@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { Trigger } from '#/api/iot/rule/scene';
 
-import { Crontab } from '@/components/Crontab';
-import { useVModel } from '@vueuse/core';
+import { onMounted } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Card, Empty, Form, Tag } from 'ant-design-vue';
+
+import { CronTab } from '#/components/cron-tab';
 import {
   getTriggerTypeLabel,
   IotRuleSceneTriggerTypeEnum,
@@ -26,19 +31,19 @@ const emit = defineEmits<{
 const triggers = useVModel(props, 'triggers', emit);
 
 /** 获取触发器标签类型（用于 el-tag 的 type 属性） */
-const getTriggerTagType = (
+function getTriggerTagType(
   type: number,
-): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
+): 'danger' | 'info' | 'primary' | 'success' | 'warning' {
   if (type === IotRuleSceneTriggerTypeEnum.TIMER) {
     return 'warning';
   }
   return isDeviceTrigger(type) ? 'success' : 'info';
-};
+}
 
 /** 添加触发器 */
-const addTrigger = () => {
+function addTrigger() {
   const newTrigger: Trigger = {
-    type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE,
+    type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE.toString(),
     productId: undefined,
     deviceId: undefined,
     identifier: undefined,
@@ -48,52 +53,52 @@ const addTrigger = () => {
     conditionGroups: [], // 空的条件组数组
   };
   triggers.value.push(newTrigger);
-};
+}
 
 /**
  * 删除触发器
  * @param index 触发器索引
  */
-const removeTrigger = (index: number) => {
+function removeTrigger(index: number) {
   if (triggers.value.length > 1) {
     triggers.value.splice(index, 1);
   }
-};
+}
 
 /**
  * 更新触发器类型
  * @param index 触发器索引
  * @param type 触发器类型
  */
-const updateTriggerType = (index: number, type: number) => {
+function updateTriggerType(index: number, type: number) {
   triggers.value[index].type = type;
   onTriggerTypeChange(index, type);
-};
+}
 
 /**
  * 更新触发器设备配置
  * @param index 触发器索引
  * @param newTrigger 新的触发器对象
  */
-const updateTriggerDeviceConfig = (index: number, newTrigger: Trigger) => {
+function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
   triggers.value[index] = newTrigger;
-};
+}
 
 /**
  * 更新触发器 CRON 配置
  * @param index 触发器索引
  * @param cronExpression CRON 表达式
  */
-const updateTriggerCronConfig = (index: number, cronExpression?: string) => {
+function updateTriggerCronConfig(index: number, cronExpression?: string) {
   triggers.value[index].cronExpression = cronExpression;
-};
+}
 
 /**
  * 处理触发器类型变化事件
  * @param index 触发器索引
  * @param _ 触发器类型（未使用）
  */
-const onTriggerTypeChange = (index: number, _: number) => {
+function onTriggerTypeChange(index: number, _: number) {
   const triggerItem = triggers.value[index];
   triggerItem.productId = undefined;
   triggerItem.deviceId = undefined;
@@ -102,7 +107,7 @@ const onTriggerTypeChange = (index: number, _: number) => {
   triggerItem.value = undefined;
   triggerItem.cronExpression = undefined;
   triggerItem.conditionGroups = [];
-};
+}
 
 /** 初始化：确保至少有一个触发器 */
 onMounted(() => {
@@ -113,28 +118,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card
-    class="rounded-8px mb-10px border border-[var(--el-border-color-light)]"
-    shadow="never"
-  >
-    <template #header>
+  <Card class="rounded-8px mb-10px border-primary border" shadow="never">
+    <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <Icon
-            icon="ep:lightning"
-            class="text-18px text-[var(--el-color-primary)]"
-          />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]"
-            >触发器配置</span
-          >
-          <el-tag size="small" type="info">
-            {{ triggers.length }} 个触发器
-          </el-tag>
+          <IconifyIcon icon="ep:lightning" class="text-18px text-primary" />
+          <span class="text-16px font-600 text-primary">触发器配置</span>
+          <Tag size="small" type="info"> {{ triggers.length }} 个触发器 </Tag>
         </div>
-        <el-button type="primary" size="small" @click="addTrigger">
-          <Icon icon="ep:plus" />
+        <Button type="primary" size="small" @click="addTrigger">
+          <IconifyIcon icon="ep:plus" />
           添加触发器
-        </el-button>
+        </Button>
       </div>
     </template>
 
@@ -161,26 +156,26 @@ onMounted(() => {
                 </div>
                 <span>触发器 {{ index + 1 }}</span>
               </div>
-              <el-tag
+              <Tag
                 size="small"
-                :type="getTriggerTagType(triggerItem.type)"
+                :type="getTriggerTagType(triggerItem.type as any)"
                 class="font-500"
               >
-                {{ getTriggerTypeLabel(triggerItem.type) }}
-              </el-tag>
+                {{ getTriggerTypeLabel(triggerItem.type as any) }}
+              </Tag>
             </div>
             <div class="gap-8px flex items-center">
-              <el-button
+              <Button
                 v-if="triggers.length > 1"
-                type="danger"
+                danger
                 size="small"
                 text
                 @click="removeTrigger(index)"
                 class="hover:bg-red-50"
               >
-                <Icon icon="ep:delete" />
+                <IconifyIcon icon="ep:delete" />
                 删除
-              </el-button>
+              </Button>
             </div>
           </div>
 
@@ -188,7 +183,7 @@ onMounted(() => {
           <div class="p-16px space-y-16px">
             <!-- 设备触发配置 -->
             <DeviceTriggerConfig
-              v-if="isDeviceTrigger(triggerItem.type)"
+              v-if="isDeviceTrigger(triggerItem.type as any)"
               :model-value="triggerItem"
               :index="index"
               @update:model-value="
@@ -199,34 +194,33 @@ onMounted(() => {
 
             <!-- 定时触发配置 -->
             <div
-              v-else-if="triggerItem.type === IotRuleSceneTriggerTypeEnum.TIMER"
+              v-else-if="
+                triggerItem.type ===
+                IotRuleSceneTriggerTypeEnum.TIMER.toString()
+              "
               class="gap-16px flex flex-col"
             >
               <div
-                class="gap-8px p-12px px-16px rounded-6px flex items-center border border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-light)]"
+                class="gap-8px p-12px px-16px rounded-6px border-primary bg-background flex items-center border"
               >
-                <Icon
-                  icon="ep:timer"
-                  class="text-18px text-[var(--el-color-danger)]"
-                />
-                <span
-                  class="text-14px font-500 text-[var(--el-text-color-primary)]"
-                  >定时触发配置</span
-                >
+                <IconifyIcon icon="ep:timer" class="text-18px text-danger" />
+                <span class="text-14px font-500 text-primary">
+                  定时触发配置
+                </span>
               </div>
 
               <!-- CRON 表达式配置 -->
               <div
-                class="p-16px rounded-6px border border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-blank)]"
+                class="p-16px rounded-6px border-primary bg-background border"
               >
-                <el-form-item label="CRON表达式" required>
-                  <Crontab
+                <Form.Item label="CRON表达式" required>
+                  <CronTab
                     :model-value="triggerItem.cronExpression || '0 0 12 * * ?'"
                     @update:model-value="
                       (value) => updateTriggerCronConfig(index, value)
                     "
                   />
-                </el-form-item>
+                </Form.Item>
               </div>
             </div>
           </div>
@@ -235,19 +229,17 @@ onMounted(() => {
 
       <!-- 空状态 -->
       <div v-else class="py-40px text-center">
-        <el-empty description="暂无触发器">
+        <Empty description="暂无触发器">
           <template #description>
             <div class="space-y-8px">
-              <p class="text-[var(--el-text-color-secondary)]">
-                暂无触发器配置
-              </p>
-              <p class="text-12px text-[var(--el-text-color-placeholder)]">
+              <p class="text-secondary">暂无触发器配置</p>
+              <p class="text-12px text-primary">
                 请使用上方的"添加触发器"按钮来设置触发规则
               </p>
             </div>
           </template>
-        </el-empty>
+        </Empty>
       </div>
     </div>
-  </el-card>
+  </Card>
 </template>

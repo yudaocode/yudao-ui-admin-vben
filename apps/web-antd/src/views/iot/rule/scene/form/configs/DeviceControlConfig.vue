@@ -6,9 +6,14 @@ import type {
   ThingModelService,
 } from '#/api/iot/thingmodel';
 
-import { useVModel } from '@vueuse/core';
+import { computed, onMounted, ref, watch } from 'vue';
 
-import { ThingModelApi } from '#/api/iot/thingmodel';
+import { isObject } from '@vben/utils';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Form, Row, Select, Tag } from 'ant-design-vue';
+
+import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneActionTypeEnum,
@@ -42,7 +47,7 @@ const loadingServices = ref(false); // 服务加载状态
 const paramsValue = computed({
   get: () => {
     // 如果 params 是对象，转换为 JSON 字符串（兼容旧数据）
-    if (action.value.params && typeof action.value.params === 'object') {
+    if (action.value.params && isObject(action.value.params)) {
       return JSON.stringify(action.value.params, null, 2);
     }
     // 如果 params 已经是字符串，直接返回
@@ -56,19 +61,25 @@ const paramsValue = computed({
 
 // 计算属性：是否为属性设置类型
 const isPropertySetAction = computed(() => {
-  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET;
+  return (
+    action.value.type ===
+    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET.toString()
+  );
 });
 
 // 计算属性：是否为服务调用类型
 const isServiceInvokeAction = computed(() => {
-  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE;
+  return (
+    action.value.type ===
+    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE.toString()
+  );
 });
 
 /**
  * 处理产品变化事件
  * @param productId 产品 ID
  */
-const handleProductChange = (productId?: number) => {
+function handleProductChange(productId?: number) {
   // 当产品变化时，清空设备选择和参数配置
   if (action.value.productId !== productId) {
     action.value.deviceId = undefined;
@@ -86,24 +97,24 @@ const handleProductChange = (productId?: number) => {
       loadServiceList(productId);
     }
   }
-};
+}
 
 /**
  * 处理设备变化事件
  * @param deviceId 设备 ID
  */
-const handleDeviceChange = (deviceId?: number) => {
+function handleDeviceChange(deviceId?: number) {
   // 当设备变化时，清空参数配置
   if (action.value.deviceId !== deviceId) {
     action.value.params = ''; // 清空参数，保存为空字符串
   }
-};
+}
 
 /**
  * 处理服务变化事件
  * @param serviceIdentifier 服务标识符
  */
-const handleServiceChange = (serviceIdentifier?: string) => {
+function handleServiceChange(serviceIdentifier?: any) {
   // 根据服务标识符找到对应的服务对象
   const service =
     serviceList.value.find((s) => s.identifier === serviceIdentifier) || null;
@@ -121,29 +132,29 @@ const handleServiceChange = (serviceIdentifier?: string) => {
     // 将默认参数转换为 JSON 字符串保存
     action.value.params = JSON.stringify(defaultParams, null, 2);
   }
-};
+}
 
 /**
  * 获取物模型TSL数据
  * @param productId 产品ID
  * @returns 物模型TSL数据
  */
-const getThingModelTSL = async (productId: number) => {
+async function getThingModelTSL(productId: number) {
   if (!productId) return null;
 
   try {
-    return await ThingModelApi.getThingModelTSLByProductId(productId);
+    return await getThingModelListByProductId(productId);
   } catch (error) {
     console.error('获取物模型TSL数据失败:', error);
     return null;
   }
-};
+}
 
 /**
  * 加载物模型属性（可写属性）
  * @param productId 产品ID
  */
-const loadThingModelProperties = async (productId: number) => {
+async function loadThingModelProperties(productId: number) {
   if (!productId) {
     thingModelProperties.value = [];
     return;
@@ -171,13 +182,13 @@ const loadThingModelProperties = async (productId: number) => {
   } finally {
     loadingThingModel.value = false;
   }
-};
+}
 
 /**
  * 加载服务列表
  * @param productId 产品ID
  */
-const loadServiceList = async (productId: number) => {
+async function loadServiceList(productId: number) {
   if (!productId) {
     serviceList.value = [];
     return;
@@ -199,17 +210,17 @@ const loadServiceList = async (productId: number) => {
   } finally {
     loadingServices.value = false;
   }
-};
+}
 
 /**
  * 从TSL加载服务信息（用于编辑模式回显）
  * @param productId 产品ID
  * @param serviceIdentifier 服务标识符
  */
-const loadServiceFromTSL = async (
+async function loadServiceFromTSL(
   productId: number,
   serviceIdentifier: string,
-) => {
+) {
   // 先加载服务列表
   await loadServiceList(productId);
 
@@ -220,14 +231,14 @@ const loadServiceFromTSL = async (
   if (service) {
     selectedService.value = service;
   }
-};
+}
 
 /**
  * 根据参数类型获取默认值
  * @param param 参数对象
  * @returns 默认值
  */
-const getDefaultValueForParam = (param: any) => {
+function getDefaultValueForParam(param: any) {
   switch (param.dataType) {
     case IoTDataSpecsDataTypeEnum.BOOL: {
       return false;
@@ -256,14 +267,14 @@ const getDefaultValueForParam = (param: any) => {
       return '';
     }
   }
-};
+}
 
 const isInitialized = ref(false); // 防止重复初始化的标志
 
 /**
  * 初始化组件数据
  */
-const initializeComponent = async () => {
+async function initializeComponent() {
   if (isInitialized.value) return;
 
   const currentAction = action.value;
@@ -285,7 +296,7 @@ const initializeComponent = async () => {
   }
 
   isInitialized.value = true;
-};
+}
 
 /** 组件初始化 */
 onMounted(() => {
@@ -329,30 +340,30 @@ watch(
 <template>
   <div class="gap-16px flex flex-col">
     <!-- 产品和设备选择 - 与触发器保持一致的分离式选择器 -->
-    <el-row :gutter="16">
-      <el-col :span="12">
-        <el-form-item label="产品" required>
+    <Row :gutter="16">
+      <Col :span="12">
+        <Form.Item label="产品" required>
           <ProductSelector
             v-model="action.productId"
             @change="handleProductChange"
           />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="设备" required>
+        </Form.Item>
+      </Col>
+      <Col :span="12">
+        <Form.Item label="设备" required>
           <DeviceSelector
             v-model="action.deviceId"
             :product-id="action.productId"
             @change="handleDeviceChange"
           />
-        </el-form-item>
-      </el-col>
-    </el-row>
+        </Form.Item>
+      </Col>
+    </Row>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
     <div v-if="action.productId && isServiceInvokeAction" class="space-y-16px">
-      <el-form-item label="服务" required>
-        <el-select
+      <Form.Item label="服务" required>
+        <Select
           v-model="action.identifier"
           placeholder="请选择服务"
           filterable
@@ -361,7 +372,7 @@ watch(
           :loading="loadingServices"
           @change="handleServiceChange"
         >
-          <el-option
+          <Select.Option
             v-for="service in serviceList"
             :key="service.identifier"
             :label="service.name"
@@ -369,41 +380,41 @@ watch(
           >
             <div class="flex items-center justify-between">
               <span>{{ service.name }}</span>
-              <el-tag
+              <Tag
                 :type="service.callType === 'sync' ? 'primary' : 'success'"
                 size="small"
               >
                 {{ service.callType === 'sync' ? '同步' : '异步' }}
-              </el-tag>
+              </Tag>
             </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
+          </Select.Option>
+        </Select>
+      </Form.Item>
 
       <!-- 服务参数配置 -->
       <div v-if="action.identifier" class="space-y-16px">
-        <el-form-item label="服务参数" required>
+        <Form.Item label="服务参数" required>
           <JsonParamsInput
             v-model="paramsValue"
             type="service"
             :config="{ service: selectedService } as any"
             placeholder="请输入 JSON 格式的服务参数"
           />
-        </el-form-item>
+        </Form.Item>
       </div>
     </div>
 
     <!-- 控制参数配置 - 属性设置类型时显示 -->
     <div v-if="action.productId && isPropertySetAction" class="space-y-16px">
       <!-- 参数配置 -->
-      <el-form-item label="参数" required>
+      <Form.Item label="参数" required>
         <JsonParamsInput
           v-model="paramsValue"
           type="property"
           :config="{ properties: thingModelProperties }"
           placeholder="请输入 JSON 格式的控制参数"
         />
-      </el-form-item>
+      </Form.Item>
     </div>
   </div>
 </template>

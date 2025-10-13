@@ -2,9 +2,12 @@
 <script setup lang="ts">
 import type { IotSceneRule } from '#/api/iot/rule/scene';
 
-import { DICT_TYPE, getIntDictOptions } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
+import { Card, Col, Form, Input, Radio, Row } from 'ant-design-vue';
 
 /** 基础信息配置组件 */
 defineOptions({ name: 'BasicInfoSection' });
@@ -22,65 +25,62 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
 </script>
 
 <template>
-  <el-card
-    class="rounded-8px mb-10px border border-[var(--el-border-color-light)]"
-    shadow="never"
-  >
-    <template #header>
+  <Card class="rounded-8px mb-10px border-primary border" shadow="never">
+    <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <Icon
-            icon="ep:info-filled"
-            class="text-18px text-[var(--el-color-primary)]"
-          />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">基础信息</span>
+          <IconifyIcon icon="ep:info-filled" class="text-18px text-primary" />
+          <span class="text-16px font-600 text-primary">基础信息</span>
         </div>
         <div class="gap-8px flex items-center">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="formData.status" />
+          <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="formData.status" />
         </div>
       </div>
     </template>
 
     <div class="p-0">
-      <el-row :gutter="24" class="mb-24px">
-        <el-col :span="12">
-          <el-form-item label="场景名称" prop="name" required>
-            <el-input
+      <Row :gutter="24" class="mb-24px">
+        <Col :span="12">
+          <Form.Item label="场景名称" prop="name" required>
+            <Input
               v-model="formData.name"
               placeholder="请输入场景名称"
-              maxlength="50"
+              :maxlength="50"
               show-word-limit
               clearable
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="场景状态" prop="status" required>
-            <el-radio-group v-model="formData.status">
-              <el-radio
-                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-                :key="dict.value"
+          </Form.Item>
+        </Col>
+        <Col :span="12">
+          <Form.Item label="场景状态" prop="status" required>
+            <Radio.Group v-model="formData.status">
+              <Radio
+                v-for="(dict, index) in getDictOptions(
+                  DICT_TYPE.COMMON_STATUS,
+                  'number',
+                )"
+                :key="index"
                 :label="dict.value"
               >
                 {{ dict.label }}
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="场景描述" prop="description">
-        <el-input
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item label="场景描述" prop="description">
+        <Input.TextArea
           v-model="formData.description"
-          type="textarea"
+          type="text"
           placeholder="请输入场景描述（可选）"
           :rows="3"
-          maxlength="200"
+          :maxlength="200"
           show-word-limit
           resize="none"
         />
-      </el-form-item>
+      </Form.Item>
     </div>
-  </el-card>
+  </Card>
 </template>
 
 <style scoped>

@@ -90,6 +90,7 @@ export interface TriggerCondition {
   operator?: string;
   value?: any;
   type?: string;
+  param?: string;
 }
 
 /** IoT 场景联动规则动作 */

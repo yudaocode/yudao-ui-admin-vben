@@ -1,10 +1,14 @@
 <!-- dataType：enum 数组类型 -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import type { DataSpecsEnumOrBoolData } from '#/api/iot/thingmodel';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Button, Form, Input, message } from 'ant-design-vue';
 
-import { DataSpecsEnumOrBoolData } from '#/api/iot/thingmodel';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 /** 枚举型的 dataSpecs 配置组件 */
@@ -17,30 +21,30 @@ const dataSpecsList = useVModel(props, 'modelValue', emits) as Ref<
 >;
 
 /** 添加枚举项 */
-const addEnum = () => {
+function addEnum() {
   dataSpecsList.value.push({
     dataType: IoTDataSpecsDataTypeEnum.ENUM,
     name: '', // 枚举项的名称
-    value: undefined, // 枚举值
+    value: '', // 枚举值
   });
-};
+}
 
 /** 删除枚举项 */
-const deleteEnum = (index: number) => {
+function deleteEnum(index: number) {
   if (dataSpecsList.value.length === 1) {
     message.warning('至少需要一个枚举项');
     return;
   }
   dataSpecsList.value.splice(index, 1);
-};
+}
 
 /** 校验枚举值 */
-const validateEnumValue = (_: any, value: any, callback: any) => {
+function validateEnumValue(_: any, value: any, callback: any) {
   if (isEmpty(value)) {
     callback(new Error('枚举值不能为空'));
     return;
   }
-  if (isNaN(Number(value))) {
+  if (Number.isNaN(Number(value))) {
     callback(new Error('枚举值必须是数字'));
     return;
   }
@@ -51,10 +55,10 @@ const validateEnumValue = (_: any, value: any, callback: any) => {
     return;
   }
   callback();
-};
+}
 
 /** 校验枚举描述 */
-const validateEnumName = (_: any, value: string, callback: any) => {
+function validateEnumName(_: any, value: string, callback: any) {
   if (isEmpty(value)) {
     callback(new Error('枚举描述不能为空'));
     return;
@@ -75,10 +79,10 @@ const validateEnumName = (_: any, value: string, callback: any) => {
     return;
   }
   callback();
-};
+}
 
 /** 校验整个枚举列表 */
-const validateEnumList = (_: any, __: any, callback: any) => {
+function validateEnumList(_: any, __: any, callback: any) {
   if (isEmpty(dataSpecsList.value)) {
     callback(new Error('请至少添加一个枚举项'));
     return;
@@ -95,7 +99,7 @@ const validateEnumList = (_: any, __: any, callback: any) => {
 
   // 检查枚举值是否都是数字
   const hasInvalidNumber = dataSpecsList.value.some((item) =>
-    isNaN(Number(item.value)),
+    Number.isNaN(Number(item.value)),
   );
   if (hasInvalidNumber) {
     callback(new Error('存在非数字的枚举值'));
@@ -110,11 +114,11 @@ const validateEnumList = (_: any, __: any, callback: any) => {
     return;
   }
   callback();
-};
+}
 </script>
 
 <template>
-  <el-form-item
+  <Form.Item
     :rules="[
       { required: true, validator: validateEnumList, trigger: 'change' },
     ]"
@@ -130,7 +134,7 @@ const validateEnumList = (_: any, __: any, callback: any) => {
         :key="index"
         class="mb-5px flex items-center justify-between"
       >
-        <el-form-item
+        <Form.Item
           :prop="`property.dataSpecsList[${index}].value`"
           :rules="[
             { required: true, message: '枚举值不能为空' },
@@ -138,10 +142,10 @@ const validateEnumList = (_: any, __: any, callback: any) => {
           ]"
           class="mb-0 flex-1"
         >
-          <el-input v-model="item.value" placeholder="请输入枚举值,如'0'" />
-        </el-form-item>
+          <Input v-model="item.value" placeholder="请输入枚举值,如'0'" />
+        </Form.Item>
         <span class="mx-2">~</span>
-        <el-form-item
+        <Form.Item
           :prop="`property.dataSpecsList[${index}].name`"
           :rules="[
             { required: true, message: '枚举描述不能为空' },
@@ -149,20 +153,15 @@ const validateEnumList = (_: any, __: any, callback: any) => {
           ]"
           class="mb-0 flex-1"
         >
-          <el-input v-model="item.name" placeholder="对该枚举项的描述" />
-        </el-form-item>
-        <el-button
-          class="ml-10px"
-          link
-          type="primary"
-          @click="deleteEnum(index)"
-        >
+          <Input v-model="item.name" placeholder="对该枚举项的描述" />
+        </Form.Item>
+        <Button class="ml-10px" link type="primary" @click="deleteEnum(index)">
           删除
-        </el-button>
+        </Button>
       </div>
-      <el-button link type="primary" @click="addEnum">+添加枚举项</el-button>
+      <Button link type="primary" @click="addEnum">+添加枚举项</Button>
     </div>
-  </el-form-item>
+  </Form.Item>
 </template>
 
 <style lang="scss" scoped>

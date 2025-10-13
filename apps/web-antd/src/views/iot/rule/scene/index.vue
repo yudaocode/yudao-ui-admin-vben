@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSceneRule,
-  getRuleScenePage,
+  getSceneRulePage,
   updateSceneRuleStatus,
 } from '#/api/iot/rule/scene';
 import { $t } from '#/locales';
@@ -85,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getRuleScenePage({
+          return await getSceneRulePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,

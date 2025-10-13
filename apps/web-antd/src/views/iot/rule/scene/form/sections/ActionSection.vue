@@ -2,7 +2,10 @@
 <script setup lang="ts">
 import type { Action } from '#/api/iot/rule/scene';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
+import { Button, Card, Empty, Form, Select, Tag } from 'ant-design-vue';
 
 import {
   getActionTypeLabel,
@@ -27,110 +30,116 @@ const emit = defineEmits<{
 const actions = useVModel(props, 'actions', emit);
 
 /** 获取执行器标签类型（用于 el-tag 的 type 属性） */
-const getActionTypeTag = (
+function getActionTypeTag(
   type: number,
-): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
-  const actionTypeTags = {
+): 'danger' | 'info' | 'primary' | 'success' | 'warning' {
+  const actionTypeTags: Record<
+    number,
+    'danger' | 'info' | 'primary' | 'success' | 'warning'
+  > = {
     [IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET]: 'primary',
     [IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE]: 'success',
     [IotRuleSceneActionTypeEnum.ALERT_TRIGGER]: 'danger',
     [IotRuleSceneActionTypeEnum.ALERT_RECOVER]: 'warning',
   } as const;
   return actionTypeTags[type] || 'info';
-};
+}
 
 /** 判断是否为设备执行器类型 */
-const isDeviceAction = (type: number): boolean => {
+function isDeviceAction(type: number): boolean {
   const deviceActionTypes = [
     IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET,
     IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE,
   ] as number[];
   return deviceActionTypes.includes(type);
-};
+}
 
 /** 判断是否为告警执行器类型 */
-const isAlertAction = (type: number): boolean => {
+function isAlertAction(type: number): boolean {
   const alertActionTypes = [
     IotRuleSceneActionTypeEnum.ALERT_TRIGGER,
     IotRuleSceneActionTypeEnum.ALERT_RECOVER,
   ] as number[];
   return alertActionTypes.includes(type);
-};
+}
 
 /**
  * 创建默认的执行器数据
  * @returns 默认执行器对象
  */
-const createDefaultActionData = (): Action => {
+function createDefaultActionData(): Action {
   return {
-    type: IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET, // 默认为设备属性设置
+    type: IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET.toString(), // 默认为设备属性设置
     productId: undefined,
     deviceId: undefined,
     identifier: undefined, // 物模型标识符（服务调用时使用）
     params: undefined,
     alertConfigId: undefined,
   };
-};
+}
 
 /**
  * 添加执行器
  */
-const addAction = () => {
+function addAction() {
   const newAction = createDefaultActionData();
   actions.value.push(newAction);
-};
+}
 
 /**
  * 删除执行器
  * @param index 执行器索引
  */
-const removeAction = (index: number) => {
+function removeAction(index: number) {
   actions.value.splice(index, 1);
-};
+}
 
 /**
  * 更新执行器类型
  * @param index 执行器索引
  * @param type 执行器类型
  */
-const updateActionType = (index: number, type: number) => {
-  actions.value[index].type = type;
-  onActionTypeChange(actions.value[index], type);
-};
+function updateActionType(index: number, type: number) {
+  actions.value[index].type = type.toString();
+  onActionTypeChange(actions.value[index] as Action, type);
+}
 
 /**
  * 更新执行器
  * @param index 执行器索引
  * @param action 执行器对象
  */
-const updateAction = (index: number, action: Action) => {
+function updateAction(index: number, action: Action) {
   actions.value[index] = action;
-};
+}
 
 /**
  * 更新告警配置
  * @param index 执行器索引
  * @param alertConfigId 告警配置ID
  */
-const updateActionAlertConfig = (index: number, alertConfigId?: number) => {
+function updateActionAlertConfig(index: number, alertConfigId?: number) {
   actions.value[index].alertConfigId = alertConfigId;
-};
+  if (actions.value[index]) {
+    actions.value[index].alertConfigId = alertConfigId;
+  }
+}
 
 /**
  * 监听执行器类型变化
  * @param action 执行器对象
  * @param type 执行器类型
  */
-const onActionTypeChange = (action: Action, type: number) => {
+function onActionTypeChange(action: Action, type: any) {
   // 清理不相关的配置，确保数据结构干净
   if (isDeviceAction(type)) {
     // 设备控制类型：清理告警配置，确保设备参数存在
     action.alertConfigId = undefined;
-    if (!action.params) {
-      action.params = '';
+    if (!(action as any).params) {
+      (action as any).params = '';
     }
     // 如果从其他类型切换到设备控制类型，清空identifier（让用户重新选择）
-    if (action.identifier && type !== action.type) {
+    if (action.identifier && type !== (action as any).type) {
       action.identifier = undefined;
     }
   } else if (isAlertAction(type)) {
@@ -140,33 +149,23 @@ const onActionTypeChange = (action: Action, type: number) => {
     action.params = undefined;
     action.alertConfigId = undefined;
   }
-};
+}
 </script>
 
 <template>
-  <el-card
-    class="rounded-8px border border-[var(--el-border-color-light)]"
-    shadow="never"
-  >
-    <template #header>
+  <Card class="rounded-8px border-primary border" shadow="never">
+    <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <Icon
-            icon="ep:setting"
-            class="text-18px text-[var(--el-color-primary)]"
-          />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]"
-            >执行器配置</span
-          >
-          <el-tag size="small" type="info">
-            {{ actions.length }} 个执行器
-          </el-tag>
+          <IconifyIcon icon="ep:setting" class="text-18px text-primary" />
+          <span class="text-16px font-600 text-primary"> 执行器配置 </span>
+          <Tag size="small" type="info"> {{ actions.length }} 个执行器 </Tag>
         </div>
         <div class="gap-8px flex items-center">
-          <el-button type="primary" size="small" @click="addAction">
-            <Icon icon="ep:plus" />
+          <Button type="primary" size="small" @click="addAction">
+            <IconifyIcon icon="ep:plus" />
             添加执行器
-          </el-button>
+          </Button>
         </div>
       </div>
     </template>
@@ -174,12 +173,12 @@ const onActionTypeChange = (action: Action, type: number) => {
     <div class="p-0">
       <!-- 空状态 -->
       <div v-if="actions.length === 0">
-        <el-empty description="暂无执行器配置">
-          <el-button type="primary" @click="addAction">
-            <Icon icon="ep:plus" />
+        <Empty description="暂无执行器配置">
+          <Button type="primary" @click="addAction">
+            <IconifyIcon icon="ep:plus" />
             添加第一个执行器
-          </el-button>
-        </el-empty>
+          </Button>
+        </Empty>
       </div>
 
       <!-- 执行器列表 -->
@@ -204,26 +203,26 @@ const onActionTypeChange = (action: Action, type: number) => {
                 </div>
                 <span>执行器 {{ index + 1 }}</span>
               </div>
-              <el-tag
-                :type="getActionTypeTag(action.type)"
+              <Tag
+                :type="getActionTypeTag(action.type as any)"
                 size="small"
                 class="font-500"
               >
-                {{ getActionTypeLabel(action.type) }}
-              </el-tag>
+                {{ getActionTypeLabel(action.type as any) }}
+              </Tag>
             </div>
             <div class="gap-8px flex items-center">
-              <el-button
+              <Button
                 v-if="actions.length > 1"
-                type="danger"
+                danger
                 size="small"
                 text
                 @click="removeAction(index)"
                 class="hover:bg-red-50"
               >
-                <Icon icon="ep:delete" />
+                <IconifyIcon icon="ep:delete" />
                 删除
-              </el-button>
+              </Button>
             </div>
           </div>
 
@@ -231,36 +230,39 @@ const onActionTypeChange = (action: Action, type: number) => {
           <div class="p-16px space-y-16px">
             <!-- 执行类型选择 -->
             <div class="w-full">
-              <el-form-item label="执行类型" required>
-                <el-select
+              <Form.Item label="执行类型" required>
+                <Select
                   :model-value="action.type"
                   @update:model-value="
-                    (value) => updateActionType(index, value)
+                    (value: number) => updateActionType(index, value)
                   "
                   @change="(value) => onActionTypeChange(action, value)"
                   placeholder="请选择执行类型"
                   class="w-full"
                 >
-                  <el-option
+                  <Select.Option
                     v-for="option in getActionTypeOptions()"
                     :key="option.value"
                     :label="option.label"
                     :value="option.value"
                   />
-                </el-select>
-              </el-form-item>
+                </Select>
+              </Form.Item>
             </div>
 
             <!-- 设备控制配置 -->
             <DeviceControlConfig
-              v-if="isDeviceAction(action.type)"
+              v-if="isDeviceAction(action.type as any)"
               :model-value="action"
               @update:model-value="(value) => updateAction(index, value)"
             />
 
             <!-- 告警配置 - 只有恢复告警时才显示 -->
             <AlertConfig
-              v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_RECOVER"
+              v-if="
+                action.type ===
+                IotRuleSceneActionTypeEnum.ALERT_RECOVER.toString()
+              "
               :model-value="action.alertConfigId"
               @update:model-value="
                 (value) => updateActionAlertConfig(index, value)
@@ -269,19 +271,16 @@ const onActionTypeChange = (action: Action, type: number) => {
 
             <!-- 触发告警提示 - 触发告警时显示 -->
             <div
-              v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER"
-              class="rounded-6px p-16px border border-[var(--el-border-color-light)] bg-[var(--el-fill-color-blank)]"
+              v-if="
+                action.type ===
+                IotRuleSceneActionTypeEnum.ALERT_TRIGGER.toString()
+              "
+              class="rounded-6px p-16px border-border bg-fill-color-blank border"
             >
               <div class="gap-8px mb-8px flex items-center">
-                <Icon
-                  icon="ep:warning"
-                  class="text-16px text-[var(--el-color-warning)]"
-                />
-                <span
-                  class="text-14px font-600 text-[var(--el-text-color-primary)]"
-                  >触发告警</span
-                >
-                <el-tag size="small" type="warning">自动执行</el-tag>
+                <IconifyIcon icon="ep:warning" class="text-16px text-warning" />
+                <span class="text-14px font-600 text-primary">触发告警</span>
+                <Tag size="small" type="warning">自动执行</Tag>
               </div>
               <div
                 class="text-12px leading-relaxed text-[var(--el-text-color-secondary)]"
@@ -296,11 +295,11 @@ const onActionTypeChange = (action: Action, type: number) => {
 
       <!-- 添加提示 -->
       <div v-if="actions.length > 0" class="py-16px text-center">
-        <el-button type="primary" plain @click="addAction">
-          <Icon icon="ep:plus" />
+        <Button type="primary" plain @click="addAction">
+          <IconifyIcon icon="ep:plus" />
           继续添加执行器
-        </el-button>
+        </Button>
       </div>
     </div>
-  </el-card>
+  </Card>
 </template>

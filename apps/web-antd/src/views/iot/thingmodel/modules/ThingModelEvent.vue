@@ -1,5 +1,9 @@
 <!-- 产品的物模型表单（event 项） -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import { watch } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';

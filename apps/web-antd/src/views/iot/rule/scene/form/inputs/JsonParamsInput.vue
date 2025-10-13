@@ -2,8 +2,12 @@
 <script setup lang="ts">
 import type { JsonParamsInputType } from '#/views/iot/utils/constants';
 
-import { InfoFilled } from '@element-plus/icons-vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
+import { Button, Input, Popover, Tag } from 'ant-design-vue';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -44,10 +48,10 @@ interface JsonParamsConfig {
 }
 
 interface Props {
-  modelValue?: string;
-  config?: JsonParamsConfig;
-  type?: JsonParamsInputType;
-  placeholder?: string;
+  modelValue: string;
+  config: JsonParamsConfig;
+  type: JsonParamsInputType;
+  placeholder: string;
 }
 
 interface Emits {
@@ -217,7 +221,7 @@ const noConfigMessage = computed(() => {
 /**
  * 处理参数变化事件
  */
-const handleParamsChange = () => {
+function handleParamsChange() {
   try {
     jsonError.value = ''; // 清除之前的错误
 
@@ -256,33 +260,33 @@ const handleParamsChange = () => {
         : JSON_PARAMS_INPUT_CONSTANTS.UNKNOWN_ERROR,
     );
   }
-};
+}
 
 /**
  * 快速填充示例数据
  */
-const fillExampleJson = () => {
+function fillExampleJson() {
   paramsJson.value = generateExampleJson();
   handleParamsChange();
-};
+}
 
 /**
  * 清空参数
  */
-const clearParams = () => {
+function clearParams() {
   paramsJson.value = '';
   localValue.value = '';
   jsonError.value = '';
-};
+}
 
 /**
  * 获取参数类型名称
  * @param dataType 数据类型
  * @returns 类型名称
  */
-const getParamTypeName = (dataType: string) => {
+function getParamTypeName(dataType: string) {
   // 使用 constants.ts 中已有的 getDataTypeName 函数逻辑
-  const typeMap = {
+  const typeMap: Record<string, string> = {
     [IoTDataSpecsDataTypeEnum.INT]: '整数',
     [IoTDataSpecsDataTypeEnum.FLOAT]: '浮点数',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: '双精度',
@@ -294,15 +298,15 @@ const getParamTypeName = (dataType: string) => {
     [IoTDataSpecsDataTypeEnum.ARRAY]: '数组',
   };
   return typeMap[dataType] || dataType;
-};
+}
 
 /**
  * 获取参数类型标签样式
  * @param dataType 数据类型
  * @returns 标签样式
  */
-const getParamTypeTag = (dataType: string) => {
-  const tagMap = {
+function getParamTypeTag(dataType: string) {
+  const tagMap: Record<string, string> = {
     [IoTDataSpecsDataTypeEnum.INT]: 'primary',
     [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
@@ -314,45 +318,45 @@ const getParamTypeTag = (dataType: string) => {
     [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
   };
   return tagMap[dataType] || 'info';
-};
+}
 
 /**
  * 获取示例值
  * @param param 参数对象
  * @returns 示例值
  */
-const getExampleValue = (param: any) => {
-  const exampleConfig =
+function getExampleValue(param: any) {
+  const exampleConfig: any =
     JSON_PARAMS_EXAMPLE_VALUES[param.dataType] ||
     JSON_PARAMS_EXAMPLE_VALUES.DEFAULT;
   return exampleConfig.display;
-};
+}
 
 /**
  * 生成示例JSON
  * @returns JSON字符串
  */
-const generateExampleJson = () => {
+function generateExampleJson() {
   if (paramsList.value.length === 0) {
     return '{}';
   }
 
-  const example = {};
+  const example: Record<string, any> = {};
   paramsList.value.forEach((param) => {
-    const exampleConfig =
+    const exampleConfig: any =
       JSON_PARAMS_EXAMPLE_VALUES[param.dataType] ||
       JSON_PARAMS_EXAMPLE_VALUES.DEFAULT;
     example[param.identifier] = exampleConfig.value;
   });
 
   return JSON.stringify(example, null, 2);
-};
+}
 
 /**
  * 处理数据回显
  * @param value 值字符串
  */
-const handleDataDisplay = (value: string) => {
+function handleDataDisplay(value: string) {
   if (!value || !value.trim()) {
     paramsJson.value = '';
     jsonError.value = '';
@@ -369,7 +373,7 @@ const handleDataDisplay = (value: string) => {
     paramsJson.value = value;
     jsonError.value = '';
   }
-};
+}
 
 // 监听外部值变化（编辑模式数据回显）
 watch(
@@ -414,9 +418,9 @@ watch(
   <div class="space-y-12px w-full">
     <!-- JSON 输入框 -->
     <div class="relative">
-      <el-input
+      <Input.TextArea
         v-model="paramsJson"
-        type="textarea"
+        type="text"
         :rows="4"
         :placeholder="placeholder"
         @input="handleParamsChange"
@@ -424,8 +428,8 @@ watch(
       />
       <!-- 查看详细示例弹出层 -->
       <div class="top-8px right-8px absolute">
-        <el-popover
-          placement="left-start"
+        <Popover
+          placement="leftTop"
           :width="450"
           trigger="click"
           :show-arrow="true"
@@ -433,19 +437,21 @@ watch(
           popper-class="json-params-detail-popover"
         >
           <template #reference>
-            <el-button
-              type="info"
-              :icon="InfoFilled"
+            <Button
+              text
+              type="primary"
               circle
               size="small"
               :title="JSON_PARAMS_INPUT_CONSTANTS.VIEW_EXAMPLE_TITLE"
-            />
+            >
+              <IconifyIcon icon="ep:info-filled" />
+            </Button>
           </template>
 
           <!-- 弹出层内容 -->
           <div class="json-params-detail-content">
             <div class="gap-8px mb-16px flex items-center">
-              <Icon
+              <IconifyIcon
                 :icon="titleIcon"
                 class="text-18px text-[var(--el-color-primary)]"
               />
@@ -460,7 +466,7 @@ watch(
               <!-- 参数列表 -->
               <div v-if="paramsList.length > 0">
                 <div class="gap-8px mb-8px flex items-center">
-                  <Icon
+                  <IconifyIcon
                     :icon="paramsIcon"
                     class="text-14px text-[var(--el-color-primary)]"
                   />
@@ -481,14 +487,14 @@ watch(
                         class="text-12px font-500 text-[var(--el-text-color-primary)]"
                       >
                         {{ param.name }}
-                        <el-tag
+                        <Tag
                           v-if="param.required"
                           size="small"
                           type="danger"
                           class="ml-4px"
                         >
                           {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
-                        </el-tag>
+                        </Tag>
                       </div>
                       <div
                         class="text-11px text-[var(--el-text-color-secondary)]"
@@ -497,12 +503,9 @@ watch(
                       </div>
                     </div>
                     <div class="gap-8px flex items-center">
-                      <el-tag
-                        :type="getParamTypeTag(param.dataType)"
-                        size="small"
-                      >
+                      <Tag :type="getParamTypeTag(param.dataType)" size="small">
                         {{ getParamTypeName(param.dataType) }}
-                      </el-tag>
+                      </Tag>
                       <span
                         class="text-11px text-[var(--el-text-color-secondary)]"
                       >
@@ -536,14 +539,14 @@ watch(
               </div>
             </div>
           </div>
-        </el-popover>
+        </Popover>
       </div>
     </div>
 
     <!-- 验证状态和错误提示 -->
     <div class="flex items-center justify-between">
       <div class="gap-8px flex items-center">
-        <Icon
+        <IconifyIcon
           :icon="
             jsonError
               ? JSON_PARAMS_INPUT_ICONS.STATUS_ICONS.ERROR
@@ -573,12 +576,12 @@ watch(
         <span class="text-12px text-[var(--el-text-color-secondary)]">{{
           JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL
         }}</span>
-        <el-button size="small" type="primary" plain @click="fillExampleJson">
+        <Button size="small" type="primary" plain @click="fillExampleJson">
           {{ JSON_PARAMS_INPUT_CONSTANTS.EXAMPLE_DATA_BUTTON }}
-        </el-button>
-        <el-button size="small" type="danger" plain @click="clearParams">
+        </Button>
+        <Button size="small" danger type="primary" @click="clearParams">
           {{ JSON_PARAMS_INPUT_CONSTANTS.CLEAR_BUTTON }}
-        </el-button>
+        </Button>
       </div>
     </div>
   </div>
@@ -595,7 +598,7 @@ watch(
   max-width: 500px !important;
 }
 
-:global(.json-params-detail-popover .el-popover__content) {
+:global(.json-params-detail-popover .ant-popover__content) {
   padding: 16px !important;
 }
 
