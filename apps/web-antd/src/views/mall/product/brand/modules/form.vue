@@ -18,8 +18,8 @@ const emit = defineEmits(['success']);
 const formData = ref<MallBrandApi.Brand>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['品牌'])
-    : $t('ui.actionTitle.create', ['品牌']);
+    ? $t('ui.actionTitle.edit', ['商品品牌'])
+    : $t('ui.actionTitle.create', ['商品品牌']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -28,7 +28,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 120,
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -77,7 +77,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle" class="w-1/4">
     <Form class="mx-4" />
   </Modal>
 </template>

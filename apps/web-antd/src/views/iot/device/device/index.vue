@@ -4,30 +4,39 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Button, Card, Input, message, Select, Space, Tag } from 'ant-design-vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { downloadFileFromBlobPart } from '@vben/utils';
 import { IconifyIcon } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
+
+import {
+  Button,
+  Card,
+  Input,
+  message,
+  Select,
+  Space,
+  Tag,
+} from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { 
+import {
   deleteDevice,
   deleteDeviceList,
   exportDeviceExcel,
-  getDevicePage
+  getDevicePage,
 } from '#/api/iot/device/device';
-import { getSimpleProductList } from '#/api/iot/product/product';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
+import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
+import { useGridColumns } from './data';
+// @ts-ignore
+import DeviceCardView from './modules/DeviceCardView.vue';
 import DeviceForm from './modules/DeviceForm.vue';
 import DeviceGroupForm from './modules/DeviceGroupForm.vue';
 import DeviceImportForm from './modules/DeviceImportForm.vue';
-// @ts-ignore
-import DeviceCardView from './modules/DeviceCardView.vue';
-import { useGridColumns } from './data';
 
 /** IoT 设备列表 */
 defineOptions({ name: 'IoTDevice' });
@@ -36,7 +45,7 @@ const route = useRoute();
 const router = useRouter();
 const products = ref<any[]>([]);
 const deviceGroups = ref<any[]>([]);
-const viewMode = ref<'list' | 'card'>('card');
+const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 
 // Modal instances
@@ -120,7 +129,11 @@ function openProductDetail(productId: number) {
 
 /** 打开物模型数据 */
 function openModel(id: number) {
-  router.push({ name: 'IoTDeviceDetail', params: { id }, query: { tab: 'model' } });
+  router.push({
+    name: 'IoTDeviceDetail',
+    params: { id },
+    query: { tab: 'model' },
+  });
 }
 
 /** 新增设备 */
@@ -141,7 +154,7 @@ async function handleDelete(row: any) {
   });
   try {
     await deleteDevice(row.id);
-    message.success($t('common.delSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -162,7 +175,7 @@ async function handleDeleteBatch() {
   try {
     const ids = checkedRows.map((row: any) => row.id);
     await deleteDeviceList(ids);
-    message.success($t('common.delSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -219,7 +232,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions,
 });
 
-/** 初始化 **/
+/** 初始化 */
 onMounted(async () => {
   // 获取产品列表
   products.value = await getSimpleProductList();
@@ -241,11 +254,11 @@ onMounted(async () => {
     <DeviceFormModal @success="handleRefresh" />
     <DeviceGroupFormModal @success="handleRefresh" />
     <DeviceImportFormModal @success="handleRefresh" />
-    
+
     <!-- 统一搜索工具栏 -->
     <Card :body-style="{ padding: '16px' }" class="mb-4">
       <!-- 搜索表单 -->
-      <div class="flex flex-wrap items-center gap-3 mb-3">
+      <div class="mb-3 flex flex-wrap items-center gap-3">
         <Select
           v-model:value="searchParams.productId"
           placeholder="请选择产品"
@@ -265,14 +278,14 @@ onMounted(async () => {
           placeholder="请输入 DeviceName"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         />
         <Input
           v-model:value="searchParams.nickname"
           placeholder="请输入备注名称"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         />
         <Select
           v-model:value="searchParams.deviceType"
@@ -329,22 +342,30 @@ onMounted(async () => {
       <!-- 操作按钮 -->
       <div class="flex items-center justify-between">
         <Space :size="12">
-          <Button type="primary" @click="handleCreate" v-hasPermi="['iot:device:create']">
+          <Button
+            type="primary"
+            @click="handleCreate"
+            v-access:code="['iot:device:create']"
+          >
             <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
             新增
           </Button>
-          <Button type="primary" @click="handleExport" v-hasPermi="['iot:device:export']">
+          <Button
+            type="primary"
+            @click="handleExport"
+            v-access:code="['iot:device:export']"
+          >
             <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
             导出
           </Button>
-          <Button @click="handleImport" v-hasPermi="['iot:device:import']">
+          <Button @click="handleImport" v-access:code="['iot:device:import']">
             <IconifyIcon icon="ant-design:upload-outlined" class="mr-1" />
             导入
           </Button>
           <Button
             v-show="viewMode === 'list'"
             @click="handleAddToGroup"
-            v-hasPermi="['iot:device:update']"
+            v-access:code="['iot:device:update']"
           >
             <IconifyIcon icon="ant-design:folder-add-outlined" class="mr-1" />
             添加到分组
@@ -353,13 +374,13 @@ onMounted(async () => {
             v-show="viewMode === 'list'"
             danger
             @click="handleDeleteBatch"
-            v-hasPermi="['iot:device:delete']"
+            v-access:code="['iot:device:delete']"
           >
             <IconifyIcon icon="ant-design:delete-outlined" class="mr-1" />
             批量删除
           </Button>
         </Space>
-        
+
         <!-- 视图切换 -->
         <Space :size="4">
           <Button
@@ -385,7 +406,10 @@ onMounted(async () => {
 
       <!-- 所属产品列 -->
       <template #product="{ row }">
-        <a class="cursor-pointer text-primary" @click="openProductDetail(row.productId)">
+        <a
+          class="text-primary cursor-pointer"
+          @click="openProductDetail(row.productId)"
+        >
           {{ products.find((p: any) => p.id === row.productId)?.name || '-' }}
         </a>
       </template>

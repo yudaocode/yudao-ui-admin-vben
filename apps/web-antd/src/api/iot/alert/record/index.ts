@@ -80,6 +80,3 @@ export function deleteAlertRecordList(ids: number[]) {
     params: { ids: ids.join(',') },
   });
 }
-
-export { AlertRecordApi };
-

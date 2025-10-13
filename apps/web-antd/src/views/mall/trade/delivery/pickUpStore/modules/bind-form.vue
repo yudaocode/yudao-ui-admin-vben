@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickUpStore';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  bindStoreStaffId,
+  bindDeliveryPickUpStore,
   getDeliveryPickUpStore,
 } from '#/api/mall/trade/delivery/pickUpStore';
 import { $t } from '#/locales';
@@ -18,11 +18,6 @@ import { useBindFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MallDeliveryPickUpStoreApi.PickUpStore>();
-const getTitle = computed(() => {
-  return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['绑定店员'])
-    : $t('ui.actionTitle.create', ['绑定店员']);
-});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -46,9 +41,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data =
-      (await formApi.getValues()) as MallDeliveryPickUpStoreApi.BindStaffRequest;
+      (await formApi.getValues()) as MallDeliveryPickUpStoreApi.DeliveryPickUpBindReqVO;
     try {
-      await bindStoreStaffId(data);
+      await bindDeliveryPickUpStore(data);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -64,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data =
-      modalApi.getData<MallDeliveryPickUpStoreApi.BindStaffRequest>();
+      modalApi.getData<MallDeliveryPickUpStoreApi.DeliveryPickUpBindReqVO>();
     if (!data || !data.id) {
       return;
     }
@@ -72,6 +67,9 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getDeliveryPickUpStore(data.id);
       // 设置到 values
+      formData.value.verifyUserIds = formData.value.verifyUsers?.map(
+        (item: any) => item.id,
+      );
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -81,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal title="绑定店员" class="w-2/5">
     <Form class="mx-4" />
   </Modal>
 </template>

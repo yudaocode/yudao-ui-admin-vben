@@ -7,7 +7,7 @@ import { computed, ref } from 'vue';
 import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
@@ -134,17 +134,18 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <Tree
-          class="max-h-96 overflow-y-auto"
-          :loading="menuLoading"
-          :tree-data="menuTree"
-          multiple
-          bordered
-          :expanded="expandedKeys"
-          v-bind="slotProps"
-          value-field="id"
-          label-field="name"
-        />
+        <Spin :spinning="menuLoading" wrapper-class-name="w-full">
+          <Tree
+            class="max-h-96 overflow-y-auto"
+            :tree-data="menuTree"
+            multiple
+            bordered
+            :default-expanded-keys="expandedKeys"
+            v-bind="slotProps"
+            value-field="id"
+            label-field="name"
+          />
+        </Spin>
       </template>
     </Form>
     <template #prepend-footer>

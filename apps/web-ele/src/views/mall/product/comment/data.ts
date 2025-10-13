@@ -1,7 +1,9 @@
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+
 import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { MallCommentApi } from '#/api/mall/product/comment';
 
+import { z } from '#/adapter/form';
 import { getSpuSimpleList } from '#/api/mall/product/spu';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -16,6 +18,7 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
+    // TODO @puhui999：商品的选择
     {
       fieldName: 'spuId',
       label: '商品',
@@ -24,48 +27,57 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSpuSimpleList,
         labelField: 'name',
         valueField: 'id',
+        placeholder: '请选择商品',
       },
       rules: 'required',
     },
-    // TODO @霖：用户头像，有点丑，多了一层
     {
       fieldName: 'userAvatar',
       label: '用户头像',
       component: 'ImageUpload',
+      componentProps: {
+        placeholder: '请上传用户头像',
+      },
       rules: 'required',
     },
     {
       fieldName: 'userNickname',
       label: '用户名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户名称',
+      },
       rules: 'required',
     },
     {
       fieldName: 'content',
       label: '评论内容',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入评论内容',
+      },
       rules: 'required',
     },
-    // TODO @霖：星级缺了；
+    // TODO @xingyu：ele 版本，rate 会无法使用。
     {
       fieldName: 'descriptionScores',
       label: '描述星级',
       component: 'Rate',
-      rules: 'required',
+      rules: z.number().min(1).max(5).default(5),
     },
     {
       fieldName: 'benefitScores',
       label: '服务星级',
       component: 'Rate',
-      rules: 'required',
+      rules: z.number().min(1).max(5).default(5),
     },
-    // TODO @霖：评价图片，有点丑，多了一层
     {
       fieldName: 'picUrls',
       label: '评论图片',
       component: 'ImageUpload',
       componentProps: {
         maxNumber: 9,
+        placeholder: '请上传评论图片',
       },
       rules: 'required',
     },
@@ -84,22 +96,36 @@ export function useGridFormSchema(): VbenFormSchema[] {
           { label: '已回复', value: true },
           { label: '未回复', value: false },
         ],
+        placeholder: '请选择回复状态',
+        clearable: true,
       },
     },
     {
       fieldName: 'spuName',
       label: '商品名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入商品名称',
+        clearable: true,
+      },
     },
     {
       fieldName: 'userNickname',
       label: '用户名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户名称',
+        clearable: true,
+      },
     },
     {
       fieldName: 'orderId',
       label: '订单编号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入订单编号',
+        clearable: true,
+      },
     },
     {
       fieldName: 'createTime',
@@ -113,23 +139,24 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 表格列配置 */
-// TODO @霖：列表的宽度需要优化下，样式~
-export function useGridColumns<T = MallCommentApi.Comment>(
+/** 列表的字段 */
+export function useGridColumns(
   onStatusChange?: (
     newStatus: boolean,
-    row: T,
+    row: MallCommentApi.Comment,
   ) => PromiseLike<boolean | undefined>,
-): VxeGridPropTypes.Columns {
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
       title: '评论编号',
       fixed: 'left',
+      minWidth: 80,
     },
     {
       field: 'skuPicUrl',
       title: '商品图片',
+      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -137,7 +164,7 @@ export function useGridColumns<T = MallCommentApi.Comment>(
     {
       field: 'spuName',
       title: '商品名称',
-      minWidth: 200,
+      minWidth: 250,
     },
     {
       field: 'skuProperties',
@@ -154,22 +181,33 @@ export function useGridColumns<T = MallCommentApi.Comment>(
     {
       field: 'userNickname',
       title: '用户名称',
+      minWidth: 100,
     },
     {
       field: 'descriptionScores',
       title: '商品评分',
+      minWidth: 150,
+      slots: {
+        default: 'descriptionScores',
+      },
     },
     {
       field: 'benefitScores',
       title: '服务评分',
+      minWidth: 150,
+      slots: {
+        default: 'benefitScores',
+      },
     },
     {
       field: 'content',
       title: '评论内容',
+      minWidth: 210,
     },
     {
       field: 'picUrls',
       title: '评论图片',
+      minWidth: 120,
       cellRender: {
         name: 'CellImages',
       },
@@ -177,15 +215,18 @@ export function useGridColumns<T = MallCommentApi.Comment>(
     {
       field: 'replyContent',
       title: '回复内容',
+      minWidth: 250,
     },
     {
       field: 'createTime',
       title: '评论时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       field: 'visible',
       title: '是否展示',
+      minWidth: 110,
       align: 'center',
       cellRender: {
         attrs: { beforeChange: onStatusChange },

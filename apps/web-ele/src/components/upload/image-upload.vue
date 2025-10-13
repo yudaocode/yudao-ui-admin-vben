@@ -13,7 +13,7 @@ import type { AxiosProgressEvent } from '#/api/infra/file';
 
 import { nextTick, ref, toRefs, watch } from 'vue';
 
-import { Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isFunction, isObject, isString } from '@vben/utils';
 
@@ -274,11 +274,11 @@ const triggerEdit = () => {
         <img :src="fileList[0].url" class="upload-image" />
         <div class="upload-handle">
           <div class="handle-icon" @click="handlePreview(fileList[0]!)">
-            <i class="el-icon el-icon-zoom-in"></i>
+            <IconifyIcon icon="lucide:circle-plus" />
             <span>详情</span>
           </div>
           <div v-if="!disabled" class="handle-icon" @click="triggerEdit">
-            <i class="el-icon el-icon-edit"></i>
+            <IconifyIcon icon="lucide:edit" />
             <span>编辑</span>
           </div>
           <div
@@ -286,7 +286,7 @@ const triggerEdit = () => {
             class="handle-icon"
             @click="handleRemove(fileList[0]!)"
           >
-            <i class="el-icon el-icon-delete"></i>
+            <IconifyIcon icon="lucide:trash" />
             <span>删除</span>
           </div>
         </div>
@@ -313,7 +313,7 @@ const triggerEdit = () => {
         }"
       >
         <div class="upload-content flex flex-col items-center justify-center">
-          <Plus />
+          <IconifyIcon icon="lucide:plus" />
         </div>
       </ElUpload>
     </template>

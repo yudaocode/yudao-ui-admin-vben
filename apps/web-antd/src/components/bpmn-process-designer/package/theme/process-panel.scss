@@ -59,7 +59,7 @@
     line-height: 32px;
   }
 
-  .el-form-item {
+  .ant-form-item {
     width: 100%;
     padding-bottom: 18px;
     margin-bottom: 0;
@@ -106,22 +106,22 @@
   margin-top: 8px;
 }
 
-.element-drawer__button > .el-button {
+.element-drawer__button > .ant-button {
   width: 100%;
 }
 
-.el-collapse-item__content {
+.ant-collapse-item__content {
   padding-bottom: 0;
 }
 
-.el-input.is-disabled .el-input__inner {
+.ant-input.is-disabled .ant-input__inner {
   color: #999;
 }
 
-.el-form-item.el-form-item--mini {
+.ant-form-item.ant-form-item--mini {
   margin-bottom: 0;
 
-  & + .el-form-item {
+  & + .ant-form-item {
     margin-top: 16px;
   }
 }

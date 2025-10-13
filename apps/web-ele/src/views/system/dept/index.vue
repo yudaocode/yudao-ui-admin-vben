@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
-import type { SystemUserApi } from '#/api/system/user';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
@@ -12,7 +11,6 @@ import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, deleteDeptList, getDeptList } from '#/api/system/dept';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -22,12 +20,6 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
-
-/** 获取负责人名称 */
-const userList = ref<SystemUserApi.User[]>([]);
-function getLeaderName(userId: number) {
-  return userList.value.find((user) => user.id === userId)?.nickname;
-}
 
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
@@ -97,7 +89,7 @@ function handleRowCheckboxChange({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(getLeaderName),
+    columns: useGridColumns(),
     height: 'auto',
     pagerConfig: {
       enabled: false,
@@ -129,11 +121,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,
   },
-});
-
-/** 初始化 */
-onMounted(async () => {
-  userList.value = await getSimpleUserList();
 });
 </script>
 

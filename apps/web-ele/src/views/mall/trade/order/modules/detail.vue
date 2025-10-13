@@ -220,7 +220,7 @@ onMounted(async () => {
           />
         </ElDescriptionsItem>
         <ElDescriptionsItem
-          v-hasPermi="['trade:order:update']"
+          v-access:code="['trade:order:update']"
           label-class-name="no-colon"
         >
           <el-button

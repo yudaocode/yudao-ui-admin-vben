@@ -175,8 +175,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <!-- TODO @xingyu：高度不对 -->
-    <Card class="mb-4 h-[10%]">
+    <Card class="m-4">
       <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"

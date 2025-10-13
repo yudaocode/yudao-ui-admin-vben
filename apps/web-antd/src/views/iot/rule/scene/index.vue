@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSceneRule,
-  getRuleScenePage,
+  getSceneRulePage,
   updateSceneRuleStatus,
 } from '#/api/iot/rule/scene';
 import { $t } from '#/locales';
@@ -85,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getRuleScenePage({
+          return await getSceneRulePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -129,7 +129,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: row.status === 0 ? '停用' : '启用',
               type: 'link',
-              icon: row.status === 0 ? 'ant-design:stop-outlined' : 'ant-design:check-circle-outlined',
+              icon:
+                row.status === 0
+                  ? 'ant-design:stop-outlined'
+                  : 'ant-design:check-circle-outlined',
               onClick: handleToggleStatus.bind(null, row),
             },
             {

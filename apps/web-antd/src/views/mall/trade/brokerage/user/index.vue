@@ -2,11 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
-import { useAccess } from '@vben/access';
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message, Switch } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -16,99 +15,102 @@ import {
 } from '#/api/mall/trade/brokerage/user';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import CreateForm from './modules/create-form.vue';
 import BrokerageOrderListModal from './modules/order-list-modal.vue';
-import BrokerageUserCreateForm from './modules/user-create-form.vue';
+import UpdateForm from './modules/update-form.vue';
 import BrokerageUserListModal from './modules/user-list-modal.vue';
-import BrokerageUserUpdateForm from './modules/user-update-form.vue';
 
 defineOptions({ name: 'TradeBrokerageUser' });
 
-const { hasAccessByCodes } = useAccess();
+const [CreateFormModal, createFormModalApi] = useVbenModal({
+  connectedComponent: CreateForm,
+  destroyOnClose: true,
+});
+
+const [UpdateFormModal, updateModalApi] = useVbenModal({
+  connectedComponent: UpdateForm,
+  destroyOnClose: true,
+});
+
+const [OrderListModal, orderListModalApi] = useVbenModal({
+  connectedComponent: BrokerageOrderListModal,
+  destroyOnClose: true,
+});
+
+const [UserListModal, userListModalApi] = useVbenModal({
+  connectedComponent: BrokerageUserListModal,
+  destroyOnClose: true,
+});
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-const [OrderListModal, OrderListModalApi] = useVbenModal({
-  connectedComponent: BrokerageOrderListModal,
-});
+/** 创建分销员 */
+function handleCreate() {
+  createFormModalApi.open();
+}
 
-const [UserCreateModal, UserCreateModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserCreateForm,
-});
-
-const [UserListModal, UserListModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserListModal,
-});
-
-const [UserUpdateModal, UserUpdateModalApi] = useVbenModal({
-  connectedComponent: BrokerageUserUpdateForm,
-});
+/** 修改分销员 */
+function handleUpdateForm(row: MallBrokerageUserApi.BrokerageUser) {
+  updateModalApi.setData(row).open();
+}
 
 /** 打开推广人列表 */
-function openBrokerageUserTable(row: MallBrokerageUserApi.BrokerageUser) {
-  UserListModalApi.setData(row).open();
+function handleOpenUserList(row: MallBrokerageUserApi.BrokerageUser) {
+  userListModalApi.setData(row).open();
 }
 
 /** 打开推广订单列表 */
-function openBrokerageOrderTable(row: MallBrokerageUserApi.BrokerageUser) {
-  OrderListModalApi.setData(row).open();
-}
-
-/** 打开表单：修改上级推广人 */
-function openUpdateBindUserForm(row: MallBrokerageUserApi.BrokerageUser) {
-  UserUpdateModalApi.setData(row).open();
-}
-
-/** 创建分销员 */
-function openCreateUserForm() {
-  UserCreateModalApi.open();
+function handleOpenOrderList(row: MallBrokerageUserApi.BrokerageUser) {
+  orderListModalApi.setData(row).open();
 }
 
 /** 清除上级推广人 */
 async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
   const hideLoading = message.loading({
-    content: `正在清除"${row.nickname}"的上级推广人...`,
-    key: 'clear_bind_user_msg',
+    content: $t('ui.actionMessage.deleting', [row.nickname]),
+    duration: 0,
   });
   try {
-    await clearBindUser({ id: row.id as number });
-    message.success({
-      content: '清除成功',
-      key: 'clear_bind_user_msg',
-    });
-    onRefresh();
+    await clearBindUser({ id: row.id! });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.nickname]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-/** 推广资格：开通/关闭 */
+/** 更新推广资格 */
 async function handleBrokerageEnabledChange(
+  newEnabled: boolean,
   row: MallBrokerageUserApi.BrokerageUser,
-) {
-  const text = row.brokerageEnabled ? '开通' : '关闭';
-  const hideLoading = message.loading({
-    content: `正在${text}"${row.nickname}"的推广资格...`,
-    key: 'brokerage_enabled_msg',
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    const text = newEnabled ? '开通' : '关闭';
+    confirm({
+      content: `你要将${row.nickname}的推广资格切换为【${text}】吗？`,
+    })
+      .then(async () => {
+        // 更新推广资格
+        const res = await updateBrokerageEnabled({
+          id: row.id!,
+          enabled: newEnabled,
+        });
+        if (res) {
+          // 提示并返回成功
+          message.success($t('ui.actionMessage.operationSuccess'));
+          handleRefresh();
+          resolve(true);
+        } else {
+          reject(new Error('更新失败'));
+        }
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
   });
-  try {
-    await updateBrokerageEnabled({
-      id: row.id as number,
-      enabled: row.brokerageEnabled as boolean,
-    });
-    message.success({
-      content: `${text}成功`,
-      key: 'brokerage_enabled_msg',
-    });
-    onRefresh();
-  } catch {
-    // 异常时，需要重置回之前的值
-    row.brokerageEnabled = !row.brokerageEnabled;
-  } finally {
-    hideLoading();
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -116,10 +118,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleBrokerageEnabledChange),
     height: 'auto',
     keepSource: true,
-    showOverflow: 'tooltip',
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -152,6 +153,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
+    <!-- 创建分销员 -->
+    <CreateFormModal @success="handleRefresh" />
+    <!-- 修改分销员 -->
+    <UpdateFormModal @success="handleRefresh" />
+    <!-- 推广人列表 -->
+    <UserListModal />
+    <!-- 推广订单列表 -->
+    <OrderListModal />
     <Grid table-title="分销用户列表">
       <template #toolbar-tools>
         <TableAction
@@ -161,24 +170,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['trade:brokerage-user:create'],
-              onClick: openCreateUserForm,
+              onClick: handleCreate,
             },
           ]"
         />
       </template>
-
-      <template #brokerageEnabled="{ row }">
-        <Switch
-          v-model:checked="row.brokerageEnabled"
-          :disabled="
-            !hasAccessByCodes(['trade:brokerage-user:update-bind-user'])
-          "
-          checked-children="有"
-          un-checked-children="无"
-          @change="handleBrokerageEnabledChange(row)"
-        />
-      </template>
-
       <template #actions="{ row }">
         <TableAction
           :drop-down-actions="[
@@ -186,38 +182,30 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '推广人',
               type: 'link',
               auth: ['trade:brokerage-user:user-query'],
-              onClick: openBrokerageUserTable.bind(null, row),
+              onClick: handleOpenUserList.bind(null, row),
             },
             {
               label: '推广订单',
               type: 'link',
               auth: ['trade:brokerage-user:order-query'],
-              onClick: openBrokerageOrderTable.bind(null, row),
+              onClick: handleOpenOrderList.bind(null, row),
             },
             {
               label: '修改上级推广人',
               type: 'link',
               auth: ['trade:brokerage-user:update-bind-user'],
-              onClick: openUpdateBindUserForm.bind(null, row),
+              onClick: handleUpdateForm.bind(null, row),
             },
             {
               label: '清除上级推广人',
               type: 'link',
               auth: ['trade:brokerage-user:clear-bind-user'],
+              ifShow: !!row.bindUserId,
               onClick: handleClearBindUser.bind(null, row),
             },
           ]"
         />
       </template>
     </Grid>
-
-    <!-- 修改上级推广人表单 -->
-    <UserUpdateModal @success="onRefresh" />
-    <!-- 推广人列表 -->
-    <UserListModal />
-    <!-- 推广订单列表 -->
-    <OrderListModal />
-    <!-- 创建分销员 -->
-    <UserCreateModal @success="onRefresh" />
   </Page>
 </template>

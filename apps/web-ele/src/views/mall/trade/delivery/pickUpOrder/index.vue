@@ -175,8 +175,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <ElCard class="mb-4 h-[10%]">
-      <!-- TODO @霖：高度不对 -->
+    <ElCard class="m-4">
       <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"

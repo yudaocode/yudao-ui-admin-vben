@@ -11,8 +11,9 @@ enum DICT_TYPE {
   AI_WRITE_LENGTH = 'ai_write_length', // AI 写作长度
   AI_WRITE_TONE = 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE = 'ai_write_type', // AI 写作类型
-  BPM_MODEL_FORM_TYPE = 'bpm_model_form_type',
   // ========== BPM 模块 ==========
+  BPM_MODEL_FORM_TYPE = 'bpm_model_form_type',
+
   BPM_MODEL_TYPE = 'bpm_model_type',
   BPM_OA_LEAVE_TYPE = 'bpm_oa_leave_type',
   BPM_PROCESS_INSTANCE_STATUS = 'bpm_process_instance_status',
@@ -49,8 +50,10 @@ enum DICT_TYPE {
   ERP_STOCK_RECORD_BIZ_TYPE = 'erp_stock_record_biz_type', // 库存明细的业务类型
   // ========== MALL - 交易模块 ==========
   EXPRESS_CHARGE_MODE = 'trade_delivery_express_charge_mode', // 快递的计费方式
-  INFRA_API_ERROR_LOG_PROCESS_STATUS = 'infra_api_error_log_process_status',
+
   // ========== INFRA 模块 ==========
+  INFRA_API_ERROR_LOG_PROCESS_STATUS = 'infra_api_error_log_process_status',
+
   INFRA_BOOLEAN_STRING = 'infra_boolean_string',
   INFRA_CODEGEN_FRONT_TYPE = 'infra_codegen_front_type',
   INFRA_CODEGEN_SCENE = 'infra_codegen_scene',
@@ -64,24 +67,42 @@ enum DICT_TYPE {
   INFRA_JOB_STATUS = 'infra_job_status',
 
   INFRA_OPERATE_TYPE = 'infra_operate_type',
-  IOT_DATA_FORMAT = 'iot_data_format', // IOT 数据格式
-  IOT_DATA_TYPE = 'iot_data_type', // IOT 数据类型
-  IOT_DEVICE_STATUS = 'iot_device_status', // IOT 设备状态
+
   // ========== IOT - 物联网模块  ==========
+  IOT_ALERT_LEVEL = 'iot_alert_level', // IoT 告警级别
+  IOT_ALERT_RECEIVE_TYPE = 'iot_alert_receive_type', // IoT 告警接收类型
+  IOT_CODEC_TYPE = 'iot_codec_type', // IOT 数据格式（编解码器类型）
+  IOT_DATA_FORMAT = 'iot_data_format', // IOT 数据格式
+  // TODO @芋艿：貌似这几个多了 _enum 后缀
+  IOT_DATA_SINK_TYPE_ENUM = 'iot_data_sink_type_enum', // IoT 数据流转目的类型
+  IOT_DATA_TYPE = 'iot_data_type', // IOT 数据类型
+  IOT_DEVICE_STATE = 'iot_device_state', // IOT 设备状态
+  IOT_DEVICE_STATUS = 'iot_device_status', // IOT 设备状态
+  IOT_LOCATION_TYPE = 'iot_location_type', // IOT 定位类型
+
   IOT_NET_TYPE = 'iot_net_type', // IOT 联网方式
+  IOT_OTA_TASK_DEVICE_SCOPE = 'iot_ota_task_device_scope', // IoT OTA任务设备范围
+  IOT_OTA_TASK_RECORD_STATUS = 'iot_ota_task_record_status', // IoT OTA 记录状态
+  IOT_OTA_TASK_STATUS = 'iot_ota_task_status', // IoT OTA 任务状态
+
   IOT_PRODUCT_DEVICE_TYPE = 'iot_product_device_type', // IOT 产品设备类型
   IOT_PRODUCT_FUNCTION_TYPE = 'iot_product_function_type', // IOT 产品功能类型
   IOT_PRODUCT_STATUS = 'iot_product_status', // IOT 产品状态
   IOT_PROTOCOL_TYPE = 'iot_protocol_type', // IOT 接入网关协议
+  IOT_RULE_SCENE_ACTION_TYPE_ENUM = 'iot_rule_scene_action_type_enum', // IoT 规则场景的触发类型枚举
+  IOT_RULE_SCENE_TRIGGER_TYPE_ENUM = 'iot_rule_scene_trigger_type_enum', // IoT 场景流转的触发类型枚举
   IOT_RW_TYPE = 'iot_rw_type', // IOT 读写类型
+
+  IOT_THING_MODEL_TYPE = 'iot_thing_model_type', // IOT 产品功能类型
+  IOT_THING_MODEL_UNIT = 'iot_thing_model_unit', // IOT 物模型单位
   IOT_UNIT_TYPE = 'iot_unit_type', // IOT 单位类型
   IOT_VALIDATE_TYPE = 'iot_validate_type', // IOT 数据校验级别
-  MEMBER_EXPERIENCE_BIZ_TYPE = 'member_experience_biz_type', // 会员经验业务类型
+
   // ========== Member 会员模块 ==========
+  MEMBER_EXPERIENCE_BIZ_TYPE = 'member_experience_biz_type', // 会员经验业务类型
   MEMBER_POINT_BIZ_TYPE = 'member_point_biz_type', // 积分的业务类型
   // ========== MP 模块 ==========
   MP_AUTO_REPLY_REQUEST_MATCH = 'mp_auto_reply_request_match', // 自动回复请求匹配类型
-
   MP_MESSAGE_TYPE = 'mp_message_type', // 消息类型
   // ========== PAY 模块 ==========
   PAY_CHANNEL_CODE = 'pay_channel_code', // 支付渠道编码类型
@@ -93,7 +114,7 @@ enum DICT_TYPE {
   PAY_TRANSFER_TYPE = 'pay_transfer_type', // 转账订单状态
   // ========== MALL - 商品模块 ==========
   PRODUCT_SPU_STATUS = 'product_spu_status', // 商品状态
-
+  // ========== MALL - 营销模块 ==========
   PROMOTION_BANNER_POSITION = 'promotion_banner_position', // banner 定位
   PROMOTION_BARGAIN_RECORD_STATUS = 'promotion_bargain_record_status', // 砍价记录的状态
   PROMOTION_COMBINATION_RECORD_STATUS = 'promotion_combination_record_status', // 拼团记录的状态
@@ -101,27 +122,26 @@ enum DICT_TYPE {
   PROMOTION_COUPON_STATUS = 'promotion_coupon_status', // 优惠劵的状态
   PROMOTION_COUPON_TAKE_TYPE = 'promotion_coupon_take_type', // 优惠劵的领取方式
   PROMOTION_COUPON_TEMPLATE_VALIDITY_TYPE = 'promotion_coupon_template_validity_type', // 优惠劵模板的有限期类型
-  // ========== MALL - 营销模块 ==========
   PROMOTION_DISCOUNT_TYPE = 'promotion_discount_type', // 优惠类型
   PROMOTION_PRODUCT_SCOPE = 'promotion_product_scope', // 营销的商品范围
+
+  // ========== SYSTEM 模块 ==========
   SYSTEM_DATA_SCOPE = 'system_data_scope',
   SYSTEM_LOGIN_RESULT = 'system_login_result',
-
   SYSTEM_LOGIN_TYPE = 'system_login_type',
   SYSTEM_MAIL_SEND_STATUS = 'system_mail_send_status',
-
   SYSTEM_MENU_TYPE = 'system_menu_type',
   SYSTEM_NOTICE_TYPE = 'system_notice_type',
   SYSTEM_NOTIFY_TEMPLATE_TYPE = 'system_notify_template_type',
+
   SYSTEM_OAUTH2_GRANT_TYPE = 'system_oauth2_grant_type',
   SYSTEM_ROLE_TYPE = 'system_role_type',
   SYSTEM_SMS_CHANNEL_CODE = 'system_sms_channel_code',
   SYSTEM_SMS_RECEIVE_STATUS = 'system_sms_receive_status',
   SYSTEM_SMS_SEND_STATUS = 'system_sms_send_status',
   SYSTEM_SMS_TEMPLATE_TYPE = 'system_sms_template_type',
-
   SYSTEM_SOCIAL_TYPE = 'system_social_type',
-  // ========== SYSTEM 模块 ==========
+
   SYSTEM_USER_SEX = 'system_user_sex',
   TERMINAL = 'terminal', // 终端
   TRADE_AFTER_SALE_STATUS = 'trade_after_sale_status', // 售后 - 状态

@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { message } from 'ant-design-vue';
+import { Button, Card, Descriptions, message } from 'ant-design-vue';
 
 import { updateProductStatus } from '#/api/iot/product/product';
-import type { IotProductApi } from '#/api/iot/product/product';
 
 import ProductForm from '../ProductForm.vue';
 
@@ -26,27 +27,30 @@ const router = useRouter();
 const formRef = ref();
 
 /** 复制到剪贴板 */
-const copyToClipboard = async (text: string) => {
+async function copyToClipboard(text: string) {
   try {
     await navigator.clipboard.writeText(text);
     message.success('复制成功');
   } catch {
     message.error('复制失败');
   }
-};
+}
 
 /** 跳转到设备管理 */
-const goToDeviceList = (productId: number) => {
-  router.push({ path: '/iot/device/device', query: { productId: String(productId) } });
-};
+function goToDeviceList(productId: number) {
+  router.push({
+    path: '/iot/device/device',
+    query: { productId: String(productId) },
+  });
+}
 
 /** 打开编辑表单 */
-const openForm = (type: string, id?: number) => {
+function openForm(type: string, id?: number) {
   formRef.value?.open(type, id);
-};
+}
 
 /** 发布产品 */
-const confirmPublish = async (id: number) => {
+async function confirmPublish(id: number) {
   try {
     await updateProductStatus(id, 1);
     message.success('发布成功');
@@ -54,10 +58,10 @@ const confirmPublish = async (id: number) => {
   } catch {
     message.error('发布失败');
   }
-};
+}
 
 /** 撤销发布 */
-const confirmUnpublish = async (id: number) => {
+async function confirmUnpublish(id: number) {
   try {
     await updateProductStatus(id, 0);
     message.success('撤销发布成功');
@@ -65,7 +69,7 @@ const confirmUnpublish = async (id: number) => {
   } catch {
     message.error('撤销发布失败');
   }
-};
+}
 </script>
 
 <template>
@@ -75,45 +79,51 @@ const confirmUnpublish = async (id: number) => {
         <h2 class="text-xl font-bold">{{ product.name }}</h2>
       </div>
       <div class="space-x-2">
-        <a-button
+        <Button
           :disabled="product.status === 1"
           @click="openForm('update', product.id)"
         >
           编辑
-        </a-button>
-        <a-button
+        </Button>
+        <Button
           v-if="product.status === 0"
           type="primary"
           @click="confirmPublish(product.id!)"
         >
           发布
-        </a-button>
-        <a-button
+        </Button>
+        <Button
           v-if="product.status === 1"
           danger
           @click="confirmUnpublish(product.id!)"
         >
           撤销发布
-        </a-button>
+        </Button>
       </div>
     </div>
 
-    <a-card class="mt-4">
-      <a-descriptions :column="1">
-        <a-descriptions-item label="ProductKey">
+    <Card class="mt-4">
+      <Descriptions :column="1">
+        <Descriptions.Item label="ProductKey">
           {{ product.productKey }}
-          <a-button size="small" class="ml-2" @click="copyToClipboard(product.productKey || '')">
+          <Button
+            size="small"
+            class="ml-2"
+            @click="copyToClipboard(product.productKey || '')"
+          >
             复制
-          </a-button>
-        </a-descriptions-item>
-        <a-descriptions-item label="设备总数">
-          <span class="ml-5 mr-2">{{ product.deviceCount ?? '加载中...' }}</span>
-          <a-button size="small" @click="goToDeviceList(product.id!)">
+          </Button>
+        </Descriptions.Item>
+        <Descriptions.Item label="设备总数">
+          <span class="ml-5 mr-2">
+            {{ product.deviceCount ?? '加载中...' }}
+          </span>
+          <Button size="small" @click="goToDeviceList(product.id!)">
             前往管理
-          </a-button>
-        </a-descriptions-item>
-      </a-descriptions>
-    </a-card>
+          </Button>
+        </Descriptions.Item>
+      </Descriptions>
+    </Card>
 
     <!-- 表单弹窗 -->
     <ProductForm ref="formRef" @success="emit('refresh')" />

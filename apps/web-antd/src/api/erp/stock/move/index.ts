@@ -43,6 +43,7 @@ export namespace ErpStockMoveApi {
     status?: number;
   }
 }
+
 /**
  * 查询库存调拨单分页
  */
@@ -102,7 +103,5 @@ export function deleteStockMove(ids: number[]) {
  * 导出库存调拨单 Excel
  */
 export function exportStockMove(params: ErpStockMoveApi.StockMovePageParams) {
-  return requestClient.download('/erp/stock-move/export-excel', {
-    params,
-  });
+  return requestClient.download('/erp/stock-move/export-excel', { params });
 }

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
+
 import {
   Button,
   Card,
@@ -12,13 +16,20 @@ import {
   Tag,
   Tooltip,
 } from 'ant-design-vue';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 
 import { getProductPage } from '#/api/iot/product/product';
 
 defineOptions({ name: 'ProductCardView' });
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  create: [];
+  delete: [row: any];
+  detail: [productId: number];
+  edit: [row: any];
+  thingModel: [productId: number];
+}>();
 
 interface Props {
   categoryList: any[];
@@ -27,16 +38,6 @@ interface Props {
     productKey: string;
   };
 }
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  create: [];
-  edit: [row: any];
-  delete: [row: any];
-  detail: [productId: number];
-  thingModel: [productId: number];
-}>();
 
 const loading = ref(false);
 const list = ref<any[]>([]);
@@ -47,13 +48,13 @@ const queryParams = ref({
 });
 
 // 获取分类名称
-const getCategoryName = (categoryId: number) => {
+function getCategoryName(categoryId: number) {
   const category = props.categoryList.find((c: any) => c.id === categoryId);
   return category?.name || '未分类';
-};
+}
 
 // 获取产品列表
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await getProductPage({
@@ -65,30 +66,30 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 // 处理页码变化
-const handlePageChange = (page: number, pageSize: number) => {
+function handlePageChange(page: number, pageSize: number) {
   queryParams.value.pageNo = page;
   queryParams.value.pageSize = pageSize;
   getList();
-};
+}
 
 // 获取设备类型颜色
-const getDeviceTypeColor = (deviceType: number) => {
+function getDeviceTypeColor(deviceType: number) {
   const colors: Record<number, string> = {
     0: 'blue',
     1: 'green',
   };
   return colors[deviceType] || 'default';
-};
+}
 
 onMounted(() => {
   getList();
 });
 
 // 暴露方法供父组件调用
-defineExpose({ 
+defineExpose({
   reload: getList,
   search: () => {
     queryParams.value.pageNo = 1;
@@ -111,42 +112,57 @@ defineExpose({
           :lg="6"
           class="mb-4"
         >
-          <Card
-            :body-style="{ padding: '20px' }"
-            class="product-card h-full"
-          >
+          <Card :body-style="{ padding: '20px' }" class="product-card h-full">
             <!-- 顶部标题区域 -->
-            <div class="flex items-start mb-4">
+            <div class="mb-4 flex items-start">
               <div class="product-icon">
-                <IconifyIcon icon="ant-design:inbox-outlined" class="text-[32px]" />
+                <IconifyIcon
+                  icon="ant-design:inbox-outlined"
+                  class="text-[32px]"
+                />
               </div>
-              <div class="ml-3 flex-1 min-w-0">
+              <div class="ml-3 min-w-0 flex-1">
                 <div class="product-title">{{ item.name }}</div>
               </div>
             </div>
 
             <!-- 内容区域 -->
-            <div class="flex items-start mb-4">
-              <div class="flex-1 info-list">
+            <div class="mb-4 flex items-start">
+              <div class="info-list flex-1">
                 <div class="info-item">
                   <span class="info-label">产品分类</span>
-                  <span class="info-value text-primary">{{ getCategoryName(item.categoryId) }}</span>
+                  <span class="info-value text-primary">
+                    {{ getCategoryName(item.categoryId) }}
+                  </span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品类型</span>
-                  <Tag :color="getDeviceTypeColor(item.deviceType)" class="m-0 info-tag">
-                    {{ getDictLabel(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, item.deviceType) }}
+                  <Tag
+                    :color="getDeviceTypeColor(item.deviceType)"
+                    class="info-tag m-0"
+                  >
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
+                        item.deviceType,
+                      )
+                    }}
                   </Tag>
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
                   <Tooltip :title="item.productKey || item.id" placement="top">
-                    <span class="info-value product-key">{{ item.productKey || item.id }}</span>
+                    <span class="info-value product-key">
+                      {{ item.productKey || item.id }}
+                    </span>
                   </Tooltip>
                 </div>
               </div>
               <div class="product-3d-icon">
-                <IconifyIcon icon="ant-design:box-plot-outlined" class="text-[80px]" />
+                <IconifyIcon
+                  icon="ant-design:box-plot-outlined"
+                  class="text-[80px]"
+                />
               </div>
             </div>
 
@@ -173,7 +189,10 @@ defineExpose({
                 class="action-btn action-btn-model"
                 @click="emit('thingModel', item.id)"
               >
-                <IconifyIcon icon="ant-design:apartment-outlined" class="mr-1" />
+                <IconifyIcon
+                  icon="ant-design:apartment-outlined"
+                  class="mr-1"
+                />
                 物模型
               </Button>
               <Popconfirm
@@ -217,44 +236,44 @@ defineExpose({
 .product-card-view {
   .product-card {
     height: 100%;
-    transition: all 0.3s ease;
+    overflow: hidden;
     border: 1px solid #e8e8e8;
     border-radius: 8px;
-    overflow: hidden;
+    transition: all 0.3s ease;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       border-color: #d9d9d9;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
       transform: translateY(-2px);
     }
 
     :deep(.ant-card-body) {
-      height: 100%;
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
 
     // 产品图标
     .product-icon {
-      width: 48px;
-      height: 48px;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: 48px;
+      height: 48px;
+      color: white;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 8px;
-      color: white;
-      flex-shrink: 0;
     }
 
     // 产品标题
     .product-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1f2937;
-      line-height: 1.5;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #1f2937;
       white-space: nowrap;
     }
 
@@ -271,16 +290,16 @@ defineExpose({
         }
 
         .info-label {
-          color: #6b7280;
-          margin-right: 8px;
           flex-shrink: 0;
+          margin-right: 8px;
+          color: #6b7280;
         }
 
         .info-value {
-          color: #1f2937;
-          font-weight: 500;
           overflow: hidden;
           text-overflow: ellipsis;
+          font-weight: 500;
+          color: #1f2937;
           white-space: nowrap;
 
           &.text-primary {
@@ -289,15 +308,15 @@ defineExpose({
         }
 
         .product-key {
-          font-family: 'Courier New', monospace;
-          font-size: 12px;
-          color: #374151;
           display: inline-block;
           max-width: 150px;
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
           vertical-align: middle;
+          color: #374151;
+          white-space: nowrap;
           cursor: help;
         }
 
@@ -309,15 +328,15 @@ defineExpose({
 
     // 3D 图标
     .product-3d-icon {
-      width: 100px;
-      height: 100px;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: 100px;
+      height: 100px;
+      color: #667eea;
       background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
       border-radius: 8px;
-      flex-shrink: 0;
-      color: #667eea;
     }
 
     // 按钮组
@@ -325,8 +344,8 @@ defineExpose({
       display: flex;
       gap: 8px;
       padding-top: 12px;
-      border-top: 1px solid #f0f0f0;
       margin-top: auto;
+      border-top: 1px solid #f0f0f0;
 
       .action-btn {
         flex: 1;
@@ -340,8 +359,8 @@ defineExpose({
           border-color: #1890ff;
 
           &:hover {
-            background: #1890ff;
             color: white;
+            background: #1890ff;
           }
         }
 
@@ -350,8 +369,8 @@ defineExpose({
           border-color: #52c41a;
 
           &:hover {
-            background: #52c41a;
             color: white;
+            background: #52c41a;
           }
         }
 
@@ -360,8 +379,8 @@ defineExpose({
           border-color: #722ed1;
 
           &:hover {
-            background: #722ed1;
             color: white;
+            background: #722ed1;
           }
         }
 
@@ -374,4 +393,3 @@ defineExpose({
   }
 }
 </style>
-

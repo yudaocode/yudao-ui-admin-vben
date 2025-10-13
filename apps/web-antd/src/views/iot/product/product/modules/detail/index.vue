@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { message } from 'ant-design-vue';
 import { Page } from '@vben/common-ui';
 
-import { getProduct } from '#/api/iot/product/product';
-import type { IotProductApi } from '#/api/iot/product/product';
+import { message, Tabs } from 'ant-design-vue';
+
 import { getDeviceCount } from '#/api/iot/device/device';
+import { getProduct } from '#/api/iot/product/product';
+import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 
 import ProductDetailsHeader from './ProductDetailsHeader.vue';
 import ProductDetailsInfo from './ProductDetailsInfo.vue';
-import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 
 defineOptions({ name: 'IoTProductDetail' });
 
@@ -27,7 +29,7 @@ const activeTab = ref('info');
 provide('product', product);
 
 /** 获取产品详情 */
-const getProductData = async (productId: number) => {
+async function getProductData(productId: number) {
   loading.value = true;
   try {
     product.value = await getProduct(productId);
@@ -36,17 +38,22 @@ const getProductData = async (productId: number) => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 查询设备数量 */
-const getDeviceCountData = async (productId: number) => {
+async function getDeviceCountData(productId: number) {
   try {
     return await getDeviceCount(productId);
   } catch (error) {
-    console.error('Error fetching device count:', error, 'productId:', productId);
+    console.error(
+      'Error fetching device count:',
+      error,
+      'productId:',
+      productId,
+    );
     return 0;
   }
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -55,15 +62,15 @@ onMounted(async () => {
     router.back();
     return;
   }
-  
+
   await getProductData(id);
-  
+
   // 处理 tab 参数
   const { tab } = route.query;
   if (tab) {
     activeTab.value = tab as string;
   }
-  
+
   // 查询设备数量
   if (product.value.id) {
     product.value.deviceCount = await getDeviceCountData(product.value.id);
@@ -79,13 +86,16 @@ onMounted(async () => {
       @refresh="() => getProductData(id)"
     />
 
-    <a-tabs v-model:active-key="activeTab" class="mt-4">
-      <a-tab-pane key="info" tab="产品信息">
+    <Tabs v-model:active-key="activeTab" class="mt-4">
+      <Tabs.TabPane key="info" tab="产品信息">
         <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
-      </a-tab-pane>
-      <a-tab-pane key="thingModel" tab="物模型（功能定义）">
-        <IoTProductThingModel v-if="activeTab === 'thingModel'" :product-id="id" />
-      </a-tab-pane>
-    </a-tabs>
+      </Tabs.TabPane>
+      <Tabs.TabPane key="thingModel" tab="物模型（功能定义）">
+        <IoTProductThingModel
+          v-if="activeTab === 'thingModel'"
+          :product-id="id"
+        />
+      </Tabs.TabPane>
+    </Tabs>
   </Page>
 </template>

@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
-import { message, Textarea } from 'ant-design-vue';
+import { message, Rate, Textarea } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -25,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -38,7 +38,9 @@ function handleCreate() {
 function handleReply(row: MallCommentApi.Comment) {
   prompt({
     component: () => {
-      return h(Textarea, {});
+      return h(Textarea, {
+        placeholder: '请输入回复内容',
+      });
     },
     content: row.content
       ? `用户评论：${row.content}\n请输入回复内容：`
@@ -48,10 +50,10 @@ function handleReply(row: MallCommentApi.Comment) {
   }).then(async (val) => {
     if (val) {
       await replyComment({
-        id: row.id as number,
+        id: row.id!,
         replyContent: val,
       });
-      onRefresh();
+      handleRefresh();
     }
   });
 }
@@ -64,12 +66,12 @@ async function handleStatusChange(
   return new Promise((resolve, reject) => {
     const text = newStatus ? '展示' : '隐藏';
     confirm({
-      content: `确认要${text + row.id}评论吗?`,
+      content: `确认要${text}该评论吗？`,
     })
       .then(async () => {
         // 更新状态
         const res = await updateCommentVisible({
-          id: row.id as number,
+          id: row.id!,
           visible: newStatus,
         });
         if (res) {
@@ -107,6 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -124,8 +127,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/product-comment/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="评论列表">
+      <template #descriptionScores="{ row }">
+        <Rate v-model:value="row.descriptionScores" :disabled="true" />
+      </template>
+      <template #benefitScores="{ row }">
+        <Rate v-model:value="row.benefitScores" :disabled="true" />
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[

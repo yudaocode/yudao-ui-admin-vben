@@ -1,28 +1,17 @@
-<template>
-  <Card title="设备数量统计" :loading="loading" class="chart-card">
-    <div v-if="loading && !hasData" class="h-[300px] flex justify-center items-center">
-      <Empty description="加载中..." />
-    </div>
-    <div v-else-if="!hasData" class="h-[300px] flex justify-center items-center">
-      <Empty description="暂无数据" />
-    </div>
-    <div v-else>
-      <EchartsUI ref="deviceCountChartRef" class="h-[400px] w-full" />
-    </div>
-  </Card>
-</template>
-
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
-import { Card, Empty } from 'ant-design-vue';
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import type { IotStatisticsApi } from '#/api/iot/statistics';
+
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+
+import { Card, Empty } from 'ant-design-vue';
 
 defineOptions({ name: 'DeviceCountCard' });
 
 const props = defineProps<{
-  statsData: IotStatisticsApi.StatisticsSummary;
   loading?: boolean;
+  statsData: IotStatisticsApi.StatisticsSummary;
 }>();
 
 const deviceCountChartRef = ref();
@@ -31,18 +20,20 @@ const { renderEcharts } = useEcharts(deviceCountChartRef);
 /** 是否有数据 */
 const hasData = computed(() => {
   if (!props.statsData) return false;
-  const categories = Object.entries(props.statsData.productCategoryDeviceCounts || {});
+  const categories = Object.entries(
+    props.statsData.productCategoryDeviceCounts || {},
+  );
   return categories.length > 0 && props.statsData.deviceCount !== 0;
 });
 
 /** 初始化图表 */
-const initChart = () => {
+function initChart() {
   if (!hasData.value) return;
-  
+
   nextTick(() => {
-    const data = Object.entries(props.statsData.productCategoryDeviceCounts).map(
-      ([name, value]) => ({ name, value })
-    );
+    const data = Object.entries(
+      props.statsData.productCategoryDeviceCounts,
+    ).map(([name, value]) => ({ name, value }));
 
     renderEcharts({
       tooltip: {
@@ -98,12 +89,12 @@ const initChart = () => {
           labelLine: {
             show: false,
           },
-          data: data,
+          data,
         },
       ],
     });
   });
-};
+}
 
 /** 监听数据变化 */
 watch(
@@ -111,7 +102,7 @@ watch(
   () => {
     initChart();
   },
-  { deep: true }
+  { deep: true },
 );
 
 /** 组件挂载时初始化图表 */
@@ -119,6 +110,26 @@ onMounted(() => {
   initChart();
 });
 </script>
+
+<template>
+  <Card title="设备数量统计" :loading="loading" class="chart-card">
+    <div
+      v-if="loading && !hasData"
+      class="flex h-[300px] items-center justify-center"
+    >
+      <Empty description="加载中..." />
+    </div>
+    <div
+      v-else-if="!hasData"
+      class="flex h-[300px] items-center justify-center"
+    >
+      <Empty description="暂无数据" />
+    </div>
+    <div v-else>
+      <EchartsUI ref="deviceCountChartRef" class="h-[400px] w-full" />
+    </div>
+  </Card>
+</template>
 
 <style scoped>
 .chart-card {

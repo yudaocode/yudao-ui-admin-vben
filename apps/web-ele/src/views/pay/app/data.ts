@@ -46,10 +46,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = PayAppApi.App>(
+export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: T,
+    row: PayAppApi.App,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

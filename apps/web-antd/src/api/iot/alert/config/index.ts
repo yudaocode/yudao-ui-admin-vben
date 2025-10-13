@@ -51,7 +51,9 @@ export function getAlertConfig(id: number) {
 
 /** 查询所有告警配置列表 */
 export function getAlertConfigList() {
-  return requestClient.get<AlertConfigApi.AlertConfig[]>('/iot/alert-config/list');
+  return requestClient.get<AlertConfigApi.AlertConfig[]>(
+    '/iot/alert-config/list',
+  );
 }
 
 /** 新增告警配置 */
@@ -90,6 +92,3 @@ export function getSimpleAlertConfigList() {
     '/iot/alert-config/simple-list',
   );
 }
-
-export { AlertConfigApi };
-

@@ -98,7 +98,7 @@ function handleEdit(row: MallSpuApi.Spu) {
 
 /** 删除商品 */
 async function handleDelete(row: MallSpuApi.Spu) {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
@@ -106,7 +106,7 @@ async function handleDelete(row: MallSpuApi.Spu) {
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     await onRefresh();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 

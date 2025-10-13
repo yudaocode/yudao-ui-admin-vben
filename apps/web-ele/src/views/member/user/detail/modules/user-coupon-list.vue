@@ -25,7 +25,7 @@ const activeStatus = ref<number | string>('all');
 
 /** 删除按钮操作 */
 const handleDelete = async (row: MallCouponApi.Coupon) => {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
   });
   try {
@@ -34,7 +34,7 @@ const handleDelete = async (row: MallCouponApi.Coupon) => {
     // 重新加载列表
     gridApi.query();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 };
 

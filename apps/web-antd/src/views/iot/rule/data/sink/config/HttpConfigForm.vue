@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { Input, Select, FormItem } from 'ant-design-vue';
-import { useVModel } from '@vueuse/core';
+import { computed, onMounted, ref, watch } from 'vue';
+
 import { isEmpty } from '@vben/utils';
+
+import { useVModel } from '@vueuse/core';
+import { FormItem, Input, Select } from 'ant-design-vue';
 
 import KeyValueEditor from './components/KeyValueEditor.vue';
 
@@ -11,7 +14,7 @@ const props = defineProps<{
   modelValue: any;
 }>();
 const emit = defineEmits(['update:modelValue']);
-const config = useVModel(props, 'modelValue', emit) as Ref<any>;
+const config = useVModel(props, 'modelValue', emit) as any;
 
 // noinspection HttpUrlsUsage
 /** URL处理 */
@@ -33,10 +36,10 @@ onMounted(() => {
     if (config.value.url) {
       if (config.value.url.startsWith('https://')) {
         urlPrefix.value = 'https://';
-        urlPath.value = config.value.url.substring(8);
+        urlPath.value = config.value.url.slice(8);
       } else if (config.value.url.startsWith('http://')) {
         urlPrefix.value = 'http://';
-        urlPath.value = config.value.url.substring(7);
+        urlPath.value = config.value.url.slice(7);
       } else {
         urlPath.value = config.value.url;
       }

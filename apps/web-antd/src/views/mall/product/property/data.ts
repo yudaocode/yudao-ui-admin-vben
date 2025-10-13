@@ -2,10 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { getPropertySimpleList } from '#/api/mall/product/property';
+import { getRangePickerDefaultProps } from '#/utils';
 
 // ============================== 属性 ==============================
 
-/** 类型新增/修改的表单 */
+/** 属性新增/修改的表单 */
 export function usePropertyFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -18,10 +19,10 @@ export function usePropertyFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'name',
-      label: '名称',
+      label: '属性名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入名称',
+        placeholder: '请输入属性名称',
       },
       rules: 'required',
     },
@@ -36,53 +37,66 @@ export function usePropertyFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 类型列表的搜索表单 */
+/** 属性列表的搜索表单 */
 export function usePropertyGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
-      label: '名称',
+      label: '属性名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入名称',
+        placeholder: '请输入属性名称',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'createTime',
+      label: '创建时间',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
         allowClear: true,
       },
     },
   ];
 }
 
-/** 类型列表的字段 */
+/** 属性列表的字段 */
 export function usePropertyGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
-      title: '编号',
+      title: '属性编号',
+      minWidth: 100,
     },
     {
       field: 'name',
-      title: '名称',
+      title: '属性名称',
+      minWidth: 200,
     },
     {
       field: 'remark',
       title: '备注',
+      minWidth: 180,
     },
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 160,
+      minWidth: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },
   ];
 }
 
-// ============================== 值数据 ==============================
+// ============================== 属性值 ==============================
 
-/** 数据新增/修改的表单 */
+/** 属性值新增/修改的表单 */
 export function useValueFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -95,11 +109,12 @@ export function useValueFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'propertyId',
-      label: '属性编号',
+      label: '属性',
       component: 'ApiSelect',
       componentProps: (values) => {
         return {
           api: getPropertySimpleList,
+          placeholder: '请选择属性',
           labelField: 'name',
           valueField: 'id',
           disabled: !!values.id,
@@ -112,10 +127,10 @@ export function useValueFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'name',
-      label: '名称',
+      label: '属性值名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入名称',
+        placeholder: '请输入属性值名称',
       },
       rules: 'required',
     },
@@ -130,45 +145,61 @@ export function useValueFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 字典数据列表搜索表单 */
+/** 属性值列表搜索表单 */
 export function useValueGridFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'propertyId',
+      label: '属性项',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getPropertySimpleList,
+        placeholder: '请选择属性项',
+        labelField: 'name',
+        valueField: 'id',
+        disabled: true,
+        allowClear: false,
+      },
+    },
+    {
       fieldName: 'name',
-      label: '名称',
+      label: '属性值名称',
       component: 'Input',
       componentProps: {
+        placeholder: '请输入属性值名称',
         allowClear: true,
       },
     },
   ];
 }
 
-/**
- * 字典数据表格列
- */
+/** 属性值表格列 */
 export function useValueGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
-      title: '编号',
+      title: '属性值编号',
+      minWidth: 100,
     },
     {
       field: 'name',
       title: '属性值名称',
+      minWidth: 180,
     },
     {
       field: 'remark',
       title: '备注',
+      minWidth: 180,
     },
     {
       title: '创建时间',
       field: 'createTime',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 160,
+      minWidth: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },

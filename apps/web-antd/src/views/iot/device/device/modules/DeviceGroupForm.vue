@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
 
 import { updateDeviceGroup } from '#/api/iot/device/device';
 import { $t } from '#/locales';

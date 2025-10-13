@@ -79,8 +79,8 @@ export namespace IotDeviceApi {
 /** IoT 设备状态枚举 */
 export enum DeviceStateEnum {
   INACTIVE = 0, // 未激活
-  ONLINE = 1, // 在线
   OFFLINE = 2, // 离线
+  ONLINE = 1, // 在线
 }
 
 /** 查询设备分页 */
@@ -194,31 +194,3 @@ export function getDeviceMessagePairPage(params: PageParam) {
 export function sendDeviceMessage(params: IotDeviceApi.DeviceMessageSendReq) {
   return requestClient.post('/iot/device/message/send', params);
 }
-
-// Export aliases for compatibility
-export const DeviceApi = {
-  getDevicePage,
-  getDevice,
-  createDevice,
-  updateDevice,
-  updateDeviceGroup,
-  deleteDevice,
-  deleteDeviceList,
-  exportDeviceExcel,
-  getDeviceCount,
-  getSimpleDeviceList,
-  getDeviceListByProductId,
-  importDeviceTemplate,
-  getLatestDeviceProperties,
-  getHistoryDevicePropertyList,
-  getDeviceAuthInfo,
-  getDeviceMessagePage,
-  getDeviceMessagePairPage,
-  sendDeviceMessage,
-};
-
-export type DeviceVO = IotDeviceApi.Device;
-export type IotDeviceAuthInfoVO = IotDeviceApi.DeviceAuthInfo;
-export type IotDevicePropertyDetailRespVO = IotDeviceApi.DevicePropertyDetail;
-export type IotDevicePropertyRespVO = IotDeviceApi.DeviceProperty;
-

@@ -1,15 +1,15 @@
 /**
  * IoT 首页数据配置文件
- * 
+ *
  * 该文件封装了 IoT 首页所需的:
  * - 统计数据接口定义
  * - 业务逻辑函数
  * - 工具函数
  */
 
-import { ref, onMounted } from 'vue';
-
 import type { IotStatisticsApi } from '#/api/iot/statistics';
+
+import { onMounted, ref } from 'vue';
 
 import { getStatisticsSummary } from '#/api/iot/statistics';
 
@@ -43,13 +43,13 @@ export async function loadStatisticsData(): Promise<StatsData> {
   } catch (error) {
     console.error('获取统计数据出错:', error);
     console.warn('使用 Mock 数据，请检查后端接口是否已实现');
-    
+
     // 返回 Mock 数据用于开发调试
     return {
       productCategoryCount: 12,
       productCount: 45,
       deviceCount: 328,
-      deviceMessageCount: 15678,
+      deviceMessageCount: 15_678,
       productCategoryTodayCount: 2,
       productTodayCount: 5,
       deviceTodayCount: 23,
@@ -58,10 +58,10 @@ export async function loadStatisticsData(): Promise<StatsData> {
       deviceOfflineCount: 48,
       deviceInactiveCount: 24,
       productCategoryDeviceCounts: {
-        '智能家居': 120,
-        '工业设备': 98,
-        '环境监测': 65,
-        '智能穿戴': 45,
+        智能家居: 120,
+        工业设备: 98,
+        环境监测: 65,
+        智能穿戴: 45,
       },
     };
   }
@@ -102,13 +102,12 @@ export function useIotHome() {
 }
 
 /** 格式化数字 - 大数字显示为 K/M */
-export const formatNumber = (num: number): string => {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
+export function formatNumber(num: number): string {
+  if (num >= 1_000_000) {
+    return `${(num / 1_000_000).toFixed(1)}M`;
   }
   if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
+    return `${(num / 1000).toFixed(1)}K`;
   }
   return num.toString();
-};
-
+}

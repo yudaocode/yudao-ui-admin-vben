@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -9,6 +10,13 @@ import { handleTree } from '@vben/utils';
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
+
+let userList: SystemUserApi.User[] = [];
+async function getUserData() {
+  userList = await getSimpleUserList();
+}
+
+getUserData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -111,9 +119,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getLeaderName?: (userId: number) => string | undefined,
-): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -128,7 +134,8 @@ export function useGridColumns(
       field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
-      formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
+      formatter: ({ cellValue }) =>
+        userList.find((user) => user.id === cellValue)?.nickname || '-',
     },
     {
       field: 'sort',

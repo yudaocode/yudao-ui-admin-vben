@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -7,6 +8,14 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { getRangePickerDefaultProps } from '#/utils';
+
+let tenantPackageList: SystemTenantPackageApi.TenantPackage[] = [];
+
+async function getTenantPackageData() {
+  tenantPackageList = await getTenantPackageList();
+}
+
+getTenantPackageData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -164,9 +173,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getPackageName?: (packageId: number) => string | undefined,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -183,8 +190,10 @@ export function useGridColumns(
       field: 'packageId',
       title: '租户套餐',
       minWidth: 180,
-      formatter: (row: { cellValue: number }) => {
-        return getPackageName?.(row.cellValue) || '-';
+      formatter: ({ cellValue }) => {
+        return cellValue === 0
+          ? '系统租户'
+          : tenantPackageList.find((pkg) => pkg.id === cellValue)?.name || '-';
       },
     },
     {

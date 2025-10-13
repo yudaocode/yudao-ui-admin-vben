@@ -67,18 +67,3 @@ export function getDeviceMessageSummary(statType: number) {
     { params: { statType } },
   );
 }
-
-// 导出 API 对象（兼容旧代码）
-export const StatisticsApi = {
-  getStatisticsSummary,
-  getDeviceMessageSummaryByDate,
-  getDeviceMessageSummary,
-};
-
-// 导出类型别名（兼容旧代码）
-export type IotStatisticsSummaryRespVO = IotStatisticsApi.StatisticsSummary;
-export type IotStatisticsDeviceMessageSummaryRespVO =
-  IotStatisticsApi.DeviceMessageSummary;
-export type IotStatisticsDeviceMessageSummaryByDateRespVO =
-  IotStatisticsApi.DeviceMessageSummaryByDate;
-export type IotStatisticsDeviceMessageReqVO = IotStatisticsApi.DeviceMessageReq;

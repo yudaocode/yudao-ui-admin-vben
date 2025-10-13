@@ -4,14 +4,14 @@ import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message, Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
 import AlertConfigForm from '../modules/AlertConfigForm.vue';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTAlertConfig' });
 
@@ -26,7 +26,7 @@ function onRefresh() {
 }
 
 // 获取告警级别文本
-const getLevelText = (level?: number) => {
+function getLevelText(level?: number) {
   const levelMap: Record<number, string> = {
     1: '提示',
     2: '一般',
@@ -35,10 +35,10 @@ const getLevelText = (level?: number) => {
     5: '紧急',
   };
   return level ? levelMap[level] || `级别${level}` : '-';
-};
+}
 
 // 获取告警级别颜色
-const getLevelColor = (level?: number) => {
+function getLevelColor(level?: number) {
   const colorMap: Record<number, string> = {
     1: 'blue',
     2: 'green',
@@ -47,10 +47,10 @@ const getLevelColor = (level?: number) => {
     5: 'purple',
   };
   return level ? colorMap[level] || 'default' : 'default';
-};
+}
 
 // 获取接收类型文本
-const getReceiveTypeText = (type?: number) => {
+function getReceiveTypeText(type?: number) {
   const typeMap: Record<number, string> = {
     1: '站内信',
     2: '邮箱',
@@ -59,7 +59,7 @@ const getReceiveTypeText = (type?: number) => {
     5: '钉钉',
   };
   return type ? typeMap[type] || `类型${type}` : '-';
-};
+}
 
 /** 创建告警配置 */
 function handleCreate() {
@@ -138,9 +138,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
       <!-- 告警级别列 -->
       <template #level="{ row }">
-        <a-tag :color="getLevelColor(row.level)">
+        <Tag :color="getLevelColor(row.level)">
           {{ getLevelText(row.level) }}
-        </a-tag>
+        </Tag>
       </template>
 
       <!-- 关联场景联动规则列 -->
@@ -150,13 +150,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
       <!-- 接收类型列 -->
       <template #receiveTypes="{ row }">
-        <a-tag
+        <Tag
           v-for="(type, index) in row.receiveTypes"
           :key="index"
           class="mr-1"
         >
           {{ getReceiveTypeText(type) }}
-        </a-tag>
+        </Tag>
       </template>
 
       <!-- 操作列 -->

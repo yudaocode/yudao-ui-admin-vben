@@ -114,13 +114,13 @@ export interface ThingModelFormRules {
 }
 
 /** 验证布尔型名称 */
-export const validateBoolName = (_rule: any, value: any, callback: any) => {
-  if (!value) {
-    callback(new Error('枚举描述不能为空'));
-  } else {
+export function validateBoolName(_rule: any, value: any, callback: any) {
+  if (value) {
     callback();
+  } else {
+    callback(new Error('枚举描述不能为空'));
   }
-};
+}
 
 /** 查询产品物模型分页 */
 export function getThingModelPage(params: PageParam) {
@@ -189,18 +189,3 @@ export function exportThingModelTSL(productId: number) {
     params: { productId },
   });
 }
-
-// Add a consolidated API object and getThingModelList alias
-export const ThingModelApi = {
-  getThingModelPage,
-  getThingModel,
-  getThingModelList: getThingModelListByProductId, // alias for compatibility
-  getThingModelListByProductId,
-  getThingModelListByProductKey,
-  createThingModel,
-  updateThingModel,
-  deleteThingModel,
-  deleteThingModelList,
-  importThingModelTSL,
-  exportThingModelTSL,
-};

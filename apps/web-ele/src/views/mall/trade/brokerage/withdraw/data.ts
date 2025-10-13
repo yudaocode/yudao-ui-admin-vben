@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现类型',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_TYPE, 'number'),
       },
     },
@@ -34,16 +34,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入账号',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
       fieldName: 'userName',
-      label: '真实名字',
+      label: '真实姓名',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入真实名字',
-        clearable: true,
+        placeholder: '请输入真实姓名',
+        allowClear: true,
       },
     },
     {
@@ -52,7 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现银行',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_BANK_NAME, 'string'),
       },
     },
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        clearable: true,
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_STATUS, 'number'),
       },
     },
@@ -72,7 +72,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];
@@ -88,25 +88,25 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'userId',
-      title: '用户编号：',
+      title: '用户编号',
       minWidth: 80,
     },
     {
       field: 'userNickname',
-      title: '用户昵称：',
+      title: '用户昵称',
       minWidth: 80,
     },
     {
       field: 'price',
       title: '提现金额',
       minWidth: 80,
-      formatter: 'formatFenToYuanAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'feePrice',
       title: '提现手续费',
       minWidth: 80,
-      formatter: 'formatFenToYuanAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'type',

@@ -1,59 +1,29 @@
 <!-- 操作符选择器组件 -->
-<template>
-  <div class="w-full">
-    <el-select
-      v-model="localValue"
-      placeholder="请选择操作符"
-      @change="handleChange"
-      class="w-full"
-    >
-      <el-option
-        v-for="operator in availableOperators"
-        :key="operator.value"
-        :label="operator.label"
-        :value="operator.value"
-      >
-        <div class="flex items-center justify-between w-full py-4px">
-          <div class="flex items-center gap-8px">
-            <div class="text-14px font-500 text-[var(--el-text-color-primary)]">
-              {{ operator.label }}
-            </div>
-            <div
-              class="text-12px text-[var(--el-color-primary)] bg-[var(--el-color-primary-light-9)] px-6px py-2px rounded-4px font-mono"
-            >
-              {{ operator.symbol }}
-            </div>
-          </div>
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
-            {{ operator.description }}
-          </div>
-        </div>
-      </el-option>
-    </el-select>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { useVModel } from '@vueuse/core'
+import { computed, watch } from 'vue';
+
+import { useVModel } from '@vueuse/core';
+import { Select } from 'ant-design-vue';
+
 import {
+  IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-  IoTDataSpecsDataTypeEnum
-} from '#/views/iot/utils/constants'
+} from '#/views/iot/utils/constants';
 
 /** 操作符选择器组件 */
-defineOptions({ name: 'OperatorSelector' })
+defineOptions({ name: 'OperatorSelector' });
 
 const props = defineProps<{
-  modelValue?: string
-  propertyType?: string
-}>()
+  modelValue?: string;
+  propertyType?: string;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-  (e: 'change', value: string): void
-}>()
+  (e: 'update:modelValue', value: string): void;
+  (e: 'change', value: string): void;
+}>();
 
-const localValue = useVModel(props, 'modelValue', emit)
+const localValue = useVModel(props, 'modelValue', emit);
 
 // 基于枚举的操作符定义
 const allOperators = [
@@ -69,8 +39,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.DOUBLE,
       IoTDataSpecsDataTypeEnum.TEXT,
       IoTDataSpecsDataTypeEnum.BOOL,
-      IoTDataSpecsDataTypeEnum.ENUM
-    ]
+      IoTDataSpecsDataTypeEnum.ENUM,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_EQUALS.value,
@@ -84,8 +54,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.DOUBLE,
       IoTDataSpecsDataTypeEnum.TEXT,
       IoTDataSpecsDataTypeEnum.BOOL,
-      IoTDataSpecsDataTypeEnum.ENUM
-    ]
+      IoTDataSpecsDataTypeEnum.ENUM,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.GREATER_THAN.value,
@@ -97,12 +67,16 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
-    value: IotRuleSceneTriggerConditionParameterOperatorEnum.GREATER_THAN_OR_EQUALS.value,
-    label: IotRuleSceneTriggerConditionParameterOperatorEnum.GREATER_THAN_OR_EQUALS.name,
+    value:
+      IotRuleSceneTriggerConditionParameterOperatorEnum.GREATER_THAN_OR_EQUALS
+        .value,
+    label:
+      IotRuleSceneTriggerConditionParameterOperatorEnum.GREATER_THAN_OR_EQUALS
+        .name,
     symbol: '≥',
     description: '值大于或等于指定值时触发',
     example: 'humidity >= 80',
@@ -110,8 +84,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.LESS_THAN.value,
@@ -123,12 +97,16 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
-    value: IotRuleSceneTriggerConditionParameterOperatorEnum.LESS_THAN_OR_EQUALS.value,
-    label: IotRuleSceneTriggerConditionParameterOperatorEnum.LESS_THAN_OR_EQUALS.name,
+    value:
+      IotRuleSceneTriggerConditionParameterOperatorEnum.LESS_THAN_OR_EQUALS
+        .value,
+    label:
+      IotRuleSceneTriggerConditionParameterOperatorEnum.LESS_THAN_OR_EQUALS
+        .name,
     symbol: '≤',
     description: '值小于或等于指定值时触发',
     example: 'battery <= 20',
@@ -136,8 +114,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.IN.value,
@@ -149,8 +127,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.TEXT,
-      IoTDataSpecsDataTypeEnum.ENUM
-    ]
+      IoTDataSpecsDataTypeEnum.ENUM,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_IN.value,
@@ -162,8 +140,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.TEXT,
-      IoTDataSpecsDataTypeEnum.ENUM
-    ]
+      IoTDataSpecsDataTypeEnum.ENUM,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value,
@@ -175,8 +153,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_BETWEEN.value,
@@ -188,8 +166,8 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,
       IoTDataSpecsDataTypeEnum.DOUBLE,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.LIKE.value,
@@ -197,7 +175,7 @@ const allOperators = [
     symbol: '≈',
     description: '字符串匹配指定模式时触发',
     example: 'message like "%error%"',
-    supportedTypes: [IoTDataSpecsDataTypeEnum.TEXT]
+    supportedTypes: [IoTDataSpecsDataTypeEnum.TEXT],
   },
   {
     value: IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_NULL.value,
@@ -212,32 +190,32 @@ const allOperators = [
       IoTDataSpecsDataTypeEnum.TEXT,
       IoTDataSpecsDataTypeEnum.BOOL,
       IoTDataSpecsDataTypeEnum.ENUM,
-      IoTDataSpecsDataTypeEnum.DATE
-    ]
-  }
-]
+      IoTDataSpecsDataTypeEnum.DATE,
+    ],
+  },
+];
 
 // 计算属性：可用的操作符
 const availableOperators = computed(() => {
   if (!props.propertyType) {
-    return allOperators
+    return allOperators;
   }
   return allOperators.filter((op) =>
-    (op.supportedTypes as any[]).includes(props.propertyType || '')
-  )
-})
+    (op.supportedTypes as any[]).includes(props.propertyType || ''),
+  );
+});
 
 // 计算属性：当前选中的操作符
 const selectedOperator = computed(() => {
-  return allOperators.find((op) => op.value === localValue.value)
-})
+  return allOperators.find((op) => op.value === localValue.value);
+});
 
 /**
  * 处理选择变化事件
  * @param value 选中的操作符值
  */
-const handleChange = (value: string) => {
-  emit('change', value)
+function handleChange(value: any) {
+  emit('change', value);
 }
 
 /** 监听属性类型变化 */
@@ -248,13 +226,49 @@ watch(
     if (
       localValue.value &&
       selectedOperator.value &&
-      !(selectedOperator.value.supportedTypes as any[]).includes(props.propertyType || '')
+      !(selectedOperator.value.supportedTypes as any[]).includes(
+        props.propertyType || '',
+      )
     ) {
-      localValue.value = ''
+      localValue.value = '';
     }
-  }
-)
+  },
+);
 </script>
+
+<template>
+  <div class="w-full">
+    <Select
+      v-model="localValue"
+      placeholder="请选择操作符"
+      @change="handleChange"
+      class="w-full"
+    >
+      <Select.Option
+        v-for="operator in availableOperators"
+        :key="operator.value"
+        :label="operator.label"
+        :value="operator.value"
+      >
+        <div class="py-4px flex w-full items-center justify-between">
+          <div class="gap-8px flex items-center">
+            <div class="text-14px font-500 text-primary">
+              {{ operator.label }}
+            </div>
+            <div
+              class="text-12px px-6px py-2px rounded-4px bg-primary-light-9 text-primary font-mono"
+            >
+              {{ operator.symbol }}
+            </div>
+          </div>
+          <div class="text-12px text-secondary">
+            {{ operator.description }}
+          </div>
+        </div>
+      </Select.Option>
+    </Select>
+  </div>
+</template>
 
 <style scoped>
 :deep(.el-select-dropdown__item) {

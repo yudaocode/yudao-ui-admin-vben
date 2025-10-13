@@ -4,31 +4,31 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Button, Card, Image, Input, Space } from 'ant-design-vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { downloadFileFromBlobPart } from '@vben/utils';
+
+import { Button, Card, Image, Input, message, Space } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteProduct,
+  exportProduct,
+  getProductPage,
+} from '#/api/crm/product';
+import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
-import ProductForm from './modules/ProductForm.vue';
+import { useGridColumns, useImagePreview } from './data';
 // @ts-ignore
 import ProductCardView from './modules/ProductCardView.vue';
-import { 
-  getCategoryName,
-  handleDeleteProduct,
-  handleExportProduct,
-  loadCategoryList,
-  queryProductList,
-  useGridColumns,
-  useImagePreview,
-} from './data';
+import ProductForm from './modules/ProductForm.vue';
 
 defineOptions({ name: 'IoTProduct' });
 
 const router = useRouter();
 const categoryList = ref<any[]>([]);
-const viewMode = ref<'list' | 'card'>('card');
+const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 
 // 搜索参数
@@ -46,14 +46,15 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 // 加载产品分类列表
-const loadCategories = async () => {
-  categoryList.value = await loadCategoryList();
-};
+async function loadCategories() {
+  categoryList.value = await getSimpleProductCategoryList();
+}
 
 // 获取分类名称
-const getCategoryNameByValue = (categoryId: number) => {
-  return getCategoryName(categoryList.value, categoryId);
-};
+function getCategoryNameByValue(categoryId: number) {
+  const category = categoryList.value.find((c: any) => c.id === categoryId);
+  return category?.name || '未分类';
+}
 
 /** 搜索 */
 function handleSearch() {
@@ -83,7 +84,8 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  await handleExportProduct(searchParams.value);
+  const data = await exportProduct(searchParams.value);
+  await downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
 }
 
 /** 打开产品详情 */
@@ -115,7 +117,17 @@ function handleEdit(row: any) {
 
 /** 删除产品 */
 async function handleDelete(row: any) {
-  await handleDeleteProduct(row, handleRefresh);
+  const hideLoading = message.loading({
+    content: `正在删除 ${row.name}...`,
+    duration: 0,
+  });
+  try {
+    await deleteProduct(row.id);
+    message.success(`删除 ${row.name} 成功`);
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -128,7 +140,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: ({ page }) => queryProductList({ page }, searchParams.value),
+        query: async ({ page }) => {
+          return await getProductPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...searchParams.value,
+          });
+        },
       },
     },
     rowConfig: {
@@ -150,17 +168,17 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-    
+
     <!-- 统一搜索工具栏 -->
     <Card :body-style="{ padding: '16px' }" class="mb-4">
       <!-- 搜索表单 -->
-      <div class="flex items-center gap-3 mb-3">
+      <div class="mb-3 flex items-center gap-3">
         <Input
           v-model:value="searchParams.name"
           placeholder="请输入产品名称"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         >
           <template #prefix>
             <span class="text-gray-400">产品名称</span>
@@ -171,7 +189,7 @@ onMounted(() => {
           placeholder="请输入产品标识"
           allow-clear
           style="width: 200px"
-          @pressEnter="handleSearch"
+          @press-enter="handleSearch"
         >
           <template #prefix>
             <span class="text-gray-400">ProductKey</span>
@@ -199,7 +217,7 @@ onMounted(() => {
             导出
           </Button>
         </Space>
-        
+
         <!-- 视图切换 -->
         <Space :size="4">
           <Button
@@ -335,6 +353,6 @@ onMounted(() => {
 }
 
 .ant-image-preview-operations {
-  background: rgba(0, 0, 0, 0.7) !important;
+  background: rgb(0 0 0 / 70%) !important;
 }
 </style>

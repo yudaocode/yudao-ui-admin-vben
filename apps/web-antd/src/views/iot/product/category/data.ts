@@ -1,19 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
 import { DICT_TYPE } from '@vben/constants';
-import { handleTree } from '@vben/utils';
-
-import { message } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
-import { 
-  deleteProductCategory, 
-  getProductCategoryPage,
-  getSimpleProductCategoryList 
-} from '#/api/iot/product/category';
-import { $t } from '#/locales';
+import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 
 /** 新增/修改产品分类的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -159,33 +150,4 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'actions' },
     },
   ];
-}
-
-/** 删除分类 */
-export async function handleDeleteCategory(row: IotProductCategoryApi.ProductCategory, onSuccess?: () => void) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-  });
-  try {
-    await deleteProductCategory(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onSuccess?.();
-  } finally {
-    hideLoading();
-  }
-}
-
-/** 查询分类列表 */
-export async function queryProductCategoryList({ page }: any, formValues: any) {
-  const data = await getProductCategoryPage({
-    pageNo: page.currentPage,
-    pageSize: page.pageSize,
-    ...formValues,
-  });
-  // 转换为树形结构
-  return {
-    ...data,
-    list: handleTree(data.list, 'id', 'parentId'),
-  };
 }

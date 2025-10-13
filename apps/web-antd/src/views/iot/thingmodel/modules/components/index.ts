@@ -1,3 +1,1 @@
-import DataDefinition from './DataDefinition.vue'
-
-export { DataDefinition }
+export { default as DataDefinition } from './DataDefinition.vue';

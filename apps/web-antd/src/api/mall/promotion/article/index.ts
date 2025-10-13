@@ -5,32 +5,19 @@ import { requestClient } from '#/api/request';
 export namespace MallArticleApi {
   /** 文章管理 */
   export interface Article {
-    /** 文章编号 */
-    id: number;
-    /** 分类编号 */
-    categoryId: number;
-    /** 文章标题 */
-    title: string;
-    /** 作者 */
-    author: string;
-    /** 封面图 */
-    picUrl: string;
-    /** 文章简介 */
-    introduction: string;
-    /** 浏览数量 */
-    browseCount: string;
-    /** 排序 */
-    sort: number;
-    /** 状态 */
-    status: number;
-    /** 商品编号 */
-    spuId: number;
-    /** 是否热门 */
-    recommendHot: boolean;
-    /** 是否轮播图 */
-    recommendBanner: boolean;
-    /** 文章内容 */
-    content: string;
+    id: number; // 文章编号
+    categoryId: number; // 分类编号
+    title: string; // 文章标题
+    author: string; // 作者
+    picUrl: string; // 封面图
+    introduction: string; // 文章简介
+    browseCount: string; // 浏览数量
+    sort: number; // 排序
+    status: number; // 状态
+    spuId: number; // 商品编号
+    recommendHot: boolean; // 是否热门
+    recommendBanner: boolean; // 是否轮播图
+    content: string; // 文章内容
   }
 }
 

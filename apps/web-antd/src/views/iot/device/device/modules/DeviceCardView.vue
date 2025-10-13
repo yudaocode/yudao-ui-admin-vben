@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
+
 import {
   Button,
   Card,
@@ -11,37 +15,34 @@ import {
   Row,
   Tag,
 } from 'ant-design-vue';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 
 import { DeviceStateEnum, getDevicePage } from '#/api/iot/device/device';
 
 defineOptions({ name: 'DeviceCardView' });
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  create: [];
+  delete: [row: any];
+  detail: [id: number];
+  edit: [row: any];
+  model: [id: number];
+  productDetail: [productId: number];
+}>();
 
 interface Props {
   products: any[];
   deviceGroups: any[];
   searchParams?: {
     deviceName: string;
+    deviceType?: number;
+    groupId?: number;
     nickname: string;
     productId?: number;
-    deviceType?: number;
     status?: number;
-    groupId?: number;
   };
 }
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  create: [];
-  edit: [row: any];
-  delete: [row: any];
-  detail: [id: number];
-  model: [id: number];
-  productDetail: [productId: number];
-}>();
 
 const loading = ref(false);
 const list = ref<any[]>([]);
@@ -52,13 +53,13 @@ const queryParams = ref({
 });
 
 // 获取产品名称
-const getProductName = (productId: number) => {
+function getProductName(productId: number) {
   const product = props.products.find((p: any) => p.id === productId);
   return product?.name || '-';
-};
+}
 
 // 获取设备列表
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await getDevicePage({
@@ -70,26 +71,26 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 // 处理页码变化
-const handlePageChange = (page: number, pageSize: number) => {
+function handlePageChange(page: number, pageSize: number) {
   queryParams.value.pageNo = page;
   queryParams.value.pageSize = pageSize;
   getList();
-};
+}
 
 // 获取设备类型颜色
-const getDeviceTypeColor = (deviceType: number) => {
+function getDeviceTypeColor(deviceType: number) {
   const colors: Record<number, string> = {
     0: 'blue',
     1: 'cyan',
   };
   return colors[deviceType] || 'default';
-};
+}
 
 // 获取设备状态信息
-const getStatusInfo = (state: number) => {
+function getStatusInfo(state: number) {
   if (state === DeviceStateEnum.ONLINE) {
     return {
       text: '在线',
@@ -104,14 +105,14 @@ const getStatusInfo = (state: number) => {
     bgColor: '#fff1f0',
     borderColor: '#ffccc7',
   };
-};
+}
 
 onMounted(() => {
   getList();
 });
 
 // 暴露方法供父组件调用
-defineExpose({ 
+defineExpose({
   reload: getList,
   search: () => {
     queryParams.value.pageNo = 1;
@@ -145,7 +146,7 @@ defineExpose({
                 <div class="device-icon">
                   <IconifyIcon icon="mdi:chip" />
                 </div>
-                <div 
+                <div
                   class="status-badge"
                   :style="{
                     color: getStatusInfo(item.state).color,
@@ -167,17 +168,30 @@ defineExpose({
               <div class="info-section">
                 <div class="info-item">
                   <span class="label">所属产品</span>
-                  <a 
+                  <a
                     class="value link"
-                    @click="(e: MouseEvent) => { e.stopPropagation(); emit('productDetail', item.productId); }"
+                    @click="
+                      (e) => {
+                        e.stopPropagation();
+                        emit('productDetail', item.productId);
+                      }
+                    "
                   >
                     {{ getProductName(item.productId) }}
                   </a>
                 </div>
                 <div class="info-item">
                   <span class="label">设备类型</span>
-                  <Tag :color="getDeviceTypeColor(item.deviceType)" size="small">
-                    {{ getDictLabel(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, item.deviceType) }}
+                  <Tag
+                    :color="getDeviceTypeColor(item.deviceType)"
+                    size="small"
+                  >
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
+                        item.deviceType,
+                      )
+                    }}
                   </Tag>
                 </div>
                 <div class="info-item">
@@ -190,29 +204,44 @@ defineExpose({
 
               <!-- 操作按钮 -->
               <div class="action-bar">
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-edit"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('edit', item); }"
+                  @click="
+                    (e) => {
+                      e.stopPropagation();
+                      emit('edit', item);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:note-pencil" />
                   编辑
                 </Button>
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-view"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('detail', item.id); }"
+                  @click="
+                    (e: MouseEvent) => {
+                      e.stopPropagation();
+                      emit('detail', item.id);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:eye" />
                   详情
                 </Button>
-                <Button 
+                <Button
                   type="default"
                   size="small"
                   class="action-btn btn-data"
-                  @click="(e: MouseEvent) => { e.stopPropagation(); emit('model', item.id); }"
+                  @click="
+                    (e: MouseEvent) => {
+                      e.stopPropagation();
+                      emit('model', item.id);
+                    }
+                  "
                 >
                   <IconifyIcon icon="ph:database" />
                   数据
@@ -221,7 +250,7 @@ defineExpose({
                   title="确认删除该设备吗?"
                   @confirm="() => emit('delete', item)"
                 >
-                  <Button 
+                  <Button
                     type="default"
                     size="small"
                     class="action-btn btn-delete"
@@ -260,17 +289,23 @@ defineExpose({
 .device-card-view {
   .device-card {
     height: 100%;
-    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
-    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-    border: 1px solid #f0f0f0;
     background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow:
+      0 1px 2px 0 rgb(0 0 0 / 3%),
+      0 1px 6px -1px rgb(0 0 0 / 2%),
+      0 2px 4px 0 rgb(0 0 0 / 2%);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     &:hover {
-      box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
-      transform: translateY(-4px);
       border-color: #e6e6e6;
+      box-shadow:
+        0 1px 2px -2px rgb(0 0 0 / 16%),
+        0 3px 6px 0 rgb(0 0 0 / 12%),
+        0 5px 12px 4px rgb(0 0 0 / 9%);
+      transform: translateY(-4px);
     }
 
     :deep(.ant-card-body) {
@@ -278,10 +313,10 @@ defineExpose({
     }
 
     .card-content {
-      padding: 16px;
       display: flex;
       flex-direction: column;
       height: 100%;
+      padding: 16px;
     }
 
     // 头部区域
@@ -292,48 +327,48 @@ defineExpose({
       margin-bottom: 16px;
 
       .device-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+        width: 32px;
+        height: 32px;
         font-size: 18px;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+        color: #fff;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgb(102 126 234 / 25%);
       }
 
       .status-badge {
+        display: flex;
+        gap: 4px;
+        align-items: center;
         padding: 2px 10px;
-        border-radius: 12px;
         font-size: 12px;
         font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        border: 1px solid;
         line-height: 18px;
+        border: 1px solid;
+        border-radius: 12px;
 
         .status-dot {
           width: 6px;
           height: 6px;
+          background: currentcolor;
           border-radius: 50%;
-          background: currentColor;
         }
       }
     }
 
     // 设备名称
     .device-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #262626;
       margin-bottom: 16px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 16px;
+      font-weight: 600;
       line-height: 24px;
+      color: #262626;
+      white-space: nowrap;
     }
 
     // 信息区域
@@ -343,30 +378,30 @@ defineExpose({
 
       .info-item {
         display: flex;
+        gap: 8px;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 12px;
-        gap: 8px;
 
         &:last-child {
           margin-bottom: 0;
         }
 
         .label {
+          flex-shrink: 0;
           font-size: 13px;
           color: #8c8c8c;
-          flex-shrink: 0;
         }
 
         .value {
-          font-size: 13px;
-          color: #262626;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          text-align: right;
           flex: 1;
           min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 13px;
+          color: #262626;
+          text-align: right;
+          white-space: nowrap;
 
           &.link {
             color: #1890ff;
@@ -379,10 +414,11 @@ defineExpose({
           }
 
           &.code {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+            font-family:
+              'SF Mono', Monaco, Inconsolata, 'Fira Code', Consolas, monospace;
             font-size: 12px;
-            color: #595959;
             font-weight: 500;
+            color: #595959;
           }
         }
       }
@@ -390,28 +426,28 @@ defineExpose({
 
     // 操作按钮栏
     .action-bar {
+      position: relative;
+      z-index: 1;
       display: flex;
       gap: 8px;
       padding-top: 12px;
       border-top: 1px solid #f5f5f5;
-      position: relative;
-      z-index: 1;
 
       .action-btn {
-        flex: 1;
-        height: 32px;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 13px;
         display: flex;
+        flex: 1;
+        gap: 4px;
         align-items: center;
         justify-content: center;
-        gap: 4px;
-        transition: all 0.2s;
+        height: 32px;
+        padding: 4px 8px;
+        font-size: 13px;
         font-weight: 400;
-        border: 1px solid;
-        cursor: pointer;
         pointer-events: auto;
+        cursor: pointer;
+        border: 1px solid;
+        border-radius: 6px;
+        transition: all 0.2s;
 
         :deep(.anticon) {
           font-size: 16px;

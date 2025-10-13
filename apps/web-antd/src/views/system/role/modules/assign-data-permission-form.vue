@@ -8,7 +8,7 @@ import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
@@ -134,18 +134,18 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <Tree
-          :tree-data="deptTree"
-          multiple
-          bordered
-          :spinning="deptLoading"
-          :expanded="expandedKeys"
-          v-bind="slotProps"
-          value-field="id"
-          label-field="name"
-          :auto-check-parent="false"
-          :check-strictly="!isCheckStrictly"
-        />
+        <Spin :spinning="deptLoading" wrapper-class-name="w-full">
+          <Tree
+            :tree-data="deptTree"
+            multiple
+            bordered
+            :default-expanded-keys="expandedKeys"
+            v-bind="slotProps"
+            :check-strictly="!isCheckStrictly"
+            value-field="id"
+            label-field="name"
+          />
+        </Spin>
       </template>
     </Form>
     <template #prepend-footer>

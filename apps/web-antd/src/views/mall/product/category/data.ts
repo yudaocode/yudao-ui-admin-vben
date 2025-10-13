@@ -31,10 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
           data.unshift({
             id: 0,
             name: '顶级分类',
-            picUrl: '',
-            sort: 0,
-            status: 0,
-          });
+          } as MallCategoryApi.Category);
           return handleTree(data);
         },
         labelField: 'name',
@@ -58,6 +55,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'picUrl',
       label: '移动端分类图',
       component: 'ImageUpload',
+      componentProps: {
+        placeholder: '请上传移动端分类图',
+      },
       rules: 'required',
     },
     {
@@ -68,7 +68,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         placeholder: '请输入分类排序',
       },
-      rules: z.number().min(0).default(1),
+      rules: 'required',
     },
     {
       fieldName: 'status',
@@ -91,6 +91,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '分类名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入分类名称',
+        allowClear: true,
+      },
     },
   ];
 }
@@ -101,6 +105,7 @@ export function useGridColumns(): VxeTableGridOptions<MallCategoryApi.Category>[
     {
       field: 'name',
       title: '分类名称',
+      minWidth: 200,
       align: 'left',
       fixed: 'left',
       treeNode: true,
@@ -108,6 +113,7 @@ export function useGridColumns(): VxeTableGridOptions<MallCategoryApi.Category>[
     {
       field: 'picUrl',
       title: '移动端分类图',
+      minWidth: 120,
       cellRender: {
         name: 'CellImage',
       },
@@ -115,10 +121,12 @@ export function useGridColumns(): VxeTableGridOptions<MallCategoryApi.Category>[
     {
       field: 'sort',
       title: '分类排序',
+      minWidth: 100,
     },
     {
       field: 'status',
-      title: '开启状态',
+      title: '分类状态',
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -127,11 +135,12 @@ export function useGridColumns(): VxeTableGridOptions<MallCategoryApi.Category>[
     {
       field: 'createTime',
       title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 300,
+      width: 240,
       fixed: 'right',
       slots: { default: 'actions' },
     },

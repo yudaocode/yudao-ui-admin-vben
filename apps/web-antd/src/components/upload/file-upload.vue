@@ -314,11 +314,11 @@ function getValue() {
 
 <style scoped>
 .upload-drag-area {
-  border: 2px dashed #d9d9d9;
-  border-radius: 8px;
   padding: 20px;
   text-align: center;
   background-color: #fafafa;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
   transition: border-color 0.3s;
 }
 
@@ -327,15 +327,15 @@ function getValue() {
 }
 
 .ant-upload-drag-icon {
+  margin-bottom: 16px;
   font-size: 48px;
   color: #d9d9d9;
-  margin-bottom: 16px;
 }
 
 .ant-upload-text {
+  margin-bottom: 8px;
   font-size: 16px;
   color: #666;
-  margin-bottom: 8px;
 }
 
 .ant-upload-hint {

@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useVbenModal } from '@vben/common-ui';
-import { message, Form, Input, Select, Spin } from 'ant-design-vue';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { OtaTask } from '#/api/iot/ota/task';
+
+import { computed, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { Form, Input, message, Select, Spin } from 'ant-design-vue';
+
+import * as DeviceApi from '#/api/iot/device/device';
 import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import { IoTOtaTaskDeviceScopeEnum } from '#/views/iot/utils/constants';
-import type { DeviceVO } from '#/api/iot/device/device';
-import * as DeviceApi from '#/api/iot/device/device';
 
 /** IoT OTA 升级任务表单 */
 defineOptions({ name: 'OtaTaskForm' });
@@ -28,11 +32,32 @@ const formData = ref<OtaTask>({
 });
 const formRef = ref();
 const formRules = {
-  name: [{ required: true, message: '请输入任务名称', trigger: 'blur' as const, type: 'string' as const }],
-  deviceScope: [{ required: true, message: '请选择升级范围', trigger: 'change' as const, type: 'number' as const }],
-  deviceIds: [{ required: true, message: '请至少选择一个设备', trigger: 'change' as const, type: 'array' as const }],
+  name: [
+    {
+      required: true,
+      message: '请输入任务名称',
+      trigger: 'blur' as const,
+      type: 'string' as const,
+    },
+  ],
+  deviceScope: [
+    {
+      required: true,
+      message: '请选择升级范围',
+      trigger: 'change' as const,
+      type: 'number' as const,
+    },
+  ],
+  deviceIds: [
+    {
+      required: true,
+      message: '请至少选择一个设备',
+      trigger: 'change' as const,
+      type: 'array' as const,
+    },
+  ],
 };
-const devices = ref<DeviceVO[]>([]);
+const devices = ref<IotDeviceApi.Device[]>([]);
 
 /** 设备选项 */
 const deviceOptions = computed(() => {
@@ -73,7 +98,8 @@ const [Modal, modalApi] = useVbenModal({
     // 加载设备列表
     formLoading.value = true;
     try {
-      devices.value = (await DeviceApi.getDeviceListByProductId(props.productId)) || [];
+      devices.value =
+        (await DeviceApi.getDeviceListByProductId(props.productId)) || [];
     } finally {
       formLoading.value = false;
     }
@@ -81,7 +107,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     name: '',
     deviceScope: IoTOtaTaskDeviceScopeEnum.ALL.value,
@@ -90,12 +116,12 @@ const resetForm = () => {
     deviceIds: [],
   };
   formRef.value?.resetFields();
-};
+}
 
 /** 打开弹窗 */
-const open = async () => {
+async function open() {
   await modalApi.open();
-};
+}
 
 defineExpose({ open });
 </script>

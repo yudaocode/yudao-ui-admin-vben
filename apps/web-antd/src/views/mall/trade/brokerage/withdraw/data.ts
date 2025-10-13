@@ -39,10 +39,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'userName',
-      label: '真实名字',
+      label: '真实姓名',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入真实名字',
+        placeholder: '请输入真实姓名',
         allowClear: true,
       },
     },
@@ -88,12 +88,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'userId',
-      title: '用户编号：',
+      title: '用户编号',
       minWidth: 80,
     },
     {
       field: 'userNickname',
-      title: '用户昵称：',
+      title: '用户昵称',
       minWidth: 80,
     },
     {

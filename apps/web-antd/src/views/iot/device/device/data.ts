@@ -6,7 +6,10 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
-import { DeviceTypeEnum, getSimpleProductList } from '#/api/iot/product/product';
+import {
+  DeviceTypeEnum,
+  getSimpleProductList,
+} from '#/api/iot/product/product';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -43,7 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
         .min(4, 'DeviceName 长度不能少于 4 个字符')
         .max(32, 'DeviceName 长度不能超过 32 个字符')
         .regex(
-          /^[a-zA-Z0-9_.\-:@]{4,32}$/,
+          /^[\w.\-:@]{4,32}$/,
           '支持英文字母、数字、下划线（_）、中划线（-）、点号（.）、半角冒号（:）和特殊字符@',
         ),
     },
@@ -79,7 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
         .min(4, '备注名称长度限制为 4~64 个字符')
         .max(64, '备注名称长度限制为 4~64 个字符')
         .regex(
-          /^[\u4e00-\u9fa5\u3040-\u30ff_a-zA-Z0-9]+$/,
+          /^[\u4E00-\u9FA5\u3040-\u30FF\w]+$/,
           '备注名称只能包含中文、英文字母、日文、数字和下划线（_）',
         )
         .optional()
@@ -106,7 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z
         .string()
-        .regex(/^[a-zA-Z0-9-_]+$/, '序列号只能包含字母、数字、中划线和下划线')
+        .regex(/^[\w-]+$/, '序列号只能包含字母、数字、中划线和下划线')
         .optional()
         .or(z.literal('')),
     },
@@ -318,4 +321,3 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
-

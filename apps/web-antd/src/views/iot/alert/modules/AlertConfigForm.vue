@@ -49,7 +49,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as AlertConfigApi.AlertConfig;
     try {
-      await (formData.value?.id ? updateAlertConfig(data) : createAlertConfig(data));
+      await (formData.value?.id
+        ? updateAlertConfig(data)
+        : createAlertConfig(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

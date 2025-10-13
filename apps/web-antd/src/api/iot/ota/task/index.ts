@@ -96,6 +96,3 @@ export function pauseOtaTask(id: number) {
 export function resumeOtaTask(id: number) {
   return requestClient.put(`/iot/ota/task/resume?id=${id}`);
 }
-
-export { IoTOtaTaskApi };
-

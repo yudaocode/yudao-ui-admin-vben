@@ -1,20 +1,115 @@
 <!-- 设备触发配置组件 -->
+<script setup lang="ts">
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
+
+import { nextTick } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Tag } from 'ant-design-vue';
+
+import MainConditionInnerConfig from './MainConditionInnerConfig.vue';
+import SubConditionGroupConfig from './SubConditionGroupConfig.vue';
+
+/** 设备触发配置组件 */
+defineOptions({ name: 'DeviceTriggerConfig' });
+
+const props = defineProps<{
+  index: number;
+  modelValue: RuleSceneApi.Trigger;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: RuleSceneApi.Trigger): void;
+  (e: 'triggerTypeChange', type: number): void;
+}>();
+
+const trigger = useVModel(props, 'modelValue', emit);
+
+const maxSubGroups = 3; // 最多 3 个子条件组
+const maxConditionsPerGroup = 3; // 每组最多 3 个条件
+
+/**
+ * 更新条件
+ * @param condition 条件对象
+ */
+function updateCondition(condition: RuleSceneApi.Trigger) {
+  trigger.value = condition;
+}
+
+/**
+ * 处理触发器类型变化事件
+ * @param type 触发器类型
+ */
+function handleTriggerTypeChange(type: number) {
+  trigger.value.type = type.toString();
+  emit('triggerTypeChange', type);
+}
+
+/** 添加子条件组 */
+async function addSubGroup() {
+  if (!trigger.value.conditionGroups) {
+    trigger.value.conditionGroups = [];
+  }
+
+  // 检查是否达到最大子组数量限制
+  if (trigger.value.conditionGroups?.length >= maxSubGroups) {
+    return;
+  }
+
+  // 使用 nextTick 确保响应式更新完成后再添加新的子组
+  await nextTick();
+  if (trigger.value.conditionGroups) {
+    trigger.value.conditionGroups.push([] as any);
+  }
+}
+
+/**
+ * 移除子条件组
+ * @param index 子条件组索引
+ */
+function removeSubGroup(index: number) {
+  if (trigger.value.conditionGroups) {
+    trigger.value.conditionGroups.splice(index, 1);
+  }
+}
+
+/**
+ * 更新子条件组
+ * @param index 子条件组索引
+ * @param subGroup 子条件组数据
+ */
+function updateSubGroup(index: number, subGroup: any) {
+  if (trigger.value.conditionGroups) {
+    trigger.value.conditionGroups[index] = subGroup;
+  }
+}
+
+/** 移除整个条件组 */
+function removeConditionGroup() {
+  trigger.value.conditionGroups = undefined;
+}
+</script>
+
 <template>
-  <div class="flex flex-col gap-16px">
+  <div class="gap-16px flex flex-col">
     <!-- 主条件配置 - 默认直接展示 -->
     <div class="space-y-16px">
       <!-- 主条件配置 -->
-      <div class="flex flex-col gap-16px">
+      <div class="gap-16px flex flex-col">
         <!-- 主条件配置 -->
         <div class="space-y-16px">
           <!-- 主条件头部 - 与附加条件组保持一致的绿色风格 -->
           <div
-            class="flex items-center justify-between p-16px bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-8px"
+            class="p-16px rounded-8px flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
           >
-            <div class="flex items-center gap-12px">
-              <div class="flex items-center gap-8px text-16px font-600 text-green-700">
+            <div class="gap-12px flex items-center">
+              <div
+                class="gap-8px text-16px font-600 flex items-center text-green-700"
+              >
                 <div
-                  class="w-24px h-24px bg-green-500 text-white rounded-full flex items-center justify-center text-12px font-bold"
+                  class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
                 >
                   主
                 </div>
@@ -28,7 +123,7 @@
           <MainConditionInnerConfig
             :model-value="trigger"
             @update:model-value="updateCondition"
-            :trigger-type="trigger.type"
+            :trigger-type="trigger.type as any"
             @trigger-type-change="handleTriggerTypeChange"
           />
         </div>
@@ -38,15 +133,17 @@
     <!-- 条件组配置 -->
     <div class="space-y-16px">
       <!-- 条件组配置 -->
-      <div class="flex flex-col gap-16px">
+      <div class="gap-16px flex flex-col">
         <!-- 条件组容器头部 -->
         <div
-          class="flex items-center justify-between p-16px bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-8px"
+          class="p-16px rounded-8px flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
         >
-          <div class="flex items-center gap-12px">
-            <div class="flex items-center gap-8px text-16px font-600 text-green-700">
+          <div class="gap-12px flex items-center">
+            <div
+              class="gap-8px text-16px font-600 flex items-center text-green-700"
+            >
               <div
-                class="w-24px h-24px bg-green-500 text-white rounded-full flex items-center justify-center text-12px font-bold"
+                class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
               >
                 组
               </div>
@@ -57,20 +154,20 @@
               {{ trigger.conditionGroups?.length || 0 }} 个子条件组
             </el-tag>
           </div>
-          <div class="flex items-center gap-8px">
-            <el-button
+          <div class="gap-8px flex items-center">
+            <Button
               type="primary"
               size="small"
               @click="addSubGroup"
               :disabled="(trigger.conditionGroups?.length || 0) >= maxSubGroups"
             >
-              <Icon icon="ep:plus" />
+              <IconifyIcon icon="ep:plus" />
               添加子条件组
-            </el-button>
-            <el-button type="danger" size="small" text @click="removeConditionGroup">
-              <Icon icon="ep:delete" />
+            </Button>
+            <Button danger size="small" text @click="removeConditionGroup">
+              <IconifyIcon icon="ep:delete" />
               删除条件组
-            </el-button>
+            </Button>
           </div>
         </div>
 
@@ -88,53 +185,63 @@
             >
               <!-- 子条件组容器 -->
               <div
-                class="border-2 border-orange-200 rounded-8px bg-orange-50 shadow-sm hover:shadow-md transition-shadow"
+                class="rounded-8px border-2 border-orange-200 bg-orange-50 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div
-                  class="flex items-center justify-between p-16px bg-gradient-to-r from-orange-50 to-yellow-50 border-b border-orange-200 rounded-t-6px"
+                  class="p-16px rounded-t-6px flex items-center justify-between border-b border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50"
                 >
-                  <div class="flex items-center gap-12px">
-                    <div class="flex items-center gap-8px text-16px font-600 text-orange-700">
+                  <div class="gap-12px flex items-center">
+                    <div
+                      class="gap-8px text-16px font-600 flex items-center text-orange-700"
+                    >
                       <div
-                        class="w-24px h-24px bg-orange-500 text-white rounded-full flex items-center justify-center text-12px font-bold"
+                        class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-orange-500 font-bold text-white"
                       >
                         {{ subGroupIndex + 1 }}
                       </div>
                       <span>子条件组 {{ subGroupIndex + 1 }}</span>
                     </div>
-                    <el-tag size="small" type="warning" class="font-500">组内条件为"且"关系</el-tag>
-                    <el-tag size="small" type="info"> {{ subGroup?.length || 0 }}个条件 </el-tag>
+                    <Tag size="small" type="warning" class="font-500">
+                      组内条件为"且"关系
+                    </Tag>
+                    <Tag size="small" type="info">
+                      {{ (subGroup as any)?.length || 0 }}个条件
+                    </Tag>
                   </div>
-                  <el-button
-                    type="danger"
+                  <Button
+                    danger
                     size="small"
                     text
                     @click="removeSubGroup(subGroupIndex)"
                     class="hover:bg-red-50"
                   >
-                    <Icon icon="ep:delete" />
+                    <IconifyIcon icon="ep:delete" />
                     删除组
-                  </el-button>
+                  </Button>
                 </div>
 
                 <SubConditionGroupConfig
-                  :model-value="subGroup"
-                  @update:model-value="(value) => updateSubGroup(subGroupIndex, value)"
-                  :trigger-type="trigger.type"
+                  :model-value="subGroup as any"
+                  @update:model-value="
+                    (value) => updateSubGroup(subGroupIndex, value)
+                  "
+                  :trigger-type="trigger.type as any"
                   :max-conditions="maxConditionsPerGroup"
                 />
               </div>
 
-              <!-- 子条件组间的"或"连接符 -->
+              <!-- 子条件组间的'或'连接符 -->
               <div
                 v-if="subGroupIndex < trigger.conditionGroups!.length - 1"
-                class="flex items-center justify-center py-12px"
+                class="py-12px flex items-center justify-center"
               >
-                <div class="flex items-center gap-8px">
+                <div class="gap-8px flex items-center">
                   <!-- 连接线 -->
                   <div class="w-32px h-1px bg-orange-300"></div>
                   <!-- 或标签 -->
-                  <div class="px-16px py-6px bg-orange-100 border-2 border-orange-300 rounded-full">
+                  <div
+                    class="px-16px py-6px rounded-full border-2 border-orange-300 bg-orange-100"
+                  >
                     <span class="text-14px font-600 text-orange-600">或</span>
                   </div>
                   <!-- 连接线 -->
@@ -148,10 +255,10 @@
         <!-- 空状态 -->
         <div
           v-else
-          class="p-24px border-2 border-dashed border-orange-200 rounded-8px text-center bg-orange-50"
+          class="p-24px rounded-8px border-2 border-dashed border-orange-200 bg-orange-50 text-center"
         >
-          <div class="flex flex-col items-center gap-12px">
-            <Icon icon="ep:plus" class="text-32px text-orange-400" />
+          <div class="gap-12px flex flex-col items-center">
+            <IconifyIcon icon="ep:plus" class="text-32px text-orange-400" />
             <div class="text-orange-600">
               <p class="text-14px font-500 mb-4px">暂无子条件组</p>
               <p class="text-12px">点击上方"添加子条件组"按钮开始配置</p>
@@ -162,90 +269,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useVModel } from '@vueuse/core'
-
-import MainConditionInnerConfig from './MainConditionInnerConfig.vue'
-import SubConditionGroupConfig from './SubConditionGroupConfig.vue'
-import type { Trigger } from '#/api/iot/rule/scene'
-
-/** 设备触发配置组件 */
-defineOptions({ name: 'DeviceTriggerConfig' })
-
-const props = defineProps<{
-  modelValue: Trigger
-  index: number
-}>()
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: Trigger): void
-  (e: 'trigger-type-change', type: number): void
-}>()
-
-const trigger = useVModel(props, 'modelValue', emit)
-
-const maxSubGroups = 3 // 最多 3 个子条件组
-const maxConditionsPerGroup = 3 // 每组最多 3 个条件
-
-/**
- * 更新条件
- * @param condition 条件对象
- */
-const updateCondition = (condition: Trigger) => {
-  trigger.value = condition
-}
-
-/**
- * 处理触发器类型变化事件
- * @param type 触发器类型
- */
-const handleTriggerTypeChange = (type: number) => {
-  trigger.value.type = type
-  emit('trigger-type-change', type)
-}
-
-/** 添加子条件组 */
-const addSubGroup = async () => {
-  if (!trigger.value.conditionGroups) {
-    trigger.value.conditionGroups = []
-  }
-
-  // 检查是否达到最大子组数量限制
-  if (trigger.value.conditionGroups?.length >= maxSubGroups) {
-    return
-  }
-
-  // 使用 nextTick 确保响应式更新完成后再添加新的子组
-  await nextTick()
-  if (trigger.value.conditionGroups) {
-    trigger.value.conditionGroups.push([])
-  }
-}
-
-/**
- * 移除子条件组
- * @param index 子条件组索引
- */
-const removeSubGroup = (index: number) => {
-  if (trigger.value.conditionGroups) {
-    trigger.value.conditionGroups.splice(index, 1)
-  }
-}
-
-/**
- * 更新子条件组
- * @param index 子条件组索引
- * @param subGroup 子条件组数据
- */
-const updateSubGroup = (index: number, subGroup: any) => {
-  if (trigger.value.conditionGroups) {
-    trigger.value.conditionGroups[index] = subGroup
-  }
-}
-
-/** 移除整个条件组 */
-const removeConditionGroup = () => {
-  trigger.value.conditionGroups = undefined
-}
-</script>

@@ -1,19 +1,18 @@
 <!-- IoT 产品选择器，使用弹窗展示 -->
 <script setup lang="ts">
+import type { IotProductApi } from '#/api/iot/product/product';
+
 import { reactive, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+
+import { Button, Form, Input, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductPage } from '#/api/iot/product/product';
-import type { IotProductApi } from '#/api/iot/product/product';
 
 defineOptions({ name: 'IoTProductTableSelect' });
-
-interface Props {
-  multiple?: boolean;
-}
 
 const props = withDefaults(defineProps<Props>(), {
   multiple: false,
@@ -22,6 +21,10 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   success: [product: IotProductApi.Product | IotProductApi.Product[]];
 }>();
+
+interface Props {
+  multiple?: boolean;
+}
 
 const [Modal, modalApi] = useVbenModal({
   title: '产品选择器',
@@ -99,24 +102,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 打开选择器
-const open = async () => {
+async function open() {
   selectedProducts.value = [];
   selectedRowKeys.value = [];
   modalApi.open();
   gridApi.reload();
-};
+}
 
 // 搜索
-const handleSearch = () => {
+function handleSearch() {
   gridApi.reload();
-};
+}
 
 // 重置搜索
-const handleReset = () => {
+function handleReset() {
   queryParams.name = '';
   queryParams.productKey = '';
   gridApi.reload();
-};
+}
 
 // 确认选择
 async function handleConfirm() {
@@ -149,40 +152,40 @@ defineExpose({ open });
 <template>
   <Modal class="!w-[900px]">
     <div class="mb-4">
-      <a-form layout="inline" :model="queryParams">
-        <a-form-item label="产品名称">
-          <a-input
+      <Form layout="inline" :model="queryParams">
+        <Form.Item label="产品名称">
+          <Input
             v-model:value="queryParams.name"
             placeholder="请输入产品名称"
             allow-clear
             class="!w-[200px]"
             @press-enter="handleSearch"
           />
-        </a-form-item>
-        <a-form-item label="ProductKey">
-          <a-input
+        </Form.Item>
+        <Form.Item label="ProductKey">
+          <Input
             v-model:value="queryParams.productKey"
             placeholder="请输入产品标识"
             allow-clear
             class="!w-[200px]"
             @press-enter="handleSearch"
           />
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" @click="handleSearch">
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" @click="handleSearch">
             <template #icon>
-              <Icon icon="ant-design:search-outlined" />
+              <IconifyIcon icon="ant-design:search-outlined" />
             </template>
             搜索
-          </a-button>
-          <a-button class="ml-2" @click="handleReset">
+          </Button>
+          <Button class="ml-2" @click="handleReset">
             <template #icon>
-              <Icon icon="ant-design:reload-outlined" />
+              <IconifyIcon icon="ant-design:reload-outlined" />
             </template>
             重置
-          </a-button>
-        </a-form-item>
-      </a-form>
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
 
     <Grid />

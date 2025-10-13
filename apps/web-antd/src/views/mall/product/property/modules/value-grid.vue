@@ -31,32 +31,30 @@ const [ValueFormModal, valueFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建字典数据 */
+/** 创建属性值 */
 function handleCreate() {
   valueFormModalApi.setData({ propertyId: props.propertyId }).open();
 }
 
-/** 编辑字典数据 */
+/** 编辑属性值 */
 function handleEdit(row: MallPropertyApi.PropertyValue) {
   valueFormModalApi.setData(row).open();
 }
 
-/** 删除字典数据 */
+/** 删除属性值 */
 async function handleDelete(row: MallPropertyApi.PropertyValue) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deletePropertyValue(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    await deletePropertyValue(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -84,6 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -92,20 +91,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MallPropertyApi.PropertyValue>,
 });
 
-/** 监听 dictType 变化，重新查询 */
+/** 监听 propertyId 变化，重新查询 */
 watch(
   () => props.propertyId,
-  () => {
-    if (props.propertyId) {
-      onRefresh();
+  (newPropertyId) => {
+    if (newPropertyId) {
+      // 设置搜索表单中的 propertyId
+      gridApi.formApi.setValues({ propertyId: newPropertyId });
+      handleRefresh();
     }
   },
+  { immediate: true },
 );
 </script>
 
 <template>
   <div class="flex h-full flex-col">
-    <ValueFormModal @success="onRefresh" />
+    <ValueFormModal @success="handleRefresh" />
 
     <Grid table-title="属性值列表">
       <template #toolbar-tools>

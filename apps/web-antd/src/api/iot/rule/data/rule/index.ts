@@ -81,4 +81,3 @@ export function updateDataRuleStatus(id: number, status: number) {
     status,
   });
 }
-

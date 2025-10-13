@@ -7,6 +7,8 @@ import type { VerificationProps } from './typing';
 
 import { defineAsyncComponent, markRaw, ref, toRefs, watchEffect } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import './verify.css';
 
 defineOptions({
@@ -112,7 +114,7 @@ defineExpose({
       <div v-if="mode === 'pop'" class="verifybox-top">
         {{ $t('ui.captcha.title') }}
         <span class="verifybox-close" @click="onClose">
-          <i class="iconfont icon-close"></i>
+          <IconifyIcon icon="lucide:x" class="size-5" />
         </span>
       </div>
       <div

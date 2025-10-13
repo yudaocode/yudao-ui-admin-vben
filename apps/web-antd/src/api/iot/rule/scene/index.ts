@@ -90,6 +90,7 @@ export interface TriggerCondition {
   operator?: string;
   value?: any;
   type?: string;
+  param?: string;
 }
 
 /** IoT 场景联动规则动作 */
@@ -153,11 +154,3 @@ export function getSimpleRuleSceneList() {
     '/iot/scene-rule/simple-list',
   );
 }
-
-// 别名导出（兼容旧代码）
-export {
-  getSceneRulePage as getRuleScenePage,
-  deleteSceneRule as deleteRuleScene,
-  updateSceneRuleStatus as updateRuleSceneStatus,
-};
-

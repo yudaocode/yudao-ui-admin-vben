@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { formatDate } from '@vben/utils';
+import type { TableColumnsType } from 'ant-design-vue';
+
 import type { OtaTask } from '#/api/iot/ota/task';
+
+import { onMounted, reactive, ref } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+import { formatDate } from '@vben/utils';
+
+import {
+  Button,
+  Card,
+  Input,
+  message,
+  Modal,
+  Space,
+  Table,
+  Tag,
+} from 'ant-design-vue';
+
 import * as IoTOtaTaskApi from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
-import OtaTaskForm from './OtaTaskForm.vue';
+
 import OtaTaskDetail from './OtaTaskDetail.vue';
-import { Card, Input, Table, Space, Modal, message, Tag } from 'ant-design-vue';
-import type { TableColumnsType } from 'ant-design-vue';
-import { VbenButton } from '@vben/common-ui';
+import OtaTaskForm from './OtaTaskForm.vue';
 
 /** IoT OTA 任务列表 */
 defineOptions({ name: 'OtaTaskList' });
@@ -34,7 +49,7 @@ const taskFormRef = ref(); // 任务表单引用
 const taskDetailRef = ref(); // 任务详情引用
 
 /** 获取任务列表 */
-const getTaskList = async () => {
+async function getTaskList() {
   taskLoading.value = true;
   try {
     const data = await IoTOtaTaskApi.getOtaTaskPage(queryParams);
@@ -43,32 +58,32 @@ const getTaskList = async () => {
   } finally {
     taskLoading.value = false;
   }
-};
+}
 
 /** 搜索 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getTaskList();
-};
+}
 
 /** 打开任务表单 */
-const openTaskForm = () => {
+function openTaskForm() {
   taskFormRef.value?.open();
-};
+}
 
 /** 处理任务创建成功 */
-const handleTaskCreateSuccess = () => {
+function handleTaskCreateSuccess() {
   getTaskList();
   emit('success');
-};
+}
 
 /** 查看任务详情 */
-const handleTaskDetail = (id: number) => {
+function handleTaskDetail(id: number) {
   taskDetailRef.value?.open(id);
-};
+}
 
 /** 取消任务 */
-const handleCancelTask = async (id: number) => {
+async function handleCancelTask(id: number) {
   Modal.confirm({
     title: '确认取消',
     content: '确认要取消该升级任务吗？',
@@ -82,20 +97,20 @@ const handleCancelTask = async (id: number) => {
       }
     },
   });
-};
+}
 
 /** 刷新数据 */
-const refresh = async () => {
+async function refresh() {
   await getTaskList();
   emit('success');
-};
+}
 
 /** 分页变化 */
-const handleTableChange = (pagination: any) => {
+function handleTableChange(pagination: any) {
   queryParams.pageNo = pagination.current;
   queryParams.pageSize = pagination.pageSize;
   getTaskList();
-};
+}
 
 /** 表格列配置 */
 const columns: TableColumnsType = [
@@ -160,11 +175,11 @@ onMounted(() => {
 <template>
   <Card title="升级任务管理" class="mb-5">
     <!-- 搜索栏 -->
-    <div class="mb-4 flex justify-between items-center">
-      <VbenButton type="primary" @click="openTaskForm">
-        <Icon icon="ant-design:plus-outlined" class="mr-1" />
+    <div class="mb-4 flex items-center justify-between">
+      <Button type="primary" @click="openTaskForm">
+        <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
         新增
-      </VbenButton>
+      </Button>
       <Input
         v-model:value="queryParams.name"
         placeholder="请输入任务名称"

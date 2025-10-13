@@ -15,6 +15,7 @@ import {
   toRefs,
 } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { AES } from '@vben-core/shared/utils';
@@ -299,7 +300,7 @@ defineExpose({
           style="display: block; width: 100%; height: 100%"
         />
         <div v-show="showRefresh" class="verify-refresh" @click="refresh">
-          <i class="iconfont icon-refresh"></i>
+          <IconifyIcon icon="lucide:refresh-ccw" class="mr-2 size-5" />
         </div>
         <transition name="tips">
           <span
