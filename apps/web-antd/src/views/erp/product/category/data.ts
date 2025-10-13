@@ -58,7 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入分类编码',
       },
-      rules: z.string().regex(/^[A-Z]+$/, '分类编码必须为大写字母'),
+      rules: 'required',
     },
     {
       fieldName: 'sort',
@@ -66,12 +66,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
       rules: 'required',
     },
-
     {
       fieldName: 'status',
       label: '状态',
@@ -82,6 +80,31 @@ export function useFormSchema(): VbenFormSchema[] {
         optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
+    },
+  ];
+}
+
+/** 查询表单 */
+export function useQueryFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'name',
+      label: '分类名称',
+      componentProps: {
+        placeholder: '请输入分类名称',
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Select',
+      fieldName: 'status',
+      label: '开启状态',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择开启状态',
+        allowClear: true,
+      },
     },
   ];
 }

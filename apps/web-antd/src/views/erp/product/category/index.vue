@@ -5,17 +5,19 @@ import type { ErpProductCategoryApi } from '#/api/erp/product/category';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProductCategory,
+  exportProductCategory,
   getProductCategoryList,
 } from '#/api/erp/product/category';
 import { $t } from '#/locales';
 
-import { useGridColumns } from './data';
+import { useGridColumns, useQueryFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -25,14 +27,20 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
-function toggleExpand() {
+function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
+}
+
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportProductCategory(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '产品分类.xls', source: data });
 }
 
 /** 创建分类 */
@@ -58,28 +66,29 @@ async function handleDelete(row: ErpProductCategoryApi.ProductCategory) {
   });
   try {
     await deleteProductCategory(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useQueryFormSchema(),
+  },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    proxyConfig: {
-      ajax: {
-        query: async () => {
-          return await getProductCategoryList();
-        },
-      },
-    },
     pagerConfig: {
       enabled: false,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async (_, formValues) => {
+          return await getProductCategoryList(formValues);
+        },
+      },
     },
     rowConfig: {
       keyField: 'id',
@@ -90,11 +99,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
     treeConfig: {
-      transform: true,
-      rowField: 'id',
       parentField: 'parentId',
+      rowField: 'id',
+      transform: true,
       expandAll: true,
-      accordion: false,
+      reserve: true,
     },
   } as VxeTableGridOptions<ErpProductCategoryApi.ProductCategory>,
 });
@@ -108,7 +117,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/erp/product/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="产品分类列表">
       <template #toolbar-tools>
         <TableAction
@@ -121,9 +131,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
               onClick: handleCreate,
             },
             {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['erp:product-category:export'],
+              onClick: handleExport,
+            },
+            {
               label: isExpanded ? '收缩' : '展开',
               type: 'primary',
-              onClick: toggleExpand,
+              onClick: handleExpand,
             },
           ]"
         />
@@ -151,7 +168,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['erp:product-category:delete'],
-              ifShow: !(row.children && row.children.length > 0),
+              disabled: row.children && row.children.length > 0,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

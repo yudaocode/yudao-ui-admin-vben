@@ -10,44 +10,43 @@ import { getAccountSimpleList } from '#/api/erp/finance/account';
 import { getProductSimpleList } from '#/api/erp/product/product';
 import { getCustomerSimpleList } from '#/api/erp/sale/customer';
 import { getSimpleUserList } from '#/api/system/user';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单的配置项 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(formType: string): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
-      componentProps: {
-        style: { display: 'none' },
-      },
       fieldName: 'id',
-      label: 'ID',
-      hideLabel: true,
-      formItemClass: 'hidden',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
-
     {
+      fieldName: 'no',
+      label: '订单单号',
       component: 'Input',
       componentProps: {
         placeholder: '系统自动生成',
         disabled: true,
       },
-      fieldName: 'no',
-      label: '订单单号',
     },
     {
+      fieldName: 'orderTime',
+      label: '订单时间',
       component: 'DatePicker',
       componentProps: {
         placeholder: '选择订单时间',
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
-        style: { width: '100%' },
       },
-      fieldName: 'orderTime',
-      label: '订单时间',
       rules: 'required',
     },
     {
+      label: '客户',
+      fieldName: 'customerId',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择客户',
@@ -59,16 +58,14 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'customerId',
-      label: '客户',
       rules: 'required',
     },
     {
       fieldName: 'saleUserId',
-      label: '创建人',
+      label: '销售人员',
       component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择创建人',
+        placeholder: '请选择销售人员',
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,
@@ -79,15 +76,19 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'remark',
+      label: '备注',
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
         autoSize: { minRows: 1, maxRows: 1 },
+        disabled: formType === 'detail',
       },
-      fieldName: 'remark',
-      label: '备注',
+      formItemClass: 'col-span-2',
     },
     {
+      fieldName: 'fileUrl',
+      label: '附件',
       component: 'FileUpload',
       componentProps: {
         maxNumber: 1,
@@ -103,56 +104,54 @@ export function useFormSchema(): VbenFormSchema[] {
           'jpeg',
           'png',
         ],
-        showDescription: true,
+        showDescription: formType !== 'detail',
+        disabled: formType === 'detail',
       },
-      fieldName: 'fileUrl',
-      label: '附件',
       formItemClass: 'col-span-3',
     },
     {
-      fieldName: 'product',
-      label: '产品清单',
+      fieldName: 'items',
+      label: '销售产品清单',
       component: 'Input',
       formItemClass: 'col-span-3',
     },
     {
+      fieldName: 'discountPercent',
+      label: '优惠率(%)',
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入优惠率',
         min: 0,
         max: 100,
         precision: 2,
-        style: { width: '100%' },
       },
-      fieldName: 'discountPercent',
-      label: '优惠率(%)',
       rules: z.number().min(0).optional(),
     },
     {
+      fieldName: 'discountPrice',
+      label: '付款优惠',
       component: 'InputNumber',
       componentProps: {
         placeholder: '收款优惠',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'discountPrice',
-      label: '付款优惠',
     },
     {
+      fieldName: 'totalPrice',
+      label: '优惠后金额',
       component: 'InputNumber',
       componentProps: {
         placeholder: '优惠后金额',
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
-        style: { width: '100%' },
       },
-      fieldName: 'totalPrice',
-      label: '优惠后金额',
     },
     {
+      fieldName: 'accountId',
+      label: '结算账户',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择结算账户',
@@ -164,15 +163,12 @@ export function useFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
       },
-      fieldName: 'accountId',
-      label: '结算账户',
     },
     {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入收取订金',
         precision: 2,
-        style: { width: '100%' },
         min: 0,
       },
       fieldName: 'depositPrice',
@@ -182,8 +178,8 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 采购订单项表格列定义 */
-export function useSaleOrderItemTableColumns(): VxeTableGridOptions['columns'] {
+/** 表单的明细表格列 */
+export function useFormItemColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
     {
@@ -196,6 +192,7 @@ export function useSaleOrderItemTableColumns(): VxeTableGridOptions['columns'] {
       field: 'stockCount',
       title: '库存',
       minWidth: 80,
+      formatter: 'formatAmount3',
     },
     {
       field: 'productBarCode',
@@ -208,46 +205,52 @@ export function useSaleOrderItemTableColumns(): VxeTableGridOptions['columns'] {
       minWidth: 80,
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+      slots: { default: 'remark' },
+    },
+    {
       field: 'count',
       title: '数量',
       minWidth: 120,
+      fixed: 'right',
       slots: { default: 'count' },
     },
     {
       field: 'productPrice',
       title: '产品单价',
       minWidth: 120,
+      fixed: 'right',
       slots: { default: 'productPrice' },
     },
     {
       field: 'totalProductPrice',
       title: '金额',
       minWidth: 120,
+      fixed: 'right',
       formatter: 'formatAmount2',
     },
     {
       field: 'taxPercent',
       title: '税率(%)',
-      minWidth: 100,
+      minWidth: 105,
+      fixed: 'right',
       slots: { default: 'taxPercent' },
     },
     {
       field: 'taxPrice',
       title: '税额',
       minWidth: 120,
+      fixed: 'right',
       formatter: 'formatAmount2',
     },
     {
       field: 'totalPrice',
       title: '税额合计',
       minWidth: 120,
+      fixed: 'right',
       formatter: 'formatAmount2',
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 150,
-      slots: { default: 'remark' },
     },
     {
       title: '操作',
@@ -290,10 +293,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '订单时间',
       component: 'RangePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
     {
@@ -333,6 +334,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
         placeholder: '请选择状态',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入备注',
         allowClear: true,
       },
     },
@@ -406,34 +416,37 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'totalCount',
       title: '总数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'outCount',
       title: '出库数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'returnCount',
       title: '退货数量',
+      formatter: 'formatAmount3',
       minWidth: 120,
     },
     {
       field: 'totalProductPrice',
       title: '金额合计',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
       field: 'totalPrice',
       title: '含税金额',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {
       field: 'depositPrice',
       title: '收取订金',
-      formatter: 'formatNumber',
+      formatter: 'formatAmount2',
       minWidth: 120,
     },
     {

@@ -100,12 +100,7 @@ export function updatePurchaseOrderStatus(id: number, status: number) {
 }
 
 /** 删除采购订单 */
-export function deletePurchaseOrder(id: number) {
-  return requestClient.delete(`/erp/purchase-order/delete?id=${id}`);
-}
-
-/** 批量删除采购订单 */
-export function deletePurchaseOrderList(ids: number[]) {
+export function deletePurchaseOrder(ids: number[]) {
   return requestClient.delete('/erp/purchase-order/delete', {
     params: { ids: ids.join(',') },
   });

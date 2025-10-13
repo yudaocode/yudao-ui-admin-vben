@@ -12,6 +12,7 @@ import {
   toRefs,
 } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { AES } from '@vben-core/shared/utils';
@@ -221,7 +222,7 @@ defineExpose({
           style="z-index: 3"
           @click="refresh"
         >
-          <i class="iconfont icon-refresh"></i>
+          <IconifyIcon icon="lucide:refresh-ccw" class="mr-2 size-5" />
         </div>
         <img
           ref="canvas"

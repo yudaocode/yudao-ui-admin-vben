@@ -1,3 +1,5 @@
+import type { PageParam, PageResult } from '@vben/request';
+
 import { requestClient } from '#/api/request';
 
 export namespace SystemDictTypeApi {
@@ -14,17 +16,24 @@ export namespace SystemDictTypeApi {
 
 // 查询字典（精简)列表
 export function getSimpleDictTypeList() {
-  return requestClient.get('/system/dict-type/list-all-simple');
+  return requestClient.get<SystemDictTypeApi.DictType[]>(
+    '/system/dict-type/list-all-simple',
+  );
 }
 
 // 查询字典列表
-export function getDictTypePage(params: any) {
-  return requestClient.get('/system/dict-type/page', { params });
+export function getDictTypePage(params: PageParam) {
+  return requestClient.get<PageResult<SystemDictTypeApi.DictType>>(
+    '/system/dict-type/page',
+    { params },
+  );
 }
 
 // 查询字典详情
 export function getDictType(id: number) {
-  return requestClient.get(`/system/dict-type/get?id=${id}`);
+  return requestClient.get<SystemDictTypeApi.DictType>(
+    `/system/dict-type/get?id=${id}`,
+  );
 }
 
 // 新增字典

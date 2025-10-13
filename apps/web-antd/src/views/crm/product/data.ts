@@ -37,6 +37,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'ownerUserId',
       label: '负责人',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
@@ -227,4 +231,3 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
-

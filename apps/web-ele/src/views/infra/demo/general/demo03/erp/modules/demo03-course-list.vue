@@ -56,7 +56,6 @@ function handleEdit(row: Demo03StudentApi.Demo03Course) {
 async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03Course(row.id!);
@@ -71,7 +70,6 @@ async function handleDelete(row: Demo03StudentApi.Demo03Course) {
 async function handleDeleteBatch() {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo03CourseList(checkedIds.value);

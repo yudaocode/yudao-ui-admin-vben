@@ -42,12 +42,6 @@ export namespace ErpStockMoveApi {
     no?: string;
     status?: number;
   }
-
-  /** 库存调拨单状态更新参数 */
-  export interface StockMoveStatusParams {
-    id: number;
-    status: number;
-  }
 }
 
 /**
@@ -88,11 +82,9 @@ export function updateStockMove(data: ErpStockMoveApi.StockMove) {
 /**
  * 更新库存调拨单的状态
  */
-export function updateStockMoveStatus(
-  params: ErpStockMoveApi.StockMoveStatusParams,
-) {
+export function updateStockMoveStatus(id: number, status: number) {
   return requestClient.put('/erp/stock-move/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 
@@ -111,7 +103,5 @@ export function deleteStockMove(ids: number[]) {
  * 导出库存调拨单 Excel
  */
 export function exportStockMove(params: ErpStockMoveApi.StockMovePageParams) {
-  return requestClient.download('/erp/stock-move/export-excel', {
-    params,
-  });
+  return requestClient.download('/erp/stock-move/export-excel', { params });
 }

@@ -10,6 +10,8 @@ import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 
+const userList = await getSimpleUserList();
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -58,7 +60,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
       rules: 'required',
@@ -110,9 +111,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getLeaderName?: (userId: number) => string | undefined,
-): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -127,7 +126,8 @@ export function useGridColumns(
       field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
-      formatter: ({ cellValue }) => getLeaderName?.(cellValue) || '-',
+      formatter: ({ cellValue }) =>
+        userList.find((user) => user.id === cellValue)?.nickname || '-',
     },
     {
       field: 'sort',

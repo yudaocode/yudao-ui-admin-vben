@@ -1,20 +1,20 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { PayOrderApi } from '#/api/pay/order';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { getOrder } from '#/api/pay/order';
+import { getOrderDetail } from '#/api/pay/order';
 import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../data';
 
-const detailData = ref<PayOrderApi.Order>();
+const formData = ref<PayOrderApi.Order>();
 
 const [Descriptions] = useDescription({
   componentProps: {
-    bordered: false,
+    bordered: true,
     column: 2,
     class: 'mx-4',
   },
@@ -22,9 +22,9 @@ const [Descriptions] = useDescription({
 });
 
 const [Modal, modalApi] = useVbenModal({
-  onOpenChange: async (isOpen) => {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      detailData.value = undefined;
+      formData.value = undefined;
       return;
     }
     // 加载数据
@@ -34,7 +34,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      detailData.value = await getOrder(data.id);
+      formData.value = await getOrderDetail(data.id);
     } finally {
       modalApi.unlock();
     }
@@ -48,6 +48,6 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Descriptions :data="detailData" />
+    <Descriptions :data="formData" />
   </Modal>
 </template>

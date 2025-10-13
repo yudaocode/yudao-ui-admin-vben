@@ -2,8 +2,10 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpWarehouseApi } from '#/api/erp/stock/warehouse';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+
+import { z } from '#/adapter/form';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -39,9 +41,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
-      rules: 'required',
-      defaultValue: 0,
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'warehousePrice',
@@ -51,7 +54,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入仓储费，单位：元/天/KG',
         min: 0,
         precision: 2,
-        class: 'w-full',
       },
     },
     {
@@ -62,7 +64,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入搬运费，单位：元',
         min: 0,
         precision: 2,
-        class: 'w-full',
       },
     },
     {
@@ -80,10 +81,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入排序',
         precision: 0,
-        class: 'w-full',
       },
       rules: 'required',
-      defaultValue: 0,
     },
     {
       fieldName: 'remark',
@@ -91,9 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        rows: 3,
       },
-      formItemClass: 'col-span-2',
     },
   ];
 }
@@ -124,10 +121,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
+export function useGridColumns(
   onDefaultStatusChange?: (
     newStatus: boolean,
-    row: T,
+    row: ErpWarehouseApi.Warehouse,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -144,34 +141,30 @@ export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
     },
     {
       field: 'warehousePrice',
-      title: '仓储费(元)',
-      width: 120,
-      cellRender: {
-        name: 'CellMoney',
-      },
+      title: '仓储费',
+      minWidth: 120,
+      formatter: 'formatAmount2',
     },
     {
       field: 'truckagePrice',
-      title: '搬运费(元)',
-      width: 120,
-      cellRender: {
-        name: 'CellMoney',
-      },
+      title: '搬运费',
+      minWidth: 120,
+      formatter: 'formatAmount2',
     },
     {
       field: 'principal',
       title: '负责人',
-      width: 100,
+      minWidth: 100,
     },
     {
       field: 'sort',
       title: '排序',
-      width: 80,
+      minWidth: 80,
     },
     {
       field: 'status',
       title: '状态',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -180,7 +173,7 @@ export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
     {
       field: 'defaultStatus',
       title: '是否默认',
-      width: 100,
+      minWidth: 100,
       cellRender: {
         attrs: { beforeChange: onDefaultStatusChange },
         name: 'CellSwitch',
@@ -199,15 +192,12 @@ export function useGridColumns<T = ErpWarehouseApi.Warehouse>(
     {
       field: 'createTime',
       title: '创建时间',
-      width: 180,
-      cellRender: {
-        name: 'CellDateTime',
-      },
+      minWidth: 180,
+      formatter: 'formatDateTime',
     },
     {
-      field: 'actions',
       title: '操作',
-      width: 160,
+      width: 130,
       fixed: 'right',
       slots: { default: 'actions' },
     },

@@ -34,6 +34,7 @@ function getUserTypeColor(userType: number) {
 </script>
 <template>
   <div>
+    <!-- TODO @xingyu：有没可能美化下？ -->
     <Timeline>
       <Timeline.Item
         v-for="log in logList"

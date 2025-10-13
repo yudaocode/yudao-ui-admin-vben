@@ -96,11 +96,9 @@ export function updatePurchaseReturn(
 /**
  * 更新采购退货的状态
  */
-export function updatePurchaseReturnStatus(
-  params: ErpPurchaseReturnApi.PurchaseReturnStatusParams,
-) {
+export function updatePurchaseReturnStatus(id: number, status: number) {
   return requestClient.put('/erp/purchase-return/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 

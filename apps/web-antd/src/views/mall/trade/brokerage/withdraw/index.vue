@@ -29,19 +29,23 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'BrokerageWithdraw' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 审核通过 */
 async function handleApprove(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
+  await confirm('确定要审核通过吗？');
+  const hideLoading = message.loading({
+    content: '审核通过中 ...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要审核通过吗？');
     await approveBrokerageWithdraw(row.id);
     message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('审核失败:', error);
+    handleRefresh();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -61,10 +65,10 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
   }).then(async (val) => {
     if (val) {
       await rejectBrokerageWithdraw({
-        id: row.id as number,
+        id: row.id!,
         auditReason: val,
       });
-      onRefresh();
+      handleRefresh();
     }
   });
 }
@@ -73,13 +77,17 @@ function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
 async function handleRetryTransfer(
   row: MallBrokerageWithdrawApi.BrokerageWithdraw,
 ) {
+  await confirm('确定要重新转账吗？');
+  const hideLoading = message.loading({
+    content: '审核通过中 ...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要重新转账吗？');
     await approveBrokerageWithdraw(row.id);
     message.success($t('ui.actionMessage.operationSuccess'));
-    onRefresh();
-  } catch (error) {
-    console.error('重新转账失败:', error);
+    handleRefresh();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -92,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     cellConfig: {
-      height: 80,
+      height: 90,
     },
     proxyConfig: {
       ajax: {
@@ -107,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -120,46 +129,67 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <Grid table-title="佣金提现列表">
       <template #withdraw-info="{ row }">
-        <div v-if="row.type === BrokerageWithdrawTypeEnum.WALLET.type">-</div>
-        <div v-else>
-          <div v-if="row.userAccount">账号：{{ row.userAccount }}</div>
-          <div v-if="row.userName">真实姓名：{{ row.userName }}</div>
+        <div
+          v-if="row.type === BrokerageWithdrawTypeEnum.WALLET.type"
+          class="text-left"
+        >
+          -
+        </div>
+        <div v-else class="text-left">
+          <div v-if="row.userAccount" class="text-left">
+            账号：{{ row.userAccount }}
+          </div>
+          <div v-if="row.userName" class="text-left">
+            真实姓名：{{ row.userName }}
+          </div>
           <template v-if="row.type === BrokerageWithdrawTypeEnum.BANK.type">
-            <div v-if="row.bankName">银行名称：{{ row.bankName }}</div>
-            <div v-if="row.bankAddress">开户地址：{{ row.bankAddress }}</div>
+            <div v-if="row.bankName" class="text-left">
+              银行名称：{{ row.bankName }}
+            </div>
+            <div v-if="row.bankAddress" class="text-left">
+              开户地址：{{ row.bankAddress }}
+            </div>
           </template>
-          <div v-if="row.qrCodeUrl" class="mt-2">
-            <div>收款码：</div>
-            <img :src="row.qrCodeUrl" class="mt-1 h-10 w-10" />
+          <div v-if="row.qrCodeUrl" class="mt-2 text-left">
+            <div class="flex items-start gap-2">
+              <span class="flex-shrink-0">收款码：</span>
+              <img :src="row.qrCodeUrl" class="h-10 w-10 flex-shrink-0" />
+            </div>
           </div>
         </div>
       </template>
-
       <template #status-info="{ row }">
-        <div>
+        <div class="text-left">
           <DictTag
             :value="row.status"
             :type="DICT_TYPE.BROKERAGE_WITHDRAW_STATUS"
           />
-          <div v-if="row.auditTime" class="mt-1 text-xs text-gray-500">
+          <div
+            v-if="row.auditTime"
+            class="mt-1 text-left text-xs text-gray-500"
+          >
             时间：{{ formatDateTime(row.auditTime) }}
           </div>
-          <div v-if="row.auditReason" class="mt-1 text-xs text-gray-500">
+          <div
+            v-if="row.auditReason"
+            class="mt-1 text-left text-xs text-gray-500"
+          >
             审核原因：{{ row.auditReason }}
           </div>
-          <div v-if="row.transferErrorMsg" class="mt-1 text-xs text-red-500">
+          <div
+            v-if="row.transferErrorMsg"
+            class="mt-1 text-left text-xs text-red-500"
+          >
             转账失败原因：{{ row.transferErrorMsg }}
           </div>
         </div>
       </template>
-
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            // 审核中状态且没有支付转账编号，显示通过和驳回按钮
             {
               label: '通过',
-              type: 'link' as const,
+              type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['trade:brokerage-withdraw:audit'],
               ifShow:
@@ -169,7 +199,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '驳回',
-              type: 'link' as const,
+              type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['trade:brokerage-withdraw:audit'],
@@ -180,7 +210,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '重新转账',
-              type: 'link' as const,
+              type: 'link',
               icon: ACTION_ICON.REFRESH,
               auth: ['trade:brokerage-withdraw:audit'],
               ifShow:

@@ -31,7 +31,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 刷新表格 */
-async function onRefresh() {
+async function handleRefresh() {
   await gridApi.grid.loadData(
     await getDemo03CourseListByStudentId(props.studentId!),
   );
@@ -45,7 +45,7 @@ watch(
       return;
     }
     await nextTick();
-    await onRefresh();
+    await handleRefresh();
   },
   { immediate: true },
 );

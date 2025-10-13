@@ -16,7 +16,7 @@ export namespace PayAppApi {
     merchantId: number;
     merchantName: string;
     createTime?: Date;
-    channelCodes: string[];
+    channelCodes?: string[];
   }
 
   /** 更新状态请求 */
@@ -25,20 +25,16 @@ export namespace PayAppApi {
     status: number;
   }
 
-  export interface AppPageReq extends PageParam {
+  export interface AppPageReqVO extends PageParam {
     name?: string;
+    appKey?: string;
     status?: number;
-    remark?: string;
-    payNotifyUrl?: string;
-    refundNotifyUrl?: string;
-    transferNotifyUrl?: string;
-    merchantName?: string;
     createTime?: Date[];
   }
 }
 
 /** 查询支付应用列表 */
-export function getAppPage(params: PayAppApi.AppPageReq) {
+export function getAppPage(params: PayAppApi.AppPageReqVO) {
   return requestClient.get<PageResult<PayAppApi.App>>('/pay/app/page', {
     params,
   });
@@ -60,7 +56,7 @@ export function updateApp(data: PayAppApi.App) {
 }
 
 /** 修改支付应用状态 */
-export function changeAppStatus(data: PayAppApi.UpdateStatusReq) {
+export function updateAppStatus(data: PayAppApi.UpdateStatusReq) {
   return requestClient.put('/pay/app/update-status', data);
 }
 

@@ -18,7 +18,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
-        filterOption: false,
       },
     },
     {
@@ -32,7 +31,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',
-        filterOption: false,
       },
     },
   ];
@@ -60,12 +58,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'count',
       title: '库存量',
       minWidth: 100,
-      cellRender: {
-        name: 'CellAmount',
-        props: {
-          digits: 2,
-        },
-      },
+      formatter: 'formatAmount3',
     },
     {
       field: 'warehouseName',

@@ -44,10 +44,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = MallSpuApi.Spu>(
+export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: T,
+    row: MallSpuApi.Spu,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [

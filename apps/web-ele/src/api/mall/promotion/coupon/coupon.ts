@@ -40,9 +40,9 @@ export namespace MallCouponApi {
   }
 
   /** 发送优惠券 */
-  export interface SendCoupon {
+  export interface CouponSendReqVO {
     /** 优惠券编号 */
-    couponId: number;
+    templateId: number;
     /** 用户编号数组 */
     userIds: number[];
   }
@@ -62,6 +62,6 @@ export function getCouponPage(params: PageParam) {
 }
 
 /** 发送优惠券 */
-export function sendCoupon(data: MallCouponApi.SendCoupon) {
+export function sendCoupon(data: MallCouponApi.CouponSendReqVO) {
   return requestClient.post('/promotion/coupon/send', data);
 }

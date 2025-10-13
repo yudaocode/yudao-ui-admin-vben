@@ -11,7 +11,7 @@ import { DictTag } from '#/components/dict-tag';
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     {
-      field: 'name',
+      field: 'customerName',
       label: '客户名称',
     },
     {
@@ -24,7 +24,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     },
     {
       field: 'createTime',
-      label: '下次联系时间',
+      label: '创建时间',
       content: (data) => formatDateTime(data?.createTime) as string,
     },
   ];
@@ -64,10 +64,11 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'areaName',
       label: '地址',
-    },
-    {
-      field: 'detailAddress',
-      label: '详细地址',
+      content: (data) => {
+        const areaName = data?.areaName ?? '';
+        const detailAddress = data?.detailAddress ?? '';
+        return [areaName, detailAddress].filter(Boolean).join(' ');
+      },
     },
     {
       field: 'post',

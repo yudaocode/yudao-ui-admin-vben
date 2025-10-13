@@ -12,7 +12,6 @@ import {
   getDemoWithdrawPage,
   transferDemoWithdraw,
 } from '#/api/pay/demo/withdraw';
-import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
 import Form from './modules/form.vue';
@@ -23,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -40,10 +39,8 @@ async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
   });
   try {
     const payTransferId = await transferDemoWithdraw(row.id as number);
-    message.success({
-      content: `转账提交成功，转账单号：${payTransferId}`,
-    });
-    onRefresh();
+    message.success(`转账提交成功，转账单号：${payTransferId}`);
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -67,6 +64,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -89,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="示例提现单列表">
       <template #toolbar-tools>
         <TableAction
@@ -127,12 +125,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '发起转账',
               type: 'link',
+              icon: ACTION_ICON.ADD,
               ifShow: row.status === 0 && !row.payTransferId,
               onClick: handleTransfer.bind(null, row),
             },
             {
               label: '重新转账',
               type: 'link',
+              danger: true,
+              icon: ACTION_ICON.EDIT,
               ifShow: row.status === 20,
               onClick: handleTransfer.bind(null, row),
             },

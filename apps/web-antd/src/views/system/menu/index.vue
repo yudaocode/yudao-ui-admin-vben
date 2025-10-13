@@ -29,7 +29,7 @@ function handleRefresh() {
 
 /** 创建菜单 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 添加下级菜单 */

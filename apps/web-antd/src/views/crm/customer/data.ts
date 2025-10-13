@@ -55,6 +55,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'ownerUserId',
       label: '负责人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
@@ -227,6 +231,10 @@ export function useImportFormSchema(): VbenFormSchema[] {
         allowClear: true,
         class: 'w-full',
       },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       rules: 'required',
     },
     {
@@ -352,7 +360,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '距离进入公海天数',
       minWidth: 140,
       formatter: ({ cellValue }) =>
-        cellValue == null ? '-' : `${cellValue} 天`,
+        cellValue === null ? '-' : `${cellValue} 天`,
     },
     {
       field: 'ownerUserName',

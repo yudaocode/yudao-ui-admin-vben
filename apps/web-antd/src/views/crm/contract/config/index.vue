@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { VbenFormSchema } from '#/adapter/form';
 import type { CrmContractConfigApi } from '#/api/crm/contract/config';
 
 import { onMounted } from 'vue';
@@ -15,51 +14,13 @@ import {
 } from '#/api/crm/contract/config';
 import { $t } from '#/locales';
 
-const emit = defineEmits(['success']);
-
-const schema: VbenFormSchema[] = [
-  {
-    component: 'RadioGroup',
-    fieldName: 'notifyEnabled',
-    label: '提前提醒设置',
-    componentProps: {
-      options: [
-        { label: '提醒', value: true },
-        { label: '不提醒', value: false },
-      ],
-    },
-    defaultValue: true,
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'notifyDays',
-    componentProps: {
-      min: 0,
-      precision: 0,
-    },
-    renderComponentContent: () => ({
-      addonBefore: () => '提前',
-      addonAfter: () => '天提醒',
-    }),
-    dependencies: {
-      triggerFields: ['notifyEnabled'],
-      show: (values) => values.notifyEnabled,
-      trigger(values) {
-        if (!values.notifyEnabled) {
-          values.notifyDays = undefined;
-        }
-      },
-    },
-  },
-];
+import { schema } from './data';
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    labelClass: 'w-2/6',
+    labelClass: 'w-100',
   },
   layout: 'horizontal',
-  wrapperClass: 'grid-cols-1',
-  actionWrapperClass: 'text-center',
   schema,
   handleSubmit,
 });
@@ -76,7 +37,6 @@ async function handleSubmit() {
   }
   await saveContractConfig(data);
   await formApi.setValues(data);
-  emit('success');
   message.success($t('ui.actionMessage.operationSuccess'));
 }
 

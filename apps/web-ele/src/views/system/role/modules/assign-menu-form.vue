@@ -143,11 +143,11 @@ function getNodeClass(node: Recordable<any>) {
     <Form class="mx-4">
       <template #menuIds="slotProps">
         <Tree
-          :spinning="menuLoading"
+          v-loading="menuLoading"
           :tree-data="menuTree"
           multiple
           bordered
-          :expanded="expandedKeys"
+          :default-expanded-keys="expandedKeys"
           :get-node-class="getNodeClass"
           v-bind="slotProps"
           value-field="id"

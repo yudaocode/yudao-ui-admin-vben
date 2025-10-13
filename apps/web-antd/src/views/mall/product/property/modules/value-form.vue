@@ -67,27 +67,19 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<
-      MallPropertyApi.PropertyValue | { propertyId?: string }
-    >();
-
-    // 如果有ID，表示是编辑
-    if (data && 'id' in data && data.id) {
-      modalApi.lock();
-      try {
-        formData.value = await getPropertyValue(data.id);
-        // 设置到 values
-        if (formData.value) {
-          await formApi.setValues(formData.value);
-        }
-      } finally {
-        modalApi.unlock();
-      }
-    } else if (data && 'propertyId' in data && data.propertyId) {
-      // 新增时，如果传入了propertyId，则需要设置
-      await formApi.setValues({
-        propertyId: data.propertyId,
-      });
+    const data = modalApi.getData<MallPropertyApi.PropertyValue>();
+    if (!data || !data.id) {
+      // 设置 propertyId
+      await formApi.setValues(data);
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getPropertyValue(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
   },
 });

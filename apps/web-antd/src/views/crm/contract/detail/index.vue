@@ -20,14 +20,14 @@ import { $t } from '#/locales';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
 import { ProductDetailsList } from '#/views/crm/product/components';
-import {
-  ReceivableDetailsList,
-  ReceivablePlanDetailsList,
-} from '#/views/crm/receivable';
+import { ReceivableDetailsList } from '#/views/crm/receivable/components';
+import { ReceivablePlanDetailsList } from '#/views/crm/receivable/plan/components';
 
 import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import ContractDetailsInfo from './modules/info.vue';
+
+const props = defineProps<{ id?: number }>();
 
 const route = useRoute();
 const router = useRouter();
@@ -92,7 +92,7 @@ function handleTransfer() {
 
 /** 加载数据 */
 onMounted(() => {
-  contractId.value = Number(route.params.id);
+  contractId.value = Number(props.id || route.params.id);
   loadContractDetail();
 });
 </script>
@@ -132,10 +132,10 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="合同跟进" key="1" :force-render="true">
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="contractId" :biz-type="BizTypeEnum.CRM_CONTRACT" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="详细资料" key="2" :force-render="true">
+        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
           <ContractDetailsInfo :contract="contract" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="产品" key="3" :force-render="true">

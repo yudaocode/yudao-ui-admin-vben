@@ -6,7 +6,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import PropertyGrid from './modules/property-grid.vue';
 import ValueGrid from './modules/value-grid.vue';
 
-const searchPropertyId = ref<number>(); // 搜索的属性ID
+const searchPropertyId = ref<number>(); // 搜索的属性 ID
 
 function handlePropertyIdSelect(propertyId: number) {
   searchPropertyId.value = propertyId;

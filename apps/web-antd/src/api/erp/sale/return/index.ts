@@ -22,6 +22,7 @@ export namespace ErpSaleReturnApi {
     fileUrl?: string; // 附件地址
     items?: SaleReturnItem[];
   }
+
   export interface SaleReturnItem {
     count?: number;
     id?: number;
@@ -47,12 +48,6 @@ export namespace ErpSaleReturnApi {
     no?: string;
     customerId?: number;
     status?: number;
-  }
-
-  /** 销售退货状态更新参数 */
-  export interface SaleReturnStatusParams {
-    id: number;
-    status: number;
   }
 }
 
@@ -96,11 +91,9 @@ export function updateSaleReturn(data: ErpSaleReturnApi.SaleReturn) {
 /**
  * 更新销售退货的状态
  */
-export function updateSaleReturnStatus(
-  params: ErpSaleReturnApi.SaleReturnStatusParams,
-) {
+export function updateSaleReturnStatus(id: number, status: number) {
   return requestClient.put('/erp/sale-return/update-status', null, {
-    params,
+    params: { id, status },
   });
 }
 

@@ -46,6 +46,7 @@ export const CONTRACT_EXPIRY_TYPE = [
   { label: '已过期', value: 2 },
 ];
 
+/** 左侧菜单 */
 export const useLeftSides = (
   customerTodayContactCount: Ref<number>,
   clueFollowCount: Ref<number>,

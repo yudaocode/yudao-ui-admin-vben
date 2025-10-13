@@ -37,7 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (formValues) => !formValues.id,
+        disabled: (formValues) => formValues.id,
       },
     },
     {
@@ -83,7 +83,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入主机端口',
       },
       rules: 'required',

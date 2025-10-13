@@ -20,13 +20,19 @@ export namespace PayWalletApi {
   }
 
   /** 钱包分页请求 */
-  export interface WalletPageReq extends PageParam {
+  export interface WalletPageReqVO extends PageParam {
     userId?: number;
     userType?: number;
     balance?: number;
     totalExpense?: number;
     totalRecharge?: number;
     freezePrice?: number;
+  }
+
+  /** 钱包修改余额 */
+  export interface PayWalletUpdateBalanceReqVO {
+    userId: number;
+    balance: number;
   }
 }
 
@@ -38,7 +44,7 @@ export function getWallet(params: PayWalletApi.PayWalletUserReq) {
 }
 
 /** 查询会员钱包列表 */
-export function getWalletPage(params: PayWalletApi.WalletPageReq) {
+export function getWalletPage(params: PayWalletApi.WalletPageReqVO) {
   return requestClient.get<PageResult<PayWalletApi.Wallet>>(
     '/pay/wallet/page',
     {
@@ -48,6 +54,8 @@ export function getWalletPage(params: PayWalletApi.WalletPageReq) {
 }
 
 /** 修改会员钱包余额 */
-export function updateWalletBalance(data: PayWalletApi.Wallet) {
+export function updateWalletBalance(
+  data: PayWalletApi.PayWalletUpdateBalanceReqVO,
+) {
   return requestClient.put('/pay/wallet/update-balance', data);
 }

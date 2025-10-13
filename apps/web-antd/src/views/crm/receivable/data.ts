@@ -39,6 +39,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       component: 'ApiSelect',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
@@ -63,6 +67,10 @@ export function useFormSchema(): VbenFormSchema[] {
         },
         placeholder: '请选择客户',
       },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
     },
     {
       fieldName: 'contractId',
@@ -71,16 +79,18 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['customerId'],
-        disabled: (values) => !values.customerId,
+        disabled: (values) => !values.customerId || values.id,
         async componentProps(values) {
           if (values.customerId) {
-            values.contractId = undefined;
+            if (!values.id) {
+              // 特殊：只有在【新增】时，才清空合同编号
+              values.contractId = undefined;
+            }
             const contracts = await getContractSimpleList(values.customerId);
             return {
               options: contracts.map((item) => ({
                 label: item.name,
                 value: item.id,
-                disabled: item.auditStatus !== 20,
               })),
               placeholder: '请选择合同',
             } as any;
@@ -121,14 +131,12 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'returnTime',
-      label: '回款日期',
-      component: 'DatePicker',
+      fieldName: 'returnType',
+      label: '回款方式',
+      component: 'Select',
       componentProps: {
-        placeholder: '请选择回款日期',
-        showTime: false,
-        valueFormat: 'x',
-        format: 'YYYY-MM-DD',
+        options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
+        placeholder: '请选择回款方式',
       },
     },
     {
@@ -143,13 +151,15 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'returnType',
-      label: '回款方式',
-      component: 'Select',
+      fieldName: 'returnTime',
+      label: '回款日期',
+      component: 'DatePicker',
       rules: 'required',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE, 'number'),
-        placeholder: '请选择回款方式',
+        placeholder: '请选择回款日期',
+        showTime: false,
+        valueFormat: 'x',
+        format: 'YYYY-MM-DD',
       },
     },
     {
@@ -160,6 +170,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 4,
       },
+      formItemClass: 'md:col-span-2',
     },
   ];
 }
@@ -286,7 +297,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '操作',
       field: 'actions',
-      minWidth: 130,
+      minWidth: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },

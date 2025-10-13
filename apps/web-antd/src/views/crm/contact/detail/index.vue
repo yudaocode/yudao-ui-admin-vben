@@ -134,7 +134,10 @@ onMounted(() => {
         <Tabs.TabPane tab="详细资料" key="2" :force-render="true">
           <Info :contact="contact" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
+        <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
+          <OperateLog :log-list="logList" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="contactId"
@@ -143,16 +146,13 @@ onMounted(() => {
             @quit-team="handleBack"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="商机" key="4" :force-render="true">
+        <Tabs.TabPane tab="商机" key="5" :force-render="true">
           <BusinessDetailsList
             :biz-id="contactId"
             :biz-type="BizTypeEnum.CRM_CONTACT"
             :contact-id="contactId"
             :customer-id="contact.customerId"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="5" :force-render="true">
-          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

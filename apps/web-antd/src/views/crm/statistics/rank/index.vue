@@ -36,7 +36,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async (_, formValues) => {
           const res = await getDatas(activeTabName.value, formValues);
-          renderEcharts(getChartOptions(activeTabName.value, res));
+          await renderEcharts(getChartOptions(activeTabName.value, res));
           return res;
         },
       },
@@ -51,12 +51,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUser>,
 });
 
+/** tab 切换 */
 async function handleTabChange(key: any) {
   activeTabName.value = key;
   gridApi.setGridOptions({
     columns: useGridColumns(key),
   });
-  gridApi.reload();
+  await gridApi.reload();
 }
 </script>
 

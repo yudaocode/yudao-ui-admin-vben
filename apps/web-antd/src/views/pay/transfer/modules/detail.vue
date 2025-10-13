@@ -12,6 +12,15 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<PayTransferApi.Transfer>();
 
+const [Descriptions] = useDescription({
+  componentProps: {
+    bordered: true,
+    column: 2,
+    class: 'mx-4',
+  },
+  schema: useDetailSchema(),
+});
+
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
@@ -30,16 +39,6 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-});
-
-const [Descriptions] = useDescription({
-  componentProps: {
-    title: '基本信息',
-    bordered: false,
-    column: 2,
-    class: 'mx-4',
-  },
-  schema: useDetailSchema(),
 });
 </script>
 

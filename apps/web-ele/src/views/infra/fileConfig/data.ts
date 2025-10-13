@@ -37,7 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (formValues) => !formValues.id,
+        disabled: (formValues) => formValues.id,
       },
     },
     {
@@ -83,8 +83,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入主机端口',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
       dependencies: {
@@ -256,7 +257,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入配置名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -266,7 +267,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE, 'number'),
         placeholder: '请选择存储器',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -275,7 +276,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

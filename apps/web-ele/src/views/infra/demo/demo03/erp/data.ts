@@ -143,7 +143,7 @@ export function useGridColumns(): VxeTableGridOptions<Demo03StudentApi.Demo03Stu
     },
     {
       title: '操作',
-      width: 200,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -258,7 +258,7 @@ export function useDemo03CourseGridColumns(): VxeTableGridOptions<Demo03StudentA
     },
     {
       title: '操作',
-      width: 200,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },
@@ -373,7 +373,7 @@ export function useDemo03GradeGridColumns(): VxeTableGridOptions<Demo03StudentAp
     },
     {
       title: '操作',
-      width: 200,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },

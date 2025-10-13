@@ -4,9 +4,8 @@ import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 import { Divider } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
-import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
 
-import { useDetailBaseSchema } from '../data';
+import { useDetailBaseSchema, useDetailSystemSchema } from '../data';
 
 defineProps<{
   receivablePlan: CrmReceivablePlanApi.Plan; // 收款计划信息
@@ -29,7 +28,7 @@ const [SystemDescriptions] = useDescription({
     column: 3,
     class: 'mx-4',
   },
-  schema: useFollowUpDetailSchema(),
+  schema: useDetailSystemSchema(),
 });
 </script>
 

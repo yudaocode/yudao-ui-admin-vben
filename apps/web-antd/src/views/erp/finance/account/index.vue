@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpAccountApi } from '#/api/erp/finance/account';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -12,6 +12,7 @@ import {
   deleteAccount,
   exportAccount,
   getAccountPage,
+  updateAccountDefaultStatus,
 } from '#/api/erp/finance/account';
 import { $t } from '#/locales';
 
@@ -24,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -52,13 +53,33 @@ async function handleDelete(row: ErpAccountApi.Account) {
   });
   try {
     await deleteAccount(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
+}
+
+/** 修改默认状态 */
+async function handleDefaultStatusChange(
+  newStatus: boolean,
+  row: ErpAccountApi.Account,
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    const text = newStatus ? '设置' : '取消';
+    confirm({
+      content: `确认要${text}"${row.name}"默认吗?`,
+    })
+      .then(async () => {
+        // 更新默认状态
+        await updateAccountDefaultStatus(row.id!, newStatus);
+        message.success(`${text}默认成功`);
+        resolve(true);
+      })
+      .catch(() => {
+        reject(new Error('取消操作'));
+      });
+  });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -66,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleDefaultStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -100,7 +121,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/sale/finance-payment-receipt/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="结算账户列表">
       <template #toolbar-tools>
         <TableAction

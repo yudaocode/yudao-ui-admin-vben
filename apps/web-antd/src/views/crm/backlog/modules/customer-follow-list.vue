@@ -53,6 +53,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

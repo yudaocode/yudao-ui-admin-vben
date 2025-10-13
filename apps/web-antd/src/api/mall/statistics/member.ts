@@ -7,67 +7,65 @@ import { requestClient } from '#/api/request';
 export namespace MallMemberStatisticsApi {
   /** 会员分析 Request */
   export interface AnalyseReq {
-    times: Date[];
+    times: Date[]; // 时间范围
   }
 
   /** 会员分析对照数据 Response */
   export interface AnalyseComparison {
-    registerUserCount: number;
-    visitUserCount: number;
-    rechargeUserCount: number;
+    registerUserCount: number; // 注册用户数
+    visitUserCount: number; // 访问用户数
+    rechargeUserCount: number; // 充值用户数
   }
 
   /** 会员分析 Response */
   export interface Analyse {
-    visitUserCount: number;
-    orderUserCount: number;
-    payUserCount: number;
-    atv: number;
-    comparison: MallDataComparisonResp<AnalyseComparison>;
+    visitUserCount: number; // 访问用户数
+    orderUserCount: number; // 下单用户数
+    payUserCount: number; // 支付用户数
+    atv: number; // 平均客单价
+    comparison: MallDataComparisonResp<AnalyseComparison>; // 对照数据
   }
 
   /** 会员地区统计 Response */
   export interface AreaStatistics {
-    areaId: number;
-    areaName: string;
-    userCount: number;
-    orderCreateUserCount: number;
-    orderPayUserCount: number;
-    orderPayPrice: number;
+    areaId: number; // 地区ID
+    areaName: string; // 地区名称
+    userCount: number; // 用户数
+    orderCreateUserCount: number; // 下单用户数
+    orderPayUserCount: number; // 支付用户数
+    orderPayPrice: number; // 支付金额
   }
 
   /** 会员性别统计 Response */
   export interface SexStatistics {
-    sex: number;
-    userCount: number;
+    sex: number; // 性别
+    userCount: number; // 用户数
   }
 
   /** 会员统计 Response */
   export interface Summary {
-    userCount: number;
-    rechargeUserCount: number;
-    rechargePrice: number;
-    expensePrice: number;
+    userCount: number; // 用户数
+    rechargeUserCount: number; // 充值用户数
+    rechargePrice: number; // 充值金额
+    expensePrice: number; // 消费金额
   }
 
   /** 会员终端统计 Response */
   export interface TerminalStatistics {
-    terminal: number;
-    userCount: number;
+    terminal: number; // 终端
+    userCount: number; // 用户数
   }
 
   /** 会员数量统计 Response */
   export interface Count {
-    /** 用户访问量 */
-    visitUserCount: string;
-    /** 注册用户数量 */
-    registerUserCount: number;
+    visitUserCount: string; // 用户访问量
+    registerUserCount: number; // 注册用户数量
   }
 
   /** 会员注册数量 Response */
   export interface RegisterCount {
-    date: string;
-    count: number;
+    date: string; // 日期
+    count: number; // 数量
   }
 }
 

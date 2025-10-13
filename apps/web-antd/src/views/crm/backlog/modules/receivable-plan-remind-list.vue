@@ -49,7 +49,7 @@ const [Grid] = useVbenVxeGrid({
           allowClear: true,
           options: RECEIVABLE_REMIND_TYPE,
         },
-        defaultValue: 1,
+        defaultValue: RECEIVABLE_REMIND_TYPE[0]!.value,
       },
     ],
   },
@@ -70,6 +70,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

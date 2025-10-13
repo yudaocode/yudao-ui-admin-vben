@@ -1,6 +1,6 @@
+<!-- 回款计划列表：用于【客户】【合同】详情中，展示它们关联的回款计划列表 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmReceivableApi } from '#/api/crm/receivable';
 import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -14,7 +14,6 @@ import {
 } from '#/api/crm/receivable/plan';
 import { $t } from '#/locales';
 
-import ReceivableForm from '../../modules/form.vue';
 import Form from '../modules/form.vue';
 import { useDetailListColumns } from './data';
 
@@ -28,13 +27,8 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [ReceivableFormModal, receivableFormModalApi] = useVbenModal({
-  connectedComponent: ReceivableForm,
-  destroyOnClose: true,
-});
-
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -48,28 +42,23 @@ function handleCreate() {
     .open();
 }
 
-/** 创建回款 */
-function handleCreateReceivable(row: CrmReceivablePlanApi.Plan) {
-  receivableFormModalApi.setData({ plan: row }).open();
-}
-
 /** 编辑回款计划 */
-function handleEdit(row: CrmReceivableApi.Receivable) {
-  formModalApi.setData({ receivable: row }).open();
+function handleEdit(row: CrmReceivablePlanApi.Plan) {
+  formModalApi.setData({ receivablePlan: row }).open();
 }
 
 /** 删除回款计划 */
 async function handleDelete(row: CrmReceivablePlanApi.Plan) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.period]),
+    content: $t('ui.actionMessage.deleting', [`第${row.period}期`]),
     duration: 0,
   });
   try {
     await deleteReceivablePlan(row.id!);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.period]),
-    });
-    onRefresh();
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [`第${row.period}期`]),
+    );
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -78,15 +67,14 @@ async function handleDelete(row: CrmReceivablePlanApi.Plan) {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useDetailListColumns(),
-    height: 400,
+    height: 500,
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page }, formValues) => {
+        query: async ({ page }) => {
           const queryParams: CrmReceivablePlanApi.PlanPageParam = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
           };
           if (props.customerId && !props.contractId) {
             queryParams.customerId = props.customerId;
@@ -101,6 +89,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -112,8 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
-    <ReceivableFormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -132,14 +120,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['回款']),
-              type: 'link',
-              icon: ACTION_ICON.ADD,
-              auth: ['crm:receivable-plan:create'],
-              disabled: !!row.receivableId,
-              onClick: handleCreateReceivable.bind(null, row),
-            },
-            {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
@@ -153,7 +133,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['crm:receivable-plan:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.period]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  `第${row.period}期`,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
             },

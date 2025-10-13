@@ -1,10 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { fenToYuan } from '@vben/utils';
-
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { fenToYuan } from '@vben/utils';
 
 import { getRangePickerDefaultProps } from '#/utils';
 

@@ -53,6 +53,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUser>,
 });
 
+/** tab 切换 */
 async function handleTabChange(key: any) {
   activeTabName.value = key;
   const params = (await gridApi.formApi.getValues()) as any;
@@ -128,10 +129,12 @@ async function handleTabChange(key: any) {
             100
           ).toFixed(2);
   });
-  renderEcharts(getChartOptions(key, data), true);
-  gridApi.grid.reloadColumn(columnsData);
-  gridApi.grid.reloadData(tableData);
+  await renderEcharts(getChartOptions(key, data), true);
+  await gridApi.grid.reloadColumn(columnsData);
+  await gridApi.grid.reloadData(tableData);
 }
+
+/** 初始化加载 */
 onMounted(() => {
   handleTabChange(activeTabName.value);
 });

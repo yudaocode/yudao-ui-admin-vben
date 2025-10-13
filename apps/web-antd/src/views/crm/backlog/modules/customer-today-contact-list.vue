@@ -31,7 +31,7 @@ const [Grid] = useVbenVxeGrid({
           allowClear: true,
           options: CONTACT_STATUS,
         },
-        defaultValue: 1,
+        defaultValue: CONTACT_STATUS[0]!.value,
       },
       {
         fieldName: 'sceneType',
@@ -41,7 +41,7 @@ const [Grid] = useVbenVxeGrid({
           allowClear: true,
           options: SCENE_TYPES,
         },
-        defaultValue: 1,
+        defaultValue: SCENE_TYPES[0]!.value,
       },
     ],
   },
@@ -63,6 +63,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

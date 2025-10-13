@@ -2,7 +2,6 @@
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
 
-// TODO @jason：业务表单审批时，读取不到界面，参见 https://t.zsxq.com/eif2e
 import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
@@ -156,7 +155,6 @@ async function getApprovalDetail() {
       });
     } else {
       // 注意：data.processDefinition.formCustomViewPath 是组件的全路径，例如说：/crm/contract/detail/index.vue
-
       BusinessFormComponent.value = registerComponent(
         data?.processDefinition?.formCustomViewPath || '',
       );

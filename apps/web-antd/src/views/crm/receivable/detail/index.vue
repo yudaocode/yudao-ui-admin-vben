@@ -23,6 +23,8 @@ import ReceivableForm from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import Info from './modules/info.vue';
 
+const props = defineProps<{ id?: number }>();
+
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
@@ -73,12 +75,12 @@ function handleBack() {
 
 /** 编辑收款 */
 function handleEdit() {
-  formModalApi.setData({ id: receivableId.value }).open();
+  formModalApi.setData({ receivable: { id: receivableId.value } }).open();
 }
 
 /** 加载数据 */
 onMounted(() => {
-  receivableId.value = Number(route.params.id);
+  receivableId.value = Number(props.id || route.params.id);
   loadReceivableDetail();
 });
 </script>
@@ -114,7 +116,10 @@ onMounted(() => {
         <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
           <Info :receivable="receivable" />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="2" :force-render="true">
+        <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
+          <OperateLog :log-list="logList" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="receivableId"
@@ -122,9 +127,6 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="3" :force-render="true">
-          <OperateLog :log-list="logList" />
         </Tabs.TabPane>
       </Tabs>
     </Card>

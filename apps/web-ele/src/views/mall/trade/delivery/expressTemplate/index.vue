@@ -22,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -46,7 +46,7 @@ async function handleDelete(
   try {
     await deleteDeliveryExpressTemplate(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -73,6 +73,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -84,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="快递模板列表">
       <template #toolbar-tools>
         <TableAction
@@ -104,6 +105,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['trade:delivery:express-template:update'],
@@ -111,8 +113,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              link: true,
               type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['trade:delivery:express-template:delete'],
               popConfirm: {

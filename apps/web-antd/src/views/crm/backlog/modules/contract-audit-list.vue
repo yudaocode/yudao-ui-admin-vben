@@ -53,7 +53,7 @@ const [Grid] = useVbenVxeGrid({
           allowClear: true,
           options: AUDIT_STATUS,
         },
-        defaultValue: 10,
+        defaultValue: AUDIT_STATUS[0]!.value,
       },
     ],
   },
@@ -75,6 +75,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

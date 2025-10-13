@@ -8,6 +8,8 @@ import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { getRangePickerDefaultProps } from '#/utils';
 
+const tenantPackageList = await getTenantPackageList();
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -163,9 +165,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getPackageName?: (packageId: number) => string | undefined,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -182,8 +182,10 @@ export function useGridColumns(
       field: 'packageId',
       title: '租户套餐',
       minWidth: 180,
-      formatter: (row: { cellValue: number }) => {
-        return getPackageName?.(row.cellValue) || '-';
+      formatter: ({ cellValue }) => {
+        return cellValue === 0
+          ? '系统租户'
+          : tenantPackageList.find((pkg) => pkg.id === cellValue)?.name || '-';
       },
     },
     {

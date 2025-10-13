@@ -89,7 +89,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 创建示例联系人 */
 function handleCreate() {
-  formModalApi.setData({}).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑示例联系人 */
@@ -101,7 +101,6 @@ function handleEdit(row: Demo01ContactApi.Demo01Contact) {
 async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo01Contact(row.id!);
@@ -116,7 +115,6 @@ async function handleDelete(row: Demo01ContactApi.Demo01Contact) {
 async function handleDeleteBatch() {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting'),
-    background: 'rgba(0, 0, 0, 0.7)',
   });
   try {
     await deleteDemo01ContactList(checkedIds.value);

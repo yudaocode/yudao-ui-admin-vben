@@ -6,11 +6,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage } from '#/api/member/user';
 import { $t } from '#/locales';
 
+import { CouponSendForm } from '../../mall/promotion/coupon/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import BalanceForm from './modules/balance-form.vue';
 import Form from './modules/form.vue';
@@ -39,21 +41,14 @@ const [LevelFormModal, levelFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 刷新表格数据 */
-function onRefresh() {
+const [CouponSendFormModal, couponSendFormModalApi] = useVbenModal({
+  connectedComponent: CouponSendForm,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function handleRefresh() {
   gridApi.query();
-}
-
-/** 设置选中 ID */
-const checkedIds = ref<number[]>([]);
-function setCheckedIds({ records }: { records: MemberUserApi.User[] }) {
-  checkedIds.value = records.map((item) => item.id!);
-}
-
-/** 发送优惠券 */
-// TODO @xingyu：这个功能没开发对，是发送优惠劵哈；
-function handleSendCoupon() {
-  formModalApi.setData(null).open();
 }
 
 /** 编辑会员 */
@@ -76,6 +71,24 @@ function handleUpdateBalance(row: MemberUserApi.User) {
   balanceFormModalApi.setData(row).open();
 }
 
+/** 发送优惠券 */
+async function handleSendCoupon() {
+  couponSendFormModalApi
+    .setData({
+      userIds: checkedIds.value,
+    })
+    .open();
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: MemberUserApi.User[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
 /** 查看会员详情 */
 function handleViewDetail(row: MemberUserApi.User) {
   router.push({
@@ -86,17 +99,12 @@ function handleViewDetail(row: MemberUserApi.User) {
   });
 }
 
-// 表格实例
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
-    checkboxConfig: {
-      highlight: true,
-      labelField: 'checkbox',
-    },
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -112,6 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -119,8 +128,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MemberUserApi.User>,
   gridEvents: {
-    checkboxAll: setCheckedIds,
-    checkboxChange: setCheckedIds,
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
   },
 });
 </script>
@@ -134,10 +143,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <PointFormModal @success="onRefresh" />
-    <BalanceFormModal @success="onRefresh" />
-    <LevelFormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <PointFormModal @success="handleRefresh" />
+    <BalanceFormModal @success="handleRefresh" />
+    <LevelFormModal @success="handleRefresh" />
+    <CouponSendFormModal />
     <Grid table-title="会员列表">
       <template #toolbar-tools>
         <TableAction
@@ -146,6 +156,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '发送优惠券',
               type: 'primary',
               icon: 'lucide:mouse-pointer-2',
+              disabled: isEmpty(checkedIds),
               auth: ['promotion:coupon:send'],
               onClick: handleSendCoupon,
             },

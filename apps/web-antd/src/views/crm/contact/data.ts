@@ -36,6 +36,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       component: 'ApiSelect',
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
         api: () => getSimpleUserList(),
         fieldNames: {
@@ -196,7 +200,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: 'id',
         },
         placeholder: '请选择客户',
-        allowClear: true,
       },
     },
     {

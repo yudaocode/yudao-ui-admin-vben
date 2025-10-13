@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { PayAppApi } from '#/api/pay/app/index';
+import type { ActionItem, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayAppApi } from '#/api/pay/app';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
@@ -8,50 +8,58 @@ import { CommonStatusEnum, PayChannelEnum } from '@vben/constants';
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { changeAppStatus, deleteApp, getAppPage } from '#/api/pay/app/index';
+import { deleteApp, getAppPage, updateAppStatus } from '#/api/pay/app';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import appFrom from './modules/app-form.vue';
-import channelFrom from './modules/channel-form.vue';
+import AppForm from './modules/app-form.vue';
+import ChannelForm from './modules/channel-form.vue';
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 const [AppFormModal, appFormModalApi] = useVbenModal({
-  connectedComponent: appFrom,
+  connectedComponent: AppForm,
   destroyOnClose: true,
 });
 
 const [ChannelFormModal, channelFormModalApi] = useVbenModal({
-  connectedComponent: channelFrom,
+  connectedComponent: ChannelForm,
   destroyOnClose: true,
 });
 
+/** 创建应用 */
 function handleCreate() {
   appFormModalApi.setData(null).open();
 }
 
+/** 编辑应用 */
 function handleEdit(row: PayAppApi.App) {
   appFormModalApi.setData({ id: row.id }).open();
 }
 
+/** 创建/编辑渠道 */
+async function handleChannelForm(row: PayAppApi.App, payCode: string) {
+  channelFormModalApi.setData({ appId: row.id, code: payCode }).open();
+}
+
+/** 删除应用 */
 async function handleDelete(row: PayAppApi.App) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteApp(row.id as number);
+    await deleteApp(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
-/** 更新状态 */
+/** 更新应用状态 */
 async function handleStatusChange(
   newStatus: number,
   row: PayAppApi.App,
@@ -63,8 +71,8 @@ async function handleStatusChange(
     })
       .then(async () => {
         // 更新状态
-        const res = await changeAppStatus({
-          id: row.id as number,
+        const res = await updateAppStatus({
+          id: row.id!,
           status: newStatus,
         });
         if (res) {
@@ -81,21 +89,20 @@ async function handleStatusChange(
   });
 }
 
-/**
- * 根据渠道编码判断渠道列表中是否存在
- *
- * @param channels 渠道列表
- * @param channelCode 渠道编码
- */
-function isChannelExists(channels: string[], channelCode: string) {
-  if (!channels) {
-    return false;
-  }
-  return channels.includes(channelCode);
-}
-
-async function openChannelForm(row: PayAppApi.App, payCode: string) {
-  channelFormModalApi.setData({ id: row.id, payCode }).open();
+/** 生成渠道配置按钮 */
+function createChannelConfigAction(
+  row: PayAppApi.App,
+  channelCode: string,
+): ActionItem[] {
+  const exists = row.channelCodes?.includes(channelCode);
+  return [
+    {
+      type: exists ? 'primary' : 'danger',
+      size: 'small',
+      icon: exists ? 'lucide:check' : 'lucide:x',
+      onClick: handleChannelForm.bind(null, row, channelCode),
+    },
+  ];
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -119,6 +126,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -134,10 +142,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="支付功能开启" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <AppFormModal @success="onRefresh" />
-    <ChannelFormModal @success="onRefresh" />
+    <AppFormModal @success="handleRefresh" />
+    <ChannelFormModal @success="handleRefresh" />
 
-    <Grid>
+    <Grid table-title="应用列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -156,16 +164,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              link: true,
               type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['pay:app:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              link: true,
               type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['pay:app:delete'],
               popConfirm: {
@@ -177,349 +185,80 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #alipayAppConfig="{ row }">
-        <!-- TODO @xingyu：channelCodes 爆红 -->
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_APP.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.ALIPAY_APP.code)
+          "
         />
       </template>
       <template #alipayPCConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_PC.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_PC.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.ALIPAY_PC.code)
+          "
         />
       </template>
       <template #alipayWAPConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_WAP.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_WAP.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.ALIPAY_WAP.code)
+          "
         />
       </template>
       <template #alipayQrConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_QR.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_QR.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.ALIPAY_QR.code)
+          "
         />
       </template>
       <template #alipayBarConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_BAR.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.ALIPAY_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.ALIPAY_BAR.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.ALIPAY_BAR.code)
+          "
         />
       </template>
       <template #wxLiteConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_LITE.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_LITE.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_LITE.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WX_LITE.code)"
         />
       </template>
       <template #wxPubConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_PUB.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_PUB.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_PUB.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WX_PUB.code)"
         />
       </template>
       <template #wxAppConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_APP.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_APP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_APP.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WX_APP.code)"
         />
       </template>
       <template #wxNativeConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_NATIVE.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_NATIVE.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_NATIVE.code,
-              ),
-            },
-          ]"
+          :actions="
+            createChannelConfigAction(row, PayChannelEnum.WX_NATIVE.code)
+          "
         />
       </template>
       <template #wxWapConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_WAP.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_WAP.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_WAP.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WX_WAP.code)"
         />
       </template>
       <template #wxBarConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_BAR.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WX_BAR.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WX_BAR.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WX_BAR.code)"
         />
       </template>
       <template #walletConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WALLET.code,
-              )
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(
-                row.channelCodes,
-                PayChannelEnum.WALLET.code,
-              )
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.WALLET.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.WALLET.code)"
         />
       </template>
       <template #mockConfig="{ row }">
         <TableAction
-          :actions="[
-            {
-              size: 'small',
-              icon: isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)
-                ? 'lucide:check'
-                : 'lucide:x',
-              type: !isChannelExists(row.channelCodes, PayChannelEnum.MOCK.code)
-                ? 'danger'
-                : 'primary',
-              circle: true,
-              onClick: openChannelForm.bind(
-                null,
-                row,
-                PayChannelEnum.MOCK.code,
-              ),
-            },
-          ]"
+          :actions="createChannelConfigAction(row, PayChannelEnum.MOCK.code)"
         />
       </template>
     </Grid>

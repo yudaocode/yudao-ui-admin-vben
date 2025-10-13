@@ -30,7 +30,6 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 已选择的商机 */
 const checkedRows = ref<CrmBusinessApi.Business[]>([]);
 function setCheckedRows({ records }: { records: CrmBusinessApi.Business[] }) {
   checkedRows.value = records;

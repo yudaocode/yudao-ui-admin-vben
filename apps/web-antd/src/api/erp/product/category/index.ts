@@ -14,9 +14,10 @@ export namespace ErpProductCategoryApi {
 }
 
 /** 查询产品分类列表 */
-export function getProductCategoryList() {
+export function getProductCategoryList(params?: any) {
   return requestClient.get<ErpProductCategoryApi.ProductCategory[]>(
     '/erp/product-category/list',
+    { params },
   );
 }
 

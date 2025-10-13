@@ -1,18 +1,48 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PayNotifyApi } from '#/api/pay/notify';
+
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
 
-import { Descriptions, Divider, Table, Tag } from 'ant-design-vue';
+import { Divider } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyTaskDetail } from '#/api/pay/notify';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
 
-import { detailColumns } from '../data';
+import { useDetailLogColumns, useDetailSchema } from '../data';
 
-const formData = ref();
+const formData = ref<PayNotifyApi.NotifyTask>();
+
+const [Description] = useDescription({
+  componentProps: {
+    bordered: true,
+    column: 2,
+    class: 'mx-4',
+  },
+  schema: useDetailSchema(),
+});
+
+const [LogGrid, logGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useDetailLogColumns(),
+    height: 'auto',
+    keepSource: true,
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      enabled: true,
+      refresh: true,
+    },
+  } as VxeTableGridOptions,
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
@@ -21,13 +51,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData();
+    const data = modalApi.getData<PayNotifyApi.NotifyTask>();
     if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
       formData.value = await getNotifyTaskDetail(data.id);
+      logGridApi.grid?.reloadData(formData.value?.logs || []);
     } finally {
       modalApi.unlock();
     }
@@ -42,63 +73,10 @@ const [Modal, modalApi] = useVbenModal({
     :show-cancel-button="false"
     :show-confirm-button="false"
   >
-    <Descriptions bordered :column="2" size="middle" class="mx-4">
-      <Descriptions.Item label="商户订单编号">
-        <Tag>{{ formData?.merchantOrderId }}</Tag>
-      </Descriptions.Item>
-      <Descriptions.Item label="通知状态">
-        <DictTag
-          :type="DICT_TYPE.PAY_NOTIFY_STATUS"
-          :value="formData?.status"
-        />
-      </Descriptions.Item>
-
-      <Descriptions.Item label="应用编号">
-        {{ formData?.appId }}
-      </Descriptions.Item>
-      <Descriptions.Item label="应用名称">
-        {{ formData?.appName }}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="关联编号">
-        {{ formData?.dataId }}
-      </Descriptions.Item>
-      <Descriptions.Item label="通知类型">
-        <DictTag :type="DICT_TYPE.PAY_NOTIFY_TYPE" :value="formData?.type" />
-      </Descriptions.Item>
-
-      <Descriptions.Item label="通知次数">
-        {{ formData?.notifyTimes }}
-      </Descriptions.Item>
-      <Descriptions.Item label="最大通知次数">
-        {{ formData?.maxNotifyTimes }}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="最后通知时间">
-        {{ formatDateTime(formData?.lastExecuteTime || '') }}
-      </Descriptions.Item>
-      <Descriptions.Item label="下次通知时间">
-        {{ formatDateTime(formData?.nextNotifyTime || '') }}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="创建时间">
-        {{ formatDateTime(formData?.createTime || '') }}
-      </Descriptions.Item>
-      <Descriptions.Item label="更新时间">
-        {{ formatDateTime(formData?.updateTime || '') }}
-      </Descriptions.Item>
-    </Descriptions>
+    <Description :data="formData" />
 
     <Divider />
 
-    <Descriptions bordered :column="1" size="middle" class="mx-4">
-      <Descriptions.Item label="回调日志">
-        <Table
-          v-if="formData"
-          :data-source="formData.logs"
-          :columns="detailColumns"
-        />
-      </Descriptions.Item>
-    </Descriptions>
+    <LogGrid table-title="支付通知列表" />
   </Modal>
 </template>

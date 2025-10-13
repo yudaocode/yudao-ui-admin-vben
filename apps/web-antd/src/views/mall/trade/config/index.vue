@@ -4,6 +4,7 @@ import type { MallTradeConfigApi } from '#/api/mall/trade/config';
 import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
+import { fenToYuan, yuanToFen } from '@vben/utils';
 
 import { Card, message, Tabs } from 'ant-design-vue';
 
@@ -11,66 +12,66 @@ import { useVbenForm } from '#/adapter/form';
 import { getTradeConfig, saveTradeConfig } from '#/api/mall/trade/config';
 import { $t } from '#/locales';
 
-import { useFormSchema } from './data';
+import { schema } from './data';
 
 const activeKey = ref('afterSale');
 const formData = ref<MallTradeConfigApi.Config & { type?: string }>();
 
+/** 获取配置 */
+async function getConfigInfo() {
+  const res = await getTradeConfig();
+  if (!res) {
+    return;
+  }
+  formData.value = res;
+  // 转换金额单位
+  formData.value.deliveryExpressFreePrice = Number.parseFloat(
+    fenToYuan(formData.value.deliveryExpressFreePrice!),
+  );
+  formData.value.brokerageWithdrawMinPrice = Number.parseFloat(
+    fenToYuan(formData.value.brokerageWithdrawMinPrice!),
+  );
+  formData.value!.type = activeKey.value;
+  formApi.updateSchema(schema);
+  // 设置到 values
+  await formApi.setValues(formData.value);
+}
+
+/** 切换 Tab */
 function handleTabChange(key: any) {
   activeKey.value = key;
   formData.value!.type = activeKey.value;
   formApi.setValues(formData.value!);
-  formApi.updateSchema(useFormSchema());
+  formApi.updateSchema(schema);
 }
 
-async function loadConfig() {
-  const res = await getTradeConfig();
-  if (res) {
-    formData.value = res;
-    // 金额缩小
-    formData.value.deliveryExpressFreePrice =
-      formData.value.deliveryExpressFreePrice! / 100 || 0;
-    formData.value.brokerageWithdrawMinPrice =
-      formData.value.brokerageWithdrawMinPrice! / 100 || 0;
-    formData.value!.type = activeKey.value;
-    formApi.updateSchema(useFormSchema());
-    await formApi.setValues(formData.value);
-  }
-}
-
-async function onSubmit() {
+/** 提交表单 */
+async function handleSubmit() {
   const { valid } = await formApi.validate();
   if (!valid) {
     return;
   }
   // 提交表单
   const data = (await formApi.getValues()) as MallTradeConfigApi.Config;
-  formApi.setState({ commonConfig: { disabled: true } });
-  try {
-    await saveTradeConfig(data);
-    message.success($t('ui.actionMessage.operationSuccess'));
-  } finally {
-    formApi.setState({ commonConfig: { disabled: false } });
-  }
+  // 转换金额单位
+  data.deliveryExpressFreePrice = yuanToFen(data.deliveryExpressFreePrice!);
+  data.brokerageWithdrawMinPrice = yuanToFen(data.brokerageWithdrawMinPrice!);
+  await saveTradeConfig(data);
+  message.success($t('ui.actionMessage.operationSuccess'));
 }
-
-onMounted(() => {
-  loadConfig();
-});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
-    labelClass: 'w-2/6',
+    labelWidth: 150,
   },
-  wrapperClass: 'grid-cols-1',
-  actionWrapperClass: 'text-center',
-  handleSubmit: onSubmit,
   layout: 'horizontal',
-  resetButtonOptions: {
-    show: false,
-  },
-  schema: useFormSchema(),
+  handleSubmit,
+  schema,
+});
+
+/** 初始化 */
+onMounted(() => {
+  getConfigInfo();
 });
 </script>
 
@@ -90,10 +91,9 @@ const [Form, formApi] = useVbenForm({
       <Tabs :active-key="activeKey" @change="handleTabChange">
         <Tabs.TabPane tab="售后" key="afterSale" :force-render="true" />
         <Tabs.TabPane tab="配送" key="delivery" :force-render="true" />
-        <!-- TODO @xingyu：tooltip 有点丑；要不要左对齐？（貌似都行） -->
         <Tabs.TabPane tab="分销" key="brokerage" :force-render="true" />
       </Tabs>
-      <Form class="w-3/5" />
+      <Form class="w-2/5" />
     </Card>
   </Page>
 </template>

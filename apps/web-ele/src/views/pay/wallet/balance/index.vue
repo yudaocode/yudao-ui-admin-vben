@@ -9,20 +9,21 @@ import { getWalletPage } from '#/api/pay/wallet/balance';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import WalletDetail from './modules/detail.vue';
+import Detail from './modules/detail.vue';
 
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
-const [WalletModal, walletModalApi] = useVbenModal({
-  connectedComponent: WalletDetail,
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 查看钱包 */
 function handleDetail(row: Required<PayWalletApi.Wallet>) {
-  walletModalApi.setData(row).open();
+  detailModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -46,6 +47,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -61,8 +63,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="钱包余额" url="https://doc.iocoder.cn/pay/build/" />
     </template>
 
-    <WalletModal @reload="onRefresh" />
-
+    <DetailModal @reload="handleRefresh" />
     <Grid>
       <template #actions="{ row }">
         <TableAction

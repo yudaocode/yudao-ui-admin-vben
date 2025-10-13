@@ -4,16 +4,14 @@ import type { CrmFollowUpApi } from '#/api/crm/followup';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getBusinessPageByCustomer } from '#/api/crm/business';
-import { getContactPageByCustomer } from '#/api/crm/contact';
 import { createFollowUpRecord } from '#/api/crm/followup';
 import { $t } from '#/locales';
+
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
@@ -29,94 +27,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'bizId',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'bizType',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      fieldName: 'type',
-      label: '跟进类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.CRM_FOLLOW_UP_TYPE, 'number'),
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'nextTime',
-      label: '下次联系时间',
-      component: 'DatePicker',
-      componentProps: {
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'content',
-      label: '跟进内容',
-      component: 'Textarea',
-      rules: 'required',
-    },
-    {
-      fieldName: 'picUrls',
-      label: '图片',
-      component: 'ImageUpload',
-    },
-    {
-      fieldName: 'fileUrls',
-      label: '附件',
-      component: 'FileUpload',
-    },
-    {
-      fieldName: 'contactIds',
-      label: '关联联系人',
-      component: 'ApiSelect',
-      componentProps: {
-        api: async () => {
-          const res = await getContactPageByCustomer({
-            pageNo: 1,
-            pageSize: 100,
-            customerId: bizId.value,
-          });
-          return res.list;
-        },
-        mode: 'multiple',
-        fieldNames: { label: 'name', value: 'id' },
-      },
-    },
-    {
-      fieldName: 'businessIds',
-      label: '关联商机',
-      component: 'ApiSelect',
-      componentProps: {
-        api: async () => {
-          const res = await getBusinessPageByCustomer({
-            pageNo: 1,
-            pageSize: 100,
-            customerId: bizId.value,
-          });
-          return res.list;
-        },
-        mode: 'multiple',
-        fieldNames: { label: 'name', value: 'id' },
-      },
-    },
-  ],
+  schema: useFormSchema(bizId),
   showDefaultActions: false,
 });
 
@@ -154,6 +65,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      // 设置到 values
       await formApi.setValues(data);
     } finally {
       modalApi.unlock();

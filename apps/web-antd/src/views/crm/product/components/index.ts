@@ -1,9 +1,2 @@
-import { defineAsyncComponent } from 'vue';
-
-export const ProductDetailsList = defineAsyncComponent(
-  () => import('./detail-list.vue'),
-);
-
-export const ProductEditTable = defineAsyncComponent(
-  () => import('./edit-table.vue'),
-);
+export { default as ProductDetailsList } from './detail-list.vue';
+export { default as ProductEditTable } from './edit-table.vue';

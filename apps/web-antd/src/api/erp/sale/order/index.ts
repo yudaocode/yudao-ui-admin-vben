@@ -24,6 +24,7 @@ export namespace ErpSaleOrderApi {
     depositPrice?: number; // 定金金额，单位：元
     items?: SaleOrderItem[]; // 销售订单产品明细列表
   }
+
   export interface SaleOrderItem {
     id?: number; // 订单项编号
     orderId?: number; // 采购订单编号
@@ -63,6 +64,13 @@ export function getSaleOrderPage(params: ErpSaleOrderApi.SaleOrderPageParam) {
 export function getSaleOrder(id: number) {
   return requestClient.get<ErpSaleOrderApi.SaleOrder>(
     `/erp/sale-order/get?id=${id}`,
+  );
+}
+
+/** 查询销售订单项列表 */
+export function getSaleOrderItemListByOrderId(orderId: number) {
+  return requestClient.get<ErpSaleOrderApi.SaleOrderItem[]>(
+    `/erp/sale-order/item/list-by-order-id?orderId=${orderId}`,
   );
 }
 

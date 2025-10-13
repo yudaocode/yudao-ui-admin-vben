@@ -20,20 +20,20 @@ export namespace MemberUserApi {
     status: number;
     areaId?: number;
     areaName?: string;
-    levelName: null | string;
-    point?: null | number;
-    totalPoint?: null | number;
-    experience?: null | number;
+    levelName: string;
+    point?: number;
+    totalPoint?: number;
+    experience?: number;
   }
 
   /** 会员用户等级更新信息 */
-  export interface UserLevelUpdate {
+  export interface UserUpdateLevelReqVO {
     id: number;
     levelId: number;
   }
 
   /** 会员用户积分更新信息 */
-  export interface UserPointUpdate {
+  export interface UserPointUpdateReqVO {
     id: number;
     point: number;
   }
@@ -60,11 +60,11 @@ export function updateUser(data: MemberUserApi.User) {
 }
 
 /** 修改会员用户等级 */
-export function updateUserLevel(data: MemberUserApi.UserLevelUpdate) {
+export function updateUserLevel(data: MemberUserApi.UserUpdateLevelReqVO) {
   return requestClient.put('/member/user/update-level', data);
 }
 
 /** 修改会员用户积分 */
-export function updateUserPoint(data: MemberUserApi.UserPointUpdate) {
+export function updateUserPoint(data: MemberUserApi.UserPointUpdateReqVO) {
   return requestClient.put('/member/user/update-point', data);
 }
