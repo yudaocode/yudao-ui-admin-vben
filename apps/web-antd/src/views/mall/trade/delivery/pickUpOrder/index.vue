@@ -2,25 +2,31 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h, onMounted, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, prompt } from '@vben/common-ui';
-import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
+import { DeliveryTypeEnum } from '@vben/constants';
+import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
 import { Card, Input, message } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  getOrderByPickUpVerifyCode,
   getOrderPage,
   getOrderSummary,
+  pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 import { SummaryCard } from '#/components/summary-card';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
 const summary = ref<MallOrderApi.OrderSummary>();
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
 
 /** 获取订单统计数据 */
 async function getOrderSum() {
@@ -31,6 +37,7 @@ async function getOrderSum() {
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
+  // 如果没有传核销码，则弹窗输入
   if (!pickUpVerifyCode) {
     await prompt({
       component: () => {
@@ -48,13 +55,18 @@ async function handlePickup(pickUpVerifyCode?: string) {
   if (!pickUpVerifyCode) {
     return;
   }
-  const data = await getOrderByPickUpVerifyCode(pickUpVerifyCode);
-  if (data?.deliveryType !== DeliveryTypeEnum.PICK_UP.type) {
-    message.error('未查询到订单');
-    return;
-  }
-  if (data?.status !== TradeOrderStatusEnum.UNDELIVERED.status) {
-    message.error('订单不是待核销状态');
+
+  // 执行核销
+  const hideLoading = message.loading({
+    content: '订单核销中 ...',
+    duration: 0,
+  });
+  try {
+    await pickUpOrderByVerifyCode(pickUpVerifyCode);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -64,7 +76,6 @@ const reader = ref('');
 const serialPort = ref(false); // 是否连接扫码枪
 
 /** 连接扫码枪 */
-// TODO @AI：晚点搞！
 async function connectToSerialPort() {
   try {
     // 判断浏览器支持串口通信
@@ -81,7 +92,7 @@ async function connectToSerialPort() {
       return;
     }
 
-    // 获取用户之前授予该网站访问权限的所有串口。
+    // 获取用户之前授予该网站访问权限的所有串口
     ports.value = await (navigator.serial as any).getPorts();
 
     // 等待串口打开
@@ -93,7 +104,7 @@ async function connectToSerialPort() {
 
     message.success('成功连接扫码枪');
     serialPort.value = true;
-    readData();
+    await readData();
   } catch (error) {
     // 处理连接串口出错的情况
     console.error('Error connecting to serial port:', error);
@@ -121,11 +132,12 @@ async function readData() {
       data = ''; // 清空下次读取不会叠加
       console.warn(`二维码数据:${codeData}`);
       // 处理拿到数据逻辑
-      handlePickup(codeData);
+      await handlePickup(codeData);
     }
   }
 }
 
+/** 断开扫码枪连接 */
 async function cutPort() {
   if (port.value === '') {
     message.warning('请先连接或打开扫码枪');
@@ -141,8 +153,6 @@ async function cutPort() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    // TODO @AI：需要移除自己不能门店自提的店铺；
-    // TODO @AI：默认选中第一个！
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -152,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // TODO @AI：有个“聚合搜索”，可以拆解成多个表单；
+          await getOrderSum();
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -171,10 +181,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MallOrderApi.Order>,
-});
-
-onMounted(() => {
-  getOrderSum();
 });
 </script>
 

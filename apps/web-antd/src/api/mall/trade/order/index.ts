@@ -284,7 +284,7 @@ export function pickUpOrder(id: number) {
 
 /** 订单核销 */
 export function pickUpOrderByVerifyCode(pickUpVerifyCode: string) {
-  return requestClient.put('/trade/order/pick-up-by-verify-code', {
+  return requestClient.put('/trade/order/pick-up-by-verify-code', undefined, {
     params: { pickUpVerifyCode },
   });
 }
