@@ -2,19 +2,27 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h, onMounted, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, prompt } from '@vben/common-ui';
-import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
+import { DeliveryTypeEnum } from '@vben/constants';
+import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
-import { ElCard, ElInput, ElMessage } from 'element-plus';
+import {
+  ElCard,
+  ElImage,
+  ElInput,
+  ElLoading,
+  ElMessage,
+  ElTag,
+} from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  getOrderByPickUpVerifyCode,
   getOrderPage,
   getOrderSummary,
+  pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 import { SummaryCard } from '#/components/summary-card';
 
@@ -22,15 +30,22 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const summary = ref<MallOrderApi.OrderSummary>();
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 获取订单统计数据 */
 async function getOrderSum() {
   const query = await gridApi.formApi.getValues();
   query.deliveryType = DeliveryTypeEnum.PICK_UP.type;
-  const res = await getOrderSummary(query as any);
-  summary.value = res;
+  summary.value = await getOrderSummary(query);
 }
 
-/** 核销 */
+/** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
+  // 如果没有传核销码，则弹窗输入
+  // TODO @AI：不太对
   if (!pickUpVerifyCode) {
     await prompt({
       component: () => {
@@ -48,13 +63,17 @@ async function handlePickup(pickUpVerifyCode?: string) {
   if (!pickUpVerifyCode) {
     return;
   }
-  const data = await getOrderByPickUpVerifyCode(pickUpVerifyCode);
-  if (data?.deliveryType !== DeliveryTypeEnum.PICK_UP.type) {
-    ElMessage.error('未查询到订单');
-    return;
-  }
-  if (data?.status !== TradeOrderStatusEnum.UNDELIVERED.status) {
-    ElMessage.error('订单不是待核销状态');
+
+  // 执行核销
+  const loadingInstance = ElLoading.service({
+    text: '订单核销中 ...',
+  });
+  try {
+    await pickUpOrderByVerifyCode(pickUpVerifyCode);
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
   }
 }
 
@@ -80,7 +99,7 @@ async function connectToSerialPort() {
       return;
     }
 
-    // 获取用户之前授予该网站访问权限的所有串口。
+    // 获取用户之前授予该网站访问权限的所有串口
     ports.value = await (navigator.serial as any).getPorts();
 
     // 等待串口打开
@@ -92,7 +111,7 @@ async function connectToSerialPort() {
 
     ElMessage.success('成功连接扫码枪');
     serialPort.value = true;
-    readData();
+    await readData();
   } catch (error) {
     // 处理连接串口出错的情况
     console.error('Error connecting to serial port:', error);
@@ -120,7 +139,7 @@ async function readData() {
       data = ''; // 清空下次读取不会叠加
       console.warn(`二维码数据:${codeData}`);
       // 处理拿到数据逻辑
-      handlePickup(codeData);
+      await handlePickup(codeData);
     }
   }
 }
@@ -143,12 +162,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
+    cellConfig: {
+      height: 100,
+    },
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await getOrderSum();
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -160,6 +183,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -167,15 +191,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MallOrderApi.Order>,
 });
-
-onMounted(() => {
-  getOrderSum();
-});
 </script>
 
 <template>
   <Page auto-content-height>
-    <ElCard class="m-4">
+    <ElCard class="mb-2">
       <div class="flex flex-row gap-4">
         <SummaryCard
           class="flex flex-1"
@@ -215,8 +235,43 @@ onMounted(() => {
         />
       </div>
     </ElCard>
-    <!-- TODO @霖：核销订单，点出的弹窗，无法输入内容； -->
+
     <Grid class="h-4/5" table-title="核销订单">
+      <template #spuName="{ row }">
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="item in row.items"
+            :key="item.id!"
+            class="flex items-start gap-2"
+          >
+            <!-- TODO @AI：长宽不太对 -->
+            <ElImage
+              :src="item.picUrl || ''"
+              :alt="item.spuName || ''"
+              :width="30"
+              :height="30"
+              class="flex-shrink-0"
+              :preview-src-list="item.picUrl ? [item.picUrl] : []"
+            />
+            <div class="flex flex-1 flex-col gap-1">
+              <span class="text-sm">{{ item.spuName }}</span>
+              <div class="flex flex-wrap gap-1">
+                <ElTag
+                  v-for="property in item.properties"
+                  :key="property.propertyId!"
+                  size="small"
+                  type="info"
+                >
+                  {{ property.propertyName }}: {{ property.valueName }}
+                </ElTag>
+              </div>
+              <span class="text-xs text-gray-500">
+                {{ fenToYuan(item.price) }} 元 x {{ item.count || 0 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -229,9 +284,8 @@ onMounted(() => {
             },
             {
               label: serialPort ? '断开扫描枪' : '连接扫描枪',
-              type: 'primary',
+              type: serialPort ? 'danger' : 'primary',
               icon: serialPort ? 'lucide:circle-x' : 'lucide:circle-play',
-              link: true,
               onClick: serialPort ? cutPort : connectToSerialPort,
             },
           ]"

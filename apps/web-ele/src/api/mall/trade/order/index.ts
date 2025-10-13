@@ -49,6 +49,7 @@ export namespace MallOrderApi {
     afterSaleStatus?: null | number;
     /** 属性数组 */
     properties?: ProductProperty[];
+    price?: number;
   }
 
   /** 订单日志 */
@@ -248,7 +249,7 @@ export function getOrderPage(params: PageParam) {
 }
 
 /** 查询交易订单统计 */
-export function getOrderSummary(params: PageParam) {
+export function getOrderSummary(params: any) {
   return requestClient.get<MallOrderApi.OrderSummary>('/trade/order/summary', {
     params,
   });
