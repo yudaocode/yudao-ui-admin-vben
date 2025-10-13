@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickUpStore';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 

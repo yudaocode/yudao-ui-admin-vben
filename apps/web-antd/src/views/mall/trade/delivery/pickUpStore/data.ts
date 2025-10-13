@@ -86,7 +86,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         format: 'HH:mm',
-        minuteStep: 15,
         placeholder: ['开始时间', '结束时间'],
       },
     },
