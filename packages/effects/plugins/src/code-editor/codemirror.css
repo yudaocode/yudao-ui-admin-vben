@@ -139,16 +139,19 @@
   border: 0;
   animation: blink 1.06s steps(1) infinite;
 }
+
 @keyframes blink {
   50% {
     background-color: transparent;
   }
 }
+
 @keyframes blink {
   50% {
     background-color: transparent;
   }
 }
+
 @keyframes blink {
   50% {
     background-color: transparent;
@@ -162,10 +165,7 @@
 
 .CodeMirror-rulers {
   position: absolute;
-  top: -50px;
-  right: 0;
-  bottom: -20px;
-  left: 0;
+  inset: -50px 0 -20px;
   overflow: hidden;
 }
 
@@ -341,15 +341,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-vscrollbar {
   top: 0;
   right: 0;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden scroll;
 }
 
 .CodeMirror-hscrollbar {
   bottom: 0;
   left: 0;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: scroll hidden;
 }
 
 .CodeMirror-scrollbar-filler {
@@ -366,8 +364,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   display: inline-block;
   height: 100%;
   margin-bottom: -30px;
-  white-space: normal;
   vertical-align: top;
+  white-space: normal;
 }
 
 .CodeMirror-gutter-wrapper {
@@ -406,6 +404,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   overflow: visible;
   font-family: inherit;
   font-size: inherit;
+  font-variant-ligatures: contextual;
   line-height: inherit;
   color: inherit;
   word-wrap: normal;
@@ -416,7 +415,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   /* Reset some styles that the rest of the page might have set */
   border-radius: 0;
   -webkit-tap-highlight-color: transparent;
-  font-variant-ligatures: contextual;
 }
 
 .CodeMirror-wrap pre {
@@ -427,10 +425,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-linebackground {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 0;
 }
 
@@ -459,10 +454,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-measure {
   position: absolute;
+  visibility: hidden;
   width: 100%;
   height: 0;
   overflow: hidden;
-  visibility: hidden;
 }
 
 .CodeMirror-measure pre {
