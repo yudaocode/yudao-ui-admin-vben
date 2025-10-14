@@ -1,5 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import type { MallOrderApi } from '#/api/mall/trade/order';
+
 import { requestClient } from '#/api/request';
 
 export namespace MallAfterSaleApi {
@@ -75,6 +77,9 @@ export namespace MallAfterSaleApi {
     receiveTime?: Date;
     /** 收货备注 */
     receiveReason?: string;
+    order?: MallOrderApi.Order; // 关联订单
+    orderItem?: MallOrderApi.OrderItem; // 关联订单项
+    logs?: any[]; // 关联售后日志
   }
 
   /** 拒绝售后请求 */

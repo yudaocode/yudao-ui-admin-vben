@@ -1,28 +1,30 @@
 <script setup lang="ts">
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallAfterSaleApi } from '#/api/mall/trade/afterSale';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel, useTabs } from '@vben/hooks';
+import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { Card, message, Modal, Timeline } from 'ant-design-vue';
+import { Card, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+// TODO @AI：移除 AfterSaleApi，直接换成 api
 import * as AfterSaleApi from '#/api/mall/trade/afterSale/index';
 import { useDescription } from '#/components/description';
+import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
 import {
-  getUserTypeColor,
   useAfterSaleInfoSchema,
   useOperateLogSchema,
   useOrderInfoSchema,
-  useProductInfoSchema,
+  useProductColumns,
   useRefundStatusSchema,
 } from './data';
 
@@ -35,9 +37,9 @@ const tabs = useTabs();
 const loading = ref(false);
 const afterSaleId = ref(0);
 const afterSale = ref<MallAfterSaleApi.AfterSale>({
-  order: {} as MallOrderApi.Order,
-  orderItem: {} as MallOrderApi.OrderItem,
-  logs: [] as any[],
+  order: {},
+  orderItem: {},
+  logs: [],
 });
 
 const [OrderDescriptions] = useDescription({
@@ -67,20 +69,38 @@ const [RefundStatusDescriptions] = useDescription({
   schema: useRefundStatusSchema(),
 });
 
-// TODO @AI：只把 columns 拿出去
-const [ProductGrid] = useVbenVxeGrid({
+const [ProductGrid, productGridApi] = useVbenVxeGrid({
   gridOptions: {
-    ...useProductInfoSchema(),
-    class: 'mt-4',
-  },
+    cellConfig: {
+      height: 60,
+    },
+    columns: useProductColumns(),
+    data: [],
+    height: 'auto',
+    border: true,
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<MallOrderApi.OrderItem>,
 });
 
-// TODO @AI：只把 columns 拿出去
-const [OperateLogGrid] = useVbenVxeGrid({
+const [OperateLogGrid, operateLogGridApi] = useVbenVxeGrid({
   gridOptions: {
-    ...useOperateLogSchema(),
-    class: 'mt-4',
-  },
+    columns: useOperateLogSchema(),
+    data: [],
+    border: true,
+    pagerConfig: {
+      enabled: false,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions,
 });
 
 const [DisagreeModal, disagreeModalApi] = useVbenModal({
@@ -99,15 +119,10 @@ async function getDetail() {
       return;
     }
     afterSale.value = res;
-
-    // 更新商品信息
-    if (res.orderItem) {
-      ProductGrid.api?.reload([res.orderItem]);
-    }
-    // 更新操作日志
-    if (res.logs) {
-      OperateLogGrid.api?.reload(res.logs);
-    }
+    await productGridApi.setGridOptions({ data: [afterSale.value.orderItem] });
+    await operateLogGridApi.setGridOptions({
+      data: afterSale.value.logs || [],
+    });
   } finally {
     loading.value = false;
   }
@@ -240,59 +255,6 @@ function getActionButtons() {
   return buttons;
 }
 
-/** 渲染操作日志时间线 */
-function renderTimeline() {
-  return afterSale.value.logs?.map((log: any) => ({
-    key: log.id,
-    children: [
-      h(
-        'div',
-        {
-          style: {
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            borderRadius: '4px',
-            position: 'relative',
-            marginLeft: '10px',
-          },
-        },
-        [
-          h('div', log.content),
-          h('div', {
-            style: {
-              position: 'absolute',
-              left: '-16px',
-              top: '10px',
-              width: 0,
-              height: 0,
-              borderTop: '8px solid transparent',
-              borderBottom: '8px solid transparent',
-              borderRight: '8px solid #f5f5f5',
-            },
-          }),
-        ],
-      ),
-    ],
-    dot: h(
-      'span',
-      {
-        style: {
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '20px',
-          height: '20px',
-          fontSize: '10px',
-          color: '#fff',
-          borderRadius: '50%',
-          backgroundColor: getUserTypeColor(log.userType ?? 0),
-        },
-      },
-      getDictLabel(DICT_TYPE.USER_TYPE, log.userType)?.[0] || '系',
-    ),
-  }));
-}
-
 onMounted(() => {
   afterSaleId.value = Number(route.params.id);
   getDetail();
@@ -301,7 +263,9 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height :title="afterSale.no" :loading="loading">
+    <!-- TODO @AI：晚点搞；
     <DisagreeModal @success="getDetail" />
+    -->
 
     <!-- TODO @AI：直接写，不用 getActionButtons；按钮是否展示，使用 ifShow -->
     <template #extra>
@@ -321,14 +285,32 @@ onMounted(() => {
       <RefundStatusDescriptions :data="afterSale" />
     </Card>
     <!-- 商品信息 -->
-    <Card class="mb-4" title="商品信息">
-      <ProductGrid />
-    </Card>
+    <div class="mb-4">
+      <ProductGrid table-title="商品信息">
+        <template #spuName="{ row }">
+          <div class="flex flex-1 flex-col items-start gap-1 gap-2 text-left">
+            <span class="text-sm">{{ row.spuName }}</span>
+            <div class="flex flex-wrap gap-1">
+              <Tag
+                v-for="property in row.properties"
+                :key="property.propertyId!"
+                size="small"
+              >
+                {{ property.propertyName }}: {{ property.valueName }}
+              </Tag>
+            </div>
+          </div>
+        </template>
+      </ProductGrid>
+    </div>
     <!-- 操作日志 -->
-    <Card class="mb-4" title="售后日志">
-      <div style="margin-left: 160px">
-        <Timeline :items="renderTimeline()" />
-      </div>
-    </Card>
+    <div>
+      <OperateLogGrid table-title="售后日志">
+        <template #userType="{ row }">
+          <Tag v-if="row.userId === 0" color="default">系统</Tag>
+          <DictTag v-else :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
+        </template>
+      </OperateLogGrid>
+    </div>
   </Page>
 </template>

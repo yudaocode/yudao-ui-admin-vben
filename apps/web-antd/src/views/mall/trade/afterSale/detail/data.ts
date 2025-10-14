@@ -173,91 +173,53 @@ export function useRefundStatusSchema(): DescriptionItemSchema[] {
   ];
 }
 
-/** 商品信息 schema */
-export function useProductInfoSchema() {
-  return {
-    columns: [
-      {
-        field: 'spuName',
-        title: '商品',
-        width: 'auto',
-        formatter: ({ row }) => {
-          const properties = (row.properties || [])
-            .map(
-              (property: any) =>
-                `${property.propertyName}: ${property.valueName}`,
-            )
-            .join(', ');
-          return `${row.spuName}${properties ? ` (${properties})` : ''}`;
-        },
-      },
-      {
-        field: 'price',
-        title: '商品原价',
-        width: 150,
-        formatter: ({ cellValue }) => `${fenToYuan(cellValue)} 元`,
-      },
-      {
-        field: 'count',
-        title: '数量',
-        width: 100,
-      },
-      {
-        field: 'payPrice',
-        title: '合计',
-        width: 150,
-        formatter: ({ cellValue }) => `${fenToYuan(cellValue)} 元`,
-      },
-    ],
-    data: [],
-    pagination: false,
-    border: true,
-    size: 'small',
-  };
+/** 商品信息 columns */
+export function useProductColumns() {
+  return [
+    {
+      field: 'spuName',
+      title: '商品信息',
+      minWidth: 300,
+      slots: { default: 'spuName' },
+    },
+    {
+      field: 'price',
+      title: '商品原价',
+      minWidth: 150,
+      formatter: 'formatFenToYuanAmount',
+    },
+    {
+      field: 'count',
+      title: '数量',
+      minWidth: 100,
+    },
+    {
+      field: 'payPrice',
+      title: '合计',
+      minWidth: 150,
+      formatter: 'formatFenToYuanAmount',
+    },
+  ];
 }
 
-/** 操作日志 schema */
+/** 操作日志 columns */
 export function useOperateLogSchema() {
-  return {
-    columns: [
-      {
-        field: 'createTime',
-        title: '操作时间',
-        width: 180,
-        formatter: ({ cellValue }) => formatDate(cellValue),
-      },
-      {
-        field: 'content',
-        title: '操作内容',
-        width: 'auto',
-      },
-      {
-        field: 'userType',
-        title: '操作人',
-        width: 80,
-        formatter: ({ cellValue }) => {
-          const userTypeLabels: Record<number, string> = {
-            1: '管',
-            2: '商',
-            3: '买',
-          };
-          return userTypeLabels[cellValue || 0] || '系';
-        },
-      },
-    ],
-    data: [],
-    pagination: false,
-    border: true,
-    size: 'small',
-  };
-}
-
-/** 获得用户类型颜色 */
-export function getUserTypeColor(type: number): string {
-  const colorMap: Record<number, string> = {
-    1: '#1890ff', // 蓝色
-    2: '#52c41a', // 绿色
-    3: '#fa8c16', // 橙色
-  };
-  return colorMap[type] || '#1890ff';
+  return [
+    {
+      field: 'createTime',
+      title: '操作时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'userType',
+      title: '操作人',
+      width: 100,
+      slots: { default: 'userType' },
+    },
+    {
+      field: 'content',
+      title: '操作内容',
+    },
+  ];
 }
