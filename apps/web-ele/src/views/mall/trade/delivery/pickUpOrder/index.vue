@@ -218,7 +218,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <SummaryCard
           class="flex flex-1"
           title="退款单数"
-          icon="heroicons:receipt-refund"
+          icon="heroicons:receipt-refundAfterSale"
           icon-color="bg-yellow-100"
           icon-bg-color="text-yellow-500"
           :value="summary?.afterSaleCount || 0"
@@ -226,7 +226,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <SummaryCard
           class="flex flex-1"
           title="退款金额"
-          icon="ri:refund-2-line"
+          icon="ri:refundAfterSale-2-line"
           icon-color="bg-green-100"
           icon-bg-color="text-green-500"
           prefix="￥"

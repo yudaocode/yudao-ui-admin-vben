@@ -107,26 +107,26 @@ export function getAfterSale(id: number) {
 }
 
 /** 同意售后 */
-export function agree(id: number) {
+export function agreeAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/agree?id=${id}`);
 }
 
 /** 拒绝售后 */
-export function disagree(data: MallAfterSaleApi.DisagreeRequest) {
+export function disagreeAfterSale(data: MallAfterSaleApi.DisagreeRequest) {
   return requestClient.put('/trade/after-sale/disagree', data);
 }
 
 /** 确认收货 */
-export function receive(id: number) {
+export function receiveAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/receive?id=${id}`);
 }
 
 /** 拒绝收货 */
-export function refuse(id: number) {
+export function refuseAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/refuse?id=${id}`);
 }
 
 /** 确认退款 */
-export function refund(id: number) {
+export function refundAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/refund?id=${id}`);
 }

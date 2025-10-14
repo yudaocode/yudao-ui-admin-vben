@@ -6,16 +6,21 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { Card, message, Modal, Tag } from 'ant-design-vue';
+import { Card, message, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-// TODO @AI：移除 AfterSaleApi，直接换成 api
-import * as AfterSaleApi from '#/api/mall/trade/afterSale/index';
+import {
+  agreeAfterSale,
+  getAfterSale,
+  receiveAfterSale,
+  refundAfterSale,
+  refuseAfterSale,
+} from '#/api/mall/trade/afterSale';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
@@ -112,15 +117,15 @@ const [DisagreeModal, disagreeModalApi] = useVbenModal({
 async function getDetail() {
   loading.value = true;
   try {
-    const res = await AfterSaleApi.getAfterSale(afterSaleId.value);
+    const res = await getAfterSale(afterSaleId.value);
     if (res === null) {
       message.error('售后订单不存在');
       handleBack();
       return;
     }
     afterSale.value = res;
-    await productGridApi.setGridOptions({ data: [afterSale.value.orderItem] });
-    await operateLogGridApi.setGridOptions({
+    productGridApi.setGridOptions({ data: [afterSale.value.orderItem] });
+    operateLogGridApi.setGridOptions({
       data: afterSale.value.logs || [],
     });
   } finally {
@@ -129,64 +134,72 @@ async function getDetail() {
 }
 
 /** 同意售后 */
-// TODO @AI：需要 loading
-async function agree() {
-  Modal.confirm({
-    title: '确认操作',
-    content: '是否同意售后？',
-    onOk: async () => {
-      await AfterSaleApi.agree(afterSale.value.id!);
-      message.success($t('page.common.success'));
-      await getDetail();
-    },
+async function handleAgree() {
+  await confirm('是否同意售后？');
+  const hideLoading = message.loading({
+    content: '正在处理中...',
+    duration: 0,
   });
+  try {
+    await agreeAfterSale(afterSale.value.id!);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await getDetail();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 拒绝售后 */
-function disagree() {
+function handleDisagree() {
   disagreeModalApi.setData({ afterSale: afterSale.value }).open();
 }
 
 /** 确认收货 */
-// TODO @AI：需要 loading
-async function receive() {
-  Modal.confirm({
-    title: '确认操作',
-    content: '是否确认收货？',
-    onOk: async () => {
-      await AfterSaleApi.receive(afterSale.value.id!);
-      message.success($t('page.common.success'));
-      await getDetail();
-    },
+async function handleReceive() {
+  await confirm('是否确认收货？');
+  const hideLoading = message.loading({
+    content: '正在处理中...',
+    duration: 0,
   });
+  try {
+    await receiveAfterSale(afterSale.value.id!);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await getDetail();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 拒绝收货 */
-// TODO @AI：需要 loading
-async function refuse() {
-  Modal.confirm({
-    title: '确认操作',
-    content: '是否拒绝收货？',
-    onOk: async () => {
-      await AfterSaleApi.refuse(afterSale.value.id!);
-      message.success($t('page.common.success'));
-      await getDetail();
-    },
+async function handleRefuse() {
+  await confirm('是否拒绝收货？');
+  const hideLoading = message.loading({
+    content: '正在处理中...',
+    duration: 0,
   });
+  try {
+    await refuseAfterSale(afterSale.value.id!);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await getDetail();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 确认退款 */
-// TODO @AI：需要 loading
-async function refund() {
-  Modal.confirm({
-    title: '确认操作',
-    content: '是否确认退款？',
-    onOk: async () => {
-      await AfterSaleApi.refund(afterSale.value.id!);
-      message.success($t('page.common.success'));
-      await getDetail();
-    },
+async function handleRefund() {
+  await confirm('是否确认退款？');
+  const hideLoading = message.loading({
+    content: '正在处理中...',
+    duration: 0,
   });
+  try {
+    await refundAfterSale(afterSale.value.id!);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await getDetail();
+  } finally {
+    hideLoading();
+  }
 }
 
 /** 返回列表页 */
@@ -195,66 +208,7 @@ function handleBack() {
   router.push('/mall/trade/afterSale');
 }
 
-/** 获取操作按钮 */
-function getActionButtons() {
-  const buttons: any[] = [
-    {
-      label: '返回',
-      type: 'default',
-      icon: 'lucide:arrow-left',
-      onClick: handleBack,
-    },
-  ];
-
-  // 根据状态添加不同的操作按钮
-  switch (afterSale.value.status) {
-    case 10: {
-      buttons.push(
-        {
-          label: '同意售后',
-          type: 'primary',
-          onClick: agree,
-        },
-        {
-          label: '拒绝售后',
-          type: 'primary',
-          onClick: disagree,
-        },
-      );
-
-      break;
-    }
-    case 30: {
-      buttons.push(
-        {
-          label: '确认收货',
-          type: 'primary',
-          onClick: receive,
-        },
-        {
-          label: '拒绝收货',
-          type: 'primary',
-          onClick: refuse,
-        },
-      );
-
-      break;
-    }
-    case 40: {
-      buttons.push({
-        label: '确认退款',
-        type: 'primary',
-        onClick: refund,
-      });
-
-      break;
-    }
-    // No default
-  }
-
-  return buttons;
-}
-
+/** 初始化 */
 onMounted(() => {
   afterSaleId.value = Number(route.params.id);
   getDetail();
@@ -267,9 +221,49 @@ onMounted(() => {
     <DisagreeModal @success="getDetail" />
     -->
 
-    <!-- TODO @AI：直接写，不用 getActionButtons；按钮是否展示，使用 ifShow -->
     <template #extra>
-      <TableAction :actions="getActionButtons()" />
+      <TableAction
+        :actions="[
+          {
+            label: '返回',
+            type: 'default',
+            icon: 'lucide:arrow-left',
+            onClick: handleBack,
+          },
+          {
+            label: '同意售后',
+            type: 'primary',
+            onClick: handleAgree,
+            ifShow: afterSale.status === 10,
+          },
+          {
+            label: '拒绝售后',
+            type: 'primary',
+            danger: true,
+            onClick: handleDisagree,
+            // ifShow: afterSale.status === 10,
+          },
+          {
+            label: '确认收货',
+            type: 'primary',
+            onClick: handleReceive,
+            ifShow: afterSale.status === 30,
+          },
+          {
+            label: '拒绝收货',
+            type: 'primary',
+            danger: true,
+            onClick: handleRefuse,
+            ifShow: afterSale.status === 30,
+          },
+          {
+            label: '确认退款',
+            type: 'primary',
+            onClick: handleRefund,
+            ifShow: afterSale.status === 40,
+          },
+        ]"
+      />
     </template>
 
     <!-- 订单信息 -->
