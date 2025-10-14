@@ -4,13 +4,11 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { ref } from 'vue';
 
-import { DeliveryTypeEnum } from '@vben/constants';
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
@@ -28,6 +26,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.TRADE_ORDER_STATUS, 'number'),
+        placeholder: '请选择订单状态',
+        allowClear: true,
       },
     },
     {
@@ -36,12 +36,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'number'),
+        placeholder: '请选择支付方式',
+        allowClear: true,
       },
-    },
-    {
-      fieldName: 'name',
-      label: '品牌名称',
-      component: 'Input',
     },
     {
       fieldName: 'createTime',
@@ -58,6 +55,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.TERMINAL, 'number'),
+        placeholder: '请选择订单来源',
+        allowClear: true,
       },
     },
     {
@@ -66,6 +65,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.TRADE_DELIVERY_TYPE, 'number'),
+        placeholder: '请选择配送方式',
+        allowClear: true,
       },
     },
     {
@@ -78,6 +79,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
           label: 'name',
           value: 'id',
         },
+        placeholder: '请选择快递公司',
+        allowClear: true,
       },
       dependencies: {
         triggerFields: ['deliveryType'],
@@ -94,6 +97,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
           label: 'name',
           value: 'id',
         },
+        placeholder: '请选择自提门店',
+        allowClear: true,
       },
       dependencies: {
         triggerFields: ['deliveryType'],
@@ -104,9 +109,49 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'deliveryType',
       label: '核销码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入核销码',
+        allowClear: true,
+      },
       dependencies: {
         triggerFields: ['deliveryType'],
         show: (values) => values.deliveryType === DeliveryTypeEnum.PICK_UP.type,
+      },
+    },
+    {
+      fieldName: 'no',
+      label: '订单号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入订单号',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'userId',
+      label: '用户 UID',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户 UID',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'userNickname',
+      label: '用户昵称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户昵称',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'userMobile',
+      label: '用户电话',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户电话',
+        allowClear: true,
       },
     },
   ];
