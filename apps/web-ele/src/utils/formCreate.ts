@@ -5,13 +5,13 @@
 import { isRef } from 'vue';
 
 // 编码表单 Conf
-export const encodeConf = (designerRef: object) => {
+export function encodeConf(designerRef: object) {
   // @ts-ignore designerRef.value is dynamically added by form-create-designer
   return JSON.stringify(designerRef.value.getOption());
-};
+}
 
 // 编码表单 Fields
-export const encodeFields = (designerRef: object) => {
+export function encodeFields(designerRef: object) {
   // @ts-ignore designerRef.value is dynamically added by form-create-designer
   const rule = JSON.parse(designerRef.value.getJson());
   const fields: string[] = [];
@@ -19,36 +19,36 @@ export const encodeFields = (designerRef: object) => {
     fields.push(JSON.stringify(item));
   });
   return fields;
-};
+}
 
 // 解码表单 Fields
-export const decodeFields = (fields: string[]) => {
+export function decodeFields(fields: string[]) {
   const rule: object[] = [];
   fields.forEach((item) => {
     rule.push(JSON.parse(item));
   });
   return rule;
-};
+}
 
 // 设置表单的 Conf 和 Fields，适用 FcDesigner 场景
-export const setConfAndFields = (
+export function setConfAndFields(
   designerRef: object,
   conf: string,
   fields: string,
-) => {
+) {
   // @ts-ignore designerRef.value is dynamically added by form-create-designer
   designerRef.value.setOption(JSON.parse(conf));
   // @ts-ignore designerRef.value is dynamically added by form-create-designer
   designerRef.value.setRule(decodeFields(fields));
-};
+}
 
 // 设置表单的 Conf 和 Fields，适用 form-create 场景
-export const setConfAndFields2 = (
+export function setConfAndFields2(
   detailPreview: object,
   conf: string,
   fields: string[],
   value?: object,
-) => {
+) {
   if (isRef(detailPreview)) {
     // @ts-ignore detailPreview.value is dynamically added by form-create-designer
     detailPreview = detailPreview.value;
@@ -61,4 +61,4 @@ export const setConfAndFields2 = (
     // @ts-ignore detailPreview properties are dynamically added by form-create-designer
     detailPreview.value = value;
   }
-};
+}
