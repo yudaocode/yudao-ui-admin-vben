@@ -23,16 +23,18 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import DeleveryForm from './modules/delevery-form.vue';
 
+const { push } = useRouter();
+
 const [DeleveryFormModal, deleveryFormModalApi] = useVbenModal({
   connectedComponent: DeleveryForm,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
-const { push } = useRouter();
+
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });
@@ -61,7 +63,7 @@ function handleRemake(row: MallOrderApi.Order) {
         id: row.id as number,
         remark: val,
       });
-      onRefresh();
+      handleRefresh();
     }
   });
 }
@@ -113,7 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/trade-cart/"
       />
     </template>
-    <DeleveryFormModal @success="onRefresh" />
+    <DeleveryFormModal @success="handleRefresh" />
     <Grid table-title="订单列表">
       <template #expand_content="{ row }">
         <List item-layout="vertical" :data-source="row.items">

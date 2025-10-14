@@ -60,6 +60,8 @@ export namespace MallOrderApi {
     createTime?: Date;
     /** 用户类型 */
     userType?: number;
+    /** 用户编号 */
+    userId?: number;
   }
 
   /** 订单 */
