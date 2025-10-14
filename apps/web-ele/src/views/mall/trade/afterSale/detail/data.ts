@@ -6,7 +6,7 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { fenToYuan, formatDate } from '@vben/utils';
 
-import { Image } from 'ant-design-vue';
+import { ElImage } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -134,7 +134,7 @@ export function useAfterSaleInfoSchema(): DescriptionItemSchema[] {
           'div',
           { class: 'flex gap-10px' },
           images.map((url: string, index: number) =>
-            h(Image, {
+            h(ElImage, {
               key: index,
               src: url,
               width: 60,

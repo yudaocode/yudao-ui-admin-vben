@@ -77,21 +77,9 @@ export namespace MallAfterSaleApi {
     receiveTime?: Date;
     /** 收货备注 */
     receiveReason?: string;
-    /** 订单 */
-    order?: MallOrderApi.Order;
-    /** 订单操作日志 */
-    logs?: MallOrderApi.OrderLog[];
-    /** 订单项 */
-    orderItem?: MallOrderApi.OrderItem;
-    /** 用户信息 */
-    user?: {
-      /** 用户头像 */
-      avatar?: string;
-      /** 用户编号 */
-      id?: null | number;
-      /** 用户昵称 */
-      nickname?: string;
-    };
+    order?: MallOrderApi.Order; // 关联订单
+    orderItem?: MallOrderApi.OrderItem; // 关联订单项
+    logs?: any[]; // 关联售后日志
   }
 
   /** 拒绝售后请求 */
@@ -119,26 +107,26 @@ export function getAfterSale(id: number) {
 }
 
 /** 同意售后 */
-export function agree(id: number) {
+export function agreeAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/agree?id=${id}`);
 }
 
 /** 拒绝售后 */
-export function disagree(data: MallAfterSaleApi.DisagreeRequest) {
+export function disagreeAfterSale(data: MallAfterSaleApi.DisagreeRequest) {
   return requestClient.put('/trade/after-sale/disagree', data);
 }
 
 /** 确认收货 */
-export function receive(id: number) {
+export function receiveAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/receive?id=${id}`);
 }
 
 /** 拒绝收货 */
-export function refuse(id: number) {
+export function refuseAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/refuse?id=${id}`);
 }
 
 /** 确认退款 */
-export function refund(id: number) {
+export function refundAfterSale(id: number) {
   return requestClient.put(`/trade/after-sale/refund?id=${id}`);
 }

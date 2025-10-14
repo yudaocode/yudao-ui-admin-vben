@@ -11,7 +11,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { Card, message, Tag } from 'ant-design-vue';
+import { ElCard, ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -51,8 +51,11 @@ const afterSale = ref<MallAfterSaleApi.AfterSale>({
 const [OrderDescriptions] = useDescription({
   componentProps: {
     title: '订单信息',
-    bordered: false,
+    border: false,
     column: 3,
+    direction: 'horizontal',
+    labelWidth: 140,
+    extra: '',
   },
   schema: useOrderInfoSchema(),
 });
@@ -60,8 +63,11 @@ const [OrderDescriptions] = useDescription({
 const [AfterSaleDescriptions] = useDescription({
   componentProps: {
     title: '售后信息',
-    bordered: false,
+    border: false,
     column: 3,
+    direction: 'horizontal',
+    labelWidth: 140,
+    extra: '',
   },
   schema: useAfterSaleInfoSchema(),
 });
@@ -69,8 +75,11 @@ const [AfterSaleDescriptions] = useDescription({
 const [RefundStatusDescriptions] = useDescription({
   componentProps: {
     title: '退款状态',
-    bordered: false,
+    border: false,
     column: 1,
+    direction: 'horizontal',
+    labelWidth: 140,
+    extra: '',
   },
   schema: useRefundStatusSchema(),
 });
@@ -120,7 +129,7 @@ async function getDetail() {
   try {
     const res = await getAfterSale(afterSaleId.value);
     if (res === null) {
-      message.error('售后订单不存在');
+      ElMessage.error('售后订单不存在');
       handleBack();
       return;
     }
@@ -137,16 +146,15 @@ async function getDetail() {
 /** 同意售后 */
 async function handleAgree() {
   await confirm('是否同意售后？');
-  const hideLoading = message.loading({
-    content: '正在处理中...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
   });
   try {
     await agreeAfterSale(afterSale.value.id!);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getDetail();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -158,48 +166,45 @@ function handleDisagree() {
 /** 确认收货 */
 async function handleReceive() {
   await confirm('是否确认收货？');
-  const hideLoading = message.loading({
-    content: '正在处理中...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
   });
   try {
     await receiveAfterSale(afterSale.value.id!);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getDetail();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
 /** 拒绝收货 */
 async function handleRefuse() {
   await confirm('是否拒绝收货？');
-  const hideLoading = message.loading({
-    content: '正在处理中...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
   });
   try {
     await refuseAfterSale(afterSale.value.id!);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getDetail();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
 /** 确认退款 */
 async function handleRefund() {
   await confirm('是否确认退款？');
-  const hideLoading = message.loading({
-    content: '正在处理中...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
   });
   try {
     await refundAfterSale(afterSale.value.id!);
-    message.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getDetail();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -235,8 +240,8 @@ onMounted(() => {
           },
           {
             label: '拒绝售后',
-            type: 'primary',
-            danger: true,
+            type: 'danger',
+            link: true,
             onClick: handleDisagree,
             ifShow: afterSale.status === 10,
           },
@@ -248,8 +253,8 @@ onMounted(() => {
           },
           {
             label: '拒绝收货',
-            type: 'primary',
-            danger: true,
+            type: 'danger',
+            link: true,
             onClick: handleRefuse,
             ifShow: afterSale.status === 30,
           },
@@ -267,17 +272,17 @@ onMounted(() => {
     <DisagreeModal @success="getDetail" />
 
     <!-- 订单信息 -->
-    <Card class="mb-4">
+    <ElCard class="mb-4">
       <OrderDescriptions :data="afterSale" />
-    </Card>
+    </ElCard>
     <!-- 售后信息 -->
-    <Card class="mb-4">
+    <ElCard class="mb-4">
       <AfterSaleDescriptions :data="afterSale" />
-    </Card>
+    </ElCard>
     <!-- 退款状态 -->
-    <Card class="mb-4">
+    <ElCard class="mb-4">
       <RefundStatusDescriptions :data="afterSale" />
-    </Card>
+    </ElCard>
     <!-- 商品信息 -->
     <div class="mb-4">
       <ProductGrid table-title="商品信息">
@@ -285,13 +290,14 @@ onMounted(() => {
           <div class="flex flex-1 flex-col items-start gap-1 text-left">
             <span class="text-sm">{{ row.spuName }}</span>
             <div class="flex flex-wrap gap-1">
-              <Tag
+              <ElTag
                 v-for="property in row.properties"
                 :key="property.propertyId!"
                 size="small"
+                type="info"
               >
                 {{ property.propertyName }}: {{ property.valueName }}
-              </Tag>
+              </ElTag>
             </div>
           </div>
         </template>
@@ -301,7 +307,7 @@ onMounted(() => {
     <div>
       <OperateLogGrid table-title="售后日志">
         <template #userType="{ row }">
-          <Tag v-if="row.userId === 0" color="default">系统</Tag>
+          <ElTag v-if="row.userId === 0" type="info">系统</ElTag>
           <DictTag v-else :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
         </template>
       </OperateLogGrid>

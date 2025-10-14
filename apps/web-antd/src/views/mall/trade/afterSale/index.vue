@@ -119,6 +119,7 @@ onMounted(() => {
       <template #productInfo="{ row }">
         <div class="flex items-start gap-2 text-left">
           <Image
+            v-if="row.picUrl"
             :src="row.picUrl"
             :width="40"
             :height="40"

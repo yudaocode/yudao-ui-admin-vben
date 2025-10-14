@@ -9,7 +9,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { ElButton, ElTabs } from 'element-plus';
+import { ElButton, ElImage, ElTabs, ElTag } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';
@@ -18,23 +18,28 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 
-const status = ref('0');
 const statusTabs = ref([
   {
     label: '全部',
     value: '0',
   },
 ]);
+const statusTab = ref(statusTabs.value[0]!.value);
 
 /** 处理退款 */
-function openAfterSaleDetail(row: MallAfterSaleApi.AfterSale) {
+function handleOpenAfterSaleDetail(row: MallAfterSaleApi.AfterSale) {
   push({ name: 'TradeAfterSaleDetail', params: { id: row.id } });
 }
 
-// TODO @xingyu：缺详情页
 /** 查看订单详情 */
-function openOrderDetail(row: MallAfterSaleApi.AfterSale) {
-  push({ name: 'TradeOrderDetail', params: { id: row.id } });
+function handleOpenOrderDetail(row: MallAfterSaleApi.AfterSale) {
+  push({ name: 'TradeOrderDetail', params: { id: row.orderId } });
+}
+
+/** 切换售后状态 */
+function handleChangeStatus(key: number | string) {
+  statusTab.value = key.toString();
+  gridApi.query();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -42,6 +47,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
+    cellConfig: {
+      height: 60,
+    },
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
@@ -51,7 +59,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getAfterSalePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            status: status.value === '0' ? undefined : status.value,
+            status:
+              statusTab.value === '0' ? undefined : Number(statusTab.value),
             ...formValues,
           });
         },
@@ -59,6 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -67,10 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MallAfterSaleApi.AfterSale>,
 });
 
-function onChangeStatus(key: number | string) {
-  status.value = key.toString();
-  gridApi.query();
-}
+/** 初始化 */
 onMounted(() => {
   for (const dict of getDictOptions(DICT_TYPE.TRADE_AFTER_SALE_STATUS)) {
     statusTabs.value.push({
@@ -85,24 +92,49 @@ onMounted(() => {
   <Page auto-content-height>
     <template #doc>
       <DocAlert
-        title="【交易】交易订单"
-        url="https://doc.iocoder.cn/mall/trade-order/"
+        title="【交易】售后退款"
+        url="https://doc.iocoder.cn/mall/trade-aftersale/"
       />
     </template>
-    <Grid table-title="退款列表">
+
+    <Grid>
       <template #top>
-        <ElTabs class="border-none" @change="onChangeStatus">
+        <ElTabs v-model="statusTab" class="-mt-11" @tab-change="handleChangeStatus">
           <ElTabs.TabPane
             v-for="tab in statusTabs"
             :key="tab.value"
-            :tab="tab.label"
+            :label="tab.label"
+            :name="tab.value"
           />
         </ElTabs>
       </template>
       <template #orderNo="{ row }">
-        <ElButton type="primary" link @click="openOrderDetail(row)">
+        <ElButton type="primary" link @click="handleOpenOrderDetail(row)">
           {{ row.orderNo }}
         </ElButton>
+      </template>
+      <template #productInfo="{ row }">
+        <div class="flex items-start gap-2 text-left">
+          <ElImage
+            v-if="row.picUrl"
+            :src="row.picUrl"
+            style="width: 40px; height: 40px"
+            :preview-src-list="[row.picUrl]"
+          />
+          <div class="flex flex-1 flex-col gap-1">
+            <span class="text-sm">{{ row.spuName }}</span>
+            <div class="mt-1 flex flex-wrap gap-1">
+              <ElTag
+                v-for="property in row.properties"
+                :key="property.propertyId!"
+                size="small"
+                type="info"
+              >
+                {{ property.propertyName }}: {{ property.valueName }}
+              </ElTag>
+            </div>
+          </div>
+        </div>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -111,7 +143,7 @@ onMounted(() => {
               label: '处理退款',
               type: 'primary',
               link: true,
-              onClick: openAfterSaleDetail.bind(null, row),
+              onClick: handleOpenAfterSaleDetail.bind(null, row),
             },
           ]"
         />
@@ -119,3 +151,8 @@ onMounted(() => {
     </Grid>
   </Page>
 </template>
+<style scoped>
+:deep(.vxe-toolbar div) {
+  z-index: 1;
+}
+</style>
