@@ -15,7 +15,7 @@ import {
   deleteProduct,
   exportProduct,
   getProductPage,
-} from '#/api/crm/product';
+} from '#/api/iot/product/product';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
