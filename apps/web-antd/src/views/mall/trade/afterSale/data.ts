@@ -4,6 +4,7 @@ import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -56,6 +57,30 @@ export function useGridFormSchema(): VbenFormSchema[] {
         ...getRangePickerDefaultProps(),
         allowClear: true,
       },
+    },
+  ];
+}
+
+/** 拒绝售后表单的 schema 配置 */
+export function useDisagreeFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      component: 'Textarea',
+      fieldName: 'reason',
+      label: '拒绝原因',
+      componentProps: {
+        placeholder: '请输入拒绝原因',
+        rows: 4,
+      },
+      rules: z.string().min(2, { message: '拒绝原因不能少于 2 个字符' }),
     },
   ];
 }

@@ -25,6 +25,7 @@ import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
+import DisagreeForm from '../modules/disagree-form.vue';
 import {
   useAfterSaleInfoSchema,
   useOperateLogSchema,
@@ -109,7 +110,7 @@ const [OperateLogGrid, operateLogGridApi] = useVbenVxeGrid({
 });
 
 const [DisagreeModal, disagreeModalApi] = useVbenModal({
-  connectedComponent: () => import('./modules/disagree-form.vue'),
+  connectedComponent: DisagreeForm,
   destroyOnClose: true,
 });
 
@@ -217,10 +218,6 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height :title="afterSale.no" :loading="loading">
-    <!-- TODO @AI：晚点搞；
-    <DisagreeModal @success="getDetail" />
-    -->
-
     <template #extra>
       <TableAction
         :actions="[
@@ -265,6 +262,9 @@ onMounted(() => {
         ]"
       />
     </template>
+
+    <!-- 拒绝售后弹窗 -->
+    <DisagreeModal @success="getDetail" />
 
     <!-- 订单信息 -->
     <Card class="mb-4">
