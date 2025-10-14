@@ -67,7 +67,7 @@ const routes: RouteRecordRaw[] = [
           activePath: '/mall/trade/after-sale',
         },
         component: () =>
-          import('#/views/mall/trade/afterSale/modules/detail.vue'),
+          import('#/views/mall/trade/afterSale/detail/index.vue'),
       },
     ],
   },

@@ -238,7 +238,7 @@ watch(
       <IconifyIcon
         icon="ant-design:check-circle-filled"
         v-if="valid"
-        style="color: green; margin-left: 8px"
+        style=" margin-left: 8px;color: green"
       />
     </div>
     <div style="display: flex; align-items: center; margin-top: 10px">
