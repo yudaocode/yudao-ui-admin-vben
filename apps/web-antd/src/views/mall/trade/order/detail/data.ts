@@ -1,11 +1,11 @@
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 import type { DescriptionItemSchema } from '#/components/description';
-import type { VxeGridPropTypes } from 'vxe-table';
 
 import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
-import { fenToYuan, formatDate } from '@vben/utils';
+import { fenToYuan, formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -82,10 +82,13 @@ export function useOrderStatusSchema(): DescriptionItemSchema[] {
       field: 'reminder',
       label: '提醒',
       content: () =>
-        h('div', { class: 'text-red-500 space-y-1' }, [
+        h('div', { class: 'space-y-1' }, [
           h('div', '买家付款成功后，货款将直接进入您的商户号（微信、支付宝）'),
           h('div', '请及时关注你发出的包裹状态，确保可以配送至买家手中'),
-          h('div', '如果买家表示没收到货或货物有问题，请及时联系买家处理，友好协商'),
+          h(
+            'div',
+            '如果买家表示没收到货或货物有问题，请及时联系买家处理，友好协商',
+          ),
         ]),
     },
   ];
@@ -97,46 +100,66 @@ export function useOrderPriceSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '商品总额',
-      content: (data: MallOrderApi.Order) => `${fenToYuan(data?.totalPrice ?? 0)} 元`,
+      content: (data: MallOrderApi.Order) =>
+        `${fenToYuan(data?.totalPrice ?? 0)} 元`,
     },
     {
       field: 'deliveryPrice',
       label: '运费金额',
-      content: (data: MallOrderApi.Order) => `${fenToYuan(data?.deliveryPrice ?? 0)} 元`,
+      content: (data: MallOrderApi.Order) =>
+        `${fenToYuan(data?.deliveryPrice ?? 0)} 元`,
     },
     {
       field: 'adjustPrice',
       label: '订单调价',
-      content: (data: MallOrderApi.Order) => `${fenToYuan(data?.adjustPrice ?? 0)} 元`,
+      content: (data: MallOrderApi.Order) =>
+        `${fenToYuan(data?.adjustPrice ?? 0)} 元`,
     },
     {
       field: 'couponPrice',
       label: '优惠劵优惠',
       content: (data: MallOrderApi.Order) =>
-        h('span', { class: 'text-red-500' }, `${fenToYuan(data?.couponPrice ?? 0)} 元`),
+        h(
+          'span',
+          { class: 'text-red-500' },
+          `${fenToYuan(data?.couponPrice ?? 0)} 元`,
+        ),
     },
     {
       field: 'vipPrice',
       label: 'VIP 优惠',
       content: (data: MallOrderApi.Order) =>
-        h('span', { class: 'text-red-500' }, `${fenToYuan(data?.vipPrice ?? 0)} 元`),
+        h(
+          'span',
+          { class: 'text-red-500' },
+          `${fenToYuan(data?.vipPrice ?? 0)} 元`,
+        ),
     },
     {
       field: 'discountPrice',
       label: '活动优惠',
       content: (data: MallOrderApi.Order) =>
-        h('span', { class: 'text-red-500' }, `${fenToYuan(data?.discountPrice ?? 0)} 元`),
+        h(
+          'span',
+          { class: 'text-red-500' },
+          `${fenToYuan(data?.discountPrice ?? 0)} 元`,
+        ),
     },
     {
       field: 'pointPrice',
       label: '积分抵扣',
       content: (data: MallOrderApi.Order) =>
-        h('span', { class: 'text-red-500' }, `${fenToYuan(data?.pointPrice ?? 0)} 元`),
+        h(
+          'span',
+          { class: 'text-red-500' },
+          `${fenToYuan(data?.pointPrice ?? 0)} 元`,
+        ),
     },
     {
       field: 'payPrice',
       label: '应付金额',
-      content: (data: MallOrderApi.Order) => `${fenToYuan(data?.payPrice ?? 0)} 元`,
+      content: (data: MallOrderApi.Order) =>
+        `${fenToYuan(data?.payPrice ?? 0)} 元`,
     },
   ];
 }
@@ -168,21 +191,17 @@ export function useDeliveryInfoSchema(): DescriptionItemSchema[] {
         `${data?.receiverAreaName} ${data?.receiverDetailAddress}`.trim(),
     },
     {
-      field: 'logisticsTime',
+      field: 'deliveryTime',
       label: '发货时间',
-      content: (data: MallOrderApi.Order) => formatDate(data?.deliveryTime) as string,
+      content: (data: MallOrderApi.Order) =>
+        formatDateTime(data?.deliveryTime) as string,
     },
   ];
 }
 
 /** 商品信息 columns */
-export function useProductColumns(): VxeGridPropTypes.Columns {
+export function useProductColumns(): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'seq',
-      width: 60,
-      title: '序号',
-    },
     {
       field: 'spuName',
       title: '商品',
@@ -193,7 +212,7 @@ export function useProductColumns(): VxeGridPropTypes.Columns {
       field: 'price',
       title: '商品原价',
       width: 150,
-      formatter: ({ cellValue }: any) => `${fenToYuan(cellValue)} 元`,
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'count',
@@ -204,25 +223,45 @@ export function useProductColumns(): VxeGridPropTypes.Columns {
       field: 'payPrice',
       title: '合计',
       width: 150,
-      formatter: ({ cellValue }: any) => `${fenToYuan(cellValue)} 元`,
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'afterSaleStatus',
       title: '售后状态',
       width: 120,
-      slots: { default: 'afterSaleStatus' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS },
+      },
+    },
+  ];
+}
+
+/** 物流详情 columns */
+export function useExpressTrackColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'time',
+      title: '时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'content',
+      title: '物流状态',
+      minWidth: 300,
     },
   ];
 }
 
 /** 操作日志 columns */
-export function useOperateLogColumns(): VxeGridPropTypes.Columns {
+export function useOperateLogColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'createTime',
       title: '操作时间',
       width: 180,
-      formatter: ({ cellValue }: any) => formatDate(cellValue) as string,
+      formatter: 'formatDateTime',
     },
     {
       field: 'userType',
