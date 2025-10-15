@@ -121,7 +121,7 @@ export namespace MallOrderApi {
     /** 配送模板编号 */
     deliveryTemplateId?: null | number;
     /** 发货物流公司编号 */
-    logisticsId?: null | number;
+    logisticsId?: number;
     /** 发货物流单号 */
     logisticsNo?: string;
     /** 发货时间 */

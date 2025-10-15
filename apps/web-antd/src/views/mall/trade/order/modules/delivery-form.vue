@@ -18,7 +18,7 @@ const emit = defineEmits(['success']);
 const formData = ref({
   id: 0,
   expressType: 'express',
-  logisticsId: 0,
+  logisticsId: undefined,
   logisticsNo: '',
 });
 
@@ -70,11 +70,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value.id = data.id;
-      // 根据当前物流信息判断发货方式
+      formData.value = data as any;
       formData.value.expressType = data.logisticsId === 0 ? 'none' : 'express';
-      formData.value.logisticsId = data.logisticsId || 0;
-      formData.value.logisticsNo = data.logisticsNo || '';
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
