@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
           title: '订单详情',
           activePath: '/mall/trade/order',
         },
-        component: () => import('#/views/mall/trade/order/modules/detail.vue'),
+        component: () => import('#/views/mall/trade/order/detail/index.vue'),
       },
       {
         path: String.raw`after-sale/detail/:id(\d+)`,

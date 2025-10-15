@@ -1,20 +1,16 @@
 <script lang="ts" setup>
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { deliveryOrder } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
+import { useDeliveryFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-
-const formData = ref<MallOrderApi.DeliveryRequest>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -25,53 +21,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    // TODO @xingyu：发货默认选中第一个？
-    {
-      fieldName: 'expressType',
-      label: '发货方式',
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          { label: '快递', value: 'express' },
-          { label: '无需发货', value: 'none' },
-        ],
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-    },
-    {
-      fieldName: 'logisticsId',
-      label: '物流公司',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleDeliveryExpressList,
-        labelField: 'name',
-        valueField: 'id',
-      },
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
-    },
-    {
-      fieldName: 'logisticsNo',
-      label: '物流单号',
-      component: 'Input',
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
-    },
-  ],
+  schema: useDeliveryFormSchema(),
   showDefaultActions: false,
 });
 
@@ -101,7 +51,6 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
       return;
     }
     // 加载数据
@@ -111,10 +60,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      await formApi.setValues({ id: data.id });
       if (data.logisticsId === 0) {
         await formApi.setValues({ expressType: 'none' });
       }
-      // 设置到 values
     } finally {
       modalApi.unlock();
     }

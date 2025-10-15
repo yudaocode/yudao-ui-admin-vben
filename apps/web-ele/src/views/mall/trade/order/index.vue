@@ -2,10 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import {
   DeliveryTypeEnum,
   DICT_TYPE,
@@ -13,26 +12,34 @@ import {
 } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
-import { ElImage, ElInput, ElTag } from 'element-plus';
+import { ElImage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getOrderPage, updateOrderRemark } from '#/api/mall/trade/order';
+import { getOrderPage } from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import DeleveryForm from './modules/delevery-form.vue';
+import RemarkForm from './modules/update-remark-form.vue';
+
+const { push } = useRouter();
 
 const [DeleveryFormModal, deleveryFormModalApi] = useVbenModal({
   connectedComponent: DeleveryForm,
   destroyOnClose: true,
 });
 
+const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
+  connectedComponent: RemarkForm,
+  destroyOnClose: true,
+});
+
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
-const { push } = useRouter();
+
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });
@@ -44,27 +51,8 @@ function handleDelivery(row: MallOrderApi.Order) {
 }
 
 /** 备注 */
-function handleRemake(row: MallOrderApi.Order) {
-  prompt({
-    component: () => {
-      return h(ElInput, {
-        defaultValue: row.remark,
-        rows: 3,
-        type: 'textarea',
-      });
-    },
-    content: '请输入订单备注',
-    title: '订单备注',
-    modelPropName: 'value',
-  }).then(async (val) => {
-    if (val) {
-      await updateOrderRemark({
-        id: row.id as number,
-        remark: val,
-      });
-      onRefresh();
-    }
-  });
+function handleRemark(row: MallOrderApi.Order) {
+  remarkFormModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -93,6 +81,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -114,9 +103,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/trade-cart/"
       />
     </template>
-    <DeleveryFormModal @success="onRefresh" />
+
+    <DeleveryFormModal @success="handleRefresh" />
+    <RemarkFormModal @success="handleRefresh" />
     <Grid table-title="订单列表">
-      <!-- TODO @霖：列表有点丑 -->
       <template #expand_content="{ row }">
         <div class="order-items">
           <div
@@ -125,23 +115,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
             class="order-item"
           >
             <div class="order-item-image">
-              <ElImage :src="item.picUrl" class="h-40 w-40" />
+              <ElImage :src="item.picUrl" class="h-10 w-10" />
             </div>
             <div class="order-item-content">
               <div class="order-item-name">
                 {{ item.spuName }}
                 <ElTag
-                  v-for="property in item.properties"
-                  :key="property.id"
+                  v-for="(property, index) in item.properties"
+                  :key="index"
                   class="ml-1"
+                  size="small"
                 >
                   {{ property.propertyName }}: {{ property.valueName }}
                 </ElTag>
               </div>
               <div class="order-item-info">
                 <span>
-                  原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
-                    item.count
+                  原价：{{ fenToYuan(item.price || 0) }} 元 / 数量：{{
+                    item.count || 0
                   }}个
                 </span>
                 <DictTag
@@ -176,7 +167,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '备注',
               link: true,
-              onClick: handleRemake.bind(null, row),
+              onClick: handleRemark.bind(null, row),
             },
           ]"
         />
