@@ -26,9 +26,9 @@ import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
 import DeliveryForm from '../modules/delivery-form.vue';
+import PriceForm from '../modules/price-form.vue';
 import RemarkForm from '../modules/remark-form.vue';
 import OrderUpdateAddressForm from '../modules/update-address-form.vue';
-import OrderUpdatePriceForm from '../modules/update-price-form.vue';
 import {
   useDeliveryInfoSchema,
   useExpressTrackColumns,
@@ -156,8 +156,8 @@ const [OrderUpdateAddressFormModal, addressFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [OrderUpdatePriceFormModal, priceFormModalApi] = useVbenModal({
-  connectedComponent: OrderUpdatePriceForm,
+const [PriceFormModal, priceFormModalApi] = useVbenModal({
+  connectedComponent: PriceForm,
   destroyOnClose: true,
 });
 
@@ -300,7 +300,7 @@ onMounted(async () => {
     <DeliveryFormModal @success="getDetail" />
     <RemarkFormModal @success="getDetail" />
     <OrderUpdateAddressFormModal @success="getDetail" />
-    <OrderUpdatePriceFormModal @success="getDetail" />
+    <PriceFormModal @success="getDetail" />
 
     <!-- 订单信息 -->
     <Card class="mb-4">

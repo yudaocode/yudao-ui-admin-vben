@@ -6,6 +6,7 @@ import { ref } from 'vue';
 
 import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
@@ -280,6 +281,61 @@ export function useRemarkFormSchema(): VbenFormSchema[] {
       componentProps: {
         type: 'textarea',
         rows: 3,
+      },
+    },
+  ];
+}
+
+/** 订单调价表单配置 */
+export function usePriceFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'payPrice',
+      label: '应付金额(总)',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入应付金额(总)',
+        disabled: true,
+        formatter: (value: string) => `${value}元`,
+      },
+    },
+    {
+      fieldName: 'adjustPrice',
+      label: '订单调价',
+      component: 'InputNumber',
+      componentProps: {
+        placeholder: '请输入订单调价',
+        step: 0.1,
+        precision: 2,
+      },
+      help: '订单调价。 正数，加价；负数，减价',
+      rules: 'required',
+    },
+    {
+      fieldName: 'newPayPrice',
+      label: '调价后',
+      component: 'Input',
+      componentProps: {
+        placeholder: '',
+        formatter: (value: string) => `${value}元`,
+      },
+      dependencies: {
+        triggerFields: ['payPrice', 'adjustPrice'],
+        disabled: true,
+        trigger(values, form) {
+          const originalPrice = convertToInteger(values.payPrice);
+          const adjustPrice = convertToInteger(values.adjustPrice);
+          const newPrice = originalPrice + adjustPrice;
+          form.setFieldValue('newPayPrice', formatToFraction(newPrice));
+        },
       },
     },
   ];
