@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
@@ -8,9 +10,17 @@ import { ElMessage } from 'element-plus';
 import { useVbenForm } from '#/adapter/form';
 import { deliveryOrder } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
+
 import { useDeliveryFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+
+const formData = ref({
+  id: 0,
+  expressType: 'express',
+  logisticsId: undefined,
+  logisticsNo: '',
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -33,14 +43,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.DeliveryRequest;
+    const data = await formApi.getValues();
     if (data.expressType === 'none') {
       // 无需发货的情况
       data.logisticsId = 0;
       data.logisticsNo = '';
     }
     try {
-      await deliveryOrder(data);
+      await deliveryOrder(data as MallOrderApi.DeliveryRequest);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -55,15 +65,15 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<MallOrderApi.Order>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      await formApi.setValues({ id: data.id });
-      if (data.logisticsId === 0) {
-        await formApi.setValues({ expressType: 'none' });
-      }
+      formData.value = data as any;
+      formData.value.expressType = data.logisticsId === 0 ? 'none' : 'express';
+      // 设置到 values
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }
@@ -72,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-1/3" title="发货">
+  <Modal title="发货" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -25,8 +25,8 @@ import * as TradeOrderApi from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
-import DeliveryForm from '../modules/delivery-form.vue';
 import AddressForm from '../modules/address-form.vue';
+import DeliveryForm from '../modules/delivery-form.vue';
 import PriceForm from '../modules/price-form.vue';
 import RemarkForm from '../modules/remark-form.vue';
 import {
@@ -374,27 +374,19 @@ onMounted(async () => {
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">优惠劵优惠:</span>
-          <span class="text-red-500"
-            >{{ fenToYuan(order.couponPrice ?? 0) }} 元</span
-          >
+          <span class="text-red-500">{{ fenToYuan(order.couponPrice ?? 0) }} 元</span>
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">VIP 优惠:</span>
-          <span class="text-red-500"
-            >{{ fenToYuan(order.vipPrice ?? 0) }} 元</span
-          >
+          <span class="text-red-500">{{ fenToYuan(order.vipPrice ?? 0) }} 元</span>
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">活动优惠:</span>
-          <span class="text-red-500"
-            >{{ fenToYuan(order.discountPrice ?? 0) }} 元</span
-          >
+          <span class="text-red-500">{{ fenToYuan(order.discountPrice ?? 0) }} 元</span>
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">积分抵扣:</span>
-          <span class="text-red-500"
-            >{{ fenToYuan(order.pointPrice ?? 0) }} 元</span
-          >
+          <span class="text-red-500">{{ fenToYuan(order.pointPrice ?? 0) }} 元</span>
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">应付金额:</span>
@@ -426,10 +418,8 @@ onMounted(async () => {
         </div>
         <div class="flex md:col-span-3">
           <span class="mr-2 min-w-fit text-gray-600">收货地址:</span>
-          <span
-            >{{ order.receiverAreaName }}
-            {{ order.receiverDetailAddress }}</span
-          >
+          <span>{{ order.receiverAreaName }}
+            {{ order.receiverDetailAddress }}</span>
         </div>
         <div class="flex">
           <span class="mr-2 min-w-fit text-gray-600">发货时间:</span>

@@ -109,11 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid table-title="订单列表">
       <template #expand_content="{ row }">
         <div class="order-items">
-          <div
-            v-for="(item, index) in row.items"
-            :key="index"
-            class="order-item"
-          >
+          <div v-for="item in row.items" :key="item.id!" class="order-item">
             <div class="order-item-image">
               <ElImage :src="item.picUrl" class="h-10 w-10" />
             </div>
@@ -121,8 +117,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <div class="order-item-name">
                 {{ item.spuName }}
                 <ElTag
-                  v-for="(property, index) in item.properties"
-                  :key="index"
+                  v-for="property in item.properties"
+                  :key="property.id!"
                   class="ml-1"
                   size="small"
                 >
@@ -149,6 +145,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.detail'),
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
               auth: ['trade:order:query'],
@@ -158,6 +155,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :drop-down-actions="[
             {
               label: '发货',
+              type: 'primary',
               link: true,
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
@@ -166,6 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '备注',
+              type: 'primary',
               link: true,
               onClick: handleRemark.bind(null, row),
             },

@@ -77,10 +77,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleDeliveryExpressList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择快递公司',
         clearable: true,
       },
@@ -315,6 +313,8 @@ export function usePriceFormSchema(): VbenFormSchema[] {
         placeholder: '请输入订单调价',
         step: 0.1,
         precision: 2,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       help: '订单调价。 正数，加价；负数，减价',
       rules: 'required',
@@ -431,10 +431,8 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleDeliveryExpressList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择物流公司',
       },
       dependencies: {
