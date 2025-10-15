@@ -97,17 +97,17 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建学生 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑学生 */
-function onEdit(row: Demo03StudentApi.Demo03Student) {
+function handleEdit(row: Demo03StudentApi.Demo03Student) {
   formModalApi.setData(row).open();
 }
 
 /** 删除学生 */
-async function onDelete(row: Demo03StudentApi.Demo03Student) {
+async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -126,7 +126,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Student) {
 }
 
 /** 批量删除学生 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
@@ -152,7 +152,7 @@ function handleRowCheckboxChange({
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo03Student(queryParams);
@@ -230,7 +230,7 @@ onMounted(() => {
           <Button
             class="ml-2"
             type="primary"
-            @click="onCreate"
+            @click="handleCreate"
             v-access:code="['infra:demo03-student:create']"
           >
             <IconifyIcon icon="lucide:plus" />
@@ -240,7 +240,7 @@ onMounted(() => {
             type="primary"
             class="ml-2"
             :loading="exportLoading"
-            @click="onExport"
+            @click="handleExport"
             v-access:code="['infra:demo03-student:export']"
           >
             <IconifyIcon icon="lucide:download" />
@@ -251,7 +251,7 @@ onMounted(() => {
             danger
             class="ml-2"
             :disabled="isEmpty(checkedIds)"
-            @click="onDeleteBatch"
+            @click="handleDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >
             <IconifyIcon icon="lucide:trash-2" />
@@ -297,7 +297,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -307,7 +307,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="onDelete(row)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

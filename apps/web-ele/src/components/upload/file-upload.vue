@@ -5,6 +5,7 @@ import type {
   UploadInstance,
   UploadProps,
   UploadRawFile,
+  UploadRequestOptions,
   UploadUserFile,
 } from 'element-plus';
 

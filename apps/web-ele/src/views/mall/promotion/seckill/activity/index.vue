@@ -29,7 +29,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -48,7 +48,7 @@ async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
   await confirm('确认关闭该秒杀活动吗？');
   await closeSeckillActivity(row.id as number);
   ElMessage.success('关闭成功');
-  onRefresh();
+  handleRefresh();
 }
 
 /** 删除活动 */
@@ -59,7 +59,7 @@ async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
   try {
     await deleteSeckillActivity(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -115,7 +115,7 @@ onMounted(async () => {
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="秒杀活动列表">
       <template #toolbar-tools>
         <TableAction

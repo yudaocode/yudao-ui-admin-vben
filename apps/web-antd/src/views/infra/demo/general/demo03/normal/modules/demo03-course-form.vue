@@ -24,7 +24,7 @@ async function onAdd() {
 }
 
 /** 删除学生课程 */
-async function onDelete(row: Demo03StudentApi.Demo03Course) {
+async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   await tableRef.value?.remove(row);
 }
 
@@ -73,7 +73,7 @@ watch(
           size="small"
           type="link"
           danger
-          @click="onDelete(row)"
+          @click="handleDelete(row)"
           v-access:code="['infra:demo03-student:delete']"
         >
           {{ $t('ui.actionTitle.delete') }}

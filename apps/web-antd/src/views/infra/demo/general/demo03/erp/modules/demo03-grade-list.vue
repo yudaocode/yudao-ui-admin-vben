@@ -38,7 +38,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建学生班级 */
-function onCreate() {
+function handleCreate() {
   if (!props.studentId) {
     message.warning('请先选择一个学生!');
     return;
@@ -47,12 +47,12 @@ function onCreate() {
 }
 
 /** 编辑学生班级 */
-function onEdit(row: Demo03StudentApi.Demo03Grade) {
+function handleEdit(row: Demo03StudentApi.Demo03Grade) {
   formModalApi.setData(row).open();
 }
 
 /** 删除学生班级 */
-async function onDelete(row: Demo03StudentApi.Demo03Grade) {
+async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -71,7 +71,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Grade) {
 }
 
 /** 批量删除学生班级 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
@@ -219,7 +219,7 @@ onMounted(() => {
           <Button
             class="ml-2"
             type="primary"
-            @click="onCreate"
+            @click="handleCreate"
             v-access:code="['infra:demo03-student:create']"
           >
             <IconifyIcon icon="lucide:plus" />
@@ -230,7 +230,7 @@ onMounted(() => {
             danger
             class="ml-2"
             :disabled="isEmpty(checkedIds)"
-            @click="onDeleteBatch"
+            @click="handleDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >
             <IconifyIcon icon="lucide:trash-2" />
@@ -261,7 +261,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -271,7 +271,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="onDelete(row)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

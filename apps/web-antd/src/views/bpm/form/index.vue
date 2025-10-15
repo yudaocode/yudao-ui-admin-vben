@@ -20,7 +20,7 @@ import Detail from './modules/detail.vue';
 defineOptions({ name: 'BpmForm' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -67,7 +67,7 @@ async function handleDelete(row: BpmFormApi.Form) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -121,7 +121,7 @@ watch(
   () => route.query.refresh,
   (val) => {
     if (val === '1') {
-      onRefresh();
+      handleRefresh();
     }
   },
   { immediate: true },

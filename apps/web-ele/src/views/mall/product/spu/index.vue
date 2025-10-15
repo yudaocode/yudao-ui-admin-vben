@@ -64,7 +64,7 @@ const tabsData = ref([
 ]);
 
 /** 刷新表格 */
-async function onRefresh() {
+async function handleRefresh() {
   await gridApi.query();
   await getTabCount();
 }
@@ -104,7 +104,7 @@ async function handleDelete(row: MallSpuApi.Spu) {
   try {
     await deleteSpu(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    await onRefresh();
+    await handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -120,7 +120,7 @@ async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
   await confirm(`确认要"${row.name}"${text}吗？`);
   await updateStatus({ id: row.id as number, status: newStatus });
   ElMessage.success(`${text}成功`);
-  await onRefresh();
+  await handleRefresh();
 }
 
 /** 更新状态 */

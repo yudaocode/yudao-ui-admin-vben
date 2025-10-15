@@ -23,7 +23,7 @@ const [FormModal, formModalApi] = useVbenModal({
 const { push } = useRouter();
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -46,7 +46,7 @@ function handleDecorate(row: MallDiyPageApi.DiyPage) {
 /** 删除 DIY 页面 */
 async function handleDelete(row: MallDiyPageApi.DiyPage) {
   await deleteDiyPage(row.id as number);
-  onRefresh();
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -89,7 +89,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="装修页面列表">
       <template #toolbar-tools>

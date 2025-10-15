@@ -33,14 +33,14 @@ async function handleDelete(row: MallCouponApi.Coupon) {
     message.success({
       content: '回收成功',
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 

@@ -56,7 +56,7 @@ async function getAccountList() {
   });
 }
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -81,7 +81,7 @@ async function handleDelete(row: MpTagApi.Tag) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -97,7 +97,7 @@ async function handleSync() {
     message.success({
       content: '同步标签成功',
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -140,7 +140,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="公众号标签列表">
       <template #toolbar-tools>
         <TableAction

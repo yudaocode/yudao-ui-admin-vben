@@ -30,14 +30,14 @@ async function handleDelete(row: MallCouponApi.Coupon) {
   try {
     await deleteCoupon(row.id as number);
     ElMessage.success('回收成功');
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 

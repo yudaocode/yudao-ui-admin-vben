@@ -19,7 +19,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -41,7 +41,7 @@ async function handleDelete(row: MallBannerApi.Banner) {
   try {
     await deleteBanner(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.title]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -79,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="Banner列表">
       <template #toolbar-tools>
         <TableAction

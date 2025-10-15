@@ -141,7 +141,7 @@ function handleRowCheckboxChange({
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo01Contact(queryParams);
@@ -229,7 +229,7 @@ onMounted(() => {
             type="primary"
             class="ml-2"
             :loading="exportLoading"
-            @click="onExport"
+            @click="handleExport"
             v-access:code="['infra:demo01-contact:export']"
           >
             <IconifyIcon icon="lucide:download" />

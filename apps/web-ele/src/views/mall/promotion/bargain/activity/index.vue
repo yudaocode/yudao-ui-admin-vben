@@ -25,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -44,7 +44,7 @@ async function handleClose(row: MallBargainActivityApi.BargainActivity) {
   await confirm('确定关闭该砍价活动吗？');
   await closeBargainActivity(row.id as number);
   ElMessage.success('关闭成功');
-  onRefresh();
+  handleRefresh();
 }
 
 /** 删除砍价活动 */
@@ -55,7 +55,7 @@ async function handleDelete(row: MallBargainActivityApi.BargainActivity) {
   try {
     await deleteBargainActivity(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -101,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="砍价活动列表">
       <template #toolbar-tools>
