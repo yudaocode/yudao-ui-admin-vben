@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallArticleApi } from '#/api/mall/promotion/article';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -23,17 +23,17 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建品牌 */
+/** 创建文章 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑品牌 */
+/** 编辑文章 */
 function handleEdit(row: MallArticleApi.Article) {
   formModalApi.setData(row).open();
 }
 
-/** 删除品牌 */
+/** 删除文章 */
 async function handleDelete(row: MallArticleApi.Article) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
@@ -41,9 +41,7 @@ async function handleDelete(row: MallArticleApi.Article) {
   });
   try {
     await deleteArticle(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -71,6 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -82,6 +81,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【营销】内容管理"
+        url="https://doc.iocoder.cn/mall/promotion-content/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <Grid table-title="文章列表">
       <template #toolbar-tools>
