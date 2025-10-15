@@ -10,6 +10,7 @@ import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
+import { getAreaTree } from '#/api/system/area';
 import { getRangePickerDefaultProps } from '#/utils';
 
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
@@ -337,6 +338,65 @@ export function usePriceFormSchema(): VbenFormSchema[] {
           form.setFieldValue('newPayPrice', formatToFraction(newPrice));
         },
       },
+    },
+  ];
+}
+
+/** 订单修改地址表单配置 */
+export function useAddressFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'receiverName',
+      label: '收件人',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入收件人名称',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'receiverMobile',
+      label: '手机号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入收件人手机号',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'receiverAreaId',
+      label: '所在地',
+      component: 'ApiTreeSelect',
+      componentProps: {
+        api: () => getAreaTree(),
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+          children: 'children',
+        },
+        placeholder: '请选择收件人所在地',
+        treeDefaultExpandAll: true,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'receiverDetailAddress',
+      label: '详细地址',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入收件人详细地址',
+        type: 'textarea',
+        rows: 3,
+      },
+      rules: 'required',
     },
   ];
 }

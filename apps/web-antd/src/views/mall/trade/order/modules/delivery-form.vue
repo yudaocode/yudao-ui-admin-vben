@@ -113,10 +113,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      // 设置到 values
       if (data.logisticsId === 0) {
         await formApi.setValues({ expressType: 'none' });
       }
-      // 设置到 values
     } finally {
       modalApi.unlock();
     }
@@ -125,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-1/3" title="发货">
+  <Modal title="发货" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>
