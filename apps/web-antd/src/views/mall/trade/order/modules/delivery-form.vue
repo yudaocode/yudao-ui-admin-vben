@@ -8,13 +8,19 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { deliveryOrder } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
 
+import { useDeliveryFormSchema } from '../data';
+
 const emit = defineEmits(['success']);
 
-const formData = ref<MallOrderApi.DeliveryRequest>();
+const formData = ref({
+  id: 0,
+  expressType: 'express',
+  logisticsId: 0,
+  logisticsNo: '',
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -25,55 +31,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    // TODO @xingyu：发货默认选中第一个？
-    {
-      fieldName: 'expressType',
-      label: '发货方式',
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          { label: '快递', value: 'express' },
-          { label: '无需发货', value: 'none' },
-        ],
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-    },
-    {
-      fieldName: 'logisticsId',
-      label: '物流公司',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleDeliveryExpressList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
-      },
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
-    },
-    {
-      fieldName: 'logisticsNo',
-      label: '物流单号',
-      component: 'Input',
-      dependencies: {
-        triggerFields: ['expressType'],
-        show: (values) => values.expressType === 'express',
-      },
-    },
-  ],
+  schema: useDeliveryFormSchema(),
   showDefaultActions: false,
 });
 
@@ -85,14 +43,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.DeliveryRequest;
+    const data = await formApi.getValues();
     if (data.expressType === 'none') {
       // 无需发货的情况
       data.logisticsId = 0;
       data.logisticsNo = '';
     }
     try {
-      await deliveryOrder(data);
+      await deliveryOrder(data as MallOrderApi.DeliveryRequest);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -103,20 +61,22 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallOrderApi.Order>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
+      formData.value.id = data.id;
+      // 根据当前物流信息判断发货方式
+      formData.value.expressType = data.logisticsId === 0 ? 'none' : 'express';
+      formData.value.logisticsId = data.logisticsId || 0;
+      formData.value.logisticsNo = data.logisticsNo || '';
       // 设置到 values
-      if (data.logisticsId === 0) {
-        await formApi.setValues({ expressType: 'none' });
-      }
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }

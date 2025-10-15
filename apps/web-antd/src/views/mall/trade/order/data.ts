@@ -400,3 +400,62 @@ export function useAddressFormSchema(): VbenFormSchema[] {
     },
   ];
 }
+
+/** 订单发货表单配置 */
+export function useDeliveryFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'expressType',
+      label: '发货方式',
+      component: 'RadioGroup',
+      componentProps: {
+        options: [
+          { label: '快递', value: 'express' },
+          { label: '无需发货', value: 'none' },
+        ],
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+      defaultValue: 'express',
+    },
+    {
+      fieldName: 'logisticsId',
+      label: '物流公司',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleDeliveryExpressList,
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
+        placeholder: '请选择物流公司',
+      },
+      dependencies: {
+        triggerFields: ['expressType'],
+        show: (values) => values.expressType === 'express',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'logisticsNo',
+      label: '物流单号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入物流单号',
+      },
+      dependencies: {
+        triggerFields: ['expressType'],
+        show: (values) => values.expressType === 'express',
+      },
+      rules: 'required',
+    },
+  ];
+}
