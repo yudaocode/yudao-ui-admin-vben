@@ -52,7 +52,7 @@ const [OrderDeliveryFormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [OrderUpdateRemarkFormModal, remarkFormModalApi] = useVbenModal({
+const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
   connectedComponent: OrderUpdateRemarkForm,
   destroyOnClose: true,
 });
