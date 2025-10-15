@@ -261,3 +261,26 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     },
   ];
 }
+
+/** 订单备注表单配置 */
+export function useRemarkFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'id',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Input',
+      componentProps: {
+        type: 'textarea',
+        rows: 3,
+      },
+    },
+  ];
+}

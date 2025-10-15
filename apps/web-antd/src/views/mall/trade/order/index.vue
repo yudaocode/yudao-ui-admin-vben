@@ -2,6 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -21,7 +22,7 @@ import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import DeliveryForm from './modules/delivery-form.vue';
-import UpdateRemarkForm from './modules/update-remark-form.vue';
+import RemarkForm from './modules/remark-form.vue';
 
 const { push } = useRouter();
 
@@ -30,8 +31,8 @@ const [DeliveryFormModal, deliveryFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [UpdateRemarkFormModal, updateRemarkFormModalApi] = useVbenModal({
-  connectedComponent: UpdateRemarkForm,
+const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
+  connectedComponent: RemarkForm,
   destroyOnClose: true,
 });
 
@@ -52,7 +53,35 @@ function handleDelivery(row: MallOrderApi.Order) {
 
 /** 备注 */
 function handleRemark(row: MallOrderApi.Order) {
-  updateRemarkFormModalApi.setData(row).open();
+  remarkOrderId.value = row.id;
+  remarkFormVisible.value = true;
+  remarkFormApi.setValues(row);
+}
+
+/** 提交备注 */
+async function handleRemarkSubmit() {
+  const { valid } = await remarkFormApi.validate();
+  if (!valid) return;
+
+  remarkFormLoading.value = true;
+  try {
+    const data =
+      (await remarkFormApi.getValues()) as MallOrderApi.RemarkRequest;
+    await updateOrderRemark(data);
+    message.success($t('ui.actionMessage.operationSuccess'));
+    remarkFormVisible.value = false;
+    handleRefresh();
+  } catch (error) {
+    console.error('更新订单备注失败:', error);
+  } finally {
+    remarkFormLoading.value = false;
+  }
+}
+
+/** 取消备注 */
+function handleRemarkCancel() {
+  remarkFormVisible.value = false;
+  remarkOrderId.value = undefined;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -105,7 +134,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <DeliveryFormModal @success="handleRefresh" />
-    <UpdateRemarkFormModal @success="handleRefresh" />
+
+    <!-- 订单备注弹窗 -->
+    <Modal
+      v-model:open="remarkFormVisible"
+      title="订单备注"
+      :confirm-loading="remarkFormLoading"
+      @ok="handleRemarkSubmit"
+      @cancel="handleRemarkCancel"
+      width="33.33%"
+    >
+      <RemarkForm class="mx-4" />
+    </Modal>
     <Grid table-title="订单列表">
       <template #expand_content="{ row }">
         <List item-layout="vertical" :data-source="row.items">

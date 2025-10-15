@@ -25,10 +25,10 @@ import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
-import DeliveryForm from '../modules/delevery-form.vue';
+import DeliveryForm from '../modules/delivery-form.vue';
+import RemarkForm from '../modules/remark-form.vue';
 import OrderUpdateAddressForm from '../modules/update-address-form.vue';
 import OrderUpdatePriceForm from '../modules/update-price-form.vue';
-import OrderUpdateRemarkForm from '../modules/update-remark-form.vue';
 import {
   useDeliveryInfoSchema,
   useExpressTrackColumns,
@@ -146,8 +146,8 @@ const [DeliveryFormModal, deliveryFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const [OrderUpdateRemarkFormModal, remarkFormModalApi] = useVbenModal({
-  connectedComponent: OrderUpdateRemarkForm,
+const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
+  connectedComponent: RemarkForm,
   destroyOnClose: true,
 });
 
@@ -298,7 +298,7 @@ onMounted(async () => {
 
     <!-- 各种操作的弹窗 -->
     <DeliveryFormModal @success="getDetail" />
-    <OrderUpdateRemarkFormModal @success="getDetail" />
+    <RemarkFormModal @success="getDetail" />
     <OrderUpdateAddressFormModal @success="getDetail" />
     <OrderUpdatePriceFormModal @success="getDetail" />
 

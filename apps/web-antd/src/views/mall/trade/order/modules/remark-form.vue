@@ -10,6 +10,7 @@ import { message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import { updateOrderRemark } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
+import { useRemarkFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
@@ -24,26 +25,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    // TODO @xingyu：发货默认选中第一个？
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Input',
-      componentProps: {
-        type: 'textarea',
-        rows: 3,
-      },
-    },
-  ],
+  schema: useRemarkFormSchema(),
   showDefaultActions: false,
 });
 
@@ -73,13 +55,13 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<MallOrderApi.Order>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      await formApi.setValues({ id: data.id, remark: data.remark });
       // 设置到 values
+      await formApi.setValues(data);
     } finally {
       modalApi.unlock();
     }
@@ -88,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-1/3" title="订单备注">
+  <Modal title="订单备注" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>
