@@ -20,13 +20,13 @@ import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DeleveryForm from './modules/delevery-form.vue';
-import RemarkForm from './modules/update-remark-form.vue';
+import DeliveryForm from './modules/delivery-form.vue';
+import RemarkForm from './modules/remark-form.vue';
 
 const { push } = useRouter();
 
-const [DeleveryFormModal, deleveryFormModalApi] = useVbenModal({
-  connectedComponent: DeleveryForm,
+const [DeliveryFormModal, deliveryFormModalApi] = useVbenModal({
+  connectedComponent: DeliveryForm,
   destroyOnClose: true,
 });
 
@@ -47,7 +47,7 @@ function handleDetail(row: MallOrderApi.Order) {
 
 /** 发货 */
 function handleDelivery(row: MallOrderApi.Order) {
-  deleveryFormModalApi.setData(row).open();
+  deliveryFormModalApi.setData(row).open();
 }
 
 /** 备注 */
@@ -104,7 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <DeleveryFormModal @success="handleRefresh" />
+    <DeliveryFormModal @success="handleRefresh" />
     <RemarkFormModal @success="handleRefresh" />
     <Grid table-title="订单列表">
       <template #expand_content="{ row }">

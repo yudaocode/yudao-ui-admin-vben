@@ -108,7 +108,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'deliveryType',
+      fieldName: 'pickUpVerifyCode',
       label: '核销码',
       component: 'Input',
       componentProps: {
@@ -213,7 +213,6 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       },
       minWidth: 80,
     },
-
     {
       field: 'payPrice',
       title: '实际支付',

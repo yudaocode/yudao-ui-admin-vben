@@ -25,10 +25,10 @@ import * as TradeOrderApi from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
-import DeliveryForm from '../modules/delevery-form.vue';
-import UpdateAddressForm from '../modules/update-address-form.vue';
-import UpdatePriceForm from '../modules/update-price-form.vue';
-import RemarkForm from '../modules/update-remark-form.vue';
+import DeliveryForm from '../modules/delivery-form.vue';
+import AddressForm from '../modules/address-form.vue';
+import PriceForm from '../modules/price-form.vue';
+import RemarkForm from '../modules/remark-form.vue';
 import {
   useExpressTrackColumns,
   useOperateLogColumns,
@@ -112,12 +112,12 @@ const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
 });
 
 const [AddressFormModal, addressFormModalApi] = useVbenModal({
-  connectedComponent: UpdateAddressForm,
+  connectedComponent: AddressForm,
   destroyOnClose: true,
 });
 
 const [PriceFormModal, priceFormModalApi] = useVbenModal({
-  connectedComponent: UpdatePriceForm,
+  connectedComponent: PriceForm,
   destroyOnClose: true,
 });
 

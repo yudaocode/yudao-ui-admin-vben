@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
@@ -11,6 +13,8 @@ import { $t } from '#/locales';
 import { useRemarkFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+
+const formData = ref<MallOrderApi.DeliveryRequest>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -46,16 +50,18 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallOrderApi.Order>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      await formApi.setValues({ id: data.id, remark: data.remark });
+      // 设置到 values
+      await formApi.setValues(data);
     } finally {
       modalApi.unlock();
     }
@@ -64,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-1/3" title="订单备注">
+  <Modal title="订单备注" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
@@ -8,9 +10,12 @@ import { ElMessage } from 'element-plus';
 import { useVbenForm } from '#/adapter/form';
 import { updateOrderAddress } from '#/api/mall/trade/order';
 import { $t } from '#/locales';
+
 import { useAddressFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+
+const formData = ref<MallOrderApi.Order>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -33,9 +38,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MallOrderApi.AddressRequest;
+    const data = await formApi.getValues();
     try {
-      await updateOrderAddress(data);
+      await updateOrderAddress(data as MallOrderApi.AddressRequest);
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -50,18 +55,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<MallOrderApi.Order>();
-    if (!data) {
+    if (!data || !data.id) {
       return;
     }
     modalApi.lock();
     try {
-      await formApi.setValues({
-        id: data.id,
-        receiverName: data.receiverName,
-        receiverMobile: data.receiverMobile,
-        receiverAreaId: data.receiverAreaId,
-        receiverDetailAddress: data.receiverDetailAddress,
-      });
+      formData.value = data;
+      // 设置到 values
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }
@@ -70,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-1/3" title="修改地址">
+  <Modal :title="$t('ui.actionTitle.edit', ['收货地址'])" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>
