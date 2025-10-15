@@ -86,7 +86,7 @@ async function copyContent(content: string) {
   message.success('复制成功！');
 }
 /** 删除 */
-async function onDelete(id: number) {
+async function handleDelete(id: number) {
   // 删除 message
   await deleteChatMessage(id);
   message.success('删除成功！');
@@ -95,12 +95,12 @@ async function onDelete(id: number) {
 }
 
 /** 刷新 */
-async function onRefresh(message: AiChatMessageApi.ChatMessage) {
+async function handleRefresh(message: AiChatMessageApi.ChatMessage) {
   emits('onRefresh', message);
 }
 
 /** 编辑 */
-async function onEdit(message: AiChatMessageApi.ChatMessage) {
+async function handleEdit(message: AiChatMessageApi.ChatMessage) {
   emits('onEdit', message);
 }
 
@@ -150,7 +150,7 @@ onMounted(async () => {
               v-if="item.id > 0"
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
-              @click="onDelete(item.id)"
+              @click="handleDelete(item.id)"
             >
               <IconifyIcon icon="lucide:trash" />
             </Button>
@@ -185,21 +185,21 @@ onMounted(async () => {
             <Button
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
-              @click="onDelete(item.id)"
+              @click="handleDelete(item.id)"
             >
               <IconifyIcon icon="lucide:trash" />
             </Button>
             <Button
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
-              @click="onRefresh(item)"
+              @click="handleRefresh(item)"
             >
               <IconifyIcon icon="lucide:refresh-cw" />
             </Button>
             <Button
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               type="text"
-              @click="onEdit(item)"
+              @click="handleEdit(item)"
             >
               <IconifyIcon icon="lucide:edit" />
             </Button>

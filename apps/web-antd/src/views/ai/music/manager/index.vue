@@ -19,7 +19,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -34,7 +34,7 @@ async function handleDelete(row: AiMusicApi.Music) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -49,7 +49,7 @@ const handleUpdatePublicStatusChange = async (row: AiMusicApi.Music) => {
         id: row.id,
         publicStatus: row.publicStatus,
       });
-      onRefresh();
+      handleRefresh();
     });
   } catch {
     row.publicStatus = !row.publicStatus;

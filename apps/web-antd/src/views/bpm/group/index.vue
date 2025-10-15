@@ -23,7 +23,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -48,7 +48,7 @@ async function handleDelete(row: BpmUserGroupApi.UserGroup) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } catch {
     hideLoading();
   }
@@ -97,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="用户分组">
       <template #toolbar-tools>
         <TableAction

@@ -22,7 +22,7 @@ const productList = ref<any[]>([]);
 const deviceList = ref<any[]>([]);
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -101,7 +101,7 @@ async function handleProcess(row: AlertRecord) {
       try {
         await processAlertRecord(row.id as number, processRemark);
         message.success('处理成功');
-        onRefresh();
+        handleRefresh();
       } catch (error) {
         console.error('处理失败:', error);
         throw error;

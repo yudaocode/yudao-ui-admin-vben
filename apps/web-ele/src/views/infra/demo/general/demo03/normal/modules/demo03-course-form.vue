@@ -24,7 +24,7 @@ const onAdd = async () => {
 };
 
 /** 删除学生课程 */
-const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
+const handleDelete = async (row: Demo03StudentApi.Demo03Course) => {
   await tableRef.value?.remove(row);
 };
 
@@ -73,7 +73,7 @@ watch(
           size="small"
           type="danger"
           link
-          @click="onDelete(row as any)"
+          @click="handleDelete(row as any)"
           v-access:code="['infra:demo03-student:delete']"
         >
           {{ $t('ui.actionTitle.delete') }}

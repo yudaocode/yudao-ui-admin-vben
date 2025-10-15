@@ -31,7 +31,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -56,7 +56,7 @@ async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -118,7 +118,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="分段列表">
       <template #toolbar-tools>
         <TableAction

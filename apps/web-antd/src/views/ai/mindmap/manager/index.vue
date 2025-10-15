@@ -26,7 +26,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   destroyOnClose: true,
 });
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -41,7 +41,7 @@ async function handleDelete(row: AiMindmapApi.MindMap) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
