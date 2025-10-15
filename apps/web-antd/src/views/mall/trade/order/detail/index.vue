@@ -345,7 +345,7 @@ onMounted(async () => {
     <div>
       <OperateLogGrid table-title="操作日志">
         <template #userType="{ row }">
-          <Tag v-if="row.userId === 0" color="default"> 系统 </Tag>
+          <Tag v-if="row.userType === 0" color="default"> 系统 </Tag>
           <DictTag :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
         </template>
       </OperateLogGrid>

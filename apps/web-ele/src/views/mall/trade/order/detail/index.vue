@@ -14,14 +14,14 @@ import {
   TradeOrderStatusEnum,
 } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
-import { fenToYuan, formatDateTime } from '@vben/utils';
 
-import { ElCard, ElMessage, ElTag } from 'element-plus';
+import { ElCard, ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as DeliveryExpressApi from '#/api/mall/trade/delivery/express';
 import * as DeliveryPickUpStoreApi from '#/api/mall/trade/delivery/pickUpStore';
 import * as TradeOrderApi from '#/api/mall/trade/order';
+import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
 
@@ -30,8 +30,12 @@ import DeliveryForm from '../modules/delivery-form.vue';
 import PriceForm from '../modules/price-form.vue';
 import RemarkForm from '../modules/remark-form.vue';
 import {
+  useDeliveryInfoSchema,
   useExpressTrackColumns,
   useOperateLogColumns,
+  useOrderInfoSchema,
+  useOrderPriceSchema,
+  useOrderStatusSchema,
   useProductColumns,
 } from './data';
 
@@ -51,6 +55,42 @@ const deliveryExpressList = ref<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
 );
 const expressTrackList = ref<any[]>([]);
 const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
+
+const [OrderInfoDescriptions] = useDescription({
+  componentProps: {
+    title: '订单信息',
+    border: false,
+    column: 3,
+  },
+  schema: useOrderInfoSchema(),
+});
+
+const [OrderStatusDescriptions] = useDescription({
+  componentProps: {
+    title: '订单状态',
+    border: false,
+    column: 1,
+  },
+  schema: useOrderStatusSchema(),
+});
+
+const [OrderPriceDescriptions] = useDescription({
+  componentProps: {
+    title: '费用信息',
+    border: false,
+    column: 4,
+  },
+  schema: useOrderPriceSchema(),
+});
+
+const [DeliveryInfoDescriptions] = useDescription({
+  componentProps: {
+    title: '收货信息',
+    border: false,
+    column: 3,
+  },
+  schema: useDeliveryInfoSchema(),
+});
 
 const [ProductGrid, productGridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -180,10 +220,8 @@ const handleUpdatePrice = () => {
 /** 核销 */
 const handlePickUp = async () => {
   await confirm('确认核销订单吗？');
-  const loadingInstance = ElMessage({
-    message: '正在处理中...',
-    duration: 0,
-    type: 'info',
+  const loadingInstance = ElLoading.service({
+    text: '正在处理中...',
   });
   try {
     await TradeOrderApi.pickUpOrder(order.value.id!);
@@ -265,75 +303,12 @@ onMounted(async () => {
 
     <!-- 订单信息 -->
     <ElCard class="mb-4">
-      <template #header>
-        <span class="font-bold">订单信息</span>
-      </template>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">订单号:</span>
-          <span>{{ order.no }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">买家:</span>
-          <span>{{ order.user?.nickname }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">订单类型:</span>
-          <DictTag :type="DICT_TYPE.TRADE_ORDER_TYPE" :value="order.type" />
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">订单来源:</span>
-          <DictTag :type="DICT_TYPE.TERMINAL" :value="order.terminal" />
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">买家留言:</span>
-          <span>{{ order.userRemark }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">商家备注:</span>
-          <span>{{ order.remark }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">支付单号:</span>
-          <span>{{ order.payOrderId }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">付款方式:</span>
-          <DictTag
-            :type="DICT_TYPE.PAY_CHANNEL_CODE"
-            :value="order.payChannelCode"
-          />
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">推广用户:</span>
-          <span>{{ order.brokerageUser?.nickname }}</span>
-        </div>
-      </div>
+      <OrderInfoDescriptions :data="order" />
     </ElCard>
-
     <!-- 订单状态 -->
     <ElCard class="mb-4">
-      <template #header>
-        <span class="font-bold">订单状态</span>
-      </template>
-      <div class="space-y-2">
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">订单状态:</span>
-          <DictTag :type="DICT_TYPE.TRADE_ORDER_STATUS" :value="order.status" />
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">提醒:</span>
-          <div class="space-y-1">
-            <div>买家付款成功后，货款将直接进入您的商户号（微信、支付宝）</div>
-            <div>请及时关注你发出的包裹状态，确保可以配送至买家手中</div>
-            <div>
-              如果买家表示没收到货或货物有问题，请及时联系买家处理，友好协商
-            </div>
-          </div>
-        </div>
-      </div>
+      <OrderStatusDescriptions :data="order" />
     </ElCard>
-
     <!-- 商品信息 -->
     <div class="mb-4">
       <ProductGrid table-title="商品信息">
@@ -342,8 +317,8 @@ onMounted(async () => {
             <span class="text-sm">{{ row.spuName }}</span>
             <div class="flex flex-wrap gap-1">
               <ElTag
-                v-for="(property, index) in row.properties"
-                :key="index"
+                v-for="property in row.properties"
+                :key="property.propertyId!"
                 size="small"
               >
                 {{ property.propertyName }}: {{ property.valueName }}
@@ -353,91 +328,23 @@ onMounted(async () => {
         </template>
       </ProductGrid>
     </div>
-
     <!-- 费用信息 -->
     <ElCard class="mb-4">
-      <template #header>
-        <span class="font-bold">费用信息</span>
-      </template>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">商品总额:</span>
-          <span>{{ fenToYuan(order.totalPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">运费金额:</span>
-          <span>{{ fenToYuan(order.deliveryPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">订单调价:</span>
-          <span>{{ fenToYuan(order.adjustPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">优惠劵优惠:</span>
-          <span class="text-red-500">{{ fenToYuan(order.couponPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">VIP 优惠:</span>
-          <span class="text-red-500">{{ fenToYuan(order.vipPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">活动优惠:</span>
-          <span class="text-red-500">{{ fenToYuan(order.discountPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">积分抵扣:</span>
-          <span class="text-red-500">{{ fenToYuan(order.pointPrice ?? 0) }} 元</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">应付金额:</span>
-          <span>{{ fenToYuan(order.payPrice ?? 0) }} 元</span>
-        </div>
-      </div>
+      <OrderPriceDescriptions :data="order" />
     </ElCard>
-
     <!-- 收货信息 -->
     <ElCard class="mb-4">
-      <template #header>
-        <span class="font-bold">收货信息</span>
-      </template>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">配送方式:</span>
-          <DictTag
-            :type="DICT_TYPE.TRADE_DELIVERY_TYPE"
-            :value="order.deliveryType"
-          />
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">收货人:</span>
-          <span>{{ order.receiverName }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">联系电话:</span>
-          <span>{{ order.receiverMobile }}</span>
-        </div>
-        <div class="flex md:col-span-3">
-          <span class="mr-2 min-w-fit text-gray-600">收货地址:</span>
-          <span>{{ order.receiverAreaName }}
-            {{ order.receiverDetailAddress }}</span>
-        </div>
-        <div class="flex">
-          <span class="mr-2 min-w-fit text-gray-600">发货时间:</span>
-          <span>{{ formatDateTime(order.deliveryTime || '') }}</span>
-        </div>
-      </div>
+      <DeliveryInfoDescriptions :data="order" />
     </ElCard>
-
     <!-- 物流详情 -->
     <div v-if="expressTrackList.length > 0" class="mt-4">
       <ExpressTrackGrid table-title="物流详情" />
     </div>
-
     <!-- 操作日志 -->
     <div>
       <OperateLogGrid table-title="操作日志">
         <template #userType="{ row }">
-          <ElTag v-if="row.userId === 0" type="info"> 系统 </ElTag>
+          <ElTag v-if="row.userType === 0" type="info"> 系统 </ElTag>
           <DictTag v-else :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
         </template>
       </OperateLogGrid>

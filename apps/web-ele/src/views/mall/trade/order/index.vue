@@ -108,27 +108,33 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <RemarkFormModal @success="handleRefresh" />
     <Grid table-title="订单列表">
       <template #expand_content="{ row }">
-        <div class="order-items">
-          <div v-for="item in row.items" :key="item.id!" class="order-item">
-            <div class="order-item-image">
+        <div class="py-2">
+          <div
+            v-for="item in row.items"
+            :key="item.id!"
+            class="flex items-start border-b border-gray-100 py-2 last:border-b-0"
+          >
+            <div class="mr-3 flex-shrink-0">
               <ElImage :src="item.picUrl" class="h-10 w-10" />
             </div>
-            <div class="order-item-content">
-              <div class="order-item-name">
+            <div class="flex-1">
+              <div class="mb-1 font-medium">
                 {{ item.spuName }}
                 <ElTag
                   v-for="property in item.properties"
-                  :key="property.id!"
+                  :key="property.id"
                   class="ml-1"
                   size="small"
                 >
                   {{ property.propertyName }}: {{ property.valueName }}
                 </ElTag>
               </div>
-              <div class="order-item-info">
+              <div
+                class="flex items-center justify-between text-xs text-gray-500"
+              >
                 <span>
-                  原价：{{ fenToYuan(item.price || 0) }} 元 / 数量：{{
-                    item.count || 0
+                  原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
+                    item.count
                   }}个
                 </span>
                 <DictTag
@@ -174,42 +180,3 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
-
-<style lang="scss" scoped>
-.order-items {
-  padding: 8px 0;
-}
-
-.order-item {
-  display: flex;
-  align-items: flex-start;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.order-item-image {
-  flex-shrink: 0;
-  margin-right: 12px;
-}
-
-.order-item-content {
-  flex: 1;
-}
-
-.order-item-name {
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.order-item-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #666;
-}
-</style>
