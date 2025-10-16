@@ -1,10 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-// 格式化函数移到组件内部实现
 import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -40,6 +40,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'description',
       label: '优惠券描述',
       component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入优惠券描述',
+      },
     },
     // TODO @xingyu：不同的优惠，不同的选择
     {
@@ -48,6 +51,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PROMOTION_PRODUCT_SCOPE, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
       },
       rules: 'required',
     },
@@ -117,7 +122,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '优惠券名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入优惠券名称',
+        placeholder: '请输入优惠劵名',
         allowClear: true,
       },
     },
@@ -154,9 +159,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  onStatusChange?: (
+    newStatus: number,
+    row: MallCouponTemplateApi.CouponTemplate,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '优惠券名称',
@@ -233,7 +242,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'status',
       title: '状态',
       minWidth: 100,
-      slots: { default: 'status' },
+      align: 'center',
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: CommonStatusEnum.ENABLE,
+          unCheckedValue: CommonStatusEnum.DISABLE,
+        },
+      },
     },
     {
       field: 'createTime',
