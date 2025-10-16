@@ -55,6 +55,7 @@ const Description = defineComponent({
         {...props}
         bordered={props.componentProps?.bordered}
         column={props.componentProps?.column}
+        labelPlacement={props.componentProps?.labelPlacement || 'left'}
         size={props.componentProps?.size}
         title={props.componentProps?.title}
       >
