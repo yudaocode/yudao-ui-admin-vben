@@ -8,7 +8,6 @@ import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSocialClient,
@@ -136,7 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),
-               type: 'error',
+              type: 'error',
               icon: ACTION_ICON.DELETE,
               auth: ['system:social-client:delete'],
               disabled: isEmpty(checkedIds),
