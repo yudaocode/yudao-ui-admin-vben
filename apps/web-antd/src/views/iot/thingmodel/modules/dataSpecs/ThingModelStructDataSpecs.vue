@@ -29,6 +29,7 @@ const formData = ref<any>({
     dataSpecs: {
       dataType: IoTDataSpecsDataTypeEnum.INT,
     },
+    dataSpecsList: [],
   },
 });
 
@@ -40,16 +41,22 @@ function openStructForm(val: any) {
     return;
   }
   // 编辑时回显数据
+  const valData = val as any;
   formData.value = {
-    identifier: val.identifier,
-    name: val.name,
-    description: val.description,
+    identifier: valData?.identifier || '',
+    name: valData?.name || '',
+    description: valData?.description || '',
     property: {
-      dataType: val.childDataType,
-      dataSpecs: val.dataSpecs,
-      dataSpecsList: val.dataSpecsList,
+      dataType: valData?.childDataType || IoTDataSpecsDataTypeEnum.INT,
+      dataSpecs: valData?.dataSpecs ?? {},
+      dataSpecsList: valData?.dataSpecsList ?? [],
     },
   };
+
+  // 确保 property.dataType 有值
+  if (!formData.value.property.dataType) {
+    formData.value.property.dataType = IoTDataSpecsDataTypeEnum.INT;
+  }
 }
 
 /** 删除 struct 项 */
@@ -102,19 +109,12 @@ function resetForm() {
       dataSpecs: {
         dataType: IoTDataSpecsDataTypeEnum.INT,
       },
+      dataSpecsList: [],
     },
   };
   structFormRef.value?.resetFields();
 }
 
-/** 校验 struct 不能为空 */
-function validateList(_: any, __: any, callback: any) {
-  if (isEmpty(dataSpecsList.value)) {
-    callback(new Error('struct 不能为空'));
-    return;
-  }
-  callback();
-}
 
 /** 组件初始化 */
 onMounted(async () => {
@@ -126,51 +126,49 @@ onMounted(async () => {
 
 <template>
   <!-- struct 数据展示 -->
-  <Form.Item
-    :rules="[{ required: true, validator: validateList, trigger: 'change' }]"
-    label="JSON 对象"
-  >
+  <Form.Item label="属性对象">
     <div
       v-for="(item, index) in dataSpecsList"
       :key="index"
       class="px-10px mb-10px flex w-full justify-between bg-gray-100"
     >
-      <span>参数名称：{{ item.name }}</span>
+      <span>参数：{{ item.name }}</span>
       <div class="btn">
-        <Button link type="primary" @click="openStructForm(item)">
+        <Button type="link" @click="openStructForm(item)">
           编辑
         </Button>
-        <Divider direction="vertical" />
-        <Button link danger @click="deleteStructItem(index)"> 删除 </Button>
+        <Divider type="vertical" />
+        <Button type="link" danger @click="deleteStructItem(index)">
+          删除
+        </Button>
       </div>
     </div>
-    <Button link type="primary" @click="openStructForm(null)">
+    <Button type="link" @click="openStructForm(null)">
       +新增参数
     </Button>
   </Form.Item>
 
   <!-- struct 表单 -->
-  <Modal v-model="dialogVisible" :title="dialogTitle" append-to-body>
+  <Modal
+    v-model:open="dialogVisible"
+    :title="dialogTitle"
+    :confirm-loading="formLoading"
+    @ok="submitForm"
+  >
     <Form
       ref="structFormRef"
-      v-loading="formLoading"
       :model="formData"
-      label-width="100px"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="参数名称" prop="name">
-        <Input v-model="formData.name" placeholder="请输入功能名称" />
+      <Form.Item label="参数名称" name="name">
+        <Input v-model:value="formData.name" placeholder="请输入功能名称" />
       </Form.Item>
-      <Form.Item label="标识符" prop="identifier">
-        <Input v-model="formData.identifier" placeholder="请输入标识符" />
+      <Form.Item label="标识符" name="identifier">
+        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
       </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-struct-data-specs />
     </Form>
-    <template #footer>
-      <Button :disabled="formLoading" type="primary" @click="submitForm">
-        确 定
-      </Button>
-      <Button @click="dialogVisible = false">取 消</Button>
-    </template>
   </Modal>
 </template>

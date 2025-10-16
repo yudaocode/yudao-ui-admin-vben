@@ -25,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function handleRefresh() {
+function onRefresh() {
   gridApi.query();
 }
 
@@ -51,7 +51,7 @@ async function handleToggleStatus(row: RuleSceneApi.SceneRule) {
     message.success({
       content: newStatus === 0 ? '启用成功' : '停用成功',
     });
-    handleRefresh();
+    onRefresh();
   } finally {
     hideLoading();
   }
@@ -68,7 +68,7 @@ async function handleDelete(row: RuleSceneApi.SceneRule) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    handleRefresh();
+    onRefresh();
   } finally {
     hideLoading();
   }
@@ -107,7 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="handleRefresh" />
+    <FormModal @success="onRefresh" />
     <Grid table-title="场景规则列表">
       <template #toolbar-tools>
         <TableAction

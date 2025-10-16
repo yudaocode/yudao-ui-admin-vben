@@ -21,7 +21,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function handleRefresh() {
+function onRefresh() {
   gridApi.query();
 }
 
@@ -82,7 +82,7 @@ async function handleDelete(row: AlertConfigApi.AlertConfig) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    handleRefresh();
+    onRefresh();
   } finally {
     hideLoading();
   }
@@ -121,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="handleRefresh" />
+    <FormModal @success="onRefresh" />
     <Grid table-title="告警配置列表">
       <template #toolbar-tools>
         <TableAction

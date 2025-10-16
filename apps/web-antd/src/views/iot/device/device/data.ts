@@ -113,16 +113,16 @@ export function useFormSchema(): VbenFormSchema[] {
         .optional()
         .or(z.literal('')),
     },
-    // {
-    //   fieldName: 'locationType',
-    //   label: '定位类型',
-    //   component: 'RadioGroup',
-    //   componentProps: {
-    //     options: getDictOptions(DICT_TYPE.IOT_LOCATION_TYPE, 'number'),
-    //     buttonStyle: 'solid',
-    //     optionType: 'button',
-    //   },
-    // },
+    {
+      fieldName: 'locationType',
+      label: '定位类型',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.IOT_LOCATION_TYPE, 'number'),
+        buttonStyle: 'solid',
+        optionType: 'button',
+      },
+    },
     {
       fieldName: 'longitude',
       label: '设备经度',

@@ -1,23 +1,35 @@
 <script setup lang="ts">
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ThingModelApi } from '#/api/iot/thingmodel';
+import { onMounted, provide, ref } from 'vue';
 
+import { message } from 'ant-design-vue';
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
+import { getProduct } from '#/api/iot/product/product';
+import type { IotProductApi } from '#/api/iot/product/product';
 
-import { getDataTypeOptionsLabel } from '../utils/constants';
 import { useGridColumns, useGridFormSchema } from './data';
+import { getDataTypeOptionsLabel, IOT_PROVIDE_KEY } from '../utils/constants';
+import ThingModelForm from './modules/ThingModelForm.vue';
+import ThingModelTSL from './modules/ThingModelTSL.vue';
+import { DataDefinition } from './modules/components';
 
 defineOptions({ name: 'IoTThingModel' });
 
 const props = defineProps<{
   productId: number;
 }>();
+
+// 产品信息
+const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
+
+// 提供产品信息给子组件
+provide(IOT_PROVIDE_KEY.PRODUCT, product);
+
+// 组件引用
+const thingModelFormRef = ref();
+const thingModelTSLRef = ref();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -26,12 +38,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page, form }) => {
+        query: async ({ page }: any, formValues: any) => {
           return await getThingModelPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             productId: props.productId,
-            ...form,
+            ...formValues,
           });
         },
       },
@@ -44,7 +56,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ThingModelApi.ThingModel>,
+  },
   formOptions: {
     schema: useGridFormSchema(),
   },
@@ -52,14 +64,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 // 新增功能
 const handleCreate = () => {
-  // TODO: 打开物模型表单
-  console.error('新增功能');
+  thingModelFormRef.value?.open('create');
 };
 
 // 编辑功能
 const handleEdit = (row: any) => {
-  // TODO: 打开物模型表单
-  console.error('编辑功能:', row);
+  thingModelFormRef.value?.open('update', row.id);
 };
 
 // 删除功能
@@ -75,28 +85,58 @@ const handleDelete = async (row: any) => {
 
 // 打开 TSL
 const handleOpenTSL = () => {
-  // TODO: 打开 TSL 弹窗
-  console.error('打开 TSL');
+  thingModelTSLRef.value?.open();
 };
 
 // 获取数据类型标签
 const getDataTypeLabel = (row: any) => {
   return getDataTypeOptionsLabel(row.property?.dataType) || '-';
 };
+
+// 刷新表格
+const handleRefresh = () => {
+  gridApi.reload();
+};
+
+// 获取产品信息
+const getProductData = async () => {
+  try {
+    product.value = await getProduct(props.productId);
+  } catch (error) {
+    console.error('获取产品信息失败:', error);
+  }
+};
+
+// 初始化
+onMounted(async () => {
+  await getProductData();
+});
 </script>
 
 <template>
   <Page
+    auto-content-height
     description="管理产品的物模型定义，包括属性、服务和事件"
     title="物模型管理"
   >
-    <Grid>
+    <Grid ref="xGrid">
       <template #toolbar-tools>
-        <Button @click="handleCreate">
-          <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
-          添加功能
-        </Button>
-        <Button type="primary" @click="handleOpenTSL"> TSL </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '添加功能',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              onClick: handleCreate,
+            },
+            {
+              label: 'TSL',
+              type: 'default',
+              color: 'success',
+              onClick: handleOpenTSL,
+            },
+          ]"
+        />
       </template>
 
       <!-- 数据类型列 -->
@@ -106,17 +146,38 @@ const getDataTypeLabel = (row: any) => {
 
       <!-- 数据定义列 -->
       <template #dataDefinition="{ row }">
-        <!-- TODO: 实现数据定义组件 -->
-        <span class="text-gray-400">{{ row }}</span>
+        <DataDefinition :data="row" />
       </template>
 
       <!-- 操作列 -->
       <template #actions="{ row }">
-        <Button size="small" type="primary" @click="handleEdit(row)">
-          编辑
-        </Button>
-        <Button size="small" danger @click="handleDelete(row)"> 删除 </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              popConfirm: {
+                title: '确认删除该功能吗?',
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
+
+    <!-- 物模型表单 -->
+    <ThingModelForm ref="thingModelFormRef" @success="handleRefresh" />
+
+    <!-- TSL 弹窗 -->
+    <ThingModelTSL ref="thingModelTSLRef" />
   </Page>
 </template>

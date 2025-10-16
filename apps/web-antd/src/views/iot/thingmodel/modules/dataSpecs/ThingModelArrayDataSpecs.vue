@@ -29,8 +29,8 @@ function handleChange(val: any) {
 </script>
 
 <template>
-  <Form.Item label="元素类型" prop="property.dataSpecs.childDataType">
-    <Radio.Group v-model="dataSpecs.childDataType" @change="handleChange">
+  <Form.Item label="元素类型" name="property.dataSpecs.childDataType">
+    <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
       <template v-for="item in getDataTypeOptions()" :key="item.value">
         <Radio
           v-if="
@@ -50,8 +50,8 @@ function handleChange(val: any) {
       </template>
     </Radio.Group>
   </Form.Item>
-  <Form.Item label="元素个数" prop="property.dataSpecs.size">
-    <Input v-model="dataSpecs.size" placeholder="请输入数组中的元素个数" />
+  <Form.Item label="元素个数" name="property.dataSpecs.size">
+    <Input v-model:value="dataSpecs.size" placeholder="请输入数组中的元素个数" />
   </Form.Item>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs

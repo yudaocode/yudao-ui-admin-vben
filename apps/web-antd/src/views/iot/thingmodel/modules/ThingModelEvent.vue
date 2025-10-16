@@ -2,8 +2,6 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { ThingModelEvent } from '#/api/iot/thingmodel';
-
 import { watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -27,7 +25,7 @@ const thingModelEvent = useVModel(
   props,
   'modelValue',
   emits,
-) as Ref<ThingModelEvent>;
+) as Ref<any>;
 
 // 默认选中，INFO 信息
 watch(
@@ -43,9 +41,9 @@ watch(
   <Form.Item
     :rules="[{ required: true, message: '请选择事件类型', trigger: 'change' }]"
     label="事件类型"
-    prop="event.type"
+    name="event.type"
   >
-    <Radio.Group v-model="thingModelEvent.type">
+    <Radio.Group v-model:value="thingModelEvent.type">
       <Radio
         v-for="eventType in Object.values(IoTThingModelEventTypeEnum)"
         :key="eventType.value"
@@ -57,7 +55,7 @@ watch(
   </Form.Item>
   <Form.Item label="输出参数">
     <ThingModelInputOutputParam
-      v-model="thingModelEvent.outputData"
+      v-model="thingModelEvent.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
     />
   </Form.Item>

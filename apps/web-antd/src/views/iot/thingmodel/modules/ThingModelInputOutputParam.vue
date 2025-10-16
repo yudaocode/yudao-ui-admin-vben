@@ -29,6 +29,7 @@ const formData = ref<any>({
     dataSpecs: {
       dataType: IoTDataSpecsDataTypeEnum.INT,
     },
+    dataSpecsList: [],
   },
 });
 
@@ -40,16 +41,22 @@ function openParamForm(val: any) {
     return;
   }
   // 编辑时回显数据
+  const valData = val as any;
   formData.value = {
-    identifier: val.identifier,
-    name: val.name,
-    description: val.description,
+    identifier: valData?.identifier || '',
+    name: valData?.name || '',
+    description: valData?.description || '',
     property: {
-      dataType: val.dataType,
-      dataSpecs: val.dataSpecs,
-      dataSpecsList: val.dataSpecsList,
+      dataType: valData?.dataType || IoTDataSpecsDataTypeEnum.INT,
+      dataSpecs: valData?.dataSpecs ?? {},
+      dataSpecsList: valData?.dataSpecsList ?? [],
     },
   };
+
+  // 确保 property.dataType 有值
+  if (!formData.value.property.dataType) {
+    formData.value.property.dataType = IoTDataSpecsDataTypeEnum.INT;
+  }
 }
 
 /** 删除 param 项 */
@@ -108,6 +115,7 @@ function resetForm() {
       dataSpecs: {
         dataType: IoTDataSpecsDataTypeEnum.INT,
       },
+      dataSpecsList: [],
     },
   };
   paramFormRef.value?.resetFields();
@@ -122,35 +130,34 @@ function resetForm() {
   >
     <span>参数名称：{{ item.name }}</span>
     <div class="btn">
-      <Button link type="primary" @click="openParamForm(item)"> 编辑 </Button>
-      <Divider direction="vertical" />
-      <Button link danger @click="deleteParamItem(index)"> 删除 </Button>
+      <Button type="link" @click="openParamForm(item)">编辑</Button>
+      <Divider type="vertical" />
+      <Button type="link" danger @click="deleteParamItem(index)">删除</Button>
     </div>
   </div>
-  <Button link type="primary" @click="openParamForm(null)"> +新增参数 </Button>
+  <Button type="link" @click="openParamForm(null)">+新增参数</Button>
 
   <!-- param 表单 -->
-  <Modal v-model="dialogVisible" title="新增参数" append-to-body>
+  <Modal
+    v-model:open="dialogVisible"
+    title="新增参数"
+    :confirm-loading="formLoading"
+    @ok="submitForm"
+  >
     <Form
       ref="paramFormRef"
-      v-loading="formLoading"
       :model="formData"
-      label-width="100px"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="参数名称" prop="name">
-        <Input v-model="formData.name" placeholder="请输入功能名称" />
+      <Form.Item label="参数名称" name="name">
+        <Input v-model:value="formData.name" placeholder="请输入功能名称" />
       </Form.Item>
-      <Form.Item label="标识符" prop="identifier">
-        <Input v-model="formData.identifier" placeholder="请输入标识符" />
+      <Form.Item label="标识符" name="identifier">
+        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
       </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-params />
     </Form>
-    <template #footer>
-      <Button :disabled="formLoading" type="primary" @click="submitForm">
-        确 定
-      </Button>
-      <Button @click="dialogVisible = false">取 消</Button>
-    </template>
   </Modal>
 </template>

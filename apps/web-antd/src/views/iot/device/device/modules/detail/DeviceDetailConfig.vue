@@ -2,9 +2,9 @@
 <script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
-import { Alert, Button, message } from 'ant-design-vue';
+import { Alert, Button, message, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
 import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
@@ -22,41 +22,68 @@ const emit = defineEmits<{
 const loading = ref(false); // 加载中
 const pushLoading = ref(false); // 推送加载中
 const config = ref<any>({}); // 只存储 config 字段
-const hasJsonError = ref(false); // 是否有 JSON 格式错误
+const configString = ref(''); // 用于编辑器的字符串格式
 
 /** 监听 props.device 的变化，只更新 config 字段 */
 watchEffect(() => {
   try {
     config.value = props.device.config ? JSON.parse(props.device.config) : {};
+    // 将对象转换为格式化的 JSON 字符串
+    configString.value = JSON.stringify(config.value, null, 2);
   } catch {
     config.value = {};
+    configString.value = '{}';
   }
 });
 
 const isEditing = ref(false); // 编辑状态
+
+/** 格式化的配置用于只读展示 */
+const formattedConfig = computed(() => {
+  try {
+    if (typeof config.value === 'string') {
+      return JSON.stringify(JSON.parse(config.value), null, 2);
+    }
+    return JSON.stringify(config.value, null, 2);
+  } catch {
+    return JSON.stringify(config.value, null, 2);
+  }
+});
+
+/** 判断配置是否有数据 */
+const hasConfigData = computed(() => {
+  return config.value && Object.keys(config.value).length > 0;
+});
+
 /** 启用编辑模式的函数 */
 function enableEdit() {
   isEditing.value = true;
-  hasJsonError.value = false; // 重置错误状态
+  // 重新同步编辑器内容
+  configString.value = JSON.stringify(config.value, null, 2);
 }
 
 /** 取消编辑的函数 */
 function cancelEdit() {
   try {
     config.value = props.device.config ? JSON.parse(props.device.config) : {};
+    configString.value = JSON.stringify(config.value, null, 2);
   } catch {
     config.value = {};
+    configString.value = '{}';
   }
   isEditing.value = false;
-  hasJsonError.value = false; // 重置错误状态
 }
 
 /** 保存配置的函数 */
 async function saveConfig() {
-  if (hasJsonError.value) {
+  // 验证 JSON 格式
+  try {
+    config.value = JSON.parse(configString.value);
+  } catch (error) {
     message.error({ content: 'JSON格式错误，请修正后再提交！' });
     return;
   }
+
   await updateDeviceConfig();
   isEditing.value = false;
 }
@@ -102,31 +129,18 @@ async function updateDeviceConfig() {
     loading.value = false;
   }
 }
-
-/** 处理 JSON 编辑器错误的函数 */
-function onError(errors: any) {
-  if (!errors || (Array.isArray(errors) && errors.length === 0)) {
-    hasJsonError.value = false;
-    return;
-  }
-  hasJsonError.value = true;
-}
 </script>
 
 <template>
   <div>
+    <!-- 只在没有配置数据时显示提示 -->
     <Alert
+      v-if="!hasConfigData"
       message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「下发」按钮，设备即可进行远程配置。"
       type="info"
       show-icon
       class="my-4"
       description="如需编辑文件，请点击下方编辑按钮"
-    />
-    <JsonEditor
-      v-model="config"
-      :mode="isEditing ? 'code' : 'view'"
-      height="600px"
-      @error="onError"
     />
     <div class="mt-5 text-center">
       <Button v-if="isEditing" @click="cancelEdit">取消</Button>
@@ -134,7 +148,7 @@ function onError(errors: any) {
         v-if="isEditing"
         type="primary"
         @click="saveConfig"
-        :disabled="hasJsonError"
+        :loading="loading"
       >
         保存
       </Button>
@@ -148,5 +162,47 @@ function onError(errors: any) {
         配置推送
       </Button>
     </div>
+
+    <!-- 代码视图 - 只读展示 -->
+    <div v-if="!isEditing" class="json-viewer-container">
+      <pre class="json-code"><code>{{ formattedConfig }}</code></pre>
+    </div>
+
+    <!-- 编辑器视图 - 可编辑 -->
+    <Textarea
+      v-else
+      v-model:value="configString"
+      :rows="20"
+      placeholder="请输入 JSON 格式的配置信息"
+      class="json-editor"
+    />
+
+
   </div>
 </template>
+
+<style scoped>
+.json-viewer-container {
+  background-color: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.json-code {
+  margin: 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.json-editor {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 13px;
+}
+</style>

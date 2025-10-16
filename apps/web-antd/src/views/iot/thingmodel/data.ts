@@ -15,6 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE, 'number'),
         placeholder: '请选择功能类型',
         allowClear: true,
+
       },
     },
   ];
@@ -27,7 +28,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'type',
       title: '功能类型',
-      minWidth: 100,
+      minWidth: 20,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.IOT_THING_MODEL_TYPE },
@@ -41,17 +42,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'identifier',
       title: '标识符',
-      minWidth: 150,
+      minWidth: 20,
     },
     {
       field: 'dataType',
       title: '数据类型',
-      minWidth: 120,
+      minWidth: 50,
       slots: { default: 'dataType' },
     },
     {
-      field: 'dataDefinition',
-      title: '数据定义',
+      field: 'property',
+      title: '属性',
       minWidth: 200,
       slots: { default: 'dataDefinition' },
     },

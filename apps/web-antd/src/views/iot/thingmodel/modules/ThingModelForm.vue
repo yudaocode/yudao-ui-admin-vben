@@ -12,7 +12,7 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
-import { Button, Form, Input, message, Radio } from 'ant-design-vue';
+import { Form, Input, message, Modal, Radio } from 'ant-design-vue';
 
 import {
   createThingModel,
@@ -40,8 +40,8 @@ const dialogVisible = ref(false); // 弹窗的是否展示
 const dialogTitle = ref(''); // 弹窗的标题
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref(''); // 表单的类型：create - 新增；update - 修改
-const formData = ref<ThingModelData>({
-  type: IoTThingModelTypeEnum.PROPERTY.toString(),
+const formData = ref<any>({
+  type: IoTThingModelTypeEnum.PROPERTY,
   dataType: IoTDataSpecsDataTypeEnum.INT,
   property: {
     dataType: IoTDataSpecsDataTypeEnum.INT,
@@ -49,8 +49,13 @@ const formData = ref<ThingModelData>({
       dataType: IoTDataSpecsDataTypeEnum.INT,
     },
   },
-  service: {},
-  event: {},
+  service: {
+    inputParams: [],
+    outputParams: [],
+  },
+  event: {
+    outputParams: [],
+  },
 });
 
 const formRef = ref(); // 表单 Ref
@@ -58,13 +63,19 @@ const formRef = ref(); // 表单 Ref
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true;
-  dialogTitle.value = $t(`action.${type}`);
+  // 设置标题：create -> 新增，update -> 编辑
+  dialogTitle.value = type === 'create' ? $t('page.action.add') : $t('page.action.edit');
   formType.value = type;
   resetForm();
   if (id) {
     formLoading.value = true;
     try {
-      formData.value = await getThingModel(id);
+      const result = await getThingModel(id);
+      // 转换类型为数字
+      formData.value = {
+        ...result,
+        type: Number(result.type),
+      };
       // 情况一：属性初始化
       if (
         !formData.value.property ||
@@ -77,20 +88,50 @@ const open = async (type: string, id?: number) => {
             dataType: IoTDataSpecsDataTypeEnum.INT,
           },
         };
+      } else {
+        // 确保 dataSpecs 和 dataSpecsList 存在
+        if (!formData.value.property.dataSpecs) {
+          formData.value.property.dataSpecs = {};
+        }
+        if (!formData.value.property.dataSpecsList) {
+          formData.value.property.dataSpecsList = [];
+        }
+        // 如果 property.dataType 不存在，设置为默认值
+        if (!formData.value.property.dataType) {
+          formData.value.property.dataType = IoTDataSpecsDataTypeEnum.INT;
+        }
       }
       // 情况二：服务初始化
       if (
         !formData.value.service ||
         Object.keys(formData.value.service).length === 0
       ) {
-        formData.value.service = {};
+        formData.value.service = {
+          inputParams: [],
+          outputParams: [],
+        };
+      } else {
+        // 确保参数数组存在
+        if (!formData.value.service.inputParams) {
+          formData.value.service.inputParams = [];
+        }
+        if (!formData.value.service.outputParams) {
+          formData.value.service.outputParams = [];
+        }
       }
       // 情况三：事件初始化
       if (
         !formData.value.event ||
         Object.keys(formData.value.event).length === 0
       ) {
-        formData.value.event = {};
+        formData.value.event = {
+          outputParams: [],
+        };
+      } else {
+        // 确保参数数组存在
+        if (!formData.value.event.outputParams) {
+          formData.value.event.outputParams = [];
+        }
       }
     } finally {
       formLoading.value = false;
@@ -137,6 +178,13 @@ function fillExtraAttributes(data: any) {
     data.dataType = data.service.dataType;
     data.service.identifier = data.identifier;
     data.service.name = data.name;
+    // 保留输入输出参数，但如果为空数组则删除
+    if (!data.service.inputParams || data.service.inputParams.length === 0) {
+      delete data.service.inputParams;
+    }
+    if (!data.service.outputParams || data.service.outputParams.length === 0) {
+      delete data.service.outputParams;
+    }
     delete data.property;
     delete data.event;
   }
@@ -146,6 +194,10 @@ function fillExtraAttributes(data: any) {
     data.dataType = data.event.dataType;
     data.event.identifier = data.identifier;
     data.event.name = data.name;
+    // 保留输出参数，但如果为空数组则删除
+    if (!data.event.outputParams || data.event.outputParams.length === 0) {
+      delete data.event.outputParams;
+    }
     delete data.property;
     delete data.service;
   }
@@ -164,7 +216,7 @@ function removeDataSpecs(val: any) {
 /** 重置表单 */
 function resetForm() {
   formData.value = {
-    type: IoTThingModelTypeEnum.PROPERTY.toString(),
+    type: IoTThingModelTypeEnum.PROPERTY,
     dataType: IoTDataSpecsDataTypeEnum.INT,
     property: {
       dataType: IoTDataSpecsDataTypeEnum.INT,
@@ -172,18 +224,27 @@ function resetForm() {
         dataType: IoTDataSpecsDataTypeEnum.INT,
       },
     },
-    service: {},
-    event: {},
+    service: {
+      inputParams: [],
+      outputParams: [],
+    },
+    event: {
+      outputParams: [],
+    },
   };
   formRef.value?.resetFields();
 }
 </script>
 
 <template>
-  <Modal v-model="dialogVisible" :title="dialogTitle">
+  <Modal
+    v-model:open="dialogVisible"
+    :title="dialogTitle"
+    :confirm-loading="formLoading"
+    @ok="submitForm"
+  >
     <Form
       ref="formRef"
-      :loading="formLoading"
       :model="formData"
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 18 }"
@@ -191,12 +252,9 @@ function resetForm() {
       <Form.Item label="功能类型" name="type">
         <Radio.Group v-model:value="formData.type">
           <Radio.Button
-            v-for="(dict, index) in getDictOptions(
-              DICT_TYPE.IOT_THING_MODEL_TYPE,
-              'number',
-            )"
-            :key="index"
-            :value="dict.value"
+            v-for="dict in getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE)"
+            :key="String(dict.value)"
+            :value="Number(dict.value)"
           >
             {{ dict.label }}
           </Radio.Button>
@@ -210,17 +268,17 @@ function resetForm() {
       </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty
-        v-if="formData.type === IoTThingModelTypeEnum.PROPERTY.toString()"
+        v-if="formData.type === IoTThingModelTypeEnum.PROPERTY"
         v-model="formData.property"
       />
       <!-- 服务配置 -->
       <ThingModelService
-        v-if="formData.type === IoTThingModelTypeEnum.SERVICE.toString()"
+        v-if="formData.type === IoTThingModelTypeEnum.SERVICE"
         v-model="formData.service"
       />
       <!-- 事件配置 -->
       <ThingModelEvent
-        v-if="formData.type === IoTThingModelTypeEnum.EVENT.toString()"
+        v-if="formData.type === IoTThingModelTypeEnum.EVENT"
         v-model="formData.event"
       />
       <Form.Item label="描述" name="desc">
@@ -232,12 +290,5 @@ function resetForm() {
         />
       </Form.Item>
     </Form>
-
-    <template #footer>
-      <Button :disabled="formLoading" type="primary" @click="submitForm">
-        确 定
-      </Button>
-      <Button @click="dialogVisible = false">取 消</Button>
-    </template>
   </Modal>
 </template>

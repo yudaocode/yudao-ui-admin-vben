@@ -8,23 +8,26 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
+
 import {
   Button,
   Card,
-  Col,
   Input,
   message,
-  Row,
   Table,
   Tabs,
   Textarea,
 } from 'ant-design-vue';
+import { DownOutlined, UpOutlined } from '@ant-design/icons-vue';
 
 import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
+
+import DataDefinition from '#/views/iot/thingmodel/modules/components/DataDefinition.vue';
 
 import DeviceDetailsMessage from './DeviceDetailsMessage.vue';
 
@@ -40,6 +43,10 @@ const upstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_POST.method); // 上
 const downstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_SET.method); // 下行子标签
 const deviceMessageRef = ref(); // 设备消息组件引用
 const deviceMessageRefreshDelay = 2000; // 延迟 N 秒，保证模拟上行的消息被处理
+
+// 折叠状态
+const debugCollapsed = ref(false); // 指令调试区域折叠状态
+const messageCollapsed = ref(false); // 设备消息区域折叠状态
 
 // 表单数据：存储用户输入的模拟值
 const formData = ref<Record<string, string>>({});
@@ -90,12 +97,12 @@ const propertyColumns: TableColumnType[] = [
   {
     title: '数据定义',
     key: 'dataDefinition',
-    minWidth: 200,
+    minWidth: 100,
   },
   {
     title: '值',
     key: 'value',
-    width: 150,
+    width: 300,
     fixed: 'right' as any,
   },
 ];
@@ -332,19 +339,32 @@ async function handleServiceInvoke(row: ThingModelData) {
 
 <template>
   <ContentWrap>
-    <Row :gutter="20">
-      <!-- 左侧指令调试区域 -->
-      <Col :span="12">
-        <Card>
-          <Tabs v-model:active-key="activeTab">
-            <!-- 上行指令调试 -->
-            <Tabs.Pane key="upstream" tab="上行指令调试">
+    <!-- 上方：指令调试区域 -->
+    <Card class="mb-4 simulator-tabs">
+      <template #title>
+        <div class="flex items-center justify-between">
+          <span>指令调试</span>
+          <Button
+            type="text"
+            size="small"
+            @click="debugCollapsed = !debugCollapsed"
+          >
+            <UpOutlined v-if="!debugCollapsed" />
+            <DownOutlined v-if="debugCollapsed" />
+          </Button>
+        </div>
+      </template>
+      <div v-show="!debugCollapsed">
+        <Tabs v-model:active-key="activeTab" size="small">
+        <!-- 上行指令调试 -->
+        <Tabs.TabPane key="upstream" tab="上行指令调试">
               <Tabs
                 v-if="activeTab === 'upstream'"
                 v-model:active-key="upstreamTab"
+                size="small"
               >
                 <!-- 属性上报 -->
-                <Tabs.Pane
+                <Tabs.TabPane
                   :key="IotDeviceMessageMethodEnum.PROPERTY_POST.method"
                   tab="属性上报"
                 >
@@ -354,6 +374,8 @@ async function handleServiceInvoke(row: ThingModelData) {
                       align="center"
                       :columns="propertyColumns"
                       :pagination="false"
+                      :scroll="{ y: 300 }"
+                      size="small"
                     >
                       <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'dataType'">
@@ -383,10 +405,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                       </Button>
                     </div>
                   </ContentWrap>
-                </Tabs.Pane>
+                </Tabs.TabPane>
 
                 <!-- 事件上报 -->
-                <Tabs.Pane
+                <Tabs.TabPane
                   :key="IotDeviceMessageMethodEnum.EVENT_POST.method"
                   tab="事件上报"
                 >
@@ -396,6 +418,8 @@ async function handleServiceInvoke(row: ThingModelData) {
                       align="center"
                       :columns="eventColumns"
                       :pagination="false"
+                      :scroll="{ y: 300 }"
+                      size="small"
                     >
                       <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'dataType'">
@@ -427,10 +451,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                       </template>
                     </Table>
                   </ContentWrap>
-                </Tabs.Pane>
+                </Tabs.TabPane>
 
                 <!-- 状态变更 -->
-                <Tabs.Pane
+                <Tabs.TabPane
                   :key="IotDeviceMessageMethodEnum.STATE_UPDATE.method"
                   tab="状态变更"
                 >
@@ -450,18 +474,19 @@ async function handleServiceInvoke(row: ThingModelData) {
                       </Button>
                     </div>
                   </ContentWrap>
-                </Tabs.Pane>
+                </Tabs.TabPane>
               </Tabs>
-            </Tabs.Pane>
+            </Tabs.TabPane>
 
             <!-- 下行指令调试 -->
-            <Tabs.Pane key="downstream" tab="下行指令调试">
+            <Tabs.TabPane key="downstream" tab="下行指令调试">
               <Tabs
                 v-if="activeTab === 'downstream'"
                 v-model:active-key="downstreamTab"
+                size="small"
               >
                 <!-- 属性调试 -->
-                <Tabs.Pane
+                <Tabs.TabPane
                   :key="IotDeviceMessageMethodEnum.PROPERTY_SET.method"
                   tab="属性设置"
                 >
@@ -471,6 +496,8 @@ async function handleServiceInvoke(row: ThingModelData) {
                       align="center"
                       :columns="propertyColumns"
                       :pagination="false"
+                      :scroll="{ y: 300 }"
+                      size="small"
                     >
                       <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'dataType'">
@@ -500,10 +527,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                       </Button>
                     </div>
                   </ContentWrap>
-                </Tabs.Pane>
+                </Tabs.TabPane>
 
                 <!-- 服务调用 -->
-                <Tabs.Pane
+                <Tabs.TabPane
                   :key="IotDeviceMessageMethodEnum.SERVICE_INVOKE.method"
                   tab="设备服务调用"
                 >
@@ -513,6 +540,8 @@ async function handleServiceInvoke(row: ThingModelData) {
                       align="center"
                       :columns="serviceColumns"
                       :pagination="false"
+                      :scroll="{ y: 300 }"
+                      size="small"
                     >
                       <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'dataDefinition'">
@@ -541,23 +570,35 @@ async function handleServiceInvoke(row: ThingModelData) {
                       </template>
                     </Table>
                   </ContentWrap>
-                </Tabs.Pane>
+                </Tabs.TabPane>
               </Tabs>
-            </Tabs.Pane>
+            </Tabs.TabPane>
           </Tabs>
-        </Card>
-      </Col>
+        </div>
+      </Card>
 
-      <!-- 右侧设备日志区域 -->
-      <Col :span="12">
-        <ContentWrap title="设备消息">
-          <DeviceDetailsMessage
-            v-if="device.id"
-            ref="deviceMessageRef"
-            :device-id="device.id"
-          />
-        </ContentWrap>
-      </Col>
-    </Row>
+    <!-- 下方：设备消息区域 -->
+    <Card>
+      <template #title>
+        <div class="flex items-center justify-between">
+          <span>设备消息</span>
+          <Button
+            type="text"
+            size="small"
+            @click="messageCollapsed = !messageCollapsed"
+          >
+            <UpOutlined v-if="!messageCollapsed" />
+            <DownOutlined v-if="messageCollapsed" />
+          </Button>
+        </div>
+      </template>
+      <div v-show="!messageCollapsed">
+        <DeviceDetailsMessage
+          v-if="device.id"
+          ref="deviceMessageRef"
+          :device-id="device.id"
+        />
+      </div>
+    </Card>
   </ContentWrap>
 </template>

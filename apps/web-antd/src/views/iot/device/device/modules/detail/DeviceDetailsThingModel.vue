@@ -22,21 +22,26 @@ const activeTab = ref('property'); // 默认选中设备属性
 <template>
   <ContentWrap>
     <Tabs v-model:active-key="activeTab" class="!h-auto !p-0">
-      <Tabs.Pane key="property" tab="设备属性（运行状态）">
-        <DeviceDetailsThingModelProperty :device-id="deviceId" />
-      </Tabs.Pane>
-      <Tabs.Pane key="event" tab="设备事件上报">
+      <Tabs.TabPane key="property" tab="设备属性（运行状态）">
+        <DeviceDetailsThingModelProperty
+          v-if="activeTab === 'property'"
+          :device-id="deviceId"
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane key="event" tab="设备事件上报">
         <DeviceDetailsThingModelEvent
+          v-if="activeTab === 'event'"
           :device-id="props.deviceId"
           :thing-model-list="props.thingModelList"
         />
-      </Tabs.Pane>
-      <Tabs.Pane key="service" tab="设备服务调用">
+      </Tabs.TabPane>
+      <Tabs.TabPane key="service" tab="设备服务调用">
         <DeviceDetailsThingModelService
+          v-if="activeTab === 'service'"
           :device-id="deviceId"
           :thing-model-list="props.thingModelList"
         />
-      </Tabs.Pane>
+      </Tabs.TabPane>
     </Tabs>
   </ContentWrap>
 </template>
