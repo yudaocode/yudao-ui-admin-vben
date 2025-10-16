@@ -32,9 +32,9 @@ function handleSearch(e: any) {
 }
 
 /** 选中部门 */
-const handleSelect = (_selectedKeys: any[], info: any) => {
+function handleSelect(_selectedKeys: any[], info: any) {
   emit('select', info.node.dataRef);
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
