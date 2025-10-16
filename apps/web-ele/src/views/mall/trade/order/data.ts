@@ -420,8 +420,6 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
           { label: '快递', value: 'express' },
           { label: '无需发货', value: 'none' },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       defaultValue: 'express',
     },

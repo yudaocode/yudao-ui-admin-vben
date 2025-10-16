@@ -1,17 +1,19 @@
-import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import type { VbenFormSchema } from '#/adapter/form';
+
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -19,14 +21,20 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'title',
-      label: 'Banner标题',
+      label: 'Banner 标题',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入 Banner 标题',
+      },
       rules: 'required',
     },
     {
       fieldName: 'picUrl',
       label: '图片地址',
       component: 'ImageUpload',
+      componentProps: {
+        placeholder: '请上传图片',
+      },
       rules: 'required',
     },
     {
@@ -44,6 +52,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'url',
       label: '跳转地址',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入跳转地址',
+      },
       rules: 'required',
     },
     {
@@ -65,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: 'required',
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'memo',
@@ -84,18 +95,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'title',
-      label: 'Banner标题',
+      label: 'Banner 标题',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入Banner标题',
+        placeholder: '请输入 Banner 标题',
       },
     },
     {
       fieldName: 'status',
-      label: '状态',
+      label: '活动状态',
       component: 'Select',
       componentProps: {
-        placeholder: '请选择状态',
+        placeholder: '请选择活动状态',
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -112,16 +123,17 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns(): VxeGridPropTypes.Columns {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       title: 'Banner标题',
       field: 'title',
+      minWidth: 100,
     },
     {
       title: '图片',
       field: 'picUrl',
-      width: 80,
+      minWidth: 80,
       cellRender: {
         name: 'CellImage',
       },
@@ -129,7 +141,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       title: '状态',
       field: 'status',
-      width: 150,
+      minWidth: 150,
       cellRender: {
         name: 'CellDictTag',
         props: {
@@ -140,7 +152,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       title: '定位',
       field: 'position',
-      width: 150,
+      minWidth: 150,
       cellRender: {
         name: 'CellDictTag',
         props: {
@@ -151,21 +163,23 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       title: '跳转地址',
       field: 'url',
+      minWidth: 200,
     },
     {
       title: '创建时间',
       field: 'createTime',
-      width: 180,
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '排序',
       field: 'sort',
-      width: 100,
+      minWidth: 100,
     },
     {
       title: '描述',
       field: 'memo',
+      minWidth: 150,
     },
     {
       title: '操作',

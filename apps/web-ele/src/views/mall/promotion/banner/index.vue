@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBannerApi } from '#/api/mall/market/banner';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -23,17 +23,17 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建Banner */
+/** 创建 Banner */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑Banner */
+/** 编辑 Banner */
 function handleEdit(row: MallBannerApi.Banner) {
   formModalApi.setData(row).open();
 }
 
-/** 删除Banner */
+/** 删除 Banner */
 async function handleDelete(row: MallBannerApi.Banner) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.title]),
@@ -68,6 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -79,6 +80,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【营销】内容管理"
+        url="https://doc.iocoder.cn/mall/promotion-content/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <Grid table-title="Banner列表">
       <template #toolbar-tools>

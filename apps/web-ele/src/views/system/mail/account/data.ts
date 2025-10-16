@@ -71,8 +71,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(true),
     },
@@ -82,8 +80,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(false),
     },
