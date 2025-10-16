@@ -1,9 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -21,21 +22,28 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '分类名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入分类名称',
+      },
       rules: 'required',
     },
     {
       fieldName: 'picUrl',
-      label: '图标地址',
+      label: '分类图片',
       component: 'ImageUpload',
+      componentProps: {
+        placeholder: '请上传分类图片',
+      },
     },
     {
       fieldName: 'sort',
-      label: '排序',
+      label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        placeholder: '请输入显示顺序',
         controlsPosition: 'right',
-        placeholder: '请输入排序',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -48,7 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: 'required',
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
   ];
 }
@@ -62,6 +70,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入分类名称',
+        allowClear: true,
       },
     },
     {
@@ -70,6 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
+        allowClear: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -79,58 +89,58 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];
 }
 
 /** 表格列配置 */
-export function useGridColumns(): VxeGridPropTypes.Columns {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      title: '编号',
       field: 'id',
-      width: 100,
+      title: '编号',
+      minWidth: 100,
     },
     {
-      title: '分类名称',
       field: 'name',
+      title: '分类名称',
       minWidth: 240,
+      align: 'left',
+      fixed: 'left',
     },
     {
-      title: '分类图片',
       field: 'picUrl',
-      width: 80,
+      title: '分类图片',
+      minWidth: 80,
       cellRender: {
         name: 'CellImage',
       },
     },
     {
-      title: '状态',
       field: 'status',
-      width: 150,
+      title: '状态',
+      minWidth: 150,
       cellRender: {
-        name: 'CellDictTag',
-        props: {
-          dictType: DICT_TYPE.COMMON_STATUS,
-        },
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
-      title: '排序',
       field: 'sort',
-      width: 150,
+      title: '显示顺序',
+      minWidth: 150,
     },
     {
-      title: '创建时间',
       field: 'createTime',
-      width: 180,
+      title: '创建时间',
+      minWidth: 180,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 180,
+      minWidth: 220,
       fixed: 'right',
       slots: { default: 'actions' },
     },
