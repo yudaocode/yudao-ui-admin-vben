@@ -7,7 +7,6 @@ import type { ComponentType } from './component';
 
 import { setupVbenForm, useVbenForm as useForm, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import { isMobile } from '@vben/utils';
 
 async function initSetupVbenForm() {
   setupVbenForm<ComponentType>({
@@ -31,25 +30,6 @@ async function initSetupVbenForm() {
       selectRequired: (value, _params, ctx) => {
         if (value === undefined || value === null) {
           return $t('ui.formRules.selectRequired', [ctx.label]);
-        }
-        return true;
-      },
-      // 手机号非必填
-      mobile: (value, _params, ctx) => {
-        if (value === undefined || value === null || value.length === 0) {
-          return true;
-        } else if (!isMobile(value)) {
-          return $t('ui.formRules.mobile', [ctx.label]);
-        }
-        return true;
-      },
-      // 手机号必填
-      mobileRequired: (value, _params, ctx) => {
-        if (value === undefined || value === null || value.length === 0) {
-          return $t('ui.formRules.required', [ctx.label]);
-        }
-        if (!isMobile(value)) {
-          return $t('ui.formRules.mobile', [ctx.label]);
         }
         return true;
       },

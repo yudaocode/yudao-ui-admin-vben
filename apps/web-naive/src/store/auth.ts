@@ -1,6 +1,4 @@
-import type { AuthPermissionInfo, Recordable, UserInfo } from '@vben/types';
-
-import type { AuthApi } from '#/api';
+import type { Recordable, UserInfo } from '@vben/types';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -12,14 +10,7 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { defineStore } from 'pinia';
 
 import { notification } from '#/adapter/naive';
-import {
-  getAuthPermissionInfoApi,
-  loginApi,
-  logoutApi,
-  register,
-  smsLogin,
-  socialLogin,
-} from '#/api';
+import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -32,12 +23,9 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * 异步处理登录操作
    * Asynchronously handle the login process
-   * @param type 登录类型
    * @param params 登录表单数据
-   * @param onSuccess 登录成功后的回调函数
    */
   async function authLogin(
-    type: 'mobile' | 'register' | 'social' | 'username',
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
@@ -45,30 +33,23 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken, refreshToken } =
-        type === 'mobile'
-          ? await smsLogin(params as AuthApi.SmsLoginParams)
-          : type === 'register'
-            ? await register(params as AuthApi.RegisterParams)
-            : // eslint-disable-next-line unicorn/no-nested-ternary
-              type === 'social'
-              ? await socialLogin(params as AuthApi.SocialLoginParams)
-              : await loginApi(params);
+      const { accessToken } = await loginApi(params);
 
       // 如果成功获取到 accessToken
       if (accessToken) {
+        // 将 accessToken 存储到 accessStore 中
         accessStore.setAccessToken(accessToken);
-        accessStore.setRefreshToken(refreshToken);
 
-        // 获取用户信息并存储到 userStore、accessStore 中
-        // TODO @芋艿：清理掉 accessCodes 相关的逻辑
-        // const [fetchUserInfoResult, accessCodes] = await Promise.all([
-        //   fetchUserInfo(),
-        //   // getAccessCodesApi(),
-        // ]);
-        const fetchUserInfoResult = await fetchUserInfo();
+        // 获取用户信息并存储到 accessStore 中
+        const [fetchUserInfoResult, accessCodes] = await Promise.all([
+          fetchUserInfo(),
+          getAccessCodesApi(),
+        ]);
 
-        userInfo = fetchUserInfoResult.user;
+        userInfo = fetchUserInfoResult;
+
+        userStore.setUserInfo(userInfo);
+        accessStore.setAccessCodes(accessCodes);
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
@@ -80,10 +61,10 @@ export const useAuthStore = defineStore('auth', () => {
               );
         }
 
-        if (userInfo?.nickname) {
+        if (userInfo?.realName) {
           notification.success({
             content: $t('authentication.loginSuccess'),
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.nickname}`,
+            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
             duration: 3000,
           });
         }
@@ -99,10 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout(redirect: boolean = true) {
     try {
-      const accessToken = accessStore.accessToken as string;
-      if (accessToken) {
-        await logoutApi(accessToken);
-      }
+      await logoutApi();
     } catch {
       // 不做任何处理
     }
@@ -121,16 +99,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    // 加载
-    let authPermissionInfo: AuthPermissionInfo | null = null;
-    authPermissionInfo = await getAuthPermissionInfoApi();
-    // userStore
-    userStore.setUserInfo(authPermissionInfo.user);
-    userStore.setUserRoles(authPermissionInfo.roles);
-    // accessStore
-    accessStore.setAccessMenus(authPermissionInfo.menus);
-    accessStore.setAccessCodes(authPermissionInfo.permissions);
-    return authPermissionInfo;
+    let userInfo: null | UserInfo = null;
+    userInfo = await getUserInfoApi();
+    userStore.setUserInfo(userInfo);
+    return userInfo;
   }
 
   function $reset() {

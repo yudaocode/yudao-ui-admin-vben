@@ -1,15 +1,12 @@
 import type { Router } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
-import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
-import { message } from '#/adapter/naive';
-import { getSimpleDictDataList } from '#/api/system/dict/data';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore, useDictStore } from '#/store';
+import { useAuthStore } from '#/store';
 
 import { generateAccess } from './access';
 
@@ -52,7 +49,6 @@ function setupAccessGuard(router: Router) {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
-    const dictStore = useDictStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -93,26 +89,10 @@ function setupAccessGuard(router: Router) {
     if (accessStore.isAccessChecked) {
       return true;
     }
-
-    // 加载字典数据（不阻塞加载）
-    dictStore.setDictCacheByApi(getSimpleDictDataList);
-
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
-    let userInfo = userStore.userInfo;
-    if (!userInfo) {
-      // add by 芋艿：由于 yudao 是 fetchUserInfo 统一加载用户 + 权限信息，所以将 fetchMenuListAsync
-      const loading = message.loading(`${$t('common.loadingMenu')}...`);
-      try {
-        const authPermissionInfo = await authStore.fetchUserInfo();
-        if (authPermissionInfo) {
-          userInfo = authPermissionInfo.user;
-        }
-      } finally {
-        loading.destroy();
-      }
-    }
-    const userRoles = userStore.userRoles ?? [];
+    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+    const userRoles = userInfo.roles ?? [];
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
@@ -126,10 +106,9 @@ function setupAccessGuard(router: Router) {
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
-    userStore.setUserRoles(userRoles);
     const redirectPath = (from.query.redirect ??
       (to.path === preferences.app.defaultHomePath
-        ? userInfo?.homePath || preferences.app.defaultHomePath
+        ? userInfo.homePath || preferences.app.defaultHomePath
         : to.fullPath)) as string;
 
     return {

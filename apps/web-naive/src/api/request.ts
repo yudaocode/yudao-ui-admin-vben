@@ -3,7 +3,7 @@
  */
 import type { RequestClientOptions } from '@vben/request';
 
-import { isTenantEnable, useAppConfig } from '@vben/hooks';
+import { useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import {
   authenticateResponseInterceptor,
@@ -19,7 +19,6 @@ import { useAuthStore } from '#/store';
 import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
-const tenantEnable = isTenantEnable();
 
 function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({
@@ -50,16 +49,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    */
   async function doRefreshToken() {
     const accessStore = useAccessStore();
-    const refreshToken = accessStore.refreshToken as string;
-    if (!refreshToken) {
-      throw new Error('Refresh token is null!');
-    }
-    const resp = await refreshTokenApi(refreshToken);
-    const newToken = resp?.data?.data?.accessToken;
-    // add by 芋艿：这里一定要抛出 resp.data，从而触发 authenticateResponseInterceptor 中，刷新令牌失败！！！
-    if (!newToken) {
-      throw resp.data;
-    }
+    const resp = await refreshTokenApi();
+    const newToken = resp.data;
     accessStore.setAccessToken(newToken);
     return newToken;
   }
@@ -75,14 +66,6 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
-      // 添加租户编号
-      config.headers['tenant-id'] = tenantEnable
-        ? accessStore.tenantId
-        : undefined;
-      // 只有登录时，才设置 visit-tenant-id 访问租户
-      config.headers['visit-tenant-id'] = tenantEnable
-        ? accessStore.visitTenantId
-        : undefined;
       return config;
     },
   });
@@ -113,12 +96,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
-      const errorMessage =
-        responseData?.error ?? responseData?.message ?? responseData.msg ?? '';
-      // add by 芋艿：特殊：避免 401 “账号未登录”，重复提示。因为，此时会跳转到登录界面，只需提示一次！！！
-      if (error?.data?.code === 401) {
-        return;
-      }
+      const errorMessage = responseData?.error ?? responseData?.message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
       message.error(errorMessage || msg);
     }),
@@ -132,17 +110,3 @@ export const requestClient = createRequestClient(apiURL, {
 });
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
-baseRequestClient.addRequestInterceptor({
-  fulfilled: (config) => {
-    const accessStore = useAccessStore();
-    // 添加租户编号
-    config.headers['tenant-id'] = tenantEnable
-      ? accessStore.tenantId
-      : undefined;
-    // 只有登录时，才设置 visit-tenant-id 访问租户
-    config.headers['visit-tenant-id'] = tenantEnable
-      ? accessStore.visitTenantId
-      : undefined;
-    return config;
-  },
-});
