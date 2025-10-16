@@ -3,10 +3,10 @@
   "extends": "@vben/tsconfig/web-app.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "allowJs": true,
     "paths": {
       "#/*": ["./src/*"]
-    }
+    },
+    "allowJs": true
   },
   "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
