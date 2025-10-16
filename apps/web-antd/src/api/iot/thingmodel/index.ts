@@ -175,17 +175,27 @@ export function deleteThingModelList(ids: number[]) {
   });
 }
 
-/** 导入物模型 TSL */
+/** 获取物模型 TSL */
+export function getThingModelTSL(productId: number) {
+  return requestClient.get<ThingModelApi.ThingModel[]>(
+    '/iot/thing-model/get-tsl',
+    { params: { productId } },
+  );
+}
+
+/** 导入物模型 TSL
 export function importThingModelTSL(productId: number, tslData: any) {
   return requestClient.post('/iot/thing-model/import-tsl', {
     productId,
     tslData,
   });
 }
+ */
 
-/** 导出物模型 TSL */
+/** 导出物模型 TSL
 export function exportThingModelTSL(productId: number) {
   return requestClient.get<any>('/iot/thing-model/export-tsl', {
     params: { productId },
   });
 }
+ */
