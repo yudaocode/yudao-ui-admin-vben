@@ -42,7 +42,7 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入表名称',
       },
     },
@@ -51,7 +51,7 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入表描述',
       },
     },
@@ -163,7 +163,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       help: '分配到指定菜单下，例如 系统管理',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getMenuList();
           data.unshift({
@@ -257,7 +257,7 @@ export function useGenerationInfoTreeFormSchema(
       help: '树显示的父编码字段名，例如 parent_Id',
       componentProps: {
         class: 'w-full',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择',
         options: columns.map((column) => ({
           label: column.columnName,
@@ -273,7 +273,7 @@ export function useGenerationInfoTreeFormSchema(
       help: '树节点显示的名称字段，一般是 name',
       componentProps: {
         class: 'w-full',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择名称字段',
         options: columns.map((column) => ({
           label: column.columnName,
@@ -309,7 +309,7 @@ export function useGenerationInfoSubTableFormSchema(
       help: '关联主表（父表）的表名， 如：system_user',
       componentProps: {
         class: 'w-full',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择',
         options: tables.map((table) => ({
           label: `${table.tableName}：${table.tableComment}`,
@@ -325,7 +325,7 @@ export function useGenerationInfoSubTableFormSchema(
       help: '子表关联的字段， 如：user_id',
       componentProps: {
         class: 'w-full',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择',
         options: columns.map((column) => ({
           label: `${column.columnName}:${column.columnComment}`,
@@ -341,7 +341,7 @@ export function useGenerationInfoSubTableFormSchema(
       help: '主表与子表的关联关系',
       componentProps: {
         class: 'w-full',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择',
         options: [
           {
@@ -367,7 +367,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入表名称',
       },
     },
@@ -376,7 +376,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '表描述',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入表描述',
       },
     },
@@ -386,7 +386,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

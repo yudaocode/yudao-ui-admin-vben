@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择用户类型',
       },
     },
@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用名',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入应用名',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -58,7 +58,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '执行时长',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入执行时长',
       },
     },
@@ -67,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '结果码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入结果码',
       },
     },

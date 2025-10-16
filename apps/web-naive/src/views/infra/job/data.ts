@@ -104,7 +104,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '任务名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入任务名称',
       },
     },
@@ -114,7 +114,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_JOB_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择任务状态',
       },
     },
@@ -123,7 +123,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '处理器的名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入处理器的名字',
       },
     },

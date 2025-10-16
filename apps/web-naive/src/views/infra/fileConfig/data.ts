@@ -256,7 +256,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入配置名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -266,7 +266,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE, 'number'),
         placeholder: '请选择存储器',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -275,7 +275,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

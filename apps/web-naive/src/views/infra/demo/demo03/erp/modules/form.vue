@@ -5,9 +5,8 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from '#/adapter/naive';
-
 import { useVbenForm } from '#/adapter/form';
+import { message } from '#/adapter/naive';
 import {
   createDemo03Student,
   getDemo03Student,

@@ -5,6 +5,7 @@
 ## 组件列表
 
 ### 1. ImageUpload - 图片上传组件
+
 - **文件**: `image-upload.vue`
 - **功能**: 专门用于图片上传的组件，支持图片预览
 - **特性**:
@@ -16,6 +17,7 @@
   - 支持进度显示
 
 ### 2. FileUpload - 文件上传组件
+
 - **文件**: `file-upload.vue`
 - **功能**: 通用文件上传组件
 - **特性**:
@@ -28,6 +30,7 @@
   - 支持返回文本内容（用于配置文件等）
 
 ### 3. InputUpload - 输入框上传组件
+
 - **文件**: `input-upload.vue`
 - **功能**: 结合输入框和文件上传的组件
 - **特性**:
@@ -94,7 +97,7 @@ const configContent = ref('');
     input-type="textarea"
     :file-upload-props="{
       accept: ['json', 'yaml', 'yml'],
-      maxSize: 1
+      maxSize: 1,
     }"
   />
 </template>
@@ -104,39 +107,39 @@ const configContent = ref('');
 
 ### 通用 Props (FileUploadProps)
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| modelValue/value | `string \| string[]` | - | v-model 绑定值 |
-| accept | `string[]` | `[]` | 接受的文件类型 |
-| maxSize | `number` | `2` | 文件最大大小（MB） |
-| maxNumber | `number` | `1` | 最大文件数量 |
-| multiple | `boolean` | `false` | 是否支持多选 |
-| disabled | `boolean` | `false` | 是否禁用 |
-| drag | `boolean` | `false` | 是否支持拖拽上传 |
-| directory | `string` | - | 上传目录 |
-| api | `Function` | - | 自定义上传 API |
-| showDescription | `boolean` | - | 是否显示描述文本 |
+| 属性             | 类型                 | 默认值  | 说明               |
+| ---------------- | -------------------- | ------- | ------------------ |
+| modelValue/value | `string \| string[]` | -       | v-model 绑定值     |
+| accept           | `string[]`           | `[]`    | 接受的文件类型     |
+| maxSize          | `number`             | `2`     | 文件最大大小（MB） |
+| maxNumber        | `number`             | `1`     | 最大文件数量       |
+| multiple         | `boolean`            | `false` | 是否支持多选       |
+| disabled         | `boolean`            | `false` | 是否禁用           |
+| drag             | `boolean`            | `false` | 是否支持拖拽上传   |
+| directory        | `string`             | -       | 上传目录           |
+| api              | `Function`           | -       | 自定义上传 API     |
+| showDescription  | `boolean`            | -       | 是否显示描述文本   |
 
 ### ImageUpload 特有 Props
 
 | 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
+| --- | --- | --- | --- |
 | listType | `string` | `'picture-card'` | 列表类型 |
 | accept | `string[]` | `['jpg', 'jpeg', 'png', 'gif', 'webp']` | 接受的图片类型 |
 | showDescription | `boolean` | `true` | 是否显示描述文本 |
 
 ### InputUpload 特有 Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| inputType | `'input' \| 'textarea'` | `'input'` | 输入框类型 |
-| inputProps | `InputProps` | - | 输入框属性 |
-| fileUploadProps | `FileUploadProps` | - | 文件上传组件属性 |
+| 属性            | 类型                    | 默认值    | 说明             |
+| --------------- | ----------------------- | --------- | ---------------- |
+| inputType       | `'input' \| 'textarea'` | `'input'` | 输入框类型       |
+| inputProps      | `InputProps`            | -         | 输入框属性       |
+| fileUploadProps | `FileUploadProps`       | -         | 文件上传组件属性 |
 
 ## Events
 
 | 事件名 | 参数 | 说明 |
-|--------|------|------|
+| --- | --- | --- |
 | update:value | `value: string \| string[]` | 值更新事件 |
 | update:modelValue | `value: string \| string[]` | v-model 更新事件 |
 | change | `value: string \| string[]` | 值变化事件 |
@@ -147,6 +150,7 @@ const configContent = ref('');
 ## 辅助工具
 
 ### useUpload
+
 - **文件**: `use-upload.ts`
 - **功能**: 提供上传相关的工具函数
 - **主要方法**:
@@ -154,6 +158,7 @@ const configContent = ref('');
   - `getUploadUrl`: 获取上传 URL
 
 ### useUploadType
+
 - **功能**: 处理上传类型相关的逻辑
 - **主要方法**:
   - `getStringAccept`: 获取 accept 字符串
@@ -162,7 +167,7 @@ const configContent = ref('');
 ## 技术栈
 
 - **UI 框架**: Naive UI
-- **核心组件**: 
+- **核心组件**:
   - NUpload
   - NImage
   - NImageGroup
@@ -170,7 +175,7 @@ const configContent = ref('');
   - NButton
   - NGrid
   - NInput
-- **工具库**: 
+- **工具库**:
   - @vueuse/core
   - @vben/utils
 
@@ -189,50 +194,55 @@ const configContent = ref('');
 从 Ant Design Vue 迁移到 Naive UI 的主要变化：
 
 1. **组件导入**:
+
    ```typescript
    // 旧
    import { Upload } from 'ant-design-vue';
-   
+
    // 新
    import { NUpload } from 'naive-ui';
    ```
 
 2. **文件列表类型**:
+
    ```typescript
    // 旧
    import type { UploadFile } from 'ant-design-vue';
-   
+
    // 新
    import type { UploadFileInfo } from 'naive-ui';
    ```
 
 3. **状态值**:
+
    ```typescript
    // 旧
-   status: 'done'
-   
+   status: 'done';
+
    // 新
-   status: 'finished'
+   status: 'finished';
    ```
 
 4. **事件回调**:
+
    ```typescript
    // 旧
    @remove="handleRemove"
    function handleRemove(file: UploadFile) { }
-   
+
    // 新
    @remove="handleRemove"
    function handleRemove(options: { file: UploadFileInfo; fileList: UploadFileInfo[] }) { }
    ```
 
 5. **自定义上传**:
+
    ```typescript
    // 旧
    customRequest(info: UploadRequestOption) {
      info.onSuccess!(res);
    }
-   
+
    // 新
    customRequest(options: UploadCustomRequestOptions) {
      options.onFinish();
@@ -242,9 +252,9 @@ const configContent = ref('');
 ## 更新日志
 
 ### v1.0.0 (2025-01-16)
+
 - ✅ 将所有上传组件从 Ant Design Vue 重构为 Naive UI
 - ✅ 保持原有功能和 API 兼容性
 - ✅ 优化代码结构和类型定义
 - ✅ 修复所有 linter 错误
 - ✅ 添加完整的文档说明
-

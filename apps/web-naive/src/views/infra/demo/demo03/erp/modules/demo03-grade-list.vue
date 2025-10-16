@@ -8,7 +8,6 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteDemo03Grade,
@@ -176,7 +175,7 @@ watch(
           {
             label: $t('common.edit'),
             type: 'primary',
-              text: true,
+            text: true,
             icon: ACTION_ICON.EDIT,
             auth: ['infra:demo03-student:update'],
             onClick: handleEdit.bind(null, row),
@@ -185,7 +184,7 @@ watch(
             label: $t('common.delete'),
             danger: true,
             type: 'primary',
-              text: true,
+            text: true,
             icon: ACTION_ICON.DELETE,
             auth: ['infra:demo03-student:delete'],
             popConfirm: {
