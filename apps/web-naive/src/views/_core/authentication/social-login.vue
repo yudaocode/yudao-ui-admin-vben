@@ -3,12 +3,14 @@ import type { VbenFormSchema } from '@vben/common-ui';
 
 import type { AuthApi } from '#/api/core/auth';
 
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import { AuthenticationRegister, Verification, z } from '@vben/common-ui';
+import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
+import { getUrlValue } from '@vben/utils';
 
 import {
   checkCaptcha,
@@ -18,16 +20,16 @@ import {
 } from '#/api/core/auth';
 import { useAuthStore } from '#/store';
 
-defineOptions({ name: 'Register' });
+defineOptions({ name: 'SocialLogin' });
 
-const loading = ref(false);
-
-const accessStore = useAccessStore();
 const authStore = useAuthStore();
+const accessStore = useAccessStore();
+const { query } = useRoute();
+const router = useRouter();
 const tenantEnable = isTenantEnable();
 const captchaEnable = isCaptchaEnable();
 
-const registerRef = ref();
+const loginRef = ref();
 const verifyRef = ref();
 
 const captchaType = 'blockPuzzle'; // 验证码类型：'blockPuzzle' | 'clickWord'
@@ -38,6 +40,7 @@ async function fetchTenantList() {
   if (!tenantEnable) {
     return;
   }
+
   try {
     // 获取租户列表、域名对应租户
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
@@ -60,16 +63,38 @@ async function fetchTenantList() {
 
     // 设置选中的租户编号
     accessStore.setTenantId(tenantId);
-    registerRef.value
-      .getFormApi()
-      .setFieldValue('tenantId', tenantId?.toString());
+    loginRef.value.getFormApi().setFieldValue('tenantId', tenantId);
   } catch (error) {
     console.error('获取租户列表失败:', error);
   }
 }
 
-/** 执行注册 */
-async function handleRegister(values: any) {
+/** 尝试登录：当账号已经绑定，socialLogin 会直接获得 token */
+const socialType = Number(getUrlValue('type'));
+const redirect = getUrlValue('redirect');
+const socialCode = query?.code as string;
+const socialState = query?.state as string;
+async function tryLogin() {
+  // 用于登录后，基于 redirect 的重定向
+  if (redirect) {
+    await router.replace({
+      query: {
+        ...query,
+        redirect: encodeURIComponent(redirect),
+      },
+    });
+  }
+
+  // 尝试登录
+  await authStore.authLogin('social', {
+    type: socialType,
+    code: socialCode,
+    state: socialState,
+  });
+}
+
+/** 处理登录 */
+async function handleLogin(values: any) {
   // 如果开启验证码，则先验证验证码
   if (captchaEnable) {
     verifyRef.value.show();
@@ -77,24 +102,34 @@ async function handleRegister(values: any) {
   }
 
   // 无验证码，直接登录
-  await authStore.authLogin('register', values);
+  await authStore.authLogin('username', {
+    ...values,
+    socialType,
+    socialCode,
+    socialState,
+  });
 }
 
-/** 验证码通过，执行注册 */
-const handleVerifySuccess = async ({ captchaVerification }: any) => {
+/** 验证码通过，执行登录 */
+async function handleVerifySuccess({ captchaVerification }: any) {
   try {
-    await authStore.authLogin('register', {
-      ...(await registerRef.value.getFormApi().getValues()),
+    await authStore.authLogin('username', {
+      ...(await loginRef.value.getFormApi().getValues()),
       captchaVerification,
+      socialType,
+      socialCode,
+      socialState,
     });
   } catch (error) {
-    console.error('Error in handleRegister:', error);
+    console.error('Error in handleLogin:', error);
   }
-};
+}
 
 /** 组件挂载时获取租户信息 */
-onMounted(() => {
-  fetchTenantList();
+onMounted(async () => {
+  await fetchTenantList();
+
+  await tryLogin();
 });
 
 const formSchema = computed((): VbenFormSchema[] => {
@@ -128,72 +163,22 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'username',
       label: $t('authentication.username'),
-      rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
-    },
-    {
-      component: 'VbenInput',
-      componentProps: {
-        placeholder: $t('authentication.nicknameTip'),
-      },
-      fieldName: 'nickname',
-      label: $t('authentication.nickname'),
-      rules: z.string().min(1, { message: $t('authentication.nicknameTip') }),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.usernameTip') })
+        .default(import.meta.env.VITE_APP_DEFAULT_USERNAME),
     },
     {
       component: 'VbenInputPassword',
       componentProps: {
-        passwordStrength: true,
-        placeholder: $t('authentication.password'),
+        placeholder: $t('authentication.passwordTip'),
       },
       fieldName: 'password',
       label: $t('authentication.password'),
-      renderComponentContent() {
-        return {
-          strengthText: () => $t('authentication.passwordStrength'),
-        };
-      },
-      rules: z.string().min(1, { message: $t('authentication.passwordTip') }),
-    },
-    {
-      component: 'VbenInputPassword',
-      componentProps: {
-        placeholder: $t('authentication.confirmPassword'),
-      },
-      dependencies: {
-        rules(values) {
-          const { password } = values;
-          return z
-            .string({ required_error: $t('authentication.passwordTip') })
-            .min(1, { message: $t('authentication.passwordTip') })
-            .refine((value) => value === password, {
-              message: $t('authentication.confirmPasswordTip'),
-            });
-        },
-        triggerFields: ['password'],
-      },
-      fieldName: 'confirmPassword',
-      label: $t('authentication.confirmPassword'),
-    },
-    {
-      component: 'VbenCheckbox',
-      fieldName: 'agreePolicy',
-      renderComponentContent: () => ({
-        default: () =>
-          h('span', [
-            $t('authentication.agree'),
-            h(
-              'a',
-              {
-                class: 'vben-link ml-1 ',
-                href: '',
-              },
-              `${$t('authentication.privacyPolicy')} & ${$t('authentication.terms')}`,
-            ),
-          ]),
-      }),
-      rules: z.boolean().refine((value) => !!value, {
-        message: $t('authentication.agreeTip'),
-      }),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.passwordTip') })
+        .default(import.meta.env.VITE_APP_DEFAULT_PASSWORD),
     },
   ];
 });
@@ -201,11 +186,15 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 <template>
   <div>
-    <AuthenticationRegister
-      ref="registerRef"
+    <AuthenticationLogin
+      ref="loginRef"
       :form-schema="formSchema"
-      :loading="loading"
-      @submit="handleRegister"
+      :loading="authStore.loginLoading"
+      :show-code-login="false"
+      :show-qrcode-login="false"
+      :show-third-party-login="false"
+      :show-register="false"
+      @submit="handleLogin"
     />
     <Verification
       ref="verifyRef"
