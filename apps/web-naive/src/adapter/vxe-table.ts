@@ -145,14 +145,12 @@ setupVbenVxeTable({
         const loadingKey = `__loading_${column.field}`;
         const finallyProps = {
           inlinePrompt: true,
-          activeText: $t('common.enabled'),
-          inactiveText: $t('common.disabled'),
-          activeValue: 1,
-          inactiveValue: 0,
+          checkedValue: 0,
+          uncheckedValue: 1,
           ...props,
-          modelValue: row[column.field],
+          value: row[column.field],
           loading: row[loadingKey] ?? false,
-          'onUpdate:modelValue': onChange,
+          'onUpdate:value': onChange,
         };
 
         async function onChange(newVal: any) {
@@ -167,7 +165,10 @@ setupVbenVxeTable({
           }
         }
 
-        return h(NSwitch, finallyProps);
+        return h(NSwitch, finallyProps, {
+          checked: $t('common.enabled'),
+          unchecked: $t('common.disabled'),
+        });
       },
     });
 
@@ -206,4 +207,5 @@ setupVbenVxeTable({
 
 export { useVbenVxeGrid };
 
+export * from '#/components/table-action';
 export type * from '@vben/plugins/vxe-table';
