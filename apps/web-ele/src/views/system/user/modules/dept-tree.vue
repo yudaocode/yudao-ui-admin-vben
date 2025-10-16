@@ -31,9 +31,9 @@ function handleSearch(value: string) {
 }
 
 /** 选中部门 */
-const handleSelect = (data: any) => {
+function handleSelect(data: any) {
   emit('select', data);
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
