@@ -11,8 +11,8 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createForm, updateForm } from '#/api/bpm/form';
+import { encodeConf, encodeFields } from '#/components/form-create';
 import { $t } from '#/locales';
-import { encodeConf, encodeFields } from '#/utils';
 
 import { useFormSchema } from '../data';
 
