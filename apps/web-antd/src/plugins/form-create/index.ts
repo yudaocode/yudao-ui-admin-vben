@@ -74,7 +74,6 @@ const components = [
   Menu,
   MenuDivider,
   MenuItem,
-  message,
   Popconfirm,
   Table,
   TableColumn,
