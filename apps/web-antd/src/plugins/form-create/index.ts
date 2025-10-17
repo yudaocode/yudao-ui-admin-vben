@@ -1,8 +1,36 @@
 import type { App } from 'vue';
 
-// import install from '@form-create/ant-design-vue/auto-import';
+import formCreate from '@form-create/ant-design-vue';
+import install from '@form-create/ant-design-vue/auto-import';
 import FcDesigner from '@form-create/antd-designer';
-import Antd from 'ant-design-vue';
+// 👇使用 form-create 需额外全局引入 ant-design-vue 组件
+import {
+  Alert,
+  Badge,
+  Card,
+  Collapse,
+  CollapsePanel,
+  ConfigProvider,
+  Divider,
+  Dropdown,
+  Image,
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+  LayoutSider,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  message,
+  Popconfirm,
+  Table,
+  TableColumn,
+  TabPane,
+  Tabs,
+  Tag,
+  Transfer,
+} from 'ant-design-vue';
 
 // ======================= 自定义组件 =======================
 import { useApiSelect } from '#/components/form-create';
@@ -33,19 +61,42 @@ const components = [
   ImagesUpload,
   FileUpload,
   Tinymce,
+  ConfigProvider,
   DictSelect,
   UserSelect,
   DeptSelect,
   ApiSelect,
+  Alert,
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  LayoutFooter,
+  LayoutSider,
+  Transfer,
+  Divider,
+  Popconfirm,
+  Table,
+  TableColumn,
+  TabPane,
+  Tabs,
+  Dropdown,
+  Badge,
+  Tag,
+  Menu,
+  Image,
+  MenuItem,
+  MenuDivider,
+  Collapse,
+  CollapsePanel,
+  Card,
 ];
 
-// TODO: @dhb52 按需导入，而不是app.use(Antd);
-// 参考 http://www.form-create.com/v3/ant-design-vue/auto-import.html 文档
-export const setupFormCreate = (app: App) => {
+export function setupFormCreate(app: App) {
   components.forEach((component) => {
     app.component(component.name as string, component);
   });
-  app.use(Antd);
+  app.component('AMessage', message);
+  formCreate.use(install);
+  app.use(formCreate);
   app.use(FcDesigner);
-  app.use(FcDesigner.formCreate);
-};
+}
