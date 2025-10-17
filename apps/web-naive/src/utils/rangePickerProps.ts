@@ -8,7 +8,6 @@ export function getRangePickerDefaultProps() {
     startPlaceholder: $t('utils.rangePicker.beginTime'),
     endPlaceholder: $t('utils.rangePicker.endTime'),
     type: 'datetimerange',
-    // TODO
     format: 'YYYY-MM-dd HH:mm:ss',
     valueFormat: 'YYYY-MM-dd HH:mm:ss',
     defaultTime: ['00:00:00', '23:59:59'],

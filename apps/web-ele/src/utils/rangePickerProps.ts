@@ -5,8 +5,15 @@ import { $t } from '#/locales';
 /** 时间段选择器拓展 */
 export function getRangePickerDefaultProps() {
   return {
+    // 显示在输入框中的格式
+    format: 'YYYY-MM-DD HH:mm:ss',
+    // 绑定值的格式。 不指定则绑定值为 Date 对象
+    valueFormat: 'YYYY-MM-DD HH:mm:ss',
+    defaultTime: [new Date('1 00:00:00'), new Date('1 23:59:59')],
+    // 输入框提示文字
     startPlaceholder: $t('utils.rangePicker.beginTime'),
     endPlaceholder: $t('utils.rangePicker.endTime'),
+    // 快捷时间范围
     shortcuts: [
       {
         text: $t('utils.rangePicker.today'),
@@ -63,16 +70,5 @@ export function getRangePickerDefaultProps() {
         },
       },
     ],
-    transformDateFunc: (dates: any) => {
-      // TODO puhui999: 没起作用后面调试再看看
-      if (dates && dates.length === 2) {
-        // 格式化为后台支持的时间格式
-        return [dates.createTime[0], dates.createTime[1]].join(',');
-      }
-      return {};
-    },
-    format: 'YYYY-MM-DD HH:mm:ss',
-    valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    defaultTime: [new Date('1 00:00:00'), new Date('1 23:59:59')],
   };
 }
