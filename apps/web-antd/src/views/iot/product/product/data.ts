@@ -43,12 +43,16 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
         .min(1, 'ProductKey 不能为空')
         .max(32, 'ProductKey 长度不能超过 32 个字符'),
       suffix: () => {
-        return h(Button, {
-          type: 'default',
-          onClick: () => {
-            formApi?.setFieldValue('productKey', generateProductKey());
+        return h(
+          Button,
+          {
+            type: 'default',
+            onClick: () => {
+              formApi?.setFieldValue('productKey', generateProductKey());
+            },
           },
-        }, { default: () => '重新生成' });
+          { default: () => '重新生成' },
+        );
       },
     },
     // 编辑时的 ProductKey 字段（禁用，无按钮）
@@ -157,7 +161,7 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
         placeholder: '请输入产品描述',
         rows: 3,
       },
-    }
+    },
   ];
 }
 
@@ -192,12 +196,16 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
         .min(1, 'ProductKey 不能为空')
         .max(32, 'ProductKey 长度不能超过 32 个字符'),
       suffix: () => {
-        return h(Button, {
-          type: 'default',
-          onClick: () => {
-            formApi?.setFieldValue('productKey', generateProductKey());
+        return h(
+          Button,
+          {
+            type: 'default',
+            onClick: () => {
+              formApi?.setFieldValue('productKey', generateProductKey());
+            },
           },
-        }, { default: () => '重新生成' });
+          { default: () => '重新生成' },
+        );
       },
     },
     // 编辑时的 ProductKey 字段（禁用，无按钮）
@@ -297,7 +305,7 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
         placeholder: '请选择定位类型',
       },
       rules: 'required',
-    }
+    },
   ];
 }
 
@@ -307,7 +315,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'icon',
       label: '产品图标',
-      component: 'IconPicker',//用这个组件 产品卡片列表 可以根据这个显示 否则就显示默认的
+      component: 'IconPicker', // 用这个组件 产品卡片列表 可以根据这个显示 否则就显示默认的
       componentProps: {
         placeholder: '请选择产品图标',
         prefix: 'carbon',
@@ -440,7 +448,8 @@ export function useImagePreview() {
 
 /** 生成 ProductKey（包含大小写字母和数字） */
 export function generateProductKey(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < 16; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));

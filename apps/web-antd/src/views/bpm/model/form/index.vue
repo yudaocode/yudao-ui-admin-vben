@@ -456,9 +456,9 @@ onBeforeUnmount(() => {
               >
                 {{ index + 1 }}
               </div>
-              <span class="whitespace-nowrap text-base font-bold">{{
-                step.title
-              }}</span>
+              <span class="whitespace-nowrap text-base font-bold">
+                {{ step.title }}
+              </span>
             </div>
           </div>
         </div>
