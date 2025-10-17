@@ -9,8 +9,9 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-// import { Timeline } from 'ant-design-vue';
-// import { CronTab } from '#/components/cron-tab';
+import { NTimeline, NTimelineItem } from 'naive-ui';
+
+import { CronTab } from '#/components/cron-tab';
 import { DictTag } from '#/components/dict-tag';
 
 /** 新增/修改的表单 */
@@ -234,9 +235,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
         if (!data?.nextTimes || data.nextTimes.length === 0) {
           return '无后续执行时间';
         }
-        return h(Timeline, {}, () =>
+        return h(NTimeline, {}, () =>
           data.nextTimes?.map((time: Date) =>
-            h(Timeline.Item, {}, () => formatDateTime(time)),
+            h(NTimelineItem, {}, () => formatDateTime(time)),
           ),
         );
       },
