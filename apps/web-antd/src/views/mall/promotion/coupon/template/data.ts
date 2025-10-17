@@ -2,7 +2,14 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  CouponTemplateTakeTypeEnum,
+  CouponTemplateValidityTypeEnum,
+  DICT_TYPE,
+  PromotionDiscountTypeEnum,
+  PromotionProductScopeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
@@ -44,72 +51,229 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入优惠券描述',
       },
     },
-    // TODO @xingyu：不同的优惠，不同的选择
     {
       fieldName: 'productScope',
-      label: '优惠类型',
+      label: '优惠劵类型',
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PROMOTION_PRODUCT_SCOPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+      },
+      rules: 'required',
+      defaultValue: PromotionProductScopeEnum.ALL.scope,
+    },
+    // TODO @puhui999： 商品选择器优化
+    {
+      fieldName: 'productSpuIds',
+      label: '商品',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请选择商品',
+      },
+      dependencies: {
+        triggerFields: ['productScope'],
+        show: (model) =>
+          model.productScope === PromotionProductScopeEnum.SPU.scope,
+      },
+      rules: 'required',
+    },
+    // TODO @puhui999： 商品分类选择器优化
+    {
+      fieldName: 'productCategoryIds',
+      label: '商品分类',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请选择商品分类',
+      },
+      dependencies: {
+        triggerFields: ['productScope'],
+        show: (model) =>
+          model.productScope === PromotionProductScopeEnum.CATEGORY.scope,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'discountType',
+      label: '优惠类型',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.PROMOTION_DISCOUNT_TYPE, 'number'),
+      },
+      rules: 'required',
+      defaultValue: PromotionDiscountTypeEnum.PRICE.type,
+    },
+    {
+      fieldName: 'discountPrice',
+      label: '优惠券面额',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        placeholder: '请输入优惠金额，单位：元',
+        addonAfter: '元',
+      },
+      dependencies: {
+        triggerFields: ['discountType'],
+        show: (model) =>
+          model.discountType === PromotionDiscountTypeEnum.PRICE.type,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'discountPercent',
+      label: '优惠券折扣',
+      component: 'InputNumber',
+      componentProps: {
+        min: 1,
+        max: 9.9,
+        precision: 1,
+        placeholder: '优惠券折扣不能小于 1 折，且不可大于 9.9 折',
+        addonAfter: '折',
+      },
+      dependencies: {
+        triggerFields: ['discountType'],
+        show: (model) =>
+          model.discountType === PromotionDiscountTypeEnum.PERCENT.type,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'discountLimitPrice',
+      label: '最多优惠',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        placeholder: '请输入最多优惠',
+        addonAfter: '元',
+      },
+      dependencies: {
+        triggerFields: ['discountType'],
+        show: (model) =>
+          model.discountType === PromotionDiscountTypeEnum.PERCENT.type,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'usePrice',
+      label: '满多少元可以使用',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        precision: 2,
+        placeholder: '无门槛请设为 0',
+        addonAfter: '元',
       },
       rules: 'required',
     },
     {
       fieldName: 'takeType',
       label: '领取方式',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
-        placeholder: '请选择领取方式',
         options: getDictOptions(DICT_TYPE.PROMOTION_COUPON_TAKE_TYPE, 'number'),
       },
       rules: 'required',
-    },
-    // TODO @xingu：不同的有效期，不同的类型
-    {
-      fieldName: 'validityType',
-      label: '有效期类型',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择有效期类型',
-        options: getDictOptions(
-          DICT_TYPE.PROMOTION_COUPON_TEMPLATE_VALIDITY_TYPE,
-          'number',
-        ),
-      },
-      rules: 'required',
+      defaultValue: CouponTemplateTakeTypeEnum.USER.type,
     },
     {
       fieldName: 'totalCount',
       label: '发放数量',
       component: 'InputNumber',
       componentProps: {
-        min: 0,
-        placeholder: '请输入发放数量',
+        min: -1,
+        placeholder: '发放数量，没有之后不能领取或发放，-1 为不限制',
+        addonAfter: '张',
+      },
+      dependencies: {
+        triggerFields: ['takeType'],
+        show: (model) =>
+          model.takeType === CouponTemplateTakeTypeEnum.USER.type,
       },
       rules: 'required',
     },
     {
       fieldName: 'takeLimitCount',
-      label: '领取上限',
+      label: '每人限领个数',
       component: 'InputNumber',
       componentProps: {
-        min: 0,
-        placeholder: '请输入领取上限',
+        min: -1,
+        placeholder: '设置为 -1 时，可无限领取',
+        addonAfter: '张',
+      },
+      dependencies: {
+        triggerFields: ['takeType'],
+        show: (model) => model.takeType === 1,
       },
       rules: 'required',
     },
     {
-      fieldName: 'status',
-      label: '优惠券状态',
+      fieldName: 'validityType',
+      label: '有效期类型',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        options: getDictOptions(
+          DICT_TYPE.PROMOTION_COUPON_TEMPLATE_VALIDITY_TYPE,
+          'number',
+        ),
       },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
+      defaultValue: CouponTemplateValidityTypeEnum.DATE.type,
+      rules: 'required',
+    },
+    // TODO @AI：不太对；
+    {
+      fieldName: 'validTimes',
+      label: '固定日期',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+      },
+      dependencies: {
+        triggerFields: ['validityType'],
+        show: (model) =>
+          model.validityType === CouponTemplateValidityTypeEnum.DATE.type,
+      },
+      rules: z.array(z.number()).min(2, '固定日期不能为空'),
+    },
+    {
+      fieldName: 'fixedStartTerm',
+      label: '领取日期',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        placeholder: '第 0 为今天生效',
+        addonBefore: '第',
+        addonAfter: '天',
+      },
+      dependencies: {
+        triggerFields: ['validityType'],
+        show: (model) =>
+          model.validityType === CouponTemplateValidityTypeEnum.TERM.type,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'fixedEndTerm',
+      component: 'InputNumber',
+      componentProps: {
+        min: 0,
+        placeholder: '请输入结束天数',
+        addonBefore: '至',
+        addonAfter: '天有效',
+      },
+      dependencies: {
+        triggerFields: ['validityType'],
+        show: (model) =>
+          model.validityType === CouponTemplateValidityTypeEnum.TERM.type,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'productScopeValues',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
   ];
 }
