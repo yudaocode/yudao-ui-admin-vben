@@ -78,7 +78,7 @@ const rules: Record<string, Rule[]> = {
           callback();
           return;
         }
-        if (!/^[a-z_][\-\w.$]*$/i.test(value)) {
+        if (!/^[a-z_][-\w.$]*$/i.test(value)) {
           callback(
             new Error(
               '只能包含字母、数字、下划线、连字符和点号，且必须以字母或下划线开头',
@@ -460,7 +460,6 @@ defineExpose({ validate });
       class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
-      title="选择用户"
       @confirm="handleUserSelectConfirm"
       @closed="handleUserSelectClosed"
       @cancel="handleUserSelectCancel"
@@ -468,7 +467,6 @@ defineExpose({ validate });
     <!-- 部门选择对话框 -->
     <DeptSelectModalComp
       class="w-3/5"
-      title="发起人部门选择"
       :check-strictly="true"
       @confirm="handleDeptSelectConfirm"
     />
