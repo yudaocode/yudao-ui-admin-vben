@@ -149,6 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'primary',
+              text: true,
               icon: ACTION_ICON.EDIT,
               auth: ['system:tenant-package:update'],
               onClick: handleEdit.bind(null, row),

@@ -135,7 +135,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-6">
       <template #menuIds="slotProps">
-        <NSpin :show="menuLoading" content-class="w-full">
+        <NSpin :show="menuLoading" class="w-full">
           <Tree
             class="max-h-96 overflow-y-auto"
             :tree-data="menuTree"

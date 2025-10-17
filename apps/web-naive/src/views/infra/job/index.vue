@@ -110,9 +110,7 @@ function handleLog(row?: InfraJobApi.Job) {
 async function handleDelete(row: InfraJobApi.Job) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteJob(row.id!);

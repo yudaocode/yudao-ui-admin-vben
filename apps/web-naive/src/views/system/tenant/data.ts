@@ -72,7 +72,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       label: '用户密码',
       fieldName: 'password',
-      component: 'InputPassword',
+      component: 'Input',
+      componentProps: {
+        type: 'password',
+      },
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
@@ -90,8 +93,8 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'expireTime',
       component: 'DatePicker',
       componentProps: {
-        format: 'YYYY-MM-DD',
-        valueFormat: 'x',
+        type: 'datetime',
+        valueFormat: 'YYYY-MM-dd HH:mm:ss',
         placeholder: '请选择过期时间',
       },
       rules: 'required',
@@ -102,8 +105,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入绑定域名',
-        mode: 'tags',
-        clearable: true,
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
     },
     {
@@ -112,8 +116,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },

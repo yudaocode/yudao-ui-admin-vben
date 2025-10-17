@@ -50,9 +50,7 @@ function handleEdit(row: Demo03StudentApi.Demo03Student) {
 async function handleDelete(row: Demo03StudentApi.Demo03Student) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.id]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteDemo03Student(row.id!);

@@ -41,10 +41,10 @@ function handleEdit(row: SystemSocialClientApi.SocialClient) {
 
 /** 删除社交客户端 */
 async function handleDelete(row: SystemSocialClientApi.SocialClient) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-  });
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.name]),
+    { duration: 0 },
+  );
   try {
     await deleteSocialClient(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -57,8 +57,7 @@ async function handleDelete(row: SystemSocialClientApi.SocialClient) {
 /** 批量删除社交客户端 */
 async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteBatchConfirm'));
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deletingBatch'),
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
     duration: 0,
   });
   try {
@@ -150,6 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: $t('common.edit'),
               type: 'primary',
+              text: true,
               icon: ACTION_ICON.EDIT,
               auth: ['system:social-client:update'],
               onClick: handleEdit.bind(null, row),

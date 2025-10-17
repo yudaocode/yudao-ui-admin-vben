@@ -45,9 +45,7 @@ function handleEdit(row: InfraFileConfigApi.FileConfig) {
 async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.updating', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await updateFileConfigMaster(row.id!);
@@ -83,9 +81,7 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
 async function handleDelete(row: InfraFileConfigApi.FileConfig) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteFileConfig(row.id!);

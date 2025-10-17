@@ -51,9 +51,7 @@ function handleEdit(row: SystemDeptApi.Dept) {
 async function handleDelete(row: SystemDeptApi.Dept) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteDept(row.id!);

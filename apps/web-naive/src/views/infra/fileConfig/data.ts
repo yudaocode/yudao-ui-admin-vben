@@ -130,8 +130,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '主动模式', value: 'Active' },
           { label: '被动模式', value: 'Passive' },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       dependencies: {
@@ -201,8 +199,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '启用', value: true },
           { label: '禁用', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       dependencies: {
@@ -220,8 +216,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '公开', value: true },
           { label: '私有', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       dependencies: {
@@ -326,7 +320,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 240,
+      width: 280,
       fixed: 'right',
       slots: { default: 'actions' },
     },

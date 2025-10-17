@@ -26,9 +26,7 @@ function handleRefresh() {
 async function handleDelete(row: SystemOAuth2TokenApi.OAuth2Token) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', ['令牌']),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteOAuth2Token(row.accessToken);

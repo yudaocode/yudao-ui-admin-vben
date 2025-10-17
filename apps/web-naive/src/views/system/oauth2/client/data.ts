@@ -65,8 +65,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -96,7 +94,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE),
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请输入授权类型',
       },
       rules: 'required',
@@ -107,8 +106,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入授权范围',
-        mode: 'tags',
-        clearable: true,
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
     },
     {
@@ -117,7 +117,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入自动授权范围',
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
       dependencies: {
         triggerFields: ['scopes'],
@@ -137,7 +139,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入可重定向的 URI 地址',
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
       rules: 'required',
     },
@@ -147,7 +151,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入权限',
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
     },
     {
@@ -155,7 +161,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '资源',
       component: 'Select',
       componentProps: {
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
         placeholder: '请输入资源',
       },
     },

@@ -3,7 +3,7 @@ import type { UploadFileInfo } from 'naive-ui';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { NUpload } from 'naive-ui';
+import { NUpload, NUploadDragger } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { message } from '#/adapter/naive';
@@ -50,8 +50,11 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 上传前 */
-function beforeUpload(file: UploadFileInfo) {
-  formApi.setFieldValue('file', file);
+function beforeUpload(data: {
+  file: UploadFileInfo;
+  fileList: UploadFileInfo[];
+}) {
+  formApi.setFieldValue('file', data.file.file);
   return false;
 }
 </script>
@@ -62,21 +65,23 @@ function beforeUpload(file: UploadFileInfo) {
       <template #file>
         <div class="w-full">
           <!-- 上传区域 -->
-          <NUpload.Dragger
+          <NUpload
             name="file"
-            :max-count="1"
+            :max="1"
+            :multiple="false"
             accept=".jpg,.png,.gif,.webp"
-            :before-upload="beforeUpload"
-            list-type="picture-card"
+            @before-upload="beforeUpload"
           >
-            <p class="ant-upload-drag-icon">
-              <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
-            </p>
-            <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
-            <p class="ant-upload-hint">
-              支持 .jpg、.png、.gif、.webp 格式图片文件
-            </p>
-          </NUpload.Dragger>
+            <NUploadDragger>
+              <p class="ant-upload-drag-icon">
+                <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
+              </p>
+              <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
+              <p class="ant-upload-hint">
+                支持 .jpg、.png、.gif、.webp 格式图片文件
+              </p>
+            </NUploadDragger>
+          </NUpload>
         </div>
       </template>
     </Form>

@@ -9,8 +9,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-import dayjs from 'dayjs';
-
 import { DictTag } from '#/components/dict-tag';
 
 /** 列表的搜索表单 */
@@ -31,12 +29,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         clearable: true,
+        type: 'datetime',
+        valueFormat: 'YYYY-MM-dd HH:mm:ss',
+        defaultTime: '00:00:00',
         placeholder: '选择开始执行时间',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
-        showTime: {
-          format: 'HH:mm:ss',
-          defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
-        },
       },
     },
     {
@@ -45,12 +41,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         clearable: true,
+        type: 'datetime',
+        valueFormat: 'YYYY-MM-dd HH:mm:ss',
+        defaultTime: '23:59:59',
         placeholder: '选择结束执行时间',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
-        showTime: {
-          format: 'HH:mm:ss',
-          defaultValue: dayjs('23:59:59', 'HH:mm:ss'),
-        },
       },
     },
     {

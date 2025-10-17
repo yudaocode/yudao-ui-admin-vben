@@ -61,9 +61,7 @@ function handleSend(row: SystemNotifyTemplateApi.NotifyTemplate) {
 async function handleDelete(row: SystemNotifyTemplateApi.NotifyTemplate) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteNotifyTemplate(row.id!);

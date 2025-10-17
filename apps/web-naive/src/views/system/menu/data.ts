@@ -90,8 +90,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(SystemMenuTypeEnum.DIR),
     },
@@ -164,14 +162,15 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'componentName',
       label: '组件名称',
-      component: 'AutoComplete',
+      component: 'Select',
       componentProps: {
         clearable: true,
-        filterOption(input: string, option: { value: string }) {
+        filterable: true,
+        placeholder: '请选择组件名称',
+        options: componentKeys.map((v) => ({ label: v, value: v })),
+        filter(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },
-        placeholder: '请选择组件名称',
-        options: componentKeys.map((v) => ({ value: v })),
       },
       dependencies: {
         triggerFields: ['type'],
@@ -212,8 +211,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -226,8 +223,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '总是', value: true },
           { label: '不是', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       defaultValue: true,
@@ -248,8 +243,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '缓存', value: true },
           { label: '不缓存', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       defaultValue: true,

@@ -61,9 +61,7 @@ function handleSend(row: SystemSmsTemplateApi.SmsTemplate) {
 async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteSmsTemplate(row.id!);

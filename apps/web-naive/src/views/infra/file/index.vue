@@ -53,9 +53,7 @@ async function handleCopyUrl(row: InfraFileApi.File) {
 async function handleDelete(row: InfraFileApi.File) {
   const hideLoading = message.loading(
     $t('ui.actionMessage.deleting', [row.name || row.path]),
-    {
-      duration: 0,
-    },
+    { duration: 0 },
   );
   try {
     await deleteFile(row.id!);

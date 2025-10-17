@@ -38,8 +38,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'password',
       label: '密码',
-      component: 'InputPassword',
+      component: 'Input',
       componentProps: {
+        type: 'password',
         placeholder: '请输入密码',
       },
       rules: 'required',
@@ -70,8 +71,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(true),
     },
@@ -81,8 +80,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(false),
     },

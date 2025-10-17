@@ -33,7 +33,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       label: '用户密码',
       fieldName: 'password',
-      component: 'InputPassword',
+      component: 'Input',
+      componentProps: {
+        type: 'password',
+      },
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
@@ -70,7 +73,8 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimplePostList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请选择岗位',
       },
     },
@@ -97,8 +101,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(1),
     },
@@ -108,8 +110,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -219,7 +219,8 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
         api: getSimpleRoleList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请选择角色',
       },
     },

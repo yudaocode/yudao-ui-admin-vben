@@ -7,6 +7,8 @@ import { ref, watch } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
+import { NTag } from 'naive-ui';
+
 import { message } from '#/adapter/naive';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -173,10 +175,14 @@ watch(
         />
       </template>
       <template #colorType="{ row }">
-        <Tag :color="row.colorType">{{ row.colorType }}</Tag>
+        <NTag v-if="row.colorType" :type="row.colorType as any">
+          {{ row.colorType }}
+        </NTag>
       </template>
       <template #cssClass="{ row }">
-        <Tag :color="row.cssClass">{{ row.cssClass }}</Tag>
+        <NTag v-if="row.cssClass" :color="{ color: row.cssClass }">
+          {{ row.cssClass }}
+        </NTag>
       </template>
       <template #actions="{ row }">
         <TableAction
