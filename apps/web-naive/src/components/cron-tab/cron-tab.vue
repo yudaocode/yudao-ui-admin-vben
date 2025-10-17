@@ -814,23 +814,25 @@ const shortcutsOptions = computed(() => {
               </NRadioGroup>
             </NFormItem>
             <NFormItem v-if="cronValue.week.type === '1'" label="范围">
-              <NSelect v-model:value="cronValue.week.range.start">
-                <NSelect.Option
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </NSelect>
+              <NSelect
+                v-model:value="cronValue.week.range.start"
+                :options="
+                  data.week.map((item) => ({
+                    label: item.label,
+                    value: item.value,
+                  }))
+                "
+              />
               <span class="px-4">-</span>
-              <NSelect v-model:value="cronValue.week.range.end">
-                <NSelect.Option
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </NSelect>
+              <NSelect
+                v-model:value="cronValue.week.range.end"
+                :options="
+                  data.week.map((item) => ({
+                    label: item.label,
+                    value: item.value,
+                  }))
+                "
+              />
             </NFormItem>
             <NFormItem v-if="cronValue.week.type === '2'" label="间隔">
               第
